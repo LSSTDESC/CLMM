@@ -50,3 +50,4 @@ B. `clmm.Inferrer` config file reader including profile/prior/fit method
 
 Users and developers may implement their own subclass instances of these superclasses to flesh out the `clmm` functionality.
  
+_test text_
