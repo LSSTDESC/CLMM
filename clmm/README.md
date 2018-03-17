@@ -1,6 +1,6 @@
 # `clmm` proposed code structure
 
-`clmm` is a general code for performing individual- and population-level inference on galaxy cluster weak lensing data.  `clmm` aims to be modular in (at least) three respects:
+`clmm` is a general code for performing individual- and population-level inference on galaxy cluster weak lensing data.  It will serve to enable the CLMassMod Key Task of [the LSST-DESC SRM](http://lsst-desc.org/sites/default/files/DESC_SRM_V1_1.pdf) and will be used as a framework for future CL WG activities.  `clmm` aims to be modular in (at least) three respects:
 
 1. `clmm` will be able to run on real data as well as simulations, and it will not be restricted to any particular datasets.
 2. `clmm` will support multiple modes of inference of the cluster mass function and other relevant distributions, such as the mass-concentration relation.
