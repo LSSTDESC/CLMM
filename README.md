@@ -11,6 +11,11 @@ A new and improved cluster mass modeling code descended from [clmassmod](https:/
 * [Tom McClintock](https://github.com/tmcclintock) (Arizona)
 * [Mariana Penna Lima](https://github.com/pennalima)
 * [Brandyn Lee](https://github.com/brandynlee)
+* [Celine Combet]
+* [Matt Fong]
+* [Miyoung Choi]
+* [Michel Aguena]
+* [Heidi Wu]
 * [Melanie Simet](https://github.com/msimet)
 * [Doug Applegate](https://github.com/deapplegate)
 * Add your name here!
