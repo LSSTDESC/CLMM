@@ -3,13 +3,15 @@ Define CalaxyClusters class
 Who to blame for problems: Michel A.
 '''
 
-Position = namedtuple('Position', ['ra', 'dec'])
-Profile = namedtuple('Profile', ['distances', 'dimension'])
+from collections import namedtuple
 
-for n in ['Position', 'Pofile']:
+Position = namedtuple('Position', ['metadata', 'ra', 'dec'])
+Profile = namedtuple('Profile', ['metadata', 'distances', 'dimension'])
 
-    exec('%00 = %s(*[None for i in %s._fields])'%(n, n))
-    exec('%s_type = type(%)'%(n, n))
+for n in ['Position', 'Profile']:
+
+    exec('%s00 = %s(*[None for i in %s._fields])'%(n, n, n))
+    exec('%s_type = type(%s)'%(n, n))
 
 
 class GalaxyCluster():
@@ -32,15 +34,15 @@ class GalaxyCluster():
 
         for name, data_ext in data_external.items():
 
-            for data_int in self.data:
+            for data_int in self.data.values():
 
                 if type(data_int) == type(data_ext):
 
                     if data_int.metadata == data_ext.metadata:
 
-                        print('Overwritting %s[%s] data', %(name, data_ext.metadata))
+                        print('Overwritting %s[%s] data'%(name, data_ext.metadata))
 
-            self.data[name] = data_external
+            self.data[name] = data_ext
 
     def _listprofiles():
         '''
