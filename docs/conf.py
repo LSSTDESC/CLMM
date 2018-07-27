@@ -157,3 +157,5 @@ texinfo_documents = [
 
 
 # -- Extension configuration -------------------------------------------------
+
+extensions = ['sphinx_automodapi.automodapi']
