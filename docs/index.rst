@@ -22,6 +22,7 @@ This is a DESC tool ....
    :maxdepth: 2
    :caption: Contents:
 
+   api_docs   
 
 Indices and tables
 ==================
