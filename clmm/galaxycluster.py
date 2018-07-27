@@ -25,22 +25,22 @@ class GalaxyCluster():
         self.data = {}
         self.homelocal = '.'
 
-    def _add(self, added_data):
+    def _add(self, data_external):
         '''
-        added_data - dict with all the data in the correct formats
+        data_external - dict with all the data in the correct formats
         '''
 
-        for name, dat in added_data.items():
+        for name, data_ext in data_external.items():
 
-            for d in self.data:
+            for data_int in self.data:
 
-                if type(d) == type(dat):
+                if type(data_int) == type(data_ext):
 
-                    if d.metadata == dat.metadata:
+                    if data_int.metadata == data_ext.metadata:
 
-                        print('Overwritting %s data')
+                        print('Overwritting %s[%s] data', %(name, data_ext.metadata))
 
-            self.data[name] = dat
+            self.data[name] = data_external
 
     def _listprofiles():
         '''
