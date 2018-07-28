@@ -12,4 +12,4 @@ CLMM
    :maxdepth: 1
    :caption: Reference
 
-   Cluster Toolkit Reference/API<api/modules>
+   CLMM Reference/API<api/modules>
