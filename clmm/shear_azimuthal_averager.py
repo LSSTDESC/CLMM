@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 import numpy as np
 import matplotlib.pyplot as plt
-from astropy.coordinates import SkyCoord
 from astropy.cosmology import FlatLambdaCDM
-import FoFCatalogMatching
-import GCRCatalogs
+#import FoFCatalogMatching
+#import GCRCatalogs
 
 
 # see shear_azimuthal_averager_demo.py for demo

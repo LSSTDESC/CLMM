@@ -1,14 +1,11 @@
 #!/usr/bin/env python
-import numpy as np
+#import numpy as np
 import matplotlib
 matplotlib.use('pdf')
-import matplotlib.pyplot as plt
-from astropy.coordinates import SkyCoord
-from astropy.cosmology import FlatLambdaCDM
-import FoFCatalogMatching
+#import matplotlib.pyplot as plt
+#from astropy.cosmology import FlatLambdaCDM
+
 import GCRCatalogs
-
-
 from shear_azimuthal_averager import ShearAzimuthalAverager
 
 
@@ -17,15 +14,15 @@ extragalactic_cat = GCRCatalogs.load_catalog('proto-dc2_v2.1.2_test')
 massive_halos = extragalactic_cat.get_quantities(['halo_mass', 'redshift','ra', 'dec'], filters=['halo_mass > 1e14','is_central==True'])
 
 m = massive_halos['halo_mass']
-select = (m == np.max(m))
+select = (m == max(m))
 ra_cl = massive_halos['ra'][select][0]
 dec_cl = massive_halos['dec'][select][0]
 z_cl = massive_halos['redshift'][select][0]
 #print(m[select], ra_cl, dec_cl, z_cl)
 
 # get galaxies around it
-ra_min, ra_max = ra_cl-0.1, ra_cl+0.1
-dec_min, dec_max = dec_cl-0.1, dec_cl+0.1
+ra_min, ra_max = ra_cl-0.3, ra_cl+0.3
+dec_min, dec_max = dec_cl-0.3, dec_cl+0.3
 z_min = z_cl + 0.1
 z_max = 1.5
 
