@@ -8,17 +8,16 @@ import collections
 from collections import namedtuple
 
 """
-Data: A namedtuple tying values with units to the metadata of where the values came from and thus how the values are used
+GCData: A namedtuple tying values with units to the metadata of where the values came from and thus how the values are used
 
 Parameters
 ----------
-provenance: string, type of object that produced this data
-    e.g. Profile.NFW
+creator: what object (i.e. model, summarizer, inferrer)
+specs: specifications of how the data was created
 data: astropy table with column names and units
 
 Notes
 -----
 
 """
-
-GCData = namedtuple('GCData', ['provenance', 'table'])
+GCData = namedtuple('GCData', ['creator', 'specs', 'table'])
