@@ -44,6 +44,6 @@ z_src = gal_cat['redshift']
 
 saa = ShearAzimuthalAverager(ra_src, dec_src, z_src, ra_cl, dec_cl, z_cl, gamma_1, gamma_2)
 saa.compute_shear()
-saa.make_shear_profile()
+rmean_arr, gamt_arr, gamc_arr, gamt_err_arr, gamc_err_arr = saa.make_shear_profile()
 saa.plot_profile()
 #    plt.show()
