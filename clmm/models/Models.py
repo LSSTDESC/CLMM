@@ -5,7 +5,7 @@ class Model() :
     and a functional form.  The parameters may vary or be fixed.
 
     Attributes
-    ----------                                                                                                                                                                                                 
+    ----------
     func : callable
         functional form of the model, should be wrapped by the class
 
@@ -20,8 +20,8 @@ class Model() :
 
     def __init__(self, func, independent_vars=None, params=None) :
         '''
-        Parameters                                                                                                                                                                                                 
-        ----------                                                                                                                                                                                                 
+        Parameters
+        ----------
         func : callable
             functional form of the model, should be wrapped by the class
         
@@ -40,11 +40,12 @@ class Model() :
 
 class Parameter() :
     '''This is an object that may or may not vary, and can be constrained
-with a prior.  This is one of the key aspects that define a model.
+    with a prior.  This is one of the key aspects that define a model.
 
-    Attributes                                                                                                                                                                                                         ----------                                                                                                                                                                                               
-    name : str, optional                                                                                                                                                                                       
-        Name of the Parameter.                                                                                                                                                                                 
+    Attributes
+    ----------
+    name : str, optional
+        Name of the Parameter.
 
     value : float, optional
         Numerical value of the parameter.  If value is given, vary is False
@@ -62,10 +63,10 @@ with a prior.  This is one of the key aspects that define a model.
     def __init__(self, name, value=None, prior=None) :
 
         '''
-        Parameters                                                                                                                                                                                                 
-        ----------                                                                                                                                                                                                 
+        Parameters
+        ----------
         name : str
-            Name of the Parameter.                                                                                                                                                                                 
+            Name of the Parameter.
         
         value : float, optional
             Numerical value of the parameter.  If value is given, we do not vary this parameter
@@ -83,7 +84,7 @@ with a prior.  This is one of the key aspects that define a model.
 
     def __set_parameter_variation(self) :
         '''Checks if value is given (then set vary to false) and if value
-is not given, check that prior is not None.
+        is not given, check that prior is not None.
         '''
         
         if self.value is not None : 
@@ -103,7 +104,7 @@ class Prior() :
     This defines a min/max value and some function form to a parameter.
 
     Attributes
-    ----------                                                                                                                                                                                                 
+    ----------
     priormin : float
         minimum value for parameter in fit
 
@@ -117,8 +118,8 @@ class Prior() :
 
     def __init__(self, priormin, priormax, funcform) :
         '''
-        Parameters                                                                                                                                                                                                 
-        ----------                                                                                                                                                                                                 
+        Parameters
+        ----------
         priormin : float
             minimum value for parameter in fit
         
