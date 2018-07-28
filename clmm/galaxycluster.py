@@ -3,7 +3,6 @@ Define CalaxyClusters class
 Who to blame for problems: Michel A.
 '''
 
-from datatypes import *
 
 class GalaxyCluster():
     '''
