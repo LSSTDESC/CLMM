@@ -22,6 +22,8 @@ class GalaxyCluster():
     def _add(self, data_external):
         '''
         data_external - dict with all the data in the correct formats
+
+        if trying to add same metadata, try/except to ask for removal first, always overwrite if replace=true
         '''
 
         for name, data_ext in data_external.items():
