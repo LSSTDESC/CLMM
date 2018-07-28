@@ -7,6 +7,7 @@ CLMM
    :caption: Getting Started
 
    source/installation
+   source/citing
 
 .. toctree::
    :maxdepth: 1
