@@ -3,22 +3,15 @@ Define CalaxyClusters class
 Who to blame for problems: Michel A.
 '''
 
-from collections import namedtuple
-
-Position = namedtuple('Position', ['metadata', 'ra', 'dec'])
-Profile = namedtuple('Profile', ['metadata', 'distances', 'dimension'])
-
-for n in ['Position', 'Profile']:
-
-    exec('%s00 = %s(*[None for i in %s._fields])'%(n, n, n))
-    exec('%s_type = type(%s)'%(n, n))
-
+from datatypes import *
 
 class GalaxyCluster():
     '''
-    - read data
-    - write data
-    - disting data
+    Object that contains the properties of a galaxy cluster.
+    It must have this opperations:
+        - read data
+        - write data
+        - disting data
     '''
 
     def __init__(self):
@@ -54,7 +47,9 @@ class GalaxyCluster():
         '''
         '''
 
-        print(self.data.keys())
+        for n, d in self.data.values():
+
+            print(n, d.metadata)
 
     def measure_profile(self):
         '''
