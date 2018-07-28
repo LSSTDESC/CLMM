@@ -12,7 +12,7 @@ GCData: A namedtuple tying values with units to the metadata of where the values
 
 Parameters
 ----------
-creator: what object (i.e. model, summarizer, inferrer)
+creator: string, type of object (i.e. model, summarizer, inferrer) that made this data
 specs: specifications of how the data was created
 data: astropy table with column names and units
 
