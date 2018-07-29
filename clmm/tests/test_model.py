@@ -3,6 +3,7 @@ from numpy.testing import assert_raises
 
 
 def assert_block(test_model):
+    """Block of asserts for type checks in models.Model """
     assert(callable(test_model.func))
 
     assert(isinstance(test_model.independent_vars, list) or (test_model.independent_vars is None))
