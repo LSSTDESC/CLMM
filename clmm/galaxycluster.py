@@ -240,7 +240,9 @@ class GalaxyCluster():
 
         if type(incoming_data) != self.datatype:
 
-            print('*** ERROR *** - incoming_data is type "%s", must be "%s"'
+            if self._debugprint:
+
+                print('*** ERROR *** - incoming_data is type "%s", must be "%s"'
                             %(type(incoming_data), self.datatype) )
 
             return False
