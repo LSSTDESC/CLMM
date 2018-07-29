@@ -33,7 +33,7 @@ class Model() :
 
         '''
         
-        if isinstance(func, callable) :
+        if callable(func) :
             self.func = func
         else :
             raise TypeError('func should be a callable')
