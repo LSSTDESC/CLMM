@@ -298,11 +298,7 @@ class GalaxyCluster():
 
         ind = self._find_ind_in_datalist_exact(datalist, specs)
 
-        if ind is None:
-
-            print('*** ERROR *** - specs not found in datalist')
-
-        else:
+        if ind is not None:
 
             del datalist[ind]
 
