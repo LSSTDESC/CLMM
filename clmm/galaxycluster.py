@@ -3,17 +3,18 @@ Define CalaxyClusters class
 Who to blame for problems: Michel A.
 '''
 
+from datatypes import GCData_type
 
 class GalaxyCluster():
     '''
     Object that contains the properties of a galaxy cluster.
     '''
 
-    def __init__(self, initial_data=None, homelocal='.'):
+    def __init__(self, initial_data = None, homelocal = '.', datatype = GCData_type):
         '''
         Parameters
         ----------
-        data: list of clmm.GCData objects, optional
+        initial_data: list of clmm.GCData objects, optional
             initial data to associate with GalaxyCluster object
         homelocal: string, optionnal
             path to save cluster properties
@@ -24,6 +25,8 @@ class GalaxyCluster():
         '''
         self.data = {}
         self.homelocal = homelocal
+        self.datatype = datatype
+
         self._debugprint = False
 
         if initial_data is not None:
@@ -63,7 +66,7 @@ class GalaxyCluster():
             if a test_dict is a subset of main_dict
         '''
 
-        for test_key, test_value in test_dict:
+        for test_key, test_value in test_dict.items():
 
             if test_key in main_dict:
 
@@ -76,6 +79,7 @@ class GalaxyCluster():
                 return False
 
         return True
+
 
     def _find_in_datalist(self, datalist, lookup_specs):
         '''
@@ -91,9 +95,9 @@ class GalaxyCluster():
 
         Returns
         -------
-        list, False
+        list, None
             list of clmm.GCData object data with required creator and set of specs
-            if not objects are found, returns False
+            if not objects are found, returns None
         '''
 
         found = []
@@ -106,14 +110,45 @@ class GalaxyCluster():
 
         if len(found) == 0:
 
-            print('WARNING, no data found with these specification!')
-            found = False
+            print('*** WARNING *** no data found with these specification!')
+            found = None
 
-        if len(found) > 1:
+        elif len(found) > 1:
 
-            print('WARNING, multiple data found with these specification!')
+            print('*** WARNING *** multiple data found with these specification!')
             
         return found
+
+    def _find_ind_in_datalist_exact(self, datalist, lookup_specs):
+        '''
+        Finds data with given specs in a datalist,
+            requires exact match
+
+        Parameters
+        ----------
+        datalist: list
+            list of clmm.GCData objects to search for lookup_specs
+        lookup_specs: dict
+            specs required
+
+        Returns
+        -------
+        int, None
+            index of clmm.GCData object in datalist with required creator and set of specs
+            if not found, returns None
+
+        '''
+
+        for ind, data in enumerate(datalist):
+
+            if lookup_specs == data.specs :
+
+                return ind
+
+        else:
+
+            print('*** ERROR *** - no data found with these specification!')
+            return None
     
     def _find_in_datalist_exact(self, datalist, lookup_specs):
         '''
@@ -131,11 +166,11 @@ class GalaxyCluster():
         -------
         list
             list of clmm.GCData object data with required creator and set of specs
-            if not found, returns False
+            if not found, returns None
 
         '''
 
-        for data in self.data[lookup_creator]:
+        for data in datalist:
 
             if lookup_specs == data.specs :
 
@@ -143,8 +178,8 @@ class GalaxyCluster():
 
         else:
 
-            print('ERROR, no data found with these specification!')
-            return False
+            print('*** ERROR *** - no data found with these specification!')
+            return None
 
     def _find(self, lookup_creator, lookup_specs):
         '''
@@ -160,30 +195,19 @@ class GalaxyCluster():
 
         Returns
         -------
-        list, False
+        list, None
             list of clmm.GCData object data with required creator and set of specs
-            if not objects are found, returns False
+            if not objects are found, returns None
         '''
 
         if self._check_creator(lookup_creator):
 
-            for data in self.data[lookup_creator]:
+            return self._find_in_datalist(self.data[lookup_creator], lookup_specs)
 
-                if self._check_subdict(lookup_specs, data.specs) :
+        else:
 
-                    found.append( data )
-
-        if len(found) == 0:
-
-            print('WARNING, no data found with these specification!')
-            found = False
-
-        if len(found) > 1:
-
-            print('WARNING, multiple data found with these specification!')
+            return None
             
-        return found
-    
     def _find_exact(self, lookup_creator, lookup_specs):
         '''
         Finds data with a specsific cretor and specs in GalaxyCluster object
@@ -200,22 +224,28 @@ class GalaxyCluster():
         -------
         list
             list of clmm.GCData object data with required creator and set of specs
-            if not found, returns False
+            if not found, returns None
 
         '''
 
         if self._check_creator(lookup_creator):
 
-            for data in self.data[lookup_creator]:
-
-                if lookup_specs == data.specs :
-
-                    return data
+            return self._find_in_datalist_exact(self.data[lookup_creator], lookup_specs)
 
         else:
 
-            print('ERROR, no data found with these specification!')
+            return None
+
+    def _check_datatype(self, incoming_data):
+
+        if type(incoming_data) != self.datatype:
+
+            print('*** ERROR *** - incoming_data is type "%s", must be "%s"'
+                            %(type(incoming_data), self.datatype) )
+
             return False
+
+        return True
 
     def _add(self, incoming_data, replace=False):
         '''
@@ -233,47 +263,58 @@ class GalaxyCluster():
 
          '''
 
+        if not self._check_datatype(incoming_data):
+
+            return
+
         if self._check_creator(incoming_data.creator):
 
-            if self._check_specs_exact(incoming_data.creator, incoming_data.specs):
+            found_data = self._find_in_datalist_exact(self.data[incoming_data.creator], incoming_data.specs)
 
-                print('Data with this creator, specs already exists, to replace it, add replace=True key.')
-                print('Current:')
-                self._show(metadata)
-                        return 0
+            if found_data:
 
-                    else:
+                if replace:
 
-                        print('Overwritting "%s" data:'%(name))
-                        self._show(metadata)
+                    print('Overwritting this data:')
+                    self._remove_in_datalist(self.data[incoming_data.creator], incoming_data.specs)
+                    self.data[incoming_data.creator].append( incoming_data )
+
+                else:
+
+                    print('Data with this creator & specs already exists. Add replace=True key to replace it.')
+                    print('Current:')
+
+                print('   ', found_data)
+
+            else:
+
+                self.data[incoming_data.creator].append( incoming_data )
 
         else:
 
-            self.data[incoming_data.creator].append( incomming_data )
+            self.data[incoming_data.creator] = [ incoming_data ]
 
+    def _remove_in_datalist(self, datalist, specs):
 
-    def _listprofiles():
-        '''
-        '''
-        print([d.dimension for d in self.data['profiles']])
-        check_data()
+        ind = self._find_ind_in_datalist_exact(datalist, specs)
 
-    def showdata(self):
-        '''
-        '''
+        if ind is None:
 
-        for n, d in self.data.values():
+            print('*** ERROR *** - specs not found in datalist')
 
-            print(n, d.provenance)
+        else:
 
-    def measure_profile(self):
-        '''
-        '''
+            del datalist[ind]
 
-    def fit_profile(self):
-        '''
-        '''
+    def _remove(self, creator, specs):
 
-    def func(self):
-        '''
-        '''
+        if self._check_creator(creator):
+
+            if self._find_in_datalist_exact(self.data[creator], specs):
+
+                self._remove_in_datalist(self.data[creator], specs)
+
+        else:
+
+            print('*** ERROR *** - creator "%s" not found in datalist'%creator)
+
