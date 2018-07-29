@@ -7,34 +7,101 @@ Who to blame for problems: Michel A.
 class GalaxyCluster():
     '''
     Object that contains the properties of a galaxy cluster.
+
+    Parameters
+    ----------
+
+        data: dictionary with all cluster properties.
+            Each entry  must contain 
+        homelocal: path to save cluster properties
+
+
     It must have this opperations:
         - read data
         - write data
         - disting data
     '''
 
-    def __init__(self):
+    def __init__(self, initial_data=None, homelocal='.'):
         '''
+        Notes
+        -----
+
         '''
-        self.data = {}
-        self.homelocal = '.'
+        self.data = []
+        self.homelocal = homelocal
+        self.creators = {}
 
-    def _add(self, data_external):
+        if initial_data is not None:
+            self._add(initial_data)
+
+    def _add(self, incoming_data, replace=False):
         '''
-        data_external - dict with all the data in the correct formats
+        Parameters
+        ----------
+        incoming_data: clmm.GCData object
+            new data to associate with GalaxyCluster object
+        incoming_metadata: dict
+            new metadata for GalaxyCluster to use to distinguish from other clmm.GCData with same provenance
+       
+        Notes
+        -----
+
+         '''
+
+        if incoming_metadata.creator in self.creators:
+
+            self.creators[incoming_data.creator].append( len(self.data) )
+
+            for i in self.creators[incoming_metadata.creator]:
+
+                if incoming_metadata.specs = self.data[i].specs:
+
+                    if not replace:
+
+                        print('Data "%s" already exists, to replace it, add replace=True key.')
+                        print('Current:')
+                        self._show(metadata)
+                        return 0
+
+                    else:
+
+                        print('Overwritting "%s" data:'%(name))
+                        self._show(metadata)
+
+        else:
+
+            self.creators[incoming_data.creator] = [ len(self.data) ]
+
+        self.data.append( incomming_data )
+
+    def _find(self, input_creator, input_metadata):
+        '''
+        still in construction, must figure out what to do if self.data has more than one data
+            with the required creator and specs
         '''
 
-        for name, data_ext in data_external.items():
+        right_i = None
 
-            for data_int in self.data.values():
+        if input_creator in self.creators:
 
-                if type(data_int) == type(data_ext):
+            for i in self.creators[input_creator]:
 
-                    if data_int.metadata == data_ext.metadata:
+                right_i  = i
 
-                        print('Overwritting %s[%s] data'%(name, data_ext.metadata))
+                for key, value in input_metadata:
 
-            self.data[name] = data_ext
+                    if key in self.data[i].specs:
+
+                        if value != self.data[i].specs[key]
+
+                            right_i = None
+                    else:
+
+                        print('ERROR, key "%s" does not exist in %s'%(key, input_creator))
+                        return 0
+    
+            return self.data[right_i]
 
     def _listprofiles():
         '''
@@ -48,7 +115,7 @@ class GalaxyCluster():
 
         for n, d in self.data.values():
 
-            print(n, d.metadata)
+            print(n, d.provenance)
 
     def measure_profile(self):
         '''
