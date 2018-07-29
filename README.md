@@ -22,3 +22,4 @@ A new and improved cluster mass modeling code descended from [clmassmod](https:/
 * [Binyang Liu]
 * [Doug Applegate](https://github.com/deapplegate)
 * Add your name here!
+  
