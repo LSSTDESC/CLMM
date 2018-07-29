@@ -38,12 +38,12 @@ class Model() :
         else :
             raise TypeError('func should be a callable')
 
-        if isinstance(independent_vars, list) or (independent_vars is None) :
+        if ( isinstance(independent_vars, list) and all(isinstance(var,str) for var in independent_vars) ) or (independent_vars is None) :
             self.independent_vars = independent_vars
         else :
             raise TypeError('independent_vars should be a list of str or None')
 
-        if isinstance(params,list) or (params is None) :
+        if ( isinstance(params,list) and all(isinstance(param, Parameter) for param in params) ) or (params is None) :
             self.params = params
         else :
             raise TypeError('params should be a list of type Parameter')
