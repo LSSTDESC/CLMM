@@ -33,8 +33,19 @@ class Model() :
 
         '''
         
-        self.func = func
-        self.independent_vars = independent_vars
-        self.params = params
+        if isinstance(func, callable) :
+            self.func = func
+        else :
+            raise TypeError('func should be a callable')
 
+        if isinstance(independent_vars, list) or (independent_vars is None) :
+            self.independent_vars = independent_vars
+        else :
+            raise TypeError('independent_vars should be a list of str or None')
 
+        if isinstance(params,list) or (params is None) :
+            self.params = params
+        else :
+            raise TypeError('params should be a list of type Parameter')
+        
+            
