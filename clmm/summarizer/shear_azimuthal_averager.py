@@ -44,7 +44,12 @@ class ShearAzimuthalAverager(object):
         
     def compute_shear(self):
         """
-        Computes the tangential and cross shear for each source in the catalog
+        Computes the tangential and cross shear for each source in the catalog as:
+
+        ..math::
+            g_t = - (g_1 * \cos(2\phi) - g_2 * \sin(2\phi)
+            g_c = - g_1 * \sin(2\phi) + g_2 * \cos(2\phi)
+
         """
 
       # cluster information
@@ -75,8 +80,8 @@ class ShearAzimuthalAverager(object):
         cosmo = FlatLambdaCDM(H0=70, Om0=0.3)
         self.phys_dist = self.theta * cosmo.angular_diameter_distance(z_cl).value
 
-        phi = np.arctan2(dec_src-dec_cl, ra_src-ra_cl)
-        self.shear_t = - (g1 * np.cos(2.0 * phi) - g2 * np.sin(2.0 * phi))
+        phi = np.arctan2(dec_src-dec_cl, -(ra_src-ra_cl))
+        self.shear_t = - g1 * np.cos(2.0 * phi) - g2 * np.sin(2.0 * phi)
         self.shear_c = - g1 * np.sin(2.0 * phi) + g2 * np.cos(2.0 * phi)
         #plt.hist(self.shear_t)
 
