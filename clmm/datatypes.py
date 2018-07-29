@@ -21,3 +21,5 @@ Notes
 
 """
 GCData = namedtuple('GCData', ['creator', 'specs', 'table'])
+
+GCData_type = type(GCData('', {}, None))
