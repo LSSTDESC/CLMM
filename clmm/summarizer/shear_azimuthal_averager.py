@@ -68,6 +68,8 @@ class ShearAzimuthalAverager(object):
 
         else:
             print('read g1, g2 directly')
+            g1 = self.src_table['gamma1']
+            g2 = self.src_table['gamma2']
 
         self.theta = np.sqrt((ra_src-ra_cl)**2+(dec_src-dec_cl)**2)*np.pi/180.
         cosmo = FlatLambdaCDM(H0=70, Om0=0.3)
