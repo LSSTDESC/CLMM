@@ -1,20 +1,18 @@
 '''
-Define GalaxyCluster class
-Who to blame for problems: Michel A.
+GalaxyCluster is the fundamental object in clmm
 '''
-from datatypes import GCData_type
-import auxclusterfuncs as Aux
+from datatypes import GCData
 
 class GalaxyCluster():
     '''
-    Object that contains the properties of a galaxy cluster.
+    Object that contains the information associated with a galaxy cluster
     '''
 
-    def __init__(self, initial_data=None, homelocal='.', datatype=GCData_type):
+    def __init__(self, initial_data=None, homelocal='.'):
         '''
         Parameters
         ----------
-        initial_data: list of clmm.GCData objects, optional
+        initial_data: list, clmm.GCData objects, optional
             Initial data to associate with GalaxyCluster object
         homelocal: string, optionnal
             Path to save cluster properties
