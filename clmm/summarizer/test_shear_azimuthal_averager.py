@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import numpy as np
 from astropy.table import Table
 # model from Dallas group
@@ -112,12 +112,12 @@ def test_shear_azimuthal_averager():
     assert g_t_residual < tolerance
     assert g_x_residual < tolerance
 
-    plotting = True
-    if plotting==True:
-        plt.plot(r_phys, gt_mod, label='model')
-        plt.errorbar(r_phys, binned_profile['g_t'], yerr=binned_profile['g_t_err'], label='data')
-        plt.legend()
-        plt.show()
+    # plotting = True
+    # if plotting==True:
+    #     plt.plot(r_phys, gt_mod, label='model')
+    #     plt.errorbar(r_phys, binned_profile['g_t'], yerr=binned_profile['g_t_err'], label='data')
+    #     plt.legend()
+    #     plt.show()
 
 
 
