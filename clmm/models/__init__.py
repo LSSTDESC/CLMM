@@ -1,2 +1,2 @@
-import model
-import parameter
+from model import *
+from parameter import *
