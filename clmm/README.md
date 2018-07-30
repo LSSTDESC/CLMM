@@ -1,4 +1,10 @@
-# `clmm` proposed code structure
+# `clmm` Code
+
+## Structure
+
+![alt text](https://docs.google.com/drawings/d/e/2PACX-1vT7aNC5-wiRSZapWSWQP6aGzpZeZfo_mFezySGM6R_U_bAuZ001wWQCzUV2ISBooiC9VO1LU5NizS0n/pub?w=1477&amp;h=1040)
+
+### Initial `clmm` proposed code structure -- outdated!
 
 `clmm` is a general code for performing individual- and population-level inference on galaxy cluster weak lensing data.  It will serve to enable the CLMassMod Key Task of [the LSST-DESC SRM](http://lsst-desc.org/sites/default/files/DESC_SRM_V1_1.pdf) and will be used as a framework for future CL WG activities.  `clmm` aims to be modular in (at least) three respects:
 
@@ -11,7 +17,7 @@ To enable these goals, `clmm` will have (at least) three major superclasses of o
 0. `clmm.utils`
 
 1. `clmm.Reader` objects that are able to load data and corresponding metadata from external files; subclass instances will be specific to the native format of the pipeline that produced the data and/or the type of data (shear maps vs. mass surface density maps, etc.)
- A. config file readers for `clmm.Halo.map`, `clmm.Halo.mass`, etc. reading in data itself in different original formats from simulations/observations 
+ A. config file readers for `clmm.Halo.map`, `clmm.Halo.mass`, etc. reading in data itself in different original formats from simulations/observations
 
 2. `clmm.Halo` class
  Z. `clmm.Halo.config_params`
@@ -19,13 +25,13 @@ To enable these goals, `clmm` will have (at least) three major superclasses of o
   i. `clmm.Halo.map.data['shear']` and `clmm.Halo.map.data['convergence']`
   ii. `clmm.Halo.map.metadata` including radial range, binning, miscentering, noise level for a profile fit, e.g.
   iii. `clmm.Halo.map.convert('mass2D', 'shear', config_params)` (make new maps i.e. `clmm.Halo.map.data['shear']` from existing maps i.e.  `clmm.Halo.map.data['mass2D']`)
- B. `clmm.Halo.redshift` 
+ B. `clmm.Halo.redshift`
  C. `clmm.Halo.mass`
   i. `clmm.Halo.mass.MLE`
   ii. `clmm.Halo.mass.true_3D`
  D. `clmm.Halo.utils`
   i. `clmm.Halo.utils.cross_correlator()` taking two maps and producing another map
- E. `clmm.Halo.build_profile(clmm.Halo.map)` requiring `clmm.Halo.config_params` and checking if unspecified, producing `clmm.Halo.obs_profile` 
+ E. `clmm.Halo.build_profile(clmm.Halo.map)` requiring `clmm.Halo.config_params` and checking if unspecified, producing `clmm.Halo.obs_profile`
   i. `clmm.Halo.obs_profile` as an instance of the `clmm.Halo.Profile` class
 
 3. `clmm.Halo_Model` superclass, must have `.evaluate_func()` (like the NFW functional form) and `.evaluate_prior()` (such as uniform distribution or Gaussian, etc.)
@@ -44,7 +50,7 @@ To enable these goals, `clmm` will have (at least) three major superclasses of o
 5. `clmm.Metrics` objects that take as input one or more estimators produced by `clmm.Inferrer` objects and, when available, the true value of the estimated quantity read in by a `clmm.Reader` object separately.
 
 6. extensions for many-halo inference __punting to later__
- A. `clmm.Halo_Ensemble` 
+ A. `clmm.Halo_Ensemble`
   i. `clmm.Halo_Ensemble.select()` that bins `clmm.Halo` objects by some attribute they have
  B. `clmm.Halo_Ensemble_Inferrer(clmm.Halo_Ensemble, clmm.)`
 
