@@ -1,2 +1,2 @@
-from model import *
-from parameter import *
+from .model import *
+from .parameter import *
