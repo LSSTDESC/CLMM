@@ -1,5 +1,6 @@
 """Model class"""
 import numpy as np
+from models.parameter import Parameter
 import six
 
 class Model():

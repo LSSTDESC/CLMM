@@ -5,6 +5,7 @@ from numpy.testing import assert_raises
 import six
 
 from models import models
+from models.parameter import Parameter
 
 
 def assert_block(test_model):
@@ -44,5 +45,4 @@ def test_model_superclass() :
     test_model = models.Model(lambda x: x*x, ['r'], [Parameter()])
     assert_block(test_model)
 
-    assert_raises(TypeError, models.Model, lambda x:x, ['r'], Parameter())
     assert_raises(TypeError, models.Model, lambda x:x, ['r'], ['param1'])
