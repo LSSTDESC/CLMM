@@ -66,8 +66,7 @@ def find_in_datalist(lookup_specs, datalist, exact=False):
         if check_subdict(lookup_specs, data.specs) :
             found.append(data)
     if len(found) == 0:
-        print('*** WARNING *** no data found with these specification!')
-        return False
+        raise ValueError('no data found with these lookup_specs')
     else:
         if exact:
             for match in found:
