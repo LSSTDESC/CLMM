@@ -2,9 +2,7 @@
 Define the custom data type
 """
 
-import astropy
 from astropy import table
-import collections
 from collections import namedtuple
 
 """
@@ -21,3 +19,5 @@ Notes
 
 """
 GCData = namedtuple('GCData', ['creator', 'specs', 'table'])
+
+GCData_type = type(GCData('', {}, None))
