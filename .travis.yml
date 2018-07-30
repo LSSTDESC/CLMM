@@ -12,6 +12,8 @@ install:
 - pip install astropy
 - pip install scipy
 - pip install colossus
+- pip install matplotlib
+
 
 #- pip install pyccl
 
