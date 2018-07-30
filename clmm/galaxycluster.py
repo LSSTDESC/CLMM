@@ -1,39 +1,114 @@
 '''
-Define CalaxyClusters class
+Define GalaxyCluster class
 Who to blame for problems: Michel A.
 '''
+from datatypes import GCData_type
 
 
 class GalaxyCluster():
     '''
     Object that contains the properties of a galaxy cluster.
-
-    Parameters
-    ----------
-
-        data: dictionary with all cluster properties.
-            Each entry  must contain
-        homelocal: path to save cluster properties
-
-
-    It must have this opperations:
-        - read data
-        - write data
-        - disting data
     '''
 
-    def __init__(self, initial_data=None, homelocal='.'):
+    def __init__(self, initial_dat=None, homelocal='.', datatype=GCData_type):
         '''
-        Notes
-        -----
-
+        Parameters
+        ----------
+        initial_data: list of clmm.GCData objects, optional
+            Initial data to associate with GalaxyCluster object
+        homelocal: string, optionnal
+            Path to save cluster properties
         '''
-        self.data = []
+        self.data = {}
         self.homelocal = homelocal
-        self.creators = {}
+        self.datatype = datatype
+
+
+        self._debugprint = False
 
         if initial_data is not None:
             self._add(initial_data)
+
+
+    def _check_creator(self, test_creator):
+        '''
+        Checks if a creator exists in GalaxyCluster object
+
+        Parameters
+        ----------
+        test_creator: string
+            Creator that will be searched in GalaxyCluster object
+
+        Returns
+        -------
+        bool
+            Existence of the test_creator in GalaxyCluster object
+        '''
+
+        return test_creator in self.data
+
+
+    def _find(self, lookup_creator, lookup_specs):
+        '''
+        Finds data with a specific creator and specs in GalaxyCluster object
+        allows for partial match
+
+        Parameters
+        ----------
+        creator: string
+            Creator that will be searched in GalaxyCluster object
+        specs: dict
+            Specs requiered inside the creator
+
+        Returns
+        -------
+        list, None
+            List of clmm.GCData object data with required creator and set of specs
+            if no objects are found, returns None
+        '''
+
+        if self._check_creator(lookup_creator):
+            return AuxFuncs._find_in_datalist(self.data[lookup_creator], lookup_specs)
+        else:
+            return None
+
+
+    def _find_exact(self, lookup_creator, lookup_specs):
+        '''
+        Finds data with a specific cretor and specs in GalaxyCluster object
+            requires exact match
+
+        Parameters
+        ----------
+        creator: string
+            creator that will be searched in GalaxyCluster object
+        specs: dict
+            specs requiered inside the creator
+
+        Returns
+        -------
+        list
+            list of clmm.GCData object data with required creator and set of specs
+            if not found, returns None
+
+        '''
+
+        if self._check_creator(lookup_creator):
+            return AuxFuncs._find_in_datalist_exact(self.data[lookup_creator], lookup_specs)
+        else:
+            return None
+
+
+    def _check_datatype(self, incoming_data):
+
+        if type(incoming_data) not self.datatype:
+            if self._debugprint:
+                print('*** ERROR *** - incoming_data is type "%s", must be "%s"'
+                            %(type(incoming_data), self.datatype))
+            return False
+
+        return True
+
 
     def _add(self, incoming_data, replace=False):
         '''
@@ -43,88 +118,160 @@ class GalaxyCluster():
             new data to associate with GalaxyCluster object
         incoming_metadata: dict
             new metadata for GalaxyCluster to use to distinguish from other clmm.GCData with same provenance
-
-        Notes
-        -----
-
+        replace: bool, optional
+            replace in the case of data with same creator, specs already exists
          '''
 
-        if incoming_metadata.creator in self.creators:
+        if not self._check_datatype(incoming_data):
+            return
 
-            self.creators[incoming_data.creator].append( len(self.data) )
+        if self._check_creator(incoming_data.creator):
+            found_data = AuxFuncs._find_in_datalist_exact(self.data[incoming_data.creator], incoming_data.specs)
 
-            for i in self.creators[incoming_metadata.creator]:
+            if found_data:
+                if replace:
+                    print('Overwriting this data:')
+                    AuxFuncs._remove_in_datalist(self.data[incoming_data.creator], incoming_data.specs)
+                    self.data[incoming_data.creator].append( incoming_data )
 
-                if incoming_metadata.specs = self.data[i].specs:
+                else:
+                    print('Data with this creator & specs already exists. Add replace=True key to replace it.')
+                    print('Current:')
 
-                    if not replace:
+                print('\t', found_data)
 
-                        print('Data "%s" already exists, to replace it, add replace=True key.')
-                        print('Current:')
-                        self._show(metadata)
-                        return 0
-
-                    else:
-
-                        print('Overwritting "%s" data:'%(name))
-                        self._show(metadata)
+            else:
+                self.data[incoming_data.creator].append( incoming_data )
 
         else:
+            self.data[incoming_data.creator] = [ incoming_data ]
 
-            self.creators[incoming_data.creator] = [ len(self.data) ]
 
-        self.data.append( incomming_data )
+    def _remove(self, creator, specs):
 
-    def _find(self, input_creator, input_metadata):
+        if self._check_creator(creator):
+            if AuxFuncs._find_in_datalist_exact(self.data[creator], specs):
+                AuxFuncs._remove_in_datalist(self.data[creator], specs)
+        else:
+            print('*** ERROR *** - creator "%s" not found in datalist'%creator)
+
+
+class AuxFuncs():
+
+    def _check_subdict(test_dict, main_dict):
         '''
-        still in construction, must figure out what to do if self.data has more than one data
-            with the required creator and specs
+        Checks if a dictionary is a subset of another dictionary, with the same keys and values
+
+        Parameters
+        ----------
+        test_dict: dict
+            Subset dictionary
+        main_dict: dict
+            Main dictionary
+
+        Returns
+        -------
+        bool
+            If a test_dict is a subset of main_dict
+        '''
+        return test_dict.items() <= main_dict.items()
+
+
+    def _find_in_datalist(datalist, lookup_specs):
+        '''
+        Finds data with given specs in a datalist, allows for partial match
+
+        Parameters
+        ----------
+        datalist: list
+            List of clmm.GCData objects to search for lookup_specs
+        lookup_specs: dict
+            Specs required
+
+        Returns
+        -------
+        list
+            List of clmm.GCData object data with required creator and set of specs
+        None
+            If no objects are found
         '''
 
-        right_i = None
+        found = []
 
-        if input_creator in self.creators:
+        for data in datalist:
+            if AuxFuncs._check_subdict(lookup_specs, data.specs) :
+                found.append(data)
 
-            for i in self.creators[input_creator]:
+        if len(found) == 0:
+            print('*** WARNING *** no data found with these specification!')
+            found = None
 
-                right_i  = i
+        elif len(found) > 1:
+            print('*** WARNING *** multiple data found with these specification!')
 
-                for key, value in input_metadata:
-
-                    if key in self.data[i].specs:
-
-                        if value != self.data[i].specs[key]
-
-                            right_i = None
-                    else:
+        return found
 
                         print('ERROR, key "%s" does not exist in %s'%(key, input_creator))
                         return 0
 
             return self.data[right_i]
 
-    def _listprofiles():
+    def _find_ind_in_datalist_exact(datalist, lookup_specs):
         '''
-        '''
-        print([d.dimension for d in self.data['profiles']])
-        check_data()
+        Finds data with given specs in a datalist,
+        requires exact match
 
-    def showdata(self):
-        '''
-        '''
+        Parameters
+        ----------
+        datalist: list
+            List of clmm.GCData objects to search for lookup_specs
+        lookup_specs: dict
+            Specs required
 
-        for n, d in self.data.values():
+        Returns
+        -------
+        int, None
+            index of clmm.GCData object in datalist with required creator and set of specs
+            if not found, returns None
 
-            print(n, d.provenance)
+        '''
+        for ind, data in enumerate(datalist):
+            if lookup_specs == data.specs :
+                return ind
 
-    def measure_profile(self):
-        '''
-        '''
+        else:
+            print('*** ERROR *** - no data found with these specification!')
+            return None
 
-    def fit_profile(self):
-        '''
-        '''
 
-    def func(self):
+    def _find_in_datalist_exact(datalist, lookup_specs):
         '''
+        Finds data with given specs in a datalist, requires exact match
+
+        Parameters
+        ----------
+        datalist: list
+            list of clmm.GCData objects to search for lookup_specs
+        lookup_specs: dict
+            specs required
+
+        Returns
+        -------
+        list
+            list of clmm.GCData object data with required creator and set of specs
+            if not found, returns None
+
         '''
+        for data in datalist:
+            if lookup_specs == data.specs :
+                return data
+
+        else:
+            print('*** ERROR *** - no data found with these specification!')
+            return None
+
+
+    def _remove_in_datalist(datalist, specs):
+        ind = AuxFuncs._find_ind_in_datalist_exact(datalist, specs)
+        if ind is not None:
+            del datalist[ind]
