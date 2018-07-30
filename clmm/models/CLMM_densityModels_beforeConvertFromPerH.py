@@ -284,7 +284,7 @@ class nfwProfile(profile):
     def nfwSigmaMean(self, r):
         #[r] = Mpc/h
         x = r/self.rs
-        const = 4.*self.rs*self.charOverdensity()*self.rho_mdef
+        const = 4.*self.rs*self.charOverdensity()*self.rho_mdef/self.cosmo.h
         if type(x) is np.ndarray:
             #print x
             fnfw = np.piecewise(x,[x<1., x==1., x>1.], \

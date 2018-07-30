@@ -1,57 +1,83 @@
 #!/usr/bin/env python
 import numpy as np
 from astropy.table import Table
-# using DC2
-import GCRCatalogs
 # model from Dallas group
 import colossus.cosmology.cosmology as Cosmology # used for distances
 import models.CLMM_densityModels_beforeConvertFromPerH as clmm
 # the code we want to test:
 from summarizer.shear_azimuthal_averager import ShearAzimuthalAverager
 
+def generate_perfect_data(ngals, src_redshift, cluster_mass, cluster_redshift, concentration, chooseCosmology):
+    '''
+    This generates a fake dataset of background galaxies using the Dallas group software. 
+    Data are perfect, i.e. no shape noise, all galaxies at the same redshift.
+    Args:
+        ngals: number of galaxies in the fake catalog
+        cluster_mass: mass of the cluster
+        cluster_redshift:
+        concentration: concentration of the cluster
+        chooseCosmology: string defining the cosmological parameter set in colossus, e.g. WMAP7-ML
+    Returns:
+        astropy table containing the galaxy catalog [id, ra, dec, gamma1, gamma2, z]
+    '''
+
+    ngals = 10000
+    seqnr = np.arange(ngals)
+    zL = cluster_redshift # cluster redshift
+
+    mdef = '200c'
+    cosmo = Cosmology.setCosmology(chooseCosmology)
+    M = cluster_mass*cosmo.h
+    c = concentration  
+    r = np.linspace(0.25, 10., 1000) #Mpc
+    r = r*cosmo.h #Mpc/h
+
+    testProf= clmm.nfwProfile(M = M, c = c, zL = zL, mdef = mdef, \
+                            chooseCosmology = chooseCosmology, esp = None)
+
+    x_mpc = np.random.uniform(-4, 4, size=ngals)
+    y_mpc = np.random.uniform(-4, 4, size=ngals)
+    r_mpc = np.sqrt(x_mpc**2 + y_mpc**2)
+
+    Dl = cosmo.angularDiameterDistance(zL)
+
+    x_deg = (x_mpc/Dl)*(180./np.pi)
+    y_deg = (y_mpc/Dl)*(180./np.pi)
+
+    gamt= testProf.deltaSigma(r_mpc)/testProf.Sc(src_redshift)
+
+    posangle = np.arctan2(y_mpc, x_mpc)
+    cos2phi = np.cos(2*posangle)
+    sin2phi = np.sin(2*posangle)
+
+    e1 = -gamt*cos2phi
+    e2 = -gamt*sin2phi
+
+    return Table([seqnr, -x_deg, y_deg, e1, e2, np.zeros(ngals)+src_redshift], \
+                names=('id', 'ra','dec','gamma1','gamma2', 'z'))
 
 def test_shear_azimuthal_averager():
-    extragalactic_cat = GCRCatalogs.load_catalog('proto-dc2_v2.1.2_test')
+    '''
+    This tests the shear azimuthal averager by comparing the fake data g_t 
+    profile to the theoretical binned profile. 
 
-    # get a massive halo!
-    massive_halos = extragalactic_cat.get_quantities(['halo_mass', 'redshift','ra', 'dec'],\
-                                                     filters=['halo_mass > 1e14','is_central==True'])
+    This is done by checking whether the residuals in each bin are below 
+    a given tolerance
+    '''
 
-    m = massive_halos['halo_mass']
-    select = (m == np.max(m))
-    ra_cl = massive_halos['ra'][select][0]
-    dec_cl = massive_halos['dec'][select][0]
-    z_cl = massive_halos['redshift'][select][0]
-    m_cl = m[select][0]
-    print(m[select], ra_cl, dec_cl, z_cl)
+    # define the set up for fake data
+    ngals = 1e4
+    cluster_redshift = 0.3
+    src_redshift = 2 * cluster_redshift
+    cluster_mass = 1.e15
+    concentration = 4
+    chooseCosmology = 'WMAP7-ML' #Choose cosmology used
+    cosmo = Cosmology.setCosmology(chooseCosmology)
 
-    # make a dictionary for cluster
-    cl_dict = {'z':z_cl, 'ra':ra_cl, 'dec': dec_cl}
-
-
-    # get the galaxies around it
-    ra_min, ra_max = ra_cl-0.3, ra_cl+0.3
-    dec_min, dec_max = dec_cl-0.3, dec_cl+0.3
-    z_min = z_cl + 0.1
-    z_max = 1.5
-
-    coord_filters = [
-        'ra >= {}'.format(ra_min),
-        'ra < {}'.format(ra_max),
-        'dec >= {}'.format(dec_min),
-        'dec < {}'.format(dec_max),
-    ]
-    z_filters = ['redshift >= {}'.format(z_min),'redshift < {}'.format(z_max)]
-
-    gal_cat = extragalactic_cat.get_quantities(['galaxy_id', 'ra', 'dec', 'shear_1', 'shear_2', 'shear_2_phosim', 'shear_2_treecorr',\
-                                                'redshift', 'convergence'], filters=(coord_filters + z_filters))
-
-    # store the results into an astropy table
-    t = Table([gal_cat['galaxy_id'],gal_cat['ra'],gal_cat['dec'],gal_cat['shear_1'],\
-              gal_cat['shear_2'],gal_cat['redshift'],gal_cat['convergence']], \
-              names=('id','ra','dec', 'gamma1', 'gamma2', 'z', 'kappa'))
-
-
+    # make the fake data catalog
+    t = generate_perfect_data(ngals, src_redshift, cluster_mass, cluster_redshift, concentration, chooseCosmology)
+    cl_dict={'ra':0.0, 'dec':0.0, 'z':cluster_redshift}
+  
     # create an object, given cluster dictionary and galaxy astropy table
     saa = ShearAzimuthalAverager(cl_dict,t)
 
@@ -62,54 +88,28 @@ def test_shear_azimuthal_averager():
     binned_profile = saa.make_shear_profile()
 
 
-
-    # set up a model
-    zL = z_cl # NOTE!
-    chooseCosmology = 'WMAP7-ML' #Choose cosmology used
-    cosmo = Cosmology.setCosmology(chooseCosmology)
+    # compute the theoretical tangential shear at the bin locations
 
     mdef = '200c'
-    M = m_cl*cosmo.h # NOTE! model code operate with h
-    c = 4. # NOTE! n=not sure
-    r = np.linspace(0.5, 3., 100) #Mpc
+    M = cluster_mass*cosmo.h # NOTE! model code operate with h
+    c = concentration # NOTE! n=not sure
+    r = binned_profile['radius'] #Mpc
     r = r*cosmo.h #Mpc/h
 
-
-    testProf = clmm.nfwProfile(M = M, c = c, zL = zL, mdef = mdef, \
+    testProf = clmm.nfwProfile(M = M, c = c, zL = cluster_redshift, mdef = mdef, \
                             chooseCosmology = chooseCosmology, esp = None)
 
+    gt_mod= testProf.deltaSigma(r)/testProf.Sc(src_redshift)
 
-    z_infty = 300
-    zL_arr = np.zeros(len(t['z'])) + zL
-    D_LS = (cosmo.comovingDistance(z_min=0.,z_max=t['z']) - cosmo.comovingDistance(z_min=0.,z_max=zL))/(1.+t['z'])
-    D_Linfty = (cosmo.comovingDistance(z_min=0., z_max=z_infty) - cosmo.comovingDistance(z_min=0., z_max=zL))/(1.+z_infty)
-    beta = D_LS * cosmo.angularDiameterDistance(z_infty)/cosmo.angularDiameterDistance(t['z'])/D_Linfty
-
-
-    r_phys = binned_profile['radius']
-    gt_mod = np.zeros(len(r_phys))
-
-    for ir, r in enumerate(r_phys):
-        gamtest_infty= testProf.deltaSigma(np.array([r])*cosmo.h)/testProf.Sc(z_infty)
-        kappa_infty =  testProf.Sigma(np.array([r])*cosmo.h)/testProf.Sc(z_infty)
-        gt_mod[ir] = np.mean(beta * gamtest_infty/(1-beta*kappa_infty))
-
-
-    #from scipy.interpolate import interp1d
-    #gt_mod_interp = interp1d(r_phys, gt_mod)
-
+   
     nr = len(binned_profile['g_t']) * 1.
     # equivalent to chi_sqr/nbins
     g_t_residual = sum(abs(binned_profile['g_t'] - gt_mod)/binned_profile['g_t_err'])/nr
     g_x_residual = sum(abs(binned_profile['g_x'])/binned_profile['g_x_err'])/nr
 
-    print(g_t_residual)
-    print(g_x_residual)
-
     tolerance = 1 # 
     assert g_t_residual < tolerance
     assert g_x_residual < tolerance
-
     
 
 test_shear_azimuthal_averager()
