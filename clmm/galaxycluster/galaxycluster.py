@@ -1,7 +1,7 @@
 '''
 GalaxyCluster is the fundamental object in clmm
 '''
-import cPickle
+import pickle
 from datatypes import *
 
 class GalaxyCluster():
