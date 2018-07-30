@@ -4,7 +4,7 @@ import numpy as np
 from numpy.testing import assert_raises
 import six
 
-from ..models import models
+from models import models
 
 
 def assert_block(test_model):
@@ -13,14 +13,14 @@ def assert_block(test_model):
 
     assert (np.iterable(test_model.independent_vars) \
             and not isinstance(test_model.independent_vars, dict)) \
-        or test_model.independent_vars is None
+            or test_model.independent_vars is None
     if test_model.independent_vars is not None:
         for element in test_model.independent_vars:
             assert(isinstance(element, six.string_types))
 
     assert (np.iterable(test_model.params) \
-            and not isinstance(test_model.params, dict))
-        or (test_model.params is None)
+            and not isinstance(test_model.params, dict)) \
+            or (test_model.params is None)
     if test_model.params is not None:
         for element in test_model.params:
             assert(isinstance(element, Parameter))

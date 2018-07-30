@@ -55,7 +55,7 @@ class Model():
     def independent_vars(self):
         if (np.iterable(self._independent_vars) \
                     and not isinstance(self._independent_vars, dict)) \
-                or all(isinstance(var, string_types)
+                and all(isinstance(var, six.string_types)
                         for var in self._independent_vars) \
                 or self._independent_vars is None:
             return self._independent_vars
