@@ -137,10 +137,10 @@ class ShearAzimuthalAverager(object):
         self.shear_c_err_arr = gamc_err_arr[order]
 
         shear_profile = Table([self.r_mean_arr, self.angsep_mean_arr, self.shear_t_arr, self.shear_c_arr, self.shear_t_err_arr, self.shear_c_err_arr],\
-                                  names=('radius','ang_seperation','g_t','g_x', 'g_t_err','g_x_err'))
+                                  names=('radius','ang_separation','g_t','g_x', 'g_t_err','g_x_err'))
 
         shear_profile['radius'].unit='Mpc'
-        shear_profile['ang_seperation'].unit='rad'
+        shear_profile['ang_separation'].unit='rad'
         return shear_profile
         
     def plot_profile(self):

@@ -89,17 +89,17 @@ def test_shear_azimuthal_averager():
 
 
     # compute the theoretical tangential shear at the bin locations
-
     mdef = '200c'
     M = cluster_mass*cosmo.h # NOTE! model code operate with h
     c = concentration # NOTE! n=not sure
-    r = binned_profile['radius'] #Mpc
-    r = r*cosmo.h #Mpc/h
+#    r = binned_profile['radius'] #Mpc
+    theta = binned_profile['ang_separation'] #Mpc
+#    r = r*cosmo.h #Mpc/h
 
     testProf = clmm.nfwProfile(M = M, c = c, zL = cluster_redshift, mdef = mdef, \
                             chooseCosmology = chooseCosmology, esp = None)
 
-    gt_mod= testProf.deltaSigma(r)/testProf.Sc(src_redshift)
+    gt_mod= testProf.deltaSigma(theta*cosmo.angularDiameterDistance(cluster_redshift))/testProf.Sc(src_redshift)
 
    
     nr = len(binned_profile['g_t']) * 1.
@@ -107,7 +107,9 @@ def test_shear_azimuthal_averager():
     g_t_residual = sum(abs(binned_profile['g_t'] - gt_mod)/binned_profile['g_t_err'])/nr
     g_x_residual = sum(abs(binned_profile['g_x'])/binned_profile['g_x_err'])/nr
 
-    tolerance = 1 # 
+    print(g_t_residual, g_x_residual)
+
+    tolerance = 1. # 
     assert g_t_residual < tolerance
     assert g_x_residual < tolerance
     
