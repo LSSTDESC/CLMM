@@ -5,8 +5,9 @@ import numpy as np
 from numpy.testing import assert_raises
 import six
 
-from models import models
-from models.parameter import Parameter
+import clmm
+from clmm.models import models
+from clmm.models.parameter import Parameter
 
 
 def assert_block(test_model):
