@@ -16,16 +16,7 @@ class ShearAzimuthalAverager(object):
     src_table: astropy table
         containing the information of sources
 
-    Methods
-    ----------
-    compute_shear :
-        computes the shear for all galaxies in the catalog
 
-    make_shear_profile : 
-        returns an astropy table containing the radial profile
-        
-    plot_profile : 
-        plots the profile
 
     """
     def __init__(self, cl_dict, src_table):
