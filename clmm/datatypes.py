@@ -12,12 +12,10 @@ Parameters
 ----------
 creator: string, type of object (i.e. model, summarizer, inferrer) that made this data
 specs: specifications of how the data was created
-data: astropy table with column names and units
+values: astropy table with column names and units
 
 Notes
 -----
 
 """
-GCData = namedtuple('GCData', ['creator', 'specs', 'table'])
-
-GCData_type = type(GCData('', {}, None))
+GCData = namedtuple('GCData', ['creator', 'specs', 'values'])
