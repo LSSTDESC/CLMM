@@ -4,6 +4,7 @@ Define the custom data type
 
 from astropy import table
 from collections import namedtuple
+import pickle
 
 """
 GCData: A namedtuple tying values with units to the metadata of where the values came from and thus how the values are used
@@ -23,6 +24,18 @@ GCData = namedtuple('GCData', ['creator', 'specs', 'values'])
 """
 Additional functions specific to clmm.GCData
 """
+def read_GCData(filename):
+    """
+    Reads GCData from file
+    """
+    pass
+
+def write_GCData(data, filename):
+    """
+    Writes GCData to file
+    """
+    pass
+
 def check_subdict(lookup_dict, reference_dict):
     '''
     Checks if a dictionary is a subset of another dictionary, with the same keys and values
