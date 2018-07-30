@@ -13,7 +13,7 @@ install:
 
 
 script:
-- pylint 
+#- pylint 
 - py.test 
-#- '[ -z "$CHANGED" ] || pylint --disable=C0103,C0301,W0511 --extension-pkg-whitelist=numpy $CHANGED; EXITCODE=$?; if [ $(($EXITCODE&7)) -gt 0 ]; then exit $EXITCODE; fi;'
+- '[ -z "$CHANGED" ] || pylint --disable=C0103,C0301,W0511 --extension-pkg-whitelist=numpy $CHANGED; EXITCODE=$?; if [ $(($EXITCODE&7)) -gt 0 ]; then exit $EXITCODE; fi;'
 
