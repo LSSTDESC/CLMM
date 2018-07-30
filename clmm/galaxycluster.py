@@ -9,6 +9,13 @@ from datatypes import GCData, find_in_datalist
 class GalaxyCluster():
     '''
     Object that contains the information associated with a galaxy cluster
+
+    Attributes
+    ----------
+    data: dictionary
+        Dictionary with creators as keys and a list of clmm.GCData objects as values
+    homelocal: string
+        Path to save cluster properties
     '''
 
     def __init__(self, initial_data=None, homelocal='.'):
@@ -24,6 +31,7 @@ class GalaxyCluster():
         self.homelocal = homelocal
 
         if initial_data is not None:
+            
             self.add_data(initial_data)
 
     def find_data(self, lookup_creator, lookup_specs, exact=False):
