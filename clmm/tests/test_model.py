@@ -10,7 +10,14 @@ from models.parameter import Parameter
 
 
 def assert_block(test_model):
-    """Block of asserts for type checks in models.Model """
+    """Block of asserts for type checks in models.Model
+
+    Parameters
+    ----------
+    test_model : Model instance
+        Instance of the Model class to run asserts on
+    """
+
     assert callable(test_model.func)
 
     assert (np.iterable(test_model.independent_vars) \
@@ -29,11 +36,7 @@ def assert_block(test_model):
 
 
 def test_model_superclass():
-    """Test the Models superclass. This is called by
-
-    model.Models(callable [func], list of str, [independent_vars],
-                 list of Parameter obj [params]
-    """
+    """Test the Models superclass. """
 
     assert_raises(TypeError, models.Model, lambda x: x, [1])
     assert_raises(TypeError, models.Model, lambda x: x, 'r')
