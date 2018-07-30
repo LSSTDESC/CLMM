@@ -1,7 +1,7 @@
 '''
 GalaxyCluster is the fundamental object in clmm
 '''
-from datatypes import GCData
+from datatypes import *
 
 class GalaxyCluster():
     '''
@@ -19,8 +19,6 @@ class GalaxyCluster():
         '''
         self.data = {}
         self.homelocal = homelocal
-        self.datatype = datatype
-
 
         self._debugprint = False
 
@@ -46,7 +44,7 @@ class GalaxyCluster():
         return test_creator in self.data
 
 
-    def _find(self, lookup_creator, lookup_specs):
+    def _find(self, lookup_creator, lookup_specs, exact=False):
         '''
         Finds data with a specific creator and specs in GalaxyCluster object
         allows for partial match
@@ -57,6 +55,8 @@ class GalaxyCluster():
             Creator that will be searched in GalaxyCluster object
         specs: dict
             Specs requiered inside the creator
+        exact: boolean
+            Does it have to be a symmetric match?
 
         Returns
         -------
@@ -66,7 +66,7 @@ class GalaxyCluster():
         '''
 
         if self._check_creator(lookup_creator):
-            return Aux.find_in_datalist(self.data[lookup_creator], lookup_specs)
+            return find_in_datalist(lookup_specs, self.data[lookup_creator])
         else:
             return None
 
@@ -98,14 +98,7 @@ class GalaxyCluster():
 
 
     def _check_datatype(self, incoming_data):
-
-        if type(incoming_data) is not self.datatype:
-            if self._debugprint:
-                print('*** ERROR *** - incoming_data is type "%s", must be "%s"'
-                            %(type(incoming_data), self.datatype))
-            return False
-
-        return True
+        return type(incoming_data) == GCData
 
 
     def _add(self, incoming_data, replace=False):
@@ -121,6 +114,7 @@ class GalaxyCluster():
          '''
 
         if not self._check_datatype(incoming_data):
+            if self._debugprint: print('wrong type')
             return
 
         if self._check_creator(incoming_data.creator):

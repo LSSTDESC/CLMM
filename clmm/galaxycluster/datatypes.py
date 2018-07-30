@@ -66,7 +66,7 @@ def find_in_datalist(lookup_specs, datalist):
     if len(found) == 0:
         print('*** WARNING *** no data found with these specification!')
         return False
-    elif len(found) = 1:
+    elif len(found) == 1:
         print('*** SUCCESS *** one data found with these specification')
     else:
         print('*** WARNING *** multiple data found with these specification!')
