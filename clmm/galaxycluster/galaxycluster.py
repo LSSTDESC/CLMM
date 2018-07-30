@@ -15,7 +15,7 @@ class GalaxyCluster():
         ----------
         initial_data: list, clmm.GCData objects, optional
             Initial data to associate with GalaxyCluster object
-        homelocal: string, optionnal
+        homelocal: string, optional
             Path to save cluster properties
         '''
         self.data = {}
@@ -31,9 +31,9 @@ class GalaxyCluster():
 
         Parameters
         ----------
-        creator: string
+        lookup_creator: string
             Creator that will be searched in GalaxyCluster object
-        specs: dict
+        lookup_specs: dict
             Specs requiered inside the creator
         exact: boolean
             Does it have to be a symmetric match?
@@ -55,8 +55,6 @@ class GalaxyCluster():
         ----------
         incoming_data: clmm.GCData object
             new data to associate with GalaxyCluster object
-        incoming_metadata: dict
-            new metadata for GalaxyCluster to use to distinguish from other clmm.GCData with same provenance
         force: bool, optional
             replace in the case of data with same creator, specs already exists
 
@@ -76,7 +74,7 @@ class GalaxyCluster():
             self.data[incoming_data.creator] = [incoming_data]
         else:
             found_data = find_in_dataset(incoming_data.specs, self.data[incoming_data.creator], exact=True)
-            if not found_data
+            if not found_data:
                 self.data[incoming_data.creator].append(incoming_data)
             else:
                 if not force:
@@ -105,7 +103,12 @@ class GalaxyCluster():
         raise ValueError('incoming data not found in GalaxyCluster')
 
     def load_GC():
+        """
+
+        """
         pass
 
     def save_GC():
+        """
+        """
         pass
