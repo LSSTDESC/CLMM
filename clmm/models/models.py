@@ -43,6 +43,7 @@ class Model():
 
         ind_var_bools_and = [np.iterable(self._independent_vars),
                              not isinstance(self._independent_vars, dict),
+                             not isinstance(self._independent_vars, str),
                              all(isinstance(var, six.string_types) \
                                  for var in self._independent_vars)]
 
