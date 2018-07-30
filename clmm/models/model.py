@@ -1,7 +1,7 @@
 """Model class"""
 import numpy as np
 import six
-from models.parameter import Parameter
+from parameter import Parameter
 
 class Model():
     """A generalized superclass of what a model is. A model has parameters
