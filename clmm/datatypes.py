@@ -2,7 +2,7 @@
 Define the custom data type
 """
 
-from astropy import table
+# from astropy import table
 from collections import namedtuple
 import pickle
 
