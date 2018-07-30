@@ -34,33 +34,24 @@ class Model():
             list of Parameter objects (default to None)
 
         """
-        self.func = func
-        self.independent_vars = independent_vars
-        self.params = params
 
-        if not callable(self.func):
+        if not callable(func):
             raise TypeError('func should be a callable')
+        else :
+            self.func = func
 
-        if (np.iterable(self.independent_vars) and not isinstance(self.independent_vars, dict) 
+        if (np.iterable(independent_vars) and not isinstance(independent_vars, dict) 
             and all(isinstance(var,str) for var in independent_vars)
-            and not isinstance(self.independent_vars, six.string_types) ) \
+            and not isinstance(independent_vars, six.string_types) ) \
             or (independent_vars is None) :
             self.independent_vars = independent_vars
         else :
              raise TypeError('independent_vars should be a list of str or None')
 
 
-
-
-        # if not self.independent_vars is None:
-        #     raise TypeError('independent_vars should be a list of str or None')
-        # elif all(ind_var_bools_and):
-        #     raise TypeError('independent_vars should be a list of str or None')
-
-        # if (np.iterable(self.params) \
-        #             and not isinstance(self.params, dict)) \
-        #         and all(isinstance(param, Parameter) for param in self.params) \
-        #         or self.params is None:
-        #     pass
-        # else :
-        #     raise TypeError('params should be a list of type Parameter')
+        if (np.iterable(params) and all(isinstance(param, Parameter) for param in params)) \
+           or (params is None) :
+            self.params = params
+        else :
+            raise TypeError('params should be a list of type Parameter')
+        
