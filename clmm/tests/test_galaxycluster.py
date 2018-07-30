@@ -1,3 +1,6 @@
+"""
+Tests for datatype and galaxycluster
+"""
 import os, sys
 DIR = os.path.dirname(os.path.realpath(__file__))
 sys.path.append('/'.join(DIR.split('/')[:-1]))
@@ -11,7 +14,7 @@ test_creator_diff = 'Witch'
 test_dict = {'test%d'%i:True for i in range(3)}
 test_dict_diff = {'test%d'%i:False for i in range(3)}
 test_dict_sub = {'test%d'%i:True for i in range(2)}
-test_data = GCData(test_creator, test_dict,[1, 2, 3])
+test_data = GCData(test_creator, test_dict,[1, 2, 3]
 
 from numpy import testing as tst
 
@@ -42,7 +45,7 @@ def test_find_data():
     tst.assert_equal(test_data, gc.find_data(test_creator, test_dict, exact=True))
     tst.assert_raises(ValueError, gc.find_data, test_creator, test_dict_sub, exact=True)
     tst.assert_raises(ValueError, gc.find_data, test_creator, test_dict_diff, exact=True)
-    pass
+
 def test_add_data():
 
     gc = GalaxyCluster()
@@ -55,8 +58,6 @@ def test_add_data():
     tst.assert_raises(ValueError, gc.add_data, test_data)
     tst.assert_equal(None, gc.add_data(test_data, force=True))
 
-    #(self, incoming_data, force=False):
-    pass
 def test_remove_data():
 
     gc = GalaxyCluster(test_data)
@@ -65,11 +66,9 @@ def test_remove_data():
     tst.assert_raises(ValueError, gc.remove_data, test_creator, test_dict_diff)
     tst.assert_equal(None, gc.remove_data(test_creator, test_dict))
     tst.assert_raises(ValueError, gc.remove_data, test_creator, test_dict)
-    #(self, incoming_data):
-    pass
+
 def test_read_GC():
-    #(self, filename, lookup_creators=None, lookup_specs=None):
     pass
+
 def test_write_GC():
-    #(self, filename, lookup_creator=None, lookup_specs=None):
     pass
