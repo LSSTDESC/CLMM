@@ -4,7 +4,7 @@ Who to blame for problems: Michel A.
 '''
 
 from datatypes import GCData_type
-
+import auxclusterfuncs as Aux
 
 class GalaxyCluster():
     '''
@@ -68,7 +68,7 @@ class GalaxyCluster():
         '''
 
         if self._check_creator(lookup_creator):
-            return AuxFuncs._find_in_datalist(self.data[lookup_creator], lookup_specs)
+            return Aux.find_in_datalist(self.data[lookup_creator], lookup_specs)
         else:
             return None
 
@@ -94,14 +94,14 @@ class GalaxyCluster():
         '''
 
         if self._check_creator(lookup_creator):
-            return AuxFuncs._find_in_datalist_exact(self.data[lookup_creator], lookup_specs)
+            return Aux.find_in_datalist_exact(self.data[lookup_creator], lookup_specs)
         else:
             return None
 
 
     def _check_datatype(self, incoming_data):
 
-        if type(incoming_data) not self.datatype:
+        if type(incoming_data) is not self.datatype:
             if self._debugprint:
                 print('*** ERROR *** - incoming_data is type "%s", must be "%s"'
                             %(type(incoming_data), self.datatype))
@@ -126,12 +126,12 @@ class GalaxyCluster():
             return
 
         if self._check_creator(incoming_data.creator):
-            found_data = AuxFuncs._find_in_datalist_exact(self.data[incoming_data.creator], incoming_data.specs)
+            found_data = Aux.find_in_datalist_exact(self.data[incoming_data.creator], incoming_data.specs)
 
             if found_data:
                 if replace:
                     print('Overwriting this data:')
-                    AuxFuncs._remove_in_datalist(self.data[incoming_data.creator], incoming_data.specs)
+                    Aux.remove_in_datalist(self.data[incoming_data.creator], incoming_data.specs)
                     self.data[incoming_data.creator].append( incoming_data )
 
                 else:
@@ -150,125 +150,9 @@ class GalaxyCluster():
     def _remove(self, creator, specs):
 
         if self._check_creator(creator):
-            if AuxFuncs._find_in_datalist_exact(self.data[creator], specs):
-                AuxFuncs._remove_in_datalist(self.data[creator], specs)
+            if Aux.find_in_datalist_exact(self.data[creator], specs):
+                Aux.remove_in_datalist(self.data[creator], specs)
         else:
             print('*** ERROR *** - creator "%s" not found in datalist'%creator)
 
-
-class AuxFuncs():
-
-    def _check_subdict(test_dict, main_dict):
-        '''
-        Checks if a dictionary is a subset of another dictionary, with the same keys and values
-
-        Parameters
-        ----------
-        test_dict: dict
-            Subset dictionary
-        main_dict: dict
-            Main dictionary
-
-        Returns
-        -------
-        bool
-            If a test_dict is a subset of main_dict
-        '''
-        return test_dict.items() <= main_dict.items()
-
-
-    def _find_in_datalist(datalist, lookup_specs):
-        '''
-        Finds data with given specs in a datalist, allows for partial match
-
-        Parameters
-        ----------
-        datalist: list
-            List of clmm.GCData objects to search for lookup_specs
-        lookup_specs: dict
-            Specs required
-
-        Returns
-        -------
-        list
-            List of clmm.GCData object data with required creator and set of specs
-        None
-            If no objects are found
-        '''
-
-        found = []
-
-        for data in datalist:
-            if AuxFuncs._check_subdict(lookup_specs, data.specs) :
-                found.append(data)
-
-        if len(found) == 0:
-            print('*** WARNING *** no data found with these specification!')
-            found = None
-
-        elif len(found) > 1:
-            print('*** WARNING *** multiple data found with these specification!')
-            
-        return found
-
-
-    def _find_ind_in_datalist_exact(datalist, lookup_specs):
-        '''
-        Finds data with given specs in a datalist,
-        requires exact match
-
-        Parameters
-        ----------
-        datalist: list
-            List of clmm.GCData objects to search for lookup_specs
-        lookup_specs: dict
-            Specs required
-
-        Returns
-        -------
-        int, None
-            index of clmm.GCData object in datalist with required creator and set of specs
-            if not found, returns None
-
-        '''
-        for ind, data in enumerate(datalist):
-            if lookup_specs == data.specs :
-                return ind
-
-        else:
-            print('*** ERROR *** - no data found with these specification!')
-            return None
-    
-
-    def _find_in_datalist_exact(datalist, lookup_specs):
-        '''
-        Finds data with given specs in a datalist, requires exact match
-
-        Parameters
-        ----------
-        datalist: list
-            list of clmm.GCData objects to search for lookup_specs
-        lookup_specs: dict
-            specs required
-
-        Returns
-        -------
-        list
-            list of clmm.GCData object data with required creator and set of specs
-            if not found, returns None
-
-        '''
-        for data in datalist:
-            if lookup_specs == data.specs :
-                return data
-
-        else:
-            print('*** ERROR *** - no data found with these specification!')
-            return None
-
-
-    def _remove_in_datalist(datalist, specs):
-        ind = AuxFuncs._find_ind_in_datalist_exact(datalist, specs)
-        if ind is not None:
-            del datalist[ind]
 
