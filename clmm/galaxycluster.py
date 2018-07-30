@@ -118,16 +118,16 @@ class GalaxyCluster():
         """
         Checks if directory exists, otherwise makes it
         """
-        pass
+        raise ValueError('This function is currently empty. Sorry for the inconvenience.')
 
     def read_GC(self, filename, lookup_creators=None, lookup_specs=None):
         """
         Reads in a pickled GalaxyCluster's data from saved versions
         """
-        pass
+        raise ValueError('This function is currently empty. Sorry for the inconvenience.')
 
     def write_GC(self, filename, lookup_creator=None, lookup_specs=None):
         """
         Pickles GalaxyCluster's data and saves it
         """
-        pass
+        raise ValueError('This function is currently empty. Sorry for the inconvenience.')
