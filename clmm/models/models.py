@@ -38,28 +38,24 @@ class Model():
         self._independent_vars = independent_vars
         self._params = params
 
-    @property
-    def func(self):
         if not callable(self._func):
             raise TypeError('func should be a callable')
-        return self._func
 
-    @property
-    def independent_vars(self):
-        if (np.iterable(self._independent_vars) \
-                    and not isinstance(self._independent_vars, dict)) \
-                and all(isinstance(var, six.string_types)
-                        for var in self._independent_vars) \
-                or self._independent_vars is None:
-            return self._independent_vars
-        raise TypeError('independent_vars should be a list of str or None')
+        ind_var_bools_and = [np.iterable(self._independent_vars),
+                             not isinstance(self._independent_vars, dict),
+                             all(isinstance(var, six.string_types) \
+                                 for var in self._independent_vars)]
 
-    @property
-    def params(self):
-        if (np.iterable(self._params) \
-                    and not isinstance(self._params, dict)) \
-                and all(isinstance(param, Parameter) for param in self._params) \
-                or self._params is None:
-            return self._params
-        raise TypeError('params should be a list of type Parameter')
+        #params_bools_and = [np.iterable(self._params),]
 
+        if not (all(ind_var_bools_and) or self._independent_vars is None):
+            raise TypeError('independent_vars should be a list of str or None')
+
+
+        # if (np.iterable(self._params) \
+        #             and not isinstance(self._params, dict)) \
+        #         and all(isinstance(param, Parameter) for param in self._params) \
+        #         or self._params is None:
+        #     pass
+        # else :
+        #     raise TypeError('params should be a list of type Parameter')
