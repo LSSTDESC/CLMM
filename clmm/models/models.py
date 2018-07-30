@@ -2,13 +2,6 @@
 import numpy as np
 import six
 
-
-class Parameter():
-    """Temporary dummy class so this file can pass tests"""
-    def __init__(self):
-        return None
-
-
 class Model():
     """A generalized superclass of what a model is. A model has parameters
     and a functional form.  The parameters may vary or be fixed.
