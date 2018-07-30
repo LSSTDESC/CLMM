@@ -2,9 +2,7 @@
 Define the custom data type
 """
 
-import astropy
 from astropy import table
-import collections
 from collections import namedtuple
 
 """
