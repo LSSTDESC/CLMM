@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import numpy as np
-import matplotlib.pyplot as plt
 from astropy.cosmology import FlatLambdaCDM
 from astropy.table import Table
 
@@ -145,6 +144,9 @@ class ShearAzimuthalAverager(object):
         return shear_profile
         
     def plot_profile(self):
+        
+        import matplotlib.pyplot as plt
+
         plt.errorbar(self.r_mean_arr, self.shear_t_arr, yerr=self.shear_t_err_arr, label=r'$g_t$')
         plt.errorbar(self.r_mean_arr, self.shear_c_arr, yerr=self.shear_c_err_arr, label=r'$g_\times$')
         #plt.xscale('log')
