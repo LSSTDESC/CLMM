@@ -41,18 +41,21 @@ class Model():
         if not callable(self.func):
             raise TypeError('func should be a callable')
 
-        ind_var_bools_and = [np.iterable(self.independent_vars),
-                             not isinstance(self.independent_vars, dict),
-                             not isinstance(self.independent_vars, six.string_types),
-                             all(isinstance(var, six.string_types)
-                                 for var in self.independent_vars)]
+        if (np.iterable(self.independent_vars) and not isinstance(self.independent_vars, dict) 
+            and all(isinstance(var,str) for var in independent_vars)
+            and not isinstance(self.independent_vars, six.string_types) ) \
+            or (independent_vars is None) :
+            self.independent_vars = independent_vars
+        else :
+             raise TypeError('independent_vars should be a list of str or None')
 
-        #params_bools_and = [np.iterable(self.params),]
 
-        if not self.independent_vars is None:
-            raise TypeError('independent_vars should be a list of str or None')
-        elif all(ind_var_bools_and):
-            raise TypeError('independent_vars should be a list of str or None')
+
+
+        # if not self.independent_vars is None:
+        #     raise TypeError('independent_vars should be a list of str or None')
+        # elif all(ind_var_bools_and):
+        #     raise TypeError('independent_vars should be a list of str or None')
 
         # if (np.iterable(self.params) \
         #             and not isinstance(self.params, dict)) \
