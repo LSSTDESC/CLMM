@@ -1,8 +1,10 @@
 '''
 GalaxyCluster is the fundamental object in clmm
 '''
+
 import pickle
-from datatypes import *
+
+from datatypes import GCData, find_in_dataset
 
 class GalaxyCluster():
     '''
@@ -40,14 +42,15 @@ class GalaxyCluster():
 
         Returns
         -------
-        list, None
+        found: list, clmm.GCData objects or boolean
             List of clmm.GCData object data with required creator and set of specs
-            if no objects are found, returns None
+            if no objects are found, returns False
         '''
         if lookup_creator in self.data:
-            return find_in_datalist(lookup_specs, self.data[lookup_creator], exact=exact)
+            found = find_in_datalist(lookup_specs, self.data[lookup_creator], exact=exact)
         else:
-            return False
+            found = False
+        return(found)
 
     def add_data(self, incoming_data, force=False):
         '''
@@ -102,13 +105,20 @@ class GalaxyCluster():
                 return
         raise ValueError('incoming data not found in GalaxyCluster')
 
-    def load_GC():
+    def _setup_dir(self, homelocal):
         """
-
+        Checks if directory exists, otherwise makes it
         """
         pass
 
-    def save_GC():
+    def read_GC(self, filename, lookup_creators=None, lookup_specs=None):
         """
+        Reads in a pickled GalaxyCluster's data from saved versions
+        """
+        pass
+
+    def write_GC(self, filename, lookup_creator=None, lookup_specs=None):
+        """
+        Pickles GalaxyCluster's data and saves it
         """
         pass
