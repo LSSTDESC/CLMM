@@ -10,6 +10,7 @@ install:
 # Other dependencies here
 - pip install pylint
 - pip install astropy
+- pip install scipy
 - pip install colossus
 
 #- pip install pyccl
