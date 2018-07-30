@@ -5,3 +5,4 @@ clmm
    :maxdepth: 4
 
    models
+   tests
