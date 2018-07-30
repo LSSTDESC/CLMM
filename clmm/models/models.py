@@ -1,7 +1,7 @@
 """Model class"""
 import numpy as np
-from models.parameter import Parameter
 import six
+from models.parameter import Parameter
 
 class Model():
     """A generalized superclass of what a model is. A model has parameters
@@ -38,21 +38,20 @@ class Model():
 
         if not callable(func):
             raise TypeError('func should be a callable')
-        else :
+        else:
             self.func = func
 
-        if (np.iterable(independent_vars) and not isinstance(independent_vars, dict) 
-            and all(isinstance(var,str) for var in independent_vars)
-            and not isinstance(independent_vars, six.string_types) ) \
-            or (independent_vars is None) :
+        if (np.iterable(independent_vars) and not isinstance(independent_vars, dict)
+                and all(isinstance(var, str) for var in independent_vars)
+                and not isinstance(independent_vars, six.string_types)) \
+                or (independent_vars is None):
             self.independent_vars = independent_vars
-        else :
-             raise TypeError('independent_vars should be a list of str or None')
+        else:
+            raise TypeError('independent_vars should be a list of str or None')
 
 
         if (np.iterable(params) and all(isinstance(param, Parameter) for param in params)) \
-           or (params is None) :
+           or (params is None):
             self.params = params
-        else :
+        else:
             raise TypeError('params should be a list of type Parameter')
-        
