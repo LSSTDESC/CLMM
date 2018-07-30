@@ -34,29 +34,30 @@ class Model():
             list of Parameter objects (default to None)
 
         """
-        self._func = func
-        self._independent_vars = independent_vars
-        self._params = params
+        self.func = func
+        self.independent_vars = independent_vars
+        self.params = params
 
-        if not callable(self._func):
+        if not callable(self.func):
             raise TypeError('func should be a callable')
 
-        ind_var_bools_and = [np.iterable(self._independent_vars),
-                             not isinstance(self._independent_vars, dict),
-                             not isinstance(self._independent_vars, str),
-                             all(isinstance(var, six.string_types) \
-                                 for var in self._independent_vars)]
+        ind_var_bools_and = [np.iterable(self.independent_vars),
+                             not isinstance(self.independent_vars, dict),
+                             not isinstance(self.independent_vars, six.string_types),
+                             all(isinstance(var, six.string_types)
+                                 for var in self.independent_vars)]
 
-        #params_bools_and = [np.iterable(self._params),]
+        #params_bools_and = [np.iterable(self.params),]
 
-        if not (all(ind_var_bools_and) or self._independent_vars is None):
+        if not self.independent_vars is None:
+            raise TypeError('independent_vars should be a list of str or None')
+        elif all(ind_var_bools_and):
             raise TypeError('independent_vars should be a list of str or None')
 
-
-        # if (np.iterable(self._params) \
-        #             and not isinstance(self._params, dict)) \
-        #         and all(isinstance(param, Parameter) for param in self._params) \
-        #         or self._params is None:
+        # if (np.iterable(self.params) \
+        #             and not isinstance(self.params, dict)) \
+        #         and all(isinstance(param, Parameter) for param in self.params) \
+        #         or self.params is None:
         #     pass
         # else :
         #     raise TypeError('params should be a list of type Parameter')
