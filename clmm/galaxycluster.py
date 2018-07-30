@@ -4,11 +4,18 @@ GalaxyCluster is the fundamental object in clmm
 
 import pickle
 
-from datatypes import GCData, find_in_dataset
+from datatypes import GCData, find_in_datalist
 
 class GalaxyCluster():
     '''
     Object that contains the information associated with a galaxy cluster
+
+    Attributes
+    ----------
+    data: dictionary
+        Dictionary with creators as keys and a list of clmm.GCData objects as values
+    homelocal: string
+        Path to save cluster properties
     '''
 
     def __init__(self, initial_data=None, homelocal='.'):
@@ -24,6 +31,7 @@ class GalaxyCluster():
         self.homelocal = homelocal
 
         if initial_data is not None:
+            
             self.add_data(initial_data)
 
     def find_data(self, lookup_creator, lookup_specs, exact=False):
@@ -76,7 +84,7 @@ class GalaxyCluster():
         if not incoming_data.creator in self.data:
             self.data[incoming_data.creator] = [incoming_data]
         else:
-            found_data = find_in_dataset(incoming_data.specs, self.data[incoming_data.creator], exact=True)
+            found_data = find_in_datalist(incoming_data.specs, self.data[incoming_data.creator], exact=True)
             if not found_data:
                 self.data[incoming_data.creator].append(incoming_data)
             else:
@@ -87,7 +95,7 @@ class GalaxyCluster():
                     self.data[incoming_data.creator].append(incoming_data)
         return
 
-    def remove_data(self, incoming_data):
+    def remove_data(self, incoming_creator, incoming_specs):
         """
         Removes data from GalaxyCluster
 
@@ -99,9 +107,10 @@ class GalaxyCluster():
         Notes
         -----
         """
-        if incoming_data.creator in self.data:
-            if find_in_dataset(incoming_data.specs, self.data[incoming_data.creator], exact=True):
-                self.data[incoming_data.creator].remove(incoming_data.specs)
+        if incoming_creator in self.data:
+            exact_data = find_in_datalist(incoming_specs, self.data[incoming_creator], exact=True)
+            if exact_data:
+                self.data[incoming_creator].remove(exact_data)
                 return
         raise ValueError('incoming data not found in GalaxyCluster')
 
@@ -109,16 +118,16 @@ class GalaxyCluster():
         """
         Checks if directory exists, otherwise makes it
         """
-        pass
+        raise ValueError('This function is currently empty. Sorry for the inconvenience.')
 
     def read_GC(self, filename, lookup_creators=None, lookup_specs=None):
         """
         Reads in a pickled GalaxyCluster's data from saved versions
         """
-        pass
+        raise ValueError('This function is currently empty. Sorry for the inconvenience.')
 
     def write_GC(self, filename, lookup_creator=None, lookup_specs=None):
         """
         Pickles GalaxyCluster's data and saves it
         """
-        pass
+        raise ValueError('This function is currently empty. Sorry for the inconvenience.')
