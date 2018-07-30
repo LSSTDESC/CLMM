@@ -1,18 +1,17 @@
-models package
-==============
+tests package
+=============
 
 Submodules
 ----------
 
 .. toctree::
 
-   models.models
-   models.parameter
+   tests.test_model
 
 Module contents
 ---------------
 
-.. automodule:: models
+.. automodule:: tests
     :members:
     :undoc-members:
     :show-inheritance:
