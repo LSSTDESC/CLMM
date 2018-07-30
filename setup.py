@@ -1,11 +1,23 @@
 from setuptools import setup
 
-setup(name='clmm',
+setup(
+      name='clmm',
       version='0.1',
-      description='Calculate WL Masses and bias measured from simulation data',
-      url='http://github.com/storborg/funniest',
-      author='DESC-CL-WG',
+      author='LSST-DESC CL WG',
       author_email='avestruz@uchicago.edu',
-      license='MIT',
-      packages=['clmm'],
-      zip_safe=False)
+      url='https://github.com/LSSTDESC/CLMM',
+      packages=["clmm", "clmm.models"],
+      description='A comprehensive package for galaxy cluster weak lensing',
+      long_description=open("README.md").read(),
+      package_data={"": ["README.md", "LICENSE"]},
+      include_package_data=True,
+      classifiers=[
+        "Development Status :: 4 - Beta",
+        "License :: OSI Approved :: BSD 3-Clause",
+        "Intended Audience :: Developers",
+        "Intended Audience :: Science/Research",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python"
+        ],
+      install_requires=["astropy", "matplotlib", "numpy", "scipy"]
+)
