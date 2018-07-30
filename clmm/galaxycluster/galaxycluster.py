@@ -1,6 +1,7 @@
 '''
 GalaxyCluster is the fundamental object in clmm
 '''
+import cPickle
 from datatypes import *
 
 class GalaxyCluster():
@@ -20,32 +21,10 @@ class GalaxyCluster():
         self.data = {}
         self.homelocal = homelocal
 
-        self._debugprint = False
-
         if initial_data is not None:
-            self._add(initial_data)
+            self.add_data(initial_data)
 
-
-    def _check_creator(self, test_creator):
-        '''
-        Checks if a creator exists in GalaxyCluster object
-
-        Parameters
-        ----------
-        test_creator: string
-            Creator that will be searched in GalaxyCluster object
-
-        Returns
-        -------
-        bool
-            Existence of the test_creator in GalaxyCluster object
-        '''
-        if test_creator in self.data:
-            return self.data
-        else:
-            return False
-
-    def _find(self, lookup_creator, lookup_specs, exact=False):
+    def find_data(self, lookup_creator, lookup_specs, exact=False):
         '''
         Finds data with a specific creator and specs in GalaxyCluster object
         allows for partial match
@@ -70,7 +49,7 @@ class GalaxyCluster():
         else:
             return False
 
-    def _add(self, incoming_data, replace=False):
+    def add_data(self, incoming_data, force=False):
         '''
         Parameters
         ----------
@@ -78,7 +57,7 @@ class GalaxyCluster():
             new data to associate with GalaxyCluster object
         incoming_metadata: dict
             new metadata for GalaxyCluster to use to distinguish from other clmm.GCData with same provenance
-        replace: bool, optional
+        force: bool, optional
             replace in the case of data with same creator, specs already exists
 
         Notes
@@ -92,9 +71,7 @@ class GalaxyCluster():
                 #    true: remove, then add
          '''
         if not type(incoming_data) == GCData:
-            # change to raise/except
-            if self._debugprint: print('wrong type')
-            return
+            raise TypeError('incoming data of wrong type')
         if not incoming_data.creator in self.data:
             self.data[incoming_data.creator] = [incoming_data]
         else:
@@ -102,16 +79,14 @@ class GalaxyCluster():
             if not found_data
                 self.data[incoming_data.creator].append(incoming_data)
             else:
-                if not replace:
-                    print('Data with this creator & specs already exists. Add replace=True key to replace it.')
-                    print('Current:', found_data))
+                if not force:
+                    raise ValueError('Data with this creator & specs already exists. Add force=True keyword to replace it.')
                 else:
-                    print('Overwriting this data:')
                     self.data[incoming_data.creator].remove(found_data)
                     self.data[incoming_data.creator].append(incoming_data)
         return
 
-    def _remove(self, incoming_data):
+    def remove_data(self, incoming_data):
         """
         Removes data from GalaxyCluster
 
@@ -124,11 +99,13 @@ class GalaxyCluster():
         -----
         """
         if incoming_data.creator in self.data:
-            if not find_in_dataset(incoming_data.specs, self.data[incoming_data.creator], exact=True):
-                # change to raise/except
-                print('*** specs ERROR *** - incoming data not found in datalist')
-            else:
+            if find_in_dataset(incoming_data.specs, self.data[incoming_data.creator], exact=True):
                 self.data[incoming_data.creator].remove(incoming_data.specs)
-        else:
-            print('*** creator ERROR *** - incoming data not found in datalist')
-        return
+                return
+        raise ValueError('incoming data not found in GalaxyCluster')
+
+    def load_GC():
+        pass
+
+    def save_GC():
+        pass
