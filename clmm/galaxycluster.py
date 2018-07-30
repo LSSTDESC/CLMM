@@ -87,7 +87,7 @@ class GalaxyCluster():
                     self.data[incoming_data.creator].append(incoming_data)
         return
 
-    def remove_data(self, incoming_data):
+    def remove_data(self, incoming_creator, incoming_specs):
         """
         Removes data from GalaxyCluster
 
@@ -99,9 +99,10 @@ class GalaxyCluster():
         Notes
         -----
         """
-        if incoming_data.creator in self.data:
-            if find_in_datalist(incoming_data.specs, self.data[incoming_data.creator], exact=True):
-                self.data[incoming_data.creator].remove(incoming_data.specs)
+        if incoming_creator in self.data:
+            exact_data = find_in_datalist(incoming_specs, self.data[incoming_creator], exact=True)
+            if exact_data:
+                self.data[incoming_creator].remove(exact_data)
                 return
         raise ValueError('incoming data not found in GalaxyCluster')
 
