@@ -11,14 +11,23 @@ def generate_perfect_data(ngals, src_redshift, cluster_mass, cluster_redshift, c
     '''
     This generates a fake dataset of background galaxies using the Dallas group software. 
     Data are perfect, i.e. no shape noise, all galaxies at the same redshift.
-    Args:
-        ngals: number of galaxies in the fake catalog
-        cluster_mass: mass of the cluster
-        cluster_redshift:
-        concentration: concentration of the cluster
-        chooseCosmology: string defining the cosmological parameter set in colossus, e.g. WMAP7-ML
-    Returns:
-        astropy table containing the galaxy catalog [id, ra, dec, gamma1, gamma2, z]
+
+    Parameters
+    ----------
+        ngals: int
+            Number of galaxies in the fake catalog
+        cluster_mass: double
+            Mass of the cluster
+        cluster_redshift: double
+            Redshift of vluster
+        concentration: double
+            Concentration of the cluster
+        chooseCosmology: Cosmology object
+            String defining the cosmological parameter set in colossus, e.g. WMAP7-ML
+    Returns
+    -------
+        astropy table 
+            Containing the galaxy catalog [id, ra, dec, gamma1, gamma2, z]
     '''
 
     ngals = 10000
@@ -114,4 +123,3 @@ def test_shear_azimuthal_averager():
     assert g_x_residual < tolerance
     
 
-test_shear_azimuthal_averager()

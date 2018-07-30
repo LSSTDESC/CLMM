@@ -10,7 +10,7 @@ class ShearAzimuthalAverager(object):
 
     Attributes
     ----------
-    cl_dict : dictionary
+    cl_dict: dictionary
         containing the information of a cluster
 
     src_table: astropy table
@@ -54,7 +54,7 @@ class ShearAzimuthalAverager(object):
         dec_src = self.src_table['dec']
         z_src = self.src_table['z']
 
-        if 'kappa' in self.src_table.keys():
+        if 'kappa' in self.src_table:
             gamma_1 = self.src_table['gamma1']
             gamma_2 = self.src_table['gamma2']
             kappa = self.src_table['kappa']
