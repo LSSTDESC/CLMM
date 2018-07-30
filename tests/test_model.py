@@ -7,6 +7,7 @@ import six
 
 import clmm
 from clmm import models
+from clmm.models import *
 from clmm.models.model import Model
 from clmm.models.parameter import Parameter
 
