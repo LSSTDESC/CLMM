@@ -83,7 +83,7 @@ def find_in_datalist(lookup_specs, datalist, exact=False):
     else:
         if exact:
             for match in found:
-                reverse = check_subdict(match.specs, lookup_specs)
-                if reverse:
-                    return reverse
+                if check_subdict(match.specs, lookup_specs):
+                    return match
+            raise ValueError('no data found with these lookup_specs')
         return found
