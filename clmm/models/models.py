@@ -1,4 +1,4 @@
-'''Model class'''
+"""Model class"""
 import numpy as np
 import six
 
@@ -10,7 +10,7 @@ class Parameter():
 
 
 class Model():
-    '''A generalized superclass of what a model is. A model has parameters
+    """A generalized superclass of what a model is. A model has parameters
     and a functional form.  The parameters may vary or be fixed.
 
     Attributes
@@ -24,11 +24,11 @@ class Model():
     params : array-like, optional
         list of Parameter objects (default to None)
 
-    '''
+    """
 
 
     def __init__(self, func, independent_vars=None, params=None):
-        '''
+        """
         Parameters
         ----------
         func : callable
@@ -40,7 +40,7 @@ class Model():
         params : array-like
             list of Parameter objects (default to None)
 
-        '''
+        """
         self._func = func
         self._independent_vars = independent_vars
         self._params = params
