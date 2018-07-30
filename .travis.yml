@@ -7,14 +7,29 @@ python:
 - "3.6"
 
 install:
-# Other dependencies here
-- pip install pylint
-#- pip install pyccl
+  - sudo apt-get update
+  # Install the dependencies and the package:
+  - pip install -r requirements.txt
+  - python setup.py install
+  # Now get set up to run jupyter notebooks:
+  - sudo apt-get install texlive-latex-recommended
+  - sudo apt-get install texlive-latex-extra
+  - sudo apt-get install texlive-fonts-recommended
+  - sudo apt-get install chktex
+  - sudo apt-get install dvipng
+  - pip install --upgrade jupyter
+  - pip install nbconvert
+  # Finally get set up to build the docs:
+  - pip install sphinx
+  - pip install sphinx_rtd_theme
+  # Other dependencies here:
+  - pip install pylint
+#  - pip install pyccl
 
 
 script:
 #- pylint 
-- python setup.py install --user
+  # Run the unit tests:
 - py.test 
 - '[ -z "$CHANGED" ] || pylint --disable=C0103,C0301,W0511 --extension-pkg-whitelist=numpy $CHANGED; EXITCODE=$?; if [ $(($EXITCODE&7)) -gt 0 ]; then exit $EXITCODE; fi;'
 
