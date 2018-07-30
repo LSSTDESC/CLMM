@@ -14,7 +14,10 @@ test_creator_diff = 'Witch'
 test_dict = {'test%d'%i:True for i in range(3)}
 test_dict_diff = {'test%d'%i:False for i in range(3)}
 test_dict_sub = {'test%d'%i:True for i in range(2)}
-test_data = GCData(test_creator, test_dict,[1, 2, 3]
+
+test_table = []
+
+test_data = GCData(test_creator, test_dict, test_table)
 
 from numpy import testing as tst
 
