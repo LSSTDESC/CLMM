@@ -23,9 +23,9 @@ from numpy import testing as tst
 
 def test_check_subdict():
 
-    tst.assert_equal(True, check_subdict(test_dict_sub, test_dict))
-    tst.assert_equal(False, check_subdict(test_dict, test_dict_sub))
-    tst.assert_equal(False, check_subdict(test_dict_sub, test_dict_diff))
+    assert check_subdict(test_dict_sub, test_dict)
+    assert not check_subdict(test_dict, test_dict_sub)
+    assert not check_subdict(test_dict_sub, test_dict_diff)
 
 def test_find_in_datalist():
 
