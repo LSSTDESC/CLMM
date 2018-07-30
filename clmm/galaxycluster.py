@@ -11,7 +11,7 @@ class GalaxyCluster():
     Object that contains the properties of a galaxy cluster.
     '''
 
-    def __init__(self, initial_dat=None, homelocal='.', datatype=GCData_type):
+    def __init__(self, initial_data=None, homelocal='.', datatype=GCData_type):
         '''
         Parameters
         ----------
