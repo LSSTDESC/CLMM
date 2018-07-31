@@ -49,8 +49,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'CLMM'
-copyright = '2018, Camille Avestruz'
-author = 'Camille Avestruz'
+copyright = '2018, LSST DESC Clusters Working Group'
+author = 'LSST DESC Clusters Working Group'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -144,7 +144,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'CLMM.tex', 'CLMM Documentation',
-     'Camille Avestruz', 'manual'),
+     'LSST DESC Clusters Working Group', 'manual'),
 ]
 
 
