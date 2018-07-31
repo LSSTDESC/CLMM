@@ -18,6 +18,7 @@ test_dict_sub = {'test%d'%i:True for i in range(2)}
 test_table = []
 
 test_data = GCData(test_creator, test_dict, test_table)
+test_data_diff = GCData(test_creator, test_dict_diff, test_table)
 
 from numpy import testing as tst
 
@@ -58,6 +59,7 @@ def test_add_data():
 
     gc = GalaxyCluster()
     tst.assert_equal(None, gc.add_data(test_data))
+    tst.assert_equal(None, gc.add_data(test_data_diff))
     tst.assert_raises(ValueError, gc.add_data, test_data)
     tst.assert_equal(None, gc.add_data(test_data, force=True))
 
