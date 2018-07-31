@@ -7,8 +7,8 @@ sys.path.append('/'.join(DIR.split('/')[:-1]))
 
 from clmm import galaxycluster
 from clmm.galaxycluster import *
-from clmm import datatypes
-from clmm.datatypes import *
+from clmm.core import datatypes
+from clmm.core.datatypes import *
 
 test_creator = 'Mitch'
 test_creator_diff = 'Witch'
@@ -18,7 +18,7 @@ test_dict_diff = {'test%d'%i:False for i in range(3)}
 test_dict_sub = {'test%d'%i:True for i in range(2)}
 
 test_table = []
-
+p
 test_data = GCData(test_creator, test_dict, test_table)
 test_data_diff = GCData(test_creator, test_dict_diff, test_table)
 
