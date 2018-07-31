@@ -38,3 +38,6 @@ script:
   # Run the docs:
   - sphinx-quickstart -a "travis" -p clmm -v 0.0.1 --ext-autodoc -q
   - make -C docs/ html
+
+  # Run pylint
+  - find clmm/ -iname "*.py" | xargs pylint
