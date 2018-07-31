@@ -7,8 +7,8 @@ sys.path.append('/'.join(DIR.split('/')[:-1]))
 
 from clmm import galaxycluster
 from clmm.galaxycluster import *
-from clmm import datatypes
-from clmm.datatypes import *
+from clmm.core import datatypes
+from clmm.core.datatypes import *
 
 test_creator = 'Mitch'
 test_creator_diff = 'Witch'
