@@ -6,20 +6,25 @@ Define the custom data type
 from collections import namedtuple
 import pickle
 
-"""
-GCData: A namedtuple tying values with units to the metadata of where the values came from and thus how the values are used
 
-Parameters
-----------
-creator: string, type of object (i.e. model, summarizer, inferrer) that made this data
-specs: specifications of how the data was created
-values: astropy table with column names and units
+GCData_ = namedtuple('GCData', ['creator', 'specs', 'values'])
 
-Notes
------
 
-"""
-GCData = namedtuple('GCData', ['creator', 'specs', 'values'])
+class GCData(GCData_):
+    """
+    GCData: A namedtuple tying values with units to the metadata of where the values came from and thus how the values are used
+
+    Parameters
+    ----------
+    creator: string
+        Type of object (i.e. model, summarizer, inferrer) that made this data
+    specs: dict
+        Specifications of how the data was created
+    values: astropy.Table
+        Data with units
+    """
+    pass
+
 
 """
 Additional functions specific to clmm.GCData
