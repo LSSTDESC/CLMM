@@ -1,17 +1,18 @@
-tests package
-=============
+clmm\.models package
+====================
 
 Submodules
 ----------
 
 .. toctree::
 
-   tests.test_model
+   clmm.models.model
+   clmm.models.parameter
 
 Module contents
 ---------------
 
-.. automodule:: tests
+.. automodule:: clmm.models
     :members:
     :undoc-members:
     :show-inheritance:
