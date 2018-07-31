@@ -82,7 +82,7 @@ def find_in_datalist(lookup_specs, datalist, exact=False):
 
     Returns
     -------
-    list
+    found: list
         List of clmm.GCData object data with required creator and set of specs
     None
         If no objects are found
@@ -92,11 +92,12 @@ def find_in_datalist(lookup_specs, datalist, exact=False):
         if check_subdict(lookup_specs, data.specs) :
             found.append(data)
     if len(found) == 0:
-        raise ValueError('no data found with these lookup_specs')
+        print('no data found with these lookup_specs')
     else:
         if exact:
             for match in found:
                 if check_subdict(match.specs, lookup_specs):
                     return match
-            raise ValueError('no data found with these lookup_specs')
-        return found
+            found = [] 
+            print('no data found with these exact lookup_specs')
+    return found
