@@ -4,14 +4,7 @@ from __future__ import absolute_import, print_function
 import numpy as np
 from numpy.testing import assert_raises
 import six
-
-#import clmm
 from clmm import Model, Parameter
-#from clmm import models
-#from clmm.models import model
-#from clmm.models.model import Model
-#from clmm.models import parameter
-#from clmm.models.parameter import Parameter
 
 
 def assert_block(test_model):
@@ -32,12 +25,8 @@ def assert_block(test_model):
         for element in test_model.independent_vars:
             assert isinstance(element, six.string_types)
 
-    assert (np.iterable(test_model.params) \
-            and not isinstance(test_model.params, dict)) \
+    assert (isinstance(test_model.params, dict)) \
             or (test_model.params is None)
-    if test_model.params is not None:
-        for element in test_model.params:
-            assert isinstance(element, Parameter)
 
 
 def test_model_superclass():
@@ -47,6 +36,7 @@ def test_model_superclass():
     assert_raises(TypeError, Model, lambda x: x, 'r')
     assert_raises(TypeError, Model, 'x*x', ['r'])
     assert_raises(TypeError, Model, lambda x: x, ['r'], ['param1'])
+    assert_raises(TypeError, Model, lambda x: x, ['r'], [3.14])
 
     test_model = Model(lambda x: x)
     assert_block(test_model)
@@ -54,5 +44,5 @@ def test_model_superclass():
     test_model = Model(lambda x: x, ['r'])
     assert_block(test_model)
 
-    test_model = Model(lambda x: x*x, ['r'], [Parameter()])
+    test_model = Model(lambda x: x*x, ['r'], {'a': 2.})
     assert_block(test_model)
