@@ -1,4 +1,6 @@
-# CLMM
+
+
+# CLMM [![Documentation Status](https://readthedocs.org/projects/clmm/badge/?version=master)](https://clmm.readthedocs.io/en/master/?badge=master)
 
 A new and improved cluster mass modeling code descended from [clmassmod](https://github.com/LSSTDESC/clmassmod)
 
