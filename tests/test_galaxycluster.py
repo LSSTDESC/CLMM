@@ -1,10 +1,6 @@
 """
 Tests for datatype and galaxycluster
 """
-import os, sys
-DIR = os.path.dirname(os.path.realpath(__file__))
-sys.path.append('/'.join(DIR.split('/')[:-1]))
-
 from clmm import galaxycluster
 from clmm.galaxycluster import *
 from clmm.core import datatypes
