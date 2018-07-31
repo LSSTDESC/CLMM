@@ -2,10 +2,10 @@
 import numpy as np
 import six
 import clmm
+from clmm.core import CLMMBase
 
 
-
-class Model():
+class Model(CLMMBase):
     """A generalized superclass of what a model is. A model has parameters
     and a functional form.  The parameters may vary or be fixed.
 
