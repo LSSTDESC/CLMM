@@ -97,7 +97,7 @@ def find_in_datalist(lookup_specs, datalist, exact=False):
         if exact:
             for match in found:
                 if check_subdict(match.specs, lookup_specs):
-                    return match
+                    return [match]
             found = [] 
             print('no data found with these exact lookup_specs')
     return found

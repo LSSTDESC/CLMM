@@ -4,7 +4,8 @@ GalaxyCluster is the fundamental object in clmm
 
 import pickle
 
-from datatypes import GCData, find_in_datalist
+from clmm import datatypes 
+from clmm.datatypes import GCData, find_in_datalist
 
 class GalaxyCluster():
     '''
@@ -87,6 +88,7 @@ class GalaxyCluster():
                 if not force:
                     raise ValueError('Data with this creator & specs already exists. Add force=True keyword to replace it.')
                 else:
+                    print(found_data)
                     self.data[incoming_data.creator].remove(found_data[0])
                     self.data[incoming_data.creator].append(incoming_data)
         return
@@ -102,8 +104,8 @@ class GalaxyCluster():
         """
         if incoming_creator in self.data:
             exact_data = find_in_datalist(incoming_specs, self.data[incoming_creator], exact=True)
-            if exact_data:
-                self.data[incoming_creator].remove(exact_data)
+            if exact_data != []:
+                self.data[incoming_creator].remove(exact_data[0])
                 return
         raise ValueError('incoming data not found in GalaxyCluster')
 
