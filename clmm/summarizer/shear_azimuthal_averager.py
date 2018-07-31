@@ -37,7 +37,7 @@ class ShearAzimuthalAverager(object):
         Computes the tangential and cross shear for each source in the catalog as:
 
         ..math::
-            g_t = - (g_1 * \cos(2\phi) - g_2 * \sin(2\phi)
+            g_t = - (g_1 * \cos(2\phi) + g_2 * \sin(2\phi))
             g_c = - g_1 * \sin(2\phi) + g_2 * \cos(2\phi)
 
         """
