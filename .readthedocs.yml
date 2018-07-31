@@ -1,0 +1,6 @@
+requirements_file: docs/requirements.txt
+
+python:
+    pip_install: true
+    extra_requirements:
+        - numpydoc
