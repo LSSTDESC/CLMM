@@ -3,9 +3,10 @@ import numpy as np
 from astropy.table import Table
 # model from Dallas group
 import colossus.cosmology.cosmology as Cosmology # used for distances
-import models.CLMM_densityModels_beforeConvertFromPerH as clmm
+import clmm.models.CLMM_densityModels_beforeConvertFromPerH as dallas
 # the code we want to test:
-from summarizer.shear_azimuthal_averager import ShearAzimuthalAverager
+from clmm import ShearAzimuthalAverager
+from clmm import datatypes
 
 def generate_perfect_data(ngals, src_redshift, cluster_mass, cluster_redshift, concentration, chooseCosmology):
     '''
@@ -41,7 +42,7 @@ def generate_perfect_data(ngals, src_redshift, cluster_mass, cluster_redshift, c
     r = np.linspace(0.25, 10., 1000) #Mpc
     r = r*cosmo.h #Mpc/h
 
-    testProf= clmm.nfwProfile(M = M, c = c, zL = zL, mdef = mdef, \
+    testProf= dallas.nfwProfile(M = M, c = c, zL = zL, mdef = mdef, \
                             chooseCosmology = chooseCosmology, esp = None)
 
     x_mpc = np.random.uniform(-4, 4, size=ngals)
@@ -86,9 +87,10 @@ def test_shear_azimuthal_averager():
     # make the fake data catalog
     t = generate_perfect_data(ngals, src_redshift, cluster_mass, cluster_redshift, concentration, chooseCosmology)
     cl_dict={'ra':0.0, 'dec':0.0, 'z':cluster_redshift}
+    new_t = datatypes.GCData('source catalog', {}, t)
   
     # create an object, given cluster dictionary and galaxy astropy table
-    saa = ShearAzimuthalAverager(cl_dict,t)
+    saa = ShearAzimuthalAverager(cl_dict, new_t)
 
     # compute tangential and cross shear for each galaxy
     saa.compute_shear()
@@ -101,11 +103,9 @@ def test_shear_azimuthal_averager():
     mdef = '200c'
     M = cluster_mass*cosmo.h # NOTE! model code operate with h
     c = concentration # NOTE! n=not sure
-#    r = binned_profile['radius'] #Mpc
     theta = binned_profile['ang_separation'] #Mpc
-#    r = r*cosmo.h #Mpc/h
 
-    testProf = clmm.nfwProfile(M = M, c = c, zL = cluster_redshift, mdef = mdef, \
+    testProf = dallas.nfwProfile(M = M, c = c, zL = cluster_redshift, mdef = mdef, \
                             chooseCosmology = chooseCosmology, esp = None)
 
     gt_mod= testProf.deltaSigma(theta*cosmo.angularDiameterDistance(cluster_redshift))/testProf.Sc(src_redshift)
