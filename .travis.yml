@@ -8,28 +8,39 @@ python:
 
 install:
   - sudo apt-get update
+
   # Install the dependencies and the package:
   - pip install -r requirements.txt
   - python setup.py install
+
   # Now get set up to run jupyter notebooks:
-  - sudo apt-get install texlive-latex-recommended
-  - sudo apt-get install texlive-latex-extra
-  - sudo apt-get install texlive-fonts-recommended
-  - sudo apt-get install chktex
-  - sudo apt-get install dvipng
-  - pip install --upgrade jupyter
-  - pip install nbconvert
+  #- sudo apt-get install texlive-latex-recommended
+  #- sudo apt-get install texlive-latex-extra
+  #- sudo apt-get install texlive-fonts-recommended
+  #- sudo apt-get install chktex
+  #- sudo apt-get install dvipng
+  #- pip install --upgrade jupyter
+  #- pip install nbconvert
+
   # Finally get set up to build the docs:
   - pip install sphinx
   - pip install sphinx_rtd_theme
+
   # Other dependencies here:
   - pip install pylint
-#  - pip install pyccl
-
+  #- pip install pyccl
+  - pip install astropy
+  - pip install scipy
+  - pip install colossus
+  #- pip install matplotlib
 
 script:
-#- pylint 
   # Run the unit tests:
-- py.test 
-- '[ -z "$CHANGED" ] || pylint --disable=C0103,C0301,W0511 --extension-pkg-whitelist=numpy $CHANGED; EXITCODE=$?; if [ $(($EXITCODE&7)) -gt 0 ]; then exit $EXITCODE; fi;'
+  - py.test 
 
+  # Run the docs:
+  - sphinx-quickstart -a "travis" -p clmm -v 0.0.1 --ext-autodoc -q
+  - make -C docs/ html
+
+  # Run pylint - Not for the minimal working example
+  #- find clmm/ -iname "*.py" | xargs pylint
