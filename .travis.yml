@@ -39,5 +39,5 @@ script:
   - sphinx-quickstart -a "travis" -p clmm -v 0.0.1 --ext-autodoc -q
   - make -C docs/ html
 
-  # Run pylint
-  - find clmm/ -iname "*.py" | xargs pylint
+  # Run pylint - Not for the minimal working example
+  #- find clmm/ -iname "*.py" | xargs pylint
