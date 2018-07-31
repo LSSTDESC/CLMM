@@ -12,14 +12,17 @@ GCData_ = namedtuple('GCData', ['creator', 'specs', 'values'])
 
 class GCData(GCData_):
     """
-    GCData: A namedtuple tying values with units to the metadata of where the values came from and thus how the values are used
+    GCData: A namedtuple tying values with units to the metadata of where the values came from
+    and thus how the values are used
 
     Parameters
     ----------
     creator: string
-        Type of object (i.e. model, summarizer, inferrer) that made this data
+        Type of object that made this data
+        Example: clmm.summarizer.shear_azimuthal_averager.ShearAzimuthalAverager.make_shear_profile 
     specs: dict
-        Specifications of how the data was created
+        Specifications of how the data was created, what are the properties of the data.
+        If the data was created by a function, what inputs were used.
     values: astropy.Table
         Data with units
     """
