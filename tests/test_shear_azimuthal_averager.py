@@ -3,9 +3,11 @@ import numpy as np
 from astropy.table import Table
 # model from Dallas group
 import colossus.cosmology.cosmology as Cosmology # used for distances
-import models.CLMM_densityModels_beforeConvertFromPerH as clmm
+
+from clmm import models, summarizer
+import clmm.models.CLMM_densityModels_beforeConvertFromPerH as dm
 # the code we want to test:
-from summarizer.shear_azimuthal_averager import ShearAzimuthalAverager
+from clmm.summarizer.shear_azimuthal_averager import ShearAzimuthalAverager
 
 def generate_perfect_data(ngals, src_redshift, cluster_mass, cluster_redshift, concentration, chooseCosmology):
     '''
@@ -41,7 +43,7 @@ def generate_perfect_data(ngals, src_redshift, cluster_mass, cluster_redshift, c
     r = np.linspace(0.25, 10., 1000) #Mpc
     r = r*cosmo.h #Mpc/h
 
-    testProf= clmm.nfwProfile(M = M, c = c, zL = zL, mdef = mdef, \
+    testProf= dm.nfwProfile(M = M, c = c, zL = zL, mdef = mdef, \
                             chooseCosmology = chooseCosmology, esp = None)
 
     x_mpc = np.random.uniform(-4, 4, size=ngals)
@@ -105,7 +107,7 @@ def test_shear_azimuthal_averager():
     theta = binned_profile['ang_separation'] #Mpc
 #    r = r*cosmo.h #Mpc/h
 
-    testProf = clmm.nfwProfile(M = M, c = c, zL = cluster_redshift, mdef = mdef, \
+    testProf = dm.nfwProfile(M = M, c = c, zL = cluster_redshift, mdef = mdef, \
                             chooseCosmology = chooseCosmology, esp = None)
 
     gt_mod= testProf.deltaSigma(theta*cosmo.angularDiameterDistance(cluster_redshift))/testProf.Sc(src_redshift)
