@@ -2,6 +2,16 @@
 import numpy as np
 
 class CLMMBase():
+    """
+    Highest level super class for the project. Every class outside of core
+    should have this as its highest level ancestor.
+
+    Attributes
+    ----------
+    _ask_type : list or str
+        List of data types that each class will accept as inputs.
+        Queried by the manager class.
+    """
     _ask_type = []
 
     @property
