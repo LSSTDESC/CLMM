@@ -37,4 +37,4 @@ script:
 
   # Run the docs:
   - sphinx-quickstart -a "travis" -p clmm -v 0.0.1 --ext-autodoc -q
-  - make -C docs/ html -W
+  - make -C docs/ html
