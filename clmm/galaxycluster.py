@@ -4,8 +4,8 @@ GalaxyCluster is the fundamental object in clmm
 
 import pickle
 
-from clmm import datatypes 
-from clmm.datatypes import GCData, find_in_datalist
+from clmm.core import datatypes 
+from clmm.core.datatypes import GCData, find_in_datalist
 
 class GalaxyCluster():
     '''
