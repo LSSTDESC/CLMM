@@ -1,7 +1,6 @@
 """Model class"""
 import numpy as np
 import six
-#from parameter import Parameter
 import clmm
 
 
@@ -18,8 +17,8 @@ class Model():
     independent_vars : array-like of str, optional
         arguments to func that are independent variables (default to None)
 
-    params : array-like, optional
-        list of Parameter objects (default to None)
+    params : dict of floats, optional
+        Dictionary of parameters
 
     """
 
@@ -31,11 +30,11 @@ class Model():
         func : callable
             functional form of the model, should be wrapped by the class
 
-        independent_vars : array-like of str
+        independent_vars : array-like of str, optional
             arguments to func that are independent variables (default to None)
 
-        params : array-like
-            list of Parameter objects (default to None)
+        params : dict of floats, optional
+            Dictionary of parameters
 
         """
 
@@ -53,8 +52,7 @@ class Model():
             raise TypeError('independent_vars should be a list of str or None')
 
 
-        if (np.iterable(params) and all(isinstance(param, clmm.Parameter) for param in params)) \
-           or (params is None):
+        if isinstance(params, dict) or params is None:
             self.params = params
         else:
-            raise TypeError('params should be a list of type Parameter')
+            raise TypeError('params should be a dictionary')
