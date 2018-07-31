@@ -6,7 +6,7 @@ setup(
       author='LSST-DESC CL WG',
       author_email='avestruz@uchicago.edu',
       url='https://github.com/LSSTDESC/CLMM',
-      packages=["clmm", "clmm.models"],
+      packages=["clmm", "clmm.models", "clmm.summarizer"],
       description='A comprehensive package for galaxy cluster weak lensing',
       long_description=open("README.md").read(),
       package_data={"": ["README.md", "LICENSE"]},
