@@ -71,14 +71,10 @@ class GalaxyCluster():
 
         Notes
         -----
-                # is the creator already there?
-                #  false: make it
-                #  true: are specs already there?
-                #   false: append it
-                #   true: do we want to overwrite?
-                #    false: exit
-                #    true: remove, then add
-         '''
+        This function asks, "is the creator already there?" if not, make it.
+        If it is, are specs already there? If not, append it.
+        If they are, do we want to overwrite? If no, exit. If so replace.
+        '''
         if not type(incoming_data) == GCData:
             raise TypeError('incoming data of wrong type')
         if not incoming_data.creator in self.data:
@@ -103,9 +99,6 @@ class GalaxyCluster():
         ----------
         incoming_data: GCData object
             the data to be removed
-
-        Notes
-        -----
         """
         if incoming_creator in self.data:
             exact_data = find_in_datalist(incoming_specs, self.data[incoming_creator], exact=True)
