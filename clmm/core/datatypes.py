@@ -18,8 +18,7 @@ class GCData(GCData_):
     Parameters
     ----------
     creator: string
-        Type of object that made this data
-        Example: clmm.summarizer.shear_azimuthal_averager.ShearAzimuthalAverager.make_shear_profile 
+        Super class of the object that made the data.
     specs: dict
         Specifications of how the data was created, what are the properties of the data.
         If the data was created by a function, what inputs were used.
