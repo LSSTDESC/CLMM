@@ -176,8 +176,7 @@ def run_apidoc(_):
     cur_dir = os.path.normpath(os.path.dirname(__file__))
     output_path = os.path.join(cur_dir, 'api')
     modules = os.path.normpath(os.path.join(cur_dir, "../clmm"))
-    main(['-e', '-f', '-o', output_path, modules])
-    #main(['-e', '-f', '-M', '-o', output_path, modules])
+    main(['-e', '-f', '-M', '-o', output_path, modules])
 
 
 
