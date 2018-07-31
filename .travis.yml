@@ -29,7 +29,10 @@ install:
   # Other dependencies here:
   - pip install pylint
   #- pip install pyccl
-
+  - pip install astropy
+  - pip install scipy
+  - pip install colossus
+  #- pip install matplotlib
 
 script:
   # Run the unit tests:
