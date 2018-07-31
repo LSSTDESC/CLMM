@@ -24,6 +24,14 @@ GCData = namedtuple('GCData', ['creator', 'specs', 'values'])
 """
 Additional functions specific to clmm.GCData
 """
+def confirm_GCData(data):
+    """
+    Typechecks GCData elements
+    """
+    # if not (type(data.creator) == str and type(data.specs) == dict and type(data.values) == astropy.Table):
+    #     raise TypeError('GCData creator should be string, specs should be dict, values should be astropy table')
+    pass
+
 def read_GCData(filename):
     """
     Reads GCData from file
