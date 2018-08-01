@@ -12,7 +12,7 @@ class CLMMBase():
         List of data types that each class will accept as inputs.
         Queried by the manager class.
     """
-    _ask_type = []
+    _ask_type = None
 
     @property
     def ask_type(self):
@@ -21,5 +21,5 @@ class CLMMBase():
     @ask_type.setter
     def ask_type(self, ask_type_list):
         if not np.iterable(ask_type_list):
-            raise TypeError()
+            raise TypeError('ask_type should be a list')
         self._ask_type = ask_type_list

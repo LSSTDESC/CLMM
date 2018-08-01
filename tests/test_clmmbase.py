@@ -9,8 +9,7 @@ def test_constructor():
     Verify that the constructor for __CLMMBase is working.
     """
     t0 = clmm.CLMMBase()
-    print(t0.ask_type)
-    np.testing.assert_array_equal(t0.ask_type, [])
+    assert t0.ask_type == None
 
     t1 = clmm.CLMMBase()
     t1.ask_type = ['something']
@@ -27,44 +26,33 @@ def test_new_classes():
 
     Notes
     -----
-    - If the asserts in this function fail, uncomment the print line
-      to see the classes that are being checked. By adding classes
-      to either extern_classes or skip_classes will have them be
-      skipped by the analysis. If you are unsure of if you should
-      be adding a class to skip, ask.
-    - extern_classes is defined to be classes loaded by CLMM that are
-      external. This includes astropy/colossus/pyccl classes.
-    - skip_classes is defined to be classes within CLMM that do not
-      do work on data and should NOT inherit the class.
+    - skip_classes holds all CLMM classes that either are not bottom level
+      or should not inherit CLMMBase. Every bottom level class that is not
+      in core should inherit CLMMBase
     """
-    # External classes
-    extern_classes = ['FlatLambdaCDM', 'Table']
-    # Internal classes to skip
-    skip_classes = ['GCData_', 'GCData', 'Parameter', 'CLMMBase']
+    # CLMM classes to skip that should not inherit CLMMBase or is not
+    # a lowest level child class
+    skip_classes = ['GCData_', 'GCData', 'Parameter', 'CLMMBase', 'Model']
 
     # Load all of the classes in the clmm module and remove skippable things
     class_list = inspect.getmembers(sys.modules[clmm.__name__], inspect.isclass)
-    class_list = [thing[0] for thing in class_list]
-    class_list = list(set(class_list) - set(skip_classes) - set(extern_classes))
+    obj_list = [thing[0] for thing in class_list]
+    pkg_list = [str(thing[1]) for thing in class_list]
 
-    # Print the list of classes being analyzed. You will only see output
-    # on assertion failures
-    print(class_list)
+    # Drop all non-clmm
+    pkg_list = [element.split('.')[0][-4:] for element in pkg_list]
+    obj_list = [obj for obj, pkg in zip(obj_list, pkg_list) if pkg == 'clmm']
 
-    # Assert that we have not added a new class to the api. If this fails, we
-    # need to instantiate an example of these objects below and test that
-    # ask_type has been set to a reasonable value
-    assert len(class_list) == 2
+    # Remove objets that should not inherit CLMMBase
+    obj_list = list(set(obj_list) - set(skip_classes))
+
+    # Instantiate each object and check that its attirbute has been set
+    for obj in obj_list:
+        try:
+            class_instance = eval('clmm.'+obj)()
+            assert class_instance.ask_type is not None
+        except TypeError:
+            print("All attributes for {} should be optional".format(obj))
 
 
-def test_model_super():
-    """Test the super properties of Model"""
-    tmodel = clmm.Model(lambda x: x)
-    np.testing.assert_array_equal(tmodel.ask_type, [])
-
-
-def test_shearazimuthalaverager_super():
-    """Test the super properties of ShearAzimuthalAverager"""
-    tsaa = clmm.ShearAzimuthalAverager(None, None)
-    assert tsaa.ask_type
 
