@@ -23,11 +23,11 @@ class Model(CLMMBase):
     """
 
 
-    def __init__(self, func, independent_vars=None, params=None):
+    def __init__(self, func=None, independent_vars=None, params=None):
         """
         Parameters
         ----------
-        func : callable
+        func : callable, optional
             functional form of the model, should be wrapped by the class
 
         independent_vars : array-like of str, optional
@@ -38,10 +38,10 @@ class Model(CLMMBase):
 
         """
 
-        if not callable(func):
-            raise TypeError('func should be a callable')
-        else:
+        if callable(func) or func is None:
             self.func = func
+        else:
+            raise TypeError('func should be a callable')
 
         if (np.iterable(independent_vars) and not isinstance(independent_vars, dict)
                 and all(isinstance(var, str) for var in independent_vars)

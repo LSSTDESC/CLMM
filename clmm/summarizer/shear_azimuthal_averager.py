@@ -28,7 +28,7 @@ class ShearAzimuthalAverager(CLMMBase):
 
         """
         # TODO: check whether property exists in the catalog table
-        self.ask_type.append('raw_data')
+        self.ask_type = ['raw_data']
         
 
         self.cl_dict = cl_dict
