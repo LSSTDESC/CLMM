@@ -17,7 +17,7 @@ A new and improved cluster mass modeling code descended from [clmassmod](https:/
 * [Matt Fong]
 * [Miyoung Choi]
 * [Lucie Baumont]
-* [Michel Aguena]
+* [Michel Aguena](https://github.com/m-aguena) (LIneA)
 * [Heidi Wu]
 * [Melanie Simet](https://github.com/msimet)
 * [Shenming Fu]
