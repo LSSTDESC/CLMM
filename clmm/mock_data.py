@@ -56,7 +56,8 @@ class MockData(CLMMBase):
             self.config['cosmo'] = 'WMAP7-ML'
             self.config['mdef'] = '200c'
             self.config['concentration'] = 4
-            
+
+        self.ask_type = ['raw_data']
 
     def generate(self, is_shapenoise=False, shapenoise=0.005, is_zerr=False, sigma_z=0.05):
         '''
