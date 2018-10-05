@@ -2,7 +2,7 @@
 import numpy as np
 from astropy.table import Table
 # model from Dallas group
-import colossus.cosmology.cosmology as Cosmology # used for distances
+import colossus.cosmology.cosmology as Cosmology # used for distances, will need to change this
 
 from clmm import models, summarizer
 import clmm.models.CLMM_densityModels_beforeConvertFromPerH as dm
