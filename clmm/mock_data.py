@@ -1,5 +1,6 @@
 import sys
 from clmm.models import CLMM_densityModels_beforeConvertFromPerH as clmm_mod
+from clmm.core import CLMMBase
 import numpy as np
 import colossus.cosmology.cosmology as Cosmology
 import matplotlib.pyplot as plt
