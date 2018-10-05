@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from astropy.table import Table
 
 
-class MockData(): 
+class MockData(CLMMBase): 
     '''
     A class that generates a mock background galaxy catalog around a galaxy cluster
     
@@ -61,16 +61,16 @@ class MockData():
         '''
         Generates a mock dataset of sheared background galaxies using the Dallas group software. 
 
-        Parameters:
-        --------
-        is_shapenoise: bool
+        Parameters
+        ----------
+        is_shapenoise: bool, optional
             If True, noise is added to the galaxy shapes
-        shapenoise: float
+        shapenoise: float, optional
             Amount of noise to add to the galaxy shapes
-        is_zerr: bool
+        is_zerr: bool, optional
             If True, a photometric redshift error is added to the background galaxy redshifts
             and a gaussian pdf is created
-        sigma_z: float
+        sigma_z: float, optional
             Width of the redshift Gaussian pdf
         '''
 
