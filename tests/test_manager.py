@@ -1,35 +1,53 @@
 ''' 
 Tests for manager
 '''
-import os, sys
-DIR = os.path.dirname(os.path.realpath(__file__))
-sys.path.append('/'.join(DIR.split('/')[:-1]))
 
 from clmm.core import manager
-#from test_galaxycluster import *
 from clmm.core.datatypes import *
+from clmm.galaxycluster import *
 
 test_dict = {'test%d'%i:True for i in range(3)}
 test_table = []
 test_data = GCData('test_data', test_dict, test_table)
-manager_guy = mangager.Manager()
+test_data_out = GCData('func_test', test_dict, test_table)
 
-def func_test(data):
-    print '*** Here is your data ***'
-    print data
-    print '*************************'
+manager_guy = manager.Manager()
+
+test_gc = GalaxyCluster(test_data)
+test_gc_out = GalaxyCluster(test_data)
+test_gc_out.add_data(test_data_out)
+
+def func_test(data, **argv):
+    print('*** Here is your data ***')
+    print(data)
+    print('* and aux args:')
+    for a, i in argv.items():
+        print(a, i)
+    print('*************************')
     return
 
 from numpy import testing as tst
 
 def test_signcreator():
-    manager_guy._signcreator(func_test)
-    pass
+    tst.assert_equal(manager_guy._signcreator(func_test), 'func_test')
 
 def test_signspecs():
+    tst.assert_equal(manager_guy._signspecs(test_dict), test_dict)
+
+def test_pack() :
+    tst.assert_equal(manager_guy._pack(func_test, test_dict, []), test_data_out)
+    pass
+
+def test_unpack() :
+    tst.assert_equal(manager_guy._unpack(test_gc, func_test, test_dict), test_data)
     pass
 
 def test_apply() :
+    manager_guy.apply(test_gc, func_test, test_dict)
+    #tst.assert_equal(test_gc, test_gc_out)
+    for d1, d2 in zip(test_gc.data, test_gc_out.data):
+        print(d1, d2)
+        tst.assert_equal(d1, d2)
     pass
 
 def test_prepare() :
