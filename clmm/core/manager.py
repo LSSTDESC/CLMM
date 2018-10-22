@@ -30,11 +30,13 @@ class Manager():
             Inputs of func
         '''
 
-        # Run the inference/function thing on cluster
+        # Below kind of prepares, self.prepare may not be necessary, depending on how we choose to define inference
         unpacked_cluster = self._unpack(cluster)
+        # Run the inference/function thing on cluster
         incoming_values = func(unpacked_cluster, **func_spec)
 
         packed_data = self._pack(func, func_specs, incoming_values)
+        # Below kind of delivers, self.deliver may not be necessary, depending on how we choose to define inference.
         cluster.add_data(packed_data)
         
     def prepare(self):
