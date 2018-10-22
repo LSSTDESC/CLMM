@@ -32,11 +32,11 @@ class Manager():
         '''
 
         # Below kind of prepares, self.prepare may not be necessary, depending on how we choose to define inference
-        unpacked_cluster = self._unpack(cluster)
+        unpacked_cluster = self._unpack(cluster, func, func_spec)
         # Run the inference/function thing on cluster
         incoming_values = func(unpacked_cluster, **func_spec)
 
-        packed_data = self._pack(func, func_specs, incoming_values)
+        packed_data = self._pack(func, func_spec, incoming_values)
         # Below kind of delivers, self.deliver may not be necessary, depending on how we choose to define inference.
         cluster.add_data(packed_data)
         
@@ -86,7 +86,7 @@ class Manager():
         '''
         creator = self.input_creators[self._signcreator(func)]
         specs = self._signspecs(func_specs)
-        return cluster.find_data(creator, specs, exact=True)
+        return cluster.find_data(creator, specs, exact=True)[0]
 
     def _signcreator(self, func):
         '''
