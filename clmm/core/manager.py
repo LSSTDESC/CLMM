@@ -24,7 +24,7 @@ class Manager():
         ----------
         cluster: GalaxyCluster object
             Object input and output for function
-        function: clmm function
+        func: clmm function
             clmm function to be applied to cluster
         func_spec: dict
             Inputs of func
@@ -62,13 +62,17 @@ class Manager():
 
         Parameters
         ----------
+        func: clmm function
+            clmm function to be applied to cluster
+        func_spec: dict
+            Inputs of func
         incoming_values: astropy.Table
             Data with units            
             Data to be added to cluster (e.g. assumed source redshift distribution, cluster redshift, cluster mass if calculated), this needs to be compatible as other attributes of the GCData object
         Main functionality of this method is to convert incoming_data to a GCData type of object to be added to the cluster, then add to the cluster object. 
         '''
-        incoming_creator = func.__name__ # may want to simplify it
-        incoming_specs = func_specs # may add more info?
+        incoming_creator = self. _signcreator(func)
+        incoming_specs = self._signspecs(func_specs)
         return GCData(incoming_creator, incoming_specs, incoming_values)
 
     def _unpack(self):
@@ -77,7 +81,25 @@ class Manager():
         '''
         pass
 
-    def _signcreator(self):
+    def _signcreator(self, func):
         '''
+        Creates the creator name for GCData based on a ran function
+
+        Parameters
+        ----------
+        func: clmm function
+            clmm function applied to cluster
         '''
-        pass
+        incoming_creator = func.__name__ # may want to simplify it
+        return incoming_creator
+    def _signspecs(self, func_specs):
+        '''
+        Creates the specs name for GCData based on a ran function
+
+        Parameters
+        ----------
+        func_spec: dict
+            Inputs of clmm function applied to cluster
+        '''
+        incoming_specs = func_specs # may add more info?
+        return incoming_specs
