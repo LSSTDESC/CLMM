@@ -15,6 +15,7 @@ class Manager():
         '''
         '''
         pass
+        self.input_creators = {'func_test':'test_data'}
 
     def apply(self, cluster, func, func_spec):
         '''
@@ -77,11 +78,15 @@ class Manager():
         incoming_specs = self._signspecs(func_specs)
         return GCData(incoming_creator, incoming_specs, incoming_values)
 
-    def _unpack(self):
+    def _unpack(self, cluster, func, func_specs):
         '''
         Extracts the correct data from GalaxyCluster to be used in a certain function
+        cluster: GalaxyCluster object
+            Object input and output for function
         '''
-        pass
+        creator = self.input_creators[self._signcreator(func)]
+        specs = self._signspecs(func_specs)
+        return cluster.find_data(creator, specs, exact=True)
 
     def _signcreator(self, func):
         '''
