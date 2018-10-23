@@ -31,22 +31,6 @@ class Inferrer():
         self.gc_objects = {n:{'data':d} for n, d in gc_input.items()}
         self.is_chains = {}
 
-    def add_bin_info(self, bins_specs):
-        '''
-        Adds information about which bin each cluster belongs to
-        self.gc_objects
-
-        Parameters
-        ----------
-        bins_specs: list
-            List with specifications for each bin
-        '''
-        for name, obj in self.gc_objects.items():
-            for bin_spec in bins_specs:
-                if obj['data'] in bin:# to complete this
-                    self.gc_objects[name]['bin'] = \
-                            self._name_bin(bin_spec)
-                    break
 
     def run_gc_chains(self):
         '''
@@ -66,6 +50,7 @@ class Inferrer():
         bins_specs: list
             List with specifications for each bin
         '''
+        self._add_bin_info(bins_specs)
         for bin_spec in bins_specs:
             self._run_is_chain(bin_spec)
 
@@ -98,3 +83,20 @@ class Inferrer():
             Name of the bin
         '''
         return #create string with bin name 
+
+    def _add_bin_info(self, bins_specs):
+        '''
+        Adds information about which bin each cluster belongs to
+        self.gc_objects
+
+        Parameters
+        ----------
+        bins_specs: list
+            List with specifications for each bin
+        '''
+        for name, obj in self.gc_objects.items():
+            for bin_spec in bins_specs:
+                if obj['data'] in bin:# to complete this
+                    self.gc_objects[name]['bin'] = \
+                            self._name_bin(bin_spec)
+                    break
