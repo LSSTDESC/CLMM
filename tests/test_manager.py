@@ -6,10 +6,10 @@ from clmm.core import manager
 from clmm.core.datatypes import *
 from clmm.galaxycluster import *
 
-test_dict = {'test%d'%i:True for i in range(3)}
+test_spec = {'test%d'%i:True for i in range(3)}
 test_table = []
-test_data = GCData('test_data', test_dict, test_table)
-test_data_out = GCData('func_test', test_dict, test_table)
+test_data = GCData('test_data', test_spec, test_table)
+test_data_out = GCData('func_test', test_spec, test_table)
 
 manager_guy = manager.Manager()
 
@@ -32,23 +32,20 @@ def test_signcreator():
     tst.assert_equal(manager_guy._signcreator(func_test), 'func_test')
 
 def test_signspecs():
-    tst.assert_equal(manager_guy._signspecs(test_dict), test_dict)
+    tst.assert_equal(manager_guy._signspecs(test_spec), test_spec)
 
 def test_pack() :
-    tst.assert_equal(manager_guy._pack(func_test, test_dict, []), test_data_out)
-    pass
+    tst.assert_equal(manager_guy._pack(func_test, test_spec, []), test_data_out)
 
 def test_unpack() :
-    tst.assert_equal(manager_guy._unpack(test_gc, func_test, test_dict), test_data)
-    pass
+    tst.assert_equal(manager_guy._unpack(test_gc, func_test, test_spec), test_data)
 
 def test_apply() :
-    manager_guy.apply(test_gc, func_test, test_dict)
+    manager_guy.apply(test_gc, func_test, test_spec)
     #tst.assert_equal(test_gc, test_gc_out)
     for d1, d2 in zip(test_gc.data, test_gc_out.data):
         print(d1, d2)
         tst.assert_equal(d1, d2)
-    pass
 
 def test_prepare() :
     pass
