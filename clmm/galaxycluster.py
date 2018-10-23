@@ -7,7 +7,7 @@ import pickle
 from clmm.core import datatypes 
 from clmm.core.datatypes import GCData, find_in_datalist
 
-class GalaxyCluster(PipelineStage):
+class GalaxyCluster():
     '''
     Object that contains the information associated with a galaxy cluster
 
