@@ -2,8 +2,10 @@
 import numpy as np
 from astropy.cosmology import FlatLambdaCDM
 from astropy.table import Table
+from clmm.core import CLMMBase
 
-class ShearAzimuthalAverager(object):
+
+class ShearAzimuthalAverager(CLMMBase):
     """
     a class that calculates the average azimuthal profile for shear
     see shear_azimuthal_averager_demo.ipynb for demo
@@ -26,6 +28,7 @@ class ShearAzimuthalAverager(object):
 
         """
         # TODO: check whether property exists in the catalog table
+        self.ask_type = ['raw_data']
         
 
         self.cl_dict = cl_dict

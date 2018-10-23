@@ -1,4 +1,5 @@
 from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
       name='clmm',
@@ -6,7 +7,7 @@ setup(
       author='LSST-DESC CL WG',
       author_email='avestruz@uchicago.edu',
       url='https://github.com/LSSTDESC/CLMM',
-      packages=["clmm", "clmm.models", "clmm.summarizer", "clmm.core"],
+      packages=find_packages(),
       description='A comprehensive package for galaxy cluster weak lensing',
       long_description=open("README.md").read(),
       package_data={"": ["README.md", "LICENSE"]},
