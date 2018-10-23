@@ -9,12 +9,17 @@ class Manager():
 
     '''
     Makes the interactions between GalaxyCluster and the other clmm objects
+
+    Attributes
+    ----------
+    input_creators: dictionary
+        Dictionary that defines the required creator of the input data of each function,
+        given the creator of the function
     '''
 
     def __init__(self):
         '''
         '''
-        pass
         self.input_creators = {'func_test':'test_data'}
 
     def apply(self, cluster, func, func_spec):
