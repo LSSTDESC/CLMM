@@ -61,8 +61,10 @@ class Inferrer():
 
         Parameters
         ----------
-        bin_spec: ???
-            Specifications for a certain bin
+        bin_spec: dict
+            Dicitionary with specifications for a certain bin, keys are
+            names of property in gc_object and values are touples with
+            inferior, superior limits
         '''
         bin_name = self._name_bin(bin_spec)
         collection_chains = [obj['chain'] for obj in self.gc_objects.values() \
@@ -75,14 +77,20 @@ class Inferrer():
 
         Parameters
         ----------
-        bin_spec: ???
-            Specifications for a certain bin
+        bin_spec: dict
+            Dicitionary with specifications for a certain bin, keys are
+            names of property in gc_object and values are touples with
+            inferior, superior limits
         
         Retuns
         ------
+        name: string
             Name of the bin
         '''
-        return #create string with bin name 
+        name = ''
+        for b, l in bin_spec.items():
+            name += b+str(l)
+        return name#create string with bin name 
 
     def _add_bin_info(self, bins_specs):
         '''
@@ -96,7 +104,11 @@ class Inferrer():
         '''
         for name, obj in self.gc_objects.items():
             for bin_spec in bins_specs:
-                if obj['data'] in bin:# to complete this
+                in_bin = True
+                for col, lims in bin_spec.items():
+                    if col in obj:
+                        in_bin *= (obj[col]>=lims[0])*(obj[col]<lims[1])
+                if in_bin:
                     self.gc_objects[name]['bin'] = \
                             self._name_bin(bin_spec)
                     break
