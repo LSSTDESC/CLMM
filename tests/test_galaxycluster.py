@@ -38,7 +38,7 @@ def test_find_in_datalist():
 
 def test_find_data():
 
-    gc = GalaxyCluster(test_data)
+    gc = GalaxyCluster('test_cluster', test_data)
 
     tst.assert_equal([test_data], gc.find_data(test_creator, test_dict))
     tst.assert_equal([test_data], gc.find_data(test_creator, test_dict_sub))
@@ -50,12 +50,12 @@ def test_find_data():
 
 def test_add_data():
 
-    gc = GalaxyCluster()
+    gc = GalaxyCluster('test_cluster')
     tst.assert_raises(TypeError, gc.add_data, '')
     tst.assert_raises(TypeError, gc.add_data, '', force=True)
     tst.assert_equal(None, gc.add_data(test_data, force=True))
 
-    gc = GalaxyCluster()
+    gc = GalaxyCluster('test_cluster')
     tst.assert_equal(None, gc.add_data(test_data))
     tst.assert_equal(None, gc.add_data(test_data_diff))
     tst.assert_raises(ValueError, gc.add_data, test_data)
@@ -63,7 +63,7 @@ def test_add_data():
 
 def test_remove_data():
 
-    gc = GalaxyCluster(test_data)
+    gc = GalaxyCluster('test_cluster', test_data)
     tst.assert_raises(ValueError, gc.remove_data, test_creator_diff, test_dict)
     tst.assert_raises(ValueError, gc.remove_data, test_creator, test_dict_sub)
     tst.assert_raises(ValueError, gc.remove_data, test_creator, test_dict_diff)
