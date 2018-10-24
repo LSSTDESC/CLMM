@@ -13,8 +13,8 @@ test_data_out = GCData('func_test', test_spec, test_table)
 
 manager_guy = manager.Manager()
 
-test_gc = GalaxyCluster(test_data)
-test_gc_out = GalaxyCluster(test_data)
+test_gc = GalaxyCluster('test_cluster', test_data)
+test_gc_out = GalaxyCluster('test_cluster', test_data)
 test_gc_out.add_data(test_data_out)
 
 def func_test(data, **argv):
