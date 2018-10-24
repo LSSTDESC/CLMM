@@ -51,15 +51,14 @@ class GalaxyCluster():
 
         Returns
         -------
-        found: list, clmm.GCData objects or boolean
+        found: list
             List of clmm.GCData object data with required creator and set of specs
-            if no objects are found, returns False
+            if no objects are found, returns empty list
         '''
+        found = []
         if lookup_creator in self.data:
             found = find_in_datalist(lookup_specs, self.data[lookup_creator], exact=exact)
-        else:
-            found = False
-        return(found)
+        return found
 
     def add_data(self, incoming_data, force=False):
         '''

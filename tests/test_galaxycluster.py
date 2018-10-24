@@ -40,6 +40,8 @@ def test_find_data():
 
     gc = GalaxyCluster(test_data)
 
+    tst.assert_equal([], gc.find_data(test_creator_diff, test_dict))
+
     tst.assert_equal([test_data], gc.find_data(test_creator, test_dict))
     tst.assert_equal([test_data], gc.find_data(test_creator, test_dict_sub))
     tst.assert_equal([], gc.find_data(test_creator, test_dict_diff))
