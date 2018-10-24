@@ -17,6 +17,9 @@ class Inferrer():
         bin names (added later), and chains (add later) as values
     is_chains: dictionary
         Dictionary with creators as keys and a list of clmm.GCData objects as values
+    out_data: dictionary
+        Dictionary with cluster id as keys and dictionaries containing data
+        to be exported (mean and std of fitted parameters) as values
     '''
 
     def __init__(self, gc_input):
@@ -30,7 +33,7 @@ class Inferrer():
         '''
         self.gc_objects = {n:{'data':d} for n, d in gc_input.items()}
         self.is_chains = {}
-
+        self.out_data = {}
 
     def run_gc_chains(self):
         '''
@@ -53,6 +56,21 @@ class Inferrer():
         self._add_bin_info(bins_specs)
         for bin_spec in bins_specs:
             self._run_is_chain(bin_spec)
+
+    def compute_out_data(self, statistics):
+        '''
+        Computers the statistical properties to be exported
+
+        Parameters
+        ----------
+        statistics: dict
+            Dictionary with names of statistical properties as keys
+            and the functions as values
+        '''
+        is_chain_props = {n:{sn:sf(c) for sn, sf in statistics.items()}
+             for n,c in self.is_chains.items()}
+        self.out_data = {name:in_chain_props[obj['bin']] \
+                            for name, obj in self.gc_objects.item()}
 
     def _run_is_chain(self, bin_spec):
         '''
