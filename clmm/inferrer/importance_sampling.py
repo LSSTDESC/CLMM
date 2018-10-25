@@ -7,102 +7,73 @@ chains.
 
 class ImportanceSampler():
     '''
-    Object to conduct importance sampling
+    Object to conduct importance sampling for a given collection.
+    This reads in the hash to find out which clusters belong to which
+    collection.  Then, for any given collection, goes through the
+    galaxy_cluster_chains, checks if that will be needed for
+    importance sampling as it conducts the importance sampling.
 
     Attributes
     ----------
-    chains_in_collection: array-like
-        chains from individual cluster fit in this collection
-    collection_info: list
+    collection_id : int
+        identifier of the collection this importance sampler instance is 
+        responsible for  
+    collection_hash_table: dictionary
+        keys are collection id's
+            values are dictionaries
+                'collection_cluster_list' : list of clusters in collection
+                'collection_info: : dictionary of relevant collection information
     collection_output_chain: output from importance sampling
+
     '''
-    def __init__(self, input_chains, **config_params) :
+    def __init__(self) :
         '''
-        Parameters
-        ----------
-        chains: dictionary
-            Dictionary with chain information and information on how collection was selected
-        config_parms: key word arguments for making the inference including the inference method and sampling tool.
-            
-        '''
-
-        self.chains_in_collection = self.get_collection_chains(input_chains)
-        self.collection_info = self.get_collection_info(input_chains)
-        self.importance_sampling_params = **config_params
-        self.collection_output_chain = None
-
-
-    def run_importance_sampling_on_chains(self):
-        '''
-        Runs Important Sampling on this collection of chains. 
-        '''
-        collection_chains = [obj['chain'] for obj in self.gc_objects.values() \
-                                    if obj['bin'] == bin_name]
-        #self.is_chains[bin_name] = some_function(collection_chains)
-
-    def _name_bin(self, bin_spec):
-        '''
-        Creates a name for a bin, given the specification.
-
-        Parameters
-        ----------
-        bin_spec: dict
-            Dicitionary with specifications for a certain bin, keys are
-            names of property in gc_object and values are touples with
-            inferior, superior limits
         
-        Retuns
-        ------
-        name: string
-            Name of the bin
         '''
-        name = ''
-        for b, l in bin_spec.items():
-            name += b+str(l)
-        return name#create string with bin name 
+        self.collection_id = None
+        self._collection_output_chains = {}
+        return
+
+    def populate_collection_hash_table(self, collection_hash_table) :
+        '''
+        '''
+        # self.collection_hash_table = reader(collection_hash_table)
 
 
+    def _get_collection_name_of_galaxy_cluster(self, galaxy_cluster) :
+        '''
+        Cross reference cluster collection name from the hash table
+        '''
+        # do stuff with cluster_chain_id and the self.collection_hash_table
+        return cluster_collection_name
 
+    def _cluster_is_in_collection(self, galaxy_cluster) :
         
+        cluster_collection_name = self._get_collection_name_of_galaxy_cluster(galaxy_cluster)
+        return self.collection_id == cluster_collection_name
 
-    def get_collection_chains(self, input_chains) :
-        '''
-        Parameters
-        ----------
-        input_chains : dictionary
-            dictionary containing collection chains and collection information
-        '''
-        return input_chains['chains']
+    def _get_sampler_method(self, **config_params) :
+        #  Need to link this to methods
+        return sampler_method
+    
+    def set_collection_id(self, collection_id) :
+        ''' Needs to be a first step when looping over collection ids '''
+        self.collection_id = collection_id
 
-    def get_collection_info(self, input_chains) :
-        '''
-        Parameters
-        ----------
-        input_chains : dictionary
-            dictionary containing collection chains and collection information
-        '''
-        return input_chains['info']
-        
-    def get_importance_sampling_method(self, **params) :
-        '''
-        Select the method for importance sampling (to define elsewhere)
-        '''
 
-        method_key =  params.pop['importance_sampling_method']
-
-        #return importance_sampling_methods[method_key]
+    def adjust_collection_output_chain(self, sampler, galaxy_cluster) :
+        '''
+        '''
+        # Do something with the chaini in galaxy_cluster
+        # modify self.collection_output_chain
         pass
-
-    def run_importance_sampling(self):
+        
+    def importance_sample(self, galaxy_cluster, **config_params) :
+        ''' 
+        This gets run as we loop thorough galaxy clusters. 
         '''
-        Runs Importance Sampling on collection.
+        if self._cluster_is_in_collection(galaxy_cluster) :
+            sampler = self._get_sampler_method(**config_params)
+            self.adjust_collection_output_chain(sampler, galaxy_cluster)
 
-        Parameters
-        ----------
-        bins_specs: list
-            List with specifications for each bin
-        '''
-        importance_sampling_method = self.get_importance_sampling_method(**self.importance_sampling_params)
-
-        self.collection_output_chain = importance_sampling_method(self.chains_in_collection)
         
