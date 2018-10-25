@@ -33,6 +33,8 @@ class Inferrer():
             
         '''
         self.gc_objects = {n:{'data':d} for n, d in gc_objects.items()}
+        self.model = model
+        self.config_params = config_params
         self.out_data = {}
 
     def run_gc_chains(self):
@@ -40,7 +42,7 @@ class Inferrer():
         Runs chains for constraining parameters of each cluster
         individially
         '''
-        #self.gc_chains[gc.name] = some_function(self.gc_objects)
+        #self.gc_chains[gc.name] = some_function(self.gc_objects, self.model, **self.config_params)
         pass
 
     def compute_out_data(self, statistics):
