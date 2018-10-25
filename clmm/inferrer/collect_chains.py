@@ -82,8 +82,9 @@ class CollectChains():
         '''
 
         bin_name = self._name_bin(bin_spec)
-        self.collection_chains = {bin_name: obj['chain'] for obj in self.gc_objects.values() \
-                                    if obj['bin'] == bin_name}
+        self.collection_chains = {bin_name: [obj['chain'] \
+                                    for obj in self.gc_objects.values() \
+                                    if obj['bin'] == bin_name]}
         #self.is_chains[bin_name] = some_function(collection_chains)
 
     def _name_bin(self, bin_spec):
