@@ -1,91 +1,64 @@
 '''
-Object to collect chains.  Perhaps this can just be a function(?)
+Object to make collections based on definition of bins and list of clusters
 '''
 
-class CollectChains():
+class Collections():
 
     '''
     Object to create collection of chains from galaxy cluster objects
 
     Attributes
     ----------
-    gc_objects: dictionary
-        Dictionary with cluster id as keys and a dictionary containing
-        a list of relevant information for constraining parameters and 
-        individual chains, and bin names (added here) as values
-    
-    output_collected_chains: dictionary
-        Dictionary {'chains': tuple of collated chains, 'info': list of collection information}
-    
+    bins: dictionary
+        Dictionary with keys defined by _bin_names and values by bin
+        specifications in dictionary form:
+            property name (ex: Mass): property limits (ex: (1e13, 1e14))
     '''
-    def __init__(self, gc_objects, **config_params):
+    def __init__(self, bin_specs):
         '''
         Parameters
         ----------
-        gc_objects: dictionary
-            Dictionary with cluster id as keys and a list of relevant
-            information for constraining parameters as values
-        config_parms: key word arguments for defining collections of chains
+        bins_specs: list
+            List with specifications for each bin in dictionary form:
+                property name (ex: Mass): property limits (ex: (1e13, 1e14))
             
         '''
+        self.bins = {self._name_bin(bin_spec):bin_spec
+                        for bin_spec in bin_specs}
 
-        self.gc_objects = gc_objects
-        self.config_params = config_params
-        
-        self.bin_specs = self.define_bin_specs()
-
-        self.output_collected_chains = None
-
-    def run_collect_chains(self) :
-        self.add_bin_info()
-        self.collate_chains_in_collections()
-        self.populate_output()
-        
-    def define_bin_specs(self) :
-        '''
-        Define the bin specs according to the config params
-        '''
-
-        #return get_bin_specs_method(**config_params)
-        pass
-
-    def populate_output(self) :
-        '''
-        Pack the chain collections and each collection information into the output dictionary.
-
-        '''
-
-        self.output_collected_chains = {'chains': self.collection_chains, 'info': self.bin_spec}
-        
-    def add_bin_info(self):
+    def get_cl_in_bins(self, gc_objects):
         '''
         Adds information about which bin each cluster belongs to
         self.gc_objects.  Each gc object now "knows" what bin it belongs to.
+
+        Parameters
+        ----------
+        gc_objects: dictionary
+            Dictionary with cluster id as keys and a dictionary containing
+            a relevant information for binning
+            Ex: {'cl1':{'mass':2e13, z:0.8}, 'cl2':...}
+
+
+        Returns
+        -------
+        bin_collections: dictionary
+            Dictionary with bin_names as keys and list of cluster ids inside
+            each bin as values
         '''
 
-        for name, obj in self.gc_objects.items():
-            for bin_spec in bins_specs:
+        bin_collections = {name:[] for name in self.bins}
+        for gc_name, gc_obj in self.gc_objects.items():
+            for bin_name, bin_spec in bins.items():
                 in_bin = True
                 for col, lims in bin_spec.items():
-                    if col in obj:
-                        in_bin *= (obj[col]>=lims[0])*(obj[col]<lims[1])
+                    if col in gc_obj:
+                        in_bin *= lims[0] <= gc_obj[col] < lims[1]
+                    else:
+                        ValueError('%s not found in cluster'%col)
                 if in_bin:
-                    self.gc_objects[name]['bin'] = \
-                            self._name_bin(bin_spec)
+                    bin_collections.append(name)
                     break
-
-    def collate_chains_in_collections(self, bin_spec) :
-        '''
-        Collate chains from all galaxy cluster objects into collections 
-        that are determined by the bin they are assigned.
-
-        '''
-
-        bin_name = self._name_bin(bin_spec)
-        self.collection_chains = {bin_name: [obj['chain'] \
-                                    for obj in self.gc_objects.values() \
-                                    if obj['bin'] == bin_name]}
-        #self.is_chains[bin_name] = some_function(collection_chains)
+        return bin_collections
 
     def _name_bin(self, bin_spec):
         '''
