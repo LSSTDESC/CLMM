@@ -14,7 +14,7 @@ class GalaxyCluster():
     Attributes
     ----------
     name: string
-        Name (or id) of the galaxy cluster
+        Unique identifier of the galaxy cluster
     data: dictionary
         Dictionary with creators as keys and a list of clmm.GCData objects as values
     homelocal: string
@@ -26,7 +26,7 @@ class GalaxyCluster():
         Parameters
         ----------
         cluster_name: string
-            Name (or id) of the galaxy cluster
+            Unique identifier of the galaxy cluster
         initial_data: list, clmm.GCData objects, optional
             Initial data to associate with GalaxyCluster object
         homelocal: string, optional
