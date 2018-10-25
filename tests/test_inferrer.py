@@ -2,16 +2,21 @@
 Tests for inferrer
 '''
 import numpy as np
-from clmm.inferrer import inferrer
+from clmm.inferrer import parameter_sampler as ps
+from clmm.inferrer import collection as cll
 from numpy import testing as tst
 
 gc_objects_input = {i:{'rich':10+i/10} for i in range(100)}
 bins_specs = [{'rich':(i, i+10)} for i in range(10, 101, 10)]
 
-def test_init():
-    inferrer_guy = inferrer.Inferrer(gc_objects_input)
-    for gc, gc_data in gc_objects_input.items():
-        tst.assert_equal(inferrer_guy.gc_objects[gc]['data'], gc_data)
+def test_ps_init():
+    ps.ParameterSampling(None, None)
+    pass
+
+def test_ps_run():
+    psamp = ps.ParameterSampling(None, None)
+    psamp.run(None)
+    pass
 
 def test__name_bin():
     inferrer_guy = inferrer.Inferrer(gc_objects_input)
