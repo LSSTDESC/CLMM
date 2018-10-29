@@ -4,7 +4,6 @@ object (or on a stacked cluster object).
 '''
 
 class ParameterSampler():
-
     '''
     Object to run chains per cluster
 
