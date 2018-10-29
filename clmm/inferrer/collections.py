@@ -3,7 +3,6 @@ Object to make collections based on definition of bins and list of clusters
 '''
 
 class Collections():
-
     '''
     Object to create collection of chains from galaxy cluster objects
 
