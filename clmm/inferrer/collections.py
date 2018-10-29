@@ -11,7 +11,7 @@ class Collections():
     bins: dictionary
         Dictionary with keys defined by _bin_names and values by bin
         specifications in dictionary form:
-            property name (ex: Mass): property limits (ex: (1e13, 1e14))
+        property name (ex: Mass): property limits (ex: (1e13, 1e14))
     '''
     def __init__(self, bin_specs):
         '''
@@ -19,7 +19,7 @@ class Collections():
         ----------
         bins_specs: list
             List with specifications for each bin in dictionary form:
-                property name (ex: Mass): property limits (ex: (1e13, 1e14))
+            property name (ex: Mass): property limits (ex: (1e13, 1e14))
         '''
         self.bins = {self._name_bin(bin_spec):bin_spec
                         for bin_spec in bin_specs}
