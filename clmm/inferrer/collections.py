@@ -20,7 +20,6 @@ class Collections():
         bins_specs: list
             List with specifications for each bin in dictionary form:
                 property name (ex: Mass): property limits (ex: (1e13, 1e14))
-            
         '''
         self.bins = {self._name_bin(bin_spec):bin_spec
                         for bin_spec in bin_specs}
