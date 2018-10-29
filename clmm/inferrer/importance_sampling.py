@@ -20,15 +20,14 @@ class ImportanceSampler():
         responsible for  
     collection_hash_table: dictionary
         keys are collection id's
-            values are dictionaries
-                'collection_cluster_list' : list of clusters in collection
-                'collection_info: : dictionary of relevant collection information
+        values are dictionaries
+        'collection_cluster_list' : list of clusters in collection
+        'collection_info: : dictionary of relevant collection information
     collection_output_chain: output from importance sampling
 
     '''
     def __init__(self) :
         '''
-        
         '''
         self.collection_id = None
         self._collection_output_chains = {}
