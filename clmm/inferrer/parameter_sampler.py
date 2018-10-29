@@ -39,7 +39,7 @@ class ParameterSampler():
         self.model = model
         self.config_params = config_params
 
-        if sample_type in self.available_samplers:
+        if sampler_type in self.available_samplers:
             self.sampler = self.available_samplers[sampler_type]
         else:
             ValueError('sample_type (%s) not in available_samplers:%s'%(
