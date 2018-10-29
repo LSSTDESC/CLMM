@@ -26,40 +26,6 @@ class Collections():
         self.bins = {self._name_bin(bin_spec):bin_spec
                         for bin_spec in bin_specs}
 
-#    def get_cl_in_bins(self, gc_objects):
-#        '''
-#        Adds information about which bin each cluster belongs to
-#        self.gc_objects.  Each gc object now "knows" what bin it belongs to.
-#
-#        Parameters
-#        ----------
-#        gc_objects: dictionary
-#            Dictionary with cluster id as keys and a dictionary containing
-#            a relevant information for binning
-#            Ex: {'cl1':{'mass':2e13, z:0.8}, 'cl2':...}
-#
-#
-#        Returns
-#        -------
-#        bin_collections: dictionary
-#            Dictionary with bin_names as keys and list of cluster ids inside
-#            each bin as values
-#        '''
-#
-#        bin_collections = {name:[] for name in self.bins}
-#        for gc_name, gc_obj in self.gc_objects.items():
-#            for bin_name, bin_spec in bins.items():
-#                in_bin = True
-#                for col, lims in bin_spec.items():
-#                    if col in gc_obj:
-#                        in_bin *= lims[0] <= gc_obj[col] < lims[1]
-#                    else:
-#                        ValueError('%s not found in cluster'%col)
-#                if in_bin:
-#                    bin_collections.append(name)
-#                    break
-#        return bin_collections
-
     def _name_bin(self, bin_spec):
         '''
         Creates a name for a bin, given the specification.
