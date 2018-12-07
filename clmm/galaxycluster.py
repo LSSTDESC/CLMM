@@ -13,21 +13,26 @@ class GalaxyCluster():
 
     Attributes
     ----------
+    name: string
+        Unique identifier of the galaxy cluster
     data: dictionary
         Dictionary with creators as keys and a list of clmm.GCData objects as values
     homelocal: string
         Path to save cluster properties
     '''
 
-    def __init__(self, initial_data=None, homelocal='.'):
+    def __init__(self, cluster_name, initial_data=None, homelocal='.'):
         '''
         Parameters
         ----------
+        cluster_name: string
+            Unique identifier of the galaxy cluster
         initial_data: list, clmm.GCData objects, optional
             Initial data to associate with GalaxyCluster object
         homelocal: string, optional
             Path to save cluster properties
         '''
+        self.name = cluster_name
         self.data = {}
         self.homelocal = homelocal
 
