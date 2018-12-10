@@ -5,6 +5,8 @@ import numpy as np
 import colossus.cosmology.cosmology as Cosmology
 import matplotlib.pyplot as plt
 from astropy.table import Table
+from scipy import integrate
+from scipy.interpolate import interp1d
 
 
 class MockData(CLMMBase): 
