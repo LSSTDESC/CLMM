@@ -6,7 +6,7 @@ This is a brief guide to contributing to CLMM, including information about ident
 Action items for CLMM code improvements are listed as [issues in the github repository](https://github.com/LSSTDESC/CLMM/issues). Issues marked with the label `good first issue` are well-suited for new contributors.
 
 ## Making a local copy of CLMM
-As a newcomer, you will likely not have edit access to the CLMM repository. Without edit privledges, you won't be able to create or push changes to branches in the base repository. You can get around this by creating a [fork](https://help.github.com/articles/fork-a-repo/), a linked copy of the CLMM repository under your Github username. You can then push code changes to your fork which can later be merged with the base repository. To create a fork, navigate to the [CLMM home page](https://github.com/LSSTDESC/CLMM) and click 'Fork' in the upper right hand corner. The fork can now be cloned to your local repository with
+As a newcomer, you likely will not have edit access to the main CLMM repository. Without edit privledges, you won't be able to create or push changes to branches in the base repository. You can get around this by creating a [fork](https://help.github.com/articles/fork-a-repo/), a linked copy of the CLMM repository under your Github username. You can then push code changes to your fork which can later be merged with the base repository. To create a fork, navigate to the [CLMM home page](https://github.com/LSSTDESC/CLMM) and click 'Fork' in the upper right hand corner. The fork has been created under your username on Github's remote server and can now be cloned to your local repository with
 ```bash
     git clone git@github.com:YOUR-USERNAME/CLMM.git
     git remote add base git@github.com:LSSTDESC/CLMM.git
@@ -17,7 +17,7 @@ If you do have edit privledges to CLMM, it may be easier to simply clone the bas
 ```
 
 ## Making and submitting changes
-Once you've created a local copy of CLMM on your machine, you can begin making changes to the code and submitting them for review.
+Once you've created a local copy of CLMM on your machine, you can begin making changes to the code and submitting them for review. To do this, follow the following steps from within your local copy of CLMM (forked or base).
 1. Checkout a new branch to contain your code changes independently from the master repository. [Branches](https://help.github.com/articles/about-branches/) allow you to isolate temporary development work without permanently affecting code in the repository. 
     ```bash
     git checkout -b branchname
@@ -31,7 +31,6 @@ Once you've created a local copy of CLMM on your machine, you can begin making c
     git pull origin master
     git push origin branchname
     ```
-    After this step, your changes will appear as an active branch of CLMM, [here](https://github.com/LSSTDESC/CLMM/branches).
 4. You can continue to edit your code and push changes to the `branchname` remote branch. Once you are satisfied with your changes, you can submit a [pull request](https://help.github.com/articles/about-pull-requests/) to request that the changes you made in `branchname` be merged into the master repository. Navigate to the [CLMM pulls page](https://github.com/LSSTDESC/CLMM/pulls) and click 'New pull request.' Select `branchname`, fill out a name and description for the pull request, and submit for approval by CLMM admins. Once the pull request is approved, it will be merged into the CLMM master branch.
 
 ## Additional resources
