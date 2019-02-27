@@ -22,6 +22,7 @@ import sys
 #sys.path.insert(0, os.path.abspath('.'))
 #sys.path.insert(0, os.path.abspath('../'))
 sys.path.insert(0, os.path.abspath('../clmm'))
+sys.path.insert(0, os.path.abspath('..')) 
 
 
 # -- General configuration ------------------------------------------------
@@ -73,7 +74,7 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'api/clmm.rst']
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
@@ -181,7 +182,8 @@ def run_apidoc(_):
     cur_dir = os.path.normpath(os.path.dirname(__file__))
     output_path = os.path.join(cur_dir, 'api')
     modules = os.path.normpath(os.path.join(cur_dir, "../clmm"))
-    main(['-e', '-f', '-M', '-o', output_path, modules])
+    paramlist = ['--no-headings', '--no-toc', '-f', '-M', '-o', output_path, modules]
+    main(paramlist)
 
 
 

@@ -13,4 +13,4 @@ CLMM
    :maxdepth: 1
    :caption: Reference
 
-   CLMM Reference/API<api/modules>
+   api
