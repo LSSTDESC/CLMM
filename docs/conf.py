@@ -182,10 +182,49 @@ def run_apidoc(_):
     cur_dir = os.path.normpath(os.path.dirname(__file__))
     output_path = os.path.join(cur_dir, 'api')
     modules = os.path.normpath(os.path.join(cur_dir, "../clmm"))
-    paramlist = ['--no-headings', '--no-toc', '-f', '-M', '-o', output_path, modules]
+    paramlist = ['--no-headings', '--separate', '--no-toc', '-f', '-M', '-o', output_path, modules]
     main(paramlist)
 
 
 
 def setup(app):
     app.connect('builder-inited', run_apidoc)
+
+
+
+# -- Set up the API page -------------------------------------------------
+apiheader = \
+"""API Documentation
+=================
+
+Information on specific functions, classes, and methods.
+
+.. toctree::
+   :glob:
+
+"""
+
+# Only find pages that are top level
+def make_final_doclist(flist, append, extend):
+    outlist = [append + fname.split('.')[0] + extend
+        for fname in flist
+        if (not fname[0] == '_') and ((fname.split('.')[-1] == 'py') or len(fname.split('.')) < 2)]
+    return outlist
+
+# Changeable variables
+docappend = 'api/clmm.'
+docextension = '.rst'
+
+# Load file list
+baseflist = os.listdir('../clmm')
+finalflist = make_final_doclist(baseflist, docappend, docextension)
+finalflist.sort(key = lambda x: x.split('.')[1])
+
+apitoc = """"""
+for finalf in finalflist:
+    apitoc += """   {}\n""".format(finalf)
+
+with open('api.rst', 'w') as apifile:
+    apifile.write(apiheader+apitoc)
+
+
