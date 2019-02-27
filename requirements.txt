@@ -2,3 +2,4 @@ astropy
 matplotlib
 numpy
 scipy
+colossus
