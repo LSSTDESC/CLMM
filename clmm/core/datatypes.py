@@ -91,10 +91,9 @@ def find_in_datalist(lookup_specs, datalist, exact=False):
     for data in datalist:
         if check_subdict(lookup_specs, data.specs) :
             found.append(data)
-    else:
-        if exact:
-            for match in found:
-                if check_subdict(match.specs, lookup_specs):
-                    return [match]
-            found = [] 
+    if exact:
+        for match in found:
+            if check_subdict(match.specs, lookup_specs):
+                return [match]
+        found = [] 
     return found
