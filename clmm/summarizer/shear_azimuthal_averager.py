@@ -15,13 +15,13 @@ class ShearAzimuthalAverager(CLMMBase):
     cl_dict: dictionary
         containing the information of a cluster
 
-    src_data : GCData namedtuple
+    src_table : astropy table
         containing the information of sources
 
 
 
     """
-    def __init__(self, cl_dict, src_data):
+    def __init__(self, cl_dict, src_table):
         """
         Parameters
         ----------
@@ -32,8 +32,7 @@ class ShearAzimuthalAverager(CLMMBase):
         
 
         self.cl_dict = cl_dict
-        self.src_data = src_data
-        self.src_table = src_data.values
+        self.src_table = src_table
 
         
     def compute_shear(self):
