@@ -13,7 +13,7 @@ A new and improved cluster mass modeling code descended from [clmassmod](https:/
 * [Tom McClintock](https://github.com/tmcclintock) (Arizona)
 * [Mariana Penna Lima](https://github.com/pennalima)
 * [Brandyn Lee](https://github.com/brandynlee)
-* [Celine Combet]
+* [Celine Combet](https://github.com/combet)
 * [Matt Fong]
 * [Miyoung Choi]
 * [Lucie Baumont]
