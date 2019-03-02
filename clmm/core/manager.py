@@ -22,7 +22,7 @@ class Manager():
         '''
         self.input_creators = {'func_test':'test_data'}
 
-    def apply(self, cluster, func, func_spec):
+    def apply(self, cluster, func, func_spec, input_specs):
         '''
         Applies function to and writes output into GalaxyCluster object
     
@@ -34,10 +34,12 @@ class Manager():
             clmm function to be applied to cluster
         func_spec: dict
             Inputs of func
+        input_specs: dict
+            Specifications of input data (how it was created, what are the properties)
         '''
 
         # Below kind of prepares, self.prepare may not be necessary, depending on how we choose to define inference
-        unpacked_cluster = self._unpack(cluster, func, func_spec)
+        unpacked_cluster = self._unpack(cluster, func, input_specs)
         # Run the inference/function thing on cluster
         incoming_values = func(unpacked_cluster, **func_spec)
 
