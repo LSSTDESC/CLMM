@@ -130,3 +130,18 @@ class GalaxyCluster():
         Pickles GalaxyCluster's data and saves it
         """
         raise ValueError('This function is currently empty. Sorry for the inconvenience.')
+    def __str__(self):
+        """
+        Generates string for print of GalaxyCluster
+        """
+        output = 'Data inside GalaxyCluster %s:\n'%self.name
+        for creator, datas in self.data.items():
+            output += ' * Creator: %s\n'%creator
+            for data in datas:
+                output += '    --------------------\n'
+                #output += '    specs:%s\n    values:%s\n'%(str(data.specs), str(data.values))
+                output += '    specs:\n'
+                for spec_key, spec_val in data.specs.items():
+                    output += '       %s: %s\n'%(spec_key, str(spec_val))
+                output += '    values:\n       %s\n'%str(data.values)
+        return output
