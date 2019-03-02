@@ -93,7 +93,7 @@ class Manager():
         '''
         creator = self.input_creators[self._signcreator(func)]
         specs = self._signspecs(func_specs)
-        return cluster.find_data(creator, specs, exact=True)[0]
+        return cluster.find_data(creator, specs, exact=True)[0].values
 
     def _signcreator(self, func):
         '''
