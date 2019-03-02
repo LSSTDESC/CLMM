@@ -85,7 +85,7 @@ class GalaxyCluster():
         if not incoming_data.creator in self.data:
             self.data[incoming_data.creator] = [incoming_data]
         else:
-            found_data = find_in_datalist(incoming_data.specs, self.data[incoming_data.creator], exact=True)
+            found_data = self.find_data(incoming_data.creator, incoming_data.specs, exact=True)
             if found_data == []:
                 self.data[incoming_data.creator].append(incoming_data)
             else:
