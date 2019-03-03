@@ -6,7 +6,6 @@ import colossus.cosmology.cosmology as Cosmology # used for distances
 import clmm.models.CLMM_densityModels_beforeConvertFromPerH as dallas
 # the code we want to test:
 from clmm import ShearAzimuthalAverager
-from clmm import datatypes
 
 def generate_perfect_data(ngals, src_redshift, cluster_mass, cluster_redshift, concentration, chooseCosmology):
     '''
@@ -87,10 +86,9 @@ def test_shear_azimuthal_averager():
     # make the fake data catalog
     t = generate_perfect_data(ngals, src_redshift, cluster_mass, cluster_redshift, concentration, chooseCosmology)
     cl_dict={'ra':0.0, 'dec':0.0, 'z':cluster_redshift}
-    new_t = datatypes.GCData('source catalog', {}, t)
   
     # create an object, given cluster dictionary and galaxy astropy table
-    saa = ShearAzimuthalAverager(cl_dict, new_t)
+    saa = ShearAzimuthalAverager(cl_dict, t)
 
     # compute tangential and cross shear for each galaxy
     saa.compute_shear()
