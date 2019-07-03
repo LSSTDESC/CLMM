@@ -40,7 +40,7 @@ class GalaxyCluster():
             
             self.add_data(initial_data)
 
-    def find_data(self, lookup_creator, lookup_specs, exact=False):
+    def find_data(self, lookup_creator, lookup_specs, exact=False, verbose=True):
         '''
         Finds data with a specific creator and specs in GalaxyCluster object
         allows for partial match
@@ -53,6 +53,8 @@ class GalaxyCluster():
             Specs requiered inside the creator
         exact: boolean
             Does it have to be a symmetric match?
+        vebose: boolean
+            Print message if data is not found
 
         Returns
         -------
@@ -63,6 +65,8 @@ class GalaxyCluster():
         found = []
         if lookup_creator in self.data:
             found = find_in_datalist(lookup_specs, self.data[lookup_creator], exact=exact)
+        if verbose and found==[]:
+            print('no data found with these lookup_specs')
         return found
 
     def add_data(self, incoming_data, force=False):
@@ -85,7 +89,7 @@ class GalaxyCluster():
         if not incoming_data.creator in self.data:
             self.data[incoming_data.creator] = [incoming_data]
         else:
-            found_data = find_in_datalist(incoming_data.specs, self.data[incoming_data.creator], exact=True)
+            found_data = self.find_data(incoming_data.creator, incoming_data.specs, exact=True, verbose=False)
             if found_data == []:
                 self.data[incoming_data.creator].append(incoming_data)
             else:
@@ -130,3 +134,18 @@ class GalaxyCluster():
         Pickles GalaxyCluster's data and saves it
         """
         raise ValueError('This function is currently empty. Sorry for the inconvenience.')
+    def __str__(self):
+        """
+        Generates string for print of GalaxyCluster
+        """
+        output = 'Data inside GalaxyCluster %s:\n'%self.name
+        for creator, datas in self.data.items():
+            output += ' * Creator: %s\n'%creator
+            for data in datas:
+                output += '    --------------------\n'
+                #output += '    specs:%s\n    values:%s\n'%(str(data.specs), str(data.values))
+                output += '    specs:\n'
+                for spec_key, spec_val in data.specs.items():
+                    output += '       %s: %s\n'%(spec_key, str(spec_val))
+                output += '    values:\n       %s\n'%str(data.values)
+        return output

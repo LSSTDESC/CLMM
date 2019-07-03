@@ -22,7 +22,7 @@ class Manager():
         '''
         self.input_creators = {'func_test':'test_data'}
 
-    def apply(self, cluster, func, func_spec):
+    def apply(self, cluster, func, func_specs, input_specs):
         '''
         Applies function to and writes output into GalaxyCluster object
     
@@ -32,16 +32,18 @@ class Manager():
             Object input and output for function
         func: clmm function
             clmm function to be applied to cluster
-        func_spec: dict
+        func_specs: dict
             Inputs of func
+        input_specs: dict
+            Specifications of input data (how it was created, what are the properties)
         '''
 
         # Below kind of prepares, self.prepare may not be necessary, depending on how we choose to define inference
-        unpacked_cluster = self._unpack(cluster, func, func_spec)
+        unpacked_cluster = self._unpack(cluster, func, input_specs)
         # Run the inference/function thing on cluster
-        incoming_values = func(unpacked_cluster, **func_spec)
+        incoming_values = func(unpacked_cluster, **func_specs)
 
-        packed_data = self._pack(func, func_spec, incoming_values)
+        packed_data = self._pack(func, func_specs, incoming_values)
         # Below kind of delivers, self.deliver may not be necessary, depending on how we choose to define inference.
         cluster.add_data(packed_data)
         
@@ -72,7 +74,7 @@ class Manager():
         ----------
         func: clmm function
             clmm function to be applied to cluster
-        func_spec: dict
+        func_specs: dict
             Inputs of func
         incoming_values: astropy.Table
             Data with units            
@@ -91,7 +93,7 @@ class Manager():
         '''
         creator = self.input_creators[self._signcreator(func)]
         specs = self._signspecs(func_specs)
-        return cluster.find_data(creator, specs, exact=True)[0]
+        return cluster.find_data(creator, specs, exact=True)[0].values
 
     def _signcreator(self, func):
         '''
