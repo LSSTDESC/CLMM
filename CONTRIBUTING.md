@@ -18,11 +18,12 @@ If you do have edit privledges to CLMM, it may be easier to simply clone the bas
 
 ## Making and submitting changes
 Once you've created a local copy of CLMM on your machine, you can begin making changes to the code and submitting them for review. To do this, follow the following steps from within your local copy of CLMM (forked or base).
+
 1. Checkout a new branch to contain your code changes independently from the master repository. [Branches](https://help.github.com/articles/about-branches/) allow you to isolate temporary development work without permanently affecting code in the repository. 
     ```bash
     git checkout -b branchname
     ```
-    Your `branchname` should be descriptive of your code changes. If you are addressing a particular Issue #`xx`, then `branchname` should be formatted as `issue/xx/summary` where `summary` is a description of your changes.
+    Your `branchname` should be descriptive of your code changes. If you are addressing a particular issue #`xx`, then `branchname` should be formatted as `issue/xx/summary` where `summary` is a description of your changes.
 2. Make your changes in the files stored in your local directory.
 3. Commit and push your changes to the `branchname` branch of the remote repository. 
     ```bash
@@ -32,6 +33,8 @@ Once you've created a local copy of CLMM on your machine, you can begin making c
     git push origin branchname
     ```
 4. You can continue to edit your code and push changes to the `branchname` remote branch. Once you are satisfied with your changes, you can submit a [pull request](https://help.github.com/articles/about-pull-requests/) to request that the changes you made in `branchname` be merged into the master repository. Navigate to the [CLMM pulls page](https://github.com/LSSTDESC/CLMM/pulls) and click 'New pull request.' Select `branchname`, fill out a name and description for the pull request, and submit for approval by CLMM admins. Once the pull request is approved, it will be merged into the CLMM master branch.
+
+NOTE: Code is not complete without unit tests and documentation. Please ensure that unit tests (both new and old) all pass and that docs run successfully. To run all of the unit tests, run `py.test` in the root package directory. To test the docs, in the root package directory, run `make -C docs/ clean` to delete any existing documents and then `make -C docs/ html` to rebuild the documentation. If you do not first run `clean`, you may compile locally but fail online.
 
 ## Additional resources
 Here's a list of additional resources which you may find helpful in navigating git for the first time.
