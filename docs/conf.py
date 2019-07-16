@@ -178,11 +178,12 @@ napoleon_use_ivar = True
 
 # -- Options for Autodoc--------------------------------------------------
 def run_apidoc(_):
-    from sphinx.apidoc import main as apidoc_main
+    from sphinx.ext.apidoc import main as apidoc_main
     cur_dir = os.path.normpath(os.path.dirname(__file__))
     output_path = os.path.join(cur_dir, 'api')
     modules = os.path.normpath(os.path.join(cur_dir, "../clmm"))
-    paramlist = ['--no-headings', '--separate', '--no-toc', '-f', '-M', '-o', output_path, modules]
+    #paramlist = ['--no-headings', '--separate', '--no-toc', '-f', '-M', '-o', output_path, modules]
+    paramlist = ['--separate', '--no-toc', '-f', '-M', '-o', output_path, modules]
     apidoc_main(paramlist)
 
 
