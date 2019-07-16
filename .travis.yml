@@ -23,15 +23,14 @@ install:
   #- pip install nbconvert
 
   # Finally get set up to build the docs:
-  - pip install sphinx
+  - pip install sphinx==2.1.2
   - pip install sphinx_rtd_theme
 
-  # Other dependencies here:
-  - pip install pylint
+  # Other dependencies here: # This is done through requirements.txt
   #- pip install pyccl
-  - pip install astropy
-  - pip install scipy
-  - pip install colossus==1.2.5
+  #- pip install astropy
+  #- pip install scipy
+  #- pip install colossus==1.2.5
   #- pip install matplotlib
 
 script:
@@ -41,6 +40,3 @@ script:
   # Run the docs:
   - sphinx-quickstart -a "travis" -p clmm -v 0.0.1 --ext-autodoc -q
   - make -C docs/ html
-
-  # Run pylint - Not for the minimal working example
-  #- find clmm/ -iname "*.py" | xargs pylint
