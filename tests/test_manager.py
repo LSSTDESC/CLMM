@@ -38,10 +38,10 @@ def test_pack() :
     tst.assert_equal(manager_guy._pack(func_test, test_spec, []), test_data_out)
 
 def test_unpack() :
-    tst.assert_equal(manager_guy._unpack(test_gc, func_test, test_spec), test_data)
+    tst.assert_equal(manager_guy._unpack(test_gc, func_test, test_spec), test_data.values)
 
 def test_apply() :
-    manager_guy.apply(test_gc, func_test, test_spec)
+    manager_guy.apply(test_gc, func_test, test_spec, test_spec)
     #tst.assert_equal(test_gc, test_gc_out)
     for d1, d2 in zip(test_gc.data, test_gc_out.data):
         print(d1, d2)
