@@ -1,7 +1,7 @@
 import pickle
 from astropy.table import Table
 
-class Cluster():
+class GalaxyCluster():
     def __init__(self, id=None, 
                        ra=None, dec=None,
                        z=None, richness=None,
