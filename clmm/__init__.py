@@ -5,3 +5,4 @@ from .models import *
 from .summarizer import *
 from .core import *
 from .mock_data import *
+from .structures import *
