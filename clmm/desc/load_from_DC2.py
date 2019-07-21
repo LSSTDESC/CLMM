@@ -4,7 +4,7 @@ import numpy as np
 import GCRCatalogs
 from astropy.table import Table
 
-from clmm.structures import Cluster
+from clmm.structures import GalaxyCluster
 
 def load_from_dc2(N, catalog, save_dir):
     catalog = GCRCatalogs.load_catalog(catalog)
@@ -38,15 +38,20 @@ def load_from_dc2(N, catalog, save_dir):
         gals = catalog.get_quantities(['galaxy_id', 'ra', 'dec', 'shear_1', 'shear_2',
                                        'redshift', 'convergence'], filters=(coord_filters + z_filters))
 
+        # calculate reduced shear
+        g1 = gals['shear_1']/(1.-gals['convergence'])
+        g2 = gals['shear_2']/(1.-gals['convergence'])
+
         # store the results into an astropy table
-        t = Table([gals['galaxy_id'],gals['ra'],gals['dec'],gals['shear_1'],
-                   gals['shear_2'],gals['redshift'],gals['convergence']],
-                  names=('id','ra','dec', 'gamma1', 'gamma2', 'z', 'kappa'))
+        t = Table([gals['galaxy_id'],gals['ra'],gals['dec'],
+                   2*g1, 2*g2,
+                   gals['redshift'],gals['convergence']],
+                  names=('id','ra','dec', 'e1', 'e2', 'z', 'kappa'))
 
 
-        c = Cluster(id=id_cl, ra=ra_cl, dec=dec_cl,
-                    z=z_cl, richness=None,
-                    gals=t)
+        c = GalaxyCluster(id=id_cl, ra=ra_cl, dec=dec_cl,
+                          z=z_cl, richness=None,
+                          gals=t)
 
         c.save(os.path.join(save_dir, '%s.p'%id_cl))
 
