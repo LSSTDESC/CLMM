@@ -25,4 +25,4 @@ A new and improved cluster mass modeling code descended from [clmassmod](https:/
 * [Doug Applegate](https://github.com/deapplegate)
 * [Matthew Ho](https://github.com/maho3) (CMU)
 * [Marina Ricci](https://github.com/marina-ricci) (LAPP)
-* Add your name here!
+* [Mijin Yoon](https://github.com/mijinyoon)(GCCL)
