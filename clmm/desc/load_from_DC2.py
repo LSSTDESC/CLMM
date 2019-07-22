@@ -1,29 +1,36 @@
-
 import os
 import numpy as np
 import GCRCatalogs
 from astropy.table import Table
-
+import random
 from clmm.structures import GalaxyCluster
 
 def load_from_dc2(N, catalog, save_dir):
+    print('Loading catalog...')
     catalog = GCRCatalogs.load_catalog(catalog)
+    
+    print('Getting halos...')
     halos = catalog.get_quantities(['galaxy_id', 'halo_mass', 'redshift','ra', 'dec'],
                                    filters=['halo_mass > 1e14','is_central==True'])
+    
+    #print('Total number of halos: %d'%len(halos))
+    #print('Analyzing and saving data...')
+    for index in random.sample(range(len(halos)), N):
+        
+        #print('Working on No.%d halo...'%index)
+        
+        i = index #np.random.randint(len(halos))
 
-    for _ in range(N):
-        i = np.random.randint(len(halos))
-
-        id_cl = halos['galaxy_id'][i]
-        ra_cl = halos['ra'][i]
-        dec_cl = halos['dec'][i]
-        z_cl = halos['redshift'][i]
-        m_cl = halos['halo_mass'][i]
+        cl_id = halos['galaxy_id'][i]
+        cl_ra = halos['ra'][i]
+        cl_dec = halos['dec'][i]
+        cl_z = halos['redshift'][i]
+        cl_m = halos['halo_mass'][i]
 
         # get galaxies around cluster
-        ra_min, ra_max = ra_cl-0.3, ra_cl+0.3
-        dec_min, dec_max = dec_cl-0.3, dec_cl+0.3
-        z_min = z_cl + 0.1
+        ra_min, ra_max = cl_ra-0.3, cl_ra+0.3
+        dec_min, dec_max = cl_dec-0.3, cl_dec+0.3
+        z_min = cl_z + 0.1
         z_max = 1.5
 
         coord_filters = [
@@ -46,12 +53,13 @@ def load_from_dc2(N, catalog, save_dir):
         t = Table([gals['galaxy_id'],gals['ra'],gals['dec'],
                    2*g1, 2*g2,
                    gals['redshift'],gals['convergence']],
-                  names=('id','ra','dec', 'e1', 'e2', 'z', 'kappa'))
+                  names=('gal_id','gal_ra','gal_dec', 'gal_e1', 'gal_e2', 'gal_z', 'gal_kappa'))
 
 
-        c = GalaxyCluster(id=id_cl, ra=ra_cl, dec=dec_cl,
-                          z=z_cl, richness=None,
-                          gals=t)
+        c = GalaxyCluster(cl_id=cl_id, cl_ra=cl_ra, cl_dec=cl_dec,
+                          cl_z=cl_z, cl_richness=None,
+                          gal_cat=t)
 
-        c.save(os.path.join(save_dir, '%s.p'%id_cl))
+        #print('Saving No.%d...'%index)
+        c.save(os.path.join(save_dir, '%s.p'%cl_id))
 

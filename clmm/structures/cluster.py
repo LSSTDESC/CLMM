@@ -7,23 +7,28 @@ class GalaxyCluster():
     Object that contains the galaxy cluster metadata and background galaxy data
     Attributes
     ----------
-    id (int): Unique identifier of the galaxy cluster
-    ra (float): Right ascension of galaxy cluster center (in degrees)
-    dec (float): Declination of galaxy cluster center (in degrees)
-    z (float): Redshift of galaxy cluster center (in degrees)
-    richness (int): Number of member galaxies above prescribes luminosity cut
+    cl_id (int): Unique identifier of the galaxy cluster
+    cl_name (string): Name of galaxy cluster
+    cl_ra (float): Right ascension of galaxy cluster center (in degrees)
+    cl_dec (float): Declination of galaxy cluster center (in degrees)
+    cl_z (float): Redshift of galaxy cluster center
+    cl_richness (int): Number of member galaxies above prescribes luminosity cut
     '''
-    def __init__(self, id: int=None, 
-                       ra: float=None, dec: float=None,
-                       z: float=None, richness: int=None,
-                       gals: astropy.table.table.Table=Table()
+    def __init__(self, cl_id: int=None,
+                       cl_name: str=None,
+                       cl_ra: float=None, 
+                       cl_dec: float=None,
+                       cl_z: float=None, 
+                       cl_richness: int=None,
+                       gal_cat: astropy.table.table.Table=Table()
                 ):
-        self.id = id
-        self.ra = ra
-        self.dec = dec
-        self.z = z
-        self.richness = richness
-        self.gals = gals
+        self.cl_id = cl_id
+        self.cl_name = cl_name
+        self.cl_ra = cl_ra
+        self.cl_dec = cl_dec
+        self.cl_z = cl_z
+        self.cl_richness = cl_richness
+        self.gal_cat = gal_cat
 
     def save(self, filename, **kwargs):
         """Saves GalaxyCluster object to filename using Pickle"""
