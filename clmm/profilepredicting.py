@@ -62,8 +62,8 @@ def get_3d_density_profile(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_p
     def calculate_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameterization='nfw'
                                         ):
     '''
-    Computes the surface density profile:
-    $\Sigma = ...$
+    Computes the surface mass density profile:
+    $\Sigma(R) = \Omega_m\rho_{crit}\int^\inf_{-\inf} dz \Xi_{hm}(\sqrt{R^2+z^2})$, where $\Xi_{hm}$ is the halo mass function.
     
     Parameters
     ----------
@@ -90,7 +90,7 @@ def get_3d_density_profile(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_p
     Returns
     -------
     array-like
-        Excess surface density, DeltaSigma.
+        Excess surface density, DeltaSigma in units of [h M_\\odot/$pc^2$]
 
 
     '''
@@ -107,7 +107,7 @@ def calculate_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200,
                                      halo_profile_parameterization='nfw'):
     '''
     Computes the excess surface density profile:
-    $\Delta\Sigma = $
+    $\Delta\Sigma(R) = \bar{\Sigma}(<R)-\Sigma(R)$, where $\bar{\Sigma}(<R)=\frac{2}{R^2}\int^R_0 dR' R'\Sigma(R')$
     
     Parameters
     ----------
@@ -134,7 +134,7 @@ def calculate_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200,
     Returns
     -------
     array-like
-        Excess surface density, DeltaSigma.
+        Excess surface density, DeltaSigma in units of [h M_\\odot/$pc^2$].
 
 
     '''
