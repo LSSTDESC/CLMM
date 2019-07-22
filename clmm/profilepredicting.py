@@ -195,18 +195,18 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
 
     m_to_pc = 3.2408e-17
     kg_to_msun = 5.0279e-31
+    mpc_to_pc = 1e6
 
     
     c = ccl.physical_constants.CLIGHT * m_to_pc
     G = ccl.physical_constants.GNEWT * (m_to_pc)**3/(kg_to_msun)
 
     h = cosmo['h']
-    mpc2pc = 1e6
     
     aexp_cluster = 1./(1.+z_cluster)
     aexp_src = 1./(1.+z_source)
-    d_l = ccl.comoving_angular_distance(cosmo, aexp_cluster) * aexp_cluster * h * mpc2pc
-    d_s = ccl.comoving_angular_distance(cosmo, aexp_src) * aexp_src * h * mpc2pc
+    d_l = ccl.comoving_angular_distance(cosmo, aexp_cluster) * aexp_cluster * h * mpc_to_pc
+    d_s = ccl.comoving_angular_distance(cosmo, aexp_src) * aexp_src * h * mpc_to_pc
     d_ls = _comoving_angular_distance_aexp1_aexp2(cosmo, aexp_cluster, aexp_src)
 
     # will need to deal with units: distances in Mpc and some CCL constants in SI
