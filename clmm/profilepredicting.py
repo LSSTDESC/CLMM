@@ -17,7 +17,11 @@ cluster_concentration = 4
 def get_3d_density_profile(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameterization='nfw')
     '''
     Computes the 3d density profile:
-    $\rho(r) = ...$
+    $\rho(r)$
+
+    e.g. For halo_profile_parameterization='nfw, 
+
+    $\rho(r)=\frac{\rho_0}{c/(r/R_{vir})(1+c/(r/R_{vir}))^2}$
     
     Parameters
     ----------
@@ -58,8 +62,8 @@ def get_3d_density_profile(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_p
     def calculate_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameterization='nfw'
                                         ):
     '''
-    Computes the surface density profile:
-    $\Sigma = ...$
+    Computes the surface mass density profile:
+    $\Sigma(R) = \Omega_m\rho_{crit}\int^\inf_{-\inf} dz \Xi_{hm}(\sqrt{R^2+z^2})$, where $\Xi_{hm}$ is the halo mass function.
     
     Parameters
     ----------
@@ -86,7 +90,7 @@ def get_3d_density_profile(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_p
     Returns
     -------
     array-like
-        Excess surface density, DeltaSigma.
+        Excess surface density, DeltaSigma in units of [h M_\\odot/$pc^2$]
 
 
     '''
@@ -103,7 +107,7 @@ def calculate_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200,
                                      halo_profile_parameterization='nfw'):
     '''
     Computes the excess surface density profile:
-    $\Delta\Sigma = ...$
+    $\Delta\Sigma(R) = \bar{\Sigma}(<R)-\Sigma(R)$, where $\bar{\Sigma}(<R)=\frac{2}{R^2}\int^R_0 dR' R'\Sigma(R')$
     
     Parameters
     ----------
@@ -130,7 +134,7 @@ def calculate_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200,
     Returns
     -------
     array-like
-        Excess surface density, DeltaSigma.
+        Excess surface density, DeltaSigma in units of [h M_\\odot/$pc^2$].
 
 
     '''
@@ -157,8 +161,11 @@ def _comoving_angular_distance_aexp1_aexp2(cosmo, aexp1, aexp2):
     z1 = 1./aexp1 - 1.
     z2 = 1./aexp2 - 1. 
     from astropy.cosmology import FlatLambdaCDM
+    from astropy import units as u
     cosmo = FlatLambdaCDM(H0=70, Om0=0.3)
-    return cosmo.angular_diameter_distance_z1z2(z1, z2).value
+    # astropy angular diameter distance in Mpc
+    # need to return in pc/h
+    return cosmo.angular_diameter_distance_z1z2(1, 2).to_value(u.pc) * cosmo.h
     
     
 
@@ -166,8 +173,8 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     '''
     Note:  We will need gamma inf and kappa inf for alternative z_src_models using Beta_s
 
-    Computes the tangential shear profile:
-    $\gamma_t = ...$
+    Computes the critical surface density:
+    $\Sigma_{crit} = \frac{c^2}{4\pi G}\frac{D_s}{D_LD_{LS}}$
     
     Parameters
     ----------
@@ -186,17 +193,24 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
 
     '''
 
+    m_to_pc = 3.2408e-17
+    kg_to_msun = 5.0279e-31
 
-    c = ccl.physical_constants.CLIGHT
-    G = ccl.physical_constants.GNEWT
+    
+    c = ccl.physical_constants.CLIGHT * m_to_pc
+    G = ccl.physical_constants.GNEWT * (m_to_pc)**3/(kg_to_msun)
+
+    h = cosmo['h']
+    mpc2pc = 1e6
+    
     aexp_cluster = 1./(1.+z_cluster)
     aexp_src = 1./(1.+z_source)
-    d_l = ccl.comoving_angular_distance(cosmo, aexp_cluster)
-    d_s = ccl.comoving_angular_distance(cosmo, aexp_src)
+    d_l = ccl.comoving_angular_distance(cosmo, aexp_cluster) * aexp_cluster * h * mpc2pc
+    d_s = ccl.comoving_angular_distance(cosmo, aexp_src) * aexp_src * h * mpc2pc
     d_ls = _comoving_angular_distance_aexp1_aexp2(cosmo, aexp_cluster, aexp_src)
 
     # will need to deal with units: distances in Mpc and some CCL constants in SI
-    return d_s/(d_l*d_ls) * c*c/(4*np.pi*G)
+    return c*c/(4*np.pi*G) * d_s/(d_l*d_ls) 
 
 def compute_tangential_shear_profile(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delta=200, 
                                      halo_profile_parameterization='nfw', 
@@ -205,7 +219,9 @@ def compute_tangential_shear_profile(r_proj, mdelta, cdelta, z_cluster, z_source
     Note:  We will need gamma inf and kappa inf for alternative z_src_models using Beta_s
 
     Computes the tangential shear profile:
-    $\gamma_t = ...$
+    $\gamma_t = \frac{\Delta\Sigma}{\Sigma_{crit}} = \frac{\bar{\Sigma}-\Sigma}{\Sigma_{crit}}}$
+    or
+    $\gamma_t = \gamma_\inf \times \Beta_s$
     
     Parameters
     ----------
@@ -255,7 +271,9 @@ def compute_convergence_profile(r_proj, mdelta, cdelta, z_cluster, z_source, cos
                                     z_src_model='single_plane'):
     '''
     Computes the mass convergence profile:
-    $\kappa = ...$
+    $\kappa = \frac{\Sigma}{\Sigma_{crit}}$
+    or
+    $\kappa = \kappa_\inf \times \Beta_s$
     
     Parameters
     ----------
