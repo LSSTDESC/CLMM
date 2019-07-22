@@ -161,8 +161,11 @@ def _comoving_angular_distance_aexp1_aexp2(cosmo, aexp1, aexp2):
     z1 = 1./aexp1 - 1.
     z2 = 1./aexp2 - 1. 
     from astropy.cosmology import FlatLambdaCDM
+    from astropy import units as u
     cosmo = FlatLambdaCDM(H0=70, Om0=0.3)
-    return cosmo.angular_diameter_distance_z1z2(z1, z2).value
+    # astropy angular diameter distance in Mpc
+    # need to return in pc/h
+    return cosmo.angular_diameter_distance_z1z2(1, 2).to_value(u.pc) * cosmo.h
     
     
 
@@ -190,13 +193,20 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
 
     '''
 
+    m_to_pc = 3.2408e-17
+    kg_to_msun = 5.0279e-31
 
-    c = ccl.physical_constants.CLIGHT
-    G = ccl.physical_constants.GNEWT
+    
+    c = ccl.physical_constants.CLIGHT * m_to_pc
+    G = ccl.physical_constants.GNEWT * (m_to_pc)**3/(kg_to_msun)
+
+    h = cosmo['h']
+    mpc2pc = 1e6
+    
     aexp_cluster = 1./(1.+z_cluster)
     aexp_src = 1./(1.+z_source)
-    d_l = ccl.comoving_angular_distance(cosmo, aexp_cluster)
-    d_s = ccl.comoving_angular_distance(cosmo, aexp_src)
+    d_l = ccl.comoving_angular_distance(cosmo, aexp_cluster) * aexp_cluster * h * mpc2pc
+    d_s = ccl.comoving_angular_distance(cosmo, aexp_src) * aexp_src * h * mpc2pc
     d_ls = _comoving_angular_distance_aexp1_aexp2(cosmo, aexp_cluster, aexp_src)
 
     # will need to deal with units: distances in Mpc and some CCL constants in SI
