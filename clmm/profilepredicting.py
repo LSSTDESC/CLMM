@@ -14,7 +14,7 @@ mass_Delta = 200
 cluster_mass = 1.e15
 cluster_concentration = 4
 
-def get_3d_density_profile(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameterization='nfw')
+def get_3d_density_profile(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameterization='nfw'):
     '''
     Computes the 3d density profile:
     $\rho(r) = ...$
@@ -55,8 +55,7 @@ def get_3d_density_profile(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_p
     else:
         pass              
 
-    def calculate_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameterization='nfw'
-                                        ):
+def calculate_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameterization='nfw'):
     '''
     Computes the surface density profile:
     $\Sigma = ...$
