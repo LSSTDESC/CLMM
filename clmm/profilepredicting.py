@@ -27,6 +27,20 @@ def set_omega_m(cosmo):
     cosmo['Omega_m'] = cosmo['Omega_c'] + cosmo['Omega_b']
     return cosmo
 
+def get_a_from_z(z):
+    '''
+    [write the docstring]
+    '''
+    a = 1. / (1. + z)
+    return a
+
+def get_z_from_a(a):
+    '''
+    [write the docstring]
+    '''
+    z = 1. / a - 1.
+    return z
+
 def get_3d_density_profile(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameterization='nfw'):
     '''
     Computes the 3d density profile:
@@ -170,8 +184,8 @@ def _comoving_angular_distance_aexp1_aexp2(cosmo, aexp1, aexp2):
 
     # AIM: needs a docstring for args
     '''
-    z1 = 1. / aexp1 - 1.
-    z2 = 1. / aexp2 - 1.
+    z1 = get_z_from_a(aexp1)
+    z2 = get_z_from_a(aexp2)
     from astropy.cosmology import FlatLambdaCDM
     from astropy import units as u
     ap_cosmo = FlatLambdaCDM(H0=ccl_cosmo['H_0'], Om0=ccl_cosmo['Omega_m'])
@@ -212,8 +226,8 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
 
     h = cosmo['h']
 
-    aexp_cluster = 1./(1.+z_cluster)
-    aexp_src = 1./(1.+z_source)
+    aexp_cluster = get_a_from_z(z_cluster)
+    aexp_src = get_a_from_z(z_source)
     d_l = ccl.comoving_angular_distance(cosmo, aexp_cluster) * aexp_cluster * h * mpc_to_pc
     d_s = ccl.comoving_angular_distance(cosmo, aexp_src) * aexp_src * h * mpc_to_pc
     d_ls = _comoving_angular_distance_aexp1_aexp2(cosmo, aexp_cluster, aexp_src)
