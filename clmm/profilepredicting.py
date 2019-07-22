@@ -40,7 +40,11 @@ def get_Om(cosmo):
 def get_3d_density_profile(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameterization='nfw'):
     '''
     Computes the 3d density profile:
-    $\rho(r) = ...$
+    $\rho(r)$
+
+    e.g. For halo_profile_parameterization='nfw,
+
+    $\rho(r)=\frac{\rho_0}{c/(r/R_{vir})(1+c/(r/R_{vir}))^2}$
 
     Parameters
     ----------
@@ -84,8 +88,8 @@ def get_3d_density_profile(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_p
 
 def calculate_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameterization='nfw'):
     '''
-    Computes the surface density profile:
-    $\Sigma = ...$
+    Computes the surface mass density profile:
+    $\Sigma(R) = \Omega_m\rho_{crit}\int^\inf_{-\inf} dz \Xi_{hm}(\sqrt{R^2+z^2})$, where $\Xi_{hm}$ is the halo mass function.
 
     Parameters
     ----------
@@ -111,7 +115,7 @@ def calculate_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_pro
     Returns
     -------
     sigma : array-like, float
-        Surface density, Sigma.
+        Surface density, Sigma in units of [h M_\\odot/$pc^2$]
 
     Notes
     -----
@@ -129,7 +133,7 @@ def calculate_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_pro
 def calculate_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameterization='nfw'):
     '''
     Computes the excess surface density profile:
-    $\Delta\Sigma = ...$
+    $\Delta\Sigma(R) = \bar{\Sigma}(<R)-\Sigma(R)$, where $\bar{\Sigma}(<R)=\frac{2}{R^2}\int^R_0 dR' R'\Sigma(R')$
 
     Parameters
     ----------
@@ -155,7 +159,7 @@ def calculate_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, h
     Returns
     -------
     deltsigma : array-like, float
-        Excess surface density, DeltaSigma.
+        Excess surface density, DeltaSigma in units of [h M_\\odot/$pc^2$].
     '''
     Om_m = cosmo['Omega_c'] + cosmo['Omega_b']
 
@@ -190,9 +194,8 @@ def _comoving_angular_distance_aexp1_aexp2(cosmo, aexp1, aexp2):
 
 def get_critical_surface_density(cosmo, z_cluster, z_source):
     '''
-    Computes the tangential shear profile:
-    $\gamma_t = ...$
-    # Shouldn't this be critical surface density...?
+    Computes the critical surface density:
+    $\Sigma_{crit} = \frac{c^2}{4\pi G}\frac{D_s}{D_LD_{LS}}$
 
     Parameters
     ----------
@@ -229,7 +232,9 @@ def compute_tangential_shear_profile(r_proj, mdelta, cdelta, z_cluster, z_source
                                      z_src_model='single_plane'):
     '''
     Computes the tangential shear profile:
-    $\gamma_t = ...$
+    $\gamma_t = \frac{\Delta\Sigma}{\Sigma_{crit}} = \frac{\bar{\Sigma}-\Sigma}{\Sigma_{crit}}}$
+    or
+    $\gamma_t = \gamma_\inf \times \Beta_s$
 
     Parameters
     ----------
@@ -283,7 +288,9 @@ def compute_convergence_profile(r_proj, mdelta, cdelta, z_cluster, z_source, cos
                                     z_src_model='single_plane'):
     '''
     Computes the mass convergence profile:
-    $\kappa = ...$
+    $\kappa = \frac{\Sigma}{\Sigma_{crit}}$
+    or
+    $\kappa = \kappa_\inf \times \Beta_s$
 
     Parameters
     ----------
