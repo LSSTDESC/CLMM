@@ -5,16 +5,6 @@ import numpy as np
 import pyccl as ccl
 import cluster_toolkit as ct
 
-# AIM: I'm removing these hardcoded things from the notebook.
-# # Define CCL cosmology object
-# cosmo_ccl = ccl.Cosmology(Omega_c=0.27, Omega_b=0.045, h=0.67, A_s=2.1e-9, n_s=0.96)
-
-# # Select density profile and profile parametrization options
-# density_profile_parametrization = 'nfw'
-# mass_Delta = 200
-# cluster_mass = 1.e15
-# cluster_concentration = 4
-
 # AIM: standard nomenclature for verbs
 # compute for heavy computation
 # calculate for straightforward calculations
