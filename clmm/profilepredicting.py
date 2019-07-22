@@ -17,7 +17,11 @@ cluster_concentration = 4
 def get_3d_density_profile(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameterization='nfw')
     '''
     Computes the 3d density profile:
-    $\rho(r) = ...$
+    $\rho(r)$
+
+    e.g. For halo_profile_parameterization='nfw, 
+
+    $\rho(r)=\frac{\rho_0}{c/(r/R_{vir})(1+c/(r/R_{vir}))^2}$
     
     Parameters
     ----------
@@ -103,7 +107,7 @@ def calculate_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200,
                                      halo_profile_parameterization='nfw'):
     '''
     Computes the excess surface density profile:
-    $\Delta\Sigma = ...$
+    $\Delta\Sigma = $
     
     Parameters
     ----------
@@ -166,8 +170,8 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     '''
     Note:  We will need gamma inf and kappa inf for alternative z_src_models using Beta_s
 
-    Computes the tangential shear profile:
-    $\gamma_t = ...$
+    Computes the critical surface density:
+    $\Sigma_{crit} = \frac{c^2}{4\pi G}\frac{D_s}{D_LD_{LS}}$
     
     Parameters
     ----------
@@ -196,7 +200,7 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     d_ls = _comoving_angular_distance_aexp1_aexp2(cosmo, aexp_cluster, aexp_src)
 
     # will need to deal with units: distances in Mpc and some CCL constants in SI
-    return d_s/(d_l*d_ls) * c*c/(4*np.pi*G)
+    return c*c/(4*np.pi*G) * d_s/(d_l*d_ls) 
 
 def compute_tangential_shear_profile(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delta=200, 
                                      halo_profile_parameterization='nfw', 
@@ -205,7 +209,9 @@ def compute_tangential_shear_profile(r_proj, mdelta, cdelta, z_cluster, z_source
     Note:  We will need gamma inf and kappa inf for alternative z_src_models using Beta_s
 
     Computes the tangential shear profile:
-    $\gamma_t = ...$
+    $\gamma_t = \frac{\Delta\Sigma}{\Sigma_{crit}} = \frac{\bar{\Sigma}-\Sigma}{\Sigma_{crit}}}$
+    or
+    $\gamma_t = \gamma_\inf \times \Beta_s$
     
     Parameters
     ----------
@@ -255,7 +261,9 @@ def compute_convergence_profile(r_proj, mdelta, cdelta, z_cluster, z_source, cos
                                     z_src_model='single_plane'):
     '''
     Computes the mass convergence profile:
-    $\kappa = ...$
+    $\kappa = \frac{\Sigma}{\Sigma_{crit}}$
+    or
+    $\kappa = \kappa_\inf \times \Beta_s$
     
     Parameters
     ----------
