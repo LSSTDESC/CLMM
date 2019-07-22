@@ -10,7 +10,7 @@ def test_initialization():
     testdict1 = {'unique_id': '1', 'ra': 161.3, 'dec': 34., 'z': 0.3, 'richness': 103., 'galcat': Table()}
     cl1 = clmm.GalaxyCluster(**testdict1)
 
-    testing.assert_equal(testdict1['unique_id'], cl1.id)
+    testing.assert_equal(testdict1['unique_id'], cl1.unique_id)
     testing.assert_equal(testdict1['ra'], cl1.ra)
     testing.assert_equal(testdict1['dec'], cl1.dec)
     testing.assert_equal(testdict1['z'], cl1.z)
