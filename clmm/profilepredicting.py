@@ -381,33 +381,3 @@ def compute_reduced_tangential_shear_profile(r_proj, mdelta, cdelta, z_cluster, 
         NotImplementedError('Need to implemnt Beta_s functionality, or average sigma/sigma_c kappa_t = Beta_s*kappa_inf')
     elif z_src_model == 'z_src_distribution' : # Continuous ( from a distribution) case
         NotImplementedError('Need to implement Beta_s and Beta_s2 calculation from integrating distribution of redshifts in each radial bin')
-
-
-# AIM: Let's use these as a starting point for unit tests
-# # Quick test of functions
-#
-# r3d = np.logspace(-2,2,100)
-#
-# rho = get_3d_density_profile(r3d,mdelta=cluster_mass, cdelta=cluster_concentration, cosmo=cosmo_ccl)
-#
-# Sigma = calculate_surface_density(r3d, cluster_mass, cluster_concentration, cosmo=cosmo_ccl, Delta=200,
-#                                   halo_profile_parameterization='nfw')
-#
-# DeltaSigma = calculate_excess_surface_density(r3d, cluster_mass, cluster_concentration, cosmo=cosmo_ccl, Delta=200,
-#                                               halo_profile_parameterization='nfw')
-#
-# Sigmac = get_critical_surface_density(cosmo_ccl, z_cluster=1.0, z_source=2.0)
-#
-# gammat = compute_tangential_shear_profile(r3d, mdelta=cluster_mass, cdelta=cluster_concentration, z_cluster=1.0,
-#                                           z_source=2.0, cosmo=cosmo_ccl, Delta=200,
-#                                           halo_profile_parameterization='nfw', z_src_model='single_plane')
-#
-# kappa = compute_convergence_profile(r3d, mdelta=cluster_mass, cdelta=cluster_concentration,
-#                             z_cluster=1.0, z_source=2.0,
-#                                  cosmo=cosmo_ccl, Delta=200,
-#                                      halo_profile_parameterization='nfw',
-#                                     z_src_model='single_plane')
-#
-# gt = compute_reduced_tangential_shear_profile(r3d, mdelta=cluster_mass, cdelta=cluster_concentration,
-#                                          z_cluster=1.0, z_source=2.0, cosmo=cosmo_ccl, Delta=200,
-#                                          halo_profile_parameterization='nfw', z_src_model='single_plane')
