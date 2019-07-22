@@ -121,7 +121,7 @@ def calculate_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_pro
     -----
     AIM: We should only require arguments that are necessary for all profiles and use another structure to take the arguments necessary for specific profiles.
     '''
-    Om_m = cosmo['Omega_c'] + cosmo['Omega_b']
+    cosmo = get_Om(cosmo)
 
     if halo_profile_parameterization=='nfw':
         sigma = ct.deltasigma.Sigma_nfw_at_R(r_proj, mdelta, cdelta, Om_m, delta=Delta)
@@ -161,7 +161,7 @@ def calculate_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, h
     deltsigma : array-like, float
         Excess surface density, DeltaSigma in units of [h M_\\odot/$pc^2$].
     '''
-    Om_m = cosmo['Omega_c'] + cosmo['Omega_b']
+    cosmo = get_Om(cosmo)
 
     if halo_profile_parameterization == 'nfw':
 
