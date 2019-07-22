@@ -4,7 +4,7 @@ Tests for datatype and galaxycluster
 from numpy import testing
 import clmm
 from astropy.table import Table
-
+import os
 
 def test_initialization():
     testdict1 = {'unique_id': '1', 'ra': 161.3, 'dec': 34., 'z': 0.3, 'richness': 103., 'galcat': Table()}
@@ -47,8 +47,19 @@ def test_integrity(): # Converge on name
     assert clmm.GalaxyCluster(unique_id=1.0, ra=161.3, dec=34., z=0.3, richness=103., galcat=Table()).unique_id == '1'
     assert isinstance(clmm.GalaxyCluster(unique_id='1', ra=161.3, dec=34., z=0.3, richness=103., galcat=Table()).unique_id, str)
 
-# def test_save_load():
-#     clmm.GalaxyCluster(unique_id=1.0, ra=161.3, dec=34., z=0.3, richness=103., galcat=Table())
+def test_save_load():
+    cl1 = clmm.GalaxyCluster(unique_id='1', ra=161.3, dec=34., z=0.3, richness=103., galcat=Table())
+    cl1.save('testcluster.pkl')
+    cl2 = clmm.load_cluster('testcluster.pkl')
+    os.system('rm testcluster.pkl')
+    
+    testing.assert_equal(cl2.unique_id, cl1.unique_id)
+    testing.assert_equal(cl2.ra, cl1.ra)
+    testing.assert_equal(cl2.dec, cl1.dec)
+    testing.assert_equal(cl2.z, cl1.z)
+    testing.assert_equal(cl2.richness, cl1.richness)
+
+    # remeber to add tests for the tables of the cluster
 
 
 # def test_find_data():
