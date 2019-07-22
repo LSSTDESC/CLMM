@@ -2,30 +2,24 @@ import os
 import numpy as np
 import GCRCatalogs
 from astropy.table import Table
-import random
 from clmm.structures import GalaxyCluster
 
-def load_from_dc2(N, catalog, save_dir):
-    print('Loading catalog...')
+def load_from_dc2(N, catalog, save_dir, verbose=False):
     catalog = GCRCatalogs.load_catalog(catalog)
     
-    print('Getting halos...')
     halos = catalog.get_quantities(['galaxy_id', 'halo_mass', 'redshift','ra', 'dec'],
                                    filters=['halo_mass > 1e14','is_central==True'])
-    
-    #print('Total number of halos: %d'%len(halos))
-    #print('Analyzing and saving data...')
-    for index in random.sample(range(len(halos)), N):
-        
-        #print('Working on No.%d halo...'%index)
-        
-        i = index #np.random.randint(len(halos))
+
+    for i in np.random.choice(range(len(halos)), N, replace=False):
 
         cl_id = halos['galaxy_id'][i]
         cl_ra = halos['ra'][i]
         cl_dec = halos['dec'][i]
         cl_z = halos['redshift'][i]
         cl_m = halos['halo_mass'][i]
+        
+        if verbose:
+            print('Loading cluster %s'%cl_id)
 
         # get galaxies around cluster
         ra_min, ra_max = cl_ra-0.3, cl_ra+0.3
@@ -60,6 +54,5 @@ def load_from_dc2(N, catalog, save_dir):
                           cl_z=cl_z, cl_richness=None,
                           gal_cat=t)
 
-        #print('Saving No.%d...'%index)
         c.save(os.path.join(save_dir, '%s.p'%cl_id))
 
