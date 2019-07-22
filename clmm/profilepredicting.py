@@ -20,7 +20,7 @@ import cluster_toolkit as ct
 # calculate for straightforward calculations
 # get for lookup existing value
 
-def get_Om(cosmo):
+def set_omega_m(cosmo):
     '''
     Retrieves matter energy density from cosmology
 
@@ -78,7 +78,7 @@ def get_3d_density_profile(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_p
     -----
     AIM: We should only require arguments that are necessary for all profiles and use another structure to take the arguments necessary for specific profiles.
     '''
-    cosmo = get_Om(cosmo)
+    cosmo = set_omega_m(cosmo)
 
     if halo_profile_parameterization=='nfw':
         rho = ct.density.rho_nfw_at_r(r3d, mdelta, cdelta, cosmo['Omega_m'] delta=Delta)
@@ -121,10 +121,10 @@ def calculate_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_pro
     -----
     AIM: We should only require arguments that are necessary for all profiles and use another structure to take the arguments necessary for specific profiles.
     '''
-    cosmo = get_Om(cosmo)
+    cosmo = set_omega_m(cosmo)
 
     if halo_profile_parameterization=='nfw':
-        sigma = ct.deltasigma.Sigma_nfw_at_R(r_proj, mdelta, cdelta, Om_m, delta=Delta)
+        sigma = ct.deltasigma.Sigma_nfw_at_R(r_proj, mdelta, cdelta, cosmo['Omega_m'], delta=Delta)
         return sigma
     else:
         #return ct.Sigma_at_R(r_proj, mdelta, cdelta, cosmo.Omegam, delta=Delta)
@@ -161,27 +161,24 @@ def calculate_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, h
     deltsigma : array-like, float
         Excess surface density, DeltaSigma in units of [h M_\\odot/$pc^2$].
     '''
-    cosmo = get_Om(cosmo)
+    cosmo = set_omega_m(cosmo)
 
     if halo_profile_parameterization == 'nfw':
 
-        Sigma = ct.deltasigma.Sigma_nfw_at_R(r_proj, mdelta, cdelta, Om_m, delta=Delta)
+        Sigma = ct.deltasigma.Sigma_nfw_at_R(r_proj, mdelta, cdelta, cosmo['Omega_m'], delta=Delta)
         # ^ Note: Let's not use this naming convention when transfering ct to ccl....
-        deltasigma = ct.deltasigma.DeltaSigma_at_R(r_proj, r_proj, Sigma, mdelta, cdelta, Om_m, delta=Delta)
+        deltasigma = ct.deltasigma.DeltaSigma_at_R(r_proj, r_proj, Sigma, mdelta, cdelta, cosmo['Omega_m'], delta=Delta)
         return deltasigma
     else:
         pass
 
-
 def _comoving_angular_distance_aexp1_aexp2(cosmo, aexp1, aexp2):
     '''
-
     This is a monkey-patched method to calculate d_LS (angular
     distance between lens and source) because CCL does not yet have
     this PR completed.  Temporarily using the astropy implementation.
 
     # AIM: needs a docstring for args
-
     '''
     z1 = 1. / aexp1 - 1.
     z2 = 1. / aexp2 - 1.
@@ -189,8 +186,6 @@ def _comoving_angular_distance_aexp1_aexp2(cosmo, aexp1, aexp2):
     # cosmo = FlatLambdaCDM(H0=70, Om0=0.3)
     d_a = cosmo.angular_diameter_distance_z1z2(z1, z2).value
     return d_a
-
-
 
 def get_critical_surface_density(cosmo, z_cluster, z_source):
     '''
@@ -227,9 +222,7 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     sigmacrit = d_s / (d_l * d_ls) * c * c / (4 * np.pi * G)
     return sigmacrit
 
-def compute_tangential_shear_profile(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delta=200,
-                                     halo_profile_parameterization='nfw',
-                                     z_src_model='single_plane'):
+def compute_tangential_shear_profile(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delta=200, halo_profile_parameterization='nfw', z_src_model='single_plane'):
     '''
     Computes the tangential shear profile:
     $\gamma_t = \frac{\Delta\Sigma}{\Sigma_{crit}} = \frac{\bar{\Sigma}-\Sigma}{\Sigma_{crit}}}$
@@ -283,9 +276,7 @@ def compute_tangential_shear_profile(r_proj, mdelta, cdelta, z_cluster, z_source
     elif z_src_model == 'z_src_distribution' : # Continuous ( from a distribution) case
         NotImplementedError('Need to implement Beta_s calculation from integrating distribution of redshifts in each radial bin')
 
-def compute_convergence_profile(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delta=200,
-                                     halo_profile_parameterization='nfw',
-                                    z_src_model='single_plane'):
+def compute_convergence_profile(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delta=200, halo_profile_parameterization='nfw', z_src_model='single_plane'):
     '''
     Computes the mass convergence profile:
     $\kappa = \frac{\Sigma}{\Sigma_{crit}}$
@@ -338,9 +329,7 @@ def compute_convergence_profile(r_proj, mdelta, cdelta, z_cluster, z_source, cos
     elif z_src_model == 'z_src_distribution' : # Continuous ( from a distribution) case
         NotImplementedError('Need to implement Beta_s calculation from integrating distribution of redshifts in each radial bin')
 
-def compute_reduced_tangential_shear_profile(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delta=200,
-                                             halo_profile_parameterization='nfw',
-                                                z_src_model='single_plane'):
+def compute_reduced_tangential_shear_profile(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delta=200, halo_profile_parameterization='nfw', z_src_model='single_plane'):
     '''
     Computes the reduced tangential shear profile:
     $g_t = \frac{\\gamma_t}{1-\\kappa}$.
@@ -422,16 +411,3 @@ def compute_reduced_tangential_shear_profile(r_proj, mdelta, cdelta, z_cluster, 
 # gt = compute_reduced_tangential_shear_profile(r3d, mdelta=cluster_mass, cdelta=cluster_concentration,
 #                                          z_cluster=1.0, z_source=2.0, cosmo=cosmo_ccl, Delta=200,
 #                                          halo_profile_parameterization='nfw', z_src_model='single_plane')
-#
-#
-# import matplotlib.pyplot as plt
-#
-# def plot_profile(r, profile_vals, profile_label='rho'):
-#     plt.loglog(r, profile_vals)
-#     plt.xlabel('r [Mpc]', fontsize='xx-large')
-#     plt.ylabel(profile_label, fontsize='xx-large')
-#
-#
-#
-# def check_import3():
-#     print("Imported profilepredicting.py")
