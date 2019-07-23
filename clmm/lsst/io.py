@@ -4,11 +4,12 @@ Contains functions to interact with the General Catalog Reader
 
 import os
 import numpy as np
-import GCRCatalogs
 from astropy.table import Table
 from clmm import GalaxyCluster
 
 def load_from_dc2(N, catalog, save_dir, verbose=False):
+    import GCRCatalogs
+
     catalog = GCRCatalogs.load_catalog(catalog)
     
     halos = catalog.get_quantities(['galaxy_id', 'halo_mass', 'redshift','ra', 'dec'],
