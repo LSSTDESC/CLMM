@@ -57,7 +57,7 @@ def load_from_dc2(N, catalog, save_dir, verbose=False):
                   names=('galaxy_id', 'ra','dec', 'e1', 'e2', 'z', 'kappa'))
 
 
-        c = GalaxyCluster(unique_id=cl_id, ra=cl_ra, dec=cl_dec, z=cl_z,
+        c = GalaxyCluster(unique_id=int(cl_id), ra=cl_ra, dec=cl_dec, z=cl_z,
                           galcat=t)
 
         c.save(os.path.join(save_dir, '%s.p'%cl_id))
