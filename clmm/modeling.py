@@ -23,13 +23,14 @@ def _cclify_astropy_cosmo(apy_cosmo) :
 
     Notes
     -----
-    Need to replace:
+    If you do not have CCL installed, 
+    you need to replace:
     `import pyccl as ccl
     cosmo_ccl = ccl.Cosmology(Omega_c=0.27, Omega_b=0.045, h=0.67, A_s=2.1e-9, n_s=0.96)`
     with
     `from astropy.cosmology import FlatLambdaCDM
     astropy_cosmology_object = FlatLambdaCDM(H0=70, Om0=0.27, Ob0=0.045)
-    cosmo_ccl = create_ccl_cosmo_object_from_astropy(astropy_cosmology_object)``
+    cosmo_ccl = _cclify_astropy_cosmo(astropy_cosmology_object)``
     '''
     if type(apy_cosmo) == astropy.cosmology.core.FlatLambdaCDM:
         ccl_cosmo = {'Omega_c': apy_cosmo.Om0,
