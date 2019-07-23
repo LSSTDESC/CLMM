@@ -152,7 +152,6 @@ def _compute_shear(ra_l, dec_l, ra_s, dec_s, g1, g2, sky="flat"):
 
 
 def _make_bins(rmin, rmax, n_bins=10, log_bins=False):
-<<<<<<< HEAD
     """Define equal sized bins with an array of n_bins+1 bin edges
     
     Parameters
