@@ -1,79 +1,78 @@
 """
 Tests for datatype and galaxycluster
 """
-from clmm import galaxycluster
-from clmm.galaxycluster import *
-from clmm.core import datatypes
-from clmm.core.datatypes import *
+from numpy import testing
+import clmm
+from astropy.table import Table
+import os
 
-test_creator = 'Mitch'
-test_creator_diff = 'Witch'
+def test_initialization():
+    testdict1 = {'unique_id': '1', 'ra': 161.3, 'dec': 34., 'z': 0.3, 'galcat': Table()}
+    cl1 = clmm.GalaxyCluster(**testdict1)
 
-test_dict = {'test%d'%i:True for i in range(3)}
-test_dict_diff = {'test%d'%i:False for i in range(3)}
-test_dict_sub = {'test%d'%i:True for i in range(2)}
+    testing.assert_equal(testdict1['unique_id'], cl1.unique_id)
+    testing.assert_equal(testdict1['ra'], cl1.ra)
+    testing.assert_equal(testdict1['dec'], cl1.dec)
+    testing.assert_equal(testdict1['z'], cl1.z)
+    assert isinstance(cl1.galcat, Table)
 
-test_table = []
 
-test_data = GCData(test_creator, test_dict, test_table)
-test_data_diff = GCData(test_creator, test_dict_diff, test_table)
+def test_integrity(): # Converge on name
+    # Ensure we have all necessary values to make a GalaxyCluster
+    testing.assert_raises(TypeError, clmm.GalaxyCluster, ra=161.3, dec=34., z=0.3, galcat=Table())
+    testing.assert_raises(TypeError, clmm.GalaxyCluster, unique_id=1, dec=34., z=0.3, galcat=Table())
+    testing.assert_raises(TypeError, clmm.GalaxyCluster, unique_id=1, ra=161.3, z=0.3, galcat=Table())
+    testing.assert_raises(TypeError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=34., galcat=Table())
 
-from numpy import testing as tst
+    # Test that we get errors when we pass in values outside of the domains
+    testing.assert_raises(ValueError, clmm.GalaxyCluster, unique_id=1, ra=-360.3, dec=34., z=0.3, galcat=Table())
+    testing.assert_raises(ValueError, clmm.GalaxyCluster, unique_id=1, ra=360.3, dec=34., z=0.3, galcat=Table())
+    testing.assert_raises(ValueError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=95., z=0.3, galcat=Table())
+    testing.assert_raises(ValueError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=-95., z=0.3, galcat=Table())
+    testing.assert_raises(ValueError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=34., z=-0.3, galcat=Table())
 
-def test_check_subdict():
+    # Test that inputs are the correct type
+    testing.assert_raises(TypeError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=34., z=0.3, galcat=1)
+    testing.assert_raises(TypeError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=34., z=0.3, galcat=[])
+    testing.assert_raises(TypeError, clmm.GalaxyCluster, unique_id=1, ra='161.3', dec=34., z=0.3, galcat=Table())
+    testing.assert_raises(TypeError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec='34.', z=0.3, galcat=Table())
+    testing.assert_raises(TypeError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=34., z='0.3', galcat=Table())
 
-    assert check_subdict(test_dict_sub, test_dict)
-    assert not check_subdict(test_dict, test_dict_sub)
-    assert not check_subdict(test_dict_sub, test_dict_diff)
+    # Test that id can support numbers and strings
+    assert isinstance(clmm.GalaxyCluster(unique_id=1, ra=161.3, dec=34., z=0.3, galcat=Table()).unique_id, str)
+    # assert clmm.GalaxyCluster(unique_id=1.0, ra=161.3, dec=34., z=0.3, galcat=Table()).unique_id == '1'
+    assert isinstance(clmm.GalaxyCluster(unique_id='1', ra=161.3, dec=34., z=0.3, galcat=Table()).unique_id, str)
 
-def test_find_in_datalist():
+def test_save_load():
+    cl1 = clmm.GalaxyCluster(unique_id='1', ra=161.3, dec=34., z=0.3, galcat=Table())
+    cl1.save('testcluster.pkl')
+    cl2 = clmm.load_cluster('testcluster.pkl')
+    os.system('rm testcluster.pkl')
+    
+    testing.assert_equal(cl2.unique_id, cl1.unique_id)
+    testing.assert_equal(cl2.ra, cl1.ra)
+    testing.assert_equal(cl2.dec, cl1.dec)
+    testing.assert_equal(cl2.z, cl1.z)
 
-    tst.assert_equal([test_data], find_in_datalist(test_dict, [test_data]))
-    tst.assert_equal([test_data], find_in_datalist(test_dict_sub, [test_data]))
-    tst.assert_equal([], find_in_datalist(test_dict_diff, [test_data]))
+    # remeber to add tests for the tables of the cluster
 
-    tst.assert_equal([test_data], find_in_datalist(test_dict, [test_data], exact=True))
-    tst.assert_equal([], find_in_datalist(test_dict_sub, [test_data], exact=True))
-    tst.assert_equal([], find_in_datalist(test_dict_diff, [test_data], exact=True))
 
-def test_find_data():
+# def test_find_data():
+#     gc = GalaxyCluster('test_cluster', test_data)
+#
+#     tst.assert_equal([], gc.find_data(test_creator_diff, test_dict))
+#
+#     tst.assert_equal([test_data], gc.find_data(test_creator, test_dict))
+#     tst.assert_equal([test_data], gc.find_data(test_creator, test_dict_sub))
+#     tst.assert_equal([], gc.find_data(test_creator, test_dict_diff))
+#
+#     tst.assert_equal([test_data], gc.find_data(test_creator, test_dict, exact=True))
+#     tst.assert_equal([], gc.find_data(test_creator, test_dict_sub, exact=True))
+#     tst.assert_equal([], gc.find_data(test_creator, test_dict_diff, exact=True))
 
-    gc = GalaxyCluster('test_cluster', test_data)
 
-    tst.assert_equal([], gc.find_data(test_creator_diff, test_dict))
 
-    tst.assert_equal([test_data], gc.find_data(test_creator, test_dict))
-    tst.assert_equal([test_data], gc.find_data(test_creator, test_dict_sub))
-    tst.assert_equal([], gc.find_data(test_creator, test_dict_diff))
+if __name__ == "__main__":
+    test_initialization()
+    test_integrity()
 
-    tst.assert_equal([test_data], gc.find_data(test_creator, test_dict, exact=True))
-    tst.assert_equal([], gc.find_data(test_creator, test_dict_sub, exact=True))
-    tst.assert_equal([], gc.find_data(test_creator, test_dict_diff, exact=True))
-
-def test_add_data():
-
-    gc = GalaxyCluster('test_cluster')
-    tst.assert_raises(TypeError, gc.add_data, '')
-    tst.assert_raises(TypeError, gc.add_data, '', force=True)
-    tst.assert_equal(None, gc.add_data(test_data, force=True))
-
-    gc = GalaxyCluster('test_cluster')
-    tst.assert_equal(None, gc.add_data(test_data))
-    tst.assert_equal(None, gc.add_data(test_data_diff))
-    tst.assert_raises(ValueError, gc.add_data, test_data)
-    tst.assert_equal(None, gc.add_data(test_data, force=True))
-
-def test_remove_data():
-
-    gc = GalaxyCluster('test_cluster', test_data)
-    tst.assert_raises(ValueError, gc.remove_data, test_creator_diff, test_dict)
-    tst.assert_raises(ValueError, gc.remove_data, test_creator, test_dict_sub)
-    tst.assert_raises(ValueError, gc.remove_data, test_creator, test_dict_diff)
-    tst.assert_equal(None, gc.remove_data(test_creator, test_dict))
-    tst.assert_raises(ValueError, gc.remove_data, test_creator, test_dict)
-
-def test_read_GC():
-    pass
-
-def test_write_GC():
-    pass
