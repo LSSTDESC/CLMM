@@ -1,12 +1,34 @@
 """@file polaraveraging.py
 Functions to compute polar/azimuthal averages in radial bins
 """
+try:
+    import pyccl as ccl
+except:
+    pass
 import numpy as np
 import matplotlib.pyplot as plt
 from astropy.coordinates import SkyCoord
 from astropy.cosmology import FlatLambdaCDM
 from astropy.table import Table
 from astropy import units as u
+
+
+def _astropy_to_CCL_cosmo_object(astropy_cosmology_object) :
+#ALLOWS TO USE EITHER ASTROPY OR CCL FOR COSMO OBJECT, MAYBE THIS FUNCTION SOULD NOT BE HERE
+#adapted from https://github.com/LSSTDESC/CLMM/blob/issue/111/model-definition/clmm/modeling.py
+    ''' 
+    Generates a ccl cosmology object from an GCR or astropy cosmology object.  
+    '''
+    apy_cosmo = astropy_cosmology_object
+    ccl_cosmo = ccl.Cosmology(Omega_c=apy_cosmo.Odm0,
+                  Omega_b=apy_cosmo.Ob0,
+                  h=apy_cosmo.h,
+                  n_s=apy_cosmo.n_s,
+                  sigma8=apy_cosmo.sigma8,
+                  Omega_k=apy_cosmo.Ok0)
+    
+    return ccl_cosmo
+
 
 
 def _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
@@ -70,7 +92,7 @@ def _compute_g_t(g1, g2, phi):
     return g_t
 
 
-def _compute_g_x(g1,g2,phi):
+def _compute_g_x(g1, g2, phi):
     """Computes cross shear for each source in galaxy catalog
     
     Parameters
@@ -94,7 +116,7 @@ def _compute_g_x(g1,g2,phi):
     return g_x
 
 
-def _compute_shear(ra_l,dec_l,ra_s, dec_s, g1, g2, sky = "flat"):
+def _compute_shear(ra_l, dec_l, ra_s, dec_s, g1, g2, sky="flat"):
     """Wrapper that returns tangential and cross shear along with radius in radians
     
     Parameters
@@ -130,6 +152,7 @@ def _compute_shear(ra_l,dec_l,ra_s, dec_s, g1, g2, sky = "flat"):
 
 
 def _make_bins(rmin, rmax, n_bins=10, log_bins=False):
+<<<<<<< HEAD
     """Define equal sized bins with an array of n_bins+1 bin edges
     
     Parameters
@@ -157,7 +180,7 @@ def _make_bins(rmin, rmax, n_bins=10, log_bins=False):
     return binedges
 
 
-def _make_shear_profile(radius, g, bins = None):
+def _make_shear_profile(radius, g, bins=None):
     """Returns astropy table containing shear profile of either tangential or cross shear
 
     Parameters
@@ -180,7 +203,7 @@ def _make_shear_profile(radius, g, bins = None):
     """
     if bins == None:
         nbins = 10
-        bins = np.linspace(np.min(radius),np.max(radius), nbins)
+        bins = np.linspace(np.min(radius), np.max(radius), nbins)
 
     g_profile = np.zeros(len(bins) - 1)
     gerr_profile = np.zeros(len(bins) - 1)
@@ -199,7 +222,7 @@ def _make_shear_profile(radius, g, bins = None):
     return r_profile, g_profile, gerr_profile
 
 
-def _plot_profiles(r, gt, gterr, gx=None, gxerr=None, r_units = "" ):
+def _plot_profiles(r, gt, gterr, gx=None, gxerr=None, r_units=""):
     """Plot shear profiles for validation
 
     Parameters
@@ -215,16 +238,16 @@ def _plot_profiles(r, gt, gterr, gx=None, gxerr=None, r_units = "" ):
     gxerr: array_like, float
         error on cross shear 
     """
-    plt.plot(r,gt,'bo-', label = "tangential shear")
-    plt.errorbar(r,gt,gterr)
+    fig, ax = plt.subplots()
+    ax.plot(r, gt, 'bo-', label="tangential shear")
+    ax.errorbar(r, gt, gterr)
     
     if type(gx) is np.ndarray:
-        plt.plot(r,gx,'ro-', label = "cross shear")
-        plt.errorbar(r,gx,gxerr)
+        plt.plot(r, gx, 'ro-', label="cross shear")
+        plt.errorbar(r, gx, gxerr)
 
-    plt.legend()
-    plt.xlabel("r ["+ r_units +"]")
-    plt.ylabel('$\\gamma$')
-    figure = 
-    axis = 
-    return(figure, axis)
+    ax.legend()
+    ax.set_xlabel("r [%s]"%r_units)
+    ax.set_ylabel('$\\gamma$')
+
+    return(fig, ax)
