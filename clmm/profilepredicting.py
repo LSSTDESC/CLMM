@@ -141,10 +141,10 @@ def calculate_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200,
     Om_m = cosmo['Omega_c']+cosmo['Omega_b']
     
     if halo_profile_parameterization == 'nfw' :
-    
-        Sigma = ct.deltasigma.Sigma_nfw_at_R(r_proj, mdelta, cdelta, Om_m, delta=Delta)
+        Sigma_r_proj = np.logspace(-3,4,1000)
+        Sigma = ct.deltasigma.Sigma_nfw_at_R(Sigma_r_proj, mdelta, cdelta, Om_m, delta=Delta)
         # ^ Note: Let's not use this naming convention when transfering ct to ccl.... 
-        return ct.deltasigma.DeltaSigma_at_R(r_proj, r_proj, Sigma, mdelta, cdelta, Om_m, delta=Delta)
+        return ct.deltasigma.DeltaSigma_at_R(r_proj, Sigma_r_proj, Sigma, mdelta, cdelta, Om_m, delta=Delta)
     else :
         pass
 
@@ -256,7 +256,6 @@ def compute_tangential_shear_profile(r_proj, mdelta, cdelta, z_cluster, z_source
     '''
     delta_sigma = calculate_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=Delta, 
                                                    halo_profile_parameterization=halo_profile_parameterization)
-        
     if z_src_model == 'single_plane':
         sigma_c = get_critical_surface_density(cosmo, z_cluster, z_source)
         return delta_sigma / sigma_c

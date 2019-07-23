@@ -7,7 +7,7 @@ from scipy.interpolate import interp1d
 import pyccl as ccl
 sys.path.append('../../clmm')
 import profilepredicting as pp
-
+import pdb
 
 class MockData(): 
     '''
@@ -154,21 +154,16 @@ class MockData():
         x_mpc = np.random.uniform(-4, 4, size=ngals)
         y_mpc = np.random.uniform(-4, 4, size=ngals)
         r_mpc = np.sqrt(x_mpc**2 + y_mpc**2)
-
- #       Dl = cosmo.angularDiameterDistance(zL)
   
         aexp_cluster = 1./(1.+zL)
-        Dl = ccl.comoving_angular_distance(self.config['cosmo'], aexp_cluster)
+        Dl = ccl.comoving_angular_distance(self.config['cosmo'], aexp_cluster)*aexp_cluster
 
         x_deg = (x_mpc/Dl)*(180./np.pi) #ra
         y_deg = (y_mpc/Dl)*(180./np.pi) #dec
-
-        gamt = pp.compute_tangential_shear_profile(r_mpc, M, c, zL, z_true, self.config['cosmo'], Delta=self.config['Delta'], 
-                                                halo_profile_parameterization='nfw',
-                                                z_src_model='single_plane')
-            
-#        gamt = testProf.deltaSigma(r_mpc)/testProf.Sc(z_true)
-
+        gamt = pp.compute_tangential_shear_profile(r_mpc, mdelta=M, cdelta=c, z_cluster=zL, z_source=z_true,
+                                                  cosmo=self.config['cosmo'], Delta=self.config['Delta'],
+                                                  halo_profile_parameterization='nfw',z_src_model='single_plane')
+        
         if is_shapenoise:
             self.config['shape_noise'] = shapenoise
             gamt = gamt + shapenoise*np.random.standard_normal(ngals)
@@ -179,7 +174,6 @@ class MockData():
 
         e1 = -gamt*cos2phi
         e2 = -gamt*sin2phi
-
         if is_zerr:
             self.catalog = Table([seqnr, -x_deg, y_deg, e1, e2, z_best, pdf_grid, zbins_grid], \
                                   names=('id', 'ra','dec','gamma1','gamma2', 'z', 'z_pdf', 'z_bins'))
