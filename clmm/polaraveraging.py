@@ -63,7 +63,7 @@ def compute_shear(cluster, geometry="flat", add_to_cluster=True):
         cluster.galcat['theta'] = theta
         cluster.galcat['gt'] = gt
         cluster.galcat['gx'] = gx
-    return theta, gt , gx
+    return theta, gt, gx
 
 
 def make_shear_profile(cluster, bins=None, add_to_cluster=True):
