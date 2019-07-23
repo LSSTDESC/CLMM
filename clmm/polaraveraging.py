@@ -11,6 +11,7 @@ from astropy.coordinates import SkyCoord
 from astropy.cosmology import FlatLambdaCDM
 from astropy.table import Table
 from astropy import units as u
+import math
 
 
 ##############################################################################################
@@ -118,25 +119,36 @@ def _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
     phi : array_like, float
         Angle in radians, (can we do better)
     """
-    dx = (ra_s-ra_l)*u.deg.to(u.rad) * np.cos(dec_l *u.deg.to(u.rad))             
-    dy = (dec_s - dec_l)*u.deg.to(u.rad)                 
-    phi = np.arctan2(dy, -dx)     
-    
-    if sky == "curved":
-        raise ValueError('Curved sky functionality not yet supported!')
+    if not -360. < ra_l < 360.:
+        raise ValueError("ra = %f of lens if out of domain"%ra_l)
+    if not -90. < dec_l < 90.:
+        raise ValueError("dec = %f of lens if out of domain"%dec_l)
+    if not np.array([-360. < x_ < 360. for x_ in ra_s]).all():
+        raise ValueError("Object has an invalid ra in source catalog")
+    if not np.array([-90. < x_ < 90 for x_ in dec_s]).all():
+        raise ValueError("Object has an invalid dec in the source catalog")
+
+    deg_to_rad = np.pi/180.
+    dx = (ra_s - ra_l)*deg_to_rad * math.cos(dec_l*deg_to_rad)
+    dy = (dec_s - dec_l)*deg_to_rad
+    phi = np.arctan2(dy, -dx)
+
+    if sky == "flat":
+        dx[dx>np.pi/2.] = dx[dx>np.pi/2.] - 2.*np.pi
+        theta =  np.sqrt(dx**2 + dy**2)
+    elif sky == "curved":
+        raise ValueError("Curved sky functionality not yet supported!")
         # coord_l = SkyCoord(ra_l*u.deg,dec_l*u.deg)
         # coord_s = SkyCoord(ra_s*u.deg,dec_s*u.deg)
         # theta = coord_l.separation(coord_s).to(u.rad).value
-
-    else:                     
-        dx[dx>180.] = 360.-dx[dx>180.]
-        theta =  np.sqrt(dx**2 + dy**2)
+    else:
+        raise ValueError("Sky option %s not supported!"%sky)
 
     return theta, phi
 
 
 def _compute_g_t(g1, g2, phi):
-    """Computes the tangential shear for each source in the galaxy catalog
+    r"""Computes the tangential shear for each source in the galaxy catalog
 
     Add extended description
 
@@ -161,7 +173,7 @@ def _compute_g_t(g1, g2, phi):
 
 
 def _compute_g_x(g1, g2, phi):
-    """Computes cross shear for each source in galaxy catalog
+    r"""Computes cross shear for each source in galaxy catalog
     
     Parameters
     ----------
@@ -185,7 +197,7 @@ def _compute_g_x(g1, g2, phi):
 
 
 def _compute_shear(ra_l, dec_l, ra_s, dec_s, g1, g2, sky="flat"):
-    """Wrapper that returns tangential and cross shear along with radius in radians
+    r"""Wrapper that returns tangential and cross shear along with radius in radians
     
     Parameters
     ----------
