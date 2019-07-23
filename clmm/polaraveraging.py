@@ -88,8 +88,8 @@ def make_shear_profile(cluster, bins=None, add_to_cluster=True):
                         'Run compute_shear first!')
     rMpc = cluster.galcat['theta'] *\
          cosmo.angular_diameter_distance(cluster.z).value
-    r_avg, gt_avg, gt_std = _make_shear_profile(rMpc, cluster.galcat['gt'])
-    r_avg, gx_avg, gx_std = _make_shear_profile(rMpc, cluster.galcat['gx'])
+    r_avg, gt_avg, gt_std = _compute_radial_averages(rMpc, cluster.galcat['gt'])
+    r_avg, gx_avg, gx_std = _compute_radial_averages(rMpc, cluster.galcat['gx'])
     profile_table = Table([r, gt, gterr, gx, gxerr],
         names = ('r', 'gt', 'gt_err', 'gx', 'gx_err'))
     if add_to_cluster:
@@ -293,7 +293,7 @@ def _make_bins(rmin, rmax, n_bins=10, log_bins=False):
     return binedges
 
 
-def _make_shear_profile(radius, g, bins=None):
+def _compute_radial_averages(radius, g, bins=None):
     """Returns astropy table containing shear profile of either tangential or cross shear
 
     Parameters
