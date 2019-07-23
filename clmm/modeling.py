@@ -279,7 +279,6 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
 
     # will need to deal with units: distances in Mpc and some CCL constants in SI
     sigmacrit = d_s / (d_l * d_ls) * c * c / (4 * np.pi * G)
-    print(d_s, d_l, d_ls, sigmacrit)
     return sigmacrit
 
 def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delta=200, halo_profile_parameterization='nfw', z_src_model='single_plane'):
