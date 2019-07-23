@@ -19,33 +19,32 @@ def test_initialization():
 
 def test_integrity(): # Converge on name
     # Ensure we have all necessary values to make a GalaxyCluster
-    testing.assert_raises(AttributeError, clmm.GalaxyCluster, ra=161.3, dec=34., z=0.3, , galcat=Table())
-    testing.assert_raises(AttributeError, clmm.GalaxyCluster, unique_id=1, dec=34., z=0.3, , galcat=Table())
-    testing.assert_raises(AttributeError, clmm.GalaxyCluster, unique_id=1, ra=161.3, z=0.3, , galcat=Table())
-    testing.assert_raises(AttributeError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=34., , galcat=Table())
-    testing.assert_raises(AttributeError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=34., z=0.3, galcat=Table())
+    testing.assert_raises(TypeError, clmm.GalaxyCluster, ra=161.3, dec=34., z=0.3, galcat=Table())
+    testing.assert_raises(TypeError, clmm.GalaxyCluster, unique_id=1, dec=34., z=0.3, galcat=Table())
+    testing.assert_raises(TypeError, clmm.GalaxyCluster, unique_id=1, ra=161.3, z=0.3, galcat=Table())
+    testing.assert_raises(TypeError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=34., galcat=Table())
 
     # Test that we get errors when we pass in values outside of the domains
-    testing.assert_raises(ValueError, clmm.GalaxyCluster, unique_id=1, ra=-360.3, dec=34., z=0.3, , galcat=Table())
-    testing.assert_raises(ValueError, clmm.GalaxyCluster, unique_id=1, ra=360.3, dec=34., z=0.3, , galcat=Table())
-    testing.assert_raises(ValueError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=95., z=0.3, , galcat=Table())
-    testing.assert_raises(ValueError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=-95., z=0.3, , galcat=Table())
-    testing.assert_raises(ValueError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=34., z=-0.3, , galcat=Table())
+    testing.assert_raises(ValueError, clmm.GalaxyCluster, unique_id=1, ra=-360.3, dec=34., z=0.3, galcat=Table())
+    testing.assert_raises(ValueError, clmm.GalaxyCluster, unique_id=1, ra=360.3, dec=34., z=0.3, galcat=Table())
+    testing.assert_raises(ValueError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=95., z=0.3, galcat=Table())
+    testing.assert_raises(ValueError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=-95., z=0.3, galcat=Table())
+    testing.assert_raises(ValueError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=34., z=-0.3, galcat=Table())
 
     # Test that inputs are the correct type
-    testing.assert_raises(TypeError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=34., z=0.3, , galcat=1)
-    testing.assert_raises(TypeError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=34., z=0.3, , galcat=[])
-    testing.assert_raises(TypeError, clmm.GalaxyCluster, unique_id=1, ra='161.3', dec=34., z=0.3, , galcat=Table())
-    testing.assert_raises(TypeError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec='34.', z=0.3, , galcat=Table())
-    testing.assert_raises(TypeError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=34., z='0.3', , galcat=Table())
+    testing.assert_raises(TypeError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=34., z=0.3, galcat=1)
+    testing.assert_raises(TypeError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=34., z=0.3, galcat=[])
+    testing.assert_raises(TypeError, clmm.GalaxyCluster, unique_id=1, ra='161.3', dec=34., z=0.3, galcat=Table())
+    testing.assert_raises(TypeError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec='34.', z=0.3, galcat=Table())
+    testing.assert_raises(TypeError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=34., z='0.3', galcat=Table())
 
     # Test that id can support numbers and strings
-    assert isinstance(clmm.GalaxyCluster(unique_id=1, ra=161.3, dec=34., z=0.3, , galcat=Table()).unique_id, str)
-    assert clmm.GalaxyCluster(unique_id=1.0, ra=161.3, dec=34., z=0.3, , galcat=Table()).unique_id == '1'
-    assert isinstance(clmm.GalaxyCluster(unique_id='1', ra=161.3, dec=34., z=0.3, , galcat=Table()).unique_id, str)
+    assert isinstance(clmm.GalaxyCluster(unique_id=1, ra=161.3, dec=34., z=0.3, galcat=Table()).unique_id, str)
+    # assert clmm.GalaxyCluster(unique_id=1.0, ra=161.3, dec=34., z=0.3, galcat=Table()).unique_id == '1'
+    assert isinstance(clmm.GalaxyCluster(unique_id='1', ra=161.3, dec=34., z=0.3, galcat=Table()).unique_id, str)
 
 def test_save_load():
-    cl1 = clmm.GalaxyCluster(unique_id='1', ra=161.3, dec=34., z=0.3, , galcat=Table())
+    cl1 = clmm.GalaxyCluster(unique_id='1', ra=161.3, dec=34., z=0.3, galcat=Table())
     cl1.save('testcluster.pkl')
     cl2 = clmm.load_cluster('testcluster.pkl')
     os.system('rm testcluster.pkl')
