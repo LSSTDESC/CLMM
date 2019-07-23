@@ -257,8 +257,8 @@ def compute_tangential_shear_profile(r_proj, mdelta, cdelta, z_cluster, z_source
         CCL Cosmology object
     Delta : int, optional
         Mass overdensity definition.  Defaults to 200.
-    halo_profile_parameterization :obj:`str`, optional
-        Profile model parameterization that we wish to use, with the following supported options:
+    halo_profile_parameterization : str, optional
+        Profile model parameterization, with the following supported options:
         `nfw` (default) - [insert citation here]
     z_src_model : str, optional
         Source redshift model, with the following supported options:
