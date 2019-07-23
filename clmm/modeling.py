@@ -224,7 +224,9 @@ def _get_comoving_angular_distance_a(cosmo, aexp2, aexp1=1.):
     Notes
     -----
     This is definitely broken if other cosmological parameter specifications differ, so we'll have to revise this later.
-    # AIM: needs a docstring for args
+
+    AIM : we need to switch angular_diameter_distance_z1z2 to CCL equivalent angular distance once implemented
+    
     '''
     z1 = _get_z_from_a(aexp1)
     z2 = _get_z_from_a(aexp2)
@@ -254,18 +256,12 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     Returns
     -------
     sigmacrit : float
-        Cosmology-dependent critical surface density
+        Cosmology-dependent critical surface density in units of [h M_\\odot/$pc^2$]. 
 
     Notes
     -----
     We will need gamma inf and kappa inf for alternative z_src_models using Beta_s
     '''
-    # m_to_pc = 3.2408e-17
-    # kg_to_msun = 5.0279e-31
-    # if type(cosmo) == pyccl.core.Cosmology:
-    #     c = ccl.physical_constants.CLIGHT * m_to_pc
-    #     G = ccl.physical_constants.GNEWT * (m_to_pc)**3 / (kg_to_msun)
-    # else:
     c = astropy.constants.c.to_value(astropy.units('pc/s'))
     G = astropy.constants.G.to_value(astropy.units('pc3 / (Msun s2)'))
 
@@ -276,7 +272,6 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     d_s = _get_comoving_angular_distance_a(cosmo, aexp_src)
     d_ls = _get_comoving_angular_distance_a(cosmo, aexp_src, aexp_cluster)
 
-    # will need to deal with units: distances in Mpc and some CCL constants in SI
     sigmacrit = d_s / (d_l * d_ls) * c * c / (4 * np.pi * G)
     return sigmacrit
 
