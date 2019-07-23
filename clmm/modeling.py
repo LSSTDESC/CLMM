@@ -1,15 +1,10 @@
 """@file.py profilepredicting.py
-Functions to compute profiles from theory.  Default is NFW.
+Functions for theoretical models.  Default is NFW.
 """
 
 import numpy as np
 import pyccl as ccl
 import cluster_toolkit as ct
-
-# AIM: standard nomenclature for verbs
-# compute for heavy computation
-# calculate for straightforward calculations
-# get for lookup existing value
 
 def set_omega_m(cosmo):
     '''
@@ -34,14 +29,34 @@ def set_omega_m(cosmo):
 
 def get_a_from_z(z):
     '''
-    [write the docstring]
+    Convert redshift to scale factor
+
+    Parameters
+    ----------
+    z : array-like, float
+        redshift
+
+    Returns
+    -------
+    a : array-like, float
+        scale factor
     '''
     a = 1. / (1. + z)
     return a
 
 def get_z_from_a(a):
     '''
-    [write the docstring]
+    Convert scale factor to redshift
+
+    Parameters
+    ----------
+    a : array-like, float
+        scale factor
+
+    Returns
+    -------
+    z : array-like, float
+        redshift
     '''
     z = 1. / a - 1.
     return z
