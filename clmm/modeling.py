@@ -192,6 +192,14 @@ def comoving_angular_distance_aexp1_aexp2(cosmo, aexp1, aexp2):
     This is a monkey-patched method to calculate d_LS (angular
     distance between lens and source) because CCL does not yet have
     this PR completed.  Temporarily using the astropy implementation.
+    
+    Parameters
+    ----------
+    cosmo : pyccl.core.Cosmology object
+            CCL Cosmology object
+
+    aexp1 : 
+    
 
     # AIM: needs a docstring for args
     '''
@@ -268,8 +276,8 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
         G = ccl.physical_constants.GNEWT * (m_to_pc)**3 / (kg_to_msun)
     except ImportError :
         from astropy import constants, units
-        c = constants.c.to_value(units.('pc/s'))
-        G = constants.G.to_value(units.('pc3 / (Msun s2)'))
+        c = constants.c.to_value(units('pc/s'))
+        G = constants.G.to_value(units('pc3 / (Msun s2)'))
 
         
     aexp_cluster = get_a_from_z(z_cluster)
@@ -448,15 +456,15 @@ def create_ccl_cosmo_object_from_astropy(astropy_cosmology_object) :
     with 
 
     from astropy.cosmology import FlatLambdaCDM
-    astropy_cosmology_object = FlatLambdaCDM(H0=70, Om0=0.3)
+    astropy_cosmology_object = FlatLambdaCDM(H0=70, Om0=0.27, Ob0=0.045)
     astropy_cosmology_object = 
     cosmo_ccl = create_ccl_cosmo_object_from_astropy(astropy_cosmology_object)
 
     '''
     apy_cosmo = astropy_cosmology_object
-    ccl_cosmo = { 'Omega_c':0.27,
-                  'Omega_b':0.03,
-                  'h':apy_cosmo.h
+    ccl_cosmo = { 'Omega_c':apy_cosmo.Om0,
+                  'Omega_b':apy_cosmo.Ob0,
+                  'h':apy_cosmo.h,
                   'H0':apy_cosmo.H0.value,
     }
 
