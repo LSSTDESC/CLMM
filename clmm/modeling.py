@@ -228,10 +228,10 @@ def _get_comoving_angular_distance_a(cosmo, aexp2, aexp1=1.):
     '''
     z1 = _get_z_from_a(aexp1)
     z2 = _get_z_from_a(aexp2)
-    Omega_m = cosmo['Omega_b'] + cosmo['Omega_c']
     if type(cosmo) == astropy.cosmology.core.FlatLambdaCDM:
         ap_cosmo = cosmo
     else:
+        Omega_m = cosmo['Omega_b'] + cosmo['Omega_c']
         ap_cosmo = astropy.cosmology.core.FlatLambdaCDM(H0=cosmo['H0'], Om0=Omega_m, Ob0=cosmo['Omega_b'])
     # astropy angular diameter distance in Mpc
     # need to return in pc/h
@@ -269,7 +269,7 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
 
     c = constants.c.to(units.pc/units.s).value
     G = constants.G.to(units.pc**3/units.M_sun/units.s**2).value
-    
+
     aexp_cluster = _get_a_from_z(z_cluster)
     aexp_src = _get_a_from_z(z_source)
 
