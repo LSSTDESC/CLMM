@@ -440,6 +440,18 @@ def create_ccl_cosmo_object_from_astropy(astropy_cosmology_object) :
     ''' 
     Generates a ccl looking cosmology object (with all values needed for profilepredicting) 
     from an astropy cosmology object.  THIS IS A MONKEY PATCH NEED TO CHANGE LATER!!!
+
+    Parameters
+    ----------
+    astropy_cosmology_object : ccl cosmo object 
+
+    Returns
+    ----------
+    cosmo_ccl : ccl cosmo disctionary 
+
+    Notes
+    ----------
+
     
     Example:
     -------
