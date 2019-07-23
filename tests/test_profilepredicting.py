@@ -11,14 +11,16 @@ def test_set_omega_m(cosmo):
 # others: test that inputs are as expected, values from demos
 
 # AIM: I'm removing these hardcoded things from the notebook.
-# # Define CCL cosmology object
-# cosmo_ccl = ccl.Cosmology(Omega_c=0.27, Omega_b=0.045, h=0.67, A_s=2.1e-9, n_s=0.96)
+# Define CCL cosmology object
+cosmo_ccl = ccl.Cosmology(Omega_c=0.27, Omega_b=0.045, h=0.67, A_s=2.1e-9, n_s=0.96)
 
-# # Select density profile and profile parametrization options
-# density_profile_parametrization = 'nfw'
-# mass_Delta = 200
-# cluster_mass = 1.e15
-# cluster_concentration = 4
+# Select density profile and profile parametrization options
+density_profile_parametrization = 'nfw'
+mass_Delta = 200
+cluster_mass = 1.e15
+cluster_concentration = 4
+
+mass_lims = (1.e12, 1.e16)
 
 # AIM: Let's use these as a starting point for unit tests
 # # Quick test of functions
