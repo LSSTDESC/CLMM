@@ -3,7 +3,6 @@ Functions for theoretical models.  Default is NFW.
 """
 
 import numpy as np
-import pyccl as ccl
 import cluster_toolkit as ct
 
 def set_omega_m(cosmo):
