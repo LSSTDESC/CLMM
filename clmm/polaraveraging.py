@@ -57,9 +57,10 @@ def _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
     phi = np.arctan2(dy, -dx)     
     
     if sky == "curved":
-        coord_l = SkyCoord(ra_l*u.deg,dec_l*u.deg)
-        coord_s = SkyCoord(ra_s*u.deg,dec_s*u.deg)
-        theta = coord_l.separation(coord_s).to(u.rad).value
+        raise ValueError('Curved sky functionality not yet supported!')
+        # coord_l = SkyCoord(ra_l*u.deg,dec_l*u.deg)
+        # coord_s = SkyCoord(ra_s*u.deg,dec_s*u.deg)
+        # theta = coord_l.separation(coord_s).to(u.rad).value
 
     else:                     
         theta =  np.sqrt(dx**2 + dy**2)
