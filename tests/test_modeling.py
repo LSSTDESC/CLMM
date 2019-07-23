@@ -5,7 +5,7 @@ Tests for modeling
 import astropy
 from astropy import cosmology
 from numpy import testing as tst
-
+import numpy as np
 import clmm
 # from clmm import modeling as pp
 # from modeling import *
@@ -18,12 +18,12 @@ cluster_concentration = 4
 
 # cosmo_ccl = ccl.Cosmology(Omega_c=0.27, Omega_b=0.045, h=0.67, A_s=2.1e-9, n_s=0.96)
 cosmo_apy= astropy.cosmology.core.FlatLambdaCDM(H0=70, Om0=0.27, Ob0=0.045)
-cosmo_ccl = clmm._cclify_astropy_cosmo(cosmo_apy)
+cosmo_ccl = clmm.cclify_astropy_cosmo(cosmo_apy)
 
 def test_cosmo_type():
     tst.assert_equal(type(cosmo_apy), astropy.cosmology.core.FlatLambdaCDM)
     tst.assert_equal(type(cosmo_ccl), dict)
-    tst.assert_equal(cosmo_ccl['Omega_c'] + cosmo_ccl['Omega_b'], cosmo_apy.Odm_0 + cosmo_apy.Ob_0)
+    tst.assert_equal(cosmo_ccl['Omega_c'] + cosmo_ccl['Omega_b'], cosmo_apy.Odm0 + cosmo_apy.Ob0)
 
 r3d = np.logspace(-2, 2, 100)
 r3d_one = r3d[-1]
