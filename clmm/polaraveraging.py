@@ -8,6 +8,68 @@ from astropy.cosmology import FlatLambdaCDM
 from astropy.table import Table
 from astropy import units as u
 
+def compute_shear(cluster, geometry="flat", add_to_cluster=True):
+    """Computs tangential and cross shear along 
+         with radius in radians
+    Parameters
+    ----------
+    cluster: GalaxyCluster object
+        GalaxyCluster object with galaxies
+    geometry: str ('flat', 'curve')
+        Geometry to be used in the computation of theta, phi
+    add_to_cluster: bool
+        Adds the outputs to cluster.galcat
+    Returns
+    -------
+    gt: float vector
+        tangential shear
+    gx: float vector
+        cross shear
+    theta: float vector
+        radius in radians
+    """
+    if not ('e1' in cluster.galcat.columns() \ 
+        and 'e2' in cluster.galcat.columns()):
+        raise TypeError('shear information is missing in galaxy, ',
+                        'must have (e1, e2) or (gamma1, gamma2, kappa)')
+    theta, gt , gx = _compute_shear(cluster.ra, cluster.dec, 
+        cluster.galcat['ra'], cluster.galcat['dec'], 
+        cluster.galcat['e1'], cluster.galcat['e2'], 
+        sky=geometry)
+    if add_to_cluster:
+        cluster.galcat['theta'] = theta
+        cluster.galcat['gt'] = gt
+        cluster.galcat['gx'] = gx
+    return theta, gt , gx
+def make_shear_profile(cluster, bins=None, add_to_cluster=True):
+    """ Computes shear profile of the cluster
+    Parameters
+    ----------
+    cluster: GalaxyCluster object
+        GalaxyCluster object with galaxies
+    add_to_cluster: bool
+        Adds the outputs to cluster.profile
+    Returns
+    -------
+    profile_table: astropy Table
+        Table with r_profile, gt profile (and error) and
+        gx profile (and error)
+    """
+    if not ('gt' in cluster.galcat.columns() \ 
+        and 'gx' in cluster.galcat.columns()):
+        and 'theta' in cluster.galcat.columns()):
+        raise TypeError('shear information is missing in galaxy, ',
+                        'must have (e1, e2) or (gamma1, gamma2, kappa).',
+                        'Run compute_shear first!')
+    rMpc = cluster.galcat['theta'] *\
+         cosmo.angular_diameter_distance(cluster.z).value
+    r_avg, gt_avg, gt_std = _make_shear_profile(rMpc, cluster.galcat['gt'])
+    r_avg, gx_avg, gx_std = _make_shear_profile(rMpc, cluster.galcat['gx'])
+    profile_table = Table([r, gt, gterr, gx, gxerr],
+        names = ('r', 'gt', 'gt_err', 'gx', 'gx_err'))
+    if add_to_cluster:
+        cluster.profile = profile_table
+    return profile_table
 
 def _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
     
