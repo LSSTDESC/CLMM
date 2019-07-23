@@ -32,7 +32,7 @@ def _cclify_astropy_cosmo(apy_cosmo) :
     cosmo_ccl = create_ccl_cosmo_object_from_astropy(astropy_cosmology_object)``
     '''
     if type(apy_cosmo) == astropy.cosmology.core.FlatLambdaCDM:
-        ccl_cosmo = {'Omega_c': apy_cosmo.Om0,
+        ccl_cosmo = {'Omega_c': apy_cosmo.Odm0,
                  'Omega_b': apy_cosmo.Ob0,
                  'h': apy_cosmo.h,
                  'H0': apy_cosmo.H0.value}
@@ -232,7 +232,7 @@ def _get_comoving_angular_distance_a(cosmo, aexp2, aexp1=1.):
     if type(cosmo) == astropy.cosmology.core.FlatLambdaCDM:
         ap_cosmo = cosmo
     else:
-        ap_cosmo = astropy.FlatLambdaCDM(H0=cosmo['H_0'], Om0=Omega_m, Ob0=cosmo['Omega_b'])
+        ap_cosmo = astropy.cosmology.core.FlatLambdaCDM(H0=cosmo['H0'], Om0=Omega_m, Ob0=cosmo['Omega_b'])
     # astropy angular diameter distance in Mpc
     # need to return in pc/h
     da = ap_cosmo.angular_diameter_distance_z1z2(z1, z2).to_value(units.pc) * ap_cosmo.h
@@ -266,9 +266,9 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     #     c = ccl.physical_constants.CLIGHT * m_to_pc
     #     G = ccl.physical_constants.GNEWT * (m_to_pc)**3 / (kg_to_msun)
     # else:
-    c = constants.c.to_value(units('pc/s'))
-    G = constants.G.to_value(units('pc3 / (Msun s2)'))
-
+    c = constants.c.to(units.pc/units.s).value
+    G = constants.G.to(units.pc**3/units.M_sun/units.s**2).value
+    
     aexp_cluster = _get_a_from_z(z_cluster)
     aexp_src = _get_a_from_z(z_source)
 
