@@ -2,13 +2,24 @@
 Functions for theoretical models.  Default is NFW.
 """
 
+import astropy
 from astropy import constants, units
 import cluster_toolkit as ct
 import numpy as np
 
-def _create_ccl_cosmo_object_from_astropy(apy_cosmo) :
+def _cclify_astropy_cosmo(apy_cosmo) :
     '''
     Generates a ccl-looking cosmology object (with all values needed for modeling) from an astropy cosmology object.
+
+    Parameters
+    ----------
+    apy_cosmo : astropy.cosmology.core.FlatLambdaCDM or pyccl.core.Cosmology
+        astropy or CCL cosmology object
+
+    Returns
+    -------
+    ccl_cosmo : dictionary
+        modified astropy cosmology object
 
     Notes
     -----
@@ -20,12 +31,13 @@ def _create_ccl_cosmo_object_from_astropy(apy_cosmo) :
     astropy_cosmology_object = FlatLambdaCDM(H0=70, Om0=0.27, Ob0=0.045)
     cosmo_ccl = create_ccl_cosmo_object_from_astropy(astropy_cosmology_object)``
     '''
-    ccl_cosmo = {'Omega_c': apy_cosmo.Om0,
+    if type(apy_cosmo) == pyccl.core.Cosmology:
+        ccl_cosmo = apy_cosmo
+    else:
+        ccl_cosmo = {'Omega_c': apy_cosmo.Om0,
                  'Omega_b': apy_cosmo.Ob0,
                  'h': apy_cosmo.h,
-                 'H0': apy_cosmo.H0.value,
-    }
-
+                 'H0': apy_cosmo.H0.value}
     return ccl_cosmo
 
 def _get_a_from_z(z):
@@ -96,7 +108,7 @@ def get_3d_density(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameter
     -----
     AIM: We should only require arguments that are necessary for all profiles and use another structure to take the arguments necessary for specific models
     '''
-    cosmo = _create_ccl_cosmo_object_from_astropy(cosmo)
+    cosmo = _cclify_astropy_cosmo(cosmo)
     Omega_m = cosmo['Omega_c'] + cosmo['Omega_b']
 
     if halo_profile_parameterization == 'nfw':
@@ -139,7 +151,7 @@ def predict_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profi
     -----
     AIM: We should only require arguments that are necessary for all models and use another structure to take the arguments necessary for specific models.
     '''
-    cosmo = _create_ccl_cosmo_object_from_astropy(cosmo)
+    cosmo = _cclify_astropy_cosmo(cosmo)
     Omega_m = cosmo['Omega_c'] + cosmo['Omega_b']
 
     if halo_profile_parameterization == 'nfw':
@@ -179,7 +191,7 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, hal
     deltasigma : array-like, float
         Excess surface density, DeltaSigma in units of [h M_\\odot/$pc^2$].
     '''
-    cosmo = _create_ccl_cosmo_object_from_astropy(cosmo)
+    cosmo = _cclify_astropy_cosmo(cosmo)
     Omega_m = cosmo['Omega_c'] + cosmo['Omega_b']
 
     if halo_profile_parameterization == 'nfw':
