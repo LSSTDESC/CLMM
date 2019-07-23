@@ -232,7 +232,7 @@ def comoving_angular_distance(cosmo, aexp):
         ap_cosmo = FlatLambdaCDM(H0=cosmo['H_0'], Om0=cosmo['Omega_m'])
         # astropy angular diameter distance in Mpc
         # need to return in pc/h
-        da = ap_cosmo.angular_diameter_distance(z).to_value(u.pc) * cosmo.h
+        da = ap_cosmo.angular_diameter_distance(z).to_value(u.pc) * cosmo['h']
         return da
 
     
