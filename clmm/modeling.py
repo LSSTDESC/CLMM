@@ -187,11 +187,11 @@ def comoving_angular_distance_aexp1_aexp2(cosmo, aexp1, aexp2):
     from astropy import units as u
 
     Omega_m = cosmo['Omega_b']+cosmo['Omega_c']
-    ap_cosmo = FlatLambdaCDM(H0=cosmo['H_0'], Om0=Omega_m, Ob0=cosmo['Omega_b'])
+    ap_cosmo = FlatLambdaCDM(H0=cosmo['H0'], Om0=Omega_m, Ob0=cosmo['Omega_b'])
 
     # astropy angular diameter distance in Mpc
     # need to return in pc/h
-    da = ap_cosmo.angular_diameter_distance_z1z2(z1, z2).to_value(u.pc) * cosmo.h
+    da = ap_cosmo.angular_diameter_distance_z1z2(z1, z2).to_value(u.pc) * cosmo['h']
     return da
 
 def comoving_angular_distance(cosmo, aexp):
@@ -218,7 +218,7 @@ def comoving_angular_distance(cosmo, aexp):
 
         Omega_m = cosmo['Omega_b']+cosmo['Omega_c']
         z = get_z_from_a(aexp)
-        ap_cosmo = FlatLambdaCDM(H0=cosmo['H_0'], Om0=Omega_m, Ob0=cosmo['Omega_b'])
+        ap_cosmo = FlatLambdaCDM(H0=cosmo['H0'], Om0=Omega_m, Ob0=cosmo['Omega_b'])
         # astropy angular diameter distance in Mpc
         # need to return in pc/h
         da = ap_cosmo.angular_diameter_distance(z).to_value(u.pc) * cosmo['h']
