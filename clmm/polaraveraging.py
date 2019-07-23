@@ -217,14 +217,14 @@ def _compute_shear(ra_l, dec_l, ra_s, dec_s, g1, g2, sky="flat"):
     g_x = _compute_g_x(g1,g2,phi)
     return theta, g_t, g_x
 
-def _theta_units_conversion(theta, units="None", cosmo="None", z_l="None", cosmo_object_type = "ccl"):
+def _theta_units_conversion(theta, units="None", cosmo="None", z_l="None", cosmo_object_type = "astropy"):
     
     """
     Converts theta from radian to whatever units specified in units
     units: one of ["deg", "arcmin", "arcsec", kpc", "Mpc"]
     cosmo : cosmo object 
     z_l : cluster redshift
-    cosmo_object_type : string keywords can be either "ccl" or "astropy" 
+    cosmo_object_type : string keywords that can be either "ccl" or "astropy" 
     """
     
     theta = theta * u.rad
