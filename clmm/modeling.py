@@ -1,6 +1,7 @@
 """@file.py profilepredicting.py
 Functions to compute profiles from theory.  Default is NFW.
 """
+
 import numpy as np
 import pyccl as ccl
 import cluster_toolkit as ct
@@ -23,6 +24,10 @@ def set_omega_m(cosmo):
     -------
     cosmo : pyccl.core.Cosmology object
         modified CCL Cosmology object
+
+    Notes
+    -----
+    This could be extended to checking for CCL and using astropy if CCL isn't available
     '''
     cosmo['Omega_m'] = cosmo['Omega_c'] + cosmo['Omega_b']
     return cosmo
@@ -149,10 +154,10 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, hal
         CCL Cosmology object
     Delta : int, optional
         Mass overdensity definition; defaults to 200.
-    halo_profile_parameterization :obj:`str`, optional
+    halo_profile_parameterization : str, optional
         Profile model parameterization, with the following supported options:
         `nfw` (default) - [insert citation here]
-    z_src_model : `str`, optional
+    z_src_model : str, optional
         Source redshift model, with the following supported options:
         `single_plane` (default) - all sources at one redshift
         `known_z_src` - known individual source galaxy redshifts, e.g. discrete case
@@ -166,12 +171,12 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, hal
     cosmo = set_omega_m(cosmo)
 
     if halo_profile_parameterization == 'nfw':
-
-        Sigma = ct.deltasigma.Sigma_nfw_at_R(r_proj, mdelta, cdelta, cosmo['Omega_m'], delta=Delta)
+        Sigma_r_proj = np.logspace(-3, 4, 1000)
+        Sigma = ct.deltasigma.Sigma_nfw_at_R(Sigma_r_proj, mdelta, cdelta, cosmo['Omega_m'], delta=Delta)
         # ^ Note: Let's not use this naming convention when transfering ct to ccl....
-        deltasigma = ct.deltasigma.DeltaSigma_at_R(r_proj, r_proj, Sigma, mdelta, cdelta, cosmo['Omega_m'], delta=Delta)
+        deltasigma = ct.deltasigma.DeltaSigma_at_R(r_proj, Sigma_r_proj, Sigma, mdelta, cdelta, cosmo['Omega_m'], delta=Delta)
         return deltasigma
-    else:
+    else :
         pass
 
 def _get_comoving_angular_distance_a(cosmo, aexp1, aexp2=1.):
@@ -308,8 +313,8 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delt
         CCL Cosmology object
     Delta : int, optional
         Mass overdensity definition.  Defaults to 200.
-    halo_profile_parameterization :obj:`str`, optional
-        Profile model parameterization that we wish to use, with the following supported options:
+    halo_profile_parameterization : str, optional
+        Profile model parameterization, with the following supported options:
         `nfw` (default) - [insert citation here]
     z_src_model : str, optional
         Source redshift model, with the following supported options:
@@ -358,8 +363,8 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
         CCL Cosmology object
     Delta : int, optional
         Mass overdensity definition.  Defaults to 200.
-    halo_profile_parameterization :obj:`str`, optional
-        Profile model parameterization that we wish to use, with the following supported options:
+    halo_profile_parameterization : str, optional
+        Profile model parameterization, with the following supported options:
         `nfw` (default) - [insert citation here]
     z_src_model : str, optional
         Source redshift model, with the following supported options:
