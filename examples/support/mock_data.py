@@ -7,7 +7,6 @@ from scipy.interpolate import interp1d
 import pyccl as ccl
 sys.path.append('../../clmm')
 import modeling as pp
-import pdb
 
 class MockData(): 
     '''
