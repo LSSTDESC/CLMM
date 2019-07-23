@@ -223,6 +223,11 @@ def comoving_angular_distance(cosmo, aexp):
     
     Returns
     -------
+    da : comoving_angular_distance
+
+    Notes
+    -----
+    
 
     ''' 
     mpc_to_pc = 1e6
