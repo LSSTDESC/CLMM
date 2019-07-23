@@ -1,11 +1,34 @@
-"""@file.py profilepredicting.py
+"""@file.py modeling.py
 Functions for theoretical models.  Default is NFW.
 """
 
-import numpy as np
+from astropy import constants, units
 import cluster_toolkit as ct
+import numpy as np
 
-def get_a_from_z(z):
+def _create_ccl_cosmo_object_from_astropy(apy_cosmo) :
+    '''
+    Generates a ccl-looking cosmology object (with all values needed for modeling) from an astropy cosmology object.
+
+    Notes
+    -----
+    Need to replace:
+    `import pyccl as ccl
+    cosmo_ccl = ccl.Cosmology(Omega_c=0.27, Omega_b=0.045, h=0.67, A_s=2.1e-9, n_s=0.96)`
+    with
+    `from astropy.cosmology import FlatLambdaCDM
+    astropy_cosmology_object = FlatLambdaCDM(H0=70, Om0=0.27, Ob0=0.045)
+    cosmo_ccl = create_ccl_cosmo_object_from_astropy(astropy_cosmology_object)``
+    '''
+    ccl_cosmo = {'Omega_c': apy_cosmo.Om0,
+                 'Omega_b': apy_cosmo.Ob0,
+                 'h': apy_cosmo.h,
+                 'H0': apy_cosmo.H0.value,
+    }
+
+    return ccl_cosmo
+
+def _get_a_from_z(z):
     '''
     Convert redshift to scale factor
 
@@ -22,7 +45,7 @@ def get_a_from_z(z):
     a = 1. / (1. + z)
     return a
 
-def get_z_from_a(a):
+def _get_z_from_a(a):
     '''
     Convert scale factor to redshift
 
@@ -73,6 +96,7 @@ def get_3d_density(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameter
     -----
     AIM: We should only require arguments that are necessary for all profiles and use another structure to take the arguments necessary for specific models
     '''
+    cosmo = _create_ccl_cosmo_object_from_astropy(cosmo)
     Omega_m = cosmo['Omega_c'] + cosmo['Omega_b']
 
     if halo_profile_parameterization == 'nfw':
@@ -115,6 +139,7 @@ def predict_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profi
     -----
     AIM: We should only require arguments that are necessary for all models and use another structure to take the arguments necessary for specific models.
     '''
+    cosmo = _create_ccl_cosmo_object_from_astropy(cosmo)
     Omega_m = cosmo['Omega_c'] + cosmo['Omega_b']
 
     if halo_profile_parameterization == 'nfw':
@@ -154,6 +179,7 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, hal
     deltasigma : array-like, float
         Excess surface density, DeltaSigma in units of [h M_\\odot/$pc^2$].
     '''
+    cosmo = _create_ccl_cosmo_object_from_astropy(cosmo)
     Omega_m = cosmo['Omega_c'] + cosmo['Omega_b']
 
     if halo_profile_parameterization == 'nfw':
@@ -165,66 +191,41 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, hal
     else:
         pass
 
-def comoving_angular_distance_a(cosmo, aexp1, aexp2=1.):
+def _get_comoving_angular_distance_a(cosmo, aexp2, aexp1=1.):
     '''
-    This is a monkey-patched method to calculate d_LS (angular
-    distance between lens and source) because CCL does not yet have
-    this PR completed.  Temporarily using the astropy implementation.
+    This is a function to calculate d_LS (angular distance between lens and source) because CCL cannot yet do it.  Temporarily using the astropy implementation.
 
     Parameters
     ----------
     cosmo : pyccl.core.Cosmology object
             CCL Cosmology object
-
-    aexp1 :
-
-
-    # AIM: needs a docstring for args
-    '''
-    z1 = get_z_from_a(aexp1)
-    z2 = get_z_from_a(aexp2)
-    from astropy.cosmology import FlatLambdaCDM
-    from astropy import units as u
-
-    Omega_m = cosmo['Omega_b']+cosmo['Omega_c']
-    ap_cosmo = FlatLambdaCDM(H0=cosmo['H_0'], Om0=Omega_m, Ob0=cosmo['Omega_b'])
-
-    # astropy angular diameter distance in Mpc
-    # need to return in pc/h
-    da = ap_cosmo.angular_diameter_distance_z1z2(z1, z2).to_value(u.pc) * cosmo.h
-    return da
-
-def get_comoving_angular_distance(cosmo, aexp):
-    '''
-    Calculates comoving angular distance to an aexp given a cosmology
-
-    Parameters
-    ----------
-    cosmo : ccl cosmology object
+    aexp2 : float
+        smaller scale factor
+    aexp1 : float, optional
+        larger scale factor; defaults to 1.
 
     Returns
     -------
+    da: float
+        angular diameter distance
 
+    Notes
+    -----
+    This is definitely broken if other cosmological parameter specifications differ, so we'll have to revise this later.
+    # AIM: needs a docstring for args
     '''
-    mpc_to_pc = 1e6
+    z1 = _get_z_from_a(aexp1)
+    z2 = _get_z_from_a(aexp2)
 
-    try :
-        import pyccl as ccl
-        return ccl.comoving_angular_distance(cosmo, aexp) * aexp * cosmo['h'] * mpc_to_pc
-
-    except ImportError :
-        from astropy.cosmology import FlatLambdaCDM
-        from astropy import units as u
-
-        Omega_m = cosmo['Omega_b']+cosmo['Omega_c']
-        z = get_z_from_a(aexp)
-        ap_cosmo = FlatLambdaCDM(H0=cosmo['H_0'], Om0=Omega_m, Ob0=cosmo['Omega_b'])
-        # astropy angular diameter distance in Mpc
-        # need to return in pc/h
-        da = ap_cosmo.angular_diameter_distance(z).to_value(u.pc) * cosmo['h']
-        return da
-
-
+    if type(cosmo) == pyccl.core.Cosmology:
+        Omega_m = cosmo['Omega_b'] + cosmo['Omega_c']
+        ap_cosmo = astropy.FlatLambdaCDM(H0=cosmo['H_0'], Om0=Omega_m, Ob0=cosmo['Omega_b'])
+    else:
+        ap_cosmo = cosmo
+    # astropy angular diameter distance in Mpc
+    # need to return in pc/h
+    da = ap_cosmo.angular_diameter_distance_z1z2(z1, z2).to_value(units.pc) * cosmo.h
+    return da
 
 def get_critical_surface_density(cosmo, z_cluster, z_source):
     '''
@@ -248,26 +249,21 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     -----
     We will need gamma inf and kappa inf for alternative z_src_models using Beta_s
     '''
+    # m_to_pc = 3.2408e-17
+    # kg_to_msun = 5.0279e-31
+    # if type(cosmo) == pyccl.core.Cosmology:
+    #     c = ccl.physical_constants.CLIGHT * m_to_pc
+    #     G = ccl.physical_constants.GNEWT * (m_to_pc)**3 / (kg_to_msun)
+    # else:
+    c = constants.c.to_value(units('pc/s'))
+    G = constants.G.to_value(units('pc3 / (Msun s2)'))
 
-    m_to_pc = 3.2408e-17
-    kg_to_msun = 5.0279e-31
+    aexp_cluster = _get_a_from_z(z_cluster)
+    aexp_src = _get_a_from_z(z_source)
 
-    try :
-        import pyccl as ccl
-        c = ccl.physical_constants.CLIGHT * m_to_pc
-        G = ccl.physical_constants.GNEWT * (m_to_pc)**3 / (kg_to_msun)
-    except ImportError :
-        from astropy import constants, units
-        c = constants.c.to_value(units('pc/s'))
-        G = constants.G.to_value(units('pc3 / (Msun s2)'))
-
-
-    aexp_cluster = get_a_from_z(z_cluster)
-    aexp_src = get_a_from_z(z_source)
-
-    d_l = comoving_angular_distance(cosmo, aexp_cluster)
-    d_s = comoving_angular_distance(cosmo, aexp_src)
-    d_ls = comoving_angular_distance_aexp1_aexp2(cosmo, aexp_cluster, aexp_src)
+    d_l = _get_comoving_angular_distance_a(cosmo, aexp_cluster)
+    d_s = _get_comoving_angular_distance_a(cosmo, aexp_src)
+    d_ls = _get_comoving_angular_distance_a(cosmo, aexp_src, aexp_cluster)
 
     # will need to deal with units: distances in Mpc and some CCL constants in SI
     sigmacrit = d_s / (d_l * d_ls) * c * c / (4 * np.pi * G)
@@ -316,7 +312,7 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
                                                    halo_profile_parameterization=halo_profile_parameterization)
 
     if z_src_model == 'single_plane':
-        sigma_c = get_critical_surface_density(cosmo, z_cluster, z_source)
+        sigma_c = get_critical_surface_density(cosmo, z_source, z_cluster)
         gammat = delta_sigma / sigma_c
         return gammat
     elif z_src_model == 'known_z_src': # Discrete case
@@ -424,29 +420,3 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
         NotImplementedError('Need to implemnt Beta_s functionality, or average sigma/sigma_c kappa_t = Beta_s*kappa_inf')
     elif z_src_model == 'z_src_distribution': # Continuous ( from a distribution) case
         NotImplementedError('Need to implement Beta_s and Beta_s2 calculation from integrating distribution of redshifts in each radial bin')
-
-def _create_ccl_cosmo_object_from_astropy(apy_cosmo) :
-    '''
-    Generates a ccl looking cosmology object (with all values needed for profilepredicting)
-    from an astropy cosmology object.  THIS IS A MONKEY PATCH NEED TO CHANGE LATER!!!
-
-    Example:
-    -------
-    Need to replace:
-    import pyccl as ccl
-    cosmo_ccl = ccl.Cosmology(Omega_c=0.27, Omega_b=0.045, h=0.67, A_s=2.1e-9, n_s=0.96)
-
-    with
-
-    from astropy.cosmology import FlatLambdaCDM
-    astropy_cosmology_object = FlatLambdaCDM(H0=70, Om0=0.27, Ob0=0.045)
-    cosmo_ccl = create_ccl_cosmo_object_from_astropy(astropy_cosmology_object)
-
-    '''
-    ccl_cosmo = {'Omega_c':apy_cosmo.Om0,
-                 'Omega_b':apy_cosmo.Ob0,
-                 'h':apy_cosmo.h,
-                 'H0':apy_cosmo.H0.value,
-    }
-
-    return ccl_cosmo
