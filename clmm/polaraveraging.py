@@ -66,14 +66,28 @@ def compute_shear(cluster, geometry="flat", add_to_cluster=True):
     return theta, gt, gx
 
 
-def make_shear_profile(cluster, bins=None, add_to_cluster=True):
+def make_shear_profile(cluster, radial_units, bins=None,
+                        cosmo=None, cosmo_object_type="astropy",
+                        add_to_cluster=True):
     """ Computes shear profile of the cluster
+
     Parameters
     ----------
     cluster: GalaxyCluster object
         GalaxyCluster object with galaxies
+    radial_units:
+        Radial units of the profile, one of 
+        ["deg", "arcmin", "arcsec", kpc", "Mpc"]
+    bins: array_like, float
+        User defined n_bins + 1 dimensional array of bins, if 'None',
+        the default is 10 equally spaced radial bins
+    cosmo:
+        Cosmology object 
+    cosmo_object_type : str
+        Keywords that can be either "ccl" or "astropy" 
     add_to_cluster: bool
         Adds the outputs to cluster.profile
+
     Returns
     -------
     profile_table: astropy Table
@@ -86,12 +100,13 @@ def make_shear_profile(cluster, bins=None, add_to_cluster=True):
         raise TypeError('shear information is missing in galaxy, ',
                         'must have (e1, e2) or (gamma1, gamma2, kappa).',
                         'Run compute_shear first!')
-    rMpc = cluster.galcat['theta'] *\
-         cosmo.angular_diameter_distance(cluster.z).value
-    r_avg, gt_avg, gt_std = _compute_radial_averages(rMpc, cluster.galcat['gt'])
-    r_avg, gx_avg, gx_std = _compute_radial_averages(rMpc, cluster.galcat['gx'])
+    radial_values = _theta_units_conversion(cluster.galcat['theta'],
+                                        radial_units, z_l=cluster.z,
+                                        cosmo_object_type=cosmo_object_type)
+    r_avg, gt_avg, gt_std = _compute_radial_averages(radial_values, cluster.galcat['gt'])
+    r_avg, gx_avg, gx_std = _compute_radial_averages(radial_values, cluster.galcat['gx'])
     profile_table = Table([r, gt, gterr, gx, gxerr],
-        names = ('r', 'gt', 'gt_err', 'gx', 'gx_err'))
+        names = ('radius', 'gt', 'gt_err', 'gx', 'gx_err'))
     if add_to_cluster:
         cluster.profile = profile_table
     return profile_table
