@@ -12,7 +12,7 @@ from astropy.cosmology import FlatLambdaCDM
 from astropy.table import Table
 from astropy import units as u
 
-
+##############################################################################################
 def _astropy_to_CCL_cosmo_object(astropy_cosmology_object) :
 #ALLOWS TO USE EITHER ASTROPY OR CCL FOR COSMO OBJECT, MAYBE THIS FUNCTION SOULD NOT BE HERE
 #adapted from https://github.com/LSSTDESC/CLMM/blob/issue/111/model-definition/clmm/modeling.py
@@ -28,7 +28,7 @@ def _astropy_to_CCL_cosmo_object(astropy_cosmology_object) :
                   Omega_k=apy_cosmo.Ok0)
     
     return ccl_cosmo
-
+##############################################################################################
 
 
 def _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
@@ -208,7 +208,7 @@ def _make_shear_profile(radius, g, bins = None):
         standard deviation of shear per bin
 
     """
-    if bins == None:
+    if np.any(bins) == None:
         nbins = 10
         bins = np.linspace(np.min(radius),np.max(radius), nbins)
 
