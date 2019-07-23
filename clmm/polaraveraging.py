@@ -216,6 +216,40 @@ def _compute_shear(ra_l, dec_l, ra_s, dec_s, g1, g2, sky="flat"):
     g_x = _compute_g_x(g1,g2,phi)
     return theta, g_t, g_x
 
+def _theta_units_conversion(theta, units="None", cosmo="None", z_l="None", cosmo_object_type = "ccl"):
+    
+    """
+    Converts theta from radian to whatever units specified in units
+    units: one of ["deg", "arcmin", "arcsec", kpc", "Mpc"]
+    cosmo : cosmo object 
+    z_l : cluster redshift
+    cosmo_object_type : string keywords can be either "ccl" or "astropy" 
+    """
+    
+    theta = theta * u.rad
+    
+    if units == "deg":
+        radius = theta.to(u.deg).value
+        
+    if units == "arcmin":
+        radius = theta.to(u.arcmin).value
+        
+    if units == "arcsec":
+        radius = theta.to(u.arcsec).value 
+    
+    if cosmo_object_type == "astropy" and units == "Mpc":
+        radius = theta.value * cosmo.angular_diameter_distance(z_cl).to(u.Mpc).value
+
+    if cosmo_object_type == "astropy" and units == "kpc":
+        radius = theta.value * cosmo.angular_diameter_distance(z_cl).to(u.kpc).value
+        
+    if cosmo_object_type == "ccl" and units == "Mpc":
+        radius = theta.value * ccl.comoving_angular_distance(cosmo_ccl, 1/(1+z_cl)) / (1+z_cl) * u.Mpc.to(u.Mpc)
+        
+    if cosmo_object_type == "ccl" and units == "kpc":
+        radius = theta.value * ccl.comoving_angular_distance(cosmo_ccl, 1/(1+z_cl)) / (1+z_cl) * u.Mpc.to(u.kpc)
+        
+    return radius
 
 def _make_bins(rmin, rmax, n_bins=10, log_bins=False):
     """Define equal sized bins with an array of n_bins+1 bin edges
