@@ -26,3 +26,5 @@ A new and improved cluster mass modeling code descended from [clmassmod](https:/
 * [Matthew Ho](https://github.com/maho3) (CMU)
 * [Marina Ricci](https://github.com/marina-ricci) (LAPP)
 * [Mijin Yoon](https://github.com/mijinyoon)(GCCL)
+* [Shenming Fu](https://github.com/shenmingfu)(Brown)
+* Add your name here!
