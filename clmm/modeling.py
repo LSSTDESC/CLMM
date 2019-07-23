@@ -269,7 +269,7 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     except ImportError :
         from astropy import constants, units
         c = constants.c.to_value(units.('pc/s'))
-        G = constants.G.to_value(units.(....))
+        G = constants.G.to_value(units.('pc3 / (Msun s2)'))
 
         
     aexp_cluster = get_a_from_z(z_cluster)
