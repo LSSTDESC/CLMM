@@ -451,13 +451,13 @@ def create_ccl_cosmo_object_from_astropy(astropy_cosmology_object) :
     Example:
     -------
     Need to replace: 
+    import pyccl as ccl
     cosmo_ccl = ccl.Cosmology(Omega_c=0.27, Omega_b=0.045, h=0.67, A_s=2.1e-9, n_s=0.96)
 
     with 
 
     from astropy.cosmology import FlatLambdaCDM
     astropy_cosmology_object = FlatLambdaCDM(H0=70, Om0=0.27, Ob0=0.045)
-    astropy_cosmology_object = 
     cosmo_ccl = create_ccl_cosmo_object_from_astropy(astropy_cosmology_object)
 
     '''
