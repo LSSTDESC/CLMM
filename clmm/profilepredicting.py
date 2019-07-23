@@ -443,7 +443,10 @@ def create_ccl_cosmo_object_from_astropy(astropy_cosmology_object) :
 
     with 
 
-    cosmo_ccl = create_ccl_cosmo_object_from_astropy()
+    from astropy.cosmology import FlatLambdaCDM
+    astropy_cosmology_object = FlatLambdaCDM(H0=70, Om0=0.3)
+    astropy_cosmology_object = 
+    cosmo_ccl = create_ccl_cosmo_object_from_astropy(astropy_cosmology_object)
 
     '''
     apy_cosmo = astropy_cosmology_object
