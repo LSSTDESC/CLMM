@@ -32,7 +32,7 @@ def _cclify_astropy_cosmo(apy_cosmo) :
     cosmo_ccl = _cclify_astropy_cosmo(astropy_cosmology_object)``
     '''
     if type(apy_cosmo) == astropy.cosmology.core.FlatLambdaCDM:
-        ccl_cosmo = {'Omega_c': apy_cosmo.Om0,
+        ccl_cosmo = {'Omega_c': apy_cosmo.Odm0,
                  'Omega_b': apy_cosmo.Ob0,
                  'h': apy_cosmo.h,
                  'H0': apy_cosmo.H0.value}
@@ -230,11 +230,11 @@ def _get_comoving_angular_distance_a(cosmo, aexp2, aexp1=1.):
     '''
     z1 = _get_z_from_a(aexp1)
     z2 = _get_z_from_a(aexp2)
-    Omega_m = cosmo['Omega_b'] + cosmo['Omega_c']
     if type(cosmo) == astropy.cosmology.core.FlatLambdaCDM:
         ap_cosmo = cosmo
     else:
-        ap_cosmo = astropy.FlatLambdaCDM(H0=cosmo['H_0'], Om0=Omega_m, Ob0=cosmo['Omega_b'])
+        Omega_m = cosmo['Omega_b'] + cosmo['Omega_c']
+        ap_cosmo = astropy.cosmology.core.FlatLambdaCDM(H0=cosmo['H0'], Om0=Omega_m, Ob0=cosmo['Omega_b'])
     # astropy angular diameter distance in Mpc
     # need to return in pc/h
     da = ap_cosmo.angular_diameter_distance_z1z2(z1, z2).to_value(units.pc) * ap_cosmo.h
@@ -262,8 +262,9 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     -----
     We will need gamma inf and kappa inf for alternative z_src_models using Beta_s
     '''
-    c = astropy.constants.c.to_value(astropy.units('pc/s'))
-    G = astropy.constants.G.to_value(astropy.units('pc3 / (Msun s2)'))
+
+    c = constants.c.to(units.pc/units.s).value
+    G = constants.G.to(units.pc**3/units.M_sun/units.s**2).value
 
     aexp_cluster = _get_a_from_z(z_cluster)
     aexp_src = _get_a_from_z(z_source)
@@ -318,7 +319,7 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
                                                    halo_profile_parameterization=halo_profile_parameterization)
 
     if z_src_model == 'single_plane':
-        sigma_c = get_critical_surface_density(cosmo, z_source, z_cluster)
+        sigma_c = get_critical_surface_density(cosmo, z_cluster, z_source)
         gammat = delta_sigma / sigma_c
         return gammat
     elif z_src_model == 'known_z_src': # Discrete case
