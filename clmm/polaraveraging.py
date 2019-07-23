@@ -168,6 +168,16 @@ def _make_bins(rmin, rmax, n_bins=10, log_bins=False):
     binedges: array_like, float
         n_bins+1 dimensional array that defines bin edges
     """
+
+    if rmax<rmin:
+        raise ValueError("rmax should be larger than rmin")
+    if n_bins <= 0:
+        raise ValueError("n_bins must be > 0")
+    if type(log_bins)!=bool:
+        raise TypeError("log_bins must be type bool")
+    if type(n_bins)!=int:
+        raise TypeError("You need an integer number of bins")
+    
     if log_bins==True:
         rmin = np.log(rmin)
         rmax = np.log(rmax)
