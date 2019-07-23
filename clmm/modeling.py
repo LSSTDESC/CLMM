@@ -22,7 +22,8 @@ def set_omega_m(cosmo):
 
     Notes
     -----
-    This could be extended to checking for CCL and using astropy if CCL isn't available
+    This could be extended to checking for CCL and using astropy if CCL isn't available.
+    Also, this actually must be extended in this way because CCL isn't letting us monkeypatch the cosmology object.
     '''
     cosmo['Omega_m'] = cosmo['Omega_c'] + cosmo['Omega_b']
     return cosmo
@@ -61,14 +62,9 @@ def get_z_from_a(a):
     z = 1. / a - 1.
     return z
 
-def get_3d_density_profile(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameterization='nfw'):
+def get_3d_density(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameterization='nfw'):
     '''
-    Computes the 3d density profile:
-    $\rho(r)$
-
-    e.g. For halo_profile_parameterization='nfw,
-
-    $\rho(r)=\frac{\rho_0}{c/(r/R_{vir})(1+c/(r/R_{vir}))^2}$
+    Retrieve the 3d density $\rho(r)$
 
     Parameters
     ----------
@@ -84,7 +80,7 @@ def get_3d_density_profile(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_p
         Mass overdensity definition; defaults to 200.
     halo_profile_parameterization : str, optional
         Profile model parameterization, with the following supported options:
-        `nfw` (default) - [insert citation here]
+        `nfw` (default) - $\rho(r)=\frac{\rho_0}{c/(r/R_{vir})(1+c/(r/R_{vir}))^2}$ [insert citation here]
     z_src_model : str, optional
         Source redshift model, with the following supported options:
         `single_plane` (default) - all sources at one redshift
@@ -94,24 +90,23 @@ def get_3d_density_profile(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_p
     Returns
     -------
     rho : array-like, float
-        3-dimensional mass density profile
+        3-dimensional mass density
 
     Notes
     -----
-    AIM: We should only require arguments that are necessary for all profiles and use another structure to take the arguments necessary for specific profiles.
+    AIM: We should only require arguments that are necessary for all profiles and use another structure to take the arguments necessary for specific models
     '''
     cosmo = set_omega_m(cosmo)
 
-    if halo_profile_parameterization=='nfw':
-        rho = ct.density.rho_nfw_at_r(r3d, mdelta, cdelta, cosmo['Omega_m'] delta=Delta)
+    if halo_profile_parameterization == 'nfw':
+        rho = ct.density.rho_nfw_at_r(r3d, mdelta, cdelta, cosmo['Omega_m'], delta=Delta)
         return rho
     else:
         pass
 
 def predict_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameterization='nfw'):
     '''
-    Computes the surface mass density profile:
-    $\Sigma(R) = \Omega_m\rho_{crit}\int^\inf_{-\inf} dz \Xi_{hm}(\sqrt{R^2+z^2})$, where $\Xi_{hm}$ is the halo mass function.
+    Computes the surface mass density $\Sigma(R) = \Omega_m \rho_{crit} \int^\inf_{-\inf} dz \Xi_{hm} (\sqrt{R^2+z^2})$, where $\Xi_{hm}$ is the halo mass function.
 
     Parameters
     ----------
@@ -141,11 +136,11 @@ def predict_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profi
 
     Notes
     -----
-    AIM: We should only require arguments that are necessary for all profiles and use another structure to take the arguments necessary for specific profiles.
+    AIM: We should only require arguments that are necessary for all models and use another structure to take the arguments necessary for specific models.
     '''
     cosmo = set_omega_m(cosmo)
 
-    if halo_profile_parameterization=='nfw':
+    if halo_profile_parameterization == 'nfw':
         sigma = ct.deltasigma.Sigma_nfw_at_R(r_proj, mdelta, cdelta, cosmo['Omega_m'], delta=Delta)
         return sigma
     else:
@@ -154,8 +149,7 @@ def predict_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profi
 
 def predict_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameterization='nfw'):
     '''
-    Computes the excess surface density profile:
-    $\Delta\Sigma(R) = \bar{\Sigma}(<R)-\Sigma(R)$, where $\bar{\Sigma}(<R)=\frac{2}{R^2}\int^R_0 dR' R'\Sigma(R')$
+    Computes the excess surface density $\Delta\Sigma(R) = \bar{\Sigma}(<R)-\Sigma(R)$, where $\bar{\Sigma}(<R) = \frac{2}{R^2} \int^R_0 dR' R' \Sigma(R')$
 
     Parameters
     ----------
@@ -180,7 +174,7 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, hal
 
     Returns
     -------
-    deltsigma : array-like, float
+    deltasigma : array-like, float
         Excess surface density, DeltaSigma in units of [h M_\\odot/$pc^2$].
     '''
     cosmo = set_omega_m(cosmo)
@@ -191,7 +185,7 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, hal
         # ^ Note: Let's not use this naming convention when transfering ct to ccl....
         deltasigma = ct.deltasigma.DeltaSigma_at_R(r_proj, Sigma_r_proj, Sigma, mdelta, cdelta, cosmo['Omega_m'], delta=Delta)
         return deltasigma
-    else :
+    else:
         pass
 
 def _get_comoving_angular_distance_a(cosmo, aexp1, aexp2=1.):
@@ -214,8 +208,7 @@ def _get_comoving_angular_distance_a(cosmo, aexp1, aexp2=1.):
 
 def get_critical_surface_density(cosmo, z_cluster, z_source):
     '''
-    Computes the critical surface density:
-    $\Sigma_{crit} = \frac{c^2}{4\pi G}\frac{D_s}{D_LD_{LS}}$
+    Computes the critical surface density $\Sigma_{crit} = \frac{c^2}{4\pi G} \frac{D_s}{D_LD_{LS}}$
 
     Parameters
     ----------
@@ -256,10 +249,7 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
 
 def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delta=200, halo_profile_parameterization='nfw', z_src_model='single_plane'):
     '''
-    Computes the tangential shear profile:
-    $\gamma_t = \frac{\Delta\Sigma}{\Sigma_{crit}} = \frac{\bar{\Sigma}-\Sigma}{\Sigma_{crit}}}$
-    or
-    $\gamma_t = \gamma_\inf \times \Beta_s$
+    Computes the tangential shear $\gamma_t = \frac{\Delta\Sigma}{\Sigma_{crit}} = \frac{\bar{\Sigma}-\Sigma}{\Sigma_{crit}}}$, or $\gamma_t = \gamma_\inf \times \Beta_s$
 
     Parameters
     ----------
@@ -289,14 +279,14 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     Returns
     -------
     gammat : array-like, float
-        tangential shear profile
+        tangential shear
 
     Notes
     -----
     We will need gamma inf and kappa inf for alternative z_src_models using Beta_s.
     AIM: Don't we want to raise exceptions rather than errors here?
     '''
-    delta_sigma = calculate_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=Delta,
+    delta_sigma = predict_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=Delta,
                                                    halo_profile_parameterization=halo_profile_parameterization)
 
     if z_src_model == 'single_plane':
@@ -340,14 +330,13 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delt
     Returns
     -------
     kappa : array-like, float
-        Mass convergence profile, kappa.
+        Mass convergence, kappa.
 
     Notes
     -----
     AIM: Don't we want to raise exceptions rather than errors here?
     '''
-    sigma = calculate_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=Delta,
-                                                      halo_profile_parameterization=halo_profile_parameterization)
+    sigma = predict_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=Delta, halo_profile_parameterization=halo_profile_parameterization)
 
     if z_src_model == 'single_plane':
         sigma_c = get_critical_surface_density(cosmo, z_cluster, z_source)
@@ -355,12 +344,12 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delt
         return kappa
     elif z_src_model == 'known_z_src': # Discrete case
         NotImplementedError('Need to implemnt Beta_s functionality, or average sigma/sigma_c kappa_t = Beta_s*kappa_inf')
-    elif z_src_model == 'z_src_distribution' : # Continuous ( from a distribution) case
+    elif z_src_model == 'z_src_distribution': # Continuous ( from a distribution) case
         NotImplementedError('Need to implement Beta_s calculation from integrating distribution of redshifts in each radial bin')
 
 def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delta=200, halo_profile_parameterization='nfw', z_src_model='single_plane'):
     '''
-    Computes the reduced tangential shear: $g_t = \frac{\\gamma_t}{1-\\kappa}$.
+    Computes the reduced tangential shear $g_t = \frac{\\gamma_t}{1-\\kappa}$.
 
     Parameters
     ----------
@@ -390,22 +379,22 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
     Returns
     -------
     gt : array-like, float
-        Reduced tangential shear.
+        Reduced tangential shear
 
     Notes
     -----
     AIM: Don't we want to raise exceptions rather than errors here?
     '''
     if z_src_model == 'single_plane':
-        kappa = compute_convergence_profile(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delta,
+        kappa = predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delta,
                                          halo_profile_parameterization,
                                         z_src_model)
-        gamma_t = compute_tangential_shear_profile(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delta,
+        gamma_t = predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delta,
                                          halo_profile_parameterization,
                                         z_src_model)
         gt = gamma_t / (1 - kappa)
         return gt
     elif z_src_model == 'known_z_src': # Discrete case
         NotImplementedError('Need to implemnt Beta_s functionality, or average sigma/sigma_c kappa_t = Beta_s*kappa_inf')
-    elif z_src_model == 'z_src_distribution' : # Continuous ( from a distribution) case
+    elif z_src_model == 'z_src_distribution': # Continuous ( from a distribution) case
         NotImplementedError('Need to implement Beta_s and Beta_s2 calculation from integrating distribution of redshifts in each radial bin')
