@@ -128,7 +128,10 @@ def _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
         theta = coord_l.separation(coord_s).to(u.rad).value
 
     else:                     
-        dx[dx>180.] = 360.-dx[dx>180.]
+        if isinstance(dx, (float, int)):
+            dx = min(dx, 360.-dx)
+        else:
+            dx[dx>180.] = 360.-dx[dx>180.]
         theta =  np.sqrt(dx**2 + dy**2)
 
     return theta, phi
