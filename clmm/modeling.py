@@ -31,13 +31,13 @@ def _cclify_astropy_cosmo(apy_cosmo) :
     astropy_cosmology_object = FlatLambdaCDM(H0=70, Om0=0.27, Ob0=0.045)
     cosmo_ccl = create_ccl_cosmo_object_from_astropy(astropy_cosmology_object)``
     '''
-    if type(apy_cosmo) == pyccl.core.Cosmology:
-        ccl_cosmo = apy_cosmo
-    else:
+    if type(apy_cosmo) == astropy.cosmology.core.FlatLambdaCDM:
         ccl_cosmo = {'Omega_c': apy_cosmo.Om0,
                  'Omega_b': apy_cosmo.Ob0,
                  'h': apy_cosmo.h,
                  'H0': apy_cosmo.H0.value}
+    else:
+        ccl_cosmo = apy_cosmo
     return ccl_cosmo
 
 def _get_a_from_z(z):
@@ -229,10 +229,10 @@ def _get_comoving_angular_distance_a(cosmo, aexp2, aexp1=1.):
     z1 = _get_z_from_a(aexp1)
     z2 = _get_z_from_a(aexp2)
     Omega_m = cosmo['Omega_b'] + cosmo['Omega_c']
-    if type(cosmo) == pyccl.core.Cosmology:
-        ap_cosmo = astropy.FlatLambdaCDM(H0=cosmo['H_0'], Om0=Omega_m, Ob0=cosmo['Omega_b'])
-    else:
+    if type(cosmo) == astropy.cosmology.core.FlatLambdaCDM:
         ap_cosmo = cosmo
+    else:
+        ap_cosmo = astropy.FlatLambdaCDM(H0=cosmo['H_0'], Om0=Omega_m, Ob0=cosmo['Omega_b'])
     # astropy angular diameter distance in Mpc
     # need to return in pc/h
     da = ap_cosmo.angular_diameter_distance_z1z2(z1, z2).to_value(units.pc) * ap_cosmo.h
