@@ -16,12 +16,12 @@ def set_omega_m(cosmo):
 
     Parameters
     ----------
-    cosmo : [type(cosmo)]
+    cosmo : pyccl.core.Cosmology object
         CCL Cosmology object
 
     Returns
     -------
-    cosmo : [type(cosmo)]
+    cosmo : pyccl.core.Cosmology object
         modified CCL Cosmology object
     '''
     cosmo['Omega_m'] = cosmo['Omega_c'] + cosmo['Omega_b']
@@ -54,20 +54,18 @@ def get_3d_density_profile(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_p
     ----------
     r3d : array-like, float
         The radial positions in Mpc/h.
-    r_proj : array-like
-        The projected radial positions in Mpc/h.
     mdelta : float
         Galaxy cluster mass in Msun/h.
     cdelta : float
         Galaxy cluster NFW concentration.
-    cosmo : [type(cosmo)]
+    cosmo : pyccl.core.Cosmology object
         CCL Cosmology object
     Delta : int, optional
         Mass overdensity definition; defaults to 200.
-    halo_profile_parameterization :obj:`str`, optional
+    halo_profile_parameterization : str, optional
         Profile model parameterization, with the following supported options:
         `nfw` (default) - [insert citation here]
-    z_src_model : `str`, optional
+    z_src_model : str, optional
         Source redshift model, with the following supported options:
         `single_plane` (default) - all sources at one redshift
         `known_z_src` - known individual source galaxy redshifts, e.g. discrete case
@@ -103,7 +101,7 @@ def calculate_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_pro
         Galaxy cluster mass in Msun/h.
     cdelta : float
         Galaxy cluster NFW concentration.
-    cosmo : [type(cosmo)]
+    cosmo : pyccl.core.Cosmology object
         CCL Cosmology object
     Delta : int, optional
         Mass overdensity definition; defaults to 200.
@@ -147,7 +145,7 @@ def calculate_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, h
         Galaxy cluster mass in Msun/h.
     cdelta : float
         Galaxy cluster NFW concentration.
-    cosmo : [type(cosmo)]
+    cosmo : pyccl.core.Cosmology object
         CCL Cosmology object
     Delta : int, optional
         Mass overdensity definition; defaults to 200.
@@ -201,7 +199,7 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
 
     Parameters
     ----------
-    cosmo : [type(cosmo)]
+    cosmo : pyccl.core.Cosmology object
         CCL Cosmology object
     z_cluster : float
         Galaxy cluster redshift
@@ -255,7 +253,7 @@ def compute_tangential_shear_profile(r_proj, mdelta, cdelta, z_cluster, z_source
         Galaxy cluster redshift
     z_source : float
         Background source galaxy redshift
-    cosmo : [type(cosmo)]
+    cosmo : pyccl.core.Cosmology object
         CCL Cosmology object
     Delta : int, optional
         Mass overdensity definition.  Defaults to 200.
@@ -309,7 +307,7 @@ def compute_convergence_profile(r_proj, mdelta, cdelta, z_cluster, z_source, cos
         Galaxy cluster redshift
     z_source : float
         Background source galaxy redshift
-    cosmo : [type(cosmo)]
+    cosmo : pyccl.core.Cosmology object
         CCL Cosmology object
     Delta : int, optional
         Mass overdensity definition.  Defaults to 200.
@@ -360,7 +358,7 @@ def compute_reduced_tangential_shear_profile(r_proj, mdelta, cdelta, z_cluster, 
         Galaxy cluster redshift
     z_source : float
         Background source galaxy redshift
-    cosmo : [type(cosmo)]
+    cosmo : pyccl.core.Cosmology object
         CCL Cosmology object
     Delta : int, optional
         Mass overdensity definition.  Defaults to 200.
