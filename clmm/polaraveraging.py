@@ -7,10 +7,9 @@ from astropy.coordinates import SkyCoord
 from astropy.cosmology import FlatLambdaCDM
 from astropy.table import Table
 from astropy import units as u
-import GCRCatalogs
 
 
-def compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
+def _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
     
     """ Returns the characteristic angles of the lens system
     
@@ -42,7 +41,7 @@ def compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
     return theta, phi
 
 
-def compute_g_t(g1,g2,phi):
+def _compute_g_t(g1,g2,phi):
 
     """ Computes the tangential shear for each source in the galaxy catalog
 
@@ -69,7 +68,7 @@ def compute_g_t(g1,g2,phi):
     return g_t
 
 
-def compute_g_x(g1,g2,phi):
+def _compute_g_x(g1,g2,phi):
     
      """ computes cross shear for each source in galaxy catalog
     
@@ -95,7 +94,7 @@ def compute_g_x(g1,g2,phi):
     return g_x
 
 
-def compute_shear(ra_l,dec_l,ra_s, dec_s, g1, g2, sky = "flat"):
+def _compute_shear(ra_l,dec_l,ra_s, dec_s, g1, g2, sky = "flat"):
      """ wrapper that returns tangential and cross shear along 
          with radius in radians
     
@@ -125,15 +124,15 @@ def compute_shear(ra_l,dec_l,ra_s, dec_s, g1, g2, sky = "flat"):
     """ 
     
   
-    theta, phi = compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky = sky)
-    g_t = compute_g_t(g1,g2,phi)
-    g_x = compute_g_x(g1,g2,phi)
+    theta, phi = _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky = sky)
+    g_t = _compute_g_t(g1,g2,phi)
+    g_x = _compute_g_x(g1,g2,phi)
 
     return theta, g_t, g_x
 
 
 
-def make_bins(rmin, rmax, n_bins=10, log_bins=False):
+def _make_bins(rmin, rmax, n_bins=10, log_bins=False):
     """ 
     define equal sized bins with an array of n_bins+1 bin edges
     
@@ -164,7 +163,7 @@ def make_bins(rmin, rmax, n_bins=10, log_bins=False):
 
 
 
-def make_shear_profile(radius, g, bins = None):
+def _make_shear_profile(radius, g, bins = None):
 
     """ returns astropy table containing shear profile of either tangential or cross shear
 
@@ -208,7 +207,7 @@ def make_shear_profile(radius, g, bins = None):
 
 
 
-def plot_profiles(r, gt, gterr, gx=None, gxerr=None, r_units = "" ):
+def _plot_profiles(r, gt, gterr, gx=None, gxerr=None, r_units = "" ):
     
     """ plot shear profiles for validation
     Parameters
