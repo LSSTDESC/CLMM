@@ -88,7 +88,7 @@ def get_3d_density_profile(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_p
     else:
         pass
 
-def calculate_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameterization='nfw'):
+def predict_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameterization='nfw'):
     '''
     Computes the surface mass density profile:
     $\Sigma(R) = \Omega_m\rho_{crit}\int^\inf_{-\inf} dz \Xi_{hm}(\sqrt{R^2+z^2})$, where $\Xi_{hm}$ is the halo mass function.
@@ -132,7 +132,7 @@ def calculate_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_pro
         #return ct.Sigma_at_R(r_proj, mdelta, cdelta, cosmo.Omegam, delta=Delta)
         pass
 
-def calculate_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameterization='nfw'):
+def predict_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameterization='nfw'):
     '''
     Computes the excess surface density profile:
     $\Delta\Sigma(R) = \bar{\Sigma}(<R)-\Sigma(R)$, where $\bar{\Sigma}(<R)=\frac{2}{R^2}\int^R_0 dR' R'\Sigma(R')$
@@ -174,7 +174,7 @@ def calculate_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, h
     else:
         pass
 
-def _comoving_angular_distance_aexp1_aexp2(cosmo, aexp1, aexp2):
+def _get_comoving_angular_distance_a(cosmo, aexp1, aexp2=1.):
     '''
     This is a monkey-patched method to calculate d_LS (angular
     distance between lens and source) because CCL does not yet have
@@ -203,8 +203,8 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
         CCL Cosmology object
     z_cluster : float
         Galaxy cluster redshift
-    z_source : float
-        Background source galaxy redshift
+    z_source : array-like, float
+        Background source galaxy redshift(s)
 
     Returns
     -------
@@ -228,13 +228,13 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     aexp_src = get_a_from_z(z_source)
     d_l = ccl.comoving_angular_distance(cosmo, aexp_cluster) * aexp_cluster * h * mpc_to_pc
     d_s = ccl.comoving_angular_distance(cosmo, aexp_src) * aexp_src * h * mpc_to_pc
-    d_ls = _comoving_angular_distance_aexp1_aexp2(cosmo, aexp_cluster, aexp_src)
+    d_ls = _get_comoving_angular_distance_a(cosmo, aexp_cluster, aexp_src)
 
     # will need to deal with units: distances in Mpc and some CCL constants in SI
     sigmacrit = d_s / (d_l * d_ls) * c * c / (4 * np.pi * G)
     return sigmacrit
 
-def compute_tangential_shear_profile(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delta=200, halo_profile_parameterization='nfw', z_src_model='single_plane'):
+def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delta=200, halo_profile_parameterization='nfw', z_src_model='single_plane'):
     '''
     Computes the tangential shear profile:
     $\gamma_t = \frac{\Delta\Sigma}{\Sigma_{crit}} = \frac{\bar{\Sigma}-\Sigma}{\Sigma_{crit}}}$
@@ -251,8 +251,8 @@ def compute_tangential_shear_profile(r_proj, mdelta, cdelta, z_cluster, z_source
         Galaxy cluster NFW concentration.
     z_cluster : float
         Galaxy cluster redshift
-    z_source : float
-        Background source galaxy redshift
+    z_source : array-like, float
+        Background source galaxy redshift(s)
     cosmo : pyccl.core.Cosmology object
         CCL Cosmology object
     Delta : int, optional
@@ -288,12 +288,9 @@ def compute_tangential_shear_profile(r_proj, mdelta, cdelta, z_cluster, z_source
     elif z_src_model == 'z_src_distribution' : # Continuous ( from a distribution) case
         NotImplementedError('Need to implement Beta_s calculation from integrating distribution of redshifts in each radial bin')
 
-def compute_convergence_profile(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delta=200, halo_profile_parameterization='nfw', z_src_model='single_plane'):
+def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delta=200, halo_profile_parameterization='nfw', z_src_model='single_plane'):
     '''
-    Computes the mass convergence profile:
-    $\kappa = \frac{\Sigma}{\Sigma_{crit}}$
-    or
-    $\kappa = \kappa_\inf \times \Beta_s$
+    Computes the mass convergence $\kappa = \frac{\Sigma}{\Sigma_{crit}}$ or $\kappa = \kappa_\inf \times \Beta_s$
 
     Parameters
     ----------
@@ -305,8 +302,8 @@ def compute_convergence_profile(r_proj, mdelta, cdelta, z_cluster, z_source, cos
         Galaxy cluster NFW concentration.
     z_cluster : float
         Galaxy cluster redshift
-    z_source : float
-        Background source galaxy redshift
+    z_source : array-like, float
+        Background source galaxy redshift(s)
     cosmo : pyccl.core.Cosmology object
         CCL Cosmology object
     Delta : int, optional
@@ -341,10 +338,9 @@ def compute_convergence_profile(r_proj, mdelta, cdelta, z_cluster, z_source, cos
     elif z_src_model == 'z_src_distribution' : # Continuous ( from a distribution) case
         NotImplementedError('Need to implement Beta_s calculation from integrating distribution of redshifts in each radial bin')
 
-def compute_reduced_tangential_shear_profile(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delta=200, halo_profile_parameterization='nfw', z_src_model='single_plane'):
+def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delta=200, halo_profile_parameterization='nfw', z_src_model='single_plane'):
     '''
-    Computes the reduced tangential shear profile:
-    $g_t = \frac{\\gamma_t}{1-\\kappa}$.
+    Computes the reduced tangential shear: $g_t = \frac{\\gamma_t}{1-\\kappa}$.
 
     Parameters
     ----------
@@ -356,8 +352,8 @@ def compute_reduced_tangential_shear_profile(r_proj, mdelta, cdelta, z_cluster, 
         Galaxy cluster NFW concentration.
     z_cluster : float
         Galaxy cluster redshift
-    z_source : float
-        Background source galaxy redshift
+    z_source : array-like, float
+        Background source galaxy redshift(s)
     cosmo : pyccl.core.Cosmology object
         CCL Cosmology object
     Delta : int, optional
