@@ -7,7 +7,7 @@ from astropy import constants, cosmology, units
 import cluster_toolkit as ct
 import numpy as np
 
-def _cclify_astropy_cosmo(apy_cosmo) :
+def _cclify_astropy_cosmo(apy_cosmo):
     '''
     Generates a ccl-looking cosmology object (with all values needed for modeling) from an astropy cosmology object.
 
@@ -226,7 +226,7 @@ def _get_comoving_angular_distance_a(cosmo, aexp2, aexp1=1.):
     This is definitely broken if other cosmological parameter specifications differ, so we'll have to revise this later.
 
     We need to switch angular_diameter_distance_z1z2 to CCL equivalent angular distance once implemented
-    
+
     '''
     z1 = _get_z_from_a(aexp1)
     z2 = _get_z_from_a(aexp2)
@@ -256,7 +256,7 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     Returns
     -------
     sigmacrit : float
-        Cosmology-dependent critical surface density in units of [h M_\\odot/$pc^2$]. 
+        Cosmology-dependent critical surface density in units of [h M_\\odot/$pc^2$].
 
     Notes
     -----
