@@ -13,6 +13,7 @@ from astropy.table import Table
 from astropy import units as u
 
 
+##############################################################################################
 def _astropy_to_CCL_cosmo_object(astropy_cosmology_object) :
 #ALLOWS TO USE EITHER ASTROPY OR CCL FOR COSMO OBJECT, MAYBE THIS FUNCTION SOULD NOT BE HERE
 #adapted from https://github.com/LSSTDESC/CLMM/blob/issue/111/model-definition/clmm/modeling.py
@@ -28,7 +29,72 @@ def _astropy_to_CCL_cosmo_object(astropy_cosmology_object) :
                   Omega_k=apy_cosmo.Ok0)
     
     return ccl_cosmo
+##############################################################################################
 
+def compute_shear(cluster, geometry="flat", add_to_cluster=True):
+    """Computs tangential and cross shear along 
+         with radius in radians
+    Parameters
+    ----------
+    cluster: GalaxyCluster object
+        GalaxyCluster object with galaxies
+    geometry: str ('flat', 'curve')
+        Geometry to be used in the computation of theta, phi
+    add_to_cluster: bool
+        Adds the outputs to cluster.galcat
+    Returns
+    -------
+    gt: float vector
+        tangential shear
+    gx: float vector
+        cross shear
+    theta: float vector
+        radius in radians
+    """
+    if not ('e1' in cluster.galcat.columns()  
+        and 'e2' in cluster.galcat.columns()):
+        raise TypeError('shear information is missing in galaxy, ',
+                        'must have (e1, e2) or (gamma1, gamma2, kappa)')
+    theta, gt , gx = _compute_shear(cluster.ra, cluster.dec, 
+        cluster.galcat['ra'], cluster.galcat['dec'], 
+        cluster.galcat['e1'], cluster.galcat['e2'], 
+        sky=geometry)
+    if add_to_cluster:
+        cluster.galcat['theta'] = theta
+        cluster.galcat['gt'] = gt
+        cluster.galcat['gx'] = gx
+    return theta, gt , gx
+
+
+def make_shear_profile(cluster, bins=None, add_to_cluster=True):
+    """ Computes shear profile of the cluster
+    Parameters
+    ----------
+    cluster: GalaxyCluster object
+        GalaxyCluster object with galaxies
+    add_to_cluster: bool
+        Adds the outputs to cluster.profile
+    Returns
+    -------
+    profile_table: astropy Table
+        Table with r_profile, gt profile (and error) and
+        gx profile (and error)
+    """
+    if not ('gt' in cluster.galcat.columns()  
+        and 'gx' in cluster.galcat.columns()
+        and 'theta' in cluster.galcat.columns()):
+        raise TypeError('shear information is missing in galaxy, ',
+                        'must have (e1, e2) or (gamma1, gamma2, kappa).',
+                        'Run compute_shear first!')
+    rMpc = cluster.galcat['theta'] *\
+         cosmo.angular_diameter_distance(cluster.z).value
+    r_avg, gt_avg, gt_std = _make_shear_profile(rMpc, cluster.galcat['gt'])
+    r_avg, gx_avg, gx_std = _make_shear_profile(rMpc, cluster.galcat['gx'])
+    profile_table = Table([r, gt, gterr, gx, gxerr],
+        names = ('r', 'gt', 'gt_err', 'gx', 'gx_err'))
+    if add_to_cluster:
+        cluster.profile = profile_table
+    return profile_table
 
 
 def _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
@@ -63,6 +129,7 @@ def _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
         # theta = coord_l.separation(coord_s).to(u.rad).value
 
     else:                     
+        dx[dx>180.] = 360.-dx[dx>180.]
         theta =  np.sqrt(dx**2 + dy**2)
 
     return theta, phi
@@ -151,6 +218,40 @@ def _compute_shear(ra_l, dec_l, ra_s, dec_s, g1, g2, sky="flat"):
     g_x = _compute_g_x(g1,g2,phi)
     return theta, g_t, g_x
 
+def _theta_units_conversion(theta, units="None", cosmo="None", z_l="None", cosmo_object_type = "astropy"):
+    
+    """
+    Converts theta from radian to whatever units specified in units
+    units: one of ["deg", "arcmin", "arcsec", kpc", "Mpc"]
+    cosmo : cosmo object 
+    z_l : cluster redshift
+    cosmo_object_type : string keywords that can be either "ccl" or "astropy" 
+    """
+    
+    theta = theta * u.rad
+    
+    if units == "deg":
+        radius = theta.to(u.deg).value
+        
+    if units == "arcmin":
+        radius = theta.to(u.arcmin).value
+        
+    if units == "arcsec":
+        radius = theta.to(u.arcsec).value 
+    
+    if cosmo_object_type == "astropy" and units == "Mpc":
+        radius = theta.value * cosmo.angular_diameter_distance(z_cl).to(u.Mpc).value
+
+    if cosmo_object_type == "astropy" and units == "kpc":
+        radius = theta.value * cosmo.angular_diameter_distance(z_cl).to(u.kpc).value
+        
+    if cosmo_object_type == "ccl" and units == "Mpc":
+        radius = theta.value * ccl.comoving_angular_distance(cosmo_ccl, 1/(1+z_cl)) / (1+z_cl) * u.Mpc.to(u.Mpc)
+        
+    if cosmo_object_type == "ccl" and units == "kpc":
+        radius = theta.value * ccl.comoving_angular_distance(cosmo_ccl, 1/(1+z_cl)) / (1+z_cl) * u.Mpc.to(u.kpc)
+        
+    return radius
 
 def _make_bins(rmin, rmax, n_bins=10, log_bins=False):
     """Define equal sized bins with an array of n_bins+1 bin edges
@@ -201,7 +302,7 @@ def _make_shear_profile(radius, g, bins=None):
     gerr_profile: array_like, float
         Standard deviation of shear per bin
     """
-    if bins == None:
+    if np.any(bins) == None:
         nbins = 10
         bins = np.linspace(np.min(radius), np.max(radius), nbins)
 
