@@ -6,7 +6,7 @@ from scipy import integrate
 from scipy.interpolate import interp1d
 import pyccl as ccl
 sys.path.append('../../clmm')
-import profilepredicting as pp
+import modeling as pp
 import pdb
 
 class MockData(): 
@@ -160,7 +160,7 @@ class MockData():
 
         x_deg = (x_mpc/Dl)*(180./np.pi) #ra
         y_deg = (y_mpc/Dl)*(180./np.pi) #dec
-        gamt = pp.compute_tangential_shear_profile(r_mpc, mdelta=M, cdelta=c, z_cluster=zL, z_source=z_true,
+        gamt = pp.predict_tangential_shear(r_mpc, mdelta=M, cdelta=c, z_cluster=zL, z_source=z_true,
                                                   cosmo=self.config['cosmo'], Delta=self.config['Delta'],
                                                   halo_profile_parameterization='nfw',z_src_model='single_plane')
         
