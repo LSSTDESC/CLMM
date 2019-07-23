@@ -185,7 +185,7 @@ def _make_shear_profile(radius, g, bins = None):
         standard deviation of shear per bin
 
     """
-    if bins == None:
+    if np.any(bins) == None:
         nbins = 10
         bins = np.linspace(np.min(radius),np.max(radius), nbins)
 
