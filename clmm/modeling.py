@@ -5,28 +5,6 @@ Functions for theoretical models.  Default is NFW.
 import numpy as np
 import cluster_toolkit as ct
 
-def set_omega_m(cosmo):
-    '''
-    Retrieves matter energy density from cosmology
-
-    Parameters
-    ----------
-    cosmo : pyccl.core.Cosmology object
-        CCL Cosmology object
-
-    Returns
-    -------
-    cosmo : pyccl.core.Cosmology object
-        modified CCL Cosmology object
-
-    Notes
-    -----
-    This could be extended to checking for CCL and using astropy if CCL isn't available.
-    Also, this actually must be extended in this way because CCL isn't letting us monkeypatch the cosmology object.
-    '''
-    cosmo['Omega_m'] = cosmo['Omega_c'] + cosmo['Omega_b']
-    return cosmo
-
 def get_a_from_z(z):
     '''
     Convert redshift to scale factor
@@ -95,10 +73,10 @@ def get_3d_density(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameter
     -----
     AIM: We should only require arguments that are necessary for all profiles and use another structure to take the arguments necessary for specific models
     '''
-    cosmo = set_omega_m(cosmo)
-
+    Omega_m = cosmo['Omega_c'] + cosmo['Omega_b']
+    
     if halo_profile_parameterization == 'nfw':
-        rho = ct.density.rho_nfw_at_r(r3d, mdelta, cdelta, cosmo['Omega_m'], delta=Delta)
+        rho = ct.density.rho_nfw_at_r(r3d, mdelta, cdelta, Omega_m, delta=Delta)
         return rho
     else:
         pass
@@ -137,10 +115,10 @@ def predict_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profi
     -----
     AIM: We should only require arguments that are necessary for all models and use another structure to take the arguments necessary for specific models.
     '''
-    cosmo = set_omega_m(cosmo)
+    Omega_m = cosmo['Omega_c'] + cosmo['Omega_b']    
 
     if halo_profile_parameterization == 'nfw':
-        sigma = ct.deltasigma.Sigma_nfw_at_R(r_proj, mdelta, cdelta, cosmo['Omega_m'], delta=Delta)
+        sigma = ct.deltasigma.Sigma_nfw_at_R(r_proj, mdelta, cdelta, Omega_m, delta=Delta)
         return sigma
     else:
         #return ct.Sigma_at_R(r_proj, mdelta, cdelta, cosmo.Omegam, delta=Delta)
@@ -176,13 +154,13 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, hal
     deltasigma : array-like, float
         Excess surface density, DeltaSigma in units of [h M_\\odot/$pc^2$].
     '''
-    cosmo = set_omega_m(cosmo)
+    Omega_m = cosmo['Omega_c'] + cosmo['Omega_b']    
 
     if halo_profile_parameterization == 'nfw':
         Sigma_r_proj = np.logspace(-3, 4, 1000)
-        Sigma = ct.deltasigma.Sigma_nfw_at_R(Sigma_r_proj, mdelta, cdelta, cosmo['Omega_m'], delta=Delta)
+        Sigma = ct.deltasigma.Sigma_nfw_at_R(Sigma_r_proj, mdelta, cdelta, Omega_m, delta=Delta)
         # ^ Note: Let's not use this naming convention when transfering ct to ccl....
-        deltasigma = ct.deltasigma.DeltaSigma_at_R(r_proj, Sigma_r_proj, Sigma, mdelta, cdelta, cosmo['Omega_m'], delta=Delta)
+        deltasigma = ct.deltasigma.DeltaSigma_at_R(r_proj, Sigma_r_proj, Sigma, mdelta, cdelta, Omega_m, delta=Delta)
         return deltasigma
     else:
         pass
@@ -207,7 +185,10 @@ def comoving_angular_distance_aexp1_aexp2(cosmo, aexp1, aexp2):
     z2 = get_z_from_a(aexp2)
     from astropy.cosmology import FlatLambdaCDM
     from astropy import units as u
-    ap_cosmo = FlatLambdaCDM(H0=ccl_cosmo['H_0'], Om0=ccl_cosmo['Omega_m'])
+
+    Omega_m = cosmo['Omega_b']+cosmo['Omega_c']
+    ap_cosmo = FlatLambdaCDM(H0=cosmo['H_0'], Om0=Omega_m, Ob0=cosmo['Omega_b'])
+
     # astropy angular diameter distance in Mpc
     # need to return in pc/h
     da = ap_cosmo.angular_diameter_distance_z1z2(z1, z2).to_value(u.pc) * cosmo.h
@@ -235,8 +216,9 @@ def comoving_angular_distance(cosmo, aexp):
         from astropy.cosmology import FlatLambdaCDM
         from astropy import units as u
 
+        Omega_m = cosmo['Omega_b']+cosmo['Omega_c']
         z = get_z_from_a(aexp)
-        ap_cosmo = FlatLambdaCDM(H0=cosmo['H_0'], Om0=cosmo['Omega_m'])
+        ap_cosmo = FlatLambdaCDM(H0=cosmo['H_0'], Om0=Omega_m, Ob0=cosmo['Omega_b'])
         # astropy angular diameter distance in Mpc
         # need to return in pc/h
         da = ap_cosmo.angular_diameter_distance(z).to_value(u.pc) * cosmo['h']
