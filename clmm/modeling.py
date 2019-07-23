@@ -106,7 +106,7 @@ def get_3d_density(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameter
 
     Notes
     -----
-    AIM: We should only require arguments that are necessary for all profiles and use another structure to take the arguments necessary for specific models
+    Need to refactor later so we only require arguments that are necessary for all profiles and use another structure to take the arguments necessary for specific models
     '''
     cosmo = _cclify_astropy_cosmo(cosmo)
     Omega_m = cosmo['Omega_c'] + cosmo['Omega_b']
@@ -149,7 +149,7 @@ def predict_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profi
 
     Notes
     -----
-    AIM: We should only require arguments that are necessary for all models and use another structure to take the arguments necessary for specific models.
+    Need to refactory so we only require arguments that are necessary for all models and use another structure to take the arguments necessary for specific models.
     '''
     cosmo = _cclify_astropy_cosmo(cosmo)
     Omega_m = cosmo['Omega_c'] + cosmo['Omega_b']
@@ -225,7 +225,7 @@ def _get_comoving_angular_distance_a(cosmo, aexp2, aexp1=1.):
     -----
     This is definitely broken if other cosmological parameter specifications differ, so we'll have to revise this later.
 
-    AIM : we need to switch angular_diameter_distance_z1z2 to CCL equivalent angular distance once implemented
+    We need to switch angular_diameter_distance_z1z2 to CCL equivalent angular distance once implemented
     
     '''
     z1 = _get_z_from_a(aexp1)
@@ -313,7 +313,7 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     Notes
     -----
     We will need gamma inf and kappa inf for alternative z_src_models using Beta_s.
-    AIM: Don't we want to raise exceptions rather than errors here?
+    Need to figure out if we want to raise exceptions rather than errors here?
     '''
     delta_sigma = predict_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=Delta,
                                                    halo_profile_parameterization=halo_profile_parameterization)
@@ -363,7 +363,7 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delt
 
     Notes
     -----
-    AIM: Don't we want to raise exceptions rather than errors here?
+    Need to figure out if we want to raise exceptions rather than errors here?
     '''
     sigma = predict_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=Delta, halo_profile_parameterization=halo_profile_parameterization)
 
@@ -412,7 +412,7 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
 
     Notes
     -----
-    AIM: Don't we want to raise exceptions rather than errors here?
+    Need to figure out if we want to raise exceptions rather than errors here?
     '''
     if z_src_model == 'single_plane':
         kappa = predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delta,
