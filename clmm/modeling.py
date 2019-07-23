@@ -266,8 +266,8 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     #     c = ccl.physical_constants.CLIGHT * m_to_pc
     #     G = ccl.physical_constants.GNEWT * (m_to_pc)**3 / (kg_to_msun)
     # else:
-    c = constants.c.to_value(units('pc/s'))
-    G = constants.G.to_value(units('pc3 / (Msun s2)'))
+    c = astropy.constants.c.to_value(astropy.units('pc/s'))
+    G = astropy.constants.G.to_value(astropy.units('pc3 / (Msun s2)'))
 
     aexp_cluster = _get_a_from_z(z_cluster)
     aexp_src = _get_a_from_z(z_source)
