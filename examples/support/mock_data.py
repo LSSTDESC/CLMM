@@ -159,7 +159,7 @@ class MockData():
 
         x_deg = (x_mpc/Dl)*(180./np.pi) #ra
         y_deg = (y_mpc/Dl)*(180./np.pi) #dec
-        gamt = pp.predict_tangential_shear(r_mpc, mdelta=M, cdelta=c, z_cluster=zL, z_source=z_true,
+        gamt = pp.predict_reduced_tangential_shear(r_mpc, mdelta=M, cdelta=c, z_cluster=zL, z_source=z_true,
                                                   cosmo=self.config['cosmo'], Delta=self.config['Delta'],
                                                   halo_profile_parameterization='nfw',z_src_model='single_plane')
         
@@ -175,7 +175,7 @@ class MockData():
         e2 = -gamt*sin2phi
         if is_zerr:
             self.catalog = Table([seqnr, -x_deg, y_deg, e1, e2, z_best, pdf_grid, zbins_grid], \
-                                  names=('id', 'ra','dec','gamma1','gamma2', 'z', 'z_pdf', 'z_bins'))
+                                  names=('id', 'ra','dec','e1','e2', 'z', 'z_pdf', 'z_bins'))
         else:
             self.catalog = Table([seqnr, -x_deg, y_deg, e1, e2, z_best], \
-                                names=('id', 'ra','dec','gamma1','gamma2', 'z'))
+                                names=('id', 'ra','dec','e1','e2', 'z'))
