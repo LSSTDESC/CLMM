@@ -3,7 +3,7 @@ Functions for theoretical models.  Default is NFW.
 """
 
 import astropy
-from astropy import constants, units
+from astropy import constants, cosmology, units
 import cluster_toolkit as ct
 import numpy as np
 
