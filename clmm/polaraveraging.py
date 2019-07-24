@@ -408,15 +408,12 @@ def _compute_radial_averages(radius, g, bins=None):
         Standard deviation of shear per bin
     """
 
-    if type(radius) != np.ndarray:
+    if not isinstance(radius, (np.ndarray)):
         raise TypeError("radius must be an array")
-    if type(g) != np.ndarray:
+    if not isinstance(g, (np.ndarray)):
         raise TypeError("g must be an array")
     if len(radius) != len(g):
-        raise TypeError("radius and g must be arrays of the same length")
-    if len(bins) < 2:
-        raise TypeError("you need to define at least one bin")
-    
+        raise TypeError("radius and g must be arrays of the same length") 
     if np.any(bins) == None:
         nbins = 10
         bins = np.linspace(np.min(radius), np.max(radius), nbins)
