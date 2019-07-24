@@ -106,8 +106,8 @@ def make_shear_profile(cluster, radial_units, bins=None,
     radial_values = _theta_units_conversion(cluster.galcat['theta'],
                                         radial_units, z_cl=cluster.z,
                                         cosmo_object_type=cosmo_object_type)
-    r_avg, gt_avg, gt_std = _compute_radial_averages(radial_values, cluster.galcat['gt'])
-    r_avg, gx_avg, gx_std = _compute_radial_averages(radial_values, cluster.galcat['gx'])
+    r_avg, gt_avg, gt_std = _compute_radial_averages(radial_values, cluster.galcat['gt'].data)
+    r_avg, gx_avg, gx_std = _compute_radial_averages(radial_values, cluster.galcat['gx'].data)
     profile_table = Table([r_avg, gt_avg, gt_std, gx_avg, gx_avg],
         names = ('radius', 'gt', 'gt_err', 'gx', 'gx_err'))
     if add_to_cluster:
