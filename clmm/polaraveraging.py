@@ -102,7 +102,7 @@ def make_shear_profile(cluster, radial_units, bins=None,
                         'must have tangential and cross shears (gt,gx).',
                         'Run compute_shear first!')
     radial_values = _theta_units_conversion(cluster.galcat['theta'],
-                                        radial_units, z_l=cluster.z,
+                                        radial_units, z_cl=cluster.z,
                                         cosmo_object_type=cosmo_object_type)
     r_avg, gt_avg, gt_std = _compute_radial_averages(radial_values, cluster.galcat['gt'])
     r_avg, gx_avg, gx_std = _compute_radial_averages(radial_values, cluster.galcat['gx'])
@@ -252,7 +252,7 @@ def _theta_units_conversion(theta, units, z_cl=None, cosmo=None,
     Converts theta from radian to whatever units specified in units
     units: one of ["rad", deg", "arcmin", "arcsec", kpc", "Mpc"]
     cosmo : cosmo object 
-    z_l : cluster redshift
+    z_cl : cluster redshift
     cosmo_object_type : string keywords that can be either "ccl" or "astropy" 
     """
     
