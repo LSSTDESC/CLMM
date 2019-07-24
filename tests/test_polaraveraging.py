@@ -1,6 +1,7 @@
 """
 Tests for polaraveraging.py
 """
+import clmm
 import clmm.polaraveraging as pa
 from numpy import testing
 import numpy as np
@@ -184,6 +185,35 @@ def test_compute_shear():
             ),
         rtol=rtol)
 
+def test_gc_wrapper():
+    # the numbers on this test must be revise, output values were extracted from the first run of the code
+    ra_in = np.array([161.29, 161.34])
+    dec_in =  np.array([51.45, 51.55])
+    theta_out = [0.00077050407583119666, 0.00106951489719733675]
+    gt_out = [ 1.408693e+00,  1.315362e+00]
+    gx_out = [ 1.248319e-01, -5.194458e-01]
+    gc = clmm.GalaxyCluster(unique_id='blah', 
+        ra=161.32, dec=51.49, z=0.5,
+        galcat=Table([
+            np.append(ra_in, ra_in),
+            np.append(dec_in, dec_in),
+            np.ones(4), np.ones(4)],
+            names=('ra', 'dec', 'e1', 'e2'))
+        )
+    #test compute_shear
+    gc.compute_shear()
+    testing.assert_allclose(
+        [gc.galcat[c] for c in ('theta', 'gt', 'gx')],
+        [np.append(theta_out, theta_out),
+            np.append(gt_out, gt_out),
+            np.append(gx_out, gx_out)],
+        rtol=1e-6)
+    #test make_shear_profile
+    gc.make_shear_profile('rad', bins=[0, .001, .002])
+    testing.assert_allclose(
+        [gc.profile[c] for c in ('radius', 'gt', 'gx')],
+        [theta_out, gt_out, gx_out],
+        rtol=1e-6)
 
 if __name__ == "__main__":
     #test_make_bins()
