@@ -1,6 +1,6 @@
 from .galaxycluster import *
 from .gcdata import *
 from .polaraveraging import *
-from .profilemodelling import *
+from .modeling import *
 
 from . import lsst

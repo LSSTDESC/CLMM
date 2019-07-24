@@ -7,7 +7,7 @@ from astropy import constants, cosmology, units
 import cluster_toolkit as ct
 import numpy as np
 
-def _cclify_astropy_cosmo(apy_cosmo) :
+def cclify_astropy_cosmo(apy_cosmo):
     '''
     Generates a ccl-looking cosmology object (with all values needed for modeling) from an astropy cosmology object.
 
@@ -29,7 +29,7 @@ def _cclify_astropy_cosmo(apy_cosmo) :
     with
     `from astropy.cosmology import FlatLambdaCDM
     astropy_cosmology_object = FlatLambdaCDM(H0=70, Om0=0.27, Ob0=0.045)
-    cosmo_ccl = _cclify_astropy_cosmo(astropy_cosmology_object)``
+    cosmo_ccl = cclify_astropy_cosmo(astropy_cosmology_object)``
     '''
     if type(apy_cosmo) == astropy.cosmology.core.FlatLambdaCDM:
         ccl_cosmo = {'Omega_c': apy_cosmo.Odm0,
@@ -108,7 +108,7 @@ def get_3d_density(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameter
     -----
     Need to refactor later so we only require arguments that are necessary for all profiles and use another structure to take the arguments necessary for specific models
     '''
-    cosmo = _cclify_astropy_cosmo(cosmo)
+    cosmo = cclify_astropy_cosmo(cosmo)
     Omega_m = cosmo['Omega_c'] + cosmo['Omega_b']
 
     if halo_profile_parameterization == 'nfw':
@@ -151,7 +151,7 @@ def predict_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profi
     -----
     Need to refactory so we only require arguments that are necessary for all models and use another structure to take the arguments necessary for specific models.
     '''
-    cosmo = _cclify_astropy_cosmo(cosmo)
+    cosmo = cclify_astropy_cosmo(cosmo)
     Omega_m = cosmo['Omega_c'] + cosmo['Omega_b']
 
     if halo_profile_parameterization == 'nfw':
@@ -191,7 +191,7 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, hal
     deltasigma : array-like, float
         Excess surface density, DeltaSigma in units of [h M_\\odot/$pc^2$].
     '''
-    cosmo = _cclify_astropy_cosmo(cosmo)
+    cosmo = cclify_astropy_cosmo(cosmo)
     Omega_m = cosmo['Omega_c'] + cosmo['Omega_b']
 
     if halo_profile_parameterization == 'nfw':
@@ -226,7 +226,7 @@ def _get_comoving_angular_distance_a(cosmo, aexp2, aexp1=1.):
     This is definitely broken if other cosmological parameter specifications differ, so we'll have to revise this later.
 
     We need to switch angular_diameter_distance_z1z2 to CCL equivalent angular distance once implemented
-    
+
     '''
     z1 = _get_z_from_a(aexp1)
     z2 = _get_z_from_a(aexp2)
@@ -256,7 +256,7 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     Returns
     -------
     sigmacrit : float
-        Cosmology-dependent critical surface density in units of [h M_\\odot/$pc^2$]. 
+        Cosmology-dependent critical surface density in units of [h M_\\odot/$pc^2$].
 
     Notes
     -----
