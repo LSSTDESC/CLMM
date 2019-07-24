@@ -78,7 +78,7 @@ def make_shear_profile(cluster, radial_units, bins=None,
         GalaxyCluster object with galaxies
     radial_units:
         Radial units of the profile, one of 
-        ["deg", "arcmin", "arcsec", kpc", "Mpc"]
+        ["rad", deg", "arcmin", "arcsec", kpc", "Mpc"]
     bins: array_like, float
         User defined n_bins + 1 dimensional array of bins, if 'None',
         the default is 10 equally spaced radial bins
@@ -250,7 +250,7 @@ def _theta_units_conversion(theta, units, z_l=None, cosmo=None,
     
     """
     Converts theta from radian to whatever units specified in units
-    units: one of ["deg", "arcmin", "arcsec", kpc", "Mpc"]
+    units: one of ["rad", deg", "arcmin", "arcsec", kpc", "Mpc"]
     cosmo : cosmo object 
     z_l : cluster redshift
     cosmo_object_type : string keywords that can be either "ccl" or "astropy" 
@@ -258,6 +258,9 @@ def _theta_units_conversion(theta, units, z_l=None, cosmo=None,
     
     theta = theta * u.rad
     
+    if units == "rad":
+        radius = theta.value
+        
     if units == "deg":
         radius = theta.to(u.deg).value
         
