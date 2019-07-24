@@ -8,8 +8,6 @@ from astropy.table import Table
 import os
 
 def test_make_bins():
-    return
-    ## do something
     testing.assert_equal(len( pa.make_bins(1,10,9,False)),10 )
     testing.assert_allclose( pa.make_bins(1,10,9,False) , np.arange(1.,11.) )
     testing.assert_allclose( pa.make_bins(1,10000,4,True) ,10.**(np.arange(5)) )
@@ -25,7 +23,6 @@ def test_make_bins():
     testing.assert_raises(TypeError, pa.make_bins, rmin=1, rmax=10, n_bins=9.9, log_bins=False)
 
 def test_compute_g_x():
-    return
     data = np.array([[0.01, 0.02, 0.01], # g1
                      [0.01, 0.02, 0.03], # g2
                      [0.1, 1.2, 3.]]) # phi [rad]
@@ -56,14 +53,13 @@ def test_compute_g_x():
     testing.assert_almost_equal(pa._compute_g_x(0., 0., 0.3), 0.)
 
 def test_compute_g_t():
-    return
     data = np.array([[0.01, 0.02, 0.01], # g1
                      [0.01, 0.02, 0.03], # g2
                      [0.1, 1.2, 3.]]) # phi [rad]
 
     # test that function works for scalar and vector input
-#    testing.assert(isinstance(float, pa._compute_g_t(*(data[:,0]))))
-#    testing.assert(isinstance(np.array, pa._compute_g_t(*data)))
+    # testing.assert(isinstance(float, pa._compute_g_t(*(data[:,0]))))
+    # testing.assert(isinstance(np.array, pa._compute_g_t(*data)))
     testing.assert_equal(3, len(pa._compute_g_t(*data)))
     testing.assert_equal(pa._compute_g_t(*(data[:,0])), pa._compute_g_t(*data)[0])
     
@@ -87,8 +83,6 @@ def test_compute_g_t():
 
     
 def test_compute_radial_averages():
-    return
-
     #testing input types
     testing.assert_raises(TypeError, pa._compute_radial_averages, radius="glue", g=10, bins=[np.arange(1.,16.)])
     testing.assert_raises(TypeError, pa._compute_radial_averages, radius=np.arange(1.,10.), g="glue", bins=[np.arange(1.,16.)])  
@@ -159,6 +153,8 @@ def test_compute_theta_phi():
                             rtol, err_msg="Failure when lens and a source share a DEC")
     # l/s at same ra AND dec
     testing.assert_raises(ValueError, pa._compute_theta_phi, ra_l, dec_l, np.array([161.32, 161.34]), np.array([51.49, 51.55]))
+
+    testing.assert_warns(UserWarning,pa._compute_theta_phi, ra_l, dec_l, np.array([151.32, 161.34]), np.array([41.49, 51.55]),'flat')
     
     #testing.assert_allclose(pa._compute_theta_phi(ra_l, dec_l, np.array([161.32, 161.34]), np.array([51.49, 51.55])),
     #                        [[0.00000000000000000000, 0.00106951489719733675], [0.00000000000000000000, 1.77544123918164542530]],
@@ -192,7 +188,6 @@ def test_compute_theta_phi():
 
 
 def test_compute_shear():
-    return
     g1, g2 = 0, 100
     rtol = 1e-7
     ra_l, dec_l = 161.32, 51.49
@@ -207,9 +202,3 @@ def test_compute_shear():
             [-6.419307e+01, -9.174037e+01]]),
             rtol=rtol)
 
-if __name__ == "__main__":
-    #test_make_bins()
-    #test_compute_g_x()
-    #test_compute_g_t()
-    test_compute_radial_averages()
-    test_compute_shear()
