@@ -92,7 +92,7 @@ def get_3d_density(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameter
         Mass overdensity definition; defaults to 200.
     halo_profile_parameterization : str, optional
         Profile model parameterization, with the following supported options:
-        `nfw` (default) - $\rho(r)=\frac{\rho_0}{c/(r/R_{vir})(1+c/(r/R_{vir}))^2}$ [insert citation here]
+        `nfw` (default) - $\rho(r) = \frac{\rho_0}{c/(r/R_{vir})(1+c/(r/R_{vir}))^2}$ [insert citation here]
     z_src_model : str, optional
         Source redshift model, with the following supported options:
         `single_plane` (default) - all sources at one redshift
@@ -203,7 +203,7 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, hal
     else:
         pass
 
-def get_comoving_angular_distance_a(cosmo, aexp2, aexp1=1.):
+def get_angular_diameter_distance_a(cosmo, aexp2, aexp1=1.):
     '''
     This is a function to calculate d_LS (angular distance between lens and source) because CCL cannot yet do it.  Temporarily using the astropy implementation.
 
@@ -224,9 +224,7 @@ def get_comoving_angular_distance_a(cosmo, aexp2, aexp1=1.):
     Notes
     -----
     This is definitely broken if other cosmological parameter specifications differ, so we'll have to revise this later.
-
     We need to switch angular_diameter_distance_z1z2 to CCL equivalent angular distance once implemented
-
     '''
     z1 = _get_z_from_a(aexp1)
     z2 = _get_z_from_a(aexp2)
@@ -237,7 +235,7 @@ def get_comoving_angular_distance_a(cosmo, aexp2, aexp1=1.):
         ap_cosmo = astropy.cosmology.core.FlatLambdaCDM(H0=cosmo['H0'], Om0=Omega_m, Ob0=cosmo['Omega_b'])
     # astropy angular diameter distance in Mpc
     # need to return in pc/h
-    da = ap_cosmo.angular_diameter_distance_z1z2(z1, z2).to_value(units.pc) * ap_cosmo.h
+    da = ap_cosmo.angular_diameter_distance_z1z2(z1, z2).to_value(units.pc)
     return da
 
 def get_critical_surface_density(cosmo, z_cluster, z_source):
@@ -269,9 +267,9 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     aexp_cluster = _get_a_from_z(z_cluster)
     aexp_src = _get_a_from_z(z_source)
 
-    d_l = get_comoving_angular_distance_a(cosmo, aexp_cluster)
-    d_s = get_comoving_angular_distance_a(cosmo, aexp_src)
-    d_ls = get_comoving_angular_distance_a(cosmo, aexp_src, aexp_cluster)
+    d_l = get_angular_diameter_distance_a(cosmo, aexp_cluster)
+    d_s = get_angular_diameter_distance_a(cosmo, aexp_src)
+    d_ls = get_angular_diameter_distance_a(cosmo, aexp_src, aexp_cluster)
 
     sigmacrit = d_s / (d_l * d_ls) * c * c / (4 * np.pi * G)
     return sigmacrit
