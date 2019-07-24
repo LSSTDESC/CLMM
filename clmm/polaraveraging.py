@@ -172,17 +172,22 @@ def _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
         dy = (dec_s - dec_l)*deg_to_rad
         ## make sure absolute value of all RA differences are < 180 deg:
         ## subtract 360 deg from RA angles > 180 deg
-        dx[dx>np.pi] = dx[dx>np.pi] - 2.*np.pi
+        dx[dx>=np.pi] = dx[dx>=np.pi] - 2.*np.pi
         ## add 360 deg to RA angles < -180 deg
         dx[dx<-np.pi] = dx[dx<-np.pi] + 2.*np.pi 
         theta =  np.sqrt(dx**2 + dy**2)
         phi = np.arctan2(dy, -dx)
+
+    if np.any(theta < 1.e9):
+        raise ValueError("Ra and Dec of source and lens too similar")
         
     elif sky == "curved":
         raise ValueError("Curved sky functionality not yet supported!")
         # coord_l = SkyCoord(ra_l*u.deg,dec_l*u.deg)
         # coord_s = SkyCoord(ra_s*u.deg,dec_s*u.deg)
         # theta = coord_l.separation(coord_s).to(u.rad).value
+        # SkyCoord method position_angle gives east of north, so add pi/2
+        # phi = coord_l.position_angle(coord_s).to(u.rad).value + np.pi/2.
     else:
         raise ValueError("Sky option %s not supported!"%sky)
 
