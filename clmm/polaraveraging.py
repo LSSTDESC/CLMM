@@ -12,6 +12,7 @@ from astropy.cosmology import FlatLambdaCDM
 from astropy.table import Table
 from astropy import units as u
 import math
+import warnings
 
 
 ##############################################################################################
@@ -95,6 +96,11 @@ def make_shear_profile(cluster, radial_units, bins=None,
     profile_table: astropy Table
         Table with r_profile, gt profile (and error) and
         gx profile (and error)
+
+    Note
+    ----
+    Currently, the radial_units are not saved in the profile_table.
+    We have to add it somehow.
     """
     if not ('gt' in cluster.galcat.columns  
         and 'gx' in cluster.galcat.columns
@@ -104,16 +110,17 @@ def make_shear_profile(cluster, radial_units, bins=None,
                         'Run compute_shear first!')
     radial_values = _theta_units_conversion(cluster.galcat['theta'],
                                         radial_units, z_cl=cluster.z,
+                                        cosmo = cosmo,
                                         cosmo_object_type=cosmo_object_type)
-    r_avg, gt_avg, gt_std = _compute_radial_averages(radial_values, cluster.galcat['gt'])
-    r_avg, gx_avg, gx_std = _compute_radial_averages(radial_values, cluster.galcat['gx'])
+    r_avg, gt_avg, gt_std = _compute_radial_averages(radial_values, cluster.galcat['gt'].data, bins=bins)
+    r_avg, gx_avg, gx_std = _compute_radial_averages(radial_values, cluster.galcat['gx'].data, bins=bins)
     profile_table = Table([r_avg, gt_avg, gt_std, gx_avg, gx_avg],
         names = ('radius', 'gt', 'gt_err', 'gx', 'gx_err'))
     if add_to_cluster:
         cluster.profile = profile_table
     return profile_table
 
-def plot_profiles(cluster):
+def plot_profiles(cluster, r_units=None):
     """Plot shear profiles for validation
 
     Parameters
@@ -122,6 +129,13 @@ def plot_profiles(cluster):
         GalaxyCluster object with galaxies
     """
     prof = cluster.profile
+    if r_units is not None:
+        if cluster.profile['radius'].unit is not None:
+            raise Warning('r_units provided (%s) differ from'%r_units
+            'r_units in GalaxyCluster.galcat table (%s)'%cluster.profile['radius'].unit
+                    ', using user defined')
+        else:
+            r_units = cluster.profile['radius'].unit
     return _plot_profiles(*[cluster.profile[c] for c in
             ('radius', 'gt', 'gt_err', 'gx', 'gx_err')],
             r_units=cluster.profile['radius'].unit)
@@ -148,6 +162,7 @@ def _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
         ra and dec of source in decimal degrees
     sky : str, optional
         'flat' uses the flat sky approximation (default) and 'curved' uses exact angles
+        if 'flat' is used and any separation is > 1 deg, a warning is raised.
 
     Returns
     -------
@@ -156,20 +171,20 @@ def _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
     phi : array_like, float
         Angle in radians, (can we do better)
     """
-    if not -360. < ra_l < 360.:
+    
+    if not -360. <= ra_l <= 360.:
         raise ValueError("ra = %f of lens if out of domain"%ra_l)
-    if not -90. < dec_l < 90.:
+    if not -90. <= dec_l <= 90.:
         raise ValueError("dec = %f of lens if out of domain"%dec_l)
-    if not np.array([-360. < x_ < 360. for x_ in ra_s]).all():
+    if not np.array([-360. <= x_ <= 360. for x_ in ra_s]).all():
         raise ValueError("Object has an invalid ra in source catalog")
-    if not np.array([-90. < x_ < 90 for x_ in dec_s]).all():
+    if not np.array([-90. <= x_ <= 90 for x_ in dec_s]).all():
         raise ValueError("Object has an invalid dec in the source catalog")
-
-    deg_to_rad = np.pi/180.
+        
 
     if sky == "flat":
-        dx = (ra_s - ra_l)*deg_to_rad * math.cos(dec_l*deg_to_rad)
-        dy = (dec_s - dec_l)*deg_to_rad
+        dx = (ra_s - ra_l)*u.deg.to(u.rad) * math.cos(dec_l*u.deg.to(u.rad))
+        dy = (dec_s - dec_l)*u.deg.to(u.rad)
         ## make sure absolute value of all RA differences are < 180 deg:
         ## subtract 360 deg from RA angles > 180 deg
         dx[dx>=np.pi] = dx[dx>=np.pi] - 2.*np.pi
@@ -190,6 +205,9 @@ def _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
 
     if np.any(theta < 1.e-9):
         raise ValueError("Ra and Dec of source and lens too similar")
+
+    if np.any(theta > np.pi/180.):
+        warnings.warn("Using the flat-sky approximation with separations > 1 deg may be inaccurate", UserWarning)
     
     return theta, phi
 
@@ -402,19 +420,12 @@ def _compute_radial_averages(radius, g, bins=None):
         Standard deviation of shear per bin
     """
 
-    if type(radius) != np.ndarray:
+    if not isinstance(radius, (np.ndarray)):
         raise TypeError("radius must be an array")
-    if type(g) != np.ndarray:
+    if not isinstance(g, (np.ndarray)):
         raise TypeError("g must be an array")
     if len(radius) != len(g):
-        raise TypeError("radius and g must be arrays of the same length")
-    if np.amax(radius) >= np.amax(bins):
-        raise ValueError("maxium radius must be within range of bins")
-    if np.amin(radius) < np.amin(bins):
-        raise ValueError("Minimum radius must be within the range of bins")
-    if len(bins) < 2:
-        raise TypeError("you need to define at least one bin")
-    
+        raise TypeError("radius and g must be arrays of the same length") 
     if np.any(bins) == None:
         nbins = 10
         bins = np.linspace(np.min(radius), np.max(radius), nbins)
