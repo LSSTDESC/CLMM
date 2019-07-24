@@ -14,9 +14,9 @@ install:
   - sudo apt-get update
   - sudo apt-get install gcc-snapshot -y
   - sudo apt-get update
-  - sudo apt-get install gcc-6 -y
+  - sudo apt-get install gcc-7 -y
 
-  - CC="gcc-6"
+  - CC="gcc-7"
 
   # Install GSL
   - sudo apt-get install libgsl0-dev -y
