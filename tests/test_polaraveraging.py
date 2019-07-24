@@ -9,7 +9,6 @@ from astropy.table import Table
 import os
 
 def test_make_bins():
-    ## do something
     testing.assert_equal(len( pa.make_bins(1,10,9,False)),10 )
     testing.assert_allclose( pa.make_bins(1,10,9,False) , np.arange(1.,11.) )
     testing.assert_allclose( pa.make_bins(1,10000,4,True) ,10.**(np.arange(5)) )
@@ -25,7 +24,6 @@ def test_make_bins():
     testing.assert_raises(TypeError, pa.make_bins, rmin=1, rmax=10, n_bins=9.9, log_bins=False)
 
 def test_compute_g_x():
-    pass
     data = np.array([[0.01, 0.02, 0.01], # g1
                      [0.01, 0.02, 0.03], # g2
                      [0.1, 1.2, 3.]]) # phi [rad]
@@ -61,8 +59,8 @@ def test_compute_g_t():
                      [0.1, 1.2, 3.]]) # phi [rad]
 
     # test that function works for scalar and vector input
-#    testing.assert(isinstance(float, pa._compute_g_t(*(data[:,0]))))
-#    testing.assert(isinstance(np.array, pa._compute_g_t(*data)))
+    # testing.assert(isinstance(float, pa._compute_g_t(*(data[:,0]))))
+    # testing.assert(isinstance(np.array, pa._compute_g_t(*data)))
     testing.assert_equal(3, len(pa._compute_g_t(*data)))
     testing.assert_equal(pa._compute_g_t(*(data[:,0])), pa._compute_g_t(*data)[0])
     
@@ -86,7 +84,6 @@ def test_compute_g_t():
 
     
 def test_compute_radial_averages():
-
     #testing input types
     testing.assert_raises(TypeError, pa._compute_radial_averages, radius="glue", g=10, bins=[np.arange(1.,16.)])
     testing.assert_raises(TypeError, pa._compute_radial_averages, radius=np.arange(1.,10.), g="glue", bins=[np.arange(1.,16.)])  
@@ -124,7 +121,7 @@ def test_compute_theta_phi():
     testing.assert_raises(ValueError, pa._compute_theta_phi, ra_l, dec_l, ra_s, dec_s-10., 'flat')
     testing.assert_raises(ValueError, pa._compute_theta_phi, ra_l, dec_l, ra_s, dec_s+10., 'flat')
 
-    # Test outputs for reasonable values with flat sky
+        # Test outputs for reasonable values with flat sky
     ra_l, dec_l = 161.32, 51.49
     ra_s, dec_s = np.array([161.29, 161.34]), np.array([51.45, 51.55])
     thetas, phis = pa._compute_theta_phi(ra_l, dec_l, ra_s, dec_s, 'flat')
@@ -157,10 +154,29 @@ def test_compute_theta_phi():
                             rtol, err_msg="Failure when lens and a source share a DEC")
     # l/s at same ra AND dec
     testing.assert_raises(ValueError, pa._compute_theta_phi, ra_l, dec_l, np.array([161.32, 161.34]), np.array([51.49, 51.55]))
+
+    testing.assert_warns(UserWarning,pa._compute_theta_phi, ra_l, dec_l, np.array([151.32, 161.34]), np.array([41.49, 51.55]),'flat')
     
     #testing.assert_allclose(pa._compute_theta_phi(ra_l, dec_l, np.array([161.32, 161.34]), np.array([51.49, 51.55])),
     #                        [[0.00000000000000000000, 0.00106951489719733675], [0.00000000000000000000, 1.77544123918164542530]],
     #                        rtol, err_msg="Failure when lens and a source share an RA and a DEC")
+    
+    
+    testing.assert_allclose(pa._compute_theta_phi(0.1, dec_l, np.array([359.9,180.1]), dec_s),
+                            [[2.37312589, 1.95611677], [-2.94182333e-04,  3.14105731e+00]],
+                            rtol, err_msg="Failure when ra_l and ra_s are close but on the two sides of the 0 axis")   
+
+    testing.assert_allclose(pa._compute_theta_phi(0, dec_l, np.array([359.9,180.1]), dec_s),
+                            [[2.37203916, 1.9572035], [-2.94317111e-04,  3.14105761e+00]],
+                            rtol, err_msg="Failure when ra_l and ra_s are separated by pi + epsilon")  
+    
+    testing.assert_allclose(pa._compute_theta_phi(-180, dec_l, np.array([180.1,-90]), dec_s),
+                            [[2.36986569, 0.97805881], [-2.94587036e-04,  3.14052196e+00]],
+                            rtol, err_msg="Failure when ra_l and ra_s are the same but one is defined negative")     
+    
+    testing.assert_allclose(pa._compute_theta_phi(ra_l, 90, ra_s, np.array([51.45,-90])),
+                            [[0.67282443, 3.14159265], [-1.57079633, -1.57079633]],
+                            rtol, err_msg="Failure when dec_l and dec_s are separated by 180 deg")  
     
     # ra1, ra2 = .1 and 359.9
     # testing.assert_allclose(pa._compute_theta_phi(), desired, rtol, err_msg="")
@@ -170,6 +186,7 @@ def test_compute_theta_phi():
     # testing.assert_allclose(pa._compute_theta_phi(), desired, rtol, err_msg="")
     # dec1, dec2 = 90, -90
     # testing.assert_allclose(pa._compute_theta_phi(), desired, rtol, err_msg="")
+
 
 def test_compute_shear():
     # the numbers on this test must be revise, output values were extracted from the first run of the code
@@ -215,9 +232,3 @@ def test_gc_wrapper():
         [theta_out, gt_out, gx_out],
         rtol=1e-6)
 
-if __name__ == "__main__":
-    #test_make_bins()
-    #test_compute_g_x()
-    #test_compute_g_t()
-    test_compute_radial_averages()
-    test_compute_shear()
