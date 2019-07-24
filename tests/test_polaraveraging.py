@@ -175,14 +175,22 @@ def test_compute_theta_phi():
 
 def test_compute_shear():
     g1, g2 = 0, 100
-    ra_l, dec_l = 0, 90.
-    ra_s, dec_s = 0, 45. 
-    sky = 'curve'
-    theta, phi = pa._compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky = sky)
-    testing.assert_equal(pa._compute_shear(ra_l, dec_l, ra_s, dec_s, sky = sky), 0)
+    rtol = 1e-7
+    ra_l, dec_l = 161.32, 51.49
+    ra_s, dec_s = np.array([161.29, 161.34]), np.array([51.45, 51.55])
+    thetas, phis = pa._compute_theta_phi(ra_l, dec_l, ra_s, dec_s, 'flat')
+    cl_theta, cl_gt, cl_gx = pa._compute_shear(ra_l, dec_l, ra_s, dec_s,
+                            g1, g2, sky='flat')
+    testing.assert_allclose(pa._compute_shear(ra_l, dec_l, ra_s, dec_s,
+                            g1, g2, sky='flat'),
+        np.array([[0.00077050407583119666, 0.00106951489719733675],
+            [ 7.667626e+01,  3.979579e+01],
+            [-6.419307e+01, -9.174037e+01]]),
+            rtol=rtol)
 
 if __name__ == "__main__":
     test_make_bins()
     test_compute_g_x()
     test_compute_g_t()
     test_compute_radial_averages()
+    test_compute_shear()
