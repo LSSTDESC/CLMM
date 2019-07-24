@@ -408,10 +408,6 @@ def _compute_radial_averages(radius, g, bins=None):
         raise TypeError("g must be an array")
     if len(radius) != len(g):
         raise TypeError("radius and g must be arrays of the same length")
-    if np.amax(radius) >= np.amax(bins):
-        raise ValueError("maxium radius must be within range of bins")
-    if np.amin(radius) < np.amin(bins):
-        raise ValueError("Minimum radius must be within the range of bins")
     if len(bins) < 2:
         raise TypeError("you need to define at least one bin")
     
