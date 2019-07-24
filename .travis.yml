@@ -10,30 +10,14 @@ install:
 
   # Install the dependencies and the package:
   - pip install -r requirements.txt
+  - git clone https://github.com/tmcclintock/cluster_toolkit.git ; cd cluster_toolkit ; python setup.py install ; cd -
   - python setup.py install
-
-  # Now get set up to run jupyter notebooks:
-  #- sudo apt-get install texlive-latex-recommended
-  #- sudo apt-get install texlive-latex-extra
-  #- sudo apt-get install texlive-fonts-recommended
-  #- sudo apt-get install chktex
-  #- sudo apt-get install dvipng
-  #- pip install --upgrade jupyter
-  #- pip install nbconvert
 
   # Finally get set up to build the docs:
   - pip install sphinx==2.1.2
   - pip install sphinx_rtd_theme
 
-  # Other dependencies here: # This is done through requirements.txt
-  #- pip install pyccl
-  #- pip install astropy
-  #- pip install scipy
-  #- pip install colossus==1.2.5
-  #- pip install matplotlib
-
 script:
-  - git clone https://github.com/tmcclintock/cluster_toolkit.git ; cd cluster_toolkit ; python setup.py install ; cd -
 
   # Run the unit tests:
   - py.test --ignore=tests/crypt/ --ignore=cluster_toolkit/tests
