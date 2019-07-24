@@ -22,7 +22,7 @@ def _astropy_to_CCL_cosmo_object(astropy_cosmology_object) :
     Generates a ccl cosmology object from an GCR or astropy cosmology object.  
     '''
     apy_cosmo = astropy_cosmology_object
-    ccl_cosmo = ccl.Cosmology(Omega_c=apy_cosmo.Odm0,
+    ccl_cosmo = ccl.Cosmology(Omega_c=(apy_cosmo.Odm0-apy_cosmo.Ob0),
                   Omega_b=apy_cosmo.Ob0,
                   h=apy_cosmo.h,
                   n_s=apy_cosmo.n_s,
