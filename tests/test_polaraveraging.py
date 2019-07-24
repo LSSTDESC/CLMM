@@ -29,9 +29,9 @@ def test_make_bins():
 def test_compute_g_x():
     data = np.array([[0.01, 0.02, 0.01], # g1
                      [0.01, 0.02, 0.03], # g2
-                     [1.0, 2.0, 0.5]]) # phi
+                     [1., 20., 150.]]) # phi
 
-    # Test that function works for scalar and vector input
+    # test that function works for scalar and vector input
     testing.assert(isinstance(float, clmm._compute_g_x(*(data[:,0]))))
     testing.assert(isinstance(np.array, clmm._compute_g_x(*data)))
     testing.assert_equal(3, len(clmm._compute_g_x(*data)))
@@ -45,13 +45,49 @@ def test_compute_g_x():
     testing.assert_raises(ValueError, clmm._compute_g_x, data[0], data[1,0], data[2,0])
     testing.assert_raises(ValueError, clmm._compute_g_x, data[0,0], data[1], data[2,0])
     
-    # test for phi=0 (reasonable values)
-    # phi=0, phi=90
-    # g1, g2 = 0
-    # phi <0, >180, also =
+    # test for input range
+    testing.assert_raises(ValueError, clmm._compute_g_x, -0.1, 0.1, 1.0)
+    testing.assert_raises(ValueError, clmm._compute_g_x, 0.1, -0.1, 1.0)
+    testing.assert_raises(ValueError, clmm._compute_g_x, 0.1, 0.1, -361.)
+    testing.assert_raises(ValueError, clmm._compute_g_x, 0.1, 0.1, 361.)
+    testing.assert_equal(clmm._compute_g_x(0.1, 0.1, 0.), clmm._compute_g_x(0.1, 0.1, 360.))
     
+    # test for reasonable values
+    testing.assert_equal(clmm._compute_g_x(100, 0, 0.), 0)
+    testing.assert_equal(clmm._compute_g_x(0, 100, 45.), 0)
+    testing.assert_equal(clmm._compute_g_x(0, 0, 234.), 0)
 
+def test_compute_g_t():
+    data = np.array([[0.01, 0.02, 0.01], # g1
+                     [0.01, 0.02, 0.03], # g2
+                     [1., 20., 150.]]) # phi
 
+    # test that function works for scalar and vector input
+    testing.assert(isinstance(float, clmm._compute_g_t(*(data[:,0]))))
+    testing.assert(isinstance(np.array, clmm._compute_g_t(*data)))
+    testing.assert_equal(3, len(clmm._compute_g_t(*data)))
+    testing.assert_equal(clmm._compute_g_t(*(data[:,0])), clmm._compute_g_t(*data)[0])
+    
+    # test same length array input
+    testing.assert_raises(ValueError, clmm._compute_g_t, data[0,0], data[1], data[2])
+    testing.assert_raises(ValueError, clmm._compute_g_t, data[0], data[1,0], data[2])
+    testing.assert_raises(ValueError, clmm._compute_g_t, data[0], data[1], data[2,0])
+    testing.assert_raises(ValueError, clmm._compute_g_t, data[0,0], data[1,0], data[2])
+    testing.assert_raises(ValueError, clmm._compute_g_t, data[0], data[1,0], data[2,0])
+    testing.assert_raises(ValueError, clmm._compute_g_t, data[0,0], data[1], data[2,0])
+    
+    # test for input range
+    testing.assert_raises(ValueError, clmm._compute_g_t, -0.1, 0.1, 1.0)
+    testing.assert_raises(ValueError, clmm._compute_g_t, 0.1, -0.1, 1.0)
+    testing.assert_raises(ValueError, clmm._compute_g_t, 0.1, 0.1, -361.)
+    testing.assert_raises(ValueError, clmm._compute_g_t, 0.1, 0.1, 361.)
+    testing.assert_equal(clmm._compute_g_t(0.1, 0.1, 0.), clmm._compute_g_t(0.1, 0.1, 360.))
+    
+    # test for reasonable values
+    testing.assert_equal(clmm._compute_g_t(100, 0, 0.), 0)
+    testing.assert_equal(clmm._compute_g_t(0, 100, 45.), 0)
+    testing.assert_equal(clmm._compute_g_t(0, 0, 234.), 0)
+    
 
 def test_compute_theta_phi():
     ra_l, dec_l = 161., 65.
@@ -120,5 +156,8 @@ def test_compute_theta_phi():
     # dec1, dec2 = 90, -90
     # testing.assert_allclose(pa._compute_theta_phi(), desired, rtol, err_msg="")
 
-
+if __name__ == "__main__":
+    test_make_bins()
+    test_compute_g_x()
+    test_compute_g_t()
 
