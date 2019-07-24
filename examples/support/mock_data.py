@@ -154,7 +154,8 @@ class MockData():
         r_mpc = np.sqrt(x_mpc**2 + y_mpc**2)
   
         aexp_cluster = 1./(1.+zL)
-        Dl = ccl.comoving_angular_distance(self.config['cosmo'], aexp_cluster)*aexp_cluster
+#        Dl = ccl.comoving_angular_distance(self.config['cosmo'], aexp_cluster)*aexp_cluster
+        Dl = clmm.get_angular_diameter_distance_a(self.config['cosmo'], aexp_cluster)
 
         x_deg = (x_mpc/Dl)*(180./np.pi) #ra
         y_deg = (y_mpc/Dl)*(180./np.pi) #dec
