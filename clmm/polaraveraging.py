@@ -12,6 +12,7 @@ from astropy.cosmology import FlatLambdaCDM
 from astropy.table import Table
 from astropy import units as u
 import math
+import warnings
 
 
 ##############################################################################################
@@ -148,6 +149,7 @@ def _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
         ra and dec of source in decimal degrees
     sky : str, optional
         'flat' uses the flat sky approximation (default) and 'curved' uses exact angles
+        if 'flat' is used and any separation is > 1 deg, a warning is raised.
 
     Returns
     -------
@@ -190,6 +192,9 @@ def _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
 
     if np.any(theta < 1.e-9):
         raise ValueError("Ra and Dec of source and lens too similar")
+
+    if np.any(theta > np.pi/180.):
+        warnings.warn("Using the flat-sky approximation with separations > 1 deg may be inaccurate")
     
     return theta, phi
 
