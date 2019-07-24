@@ -51,8 +51,8 @@ def compute_shear(cluster, geometry="flat", add_to_cluster=True):
     theta: float vector
         radius in radians
     """
-    if not ('e1' in cluster.galcat.columns()  
-        and 'e2' in cluster.galcat.columns()):
+    if not ('e1' in cluster.galcat.columns  
+        and 'e2' in cluster.galcat.columns):
         raise TypeError('shear information is missing in galaxy, ',
                         'must have (e1, e2) or (gamma1, gamma2, kappa)')
     theta, gt , gx = _compute_shear(cluster.ra, cluster.dec, 
@@ -94,9 +94,9 @@ def make_shear_profile(cluster, radial_units, bins=None,
         Table with r_profile, gt profile (and error) and
         gx profile (and error)
     """
-    if not ('gt' in cluster.galcat.columns()  
-        and 'gx' in cluster.galcat.columns()
-        and 'theta' in cluster.galcat.columns()):
+    if not ('gt' in cluster.galcat.columns  
+        and 'gx' in cluster.galcat.columns
+        and 'theta' in cluster.galcat.columns):
         raise TypeError('shear information is missing in galaxy, ',
                         'must have (e1, e2) or (gamma1, gamma2, kappa).',
                         'Run compute_shear first!')
