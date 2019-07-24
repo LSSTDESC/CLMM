@@ -156,6 +156,14 @@ def test_compute_theta_phi():
     # dec1, dec2 = 90, -90
     # testing.assert_allclose(pa._compute_theta_phi(), desired, rtol, err_msg="")
 
+def test_compute_shear():
+    g1, g2 = 0, 100
+    ra_l, dec_l = 0, 90.
+    ra_s, dec_s = 0, 45. 
+    sky = 'curve'
+    theta, phi = pa._compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky = sky)
+    testing.assert_equal(pa._compute_shear(ra_l, dec_l, ra_s, dec_s, sky = sky), 0)
+
 if __name__ == "__main__":
     test_make_bins()
     test_compute_g_x()
