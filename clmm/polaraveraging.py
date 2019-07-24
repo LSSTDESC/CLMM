@@ -375,6 +375,13 @@ def _compute_radial_averages(radius, g, bins=None):
     gerr_profile: array_like, float
         Standard deviation of shear per bin
     """
+
+    if type(radius) != np.ndarray:
+        raise TypeError("radius must be an array")
+    if type(g) != np.ndarray:
+        raise TypeError("g must be an array")
+        
+    
     if np.any(bins) == None:
         nbins = 10
         bins = np.linspace(np.min(radius), np.max(radius), nbins)
