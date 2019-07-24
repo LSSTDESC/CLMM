@@ -55,5 +55,5 @@ plt.title('cross shear test')
 plt.ylim(-0.002,0.002)
 plt.hlines(0.,np.min(r), np.max(r))
 plt.xlabel("r")
-plt.ylabel('$\\gamma$');
+plt.ylabel('$\\gamma$')
 plt.show()
