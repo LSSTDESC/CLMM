@@ -7,6 +7,7 @@ from astropy import units as u
 import pickle
 import polaraveraging
 import clmm
+"""
 cl = clmm.load_cluster('9687686568.p')
 cosmo = FlatLambdaCDM(70., Om0 = 0.3) # astropy cosmology setting, will be replaced by ccl
 
@@ -45,3 +46,4 @@ plt.hlines(0.,np.min(r), np.max(r))
 plt.xlabel("r")
 plt.ylabel('$\\gamma$');
 plt.show()
+"""
