@@ -12,6 +12,7 @@ from astropy.cosmology import FlatLambdaCDM
 from astropy.table import Table
 from astropy import units as u
 import math
+import warnings
 
 
 ##############################################################################################
@@ -149,6 +150,7 @@ def _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
         ra and dec of source in decimal degrees
     sky : str, optional
         'flat' uses the flat sky approximation (default) and 'curved' uses exact angles
+        if 'flat' is used and any separation is > 1 deg, a warning is raised.
 
     Returns
     -------
@@ -173,20 +175,28 @@ def _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
         dy = (dec_s - dec_l)*deg_to_rad
         ## make sure absolute value of all RA differences are < 180 deg:
         ## subtract 360 deg from RA angles > 180 deg
-        dx[dx>np.pi] = dx[dx>np.pi] - 2.*np.pi
+        dx[dx>=np.pi] = dx[dx>=np.pi] - 2.*np.pi
         ## add 360 deg to RA angles < -180 deg
         dx[dx<-np.pi] = dx[dx<-np.pi] + 2.*np.pi 
         theta =  np.sqrt(dx**2 + dy**2)
         phi = np.arctan2(dy, -dx)
-        
+
     elif sky == "curved":
         raise ValueError("Curved sky functionality not yet supported!")
         # coord_l = SkyCoord(ra_l*u.deg,dec_l*u.deg)
         # coord_s = SkyCoord(ra_s*u.deg,dec_s*u.deg)
         # theta = coord_l.separation(coord_s).to(u.rad).value
+        # SkyCoord method position_angle gives east of north, so add pi/2
+        # phi = coord_l.position_angle(coord_s).to(u.rad).value + np.pi/2.
     else:
         raise ValueError("Sky option %s not supported!"%sky)
 
+    if np.any(theta < 1.e-9):
+        raise ValueError("Ra and Dec of source and lens too similar")
+
+    if np.any(theta > np.pi/180.):
+        warnings.warn("Using the flat-sky approximation with separations > 1 deg may be inaccurate")
+    
     return theta, phi
 
 
@@ -211,6 +221,20 @@ def _compute_g_t(g1, g2, phi):
     -----
     g_t = - (g_1 * \cos(2\phi) + g_2 * \sin(2\phi)) [cf. eqs. 7-8 of Schrabback et al. 2018, arXiv:1611.03866]
     """
+
+    if type(g1) != type(g2):
+        raise ValueError("g1 and g2 should both be array-like of same length or float-like")
+    
+    if type(g1) != type(phi):
+        raise ValueError("shear and position angle should both be array-like of same length or float-like")
+
+    if np.sum(phi<-np.pi) > 0:
+        raise ValueError("Position angle should be in radians")
+
+    if np.sum(phi>=2*np.pi) > 0:
+        raise ValueError("Position angle should be in radians")
+
+    
     g_t = - (g1*np.cos(2*phi) + g2*np.sin(2*phi))
     return g_t
 
@@ -234,7 +258,19 @@ def _compute_g_x(g1, g2, phi):
     -----
     Computes the cross shear for each source in the catalog as:
     g_x = - g_1 * \sin(2\phi) + g_2 * \cos(2\phi)    [cf. eqs. 7-8 of Schrabback et al. 2018, arXiv:1611.03866]
-    """ 
+    """
+    if type(g1) != type(g2):
+        raise ValueError("g1 and g2 should both be array-like of same length or float-like")
+    
+    if type(g1) != type(phi):
+        raise ValueError("shear and position angle should both be array-like of same length or float-like")
+
+    if np.sum(phi<-np.pi) > 0:
+        raise ValueError("Position angle should be in radians")
+
+    if np.sum(phi>=2*np.pi) > 0:
+        raise ValueError("Position angle should be in radians")
+
     g_x = - g1 * np.sin(2*phi) + g2 *np.cos(2*phi)
     return g_x
 
@@ -371,6 +407,16 @@ def _compute_radial_averages(radius, g, bins=None):
     gerr_profile: array_like, float
         Standard deviation of shear per bin
     """
+
+    if type(radius) != np.ndarray:
+        raise TypeError("radius must be an array")
+    if type(g) != np.ndarray:
+        raise TypeError("g must be an array")
+    if len(radius) != len(g):
+        raise TypeError("radius and g must be arrays of the same length")
+    if len(bins) < 2:
+        raise TypeError("you need to define at least one bin")
+    
     if np.any(bins) == None:
         nbins = 10
         bins = np.linspace(np.min(radius), np.max(radius), nbins)
