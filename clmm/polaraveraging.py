@@ -174,7 +174,7 @@ def _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
         ## subtract 360 deg from RA angles > 180 deg
         dx[dx>np.pi] = dx[dx>np.pi] - 2.*np.pi
         ## add 360 deg to RA angles < -180 deg
-        dx[dx<-np.pi] = dx[dx<-np.pi] + 2.np.pi 
+        dx[dx<-np.pi] = dx[dx<-np.pi] + 2.*np.pi 
         theta =  np.sqrt(dx**2 + dy**2)
         phi = np.arctan2(dy, -dx)
         
