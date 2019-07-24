@@ -284,7 +284,7 @@ def _theta_units_conversion(theta, units, z_l=None, cosmo=None,
         
     return radius
 
-def _make_bins(rmin, rmax, n_bins=10, log_bins=False):
+def make_bins(rmin, rmax, n_bins=10, log_bins=False):
     """Define equal sized bins with an array of n_bins+1 bin edges
     
     Parameters
