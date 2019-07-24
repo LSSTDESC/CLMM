@@ -353,10 +353,10 @@ def _theta_units_conversion(theta, units, z_cl=None, cosmo=None,
         radius = theta.value * cosmo.angular_diameter_distance(z_cl).to(u.kpc).value
         
     if cosmo_object_type == "ccl" and units == "Mpc":
-        radius = theta.value * cosmo.comoving_angular_distance(cosmo_ccl, 1/(1+z_cl)) / (1+z_cl) * u.Mpc.to(u.Mpc)
+        radius = theta.value * ccl.comoving_angular_distance(cosmo, 1/(1+z_cl)) / (1+z_cl) * u.Mpc.to(u.Mpc)
         
     if cosmo_object_type == "ccl" and units == "kpc":
-        radius = theta.value * cosmo.comoving_angular_distance(cosmo_ccl, 1/(1+z_cl)) / (1+z_cl) * u.Mpc.to(u.kpc)
+        radius = theta.value * ccl.comoving_angular_distance(cosmo, 1/(1+z_cl)) / (1+z_cl) * u.Mpc.to(u.kpc)
         
     return radius
 
