@@ -11,7 +11,7 @@ install:
   # Install an updated gcc
   # - sudo apt-get install build-essential
   # - sudo add-apt-repository ppa:jonathonf/gcc-9.0 -y
-  - apt-cache search gcc-7
+  - apt-cache search gcc-6
   - sudo apt-get install gcc-7 -y
   - CC="gcc-7"
 
