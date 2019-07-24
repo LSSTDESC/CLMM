@@ -1,15 +1,14 @@
 """@file.py modeling.py
 Functions for theoretical models.  Default is NFW.
 """
-
-import astropy
 from astropy import constants, cosmology, units
 import cluster_toolkit as ct
 import numpy as np
 
+
 def cclify_astropy_cosmo(apy_cosmo):
-    '''
-    Generates a ccl-looking cosmology object (with all values needed for modeling) from an astropy cosmology object.
+    """Generates a ccl-looking cosmology object (with all values needed for modeling) from
+    an astropy cosmology object.
 
     Parameters
     ----------
@@ -30,57 +29,57 @@ def cclify_astropy_cosmo(apy_cosmo):
     `from astropy.cosmology import FlatLambdaCDM
     astropy_cosmology_object = FlatLambdaCDM(H0=70, Om0=0.27, Ob0=0.045)
     cosmo_ccl = cclify_astropy_cosmo(astropy_cosmology_object)``
-    '''
-    if type(apy_cosmo) == astropy.cosmology.core.FlatLambdaCDM:
+    """
+    if isinstance(apy_cosmo, cosmology.core.FlatLambdaCDM):
         ccl_cosmo = {'Omega_c': apy_cosmo.Odm0,
-                 'Omega_b': apy_cosmo.Ob0,
-                 'h': apy_cosmo.h,
-                 'H0': apy_cosmo.H0.value}
+                     'Omega_b': apy_cosmo.Ob0,
+                     'h': apy_cosmo.h,
+                     'H0': apy_cosmo.H0.value}
     else:
         ccl_cosmo = apy_cosmo
     return ccl_cosmo
 
+
 def _get_a_from_z(z):
-    '''
-    Convert redshift to scale factor
+    """Convert redshift to scale factor
 
     Parameters
     ----------
-    z : array-like, float
+    z : array_like, float
         redshift
 
     Returns
     -------
-    a : array-like, float
+    a : array_like, float
         scale factor
-    '''
+    """
     a = 1. / (1. + z)
     return a
 
+
 def _get_z_from_a(a):
-    '''
-    Convert scale factor to redshift
+    """Convert scale factor to redshift
 
     Parameters
     ----------
-    a : array-like, float
+    a : array_like, float
         scale factor
 
     Returns
     -------
-    z : array-like, float
+    z : array_like, float
         redshift
-    '''
+    """
     z = 1. / a - 1.
     return z
 
+
 def get_3d_density(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameterization='nfw'):
-    '''
-    Retrieve the 3d density $\rho(r)$
+    r"""Retrieve the 3d density $\rho(r)$
 
     Parameters
     ----------
-    r3d : array-like, float
+    r3d : array_like, float
         The radial positions in Mpc/h.
     mdelta : float
         Galaxy cluster mass in Msun/h.
@@ -97,17 +96,19 @@ def get_3d_density(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameter
         Source redshift model, with the following supported options:
         `single_plane` (default) - all sources at one redshift
         `known_z_src` - known individual source galaxy redshifts, e.g. discrete case
-        `z_src_distribution` - known source redshift distribution, e.g. continuous case requiring integration.
+        `z_src_distribution` - known source redshift distribution, e.g. continuous case
+        requiring integration.
 
     Returns
     -------
-    rho : array-like, float
+    rho : array_like, float
         3-dimensional mass density
 
     Notes
     -----
-    Need to refactor later so we only require arguments that are necessary for all profiles and use another structure to take the arguments necessary for specific models
-    '''
+    Need to refactor later so we only require arguments that are necessary for all profiles
+    and use another structure to take the arguments necessary for specific models
+    """
     cosmo = cclify_astropy_cosmo(cosmo)
     Omega_m = cosmo['Omega_c'] + cosmo['Omega_b']
 
@@ -115,15 +116,17 @@ def get_3d_density(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameter
         rho = ct.density.rho_nfw_at_r(r3d, mdelta, cdelta, Omega_m, delta=Delta)
         return rho
     else:
-        pass
+        raise ValueError("Profile models other than nfw not currently supported")
+
 
 def predict_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameterization='nfw'):
-    '''
-    Computes the surface mass density $\Sigma(R) = \Omega_m \rho_{crit} \int^\inf_{-\inf} dz \Xi_{hm} (\sqrt{R^2+z^2})$, where $\Xi_{hm}$ is the halo mass function.
+    r"""Computes the surface mass density
+
+    $\Sigma(R) = \Omega_m \rho_{crit} \int^\inf_{-\inf} dz \Xi_{hm} (\sqrt{R^2+z^2})$, where $\Xi_{hm}$ is the halo mass function.
 
     Parameters
     ----------
-    r_proj : array-like
+    r_proj : array_like
         The projected radial positions in Mpc/h.
     mdelta : float
         Galaxy cluster mass in Msun/h.
@@ -144,13 +147,14 @@ def predict_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profi
 
     Returns
     -------
-    sigma : array-like, float
+    sigma : array_like, float
         Surface density, Sigma in units of [h M_\\odot/$pc^2$]
 
     Notes
     -----
-    Need to refactory so we only require arguments that are necessary for all models and use another structure to take the arguments necessary for specific models.
-    '''
+    Need to refactory so we only require arguments that are necessary for all models and use
+    another structure to take the arguments necessary for specific models.
+    """
     cosmo = cclify_astropy_cosmo(cosmo)
     Omega_m = cosmo['Omega_c'] + cosmo['Omega_b']
 
@@ -158,16 +162,17 @@ def predict_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profi
         sigma = ct.deltasigma.Sigma_nfw_at_R(r_proj, mdelta, cdelta, Omega_m, delta=Delta)
         return sigma
     else:
-        #return ct.Sigma_at_R(r_proj, mdelta, cdelta, cosmo.Omegam, delta=Delta)
-        pass
+        raise ValueError("Profile models other than nfw not currently supported")
+
 
 def predict_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameterization='nfw'):
-    '''
-    Computes the excess surface density $\Delta\Sigma(R) = \bar{\Sigma}(<R)-\Sigma(R)$, where $\bar{\Sigma}(<R) = \frac{2}{R^2} \int^R_0 dR' R' \Sigma(R')$
+    r"""Computes the excess surface density
+
+    $\Delta\Sigma(R) = \bar{\Sigma}(<R)-\Sigma(R)$, where $\bar{\Sigma}(<R) = \frac{2}{R^2} \int^R_0 dR' R' \Sigma(R')$
 
     Parameters
     ----------
-    r_proj : array-like
+    r_proj : array_like
         The projected radial positions in Mpc/h.
     mdelta : float
         Galaxy cluster mass in Msun/h.
@@ -188,9 +193,9 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, hal
 
     Returns
     -------
-    deltasigma : array-like, float
+    deltasigma : array_like, float
         Excess surface density, DeltaSigma in units of [h M_\\odot/$pc^2$].
-    '''
+    """
     cosmo = cclify_astropy_cosmo(cosmo)
     Omega_m = cosmo['Omega_c'] + cosmo['Omega_b']
 
@@ -201,11 +206,12 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, hal
         deltasigma = ct.deltasigma.DeltaSigma_at_R(r_proj, Sigma_r_proj, Sigma, mdelta, cdelta, Omega_m, delta=Delta)
         return deltasigma
     else:
-        pass
+        raise ValueError("Profile models other than nfw not currently supported")
+
 
 def get_comoving_angular_distance_a(cosmo, aexp2, aexp1=1.):
-    '''
-    This is a function to calculate d_LS (angular distance between lens and source) because CCL cannot yet do it.  Temporarily using the astropy implementation.
+    """This is a function to calculate d_LS (angular distance between lens and source) because
+    CCL cannot yet do it.  Temporarily using the astropy implementation.
 
     Parameters
     ----------
@@ -223,24 +229,28 @@ def get_comoving_angular_distance_a(cosmo, aexp2, aexp1=1.):
 
     Notes
     -----
-    This is definitely broken if other cosmological parameter specifications differ, so we'll have to revise this later.
-    We need to switch angular_diameter_distance_z1z2 to CCL equivalent angular distance once implemented
-    '''
+    This is definitely broken if other cosmological parameter specifications differ, so we'll have
+    to revise this later. We need to switch angular_diameter_distance_z1z2 to CCL equivalent
+    angular distance once implemented
+    """
     z1 = _get_z_from_a(aexp1)
     z2 = _get_z_from_a(aexp2)
-    if type(cosmo) == astropy.cosmology.core.FlatLambdaCDM:
+    if isinstance(cosmo, cosmology.core.FlatLambdaCDM):
         ap_cosmo = cosmo
     else:
         Omega_m = cosmo['Omega_b'] + cosmo['Omega_c']
-        ap_cosmo = astropy.cosmology.core.FlatLambdaCDM(H0=cosmo['H0'], Om0=Omega_m, Ob0=cosmo['Omega_b'])
+        ap_cosmo = cosmology.core.FlatLambdaCDM(H0=cosmo['H0'], Om0=Omega_m,
+                                                Ob0=cosmo['Omega_b'])
     # astropy angular diameter distance in Mpc
     # need to return in pc/h
     da = ap_cosmo.angular_diameter_distance_z1z2(z1, z2).to_value(units.pc) * ap_cosmo.h
     return da
 
+
 def get_critical_surface_density(cosmo, z_cluster, z_source):
-    '''
-    Computes the critical surface density $\Sigma_{crit} = \frac{c^2}{4\pi G} \frac{D_s}{D_LD_{LS}}$
+    r"""Computes the critical surface density
+
+    $\Sigma_{crit} = \frac{c^2}{4\pi G} \frac{D_s}{D_LD_{LS}}$
 
     Parameters
     ----------
@@ -248,19 +258,18 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
         CCL Cosmology object
     z_cluster : float
         Galaxy cluster redshift
-    z_source : array-like, float
+    z_source : array_like, float
         Background source galaxy redshift(s)
 
     Returns
     -------
     sigmacrit : float
-        Cosmology-dependent critical surface density in units of [h M_\\odot/$pc^2$].
+        Cosmology-dependent critical surface density in units of h M_\odot/$pc^2$
 
     Notes
     -----
     We will need gamma inf and kappa inf for alternative z_src_models using Beta_s
-    '''
-
+    """
     c = constants.c.to(units.pc/units.s).value
     G = constants.G.to(units.pc**3/units.M_sun/units.s**2).value
 
@@ -274,13 +283,18 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     sigmacrit = d_s / (d_l * d_ls) * c * c / (4 * np.pi * G)
     return sigmacrit
 
-def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delta=200, halo_profile_parameterization='nfw', z_src_model='single_plane'):
-    '''
-    Computes the tangential shear $\gamma_t = \frac{\Delta\Sigma}{\Sigma_{crit}} = \frac{\bar{\Sigma}-\Sigma}{\Sigma_{crit}}}$, or $\gamma_t = \gamma_\inf \times \Beta_s$
+
+def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delta=200,
+                             halo_profile_parameterization='nfw', z_src_model='single_plane'):
+    r"""Computes the tangential shear
+
+    $\gamma_t = \frac{\Delta\Sigma}{\Sigma_{crit}} = \frac{\bar{\Sigma}-\Sigma}{\Sigma_{crit}}}$
+    or
+    $\gamma_t = \gamma_\inf \times \Beta_s$
 
     Parameters
     ----------
-    r_proj : array-like
+    r_proj : array_like
         The projected radial positions in Mpc/h.
     mdelta : float
         Galaxy cluster mass in Msun/h.
@@ -288,7 +302,7 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
         Galaxy cluster NFW concentration.
     z_cluster : float
         Galaxy cluster redshift
-    z_source : array-like, float
+    z_source : array_like, float
         Background source galaxy redshift(s)
     cosmo : pyccl.core.Cosmology object
         CCL Cosmology object
@@ -305,33 +319,36 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
 
     Returns
     -------
-    gammat : array-like, float
+    gammat : array_like, float
         tangential shear
 
     Notes
     -----
     We will need gamma inf and kappa inf for alternative z_src_models using Beta_s.
     Need to figure out if we want to raise exceptions rather than errors here?
-    '''
+    """
     delta_sigma = predict_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=Delta,
-                                                   halo_profile_parameterization=halo_profile_parameterization)
+                                                 halo_profile_parameterization=halo_profile_parameterization)
 
     if z_src_model == 'single_plane':
         sigma_c = get_critical_surface_density(cosmo, z_cluster, z_source)
         gammat = delta_sigma / sigma_c
         return gammat
     elif z_src_model == 'known_z_src': # Discrete case
-        NotImplementedError('Need to implemnt Beta_s functionality, or average delta_sigma/sigma_c gamma_t = Beta_s*gamma_inf')
-    elif z_src_model == 'z_src_distribution' : # Continuous ( from a distribution) case
-        NotImplementedError('Need to implement Beta_s calculation from integrating distribution of redshifts in each radial bin')
+        raise NotImplementedError('Need to implemnt Beta_s functionality, or average delta_sigma/sigma_c gamma_t = Beta_s*gamma_inf')
+    elif z_src_model == 'z_src_distribution': # Continuous ( from a distribution) case
+        raise NotImplementedError('Need to implement Beta_s calculation from integrating distribution of redshifts in each radial bin')
+    else:
+        raise ValueError("Unsupported z_src_model")
 
-def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delta=200, halo_profile_parameterization='nfw', z_src_model='single_plane'):
-    '''
-    Computes the mass convergence $\kappa = \frac{\Sigma}{\Sigma_{crit}}$ or $\kappa = \kappa_\inf \times \Beta_s$
+
+def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delta=200,
+                        halo_profile_parameterization='nfw', z_src_model='single_plane'):
+    r"""Computes the mass convergence $\kappa = \frac{\Sigma}{\Sigma_{crit}}$ or $\kappa = \kappa_\inf \times \Beta_s$
 
     Parameters
     ----------
-    r_proj : array-like
+    r_proj : array_like
         The projected radial positions in Mpc/h.
     mdelta : float
         Galaxy cluster mass in Msun/h.
@@ -339,7 +356,7 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delt
         Galaxy cluster NFW concentration.
     z_cluster : float
         Galaxy cluster redshift
-    z_source : array-like, float
+    z_source : array_like, float
         Background source galaxy redshift(s)
     cosmo : pyccl.core.Cosmology object
         CCL Cosmology object
@@ -356,31 +373,35 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delt
 
     Returns
     -------
-    kappa : array-like, float
+    kappa : array_like, float
         Mass convergence, kappa.
 
     Notes
     -----
     Need to figure out if we want to raise exceptions rather than errors here?
-    '''
-    sigma = predict_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=Delta, halo_profile_parameterization=halo_profile_parameterization)
+    """
+    sigma = predict_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=Delta,
+                                    halo_profile_parameterization=halo_profile_parameterization)
 
     if z_src_model == 'single_plane':
         sigma_c = get_critical_surface_density(cosmo, z_cluster, z_source)
         kappa = sigma / sigma_c
         return kappa
     elif z_src_model == 'known_z_src': # Discrete case
-        NotImplementedError('Need to implemnt Beta_s functionality, or average sigma/sigma_c kappa_t = Beta_s*kappa_inf')
+        raise NotImplementedError('Need to implemnt Beta_s functionality, or average sigma/sigma_c kappa_t = Beta_s*kappa_inf')
     elif z_src_model == 'z_src_distribution': # Continuous ( from a distribution) case
-        NotImplementedError('Need to implement Beta_s calculation from integrating distribution of redshifts in each radial bin')
+        raise NotImplementedError('Need to implement Beta_s calculation from integrating distribution of redshifts in each radial bin')
+    else:
+        raise ValueError("Unsupported z_src_model")
 
-def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delta=200, halo_profile_parameterization='nfw', z_src_model='single_plane'):
-    '''
-    Computes the reduced tangential shear $g_t = \frac{\\gamma_t}{1-\\kappa}$.
+
+def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delta=200,
+                                     halo_profile_parameterization='nfw', z_src_model='single_plane'):
+    r"""Computes the reduced tangential shear $g_t = \frac{\\gamma_t}{1-\\kappa}$.
 
     Parameters
     ----------
-    r_proj : array-like
+    r_proj : array_like
         The projected radial positions in Mpc/h.
     mdelta : float
         Galaxy cluster mass in Msun/h.
@@ -388,7 +409,7 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
         Galaxy cluster NFW concentration.
     z_cluster : float
         Galaxy cluster redshift
-    z_source : array-like, float
+    z_source : array_like, float
         Background source galaxy redshift(s)
     cosmo : pyccl.core.Cosmology object
         CCL Cosmology object
@@ -405,23 +426,25 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
 
     Returns
     -------
-    gt : array-like, float
+    gt : array_like, float
         Reduced tangential shear
 
     Notes
     -----
     Need to figure out if we want to raise exceptions rather than errors here?
-    '''
+    """
     if z_src_model == 'single_plane':
         kappa = predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delta,
-                                         halo_profile_parameterization,
-                                        z_src_model)
+                                    halo_profile_parameterization,
+                                    z_src_model)
         gamma_t = predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delta,
-                                         halo_profile_parameterization,
-                                        z_src_model)
+                                           halo_profile_parameterization,
+                                           z_src_model)
         gt = gamma_t / (1 - kappa)
         return gt
     elif z_src_model == 'known_z_src': # Discrete case
-        NotImplementedError('Need to implemnt Beta_s functionality, or average sigma/sigma_c kappa_t = Beta_s*kappa_inf')
+        raise NotImplementedError('Need to implemnt Beta_s functionality, or average sigma/sigma_c kappa_t = Beta_s*kappa_inf')
     elif z_src_model == 'z_src_distribution': # Continuous ( from a distribution) case
-        NotImplementedError('Need to implement Beta_s and Beta_s2 calculation from integrating distribution of redshifts in each radial bin')
+        raise NotImplementedError('Need to implement Beta_s and Beta_s2 calculation from integrating distribution of redshifts in each radial bin')
+    else:
+        raise ValueError("Unsupported z_src_model")
