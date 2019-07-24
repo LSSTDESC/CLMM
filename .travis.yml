@@ -10,9 +10,9 @@ install:
 
   # Install an updated gcc
   # - sudo apt-get install build-essential
-  - sudo add-apt-repository ppa:jonathonf/gcc-9.0 -y
-  - sudo apt-get install gcc-9 -y
-  - CC="gcc-9"
+  # - sudo add-apt-repository ppa:jonathonf/gcc-9.0 -y
+  - sudo apt-get install gcc-6 -y
+  - CC="gcc-6"
 
   # Install GSL
   - sudo apt-get install libgsl0-dev -y
