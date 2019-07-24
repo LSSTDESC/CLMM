@@ -96,6 +96,11 @@ def make_shear_profile(cluster, radial_units, bins=None,
     profile_table: astropy Table
         Table with r_profile, gt profile (and error) and
         gx profile (and error)
+
+    Note
+    ----
+    Currently, the radial_units are not saved in the profile_table.
+    We have to add it somehow.
     """
     if not ('gt' in cluster.galcat.columns  
         and 'gx' in cluster.galcat.columns
@@ -107,15 +112,15 @@ def make_shear_profile(cluster, radial_units, bins=None,
                                         radial_units, z_cl=cluster.z,
                                         cosmo = cosmo,
                                         cosmo_object_type=cosmo_object_type)
-    r_avg, gt_avg, gt_std = _compute_radial_averages(radial_values, cluster.galcat['gt'].data)
-    r_avg, gx_avg, gx_std = _compute_radial_averages(radial_values, cluster.galcat['gx'].data)
+    r_avg, gt_avg, gt_std = _compute_radial_averages(radial_values, cluster.galcat['gt'].data, bins=bins)
+    r_avg, gx_avg, gx_std = _compute_radial_averages(radial_values, cluster.galcat['gx'].data, bins=bins)
     profile_table = Table([r_avg, gt_avg, gt_std, gx_avg, gx_avg],
         names = ('radius', 'gt', 'gt_err', 'gx', 'gx_err'))
     if add_to_cluster:
         cluster.profile = profile_table
     return profile_table
 
-def plot_profiles(cluster):
+def plot_profiles(cluster, r_units=None):
     """Plot shear profiles for validation
 
     Parameters
@@ -124,6 +129,13 @@ def plot_profiles(cluster):
         GalaxyCluster object with galaxies
     """
     prof = cluster.profile
+    if r_units is not None:
+        if cluster.profile['radius'].unit is not None:
+            raise Warning(('r_units provided (%s) differ from'
+                    'r_units in GalaxyCluster.galcat table (%s)'
+                    ', using user defined')%(r_units, cluster.profile['radius'].unit))
+        else:
+            r_units = cluster.profile['radius'].unit
     return _plot_profiles(*[cluster.profile[c] for c in
             ('radius', 'gt', 'gt_err', 'gx', 'gx_err')],
             r_units=cluster.profile['radius'].unit)
