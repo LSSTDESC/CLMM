@@ -99,7 +99,7 @@ def make_shear_profile(cluster, radial_units, bins=None,
         and 'gx' in cluster.galcat.columns()
         and 'theta' in cluster.galcat.columns()):
         raise TypeError('shear information is missing in galaxy, ',
-                        'must have (e1, e2) or (gamma1, gamma2, kappa).',
+                        'must have tangential and cross shears (gt,gx).',
                         'Run compute_shear first!')
     radial_values = _theta_units_conversion(cluster.galcat['theta'],
                                         radial_units, z_l=cluster.z,
