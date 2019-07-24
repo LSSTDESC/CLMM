@@ -8,25 +8,23 @@ from astropy.table import Table
 import os
 
 def test_make_bins():
-    testing.assert_equal(len( polaraveraging._make_bins(1,10,9,False)),10 )
-    testing.assert_allclose( polaraveraging._make_bins(1,10,9,False) , np.arange(1.,11.) )
-    testing.assert_allclose( polaraveraging._make_bins(1,10000,4,True) ,10.**(np.arange(5)) )
+    ## do something
+    testing.assert_equal(len( pa.make_bins(1,10,9,False)),10 )
+    testing.assert_allclose( pa.make_bins(1,10,9,False) , np.arange(1.,11.) )
+    testing.assert_allclose( pa.make_bins(1,10000,4,True) ,10.**(np.arange(5)) )
     
-    testing.assert_raises(TypeError, polaraveraging._make_bins, rmin='glue', rmax=10, n_bins=9, log_bins=False)
-    testing.assert_raises(TypeError, polaraveraging._make_bins, rmin=1, rmax='glue', n_bins=9, log_bins=False)
-    testing.assert_raises(TypeError, polaraveraging._make_bins, rmin=1, rmax=10, n_bins='glue', log_bins=False)
-    testing.assert_raises(TypeError, polaraveraging._make_bins, rmin=1, rmax=10, n_bins=9, log_bins='glue')
+    testing.assert_raises(TypeError, pa.make_bins, rmin='glue', rmax=10, n_bins=9, log_bins=False)
+    testing.assert_raises(TypeError, pa.make_bins, rmin=1, rmax='glue', n_bins=9, log_bins=False)
+    testing.assert_raises(TypeError, pa.make_bins, rmin=1, rmax=10, n_bins='glue', log_bins=False)
+    testing.assert_raises(TypeError, pa.make_bins, rmin=1, rmax=10, n_bins=9, log_bins='glue')
 
-    testing.assert_raises(ValueError, polaraveraging._make_bins, rmin=1, rmax=10, n_bins=-4, log_bins=False)
-    testing.assert_raises(ValueError, polaraveraging._make_bins, rmin=1, rmax=-10, n_bins=9, log_bins=False)
-    testing.assert_raises(ValueError, polaraveraging._make_bins, rmin=1, rmax=10, n_bins=0, log_bins=False)
-    testing.assert_raises(TypeError, polaraveraging._make_bins, rmin=1, rmax=10, n_bins=9.9, log_bins=False)
-
-    
-    
-
+    testing.assert_raises(ValueError, pa.make_bins, rmin=1, rmax=10, n_bins=-4, log_bins=False)
+    testing.assert_raises(ValueError, pa.make_bins, rmin=1, rmax=-10, n_bins=9, log_bins=False)
+    testing.assert_raises(ValueError, pa.make_bins, rmin=1, rmax=10, n_bins=0, log_bins=False)
+    testing.assert_raises(TypeError, pa.make_bins, rmin=1, rmax=10, n_bins=9.9, log_bins=False)
 
 def test_compute_g_x():
+    pass
     data = np.array([[0.01, 0.02, 0.01], # g1
                      [0.01, 0.02, 0.03], # g2
                      [1., 20., 150.]]) # phi
@@ -50,12 +48,31 @@ def test_compute_g_x():
     testing.assert_raises(ValueError, pa._compute_g_x, 0.1, -0.1, 1.0)
     testing.assert_raises(ValueError, pa._compute_g_x, 0.1, 0.1, -361.)
     testing.assert_raises(ValueError, pa._compute_g_x, 0.1, 0.1, 361.)
-    testing.assert_equal(pa._compute_g_x(0.1, 0.1, 0.), pa._compute_g_x(0.1, 0.1, 360.))
-    
+
+    #testing.assert_equal(pa._compute_g_x(0.1, 0.1, 0.), pa._compute_g_x(0.1, 0.1, 360.))
+
     # test for reasonable values
     testing.assert_equal(pa._compute_g_x(100, 0, 0.), 0)
     testing.assert_equal(pa._compute_g_x(0, 100, 45.), 0)
-    testing.assert_equal(pa._compute_g_x(0, 0, 234.), 0)
+    testing.assert_equal(pa._compute_g_x(0, 0, 234.), 0) 
+
+
+def test_compute_radial_averages():
+
+    #testing input types
+    testing.assert_raises(TypeError, pa._compute_radial_averages, radius="glue", g=10, bins=[np.arange(1.,16.)])
+    testing.assert_raises(TypeError, pa._compute_radial_averages, radius=np.arange(1.,10.), g="glue", bins=[np.arange(1.,16.)])  
+    testing.assert_raises(TypeError, pa._compute_radial_averages, radius=np.arange(1.,10.), g=np.arange(1.,10.), bins='glue') 
+
+    #want radius and g to have same number of entries
+    testing.assert_raises(TypeError, pa._compute_radial_averages, radius=np.arange(1.,10.), g=np.arange(1.,7.), bins=[np.arange(1.,16.)])
+
+    #want nbins <=2 
+    testing.assert_raises(TypeError, pa._compute_radial_averages, radius=np.arange(1.,10.), g=np.arange(1.,10.), bins=1)
+
+    #want binning to encompass entire radial range
+    testing.assert_raises(ValueError, pa._compute_radial_averages, radius=np.arange(1.,10.), g=np.arange(1.,10.), bins=[1,6,7])
+    testing.assert_raises(ValueError, pa._compute_radial_averages, radius=np.arange(1.,10.), g=np.arange(1.,10.), bins=[5,6,7]) 
 
 def test_compute_g_t():
     data = np.array([[0.01, 0.02, 0.01], # g1
@@ -63,8 +80,8 @@ def test_compute_g_t():
                      [1., 20., 150.]]) # phi
 
     # test that function works for scalar and vector input
-    assert(isinstance(pa._compute_g_t(*data[:,0]), float))
-    assert(isinstance(pa._compute_g_t(*data), np.ndarray))
+    testing.assert(isinstance(float, pa._compute_g_t(*(data[:,0]))))
+    testing.assert(isinstance(np.array, pa._compute_g_t(*data)))
     testing.assert_equal(3, len(pa._compute_g_t(*data)))
     testing.assert_equal(pa._compute_g_t(*(data[:,0])), pa._compute_g_t(*data)[0])
     
@@ -160,4 +177,4 @@ if __name__ == "__main__":
     test_make_bins()
     test_compute_g_x()
     test_compute_g_t()
-
+    test_compute_radial_averages()
