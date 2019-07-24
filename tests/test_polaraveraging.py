@@ -54,20 +54,6 @@ def test_compute_g_x():
     testing.assert_almost_equal(pa._compute_g_x(0., 100., np.pi/4.), 0.0)
     testing.assert_almost_equal(pa._compute_g_x(0., 0., 0.3), 0.)
 
-def test_compute_radial_averages():
-
-    #testing input types
-    testing.assert_raises(TypeError, pa._compute_radial_averages, radius="glue", g=10, bins=[np.arange(1.,16.)])
-    testing.assert_raises(TypeError, pa._compute_radial_averages, radius=np.arange(1.,10.), g="glue", bins=[np.arange(1.,16.)])  
-    testing.assert_raises(TypeError, pa._compute_radial_averages, radius=np.arange(1.,10.), g=np.arange(1.,10.), bins='glue') 
-
-    #want radius and g to have same number of entries
-    testing.assert_raises(TypeError, pa._compute_radial_averages, radius=np.arange(1.,10.), g=np.arange(1.,7.), bins=[np.arange(1.,16.)])
-
-    #want binning to encompass entire radial range
-    testing.assert_raises(ValueError, pa._compute_radial_averages, radius=np.arange(1.,10.), g=np.arange(1.,10.), bins=[1,6,7])
-    testing.assert_raises(ValueError, pa._compute_radial_averages, radius=np.arange(1.,6.), g=np.arange(1.,6.), bins=[5,6,7]) 
-
 def test_compute_g_t():
     data = np.array([[0.01, 0.02, 0.01], # g1
                      [0.01, 0.02, 0.03], # g2
@@ -96,6 +82,22 @@ def test_compute_g_t():
     testing.assert_almost_equal(pa._compute_g_t(100., 0., 0.), -100.0)
     testing.assert_almost_equal(pa._compute_g_t(0., 100., np.pi/4.), -100.0)
     testing.assert_almost_equal(pa._compute_g_t(0., 0., 0.3), 0.)
+
+    
+def test_compute_radial_averages():
+
+    #testing input types
+    testing.assert_raises(TypeError, pa._compute_radial_averages, radius="glue", g=10, bins=[np.arange(1.,16.)])
+    testing.assert_raises(TypeError, pa._compute_radial_averages, radius=np.arange(1.,10.), g="glue", bins=[np.arange(1.,16.)])  
+    testing.assert_raises(TypeError, pa._compute_radial_averages, radius=np.arange(1.,10.), g=np.arange(1.,10.), bins='glue') 
+
+    #want radius and g to have same number of entries
+    testing.assert_raises(TypeError, pa._compute_radial_averages, radius=np.arange(1.,10.), g=np.arange(1.,7.), bins=[np.arange(1.,16.)])
+
+    #want binning to encompass entire radial range
+    testing.assert_raises(ValueError, pa._compute_radial_averages, radius=np.arange(1.,10.), g=np.arange(1.,10.), bins=[1,6,7])
+    testing.assert_raises(ValueError, pa._compute_radial_averages, radius=np.arange(1.,6.), g=np.arange(1.,6.), bins=[5,6,7]) 
+
     
 
 def test_compute_theta_phi():
