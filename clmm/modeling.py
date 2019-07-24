@@ -203,7 +203,7 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, hal
     else:
         pass
 
-def _get_comoving_angular_distance_a(cosmo, aexp2, aexp1=1.):
+def get_comoving_angular_distance_a(cosmo, aexp2, aexp1=1.):
     '''
     This is a function to calculate d_LS (angular distance between lens and source) because CCL cannot yet do it.  Temporarily using the astropy implementation.
 
@@ -267,9 +267,9 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     aexp_cluster = _get_a_from_z(z_cluster)
     aexp_src = _get_a_from_z(z_source)
 
-    d_l = _get_comoving_angular_distance_a(cosmo, aexp_cluster)
-    d_s = _get_comoving_angular_distance_a(cosmo, aexp_src)
-    d_ls = _get_comoving_angular_distance_a(cosmo, aexp_src, aexp_cluster)
+    d_l = get_comoving_angular_distance_a(cosmo, aexp_cluster)
+    d_s = get_comoving_angular_distance_a(cosmo, aexp_src)
+    d_ls = get_comoving_angular_distance_a(cosmo, aexp_src, aexp_cluster)
 
     sigmacrit = d_s / (d_l * d_ls) * c * c / (4 * np.pi * G)
     return sigmacrit
