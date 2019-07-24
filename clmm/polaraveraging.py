@@ -178,7 +178,7 @@ def _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
         theta =  np.sqrt(dx**2 + dy**2)
         phi = np.arctan2(dy, -dx)
 
-    if np.any(theta < 1.e9):
+    if np.any(theta < 1.e-9):
         raise ValueError("Ra and Dec of source and lens too similar")
         
     elif sky == "curved":
