@@ -156,6 +156,8 @@ def test_compute_theta_phi():
                             rtol, err_msg="Failure when lens and a source share a DEC")
     # l/s at same ra AND dec
     testing.assert_raises(ValueError, pa._compute_theta_phi, ra_l, dec_l, np.array([161.32, 161.34]), np.array([51.49, 51.55]))
+
+    testing.assert_warns(UserWarning,pa._compute_theta_phi, ra_l, dec_l, np.array([151.32, 161.34]), np.array([51.49, 51.55]))
     
     #testing.assert_allclose(pa._compute_theta_phi(ra_l, dec_l, np.array([161.32, 161.34]), np.array([51.49, 51.55])),
     #                        [[0.00000000000000000000, 0.00106951489719733675], [0.00000000000000000000, 1.77544123918164542530]],
