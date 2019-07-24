@@ -159,20 +159,20 @@ def _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
     phi : array_like, float
         Angle in radians, (can we do better)
     """
-    if not -360. < ra_l < 360.:
+    
+    if not -360. <= ra_l <= 360.:
         raise ValueError("ra = %f of lens if out of domain"%ra_l)
-    if not -90. < dec_l < 90.:
+    if not -90. <= dec_l <= 90.:
         raise ValueError("dec = %f of lens if out of domain"%dec_l)
-    if not np.array([-360. < x_ < 360. for x_ in ra_s]).all():
+    if not np.array([-360. <= x_ <= 360. for x_ in ra_s]).all():
         raise ValueError("Object has an invalid ra in source catalog")
-    if not np.array([-90. < x_ < 90 for x_ in dec_s]).all():
+    if not np.array([-90. <= x_ <= 90 for x_ in dec_s]).all():
         raise ValueError("Object has an invalid dec in the source catalog")
-
-    deg_to_rad = np.pi/180.
+        
 
     if sky == "flat":
-        dx = (ra_s - ra_l)*deg_to_rad * math.cos(dec_l*deg_to_rad)
-        dy = (dec_s - dec_l)*deg_to_rad
+        dx = (ra_s - ra_l)*u.deg.to(u.rad) * math.cos(dec_l*u.deg.to(u.rad))
+        dy = (dec_s - dec_l)*u.deg.to(u.rad)
         ## make sure absolute value of all RA differences are < 180 deg:
         ## subtract 360 deg from RA angles > 180 deg
         dx[dx>=np.pi] = dx[dx>=np.pi] - 2.*np.pi
