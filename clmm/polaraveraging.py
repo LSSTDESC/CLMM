@@ -96,6 +96,11 @@ def make_shear_profile(cluster, radial_units, bins=None,
     profile_table: astropy Table
         Table with r_profile, gt profile (and error) and
         gx profile (and error)
+
+    Note
+    ----
+    Currently, the radial_units are not saved in the profile_table.
+    We have to add it somehow.
     """
     if not ('gt' in cluster.galcat.columns  
         and 'gx' in cluster.galcat.columns
