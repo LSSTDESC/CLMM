@@ -78,7 +78,7 @@ def make_shear_profile(cluster, radial_units, bins=None,
         GalaxyCluster object with galaxies
     radial_units:
         Radial units of the profile, one of 
-        ["deg", "arcmin", "arcsec", kpc", "Mpc"]
+        ["rad", deg", "arcmin", "arcsec", kpc", "Mpc"]
     bins: array_like, float
         User defined n_bins + 1 dimensional array of bins, if 'None',
         the default is 10 equally spaced radial bins
@@ -99,7 +99,7 @@ def make_shear_profile(cluster, radial_units, bins=None,
         and 'gx' in cluster.galcat.columns()
         and 'theta' in cluster.galcat.columns()):
         raise TypeError('shear information is missing in galaxy, ',
-                        'must have (e1, e2) or (gamma1, gamma2, kappa).',
+                        'must have tangential and cross shears (gt,gx).',
                         'Run compute_shear first!')
     radial_values = _theta_units_conversion(cluster.galcat['theta'],
                                         radial_units, z_l=cluster.z,
@@ -250,7 +250,7 @@ def _theta_units_conversion(theta, units, z_cl=None, cosmo=None,
     
     """
     Converts theta from radian to whatever units specified in units
-    units: one of ["deg", "arcmin", "arcsec", kpc", "Mpc"]
+    units: one of ["rad", deg", "arcmin", "arcsec", kpc", "Mpc"]
     cosmo : cosmo object 
     z_l : cluster redshift
     cosmo_object_type : string keywords that can be either "ccl" or "astropy" 
@@ -258,6 +258,9 @@ def _theta_units_conversion(theta, units, z_cl=None, cosmo=None,
     
     theta = theta * u.rad
     
+    if units == "rad":
+        radius = theta.value
+        
     if units == "deg":
         radius = theta.to(u.deg).value
         
@@ -281,7 +284,7 @@ def _theta_units_conversion(theta, units, z_cl=None, cosmo=None,
         
     return radius
 
-def _make_bins(rmin, rmax, n_bins=10, log_bins=False):
+def make_bins(rmin, rmax, n_bins=10, log_bins=False):
     """Define equal sized bins with an array of n_bins+1 bin edges
     
     Parameters
