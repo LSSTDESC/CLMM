@@ -8,6 +8,7 @@ python:
 install:
   - sudo apt-get update
   - sudo apt-get install libgsl0-dev -y
+  - gcc --version
 
   # Install the dependencies and the package:
   - git clone https://github.com/matthewkirby/cluster_toolkit.git ; cd cluster_toolkit ; python setup.py install ; cd -
