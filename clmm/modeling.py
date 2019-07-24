@@ -92,7 +92,7 @@ def get_3d_density(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameter
         Mass overdensity definition; defaults to 200.
     halo_profile_parameterization : str, optional
         Profile model parameterization, with the following supported options:
-        `nfw` (default) - $\rho(r)=\frac{\rho_0}{c/(r/R_{vir})(1+c/(r/R_{vir}))^2}$ [insert citation here]
+        `nfw` (default) - $\rho(r) = \frac{\rho_0}{c/(r/R_{vir})(1+c/(r/R_{vir}))^2}$ [insert citation here]
     z_src_model : str, optional
         Source redshift model, with the following supported options:
         `single_plane` (default) - all sources at one redshift
@@ -224,9 +224,7 @@ def _get_comoving_angular_distance_a(cosmo, aexp2, aexp1=1.):
     Notes
     -----
     This is definitely broken if other cosmological parameter specifications differ, so we'll have to revise this later.
-
     We need to switch angular_diameter_distance_z1z2 to CCL equivalent angular distance once implemented
-
     '''
     z1 = _get_z_from_a(aexp1)
     z2 = _get_z_from_a(aexp2)
