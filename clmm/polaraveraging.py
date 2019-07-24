@@ -404,11 +404,13 @@ def _plot_profiles(r, gt, gterr, gx=None, gxerr=None, r_units=""):
     """
     fig, ax = plt.subplots()
     ax.plot(r, gt, 'bo-', label="tangential shear")
-    ax.errorbar(r, gt, gterr)
+    ax.errorbar(r, gt, gterr, label=None)
     
-    if type(gx) is np.ndarray:
+    try:
         plt.plot(r, gx, 'ro-', label="cross shear")
-        plt.errorbar(r, gx, gxerr)
+        plt.errorbar(r, gx, gxerr, label=None)
+    except:
+        pass
 
     ax.legend()
     ax.set_xlabel("r [%s]"%r_units)
