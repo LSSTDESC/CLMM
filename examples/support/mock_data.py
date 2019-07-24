@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 from astropy.table import Table
 from scipy import integrate
 from scipy.interpolate import interp1d
-import pyccl as ccl
 import clmm
 
 class MockData(): 
@@ -53,11 +52,19 @@ class MockData():
             self.config['cluster_m'] = 1.e15
             self.config['cluster_z'] = 0.3
             self.config['src_z'] = 0.8
-            self.config['cosmo'] = ccl.Cosmology(Omega_c=0.27, Omega_b=0.045, h=0.67, A_s=2.1e-9, n_s=0.96)
             self.config['Delta'] = 200
             self.config['concentration'] = 4
 
+            from astropy.cosmology import FlatLambdaCDM
+            astropy_cosmology_object = FlatLambdaCDM(H0=70, Om0=0.27, Ob0=0.045)
+            cosmo_ccl = pp.cclify_astropy_cosmo(astropy_cosmology_object)
+
+            # self.config['cosmo'] = ccl.Cosmology(Omega_c=0.27, Omega_b=0.045, h=0.67, A_s=2.1e-9, n_s=0.96)
+            self.config['cosmo'] = cosmo_ccl
+ 
+            
         self.ask_type = ['raw_data']
+
 
     def generate(self, is_shapenoise=False, shapenoise=0.005, is_zerr=False, sigma_z_ref=0.05, 
                  is_zdistribution=False, z_min=0., z_max=7., alpha=1.24, beta=1.01, z0=0.51):
@@ -154,8 +161,9 @@ class MockData():
         r_mpc = np.sqrt(x_mpc**2 + y_mpc**2)
   
         aexp_cluster = 1./(1.+zL)
-        Dl = ccl.comoving_angular_distance(self.config['cosmo'], aexp_cluster)*aexp_cluster
-
+ #       Dl = ccl.comoving_angular_distance(self.config['cosmo'], aexp_cluster)*aexp_cluster
+        Dl = clmm.get_comoving_angular_distance_a(self.config['cosmo'], aexp_cluster)
+        
         x_deg = (x_mpc/Dl)*(180./np.pi) #ra
         y_deg = (y_mpc/Dl)*(180./np.pi) #dec
         gamt = clmm.predict_reduced_tangential_shear(r_mpc, mdelta=M, cdelta=c, z_cluster=zL, z_source=z_true,
