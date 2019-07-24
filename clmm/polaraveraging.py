@@ -22,7 +22,7 @@ def _astropy_to_CCL_cosmo_object(astropy_cosmology_object) :
     Generates a ccl cosmology object from an GCR or astropy cosmology object.  
     '''
     apy_cosmo = astropy_cosmology_object
-    ccl_cosmo = ccl.Cosmology(Omega_c=apy_cosmo.Odm0,
+    ccl_cosmo = ccl.Cosmology(Omega_c=(apy_cosmo.Odm0-apy_cosmo.Ob0),
                   Omega_b=apy_cosmo.Ob0,
                   h=apy_cosmo.h,
                   n_s=apy_cosmo.n_s,
@@ -166,13 +166,18 @@ def _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
         raise ValueError("Object has an invalid dec in the source catalog")
 
     deg_to_rad = np.pi/180.
-    dx = (ra_s - ra_l)*deg_to_rad * math.cos(dec_l*deg_to_rad)
-    dy = (dec_s - dec_l)*deg_to_rad
-    phi = np.arctan2(dy, -dx)
 
     if sky == "flat":
-        dx[dx>np.pi/2.] = dx[dx>np.pi/2.] - 2.*np.pi
+        dx = (ra_s - ra_l)*deg_to_rad * math.cos(dec_l*deg_to_rad)
+        dy = (dec_s - dec_l)*deg_to_rad
+        ## make sure absolute value of all RA differences are < 180 deg:
+        ## subtract 360 deg from RA angles > 180 deg
+        dx[dx>np.pi] = dx[dx>np.pi] - 2.*np.pi
+        ## add 360 deg to RA angles < -180 deg
+        dx[dx<-np.pi] = dx[dx<-np.pi] + 2.*np.pi 
         theta =  np.sqrt(dx**2 + dy**2)
+        phi = np.arctan2(dy, -dx)
+        
     elif sky == "curved":
         raise ValueError("Curved sky functionality not yet supported!")
         # coord_l = SkyCoord(ra_l*u.deg,dec_l*u.deg)
