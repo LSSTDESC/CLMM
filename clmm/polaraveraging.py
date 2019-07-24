@@ -105,9 +105,10 @@ def make_shear_profile(cluster, radial_units, bins=None,
                         'Run compute_shear first!')
     radial_values = _theta_units_conversion(cluster.galcat['theta'],
                                         radial_units, z_cl=cluster.z,
+                                        cosmo = cosmo,
                                         cosmo_object_type=cosmo_object_type)
-    r_avg, gt_avg, gt_std = _compute_radial_averages(radial_values, cluster.galcat['gt'])
-    r_avg, gx_avg, gx_std = _compute_radial_averages(radial_values, cluster.galcat['gx'])
+    r_avg, gt_avg, gt_std = _compute_radial_averages(radial_values, cluster.galcat['gt'].data)
+    r_avg, gx_avg, gx_std = _compute_radial_averages(radial_values, cluster.galcat['gx'].data)
     profile_table = Table([r_avg, gt_avg, gt_std, gx_avg, gx_avg],
         names = ('radius', 'gt', 'gt_err', 'gx', 'gx_err'))
     if add_to_cluster:
@@ -413,10 +414,6 @@ def _compute_radial_averages(radius, g, bins=None):
         raise TypeError("g must be an array")
     if len(radius) != len(g):
         raise TypeError("radius and g must be arrays of the same length")
-    if np.amax(radius) >= np.amax(bins):
-        raise ValueError("maxium radius must be within range of bins")
-    if np.amin(radius) < np.amin(bins):
-        raise ValueError("Minimum radius must be within the range of bins")
     if len(bins) < 2:
         raise TypeError("you need to define at least one bin")
     
