@@ -194,7 +194,7 @@ def _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
         raise ValueError("Ra and Dec of source and lens too similar")
 
     if np.any(theta > np.pi/180.):
-        warnings.warn("Using the flat-sky approximation with separations > 1 deg may be inaccurate")
+        warnings.warn("Using the flat-sky approximation with separations > 1 deg may be inaccurate", UserWarning)
     
     return theta, phi
 
