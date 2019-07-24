@@ -11,6 +11,7 @@ from astropy.coordinates import SkyCoord
 from astropy.cosmology import FlatLambdaCDM
 from astropy.table import Table
 from astropy import units as u
+import math
 
 
 ##############################################################################################
@@ -78,7 +79,7 @@ def make_shear_profile(cluster, radial_units, bins=None,
         GalaxyCluster object with galaxies
     radial_units:
         Radial units of the profile, one of 
-        ["deg", "arcmin", "arcsec", kpc", "Mpc"]
+        ["rad", deg", "arcmin", "arcsec", kpc", "Mpc"]
     bins: array_like, float
         User defined n_bins + 1 dimensional array of bins, if 'None',
         the default is 10 equally spaced radial bins
@@ -99,10 +100,10 @@ def make_shear_profile(cluster, radial_units, bins=None,
         and 'gx' in cluster.galcat.columns
         and 'theta' in cluster.galcat.columns):
         raise TypeError('shear information is missing in galaxy, ',
-                        'must have (e1, e2) or (gamma1, gamma2, kappa).',
+                        'must have tangential and cross shears (gt,gx).',
                         'Run compute_shear first!')
     radial_values = _theta_units_conversion(cluster.galcat['theta'],
-                                        radial_units, z_l=cluster.z,
+                                        radial_units, z_cl=cluster.z,
                                         cosmo_object_type=cosmo_object_type)
     r_avg, gt_avg, gt_std = _compute_radial_averages(radial_values, cluster.galcat['gt'])
     r_avg, gx_avg, gx_std = _compute_radial_averages(radial_values, cluster.galcat['gx'])
@@ -155,27 +156,36 @@ def _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
     phi : array_like, float
         Angle in radians, (can we do better)
     """
-    dx = (ra_s-ra_l)*u.deg.to(u.rad) * np.cos(dec_l *u.deg.to(u.rad))             
-    dy = (dec_s - dec_l)*u.deg.to(u.rad)                 
-    phi = np.arctan2(dy, -dx)     
-    
-    if sky == "curved":
-        coord_l = SkyCoord(ra_l*u.deg,dec_l*u.deg)
-        coord_s = SkyCoord(ra_s*u.deg,dec_s*u.deg)
-        theta = coord_l.separation(coord_s).to(u.rad).value
+    if not -360. < ra_l < 360.:
+        raise ValueError("ra = %f of lens if out of domain"%ra_l)
+    if not -90. < dec_l < 90.:
+        raise ValueError("dec = %f of lens if out of domain"%dec_l)
+    if not np.array([-360. < x_ < 360. for x_ in ra_s]).all():
+        raise ValueError("Object has an invalid ra in source catalog")
+    if not np.array([-90. < x_ < 90 for x_ in dec_s]).all():
+        raise ValueError("Object has an invalid dec in the source catalog")
 
-    else:                     
-        if isinstance(dx, (float, int)):
-            dx = min(dx, 360.-dx)
-        else:
-            dx[dx>180.] = 360.-dx[dx>180.]
+    deg_to_rad = np.pi/180.
+    dx = (ra_s - ra_l)*deg_to_rad * math.cos(dec_l*deg_to_rad)
+    dy = (dec_s - dec_l)*deg_to_rad
+    phi = np.arctan2(dy, -dx)
+
+    if sky == "flat":
+        dx[dx>np.pi/2.] = dx[dx>np.pi/2.] - 2.*np.pi
         theta =  np.sqrt(dx**2 + dy**2)
+    elif sky == "curved":
+        raise ValueError("Curved sky functionality not yet supported!")
+        # coord_l = SkyCoord(ra_l*u.deg,dec_l*u.deg)
+        # coord_s = SkyCoord(ra_s*u.deg,dec_s*u.deg)
+        # theta = coord_l.separation(coord_s).to(u.rad).value
+    else:
+        raise ValueError("Sky option %s not supported!"%sky)
 
     return theta, phi
 
 
 def _compute_g_t(g1, g2, phi):
-    """Computes the tangential shear for each source in the galaxy catalog
+    r"""Computes the tangential shear for each source in the galaxy catalog
 
     Add extended description
 
@@ -200,7 +210,7 @@ def _compute_g_t(g1, g2, phi):
 
 
 def _compute_g_x(g1, g2, phi):
-    """Computes cross shear for each source in galaxy catalog
+    r"""Computes cross shear for each source in galaxy catalog
     
     Parameters
     ----------
@@ -224,7 +234,7 @@ def _compute_g_x(g1, g2, phi):
 
 
 def _compute_shear(ra_l, dec_l, ra_s, dec_s, g1, g2, sky="flat"):
-    """Wrapper that returns tangential and cross shear along with radius in radians
+    r"""Wrapper that returns tangential and cross shear along with radius in radians
     
     Parameters
     ----------
@@ -257,19 +267,22 @@ def _compute_shear(ra_l, dec_l, ra_s, dec_s, g1, g2, sky="flat"):
     g_x = _compute_g_x(g1,g2,phi)
     return theta, g_t, g_x
 
-def _theta_units_conversion(theta, units, z_l=None, cosmo=None,
+def _theta_units_conversion(theta, units, z_cl=None, cosmo=None,
                                         cosmo_object_type="astropy"):
     
     """
     Converts theta from radian to whatever units specified in units
-    units: one of ["deg", "arcmin", "arcsec", kpc", "Mpc"]
+    units: one of ["rad", deg", "arcmin", "arcsec", kpc", "Mpc"]
     cosmo : cosmo object 
-    z_l : cluster redshift
+    z_cl : cluster redshift
     cosmo_object_type : string keywords that can be either "ccl" or "astropy" 
     """
     
     theta = theta * u.rad
     
+    if units == "rad":
+        radius = theta.value
+        
     if units == "deg":
         radius = theta.to(u.deg).value
         
@@ -293,7 +306,7 @@ def _theta_units_conversion(theta, units, z_l=None, cosmo=None,
         
     return radius
 
-def _make_bins(rmin, rmax, n_bins=10, log_bins=False):
+def make_bins(rmin, rmax, n_bins=10, log_bins=False):
     """Define equal sized bins with an array of n_bins+1 bin edges
     
     Parameters
