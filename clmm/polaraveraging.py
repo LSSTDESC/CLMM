@@ -30,6 +30,8 @@ def _astropy_to_CCL_cosmo_object(astropy_cosmology_object) :
     
     return ccl_cosmo
 ##############################################################################################
+#### Wrapper functions #######################################################################
+##############################################################################################
 
 def compute_shear(cluster, geometry="flat", add_to_cluster=True):
     """Computs tangential and cross shear along 
@@ -64,7 +66,6 @@ def compute_shear(cluster, geometry="flat", add_to_cluster=True):
         cluster.galcat['gt'] = gt
         cluster.galcat['gx'] = gx
     return theta, gt, gx
-
 
 def make_shear_profile(cluster, radial_units, bins=None,
                         cosmo=None, cosmo_object_type="astropy",
@@ -105,12 +106,33 @@ def make_shear_profile(cluster, radial_units, bins=None,
                                         cosmo_object_type=cosmo_object_type)
     r_avg, gt_avg, gt_std = _compute_radial_averages(radial_values, cluster.galcat['gt'])
     r_avg, gx_avg, gx_std = _compute_radial_averages(radial_values, cluster.galcat['gx'])
-    profile_table = Table([r, gt, gterr, gx, gxerr],
+    profile_table = Table([r_avg, gt_avg, gt_std, gx_avg, gx_avg],
         names = ('radius', 'gt', 'gt_err', 'gx', 'gx_err'))
     if add_to_cluster:
         cluster.profile = profile_table
     return profile_table
 
+def plot_profiles(cluster):
+    """Plot shear profiles for validation
+
+    Parameters
+    ----------
+    cluster: GalaxyCluster object
+        GalaxyCluster object with galaxies
+    """
+    prof = cluster.profile
+    return _plot_profiles(*[cluster.profile[c] for c in
+            ('radius', 'gt', 'gt_err', 'gx', 'gx_err')],
+            r_units=cluster.profile['radius'].unit)
+
+# Maybe these functions should be here instead of __init__
+#GalaxyCluster.compute_shear = compute_shear
+#GalaxyCluster.make_shear_profile = make_shear_profile
+#GalaxyCluster.plot_profiles = plot_profiles
+
+##############################################################################################
+#### Internal functions ######################################################################
+##############################################################################################
 
 def _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
     """Returns the characteristic angles of the lens system
