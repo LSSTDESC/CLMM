@@ -2,40 +2,26 @@ language: python
 
 cache: pip
 
-
 python:
 - "3.6"
 
 install:
   - sudo apt-get update
+  - sudo apt-get install libgsl0-dev -y
 
   # Install the dependencies and the package:
+  - git clone https://github.com/matthewkirby/cluster_toolkit.git ; cd cluster_toolkit ; python setup.py install ; cd -
   - pip install -r requirements.txt
   - python setup.py install
-
-  # Now get set up to run jupyter notebooks:
-  #- sudo apt-get install texlive-latex-recommended
-  #- sudo apt-get install texlive-latex-extra
-  #- sudo apt-get install texlive-fonts-recommended
-  #- sudo apt-get install chktex
-  #- sudo apt-get install dvipng
-  #- pip install --upgrade jupyter
-  #- pip install nbconvert
 
   # Finally get set up to build the docs:
   - pip install sphinx==2.1.2
   - pip install sphinx_rtd_theme
 
-  # Other dependencies here: # This is done through requirements.txt
-  #- pip install pyccl
-  #- pip install astropy
-  #- pip install scipy
-  #- pip install colossus==1.2.5
-  #- pip install matplotlib
-
 script:
+
   # Run the unit tests:
-  - py.test --ignore=tests/crypt/
+  - py.test --ignore=tests/crypt/ --ignore=cluster_toolkit/tests
 
   # Run the docs:
   - sphinx-quickstart -a "travis" -p clmm -v 0.0.1 --ext-autodoc -q
