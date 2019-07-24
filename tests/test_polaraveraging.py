@@ -53,9 +53,9 @@ def test_compute_g_x():
 
     
     # test for reasonable values
-    testing.assert_almost_equal(pa._compute_g_x(100., 0, 0.), 0.0)
-    testing.assert_almost_equal(pa._compute_g_x(0, 100., np.pi/4.), 0.0)
-    testing.assert_almost_equal(pa._compute_g_x(0, 0, 0.3), 0.)
+    testing.assert_almost_equal(pa._compute_g_x(100., 0., 0.), 0.0)
+    testing.assert_almost_equal(pa._compute_g_x(0., 100., np.pi/4.), 0.0)
+    testing.assert_almost_equal(pa._compute_g_x(0., 0., 0.3), 0.)
  
 
 def test_compute_g_t():
@@ -83,9 +83,9 @@ def test_compute_g_t():
     testing.assert_almost_equal(pa._compute_g_t(0.1, 0.1, 0.), pa._compute_g_t(0.1, 0.1, np.pi))
     
     # test for reasonable values
-    testing.assert_almost_equal(pa._compute_g_t(100., 0, 0.), -100.0)
-    testing.assert_almost_equal(pa._compute_g_t(0, 100., np.pi/4.), -100.0)
-    testing.assert_almost_equal(pa._compute_g_t(0, 0, 0.3), 0.)
+    testing.assert_almost_equal(pa._compute_g_t(100., 0., 0.), -100.0)
+    testing.assert_almost_equal(pa._compute_g_t(0., 100., np.pi/4.), -100.0)
+    testing.assert_almost_equal(pa._compute_g_t(0., 0., 0.3), 0.)
     
 
 def test_compute_theta_phi():
