@@ -166,17 +166,18 @@ def _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
         raise ValueError("Object has an invalid dec in the source catalog")
 
     deg_to_rad = np.pi/180.
-    dx = (ra_s - ra_l)*deg_to_rad * math.cos(dec_l*deg_to_rad)
-    dy = (dec_s - dec_l)*deg_to_rad
-    phi = np.arctan2(dy, -dx)
 
     if sky == "flat":
+        dx = (ra_s - ra_l)*deg_to_rad * math.cos(dec_l*deg_to_rad)
+        dy = (dec_s - dec_l)*deg_to_rad
         ## make sure absolute value of all RA differences are < 180 deg:
         ## subtract 360 deg from RA angles > 180 deg
         dx[dx>np.pi] = dx[dx>np.pi] - 2.*np.pi
         ## add 360 deg to RA angles < -180 deg
         dx[dx<-np.pi] = dx[dx<-np.pi] + 2.np.pi 
         theta =  np.sqrt(dx**2 + dy**2)
+        phi = np.arctan2(dy, -dx)
+        
     elif sky == "curved":
         raise ValueError("Curved sky functionality not yet supported!")
         # coord_l = SkyCoord(ra_l*u.deg,dec_l*u.deg)
