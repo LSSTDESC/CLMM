@@ -104,6 +104,7 @@ def make_shear_profile(cluster, radial_units, bins=None,
                         'Run compute_shear first!')
     radial_values = _theta_units_conversion(cluster.galcat['theta'],
                                         radial_units, z_cl=cluster.z,
+                                        cosmo = cosmo,
                                         cosmo_object_type=cosmo_object_type)
     r_avg, gt_avg, gt_std = _compute_radial_averages(radial_values, cluster.galcat['gt'])
     r_avg, gx_avg, gx_std = _compute_radial_averages(radial_values, cluster.galcat['gx'])
