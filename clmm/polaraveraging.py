@@ -245,7 +245,7 @@ def _compute_shear(ra_l, dec_l, ra_s, dec_s, g1, g2, sky="flat"):
     g_x = _compute_g_x(g1,g2,phi)
     return theta, g_t, g_x
 
-def _theta_units_conversion(theta, units, z_l=None, cosmo=None,
+def _theta_units_conversion(theta, units, z_cl=None, cosmo=None,
                                         cosmo_object_type="astropy"):
     
     """
