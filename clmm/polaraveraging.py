@@ -31,6 +31,8 @@ def _astropy_to_CCL_cosmo_object(astropy_cosmology_object) :
     
     return ccl_cosmo
 ##############################################################################################
+#### Wrapper functions #######################################################################
+##############################################################################################
 
 def compute_shear(cluster, geometry="flat", add_to_cluster=True):
     """Computs tangential and cross shear along 
@@ -52,8 +54,8 @@ def compute_shear(cluster, geometry="flat", add_to_cluster=True):
     theta: float vector
         radius in radians
     """
-    if not ('e1' in cluster.galcat.columns()  
-        and 'e2' in cluster.galcat.columns()):
+    if not ('e1' in cluster.galcat.columns  
+        and 'e2' in cluster.galcat.columns):
         raise TypeError('shear information is missing in galaxy, ',
                         'must have (e1, e2) or (gamma1, gamma2, kappa)')
     theta, gt , gx = _compute_shear(cluster.ra, cluster.dec, 
@@ -65,7 +67,6 @@ def compute_shear(cluster, geometry="flat", add_to_cluster=True):
         cluster.galcat['gt'] = gt
         cluster.galcat['gx'] = gx
     return theta, gt, gx
-
 
 def make_shear_profile(cluster, radial_units, bins=None,
                         cosmo=None, cosmo_object_type="astropy",
@@ -95,9 +96,9 @@ def make_shear_profile(cluster, radial_units, bins=None,
         Table with r_profile, gt profile (and error) and
         gx profile (and error)
     """
-    if not ('gt' in cluster.galcat.columns()  
-        and 'gx' in cluster.galcat.columns()
-        and 'theta' in cluster.galcat.columns()):
+    if not ('gt' in cluster.galcat.columns  
+        and 'gx' in cluster.galcat.columns
+        and 'theta' in cluster.galcat.columns):
         raise TypeError('shear information is missing in galaxy, ',
                         'must have tangential and cross shears (gt,gx).',
                         'Run compute_shear first!')
@@ -106,12 +107,33 @@ def make_shear_profile(cluster, radial_units, bins=None,
                                         cosmo_object_type=cosmo_object_type)
     r_avg, gt_avg, gt_std = _compute_radial_averages(radial_values, cluster.galcat['gt'])
     r_avg, gx_avg, gx_std = _compute_radial_averages(radial_values, cluster.galcat['gx'])
-    profile_table = Table([r, gt, gterr, gx, gxerr],
+    profile_table = Table([r_avg, gt_avg, gt_std, gx_avg, gx_avg],
         names = ('radius', 'gt', 'gt_err', 'gx', 'gx_err'))
     if add_to_cluster:
         cluster.profile = profile_table
     return profile_table
 
+def plot_profiles(cluster):
+    """Plot shear profiles for validation
+
+    Parameters
+    ----------
+    cluster: GalaxyCluster object
+        GalaxyCluster object with galaxies
+    """
+    prof = cluster.profile
+    return _plot_profiles(*[cluster.profile[c] for c in
+            ('radius', 'gt', 'gt_err', 'gx', 'gx_err')],
+            r_units=cluster.profile['radius'].unit)
+
+# Maybe these functions should be here instead of __init__
+#GalaxyCluster.compute_shear = compute_shear
+#GalaxyCluster.make_shear_profile = make_shear_profile
+#GalaxyCluster.plot_profiles = plot_profiles
+
+##############################################################################################
+#### Internal functions ######################################################################
+##############################################################################################
 
 def _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
     """Returns the characteristic angles of the lens system
@@ -382,11 +404,13 @@ def _plot_profiles(r, gt, gterr, gx=None, gxerr=None, r_units=""):
     """
     fig, ax = plt.subplots()
     ax.plot(r, gt, 'bo-', label="tangential shear")
-    ax.errorbar(r, gt, gterr)
+    ax.errorbar(r, gt, gterr, label=None)
     
-    if type(gx) is np.ndarray:
+    try:
         plt.plot(r, gx, 'ro-', label="cross shear")
-        plt.errorbar(r, gx, gxerr)
+        plt.errorbar(r, gx, gxerr, label=None)
+    except:
+        pass
 
     ax.legend()
     ax.set_xlabel("r [%s]"%r_units)
