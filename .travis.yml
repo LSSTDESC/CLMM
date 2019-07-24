@@ -9,11 +9,13 @@ install:
   - sudo apt-get update
 
   # Install an updated gcc
-  - sudo apt install build-essential
+  # - sudo apt install build-essential
+  - sudo add-apt-repository ppa:jonathonf/gcc-9.0
+  - sudo apt-get install gcc-9
+  - CC="gcc-9"
 
   # Install GSL
   - sudo apt-get install libgsl0-dev -y
-  - gcc --version
 
   # Install the dependencies and the package:
   - git clone https://github.com/tmcclintock/cluster_toolkit.git ; cd cluster_toolkit ; python setup.py install ; cd -
