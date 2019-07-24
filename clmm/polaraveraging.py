@@ -131,9 +131,9 @@ def plot_profiles(cluster, r_units=None):
     prof = cluster.profile
     if r_units is not None:
         if cluster.profile['radius'].unit is not None:
-            raise Warning('r_units provided (%s) differ from'%r_units
-            'r_units in GalaxyCluster.galcat table (%s)'%cluster.profile['radius'].unit
-                    ', using user defined')
+            raise Warning(('r_units provided (%s) differ from'
+                    'r_units in GalaxyCluster.galcat table (%s)'
+                    ', using user defined')%(r_units, cluster.profile['radius'].unit))
         else:
             r_units = cluster.profile['radius'].unit
     return _plot_profiles(*[cluster.profile[c] for c in
