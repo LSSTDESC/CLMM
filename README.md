@@ -34,14 +34,16 @@ whole process is able to be conducted from making source galaxies for
 a given mass and to estimate mass from the measured weak lensing
 signal.
 
-There are several examples in the /examples directory to get you
+There are several examples in the examples/ directory to get you
 started. A simple example including a simple simulated cluster and
-lensed galaxies, binning of the data and modeling is given here: ...
+lensed galaxies, binning of the data and modeling is given here: ADD
+PATH TO RELEVANT EXAMPLE
 
 ## Mock data generation
-
+  * examples/generate_mock_data.ipynb
 
 ## Cluster object parameters
+  * ADD PATH TO RELEVANT EXAMPLE
   * The GalaxyCluster object contains the galaxy cluster metadata (uniqe_id, ra, dec, z) as well as the background galaxy data
   * Background galaxy data: astropy Table containing galaxy_id, ra, dec, e1, e2, z, kappa
   * ra/dec are in decimal degrees
@@ -53,7 +55,8 @@ import polaraveraging as pa
 
 ```
 
-## Profile model option 
+## Profile model option
+  * examples/modeling_demo.ipynb
 
 ## Mass estimation  
 
