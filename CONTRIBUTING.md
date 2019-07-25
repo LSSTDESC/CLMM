@@ -3,27 +3,41 @@
 This is a brief guide to contributing to CLMM, including information about identifiying code issues and submitting code changes.
 
 ## Identifying Issues
-Action items for CLMM code improvements are listed as [issues in the github repository](https://github.com/LSSTDESC/CLMM/issues). Issues marked with the label `good first issue` are well-suited for new contributors.
+
+Action items for CLMM code improvements are listed as [GitHub Issues](https://github.com/LSSTDESC/CLMM/issues).
+Issues marked with the label `good first issue` are well-suited for new contributors.
 
 ## Making a local copy of CLMM
-As a newcomer, you likely will not have edit access to the main CLMM repository. Without edit privledges, you won't be able to create or push changes to branches in the base repository. You can get around this by creating a [fork](https://help.github.com/articles/fork-a-repo/), a linked copy of the CLMM repository under your Github username. You can then push code changes to your fork which can later be merged with the base repository. To create a fork, navigate to the [CLMM home page](https://github.com/LSSTDESC/CLMM) and click 'Fork' in the upper right hand corner. The fork has been created under your username on Github's remote server and can now be cloned to your local repository with
+
+As a newcomer, you likely will not have edit access to the main CLMM repository.
+Without edit privledges, you won't be able to create or push changes to branches in the base repository.
+You can get around this by creating a [fork](https://help.github.com/articles/fork-a-repo/), a linked copy of the CLMM repository under your Github username.
+You can then push code changes to your fork which can later be merged with the base repository.
+To create a fork, navigate to the [CLMM home page](https://github.com/LSSTDESC/CLMM) and click 'Fork' in the upper right hand corner.
+The fork has been created under your username on Github's remote server and can now be cloned to your local repository with
+
 ```bash
     git clone git@github.com:YOUR-USERNAME/CLMM.git
     git remote add base git@github.com:LSSTDESC/CLMM.git
 ```
+
 If you do have edit privledges to CLMM, it may be easier to simply clone the base CLMM repository.
+
 ``` bash
     git clone git@github.com:LSSTDESC/CLMM.git
 ```
 
 ## Making and submitting changes
-Once you've created a local copy of CLMM on your machine, you can begin making changes to the code and submitting them for review. To do this, follow the following steps from within your local copy of CLMM (forked or base).
+Once you've created a local copy of CLMM on your machine, you can begin making changes to the code and submitting them for review.
+To do this, follow the following steps from within your local copy of CLMM (forked or base).
 
-1. Checkout a new branch to contain your code changes independently from the master repository. [Branches](https://help.github.com/articles/about-branches/) allow you to isolate temporary development work without permanently affecting code in the repository.
+1. Checkout a new branch to contain your code changes independently from the master repository.
+    [Branches](https://help.github.com/articles/about-branches/) allow you to isolate temporary development work without permanently affecting code in the repository.
     ```bash
     git checkout -b branchname
     ```
-    Your `branchname` should be descriptive of your code changes. If you are addressing a particular issue #`xx`, then `branchname` should be formatted as `issue/xx/summary` where `summary` is a description of your changes.
+    Your `branchname` should be descriptive of your code changes.
+    If you are addressing a particular issue #`xx`, then `branchname` should be formatted as `issue/xx/summary` where `summary` is a description of your changes.
 2. Make your changes in the files stored in your local directory.
 3. Commit and push your changes to the `branchname` branch of the remote repository.
     ```bash
@@ -32,11 +46,20 @@ Once you've created a local copy of CLMM on your machine, you can begin making c
     git pull origin master
     git push origin branchname
     ```
-4. You can continue to edit your code and push changes to the `branchname` remote branch. Once you are satisfied with your changes, you can submit a [pull request](https://help.github.com/articles/about-pull-requests/) to request that the changes you made in `branchname` be merged into the master repository. Navigate to the [CLMM pulls page](https://github.com/LSSTDESC/CLMM/pulls) and click 'New pull request.' Select `branchname`, fill out a name and description for the pull request, and submit for approval by CLMM admins. Once the pull request is approved, it will be merged into the CLMM master branch.
+4. You can continue to edit your code and push changes to the `branchname` remote branch.
+    Once you are satisfied with your changes, you can submit a [pull request](https://help.github.com/articles/about-pull-requests/) to merge your changes from `branchname` into the master branch.
+    Navigate to the [CLMM Pull Requests](https://github.com/LSSTDESC/CLMM/pulls) and click 'New pull request.'
+    Select `branchname`, fill out a title and description for the pull request, and, optionally, request review by a CLMM team member.
+    Once the pull request is approved, it will be merged into the CLMM master branch.
 
-NOTE: Code is not complete without unit tests and documentation. Please ensure that unit tests (both new and old) all pass and that docs run successfully. To run all of the unit tests, run `pytest` in the root package directory. To test the docs, in the root package directory, run `make -C docs/ clean` to delete any existing documents and then `make -C docs/ html` to rebuild the documentation. If you do not first run `clean`, you may compile locally but fail online.
+NOTE: Code is not complete without unit tests and documentation.
+Please ensure that unit tests (both new and old) all pass and that docs compile successfully.
+To run all of the unit tests, run `pytest` in the root package directory.
+To test the docs, in the root package directory, run `make -C docs/ clean` to delete any existing documents and then `make -C docs/ html` to rebuild the documentation.
+If you do not first run `clean`, you may compile locally but fail in continuous integration.
 
 ## Additional resources
+
 Here's a list of additional resources which you may find helpful in navigating git for the first time.
 * The DESC Confluence page on [Getting Started with Git and Github](https://confluence.slac.stanford.edu/display/LSSTDESC/Getting+Started+with+Git+and+GitHub)
 * [Phil Marshall's Getting Started repository and FAQ](https://github.com/drphilmarshall/GettingStarted#forks)
@@ -45,25 +68,27 @@ Here's a list of additional resources which you may find helpful in navigating g
 
 ## Contact
 * [Michel Aguena](https://github.com/m-aguena) (LIneA)
-* [Doug Applegate](https://github.com/deapplegate)
+* [Doug Applegate](https://github.com/deapplegate) (Novartis)
 * [Camille Avestruz](https://github.com/cavestruz) (UChicago)
-* [Lucie Baumont]
-* [Miyoung Choi]
-* [Celine Combet](https://github.com/combet)
-* [Matt Fong]
+* [Lucie Baumont](https://github.com/lbaumo) (SBU)
+* [Miyoung Choi](https://github.com/mchoi8739) (UTD)
+* [Celine Combet](https://github.com/combet) (LSPC)
+* [Matt Fong](https://github.com/matthewwf2001) (UTD)
 * [Shenming Fu](https://github.com/shenmingfu)(Brown)
 * [Matthew Ho](https://github.com/maho3) (CMU)
-* [Matthew Kirby](https://github.com/matthewkirby)
-* [Brandyn Lee](https://github.com/brandynlee)
-* [Anja von der Linden](https://github.com/anjavdl) (Stony Brook)
-* [Binyang Liu]
-* [Alex Malz](https://github.com/aimalz) (NYU)
-* [Tom McClintock](https://github.com/tmcclintock) (Arizona)
-* [Mariana Penna Lima](https://github.com/pennalima)
+* [Matthew Kirby](https://github.com/matthewkirby) (Arizona)
+* [Brandyn Lee](https://github.com/brandynlee) (UTD)
+* [Anja von der Linden](https://github.com/anjavdl) (SBU)
+* [Binyang Liu](https://github.com/rbliu) (Brown)
+* [Alex Malz](https://github.com/aimalz) (NYU --> RUB)
+* [Tom McClintock](https://github.com/tmcclintock) (BNL)
+* [Hironao Miyatake](https://github.com/HironaoMiyatake) (Nagoya)
+* [Mariana Penna-Lima](https://github.com/pennalima) (Savoie Mont Blanc)
 * [Marina Ricci](https://github.com/marina-ricci) (LAPP)
-* [Melanie Simet](https://github.com/msimet)
-* [Martin Sommer](https://github.com/sipplund)(UBonn)
-* [Heidi Wu]
-* [Mijin Yoon](https://github.com/mijinyoon)(GCCL)
+* [Cristobal Sifon](https://github.com/cristobal-sifon) (Princeton)
+* [Melanie Simet](https://github.com/msimet) (JPL)
+* [Martin Sommer](https://github.com/sipplund) (Bonn)
+* [Heidi Wu](https://github.com/hywu) (Ohio)
+* [Mijin Yoon](https://github.com/mijinyoon) (RUB)
 
-* Add your name here!
+The current administrators of the repository are Michel Aguena, Camille Avestruz, Matthew Kirby, and Alex Malz.
