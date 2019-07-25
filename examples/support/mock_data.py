@@ -2,6 +2,7 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 from astropy.table import Table
+from astropy import units
 from scipy import integrate
 from scipy.interpolate import interp1d
 import clmm
@@ -162,8 +163,8 @@ class MockData():
   
         aexp_cluster = 1./(1.+zL)
 
-#        Dl = ccl.comoving_angular_distance(self.config['cosmo'], aexp_cluster)*aexp_cluster
-        Dl = clmm.get_angular_diameter_distance_a(self.config['cosmo'], aexp_cluster)/1.e6
+#       get_angular_diameter_distance_a returns pc. Must convert to Mpc hence the 1.e6 factor 
+        Dl = clmm.get_angular_diameter_distance_a(self.config['cosmo'], aexp_cluster)*units.pc.to(units.Mpc)
 
         x_deg = (x_mpc/Dl)*(180./np.pi) #ra
         y_deg = (y_mpc/Dl)*(180./np.pi) #dec
