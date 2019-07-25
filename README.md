@@ -6,6 +6,17 @@ A new and improved cluster mass modeling code descended from [clmassmod](https:/
 
 ## Overview
 
+CLMM (Cluster Lensing Mass Modelling) provides a tool to estimate cluster masses based on weak lensing data. It also includes a routine to make mock catalogs based on Cluster Toolkit. By running CLMM, the whole process is able to be conducted from making source galaxies for a given mass and to estimate mass from the measured weak lensing signal.    
+
+* Mock data generation 
+
+* Cluster object parameters
+
+* Weak lensing signal measurement
+
+* Model
+
+
 ## Contact
 
 (see CONTRIBUTING.md for now)
