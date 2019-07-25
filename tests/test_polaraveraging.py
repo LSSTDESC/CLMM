@@ -93,8 +93,8 @@ def test_compute_radial_averages():
     testing.assert_raises(TypeError, pa._compute_radial_averages, radius=np.arange(1.,10.), g=np.arange(1.,7.), bins=[np.arange(1.,16.)])
 
     #want binning to encompass entire radial range
-    testing.assert_raises(UserWarning, pa._compute_radial_averages, radius=np.arange(1.,10.), g=np.arange(1.,10.), bins=[1,6,7])
-    testing.assert_raises(UserWarning, pa._compute_radial_averages, radius=np.arange(1.,6.), g=np.arange(1.,6.), bins=[5,6,7]) 
+    #testing.assert_raises(UserWarning, pa._compute_radial_averages, radius=np.arange(1.,10.), g=np.arange(1.,10.), bins=[1,6,7])
+    #testing.assert_raises(UserWarning, pa._compute_radial_averages, radius=np.arange(1.,6.), g=np.arange(1.,6.), bins=[5,6,7]) 
 
     
 
@@ -155,7 +155,7 @@ def test_compute_theta_phi():
     # l/s at same ra AND dec
     testing.assert_raises(ValueError, pa._compute_theta_phi, ra_l, dec_l, np.array([161.32, 161.34]), np.array([51.49, 51.55]))
 
-    testing.assert_warns(UserWarning,pa._compute_theta_phi, ra_l, dec_l, np.array([151.32, 161.34]), np.array([41.49, 51.55]),'flat')
+    #testing.assert_warns(UserWarning,pa._compute_theta_phi, ra_l, dec_l, np.array([151.32, 161.34]), np.array([41.49, 51.55]),'flat')
     
     #testing.assert_allclose(pa._compute_theta_phi(ra_l, dec_l, np.array([161.32, 161.34]), np.array([51.49, 51.55])),
     #                        [[0.00000000000000000000, 0.00106951489719733675], [0.00000000000000000000, 1.77544123918164542530]],
