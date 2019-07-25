@@ -22,6 +22,11 @@ install:
   # - alias gcc="gcc-7"
   - CC="gcc-7"
 
+  - which gcc
+  - which gcc-7
+
+
+
   # Install GSL
   - sudo apt-get install libgsl0-dev -y
 
