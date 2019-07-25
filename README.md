@@ -1,12 +1,8 @@
 # CLMM [![Documentation Status](https://readthedocs.org/projects/clmm/badge/?version=master)](https://clmm.readthedocs.io/en/master/?badge=master) [![Build Status](https://travis-ci.org/LSSTDESC/CLMM.svg?branch=master)](https://travis-ci.org/LSSTDESC/CLMM)
 
-A new and improved cluster mass modeling code descended from [clmassmod](https://github.com/LSSTDESC/clmassmod)
-
-clmm is a general code for performing individual- and population-level inference on galaxy cluster weak lensing data. It will serve to enable the CLMassMod Key Task of the LSST-DESC SRM and will be used as a framework for future CL WG activities. clmm aims to be modular in (at least) three respects:
-
-    clmm will be able to run on real data as well as simulations, and it will not be restricted to any particular datasets.
-    clmm will support multiple modes of inference of the cluster mass function and other relevant distributions, such as the mass-concentration relation.
-    clmm will enable evaluation of results on the basis of a number of different metrics, some of which will not require a notion of truth from a simulation.
+The LSST-DESC Cluster Lensing Mass Modeling (CLMM) code is a Python library for performing galaxy cluster weak lensing analyses.
+clmm is associated with Key Tasks _DC1 SW+RQ_ and _DC2 SW_ of the LSST-DESC [Science Roadmap](https://lsstdesc.org/sites/default/files/DESC_SRM_V1_4.pdf) pertaining to absolute and relative mass calibration.
+CLMM is descended from [clmassmod](https://github.com/deapplegate/clmassmod) but distinguished by its modular structure and scope, which encompasses both simulated data sets with a known truth and observed data from which we aim to discover the truth.
 
 ## Installation
 
@@ -27,8 +23,14 @@ cluster\_toolkit's installation instructions can be found [here](https://cluster
 
 ## Overview
 
-CLMM (Cluster Lensing Mass Modelling) provides a tool to estimate cluster masses based on weak lensing data. It also includes a routine to make mock catalogs based on Cluster Toolkit. By running CLMM, the whole process is able to be conducted from making source galaxies for a given mass and to estimate mass from the measured weak lensing signal.    
+CLMM (Cluster Lensing Mass Modelling) provides a tool to estimate
+cluster masses based on weak lensing data. It also includes a routine
+to make mock catalogs based on Cluster Toolkit. By running CLMM, the
+whole process is able to be conducted from making source galaxies for
+a given mass and to estimate mass from the measured weak lensing
+signal.
 
+<<<<<<< HEAD
 ### Mock data generation
 
 
@@ -43,10 +45,42 @@ CLMM (Cluster Lensing Mass Modelling) provides a tool to estimate cluster masses
   * If you want a costomized binning for shear profile, prepare bins by running "make_bins". You can choose rmin, rmax, number of bins, and linear or log scale.  
   * "make_shear_profile" takes average over shear of each source galaxy with radial bins. The unit of radius can be rad, deg, arcmin, arcsec, kpc, Mpc.    
   * Check "demo_of_polaraveraging.ipynb" for the detailed examples
+=======
+There are several examples in the examples/ directory to get you
+started. A simple example including a simple simulated cluster and
+lensed galaxies, binning of the data and modeling is given here: ADD
+PATH TO RELEVANT EXAMPLE
+
+
+## Mock data generation
+  * examples/generate_mock_data.ipynb
+
+## Cluster object parameters
+The GalaxyCluster object contains the galaxy cluster metadata
+(uniqe_id, ra, dec, z) as well as the background galaxy data. The
+latter is an astropy Table containing galaxy_id, ra, dec, e1, e2, z,
+kappa. RA and Dec are in decimal degrees.
+
+ADD PATH TO RELEVANT EXAMPLE
+
+### Weak lensing signal measurement
+
+```python
+import polaraveraging as pa
+>>>>>>> 1be944eb50af9ee120248303f17544a950fc46c4
 
 ### Profile model option 
 
+<<<<<<< HEAD
 ### Mass estimation  
+=======
+### Profile model option
+  * examples/modeling_demo.ipynb
+
+
+### Mass estimation
+  * ADD PATH TO RELEVANT EXAMPLE 
+>>>>>>> 1be944eb50af9ee120248303f17544a950fc46c4
 
 
 ## Contact
