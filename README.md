@@ -61,7 +61,7 @@ The GalaxyCluster object contains the galaxy cluster metadata
 latter is an astropy Table containing galaxy_id, ra, dec, e1, e2, z,
 kappa. RA and Dec are in decimal degrees.
 
-ADD PATH TO RELEVANT EXAMPLE
+ADD PATH TO RELEVANT EXAMPLE(?)
 
 ### Weak lensing signal measurement
 
