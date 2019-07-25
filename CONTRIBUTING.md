@@ -42,3 +42,42 @@ Here's a list of additional resources which you may find helpful in navigating g
 * [Phil Marshall's Getting Started repository and FAQ](https://github.com/drphilmarshall/GettingStarted#forks)
 * [Phil Marshall's Git tutorial video lesson](https://www.youtube.com/watch?v=2g9lsbJBPEs)
 * [The Github Help Pages](https://help.github.com/)
+
+## Contact
+* [Michel Aguena](https://github.com/m-aguena) (LIneA)
+* [Doug Applegate](https://github.com/deapplegate)
+* [Camille Avestruz](https://github.com/cavestruz) (UChicago)
+* [Lucie Baumont]
+* [Miyoung Choi]
+* [Celine Combet](https://github.com/combet)
+* [Matt Fong]
+* [Shenming Fu](https://github.com/shenmingfu)(Brown)
+* [Matthew Ho](https://github.com/maho3) (CMU)
+* [Matthew Kirby](https://github.com/matthewkirby)
+* [Brandyn Lee](https://github.com/brandynlee)
+* [Anja von der Linden](https://github.com/anjavdl) (Stony Brook)
+* [Binyang Liu]
+* [Alex Malz](https://github.com/aimalz) (NYU)
+* [Tom McClintock](https://github.com/tmcclintock) (Arizona)
+* [Mariana Penna Lima](https://github.com/pennalima)
+* [Marina Ricci](https://github.com/marina-ricci) (LAPP)
+* [Melanie Simet](https://github.com/msimet)
+* [Martin Sommer](https://github.com/sipplund)(UBonn)
+* [Heidi Wu]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+* [Mijin Yoon](https://github.com/mijinyoon)(GCCL)
+
+* Add your name here!
