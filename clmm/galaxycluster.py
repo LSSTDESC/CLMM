@@ -65,8 +65,8 @@ class GalaxyCluster():
         output += '    dec: %s\n'%str(self.dec)
         output += '    z: %s\n'%str(self.z)
         output += '    --------------------\n'
-        if self.galcat is None:
-            output += '    galcat: None\n'
+        if len(self.galcat)==0:
+            output += '    galcat: Empty table\n'
         else:
             output += '    galcat: %d galaxies\n'%len(self.galcat)
             for c in self.galcat.columns:
