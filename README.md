@@ -30,6 +30,22 @@ whole process is able to be conducted from making source galaxies for
 a given mass and to estimate mass from the measured weak lensing
 signal.
 
+<<<<<<< HEAD
+### Mock data generation
+
+
+### Cluster object parameters
+  * The GalaxyCluster object contains the galaxy cluster metadata (uniqe_id, ra, dec, z) as well as the background galaxy data
+  * Background galaxy data: astropy Table containing galaxy_id, ra, dec, e1, e2, z, kappa
+  * ra/dec are in decimal degrees
+
+### Weak lensing signal measurement 
+
+  * The function "computeshear" calculates tangential shear, cross shear, and angular separation of each source galaxy relative to the center of the cluster (ra,dec)
+  * If you want a costomized binning for shear profile, prepare bins by running "make_bins". You can choose rmin, rmax, number of bins, and linear or log scale.  
+  * "make_shear_profile" takes average over shear of each source galaxy with radial bins. The unit of radius can be rad, deg, arcmin, arcsec, kpc, Mpc.    
+  * Check "demo_of_polaraveraging.ipynb" for the detailed examples
+=======
 There are several examples in the examples/ directory to get you
 started. A simple example including a simple simulated cluster and
 lensed galaxies, binning of the data and modeling is given here: ADD
@@ -51,9 +67,13 @@ ADD PATH TO RELEVANT EXAMPLE
 
 ```python
 import polaraveraging as pa
+>>>>>>> 1be944eb50af9ee120248303f17544a950fc46c4
 
-```
+### Profile model option 
 
+<<<<<<< HEAD
+### Mass estimation  
+=======
 ### Profile model option
 * examples/modeling_demo.ipynb
 * model.py holds functions for evaluating theoretical models. The
@@ -63,6 +83,7 @@ import polaraveraging as pa
 
 ### Mass estimation
   * ADD PATH TO RELEVANT EXAMPLE 
+>>>>>>> 1be944eb50af9ee120248303f17544a950fc46c4
 
 
 ## Contact
