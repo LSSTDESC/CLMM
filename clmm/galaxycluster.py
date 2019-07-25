@@ -56,7 +56,7 @@ class GalaxyCluster():
         with open(filename, 'wb') as fin:
             pickle.dump(self, fin, **kwargs)
 
-    def __str__(self):
+    def __repr__(self):
         """
         Generates string for print(GalaxyCluster)
         """
