@@ -55,7 +55,10 @@ import polaraveraging as pa
 ```
 
 ### Profile model option
-  * examples/modeling_demo.ipynb
+* examples/modeling_demo.ipynb
+* model.py holds functions for evaluating theoretical models. The
+  default is to use an NFW profile. currently this is the only
+  supported halo profile parameterization. 
 
 
 ### Mass estimation
