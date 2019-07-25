@@ -5,39 +5,36 @@ try:
     import pyccl as ccl
 except:
     pass
+import math
+import warnings
 import numpy as np
 import matplotlib.pyplot as plt
 from astropy.coordinates import SkyCoord
 from astropy.cosmology import FlatLambdaCDM
 from astropy.table import Table
 from astropy import units as u
-import math
-import warnings
 
 
 ##############################################################################################
-def _astropy_to_CCL_cosmo_object(astropy_cosmology_object) :
+def _astropy_to_CCL_cosmo_object(astropy_cosmology_object):
 #ALLOWS TO USE EITHER ASTROPY OR CCL FOR COSMO OBJECT, MAYBE THIS FUNCTION SOULD NOT BE HERE
 #adapted from https://github.com/LSSTDESC/CLMM/blob/issue/111/model-definition/clmm/modeling.py
-    ''' 
-    Generates a ccl cosmology object from an GCR or astropy cosmology object.  
-    '''
+    """Generates a ccl cosmology object from an GCR or astropy cosmology object.
+    """
     apy_cosmo = astropy_cosmology_object
-    ccl_cosmo = ccl.Cosmology(Omega_c=(apy_cosmo.Odm0-apy_cosmo.Ob0),
-                  Omega_b=apy_cosmo.Ob0,
-                  h=apy_cosmo.h,
-                  n_s=apy_cosmo.n_s,
-                  sigma8=apy_cosmo.sigma8,
-                  Omega_k=apy_cosmo.Ok0)
-    
+    ccl_cosmo = ccl.Cosmology(Omega_c=(apy_cosmo.Odm0-apy_cosmo.Ob0), Omega_b=apy_cosmo.Ob0,
+                              h=apy_cosmo.h, n_s=apy_cosmo.n_s, sigma8=apy_cosmo.sigma8,
+                              Omega_k=apy_cosmo.Ok0)
+
     return ccl_cosmo
+
+
 ##############################################################################################
 #### Wrapper functions #######################################################################
 ##############################################################################################
-
 def compute_shear(cluster, geometry="flat", add_to_cluster=True):
-    """Computs tangential and cross shear along 
-         with radius in radians
+    """Computes tangential shear, cross shear, and angular separation
+
     Parameters
     ----------
     cluster: GalaxyCluster object
@@ -46,6 +43,7 @@ def compute_shear(cluster, geometry="flat", add_to_cluster=True):
         Geometry to be used in the computation of theta, phi
     add_to_cluster: bool
         Adds the outputs to cluster.galcat
+
     Returns
     -------
     gt: float vector
@@ -55,24 +53,22 @@ def compute_shear(cluster, geometry="flat", add_to_cluster=True):
     theta: float vector
         radius in radians
     """
-    if not ('e1' in cluster.galcat.columns  
-        and 'e2' in cluster.galcat.columns):
-        raise TypeError('shear information is missing in galaxy, ',
-                        'must have (e1, e2) or (gamma1, gamma2, kappa)')
-    theta, gt , gx = _compute_shear(cluster.ra, cluster.dec, 
-        cluster.galcat['ra'], cluster.galcat['dec'], 
-        cluster.galcat['e1'], cluster.galcat['e2'], 
-        sky=geometry)
+    if not ('e1' in cluster.galcat.columns and 'e2' in cluster.galcat.columns):
+        raise TypeError('shear information is missing in galaxy, must have (e1, e2) or\
+                         (gamma1, gamma2, kappa)')
+    theta, gt, gx = _compute_shear(cluster.ra, cluster.dec, cluster.galcat['ra'],
+                                    cluster.galcat['dec'], cluster.galcat['e1'],
+                                    cluster.galcat['e2'], sky=geometry)
     if add_to_cluster:
         cluster.galcat['theta'] = theta
         cluster.galcat['gt'] = gt
         cluster.galcat['gx'] = gx
     return theta, gt, gx
 
-def make_shear_profile(cluster, radial_units, bins=None,
-                        cosmo=None, cosmo_object_type="astropy",
-                        add_to_cluster=True):
-    """ Computes shear profile of the cluster
+
+def make_shear_profile(cluster, radial_units, bins=None, cosmo=None, cosmo_object_type="astropy",
+                       add_to_cluster=True):
+    """Computes shear profile of the cluster
 
     Parameters
     ----------
@@ -102,23 +98,20 @@ def make_shear_profile(cluster, radial_units, bins=None,
     Currently, the radial_units are not saved in the profile_table.
     We have to add it somehow.
     """
-    if not ('gt' in cluster.galcat.columns  
-        and 'gx' in cluster.galcat.columns
-        and 'theta' in cluster.galcat.columns):
-        raise TypeError('shear information is missing in galaxy, ',
-                        'must have tangential and cross shears (gt,gx).',
-                        'Run compute_shear first!')
-    radial_values = _theta_units_conversion(cluster.galcat['theta'],
-                                        radial_units, z_cl=cluster.z,
-                                        cosmo = cosmo,
-                                        cosmo_object_type=cosmo_object_type)
+    if not ('gt' in cluster.galcat.columns and 'gx' in cluster.galcat.columns
+            and 'theta' in cluster.galcat.columns):
+        raise TypeError('shear information is missing in galaxy must have tangential and cross\
+                         shears (gt,gx). Run compute_shear first!')
+    radial_values = _theta_units_conversion(cluster.galcat['theta'], radial_units, z_cl=cluster.z,
+                                            cosmo = cosmo, cosmo_object_type=cosmo_object_type)
     r_avg, gt_avg, gt_std = _compute_radial_averages(radial_values, cluster.galcat['gt'].data, bins=bins)
     r_avg, gx_avg, gx_std = _compute_radial_averages(radial_values, cluster.galcat['gx'].data, bins=bins)
     profile_table = Table([r_avg, gt_avg, gt_std, gx_avg, gx_avg],
-        names = ('radius', 'gt', 'gt_err', 'gx', 'gx_err'))
+                          names=('radius', 'gt', 'gt_err', 'gx', 'gx_err'))
     if add_to_cluster:
         cluster.profile = profile_table
     return profile_table
+
 
 def plot_profiles(cluster, r_units=None):
     """Plot shear profiles for validation
@@ -131,14 +124,12 @@ def plot_profiles(cluster, r_units=None):
     prof = cluster.profile
     if r_units is not None:
         if cluster.profile['radius'].unit is not None:
-            raise Warning(('r_units provided (%s) differ from'
-                    'r_units in GalaxyCluster.galcat table (%s)'
-                    ', using user defined')%(r_units, cluster.profile['radius'].unit))
+            raise Warning(('r_units provided (%s) differ from r_units in galcat table (%s) using\
+                            user defined')%(r_units, cluster.profile['radius'].unit))
         else:
             r_units = cluster.profile['radius'].unit
-    return _plot_profiles(*[cluster.profile[c] for c in
-            ('radius', 'gt', 'gt_err', 'gx', 'gx_err')],
-            r_units=cluster.profile['radius'].unit)
+    return _plot_profiles(*[cluster.profile[c] for c in ('radius', 'gt', 'gt_err', 'gx', 'gx_err')],
+                            r_units=cluster.profile['radius'].unit)
 
 # Maybe these functions should be here instead of __init__
 #GalaxyCluster.compute_shear = compute_shear
@@ -148,15 +139,14 @@ def plot_profiles(cluster, r_units=None):
 ##############################################################################################
 #### Internal functions ######################################################################
 ##############################################################################################
-
 def _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
     """Returns the characteristic angles of the lens system
-    
+
     Add extended description
 
     Parameters
     ----------
-    ra_l, dec_l : float 
+    ra_l, dec_l : float
         ra and dec of lens in decimal degrees
     ra_s, dec_s : array_like, float
         ra and dec of source in decimal degrees
@@ -171,7 +161,6 @@ def _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
     phi : array_like, float
         Angle in radians, (can we do better)
     """
-    
     if not -360. <= ra_l <= 360.:
         raise ValueError("ra = %f of lens if out of domain"%ra_l)
     if not -90. <= dec_l <= 90.:
@@ -180,7 +169,7 @@ def _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
         raise ValueError("Object has an invalid ra in source catalog")
     if not np.array([-90. <= x_ <= 90 for x_ in dec_s]).all():
         raise ValueError("Object has an invalid dec in the source catalog")
-        
+
 
     if sky == "flat":
         dx = (ra_s - ra_l)*u.deg.to(u.rad) * math.cos(dec_l*u.deg.to(u.rad))
@@ -205,10 +194,9 @@ def _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
 
     if np.any(theta < 1.e-9):
         raise ValueError("Ra and Dec of source and lens too similar")
-
     if np.any(theta > np.pi/180.):
         warnings.warn("Using the flat-sky approximation with separations > 1 deg may be inaccurate", UserWarning)
-    
+
     return theta, phi
 
 
@@ -233,27 +221,22 @@ def _compute_g_t(g1, g2, phi):
     -----
     g_t = - (g_1 * \cos(2\phi) + g_2 * \sin(2\phi)) [cf. eqs. 7-8 of Schrabback et al. 2018, arXiv:1611.03866]
     """
-
     if type(g1) != type(g2):
         raise ValueError("g1 and g2 should both be array-like of same length or float-like")
-    
     if type(g1) != type(phi):
         raise ValueError("shear and position angle should both be array-like of same length or float-like")
-
     if np.sum(phi<-np.pi) > 0:
         raise ValueError("Position angle should be in radians")
-
     if np.sum(phi>=2*np.pi) > 0:
         raise ValueError("Position angle should be in radians")
 
-    
     g_t = - (g1*np.cos(2*phi) + g2*np.sin(2*phi))
     return g_t
 
 
 def _compute_g_x(g1, g2, phi):
     r"""Computes cross shear for each source in galaxy catalog
-    
+
     Parameters
     ----------
     g1, g2,: array_like, float
@@ -273,13 +256,10 @@ def _compute_g_x(g1, g2, phi):
     """
     if type(g1) != type(g2):
         raise ValueError("g1 and g2 should both be array-like of same length or float-like")
-    
     if type(g1) != type(phi):
         raise ValueError("shear and position angle should both be array-like of same length or float-like")
-
     if np.sum(phi<-np.pi) > 0:
         raise ValueError("Position angle should be in radians")
-
     if np.sum(phi>=2*np.pi) > 0:
         raise ValueError("Position angle should be in radians")
 
@@ -289,10 +269,10 @@ def _compute_g_x(g1, g2, phi):
 
 def _compute_shear(ra_l, dec_l, ra_s, dec_s, g1, g2, sky="flat"):
     r"""Wrapper that returns tangential and cross shear along with radius in radians
-    
+
     Parameters
     ----------
-    ra_l, dec_l: float 
+    ra_l, dec_l: float
         ra and dec of lens in decimal degrees
     ra_s, dec_s: array_like, float
         ra and dec of source in decimal degrees
@@ -315,54 +295,69 @@ def _compute_shear(ra_l, dec_l, ra_s, dec_s, g1, g2, sky="flat"):
     Computes the cross shear for each source in the galaxy catalog as:
     g_x = - g_1 * \sin(2\phi) + g_2 * \cos(2\phi)
     g_t = - (g_1 * \cos(2\phi) + g_2 * \sin(2\phi)) [cf. eqs. 7-8 of Schrabback et al. 2018, arXiv:1611.03866]
-    """ 
-    theta, phi = _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky = sky)
-    g_t = _compute_g_t(g1,g2,phi)
-    g_x = _compute_g_x(g1,g2,phi)
+    """
+    theta, phi = _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky=sky)
+    g_t = _compute_g_t(g1, g2, phi)
+    g_x = _compute_g_x(g1, g2, phi)
     return theta, g_t, g_x
 
-def _theta_units_conversion(theta, units, z_cl=None, cosmo=None,
-                                        cosmo_object_type="astropy"):
-    
-    """
-    Converts theta from radian to whatever units specified in units
+
+def _theta_units_conversion(theta, units, z_cl=None, cosmo=None, cosmo_object_type="astropy"):
+    """Converts theta from radian to whatever units specified in units
+
+    Parameters
+    ----------
+    theta : type???
+        Description???
+    units : type???
+        Description???
+    repeats for all parameters
+
+    Returns
+    -------
+    radius : type???
+        Description??
+
+    Notes
+    -----
+    This stuff below is left over, replace it above and remove this.
     units: one of ["rad", deg", "arcmin", "arcsec", kpc", "Mpc"]
-    cosmo : cosmo object 
+    cosmo : cosmo object
     z_cl : cluster redshift
-    cosmo_object_type : string keywords that can be either "ccl" or "astropy" 
+    cosmo_object_type : string keywords that can be either "ccl" or "astropy"
     """
-    
     theta = theta * u.rad
-    
+
     if units == "rad":
         radius = theta.value
-        
+
     if units == "deg":
         radius = theta.to(u.deg).value
-        
+
     if units == "arcmin":
         radius = theta.to(u.arcmin).value
-        
+
     if units == "arcsec":
-        radius = theta.to(u.arcsec).value 
-    
+        radius = theta.to(u.arcsec).value
+
     if cosmo_object_type == "astropy" and units == "Mpc":
         radius = theta.value * cosmo.angular_diameter_distance(z_cl).to(u.Mpc).value
 
     if cosmo_object_type == "astropy" and units == "kpc":
         radius = theta.value * cosmo.angular_diameter_distance(z_cl).to(u.kpc).value
-        
+
     if cosmo_object_type == "ccl" and units == "Mpc":
         radius = theta.value * ccl.comoving_angular_distance(cosmo, 1/(1+z_cl)) / (1+z_cl) * u.Mpc.to(u.Mpc)
-        
+
     if cosmo_object_type == "ccl" and units == "kpc":
         radius = theta.value * ccl.comoving_angular_distance(cosmo, 1/(1+z_cl)) / (1+z_cl) * u.Mpc.to(u.kpc)
-        
+
     return radius
+
 
 def make_bins(rmin, rmax, n_bins=10, log_bins=False):
     """Define equal sized bins with an array of n_bins+1 bin edges
-    
+
     Parameters
     ----------
     rmin, rmax,: float
@@ -377,7 +372,6 @@ def make_bins(rmin, rmax, n_bins=10, log_bins=False):
     binedges: array_like, float
         n_bins+1 dimensional array that defines bin edges
     """
-
     if rmax<rmin:
         raise ValueError("rmax should be larger than rmin")
     if n_bins <= 0:
@@ -386,7 +380,7 @@ def make_bins(rmin, rmax, n_bins=10, log_bins=False):
         raise TypeError("log_bins must be type bool")
     if type(n_bins)!=int:
         raise TypeError("You need an integer number of bins")
-    
+
     if log_bins==True:
         rmin = np.log(rmin)
         rmax = np.log(rmax)
@@ -394,7 +388,7 @@ def make_bins(rmin, rmax, n_bins=10, log_bins=False):
         binedges = np.exp(logbinedges)
     else:
         binedges = np.linspace(rmin, rmax, n_bins+1, endpoint=True)
-            
+
     return binedges
 
 
@@ -419,13 +413,12 @@ def _compute_radial_averages(radius, g, bins=None):
     gerr_profile: array_like, float
         Standard deviation of shear per bin
     """
-
     if not isinstance(radius, (np.ndarray)):
         raise TypeError("radius must be an array")
     if not isinstance(g, (np.ndarray)):
         raise TypeError("g must be an array")
     if len(radius) != len(g):
-        raise TypeError("radius and g must be arrays of the same length") 
+        raise TypeError("radius and g must be arrays of the same length")
     if np.any(bins) == None:
         nbins = 10
         bins = np.linspace(np.min(radius), np.max(radius), nbins)
@@ -433,6 +426,11 @@ def _compute_radial_averages(radius, g, bins=None):
     g_profile = np.zeros(len(bins) - 1)
     gerr_profile = np.zeros(len(bins) - 1)
     r_profile =  np.zeros(len(bins) - 1)
+
+    if np.amax(radius) >= np.amax(bins):
+        raise ValueError("maxium radius must be within range of bins")
+    if np.amin(radius) < np.amin(bins):
+        raise ValueError("Minimum radius must be within the range of bins")
 
     for i in range(len(bins)-1):
         cond = (radius>= bins[i]) & (radius < bins[i+1])
@@ -453,7 +451,7 @@ def _plot_profiles(r, gt, gterr, gx=None, gxerr=None, r_units=""):
     Parameters
     ----------
     r: array_like, float
-        radius 
+        radius
     gt: array_like, float
         tangential shear
     gterr: array_like, float
@@ -461,12 +459,12 @@ def _plot_profiles(r, gt, gterr, gx=None, gxerr=None, r_units=""):
     gx: array_like, float
         cross shear
     gxerr: array_like, float
-        error on cross shear 
+        error on cross shear
     """
     fig, ax = plt.subplots()
     ax.plot(r, gt, 'bo-', label="tangential shear")
     ax.errorbar(r, gt, gterr, label=None)
-    
+
     try:
         plt.plot(r, gx, 'ro-', label="cross shear")
         plt.errorbar(r, gx, gxerr, label=None)
