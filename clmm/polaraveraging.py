@@ -67,7 +67,7 @@ def compute_shear(cluster, geometry="flat", add_to_cluster=True):
     return theta, gt, gx
 
 
-def make_shear_profile(cluster, radial_units, bins=None, cosmo=None, cosmo_object_type="astropy",
+def make_shear_profile(cluster, radial_units, bins=None, cosmo=None,
                        add_to_cluster=True):
     """Computes shear profile of the cluster
 
@@ -83,8 +83,6 @@ def make_shear_profile(cluster, radial_units, bins=None, cosmo=None, cosmo_objec
         the default is 10 equally spaced radial bins
     cosmo:
         Cosmology object 
-    cosmo_object_type : str
-        Keywords that can be either "ccl" or "astropy" 
     add_to_cluster: bool
         Adds the outputs to cluster.profile
 
@@ -104,7 +102,7 @@ def make_shear_profile(cluster, radial_units, bins=None, cosmo=None, cosmo_objec
         raise TypeError('shear information is missing in galaxy must have tangential and cross\
                          shears (gt,gx). Run compute_shear first!')
     radial_values = _theta_units_conversion(cluster.galcat['theta'], radial_units, z_cl=cluster.z,
-                                            cosmo = cosmo, cosmo_object_type=cosmo_object_type)
+                                            cosmo = cosmo)
     r_avg, gt_avg, gt_std = _compute_radial_averages(radial_values, cluster.galcat['gt'].data, bins=bins)
     r_avg, gx_avg, gx_std = _compute_radial_averages(radial_values, cluster.galcat['gx'].data, bins=bins)
     profile_table = Table([r_avg, gt_avg, gt_std, gx_avg, gx_avg],
@@ -303,7 +301,7 @@ def _compute_shear(ra_l, dec_l, ra_s, dec_s, g1, g2, sky="flat"):
     return theta, g_t, g_x
 
 
-def _theta_units_conversion(theta, units, z_cl=None, cosmo=None, cosmo_object_type="astropy"):
+def _theta_units_conversion(theta, units, z_cl=None, cosmo=None):
     """Converts theta from radian to whatever units specified in units
 
     Parameters
@@ -329,31 +327,29 @@ def _theta_units_conversion(theta, units, z_cl=None, cosmo=None, cosmo_object_ty
     """
     theta = theta * u.rad
 
-    if units == "rad":
-        radius = theta.value
+    units_bank = {
+        "rad": u.rad,
+        "deg": u.deg,
+        "arcmin": u.arcmin,
+        "arcsec": u.arcsec,
+        "kpc": u.kpc,
+        "Mpc": u.Mpc,
+        }
 
-    if units == "deg":
-        radius = theta.to(u.deg).value
-
-    if units == "arcmin":
-        radius = theta.to(u.arcmin).value
-
-    if units == "arcsec":
-        radius = theta.to(u.arcsec).value
-
-    if cosmo_object_type == "astropy" and units == "Mpc":
-        radius = theta.value * cosmo.angular_diameter_distance(z_cl).to(u.Mpc).value
-
-    if cosmo_object_type == "astropy" and units == "kpc":
-        radius = theta.value * cosmo.angular_diameter_distance(z_cl).to(u.kpc).value
-
-    if cosmo_object_type == "ccl" and units == "Mpc":
-        radius = theta.value * ccl.comoving_angular_distance(cosmo, 1/(1+z_cl)) / (1+z_cl) * u.Mpc.to(u.Mpc)
-
-    if cosmo_object_type == "ccl" and units == "kpc":
-        radius = theta.value * ccl.comoving_angular_distance(cosmo, 1/(1+z_cl)) / (1+z_cl) * u.Mpc.to(u.kpc)
-
-    return radius
+    if units in units_bank:
+        units_ = units_bank[units]
+        if units[1:] == "pc":
+            if str(type(cosmo)) == "<class 'abc.ABCMeta'>": # astropy cosmology type
+                Da = cosmo.angular_diameter_distance(z_cl).to(units_).value
+            elif type(cosmo) == type(dict): # astropy cosmology type
+                Da = gcc.comoving_angular_distance(cosmo, 1/(1+z_cl)) / (1+z_cl) * u.Mpc.to(units_)
+            else:
+                raise ValueError("cosmo object (%s) not an astropy or ccl cosmology"%str(cosmo))
+            return theta.value*Da
+        else:
+            return theta.to(units_).value
+    else:
+        raise ValueError("units (%s) not in %s"%(units, str(units_bank.keys())))
 
 
 def make_bins(rmin, rmax, n_bins=10, log_bins=False):
