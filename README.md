@@ -67,13 +67,8 @@ ADD PATH TO RELEVANT EXAMPLE
 
 ```python
 import polaraveraging as pa
->>>>>>> 1be944eb50af9ee120248303f17544a950fc46c4
 
-### Profile model option 
 
-<<<<<<< HEAD
-### Mass estimation  
-=======
 ### Profile model option
 * examples/modeling_demo.ipynb
 * model.py holds functions for evaluating theoretical models. The
@@ -83,7 +78,6 @@ import polaraveraging as pa
 
 ### Mass estimation
   * ADD PATH TO RELEVANT EXAMPLE 
->>>>>>> 1be944eb50af9ee120248303f17544a950fc46c4
 
 
 ## Contact
