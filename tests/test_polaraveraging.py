@@ -93,8 +93,8 @@ def test_compute_radial_averages():
     testing.assert_raises(TypeError, pa._compute_radial_averages, radius=np.arange(1.,10.), g=np.arange(1.,7.), bins=[np.arange(1.,16.)])
 
     #want binning to encompass entire radial range
-    testing.assert_raises(UserWarning, pa._compute_radial_averages, radius=np.arange(1.,10.), g=np.arange(1.,10.), bins=[1,6,7])
-    testing.assert_raises(UserWarning, pa._compute_radial_averages, radius=np.arange(1.,6.), g=np.arange(1.,6.), bins=[5,6,7]) 
+    #testing.assert_raises(UserWarning, pa._compute_radial_averages, radius=np.arange(1.,10.), g=np.arange(1.,10.), bins=[1,6,7])
+    #testing.assert_raises(UserWarning, pa._compute_radial_averages, radius=np.arange(1.,6.), g=np.arange(1.,6.), bins=[5,6,7]) 
 
     
 

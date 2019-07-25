@@ -427,7 +427,7 @@ def _compute_radial_averages(radius, g, bins=None):
     gerr_profile = np.zeros(len(bins) - 1)
     r_profile =  np.zeros(len(bins) - 1)
 
-    if np.amax(radius) >= np.amax(bins):
+    if np.amax(radius) = np.amax(bins):
         warnings.warn("maximum radius must be within range of bins")
     if np.amin(radius) < np.amin(bins):
         warnings.warn("minimum radius must be within the range of bins")
