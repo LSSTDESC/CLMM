@@ -17,7 +17,7 @@ install:
   - sudo apt-get install gcc-7 -y
 
   # - sudo update-alternatives --remove-all gcc 
-  - sudo update-alternatives --set gcc /usr/bin/gcc-7
+  # - sudo update-alternatives --set gcc /usr/bin/gcc-7
 
   # - alias gcc="gcc-7"
   - CC="gcc-7"
