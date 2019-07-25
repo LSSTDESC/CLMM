@@ -58,7 +58,8 @@ import polaraveraging as pa
   * examples/modeling_demo.ipynb
 
 
-### Mass estimation  
+### Mass estimation
+  * ADD PATH TO RELEVANT EXAMPLE 
 
 
 ## Contact
