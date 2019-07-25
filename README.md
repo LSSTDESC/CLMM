@@ -71,7 +71,7 @@ ADD PATH TO RELEVANT EXAMPLE(?)
   supported halo profile parameterization. 
 
 ### Mass estimation
-  * ADD PATH TO RELEVANT EXAMPLE 
+  * examples/demo-pipeline.ipynb
 
 
 ## Contact
