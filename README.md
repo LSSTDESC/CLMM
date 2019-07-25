@@ -40,10 +40,12 @@ PATH TO RELEVANT EXAMPLE
   * examples/generate_mock_data.ipynb
 
 ## Cluster object parameters
-  * ADD PATH TO RELEVANT EXAMPLE
-  * The GalaxyCluster object contains the galaxy cluster metadata (uniqe_id, ra, dec, z) as well as the background galaxy data
-  * Background galaxy data: astropy Table containing galaxy_id, ra, dec, e1, e2, z, kappa
-  * ra/dec are in decimal degrees
+The GalaxyCluster object contains the galaxy cluster metadata
+(uniqe_id, ra, dec, z) as well as the background galaxy data. The
+latter is an astropy Table containing galaxy_id, ra, dec, e1, e2, z,
+kappa. RA and Dec are in decimal degrees.
+
+ADD PATH TO RELEVANT EXAMPLE
 
 ### Weak lensing signal measurement
 
