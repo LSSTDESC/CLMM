@@ -37,18 +37,24 @@ signal.
 There are several examples in the /examples directory to get you
 started. A simple example 
 
-== Mock data generation ==
+## Mock data generation
 
-== Cluster object parameters ==
+
+## Cluster object parameters
   * The GalaxyCluster object contains the galaxy cluster metadata (uniqe_id, ra, dec, z) as well as the background galaxy data
   * Background galaxy data: astropy Table containing galaxy_id, ra, dec, e1, e2, z, kappa
   * ra/dec are in decimal degrees
 
-== Weak lensing signal measurement ==
+## Weak lensing signal measurement 
 
-== Profile model option ==
+```python 
+import polaraveraging as pa
 
-== Mass estimation == 
+```
+
+## Profile model option 
+
+## Mass estimation  
 
 
 ## Contact
