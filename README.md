@@ -1,12 +1,8 @@
 # CLMM [![Documentation Status](https://readthedocs.org/projects/clmm/badge/?version=master)](https://clmm.readthedocs.io/en/master/?badge=master) [![Build Status](https://travis-ci.org/LSSTDESC/CLMM.svg?branch=master)](https://travis-ci.org/LSSTDESC/CLMM)
 
-A new and improved cluster mass modeling code descended from [clmassmod](https://github.com/LSSTDESC/clmassmod)
-
-clmm is a general code for performing individual- and population-level inference on galaxy cluster weak lensing data. It will serve to enable the CLMassMod Key Task of the LSST-DESC SRM and will be used as a framework for future CL WG activities. clmm aims to be modular in (at least) three respects:
-
-    clmm will be able to run on real data as well as simulations, and it will not be restricted to any particular datasets.
-    clmm will support multiple modes of inference of the cluster mass function and other relevant distributions, such as the mass-concentration relation.
-    clmm will enable evaluation of results on the basis of a number of different metrics, some of which will not require a notion of truth from a simulation.
+The LSST-DESC Cluster Lensing Mass Modeling (CLMM) code is a Python library for performing galaxy cluster weak lensing analyses.
+clmm is associated with Key Tasks _DC1 SW+RQ_ and _DC2 SW_ of the LSST-DESC [Science Roadmap](https://lsstdesc.org/sites/default/files/DESC_SRM_V1_4.pdf) pertaining to absolute and relative mass calibration.
+CLMM is descended from [clmassmod](https://github.com/deapplegate/clmassmod) but distinguished by its modular structure and scope, which encompasses both simulated data sets with a known truth and observed data from which we aim to discover the truth.
 
 ## Installation
 
@@ -39,6 +35,7 @@ started. A simple example including a simple simulated cluster and
 lensed galaxies, binning of the data and modeling is given here: ADD
 PATH TO RELEVANT EXAMPLE
 
+
 ## Mock data generation
   * examples/generate_mock_data.ipynb
 
@@ -48,9 +45,9 @@ PATH TO RELEVANT EXAMPLE
   * Background galaxy data: astropy Table containing galaxy_id, ra, dec, e1, e2, z, kappa
   * ra/dec are in decimal degrees
 
-## Weak lensing signal measurement 
+### Weak lensing signal measurement
 
-```python 
+```python
 import polaraveraging as pa
 
 ```
@@ -58,7 +55,10 @@ import polaraveraging as pa
 ## Profile model option
   * examples/modeling_demo.ipynb
 
-## Mass estimation  
+### Profile model option
+
+
+### Mass estimation  
 
 
 ## Contact
