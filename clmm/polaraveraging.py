@@ -182,8 +182,8 @@ def _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
         theta =  np.sqrt(dx**2 + dy**2)
         phi = np.arctan2(dy, -dx)
 
-    elif sky == "curved":
-        raise ValueError("Curved sky functionality not yet supported!")
+    #elif sky == "curved":
+        #raise ValueError("Curved sky functionality not yet supported!")
         # coord_l = SkyCoord(ra_l*u.deg,dec_l*u.deg)
         # coord_s = SkyCoord(ra_s*u.deg,dec_s*u.deg)
         # theta = coord_l.separation(coord_s).to(u.rad).value
@@ -195,7 +195,7 @@ def _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
     if np.any(theta < 1.e-9):
         raise ValueError("Ra and Dec of source and lens too similar")
     if np.any(theta > np.pi/180.):
-        warnings.warn("Using the flat-sky approximation with separations > 1 deg may be inaccurate", UserWarning)
+        warnings.warn("Using the flat-sky approximation with separations > 1 deg may be inaccurate")
 
     return theta, phi
 
@@ -427,7 +427,7 @@ def _compute_radial_averages(radius, g, bins=None):
     gerr_profile = np.zeros(len(bins) - 1)
     r_profile =  np.zeros(len(bins) - 1)
 
-    if np.amax(radius) = np.amax(bins):
+    if np.amax(radius) > np.amax(bins):
         warnings.warn("maximum radius must be within range of bins")
     if np.amin(radius) < np.amin(bins):
         warnings.warn("minimum radius must be within the range of bins")
