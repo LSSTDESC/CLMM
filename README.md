@@ -34,24 +34,24 @@ There are several examples in the /examples directory to get you
 started. A simple example including a simple simulated cluster and
 lensed galaxies, binning of the data and modeling is given here: ...
 
-## Mock data generation
+### Mock data generation
 
 
-## Cluster object parameters
+### Cluster object parameters
   * The GalaxyCluster object contains the galaxy cluster metadata (uniqe_id, ra, dec, z) as well as the background galaxy data
   * Background galaxy data: astropy Table containing galaxy_id, ra, dec, e1, e2, z, kappa
   * ra/dec are in decimal degrees
 
-## Weak lensing signal measurement 
+### Weak lensing signal measurement
 
-```python 
+```python
 import polaraveraging as pa
 
 ```
 
-## Profile model option 
+### Profile model option
 
-## Mass estimation  
+### Mass estimation  
 
 
 ## Contact
