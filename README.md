@@ -14,7 +14,8 @@ PATH TO RELEVANT EXAMPLE
 
 To install CLMM you currently need to build it from source::
 
-  ```git clone https://github.com/LSSTDESC/CLMM.git
+  ```
+  git clone https://github.com/LSSTDESC/CLMM.git
   cd CLMM
   python setup.py install
 ```
