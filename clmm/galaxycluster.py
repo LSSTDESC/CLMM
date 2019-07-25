@@ -55,3 +55,35 @@ class GalaxyCluster():
         """Saves GalaxyCluster object to filename using Pickle"""
         with open(filename, 'wb') as fin:
             pickle.dump(self, fin, **kwargs)
+
+    def __str__(self):
+        """
+        Generates string for print(GalaxyCluster)
+        """
+        output = 'GalaxyCluster %s:\n'%self.unique_id
+        output += '    ra: %s\n'%str(self.ra)
+        output += '    dec: %s\n'%str(self.dec)
+        output += '    z: %s\n'%str(self.z)
+        output += '    --------------------\n'
+        if self.galcat is None:
+            output += '    galcat: None\n'
+        else:
+            output += '    galcat: %d galaxies\n'%len(self.galcat)
+            for c in self.galcat.columns:
+                try:
+                    output += '        %s:\n            from %s to %s\n'%(c, 
+                        str(min(self.galcat[c])), str(max(self.galcat[c])))
+                except:
+                    output += '        %s: %s\n'%(c, type(self.galcat[c])) 
+        '''
+        for creator, datas in self.data.items():
+            output += ' * Creator: %s\n'%creator
+            for data in datas:
+                output += '    --------------------\n'
+                #output += '    specs:%s\n    values:%s\n'%(str(data.specs), str(data.values))
+                output += '    specs:\n'
+                for spec_key, spec_val in data.specs.items():
+                    output += '       %s: %s\n'%(spec_key, str(spec_val))
+                output += '    values:\n       %s\n'%str(data.values)
+        '''
+        return output
