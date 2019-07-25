@@ -35,7 +35,8 @@ a given mass and to estimate mass from the measured weak lensing
 signal.
 
 There are several examples in the /examples directory to get you
-started. A simple example 
+started. A simple example including a simple simulated cluster and
+lensed galaxies, binning of the data and modeling is given here: ...
 
 ## Mock data generation
 
