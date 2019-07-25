@@ -34,7 +34,7 @@ Once you've created a local copy of CLMM on your machine, you can begin making c
     ```
 4. You can continue to edit your code and push changes to the `branchname` remote branch. Once you are satisfied with your changes, you can submit a [pull request](https://help.github.com/articles/about-pull-requests/) to request that the changes you made in `branchname` be merged into the master repository. Navigate to the [CLMM pulls page](https://github.com/LSSTDESC/CLMM/pulls) and click 'New pull request.' Select `branchname`, fill out a name and description for the pull request, and submit for approval by CLMM admins. Once the pull request is approved, it will be merged into the CLMM master branch.
 
-NOTE: Code is not complete without unit tests and documentation. Please ensure that unit tests (both new and old) all pass and that docs run successfully. To run all of the unit tests, run `py.test` in the root package directory. To test the docs, in the root package directory, run `make -C docs/ clean` to delete any existing documents and then `make -C docs/ html` to rebuild the documentation. If you do not first run `clean`, you may compile locally but fail online.
+NOTE: Code is not complete without unit tests and documentation. Please ensure that unit tests (both new and old) all pass and that docs run successfully. To run all of the unit tests, run `pytest` in the root package directory. To test the docs, in the root package directory, run `make -C docs/ clean` to delete any existing documents and then `make -C docs/ html` to rebuild the documentation. If you do not first run `clean`, you may compile locally but fail online.
 
 ## Additional resources
 Here's a list of additional resources which you may find helpful in navigating git for the first time.
