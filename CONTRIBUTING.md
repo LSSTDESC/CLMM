@@ -83,7 +83,7 @@ Here's a list of additional resources which you may find helpful in navigating g
 * [Alex Malz](https://github.com/aimalz) (NYU --> RUB)
 * [Tom McClintock](https://github.com/tmcclintock) (BNL)
 * [Hironao Miyatake](https://github.com/HironaoMiyatake) (Nagoya)
-* [Mariana Penna-Lima](https://github.com/pennalima) (Savoie Mont Blanc)
+* [Mariana Penna-Lima](https://github.com/pennalima) (UBrasilia)
 * [Marina Ricci](https://github.com/marina-ricci) (LAPP)
 * [Cristobal Sifon](https://github.com/cristobal-sifon) (Princeton)
 * [Melanie Simet](https://github.com/msimet) (JPL)
