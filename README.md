@@ -29,16 +29,18 @@ cluster\_toolkit's installation instructions can be found [here](https://cluster
 
 CLMM (Cluster Lensing Mass Modelling) provides a tool to estimate cluster masses based on weak lensing data. It also includes a routine to make mock catalogs based on Cluster Toolkit. By running CLMM, the whole process is able to be conducted from making source galaxies for a given mass and to estimate mass from the measured weak lensing signal.    
 
-* Mock data generation 
+== Mock data generation ==
 
 * Cluster object parameters
   * The GalaxyCluster object contains the galaxy cluster metadata (uniqe_id, ra, dec, z) as well as the background galaxy data
   * Background galaxy data: astropy Table containing galaxy_id, ra, dec, e1, e2, z, kappa
   * ra/dec are in decimal degrees
 
-* Weak lensing signal measurement
+== Weak lensing signal measurement ==
 
-* Model
+== Profile model option ==
+
+== Mass estimation == 
 
 
 ## Contact
