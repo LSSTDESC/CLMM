@@ -31,7 +31,7 @@ CLMM (Cluster Lensing Mass Modelling) provides a tool to estimate cluster masses
 
 == Mock data generation ==
 
-* Cluster object parameters
+== Cluster object parameters ==
   * The GalaxyCluster object contains the galaxy cluster metadata (uniqe_id, ra, dec, z) as well as the background galaxy data
   * Background galaxy data: astropy Table containing galaxy_id, ra, dec, e1, e2, z, kappa
   * ra/dec are in decimal degrees
