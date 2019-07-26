@@ -338,7 +338,7 @@ def _theta_units_conversion(theta, units, z_cl=None, cosmo=None):
 
     if units in units_bank:
         units_ = units_bank[units]
-        if units[1:] == "pc":
+        if units[1:] == "pc"
             if isinstance(cosmo,astropy.cosmology.core.FlatLambdaCDM): # astropy cosmology type
                 Da = cosmo.angular_diameter_distance(z_cl).to(units_).value
             elif isinstance(cosmo, ccl.core.Cosmology): # astropy cosmology type
@@ -350,7 +350,8 @@ def _theta_units_conversion(theta, units, z_cl=None, cosmo=None):
             return theta.to(units_).value
     else:
         raise ValueError("units (%s) not in %s"%(units, str(units_bank.keys())))
-
+    if z_cl is None:
+        raise ValueError("To compute physical units, z_cl must not be None")
 
 def make_bins(rmin, rmax, n_bins=10, log_bins=False):
     """Define equal sized bins with an array of n_bins+1 bin edges
