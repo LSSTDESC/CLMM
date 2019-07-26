@@ -68,7 +68,7 @@ def compute_shear(cluster, geometry="flat", add_to_cluster=True):
     return theta, gt, gx
 
 
-def make_shear_profile(cluster, radial_units, bins=None, cosmo=None,
+def make_shear_profile(cluster, radius_unit, bins=None, cosmo=None,
                        add_to_cluster=True):
     """Computes shear profile of the cluster
 
@@ -76,8 +76,8 @@ def make_shear_profile(cluster, radial_units, bins=None, cosmo=None,
     ----------
     cluster: GalaxyCluster object
         GalaxyCluster object with galaxies
-    radial_units:
-        Radial units of the profile, one of 
+    radiaus_unit:
+        Radial unit of the profile, one of 
         ["rad", deg", "arcmin", "arcsec", kpc", "Mpc"]
     bins: array_like, float
         User defined n_bins + 1 dimensional array of bins, if 'None',
@@ -102,7 +102,7 @@ def make_shear_profile(cluster, radial_units, bins=None, cosmo=None,
             and 'theta' in cluster.galcat.columns):
         raise TypeError('shear information is missing in galaxy must have tangential and cross\
                          shears (gt,gx). Run compute_shear first!')
-    radial_values = _theta_units_conversion(cluster.galcat['theta'], radial_units, z_cl=cluster.z,
+    radial_values = _theta_units_conversion(cluster.galcat['theta'], radiaus_unit, z_cl=cluster.z,
                                             cosmo = cosmo)
     r_avg, gt_avg, gt_std = _compute_radial_averages(radial_values, cluster.galcat['gt'].data, bins=bins)
     r_avg, gx_avg, gx_std = _compute_radial_averages(radial_values, cluster.galcat['gx'].data, bins=bins)
@@ -110,6 +110,7 @@ def make_shear_profile(cluster, radial_units, bins=None, cosmo=None,
                           names=('radius', 'gt', 'gt_err', 'gx', 'gx_err'))
     if add_to_cluster:
         cluster.profile = profile_table
+	cluster.profile_radius_unit = radius_unit
     return profile_table
 
 
@@ -129,7 +130,7 @@ def plot_profiles(cluster, r_units=None):
         else:
             r_units = cluster.profile['radius'].unit
     return _plot_profiles(*[cluster.profile[c] for c in ('radius', 'gt', 'gt_err', 'gx', 'gx_err')],
-                            r_units=cluster.profile['radius'].unit)
+                            r_units=cluster.profile_radius_unit)
 
 # Maybe these functions should be here instead of __init__
 #GalaxyCluster.compute_shear = compute_shear
@@ -443,7 +444,7 @@ def _compute_radial_averages(radius, g, bins=None):
     return r_profile, g_profile, gerr_profile
 
 
-def _plot_profiles(r, gt, gterr, gx=None, gxerr=None, r_units=""):
+def _plot_profiles(r, gt, gterr, gx=None, gxerr=None, r_unit=""):
     """Plot shear profiles for validation
 
     Parameters
@@ -458,6 +459,9 @@ def _plot_profiles(r, gt, gterr, gx=None, gxerr=None, r_units=""):
         cross shear
     gxerr: array_like, float
         error on cross shear
+    r_unit: string
+	unit of radius
+	
     """
     fig, ax = plt.subplots()
     ax.plot(r, gt, 'bo-', label="tangential shear")
@@ -470,8 +474,8 @@ def _plot_profiles(r, gt, gterr, gx=None, gxerr=None, r_units=""):
         pass
 
     ax.legend()
-    if r_units is not None:
-    	ax.set_xlabel("r [%s]"%r_units)
+    if r_unit is not None:
+    	ax.set_xlabel("r [%s]"%r_unit)
     ax.set_ylabel('$\\gamma$')
 
     return(fig, ax)
