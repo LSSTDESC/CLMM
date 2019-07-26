@@ -339,6 +339,8 @@ def _theta_units_conversion(theta, units, z_cl=None, cosmo=None):
     if units in units_bank:
         units_ = units_bank[units]
         if units[1:] == "pc":
+            if z_cl is None:
+                raise ValueError("To compute physical units, z_cl must not be None")
             if str(type(cosmo)) == "<class 'abc.ABCMeta'>": # astropy cosmology type
                 Da = cosmo.angular_diameter_distance(z_cl).to(units_).value
             elif type(cosmo) == type(dict): # astropy cosmology type
