@@ -10,6 +10,7 @@ import math
 import warnings
 import numpy as np
 import matplotlib.pyplot as plt
+import astropy
 from astropy.coordinates import SkyCoord
 from astropy.cosmology import FlatLambdaCDM
 from astropy.table import Table
@@ -306,16 +307,16 @@ def _theta_units_conversion(theta, units, z_cl=None, cosmo=None):
 
     Parameters
     ----------
-    theta : type???
-        Description???
-    units : type???
-        Description???
+    theta : float
+        We assume the input unit is radian. Theta is angular seperation between source galaxies and the cluster center in 2D image.
+    units : string
+        Output unit you would like to convert to. 
     repeats for all parameters
 
     Returns
     -------
-    radius : type???
-        Description??
+    radius : float
+        Theta in the converted unit you want to.
 
     Notes
     -----
@@ -323,7 +324,6 @@ def _theta_units_conversion(theta, units, z_cl=None, cosmo=None):
     units: one of ["rad", deg", "arcmin", "arcsec", kpc", "Mpc"]
     cosmo : cosmo object
     z_cl : cluster redshift
-    cosmo_object_type : string keywords that can be either "ccl" or "astropy"
     """
     theta = theta * u.rad
 
@@ -339,10 +339,10 @@ def _theta_units_conversion(theta, units, z_cl=None, cosmo=None):
     if units in units_bank:
         units_ = units_bank[units]
         if units[1:] == "pc":
-            if str(type(cosmo)) == "<class 'abc.ABCMeta'>": # astropy cosmology type
+            if isinstance(cosmo,astropy.cosmology.core.FlatLambdaCDM): # astropy cosmology type
                 Da = cosmo.angular_diameter_distance(z_cl).to(units_).value
-            elif type(cosmo) == type(dict): # astropy cosmology type
-                Da = gcc.comoving_angular_distance(cosmo, 1/(1+z_cl)) / (1+z_cl) * u.Mpc.to(units_)
+            elif isinstance(cosmo, ccl.core.Cosmology): # astropy cosmology type
+                Da = ccl.comoving_angular_distance(cosmo, 1/(1+z_cl)) / (1+z_cl) * u.Mpc.to(units_)
             else:
                 raise ValueError("cosmo object (%s) not an astropy or ccl cosmology"%str(cosmo))
             return theta.value*Da
@@ -380,7 +380,7 @@ def make_bins(rmin, rmax, n_bins=10, log_bins=False):
 
     if log_bins==True:
         rmin = np.log(rmin)
-        rmax = np.log(rmax)
+        rmax = inp.log(rmax)
         logbinedges = np.linspace(rmin, rmax, n_bins+1, endpoint=True)
         binedges = np.exp(logbinedges)
     else:
@@ -469,7 +469,8 @@ def _plot_profiles(r, gt, gterr, gx=None, gxerr=None, r_units=""):
         pass
 
     ax.legend()
-    ax.set_xlabel("r [%s]"%r_units)
+    if r_units is not None:
+    	ax.set_xlabel("r [%s]"%r_units)
     ax.set_ylabel('$\\gamma$')
 
     return(fig, ax)
