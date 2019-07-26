@@ -102,7 +102,7 @@ def make_shear_profile(cluster, radius_unit, bins=None, cosmo=None,
             and 'theta' in cluster.galcat.columns):
         raise TypeError('shear information is missing in galaxy must have tangential and cross\
                          shears (gt,gx). Run compute_shear first!')
-    radial_values = _theta_units_conversion(cluster.galcat['theta'], radiaus_unit, z_cl=cluster.z,
+    radial_values = _theta_units_conversion(cluster.galcat['theta'], radius_unit, z_cl=cluster.z,
                                             cosmo = cosmo)
     r_avg, gt_avg, gt_std = _compute_radial_averages(radial_values, cluster.galcat['gt'].data, bins=bins)
     r_avg, gx_avg, gx_std = _compute_radial_averages(radial_values, cluster.galcat['gx'].data, bins=bins)
@@ -110,7 +110,7 @@ def make_shear_profile(cluster, radius_unit, bins=None, cosmo=None,
                           names=('radius', 'gt', 'gt_err', 'gx', 'gx_err'))
     if add_to_cluster:
         cluster.profile = profile_table
-	cluster.profile_radius_unit = radius_unit
+        cluster.profile_radius_unit = radius_unit
     return profile_table
 
 
@@ -130,7 +130,7 @@ def plot_profiles(cluster, r_units=None):
         else:
             r_units = cluster.profile['radius'].unit
     return _plot_profiles(*[cluster.profile[c] for c in ('radius', 'gt', 'gt_err', 'gx', 'gx_err')],
-                            r_units=cluster.profile_radius_unit)
+                            r_unit=cluster.profile_radius_unit)
 
 # Maybe these functions should be here instead of __init__
 #GalaxyCluster.compute_shear = compute_shear
@@ -339,7 +339,7 @@ def _theta_units_conversion(theta, units, z_cl=None, cosmo=None):
 
     if units in units_bank:
         units_ = units_bank[units]
-        if units[1:] == "pc"
+        if units[1:] == "pc":
             if isinstance(cosmo,astropy.cosmology.core.FlatLambdaCDM): # astropy cosmology type
                 Da = cosmo.angular_diameter_distance(z_cl).to(units_).value
             elif isinstance(cosmo, ccl.core.Cosmology): # astropy cosmology type
