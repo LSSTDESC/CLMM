@@ -10,18 +10,18 @@ Issues marked with the label `good first issue` are well-suited for new contribu
 ## Making a local copy of CLMM
 
 As a newcomer, you likely will not have edit access to the main CLMM repository.
-Without edit privledges, you won't be able to create or push changes to branches in the base repository.
+Without edit priviledges, you won't be able to create or push changes to branches in the base repository.
 You can get around this by creating a [fork](https://help.github.com/articles/fork-a-repo/), a linked copy of the CLMM repository under your Github username.
 You can then push code changes to your fork which can later be merged with the base repository.
 To create a fork, navigate to the [CLMM home page](https://github.com/LSSTDESC/CLMM) and click 'Fork' in the upper right hand corner.
-The fork has been created under your username on Github's remote server and can now be cloned to your local repository with
+The fork has been created under your username on Github's remote server and can now be cloned to your local repository with :
 
 ```bash
     git clone git@github.com:YOUR-USERNAME/CLMM.git
     git remote add base git@github.com:LSSTDESC/CLMM.git
 ```
 
-If you do have edit privledges to CLMM, it may be easier to simply clone the base CLMM repository.
+If you do have edit privledges to CLMM, it may be easier to simply clone the base CLMM repository :
 
 ``` bash
     git clone git@github.com:LSSTDESC/CLMM.git
@@ -66,7 +66,7 @@ Here's a list of additional resources which you may find helpful in navigating g
 * [Phil Marshall's Git tutorial video lesson](https://www.youtube.com/watch?v=2g9lsbJBPEs)
 * [The Github Help Pages](https://help.github.com/)
 
-## Contact
+## Contact (alphabetical order)
 * [Michel Aguena](https://github.com/m-aguena) (LIneA)
 * [Doug Applegate](https://github.com/deapplegate) (Novartis)
 * [Camille Avestruz](https://github.com/cavestruz) (UChicago)
