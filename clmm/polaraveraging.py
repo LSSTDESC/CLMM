@@ -430,9 +430,9 @@ def _compute_radial_averages(radius, g, bins=None):
     r_profile =  np.zeros(len(bins) - 1)
 
     if np.amax(radius) > np.amax(bins):
-        warnings.warn("maximum radius must be within range of bins")
+        warnings.warn("Maximum radius is not within range of bins")
     if np.amin(radius) < np.amin(bins):
-        warnings.warn("minimum radius must be within the range of bins")
+        warnings.warn("Minimum radius is not within the range of bins")
 
     for i in range(len(bins)-1):
         cond = (radius>= bins[i]) & (radius < bins[i+1])
