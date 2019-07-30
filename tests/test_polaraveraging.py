@@ -177,15 +177,6 @@ def test_compute_theta_phi():
     testing.assert_allclose(pa._compute_theta_phi(ra_l, 90, ra_s, np.array([51.45,-90])),
                             [[0.67282443, 3.14159265], [-1.57079633, -1.57079633]],
                             rtol, err_msg="Failure when dec_l and dec_s are separated by 180 deg")  
-    
-    # ra1, ra2 = .1 and 359.9
-    # testing.assert_allclose(pa._compute_theta_phi(), desired, rtol, err_msg="")
-    # ra1, ra2 = 0, 180.1
-    # testing.assert_allclose(pa._compute_theta_phi(), desired, rtol, err_msg="")
-    # ra1, ra2 = -180, 180
-    # testing.assert_allclose(pa._compute_theta_phi(), desired, rtol, err_msg="")
-    # dec1, dec2 = 90, -90
-    # testing.assert_allclose(pa._compute_theta_phi(), desired, rtol, err_msg="")
 
 
 def test_compute_shear():
