@@ -478,9 +478,9 @@ def _plot_profiles(r, gt, gterr, gx=None, gxerr=None, r_unit=""):
 
     ax.legend()
     if r_unit is not None:
-    	ax.set_xlabel("r [%s]"%r_unit)
-    else :
-	ax.set_xlabel("r")
+        ax.set_xlabel("r [%s]"%r_unit)
+    else:
+        ax.set_xlabel("r")
 
     ax.set_ylabel('$\\gamma$')
 
