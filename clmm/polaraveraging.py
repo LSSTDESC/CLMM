@@ -1,6 +1,7 @@
 """@file polaraveraging.py
 Functions to compute polar/azimuthal averages in radial bins
 """
+
 try:
     import pyccl as ccl
 except:
@@ -9,6 +10,7 @@ import math
 import warnings
 import numpy as np
 import matplotlib.pyplot as plt
+import astropy
 from astropy.coordinates import SkyCoord
 from astropy.cosmology import FlatLambdaCDM
 from astropy.table import Table
@@ -66,7 +68,7 @@ def compute_shear(cluster, geometry="flat", add_to_cluster=True):
     return theta, gt, gx
 
 
-def make_shear_profile(cluster, radial_units, bins=None, cosmo=None, cosmo_object_type="astropy",
+def make_shear_profile(cluster, radius_unit, bins=None, cosmo=None,
                        add_to_cluster=True):
     """Computes shear profile of the cluster
 
@@ -74,16 +76,14 @@ def make_shear_profile(cluster, radial_units, bins=None, cosmo=None, cosmo_objec
     ----------
     cluster: GalaxyCluster object
         GalaxyCluster object with galaxies
-    radial_units:
-        Radial units of the profile, one of 
+    radius_unit:
+        Radial unit of the profile, one of 
         ["rad", deg", "arcmin", "arcsec", kpc", "Mpc"]
     bins: array_like, float
         User defined n_bins + 1 dimensional array of bins, if 'None',
         the default is 10 equally spaced radial bins
     cosmo:
         Cosmology object 
-    cosmo_object_type : str
-        Keywords that can be either "ccl" or "astropy" 
     add_to_cluster: bool
         Adds the outputs to cluster.profile
 
@@ -102,14 +102,15 @@ def make_shear_profile(cluster, radial_units, bins=None, cosmo=None, cosmo_objec
             and 'theta' in cluster.galcat.columns):
         raise TypeError('shear information is missing in galaxy must have tangential and cross\
                          shears (gt,gx). Run compute_shear first!')
-    radial_values = _theta_units_conversion(cluster.galcat['theta'], radial_units, z_cl=cluster.z,
-                                            cosmo = cosmo, cosmo_object_type=cosmo_object_type)
+    radial_values = _theta_units_conversion(cluster.galcat['theta'], radius_unit, z_cl=cluster.z,
+                                            cosmo = cosmo)
     r_avg, gt_avg, gt_std = _compute_radial_averages(radial_values, cluster.galcat['gt'].data, bins=bins)
     r_avg, gx_avg, gx_std = _compute_radial_averages(radial_values, cluster.galcat['gx'].data, bins=bins)
     profile_table = Table([r_avg, gt_avg, gt_std, gx_avg, gx_avg],
                           names=('radius', 'gt', 'gt_err', 'gx', 'gx_err'))
     if add_to_cluster:
         cluster.profile = profile_table
+        cluster.profile_radius_unit = radius_unit
     return profile_table
 
 
@@ -129,7 +130,7 @@ def plot_profiles(cluster, r_units=None):
         else:
             r_units = cluster.profile['radius'].unit
     return _plot_profiles(*[cluster.profile[c] for c in ('radius', 'gt', 'gt_err', 'gx', 'gx_err')],
-                            r_units=cluster.profile['radius'].unit)
+                            r_unit=cluster.profile_radius_unit)
 
 # Maybe these functions should be here instead of __init__
 #GalaxyCluster.compute_shear = compute_shear
@@ -182,8 +183,8 @@ def _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
         theta =  np.sqrt(dx**2 + dy**2)
         phi = np.arctan2(dy, -dx)
 
-    elif sky == "curved":
-        raise ValueError("Curved sky functionality not yet supported!")
+    #elif sky == "curved":
+        #raise ValueError("Curved sky functionality not yet supported!")
         # coord_l = SkyCoord(ra_l*u.deg,dec_l*u.deg)
         # coord_s = SkyCoord(ra_s*u.deg,dec_s*u.deg)
         # theta = coord_l.separation(coord_s).to(u.rad).value
@@ -195,7 +196,7 @@ def _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
     if np.any(theta < 1.e-9):
         raise ValueError("Ra and Dec of source and lens too similar")
     if np.any(theta > np.pi/180.):
-        warnings.warn("Using the flat-sky approximation with separations > 1 deg may be inaccurate", UserWarning)
+        warnings.warn("Using the flat-sky approximation with separations > 1 deg may be inaccurate")
 
     return theta, phi
 
@@ -302,21 +303,24 @@ def _compute_shear(ra_l, dec_l, ra_s, dec_s, g1, g2, sky="flat"):
     return theta, g_t, g_x
 
 
-def _theta_units_conversion(theta, units, z_cl=None, cosmo=None, cosmo_object_type="astropy"):
+def _theta_units_conversion(theta, unit, z_cl=None, cosmo=None):
     """Converts theta from radian to whatever units specified in units
 
     Parameters
     ----------
-    theta : type???
-        Description???
-    units : type???
-        Description???
-    repeats for all parameters
-
+    theta : float
+        We assume the input unit is radian. Theta is angular seperation between source galaxies and the cluster center in 2D image.
+    unit : string
+        Output unit you would like to convert to, supported units are : "rad", deg", "arcmin", "arcsec", kpc", "Mpc". 
+    z_cl :  float
+	Cluster redshift, needed to convert angle to physical distances.
+    cosmo : object
+	Cosmology object to convert angle to physical distances. Can be from astropy or ccl.
+	
     Returns
     -------
-    radius : type???
-        Description??
+    radius : float
+        Theta in the converted unit you want to.
 
     Notes
     -----
@@ -324,36 +328,34 @@ def _theta_units_conversion(theta, units, z_cl=None, cosmo=None, cosmo_object_ty
     units: one of ["rad", deg", "arcmin", "arcsec", kpc", "Mpc"]
     cosmo : cosmo object
     z_cl : cluster redshift
-    cosmo_object_type : string keywords that can be either "ccl" or "astropy"
     """
     theta = theta * u.rad
 
-    if units == "rad":
-        radius = theta.value
+    units_bank = {
+        "rad": u.rad,
+        "deg": u.deg,
+        "arcmin": u.arcmin,
+        "arcsec": u.arcsec,
+        "kpc": u.kpc,
+        "Mpc": u.Mpc,
+        }
 
-    if units == "deg":
-        radius = theta.to(u.deg).value
-
-    if units == "arcmin":
-        radius = theta.to(u.arcmin).value
-
-    if units == "arcsec":
-        radius = theta.to(u.arcsec).value
-
-    if cosmo_object_type == "astropy" and units == "Mpc":
-        radius = theta.value * cosmo.angular_diameter_distance(z_cl).to(u.Mpc).value
-
-    if cosmo_object_type == "astropy" and units == "kpc":
-        radius = theta.value * cosmo.angular_diameter_distance(z_cl).to(u.kpc).value
-
-    if cosmo_object_type == "ccl" and units == "Mpc":
-        radius = theta.value * ccl.comoving_angular_distance(cosmo, 1/(1+z_cl)) / (1+z_cl) * u.Mpc.to(u.Mpc)
-
-    if cosmo_object_type == "ccl" and units == "kpc":
-        radius = theta.value * ccl.comoving_angular_distance(cosmo, 1/(1+z_cl)) / (1+z_cl) * u.Mpc.to(u.kpc)
-
-    return radius
-
+    if unit in units_bank:
+        unit_ = units_bank[unit]
+        if unit[1:] == "pc":
+            if isinstance(cosmo,astropy.cosmology.core.FlatLambdaCDM): # astropy cosmology type
+                Da = cosmo.angular_diameter_distance(z_cl).to(unit_).value
+            elif isinstance(cosmo, ccl.core.Cosmology): # astropy cosmology type
+                Da = ccl.comoving_angular_distance(cosmo, 1/(1+z_cl)) / (1+z_cl) * u.Mpc.to(unit_)
+            else:
+                raise ValueError("cosmo object (%s) not an astropy or ccl cosmology"%str(cosmo))
+            return theta.value * Da
+        else:
+            return theta.to(unit_).value
+    else:
+        raise ValueError("unit (%s) not in %s"%(unit, str(units_bank.keys())))
+    if z_cl is None:
+        raise ValueError("To compute physical units, z_cl must not be None")
 
 def make_bins(rmin, rmax, n_bins=10, log_bins=False):
     """Define equal sized bins with an array of n_bins+1 bin edges
@@ -427,7 +429,7 @@ def _compute_radial_averages(radius, g, bins=None):
     gerr_profile = np.zeros(len(bins) - 1)
     r_profile =  np.zeros(len(bins) - 1)
 
-    if np.amax(radius) >= np.amax(bins):
+    if np.amax(radius) > np.amax(bins):
         warnings.warn("maximum radius must be within range of bins")
     if np.amin(radius) < np.amin(bins):
         warnings.warn("minimum radius must be within the range of bins")
@@ -445,7 +447,7 @@ def _compute_radial_averages(radius, g, bins=None):
     return r_profile, g_profile, gerr_profile
 
 
-def _plot_profiles(r, gt, gterr, gx=None, gxerr=None, r_units=""):
+def _plot_profiles(r, gt, gterr, gx=None, gxerr=None, r_unit=""):
     """Plot shear profiles for validation
 
     Parameters
@@ -460,6 +462,9 @@ def _plot_profiles(r, gt, gterr, gx=None, gxerr=None, r_units=""):
         cross shear
     gxerr: array_like, float
         error on cross shear
+    r_unit: string
+	unit of radius
+	
     """
     fig, ax = plt.subplots()
     ax.plot(r, gt, 'bo-', label="tangential shear")
@@ -472,7 +477,11 @@ def _plot_profiles(r, gt, gterr, gx=None, gxerr=None, r_units=""):
         pass
 
     ax.legend()
-    ax.set_xlabel("r [%s]"%r_units)
+    if r_unit is not None:
+    	ax.set_xlabel("r [%s]"%r_unit)
+    else :
+	ax.set_xlabel("r")
+
     ax.set_ylabel('$\\gamma$')
 
     return(fig, ax)
