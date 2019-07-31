@@ -6,29 +6,10 @@ python:
 - "3.6"
 
 install:
-  # - sudo apt-get update
-
-  # Install an updated gcc
-  # - sudo apt-get install build-essential software-properties-common -y
-  # - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-  # - sudo apt-get update
-  # - sudo apt-get install gcc-snapshot -y
-  # - sudo apt-get update
-  # - sudo apt-get install gcc-7 -y
-
-  # - alias gcc="gcc-7"
-  # - CC="gcc-7"
-
-  # - which gcc
-  # - which gcc-7
-
-
-
   # Install GSL
   - sudo apt-get install libgsl0-dev -y
 
   # Install the dependencies and the package:
-  # - git clone https://github.com/tmcclintock/cluster_toolkit.git ; cd cluster_toolkit ; python setup.py install ; cd -
   - git clone https://github.com/matthewkirby/cluster_toolkit.git ; cd cluster_toolkit ; python setup.py install ; cd -
   - pip install -r requirements.txt
   - python setup.py install
