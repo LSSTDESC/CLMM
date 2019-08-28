@@ -1,6 +1,5 @@
-import sys
+"""Functions to generate mock source galaxy distributions to demo lensing code"""
 import numpy as np
-import matplotlib.pyplot as plt
 from astropy.table import Table
 from scipy import integrate
 from scipy.interpolate import interp1d
@@ -25,7 +24,8 @@ def compute_photoz_pdfs(galaxy_catalog, photoz_ref, ngals):
         Source galaxy catalog now with photoz errors and pdfs
     """
     galaxy_catalog['pzsigma'] = photoz_ref*(1.+galaxy_catalog['ztrue'])
-    galaxy_catalog['z'] = galaxy_catalog['ztrue'] + galaxy_catalog['pzsigma']*np.random.standard_normal(ngals)
+    galaxy_catalog['z'] = galaxy_catalog['ztrue'] + \
+                          galaxy_catalog['pzsigma']*np.random.standard_normal(ngals)
 
     pzbins_grid, pzpdf_grid = [], []
     for row in galaxy_catalog:
@@ -78,7 +78,7 @@ def draw_sources_redshifts(zsrc, ngals, cluster_z, zsrc_max):
 
         def integrated_pzfxn(zmax, func):
             """Integrated redshift distribution function for transformation method"""
-            val, err = integrate.quad(func, cluster_z+0.1, zmax)
+            val, _ = integrate.quad(func, cluster_z+0.1, zmax)
             return val
         vectorization_integrated_pzfxn = np.vectorize(integrated_pzfxn)
 
@@ -87,7 +87,7 @@ def draw_sources_redshifts(zsrc, ngals, cluster_z, zsrc_max):
         probdist = vectorization_integrated_pzfxn(zsrc_domain, pzfxn)
 
         uniform_deviate = np.random.uniform(probdist.min(), probdist.max(), ngals)
-        zsrc_list = interp1d(probdist, zsrc_domain, kind='linear')(uniform_deviate)           
+        zsrc_list = interp1d(probdist, zsrc_domain, kind='linear')(uniform_deviate)
 
     # Invalid entry
     else:
@@ -197,7 +197,5 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, mdef,
     # galaxy_catalog['id'] = np.arange(ngals)
 
     if photoz_ref is not None:
-        return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z', 'pzbins', 'pzpdf'] 
-    else:
-        return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z']
-
+        return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z', 'pzbins', 'pzpdf']
+    return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z']
