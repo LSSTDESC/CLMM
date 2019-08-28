@@ -11,3 +11,6 @@ __pycache__
 docs/api/
 docs/_build/*
 docs/api.rst
+
+# Data Files for Testing
+*.pkl
