@@ -125,9 +125,43 @@ def draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo):
 
     return galaxy_catalog
 
+
+def _find_aphysical_galaxies(galaxy_catalog):
+    r"""Finds the galaxies that have aphysical derived values due to large systematic choices.
+
+    Currently checks the following conditions
+    e1 \in [-1, 1]
+    e2 \in [-1, 1]
+    This was converted to a seperate function to allow for ease of extension without needing
+    to change the same code in multiple locations.
+
+    Parameters
+    ----------
+    galaxy_catalog : astropy.table.Table
+        Galaxy source catalog
+
+    Returns
+    -------
+    nbad : int
+        The number of aphysical galaxies in galaxy_catalog
+    badgals : array_like
+        A list of the indicies in galaxy_catalog that need to be redrawn
+    """
+    badgals = np.where((np.abs(galaxy_catalog['e1']) > 1.0) |
+                       (np.abs(galaxy_catalog['e2']) > 1.0)
+                      )[0]
+    nbad = len(badgals)
+    return nbad, badgals
+
+
 def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, mdef, zsrc,
-                            zsrc_max=7., shapenoise=None, photoz_ref=None):
+                            zsrc_max=7., shapenoise=None, photoz_ref=None, nretry=5):
     """Generates a mock dataset of sheared background galaxies.
+
+    This function also ensure that it does not return any nonsensical values for derived
+    properties. We re-draw all galaxies with e1 or e2 outside the bounds of [-1, 1].
+    After 5 (default) attempts to re-draw these properties, we return the catalog
+    and throw a warning.
 
     Parameters
     ----------
@@ -156,6 +190,8 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, mdef,
         If set, applies Gaussian shape noise to the galaxy shapes
     photoz_ref : float, optional
         If set, applies photo-z errors to source redshifts
+    nretry : int, optional
+        The number of times that we re-draw each galaxy with non-sensical derived properties
 
     Returns
     -------
@@ -165,6 +201,35 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, mdef,
     Notes
     -----
     Much of this code in this function was adapted from the Dallas group
+    """
+    params = {'cluster_m' : cluster_m, 'cluster_z' : cluster_z, 'cluster_c' : cluster_c,
+              'cosmo' : cosmo, 'mdef' : mdef, 'zsrc' : zsrc, 'zsrc_max' : zsrc_max,
+              'shapenoise' : shapenoise, 'photoz_ref' : photoz_ref}
+    galaxy_catalog = _generate_galaxy_catalog(ngals=ngals, **params)
+
+    # Check for bad galaxies and replace them
+    for i in range(nretry):
+        nbad, badids = _find_aphysical_galaxies(galaxy_catalog)
+        if nbad < 1:
+            break
+        replacements = _generate_galaxy_catalog(ngals=nbad, **params)
+        galaxy_catalog[badids] = replacements
+
+    # Final check to see if there are bad galaxies left
+    nbad, _ = _find_aphysical_galaxies(galaxy_catalog)
+    if nbad > 1:
+        print("Not able to remove {} aphysical objects after {} iterations".format(nbad, nretry))
+
+    # Now that the catalog is final, add an id column
+    galaxy_catalog['id'] = np.arange(ngals)
+    return galaxy_catalog
+
+
+def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, mdef, zsrc,
+                             zsrc_max=7., shapenoise=None, photoz_ref=None):
+    """A private function that skips the sanity checks on derived properties. This
+    function should only be used when called directly from `generate_galaxy_catalog`.
+    Takes the same parameters and returns the same things as the before mentioned function.
     """
     # Set the source galaxy redshifts
     galaxy_catalog = draw_sources_redshifts(zsrc, ngals, cluster_z, zsrc_max)
