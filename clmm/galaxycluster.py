@@ -57,22 +57,20 @@ class GalaxyCluster():
             pickle.dump(self, fin, **kwargs)
 
     def __repr__(self):
-        """
-        Generates string for print(GalaxyCluster)
-        """
+        """Generates string for print(GalaxyCluster)"""
         output = 'GalaxyCluster %s:\n'%self.unique_id
         output += '    ra: %s\n'%str(self.ra)
         output += '    dec: %s\n'%str(self.dec)
         output += '    z: %s\n'%str(self.z)
         output += '    --------------------\n'
-        if len(self.galcat)==0:
+        if len(self.galcat) == 0:
             output += '    galcat: Empty table\n'
         else:
             output += '    galcat: %d galaxies\n'%len(self.galcat)
             for c in self.galcat.columns:
                 try:
-                    output += '        %s:\n            from %s to %s\n'%(c, 
+                    output += '        %s:\n            from %s to %s\n'%(c,
                         str(min(self.galcat[c])), str(max(self.galcat[c])))
                 except:
-                    output += '        %s: %s\n'%(c, type(self.galcat[c])) 
+                    output += '        %s: %s\n'%(c, type(self.galcat[c]))
         return output
