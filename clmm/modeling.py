@@ -148,7 +148,7 @@ def predict_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profi
     Returns
     -------
     sigma : array_like, float
-        Surface density, Sigma in units of [h M_\\odot/$pc^2$]
+        Surface density, Sigma in units of [h Msun/$pc^2$]
 
     Notes
     -----
@@ -194,7 +194,7 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, hal
     Returns
     -------
     deltasigma : array_like, float
-        Excess surface density, DeltaSigma in units of [h M_\\odot/$pc^2$].
+        Excess surface density, DeltaSigma in units of [h Msun/$pc^2$].
     """
     cosmo = cclify_astropy_cosmo(cosmo)
     Omega_m = cosmo['Omega_c'] + cosmo['Omega_b']
@@ -264,7 +264,7 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     Returns
     -------
     sigmacrit : float
-        Cosmology-dependent critical surface density in units of h M_\odot/$pc^2$
+        Cosmology-dependent critical surface density in units of h Msun/pc^2
 
     Notes
     -----
