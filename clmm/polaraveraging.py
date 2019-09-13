@@ -345,8 +345,8 @@ def _theta_units_conversion(theta, unit, z_cl=None, cosmo=None):
         if unit[1:] == "pc":
             if isinstance(cosmo,astropy.cosmology.core.FlatLambdaCDM): # astropy cosmology type
                 Da = cosmo.angular_diameter_distance(z_cl).to(unit_).value
-            elif isinstance(cosmo, ccl.core.Cosmology): # astropy cosmology type
-                Da = ccl.comoving_angular_distance(cosmo, 1/(1+z_cl)) / (1+z_cl) * u.Mpc.to(unit_)
+            # elif isinstance(cosmo, ccl.core.Cosmology): # astropy cosmology type
+            #     Da = ccl.comoving_angular_distance(cosmo, 1/(1+z_cl)) / (1+z_cl) * u.Mpc.to(unit_)
             else:
                 raise ValueError("cosmo object (%s) not an astropy or ccl cosmology"%str(cosmo))
             return theta.value * Da
