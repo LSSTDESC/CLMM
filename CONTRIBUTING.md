@@ -10,7 +10,7 @@ Issues marked with the label `good first issue` are well-suited for new contribu
 ## Making a local copy of CLMM
 
 As a newcomer, you likely will not have edit access to the main CLMM repository.
-Without edit privledges, you won't be able to create or push changes to branches in the base repository.
+Without edit privileges, you won't be able to create or push changes to branches in the base repository.
 You can get around this by creating a [fork](https://help.github.com/articles/fork-a-repo/), a linked copy of the CLMM repository under your Github username.
 You can then push code changes to your fork which can later be merged with the base repository.
 To create a fork, navigate to the [CLMM home page](https://github.com/LSSTDESC/CLMM) and click 'Fork' in the upper right hand corner.
@@ -63,3 +63,30 @@ Here's a list of additional resources which you may find helpful in navigating g
 * [Phil Marshall's Getting Started repository and FAQ](https://github.com/drphilmarshall/GettingStarted#forks)
 * [Phil Marshall's Git tutorial video lesson](https://www.youtube.com/watch?v=2g9lsbJBPEs)
 * [The Github Help Pages](https://help.github.com/)
+
+## Contact (alphabetical order)
+* [Michel Aguena](https://github.com/m-aguena) (LIneA)
+* [Doug Applegate](https://github.com/deapplegate) (Novartis)
+* [Camille Avestruz](https://github.com/cavestruz) (UChicago)
+* [Lucie Baumont](https://github.com/lbaumo) (SBU)
+* [Miyoung Choi](https://github.com/mchoi8739) (UTD)
+* [Celine Combet](https://github.com/combet) (LSPC)
+* [Matthew Fong](https://github.com/matthewwf2001) (UTD)
+* [Shenming Fu](https://github.com/shenmingfu)(Brown)
+* [Matthew Ho](https://github.com/maho3) (CMU)
+* [Matthew Kirby](https://github.com/matthewkirby) (Arizona)
+* [Brandyn Lee](https://github.com/brandynlee) (UTD)
+* [Anja von der Linden](https://github.com/anjavdl) (SBU)
+* [Binyang Liu](https://github.com/rbliu) (Brown)
+* [Alex Malz](https://github.com/aimalz) (NYU --> RUB)
+* [Tom McClintock](https://github.com/tmcclintock) (BNL)
+* [Hironao Miyatake](https://github.com/HironaoMiyatake) (Nagoya)
+* [Mariana Penna-Lima](https://github.com/pennalima) (UBrasilia)
+* [Marina Ricci](https://github.com/marina-ricci) (LAPP)
+* [Cristobal Sifon](https://github.com/cristobal-sifon) (Princeton)
+* [Melanie Simet](https://github.com/msimet) (JPL)
+* [Martin Sommer](https://github.com/sipplund) (Bonn)
+* [Heidi Wu](https://github.com/hywu) (Ohio)
+* [Mijin Yoon](https://github.com/mijinyoon) (RUB)
+
+The current administrators of the repository are Michel Aguena, Camille Avestruz, Matthew Kirby, and Alex Malz.
