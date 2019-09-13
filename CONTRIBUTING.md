@@ -20,9 +20,7 @@ The fork has been created under your username on Github's remote server and can 
     git clone git@github.com:YOUR-USERNAME/CLMM.git
     git remote add base git@github.com:LSSTDESC/CLMM.git
 ```
-
-If you do have edit privledges to CLMM, it may be easier to simply clone the base CLMM repository.
-
+If you do have edit privileges to CLMM, it may be easier to simply clone the base CLMM repository.
 ``` bash
     git clone git@github.com:LSSTDESC/CLMM.git
 ```

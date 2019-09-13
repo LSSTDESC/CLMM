@@ -48,7 +48,7 @@ def test_save_load():
     cl1.save('testcluster.pkl')
     cl2 = clmm.load_cluster('testcluster.pkl')
     os.system('rm testcluster.pkl')
-    
+
     testing.assert_equal(cl2.unique_id, cl1.unique_id)
     testing.assert_equal(cl2.ra, cl1.ra)
     testing.assert_equal(cl2.dec, cl1.dec)
@@ -70,9 +70,12 @@ def test_save_load():
 #     tst.assert_equal([], gc.find_data(test_creator, test_dict_sub, exact=True))
 #     tst.assert_equal([], gc.find_data(test_creator, test_dict_diff, exact=True))
 
-
+def test_print_gc():
+    cl = clmm.GalaxyCluster(unique_id='1', ra=161.3, dec=34., z=0.3, galcat=Table())
+    print(cl)
+    assert isinstance(cl.__str__(), str)
 
 if __name__ == "__main__":
     test_initialization()
     test_integrity()
-
+    test_print_cl()
