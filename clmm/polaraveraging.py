@@ -101,16 +101,17 @@ def compute_shear(cluster=None, ra_lens=None, dec_lens=None, ra_source_list=None
         ra_source_list, dec_source_list = cluster.galcat['ra'], cluster.galcat['dec']
         shear1, shear2 = cluster.galcat['e1'], cluster.galcat['e2']
 
+    # If a cluster object is not specified, we require all of these inputs
     elif any(t_ is None for t_ in (ra_lens, dec_lens, ra_source_list, dec_source_list,
                                    shear1, shear2)):
         raise TypeError('To compute shear, please provide a GalaxyCluster object or ra and dec of\
                          lens and sources and both shears or ellipticities of the sources.')
 
+    # If there is only 1 source, make sure everything is a scalar
     if all(not hasattr(t_, '__len__') for t_ in [ra_source_list, dec_source_list, shear1, shear2]):
-        # All inputs are scalars. This stops the next check from crashing if only 1 source
         pass
+    # Otherwise, check that the length of all of the inputs match
     elif not all(len(t_) == len(ra_source_list) for t_ in [dec_source_list, shear1, shear2]):
-        # One or more of ra/dec/shear1/shear2 of sources has diff length
         raise TypeError("To compute the shear you should supply the same number of source\
                          positions and shear.")
 
@@ -165,8 +166,6 @@ def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_sourc
     angsep = np.sqrt(deltax**2 + deltay**2)
     phi = np.arctan2(deltay, -deltax)
 
-    # if np.any(angsep < 1.e-9):
-    #     raise ValueError("Ra and Dec of source and lens too similar")
     if np.any(angsep > np.pi/180.):
         warnings.warn("Using the flat-sky approximation with separations >1 deg may be inaccurate")
 
@@ -255,25 +254,6 @@ def make_shear_profile(cluster, radius_unit, bins=None, cosmo=None, add_to_clust
     return profile_table
 
 
-def plot_profiles(cluster, r_units=None):
-    """Plot shear profiles for validation
-
-    Parameters
-    ----------
-    cluster: GalaxyCluster object
-        GalaxyCluster object with galaxies
-    """
-    prof = cluster.profile
-    if r_units is not None:
-        if cluster.profile['radius'].unit is not None:
-            warning.warn(('r_units provided (%s) differ from r_units in galcat table (%s) using\
-                            user defined')%(r_units, cluster.profile['radius'].unit))
-        else:
-            r_units = cluster.profile['radius'].unit
-    return _plot_profiles(*[cluster.profile[c] for c in ('radius', 'gt', 'gt_err', 'gx', 'gx_err')],
-                          r_unit=cluster.profile_radius_unit)
-
-
 
 def _theta_units_conversion(theta, unit, z_cl=None, cosmo=None):
     """Converts theta from radian to whatever units specified in units
@@ -331,41 +311,41 @@ def _theta_units_conversion(theta, unit, z_cl=None, cosmo=None):
     if z_cl is None:
         raise ValueError("To compute physical units, z_cl must not be None")
 
-def make_bins(rmin, rmax, n_bins=10, log_bins=False):
-    """Define equal sized bins with an array of n_bins+1 bin edges
-
-    Parameters
-    ----------
-    rmin, rmax,: float
-        minimum and and maximum range of data (any units)
-    n_bins: float
-        number of bins you want to create
-    log_bins: bool
-        set to 'True' equal sized bins in log space
-
-    Returns
-    -------
-    binedges: array_like, float
-        n_bins+1 dimensional array that defines bin edges
-    """
-    if rmax < rmin:
-        raise ValueError("rmax should be larger than rmin")
-    if n_bins <= 0:
-        raise ValueError("n_bins must be > 0")
-    if type(log_bins) != bool:
-        raise TypeError("log_bins must be type bool")
-    if type(n_bins) != int:
-        raise TypeError("You need an integer number of bins")
-
-    if log_bins == True:
-        rmin = np.log(rmin)
-        rmax = np.log(rmax)
-        logbinedges = np.linspace(rmin, rmax, n_bins+1, endpoint=True)
-        binedges = np.exp(logbinedges)
-    else:
-        binedges = np.linspace(rmin, rmax, n_bins+1, endpoint=True)
-
-    return binedges
+# def make_bins(rmin, rmax, n_bins=10, log_bins=False):
+#     """Define equal sized bins with an array of n_bins+1 bin edges
+#
+#     Parameters
+#     ----------
+#     rmin, rmax,: float
+#         minimum and and maximum range of data (any units)
+#     n_bins: float
+#         number of bins you want to create
+#     log_bins: bool
+#         set to 'True' equal sized bins in log space
+#
+#     Returns
+#     -------
+#     binedges: array_like, float
+#         n_bins+1 dimensional array that defines bin edges
+#     """
+#     if rmax < rmin:
+#         raise ValueError("rmax should be larger than rmin")
+#     if n_bins <= 0:
+#         raise ValueError("n_bins must be > 0")
+#     if type(log_bins) != bool:
+#         raise TypeError("log_bins must be type bool")
+#     if type(n_bins) != int:
+#         raise TypeError("You need an integer number of bins")
+#
+#     if log_bins == True:
+#         rmin = np.log(rmin)
+#         rmax = np.log(rmax)
+#         logbinedges = np.linspace(rmin, rmax, n_bins+1, endpoint=True)
+#         binedges = np.exp(logbinedges)
+#     else:
+#         binedges = np.linspace(rmin, rmax, n_bins+1, endpoint=True)
+#
+#     return binedges
 
 
 def _compute_radial_averages(radius, g, bins=None):
@@ -420,6 +400,25 @@ def _compute_radial_averages(radius, g, bins=None):
             gerr_profile[i] = np.nan
 
     return r_profile, g_profile, gerr_profile
+
+
+def plot_profiles(cluster, r_units=None):
+    """Plot shear profiles for validation
+
+    Parameters
+    ----------
+    cluster: GalaxyCluster object
+        GalaxyCluster object with galaxies
+    """
+    prof = cluster.profile
+    if r_units is not None:
+        if cluster.profile['radius'].unit is not None:
+            warning.warn(('r_units provided (%s) differ from r_units in galcat table (%s) using\
+                            user defined')%(r_units, cluster.profile['radius'].unit))
+        else:
+            r_units = cluster.profile['radius'].unit
+    return _plot_profiles(*[cluster.profile[c] for c in ('radius', 'gt', 'gt_err', 'gx', 'gx_err')],
+                          r_unit=cluster.profile_radius_unit)
 
 
 def _plot_profiles(r, gt, gterr, gx=None, gxerr=None, r_unit=""):
