@@ -138,7 +138,7 @@ def compute_shear(cluster=None, ra_lens=None, dec_lens=None, ra_source_list=None
     cross_shear = _compute_cross_shear(shear1, shear2, phi)
 
     if add_to_cluster:
-        cluster.galcat['theta_radian'] = angsep
+        cluster.galcat['theta'] = angsep
         cluster.galcat['gt'] = tangential_shear
         cluster.galcat['gx'] = cross_shear
 
@@ -209,83 +209,79 @@ def _compute_cross_shear(shear1, shear2, phi):
     return -shear1*np.sin(2.*phi) + shear2*np.cos(2.*phi)
 
 
-
-
-
-
-
-
-
-
-
-def make_shear_profile(cluster, radius_unit, bins=None, cosmo=None, add_to_cluster=True):
+def make_shear_profile(cluster, angsep_units, bin_units, bins=None, cosmo=None,
+                       add_to_cluster=True):
     r"""Compute the shear profile of the cluster
 
-    We assume that 
+    We assume that the cluster object contains information on the cross and
+    tangential shears and angular separation of the source galaxies
 
-    This function can be called in two ways
-    1. Pass an instance of GalaxyCluster into the function
-    `make_shear_profile(cluster, 'rad')`
-    2. Call it as a method of a GalaxyCluster instance
-    `cluster.make_shear_profile('rad')`
+    This function can be called in two ways using an instance of GalaxyCluster
+
+    1. Pass an instance of GalaxyCluster into the function::
+
+        make_shear_profile(cluster, 'radians', 'radians')
+
+    2. Call it as a method of a GalaxyCluster instance::
+
+        cluster.make_shear_profile('radians', 'radians')
 
     Parameters
     ----------
-    cluster: GalaxyCluster object
-        GalaxyCluster object with galaxies
-    radius_unit: str
-        Radial unit of the profile, one of
-        ["rad", deg", "arcmin", "arcsec", kpc", "Mpc"]
-    bins: array_like, float
-        User defined n_bins + 1 dimensional array of bins, if 'None',
-        the default is 10 equally spaced radial bins
-    cosmo:
-        Cosmology object
-    add_to_cluster: bool
-        Adds the outputs to cluster.profile
+    cluster : GalaxyCluster
+        Instance of GalaxyCluster that contains the cross and tangential shears of
+        each source galaxy in its `galcat`
+    angsep_units : str
+        Units of the calculated separation of the source galaxies
+        Allowed Options = ["radians"]
+    bin_units : str
+        Units to use for the radial bins of the shear profile
+        Allowed Options = ["radians", deg", "arcmin", "arcsec", kpc", "Mpc"]
+    bins : array_like, optional
+        User defined bins to use for the shear profile. If a scalar is provided, create that many
+        bins between the minimum and maximum angular separations in bin_units. If an list is
+        provided, use that as the bin extents. If nothing is provided, default to 10 equally
+        spaced bins.
+    cosmo: dict, optional
+        Cosmology parameters to convert angular separations to physical distances
+    add_to_cluster: bool, optional
+        Attach the profile to the cluster object as `cluster.profile`
 
     Returns
     -------
-    profile_table: astropy Table
-        Table with r_profile, gt profile (and error) and
-        gx profile (and error)
-
-    Note
-    ----
-    Currently, the radial_units are not saved in the profile_table.
-    We have to add it somehow.
+    profile : astropy.table.Table
+        Output table containing the radius grid points, the tangential and cross shear profiles
+        on that grid, and the errors in the two shear profiles.
     """
-    if not ('gt' in cluster.galcat.columns and 'gx' in cluster.galcat.columns
-            and 'theta' in cluster.galcat.columns):
-        raise TypeError('shear information is missing in galaxy must have tangential and cross\
-                         shears (gt,gx). Run compute_shear first!')
-    radial_values = _theta_units_conversion(cluster.galcat['theta'], radius_unit, z_cl=cluster.z,
-                                            cosmo=cosmo)
-    r_avg, gt_avg, gt_std = _compute_radial_averages(radial_values, cluster.galcat['gt'].data,
+    if not all([t_ in cluster.galcat.columns for t_ in ('gt', 'gx', 'theta')]):
+        raise TypeError('Shear information is missing in galaxy catalog must have tangential\
+                        and cross shears (gt,gx). Run compute_shear first!')
+
+    # Check to see if we need to do a unit conversion
+    if angsep_units is not bin_units:
+        source_seps = _theta_units_conversion(cluster.galcat['theta'], angsep_units, bin_units,
+                                              z_cl=cluster.z, cosmo=cosmo)
+    else:
+        source_seps = cluster.galcat['theta']
+
+    # Make bins if they are not provided
+    if not hasattr(bins, '__len__'):
+        bins = np.linspace(np.min(source_seps), np.max(source_seps), bins)
+
+    # Compute the binned average shears
+    r_avg, gt_avg, gt_std = _compute_radial_averages(source_seps, cluster.galcat['gt'].data,
                                                      bins=bins)
-    r_avg, gx_avg, gx_std = _compute_radial_averages(radial_values, cluster.galcat['gx'].data,
+    r_avg, gx_avg, gx_std = _compute_radial_averages(source_seps, cluster.galcat['gx'].data,
                                                      bins=bins)
-    profile_table = Table([r_avg, gt_avg, gt_std, gx_avg, gx_avg],
-                          names=('radius', 'gt', 'gt_err', 'gx', 'gx_err'))
+    profile_table = Table([bins[:-1], r_avg, bins[1:], gt_avg, gt_std, gx_avg, gx_avg],
+                          names=('radius_min', 'radius', 'radius_max', 'gt', 'gt_err',
+                                 'gx', 'gx_err'))
+
     if add_to_cluster:
         cluster.profile = profile_table
-        cluster.profile_radius_unit = radius_unit
+        cluster.profile_bin_units = bin_units
+
     return profile_table
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 def _theta_units_conversion(theta, unit, z_cl=None, cosmo=None):
@@ -319,7 +315,7 @@ def _theta_units_conversion(theta, unit, z_cl=None, cosmo=None):
     theta = theta * u.rad
 
     units_bank = {
-        "rad": u.rad,
+        "radians": u.rad,
         "deg": u.deg,
         "arcmin": u.arcmin,
         "arcsec": u.arcsec,
@@ -343,6 +339,14 @@ def _theta_units_conversion(theta, unit, z_cl=None, cosmo=None):
         raise ValueError("unit (%s) not in %s"%(unit, str(units_bank.keys())))
     if z_cl is None:
         raise ValueError("To compute physical units, z_cl must not be None")
+
+
+
+
+
+
+
+
 
 # def make_bins(rmin, rmax, n_bins=10, log_bins=False):
 #     """Define equal sized bins with an array of n_bins+1 bin edges
@@ -508,3 +512,4 @@ def _plot_profiles(r, gt, gterr, gx=None, gxerr=None, r_unit=""):
 # Monkey patch functions onto Galaxy Cluster object
 from .galaxycluster import GalaxyCluster
 GalaxyCluster.compute_shear = compute_shear
+GalaxyCluster.make_shear_profile = make_shear_profile

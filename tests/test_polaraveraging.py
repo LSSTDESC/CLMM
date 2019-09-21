@@ -209,34 +209,62 @@ def test_compute_shear():
     return
 
 
-@pytest.mark.skip()
-def test_gc_wrapper():
-    # the numbers on this test must be revise, output values were extracted from the first run of the code
-    ra_in = np.array([161.29, 161.34])
-    dec_in =  np.array([51.45, 51.55])
-    theta_out = [0.00077050407583119666, 0.00106951489719733675]
-    gt_out = [ 1.408693e+00,  1.315362e+00]
-    gx_out = [ 1.248319e-01, -5.194458e-01]
-    gc = clmm.GalaxyCluster(unique_id='blah', 
-        ra=161.32, dec=51.49, z=0.5,
-        galcat=Table([
-            np.append(ra_in, ra_in),
-            np.append(dec_in, dec_in),
-            np.ones(4), np.ones(4)],
-            names=('ra', 'dec', 'e1', 'e2'))
-        )
-    #test compute_shear
-    gc.compute_shear()
-    testing.assert_allclose(
-        [gc.galcat[c] for c in ('theta', 'gt', 'gx')],
-        [np.append(theta_out, theta_out),
-            np.append(gt_out, gt_out),
-            np.append(gx_out, gx_out)],
-        rtol=1e-6)
-    #test make_shear_profile
-    gc.make_shear_profile('rad', bins=[0, .001, .002])
-    testing.assert_allclose(
-        [gc.profile[c] for c in ('radius', 'gt', 'gx')],
-        [theta_out, gt_out, gx_out],
-        rtol=1e-6)
+def test_make_shear_profiles():
+    # Set up a cluster object and compute cross and tangential shears
+    ra_lens, dec_lens = 120., 42.
+    ra_source_list = np.array([120.1, 119.9, 119.9])
+    dec_source_list = np.array([41.9, 42.2, 42.2])
+    shear1 = np.array([0.2, 0.4, 0.4])
+    shear2 = np.array([0.3, 0.5, 0.5])
+    cluster = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=0.5,
+                                 galcat=Table([ra_source_list, dec_source_list, shear1, shear2],
+                                              names=('ra', 'dec', 'e1', 'e2')))
+    angsep, tshear, xshear = pa.compute_shear(cluster=cluster, add_to_cluster=True)
+
+    # Test the outputs of compute_shear just to be save
+    expected_angsep = np.array([0.0021745039090962414, 0.0037238407383072053, 0.0037238407383072053])
+    expected_cross_shear = np.array([-0.2780316984090899, -0.6398792901134982, -0.6398792901134982])
+    expected_tan_shear = np.array([-0.22956126563459447, -0.02354769805831558, -0.02354769805831558])
+    testing.assert_allclose(angsep, expected_angsep, rtol=rtol,
+                            err_msg="Angular Separation not correct when testing shear profiles")
+    testing.assert_allclose(tshear, expected_tan_shear, rtol=rtol,
+                            err_msg="Tangential Shear not correct when testing shear profiles")
+    testing.assert_allclose(xshear, expected_cross_shear, rtol=rtol,
+                            err_msg="Cross Shear not correct when testing shear profiles")
+
+    # Make the shear profile and check it
+    bins_radians = np.array([0.002, 0.003, 0.004])
+    profile = pa.make_shear_profile(cluster, 'radians', 'radians', bins=bins_radians)
+    testing.assert_allclose(profile['radius_min'], [0.002, 0.003], rtol=rtol,
+                            err_msg="Minimum radius in bin not expected.")
+    testing.assert_allclose(profile['radius'], [0.0021745039090962414, 0.0037238407383072053], rtol=rtol,
+                            err_msg="Mean radius in bin not expected.")
+    testing.assert_allclose(profile['radius_max'], [0.003, 0.004], rtol=rtol,
+                            err_msg="Maximum radius in bin not expected.")
+    testing.assert_allclose(profile['gt'], [-0.22956126563459447, -0.02354769805831558], rtol=rtol,
+                            err_msg="Tangential shear in bin not expected")
+    # testing.assert_allclose(profile['gt_err'], [], rtol=rtol,
+    #                         err_msg="Tangential shear error in bin not expected")
+    testing.assert_allclose(profile['gx'], [-0.2780316984090899, -0.6398792901134982], rtol=rtol,
+                            err_msg="Cross shear in bin not expected")
+    # testing.assert_allclose(profile['gx_err'], [], rtol=rtol,
+    #                         err_msg="Cross shear error in bin not expected")
+
+    # Repeat the same tests when we call make_shear_profile through the GalaxyCluster method
+    profile2 = cluster.make_shear_profile('radians', 'radians', bins=bins_radians)
+    testing.assert_allclose(profile2['radius_min'], [0.002, 0.003], rtol=rtol,
+                            err_msg="Minimum radius in bin not expected.")
+    testing.assert_allclose(profile2['radius'], [0.0021745039090962414, 0.0037238407383072053], rtol=rtol,
+                            err_msg="Mean radius in bin not expected.")
+    testing.assert_allclose(profile2['radius_max'], [0.003, 0.004], rtol=rtol,
+                            err_msg="Maximum radius in bin not expected.")
+    testing.assert_allclose(profile2['gt'], [-0.22956126563459447, -0.02354769805831558], rtol=rtol,
+                            err_msg="Tangential shear in bin not expected")
+    # testing.assert_allclose(profile2['gt_err'], [], rtol=rtol,
+    #                         err_msg="Tangential shear error in bin not expected")
+    testing.assert_allclose(profile2['gx'], [-0.2780316984090899, -0.6398792901134982], rtol=rtol,
+                            err_msg="Cross shear in bin not expected")
+    # testing.assert_allclose(profile2['gx_err'], [], rtol=rtol,
+    #                         err_msg="Cross shear error in bin not expected")
+
 
