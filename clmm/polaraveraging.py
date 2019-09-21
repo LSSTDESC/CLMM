@@ -1,7 +1,4 @@
-"""@file polaraveraging.py
-Functions to compute polar/azimuthal averages in radial bins
-"""
-
+"""Functions to compute polar/azimuthal averages in radial bins"""
 # try: # 7481794
 #     import pyccl as ccl
 # except ImportError:
@@ -38,31 +35,39 @@ def compute_shear(cluster=None, ra_lens=None, dec_lens=None, ra_source_list=None
     all of the sources. We also need the two shears or ellipticities of all of the sources.
 
     These quantities can be handed to `compute_shear` in three ways
-    1. Pass in each as parameters
-        `compute_shear(ra_lens, dec_lens, ra_source_list, dec_source_list, shear1, shear2)`
-    2. Given a `GalaxyCluster()` object
-        `compute_shear(cluster)`
-    3. As a method of `GalaxyCluster()`
-        `cluster.compute_shear()`
+
+    1. Pass in each as parameters::
+
+        compute_shear(ra_lens, dec_lens, ra_source_list, dec_source_list, shear1, shear2)
+
+    2. Given a `GalaxyCluster` object::
+
+        compute_shear(cluster)
+
+    3. As a method of `GalaxyCluster`::
+
+        cluster.compute_shear()
 
     The angular separation between the source and the lens, :math:`\theta`, and the azimuthal
     position of the source relative to the lens, :math:`\phi`, are computed within and the
     angular separation is returned.
 
     In the flat sky approximation, these angles are calculated using
-    .. math::
-        \theta = \sqrt{\left(\delta_s - \delta_l\right)^2 +
-        \left(\alpha_l-\alpha_s\right)^2\cos^2(\delta_l)}
 
-        \tan\phi = \frac{\delta_s - \delta_l}{\left(\alpha_l - \alpha_s\right)\cos(\delta_l)}
+    .. math::
+
+        \theta^2 = & \left(\delta_s - \delta_l\right)^2 +
+        \left(\alpha_l-\alpha_s\right)^2\cos^2(\delta_l)\\
+        \tan\phi = & \frac{\delta_s - \delta_l}{\left(\alpha_l - \alpha_s\right)\cos(\delta_l)}
 
     The tangential, :math:`g_t`, and cross, :math:`g_x`, shears are calculated using the two
     measured ellipticities or shears of the source galaxies following
-    Schrabback et al. 2018, arXiv:1611:03866
-    .. math::
-        g_t = -\left( g_1\cos\left(2\phi\right) + g_2\sin\left(2\phi\right)\right)
+    Schrabback et al. (2018), arXiv:1611:03866
 
-        g_x = -g_1 \sin\left(2\phi\right) + g_2\cos\left(2\phi\right)
+    .. math::
+
+        g_t =& -\left( g_1\cos\left(2\phi\right) + g_2\sin\left(2\phi\right)\right)\\
+        g_x =& -g_1 \sin\left(2\phi\right) + g_2\cos\left(2\phi\right)
 
 
     Parameters
@@ -71,11 +76,17 @@ def compute_shear(cluster=None, ra_lens=None, dec_lens=None, ra_source_list=None
         Instance of `GalaxyCluster()` and must contain right ascension and declinations of both
         the lens and sources and the two shears or ellipticities of all of the sources. If this
         object is specified, right ascension, declination, and shear inputs are ignored.
-    ra_lens, dec_lens: float, optional
-        Right ascension and declination of the lensing cluster
-    ra_source_list, dec_source_list: array_like, optional
-        Right ascensions and declinations of each source galaxy
-    shear1, shear2: array_like, optional
+    ra_lens: float, optional
+        Right ascension of the lensing cluster
+    dec_lens: float, optional
+        Declination of the lensing cluster
+    ra_source_list: array_like, optional
+        Right ascensions of each source galaxy
+    dec_source_list: array_like, optional
+        Declinations of each source galaxy
+    shear1: array_like, optional
+        The measured shears or ellipticities of the source galaxies
+    shear2: array_like, optional
         The measured shears or ellipticities of the source galaxies
     geometry: str, optional
         Sky geometry to compute angular separation.
@@ -127,7 +138,7 @@ def compute_shear(cluster=None, ra_lens=None, dec_lens=None, ra_source_list=None
     cross_shear = _compute_cross_shear(shear1, shear2, phi)
 
     if add_to_cluster:
-        cluster.galcat['theta'] = angsep
+        cluster.galcat['theta_radian'] = angsep
         cluster.galcat['gt'] = tangential_shear
         cluster.galcat['gx'] = cross_shear
 
@@ -208,13 +219,21 @@ def _compute_cross_shear(shear1, shear2, phi):
 
 
 def make_shear_profile(cluster, radius_unit, bins=None, cosmo=None, add_to_cluster=True):
-    """Computes shear profile of the cluster
+    r"""Compute the shear profile of the cluster
+
+    We assume that 
+
+    This function can be called in two ways
+    1. Pass an instance of GalaxyCluster into the function
+    `make_shear_profile(cluster, 'rad')`
+    2. Call it as a method of a GalaxyCluster instance
+    `cluster.make_shear_profile('rad')`
 
     Parameters
     ----------
     cluster: GalaxyCluster object
         GalaxyCluster object with galaxies
-    radius_unit:
+    radius_unit: str
         Radial unit of the profile, one of
         ["rad", deg", "arcmin", "arcsec", kpc", "Mpc"]
     bins: array_like, float
@@ -252,6 +271,20 @@ def make_shear_profile(cluster, radius_unit, bins=None, cosmo=None, add_to_clust
         cluster.profile = profile_table
         cluster.profile_radius_unit = radius_unit
     return profile_table
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -400,6 +433,18 @@ def _compute_radial_averages(radius, g, bins=None):
             gerr_profile[i] = np.nan
 
     return r_profile, g_profile, gerr_profile
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def plot_profiles(cluster, r_units=None):
