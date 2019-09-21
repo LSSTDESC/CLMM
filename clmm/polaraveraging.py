@@ -7,6 +7,7 @@ import math
 import warnings
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.stats import binned_statistic
 from astropy.coordinates import SkyCoord
 from astropy.cosmology import FlatLambdaCDM
 from astropy.table import Table
@@ -337,24 +338,62 @@ def _theta_units_conversion(source_seps, input_units, output_units, z_cl=None, c
         return source_seps.to(units_bank[output_units]).value
 
 
+def _compute_radial_averages(distances, measurements, bins):
+    """Given a list of distances, measurements and bins, sort into bins
 
+    Parameters
+    ----------
+    distance : array_like
+        Distance from origin to measurement
+    measurements : array_like
+        Measurements corresponding to each distance
+    bins: array_like
+        Bin edges to sort distance
 
+    Returns
+    -------
+    r_profile : array_like
+        Centers of radial bins
+    y_profile : array_like
+        Average of measurements in distance bin
+    yerr_profile: array_like
+        Standard deviation of measurements in distance bin
+    """
+    # if not isinstance(distance, (np.ndarray)):
+    #     raise TypeError("Distances must be an array")
+    # if not isinstance(measurements, (np.ndarray)):
+    #     raise TypeError("Measurements must be an array")
+    # if not isinstance(bins, (np.ndarray)):
+    #     raise TypeError("Bins must be an array")
+    # if len(radius) != len(g):
+    #     raise TypeError("Must have a measurement at each distance!")
 
+    # nbins = len(bins)-1
+    # r_profile = np.zeros(nbins)
+    # y_profile = np.zeros(nbins)
+    # yerr_profile = np.zeros(nbins)
 
+    # if np.amax(distance) > np.amax(bins):
+    #     warnings.warn("Maximum distance is not within range of bins")
+    # if np.amin(distance) < np.amin(bins):
+    #     warnings.warn("Minimum distance is not within the range of bins")
 
+    # for i in range(nbins):
+    #     index = np.where((radius >= bins[i]) & (radius < bins[i+1]))[0]
+    #     if len(index) == 0:
+    #         r_profile[i] = np.nan
+    #         y_profile[i] = np.nan
+    #         yerr_profile[i] = np.nan
+    #     else:
+    #         r_profile[i] = np.average(distances[index])
+    #         y_profile[i] = np.average(measurements[index])
+    #         yerr_profile[i] = np.std(measurements[index])/np.sqrt(float(len(index)))
 
+    r_profile, _, _ = binned_statistic(distances, distances, statistic='mean', bins=bins)
+    y_profile, _, _ = binned_statistic(distances, measurements, statistic='mean', bins=bins)
+    yerr_profile, _, _ = binned_statistic(distances, measurements, statistic='std', bins=bins)
 
-
-
-
-
-
-
-
-
-
-
-
+    return r_profile, y_profile, yerr_profile
 
 
 
@@ -398,72 +437,6 @@ def _theta_units_conversion(source_seps, input_units, output_units, z_cl=None, c
 #         binedges = np.linspace(rmin, rmax, n_bins+1, endpoint=True)
 #
 #     return binedges
-
-
-def _compute_radial_averages(radius, g, bins=None):
-    """Returns astropy table containing shear profile of either tangential or cross shear
-
-    Parameters
-    ----------
-    radius: array_like, float
-        Distance (physical or angular) between source galaxy to cluster center
-    g: array_like, float
-        Either tangential or cross shear (g_t or g_x)
-    bins: array_like, float
-        User defined n_bins + 1 dimensional array of bins
-        If 'None', the default is 10 equally spaced radial bins
-
-    Returns
-    -------
-    r_profile: array_like, float
-        Centers of radial bins
-    g_profile: array_like, float
-        Average shears per bin
-    gerr_profile: array_like, float
-        Standard deviation of shear per bin
-    """
-    if not isinstance(radius, (np.ndarray)):
-        raise TypeError("radius must be an array")
-    if not isinstance(g, (np.ndarray)):
-        raise TypeError("g must be an array")
-    if len(radius) != len(g):
-        raise TypeError("radius and g must be arrays of the same length")
-    if np.any(bins) == None:
-        nbins = 10
-        bins = np.linspace(np.min(radius), np.max(radius), nbins)
-
-    g_profile = np.zeros(len(bins) - 1)
-    gerr_profile = np.zeros(len(bins) - 1)
-    r_profile = np.zeros(len(bins) - 1)
-
-    if np.amax(radius) > np.amax(bins):
-        warnings.warn("Maximum radius is not within range of bins")
-    if np.amin(radius) < np.amin(bins):
-        warnings.warn("Minimum radius is not within the range of bins")
-
-    for i in range(len(bins)-1):
-        cond = (radius >= bins[i]) & (radius < bins[i+1])
-        index = np.where(cond)[0]
-        r_profile[i] = np.average(radius[index])
-        g_profile[i] = np.average(g[index])
-        if len(index) != 0:
-            gerr_profile[i] = np.std(g[index]) / np.sqrt(float(len(index)))
-        else:
-            gerr_profile[i] = np.nan
-
-    return r_profile, g_profile, gerr_profile
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 def plot_profiles(cluster, r_units=None):

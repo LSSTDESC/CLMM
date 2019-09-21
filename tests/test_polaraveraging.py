@@ -71,7 +71,6 @@ def test_compute_tangential_shear():
     testing.assert_almost_equal(pa._compute_tangential_shear(0., 0., 0.3), 0.)
 
     
-@pytest.mark.skip()
 def test_compute_radial_averages():
     #testing input types
     testing.assert_raises(TypeError, pa._compute_radial_averages, radius="glue", g=10, bins=[np.arange(1.,16.)])
