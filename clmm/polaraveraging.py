@@ -10,7 +10,6 @@ import matplotlib.pyplot as plt
 from astropy.coordinates import SkyCoord
 from astropy.cosmology import FlatLambdaCDM
 from astropy.table import Table
-from astropy import units as u
 
 
 # def _astropy_to_CCL_cosmo_object(astropy_cosmology_object): # 7481794
@@ -284,61 +283,77 @@ def make_shear_profile(cluster, angsep_units, bin_units, bins=None, cosmo=None,
     return profile_table
 
 
-def _theta_units_conversion(theta, unit, z_cl=None, cosmo=None):
-    """Converts theta from radian to whatever units specified in units
+def _theta_units_conversion(source_seps, input_units, output_units, z_cl=None, cosmo=None):
+    """Convert source separations from input_units to output_units
 
     Parameters
     ----------
-    theta : float
-        We assume the input unit is radian. Theta is angular seperation between source galaxies and
-        the cluster center in 2D image.
-    unit : string
-        Output unit you would like to convert to
-        Supported units are : "rad", deg", "arcmin", "arcsec", kpc", "Mpc".
-    z_cl :  float
-	Cluster redshift, needed to convert angle to physical distances.
-    cosmo : object
-	Cosmology object to convert angle to physical distances. Can be from astropy or ccl.
+    source_seps : array_like
+        Separation between the lens and each source galaxy on the sky
+    input_units : str
+        Units of the input source_seps
+    output_units : str
+        Units to convert source_seps to
+        Options = ["rad", deg", "arcmin", "arcsec", kpc", "Mpc"]
+    z_cl :  float, optional
+	Cluster redshift. Required to convert to physical distances.
+    cosmo : astropy.cosmology.core.FlatLambdaCDM, optional
+        Cosmology object. Required to convert to physical distances.
 
     Returns
     -------
-    radius : float
-        Theta in the converted unit you want to.
-
-    Notes
-    -----
-    This stuff below is left over, replace it above and remove this.
-    units: one of ["rad", deg", "arcmin", "arcsec", kpc", "Mpc"]
-    cosmo : cosmo object
-    z_cl : cluster redshift
+    new_radii : array_like 
+        Source-lens separation in output_units.
     """
-    theta = theta * u.rad
+    from astropy import units as u
+    units_bank = {"radians": u.rad, "deg": u.deg, "arcmin": u.arcmin, "arcsec": u.arcsec,
+                  "kpc": u.kpc, "Mpc": u.Mpc}
 
-    units_bank = {
-        "radians": u.rad,
-        "deg": u.deg,
-        "arcmin": u.arcmin,
-        "arcsec": u.arcsec,
-        "kpc": u.kpc,
-        "Mpc": u.Mpc,
-        }
+    # Check to make sure both the input_units and output_units are supported
+    if not input_units in units_bank:
+        raise ValueError("Input units{} for separation not supported".format(input_units))
+    if not output_units in units_bank:
+        raise ValueError("Output units{} for separation not supported".format(output_units))
 
-    if unit in units_bank:
-        unit_ = units_bank[unit]
-        if unit[1:] == "pc":
-            if isinstance(cosmo, astropy.cosmology.core.FlatLambdaCDM): # astropy cosmology type
-                Da = cosmo.angular_diameter_distance(z_cl).to(unit_).value
-            # elif isinstance(cosmo, ccl.core.Cosmology): # astropy cosmology type
-            #     Da = ccl.comoving_angular_distance(cosmo, 1/(1+z_cl)) / (1+z_cl) * u.Mpc.to(unit_)
-            else:
-                raise ValueError("cosmo object (%s) not an astropy or ccl cosmology"%str(cosmo))
-            return theta.value * Da
-        else:
-            return theta.to(unit_).value
+    # Set input_units on source_seps
+    source_seps = source_seps*units_bank[input_units]
+
+    # Convert to output units and return
+    if 'pc' in output_units:
+        if z_cl is None or cosmo is None:
+            raise ValueError("Cluster redshift and cosmology object required to convert to\
+                              physical units")
+        out_units_obj = units_bank[output_units]
+        angular_diameter_distance = cosmo.angular_diameter_distance(z_cl).to(out_units_obj).value
+        # if isinstance(cosmo, astropy.cosmology.core.FlatLambdaCDM): # astropy cosmology type
+        #     Da = cosmo.angular_diameter_distance(z_cl).to(unit_).value
+        # elif isinstance(cosmo, ccl.core.Cosmology): # astropy cosmology type # 7481794
+        #     Da = ccl.comoving_angular_distance(cosmo, 1/(1+z_cl)) / (1+z_cl) * u.Mpc.to(unit_)
+        # else:
+        #     raise ValueError("cosmo object (%s) not an astropy or ccl cosmology"%str(cosmo))
+        return source_seps.value*angular_diameter_distance
+
     else:
-        raise ValueError("unit (%s) not in %s"%(unit, str(units_bank.keys())))
-    if z_cl is None:
-        raise ValueError("To compute physical units, z_cl must not be None")
+        return source_seps.to(units_bank[output_units]).value
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
