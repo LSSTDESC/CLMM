@@ -6,7 +6,7 @@ from scipy.interpolate import interp1d
 import clmm
 
 
-def compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled, ngals):
+def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled, ngals):
     r"""Add photo-z errors and compute photo-z pdfs for each source galaxy
 
     We compute the photo-z error at a given redshift using
@@ -36,6 +36,7 @@ def compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled, ngals):
     galaxy_catalog['z'] = galaxy_catalog['ztrue'] + \
                           galaxy_catalog['pzsigma']*np.random.standard_normal(ngals)
 
+    # galaxy_catalog['pzbins'] = 
     pzbins_grid, pzpdf_grid = [], []
     for row in galaxy_catalog:
         zmin, zmax = row['ztrue'] - 0.5, row['ztrue'] + 0.5
@@ -48,7 +49,7 @@ def compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled, ngals):
     return galaxy_catalog
 
 
-def draw_sources_redshifts(zsrc, ngals, cluster_z, zsrc_max):
+def _draw_sources_redshifts(zsrc, ngals, cluster_z, zsrc_max):
     """Set source galaxy redshifts either set to a fixed value or draw from Chang et al. 2013.
 
     Uses a sampling technique found in Numerical Recipes in C, Chap 7.2: Transformation Method.
@@ -104,7 +105,7 @@ def draw_sources_redshifts(zsrc, ngals, cluster_z, zsrc_max):
     return Table([zsrc_list, zsrc_list], names=('ztrue', 'z'))
 
 
-def draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo):
+def _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo):
     """Draw positions of source galaxies around lens
 
     We draw physical x and y positions from uniform distribution with -4 and 4 Mpc of the
@@ -169,16 +170,48 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta
                             zsrc_max=7., shapenoise=None, photoz_sigma_unscaled=None, nretry=5):
     r"""Generates a mock dataset of sheared background galaxies.
 
-    This function also ensure that it does not return any nonsensical values for derived
-    properties. We re-draw all galaxies with e1 or e2 outside the bounds of [-1, 1].
-    After 5 (default) attempts to re-draw these properties, we return the catalog
-    and throw a warning.
+    We build galaxy catalogs following a series of steps.
 
-    These nonsensical values for ellipticities may occur when the shapenoise is set very
-    high.
+    1. Draw true redshifts of the source galaxy population. This step is described by the
+    parameters `zsrc` and `zsrc_max`. `zsrc` can be a `float` in which case every source is
+    at the given redshift or a `str` describing a specific model to use for the source
+    distribution. Currently, the only supported model for source galaxy distribution is that
+    of Chang et al. 2013 arXiv:1305.0793. When a model is used to describe the distribution,
+    `zsrc_max` is the maximum allowed redshift of a source galaxy.
 
-    If `zsrc='chang13`, we draw the source redshift distribution from that defined in
-    Chang et al. 2013.
+    2. Apply photometric redshift errors to the source galaxy population. This step is
+    described by the parameter `photoz_sigma_unscaled`. If this parameter is set to a float,
+    we add Gaussian uncertainty to the source redshift
+
+    ..math::
+        z \sim \mathcal{N}\left(z^{\rm true},
+        \sigma_{\rm photo-z}^{\rm unscaled}(1+z^{\rm true}) \right)
+
+    We additionally include two columns in the output catalog, `pzbins` and `pzpdf` which
+    desribe the photo-z distribution as a Gaussian centered at :math:`z^{\rm true} with a
+    width :math:`\sigma_{\rm photo-z} = \sigma_{\rm photo-z}^{\rm unscaled}(1+z^{\rm true})`
+
+    If `photoz_sigma_unscaled` is `None`, the `z` column in the output catalog is the true
+    redshift.
+
+    3. Draw galaxy positions. Positions are drawn in a square box around the lens position with
+    a side length of 4 Mpc. We then convert to right ascension and declination using the
+    cosmology defined in `cosmo`.
+
+    4. We predict the reduced tangential shear of each using the radial distances of each source
+    from the lens, the source redshifts, and the lens mass, concentration, and redshift. In the
+    given cosmology for an NFW halo.
+
+    5. We apply shape noise to the tangential shears. This is described by the parameter
+    `shapenoise`. If this is set to a float, we apply a Gaussian perturbation to the
+    tangential shear with a width of `shapenoise`.
+
+    6. Finally, we compute the ellipticities along the two primary axes of the galaxy
+
+    If the shape noise parameter is high, we may draw nonsensical values for ellipticities. We 
+    ensure that we does not return any nonsensical values for derived properties. We re-draw
+    all galaxies with e1 or e2 outside the bounds of [-1, 1]. After 5 (default) attempts to
+    re-draw these properties, we return the catalog as is and throw a warning.
 
     Parameters
     ----------
@@ -246,17 +279,19 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delt
     """A private function that skips the sanity checks on derived properties. This
     function should only be used when called directly from `generate_galaxy_catalog`.
     Takes the same parameters and returns the same things as the before mentioned function.
+
+    For a more detailed description of each of the parameters, see the documentation of
+    `generate_galaxy_catalog`.
     """
     # Set the source galaxy redshifts
-    galaxy_catalog = draw_sources_redshifts(zsrc, ngals, cluster_z, zsrc_max)
+    galaxy_catalog = _draw_sources_redshifts(zsrc, ngals, cluster_z, zsrc_max)
 
     # Add photo-z errors and pdfs to source galaxy redshifts
     if photoz_sigma_unscaled is not None:
-        galaxy_catalog = compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled, ngals)
-
+        galaxy_catalog = _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled, ngals)
 
     # Draw galaxy positions
-    galaxy_catalog = draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo)
+    galaxy_catalog = _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo)
 
     # Compute the shear on each source galaxy
     gamt = clmm.predict_reduced_tangential_shear(galaxy_catalog['r_mpc'], mdelta=cluster_m,
