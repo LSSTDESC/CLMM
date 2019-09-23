@@ -57,8 +57,7 @@ def draw_sources_redshifts(zsrc, ngals, cluster_z, zsrc_max):
     Parameters
     ----------
     zsrc : float or str
-        Choose the source galaxy distribution to be fixed or according to a predefined
-        distribution.
+        Choose the source galaxy distribution to be fixed or drawn from a predefined distribution.
         float : All sources galaxies at this fixed redshift
         str : Draws individual source gal redshifts from predefined distribution. Options
               are: chang13
@@ -107,6 +106,9 @@ def draw_sources_redshifts(zsrc, ngals, cluster_z, zsrc_max):
 
 def draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo):
     """Draw positions of source galaxies around lens
+
+    We draw physical x and y positions from uniform distribution with -4 and 4 Mpc of the
+    lensing cluster center. We then convert these to RA and DEC using the supplied cosmology
 
     Parameters
     ----------
@@ -163,14 +165,20 @@ def _find_aphysical_galaxies(galaxy_catalog):
     return nbad, badgals
 
 
-def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, mdef, zsrc,
+def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta_SO, zsrc,
                             zsrc_max=7., shapenoise=None, photoz_sigma_unscaled=None, nretry=5):
-    """Generates a mock dataset of sheared background galaxies.
+    r"""Generates a mock dataset of sheared background galaxies.
 
     This function also ensure that it does not return any nonsensical values for derived
     properties. We re-draw all galaxies with e1 or e2 outside the bounds of [-1, 1].
     After 5 (default) attempts to re-draw these properties, we return the catalog
     and throw a warning.
+
+    These nonsensical values for ellipticities may occur when the shapenoise is set very
+    high.
+
+    If `zsrc='chang13`, we draw the source redshift distribution from that defined in
+    Chang et al. 2013.
 
     Parameters
     ----------
@@ -179,17 +187,16 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, mdef,
     cluster_z : float
         Cluster redshift
     cluster_c : float
-        Cluster concentration
+        Cluster concentration in the same mass definition as Delta_SO
     cosmo : dict
         Dictionary of cosmological parameters. Must contain at least, Omega_c, Omega_b,
         and H0
     ngals : float
         Number of galaxies to generate
-    mdef : float
+    Delta_SO : float
         Mass definition (Delta) in terms of rho_mean (= Omega_m*rho_crit)
     zsrc : float or str
-        Choose the source galaxy distribution to be fixed or according to a predefined
-        distribution.
+        Choose the source galaxy distribution to be fixed or drawn from a predefined distribution.
         float : All sources galaxies at this fixed redshift
         str : Draws individual source gal redshifts from predefined distribution. Options
               are: chang13
@@ -212,7 +219,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, mdef,
     Much of this code in this function was adapted from the Dallas group
     """
     params = {'cluster_m' : cluster_m, 'cluster_z' : cluster_z, 'cluster_c' : cluster_c,
-              'cosmo' : cosmo, 'mdef' : mdef, 'zsrc' : zsrc, 'zsrc_max' : zsrc_max,
+              'cosmo' : cosmo, 'Delta_SO' : Delta_SO, 'zsrc' : zsrc, 'zsrc_max' : zsrc_max,
               'shapenoise' : shapenoise, 'photoz_sigma_unscaled' : photoz_sigma_unscaled}
     galaxy_catalog = _generate_galaxy_catalog(ngals=ngals, **params)
 
@@ -234,7 +241,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, mdef,
     return galaxy_catalog
 
 
-def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, mdef, zsrc,
+def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta_SO, zsrc,
                              zsrc_max=7., shapenoise=None, photoz_sigma_unscaled=None):
     """A private function that skips the sanity checks on derived properties. This
     function should only be used when called directly from `generate_galaxy_catalog`.
@@ -255,7 +262,7 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, mdef
     gamt = clmm.predict_reduced_tangential_shear(galaxy_catalog['r_mpc'], mdelta=cluster_m,
                                                  cdelta=cluster_c, z_cluster=cluster_z,
                                                  z_source=galaxy_catalog['z'], cosmo=cosmo,
-                                                 Delta=mdef, halo_profile_parameterization='nfw',
+                                                 Delta=Delta_SO, halo_profile_parameterization='nfw',
                                                  z_src_model='single_plane')
     galaxy_catalog['gammat'] = gamt
 
