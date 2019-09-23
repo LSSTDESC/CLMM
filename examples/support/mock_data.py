@@ -6,14 +6,23 @@ from scipy.interpolate import interp1d
 import clmm
 
 
-def compute_photoz_pdfs(galaxy_catalog, photoz_ref, ngals):
-    """Add photo-z errors and compute photo-z pdfs for each source galaxy
+def compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled, ngals):
+    r"""Add photo-z errors and compute photo-z pdfs for each source galaxy
+
+    We compute the photo-z error at a given redshift using
+
+    ..math::
+        \sigma_{\rm pz} = \sigma_{\rm pz, unscaled}(1+z)
+
+    We then define the photo-z PDF as a Gaussian, centered on the true redshift
+    of the cluster with a width given by :math:`\sigma_{\rm pz}` defined over
+    the redshift range of :math:`z_{\rm true} \pm 0.5`.
 
     Parameters
     ----------
     galaxy_catalog : astropy.table.Table
         Source galaxy catalog
-    photoz_ref : float
+    photoz_sigma_unscaled : float
         Amount of scatter in the photo-zs
     ngals : float
         The number of source galaxies to draw
@@ -23,7 +32,7 @@ def compute_photoz_pdfs(galaxy_catalog, photoz_ref, ngals):
     galaxy_catalog: astropy.table.Table
         Source galaxy catalog now with photoz errors and pdfs
     """
-    galaxy_catalog['pzsigma'] = photoz_ref*(1.+galaxy_catalog['ztrue'])
+    galaxy_catalog['pzsigma'] = photoz_sigma_unscaled*(1.+galaxy_catalog['ztrue'])
     galaxy_catalog['z'] = galaxy_catalog['ztrue'] + \
                           galaxy_catalog['pzsigma']*np.random.standard_normal(ngals)
 
@@ -109,7 +118,7 @@ def draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo):
         The cluster redshift
     cosmo : dict
         Dictionary of cosmological parameters. Must contain at least, Omega_c, Omega_b,
-        h, and H0
+        and H0
 
     Returns
     -------
@@ -155,7 +164,7 @@ def _find_aphysical_galaxies(galaxy_catalog):
 
 
 def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, mdef, zsrc,
-                            zsrc_max=7., shapenoise=None, photoz_ref=None, nretry=5):
+                            zsrc_max=7., shapenoise=None, photoz_sigma_unscaled=None, nretry=5):
     """Generates a mock dataset of sheared background galaxies.
 
     This function also ensure that it does not return any nonsensical values for derived
@@ -173,7 +182,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, mdef,
         Cluster concentration
     cosmo : dict
         Dictionary of cosmological parameters. Must contain at least, Omega_c, Omega_b,
-        h, and H0
+        and H0
     ngals : float
         Number of galaxies to generate
     mdef : float
@@ -188,7 +197,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, mdef,
         If source redshifts are drawn, the maximum source redshift
     shapenoise : float, optional
         If set, applies Gaussian shape noise to the galaxy shapes
-    photoz_ref : float, optional
+    photoz_sigma_unscaled : float, optional
         If set, applies photo-z errors to source redshifts
     nretry : int, optional
         The number of times that we re-draw each galaxy with non-sensical derived properties
@@ -204,7 +213,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, mdef,
     """
     params = {'cluster_m' : cluster_m, 'cluster_z' : cluster_z, 'cluster_c' : cluster_c,
               'cosmo' : cosmo, 'mdef' : mdef, 'zsrc' : zsrc, 'zsrc_max' : zsrc_max,
-              'shapenoise' : shapenoise, 'photoz_ref' : photoz_ref}
+              'shapenoise' : shapenoise, 'photoz_sigma_unscaled' : photoz_sigma_unscaled}
     galaxy_catalog = _generate_galaxy_catalog(ngals=ngals, **params)
 
     # Check for bad galaxies and replace them
@@ -226,7 +235,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, mdef,
 
 
 def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, mdef, zsrc,
-                             zsrc_max=7., shapenoise=None, photoz_ref=None):
+                             zsrc_max=7., shapenoise=None, photoz_sigma_unscaled=None):
     """A private function that skips the sanity checks on derived properties. This
     function should only be used when called directly from `generate_galaxy_catalog`.
     Takes the same parameters and returns the same things as the before mentioned function.
@@ -235,8 +244,8 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, mdef
     galaxy_catalog = draw_sources_redshifts(zsrc, ngals, cluster_z, zsrc_max)
 
     # Add photo-z errors and pdfs to source galaxy redshifts
-    if photoz_ref is not None:
-        galaxy_catalog = compute_photoz_pdfs(galaxy_catalog, photoz_ref, ngals)
+    if photoz_sigma_unscaled is not None:
+        galaxy_catalog = compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled, ngals)
 
 
     # Draw galaxy positions
@@ -261,6 +270,6 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, mdef
 
     # galaxy_catalog['id'] = np.arange(ngals)
 
-    if photoz_ref is not None:
+    if photoz_sigma_unscaled is not None:
         return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z', 'pzbins', 'pzpdf']
     return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z']
