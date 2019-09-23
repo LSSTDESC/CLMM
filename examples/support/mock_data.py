@@ -186,7 +186,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, mdef,
     ngals : float
         Number of galaxies to generate
     mdef : float
-        Mass definition in terms of rho_XXX???
+        Mass definition (Delta) in terms of rho_mean (= Omega_m*rho_crit)
     zsrc : float or str
         Choose the source galaxy distribution to be fixed or according to a predefined
         distribution.
