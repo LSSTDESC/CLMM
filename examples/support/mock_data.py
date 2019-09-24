@@ -3,6 +3,7 @@ import numpy as np
 from astropy.table import Table
 from scipy import integrate
 from scipy.interpolate import interp1d
+from astropy import units
 import clmm
 
 
@@ -238,7 +239,7 @@ def _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo):
     galaxy_catalog : astropy.table.Table
         Source galaxy catalog with positions added
     """
-    Dl = clmm.get_angular_diameter_distance_a(cosmo, 1./(1.+cluster_z))
+    Dl = clmm.get_angular_diameter_distance_a(cosmo, 1./(1.+cluster_z))*units.pc.to(units.Mpc)
     galaxy_catalog['x_mpc'] = np.random.uniform(-4., 4., size=ngals)
     galaxy_catalog['y_mpc'] = np.random.uniform(-4., 4., size=ngals)
     galaxy_catalog['r_mpc'] = np.sqrt(galaxy_catalog['x_mpc']**2 + galaxy_catalog['y_mpc']**2)
