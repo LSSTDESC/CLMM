@@ -295,7 +295,7 @@ def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
 
     return profile_table
 
-
+#123123
 def _compute_radial_averages(distances, measurements, bins):
     """Given a list of distances, measurements and bins, sort into bins
 
@@ -353,7 +353,7 @@ def _compute_radial_averages(distances, measurements, bins):
     counts_profile, _, _ = binned_statistic(distances, measurements, statistic='count', bins=bins)
 
     return r_profile, y_profile, yerr_profile, counts_profile
-
+#123123
 
 #123123 
 def make_bins(rmin, rmax, n_bins=10, log10_bins=False, method='equal'):
