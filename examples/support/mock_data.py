@@ -46,7 +46,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta
     `shapenoise`. If this is set to a float, we apply a Gaussian perturbation to the
     tangential shear with a width of `shapenoise`.
 
-    6. Finally, we compute the ellipticities along the two primary axes of the galaxy
+    6. Finally, we compute the two components of the ellipticity, e1 and e2.
 
     If the shape noise parameter is high, we may draw nonsensical values for ellipticities. We 
     ensure that we does not return any nonsensical values for derived properties. We re-draw
@@ -67,7 +67,11 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta
     ngals : float
         Number of galaxies to generate
     Delta_SO : float
-        Mass definition (Delta) in terms of rho_mean (= Omega_m*rho_crit)
+        Overdensity density contrast used to compute the cluster mass and concentration. The
+        spherical overdensity mass is computed as the mass enclosed within the radius
+        :math:`R_{\Delta{\rm SO}}` where the mean density is :math:`\Delta_{\rm SO}` times
+        the mean density of the Universe at the cluster redshift
+        :math:`M_{\Delta{\rm SO}}=4/3\pi\Delta_{\rm SO}\rho_{m}(z_{\rm lens})R_{\Delta{\rm SO}}^3`
     zsrc : float or str
         Choose the source galaxy distribution to be fixed or drawn from a predefined distribution.
         float : All sources galaxies at this fixed redshift
@@ -76,7 +80,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta
     zsrc_max : float, optional
         If source redshifts are drawn, the maximum source redshift
     shapenoise : float, optional
-        If set, applies Gaussian shape noise to the galaxy shapes
+        If set, applies Gaussian shape noise to the galaxy shapes with a width set by `shapenoise`
     photoz_sigma_unscaled : float, optional
         If set, applies photo-z errors to source redshifts
     nretry : int, optional
@@ -149,8 +153,6 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delt
     galaxy_catalog['posangle'] = np.arctan2(galaxy_catalog['y_mpc'], galaxy_catalog['x_mpc'])
     galaxy_catalog['e1'] = -galaxy_catalog['gammat']*np.cos(2*galaxy_catalog['posangle'])
     galaxy_catalog['e2'] = -galaxy_catalog['gammat']*np.sin(2*galaxy_catalog['posangle'])
-
-    # galaxy_catalog['id'] = np.arange(ngals)
 
     if photoz_sigma_unscaled is not None:
         return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z', 'pzbins', 'pzpdf']
