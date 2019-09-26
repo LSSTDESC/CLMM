@@ -63,8 +63,8 @@ def compute_shear(cluster=None, ra_lens=None, dec_lens=None, ra_source_list=None
         \tan\phi = & \frac{\delta_s - \delta_l}{\left(\alpha_l - \alpha_s\right)\cos(\delta_l)}
 
     The tangential, :math:`g_t`, and cross, :math:`g_x`, shears are calculated using the two
-   shear components :math:`g_1` and :math:`g_2` of the source galaxies, following Eq.7 and Eq.8
-   in Schrabback et al. (2018), arXiv:1611:03866
+    shear components :math:`g_1` and :math:`g_2` of the source galaxies, following Eq.7 and Eq.8
+    in Schrabback et al. (2018), arXiv:1611:03866
 
     .. math::
 
