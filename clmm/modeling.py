@@ -286,7 +286,7 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
 
     Notes
     -----
-    We will need :math:`\gamma_\infty` and :math:`\kappa_\infty` for alternative z_src_models using :math:`\beta_s`
+    We will need :math:`\gamma_\infty` and :math:`\kappa_\infty` for alternative z_src_models using :math:`\beta_s`.
     """
     c = constants.c.to(units.pc/units.s).value
     G = constants.G.to(units.pc**3/units.M_sun/units.s**2).value
