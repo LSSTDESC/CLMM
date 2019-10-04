@@ -258,7 +258,8 @@ def get_angular_diameter_distance_a(cosmo, aexp2, aexp1=1.):
 def get_critical_surface_density(cosmo, z_cluster, z_source):
     r"""Computes the critical surface density
 
-    :math:`\Sigma_{crit} = \frac{c^2}{4\pi G} \frac{D_s}{D_LD_{LS}}`
+    .. math::
+        \Sigma_{crit} = \frac{c^2}{4\pi G} \frac{D_s}{D_LD_{LS}}
 
     Parameters
     ----------
