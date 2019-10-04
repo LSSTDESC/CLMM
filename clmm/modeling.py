@@ -300,9 +300,13 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
                              halo_profile_parameterization='nfw', z_src_model='single_plane'):
     r"""Computes the tangential shear
 
-    :math:`\gamma_t = \frac{\Delta\Sigma}{\Sigma_{crit}} = \frac{\bar{\Sigma}-\Sigma}{\Sigma_{crit}}}`
+    .. math::
+        \gamma_t = \frac{\Delta\Sigma}{\Sigma_{crit}} = \frac{\bar{\Sigma}-\Sigma}{\Sigma_{crit}}
+
     or
-    :math:`\gamma_t = \gamma_\inf \times \Beta_s`
+
+    .. math::
+        \gamma_t = \gamma_\inf \times \beta_s
 
     Parameters
     ----------
