@@ -346,7 +346,7 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
 
     Notes
     -----
-    We will need gamma inf and kappa inf for alternative z_src_models using Beta_s.
+    We will need :math:`\gamma_\infty` and :math:`\kappa_\infty` for alternative z_src_models using :math:`\beta_s`.
     Need to figure out if we want to raise exceptions rather than errors here?
     """
     delta_sigma = predict_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=Delta,
