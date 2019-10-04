@@ -2,7 +2,7 @@
 Functions for theoretical models.  Default is NFW.
 """
 from astropy import constants, cosmology, units
-import cluster_toolkit as ct
+#import cluster_toolkit as ct
 import numpy as np
 
 
@@ -130,7 +130,10 @@ def get_3d_density(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameter
 def predict_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameterization='nfw'):
     r"""Computes the surface mass density
 
-    :math:`\Sigma(R) = \Omega_m \rho_{crit} \int^\inf_{-\inf} dz \Xi_{hm} (\sqrt{R^2+z^2})`, where :math:`\Xi_{hm}` is the halo mass function.
+    .. math::
+        \Sigma(R) = \Omega_m \rho_{crit} \int^\infty_{-\infty} dz \Xi_{hm} (\sqrt{R^2+z^2}),
+    
+    where :math:`\Xi_{hm}` is the halo mass function.
 
     Parameters
     ----------
