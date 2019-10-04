@@ -52,9 +52,23 @@ To do this, follow the following steps from within your local copy of CLMM (fork
 
 NOTE: Code is not complete without unit tests and documentation.
 Please ensure that unit tests (both new and old) all pass and that docs compile successfully.
-To run all of the unit tests, run `pytest` in the root package directory.
-To test the docs, in the root package directory, run `make -C docs/ clean` to delete any existing documents and then `make -C docs/ html` to rebuild the documentation.
-If you do not first run `clean`, you may compile locally but fail in continuous integration.
+To test this, first install the code by running `python setup.py install --user`. To run all of the unit tests, run `pytest` in the root package directory.
+To test the docs, in the root package directory, run `./compile-docs` to delete any existing documents and to rebuild the documentation. You can view the compiled docs by running `open docs/_build/html/index.html`.
+
+
+## Reviewing an open pull request
+
+To review an open pull request submitted by another developer, there are several steps that you should take.
+
+1. For each new or changed file, ensure that the changes are correct, well-documented, and easy to follow. If you notice anything that can be improved, leave an inline comment (click the line of code in the review interface on Github).
+2. For any new or changed code, ensure that there are new tests in the appropriate directory. Try to come up with additional tests that either do or can break the code. If you can think of any such tests, suggest adding them in your review.
+3. Double check any relevant documentation. For any new or changed code, ensure that the documentation is accurate (i.e. references, equations, parameter descriptions).
+4. Next, checkout the branch to a location that you can run `CLMM`. From the top level package directory (the directory that has `setup.py`) install the code via `python setup.py install --user`. Then, run `pytest` to run the full testing suite.
+5. Now that tests are passing, the code likely works (assuming we have sufficient tests!) so we want to finalize the new code. We can do this by running a linter on any new or changed files `pylint {filename}`. This will take a look at the file and identify any style problems. If there are only a couple, feel free to resolve them yourself, otherwise leave a comment in your review that the author should perform this step.
+6. We can now check that the documentation looks as it should. We provide a convenient bash script to compile the documentation. To completely rebuild the documentation, AFTER INSTALLING (if you made any changes, even to docstrings), run `./compile-docs`. This will delete any compiled documentation that may already exist and rebuild it. If this runs without error, you can then take a look by `open docs/_build/html/index.html`. Make sure any docstrings that were changed compile correctly.
+7. Finally, install (`python setup.py install --user`), run tests (`pytest`), and compile documentation (`./compile-docs`) one file time and if everything passes, accept the review!
+
+NOTE: We have had several branches that have exploded in commit number. If you are merging a branch and it has more than ~20 commits, strongly recommend using the "Squash and Merge" option for merging a branch.
 
 ## Additional resources
 
