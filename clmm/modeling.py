@@ -360,7 +360,10 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delt
 
     .. math::
         \kappa = \frac{\Sigma}{\Sigma_{crit}}
-        \;\;or\;\;
+
+    or
+
+    .. math::
         \kappa = \kappa_\inf \times \beta_s
 
     Parameters
