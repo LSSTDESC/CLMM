@@ -179,7 +179,13 @@ def predict_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profi
 def predict_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameterization='nfw'):
     r"""Computes the excess surface density
 
-        `\Delta\Sigma(R) = \bar{\Sigma}(<R)-\Sigma(R)`, where :math:`\bar{\Sigma}(<R) = \frac{2}{R^2} \int^R_0 dR' R' \Sigma(R')`
+    .. math::
+        \Delta\Sigma(R) = \bar{\Sigma}(<R)-\Sigma(R),
+
+    where
+
+    .. math::
+        \bar{\Sigma}(<R) = \frac{2}{R^2} \int^R_0 dR' R' \Sigma(R')
 
     Parameters
     ----------
