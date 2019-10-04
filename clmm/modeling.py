@@ -84,7 +84,7 @@ def get_3d_density(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameter
     Parameters
     ----------
     r3d : array_like, float
-        The radial positions in :math:`Mpc/h`.
+        The radial positions in :math:`M\!pc/h`.
     mdelta : float
         Galaxy cluster mass in :math:`M_\odot/h`.
     cdelta : float
@@ -138,7 +138,7 @@ def predict_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profi
     Parameters
     ----------
     r_proj : array_like
-        The projected radial positions in :math:`Mpc/h`.
+        The projected radial positions in :math:`M\!pc/h`.
     mdelta : float
         Galaxy cluster mass in :math:`M_\odot/h`.
     cdelta : float
@@ -190,7 +190,7 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, hal
     Parameters
     ----------
     r_proj : array_like
-        The projected radial positions in :math:`Mpc/h`.
+        The projected radial positions in :math:`M\!pc/h`.
     mdelta : float
         Galaxy cluster mass in :math:`M_\odot/h`.
     cdelta : float
@@ -317,7 +317,7 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     Parameters
     ----------
     r_proj : array_like
-        The projected radial positions in :math:`Mpc/h`.
+        The projected radial positions in :math:`M\!pc/h`.
     mdelta : float
         Galaxy cluster mass in :math:`M_\odot/h`.
     cdelta : float
@@ -379,7 +379,7 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delt
     Parameters
     ----------
     r_proj : array_like
-        The projected radial positions in :math:`Mpc/h`.
+        The projected radial positions in :math:`M\!pc/h`.
     mdelta : float
         Galaxy cluster mass in :math:`M_\odot/h`.
     cdelta : float
@@ -432,7 +432,7 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
     Parameters
     ----------
     r_proj : array_like
-        The projected radial positions in :math:`Mpc/h`.
+        The projected radial positions in :math:`M\!pc/h`.
     mdelta : float
         Galaxy cluster mass in :math:`M_\odot/h`.
     cdelta : float
