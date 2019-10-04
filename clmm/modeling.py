@@ -75,7 +75,11 @@ def _get_z_from_a(a):
 
 
 def get_3d_density(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameterization='nfw'):
-    r"""Retrieve the 3d density :math:`\rho(r)`
+    r"""Retrieve the 3d density :math:`\rho(r)`.
+
+    Profiles implemented so far are:
+
+        `nfw`: :math:`\rho(r) = \frac{\rho_0}{c/(r/R_{vir})(1+c/(r/R_{vir}))^2}` [insert citation here]
 
     Parameters
     ----------
@@ -91,13 +95,17 @@ def get_3d_density(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameter
         Mass overdensity definition; defaults to 200.
     halo_profile_parameterization : str, optional
         Profile model parameterization, with the following supported options:
-        `nfw` (default) - :math:`\rho(r) = \frac{\rho_0}{c/(r/R_{vir})(1+c/(r/R_{vir}))^2}` [insert citation here]
+
+            `nfw` (default)
     z_src_model : str, optional
         Source redshift model, with the following supported options:
-        `single_plane` (default) - all sources at one redshift
-        `known_z_src` - known individual source galaxy redshifts, e.g. discrete case
-        `z_src_distribution` - known source redshift distribution, e.g. continuous case
-        requiring integration.
+
+            `single_plane` (default) - all sources at one redshift
+
+            `known_z_src` - known individual source galaxy redshifts, e.g. discrete case
+
+            `z_src_distribution` - known source redshift distribution, e.g. continuous case
+            requiring integration.
 
     Returns
     -------
