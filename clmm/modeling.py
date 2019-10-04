@@ -427,7 +427,7 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delt
 
 def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delta=200,
                                      halo_profile_parameterization='nfw', z_src_model='single_plane'):
-    r"""Computes the reduced tangential shear :math:`g_t = \frac{\\gamma_t}{1-\\kappa}`.
+    r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
 
     Parameters
     ----------
