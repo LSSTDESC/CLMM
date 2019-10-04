@@ -312,7 +312,7 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     or
 
     .. math::
-        \gamma_t = \gamma_\inf \times \beta_s
+        \gamma_t = \gamma_\infty \times \beta_s
 
     Parameters
     ----------
