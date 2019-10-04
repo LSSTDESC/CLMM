@@ -80,9 +80,9 @@ def get_3d_density(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameter
     Parameters
     ----------
     r3d : array_like, float
-        The radial positions in Mpc/h.
+        The radial positions in :math:`Mpc/h`.
     mdelta : float
-        Galaxy cluster mass in Msun/h.
+        Galaxy cluster mass in :math:`M_\odot/h`.
     cdelta : float
         Galaxy cluster NFW concentration.
     cosmo : pyccl.core.Cosmology object
@@ -127,9 +127,9 @@ def predict_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profi
     Parameters
     ----------
     r_proj : array_like
-        The projected radial positions in Mpc/h.
+        The projected radial positions in :math:`Mpc/h`.
     mdelta : float
-        Galaxy cluster mass in Msun/h.
+        Galaxy cluster mass in :math:`M_\odot/h`.
     cdelta : float
         Galaxy cluster NFW concentration.
     cosmo : pyccl.core.Cosmology object
@@ -148,7 +148,7 @@ def predict_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profi
     Returns
     -------
     sigma : array_like, float
-        Surface density, Sigma in units of [:math:`h M_odot/pc^2`]
+        Surface density, Sigma in units of [:math:`h M_\odot/pc^2`]
 
     Notes
     -----
@@ -168,14 +168,14 @@ def predict_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profi
 def predict_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameterization='nfw'):
     r"""Computes the excess surface density
 
-    :math:`\Delta\Sigma(R) = \bar{\Sigma}(<R)-\Sigma(R)`, where :math:`\bar{\Sigma}(<R) = \frac{2}{R^2} \int^R_0 dR' R' \Sigma(R')`
+        `\Delta\Sigma(R) = \bar{\Sigma}(<R)-\Sigma(R)`, where :math:`\bar{\Sigma}(<R) = \frac{2}{R^2} \int^R_0 dR' R' \Sigma(R')`
 
     Parameters
     ----------
     r_proj : array_like
-        The projected radial positions in Mpc/h.
+        The projected radial positions in :math:`Mpc/h`.
     mdelta : float
-        Galaxy cluster mass in Msun/h.
+        Galaxy cluster mass in :math:`M_\odot/h`.
     cdelta : float
         Galaxy cluster NFW concentration.
     cosmo : pyccl.core.Cosmology object
@@ -194,7 +194,7 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, hal
     Returns
     -------
     deltasigma : array_like, float
-        Excess surface density, DeltaSigma in units of [:math:`h M_odot/pc^2`].
+        Excess surface density, DeltaSigma in units of [:math:`h M_\odot/pc^2`].
     """
     cosmo = cclify_astropy_cosmo(cosmo)
     Omega_m = cosmo['Omega_c'] + cosmo['Omega_b']
@@ -264,7 +264,7 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     Returns
     -------
     sigmacrit : float
-        Cosmology-dependent critical surface density in units of h Msun/pc^2
+        Cosmology-dependent critical surface density in units of :math:`h M_\odot/pc^2`
 
     Notes
     -----
@@ -295,9 +295,9 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     Parameters
     ----------
     r_proj : array_like
-        The projected radial positions in Mpc/h.
+        The projected radial positions in :math:`Mpc/h`.
     mdelta : float
-        Galaxy cluster mass in Msun/h.
+        Galaxy cluster mass in :math:`M_\odot/h`.
     cdelta : float
         Galaxy cluster NFW concentration.
     z_cluster : float
@@ -344,14 +344,19 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
 
 def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delta=200,
                         halo_profile_parameterization='nfw', z_src_model='single_plane'):
-    r"""Computes the mass convergence :math:`\kappa = \frac{\Sigma}{\Sigma_{crit}}` or :math:`\kappa = \kappa_\inf \times \Beta_s`
+    r"""Computes the mass convergence
+
+    .. math::
+        \kappa = \frac{\Sigma}{\Sigma_{crit}}
+        \;\;or\;\;
+        \kappa = \kappa_\inf \times \beta_s
 
     Parameters
     ----------
     r_proj : array_like
-        The projected radial positions in Mpc/h.
+        The projected radial positions in :math:`Mpc/h`.
     mdelta : float
-        Galaxy cluster mass in Msun/h.
+        Galaxy cluster mass in :math:`M_\odot/h`.
     cdelta : float
         Galaxy cluster NFW concentration.
     z_cluster : float
@@ -402,9 +407,9 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
     Parameters
     ----------
     r_proj : array_like
-        The projected radial positions in Mpc/h.
+        The projected radial positions in :math:`Mpc/h`.
     mdelta : float
-        Galaxy cluster mass in Msun/h.
+        Galaxy cluster mass in :math:`M_\odot/h`.
     cdelta : float
         Galaxy cluster NFW concentration.
     z_cluster : float
