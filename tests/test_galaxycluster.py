@@ -34,14 +34,18 @@ def test_integrity(): # Converge on name
     # Test that inputs are the correct type
     testing.assert_raises(TypeError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=34., z=0.3, galcat=1)
     testing.assert_raises(TypeError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=34., z=0.3, galcat=[])
-    testing.assert_raises(TypeError, clmm.GalaxyCluster, unique_id=1, ra='161.3', dec=34., z=0.3, galcat=Table())
-    testing.assert_raises(TypeError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec='34.', z=0.3, galcat=Table())
-    testing.assert_raises(TypeError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=34., z='0.3', galcat=Table())
+    testing.assert_raises(TypeError, clmm.GalaxyCluster, unique_id=1, ra=None, dec=34., z=0.3, galcat=Table())
+    testing.assert_raises(TypeError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=None, z=0.3, galcat=Table())
+    testing.assert_raises(TypeError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=34., z=None, galcat=Table())
 
     # Test that id can support numbers and strings
     assert isinstance(clmm.GalaxyCluster(unique_id=1, ra=161.3, dec=34., z=0.3, galcat=Table()).unique_id, str)
     # assert clmm.GalaxyCluster(unique_id=1.0, ra=161.3, dec=34., z=0.3, galcat=Table()).unique_id == '1'
     assert isinstance(clmm.GalaxyCluster(unique_id='1', ra=161.3, dec=34., z=0.3, galcat=Table()).unique_id, str)
+
+    # Test that ra/dec/z can be converted from int/str to float if needed
+    assert clmm.GalaxyCluster('1', '161.', '55.', '.3', Table())
+    assert clmm.GalaxyCluster('1', 161, 55, 1, Table())
 
 def test_save_load():
     cl1 = clmm.GalaxyCluster(unique_id='1', ra=161.3, dec=34., z=0.3, galcat=Table())
