@@ -374,7 +374,7 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delt
     or
 
     .. math::
-        \kappa = \kappa_\\infty \times \beta_s
+        \kappa = \kappa_\infty \times \beta_s
 
     Parameters
     ----------
