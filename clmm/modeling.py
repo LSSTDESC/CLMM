@@ -79,7 +79,7 @@ def get_3d_density(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameter
 
     Profiles implemented so far are:
 
-        `nfw`: :math:`\rho(r) = \frac{\rho_0}{c/(r/R_{vir})(1+c/(r/R_{vir}))^2}` [insert citation here]
+        `nfw`: :math:`\rho(r) = \frac{\rho_0}{\frac{c}{(r/R_{vir})}\left(1+\frac{c}{(r/R_{vir})}\right)^2}` [insert citation here]
 
     Parameters
     ----------
