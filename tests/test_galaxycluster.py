@@ -52,7 +52,7 @@ def test_save_load():
     cl1.save('testcluster.pkl')
     cl2 = clmm.load_cluster('testcluster.pkl')
     os.system('rm testcluster.pkl')
-    
+
     testing.assert_equal(cl2.unique_id, cl1.unique_id)
     testing.assert_equal(cl2.ra, cl1.ra)
     testing.assert_equal(cl2.dec, cl1.dec)
@@ -83,4 +83,3 @@ if __name__ == "__main__":
     test_initialization()
     test_integrity()
     test_print_cl()
-
