@@ -75,14 +75,18 @@ def _get_z_from_a(a):
 
 
 def get_3d_density(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameterization='nfw'):
-    r"""Retrieve the 3d density $\rho(r)$
+    r"""Retrieve the 3d density :math:`\rho(r)`.
+
+    Profiles implemented so far are:
+
+        `nfw`: :math:`\rho(r) = \frac{\rho_0}{\frac{c}{(r/R_{vir})}\left(1+\frac{c}{(r/R_{vir})}\right)^2}` [insert citation here]
 
     Parameters
     ----------
     r3d : array_like, float
-        The radial positions in Mpc/h.
+        The radial positions in :math:`M\!pc/h`.
     mdelta : float
-        Galaxy cluster mass in Msun/h.
+        Galaxy cluster mass in :math:`M_\odot/h`.
     cdelta : float
         Galaxy cluster NFW concentration.
     cosmo : pyccl.core.Cosmology object
@@ -91,13 +95,17 @@ def get_3d_density(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameter
         Mass overdensity definition; defaults to 200.
     halo_profile_parameterization : str, optional
         Profile model parameterization, with the following supported options:
-        `nfw` (default) - $\rho(r) = \frac{\rho_0}{c/(r/R_{vir})(1+c/(r/R_{vir}))^2}$ [insert citation here]
+
+            `nfw` (default)
     z_src_model : str, optional
         Source redshift model, with the following supported options:
-        `single_plane` (default) - all sources at one redshift
-        `known_z_src` - known individual source galaxy redshifts, e.g. discrete case
-        `z_src_distribution` - known source redshift distribution, e.g. continuous case
-        requiring integration.
+
+            `single_plane` (default) - all sources at one redshift
+
+            `known_z_src` - known individual source galaxy redshifts, e.g. discrete case
+
+            `z_src_distribution` - known source redshift distribution, e.g. continuous case
+            requiring integration.
 
     Returns
     -------
@@ -122,14 +130,17 @@ def get_3d_density(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameter
 def predict_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameterization='nfw'):
     r"""Computes the surface mass density
 
-    $\Sigma(R) = \Omega_m \rho_{crit} \int^\inf_{-\inf} dz \Xi_{hm} (\sqrt{R^2+z^2})$, where $\Xi_{hm}$ is the halo mass function.
+    .. math::
+        \Sigma(R) = \Omega_m \rho_{crit} \int^\infty_{-\infty} dz \Xi_{hm} (\sqrt{R^2+z^2}),
+    
+    where :math:`\Xi_{hm}` is the halo mass function.
 
     Parameters
     ----------
     r_proj : array_like
-        The projected radial positions in Mpc/h.
+        The projected radial positions in :math:`M\!pc/h`.
     mdelta : float
-        Galaxy cluster mass in Msun/h.
+        Galaxy cluster mass in :math:`M_\odot/h`.
     cdelta : float
         Galaxy cluster NFW concentration.
     cosmo : pyccl.core.Cosmology object
@@ -148,7 +159,7 @@ def predict_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profi
     Returns
     -------
     sigma : array_like, float
-        Surface density, Sigma in units of [h Msun/$pc^2$]
+        Surface density, Sigma in units of [:math:`h M_\odot/pc^2`]
 
     Notes
     -----
@@ -168,14 +179,20 @@ def predict_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profi
 def predict_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameterization='nfw'):
     r"""Computes the excess surface density
 
-    $\Delta\Sigma(R) = \bar{\Sigma}(<R)-\Sigma(R)$, where $\bar{\Sigma}(<R) = \frac{2}{R^2} \int^R_0 dR' R' \Sigma(R')$
+    .. math::
+        \Delta\Sigma(R) = \bar{\Sigma}(<R)-\Sigma(R),
+
+    where
+
+    .. math::
+        \bar{\Sigma}(<R) = \frac{2}{R^2} \int^R_0 dR' R' \Sigma(R')
 
     Parameters
     ----------
     r_proj : array_like
-        The projected radial positions in Mpc/h.
+        The projected radial positions in :math:`M\!pc/h`.
     mdelta : float
-        Galaxy cluster mass in Msun/h.
+        Galaxy cluster mass in :math:`M_\odot/h`.
     cdelta : float
         Galaxy cluster NFW concentration.
     cosmo : pyccl.core.Cosmology object
@@ -194,7 +211,7 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, hal
     Returns
     -------
     deltasigma : array_like, float
-        Excess surface density, DeltaSigma in units of [h Msun/$pc^2$].
+        Excess surface density, DeltaSigma in units of [:math:`h M_\odot/pc^2`].
     """
     cosmo = cclify_astropy_cosmo(cosmo)
     Omega_m = cosmo['Omega_c'] + cosmo['Omega_b']
@@ -250,7 +267,8 @@ def get_angular_diameter_distance_a(cosmo, aexp2, aexp1=1.):
 def get_critical_surface_density(cosmo, z_cluster, z_source):
     r"""Computes the critical surface density
 
-    $\Sigma_{crit} = \frac{c^2}{4\pi G} \frac{D_s}{D_LD_{LS}}$
+    .. math::
+        \Sigma_{crit} = \frac{c^2}{4\pi G} \frac{D_s}{D_LD_{LS}}
 
     Parameters
     ----------
@@ -264,11 +282,11 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     Returns
     -------
     sigmacrit : float
-        Cosmology-dependent critical surface density in units of h Msun/pc^2
+        Cosmology-dependent critical surface density in units of :math:`h M_\odot/pc^2`
 
     Notes
     -----
-    We will need gamma inf and kappa inf for alternative z_src_models using Beta_s
+    We will need :math:`\gamma_\infty` and :math:`\kappa_\infty` for alternative z_src_models using :math:`\beta_s`.
     """
     c = constants.c.to(units.pc/units.s).value
     G = constants.G.to(units.pc**3/units.M_sun/units.s**2).value
@@ -288,16 +306,20 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
                              halo_profile_parameterization='nfw', z_src_model='single_plane'):
     r"""Computes the tangential shear
 
-    $\gamma_t = \frac{\Delta\Sigma}{\Sigma_{crit}} = \frac{\bar{\Sigma}-\Sigma}{\Sigma_{crit}}}$
+    .. math::
+        \gamma_t = \frac{\Delta\Sigma}{\Sigma_{crit}} = \frac{\bar{\Sigma}-\Sigma}{\Sigma_{crit}}
+
     or
-    $\gamma_t = \gamma_\inf \times \Beta_s$
+
+    .. math::
+        \gamma_t = \gamma_\infty \times \beta_s
 
     Parameters
     ----------
     r_proj : array_like
-        The projected radial positions in Mpc/h.
+        The projected radial positions in :math:`M\!pc/h`.
     mdelta : float
-        Galaxy cluster mass in Msun/h.
+        Galaxy cluster mass in :math:`M_\odot/h`.
     cdelta : float
         Galaxy cluster NFW concentration.
     z_cluster : float
@@ -324,7 +346,7 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
 
     Notes
     -----
-    We will need gamma inf and kappa inf for alternative z_src_models using Beta_s.
+    We will need :math:`\gamma_\infty` and :math:`\kappa_\infty` for alternative z_src_models using :math:`\beta_s`.
     Need to figure out if we want to raise exceptions rather than errors here?
     """
     delta_sigma = predict_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=Delta,
@@ -344,14 +366,22 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
 
 def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delta=200,
                         halo_profile_parameterization='nfw', z_src_model='single_plane'):
-    r"""Computes the mass convergence $\kappa = \frac{\Sigma}{\Sigma_{crit}}$ or $\kappa = \kappa_\inf \times \Beta_s$
+    r"""Computes the mass convergence
+
+    .. math::
+        \kappa = \frac{\Sigma}{\Sigma_{crit}}
+
+    or
+
+    .. math::
+        \kappa = \kappa_\infty \times \beta_s
 
     Parameters
     ----------
     r_proj : array_like
-        The projected radial positions in Mpc/h.
+        The projected radial positions in :math:`M\!pc/h`.
     mdelta : float
-        Galaxy cluster mass in Msun/h.
+        Galaxy cluster mass in :math:`M_\odot/h`.
     cdelta : float
         Galaxy cluster NFW concentration.
     z_cluster : float
@@ -397,14 +427,14 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delt
 
 def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delta=200,
                                      halo_profile_parameterization='nfw', z_src_model='single_plane'):
-    r"""Computes the reduced tangential shear $g_t = \frac{\\gamma_t}{1-\\kappa}$.
+    r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
 
     Parameters
     ----------
     r_proj : array_like
-        The projected radial positions in Mpc/h.
+        The projected radial positions in :math:`M\!pc/h`.
     mdelta : float
-        Galaxy cluster mass in Msun/h.
+        Galaxy cluster mass in :math:`M_\odot/h`.
     cdelta : float
         Galaxy cluster NFW concentration.
     z_cluster : float
