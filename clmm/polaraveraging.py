@@ -277,16 +277,13 @@ def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
 
 #123123
     # Compute the binned average shears and associated errors
-    r_avg, gt_avg, gt_std, gt_counts = _compute_radial_averages(source_seps,
+    r_avg, gt_avg, gt_err, gt_counts = _compute_radial_averages(source_seps,
                                                                 cluster.galcat['gt'].data,
-                                                                bins=bins)
-    r_avg, gx_avg, gx_std, gx_counts = _compute_radial_averages(source_seps,
+                                                                bins=bins, error_model='std/n')
+    r_avg, gx_avg, gx_err, gx_counts = _compute_radial_averages(source_seps,
                                                                 cluster.galcat['gx'].data,
-                                                                bins=bins)
+                                                                bins=bins, error_model='std/n')
 #123123
-    gt_err = gt_std / gt_counts
-    gx_err = gx_std / gx_counts
-    
     profile_table = Table([bins[:-1], r_avg, bins[1:], gt_avg, gt_err, gx_avg, gx_err],
                           names=('radius_min', 'radius', 'radius_max', 'gt', 'gt_err',
                                  'gx', 'gx_err'))
@@ -298,7 +295,7 @@ def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
     return profile_table
 
 #123123
-def _compute_radial_averages(distances, measurements, bins):
+def _compute_radial_averages(distances, measurements, bins, error_model='std/n'):
     """Given a list of distances, measurements and bins, sort into bins
 
     Parameters
@@ -309,6 +306,10 @@ def _compute_radial_averages(distances, measurements, bins):
         Measurements corresponding to each distance
     bins: array_like
         Bin edges to sort distance
+    error_model: str, optional
+        Error model to use for y uncertainties.
+        std/n - Standard Deviation/Counts (Default)
+        std - Standard deviation
 
     Returns
     -------
@@ -319,40 +320,15 @@ def _compute_radial_averages(distances, measurements, bins):
     yerr_profile: array_like
         Standard deviation of measurements in distance bin
     """
-    # if not isinstance(distance, (np.ndarray)):
-    #     raise TypeError("Distances must be an array")
-    # if not isinstance(measurements, (np.ndarray)):
-    #     raise TypeError("Measurements must be an array")
-    # if not isinstance(bins, (np.ndarray)):
-    #     raise TypeError("Bins must be an array")
-    # if len(radius) != len(g):
-    #     raise TypeError("Must have a measurement at each distance!")
-
-    # nbins = len(bins)-1
-    # r_profile = np.zeros(nbins)
-    # y_profile = np.zeros(nbins)
-    # yerr_profile = np.zeros(nbins)
-
-    # if np.amax(distance) > np.amax(bins):
-    #     warnings.warn("Maximum distance is not within range of bins")
-    # if np.amin(distance) < np.amin(bins):
-    #     warnings.warn("Minimum distance is not within the range of bins")
-
-    # for i in range(nbins):
-    #     index = np.where((radius >= bins[i]) & (radius < bins[i+1]))[0]
-    #     if len(index) == 0:
-    #         r_profile[i] = np.nan
-    #         y_profile[i] = np.nan
-    #         yerr_profile[i] = np.nan
-    #     else:
-    #         r_profile[i] = np.average(distances[index])
-    #         y_profile[i] = np.average(measurements[index])
-    #         yerr_profile[i] = np.std(measurements[index])/np.sqrt(float(len(index)))
-    
     r_profile, _, _ = binned_statistic(distances, distances, statistic='mean', bins=bins)
     y_profile, _, _ = binned_statistic(distances, measurements, statistic='mean', bins=bins)
-    yerr_profile, _, _ = binned_statistic(distances, measurements, statistic='std', bins=bins)
     counts_profile, _, _ = binned_statistic(distances, measurements, statistic='count', bins=bins)
+
+    if error_model is 'std':
+        yerr_profile, _, _ = binned_statistic(distances, measurements, statistic='std', bins=bins)
+    elif error_model == 'std/n':
+        yerr_profile, _, _ = binned_statistic(distances, measurements, statistic='std', bins=bins)
+        yerr_profile = yerr_profile/counts_profile
 
     return r_profile, y_profile, yerr_profile, counts_profile
 #123123
