@@ -51,8 +51,8 @@ def compute_shear(cluster=None, ra_lens=None, dec_lens=None, ra_source_list=None
         cluster.compute_shear()
 
     The angular separation between the source and the lens, :math:`\theta`, and the azimuthal
-    position of the source relative to the lens, :math:`\phi`, are computed within the function and the
-    angular separation is returned.
+    position of the source relative to the lens, :math:`\phi`, are computed within the function
+    and the angular separation is returned.
 
     In the flat sky approximation, these angles are calculated using
 
@@ -253,8 +253,8 @@ def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
     -------
     profile : astropy.table.Table
         Output table containing the radius grid points, the tangential and cross shear profiles
-        on that grid, and the errors in the two shear profiles. The errors are defined as the standard errors
-        in each bin.
+        on that grid, and the errors in the two shear profiles. The errors are defined as the
+        standard errors in each bin.
     """
     if not all([t_ in cluster.galcat.columns for t_ in ('gt', 'gx', 'theta')]):
         raise TypeError('Shear information is missing in galaxy catalog must have tangential\
@@ -277,10 +277,12 @@ def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
 
 #123123
     # Compute the binned average shears and associated errors
-    r_avg, gt_avg, gt_std, gt_counts = _compute_radial_averages(source_seps, cluster.galcat['gt'].data,
-                                                     bins=bins)
-    r_avg, gx_avg, gx_std, gx_counts = _compute_radial_averages(source_seps, cluster.galcat['gx'].data,
-                                                    bins=bins)
+    r_avg, gt_avg, gt_std, gt_counts = _compute_radial_averages(source_seps,
+                                                                cluster.galcat['gt'].data,
+                                                                bins=bins)
+    r_avg, gx_avg, gx_std, gx_counts = _compute_radial_averages(source_seps,
+                                                                cluster.galcat['gx'].data,
+                                                                bins=bins)
 #123123
     gt_err = gt_std / gt_counts
     gx_err = gx_std / gx_counts
@@ -357,24 +359,26 @@ def _compute_radial_averages(distances, measurements, bins):
 
 #123123 
 def make_bins(rmin, rmax, n_bins=10, log10_bins=False, method='equal'):
-    """Define the bins edges corresponding to the binning of data using user-defined method and parameters.
-     The binning method currently supported returns equaly sized bins. 
+    """Define the bins edges corresponding to the binning of data using user-defined method and
+    parameters. 
+    
+    The binning method currently supported returns equaly sized bins. 
 
-     Parameters
-     ----------
-     rmin, rmax,: float
-         minimum and maximum bin edges wanted (any units).
-     n_bins: float
-         number of bins you want to create, default to 10.
-     log10_bins: bool
-         set to 'True' for binning in log space of base 10, default to False, 
-     method : str
-         binning method used, 'equal' is currently the only supported option.
+    Parameters
+    ----------
+    rmin, rmax,: float
+        minimum and maximum bin edges wanted (any units).
+    n_bins: float
+        number of bins you want to create, default to 10.
+    log10_bins: bool
+        set to 'True' for binning in log space of base 10, default to False, 
+    method : str
+        binning method used, 'equal' is currently the only supported option.
 
-     Returns
-     -------
-     binedges: array_like, float
-         n_bins+1 dimensional array that defines bin edges
+    Returns
+    -------
+    binedges: array_like, float
+        n_bins+1 dimensional array that defines bin edges
     """
     if (rmax < rmin):
         raise ValueError("rmax should be larger than rmin")
@@ -450,64 +454,7 @@ def _theta_units_conversion(source_seps, input_units, output_units, z_cl=None, c
     else:
         return source_seps.to(units_bank[output_units]).value
 #123123 
-    
-def plot_profiles(cluster, r_units=None):
-    """Plot shear profiles for validation
 
-    Parameters
-    ----------
-    cluster: GalaxyCluster object
-        GalaxyCluster object with galaxies
-    """
-    prof = cluster.profile
-    if r_units is not None:
-        if cluster.profile['radius'].unit is not None:
-            warning.warn(('r_units provided (%s) differ from r_units in galcat table (%s) using\
-                            user defined')%(r_units, cluster.profile['radius'].unit))
-        else:
-            r_units = cluster.profile['radius'].unit
-    return _plot_profiles(*[cluster.profile[c] for c in ('radius', 'gt', 'gt_err', 'gx', 'gx_err')],
-                          r_unit=cluster.profile_radius_unit)
-
-
-def _plot_profiles(r, gt, gterr, gx=None, gxerr=None, r_unit=""):
-    """Plot shear profiles for validation
-
-    Parameters
-    ----------
-    r: array_like, float
-        radius
-    gt: array_like, float
-        tangential shear
-    gterr: array_like, float
-        error on tangential shear
-    gx: array_like, float
-        cross shear
-    gxerr: array_like, float
-        error on cross shear
-    r_unit: string
-	unit of radius
-
-    """
-    fig, ax = plt.subplots()
-    ax.plot(r, gt, 'bo-', label="tangential shear")
-    ax.errorbar(r, gt, gterr, label=None)
-
-    try:
-        plt.plot(r, gx, 'ro-', label="cross shear")
-        plt.errorbar(r, gx, gxerr, label=None)
-    except:
-        pass
-
-    ax.legend()
-    if r_unit is not None:
-        ax.set_xlabel("r [%s]"%r_unit)
-    else:
-        ax.set_xlabel("r")
-
-    ax.set_ylabel('$\\gamma$')
-
-    return(fig, ax)
 
 # Monkey patch functions onto Galaxy Cluster object
 from .galaxycluster import GalaxyCluster
