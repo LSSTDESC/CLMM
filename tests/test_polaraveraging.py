@@ -7,22 +7,8 @@ from astropy.table import Table
 import os
 import pytest
 
-rtol = 1.e-6
 
-# def test_make_bins():
-#     testing.assert_equal(len( pa.make_bins(1,10,9,False)),10 )
-#     testing.assert_allclose( pa.make_bins(1,10,9,False) , np.arange(1.,11.) )
-#     testing.assert_allclose( pa.make_bins(1,10000,4,True) ,10.**(np.arange(5)) )
-#     
-#     testing.assert_raises(TypeError, pa.make_bins, rmin='glue', rmax=10, n_bins=9, log_bins=False)
-#     testing.assert_raises(TypeError, pa.make_bins, rmin=1, rmax='glue', n_bins=9, log_bins=False)
-#     testing.assert_raises(TypeError, pa.make_bins, rmin=1, rmax=10, n_bins='glue', log_bins=False)
-#     testing.assert_raises(TypeError, pa.make_bins, rmin=1, rmax=10, n_bins=9, log_bins='glue')
-#
-#     testing.assert_raises(ValueError, pa.make_bins, rmin=1, rmax=10, n_bins=-4, log_bins=False)
-#     testing.assert_raises(ValueError, pa.make_bins, rmin=1, rmax=-10, n_bins=9, log_bins=False)
-#     testing.assert_raises(ValueError, pa.make_bins, rmin=1, rmax=10, n_bins=0, log_bins=False)
-#     testing.assert_raises(TypeError, pa.make_bins, rmin=1, rmax=10, n_bins=9.9, log_bins=False)
+rtol = 1.e-6
 
 
 def test_compute_cross_shear():
@@ -71,43 +57,6 @@ def test_compute_tangential_shear():
     testing.assert_almost_equal(pa._compute_tangential_shear(0., 0., 0.3), 0.)
 
     
-def test_compute_radial_averages():
-    #testing input types
-    testing.assert_raises(TypeError, pa._compute_radial_averages, radius="glue", g=10,
-                          bins=[np.arange(1.,16.)])
-    testing.assert_raises(TypeError, pa._compute_radial_averages, radius=np.arange(1.,10.),
-                          g="glue", bins=[np.arange(1.,16.)])  
-    testing.assert_raises(TypeError, pa._compute_radial_averages, radius=np.arange(1.,10.),
-                          g=np.arange(1.,10.), bins='glue') 
-
-    #want radius and g to have same number of entries
-    testing.assert_raises(TypeError, pa._compute_radial_averages, radius=np.arange(1.,10.),
-                          g=np.arange(1.,7.), bins=[np.arange(1.,16.)])
-
-    #want binning to encompass entire radial range
-    # testing.assert_raises(UserWarning, pa._compute_radial_averages, radius=np.arange(1.,10.),
-    #                       g=np.arange(1.,10.), bins=[1,6,7])
-    # testing.assert_raises(UserWarning, pa._compute_radial_averages, radius=np.arange(1.,6.),
-    #                       g=np.arange(1.,6.), bins=[5,6,7])
-
-    # Test that that we get the expected outputs
-    bins = [0.5, 1.0]
-    dists = np.hstack([.7*np.ones(5), .8*np.ones(5)])
-    vals = np.arange(1, 11, 1)
-    rtest, ytest, yerr_std, countstest = pa._compute_radial_averages(dists, vals, bins,
-                                                                     error_model='std')
-    _, _, yerr_stdn, _= pa._compute_radial_averages(dists, vals, bins, error_model='std/n')
-    testing.assert_allclose(rtest, np.mean(dists), rtol)
-    testing.assert_allclose(ytest, np.mean(vals), rtol)
-    testing.assert_allclose(yerr_std, np.std(vals), rtol)
-    testing.assert_allclose(countstest, len(vals), rtol)
-    testing.assert_allclose(yerr_stdn, np.std(vals)/countstest, rtol)
-
-
-
-
-    
-
 def test_compute_lensing_angles_flatsky():
     ra_l, dec_l = 161., 65.
     ra_s, dec_s = np.array([-355., 355.]), np.array([-85., 85.])
