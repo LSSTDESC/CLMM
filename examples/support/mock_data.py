@@ -125,20 +125,20 @@ class MockData():
             P_z = vectorization_integrated_pzfxn(z_domain,pzfxn)
         
             uniform_deviate = np.random.uniform(P_z.min(),P_z.max(),ngals)
-            z_best = interp1d(P_z,z_domain,kind='linear')(uniform_deviate)           
+            z_true = interp1d(P_z,z_domain,kind='linear')(uniform_deviate)           
         else:
-            z_best = np.zeros(ngals)+self.config['src_z']
+            z_true = np.zeros(ngals)+self.config['src_z']
         
         
         if is_zerr: 
             # introduce a redshift error on the source redshifts and generate 
             # the corresponding Gaussian pdf
             self.config['redshift_err'] = sigma_z_ref
-            sigma_z = sigma_z_ref*(1.+z_best)
-            z_true = z_best + sigma_z*np.random.standard_normal(ngals)
+            sigma_z = sigma_z_ref*(1.+z_true)
+            z_best = z_true + sigma_z*np.random.standard_normal(ngals)
             pdf_grid = []
             zbins_grid = []
-            for i,z in enumerate(z_best):
+            for i,z in enumerate(z_true):
                 zmin = z - 0.5
                 zmax = z + 0.5
                 zbins = np.arange(zmin, zmax, 0.03)
@@ -146,7 +146,7 @@ class MockData():
                 zbins_grid.append(zbins)
         else:
             # No redshift error
-            z_true = z_best
+            z_best = z_true
 
         seqnr = np.arange(ngals)
         zL = self.config['cluster_z'] # cluster redshift
@@ -155,7 +155,6 @@ class MockData():
         M = self.config['cluster_m']
         c = self.config['concentration']  
         r = np.linspace(0.25, 10., 1000) #Mpc
-
 
         x_mpc = np.random.uniform(-4, 4, size=ngals)
         y_mpc = np.random.uniform(-4, 4, size=ngals)
