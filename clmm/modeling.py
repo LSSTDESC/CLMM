@@ -260,7 +260,7 @@ def get_angular_diameter_distance_a(cosmo, aexp2, aexp1=1.):
                                                 Ob0=cosmo['Omega_b'])
     # astropy angular diameter distance in Mpc
     # need to return in pc/h
-    return ap_cosmo.angular_diameter_distance_z1z2(z1, z2).to_value(units.pc) * ap_cosmo.H0*.01
+    return ap_cosmo.angular_diameter_distance_z1z2(z1, z2).to_value(units.pc) * ap_cosmo.H0.value*.01
 
 
 def get_critical_surface_density(cosmo, z_cluster, z_source):
