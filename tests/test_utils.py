@@ -4,11 +4,13 @@ import clmm.utils as utils
 from numpy import testing
 import numpy as np
 from astropy.table import Table
+import astropy.units as u
 import os
 import pytest
 
 rtol = 1.e-6
 
+# Write test for this function
 # def test_make_bins():
 #     testing.assert_equal(len( utils.make_bins(1,10,9,False)),10 )
 #     testing.assert_allclose( utils.make_bins(1,10,9,False) , np.arange(1.,11.) )
@@ -25,6 +27,8 @@ rtol = 1.e-6
 #     testing.assert_raises(TypeError, utils.make_bins, rmin=1, rmax=10, n_bins=9.9, log_bins=False)
 
 
+# Commented tests should be made to work or removed if nonsensical
+# Ensure full coverage of all corner cases etc
 def test_compute_radial_averages():
     #testing input types
     testing.assert_raises(TypeError, utils._compute_radial_averages, radius="glue", g=10,
@@ -58,19 +62,70 @@ def test_compute_radial_averages():
     testing.assert_allclose(yerr_stdn, np.std(vals)/countstest, rtol)
 
 
-def test_theta_units_conversion():
+# Add decorator to explicitly state that this is not an automatic test 
+# Decorator can be found in pytest module
+def conversion_helper(dist1, unit1_string, unit1_astropy):
+    testing.assert_allclose(utils._convert_angular_units(dist1, unit1_string, 'degrees'),
+                            (dist1 * unit1_astropy).to(u.deg).value,
+                            rtol)
+    testing.assert_allclose(utils._convert_angular_units(dist1, unit1_string, 'radians'),
+                            (dist1 * unit1_astropy).to(u.rad).value,
+                            rtol)
+    testing.assert_allclose(utils._convert_angular_units(dist1, unit1_string, 'arcmin'),
+                            (dist1 * unit1_astropy).to(u.arcmin).value,
+                            rtol)
+    testing.assert_allclose(utils._convert_angular_units(dist1, unit1_string, 'arcsec'),
+                            (dist1 * unit1_astropy).to(u.arcsec).value,
+                            rtol)
+
+
+def test_convert_angular_units():
+    # Test conversion from degrees
+    dist1_deg = np.array([0.0, 1.0, 2.0, 3.0, 15.0, 45.0])
+    conversion_helper(dist1_deg, 'degrees', u.deg)
+    
+    # Test conversion from radians
+
+    # Test conversion from arcmin
+
+    # Test conversion from arcsec
+
+
+def test_convert_physical_units():
+    # Test each conversion between physical units
+    pass
+
+
+def test_convert_units():
+    # Test that we get the appropriate errors when we pass in unsupported units
+
+    # Test that we get the appropriate errors when no redshift or cosmology when physical units are involved
+
+    # Test angular to angular example
+
+    # Test physical to physical example
+
+    # Test angular to physical example
+
+    # Test physical to angular example
+
+
+
+# These tests are old
+
+# def test_theta_units_conversion():
     # tests for invaid input
-    testing.assert_raises(ValueError, utils._theta_units_conversion, np.pi, 'radians', 'crazy units')
-    testing.assert_raises(ValueError, utils._theta_units_conversion, np.pi, 'crazy units', 'radians')
-    testing.assert_raises(ValueError, utils._theta_units_conversion, np.pi, 'radians', 'Mpc')
-    testing.assert_raises(ValueError, utils._theta_units_conversion, np.pi, 'radians', 'Mpc', 0.5)
+    # testing.assert_raises(ValueError, utils._theta_units_conversion, np.pi, 'radians', 'crazy units')
+    # testing.assert_raises(ValueError, utils._theta_units_conversion, np.pi, 'crazy units', 'radians')
+    # testing.assert_raises(ValueError, utils._theta_units_conversion, np.pi, 'radians', 'Mpc')
+    # testing.assert_raises(ValueError, utils._theta_units_conversion, np.pi, 'radians', 'Mpc', 0.5)
 
     # tests for angular conversion
-    testing.assert_equal(utils._theta_units_conversion(np.pi, 'radians', 'radians'), np.pi)
-    testing.assert_almost_equal(utils._theta_units_conversion(np.pi, 'radians', 'deg'), 180.)
-    testing.assert_almost_equal(utils._theta_units_conversion(np.pi, 'radians', 'arcmin'), 180.*60)
-    testing.assert_almost_equal(utils._theta_units_conversion(np.pi, 'radians', 'arcsec'), 180.*60*60)
-    testing.assert_almost_equal(utils._theta_units_conversion(180., 'deg', 'radians'), np.pi)
+    # testing.assert_equal(utils._theta_units_conversion(np.pi, 'radians', 'radians'), np.pi)
+    # testing.assert_almost_equal(utils._theta_units_conversion(np.pi, 'radians', 'deg'), 180.)
+    # testing.assert_almost_equal(utils._theta_units_conversion(np.pi, 'radians', 'arcmin'), 180.*60)
+    # testing.assert_almost_equal(utils._theta_units_conversion(np.pi, 'radians', 'arcsec'), 180.*60*60)
+    # testing.assert_almost_equal(utils._theta_units_conversion(180., 'deg', 'radians'), np.pi)
 
     # Test for radians to kpc
 

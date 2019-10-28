@@ -258,22 +258,17 @@ def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
         raise TypeError('Shear information is missing in galaxy catalog must have tangential\
                         and cross shears (gt,gx). Run compute_shear first!')
 
-#123123 
     # Check to see if we need to do a unit conversion
     if angsep_units is not bin_units:
         source_seps = utils._theta_units_conversion(cluster.galcat['theta'], angsep_units, bin_units,
                                               z_cl=cluster.z, cosmo=cosmo)
     else:
         source_seps = cluster.galcat['theta']
-#123123 
 
-#123123    
     # Make bins if they are not provided
     if not hasattr(bins, '__len__'):
         bins = utils.make_bins(np.min(source_seps), np.max(source_seps), bins)
-#123123
 
-#123123
     # Compute the binned average shears and associated errors
     r_avg, gt_avg, gt_err, gt_counts = utils._compute_radial_averages(source_seps,
                                                                 cluster.galcat['gt'].data,
@@ -281,7 +276,7 @@ def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
     r_avg, gx_avg, gx_err, gx_counts = utils._compute_radial_averages(source_seps,
                                                                 cluster.galcat['gx'].data,
                                                                 bins=bins, error_model='std/n')
-#123123
+
     profile_table = Table([bins[:-1], r_avg, bins[1:], gt_avg, gt_err, gx_avg, gx_err],
                           names=('radius_min', 'radius', 'radius_max', 'gt', 'gt_err',
                                  'gx', 'gx_err'))

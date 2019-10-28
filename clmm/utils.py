@@ -7,6 +7,7 @@ from scipy.stats import binned_statistic
 from astropy.coordinates import SkyCoord
 from astropy.cosmology import FlatLambdaCDM
 from astropy.table import Table
+from astropy import units as u
 
 
 def _compute_radial_averages(distances, measurements, bins, error_model='std/n'):
@@ -33,6 +34,8 @@ def _compute_radial_averages(distances, measurements, bins, error_model='std/n')
         Average of measurements in distance bin
     yerr_profile: array_like
         Standard deviation of measurements in distance bin
+    counts_profile: array_like
+        Number of objects in the bin
     """
     r_profile, _, _ = binned_statistic(distances, distances, statistic='mean', bins=bins)
     y_profile, _, _ = binned_statistic(distances, measurements, statistic='mean', bins=bins)
@@ -48,21 +51,20 @@ def _compute_radial_averages(distances, measurements, bins, error_model='std/n')
 
 
 def make_bins(rmin, rmax, n_bins=10, log10_bins=False, method='equal'):
-    """Define the bins edges corresponding to the binning of data using user-defined method and
-    parameters. 
-    
-    The binning method currently supported returns equaly sized bins. 
+    """Define bin edges
 
     Parameters
     ----------
-    rmin, rmax,: float
-        minimum and maximum bin edges wanted (any units).
+    rmin: float
+        Minimum bin edges wanted
+    rmax: float
+        Maximum bin edges wanted
     n_bins: float
-        number of bins you want to create, default to 10.
+        Number of bins you want to create, default to 10.
     log10_bins: bool
-        set to 'True' for binning in log space of base 10, default to False, 
+        Bin in logspace rather than linear space
     method : str
-        binning method used, 'equal' is currently the only supported option.
+        Binning method used, 'equal' is currently the only supported option.
 
     Returns
     -------
@@ -89,6 +91,68 @@ def make_bins(rmin, rmax, n_bins=10, log10_bins=False, method='equal'):
     return binedges
 
 
+def convert_units(dist1, unit1, unit2, redshift=None, cosmo=None):
+    """Convenience wrapper to convert between a combination of angular and physical units
+    """
+    angular_bank = {"radians": u.rad, "deg": u.deg, "arcmin": u.arcmin, "arcsec": u.arcsec}
+    physical_bank = {"pc": u.pc, "kpc": u.kpc, "Mpc": u.Mpc}
+
+    if not unit1 in {**angular_bank, **physical_bank}:
+        raise ValueError("Input units ({}) not supported".format(unit1))
+    if not unit2 in {**angular_bank, **physical_bank}:
+        raise ValueError("Output units ({}) not supported".format(unit2))
+
+    # If both input and output are angular, use angular function
+    if (unit1 in angular_bank) and (unit2 in angular_bank):
+        return _convert_angular_units(dist1, unit1, unit2)
+    else:
+        raise NotImplementedError("OMEGALUL")
+
+
+    # Finish implementing. This should probably have 3 cases that are treated diff
+    # 1. angular to angular(Easy)
+    # 2. physical to physical (Easy)
+    # 3. angular to physical (or vice versa)
+    # Case 3 should should call both internal functions to convert to a standard
+    # i.e. arcmin to Mpc should first convert arcmin to radians and then radians to physical
+
+
+
+
+
+def _convert_angular_units(dist1, unit1, unit2):
+    """Convert a distance measure in angular units to different angular units
+
+    Can convert between degrees, arcmin, arcsec, and radians
+
+    TODO: These transformations are all trivial and should just be done with
+    constants from constants.py
+
+    Parameters
+    ----------
+    dist1: array_like
+        Input distances
+    unit1: str
+        Unit for the input distances
+    unit2: str
+        Unit for the output distances
+
+    Returns
+    -------
+    dist2: array_like
+        Input distances converted to unit2
+    """
+    # factors_to_degrees = {"radians": RAD_TO_DEG, "arcmin": ARCMIN_TO_DEG, "arcsec": ARCSEC_TO_DEG}
+    factors_to_degrees = {"degrees": 1.0, "radians": 180./np.pi, "arcmin": 1./60., "arcsec": 1./3600.}
+    dist_degrees = dist1 * factors_to_degrees[unit1]
+    return dist_degrees / factors_to_degrees[unit2]
+
+
+def convert_physical_units(dist1, unit1, unit2, redshift, cosmo):
+    pass
+
+
+
 def _theta_units_conversion(source_seps, input_units, output_units, z_cl=None, cosmo=None):
     """Convert source separations from input_units to output_units
 
@@ -111,7 +175,6 @@ def _theta_units_conversion(source_seps, input_units, output_units, z_cl=None, c
     new_radii : array_like 
         Source-lens separation in output_units.
     """
-    from astropy import units as u
     units_bank = {"radians": u.rad, "deg": u.deg, "arcmin": u.arcmin, "arcsec": u.arcsec,
                   "kpc": u.kpc, "Mpc": u.Mpc}
 
