@@ -437,7 +437,7 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delt
     -----
     Need to figure out if we want to raise exceptions rather than errors here?
     """
-    sigma = predict_surface_density(r_proj, mdelta, cdelta, z, cosmo, Delta=Delta,
+    sigma = predict_surface_density(r_proj, mdelta, cdelta, z_cluster, cosmo, Delta=Delta,
                                     halo_profile_parameterization=halo_profile_parameterization)
 
     if z_src_model == 'single_plane':
