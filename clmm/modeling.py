@@ -376,7 +376,7 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     We will need :math:`\gamma_\infty` and :math:`\kappa_\infty` for alternative z_src_models using :math:`\beta_s`.
     Need to figure out if we want to raise exceptions rather than errors here?
     """
-    delta_sigma = predict_excess_surface_density(r_proj, mdelta, cdelta, z, cosmo, Delta=Delta,
+    delta_sigma = predict_excess_surface_density(r_proj, mdelta, cdelta, z_cluster, cosmo, Delta=Delta,
                                                  halo_profile_parameterization=halo_profile_parameterization)
 
     if z_src_model == 'single_plane':
