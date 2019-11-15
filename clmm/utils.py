@@ -46,6 +46,8 @@ def _compute_radial_averages(distances, measurements, bins, error_model='std/n')
     elif error_model == 'std/n':
         yerr_profile, _, _ = binned_statistic(distances, measurements, statistic='std', bins=bins)
         yerr_profile = yerr_profile/counts_profile
+    else:
+        raise ValueError("{} not supported err model for binned stats".format(error_model))
 
     return r_profile, y_profile, yerr_profile, counts_profile
 
@@ -91,6 +93,12 @@ def make_bins(rmin, rmax, n_bins=10, log10_bins=False, method='equal'):
     return binedges
 
 
+
+# =================================================================================================
+# =================================================================================================
+# =================================================================================================
+# =================================================================================================
+# See issue 164
 def convert_units(dist1, unit1, unit2, redshift=None, cosmo=None):
     """Convenience wrapper to convert between a combination of angular and physical units
     """
@@ -108,17 +116,7 @@ def convert_units(dist1, unit1, unit2, redshift=None, cosmo=None):
     else:
         raise NotImplementedError("OMEGALUL")
 
-
-    # Finish implementing. This should probably have 3 cases that are treated diff
-    # 1. angular to angular(Easy)
-    # 2. physical to physical (Easy)
-    # 3. angular to physical (or vice versa)
-    # Case 3 should should call both internal functions to convert to a standard
-    # i.e. arcmin to Mpc should first convert arcmin to radians and then radians to physical
-
-
-
-
+    pass
 
 def _convert_angular_units(dist1, unit1, unit2):
     """Convert a distance measure in angular units to different angular units
@@ -142,14 +140,24 @@ def _convert_angular_units(dist1, unit1, unit2):
     dist2: array_like
         Input distances converted to unit2
     """
+    # This line would be pulling RAD_TO_DEG and the others from a constants file and is not yet supported...
     # factors_to_degrees = {"radians": RAD_TO_DEG, "arcmin": ARCMIN_TO_DEG, "arcsec": ARCSEC_TO_DEG}
+
     factors_to_degrees = {"degrees": 1.0, "radians": 180./np.pi, "arcmin": 1./60., "arcsec": 1./3600.}
     dist_degrees = dist1 * factors_to_degrees[unit1]
     return dist_degrees / factors_to_degrees[unit2]
 
-
-def convert_physical_units(dist1, unit1, unit2, redshift, cosmo):
+# See Issue 164
+def convert_physical_units(dist1, unit1, unit2):
     pass
+# See Issue 164
+def convert_between_rad_mpc(dist1, unit1, unit2, redshift, cosmo):
+    pass
+# =================================================================================================
+# =================================================================================================
+# =================================================================================================
+# =================================================================================================
+
 
 
 
