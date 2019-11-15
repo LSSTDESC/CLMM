@@ -34,22 +34,20 @@ def _compute_radial_averages(distances, measurements, bins, error_model='std/n')
         Average of measurements in distance bin
     yerr_profile: array_like
         Standard deviation of measurements in distance bin
-    counts_profile: array_like
-        Number of objects in the bin
     """
     r_profile, _, _ = binned_statistic(distances, distances, statistic='mean', bins=bins)
     y_profile, _, _ = binned_statistic(distances, measurements, statistic='mean', bins=bins)
-    counts_profile, _, _ = binned_statistic(distances, measurements, statistic='count', bins=bins)
 
     if error_model is 'std':
         yerr_profile, _, _ = binned_statistic(distances, measurements, statistic='std', bins=bins)
     elif error_model == 'std/n':
         yerr_profile, _, _ = binned_statistic(distances, measurements, statistic='std', bins=bins)
-        yerr_profile = yerr_profile/counts_profile
+        counts, _, _ = binned_statistic(distances, measurements, statistic='count', bins=bins)
+        yerr_profile = yerr_profile/counts
     else:
         raise ValueError("{} not supported err model for binned stats".format(error_model))
 
-    return r_profile, y_profile, yerr_profile, counts_profile
+    return r_profile, y_profile, yerr_profile
 
 
 def make_bins(rmin, rmax, n_bins=10, log10_bins=False, method='equal'):

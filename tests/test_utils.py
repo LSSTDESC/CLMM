@@ -48,14 +48,12 @@ def test_compute_radial_averages():
     bins = [0.5, 1.0]
     dists = np.hstack([.7*np.ones(5), .8*np.ones(5)])
     vals = np.arange(1, 11, 1)
-    rtest, ytest, yerr_std, countstest = utils._compute_radial_averages(dists, vals, bins,
-                                                                     error_model='std')
-    _, _, yerr_stdn, _= utils._compute_radial_averages(dists, vals, bins, error_model='std/n')
+    rtest, ytest, yerr_std = utils._compute_radial_averages(dists, vals, bins, error_model='std')
+    _, _, yerr_stdn = utils._compute_radial_averages(dists, vals, bins, error_model='std/n')
     testing.assert_allclose(rtest, np.mean(dists), rtol)
     testing.assert_allclose(ytest, np.mean(vals), rtol)
     testing.assert_allclose(yerr_std, np.std(vals), rtol)
-    testing.assert_allclose(countstest, len(vals), rtol)
-    testing.assert_allclose(yerr_stdn, np.std(vals)/countstest, rtol)
+    testing.assert_allclose(yerr_stdn, np.std(vals)/len(vals), rtol)
 
 
 def test_make_bins():
