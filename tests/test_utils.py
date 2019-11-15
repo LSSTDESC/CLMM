@@ -105,66 +105,73 @@ def test_make_bins():
 #     testing.assert_raises(TypeError, utils.make_bins, rmin=1, rmax=10, n_bins=9.9, log_bins=False)
 
 
-def angular_conversion_helper(dist1, unit1_string, unit1_astropy):
-    """ Matts comments for whoever addresses Issue 164.
-    - The the conversion tests should aim to test every permutation of supported units
-    - This function takes a distance, a string describing the unit (that is passe to
-      our function) and an astropy unit that is used to compute the truth.
-    - This function isn't run as a test since it doesn't begin with `test`. Cool, eh!
-    """
-    testing.assert_allclose(utils._convert_angular_units(dist1, unit1_string, 'degrees'),
-                            (dist1 * unit1_astropy).to(u.deg).value,
+def _angular_conversion_helper(dist, unit1_string, unit1_astropy):
+    """ Helper function to clean up test_convert_angular_units """
+    testing.assert_allclose(utils._convert_angular_units(dist, unit1_string, 'degrees'),
+                            (dist * unit1_astropy).to(u.deg).value,
                             rtol)
-    testing.assert_allclose(utils._convert_angular_units(dist1, unit1_string, 'radians'),
-                            (dist1 * unit1_astropy).to(u.rad).value,
+    testing.assert_allclose(utils._convert_angular_units(dist, unit1_string, 'radians'),
+                            (dist * unit1_astropy).to(u.rad).value,
                             rtol)
-    testing.assert_allclose(utils._convert_angular_units(dist1, unit1_string, 'arcmin'),
-                            (dist1 * unit1_astropy).to(u.arcmin).value,
+    testing.assert_allclose(utils._convert_angular_units(dist, unit1_string, 'arcmin'),
+                            (dist * unit1_astropy).to(u.arcmin).value,
                             rtol)
-    testing.assert_allclose(utils._convert_angular_units(dist1, unit1_string, 'arcsec'),
-                            (dist1 * unit1_astropy).to(u.arcsec).value,
+    testing.assert_allclose(utils._convert_angular_units(dist, unit1_string, 'arcsec'),
+                            (dist * unit1_astropy).to(u.arcsec).value,
                             rtol)
-
 
 
 def test_convert_angular_units():
-    """ Matts comments for whoever addresses Issue 164.
-    - This is sufficiently tested to me.
-    - For a handful of angles, I test every permutation of the conversion
-    - If you think of anything else, do not hesistate to add it! More test good
+    """ Test all permutations of converting angular units to angular units. Uses the
+    helper function _angular_conversion_helper to make it a bit cleaner. To compute
+    the truth, astropy units is used.
     """
     # Test conversion from degrees
-    dist1_deg = np.array([0.0, 3.0, 15.0, 45.0, 90.0, 180.0])
-    angular_conversion_helper(dist1_deg, 'degrees', u.deg)
+    dist_deg = np.array([0.0, 3.0, 15.0, 45.0, 90.0, 180.0])
+    _angular_conversion_helper(dist_deg, 'degrees', u.deg)
     
     # Test conversion from radians
-    dist1_rad = np.pi * np.array([0.0, 0.1, 0.333, 0.5, 0.8, 1.0])
-    angular_conversion_helper(dist1_rad, 'radians', u.rad)
+    dist_rad = np.pi * np.array([0.0, 0.1, 0.333, 0.5, 0.8, 1.0])
+    _angular_conversion_helper(dist_rad, 'radians', u.rad)
 
     # Test conversion from arcmin
-    dist1_am = dist1_deg * 60.
-    angular_conversion_helper(dist1_am, 'arcmin', u.arcmin)
+    dist_am = dist_deg * 60.
+    _angular_conversion_helper(dist_am, 'arcmin', u.arcmin)
 
     # Test conversion from arcsec
-    dist1_as = dist1_am * 60.
-    angular_conversion_helper(dist1_as, 'arcsec', u.arcsec)
+    dist_as = dist_am * 60.
+    _angular_conversion_helper(dist_as, 'arcsec', u.arcsec)
+
+
+def _physical_conversion_helper(dist, unit1_string, unit1_astropy):
+    """ Helper function to clean up test_convert_physical_units """
+    testing.assert_allclose(utils._convert_physical_units(dist, unit1_string, 'Mpc'),
+                            (dist * unit1_astropy).to(u.Mpc).value,
+                            rtol)
+    testing.assert_allclose(utils._convert_physical_units(dist, unit1_string, 'kpc'),
+                            (dist * unit1_astropy).to(u.kpc).value,
+                            rtol)
+    testing.assert_allclose(utils._convert_physical_units(dist, unit1_string, 'pc'),
+                            (dist * unit1_astropy).to(u.pc).value,
+                            rtol)
 
 
 def test_convert_physical_units():
-    """ Matts comments for whoever addresses Issue 164.
-    - This should be very similar to test_convert_angular_units above but for physical units
-    - Write a helper function like the angular case
-    1. Helper function should convert input to (all options in func)
-       A) pc
-       B) kpc
-       C) Mpc
-    2. Pass a list of distances into helper and assert
-       A) pass in pc
-       B) pass in kpc
-       C) pass in Mpc
+    """ Test all permutations of converting physical units to physical units. Uses the
+    helper function _physical_conversion_helper to make it a bit cleaner. To compute
+    the truth, astropy units is used.
     """
-    # Test each conversion between physical units
-    pass
+    # Test conversion from Mpc
+    dist_Mpc = np.array([-0.99, 0.0, 0.0042, 1.0, 3293.])
+    _physical_conversion_helper(dist_Mpc, 'Mpc', u.Mpc)
+
+    # Test conversion from kpc
+    dist_kpc = dist_Mpc * 1.0e3
+    _physical_conversion_helper(dist_kpc, 'kpc', u.kpc)
+
+    # Test conversion from pc
+    dist_pc = dist_kpc * 1.0e3
+    _physical_conversion_helper(dist_pc, 'pc', u.pc)
 
 
 def test_convert_between_rad_mpc():

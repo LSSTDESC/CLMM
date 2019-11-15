@@ -6,12 +6,9 @@
 import math
 import warnings
 import numpy as np
-import matplotlib.pyplot as plt
-from scipy.stats import binned_statistic
-from astropy.coordinates import SkyCoord
-from astropy.cosmology import FlatLambdaCDM
 from astropy.table import Table
-import clmm.utils as utils
+from .utils import _compute_radial_averages, make_bins, _theta_units_conversion
+from .galaxycluster import GalaxyCluster
 
 # def _astropy_to_CCL_cosmo_object(astropy_cosmology_object): # 7481794
 #     """Generates a ccl cosmology object from an GCR or astropy cosmology object.
@@ -148,7 +145,7 @@ def compute_shear(cluster=None, ra_lens=None, dec_lens=None, ra_source_list=None
 def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_source_list):
     r"""Compute the angular separation between the lens and the source and the azimuthal
     angle from the lens to the source in radians.
-    
+
     In the flat sky approximation, these angles are calculated using
     .. math::
         \theta = \sqrt{\left(\delta_s - \delta_l\right)^2 +
@@ -238,9 +235,9 @@ def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
         Units to use for the radial bins of the shear profile
         Allowed Options = ["radians", deg", "arcmin", "arcsec", kpc", "Mpc"]
     bins : array_like, optional
-        User defined bins to use for the shear profile. If a list is provided, use that as 
+        User defined bins to use for the shear profile. If a list is provided, use that as
         the bin edges. If a scalar is provided, create that many equally spaced bins between
-        the minimum and maximum angular separations in bin_units. If nothing is provided, 
+        the minimum and maximum angular separations in bin_units. If nothing is provided,
         default to 10 equally spaced bins.
     cosmo: dict, optional
         Cosmology parameters to convert angular separations to physical distances
@@ -260,22 +257,20 @@ def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
 
     # Check to see if we need to do a unit conversion
     if angsep_units is not bin_units:
-        source_seps = utils._theta_units_conversion(cluster.galcat['theta'], angsep_units, bin_units,
-                                              z_cl=cluster.z, cosmo=cosmo)
+        source_seps = _theta_units_conversion(cluster.galcat['theta'], angsep_units,
+                                              bin_units, z_cl=cluster.z, cosmo=cosmo)
     else:
         source_seps = cluster.galcat['theta']
 
     # Make bins if they are not provided
     if not hasattr(bins, '__len__'):
-        bins = utils.make_bins(np.min(source_seps), np.max(source_seps), bins)
+        bins = make_bins(np.min(source_seps), np.max(source_seps), bins)
 
     # Compute the binned average shears and associated errors
-    r_avg, gt_avg, gt_err, gt_counts = utils._compute_radial_averages(source_seps,
-                                                                cluster.galcat['gt'].data,
-                                                                bins=bins, error_model='std/n')
-    r_avg, gx_avg, gx_err, gx_counts = utils._compute_radial_averages(source_seps,
-                                                                cluster.galcat['gx'].data,
-                                                                bins=bins, error_model='std/n')
+    r_avg, gt_avg, gt_err = _compute_radial_averages(source_seps, cluster.galcat['gt'].data,
+                                                     bins=bins, error_model='std/n')
+    r_avg, gx_avg, gx_err = _compute_radial_averages(source_seps, cluster.galcat['gx'].data,
+                                                     bins=bins, error_model='std/n')
 
     profile_table = Table([bins[:-1], r_avg, bins[1:], gt_avg, gt_err, gx_avg, gx_err],
                           names=('radius_min', 'radius', 'radius_max', 'gt', 'gt_err',
@@ -289,6 +284,5 @@ def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
 
 
 # Monkey patch functions onto Galaxy Cluster object
-from .galaxycluster import GalaxyCluster
 GalaxyCluster.compute_shear = compute_shear
 GalaxyCluster.make_shear_profile = make_shear_profile
