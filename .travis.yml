@@ -21,6 +21,9 @@ install:
   - pip install sphinx==2.1.2
   - pip install sphinx_rtd_theme
 
+  # Install coveralls for test coverage
+  - pip install coveralls
+
 script:
   # Run the unit tests:
   - py.test --ignore=tests/crypt/ --ignore=cluster_toolkit/tests
@@ -28,3 +31,6 @@ script:
   # Run the docs:
   - sphinx-quickstart -a "travis" -p clmm -v 0.0.1 --ext-autodoc -q
   - make -C docs/ html
+
+after_success:
+  - coveralls
