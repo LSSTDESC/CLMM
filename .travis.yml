@@ -22,11 +22,11 @@ install:
   - pip install sphinx_rtd_theme
 
   # Install coveralls for test coverage
-  - pip install coveralls
+  - pip install coveralls pytest-cov
 
 script:
   # Run the unit tests:
-  - py.test --ignore=tests/crypt/ --ignore=cluster_toolkit/tests
+  - py.test tests/ --ignore=tests/crypt/ --ignore=cluster_toolkit/tests --cov=clmm/
 
   # Run the docs:
   - sphinx-quickstart -a "travis" -p clmm -v 0.0.1 --ext-autodoc -q
