@@ -227,7 +227,7 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, hal
 
 
 def get_angular_diameter_distance_a(cosmo, aexp2, aexp1=1.):
-    """This is a function to calculate d_LS (angular distance between lens and source) because
+    r"""This is a function to calculate d_LS (angular distance between lens and source) because
     CCL cannot yet do it.  Temporarily using the astropy implementation.
 
     Parameters
@@ -241,8 +241,8 @@ def get_angular_diameter_distance_a(cosmo, aexp2, aexp1=1.):
 
     Returns
     -------
-    float
-        angular diameter distance
+    d_a : float
+        angular diameter distance in :math:`\mathrm{Mpc\ h}^{-1}`
 
     Notes
     -----
