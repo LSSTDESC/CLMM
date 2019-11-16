@@ -43,7 +43,7 @@ def compute_radial_averages(xvals, yvals, xbins, error_model='std/n'):
     return meanx, meany, yerr
 
 
-def make_bins(rmin, rmax, n_bins=10, log10_bins=False, method='equal'):
+def make_bins(rmin, rmax, nbins=10, method='evenwidth'):
     """ Define bin edges
 
     Parameters
@@ -52,34 +52,29 @@ def make_bins(rmin, rmax, n_bins=10, log10_bins=False, method='equal'):
         Minimum bin edges wanted
     rmax : float
         Maximum bin edges wanted
-    n_bins : float
+    nbins : float
         Number of bins you want to create, default to 10.
-    log10_bins : bool
-        Bin in logspace rather than linear space
-    method : str
-        Binning method used, 'equal' is currently the only supported option.
+    method : str, optional
+        Binning method to use
+        'evenwidth' - Default, evenly spaced bins between rmin and rmax
+        'evenlog10width' - Logspaced bins with even width in log10 between rmin and rmax
 
     Returns
     -------
     binedges: array_like, float
         n_bins+1 dimensional array that defines bin edges
     """
-    if rmax < rmin:
-        raise ValueError("rmax should be larger than rmin")
-    if n_bins <= 0:
-        raise ValueError("n_bins must be > 0")
-    if isinstance(log10_bins, bool):
-        raise TypeError("log10_bins must be type bool")
-    if isinstance(n_bins, int):
-        raise TypeError("You need an integer number of bins")
+    if (rmin > rmax) or (rmin < 0.0) or (rmax < 0.0):
+        raise ValueError("Invalid bin endpoints in make_bins, {} {}".format(rmin, rmax))
+    if (nbins <= 0) or not isinstance(nbins, int):
+        raise ValueError("Invalid nbins={}. Must be integer greater than 0.".format(nbins))
 
-    if method == 'equal':
-        if log10_bins:
-            binedges = np.logspace(np.log10(rmin), np.log10(rmax), n_bins+1, endpoint=True)
-        else:
-            binedges = np.linspace(rmin, rmax, n_bins+1, endpoint=True)
+    if method == 'evenwidth':
+        binedges = np.linspace(rmin, rmax, nbins+1, endpoint=True)
+    elif method == 'evenlog10width':
+        binedges = np.logspace(np.log10(rmin), np.log10(rmax), nbins+1, endpoint=True)
     else:
-        raise NotImplementedError("Binning method '{}' is not currently supported".format(method))
+        raise ValueError("Binning method '{}' is not currently supported".format(method))
 
     return binedges
 

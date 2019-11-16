@@ -1,16 +1,17 @@
 """ Tests for utils.py """
-from astropy.cosmology import FlatLambdaCDM
 from numpy import testing
 import numpy as np
 from numpy.testing import assert_raises, assert_allclose
 from astropy.table import Table
+from astropy.cosmology import FlatLambdaCDM
 import astropy.units as u
 import os
 import pytest
 
 import clmm
 import clmm.utils as utils
-from clmm.utils import compute_radial_averages
+from clmm.utils import compute_radial_averages, make_bins
+
 
 tolerance = {'rtol': 1.0e-6, 'atol': 0}
 
@@ -60,53 +61,33 @@ def test_compute_radial_averages():
 
 
 def test_make_bins():
-    """ Matts comments for whoever addresses Issue 164.
-    - These tests came 100% commented out. I have no idea why.
-    - Lets just rewrite tests for this function, its pretty simple func
-    - For each number below, a new option is passed. After testing the option, just pass it
-      fixed to the default value.
-    1. Pass just rmin and rmax, everything else default, checkout output
-       A) rmin positive, rmax positive
-       B) rmin positive, rmax negative
-       C) rmin negative, rmax positive
-       D) rmin negative, rmax negative
-       E) rmin > rmax but both positive
-       Note: It should break if either is negative I think?
-       Note: From here you can assume 0 < rmin < rmax
-    2. Pass rmin, rmax, n_bins, everything else default
-       Note: We already tested rmin, rmax so just chose a reasonable value for each
-       A) n_bins=-10
-       B) n_bins=0
-       C) n_bins=1
-       D) n_bins=13 (just something larger than the default value)
-    3. Pass rmin, rmax, n_bins=10, log10_bins, everything else default
-       Note: We already tested rmin, rmax so just chose a reasonable value for each
-       Note: We already tests n_bins so just manually set to default, n_bins=10
-       A) log10_bins=True
-       B) log10_bins=False
-    4. Pass rmin, rmax, n_bins=10, log10_bins=False to test method keyword
-       A) Use default
-       B) set method='equal'
-       Note: We want to test every line of code. If another method was added and after
-             checking which method, we use an if statement to split on log10_bins, we
-             would also want to check that method for log10_bins True and False
-    """
+    """ Test the make_bins function. Right now this function is pretty simplistic and the
+    tests are pretty circular. As more functionality is added here the tests will
+    become more substantial.
+    """ 
+    # Test various combinations of rmin and rmax with default values
+    assert_allclose(make_bins(0.0, 10.), np.linspace(0.0, 10., 11), **tolerance)
+    assert_raises(ValueError, make_bins, 0.0, -10.)
+    assert_raises(ValueError, make_bins, -10., 10.)
+    assert_raises(ValueError, make_bins, -10., -5.)
+    assert_raises(ValueError, make_bins, 10., 0.0)
 
-    pass
-#     testing.assert_equal(len( utils.make_bins(1,10,9,False)),10 )
-#     testing.assert_allclose( utils.make_bins(1,10,9,False) , np.arange(1.,11.) )
-#     testing.assert_allclose( utils.make_bins(1,10000,4,True) ,10.**(np.arange(5)) )
-#     
-#     testing.assert_raises(TypeError, utils.make_bins, rmin='glue', rmax=10, n_bins=9, log_bins=False)
-#     testing.assert_raises(TypeError, utils.make_bins, rmin=1, rmax='glue', n_bins=9, log_bins=False)
-#     testing.assert_raises(TypeError, utils.make_bins, rmin=1, rmax=10, n_bins='glue', log_bins=False)
-#     testing.assert_raises(TypeError, utils.make_bins, rmin=1, rmax=10, n_bins=9, log_bins='glue')
-#
-#     testing.assert_raises(ValueError, utils.make_bins, rmin=1, rmax=10, n_bins=-4, log_bins=False)
-#     testing.assert_raises(ValueError, utils.make_bins, rmin=1, rmax=-10, n_bins=9, log_bins=False)
-#     testing.assert_raises(ValueError, utils.make_bins, rmin=1, rmax=10, n_bins=0, log_bins=False)
-#     testing.assert_raises(TypeError, utils.make_bins, rmin=1, rmax=10, n_bins=9.9, log_bins=False)
+    # Test various nbins
+    assert_allclose(make_bins(0.0, 10., nbins=3), np.linspace(0.0, 10., 4), **tolerance)
+    assert_allclose(make_bins(0.0, 10., nbins=13), np.linspace(0.0, 10., 14), **tolerance)
+    assert_raises(ValueError, make_bins, 0.0, 10., -10)
+    assert_raises(ValueError, make_bins, 0.0, 10., 0)
 
+    # Test default method
+    assert_allclose(make_bins(0.0, 10., nbins=10),
+                    make_bins(0.0, 10., nbins=10, method='evenwidth'),
+                    **tolerance)
+
+    # Test the different binning methods
+    assert_allclose(make_bins(0.0, 10., nbins=10, method='evenwidth'),
+                    np.linspace(0.0, 10., 11), **tolerance)
+    assert_allclose(make_bins(1.0, 10., nbins=10, method='evenlog10width'),
+                    np.logspace(np.log10(1.0), np.log10(10.), 11), **tolerance)
 
 
 def _rad_to_mpc_helper(dist, redshift, cosmo, do_inverse):
