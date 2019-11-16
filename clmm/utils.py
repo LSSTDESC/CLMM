@@ -4,8 +4,8 @@ from scipy.stats import binned_statistic
 from astropy import units as u
 
 
-def _compute_radial_averages(distances, measurements, bins, error_model='std/n'):
-    """Given a list of distances, measurements and bins, sort into bins
+def compute_radial_averages(distances, measurements, bins, error_model='std/n'):
+    """ Given a list of distances, measurements and bins, sort into bins
 
     Parameters
     ----------
@@ -15,7 +15,7 @@ def _compute_radial_averages(distances, measurements, bins, error_model='std/n')
         Measurements corresponding to each distance
     bins: array_like
         Bin edges to sort distance
-    error_model: str, optional
+    error_model : str, optional
         Error model to use for y uncertainties.
         std/n - Standard Deviation/Counts (Default)
         std - Standard deviation
@@ -26,7 +26,7 @@ def _compute_radial_averages(distances, measurements, bins, error_model='std/n')
         Centers of radial bins
     y_profile : array_like
         Average of measurements in distance bin
-    yerr_profile: array_like
+    yerr_profile : array_like
         Standard deviation of measurements in distance bin
     """
     r_profile, _, _ = binned_statistic(distances, distances, statistic='mean', bins=bins)
@@ -45,17 +45,17 @@ def _compute_radial_averages(distances, measurements, bins, error_model='std/n')
 
 
 def make_bins(rmin, rmax, n_bins=10, log10_bins=False, method='equal'):
-    """Define bin edges
+    """ Define bin edges
 
     Parameters
     ----------
-    rmin: float
+    rmin : float
         Minimum bin edges wanted
-    rmax: float
+    rmax : float
         Maximum bin edges wanted
-    n_bins: float
+    n_bins : float
         Number of bins you want to create, default to 10.
-    log10_bins: bool
+    log10_bins : bool
         Bin in logspace rather than linear space
     method : str
         Binning method used, 'equal' is currently the only supported option.
@@ -85,141 +85,91 @@ def make_bins(rmin, rmax, n_bins=10, log10_bins=False, method='equal'):
     return binedges
 
 
-
-# =================================================================================================
-# =================================================================================================
-# =================================================================================================
-# =================================================================================================
-# See issue 164
 def convert_units(dist1, unit1, unit2, redshift=None, cosmo=None):
-    """Convenience wrapper to convert between a combination of angular and physical units
-    """
-    angular_bank = {"radians": u.rad, "deg": u.deg, "arcmin": u.arcmin, "arcsec": u.arcsec}
-    physical_bank = {"pc": u.pc, "kpc": u.kpc, "Mpc": u.Mpc}
+    """ Convenience wrapper to convert between a combination of angular and physical units.
 
-    if not unit1 in {**angular_bank, **physical_bank}:
+    Supported units: radians, degrees, arcmin, arcsec, Mpc, kpc, pc
+
+    To convert between angular and physical units you must provide both
+    a redshift and a cosmology object.
+
+    Parameters
+    ----------
+    dist1 : array_like
+        Input distances
+    unit1 : str
+        Unit for the input distances
+    unit2 : str
+        Unit for the output distances
+    redshift : float
+        Redshift used to convert between angular and physical units
+    cosmo : astropy.cosmology
+        Astropy cosmology object to compute angular diameter distance to
+        convert between physical and angular units
+
+    Returns
+    -------
+    dist2: array_like
+        Input distances converted to unit2
+    """
+    angular_bank = {"radians": u.rad, "degrees": u.deg, "arcmin": u.arcmin, "arcsec": u.arcsec}
+    physical_bank = {"pc": u.pc, "kpc": u.kpc, "Mpc": u.Mpc}
+    units_bank = {**angular_bank, **physical_bank}
+
+    # Some error checking
+    if unit1 not in units_bank:
         raise ValueError("Input units ({}) not supported".format(unit1))
-    if not unit2 in {**angular_bank, **physical_bank}:
+    if unit2 not in units_bank:
         raise ValueError("Output units ({}) not supported".format(unit2))
 
-    # If both input and output are angular, use angular function
-    if (unit1 in angular_bank) and (unit2 in angular_bank):
-        return _convert_angular_units(dist1, unit1, unit2)
-    elif (unit1 in physical_bank) and (unit2 in physical_bank):
-        return _convert_physical_units(dist1, unit1, unit2)
-    else:
-        raise NotImplementedError("OMEGALUL")
+    # Try automated astropy unit conversion
+    try:
+        return (dist1 * units_bank[unit1]).to(units_bank[unit2]).value
 
-    pass
+    # Otherwise do manual conversion
+    except u.UnitConversionError:
+        # Make sure that we were passed a redshift and cosmology
+        if redshift is None or cosmo is None:
+            raise TypeError("Redshift and cosmology must be specified to convert units")
+
+        # Redshift must be greater than zero for this approx
+        if not redshift > 0.0:
+            raise ValueError("Redshift must be greater than 0.")
+
+        # Convert angular to physical
+        if (unit1 in angular_bank) and (unit2 in physical_bank):
+            dist1_rad = (dist1 * units_bank[unit1]).to(u.rad).value
+            dist1_mpc = _convert_rad_to_mpc(dist1_rad, redshift, cosmo, do_inverse=False)
+            return (dist1_mpc * u.Mpc).to(units_bank[unit2]).value
+
+        # Otherwise physical to angular
+        dist1_mpc = (dist1 * units_bank[unit1]).to(u.Mpc).value
+        dist1_rad = _convert_rad_to_mpc(dist1_mpc, redshift, cosmo, do_inverse=True)
+        return (dist1_rad * u.rad).to(units_bank[unit2]).value
 
 
-def _convert_angular_units(dist1, unit1, unit2):
-    """Convert a distance measure in angular units to different angular units
-
-    Can convert between degrees, arcmin, arcsec, and radians
+def _convert_rad_to_mpc(dist1, redshift, cosmo, do_inverse=False):
+    r""" Convert between radians and Mpc using the small angle approximation
+    and :math:`d = D_A \theta`.
 
     Parameters
-    ----------
-    dist1: array_like
+    ==========
+    dist1 : array_like
         Input distances
-    unit1: str
-        Unit for the input distances
-    unit2: str
-        Unit for the output distances
+    redshift : float
+        Redshift used to convert between angular and physical units
+    cosmo : astropy.cosmology
+        Astropy cosmology object to compute angular diameter distance to
+        convert between physical and angular units
+    do_inverse : bool
+        If true, converts Mpc to radians
 
     Returns
-    -------
-    dist2: array_like
-        Input distances converted to unit2
+    =======
+    dist2 : array_like
+        Converted distances
     """
-    factors_to_degrees = {"degrees": 1.0,
-                          "radians": 180./np.pi,
-                          "arcmin": 1./60.,
-                          "arcsec": 1./3600.}
-    return dist1 * factors_to_degrees[unit1] / factors_to_degrees[unit2]
-
-
-def _convert_physical_units(dist1, unit1, unit2):
-    """Convert a physical unit to a different physical unit
-
-    Can convert between pc, kpc, and Mpc
-
-    Parameters
-    ----------
-    dist1: array_like
-        Input distances
-    unit1: str
-        Unit for the input distances
-    unit2: str
-        Unit for the output distances
-
-    Returns
-    -------
-    dist2: array_like
-        Input distances converted to unit2
-    """
-    factors_to_Mpc = {"Mpc": 1.0, "kpc": 1.0e-3, "pc": 1.0e-6}
-    return dist1 * factors_to_Mpc[unit1] / factors_to_Mpc[unit2]
-
-
-# See Issue 164
-def convert_between_rad_mpc(dist1, unit1, unit2, redshift, cosmo):
-    pass
-# =================================================================================================
-# =================================================================================================
-# =================================================================================================
-# =================================================================================================
-
-
-
-
-def _theta_units_conversion(source_seps, input_units, output_units, z_cl=None, cosmo=None):
-    """Convert source separations from input_units to output_units
-
-    Parameters
-    ----------
-    source_seps : array_like
-        Separation between the lens and each source galaxy on the sky
-    input_units : str
-        Units of the input source_seps
-    output_units : str
-        Units to convert source_seps to
-        Options = ["rad", deg", "arcmin", "arcsec", kpc", "Mpc"]
-    z_cl :  float, optional
-	Cluster redshift. Required to convert to physical distances.
-    cosmo : astropy.cosmology.core.FlatLambdaCDM, optional
-        Cosmology object. Required to convert to physical distances.
-
-    Returns
-    -------
-    new_radii : array_like
-        Source-lens separation in output_units.
-    """
-    units_bank = {"radians": u.rad, "deg": u.deg, "arcmin": u.arcmin, "arcsec": u.arcsec,
-                  "kpc": u.kpc, "Mpc": u.Mpc}
-
-    # Check to make sure both the input_units and output_units are supported
-    if not input_units in units_bank:
-        raise ValueError("Input units{} for separation not supported".format(input_units))
-    if not output_units in units_bank:
-        raise ValueError("Output units{} for separation not supported".format(output_units))
-
-    # Set input_units on source_seps
-    source_seps = source_seps*units_bank[input_units]
-
-    # Convert to output units and return
-    if 'pc' in output_units:
-        if z_cl is None or cosmo is None:
-            raise ValueError("Cluster redshift and cosmology object required to convert to\
-                              physical units")
-        out_units_obj = units_bank[output_units]
-        angular_diameter_distance = cosmo.angular_diameter_distance(z_cl).to(out_units_obj).value
-        # if isinstance(cosmo, astropy.cosmology.core.FlatLambdaCDM): # astropy cosmology type
-        #     Da = cosmo.angular_diameter_distance(z_cl).to(unit_).value
-        # elif isinstance(cosmo, ccl.core.Cosmology): # astropy cosmology type # 7481794
-        #     Da = ccl.comoving_angular_distance(cosmo, 1/(1+z_cl)) / (1+z_cl) * u.Mpc.to(unit_)
-        # else:
-        #     raise ValueError("cosmo object (%s) not an astropy or ccl cosmology"%str(cosmo))
-        return source_seps.value*angular_diameter_distance
-
-    return source_seps.to(units_bank[output_units]).value
+    d_a = cosmo.angular_diameter_distance(redshift).to('Mpc').value
+    if do_inverse:
+        return dist1 / d_a
+    return dist1 * d_a

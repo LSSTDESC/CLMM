@@ -1,4 +1,6 @@
-"""Tests for polaraveraging.py"""
+""" Tests for utils.py """
+from numpy.testing import assert_raises, assert_allclose
+from astropy.cosmology import FlatLambdaCDM
 import clmm
 import clmm.utils as utils
 from numpy import testing
@@ -8,7 +10,7 @@ import astropy.units as u
 import os
 import pytest
 
-rtol = 1.e-6
+tolerance = {'rtol': 1.0e-6, 'atol': 0}
 
 
 # Commented tests should be made to work or removed if nonsensical
@@ -27,33 +29,33 @@ def test_compute_radial_averages():
     3. Error checking like what is done is fine. BUT if we decide to do it we NEED to be complete
     """
     #testing input types
-    testing.assert_raises(TypeError, utils._compute_radial_averages, radius="glue", g=10,
+    testing.assert_raises(TypeError, utils.compute_radial_averages, radius="glue", g=10,
                           bins=[np.arange(1.,16.)])
-    testing.assert_raises(TypeError, utils._compute_radial_averages, radius=np.arange(1.,10.),
+    testing.assert_raises(TypeError, utils.compute_radial_averages, radius=np.arange(1.,10.),
                           g="glue", bins=[np.arange(1.,16.)])  
-    testing.assert_raises(TypeError, utils._compute_radial_averages, radius=np.arange(1.,10.),
+    testing.assert_raises(TypeError, utils.compute_radial_averages, radius=np.arange(1.,10.),
                           g=np.arange(1.,10.), bins='glue') 
 
     #want radius and g to have same number of entries
-    testing.assert_raises(TypeError, utils._compute_radial_averages, radius=np.arange(1.,10.),
+    testing.assert_raises(TypeError, utils.compute_radial_averages, radius=np.arange(1.,10.),
                           g=np.arange(1.,7.), bins=[np.arange(1.,16.)])
 
     #want binning to encompass entire radial range
-    # testing.assert_raises(UserWarning, utils._compute_radial_averages, radius=np.arange(1.,10.),
+    # testing.assert_raises(UserWarning, utils.compute_radial_averages, radius=np.arange(1.,10.),
     #                       g=np.arange(1.,10.), bins=[1,6,7])
-    # testing.assert_raises(UserWarning, utils._compute_radial_averages, radius=np.arange(1.,6.),
+    # testing.assert_raises(UserWarning, utils.compute_radial_averages, radius=np.arange(1.,6.),
     #                       g=np.arange(1.,6.), bins=[5,6,7])
 
     # Test that that we get the expected outputs
     bins = [0.5, 1.0]
     dists = np.hstack([.7*np.ones(5), .8*np.ones(5)])
     vals = np.arange(1, 11, 1)
-    rtest, ytest, yerr_std = utils._compute_radial_averages(dists, vals, bins, error_model='std')
-    _, _, yerr_stdn = utils._compute_radial_averages(dists, vals, bins, error_model='std/n')
-    testing.assert_allclose(rtest, np.mean(dists), rtol)
-    testing.assert_allclose(ytest, np.mean(vals), rtol)
-    testing.assert_allclose(yerr_std, np.std(vals), rtol)
-    testing.assert_allclose(yerr_stdn, np.std(vals)/len(vals), rtol)
+    rtest, ytest, yerr_std = utils.compute_radial_averages(dists, vals, bins, error_model='std')
+    _, _, yerr_stdn = utils.compute_radial_averages(dists, vals, bins, error_model='std/n')
+    testing.assert_allclose(rtest, np.mean(dists), **tolerance)
+    testing.assert_allclose(ytest, np.mean(vals), **tolerance)
+    testing.assert_allclose(yerr_std, np.std(vals), **tolerance)
+    testing.assert_allclose(yerr_stdn, np.std(vals)/len(vals), **tolerance)
 
 
 def test_make_bins():
@@ -105,135 +107,100 @@ def test_make_bins():
 #     testing.assert_raises(TypeError, utils.make_bins, rmin=1, rmax=10, n_bins=9.9, log_bins=False)
 
 
-def _angular_conversion_helper(dist, unit1_string, unit1_astropy):
-    """ Helper function to clean up test_convert_angular_units """
-    testing.assert_allclose(utils._convert_angular_units(dist, unit1_string, 'degrees'),
-                            (dist * unit1_astropy).to(u.deg).value,
-                            rtol)
-    testing.assert_allclose(utils._convert_angular_units(dist, unit1_string, 'radians'),
-                            (dist * unit1_astropy).to(u.rad).value,
-                            rtol)
-    testing.assert_allclose(utils._convert_angular_units(dist, unit1_string, 'arcmin'),
-                            (dist * unit1_astropy).to(u.arcmin).value,
-                            rtol)
-    testing.assert_allclose(utils._convert_angular_units(dist, unit1_string, 'arcsec'),
-                            (dist * unit1_astropy).to(u.arcsec).value,
-                            rtol)
+
+def _rad_to_mpc_helper(dist, redshift, cosmo, do_inverse):
+    """ Helper function to clean up test_convert_rad_to_mpc. Truth is computed using
+    astropy so this test is very circular. Once we swap to CCL very soon this will be
+    a good source of truth. """
+    d_a = cosmo.angular_diameter_distance(redshift).to('Mpc').value
+    print(d_a)
+    if do_inverse: truth = dist / d_a
+    else: truth = dist * d_a
+    assert_allclose(utils._convert_rad_to_mpc(dist, redshift, cosmo, do_inverse),
+                    truth, **tolerance)
 
 
-def test_convert_angular_units():
-    """ Test all permutations of converting angular units to angular units. Uses the
-    helper function _angular_conversion_helper to make it a bit cleaner. To compute
-    the truth, astropy units is used.
-    """
-    # Test conversion from degrees
-    dist_deg = np.array([0.0, 3.0, 15.0, 45.0, 90.0, 180.0])
-    _angular_conversion_helper(dist_deg, 'degrees', u.deg)
-    
-    # Test conversion from radians
-    dist_rad = np.pi * np.array([0.0, 0.1, 0.333, 0.5, 0.8, 1.0])
-    _angular_conversion_helper(dist_rad, 'radians', u.rad)
+def test_convert_rad_to_mpc():
+    """ Test conversion between physical and angular units and vice-versa. """
+    # Set some default values if I want them
+    redshift = 0.25
+    cosmo = FlatLambdaCDM(H0=70., Om0=0.3)
 
-    # Test conversion from arcmin
-    dist_am = dist_deg * 60.
-    _angular_conversion_helper(dist_am, 'arcmin', u.arcmin)
+    # Test the default behavior
+    assert_allclose(utils._convert_rad_to_mpc(0.33, redshift, cosmo),
+                    utils._convert_rad_to_mpc(0.33, redshift, cosmo, False), **tolerance)
+                        
+    # Test basic conversions each way
+    _rad_to_mpc_helper(0.003, redshift, cosmo, do_inverse=False)
+    _rad_to_mpc_helper(1.0, redshift, cosmo, do_inverse=True)
 
-    # Test conversion from arcsec
-    dist_as = dist_am * 60.
-    _angular_conversion_helper(dist_as, 'arcsec', u.arcsec)
+    # Convert back and forth and make sure I get the same answer
+    midtest = utils._convert_rad_to_mpc(0.003, redshift, cosmo)
+    assert_allclose(utils._convert_rad_to_mpc(midtest, redshift, cosmo, do_inverse=True),
+                    0.003, **tolerance)
 
+    # Test some different redshifts
+    for z_ in [0.1, 0.25, 0.5, 1.0, 2.0, 3.0]:
+        _rad_to_mpc_helper(0.33, z_, cosmo, do_inverse=False)
+        _rad_to_mpc_helper(1.0, z_, cosmo, do_inverse=True)
 
-def _physical_conversion_helper(dist, unit1_string, unit1_astropy):
-    """ Helper function to clean up test_convert_physical_units """
-    testing.assert_allclose(utils._convert_physical_units(dist, unit1_string, 'Mpc'),
-                            (dist * unit1_astropy).to(u.Mpc).value,
-                            rtol)
-    testing.assert_allclose(utils._convert_physical_units(dist, unit1_string, 'kpc'),
-                            (dist * unit1_astropy).to(u.kpc).value,
-                            rtol)
-    testing.assert_allclose(utils._convert_physical_units(dist, unit1_string, 'pc'),
-                            (dist * unit1_astropy).to(u.pc).value,
-                            rtol)
+    # Test some different H0
+    for H0_ in [30., 50., 67.3, 74.7, 100.]:
+        _rad_to_mpc_helper(0.33, 0.5, FlatLambdaCDM(H0=H0_, Om0=0.3), do_inverse=False)
+        _rad_to_mpc_helper(1.0, 0.5, FlatLambdaCDM(H0=H0_, Om0=0.3), do_inverse=True)
 
-
-def test_convert_physical_units():
-    """ Test all permutations of converting physical units to physical units. Uses the
-    helper function _physical_conversion_helper to make it a bit cleaner. To compute
-    the truth, astropy units is used.
-    """
-    # Test conversion from Mpc
-    dist_Mpc = np.array([-0.99, 0.0, 0.0042, 1.0, 3293.])
-    _physical_conversion_helper(dist_Mpc, 'Mpc', u.Mpc)
-
-    # Test conversion from kpc
-    dist_kpc = dist_Mpc * 1.0e3
-    _physical_conversion_helper(dist_kpc, 'kpc', u.kpc)
-
-    # Test conversion from pc
-    dist_pc = dist_kpc * 1.0e3
-    _physical_conversion_helper(dist_pc, 'pc', u.pc)
-
-
-def test_convert_between_rad_mpc():
-    """ Matts comments for whoever addresses Issue 164.
-    - This converts radians to Mpc and vice versa
-    1. Convert rad to Mpc
-    2. Convert Mpc to rad
-    3. Convert rad to Mpc to rad (should be the same)
-    4. Test rad to Mpc
-       Note: we know the conversions generally work, to test corner cases lets just go one way
-       A) z = 0.0, flat LCDM OmM=0.3, H0=70
-       B) z = 0.5, flat LCDM OmM=0.3, H0=70
-    5. Test some cosmos, (set z=0.5 to make it a little more interesting)
-       A) Support only flat??? idk
-       B) H0 = 50, 70, 100
-       C) OmM = 0.1, 0.25, 0.4, 1.0
-    """
-    pass
+    # Test some different Omega_M
+    for Om0_ in [0.1, 0.3, 0.5, 1.0]:
+        _rad_to_mpc_helper(0.33, 0.5, FlatLambdaCDM(H0=70., Om0=Om0_), do_inverse=False)
+        _rad_to_mpc_helper(1.0, 0.5, FlatLambdaCDM(H0=70., Om0=Om0_), do_inverse=True)
 
 
 def test_convert_units():
-    """ Matts comments for whoever addresses Issue 164.
-    - Since we have tested all the parts, we just need to test that it all fits together here
-    1. What if we pass in unsupported units?
-    2. angular->physics (or vice versa) without a redshift? without a cosmology?
-    3. One case of angular -> angular units
-    4. One case of physical -> physical units
-    5. One case of angular -> physical
-    6. One case of physical -> angular
+    """ Test the wrapper function to convert units. Corner cases should be tested in the
+    individual functions. This function should test one case for all supported conversions
+    and the error handling.
     """
-    pass
-    # Test that we get the appropriate errors when we pass in unsupported units
+    # Make an astropy cosmology object for testing
+    cosmo = FlatLambdaCDM(H0=70., Om0=0.3)
 
-    # Test that we get the appropriate errors when no redshift or cosmology 
-    # when physical units are involved
+    # Test that each unit is supported
+    utils.convert_units(1.0, 'radians', 'degrees')
+    utils.convert_units(1.0, 'arcmin', 'arcsec')
+    utils.convert_units(1.0, 'Mpc', 'kpc')
+    utils.convert_units(1.0, 'Mpc', 'kpc')
 
-    # Test angular to angular example
+    # Error checking
+    assert_raises(ValueError, utils.convert_units, 1.0, 'radians', 'CRAZY')
+    assert_raises(ValueError, utils.convert_units, 1.0, 'CRAZY', 'radians')
+    assert_raises(TypeError, utils.convert_units, 1.0, 'arcsec', 'Mpc')
+    assert_raises(TypeError, utils.convert_units, 1.0, 'arcsec', 'Mpc', None, cosmo)
+    assert_raises(TypeError, utils.convert_units, 1.0, 'arcsec', 'Mpc', 0.5, None)
 
-    # Test physical to physical example
+    # Test cases to make sure angular -> angular is fitting together
+    assert_allclose(utils.convert_units(np.pi, 'radians', 'degrees'), 180., **tolerance)
+    assert_allclose(utils.convert_units(180.0, 'degrees', 'radians'), np.pi, **tolerance)
+    assert_allclose(utils.convert_units(1.0, 'degrees', 'arcmin'), 60., **tolerance)
+    assert_allclose(utils.convert_units(1.0, 'degrees', 'arcsec'), 3600., **tolerance)
 
-    # Test angular to physical example
+    # Test cases to make sure physical -> physical is fitting together
+    assert_allclose(utils.convert_units(1.0, 'Mpc', 'kpc'), 1.0e3, **tolerance)
+    assert_allclose(utils.convert_units(1000., 'kpc', 'Mpc'), 1.0, **tolerance)
+    assert_allclose(utils.convert_units(1.0, 'Mpc', 'pc'), 1.0e6, **tolerance)
 
-    # Test physical to angular example
+    # Test conversion from angular to physical
+    # Using astropy, circular now but this will be fine since we are going to be
+    # swapping to CCL soon and then its kosher
+    r_arcmin, redshift = 20.0, 0.5
+    d_a = cosmo.angular_diameter_distance(redshift).to('kpc').value
+    truth = r_arcmin * (1.0 / 60.0) * (np.pi / 180.0) * d_a
+    assert_allclose(utils.convert_units(r_arcmin, 'arcmin', 'kpc', redshift, cosmo),
+                    truth, **tolerance)
 
-
-
-def test_theta_units_conversion():
-    """ Matts comments for whoever addresses Issue 164.
-    - This function is what is still used in the code so I left the tests
-    - Once all of the above tests are written and the code is refactored, this can be scrapped.
-    """
-    # tests for invaid input
-    testing.assert_raises(ValueError, utils._theta_units_conversion, np.pi, 'radians', 'crazy units')
-    testing.assert_raises(ValueError, utils._theta_units_conversion, np.pi, 'crazy units', 'radians')
-    testing.assert_raises(ValueError, utils._theta_units_conversion, np.pi, 'radians', 'Mpc')
-    testing.assert_raises(ValueError, utils._theta_units_conversion, np.pi, 'radians', 'Mpc', 0.5)
-
-    # tests for angular conversion
-    testing.assert_equal(utils._theta_units_conversion(np.pi, 'radians', 'radians'), np.pi)
-    testing.assert_almost_equal(utils._theta_units_conversion(np.pi, 'radians', 'deg'), 180.)
-    testing.assert_almost_equal(utils._theta_units_conversion(np.pi, 'radians', 'arcmin'), 180.*60)
-    testing.assert_almost_equal(utils._theta_units_conversion(np.pi, 'radians', 'arcsec'), 180.*60*60)
-    testing.assert_almost_equal(utils._theta_units_conversion(180., 'deg', 'radians'), np.pi)
-
-
+    # Test conversion both ways between angular and physical units
+    # Using astropy, circular now but this will be fine since we are going to be
+    # swapping to CCL soon and then its kosher
+    r_kpc, redshift = 20.0, 0.5
+    d_a = cosmo.angular_diameter_distance(redshift).to('kpc').value
+    truth = r_kpc * (1.0 / d_a) * (180. / np.pi) * 60.
+    assert_allclose(utils.convert_units(r_kpc, 'kpc', 'arcmin', redshift, cosmo),
+                    truth, **tolerance)
