@@ -1,4 +1,7 @@
 """A collection of scripts that can be used to plot the various quantities that CLMM models."""
+import matplotlib.pyplot as plt
+from .galaxycluster import GalaxyCluster
+
 
 def plot_profiles(cluster=None, rbins=None, tangential_shear=None, tangential_shear_error=None,
                   cross_shear=None, cross_shear_error=None, r_units=None):
@@ -40,33 +43,36 @@ def plot_profiles(cluster=None, rbins=None, tangential_shear=None, tangential_sh
         tangential_shear = cluster.profile['gt']
         try:
             tangential_shear_error = cluster.profile['gt_err']
-        except: pass
+        except:
+            pass
         try:
             cross_shear = cluster.profile['gx']
-        except: pass
+        except:
+            pass
         try:
             cross_shear_error = cluster.profile['gx_err']
-        except: pass
+        except:
+            pass
 
     # Plot the tangential shears
-    fig, ax = plt.subplots()
-    ax.errorbar(rbins, tangential_shear, 
-                yerr=tangential_shear_error,
-                fmt='bo-', label="Tangential Shear")
+    fig, axes = plt.subplots()
+    axes.errorbar(rbins, tangential_shear,
+                  yerr=tangential_shear_error,
+                  fmt='bo-', label="Tangential Shear")
 
     # Plot the cross shears
     try:
-        plt.plot(rbins, cross_shear, 
+        plt.plot(rbins, cross_shear,
                  yerr=cross_shear_error,
                  fmt='ro-', label="Cross Shear")
         plt.errorbar(r, gx, gxerr, label=None)
-    except: pass
+    except:
+        pass
 
-    ax.legend()
-    ax.set_xlabel(r'Radius []'.format(r_unit))
-    ax.set_ylabel(r'$\gamma$')
+    axes.legend()
+    axes.set_xlabel(r'Radius [{}]'.format(r_units))
+    axes.set_ylabel(r'$\gamma$')
 
     return fig
 
-from .galaxycluster import GalaxyCluster
 GalaxyCluster.plot_profiles = plot_profiles
