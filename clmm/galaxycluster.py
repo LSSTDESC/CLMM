@@ -31,10 +31,18 @@ class GalaxyCluster():
             unique_id = str(unique_id)
         else:
             raise TypeError('unique_id incorrect type: %s'%type(unique_id))
-        if not isinstance(ra, float):
+        try:
+            ra = float(ra)
+        except:
             raise TypeError('ra incorrect type: %s'%type(ra))
-        if not isinstance(dec, float):
+        try:
+            dec = float(dec)
+        except:
             raise TypeError('dec incorrect type: %s'%type(dec))
+        try:
+            z = float(z)
+        except:
+            raise TypeError('z incorrect type: %s'%type(z))
         if not isinstance(galcat, Table):
             raise TypeError('galcat incorrect type: %s'%type(galcat))
 
