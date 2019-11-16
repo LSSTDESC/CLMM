@@ -1,61 +1,62 @@
 """ Tests for utils.py """
-from numpy.testing import assert_raises, assert_allclose
 from astropy.cosmology import FlatLambdaCDM
-import clmm
-import clmm.utils as utils
 from numpy import testing
 import numpy as np
+from numpy.testing import assert_raises, assert_allclose
 from astropy.table import Table
 import astropy.units as u
 import os
 import pytest
 
+import clmm
+import clmm.utils as utils
+from clmm.utils import compute_radial_averages
+
 tolerance = {'rtol': 1.0e-6, 'atol': 0}
 
 
-# Commented tests should be made to work or removed if nonsensical
-# Ensure full coverage of all corner cases etc
 def test_compute_radial_averages():
-    """ Matt Comments for whoever addresses Issue 164.
-    - Most of this is probably meh.
-    - Lets write a test to
-    1. Given a couple of points all in the same bin, compute on paper the answer and check
-       A) Correct answer with no error_model (so, the default)
-       B) Correct answer with error_model='std'
-       C) Correct answer with error_model='std/n'
-    2. Repeat step 1 for a couple of points split in between two bins.
-       A) first 3 obj in bin1, second 3 in bin2 for example
-       B) bin1, bin2, bin1, bin2, etc... Just shuffle the order
-    3. Error checking like what is done is fine. BUT if we decide to do it we NEED to be complete
-    """
-    #testing input types
-    testing.assert_raises(TypeError, utils.compute_radial_averages, radius="glue", g=10,
-                          bins=[np.arange(1.,16.)])
-    testing.assert_raises(TypeError, utils.compute_radial_averages, radius=np.arange(1.,10.),
-                          g="glue", bins=[np.arange(1.,16.)])  
-    testing.assert_raises(TypeError, utils.compute_radial_averages, radius=np.arange(1.,10.),
-                          g=np.arange(1.,10.), bins='glue') 
+    """ Tests compute_radial_averages, a function that computes several binned statistics """
+    # Make some test data
+    binvals = np.array([2., 3., 6., 8., 4., 9.])
+    xbins1 = [0., 10.]
+    xbins2 = [0., 5., 10.]
 
-    #want radius and g to have same number of entries
-    testing.assert_raises(TypeError, utils.compute_radial_averages, radius=np.arange(1.,10.),
-                          g=np.arange(1.,7.), bins=[np.arange(1.,16.)])
+    # Test requesting an unsupported error model
+    assert_raises(ValueError, compute_radial_averages, binvals, binvals, [0., 10.], 'glue')
 
-    #want binning to encompass entire radial range
-    # testing.assert_raises(UserWarning, utils.compute_radial_averages, radius=np.arange(1.,10.),
-    #                       g=np.arange(1.,10.), bins=[1,6,7])
-    # testing.assert_raises(UserWarning, utils.compute_radial_averages, radius=np.arange(1.,6.),
-    #                       g=np.arange(1.,6.), bins=[5,6,7])
+    # Check the default error model
+    assert_allclose(compute_radial_averages(binvals, binvals, xbins1),
+            [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)/len(binvals)]], **tolerance)
 
-    # Test that that we get the expected outputs
-    bins = [0.5, 1.0]
-    dists = np.hstack([.7*np.ones(5), .8*np.ones(5)])
-    vals = np.arange(1, 11, 1)
-    rtest, ytest, yerr_std = utils.compute_radial_averages(dists, vals, bins, error_model='std')
-    _, _, yerr_stdn = utils.compute_radial_averages(dists, vals, bins, error_model='std/n')
-    testing.assert_allclose(rtest, np.mean(dists), **tolerance)
-    testing.assert_allclose(ytest, np.mean(vals), **tolerance)
-    testing.assert_allclose(yerr_std, np.std(vals), **tolerance)
-    testing.assert_allclose(yerr_stdn, np.std(vals)/len(vals), **tolerance)
+    # Test 3 objects in one bin with various error models
+    assert_allclose(compute_radial_averages(binvals, binvals, xbins1, error_model='std/n'),
+            [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)/len(binvals)]], **tolerance)
+    assert_allclose(compute_radial_averages(binvals, binvals, xbins1, error_model='std'),
+            [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)]], **tolerance)
+
+    # A slightly more complicated case with two bins
+    inbin1 = binvals[(binvals > xbins2[0]) & (binvals < xbins2[1])]
+    inbin2 = binvals[(binvals > xbins2[1]) & (binvals < xbins2[2])]
+    assert_allclose(compute_radial_averages(binvals, binvals, xbins2, error_model='std/n'),
+            [[np.mean(inbin1), np.mean(inbin2)], [np.mean(inbin1), np.mean(inbin2)],
+             [np.std(inbin1)/len(inbin1), np.std(inbin2)/len(inbin2)]], **tolerance)
+    assert_allclose(compute_radial_averages(binvals, binvals, xbins2, error_model='std'),
+            [[np.mean(inbin1), np.mean(inbin2)], [np.mean(inbin1), np.mean(inbin2)],
+             [np.std(inbin1), np.std(inbin2)]], **tolerance)
+
+    # Test a much larger, random sample with unevenly spaced bins
+    binvals = 10.0 * np.random.random(100)
+    xbins2 = [0.0, 10.0 * np.random.random(), 10.0]
+    inbin1 = binvals[(binvals > xbins2[0]) & (binvals < xbins2[1])]
+    inbin2 = binvals[(binvals > xbins2[1]) & (binvals < xbins2[2])]
+    assert_allclose(compute_radial_averages(binvals, binvals, xbins2, error_model='std/n'),
+            [[np.mean(inbin1), np.mean(inbin2)], [np.mean(inbin1), np.mean(inbin2)],
+             [np.std(inbin1)/len(inbin1), np.std(inbin2)/len(inbin2)]], **tolerance)
+    assert_allclose(compute_radial_averages(binvals, binvals, xbins2, error_model='std'),
+            [[np.mean(inbin1), np.mean(inbin2)], [np.mean(inbin1), np.mean(inbin2)],
+             [np.std(inbin1), np.std(inbin2)]], **tolerance)
+
 
 
 def test_make_bins():

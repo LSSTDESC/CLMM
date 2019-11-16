@@ -268,9 +268,9 @@ def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
 
     # Compute the binned average shears and associated errors
     r_avg, gt_avg, gt_err = compute_radial_averages(source_seps, cluster.galcat['gt'].data,
-                                                    bins=bins, error_model='std/n')
+                                                    xbins=bins, error_model='std/n')
     r_avg, gx_avg, gx_err = compute_radial_averages(source_seps, cluster.galcat['gx'].data,
-                                                    bins=bins, error_model='std/n')
+                                                    xbins=bins, error_model='std/n')
 
     profile_table = Table([bins[:-1], r_avg, bins[1:], gt_avg, gt_err, gx_avg, gx_err],
                           names=('radius_min', 'radius', 'radius_max', 'gt', 'gt_err',
