@@ -73,8 +73,27 @@ def _get_z_from_a(a):
     z = 1. / a - 1.
     return z
 
+def _ct_omega_m_fix(Omega_m, z):
+    r"""
+    Patch to fix `cluster_toolkit` z=0 limitation. It works by passing
+    :math:`\Omega_m(z)` instead of :math:`\Omega_m(z=0)` to
+    `cluster_toolkit` functions.
 
-def get_3d_density(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameterization='nfw'):
+    Parameters
+    ----------
+    Omega_m: float
+        :math:`\Omega_m(z=0)`
+    z: float
+        Redshift of the conversion
+
+    Returns
+    -------
+    float
+        :math:`\Omega_m(z)=\Omega_m(z=0)(1+z)^3`
+    """
+    return Omega_m*(1+z)**3
+
+def get_3d_density(r3d, mdelta, cdelta, z, cosmo, Delta=200, halo_profile_parameterization='nfw'):
     r"""Retrieve the 3d density :math:`\rho(r)`.
 
     Profiles implemented so far are:
@@ -89,6 +108,8 @@ def get_3d_density(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameter
         Galaxy cluster mass in :math:`M_\odot/h`.
     cdelta : float
         Galaxy cluster NFW concentration.
+    z: float
+        Redshift of the cluster
     cosmo : pyccl.core.Cosmology object
         CCL Cosmology object
     Delta : int, optional
@@ -118,16 +139,16 @@ def get_3d_density(r3d, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameter
     and use another structure to take the arguments necessary for specific models
     """
     cosmo = cclify_astropy_cosmo(cosmo)
-    Omega_m = cosmo['Omega_c'] + cosmo['Omega_b']
+    Omega_m_z = _ct_omega_m_fix(cosmo['Omega_c'] + cosmo['Omega_b'], z)
 
     if halo_profile_parameterization == 'nfw':
-        rho = ct.density.rho_nfw_at_r(r3d, mdelta, cdelta, Omega_m, delta=Delta)
+        rho = ct.density.rho_nfw_at_r(r3d, mdelta, cdelta, Omega_m_z, delta=Delta)
         return rho
     else:
         raise ValueError("Profile models other than nfw not currently supported")
 
 
-def predict_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameterization='nfw'):
+def predict_surface_density(r_proj, mdelta, cdelta, z, cosmo, Delta=200, halo_profile_parameterization='nfw'):
     r"""Computes the surface mass density
 
     .. math::
@@ -143,6 +164,8 @@ def predict_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profi
         Galaxy cluster mass in :math:`M_\odot/h`.
     cdelta : float
         Galaxy cluster NFW concentration.
+    z: float
+        Redshift of the cluster
     cosmo : pyccl.core.Cosmology object
         CCL Cosmology object
     Delta : int, optional
@@ -167,16 +190,16 @@ def predict_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profi
     another structure to take the arguments necessary for specific models.
     """
     cosmo = cclify_astropy_cosmo(cosmo)
-    Omega_m = cosmo['Omega_c'] + cosmo['Omega_b']
+    Omega_m_z = _ct_omega_m_fix(cosmo['Omega_c'] + cosmo['Omega_b'], z)
 
     if halo_profile_parameterization == 'nfw':
-        sigma = ct.deltasigma.Sigma_nfw_at_R(r_proj, mdelta, cdelta, Omega_m, delta=Delta)
+        sigma = ct.deltasigma.Sigma_nfw_at_R(r_proj, mdelta, cdelta, Omega_m_z, delta=Delta)
         return sigma
     else:
         raise ValueError("Profile models other than nfw not currently supported")
 
 
-def predict_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, halo_profile_parameterization='nfw'):
+def predict_excess_surface_density(r_proj, mdelta, cdelta, z, cosmo, Delta=200, halo_profile_parameterization='nfw'):
     r"""Computes the excess surface density
 
     .. math::
@@ -195,6 +218,8 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, hal
         Galaxy cluster mass in :math:`M_\odot/h`.
     cdelta : float
         Galaxy cluster NFW concentration.
+    z: float
+        Redshift of the cluster
     cosmo : pyccl.core.Cosmology object
         CCL Cosmology object
     Delta : int, optional
@@ -214,13 +239,15 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=200, hal
         Excess surface density, DeltaSigma in units of [:math:`h M_\odot/pc^2`].
     """
     cosmo = cclify_astropy_cosmo(cosmo)
-    Omega_m = cosmo['Omega_c'] + cosmo['Omega_b']
+    Omega_m_z = _ct_omega_m_fix(cosmo['Omega_c'] + cosmo['Omega_b'], z)
 
     if halo_profile_parameterization == 'nfw':
         Sigma_r_proj = np.logspace(-3, 4, 1000)
-        Sigma = ct.deltasigma.Sigma_nfw_at_R(Sigma_r_proj, mdelta, cdelta, Omega_m, delta=Delta)
+        Sigma = ct.deltasigma.Sigma_nfw_at_R(Sigma_r_proj, mdelta, cdelta,
+                    Omega_m_z, delta=Delta)
         # ^ Note: Let's not use this naming convention when transfering ct to ccl....
-        deltasigma = ct.deltasigma.DeltaSigma_at_R(r_proj, Sigma_r_proj, Sigma, mdelta, cdelta, Omega_m, delta=Delta)
+        deltasigma = ct.deltasigma.DeltaSigma_at_R(r_proj, Sigma_r_proj,
+                        Sigma, mdelta, cdelta, Omega_m_z, delta=Delta)
         return deltasigma
     else:
         raise ValueError("Profile models other than nfw not currently supported")
@@ -349,7 +376,7 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     We will need :math:`\gamma_\infty` and :math:`\kappa_\infty` for alternative z_src_models using :math:`\beta_s`.
     Need to figure out if we want to raise exceptions rather than errors here?
     """
-    delta_sigma = predict_excess_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=Delta,
+    delta_sigma = predict_excess_surface_density(r_proj, mdelta, cdelta, z_cluster, cosmo, Delta=Delta,
                                                  halo_profile_parameterization=halo_profile_parameterization)
 
     if z_src_model == 'single_plane':
@@ -410,7 +437,7 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, Delt
     -----
     Need to figure out if we want to raise exceptions rather than errors here?
     """
-    sigma = predict_surface_density(r_proj, mdelta, cdelta, cosmo, Delta=Delta,
+    sigma = predict_surface_density(r_proj, mdelta, cdelta, z_cluster, cosmo, Delta=Delta,
                                     halo_profile_parameterization=halo_profile_parameterization)
 
     if z_src_model == 'single_plane':
