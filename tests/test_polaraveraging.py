@@ -8,7 +8,7 @@ import os
 import pytest
 
 
-rtol = 1.e-6
+rtol = 1.e-2
 
 
 def test_compute_cross_shear():
