@@ -8,7 +8,8 @@ import os
 import pytest
 
 
-rtol = 1.e-2
+rtol = 1.e-6
+atol = 1.e-6
 
 
 def test_compute_cross_shear():
@@ -25,12 +26,12 @@ def test_compute_cross_shear():
 #    testing.assert_allclose(cross_shear, expected_cross_shear)
 
     # Some additional edge cases
-    testing.assert_allclose(pa._compute_cross_shear(100., 0., 0.), 0.0, rtol=rtol)
-    testing.assert_allclose(pa._compute_cross_shear(100., 0., np.pi/2), 0.0,rtol=rtol)
-    testing.assert_allclose(pa._compute_cross_shear(0., 100., 0.), -100.0, rtol=rtol)
-    testing.assert_allclose(pa._compute_cross_shear(0., 100., np.pi/2), 100.0)
-    testing.assert_allclose(pa._compute_cross_shear(0., 100., np.pi/4.), 0.0)
-    testing.assert_allclose(pa._compute_cross_shear(0., 0., 0.3), 0.)
+    testing.assert_allclose(pa._compute_cross_shear(100., 0., 0.), 0.0,atol=atol)
+    testing.assert_allclose(pa._compute_cross_shear(100., 0., np.pi/2), 0.0,atol=atol)
+    testing.assert_allclose(pa._compute_cross_shear(0., 100., 0.), -100.0,atol=atol)
+    testing.assert_allclose(pa._compute_cross_shear(0., 100., np.pi/2), 100.0,atol=atol)
+    testing.assert_allclose(pa._compute_cross_shear(0., 100., np.pi/4.), 0.0,atol=atol)
+    testing.assert_allclose(pa._compute_cross_shear(0., 0., 0.3), 0.,atol=atol)
 
 
 def test_compute_tangential_shear():
