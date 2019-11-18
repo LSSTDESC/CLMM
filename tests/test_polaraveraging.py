@@ -209,17 +209,17 @@ def test_make_shear_profiles():
     # Make the shear profile and check it
     bins_radians = np.array([0.002, 0.003, 0.004])
     profile = pa.make_shear_profile(cluster, 'radians', 'radians', bins=bins_radians)
-    testing.assert_allclose(profile['radius_min'], [0.002, 0.003], rtol=rtol,
+    testing.assert_allclose(profile['radius_min'], bins_radians[:-1], rtol=rtol,
                             err_msg="Minimum radius in bin not expected.")
     testing.assert_allclose(profile['radius'], [0.0021745039090962414, 0.0037238407383072053], rtol=rtol,
                             err_msg="Mean radius in bin not expected.")
-    testing.assert_allclose(profile['radius_max'], [0.003, 0.004], rtol=rtol,
+    testing.assert_allclose(profile['radius_max'], bins_radians[1:], rtol=rtol,
                             err_msg="Maximum radius in bin not expected.")
-    testing.assert_allclose(profile['gt'], [-0.22956126563459447, -0.02354769805831558], rtol=rtol,
+    testing.assert_allclose(profile['gt'], expected_tan_shear[:-1], rtol=rtol,
                             err_msg="Tangential shear in bin not expected")
     # testing.assert_allclose(profile['gt_err'], [], rtol=rtol,
     #                         err_msg="Tangential shear error in bin not expected")
-    testing.assert_allclose(profile['gx'], [-0.2780316984090899, -0.6398792901134982], rtol=rtol,
+    testing.assert_allclose(profile['gx'], expected_cross_shear[:-1], rtol=rtol,
                             err_msg="Cross shear in bin not expected")
     # testing.assert_allclose(profile['gx_err'], [], rtol=rtol,
     #                         err_msg="Cross shear error in bin not expected")
@@ -236,7 +236,7 @@ def test_make_shear_profiles():
                             err_msg="Tangential shear in bin not expected")
     # testing.assert_allclose(profile2['gt_err'], [], rtol=rtol,
     #                         err_msg="Tangential shear error in bin not expected")
-    testing.assert_allclose(profile2['gx'], [-0.2780316984090899, -0.6398792901134982], rtol=rtol, atol=atol,
+    testing.assert_allclose(profile2['gx'], expected_cross_shear[:-1], rtol=rtol, atol=atol,
                             err_msg="Cross shear in bin not expected")
     # testing.assert_allclose(profile2['gx_err'], [], rtol=rtol,
     #                         err_msg="Cross shear error in bin not expected")
