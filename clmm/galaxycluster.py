@@ -2,7 +2,10 @@
 The GalaxyCluster class
 """
 import pickle
+import astropy.table
 from astropy.table import Table
+# from typing import Union
+
 
 def load_cluster(filename, **kwargs):
     """Loads GalaxyCluster object from filename using Pickle"""
