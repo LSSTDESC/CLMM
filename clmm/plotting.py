@@ -39,7 +39,7 @@ def plot_profiles(cluster=None, rbins=None, tangential_shear=None, tangential_sh
     # If a cluster object was passed, use these arrays
     if cluster is not None and hasattr(cluster, 'profile'):
         rbins = cluster.profile['radius']
-        r_units = cluster.profile_bin_unit
+        r_units = cluster.profile_bin_units
         tangential_shear = cluster.profile['gt']
         try:
             tangential_shear_error = cluster.profile['gt_err']
