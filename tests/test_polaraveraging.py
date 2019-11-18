@@ -146,7 +146,7 @@ def test_compute_shear():
 
     # Correct values
     expected_angsep = np.array([0.0021745039090962414, 0.0037238407383072053])
-    expected_cross_shear = np.array([-0.2780316984090899, -0.6398792901134982])
+    expected_cross_shear = np.array([0.2780316984090899, 0.6398792901134982])
     expected_tangential_shear = np.array([-0.22956126563459447, -0.02354769805831558])
 
     # Pass arrays directly into function
@@ -197,7 +197,7 @@ def test_make_shear_profiles():
 
     # Test the outputs of compute_shear just to be save
     expected_angsep = np.array([0.0021745039090962414, 0.0037238407383072053, 0.0037238407383072053])
-    expected_cross_shear = np.array([-0.2780316984090899, -0.6398792901134982, -0.6398792901134982])
+    expected_cross_shear = np.array([0.2780316984090899, 0.6398792901134982, 0.6398792901134982])
     expected_tan_shear = np.array([-0.22956126563459447, -0.02354769805831558, -0.02354769805831558])
     testing.assert_allclose(angsep, expected_angsep, rtol=rtol,
                             err_msg="Angular Separation not correct when testing shear profiles")
