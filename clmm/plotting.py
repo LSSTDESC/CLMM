@@ -73,6 +73,6 @@ def plot_profiles(cluster=None, rbins=None, tangential_shear=None, tangential_sh
     axes.set_xlabel(r'Radius [{}]'.format(r_units))
     axes.set_ylabel(r'$\gamma$')
 
-    return fig
+    return fig, axes
 
 GalaxyCluster.plot_profiles = plot_profiles
