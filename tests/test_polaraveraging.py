@@ -226,17 +226,17 @@ def test_make_shear_profiles():
 
     # Repeat the same tests when we call make_shear_profile through the GalaxyCluster method
     profile2 = cluster.make_shear_profile('radians', 'radians', bins=bins_radians)
-    testing.assert_allclose(profile2['radius_min'], [0.002, 0.003], rtol=rtol,
+    testing.assert_allclose(profile2['radius_min'], [0.002, 0.003], rtol=rtol, atol=atol,
                             err_msg="Minimum radius in bin not expected.")
-    testing.assert_allclose(profile2['radius'], [0.0021745039090962414, 0.0037238407383072053], rtol=rtol,
+    testing.assert_allclose(profile2['radius'], [0.0021745039090962414, 0.0037238407383072053], rtol=rtol, atol=atol,
                             err_msg="Mean radius in bin not expected.")
-    testing.assert_allclose(profile2['radius_max'], [0.003, 0.004], rtol=rtol,
+    testing.assert_allclose(profile2['radius_max'], [0.003, 0.004], rtol=rtol,atol=atol,
                             err_msg="Maximum radius in bin not expected.")
-    testing.assert_allclose(profile2['gt'], [-0.22956126563459447, -0.02354769805831558], rtol=rtol,
+    testing.assert_allclose(profile2['gt'], [-0.22956126563459447, -0.02354769805831558], rtol=rtol,atol=atol,
                             err_msg="Tangential shear in bin not expected")
     # testing.assert_allclose(profile2['gt_err'], [], rtol=rtol,
     #                         err_msg="Tangential shear error in bin not expected")
-    testing.assert_allclose(profile2['gx'], [-0.2780316984090899, -0.6398792901134982], rtol=rtol,
+    testing.assert_allclose(profile2['gx'], [-0.2780316984090899, -0.6398792901134982], rtol=rtol, atol=atol,
                             err_msg="Cross shear in bin not expected")
     # testing.assert_allclose(profile2['gx_err'], [], rtol=rtol,
     #                         err_msg="Cross shear error in bin not expected")
