@@ -49,7 +49,7 @@ def compute_shear(cluster=None, ra_lens=None, dec_lens=None, ra_source_list=None
     position of the source relative to the lens, :math:`\phi`, are computed within the function
     and the angular separation is returned.
 
-    In the flat sky approximation, these angles are calculated using
+    In the flat sky approximation, these angles are calculated using (_l: lens, _s: source, RA is from right to left)
 
     .. math::
 
@@ -60,11 +60,13 @@ def compute_shear(cluster=None, ra_lens=None, dec_lens=None, ra_source_list=None
     The tangential, :math:`g_t`, and cross, :math:`g_x`, shears are calculated using the two
     shear components :math:`g_1` and :math:`g_2` of the source galaxies, following Eq.7 and Eq.8
     in Schrabback et al. (2018), arXiv:1611:03866
+    We checked that with the formula in Schneider, P. (2006). Weak gravitational lensing. Gravitational lensing: strong, weak and micro, pages 269–451.
+Arxiv: https://arxiv.org/abs/astro-ph/0509252
 
     .. math::
 
-        g_t =& -\left( g_1\cos\left(2\phi\right) + g_2\sin\left(2\phi\right)\right)\\
-        g_x =& -g_1 \sin\left(2\phi\right) + g_2\cos\left(2\phi\right)
+        g_t =& -\left( g_1\cos\left(2\phi\right) - g_2\sin\left(2\phi\right)\right)\\
+        g_x =& g_1 \sin\left(2\phi\right) - g_2\cos\left(2\phi\right)
 
 
     Parameters
@@ -184,9 +186,9 @@ def _compute_tangential_shear(shear1, shear2, phi):
     r"""Compute the tangential shear given the two shears and azimuthal positions for
     a single source or list of sources.
 
-    We compute the cross shear following Eq. 7 of Schrabback et al. 2018, arXiv:1611:03866
+    We compute the tangential shear following Eq. 7 of Schrabback et al. 2018, arXiv:1611:03866
     .. math::
-        g_t = -\left( g_1\cos\left(2\phi\right) + g_2\sin\left(2\phi\right)\right)
+        g_t = -\left( g_1\cos\left(2\phi\right) - g_2\sin\left(2\phi\right)\right)
 
     For extended descriptions of parameters, see `compute_shear()` documentation.
     """
@@ -198,12 +200,14 @@ def _compute_cross_shear(shear1, shear2, phi):
     source of list of sources.
 
     We compute the cross shear following Eq. 8 of Schrabback et al. 2018, arXiv:1611:03866
+    We also checked Schneider, P. (2006). Weak gravitational lensing. Gravitational lensing: strong, weak and micro, pages 269–451.
+Arxiv: https://arxiv.org/abs/astro-ph/0509252
     .. math::
-        g_x = -g_1 \sin\left(2\phi\right) + g_2\cos\left(2\phi\right)
+        g_x = g_1 \sin\left(2\phi\right) - g_2\cos\left(2\phi\right)
 
     For extended descriptions of parameters, see `compute_shear()` documentation.
     """
-    return - shear1 * np.sin(2.*phi) + shear2 * np.cos(2.*phi)
+    return shear1 * np.sin(2.*phi) - shear2 * np.cos(2.*phi)
 
 
 def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
