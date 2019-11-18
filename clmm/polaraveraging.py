@@ -1,480 +1,288 @@
-"""@file polaraveraging.py
-Functions to compute polar/azimuthal averages in radial bins
-"""
-try:
-    import pyccl as ccl
-except:
-    pass
-import numpy as np
-import matplotlib.pyplot as plt
-from astropy.coordinates import SkyCoord
-from astropy.cosmology import FlatLambdaCDM
-from astropy.table import Table
-from astropy import units as u
+"""Functions to compute polar/azimuthal averages in radial bins"""
+# try: # 7481794
+#     import pyccl as ccl
+# except ImportError:
+#     pass
 import math
 import warnings
+import numpy as np
+from astropy.table import Table
+from .utils import compute_radial_averages, make_bins, convert_units
+from .galaxycluster import GalaxyCluster
+
+# def _astropy_to_CCL_cosmo_object(astropy_cosmology_object): # 7481794
+#     """Generates a ccl cosmology object from an GCR or astropy cosmology object.
+#
+#     Adapted from https://github.com/LSSTDESC/CLMM/blob/issue/111/model-definition/clmm/modeling.py
+#     """
+#     apy_cosmo = astropy_cosmology_object
+#     ccl_cosmo = ccl.Cosmology(Omega_c=(apy_cosmo.Odm0-apy_cosmo.Ob0), Omega_b=apy_cosmo.Ob0,
+#                               h=apy_cosmo.h, n_s=apy_cosmo.n_s, sigma8=apy_cosmo.sigma8,
+#                               Omega_k=apy_cosmo.Ok0)
+#
+#     return ccl_cosmo
 
 
-##############################################################################################
-def _astropy_to_CCL_cosmo_object(astropy_cosmology_object) :
-#ALLOWS TO USE EITHER ASTROPY OR CCL FOR COSMO OBJECT, MAYBE THIS FUNCTION SOULD NOT BE HERE
-#adapted from https://github.com/LSSTDESC/CLMM/blob/issue/111/model-definition/clmm/modeling.py
-    ''' 
-    Generates a ccl cosmology object from an GCR or astropy cosmology object.  
-    '''
-    apy_cosmo = astropy_cosmology_object
-    ccl_cosmo = ccl.Cosmology(Omega_c=(apy_cosmo.Odm0-apy_cosmo.Ob0),
-                  Omega_b=apy_cosmo.Ob0,
-                  h=apy_cosmo.h,
-                  n_s=apy_cosmo.n_s,
-                  sigma8=apy_cosmo.sigma8,
-                  Omega_k=apy_cosmo.Ok0)
-    
-    return ccl_cosmo
-##############################################################################################
-#### Wrapper functions #######################################################################
-##############################################################################################
+def compute_shear(cluster=None, ra_lens=None, dec_lens=None, ra_source_list=None,
+                  dec_source_list=None, shear1=None, shear2=None, geometry='flat',
+                  add_to_cluster=True):
+    r"""Computes tangential shear, cross shear, and angular separation
 
-def compute_shear(cluster, geometry="flat", add_to_cluster=True):
-    """Computs tangential and cross shear along 
-         with radius in radians
+    To compute the shear, we need the right ascension and declination of the lens and of
+    all of the sources. We also need the two shear components of all of the sources.
+
+    These quantities can be handed to `compute_shear` in three ways
+
+    1. Pass in each as parameters::
+
+        compute_shear(ra_lens, dec_lens, ra_source_list, dec_source_list, shear1, shear2)
+
+    2. Given a `GalaxyCluster` object::
+
+        compute_shear(cluster)
+
+    3. As a method of `GalaxyCluster`::
+
+        cluster.compute_shear()
+
+    The angular separation between the source and the lens, :math:`\theta`, and the azimuthal
+    position of the source relative to the lens, :math:`\phi`, are computed within the function
+    and the angular separation is returned.
+
+    In the flat sky approximation, these angles are calculated using
+
+    .. math::
+
+        \theta^2 = & \left(\delta_s - \delta_l\right)^2 +
+        \left(\alpha_l-\alpha_s\right)^2\cos^2(\delta_l)\\
+        \tan\phi = & \frac{\delta_s - \delta_l}{\left(\alpha_l - \alpha_s\right)\cos(\delta_l)}
+
+    The tangential, :math:`g_t`, and cross, :math:`g_x`, shears are calculated using the two
+    shear components :math:`g_1` and :math:`g_2` of the source galaxies, following Eq.7 and Eq.8
+    in Schrabback et al. (2018), arXiv:1611:03866
+
+    .. math::
+
+        g_t =& -\left( g_1\cos\left(2\phi\right) + g_2\sin\left(2\phi\right)\right)\\
+        g_x =& -g_1 \sin\left(2\phi\right) + g_2\cos\left(2\phi\right)
+
+
     Parameters
     ----------
-    cluster: GalaxyCluster object
-        GalaxyCluster object with galaxies
-    geometry: str ('flat', 'curve')
-        Geometry to be used in the computation of theta, phi
+    cluster: GalaxyCluster, optional
+        Instance of `GalaxyCluster()` and must contain right ascension and declinations of both
+        the lens and sources and the two shear components all of the sources. If this
+        object is specified, right ascension, declination, and shear inputs are ignored.
+    ra_lens: float, optional
+        Right ascension of the lensing cluster
+    dec_lens: float, optional
+        Declination of the lensing cluster
+    ra_source_list: array_like, optional
+        Right ascensions of each source galaxy
+    dec_source_list: array_like, optional
+        Declinations of each source galaxy
+    shear1: array_like, optional
+        The measured shear of the source galaxies
+    shear2: array_like, optional
+        The measured shear of the source galaxies
+    geometry: str, optional
+        Sky geometry to compute angular separation.
+        Flat is currently the only supported option.
     add_to_cluster: bool
-        Adds the outputs to cluster.galcat
+        If `True` and a cluster was input, add the computed shears to the `GalaxyCluster` object
+
     Returns
     -------
-    gt: float vector
-        tangential shear
-    gx: float vector
-        cross shear
-    theta: float vector
-        radius in radians
+    angsep: array_like
+        Angular separation between lens and each source galaxy in radians
+    tangential_shear: array_like
+        Tangential shear for each source galaxy
+    cross_shear: array_like
+        Cross shear for each source galaxy
     """
-    if not ('e1' in cluster.galcat.columns  
-        and 'e2' in cluster.galcat.columns):
-        raise TypeError('shear information is missing in galaxy, ',
-                        'must have (e1, e2) or (gamma1, gamma2, kappa)')
-    theta, gt , gx = _compute_shear(cluster.ra, cluster.dec, 
-        cluster.galcat['ra'], cluster.galcat['dec'], 
-        cluster.galcat['e1'], cluster.galcat['e2'], 
-        sky=geometry)
+    if cluster is not None:
+        required_cols = ['ra', 'dec', 'e1', 'e2']
+        if not all([t_ in cluster.galcat.columns for t_ in required_cols]):
+            raise TypeError('GalaxyCluster\'s galaxy catalog missing required columns.')
+
+        ra_lens, dec_lens = cluster.ra, cluster.dec
+        ra_source_list, dec_source_list = cluster.galcat['ra'], cluster.galcat['dec']
+        shear1, shear2 = cluster.galcat['e1'], cluster.galcat['e2']
+
+    # If a cluster object is not specified, we require all of these inputs
+    elif any(t_ is None for t_ in (ra_lens, dec_lens, ra_source_list, dec_source_list,
+                                   shear1, shear2)):
+        raise TypeError('To compute shear, please provide a GalaxyCluster object or ra and dec of\
+                         lens and sources and both shears or ellipticities of the sources.')
+
+    # If there is only 1 source, make sure everything is a scalar
+    if all(not hasattr(t_, '__len__') for t_ in [ra_source_list, dec_source_list, shear1, shear2]):
+        pass
+    # Otherwise, check that the length of all of the inputs match
+    elif not all(len(t_) == len(ra_source_list) for t_ in [dec_source_list, shear1, shear2]):
+        raise TypeError("To compute the shear you should supply the same number of source\
+                         positions and shear.")
+
+    # Compute the lensing angles
+    if geometry == 'flat':
+        angsep, phi = _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list,
+                                                      dec_source_list)
+    else:
+        raise NotImplementedError("Sky geometry {} is not currently supported".format(geometry))
+
+    # Compute the tangential and cross shears
+    tangential_shear = _compute_tangential_shear(shear1, shear2, phi)
+    cross_shear = _compute_cross_shear(shear1, shear2, phi)
+
     if add_to_cluster:
-        cluster.galcat['theta'] = theta
-        cluster.galcat['gt'] = gt
-        cluster.galcat['gx'] = gx
-    return theta, gt, gx
+        cluster.galcat['theta'] = angsep
+        cluster.galcat['gt'] = tangential_shear
+        cluster.galcat['gx'] = cross_shear
 
-def make_shear_profile(cluster, radial_units, bins=None,
-                        cosmo=None, cosmo_object_type="astropy",
-                        add_to_cluster=True):
-    """ Computes shear profile of the cluster
+    return angsep, tangential_shear, cross_shear
+
+
+def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_source_list):
+    r"""Compute the angular separation between the lens and the source and the azimuthal
+    angle from the lens to the source in radians.
+
+    In the flat sky approximation, these angles are calculated using
+    .. math::
+        \theta = \sqrt{\left(\delta_s - \delta_l\right)^2 +
+        \left(\alpha_l-\alpha_s\right)^2\cos^2(\delta_l)}
+
+        \tan\phi = \frac{\delta_s - \delta_l}{\left(\alpha_l - \alpha_s\right)\cos(\delta_l)}
+
+    For extended descriptions of parameters, see `compute_shear()` documentation.
+    """
+    if not -360. <= ra_lens <= 360.:
+        raise ValueError("ra = {} of lens if out of domain".format(ra_lens))
+    if not -90. <= dec_lens <= 90.:
+        raise ValueError("dec = {} of lens if out of domain".format(dec_lens))
+    if not all(-360. <= x_ <= 360. for x_ in ra_source_list):
+        raise ValueError("Cluster has an invalid ra in source catalog")
+    if not all(-90. <= x_ <= 90 for x_ in dec_source_list):
+        raise ValueError("Cluster has an invalid dec in the source catalog")
+
+    deltax = np.radians(ra_source_list - ra_lens) * math.cos(math.radians(dec_lens))
+    deltay = np.radians(dec_source_list - dec_lens)
+
+    # Ensure that abs(delta ra) < pi
+    deltax[deltax >= np.pi] = deltax[deltax >= np.pi] - 2.*np.pi
+    deltax[deltax < -np.pi] = deltax[deltax < -np.pi] + 2.*np.pi
+
+    angsep = np.sqrt(deltax**2 + deltay**2)
+    phi = np.arctan2(deltay, -deltax)
+
+    if np.any(angsep > np.pi/180.):
+        warnings.warn("Using the flat-sky approximation with separations >1 deg may be inaccurate")
+
+    return angsep, phi
+
+
+def _compute_tangential_shear(shear1, shear2, phi):
+    r"""Compute the tangential shear given the two shears and azimuthal positions for
+    a single source or list of sources.
+
+    We compute the cross shear following Eq. 7 of Schrabback et al. 2018, arXiv:1611:03866
+    .. math::
+        g_t = -\left( g_1\cos\left(2\phi\right) + g_2\sin\left(2\phi\right)\right)
+
+    For extended descriptions of parameters, see `compute_shear()` documentation.
+    """
+    return - (shear1 * np.cos(2.*phi) + shear2 * np.sin(2.*phi))
+
+
+def _compute_cross_shear(shear1, shear2, phi):
+    r"""Compute the cross shear given the two shears and azimuthal position for a single
+    source of list of sources.
+
+    We compute the cross shear following Eq. 8 of Schrabback et al. 2018, arXiv:1611:03866
+    .. math::
+        g_x = -g_1 \sin\left(2\phi\right) + g_2\cos\left(2\phi\right)
+
+    For extended descriptions of parameters, see `compute_shear()` documentation.
+    """
+    return - shear1 * np.sin(2.*phi) + shear2 * np.cos(2.*phi)
+
+
+def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
+                       add_to_cluster=True):
+    r"""Compute the shear profile of the cluster
+
+    We assume that the cluster object contains information on the cross and
+    tangential shears and angular separation of the source galaxies
+
+    This function can be called in two ways using an instance of GalaxyCluster
+
+    1. Pass an instance of GalaxyCluster into the function::
+
+        make_shear_profile(cluster, 'radians', 'radians')
+
+    2. Call it as a method of a GalaxyCluster instance::
+
+        cluster.make_shear_profile('radians', 'radians')
 
     Parameters
     ----------
-    cluster: GalaxyCluster object
-        GalaxyCluster object with galaxies
-    radial_units:
-        Radial units of the profile, one of 
-        ["rad", deg", "arcmin", "arcsec", kpc", "Mpc"]
-    bins: array_like, float
-        User defined n_bins + 1 dimensional array of bins, if 'None',
-        the default is 10 equally spaced radial bins
-    cosmo:
-        Cosmology object 
-    cosmo_object_type : str
-        Keywords that can be either "ccl" or "astropy" 
-    add_to_cluster: bool
-        Adds the outputs to cluster.profile
+    cluster : GalaxyCluster
+        Instance of GalaxyCluster that contains the cross and tangential shears of
+        each source galaxy in its `galcat`
+    angsep_units : str
+        Units of the calculated separation of the source galaxies
+        Allowed Options = ["radians"]
+    bin_units : str
+        Units to use for the radial bins of the shear profile
+        Allowed Options = ["radians", deg", "arcmin", "arcsec", kpc", "Mpc"]
+    bins : array_like, optional
+        User defined bins to use for the shear profile. If a list is provided, use that as
+        the bin edges. If a scalar is provided, create that many equally spaced bins between
+        the minimum and maximum angular separations in bin_units. If nothing is provided,
+        default to 10 equally spaced bins.
+    cosmo: dict, optional
+        Cosmology parameters to convert angular separations to physical distances
+    add_to_cluster: bool, optional
+        Attach the profile to the cluster object as `cluster.profile`
 
     Returns
     -------
-    profile_table: astropy Table
-        Table with r_profile, gt profile (and error) and
-        gx profile (and error)
-
-    Note
-    ----
-    Currently, the radial_units are not saved in the profile_table.
-    We have to add it somehow.
+    profile : astropy.table.Table
+        Output table containing the radius grid points, the tangential and cross shear profiles
+        on that grid, and the errors in the two shear profiles. The errors are defined as the
+        standard errors in each bin.
     """
-    if not ('gt' in cluster.galcat.columns  
-        and 'gx' in cluster.galcat.columns
-        and 'theta' in cluster.galcat.columns):
-        raise TypeError('shear information is missing in galaxy, ',
-                        'must have tangential and cross shears (gt,gx).',
-                        'Run compute_shear first!')
-    radial_values = _theta_units_conversion(cluster.galcat['theta'],
-                                        radial_units, z_cl=cluster.z,
-                                        cosmo = cosmo,
-                                        cosmo_object_type=cosmo_object_type)
-    r_avg, gt_avg, gt_std = _compute_radial_averages(radial_values, cluster.galcat['gt'].data, bins=bins)
-    r_avg, gx_avg, gx_std = _compute_radial_averages(radial_values, cluster.galcat['gx'].data, bins=bins)
-    profile_table = Table([r_avg, gt_avg, gt_std, gx_avg, gx_avg],
-        names = ('radius', 'gt', 'gt_err', 'gx', 'gx_err'))
+    if not all([t_ in cluster.galcat.columns for t_ in ('gt', 'gx', 'theta')]):
+        raise TypeError('Shear information is missing in galaxy catalog must have tangential\
+                        and cross shears (gt,gx). Run compute_shear first!')
+
+    # Check to see if we need to do a unit conversion
+    if angsep_units is not bin_units:
+        source_seps = convert_units(cluster.galcat['theta'], angsep_units, bin_units,
+                                    redshift=cluster.z, cosmo=cosmo)
+    else:
+        source_seps = cluster.galcat['theta']
+
+    # Make bins if they are not provided
+    if not hasattr(bins, '__len__'):
+        bins = make_bins(np.min(source_seps), np.max(source_seps), bins)
+
+    # Compute the binned average shears and associated errors
+    r_avg, gt_avg, gt_err = compute_radial_averages(source_seps, cluster.galcat['gt'].data,
+                                                    xbins=bins, error_model='std/n')
+    r_avg, gx_avg, gx_err = compute_radial_averages(source_seps, cluster.galcat['gx'].data,
+                                                    xbins=bins, error_model='std/n')
+
+    profile_table = Table([bins[:-1], r_avg, bins[1:], gt_avg, gt_err, gx_avg, gx_err],
+                          names=('radius_min', 'radius', 'radius_max', 'gt', 'gt_err',
+                                 'gx', 'gx_err'))
+
     if add_to_cluster:
         cluster.profile = profile_table
+        cluster.profile_bin_units = bin_units
+
     return profile_table
 
-def plot_profiles(cluster, r_units=None):
-    """Plot shear profiles for validation
 
-    Parameters
-    ----------
-    cluster: GalaxyCluster object
-        GalaxyCluster object with galaxies
-    """
-    prof = cluster.profile
-    if r_units is not None:
-        if cluster.profile['radius'].unit is not None:
-            raise Warning(('r_units provided (%s) differ from'
-                    'r_units in GalaxyCluster.galcat table (%s)'
-                    ', using user defined')%(r_units, cluster.profile['radius'].unit))
-        else:
-            r_units = cluster.profile['radius'].unit
-    return _plot_profiles(*[cluster.profile[c] for c in
-            ('radius', 'gt', 'gt_err', 'gx', 'gx_err')],
-            r_units=cluster.profile['radius'].unit)
-
-# Maybe these functions should be here instead of __init__
-#GalaxyCluster.compute_shear = compute_shear
-#GalaxyCluster.make_shear_profile = make_shear_profile
-#GalaxyCluster.plot_profiles = plot_profiles
-
-##############################################################################################
-#### Internal functions ######################################################################
-##############################################################################################
-
-def _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky="flat"):
-    """Returns the characteristic angles of the lens system
-    
-    Add extended description
-
-    Parameters
-    ----------
-    ra_l, dec_l : float 
-        ra and dec of lens in decimal degrees
-    ra_s, dec_s : array_like, float
-        ra and dec of source in decimal degrees
-    sky : str, optional
-        'flat' uses the flat sky approximation (default) and 'curved' uses exact angles
-        if 'flat' is used and any separation is > 1 deg, a warning is raised.
-
-    Returns
-    -------
-    theta : array_like, float
-        Angular separation on the sky in radians
-    phi : array_like, float
-        Angle in radians, (can we do better)
-    """
-    
-    if not -360. <= ra_l <= 360.:
-        raise ValueError("ra = %f of lens if out of domain"%ra_l)
-    if not -90. <= dec_l <= 90.:
-        raise ValueError("dec = %f of lens if out of domain"%dec_l)
-    if not np.array([-360. <= x_ <= 360. for x_ in ra_s]).all():
-        raise ValueError("Object has an invalid ra in source catalog")
-    if not np.array([-90. <= x_ <= 90 for x_ in dec_s]).all():
-        raise ValueError("Object has an invalid dec in the source catalog")
-        
-
-    if sky == "flat":
-        dx = (ra_s - ra_l)*u.deg.to(u.rad) * math.cos(dec_l*u.deg.to(u.rad))
-        dy = (dec_s - dec_l)*u.deg.to(u.rad)
-        ## make sure absolute value of all RA differences are < 180 deg:
-        ## subtract 360 deg from RA angles > 180 deg
-        dx[dx>=np.pi] = dx[dx>=np.pi] - 2.*np.pi
-        ## add 360 deg to RA angles < -180 deg
-        dx[dx<-np.pi] = dx[dx<-np.pi] + 2.*np.pi 
-        theta =  np.sqrt(dx**2 + dy**2)
-        phi = np.arctan2(dy, -dx)
-
-    elif sky == "curved":
-        raise ValueError("Curved sky functionality not yet supported!")
-        # coord_l = SkyCoord(ra_l*u.deg,dec_l*u.deg)
-        # coord_s = SkyCoord(ra_s*u.deg,dec_s*u.deg)
-        # theta = coord_l.separation(coord_s).to(u.rad).value
-        # SkyCoord method position_angle gives east of north, so add pi/2
-        # phi = coord_l.position_angle(coord_s).to(u.rad).value + np.pi/2.
-    else:
-        raise ValueError("Sky option %s not supported!"%sky)
-
-    if np.any(theta < 1.e-9):
-        raise ValueError("Ra and Dec of source and lens too similar")
-
-    if np.any(theta > np.pi/180.):
-        warnings.warn("Using the flat-sky approximation with separations > 1 deg may be inaccurate", UserWarning)
-    
-    return theta, phi
-
-
-def _compute_g_t(g1, g2, phi):
-    r"""Computes the tangential shear for each source in the galaxy catalog
-
-    Add extended description
-
-    Parameters
-    ----------
-    g1, g2 : array_like, float
-        Ellipticity or shear for each source in the galaxy catalog
-    phi: array_like, float
-        As defined in comput_theta_phi (readdress this one)
-
-    Returns
-    -------
-    g_t : array_like, float
-        tangential shear (need not be reduced shear)
-
-    Notes
-    -----
-    g_t = - (g_1 * \cos(2\phi) + g_2 * \sin(2\phi)) [cf. eqs. 7-8 of Schrabback et al. 2018, arXiv:1611.03866]
-    """
-
-    if type(g1) != type(g2):
-        raise ValueError("g1 and g2 should both be array-like of same length or float-like")
-    
-    if type(g1) != type(phi):
-        raise ValueError("shear and position angle should both be array-like of same length or float-like")
-
-    if np.sum(phi<-np.pi) > 0:
-        raise ValueError("Position angle should be in radians")
-
-    if np.sum(phi>=2*np.pi) > 0:
-        raise ValueError("Position angle should be in radians")
-
-    
-    g_t = - (g1*np.cos(2*phi) + g2*np.sin(2*phi))
-    return g_t
-
-
-def _compute_g_x(g1, g2, phi):
-    r"""Computes cross shear for each source in galaxy catalog
-    
-    Parameters
-    ----------
-    g1, g2,: array_like, float
-        ra and dec of the lens (l) and source (s)  in decimal degrees
-    phi: array_like, float
-        As defined in comput_theta_phi
-
-    Returns
-    -------
-    gx: array_like, float
-        cross shear
-
-    Notes
-    -----
-    Computes the cross shear for each source in the catalog as:
-    g_x = - g_1 * \sin(2\phi) + g_2 * \cos(2\phi)    [cf. eqs. 7-8 of Schrabback et al. 2018, arXiv:1611.03866]
-    """
-    if type(g1) != type(g2):
-        raise ValueError("g1 and g2 should both be array-like of same length or float-like")
-    
-    if type(g1) != type(phi):
-        raise ValueError("shear and position angle should both be array-like of same length or float-like")
-
-    if np.sum(phi<-np.pi) > 0:
-        raise ValueError("Position angle should be in radians")
-
-    if np.sum(phi>=2*np.pi) > 0:
-        raise ValueError("Position angle should be in radians")
-
-    g_x = - g1 * np.sin(2*phi) + g2 *np.cos(2*phi)
-    return g_x
-
-
-def _compute_shear(ra_l, dec_l, ra_s, dec_s, g1, g2, sky="flat"):
-    r"""Wrapper that returns tangential and cross shear along with radius in radians
-    
-    Parameters
-    ----------
-    ra_l, dec_l: float 
-        ra and dec of lens in decimal degrees
-    ra_s, dec_s: array_like, float
-        ra and dec of source in decimal degrees
-    g1, g2: array_like, float
-        shears or ellipticities from galaxy table
-    sky: str, optional
-        'flat' uses the flat sky approximation (default) and 'curved' uses exact angles
-
-    Returns
-    -------
-    gt: array_like, float
-        tangential shear
-    gx: array_like, float
-        cross shear
-    theta: array_like, float
-        Angular separation between lens and sources
-
-    Notes
-    -----
-    Computes the cross shear for each source in the galaxy catalog as:
-    g_x = - g_1 * \sin(2\phi) + g_2 * \cos(2\phi)
-    g_t = - (g_1 * \cos(2\phi) + g_2 * \sin(2\phi)) [cf. eqs. 7-8 of Schrabback et al. 2018, arXiv:1611.03866]
-    """ 
-    theta, phi = _compute_theta_phi(ra_l, dec_l, ra_s, dec_s, sky = sky)
-    g_t = _compute_g_t(g1,g2,phi)
-    g_x = _compute_g_x(g1,g2,phi)
-    return theta, g_t, g_x
-
-def _theta_units_conversion(theta, units, z_cl=None, cosmo=None,
-                                        cosmo_object_type="astropy"):
-    
-    """
-    Converts theta from radian to whatever units specified in units
-    units: one of ["rad", deg", "arcmin", "arcsec", kpc", "Mpc"]
-    cosmo : cosmo object 
-    z_cl : cluster redshift
-    cosmo_object_type : string keywords that can be either "ccl" or "astropy" 
-    """
-    
-    theta = theta * u.rad
-    
-    if units == "rad":
-        radius = theta.value
-        
-    if units == "deg":
-        radius = theta.to(u.deg).value
-        
-    if units == "arcmin":
-        radius = theta.to(u.arcmin).value
-        
-    if units == "arcsec":
-        radius = theta.to(u.arcsec).value 
-    
-    if cosmo_object_type == "astropy" and units == "Mpc":
-        radius = theta.value * cosmo.angular_diameter_distance(z_cl).to(u.Mpc).value
-
-    if cosmo_object_type == "astropy" and units == "kpc":
-        radius = theta.value * cosmo.angular_diameter_distance(z_cl).to(u.kpc).value
-        
-    if cosmo_object_type == "ccl" and units == "Mpc":
-        radius = theta.value * cosmo.comoving_angular_distance(cosmo_ccl, 1/(1+z_cl)) / (1+z_cl) * u.Mpc.to(u.Mpc)
-        
-    if cosmo_object_type == "ccl" and units == "kpc":
-        radius = theta.value * cosmo.comoving_angular_distance(cosmo_ccl, 1/(1+z_cl)) / (1+z_cl) * u.Mpc.to(u.kpc)
-        
-    return radius
-
-def make_bins(rmin, rmax, n_bins=10, log_bins=False):
-    """Define equal sized bins with an array of n_bins+1 bin edges
-    
-    Parameters
-    ----------
-    rmin, rmax,: float
-        minimum and and maximum range of data (any units)
-    n_bins: float
-        number of bins you want to create
-    log_bins: bool
-        set to 'True' equal sized bins in log space
-
-    Returns
-    -------
-    binedges: array_like, float
-        n_bins+1 dimensional array that defines bin edges
-    """
-
-    if rmax<rmin:
-        raise ValueError("rmax should be larger than rmin")
-    if n_bins <= 0:
-        raise ValueError("n_bins must be > 0")
-    if type(log_bins)!=bool:
-        raise TypeError("log_bins must be type bool")
-    if type(n_bins)!=int:
-        raise TypeError("You need an integer number of bins")
-    
-    if log_bins==True:
-        rmin = np.log(rmin)
-        rmax = np.log(rmax)
-        logbinedges = np.linspace(rmin, rmax, n_bins+1, endpoint=True)
-        binedges = np.exp(logbinedges)
-    else:
-        binedges = np.linspace(rmin, rmax, n_bins+1, endpoint=True)
-            
-    return binedges
-
-
-def _compute_radial_averages(radius, g, bins=None):
-    """Returns astropy table containing shear profile of either tangential or cross shear
-
-    Parameters
-    ----------
-    radius: array_like, float
-        Distance (physical or angular) between source galaxy to cluster center
-    g: array_like, float
-        Either tangential or cross shear (g_t or g_x)
-    bins: array_like, float
-        User defined n_bins + 1 dimensional array of bins, if 'None', the default is 10 equally spaced radial bins
-
-    Returns
-    -------
-    r_profile: array_like, float
-        Centers of radial bins
-    g_profile: array_like, float
-        Average shears per bin
-    gerr_profile: array_like, float
-        Standard deviation of shear per bin
-    """
-
-    if not isinstance(radius, (np.ndarray)):
-        raise TypeError("radius must be an array")
-    if not isinstance(g, (np.ndarray)):
-        raise TypeError("g must be an array")
-    if len(radius) != len(g):
-        raise TypeError("radius and g must be arrays of the same length") 
-    if np.any(bins) == None:
-        nbins = 10
-        bins = np.linspace(np.min(radius), np.max(radius), nbins)
-
-    g_profile = np.zeros(len(bins) - 1)
-    gerr_profile = np.zeros(len(bins) - 1)
-    r_profile =  np.zeros(len(bins) - 1)
-
-    for i in range(len(bins)-1):
-        cond = (radius>= bins[i]) & (radius < bins[i+1])
-        index = np.where(cond)[0]
-        r_profile[i] = np.average(radius[index])
-        g_profile[i] = np.average(g[index])
-        if len(index) != 0:
-            gerr_profile[i] = np.std(g[index]) / np.sqrt(float(len(index)))
-        else:
-            gerr_profile[i] = np.nan
-
-    return r_profile, g_profile, gerr_profile
-
-
-def _plot_profiles(r, gt, gterr, gx=None, gxerr=None, r_units=""):
-    """Plot shear profiles for validation
-
-    Parameters
-    ----------
-    r: array_like, float
-        radius 
-    gt: array_like, float
-        tangential shear
-    gterr: array_like, float
-        error on tangential shear
-    gx: array_like, float
-        cross shear
-    gxerr: array_like, float
-        error on cross shear 
-    """
-    fig, ax = plt.subplots()
-    ax.plot(r, gt, 'bo-', label="tangential shear")
-    ax.errorbar(r, gt, gterr, label=None)
-    
-    try:
-        plt.plot(r, gx, 'ro-', label="cross shear")
-        plt.errorbar(r, gx, gxerr, label=None)
-    except:
-        pass
-
-    ax.legend()
-    ax.set_xlabel("r [%s]"%r_units)
-    ax.set_ylabel('$\\gamma$')
-
-    return(fig, ax)
+# Monkey patch functions onto Galaxy Cluster object
+GalaxyCluster.compute_shear = compute_shear
+GalaxyCluster.make_shear_profile = make_shear_profile

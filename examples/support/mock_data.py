@@ -1,111 +1,182 @@
-import sys
+"""Functions to generate mock source galaxy distributions to demo lensing code"""
 import numpy as np
-import matplotlib.pyplot as plt
 from astropy.table import Table
 from astropy import units
 from scipy import integrate
 from scipy.interpolate import interp1d
+from astropy import units
 import clmm
 
-class MockData(): 
-    '''
-    A class that generates a mock background galaxy catalog around a galaxy cluster
-    
-    Attributes
+
+def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta_SO, zsrc,
+                            zsrc_max=7., shapenoise=None, photoz_sigma_unscaled=None, nretry=5):
+    r"""Generates a mock dataset of sheared background galaxies.
+
+    We build galaxy catalogs following a series of steps.
+
+    1. Draw true redshifts of the source galaxy population. This step is described by the
+    parameters `zsrc` and `zsrc_max`. `zsrc` can be a `float` in which case every source is
+    at the given redshift or a `str` describing a specific model to use for the source
+    distribution. Currently, the only supported model for source galaxy distribution is that
+    of Chang et al. 2013 arXiv:1305.0793. When a model is used to describe the distribution,
+    `zsrc_max` is the maximum allowed redshift of a source galaxy.
+
+    2. Apply photometric redshift errors to the source galaxy population. This step is
+    described by the parameter `photoz_sigma_unscaled`. If this parameter is set to a float,
+    we add Gaussian uncertainty to the source redshift
+
+    ..math::
+        z \sim \mathcal{N}\left(z^{\rm true},
+        \sigma_{\rm photo-z}^{\rm unscaled}(1+z^{\rm true}) \right)
+
+    We additionally include two columns in the output catalog, `pzbins` and `pzpdf` which
+    desribe the photo-z distribution as a Gaussian centered at :math:`z^{\rm true} with a
+    width :math:`\sigma_{\rm photo-z} = \sigma_{\rm photo-z}^{\rm unscaled}(1+z^{\rm true})`
+
+    If `photoz_sigma_unscaled` is `None`, the `z` column in the output catalog is the true
+    redshift.
+
+    3. Draw galaxy positions. Positions are drawn in a square box around the lens position with
+    a side length of 4 Mpc. We then convert to right ascension and declination using the
+    cosmology defined in `cosmo`.
+
+    4. We predict the reduced tangential shear of each using the radial distances of each source
+    from the lens, the source redshifts, and the lens mass, concentration, and redshift. In the
+    given cosmology for an NFW halo.
+
+    5. We apply shape noise to the tangential shears. This is described by the parameter
+    `shapenoise`. If this is set to a float, we apply a Gaussian perturbation to the
+    tangential shear with a width of `shapenoise`.
+
+    6. Finally, we compute the two components of the ellipticity, e1 and e2.
+
+    If the shape noise parameter is high, we may draw nonsensical values for ellipticities. We 
+    ensure that we does not return any nonsensical values for derived properties. We re-draw
+    all galaxies with e1 or e2 outside the bounds of [-1, 1]. After 5 (default) attempts to
+    re-draw these properties, we return the catalog as is and throw a warning.
+
+    Parameters
     ----------
-    config: dictionary
-        Main properties of the mock data setup (number of galaxies, cluster mass,
-        cluster redshift, cluster concentration, source redshift, cosmo. params., 
-        mass definition)        
-    catalog: astropy table
-        The catalog generated given the user-defined configuration
-    '''
+    cluster_m : float
+        Cluster mass
+    cluster_z : float
+        Cluster redshift
+    cluster_c : float
+        Cluster concentration in the same mass definition as Delta_SO
+    cosmo : dict
+        Dictionary of cosmological parameters. Must contain at least, Omega_c, Omega_b,
+        and H0
+    ngals : float
+        Number of galaxies to generate
+    Delta_SO : float
+        Overdensity density contrast used to compute the cluster mass and concentration. The
+        spherical overdensity mass is computed as the mass enclosed within the radius
+        :math:`R_{\Delta{\rm SO}}` where the mean density is :math:`\Delta_{\rm SO}` times
+        the mean density of the Universe at the cluster redshift
+        :math:`M_{\Delta{\rm SO}}=4/3\pi\Delta_{\rm SO}\rho_{m}(z_{\rm lens})R_{\Delta{\rm SO}}^3`
+    zsrc : float or str
+        Choose the source galaxy distribution to be fixed or drawn from a predefined distribution.
+        float : All sources galaxies at this fixed redshift
+        str : Draws individual source gal redshifts from predefined distribution. Options
+              are: chang13
+    zsrc_max : float, optional
+        If source redshifts are drawn, the maximum source redshift
+    shapenoise : float, optional
+        If set, applies Gaussian shape noise to the galaxy shapes with a width set by `shapenoise`
+    photoz_sigma_unscaled : float, optional
+        If set, applies photo-z errors to source redshifts
+    nretry : int, optional
+        The number of times that we re-draw each galaxy with non-sensical derived properties
 
-    
-    def __init__(self, config=None):
-        '''
-        Parameters
-        ----------
-        config: dictionary
-            Main properties of the mock data setup. The cluster is located in (0,0).
-            The fields of the dictionary should be:
-            ngals: int
-                number of galaxies in the fake catalog
-            cluster_m: float
-                mass of the cluster
-            cluster_z: float
-                redshift of cluster
-            concentration: float
-                concentration of the cluster
-            src_z: float
-                redshift of background galaxies
-            cosmo: string 
-                Defines the cosmological parameter set in colossus, e.g. WMAP7-ML
-            mdef: string
-                Mass definition, e.g. '200c'     
-        '''
-        
-        if config is not None:
-            self.config = config
-        else:
-            self.config = {}
-            self.config['ngals'] = int(3.e4)
-            self.config['cluster_m'] = 1.e15
-            self.config['cluster_z'] = 0.3
-            self.config['src_z'] = 0.8
-            self.config['Delta'] = 200
-            self.config['concentration'] = 4
+    Returns
+    -------
+    galaxy_catalog : astropy.table.Table
+        Table of source galaxies with drawn and derived properties required for lensing studies
 
-            from astropy.cosmology import FlatLambdaCDM
-            astropy_cosmology_object = FlatLambdaCDM(H0=70, Om0=0.27, Ob0=0.045)
-            cosmo_ccl = pp.cclify_astropy_cosmo(astropy_cosmology_object)
+    Notes
+    -----
+    Much of this code in this function was adapted from the Dallas group
+    """
+    params = {'cluster_m' : cluster_m, 'cluster_z' : cluster_z, 'cluster_c' : cluster_c,
+              'cosmo' : cosmo, 'Delta_SO' : Delta_SO, 'zsrc' : zsrc, 'zsrc_max' : zsrc_max,
+              'shapenoise' : shapenoise, 'photoz_sigma_unscaled' : photoz_sigma_unscaled}
+    galaxy_catalog = _generate_galaxy_catalog(ngals=ngals, **params)
 
-            # self.config['cosmo'] = ccl.Cosmology(Omega_c=0.27, Omega_b=0.045, h=0.67, A_s=2.1e-9, n_s=0.96)
-            self.config['cosmo'] = cosmo_ccl
- 
-            
-        self.ask_type = ['raw_data']
+    # Check for bad galaxies and replace them
+    for i in range(nretry):
+        nbad, badids = _find_aphysical_galaxies(galaxy_catalog)
+        if nbad < 1:
+            break
+        replacements = _generate_galaxy_catalog(ngals=nbad, **params)
+        galaxy_catalog[badids] = replacements
+
+    # Final check to see if there are bad galaxies left
+    nbad, _ = _find_aphysical_galaxies(galaxy_catalog)
+    if nbad > 1:
+        print("Not able to remove {} aphysical objects after {} iterations".format(nbad, nretry))
+
+    # Now that the catalog is final, add an id column
+    galaxy_catalog['id'] = np.arange(ngals)
+    return galaxy_catalog
 
 
-    def generate(self, is_shapenoise=False, shapenoise=0.005, is_zerr=False, sigma_z_ref=0.05, 
-                 is_zdistribution=False, z_min=0., z_max=7., alpha=1.24, beta=1.01, z0=0.51):
-        '''
-        Generates a mock dataset of sheared background galaxies using the Dallas group software. 
+def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta_SO, zsrc,
+                             zsrc_max=7., shapenoise=None, photoz_sigma_unscaled=None):
+    """A private function that skips the sanity checks on derived properties. This
+    function should only be used when called directly from `generate_galaxy_catalog`.
+    Takes the same parameters and returns the same things as the before mentioned function.
 
-        Parameters
-        ----------
-        is_shapenoise: bool, optional
-            If True, noise is added to the galaxy shapes
-        shapenoise: float, optional
-            Amount of noise to add to the galaxy shapes
-        is_zerr: bool, optional
-            If True, a photometric redshift error is added to the background galaxy redshifts
-            and a gaussian pdf is created
-        sigma_z_ref: float, optional
-            Width of the redshift Gaussian pdf, o be scaled by (1+z)
-        is_zdistribution: bool, optional
-            Default is for single background sources redshift. 
-            If True, the redshifts of background sources is taken from
-            a redshift distribution (Default values taken from Chang et al. (2013) eq. 21).
-        z_min: float, optional
-            = 0.
-        z_max: float, optional
-            = 7. 
-        
-        alpha: float, optional
-            Default value taken from Chang et al. (2013) eq. 21
-        beta: float, optional
-            Default value taken from Chang et al. (2013) eq. 21
-        z0: float, optional
-            Default value taken from Chang et al. (2013) eq. 21
-        '''
+    For a more detailed description of each of the parameters, see the documentation of
+    `generate_galaxy_catalog`.
+    """
+    # Set the source galaxy redshifts
+    galaxy_catalog = _draw_source_redshifts(zsrc, cluster_z, zsrc_max, ngals)
 
-        
-        ngals = self.config['ngals']
-   
-        
+    # Add photo-z errors and pdfs to source galaxy redshifts
+    if photoz_sigma_unscaled is not None:
+        galaxy_catalog = _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled, ngals)
+
+    # Draw galaxy positions
+    galaxy_catalog = _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo)
+
+    # Compute the shear on each source galaxy
+    gamt = clmm.predict_reduced_tangential_shear(galaxy_catalog['r_mpc'], mdelta=cluster_m,
+                                                 cdelta=cluster_c, z_cluster=cluster_z,
+                                                 z_source=galaxy_catalog['z'], cosmo=cosmo,
+                                                 Delta=Delta_SO, halo_profile_parameterization='nfw',
+                                                 z_src_model='single_plane')
+    galaxy_catalog['gammat'] = gamt
+
+    # Add shape noise to source galaxy shears
+    if shapenoise is not None:
+        galaxy_catalog['gammat'] += shapenoise*np.random.standard_normal(ngals)
+
+    # Compute ellipticities
+    galaxy_catalog['posangle'] = np.arctan2(galaxy_catalog['y_mpc'], galaxy_catalog['x_mpc'])
+    galaxy_catalog['e1'] = -galaxy_catalog['gammat']*np.cos(2*galaxy_catalog['posangle'])
+    galaxy_catalog['e2'] = -galaxy_catalog['gammat']*np.sin(2*galaxy_catalog['posangle'])
+
+    if photoz_sigma_unscaled is not None:
+        return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z', 'pzbins', 'pzpdf']
+    return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z']
+
+
+def _draw_source_redshifts(zsrc, cluster_z, zsrc_max, ngals):
+    """Set source galaxy redshifts either set to a fixed value or draw from a predefined
+    distribution. Return an astropy table of the source galaxies
+
+    Uses a sampling technique found in Numerical Recipes in C, Chap 7.2: Transformation Method.
+    Pulling out random values from a given probability distribution.
+    """
+    # Set zsrc to constant value
+    if isinstance(zsrc, float):
+        zsrc_list = np.ones(ngals)*zsrc
+
+    # Draw zsrc from Chang et al. 2013
+    elif zsrc == 'chang13':
         def pzfxn(z):
-            #Form of redshift distribution function 
+            """Redshift distribution function"""
+            alpha, beta, z0 = 1.24, 1.01, 0.51
             return (z**alpha)*np.exp(-(z/z0)**beta)
             
         def integrated_pzfxn(zmax,fxn):
