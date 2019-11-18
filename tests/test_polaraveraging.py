@@ -155,11 +155,11 @@ def test_compute_shear():
                                               dec_source_list=dec_source_list,
                                               shear1=shear1, shear2=shear2,
                                               add_to_cluster=False)
-    testing.assert_allclose(angsep, expected_angsep, rtol=rtol,
+    testing.assert_allclose(angsep, expected_angsep, rtol=rtol, atol=atol,
                             err_msg="Angular Separation not correct when passing lists")
-    testing.assert_allclose(tshear, expected_tangential_shear, rtol=rtol,
+    testing.assert_allclose(tshear, expected_tangential_shear, rtol=rtol, atol=atol,
                             err_msg="Tangential Shear not correct when passing lists")
-    testing.assert_allclose(xshear, expected_cross_shear, rtol=rtol,
+    testing.assert_allclose(xshear, expected_cross_shear, rtol=rtol, atol=atol,
                             err_msg="Cross Shear not correct when passing lists")
 
     # Pass cluster object into the function
