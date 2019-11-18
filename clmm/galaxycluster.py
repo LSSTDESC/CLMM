@@ -34,10 +34,18 @@ class GalaxyCluster():
             unique_id = str(unique_id)
         else:
             raise TypeError('unique_id incorrect type: %s'%type(unique_id))
-        if not isinstance(ra, float):
+        try:
+            ra = float(ra)
+        except:
             raise TypeError('ra incorrect type: %s'%type(ra))
-        if not isinstance(dec, float):
+        try:
+            dec = float(dec)
+        except:
             raise TypeError('dec incorrect type: %s'%type(dec))
+        try:
+            z = float(z)
+        except:
+            raise TypeError('z incorrect type: %s'%type(z))
         if not isinstance(galcat, Table):
             raise TypeError('galcat incorrect type: %s'%type(galcat))
 
@@ -58,3 +66,22 @@ class GalaxyCluster():
         """Saves GalaxyCluster object to filename using Pickle"""
         with open(filename, 'wb') as fin:
             pickle.dump(self, fin, **kwargs)
+
+    def __repr__(self):
+        """Generates string for print(GalaxyCluster)"""
+        output = 'GalaxyCluster %s:\n'%self.unique_id
+        output += '    ra: %s\n'%str(self.ra)
+        output += '    dec: %s\n'%str(self.dec)
+        output += '    z: %s\n'%str(self.z)
+        output += '    --------------------\n'
+        if len(self.galcat) == 0:
+            output += '    galcat: Empty table\n'
+        else:
+            output += '    galcat: %d galaxies\n'%len(self.galcat)
+            for c in self.galcat.columns:
+                try:
+                    output += '        %s:\n            from %s to %s\n'%(c,
+                        str(min(self.galcat[c])), str(max(self.galcat[c])))
+                except:
+                    output += '        %s: %s\n'%(c, type(self.galcat[c]))
+        return output
