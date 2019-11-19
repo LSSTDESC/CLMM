@@ -7,7 +7,7 @@ setup(
       author_email='avestruz@uchicago.edu',
       license='BSD 3-Clause License',
       url='https://github.com/LSSTDESC/CLMM',
-      packages=find_packages(exclude=['crypt']),
+      packages=find_packages(),
       description='A comprehensive package for galaxy cluster weak lensing',
       long_description=open("README.md").read(),
       package_data={"": ["README.md", "LICENSE"]},

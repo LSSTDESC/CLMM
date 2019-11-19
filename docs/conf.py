@@ -217,7 +217,6 @@ docextension = '.rst'
 
 # Load file list
 baseflist = os.listdir('../clmm')
-baseflist.remove('crypt')
 finalflist = make_final_doclist(baseflist, docappend, docextension)
 finalflist.sort(key = lambda x: x.split('.')[1])
 
