@@ -6,6 +6,7 @@ import os
 import numpy as np
 from astropy.table import Table
 from clmm import GalaxyCluster
+from collections import Sequence
 
 def load_from_dc2_rect(N, catalog, save_dir, ra_range=(-0.3, 0.3), dec_range=(-0.3, 0.3),
                        z_range=(0.1, 1.5), verbose=False):
@@ -24,22 +25,59 @@ def load_from_dc2_rect(N, catalog, save_dir, ra_range=(-0.3, 0.3), dec_range=(-0
         Name of catalog (without '.yaml')
     save_dir: str
         Path to directory in which to save cluster objects
-    ra_range: length-2 tuple of floats, optional
+    ra_range: length-2 array-like of floats, optional
         Range of right ascension values (in degrees) to cut galaxies around the cluster center
-    dec_range: length-2 tuple of floats, optional
+    dec_range: length-2 array-like of floats, optional
         Range of declination values (in degrees)to cut galaxies around the cluster center
-    z_range: length-2 tuple of floats, optional
-        Range of redshift values (in degrees)to cut galaxies around the cluster center
+    z_range: length-2 array-like of floats, optional
+        Range of redshift values to cut galaxies around the cluster center
     verbose: bool
         Sets the function to print the id of each cluster while loading
     """
+    # check input types and ranges
+    if not isinstance(N, int):
+        raise TypeError('N incorrect type: %s'%type(N))
+    if not isinstance(catalog, str):
+        raise TypeError('catalog incorrect type: %s'%type(catalog))
+    if not isinstance(save_dir, str):
+        raise TypeError('save_dir incorrect type: %s'%type(save_dir))
+    if not isinstance(verbose, bool):
+        raise TypeError('verbose incorrect type: %s'%type(verbose))
+
+    if N <= 0:
+        raise ValueError('N less than 0')
+    
+    ranges = {'ra_range': ra_range, 'dec_range': dec_range, 'z_range':z_range}
+    for key in ranges:
+        if not isinstance(ranges[key], Sequence):
+            raise TypeError('%s incorrect type: %s'%(key, type(ranges[key])))
+        if len(ranges[key])!=2:
+            raise TypeError('%s incorrect length: %s'%(key, len(ranges[key])))
+        for i in ranges[key]:
+            if not isinstance(i, float):
+                raise TypeError('%s value incorrect type: %s'%(key, type(i)))
+        if ranges[key][0] >= ranges[key][1]:
+            raise ValueError('%s invalid range'%key)
+    
+    for i in ra_range:
+        if not -360. <= i <= 360.:
+            raise ValueError(r'ra %s not in valid bounds: [-360, 360]'%i)
+    for i in dec_range:
+        if not -90. <= i <= 90.:
+            raise ValueError(r'dec %s not in valid bounds: [-90, 90]'%i)
+    
+    
+    # load GCR catalog
     import GCRCatalogs
 
     catalog = GCRCatalogs.load_catalog(catalog)
     
     halos = catalog.get_quantities(['galaxy_id', 'halo_mass', 'redshift','ra', 'dec'],
                                    filters=['halo_mass > 1e14','is_central==True'])
-
+    
+    if N > len(halos):
+        raise ValueError('N greater than number of clusters available in catalog.')
+    
     for i in np.random.choice(range(len(halos)), N, replace=False):
         # specify cluster information
         cl_id = halos['galaxy_id'][i]
