@@ -13,19 +13,7 @@ atol = 1.e-6
 
 
 def test_compute_cross_shear():
-#    shear1, shear2, phi = 0.15, 0.08, 0.52
-#    expected_cross_shear = -0.08886301350787848
-#    cross_shear = pa._compute_cross_shear(shear1, shear2, phi)
-#    testing.assert_allclose(cross_shear, expected_cross_shear)
-#
-#    shear1 = np.array([0.15, 0.40])
-#    shear2 = np.array([0.08, 0.30])
-#    phi = np.array([0.52, 1.23])
-#    expected_cross_shear = [-0.08886301350787848, -0.48498333705834484]
-#    cross_shear = pa._compute_cross_shear(shear1, shear2, phi)
-#    testing.assert_allclose(cross_shear, expected_cross_shear)
-
-    # Some additional edge cases
+    # Edge case tests
     testing.assert_allclose(pa._compute_cross_shear(100., 0., 0.), 0.0,atol=atol)
     testing.assert_allclose(pa._compute_cross_shear(100., 0., np.pi/2), 0.0,atol=atol)
     testing.assert_allclose(pa._compute_cross_shear(0., 100., 0.), -100.0,atol=atol)
@@ -47,14 +35,6 @@ def test_compute_tangential_shear():
     tangential_shear = pa._compute_tangential_shear(shear1, shear2, phi)
     testing.assert_allclose(tangential_shear, expected_tangential_shear)
 
-    # test same length array input
-    #testing.assert_raises(ValueError, pa._compute_tangential_shear, data[0,0], data[1], data[2])
-    #testing.assert_raises(ValueError, pa._compute_tangential_shear, data[0], data[1,0], data[2])
-    #testing.assert_raises(ValueError, pa._compute_tangential_shear, data[0], data[1], data[2,0])
-    #testing.assert_raises(ValueError, pa._compute_tangential_shear, data[0,0], data[1,0], data[2])
-    #testing.assert_raises(ValueError, pa._compute_tangential_shear, data[0], data[1,0], data[2,0])
-    #testing.assert_raises(ValueError, pa._compute_tangential_shear, data[0,0], data[1], data[2,0])
-    
     # test for reasonable values
     testing.assert_almost_equal(pa._compute_tangential_shear(100., 0., 0.), -100.0)
     testing.assert_almost_equal(pa._compute_tangential_shear(0., 100., np.pi/4.), -100.0)
@@ -88,11 +68,6 @@ def test_compute_lensing_angles_flatsky():
     testing.assert_allclose(phis, np.array([-1.13390499136495481736, 1.77544123918164542530]), rtol=rtol,
                             err_msg="Reasonable values with flat sky not matching to precision for phi")
 
-    # ra and dec are 0.0 - THROWS A WARNING
-    # testing.assert_allclose(pa._compute_lensing_angles_flatsky(0.0, 0.0, ra_s, dec_s),
-    #                         [[2.95479482616592248334, 2.95615695795537858359], [2.83280558128919901506, 2.83233281390148761147]],
-    #                         rtol, err_msg="Failure when RA_lens=DEC_lens=0.0")
-
     # lens and source at the same ra
     testing.assert_allclose(pa._compute_lensing_angles_flatsky(ra_l, dec_l, np.array([161.32, 161.34]), dec_s),
                             [[0.00069813170079771690, 0.00106951489719733675], [-1.57079632679489655800, 1.77544123918164542530]],
@@ -103,32 +78,6 @@ def test_compute_lensing_angles_flatsky():
                             [[0.00032601941539388962, 0.00106951489719733675], [0.00000000000000000000, 1.77544123918164542530]],
                             rtol, err_msg="Failure when lens and a source share a DEC")
 
-    # lens and source at the same ra and dec - I dont think we want this to raise an error. It just wont be in the bins, so no problemo
-    # The second test is not working!!! Find out why!!!
-    # testing.assert_raises(ValueError, pa._compute_lensing_angles_flatsky, ra_l, dec_l, np.array([161.32, 161.34]), np.array([51.49, 51.55]))
-    # testing.assert_allclose(pa._compute_lensing_angles_flatsky(ra_l, dec_l, np.array([ra_l, 161.34]), np.array([dec_l, 51.55])),
-    #                         [[0.00000000000000000000, 0.00106951489719733675], [0.00000000000000000000, 1.77544123918164542530]],
-    #                         rtol, err_msg="Failure when lens and a source share an RA and a DEC")
-    
-    # This test throws a warning!
-    # testing.assert_allclose(pa._compute_lensing_angles_flatsky(0.1, dec_l, np.array([359.9,180.1]), dec_s),
-    #                         [[2.37312589, 1.95611677], [-2.94182333e-04,  3.14105731e+00]],
-    #                         rtol, err_msg="Failure when ra_l and ra_s are close but on the two sides of the 0 axis")   
-
-    # This test throws a warning!
-    # testing.assert_allclose(pa._compute_lensing_angles_flatsky(0, dec_l, np.array([359.9,180.1]), dec_s),
-    #                         [[2.37203916, 1.9572035], [-2.94317111e-04,  3.14105761e+00]],
-    #                         rtol, err_msg="Failure when ra_l and ra_s are separated by pi + epsilon")  
-    
-    # This test throws a warning!
-    # testing.assert_allclose(pa._compute_lensing_angles_flatsky(-180, dec_l, np.array([180.1,-90]), dec_s),
-    #                         [[2.36986569, 0.97805881], [-2.94587036e-04,  3.14052196e+00]],
-    #                         rtol, err_msg="Failure when ra_l and ra_s are the same but one is defined negative")     
-    
-    # This test throws a warning!
-    # testing.assert_allclose(pa._compute_lensing_angles_flatsky(ra_l, 90, ra_s, np.array([51.45,-90])),
-    #                         [[0.67282443, 3.14159265], [-1.57079633, -1.57079633]],
-    #                         rtol, err_msg="Failure when dec_l and dec_s are separated by 180 deg")  
 
 
 def test_compute_shear():
@@ -217,12 +166,8 @@ def test_make_shear_profiles():
                             err_msg="Maximum radius in bin not expected.")
     testing.assert_allclose(profile['gt'], expected_tan_shear[:-1], rtol=rtol,
                             err_msg="Tangential shear in bin not expected")
-    # testing.assert_allclose(profile['gt_err'], [], rtol=rtol,
-    #                         err_msg="Tangential shear error in bin not expected")
     testing.assert_allclose(profile['gx'], expected_cross_shear[:-1], rtol=rtol,
                             err_msg="Cross shear in bin not expected")
-    # testing.assert_allclose(profile['gx_err'], [], rtol=rtol,
-    #                         err_msg="Cross shear error in bin not expected")
 
     # Repeat the same tests when we call make_shear_profile through the GalaxyCluster method
     profile2 = cluster.make_shear_profile('radians', 'radians', bins=bins_radians)
@@ -234,11 +179,7 @@ def test_make_shear_profiles():
                             err_msg="Maximum radius in bin not expected.")
     testing.assert_allclose(profile2['gt'], [-0.22956126563459447, -0.02354769805831558], rtol=rtol,atol=atol,
                             err_msg="Tangential shear in bin not expected")
-    # testing.assert_allclose(profile2['gt_err'], [], rtol=rtol,
-    #                         err_msg="Tangential shear error in bin not expected")
     testing.assert_allclose(profile2['gx'], expected_cross_shear[:-1], rtol=rtol, atol=atol,
                             err_msg="Cross shear in bin not expected")
-    # testing.assert_allclose(profile2['gx_err'], [], rtol=rtol,
-    #                         err_msg="Cross shear error in bin not expected")
 
 
