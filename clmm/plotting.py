@@ -19,7 +19,7 @@ def plot_profiles(cluster=None, rbins=None, tangential_shear=None, tangential_sh
     cluster: GalaxyCluster, optional
         Instance of `GalaxyCluster()` that contains a `.profile` attribute.
     rbins: array_like, optional
-        The centers of the radial bins used to compute the shears.
+        The centers of the radial bins that was used to compute the shears.
     tangential_shear: array_like, optional
         The tangential shear at the radii of `rbins`
     tangential_shear_error: array_like, optional
@@ -29,7 +29,7 @@ def plot_profiles(cluster=None, rbins=None, tangential_shear=None, tangential_sh
     cross_shear_error: array_like, optional
         The uncertainty on the cross shear
     r_units: str, optional
-        Units of `rbins`
+        Units of `rbins` for x-axis label
 
     Returns
     -------
