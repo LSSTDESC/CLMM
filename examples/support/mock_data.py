@@ -1,7 +1,6 @@
 """Functions to generate mock source galaxy distributions to demo lensing code"""
 import numpy as np
 from astropy.table import Table
-from astropy import units
 from scipy import integrate
 from scipy.interpolate import interp1d
 from astropy import units
@@ -178,83 +177,106 @@ def _draw_source_redshifts(zsrc, cluster_z, zsrc_max, ngals):
             """Redshift distribution function"""
             alpha, beta, z0 = 1.24, 1.01, 0.51
             return (z**alpha)*np.exp(-(z/z0)**beta)
-            
-        def integrated_pzfxn(zmax,fxn):
-            #Integrated redshift distribution function for transformation method
-            I, err = integrate.quad(fxn,self.config['cluster_z']+0.1,zmax)
-            return I
-        
-        if is_zdistribution is True:
-            # https://www.cec.uchile.cl/cinetica/pcordero/MC_libros/NumericalRecipesinC.pdf
-            # Numerical Recipe in C, Chap 7.2: Transformation Method. Pulling out random values from a given probability distribution
-            
-            # sampling the domain of the original p(z)
-            z_min = self.config['cluster_z'] + 0.1 # fix z_min to get background galaxies only
-            z_domain = np.arange(z_min, z_max, 0.001)
-            # calculate P_z = P(z_domain)
-            vectorization_integrated_pzfxn = np.vectorize(integrated_pzfxn)
-            P_z = vectorization_integrated_pzfxn(z_domain,pzfxn)
-        
-            uniform_deviate = np.random.uniform(P_z.min(),P_z.max(),ngals)
-            z_true = interp1d(P_z,z_domain,kind='linear')(uniform_deviate)           
-        else:
-            z_true = np.zeros(ngals)+self.config['src_z']
-        
-        
-        if is_zerr: 
-            # introduce a redshift error on the source redshifts and generate 
-            # the corresponding Gaussian pdf
-            self.config['redshift_err'] = sigma_z_ref
-            sigma_z = sigma_z_ref*(1.+z_true)
-            z_best = z_true + sigma_z*np.random.standard_normal(ngals)
-            pdf_grid = []
-            zbins_grid = []
-            for i,z in enumerate(z_true):
-                zmin = z - 0.5
-                zmax = z + 0.5
-                zbins = np.arange(zmin, zmax, 0.03)
-                pdf_grid.append(np.exp(-0.5*((zbins - z)/sigma_z[i])**2)/np.sqrt(2*np.pi*sigma_z[i]**2))
-                zbins_grid.append(zbins)
-        else:
-            # No redshift error
-            z_best = z_true
 
-        seqnr = np.arange(ngals)
-        zL = self.config['cluster_z'] # cluster redshift
-        Delta = self.config['Delta']
-  
-        M = self.config['cluster_m']
-        c = self.config['concentration']  
-        r = np.linspace(0.25, 10., 1000) #Mpc
+        def integrated_pzfxn(zmax, func):
+            """Integrated redshift distribution function for transformation method"""
+            val, _ = integrate.quad(func, cluster_z+0.1, zmax)
+            return val
+        vectorization_integrated_pzfxn = np.vectorize(integrated_pzfxn)
 
-        x_mpc = np.random.uniform(-4, 4, size=ngals)
-        y_mpc = np.random.uniform(-4, 4, size=ngals)
-        r_mpc = np.sqrt(x_mpc**2 + y_mpc**2)
-  
-        aexp_cluster = 1./(1.+zL)
+        zsrc_min = cluster_z + 0.1
+        zsrc_domain = np.arange(zsrc_min, zsrc_max, 0.001)
+        probdist = vectorization_integrated_pzfxn(zsrc_domain, pzfxn)
 
-#       get_angular_diameter_distance_a returns pc. Must convert to Mpc hence the 1.e6 factor 
-        Dl = clmm.get_angular_diameter_distance_a(self.config['cosmo'], aexp_cluster)*units.pc.to(units.Mpc)
+        uniform_deviate = np.random.uniform(probdist.min(), probdist.max(), ngals)
+        zsrc_list = interp1d(probdist, zsrc_domain, kind='linear')(uniform_deviate)
 
-        x_deg = (x_mpc/Dl)*(180./np.pi) #ra
-        y_deg = (y_mpc/Dl)*(180./np.pi) #dec
-        gamt = clmm.predict_reduced_tangential_shear(r_mpc, mdelta=M, cdelta=c, z_cluster=zL, z_source=z_true,
-                                                  cosmo=self.config['cosmo'], Delta=self.config['Delta'],
-                                                  halo_profile_parameterization='nfw',z_src_model='single_plane')
-        
-        if is_shapenoise:
-            self.config['shape_noise'] = shapenoise
-            gamt = gamt + shapenoise*np.random.standard_normal(ngals)
+    # Invalid entry
+    else:
+        raise ValueError("zsrc must be a float or chang13. You set: {}".format(zsrc))
 
-        posangle = np.arctan2(y_mpc, x_mpc)
-        cos2phi = np.cos(2*posangle)
-        sin2phi = np.sin(2*posangle)
+    return Table([zsrc_list, zsrc_list], names=('ztrue', 'z'))
 
-        e1 = -gamt*cos2phi
-        e2 = -gamt*sin2phi
-        if is_zerr:
-            self.catalog = Table([seqnr, -x_deg, y_deg, e1, e2, z_best, pdf_grid, zbins_grid], \
-                                  names=('id', 'ra','dec','e1','e2', 'z', 'z_pdf', 'z_bins'))
-        else:
-            self.catalog = Table([seqnr, -x_deg, y_deg, e1, e2, z_best], \
-                                names=('id', 'ra','dec','e1','e2', 'z'))
+
+def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled, ngals):
+    r"""Add photo-z errors and PDFs to the mock catalog."""
+    galaxy_catalog['pzsigma'] = photoz_sigma_unscaled*(1.+galaxy_catalog['ztrue'])
+    galaxy_catalog['z'] = galaxy_catalog['ztrue'] + \
+                          galaxy_catalog['pzsigma']*np.random.standard_normal(ngals)
+
+    pzbins_grid, pzpdf_grid = [], []
+    for row in galaxy_catalog:
+        zmin, zmax = row['ztrue'] - 0.5, row['ztrue'] + 0.5
+        zbins = np.arange(zmin, zmax, 0.03)
+        pzbins_grid.append(zbins)
+        pzpdf_grid.append(np.exp(-0.5*((zbins - row['ztrue'])/row['pzsigma'])**2)/np.sqrt(2*np.pi*row['pzsigma']**2))
+    galaxy_catalog['pzbins'] = pzbins_grid
+    galaxy_catalog['pzpdf'] = pzpdf_grid
+
+    return galaxy_catalog
+
+
+def _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo):
+    """Draw positions of source galaxies around lens
+
+    We draw physical x and y positions from uniform distribution with -4 and 4 Mpc of the
+    lensing cluster center. We then convert these to RA and DEC using the supplied cosmology
+
+    Parameters
+    ----------
+    galaxy_catalog : astropy.table.Table
+        Source galaxy catalog
+    ngals : float
+        The number of source galaxies to draw
+    cluster_z : float
+        The cluster redshift
+    cosmo : dict
+        Dictionary of cosmological parameters. Must contain at least, Omega_c, Omega_b,
+        and H0
+
+    Returns
+    -------
+    galaxy_catalog : astropy.table.Table
+        Source galaxy catalog with positions added
+    """
+    Dl = clmm.get_angular_diameter_distance_a(cosmo, 1./(1.+cluster_z))*units.pc.to(units.Mpc)
+    galaxy_catalog['x_mpc'] = np.random.uniform(-4., 4., size=ngals)
+    galaxy_catalog['y_mpc'] = np.random.uniform(-4., 4., size=ngals)
+    galaxy_catalog['r_mpc'] = np.sqrt(galaxy_catalog['x_mpc']**2 + galaxy_catalog['y_mpc']**2)
+    galaxy_catalog['ra'] = -(galaxy_catalog['x_mpc']/Dl)*(180./np.pi)
+    galaxy_catalog['dec'] = (galaxy_catalog['y_mpc']/Dl)*(180./np.pi)
+
+    return galaxy_catalog
+
+
+def _find_aphysical_galaxies(galaxy_catalog):
+    r"""Finds the galaxies that have aphysical derived values due to large systematic choices.
+
+    Currently checks the following conditions
+    e1 \in [-1, 1]
+    e2 \in [-1, 1]
+    This was converted to a seperate function to allow for ease of extension without needing
+    to change the same code in multiple locations.
+
+    Parameters
+    ----------
+    galaxy_catalog : astropy.table.Table
+        Galaxy source catalog
+
+    Returns
+    -------
+    nbad : int
+        The number of aphysical galaxies in galaxy_catalog
+    badgals : array_like
+        A list of the indicies in galaxy_catalog that need to be redrawn
+    """
+    badgals = np.where((np.abs(galaxy_catalog['e1']) > 1.0) |
+                       (np.abs(galaxy_catalog['e2']) > 1.0)
+                      )[0]
+    nbad = len(badgals)
+    return nbad, badgals
+
+
+
+
+
