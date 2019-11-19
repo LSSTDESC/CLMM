@@ -1,11 +1,11 @@
-from setuptools import setup
 from setuptools import setup, find_packages
 
 setup(
       name='clmm',
       version='0.1',
-      author='LSST-DESC CL WG',
+      author='The CLMM Developers',
       author_email='avestruz@uchicago.edu',
+      license='BSD 3-Clause License',
       url='https://github.com/LSSTDESC/CLMM',
       packages=find_packages(exclude=['crypt']),
       description='A comprehensive package for galaxy cluster weak lensing',
@@ -20,5 +20,5 @@ setup(
         "Operating System :: OS Independent",
         "Programming Language :: Python"
         ],
-      install_requires=["astropy", "matplotlib", "numpy", "scipy"]
+      install_requires=["astropy", "numpy", "scipy"]
 )
