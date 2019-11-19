@@ -1,4 +1,6 @@
 astropy>=3
+cluster_toolkit
 matplotlib
 numpy>=1.16
+pyccl
 scipy>=1.3
