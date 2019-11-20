@@ -2,8 +2,8 @@
 Galaxy Cluster Model
 ********************
 
-    Notebook for generating an example galaxy cluster model.
---------------------------------------------------------
+Notebook for generating an example galaxy cluster model.
+
 
 This notebook goes through the steps to generate model data for galaxy
 cluster weak lensing observables. In particular, we define a galaxy
