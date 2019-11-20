@@ -1,11 +1,10 @@
 """@file.py modeling.py
 Functions for theoretical models.  Default is NFW.
 """
-from astropy import constants, cosmology, units
+from astropy import cosmology, units
 import cluster_toolkit as ct
 import numpy as np
 from .constants import Constants as const
-# from .constants import CLIGHT_KMS, GNEWT, PC_TO_METER, SOLAR_MASS
 
 
 def cclify_astropy_cosmo(apy_cosmo):
