@@ -5,7 +5,7 @@ from collections.abc import Sequence
 import os
 import numpy as np
 from astropy.table import Table
-from clmm import GalaxyCluster
+from clmm import GalaxyCluster, get_reduced_shear_from_convergence
 
 def load_GCR_catalog(catalog_name):
     """Loads a catalog from GCRCatalogs"""
@@ -38,11 +38,6 @@ def _make_GCR_filter(filter_name, low_bound, high_bound):
 
     return ['%s >= %d'%(filter_name, low_bound),
             '%s < %d'%(filter_name, high_bound)]
-
-
-def _calc_reduced_shear(shear, convergence):
-    """Calculates reduced shear from shear and convergence"""
-    return shear/(1-convergence)
 
 def load_from_dc2(nclusters, catalog_name, save_dir, ra_range=(-0.3, 0.3), dec_range=(-0.3, 0.3),
                   z_range=(0.1, 1.5), verbose=False, _reader='GCR'):
@@ -118,8 +113,8 @@ def load_from_dc2(nclusters, catalog_name, save_dir, ra_range=(-0.3, 0.3), dec_r
                                       filters=filters)
 
         # calculate reduced shear
-        g1 = _calc_reduced_shear(gals['shear_1'], gals['convergence'])
-        g2 = _calc_reduced_shear(gals['shear_2'], gals['convergence'])
+        g1 = get_reduced_shear_from_convergence(gals['shear_1'], gals['convergence'])
+        g2 = get_reduced_shear_from_convergence(gals['shear_2'], gals['convergence'])
 
         # store the results into an astropy table
         t = Table([gals['galaxy_id'], gals['ra'], gals['dec'],
