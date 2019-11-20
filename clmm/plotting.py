@@ -70,7 +70,7 @@ def plot_profiles(cluster=None, rbins=None, tangential_shear=None, tangential_sh
         pass
 
     axes.legend()
-    axes.set_xlabel(r'Radius [{}]'.format(r_units))
+    axes.set_xlabel(f'Radius [{r_units}]')
     axes.set_ylabel(r'$\gamma$')
 
     return fig
