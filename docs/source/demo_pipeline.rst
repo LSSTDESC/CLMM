@@ -1,0 +1,300 @@
+***************************************************
+``clmm``: a minimal demonstration of pipeline usage
+***************************************************
+
+*the LSST-DESC CLMM team*
+
+This notebook demonstrates how to use ``clmm`` to estimate a WL halo
+mass from observations of a galaxy cluster.
+
+Setup
+-----
+
+First, we import some standard packages.
+
+.. code:: ipython3
+
+    from astropy.cosmology import FlatLambdaCDM
+    import matplotlib.pyplot as plt
+    # %matplotlib inline
+    import numpy as np
+    from numpy import random
+    from scipy import optimize as spo
+    import sys
+
+Next, we import ``clmm``'s core modules.
+
+.. code:: ipython3
+
+    import clmm
+    import clmm.polaraveraging as pa
+    import clmm.galaxycluster as gc
+    import clmm.modeling as modeling
+
+We then import a support modules for a specific data sets. ``clmm``
+includes support modules that enable the user to generate mock data in a
+format compatible with ``clmm``. We also provide support modules for
+processing other specific data sets for use with ``clmm``. Any existing
+support module can be used as a template for creating a new support
+module for another data set. If you do make such a support module,
+please do consider making a pull request so we can add it for others to
+use.
+
+.. code:: ipython3
+
+    sys.path.append('./support')
+    import mock_data as mock
+
+Making mock data
+----------------
+
+To create mock data, we need to define a true cosmology, which is
+currently done with ```astropy``'s cosmology
+library <http://docs.astropy.org/en/stable/cosmology/index.html>`__.
+
+.. code:: ipython3
+
+    mock_cosmo = FlatLambdaCDM(H0=70, Om0=0.27, Ob0=0.045)
+
+We now set some parameters for a mock galaxy cluster.
+
+.. code:: ipython3
+
+    cosmo = mock_cosmo
+    cluster_id = "Awesome_cluster"
+    cluster_m = 1.e15
+    cluster_z = 0.3
+    src_z = 0.8
+    concentration = 4
+    ngals = 10000
+    Delta = 200
+    cluster_ra = 0.0
+    cluster_dec = 0.0
+
+Then we use the ``mock_data`` support module to generate a new galaxy
+catalog.
+
+.. code:: ipython3
+
+    ideal_data = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration,
+                                              cosmo, ngals, Delta, src_z)
+
+This galaxy catalog is then converted to a ``clmm.GalaxyCluster``
+object.
+
+.. code:: ipython3
+
+    gc_object = clmm.GalaxyCluster(cluster_id, cluster_ra, cluster_dec,
+                                   cluster_z, ideal_data)
+
+A ``clmm.GalaxyCluster`` object can be pickled and saved for later use.
+
+.. code:: ipython3
+
+    gc_object.save('mock_GC.pkl')
+
+Any saved ``clmm.GalaxyCluster`` object may be read in for analysis.
+
+.. code:: ipython3
+
+    cl = clmm.load_cluster('mock_GC.pkl')
+    print("Cluster info = ID:", cl.unique_id, "; ra:", cl.ra, "; dec:", cl.dec,
+          "; z_l :", cl.z)
+    print("The number of source galaxies is :", len(cl.galcat))
+    
+    ra_l = cl.ra
+    dec_l = cl.dec
+    z = cl.z
+    e1 = cl.galcat['e1']
+    e2 = cl.galcat['e2']
+    ra_s = cl.galcat['ra']
+    dec_s = cl.galcat['dec']
+
+We can visualize the distribution of galaxies on the sky.
+
+.. code:: ipython3
+
+    fsize = 15
+    
+    fig = plt.figure(figsize=(10, 6))
+    hb = fig.gca().hexbin(ra_s, dec_s, gridsize=50)
+    
+    cb = fig.colorbar(hb)
+    cb.set_label('Number of sources in bin', fontsize=fsize)
+    
+    plt.gca().set_xlabel(r'$\Delta RA$', fontsize=fsize)
+    plt.gca().set_ylabel(r'$\Delta Dec$', fontsize=fsize)
+    plt.gca().set_title('Source Galaxies', fontsize=fsize)
+    
+    plt.show()
+
+``clmm`` separates cosmology-dependent and cosmology-independent
+functionality.
+
+Deriving observables
+--------------------
+
+We first demonstrate a few of the procedures one can perform on data
+without assuming a cosmology.
+
+Computing shear
+~~~~~~~~~~~~~~~
+
+``clmm.polaraveraging.compute_shear`` calculates the tangential and
+cross shears for each source galaxy in the cluster.
+
+.. code:: ipython3
+
+    theta, g_t, g_x = pa.compute_shear(cl, geometry="flat")
+
+We can visualize the shear field at each galaxy location.
+
+.. code:: ipython3
+
+    fig = plt.figure(figsize=(10, 6))
+    
+    fig.gca().loglog(theta, g_t, '.')
+    plt.ylabel("reduced shear", fontsize=fsize)
+    plt.xlabel("angular distance [deg]", fontsize=fsize)
+
+Radially binning the data
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Here we compare the reconstructed mass under two different bin
+definitions.
+
+.. code:: ipython3
+
+    bin_edges1 = pa.make_bins(0.01, 3.7, 50)
+    bin_edges2 = pa.make_bins(0.01, 3.7, 10)
+
+``clmm.polaraveraging.make_shear_profile`` evaluates the average shear
+of the galaxy catalog in bins of radius.
+
+.. code:: ipython3
+
+    res1 = pa.make_shear_profile(cl, "radians", "Mpc", bins=bin_edges1,
+                                 cosmo=cosmo)
+    res2 = pa.make_shear_profile(cl, "radians", "Mpc", bins=bin_edges2,
+                                 cosmo=cosmo)
+
+For later use, we'll define some variables for the binned radius and
+tangential shear.
+
+.. code:: ipython3
+
+    gt_profile1 = res1['gt']
+    r1 = res1['radius']
+    
+    gt_profile2 = res2['gt']
+    r2 = res2['radius']
+
+We visualize the radially binned shear for our mock galaxies.
+
+.. code:: ipython3
+
+    fig = plt.figure(figsize=(10, 6))
+    
+    fig.gca().loglog(r1, gt_profile1, '.', label='50 bins')
+    fig.gca().loglog(r2, gt_profile2, '+', markersize=15, label='10 bins')
+    plt.legend(fontsize=fsize)
+    
+    plt.gca().set_title(r'Binned shear of source galaxies', fontsize=fsize)
+    plt.gca().set_xlabel(r'$r\;[Mpc]$', fontsize=fsize)
+    plt.gca().set_ylabel(r'$g_t$', fontsize=fsize)
+
+After running ``clmm.polaraveraging.make_shear_profile`` on a
+``clmm.GalaxyCluster`` object, the object acquires the
+``clmm.GalaxyCluster.profile`` attribute.
+
+.. code:: ipython3
+
+    cl.profile
+
+Modeling the data
+-----------------
+
+We next demonstrate a few of the procedures one can perform once a
+cosmology has been chosen.
+
+Choosing a halo model
+~~~~~~~~~~~~~~~~~~~~~
+
+``clmm.modeling.predict_reduced_tangential_shear`` supports various
+parametric halo profile functions, including ``nfw``. ``clmm.modeling``
+works in units of :math:`Mpc/h`, whereas the data is
+cosmology-independent, with units of :math:`Mpc`.
+
+.. code:: ipython3
+
+    def nfw_to_shear_profile(logm, profile_info):
+        [r, gt_profile] = profile_info
+        m = 10.**logm
+        gt_model = clmm.predict_reduced_tangential_shear(r*cosmo.h,
+                                                         m, concentration,
+                                                         cluster_z, src_z, cosmo,
+                                                         delta_mdef=200,
+                                                         halo_profile_model='nfw')
+        return sum((gt_model - gt_profile)**2)
+
+Fitting a halo mass
+~~~~~~~~~~~~~~~~~~~
+
+We optimize to find the best-fit mass for the data under the two radial
+binning schemes.
+
+.. code:: ipython3
+
+    logm_0 = random.uniform(13., 17., 1)[0]
+    
+    logm_est1 = spo.minimize(nfw_to_shear_profile, logm_0,
+                             args=[r1, gt_profile1]).x
+    logm_est2 = spo.minimize(nfw_to_shear_profile, logm_0,
+                             args=[r2, gt_profile2]).x
+    
+    m_est1 = 10.**logm_est1
+    m_est2 = 10.**logm_est2
+    
+    print((m_est1, m_est2))
+
+Next, we calculate the reduced tangential shear predicted by the two
+models.
+
+.. code:: ipython3
+
+    rr = np.logspace(-2, np.log10(5), 100)
+    
+    gt_model1 = clmm.predict_reduced_tangential_shear(rr*cosmo.h,
+                                                      m_est1, concentration,
+                                                      cluster_z, src_z, cosmo,
+                                                      delta_mdef=200,
+                                                      halo_profile_model='nfw')
+    
+    gt_model2 = clmm.predict_reduced_tangential_shear(rr*cosmo.h,
+                                                      m_est2, concentration,
+                                                      cluster_z, src_z, cosmo,
+                                                      delta_mdef=200,
+                                                      halo_profile_model='nfw')
+
+We visualize the two predictions of reduced tangential shear.
+
+.. code:: ipython3
+
+    fig = plt.figure(figsize=(10, 6))
+    
+    fig.gca().scatter(r1, gt_profile1, color='orange',
+                      label='binned mock data 1, M_input = %.3e Msun' % cluster_m)
+    fig.gca().plot(rr, gt_model1, color='orange',
+                   label='best fit model 1, M_fit = %.3e' % m_est1)
+    
+    fig.gca().scatter(r2, gt_profile2, color='blue', alpha=0.5,
+                      label='binned mock data 2, M_input = %.3e Msun' % cluster_m)
+    fig.gca().plot(rr, gt_model1, color='blue', linestyle='--', alpha=0.5,
+                   label='best fit model 2, M_fit = %.3e' % m_est2)
+    
+    plt.semilogx()
+    plt.semilogy()
+    
+    plt.legend()
+    plt.xlabel('R [Mpc]', fontsize=fsize)
+    plt.ylabel('reduced tangential shear', fontsize=fsize)
