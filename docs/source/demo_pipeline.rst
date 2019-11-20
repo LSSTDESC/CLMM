@@ -12,7 +12,7 @@ Setup
 
 First, we import some standard packages.
 
-.. code:: ipython3
+.. code:: 
 
     from astropy.cosmology import FlatLambdaCDM
     import matplotlib.pyplot as plt
@@ -24,7 +24,7 @@ First, we import some standard packages.
 
 Next, we import ``clmm``'s core modules.
 
-.. code:: ipython3
+.. code:: 
 
     import clmm
     import clmm.polaraveraging as pa
@@ -40,7 +40,7 @@ module for another data set. If you do make such a support module,
 please do consider making a pull request so we can add it for others to
 use.
 
-.. code:: ipython3
+.. code:: 
 
     sys.path.append('./support')
     import mock_data as mock
@@ -52,13 +52,13 @@ To create mock data, we need to define a true cosmology, which is
 currently done with ```astropy``'s cosmology
 library <http://docs.astropy.org/en/stable/cosmology/index.html>`__.
 
-.. code:: ipython3
+.. code:: 
 
     mock_cosmo = FlatLambdaCDM(H0=70, Om0=0.27, Ob0=0.045)
 
 We now set some parameters for a mock galaxy cluster.
 
-.. code:: ipython3
+.. code:: 
 
     cosmo = mock_cosmo
     cluster_id = "Awesome_cluster"
@@ -74,7 +74,7 @@ We now set some parameters for a mock galaxy cluster.
 Then we use the ``mock_data`` support module to generate a new galaxy
 catalog.
 
-.. code:: ipython3
+.. code:: 
 
     ideal_data = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration,
                                               cosmo, ngals, Delta, src_z)
@@ -82,20 +82,20 @@ catalog.
 This galaxy catalog is then converted to a ``clmm.GalaxyCluster``
 object.
 
-.. code:: ipython3
+.. code:: 
 
     gc_object = clmm.GalaxyCluster(cluster_id, cluster_ra, cluster_dec,
                                    cluster_z, ideal_data)
 
 A ``clmm.GalaxyCluster`` object can be pickled and saved for later use.
 
-.. code:: ipython3
+.. code:: 
 
     gc_object.save('mock_GC.pkl')
 
 Any saved ``clmm.GalaxyCluster`` object may be read in for analysis.
 
-.. code:: ipython3
+.. code:: 
 
     cl = clmm.load_cluster('mock_GC.pkl')
     print("Cluster info = ID:", cl.unique_id, "; ra:", cl.ra, "; dec:", cl.dec,
@@ -112,7 +112,7 @@ Any saved ``clmm.GalaxyCluster`` object may be read in for analysis.
 
 We can visualize the distribution of galaxies on the sky.
 
-.. code:: ipython3
+.. code:: 
 
     fsize = 15
     
@@ -143,13 +143,13 @@ Computing shear
 ``clmm.polaraveraging.compute_shear`` calculates the tangential and
 cross shears for each source galaxy in the cluster.
 
-.. code:: ipython3
+.. code:: 
 
     theta, g_t, g_x = pa.compute_shear(cl, geometry="flat")
 
 We can visualize the shear field at each galaxy location.
 
-.. code:: ipython3
+.. code:: 
 
     fig = plt.figure(figsize=(10, 6))
     
@@ -163,7 +163,7 @@ Radially binning the data
 Here we compare the reconstructed mass under two different bin
 definitions.
 
-.. code:: ipython3
+.. code:: 
 
     bin_edges1 = pa.make_bins(0.01, 3.7, 50)
     bin_edges2 = pa.make_bins(0.01, 3.7, 10)
@@ -171,7 +171,7 @@ definitions.
 ``clmm.polaraveraging.make_shear_profile`` evaluates the average shear
 of the galaxy catalog in bins of radius.
 
-.. code:: ipython3
+.. code:: 
 
     res1 = pa.make_shear_profile(cl, "radians", "Mpc", bins=bin_edges1,
                                  cosmo=cosmo)
@@ -181,7 +181,7 @@ of the galaxy catalog in bins of radius.
 For later use, we'll define some variables for the binned radius and
 tangential shear.
 
-.. code:: ipython3
+.. code:: 
 
     gt_profile1 = res1['gt']
     r1 = res1['radius']
@@ -191,7 +191,7 @@ tangential shear.
 
 We visualize the radially binned shear for our mock galaxies.
 
-.. code:: ipython3
+.. code:: 
 
     fig = plt.figure(figsize=(10, 6))
     
@@ -207,7 +207,7 @@ After running ``clmm.polaraveraging.make_shear_profile`` on a
 ``clmm.GalaxyCluster`` object, the object acquires the
 ``clmm.GalaxyCluster.profile`` attribute.
 
-.. code:: ipython3
+.. code:: 
 
     cl.profile
 
@@ -225,7 +225,7 @@ parametric halo profile functions, including ``nfw``. ``clmm.modeling``
 works in units of :math:`Mpc/h`, whereas the data is
 cosmology-independent, with units of :math:`Mpc`.
 
-.. code:: ipython3
+.. code:: 
 
     def nfw_to_shear_profile(logm, profile_info):
         [r, gt_profile] = profile_info
@@ -243,7 +243,7 @@ Fitting a halo mass
 We optimize to find the best-fit mass for the data under the two radial
 binning schemes.
 
-.. code:: ipython3
+.. code:: 
 
     logm_0 = random.uniform(13., 17., 1)[0]
     
@@ -260,7 +260,7 @@ binning schemes.
 Next, we calculate the reduced tangential shear predicted by the two
 models.
 
-.. code:: ipython3
+.. code:: 
 
     rr = np.logspace(-2, np.log10(5), 100)
     
@@ -278,7 +278,7 @@ models.
 
 We visualize the two predictions of reduced tangential shear.
 
-.. code:: ipython3
+.. code:: 
 
     fig = plt.figure(figsize=(10, 6))
     
