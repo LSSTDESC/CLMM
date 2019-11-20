@@ -60,10 +60,10 @@ If you are adding documentation in the form of example jupyter notebooks, we enc
 ```bash
 jupyter nbconvert --to rst NAME-OF-NOTEBOOK.ipynb
 ```
-After you have added the `NAME-OF-NOTEBOOK.rst` file to the `docs/source` directory, you will need to also edit the `docs/index.html` file to include `source/NAME-OF-NOTEBOOK.rst`.  NOTE: You may run into a docs compilation error if your `.rst` file does not start with,
+After you have added the `NAME-OF-NOTEBOOK.rst` file to the `docs/source` directory, you will need to also edit the `docs/index.html` file to include `source/NAME-OF-NOTEBOOK.rst`.  NOTE: You may run into a docs compilation error with a direct conversion to a `.rst` file. If your file does not start with the following, add the asterisk sandwiched header,
 ```bash
 ***************
-HEADER FOR FILE
+HEADER-FOR-FILE
 ***************
 ```
 Another compilation error can occur if there are lines that look like,
