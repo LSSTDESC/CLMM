@@ -5,7 +5,6 @@ from numpy import testing
 import numpy as np
 from astropy.table import Table
 import os
-import pytest
 
 
 rtol = 1.e-6
