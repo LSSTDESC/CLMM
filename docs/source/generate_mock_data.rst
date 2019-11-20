@@ -12,7 +12,7 @@ and shape noise. We then populate a galaxy cluster object
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-.. code:: ipython3
+.. code:: 
 
     import clmm
     import numpy as np
@@ -22,7 +22,7 @@ and shape noise. We then populate a galaxy cluster object
 Import mock data module and setup the configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code:: ipython3
+.. code:: 
 
     import sys
     sys.path.append('./support')
@@ -30,14 +30,14 @@ Import mock data module and setup the configuration
 
 Mock data generation requires a defined cosmology
 
-.. code:: ipython3
+.. code:: 
 
     from astropy.cosmology import FlatLambdaCDM
     mock_cosmo = FlatLambdaCDM(H0=70, Om0=0.27, Ob0=0.045)
 
 Mock data generation requires some cluster information
 
-.. code:: ipython3
+.. code:: 
 
     cosmo = mock_cosmo
     cluster_id = "Awesome_cluster"
@@ -56,14 +56,14 @@ Generate the mock catalog with different options
 
 Clean data: no noise, all galaxies at the same redshift
 
-.. code:: ipython3
+.. code:: 
 
     ideal_data = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration,
                                               cosmo, ngals, Delta, src_z)
 
 Noisy data: shape noise, all galaxies at the same redshift
 
-.. code:: ipython3
+.. code:: 
 
     noisy_data_src_z = mock.generate_galaxy_catalog(cluster_m,
                                                 cluster_z,
@@ -79,7 +79,7 @@ Noisy data: shape noise, all galaxies at the same redshift
 Noisy data: photo-z errors (and pdfs!), all galaxies at the same
 redshift
 
-.. code:: ipython3
+.. code:: 
 
     noisy_data_photoz = mock.generate_galaxy_catalog(cluster_m,
                                                 cluster_z,
@@ -93,7 +93,7 @@ redshift
 
 Clean data: source galaxy redshifts drawn from Chang et al. 2013
 
-.. code:: ipython3
+.. code:: 
 
     ideal_with_src_dist = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration,
                                               cosmo, ngals, Delta, 'chang13',zsrc_max=7.0)
@@ -102,7 +102,7 @@ Clean data: source galaxy redshifts drawn from Chang et al. 2013
 Noisy data: galaxies following redshift distribution, redshift error,
 shape noise
 
-.. code:: ipython3
+.. code:: 
 
     allsystematics = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration,
                                               cosmo, ngals, Delta, 'chang13',zsrc_max=7.0,
@@ -114,24 +114,24 @@ Inspect the catalog data
 Ideal catalog first entries: no noise on the shape measurement, all galaxies at z=0.8
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. code:: ipython3
+.. code:: 
 
     ideal_data[0:3]
 
 With photo-z errors
 ^^^^^^^^^^^^^^^^^^^
 
-.. code:: ipython3
+.. code:: 
 
     noisy_data_photoz[0:3]
 
-.. code:: ipython3
+.. code:: 
 
     # Histogram of the redshift distribution of bkg galaxies (starting at z_cluster + 0.1)
     hist = plt.hist(allsystematics['z'], bins=50)
     plt.xlabel('Source Redshift')
 
-.. code:: ipython3
+.. code:: 
 
     # pdz for the first galaxy in the catalog
     plt.plot(allsystematics['pzbins'][0], allsystematics['pzpdf'][0])
@@ -140,7 +140,7 @@ With photo-z errors
 
 Populate in a galaxy cluster object
 
-.. code:: ipython3
+.. code:: 
 
     # At the moment mock data only allow for a cluster centred on (0,0)
     cluster_ra = 0.0
@@ -150,7 +150,7 @@ Populate in a galaxy cluster object
 
 Plot source galaxy ellipticities
 
-.. code:: ipython3
+.. code:: 
 
     plt.scatter(gc_object.galcat['e1'],gc_object.galcat['e2'])
     
