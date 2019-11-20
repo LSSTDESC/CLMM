@@ -178,10 +178,9 @@ def predict_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     z_src_model : str, optional
         Source redshift model, with the following supported options:
         `single_plane` (default) - all sources at one redshift
-        `known_z_src` - known individual source galaxy redshifts
-                        e.g. discrete case
-        `z_src_distribution` - known source redshift distribution
-                               e.g. continuous case requiring integration.
+        `known_z_src` - known individual source galaxy redshifts e.g. discrete case
+        `z_src_distribution` - known source redshift distribution e.g. continuous
+        case requiring integration.
 
     Returns
     -------
@@ -235,10 +234,9 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
     z_src_model : str, optional
         Source redshift model, with the following supported options:
         `single_plane` (default) - all sources at one redshift
-        `known_z_src` - known individual source galaxy redshifts
-                        e.g. discrete case
-        `z_src_distribution` - known source redshift distribution
-                               e.g. continuous case requiring integration.
+        `known_z_src` - known individual source galaxy redshifts e.g. discrete case
+        `z_src_distribution` - known source redshift distribution e.g. continuous
+        case requiring integration.
 
     Returns
     -------
@@ -374,10 +372,9 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     z_src_model : str, optional
         Source redshift model, with the following supported options:
         `single_plane` (default) - all sources at one redshift
-        `known_z_src` - known individual source galaxy redshifts
-                        e.g. discrete case
-        `z_src_distribution` - known source redshift distribution
-                               e.g. continuous case requiring integration.
+        `known_z_src` - known individual source galaxy redshifts e.g. discrete case
+        `z_src_distribution` - known source redshift distribution e.g. continuous
+        case requiring integration.
 
     Returns
     -------
@@ -442,10 +439,9 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     z_src_model : str, optional
         Source redshift model, with the following supported options:
         `single_plane` (default) - all sources at one redshift
-        `known_z_src` - known individual source galaxy redshifts
-                        e.g. discrete case
-        `z_src_distribution` - known source redshift distribution
-                               e.g. continuous case requiring integration.
+        `known_z_src` - known individual source galaxy redshifts e.g. discrete case
+        `z_src_distribution` - known source redshift distribution e.g. continuous
+        case requiring integration.
 
     Returns
     -------
@@ -456,17 +452,17 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     -----
     Need to figure out if we want to raise exceptions rather than errors here?
     """
-    sigma = predict_surface_density(r_proj, mdelta, cdelta, z_cluster, cosmo, delta_mdef=delta_mdef,
-                                    halo_profile_model=halo_profile_model)
+    sigma = predict_surface_density(r_proj, mdelta, cdelta, z_cluster, cosmo,
+                                    delta_mdef=delta_mdef, halo_profile_model=halo_profile_model)
 
     if z_src_model == 'single_plane':
         sigma_c = get_critical_surface_density(cosmo, z_cluster, z_source)
         kappa = sigma / sigma_c
     elif z_src_model == 'known_z_src': # Discrete case
-        raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +
+        raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +\
                                   'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
     elif z_src_model == 'z_src_distribution': # Continuous ( from a distribution) case
-        raise NotImplementedError('Need to implement Beta_s calculation from integrating' +
+        raise NotImplementedError('Need to implement Beta_s calculation from integrating' +\
                                   'distribution of redshifts in each radial bin')
     else:
         raise ValueError("Unsupported z_src_model")
@@ -500,10 +496,9 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
     z_src_model : str, optional
         Source redshift model, with the following supported options:
         `single_plane` (default) - all sources at one redshift
-        `known_z_src` - known individual source galaxy redshifts
-                        e.g. discrete case
-        `z_src_distribution` - known source redshift distribution,
-                               e.g. continuous case requiring integration.
+        `known_z_src` - known individual source galaxy redshifts e.g. discrete case
+        `z_src_distribution` - known source redshift distribution, e.g. continuous
+        case requiring integration.
 
     Returns
     -------
