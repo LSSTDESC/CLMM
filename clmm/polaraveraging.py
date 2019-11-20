@@ -113,23 +113,23 @@ def compute_shear(cluster=None, ra_lens=None, dec_lens=None, ra_source_list=None
     # If a cluster object is not specified, we require all of these inputs
     elif any(t_ is None for t_ in (ra_lens, dec_lens, ra_source_list, dec_source_list,
                                    shear1, shear2)):
-        raise TypeError('To compute shear, please provide a GalaxyCluster object or ra and dec of\
-                         lens and sources and both shears or ellipticities of the sources.')
+        raise TypeError('To compute shear, please provide a GalaxyCluster object or ra and dec' +\
+                        'of lens and sources and both shears or ellipticities of the sources.')
 
     # If there is only 1 source, make sure everything is a scalar
     if all(not hasattr(t_, '__len__') for t_ in [ra_source_list, dec_source_list, shear1, shear2]):
         pass
     # Otherwise, check that the length of all of the inputs match
     elif not all(len(t_) == len(ra_source_list) for t_ in [dec_source_list, shear1, shear2]):
-        raise TypeError("To compute the shear you should supply the same number of source\
-                         positions and shear.")
+        raise TypeError('To compute the shear you should supply the same number of source' +\
+                        'positions and shear.')
 
     # Compute the lensing angles
     if geometry == 'flat':
         angsep, phi = _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list,
                                                       dec_source_list)
     else:
-        raise NotImplementedError("Sky geometry {} is not currently supported".format(geometry))
+        raise NotImplementedError(f"Sky geometry {geometry} is not currently supported")
 
     # Compute the tangential and cross shears
     tangential_shear = _compute_tangential_shear(shear1, shear2, phi)
@@ -157,9 +157,9 @@ def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_sourc
     For extended descriptions of parameters, see `compute_shear()` documentation.
     """
     if not -360. <= ra_lens <= 360.:
-        raise ValueError("ra = {} of lens if out of domain".format(ra_lens))
+        raise ValueError(f"ra = {ra_lens} of lens if out of domain")
     if not -90. <= dec_lens <= 90.:
-        raise ValueError("dec = {} of lens if out of domain".format(dec_lens))
+        raise ValueError(f"dec = {dec_lens} of lens if out of domain")
     if not all(-360. <= x_ <= 360. for x_ in ra_source_list):
         raise ValueError("Cluster has an invalid ra in source catalog")
     if not all(-90. <= x_ <= 90 for x_ in dec_source_list):
@@ -254,8 +254,8 @@ def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
         standard errors in each bin.
     """
     if not all([t_ in cluster.galcat.columns for t_ in ('gt', 'gx', 'theta')]):
-        raise TypeError('Shear information is missing in galaxy catalog must have tangential\
-                        and cross shears (gt,gx). Run compute_shear first!')
+        raise TypeError('Shear information is missing in galaxy catalog must have tangential' +\
+                        'and cross shears (gt,gx). Run compute_shear first!')
 
     # Check to see if we need to do a unit conversion
     if angsep_units is not bin_units:

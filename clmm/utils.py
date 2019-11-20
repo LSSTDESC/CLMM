@@ -38,7 +38,7 @@ def compute_radial_averages(xvals, yvals, xbins, error_model='std/n'):
         yerr = binned_statistic(xvals, yvals, statistic='std', bins=xbins)[0]
         yerr = yerr/binned_statistic(xvals, yvals, statistic='count', bins=xbins)[0]
     else:
-        raise ValueError("{} not supported err model for binned stats".format(error_model))
+        raise ValueError(f"{error_model} not supported err model for binned stats")
 
     return meanx, meany, yerr
 
@@ -65,16 +65,16 @@ def make_bins(rmin, rmax, nbins=10, method='evenwidth'):
         n_bins+1 dimensional array that defines bin edges
     """
     if (rmin > rmax) or (rmin < 0.0) or (rmax < 0.0):
-        raise ValueError("Invalid bin endpoints in make_bins, {} {}".format(rmin, rmax))
+        raise ValueError(f"Invalid bin endpoints in make_bins, {rmin} {rmax}")
     if (nbins <= 0) or not isinstance(nbins, int):
-        raise ValueError("Invalid nbins={}. Must be integer greater than 0.".format(nbins))
+        raise ValueError(f"Invalid nbins={nbins}. Must be integer greater than 0.")
 
     if method == 'evenwidth':
         binedges = np.linspace(rmin, rmax, nbins+1, endpoint=True)
     elif method == 'evenlog10width':
         binedges = np.logspace(np.log10(rmin), np.log10(rmax), nbins+1, endpoint=True)
     else:
-        raise ValueError("Binning method '{}' is not currently supported".format(method))
+        raise ValueError(f"Binning method '{method}' is not currently supported")
 
     return binedges
 
@@ -112,9 +112,9 @@ def convert_units(dist1, unit1, unit2, redshift=None, cosmo=None):
 
     # Some error checking
     if unit1 not in units_bank:
-        raise ValueError("Input units ({}) not supported".format(unit1))
+        raise ValueError(f"Input units ({unit1}) not supported")
     if unit2 not in units_bank:
-        raise ValueError("Output units ({}) not supported".format(unit2))
+        raise ValueError(f"Output units ({unit2}) not supported")
 
     # Try automated astropy unit conversion
     try:
