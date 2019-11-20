@@ -11,7 +11,7 @@ Example notebook
 
 --------------
 
-.. code:: ipython3
+.. code:: 
 
     import matplotlib.pyplot as plt
     from clmm.polaraveraging import compute_shear, make_shear_profile, make_bins
@@ -24,7 +24,7 @@ Example notebook
 Define cosmology object
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code:: ipython3
+.. code:: 
 
     from astropy.cosmology import FlatLambdaCDM
     mock_cosmo = FlatLambdaCDM(H0=70., Om0=0.3, Ob0=0.025)
@@ -34,7 +34,7 @@ Define cosmology object
 
 Define toy cluster parameters for mock data generation
 
-.. code:: ipython3
+.. code:: 
 
     cosmo = mock_cosmo
     cluster_id = "Awesome_cluster"
@@ -56,7 +56,7 @@ Define toy cluster parameters for mock data generation
 
 Loading this into a CLMM cluster object centered on (0,0)
 
-.. code:: ipython3
+.. code:: 
 
     cluster_ra = 0.0
     cluster_dec = 0.0
@@ -71,7 +71,7 @@ Loading this into a CLMM cluster object centered on (0,0)
     Source properties (ra\_s, dec\_s, e1, e2) ### Note, if loading from
     mock data, use: > cl = gc.load\_cluster("GC\_from\_mock\_data.pkl")
 
-.. code:: ipython3
+.. code:: 
 
     cl = gc_object
     print("Cluster info = ID:", cl.unique_id, "; ra:", cl.ra,
@@ -80,7 +80,7 @@ Loading this into a CLMM cluster object centered on (0,0)
 
 Plot cluster and galaxy positions
 
-.. code:: ipython3
+.. code:: 
 
     plt.scatter(cl.galcat['ra'], cl.galcat['dec'], color='blue', s=1, alpha=0.3)
     plt.plot(cl.ra, cl.dec, 'ro')
@@ -89,7 +89,7 @@ Plot cluster and galaxy positions
 
 Check the ellipticities
 
-.. code:: ipython3
+.. code:: 
 
     fig, ax1 = plt.subplots(1, 1)
     
@@ -106,19 +106,19 @@ Check the ellipticities
 Compute angular separation, cross and tangential shear for each source
 galaxy
 
-.. code:: ipython3
+.. code:: 
 
     theta, g_t, g_x = compute_shear(cl, geometry="flat")
 
 Plot tangential and shear distributions for verification, which can be
 accessed in the galaxy cluster object, cl.
 
-.. code:: ipython3
+.. code:: 
 
     plt.hist(cl.galcat['gt'],bins=100)
     plt.xlabel('$\\gamma_t$',fontsize='xx-large')
 
-.. code:: ipython3
+.. code:: 
 
     plt.hist(cl.galcat['gx'],bins=100)
     plt.xlabel('$\\gamma_x$',fontsize='xx-large')
@@ -127,19 +127,19 @@ accessed in the galaxy cluster object, cl.
 Compute transversal and cross shear profiles in units defined by user,
 using defaults binning
 
-.. code:: ipython3
+.. code:: 
 
     profiles = make_shear_profile(cl, "radians", "kpc", cosmo=cosmo)
 
 Use function to plot the profiles
 
-.. code:: ipython3
+.. code:: 
 
     fig, ax = plot_profiles(cl)
 
 Shear Profile example in degrees
 
-.. code:: ipython3
+.. code:: 
 
     new_profiles = make_shear_profile(cl, "radians", "degrees",
                                          cosmo=cosmo)
@@ -148,7 +148,7 @@ Shear Profile example in degrees
 With user defined binning, compute transversal and cross shear profiles
 in units defined by user, plot the new profiles
 
-.. code:: ipython3
+.. code:: 
 
     new_bins = make_bins(1, 6, 20)
     
@@ -159,7 +159,7 @@ in units defined by user, plot the new profiles
 
 You can also access the individual profile quantities
 
-.. code:: ipython3
+.. code:: 
 
     plt.title('cross shear test')
     plt.errorbar(new_profiles['radius'], new_profiles['gx'],
