@@ -84,6 +84,14 @@ def test_compute_lensing_angles_flatsky():
     testing.assert_allclose(phis, np.array([-1.13390499136495481736, 1.77544123918164542530]), rtol=rtol,
                             err_msg="Reasonable values with flat sky not matching to precision for phi")
 
+    # ra and dec are 0.0 - THROWS A WARNING
+    # testing.assert_allclose(pa._compute_lensing_angles_flatsky(0.0, 0.0, ra_s, dec_s),
+    #                         [[2.95479482616592248334, 2.95615695795537858359], [2.83280558128919901506, 2.83233281390148761147]],
+    #                         rtol, err_msg="Failure when RA_lens=DEC_lens=0.0")
+
+
+
+    
     # lens and source at the same ra
     testing.assert_allclose(pa._compute_lensing_angles_flatsky(ra_l, dec_l, np.array([161.32, 161.34]), dec_s),
                             [[0.00069813170079771690, 0.00106951489719733675], [-1.57079632679489655800, 1.77544123918164542530]],
@@ -94,7 +102,34 @@ def test_compute_lensing_angles_flatsky():
                             [[0.00032601941539388962, 0.00106951489719733675], [0.00000000000000000000, 1.77544123918164542530]],
                             rtol, err_msg="Failure when lens and a source share a DEC")
 
+    # lens and source at the same ra and dec - I dont think we want this to raise an error. It just wont be in the bins, so no problemo
+    # The second test is not working!!! Find out why!!!
+    # testing.assert_raises(ValueError, pa._compute_lensing_angles_flatsky, ra_l, dec_l, np.array([161.32, 161.34]), np.array([51.49, 51.55]))
+    # testing.assert_allclose(pa._compute_lensing_angles_flatsky(ra_l, dec_l, np.array([ra_l, 161.34]), np.array([dec_l, 51.55])),
+    #                         [[0.00000000000000000000, 0.00106951489719733675], [0.00000000000000000000, 1.77544123918164542530]],
+    #                         rtol, err_msg="Failure when lens and a source share an RA and a DEC")
 
+    # This test throws a warning!
+    # testing.assert_allclose(pa._compute_lensing_angles_flatsky(0.1, dec_l, np.array([359.9,180.1]), dec_s),
+    #                         [[2.37312589, 1.95611677], [-2.94182333e-04,  3.14105731e+00]],
+    #                         rtol, err_msg="Failure when ra_l and ra_s are close but on the two sides of the 0 axis")   
+
+    # This test throws a warning!
+    # testing.assert_allclose(pa._compute_lensing_angles_flatsky(0, dec_l, np.array([359.9,180.1]), dec_s),
+    #                         [[2.37203916, 1.9572035], [-2.94317111e-04,  3.14105761e+00]],
+    #                         rtol, err_msg="Failure when ra_l and ra_s are separated by pi + epsilon")  
+
+    # This test throws a warning!
+    # testing.assert_allclose(pa._compute_lensing_angles_flatsky(-180, dec_l, np.array([180.1,-90]), dec_s),
+    #                         [[2.36986569, 0.97805881], [-2.94587036e-04,  3.14052196e+00]],
+    #                         rtol, err_msg="Failure when ra_l and ra_s are the same but one is defined negative")     
+
+    # This test throws a warning!
+    # testing.assert_allclose(pa._compute_lensing_angles_flatsky(ra_l, 90, ra_s, np.array([51.45,-90])),
+    #                         [[0.67282443, 3.14159265], [-1.57079633, -1.57079633]],
+    #                         rtol, err_msg="Failure when dec_l and dec_s are separated by 180 deg")
+
+    
 
 def test_compute_shear():
     # Input values
