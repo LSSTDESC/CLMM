@@ -35,6 +35,8 @@ The source code is publically available at https://github.com/LSSTDESC/CLMM
    :caption: Getting Started
 
    source/installation
+   source/mockdata
+   source/polaraveraging
    source/demo_of_polaraveraging
    source/citing
 
