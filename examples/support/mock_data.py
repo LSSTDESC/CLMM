@@ -142,7 +142,7 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delt
     gamt = clmm.predict_reduced_tangential_shear(galaxy_catalog['r_mpc'], mdelta=cluster_m,
                                                  cdelta=cluster_c, z_cluster=cluster_z,
                                                  z_source=galaxy_catalog['z'], cosmo=cosmo,
-                                                 Delta=Delta_SO, halo_profile_parameterization='nfw',
+                                                 delta_mdef=Delta_SO, halo_profile_model='nfw',
                                                  z_src_model='single_plane')
     galaxy_catalog['gammat'] = gamt
 
