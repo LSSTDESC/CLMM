@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
       name='clmm',
       version='0.1',
-      author='The CLMM Developers',
+      author='The LSST DESC CLMM Contributors',
       author_email='avestruz@uchicago.edu',
       license='BSD 3-Clause License',
       url='https://github.com/LSSTDESC/CLMM',
