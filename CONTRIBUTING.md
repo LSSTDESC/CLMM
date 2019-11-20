@@ -1,6 +1,6 @@
 # Contributing to CLMM
 
-This is a brief guide to contributing to CLMM, including information about identifiying code issues and submitting code changes.
+This is a brief guide to contributing to CLMM, including information about identifiying code issues and submitting code changes or documentation.
 
 ## Identifying Issues
 
