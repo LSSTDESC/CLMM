@@ -8,7 +8,7 @@ import os
 import pytest
 
 
-rtol = 1.e-6
+rtol = 1.e-7
 atol = 1.e-7
 
 
@@ -61,7 +61,6 @@ def test_compute_tangential_shear():
 def test_compute_lensing_angles_flatsky():
     ra_l, dec_l = 161., 65.
     ra_s, dec_s = np.array([-355., 355.]), np.array([-85., 85.])
-    rtol=1.e-7
 
     # Test domains on inputs
     testing.assert_raises(ValueError, pa._compute_lensing_angles_flatsky, -365., dec_l, ra_s, dec_s)
