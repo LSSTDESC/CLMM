@@ -22,7 +22,7 @@ import sys
 #sys.path.insert(0, os.path.abspath('.'))
 #sys.path.insert(0, os.path.abspath('../'))
 sys.path.insert(0, os.path.abspath('../clmm'))
-sys.path.insert(0, os.path.abspath('..')) 
+sys.path.insert(0, os.path.abspath('..'))
 
 
 # -- General configuration ------------------------------------------------
@@ -193,7 +193,9 @@ def setup(app):
 
 
 # -- Set up the API page -------------------------------------------------
-apiheader = \
+# If a new module is added to the repository, you should add it to the
+# string below alphabetically
+apicontents = \
 """API Documentation
 =================
 
@@ -202,30 +204,14 @@ Information on specific functions, classes, and methods.
 .. toctree::
    :glob:
 
+   api/clmm.galaxycluster.rst
+   api/clmm.gcdata.rst
+   api/clmm.lsst.rst
+   api/clmm.modeling.rst
+   api/clmm.plotting.rst
+   api/clmm.polaraveraging.rst
+   api/clmm.utils.rst
 """
 
-# Only find pages that are top level
-def make_final_doclist(flist, append, extend):
-    outlist = [append + fname.split('.')[0] + extend
-        for fname in flist
-        if (not fname[0] == '_') and ((fname.split('.')[-1] == 'py') or len(fname.split('.')) < 2)]
-    return outlist
-
-# Changeable variables
-docappend = 'api/clmm.'
-docextension = '.rst'
-
-# Load file list
-baseflist = os.listdir('../clmm')
-baseflist.remove('crypt')
-finalflist = make_final_doclist(baseflist, docappend, docextension)
-finalflist.sort(key = lambda x: x.split('.')[1])
-
-apitoc = """"""
-for finalf in finalflist:
-    apitoc += """   {}\n""".format(finalf)
-
 with open('api.rst', 'w') as apifile:
-    apifile.write(apiheader+apitoc)
-
-
+    apifile.write(apicontents)
