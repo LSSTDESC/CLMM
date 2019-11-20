@@ -80,7 +80,6 @@ def load_from_dc2(nclusters, catalog_name, save_dir, ra_range=(-0.3, 0.3), dec_r
     if len(z_range)!=2:
         raise ValueError('z_range incorrect length: %i'%len(z_range))
 
-
     # load catalog
     if _reader=='GCR':
         catalog = load_GCR_catalog(catalog_name)
@@ -88,6 +87,10 @@ def load_from_dc2(nclusters, catalog_name, save_dir, ra_range=(-0.3, 0.3), dec_r
         catalog = _test_catalog()
     else:
         raise ValueError('Invalid reader name: %s'%_reader)
+        
+    # check range of nclusters
+    if (nclusters<=0) | (nclusters>len(catalog)):
+        raise ValueError('nclusters value out of range: %i'%nclusters)
 
     halos = catalog.get_quantities(['galaxy_id', 'halo_mass', 'redshift', 'ra', 'dec'],
                                    filters=['halo_mass > 1e14', 'is_central==True'])
