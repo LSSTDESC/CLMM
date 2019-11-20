@@ -1,6 +1,12 @@
-*********************************************************
-Notebook to serve as example of how to use polaraveraging
-*********************************************************
+********************************
+Polar Averaging (Profile Making)
+********************************
+Most cluster weak lensing mass measurements use polar averaging
+(profile making) of the data before fitting the data to a model
+profile, such as NFW and Einasto profiles. This repository contains
+tools to create weak lensing profiles from a dataset.
+
+
 Example notebook 
 
 --------------
