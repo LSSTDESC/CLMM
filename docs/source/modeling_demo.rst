@@ -1,9 +1,24 @@
+********************
+Galaxy Cluster Model
+********************
+
+    Notebook for generating an example galaxy cluster model.
+--------------------------------------------------------
+
+This notebook goes through the steps to generate model data for galaxy
+cluster weak lensing observables. In particular, we define a galaxy
+cluster model that follows and NFW distribution and generate various
+profiles for the model (mass density, convergence, shear, etc.), which
+we plot. Note, a full pipeline to measure a galaxy cluster weak lensing
+mass requires fitting the observed (or mock) data to a model.
 
 .. code:: 
 
     import numpy as np
     import matplotlib.pyplot as plt
     %matplotlib inline
+
+Imports specific to clmm
 
 .. code:: 
 
@@ -12,8 +27,7 @@
     import clmm
     import clmm.modeling as m
 
-Define a cosmology
-^^^^^^^^^^^^^^^^^^
+Define a cosmology using astropy
 
 .. code:: 
 
@@ -21,12 +35,13 @@ Define a cosmology
     astropy_cosmology_object = FlatLambdaCDM(H0=70, Om0=0.27, Ob0=0.045)
     cosmo_ccl = m.cclify_astropy_cosmo(astropy_cosmology_object)
 
-Define the galaxy cluster model
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Define the galaxy cluster model. Here, we choose parameters that
+describe the galaxy cluster model, including the mass definition,
+concentration, and mass distribution. For the mass distribution, we
+choose a distribution that follows an NFW profile.
 
 .. code:: 
 
-    # Select density profile and profile parametrization options 
     density_profile_parametrization = 'nfw'
     mass_Delta = 200
     cluster_mass = 1.e15
@@ -35,7 +50,6 @@ Define the galaxy cluster model
     z_source = 2.
 
 Quick test of all modeling functionality
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code:: 
 
