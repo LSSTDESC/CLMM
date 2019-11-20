@@ -2,4 +2,4 @@
 disable=R0913
 
 [TYPECHECK]
-ignored-classes=astropy.units
+ignored-classes=astropy.units, astropy.constants
