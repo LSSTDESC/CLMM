@@ -204,6 +204,7 @@ Information on specific functions, classes, and methods.
 .. toctree::
    :glob:
 
+   api/clmm.constants.rst
    api/clmm.galaxycluster.rst
    api/clmm.gcdata.rst
    api/clmm.lsst.rst

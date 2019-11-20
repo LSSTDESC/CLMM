@@ -1,9 +1,10 @@
 """@file.py modeling.py
 Functions for theoretical models.  Default is NFW.
 """
-from astropy import constants, cosmology, units
+from astropy import cosmology, units
 import cluster_toolkit as ct
 import numpy as np
+from .constants import Constants as const
 
 
 def cclify_astropy_cosmo(apy_cosmo):
@@ -324,8 +325,8 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     We will need :math:`\gamma_\infty` and :math:`\kappa_\infty` for alternative
     z_src_models using :math:`\beta_s`.
     """
-    clight_pc_s = constants.c.to(units.pc/units.s).value
-    gnewt_pc3_msun_s2 = constants.G.to(units.pc**3/units.M_sun/units.s**2).value
+    clight_pc_s = const.CLIGHT_KMS.value * 1000. / const.PC_TO_METER.value
+    gnewt_pc3_msun_s2 = const.GNEWT.value * const.SOLAR_MASS.value / const.PC_TO_METER.value**3
 
     aexp_cluster = _get_a_from_z(z_cluster)
     aexp_src = _get_a_from_z(z_source)
