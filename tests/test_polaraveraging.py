@@ -9,7 +9,7 @@ import pytest
 
 
 rtol = 1.e-6
-atol = 1.e-6
+atol = 1.e-7
 
 
 def test_compute_cross_shear():
