@@ -25,7 +25,7 @@ class _test_catalog():
             if q == 'galaxy_id':
                 out_dict[q] = np.arange(self.n)
             else:
-                out_dict[q] = np.arange(0, 1, 0.1)
+                out_dict[q] = np.arange(0, 1, 1./self.n)
         return out_dict
 
 def _make_GCR_filter(filter_name, low_bound, high_bound):
