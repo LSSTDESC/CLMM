@@ -3,7 +3,7 @@ Tests for modeling
 """
 
 import astropy
-from astropy import cosmology
+from astropy import cosmology, constants
 from numpy import testing as tst
 import numpy as np
 import clmm
@@ -13,9 +13,14 @@ import os
 code_path = '/'.join(os.path.abspath(__file__).split('/')[:-2])
 example_case = pkl.load( open( "%s/examples/support/example_case.p"%code_path, "rb" ) )
 
+# Account for values of constants in different versions of astropy
+##c2_over_G = constants.c.to(units.pc/units.s).value**2/constants.G.to(units.pc**3/units.M_sun/units.s**2).value
+##corr_factor = example_case['c2_over_G']/c2_over_G
+corr_factor = constants.G.to(units.pc**3/units.M_sun/units.s**2).value/example_case['G']
+
 # Cluster parameters
 density_profile_parametrization = example_case['density_profile_parametrization']
-mass_Delta = example_case['mass_Delta']
+mass_Delta = example_case['mass_Delta']/corr_factor
 cluster_mass = example_case['cluster_mass']
 cluster_concentration = example_case['cluster_concentration']
 z_max = example_case['z_max']
@@ -39,8 +44,8 @@ def test_cosmo_type():
 
 
 rho_params = {'mdelta':cluster_mass, 'cdelta':cluster_concentration, 'z_cl':z_cluster, 'cosmo':cosmo_ccl}
-rho = clmm.get_3d_density(r3d, **rho_params)
-rho_one = clmm.get_3d_density(r3d_one, **rho_params)
+rho = clmm.get_3d_density(r3d, **rho_params)*corr_factor
+rho_one = clmm.get_3d_density(r3d_one, **rho_params)*corr_factor
 
 def test_rho():
     # consistency test
@@ -50,18 +55,19 @@ def test_rho():
 
 
 Sigma_params = {'mdelta':cluster_mass, 'cdelta':cluster_concentration, 'z_cl':z_cluster, 'cosmo':cosmo_ccl, 'delta_mdef':mass_Delta, 'halo_profile_model':density_profile_parametrization}
-Sigma = clmm.predict_surface_density(r3d, **Sigma_params)
-Sigma_one = clmm.predict_surface_density(r3d_one, **Sigma_params)
+Sigma = clmm.predict_surface_density(r3d, **Sigma_params)*corr_factor
+Sigma_one = clmm.predict_surface_density(r3d_one, **Sigma_params)*corr_factor
+
 
 def test_Sigma():
     # consistency test
     assert(np.all(Sigma > 0.))
     tst.assert_equal(Sigma[-1], Sigma_one)
     # physical value test
-    tst.assert_allclose(example_case['nc_Sigma'], Sigma, 1e-9)
+    tst.assert_allclose(example_case['nc_Sigma'], Sigma*constants_corr, 1e-9)
 
-DeltaSigma = clmm.predict_excess_surface_density(r3d, **Sigma_params)
-DeltaSigma_one = clmm.predict_excess_surface_density(r3d_one, **Sigma_params)
+DeltaSigma = clmm.predict_excess_surface_density(r3d, **Sigma_params)*corr_factor
+DeltaSigma_one = clmm.predict_excess_surface_density(r3d_one, **Sigma_params)*corr_factor
 
 def test_DeltaSigma():
     # consistency test
@@ -71,15 +77,15 @@ def test_DeltaSigma():
     # physical value test
     tst.assert_allclose(example_case['nc_DeltaSigma'], DeltaSigma, 1e-8)
 
-Sigmac = clmm.get_critical_surface_density(cosmo_ccl, z_cluster=z_cluster, z_source=z_source)
+Sigmac = clmm.get_critical_surface_density(cosmo_ccl, z_cluster=z_cluster, z_source=z_source)*corr_factor
 
 def test_Sigmac():
     # physical value test
     tst.assert_allclose(example_case['nc_Sigmac'], Sigmac, 1e-8)
 
 gamma_params = {'mdelta':cluster_mass, 'cdelta':cluster_concentration, 'z_cluster':z_cluster, 'z_source':z_source, 'cosmo':cosmo_ccl, 'delta_mdef':mass_Delta, 'halo_profile_model':density_profile_parametrization, 'z_src_model':'single_plane'}
-gammat = clmm.predict_tangential_shear(r3d, **gamma_params)
-gammat_one = clmm.predict_tangential_shear(r3d_one, **gamma_params)
+gammat = clmm.predict_tangential_shear(r3d, **gamma_params)*corr_factor
+gammat_one = clmm.predict_tangential_shear(r3d_one, **gamma_params)*corr_factor
 
 def test_gammat():
     # consistency test
@@ -89,8 +95,8 @@ def test_gammat():
     # physical value test
     tst.assert_allclose(example_case['nc_gammat'], gammat, 1e-8)
 
-kappa = clmm.predict_convergence(r3d, **gamma_params)
-kappa_one = clmm.predict_convergence(r3d_one, **gamma_params)
+kappa = clmm.predict_convergence(r3d, **gamma_params)*corr_factor
+kappa_one = clmm.predict_convergence(r3d_one, **gamma_params)*corr_factor
 
 def test_kappa():
     # consistency test
@@ -106,8 +112,8 @@ gt_one = clmm.predict_reduced_tangential_shear(r3d_one, **gamma_params)
 def test_gt():
     # consistency test
     tst.assert_equal(gt[-1], gt_one)
-    tst.assert_equal(gt, gammat / (1. - kappa))
-    tst.assert_equal(gt_one, gammat_one / (1. - kappa_one))
+    tst.assert_equal(gt, gammat / (cor_factor - kappa))
+    tst.assert_equal(gt_one, gammat_one / (cor_factor - kappa_one))
     # physical value test
     tst.assert_allclose(example_case['nc_gt'], gt, 1e-6)
 
