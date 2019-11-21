@@ -14,14 +14,13 @@ code_path = '/'.join(os.path.abspath(__file__).split('/')[:-2])
 example_case = pkl.load( open( "%s/examples/support/example_case.p"%code_path, "rb" ) )
 
 # Account for values of constants in different versions of astropy
-##c2_over_G = constants.c.to(units.pc/units.s).value**2/constants.G.to(units.pc**3/units.M_sun/units.s**2).value
-##corr_factor = example_case['c2_over_G']/c2_over_G
-corr_factor = constants.G.to(units.pc**3/units.M_sun/units.s**2).value/example_case['G']
+unc_G = abs(1.-constants.G.to(units.pc**3/units.M_sun/units.s**2).value/example_case['G'])
+unc_units = unc_G
 
 # Cluster parameters
 density_profile_parametrization = example_case['density_profile_parametrization']
 mass_Delta = example_case['mass_Delta']
-cluster_mass = example_case['cluster_mass']/corr_factor
+cluster_mass = example_case['cluster_mass']
 cluster_concentration = example_case['cluster_concentration']
 z_max = example_case['z_max']
 z_cluster = example_case['z_cluster']
@@ -44,19 +43,19 @@ def test_cosmo_type():
 
 
 rho_params = {'mdelta':cluster_mass, 'cdelta':cluster_concentration, 'z_cl':z_cluster, 'cosmo':cosmo_ccl}
-rho = clmm.get_3d_density(r3d, **rho_params)*corr_factor
-rho_one = clmm.get_3d_density(r3d_one, **rho_params)*corr_factor
+rho = clmm.get_3d_density(r3d, **rho_params)
+rho_one = clmm.get_3d_density(r3d_one, **rho_params)
 
 def test_rho():
     # consistency test
     tst.assert_equal(rho[-1], rho_one)
     # physical value test
-    tst.assert_allclose(example_case['nc_rho'], rho, 1e-11)
+    tst.assert_allclose(example_case['nc_rho'], rho, 1e-11+unc_units)
 
 
 Sigma_params = {'mdelta':cluster_mass, 'cdelta':cluster_concentration, 'z_cl':z_cluster, 'cosmo':cosmo_ccl, 'delta_mdef':mass_Delta, 'halo_profile_model':density_profile_parametrization}
-Sigma = clmm.predict_surface_density(r3d, **Sigma_params)*corr_factor
-Sigma_one = clmm.predict_surface_density(r3d_one, **Sigma_params)*corr_factor
+Sigma = clmm.predict_surface_density(r3d, **Sigma_params)
+Sigma_one = clmm.predict_surface_density(r3d_one, **Sigma_params)
 
 
 def test_Sigma():
@@ -64,10 +63,10 @@ def test_Sigma():
     assert(np.all(Sigma > 0.))
     tst.assert_equal(Sigma[-1], Sigma_one)
     # physical value test
-    tst.assert_allclose(example_case['nc_Sigma'], Sigma*corr_factor, 1e-9)
+    tst.assert_allclose(example_case['nc_Sigma'], Sigma, 1e-9+unc_units)
 
-DeltaSigma = clmm.predict_excess_surface_density(r3d, **Sigma_params)*corr_factor
-DeltaSigma_one = clmm.predict_excess_surface_density(r3d_one, **Sigma_params)*corr_factor
+DeltaSigma = clmm.predict_excess_surface_density(r3d, **Sigma_params)
+DeltaSigma_one = clmm.predict_excess_surface_density(r3d_one, **Sigma_params)
 
 def test_DeltaSigma():
     # consistency test
@@ -75,17 +74,17 @@ def test_DeltaSigma():
     assert(np.all(DeltaSigma > 0.))
     assert(DeltaSigma_one > 0.)
     # physical value test
-    tst.assert_allclose(example_case['nc_DeltaSigma'], DeltaSigma, 1e-8)
+    tst.assert_allclose(example_case['nc_DeltaSigma'], DeltaSigma, 1e-8+unc_units)
 
-Sigmac = clmm.get_critical_surface_density(cosmo_ccl, z_cluster=z_cluster, z_source=z_source)*corr_factor
+Sigmac = clmm.get_critical_surface_density(cosmo_ccl, z_cluster=z_cluster, z_source=z_source)
 
 def test_Sigmac():
     # physical value test
     tst.assert_allclose(example_case['nc_Sigmac'], Sigmac, 1e-8)
 
 gamma_params = {'mdelta':cluster_mass, 'cdelta':cluster_concentration, 'z_cluster':z_cluster, 'z_source':z_source, 'cosmo':cosmo_ccl, 'delta_mdef':mass_Delta, 'halo_profile_model':density_profile_parametrization, 'z_src_model':'single_plane'}
-gammat = clmm.predict_tangential_shear(r3d, **gamma_params)*corr_factor
-gammat_one = clmm.predict_tangential_shear(r3d_one, **gamma_params)*corr_factor
+gammat = clmm.predict_tangential_shear(r3d, **gamma_params)
+gammat_one = clmm.predict_tangential_shear(r3d_one, **gamma_params)
 
 def test_gammat():
     # consistency test
@@ -93,10 +92,10 @@ def test_gammat():
     tst.assert_equal(gammat, DeltaSigma / Sigmac)
     tst.assert_equal(gammat_one, DeltaSigma_one / Sigmac)
     # physical value test
-    tst.assert_allclose(example_case['nc_gammat'], gammat, 1e-8)
+    tst.assert_allclose(example_case['nc_gammat'], gammat, 1e-8+unc_units)
 
-kappa = clmm.predict_convergence(r3d, **gamma_params)*corr_factor
-kappa_one = clmm.predict_convergence(r3d_one, **gamma_params)*corr_factor
+kappa = clmm.predict_convergence(r3d, **gamma_params)
+kappa_one = clmm.predict_convergence(r3d_one, **gamma_params)
 
 def test_kappa():
     # consistency test
@@ -104,7 +103,7 @@ def test_kappa():
     assert(kappa_one > 0.)
     assert(np.all(kappa > 0.))
     # physical value test
-    tst.assert_allclose(example_case['nc_kappa'], kappa, 1e-8)
+    tst.assert_allclose(example_case['nc_kappa'], kappa, 1e-8+unc_units)
 
 gt = clmm.predict_reduced_tangential_shear(r3d, **gamma_params)
 gt_one = clmm.predict_reduced_tangential_shear(r3d_one, **gamma_params)
@@ -112,10 +111,10 @@ gt_one = clmm.predict_reduced_tangential_shear(r3d_one, **gamma_params)
 def test_gt():
     # consistency test
     tst.assert_equal(gt[-1], gt_one)
-    tst.assert_equal(gt, gammat / (corr_factor - kappa))
-    tst.assert_equal(gt_one, gammat_one / (corr_factor - kappa_one))
+    tst.assert_equal(gt, gammat / (1. - kappa))
+    tst.assert_equal(gt_one, gammat_one / (1. - kappa_one))
     # physical value test
-    tst.assert_allclose(example_case['nc_gt'], gt, 1e-6)
+    tst.assert_allclose(example_case['nc_gt'], gt, 1e-6+unc_units)
 
 # others: test that inputs are as expected, values from demos
 # positive values from sigma onwards
