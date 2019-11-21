@@ -3,7 +3,7 @@ Tests for modeling
 """
 
 import astropy
-from astropy import cosmology, constants
+from astropy import cosmology, constants, units
 from numpy import testing as tst
 import numpy as np
 import clmm
@@ -20,8 +20,8 @@ corr_factor = constants.G.to(units.pc**3/units.M_sun/units.s**2).value/example_c
 
 # Cluster parameters
 density_profile_parametrization = example_case['density_profile_parametrization']
-mass_Delta = example_case['mass_Delta']/corr_factor
-cluster_mass = example_case['cluster_mass']
+mass_Delta = example_case['mass_Delta']
+cluster_mass = example_case['cluster_mass']/corr_factor
 cluster_concentration = example_case['cluster_concentration']
 z_max = example_case['z_max']
 z_cluster = example_case['z_cluster']
@@ -64,7 +64,7 @@ def test_Sigma():
     assert(np.all(Sigma > 0.))
     tst.assert_equal(Sigma[-1], Sigma_one)
     # physical value test
-    tst.assert_allclose(example_case['nc_Sigma'], Sigma*constants_corr, 1e-9)
+    tst.assert_allclose(example_case['nc_Sigma'], Sigma*corr_factor, 1e-9)
 
 DeltaSigma = clmm.predict_excess_surface_density(r3d, **Sigma_params)*corr_factor
 DeltaSigma_one = clmm.predict_excess_surface_density(r3d_one, **Sigma_params)*corr_factor
@@ -112,8 +112,8 @@ gt_one = clmm.predict_reduced_tangential_shear(r3d_one, **gamma_params)
 def test_gt():
     # consistency test
     tst.assert_equal(gt[-1], gt_one)
-    tst.assert_equal(gt, gammat / (cor_factor - kappa))
-    tst.assert_equal(gt_one, gammat_one / (cor_factor - kappa_one))
+    tst.assert_equal(gt, gammat / (corr_factor - kappa))
+    tst.assert_equal(gt_one, gammat_one / (corr_factor - kappa_one))
     # physical value test
     tst.assert_allclose(example_case['nc_gt'], gt, 1e-6)
 
