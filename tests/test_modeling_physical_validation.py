@@ -95,11 +95,11 @@ def test_modeling_get_a_from_z():
     tst.assert_allclose(example_case['aexp_source'], aexp_source, 1e-10)
 
 def test_get_angular_diameter_distance_a():
-    dl = get_angular_diameter_distance_a(cosmo_ccl,
+    dl = clmm.modeling.get_angular_diameter_distance_a(cosmo_ccl,
         example_case['aexp_cluster'])
-    ds = get_angular_diameter_distance_a(cosmo_ccl,
+    ds = clmm.modeling.get_angular_diameter_distance_a(cosmo_ccl,
         example_case['aexp_source'])
-    dls = get_angular_diameter_distance_a(cosmo_ccl,
+    dsl = clmm.modeling.get_angular_diameter_distance_a(cosmo_ccl,
         example_case['aexp_source'], example_case['aexp_cluster'])
     tst.assert_allclose(example_case['dl'], dl, 1e-10+unc_units)
     tst.assert_allclose(example_case['ds'], ds, 1e-10+unc_units)
@@ -155,6 +155,8 @@ if __name__=='__main__':
     test_cosmo_type()
     test_rho()
     test_Sigma()
+    test_modeling_get_a_from_z()
+    test_get_angular_diameter_distance_a()
     test_Sigmac()
     test_DeltaSigma()
     test_gammat()
