@@ -1,3 +1,4 @@
+git+https://github.com/tmcclintock/cluster_toolkit.git
 sphinxcontrib-napoleon
 jupyter
 ipython
