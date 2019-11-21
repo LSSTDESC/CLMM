@@ -1,10 +1,6 @@
 # CLMM documentation build configuration file, created by
-# sphinx-quickstart on Fri Jul 27 17:59:34 2018.
 import os
-# import sys
 import sphinx_nbexamples
-# sys.path.insert(0, os.path.abspath('../clmm'))
-# sys.path.insert(0, os.path.abspath('..'))
 
 
 # -- General configuration ------------------------------------------------
@@ -17,9 +13,7 @@ extensions = ['sphinx.ext.autodoc',
 templates_path = ['_templates']
 
 # The suffix(es) of source filenames.
-# You can specify multiple suffix as a list of string:
 source_suffix = ['.rst', '.md']
-# source_suffix = '.rst'
 
 # The master toctree document.
 master_doc = 'index'
@@ -58,64 +52,8 @@ html_theme_options = {'prev_next_buttons_location': None,
 html_static_path = []
 
 
-# -- Options for HTMLHelp output ------------------------------------------
-
-# Output file base name for HTML help builder.
-# htmlhelp_basename = 'CLMMdoc'
-
-
-# # -- Options for LaTeX output ---------------------------------------------
-#
-# latex_elements = {
-#     # The paper size ('letterpaper' or 'a4paper').
-#     #
-#     # 'papersize': 'letterpaper',
-#
-#     # The font size ('10pt', '11pt' or '12pt').
-#     #
-#     # 'pointsize': '10pt',
-#
-#     # Additional stuff for the LaTeX preamble.
-#     #
-#     # 'preamble': '',
-#
-#     # Latex figure (float) alignment
-#     #
-#     # 'figure_align': 'htbp',
-# }
-#
-# # Grouping the document tree into LaTeX files. List of tuples
-# # (source start file, target name, title,
-# #  author, documentclass [howto, manual, or own class]).
-# latex_documents = [
-#     (master_doc, 'CLMM.tex', 'CLMM Documentation',
-#      'LSST DESC Clusters Working Group', 'manual'),
-# ]
-#
-#
-# # -- Options for manual page output ---------------------------------------
-#
-# # One entry per manual page. List of tuples
-# # (source start file, name, description, authors, manual section).
-# man_pages = [
-#     (master_doc, 'clmm', 'CLMM Documentation',
-#      [author], 1)
-# ]
-#
-#
-# # -- Options for Texinfo output -------------------------------------------
-#
-# # Grouping the document tree into Texinfo files. List of tuples
-# # (source start file, target name, title, author,
-# #  dir menu entry, description, category)
-# texinfo_documents = [
-#     (master_doc, 'CLMM', 'CLMM Documentation',
-#      author, 'CLMM', 'One line description of project.',
-#      'Miscellaneous'),
-# ]
-
-
 # -- Options for Napoleon-------------------------------------------------
+# Napoleon compiles the docstrings into .rst
 
 # If True, include class __init__ docstrings separately from class
 napoleon_include_init_with_doc = False
@@ -128,9 +66,9 @@ napoleon_use_ivar = True
 # -- Options for nbexamples ----------------------------------------------
 
 
-
-
 # -- Options for Autodoc--------------------------------------------------
+# Autodoc collects docstrings and builds API pages
+
 def run_apidoc(_):
     from sphinx.ext.apidoc import main as apidoc_main
     cur_dir = os.path.normpath(os.path.dirname(__file__))
@@ -139,17 +77,12 @@ def run_apidoc(_):
     paramlist = ['--separate', '--no-toc', '-f', '-M', '-o', output_path, modules]
     apidoc_main(paramlist)
 
-
-
 def setup(app):
     app.connect('builder-inited', run_apidoc)
 
 
-
-# -- Set up the API page -------------------------------------------------
-# If a new module is added to the repository, you should add it to the
-# string below alphabetically
-apicontents = \
+# -- Set up the API table of contents ------------------------------------
+apitoc = \
 """API Documentation
 =================
 
@@ -168,6 +101,5 @@ Information on specific functions, classes, and methods.
    api/clmm.utils.rst
 """
 
-with open('api.rst', 'w') as apifile:
-    apifile.write(apicontents)
-
+with open('api.rst', 'w') as apitocfile:
+    apitocfile.write(apitoc)
