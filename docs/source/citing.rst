@@ -2,7 +2,7 @@
 Citing CLMM
 *************
 
-This code, while public on ``github``, has not yet been released by
+This code, while public on GitHub, has not yet been released by
 DESC and is still under active development.  Our release of v1.0 will
 be accompanied by a journal paper describing the development and
 validation of `CLMM`.
