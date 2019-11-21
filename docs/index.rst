@@ -35,10 +35,6 @@ The source code is publically available at https://github.com/LSSTDESC/CLMM
    :caption: Getting Started
 
    source/installation
-   source/generate_mock_data
-   source/demo_of_polaraveraging
-   source/modeling_demo
-   source/demo_pipeline
    source/citing
 
 .. toctree::
