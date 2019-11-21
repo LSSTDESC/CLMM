@@ -76,7 +76,35 @@ def setup(app):
     app.connect('builder-inited', run_apidoc)
 
 
+# -- Compile the examples into rst----------------------------------------
+example_prefix = '../examples/'
+
+demofiles = ['demo_generate_mock_cluster.ipynb']#,
+             #'demo_polaraveraging_functionality.ipynb',
+             #'demo_modeling_functionality.ipynb']
+examplefiles = []#['Example1_Fit_Halo_Mass_to_Shear_Catalog.ipynb']
+
+nbconvert_opts = ['--to rst',
+                  # '--execute',
+                  '--output-dir compiled-examples']
+
+for demo in [*demofiles, *examplefiles]:
+    demo = os.path.join(example_prefix, demo)
+    com = ' '.join(['jupyter nbconvert'] + nbconvert_opts + [demo])
+    subprocess.run(com, shell=True)
+
+
 # -- Build index.html ----------------------------------------------------
+# This is automatic
+index_demo_toc = \
+""".. toctree::
+   :maxdepth: 1
+   :caption: Demos
+
+   compiled-examples/demo_generate_mock_cluster.rst
+
+"""
+
 # This is automatic
 index_api_toc = \
 """.. toctree::
@@ -89,6 +117,7 @@ index_api_toc = \
 # This is automatic
 subprocess.run('cp source/index_body.rst index.rst', shell=True)
 with open('index.rst', 'a') as indexfile:
+    indexfile.write(index_demo_toc)
     indexfile.write(index_api_toc)
 
 
