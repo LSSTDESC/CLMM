@@ -15,7 +15,7 @@ To run the tests you can do::
 Requirements
 ============
 
-To run the code, there are the following dependencies:
+CLMM requires Python version 3.6 or later.  To run the code, there are the following dependencies:
 
 - `Numpy <http://www.numpy.org/>`_: 1.16 or later
 
