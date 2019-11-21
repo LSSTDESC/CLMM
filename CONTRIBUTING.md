@@ -1,6 +1,6 @@
 # Contributing to CLMM
 
-This is a brief guide to contributing to CLMM, including information about identifiying code issues and submitting code changes.
+This is a brief guide to contributing to CLMM, including information about identifiying code issues and submitting code changes or documentation.
 
 ## Identifying Issues
 
@@ -53,6 +53,24 @@ To do this, follow the following steps from within your local copy of CLMM (fork
 NOTE: Code is not complete without unit tests and documentation. Please ensure that unit tests (both new and old) all pass and that docs compile successfully.
 
 To test this, first install the code by running `python setup.py install --user` (required after any change whatsoever to the `.py` files in `clmm/` directory). To run all of the unit tests, run `pytest` in the root package directory. To test the docs, in the root package directory after installing, run `./update_docs`. This script both deletes the old compiled documentation files and rebuilds them. You can view the compiled docs by running `open docs/_build/html/index.html`.
+
+## Adding documentation
+
+If you are adding documentation in the form of example jupyter notebooks, we encourage you to also add this to readthedocs.io.  There is a quick way to convert a jupyter notebook to a `.rst` file:
+```bash
+jupyter nbconvert --to rst NAME-OF-NOTEBOOK.ipynb
+```
+After you have moved the `NAME-OF-NOTEBOOK.rst` file to the `docs/source` directory, you will need to also edit the `docs/index.html` file to include `source/NAME-OF-NOTEBOOK.rst`.  NOTE: You may run into a docs compilation error with a direct conversion to a `.rst` file. If your file does not start with the following, add the asterisk sandwiched header,
+```bash
+***************
+HEADER-FOR-FILE
+***************
+```
+Another compilation error can occur if there are lines that look like,
+```bash
+.. code:: ipython3
+```
+Simply search for ipython3 and replace with no characters to remove the ipython3 occurence.
 
 
 ## Reviewing an open pull request
