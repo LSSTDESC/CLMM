@@ -61,7 +61,7 @@ To run the tests you can do:
 CLMM (Cluster Lensing Mass Modeling) provides a tool to estimate cluster masses based on weak lensing data.
 It also includes a routine to make mock catalogs based on cluster_toolkit.
 CLMM consists of the building blocks for an end-to-end weak lensing cosmology pipeline that can be validated on mock data and run on real data from LSST or other telescopes.
-We provide [examples](https://github.com/LSSTDESC/CLMM/tree/issue/115/readme/examples) of its usage in this repository.
+We provide [examples](https://github.com/LSSTDESC/CLMM/tree/master/examples) of its usage in this repository.
 
 ### The `GalaxyCluster` object
 
