@@ -21,7 +21,7 @@ CLMM requires Python version 3.6 or later.  To run the code, there are the follo
 
 - [cluster-toolkit](https://cluster-toolkit.readthedocs.io/en/latest/source/installation.html) (for halo functionality)
   
-All but cluster-toolkit are pip installable::
+All but cluster-toolkit are pip installable:
 ```
   pip install numpy scipy astropy matplotlib
 ```
@@ -36,7 +36,7 @@ For developers, you will also need to install:
 
 - [sphinx](https://www.sphinx-doc.org/en/master/usage/installation.html) (for documentation)
 
-These are also pip installable::
+These are also pip installable:
 ```
   pip install pytest sphinx sphinx_rtd_theme
 ```
@@ -44,7 +44,7 @@ Note, the last item, `sphinx_rtd_theme` is to make the docs.
 
 ## Installation
 
-To install CLMM you currently need to build it from source::
+To install CLMM you currently need to build it from source:
 
 ```
   git clone https://github.com/LSSTDESC/CLMM.git
@@ -52,7 +52,7 @@ To install CLMM you currently need to build it from source::
   python setup.py install --user   # Add --user flag to install it locally
 ```
 
-To run the tests you can do::
+To run the tests you can do:
 
   `pytest`
 
