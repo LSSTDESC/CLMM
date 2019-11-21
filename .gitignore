@@ -7,8 +7,3 @@ __pycache__
 *.egg*
 .ipynb*
 *.pkl
-
-# Documentation Files
-docs/api/
-docs/_build/*
-docs/api.rst
