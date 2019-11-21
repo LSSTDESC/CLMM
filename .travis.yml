@@ -18,7 +18,7 @@ install:
   - python setup.py install
 
   # Install dependencies required to test the docs
-  - pip install sphinx==2.1.2 sphinx_rtd_theme pandoc
+  - pip install sphinx==2.1.2 sphinx_rtd_theme pandoc nbconvert
 
   # Install coveralls for test coverage
   - pip install coveralls pytest-cov
