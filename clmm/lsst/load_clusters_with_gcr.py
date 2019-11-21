@@ -5,7 +5,8 @@ from collections.abc import Sequence
 import os
 import numpy as np
 from astropy.table import Table
-from clmm import GalaxyCluster, get_reduced_shear_from_convergence
+from ..galaxycluster import GalaxyCluster
+from ..modeling import get_reduced_shear_from_convergence
 
 def load_GCR_catalog(catalog_name):
     """Loads a catalog from GCRCatalogs"""
@@ -14,10 +15,18 @@ def load_GCR_catalog(catalog_name):
 
 class _test_catalog():
     """Blank test catalog designed to mimic a GCRCatalogs catalog. For testing only."""
+    def __init__(self, n=10):
+        self.n = n
     def __len__(self):
-        return 10
+        return self.n
     def get_quantities(self, quantities, *args, **kwargs):
-        return dict([(q, np.zeros(10)) for q in quantities])
+        out_dict = {}
+        for q in quantities:
+            if q == 'galaxy_id':
+                out_dict[q] = np.arange(self.n)
+            else:
+                out_dict[q] = np.arange(0, 1, 0.1)
+        return out_dict
 
 def _make_GCR_filter(filter_name, low_bound, high_bound):
     """Create a filter for a specified range of a certain quantity in the GCRCatalogs format.
@@ -79,7 +88,7 @@ def load_from_dc2(nclusters, catalog_name, save_dir, ra_range=(-0.3, 0.3), dec_r
     if _reader=='GCR':
         catalog = load_GCR_catalog(catalog_name)
     elif _reader=='test':
-        catalog = _test_catalog()
+        catalog = _test_catalog(10)
     else:
         raise ValueError('Invalid reader name: %s'%_reader)
         
@@ -91,7 +100,7 @@ def load_from_dc2(nclusters, catalog_name, save_dir, ra_range=(-0.3, 0.3), dec_r
                                    filters=['halo_mass > 1e14', 'is_central==True'])
 
     # generate GalaxyCluster objects
-    for i in np.random.choice(range(len(next(iter(halos)))), nclusters, replace=False):
+    for i in np.random.choice(range(len(halos['galaxy_id'])), nclusters, replace=False):
         # specify cluster information
         cl_id = halos['galaxy_id'][i]
         cl_ra = halos['ra'][i]
@@ -99,7 +108,7 @@ def load_from_dc2(nclusters, catalog_name, save_dir, ra_range=(-0.3, 0.3), dec_r
         cl_z = halos['redshift'][i]
 
         if verbose:
-            print('Loading cluster %s'%cl_id)
+            print(f'Loading cluster {cl_id}')
 
         # get galaxies around cluster
         

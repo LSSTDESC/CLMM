@@ -93,22 +93,22 @@ def _ct_omega_m_fix(omega_m, redshift):
     """
     return omega_m*(1.0 + redshift)**3
 
-def get_reduced_shear_from_convergence(gamma, k):
+def get_reduced_shear_from_convergence(shear, convergence):
     """Calculates reduced shear from shear and convergence
     
     Parameters
     ----------
-    gamma : array_like, float
+    shear : array_like, float
         shear
-    k : array_like, float
+    convergence : array_like, float
         convergence
     
     Returns:
-    g : array_like, float
+    reduced_shear : array_like, float
         reduced shear
     """
-    g = gamma/(1-k)
-    return g
+    reduced_shear = shear/(1-convergence)
+    return reduced_shear
 
 def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profile_model='nfw'):
     r"""Retrieve the 3d density :math:`\rho(r)`.
