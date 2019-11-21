@@ -77,46 +77,73 @@ def setup(app):
 
 
 # -- Compile the examples into rst----------------------------------------
-example_prefix = '../examples/'
+config = open('doc-config.ini').read().strip().split('\n')
+apilist, demofiles, examplefiles = [], [], []
+apion, demoon, exon = False, False, False
+for entry in config:
+    if not entry or entry[0] == '#':
+        continue
+    if entry == 'APIDOC':
+        apion, demoon, exon = True, False, False
+        continue
+    elif entry == 'DEMO':
+        apion, demoon, exon = False, True, False
+        continue
+    elif entry == 'EXAMPLE':
+        apion, demoon, exon = False, False, True
+        continue
+    if apion:
+        apilist += [entry]
+    elif demoon:
+        demofiles += [entry]
+    elif exon:
+        examplefiles += [entry]
 
-demofiles = ['demo_generate_mock_cluster.ipynb']#,
-             #'demo_polaraveraging_functionality.ipynb',
-             #'demo_modeling_functionality.ipynb']
-examplefiles = []#['Example1_Fit_Halo_Mass_to_Shear_Catalog.ipynb']
-
+outdir = 'compiled-examples/'
 nbconvert_opts = ['--to rst',
                   # '--execute',
-                  '--output-dir compiled-examples']
+                  f'--output-dir {outdir}']
 
 for demo in [*demofiles, *examplefiles]:
-    demo = os.path.join(example_prefix, demo)
     com = ' '.join(['jupyter nbconvert'] + nbconvert_opts + [demo])
     subprocess.run(com, shell=True)
 
 
 # -- Build index.html ----------------------------------------------------
-# This is automatic
-index_demo_toc = \
+index_examples_toc = \
 """.. toctree::
    :maxdepth: 1
-   :caption: Demos
-
-   compiled-examples/demo_generate_mock_cluster.rst
+   :caption: Examples
 
 """
+for example in examplefiles:
+    fname = ''.join(example.split('.')[:-1]).split('/')[-1] + '.rst'
+    index_examples_toc += f"   {outdir}{fname}\n"
 
 # This is automatic
+index_demo_toc = \
+"""
+.. toctree::
+   :maxdepth: 1
+   :caption: Usage Demos
+
+"""
+for demo in demofiles:
+    fname = ''.join(demo.split('.')[:-1]).split('/')[-1] + '.rst'
+    index_demo_toc += f"   {outdir}{fname}\n"
+
 index_api_toc = \
-""".. toctree::
+"""
+.. toctree::
    :maxdepth: 1
    :caption: Reference
 
    api
 """
 
-# This is automatic
 subprocess.run('cp source/index_body.rst index.rst', shell=True)
 with open('index.rst', 'a') as indexfile:
+    indexfile.write(index_examples_toc)
     indexfile.write(index_demo_toc)
     indexfile.write(index_api_toc)
 
@@ -131,15 +158,8 @@ Information on specific functions, classes, and methods.
 .. toctree::
    :glob:
 
-   api/clmm.constants.rst
-   api/clmm.galaxycluster.rst
-   api/clmm.gcdata.rst
-   api/clmm.lsst.rst
-   api/clmm.modeling.rst
-   api/clmm.plotting.rst
-   api/clmm.polaraveraging.rst
-   api/clmm.utils.rst
 """
-
+for onemodule in apilist:
+    apitoc += f"   api/clmm.{onemodule}.rst\n"
 with open('api.rst', 'w') as apitocfile:
     apitocfile.write(apitoc)
