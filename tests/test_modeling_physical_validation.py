@@ -88,8 +88,27 @@ def test_DeltaSigma():
     # physical value test
     tst.assert_allclose(example_case['nc_DeltaSigma'], DeltaSigma, 1e-8+unc_units)
 
+def test_modeling_get_a_from_z():
+    aexp_cluster = clmm.modeling._get_a_from_z(example_case['z_cluster'])
+    aexp_source = clmm.modeling._get_a_from_z(example_case['z_source'])    
+    tst.assert_allclose(example_case['aexp_cluster'], aexp_cluster, 1e-10)
+    tst.assert_allclose(example_case['aexp_source'], aexp_source, 1e-10)
+
+def test_get_angular_diameter_distance_a():
+    dl = get_angular_diameter_distance_a(cosmo_ccl,
+        example_case['aexp_cluster'])
+    ds = get_angular_diameter_distance_a(cosmo_ccl,
+        example_case['aexp_source'])
+    dls = get_angular_diameter_distance_a(cosmo_ccl,
+        example_case['aexp_source'], example_case['aexp_cluster'])
+    tst.assert_allclose(example_case['dl'], dl, 1e-10+unc_units)
+    tst.assert_allclose(example_case['ds'], ds, 1e-10+unc_units)
+    tst.assert_allclose(example_case['dsl'], dsl, 1e-10+unc_units)
+
 def test_Sigmac():
-    Sigmac = clmm.get_critical_surface_density(cosmo_ccl, z_cluster=example_case['z_cluster'], z_source=example_case['z_source'])
+    Sigmac = clmm.get_critical_surface_density(cosmo_ccl,
+        z_cluster=example_case['z_cluster'],
+        z_source=example_case['z_source'])
     # physical value test
     tst.assert_allclose(example_case['nc_Sigmac'], Sigmac, 1e-8)
 
