@@ -19,7 +19,7 @@ install:
 
   # Install dependencies required to test the docs
   - sudo apt-get install pandoc -y
-  - pip install sphinx==2.1.2 sphinx_rtd_theme nbconvert pandoc
+  - pip install sphinx==2.1.2 sphinx_rtd_theme nbconvert ipython
 
   # Install coveralls for test coverage
   - pip install coveralls pytest-cov
