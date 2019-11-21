@@ -11,37 +11,36 @@ CLMM is descended from [clmassmod](https://github.com/deapplegate/clmassmod) but
 
 CLMM requires Python version 3.6 or later.  To run the code, there are the following dependencies:
 
-- `Numpy <http://www.numpy.org/>`_: 1.16 or later
+- [numpy](http://www.numpy.org/) (1.16 or later)
 
-- `scipy <http://www.numpy.org/>`_: 1.3 or later
+- [scipy](http://www.numpy.org/) (1.3 or later)
 
-- `astropy <https://www.astropy.org/>`_: 3.x or later for units and cosmology dependence
+- [astropy](https://www.astropy.org/) (3.x or later for units and cosmology dependence)
 
-- `matplotlib <https://matplotlib.org/>`_: for plotting and going through tutorials
+- [matplotlib](https://matplotlib.org/) (for plotting and going through tutorials)
 
-- `cluster-toolkit <https://cluster-toolkit.readthedocs.io/en/latest/source/installation.html>`_: for halo functionality
+- [cluster-toolkit](https://cluster-toolkit.readthedocs.io/en/latest/source/installation.html) (for halo functionality)
   
-All but cluster-toolkit are pip installable,::
-
+All but cluster-toolkit are pip installable::
+```
   pip install numpy scipy astropy matplotlib
-
+```
 
 Ultimately, CLMM will depend on [CCL](https://github.com/LSSTDESC/CCL), but until [cluster_toolkit](https://github.com/tmcclintock/cluster\_toolkit) is [incorporated into CCL](https://github.com/LSSTDESC/CCL/issues/291), we have an explicit dependency.
 cluster\_toolkit's installation instructions can be found [here](https://cluster-toolkit.readthedocs.io/en/latest/). 
-Note: While cluster-toolkit mentions the potential need to install CAMB/CLASS for all cluster-toolkit functionality, you do not need to install these to run CLMM.
-
+**Note**: While cluster-toolkit mentions the potential need to install CAMB/CLASS for all cluster-toolkit functionality, you do not need to install these to run CLMM.
 
 For developers, you will also need to install:
 
-- `pytest <https://docs.pytest.org/en/latest/>`_: 3.x or later for testing
+- [pytest](https://docs.pytest.org/en/latest/) (3.x or later for testing)
 
-- `sphinx <https://www.sphinx-doc.org/en/master/usage/installation.html>`_: for documentation
+- [sphinx](https://www.sphinx-doc.org/en/master/usage/installation.html) (for documentation)
 
-These are also pip installable,::
-
+These are also pip installable::
+```
   pip install pytest sphinx sphinx_rtd_theme
-
-Note, the last item, sphinx_rtd_theme is to make the docs.
+```
+Note, the last item, `sphinx_rtd_theme` is to make the docs.
 
 ## Installation
 
