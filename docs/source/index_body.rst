@@ -37,8 +37,3 @@ The source code is publically available at https://github.com/LSSTDESC/CLMM
    source/installation
    source/citing
 
-.. toctree::
-   :maxdepth: 1
-   :caption: Reference
-
-   api

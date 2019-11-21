@@ -1,13 +1,11 @@
 # CLMM documentation build configuration file, created by
 import os
-import sphinx_nbexamples
+import subprocess
 
 
 # -- General configuration ------------------------------------------------
 extensions = ['sphinx.ext.autodoc',
-              # 'sphinx.ext.autosummary',
-              'sphinx.ext.napoleon']#,
-              # 'sphinx.ext.nbexamples']
+              'sphinx.ext.napoleon']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -33,7 +31,7 @@ language = 'en'
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'api/clmm.rst']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'api/clmm.rst', 'source/index_body.rst']
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
@@ -63,9 +61,6 @@ napoleon_include_private_with_doc = False
 napoleon_use_ivar = True
 
 
-# -- Options for nbexamples ----------------------------------------------
-
-
 # -- Options for Autodoc--------------------------------------------------
 # Autodoc collects docstrings and builds API pages
 
@@ -79,6 +74,22 @@ def run_apidoc(_):
 
 def setup(app):
     app.connect('builder-inited', run_apidoc)
+
+
+# -- Build index.html ----------------------------------------------------
+# This is automatic
+index_api_toc = \
+""".. toctree::
+   :maxdepth: 1
+   :caption: Reference
+
+   api
+"""
+
+# This is automatic
+subprocess.run('cp source/index_body.rst index.rst', shell=True)
+with open('index.rst', 'a') as indexfile:
+    indexfile.write(index_api_toc)
 
 
 # -- Set up the API table of contents ------------------------------------
