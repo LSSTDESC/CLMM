@@ -27,11 +27,9 @@ To run the code, there are the following dependencies:
 
 - `cluster-toolkit <https://cluster-toolkit.readthedocs.io/en/latest/source/installation.html>`_: for halo functionality
   
-All of but cluster-toolkit are pip installable,
+All but cluster-toolkit are pip installable,::
 
-::
-pip install numpy scipy astropy matplotlib
-::
+  pip install numpy scipy astropy matplotlib
 
 Ultimately, CLMM will depend on `CCL <https://github.com/LSSTDESC/CCL>`_, but until cluster_toolkit is incorporated into CCL, we have an explicit dependency.  Note: While cluster-toolkit mentions the potential need to install CAMB/CLASS for all cluster-toolkit functionality, you do not need to install these to run CLMM.
 
@@ -42,10 +40,8 @@ For developers, you will also need to install:
 
 - `sphinx <https://www.sphinx-doc.org/en/master/usage/installation.html>`_: for documentation
 
-These are also pip installable,
+These are also pip installable,::
 
-::
-pip install pytest sphinx sphinx_rtd_theme
-::
+  pip install pytest sphinx sphinx_rtd_theme
 
 Note, the last item, sphinx_rtd_theme is to make the docs.
