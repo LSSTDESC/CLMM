@@ -14,7 +14,7 @@ To install CLMM you currently need to build it from source::
 ```
   git clone https://github.com/LSSTDESC/CLMM.git
   cd CLMM
-  python setup.py install
+  python setup.py install --user   # Add --user flag to install it locally
 ```
 
 To run the tests you can do::
