@@ -12,8 +12,9 @@ sphinx:
   fail_on_warning: true
 
 # Optionally set the version of Python and requirements required to build your docs
+# - requirements: docs/requirements.txt
 python:
   version: 3.7
   install:
-    - requirements: docs/requirements.txt
+    - requirements: requirements.txt
     - method: pip
