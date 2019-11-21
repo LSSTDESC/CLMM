@@ -28,6 +28,9 @@ Ultimately, CLMM will depend on `CCL <https://github.com/LSSTDESC/CCL>`_, but un
 
 - `matplotlib <https://matplotlib.org/>`_: for plotting and going through tutorials
 
+  All of these are pip installable,
 
-
+::
+pip install numpy scipy astropy matplotlib
+   ::
   
