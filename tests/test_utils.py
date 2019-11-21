@@ -44,16 +44,20 @@ def test_compute_radial_averages():
                      [np.std(inbin1), np.std(inbin2)]], **TOLERANCE)
 
     # Test a much larger, random sample with unevenly spaced bins
-    binvals = 10.0 * np.random.random(100)
-    xbins2 = [0.0, 10.0 * np.random.random(), 10.0]
+    binvals = np.loadtxt('tests/data/radial_average_test_array.txt')
+    xbins2 = [0.0, 3.33, 6.66, 10.0]
     inbin1 = binvals[(binvals > xbins2[0]) & (binvals < xbins2[1])]
     inbin2 = binvals[(binvals > xbins2[1]) & (binvals < xbins2[2])]
+    inbin3 = binvals[(binvals > xbins2[2]) & (binvals < xbins2[3])]
     assert_allclose(compute_radial_averages(binvals, binvals, xbins2, error_model='std/n'),
-                    [[np.mean(inbin1), np.mean(inbin2)], [np.mean(inbin1), np.mean(inbin2)],
-                     [np.std(inbin1)/len(inbin1), np.std(inbin2)/len(inbin2)]], **TOLERANCE)
+                    [[np.mean(inbin1), np.mean(inbin2), np.mean(inbin3)],
+                     [np.mean(inbin1), np.mean(inbin2), np.mean(inbin3)],
+                     [np.std(inbin1)/len(inbin1), np.std(inbin2)/len(inbin2),
+                      np.std(inbin3)/len(inbin3)]], **TOLERANCE)
     assert_allclose(compute_radial_averages(binvals, binvals, xbins2, error_model='std'),
-                    [[np.mean(inbin1), np.mean(inbin2)], [np.mean(inbin1), np.mean(inbin2)],
-                     [np.std(inbin1), np.std(inbin2)]], **TOLERANCE)
+                    [[np.mean(inbin1), np.mean(inbin2), np.mean(inbin3)],
+                     [np.mean(inbin1), np.mean(inbin2), np.mean(inbin3)],
+                     [np.std(inbin1), np.std(inbin2), np.std(inbin3)]], **TOLERANCE)
 
 
 

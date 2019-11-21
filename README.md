@@ -56,4 +56,4 @@ We provide [examples](https://github.com/LSSTDESC/CLMM/tree/issue/115/readme/exa
   * See examples/modeling_demo.ipynb for example usage.
 
 ### Galaxy cluster mass estimation
-  * See examples/demo-pipeline.ipynb for example usage.
+  * See examples/demo-pipeline.ipynb for example usage of an end-to-end measurement.
