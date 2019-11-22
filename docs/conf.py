@@ -6,8 +6,33 @@ sys.path.insert(0, os.path.abspath('../clmm'))
 sys.path.insert(0, os.path.abspath('..'))
 
 
+# -- RTD Fix for cluster_toolkit -----------------------------------------
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+if on_rtd:
+    try:
+        from unittest.mock import MagicMock
+    except ImportError:
+        from mock import Mock as MagicMock
+
+    class Mock(MagicMock):
+        @classmethod
+        def __getattr__(cls, name):
+            return MagicMock()
+
+    MOCK_MODULES = [#'numpy',
+            # 'ctypes',
+            # 'cffi',
+            # 'ctypes.c_double',
+            # 'ctypes.c_int',
+            '_cluster_toolkit.so']
+    # MOCK_MODULES = ['numpy','ctypes','cffi','ctypes.c_double','ctypes.c_int',
+    #                 '_cluster_toolkit.so']
+    sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+
+
 # -- General configuration ------------------------------------------------
 extensions = ['sphinx.ext.autodoc',
+              # 'sphinx.ext.autosummary',
               'sphinx.ext.napoleon',
               'IPython.sphinxext.ipython_console_highlighting']
 
