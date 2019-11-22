@@ -56,21 +56,11 @@ To test this, first install the code by running `python setup.py install --user`
 
 ## Adding documentation
 
-If you are adding documentation in the form of example jupyter notebooks, we encourage you to also add this to readthedocs.io.  There is a quick way to convert a jupyter notebook to a `.rst` file:
-```bash
-jupyter nbconvert --to rst NAME-OF-NOTEBOOK.ipynb
-```
-After you have moved the `NAME-OF-NOTEBOOK.rst` file to the `docs/source` directory, you will need to also edit the `docs/index.html` file to include `source/NAME-OF-NOTEBOOK.rst`.  NOTE: You may run into a docs compilation error with a direct conversion to a `.rst` file. If your file does not start with the following, add the asterisk sandwiched header,
-```bash
-***************
-HEADER-FOR-FILE
-***************
-```
-Another compilation error can occur if there are lines that look like,
-```bash
-.. code:: ipython3
-```
-Simply search for ipython3 and replace with no characters to remove the ipython3 occurence.
+If you are adding documentation either in the form of example jupyter notebooks or new python modules, your documentation will need to compile for our online documentation hosted by readthedocs.io.
+
+We have done most of the hard work for you. Simply edit the configuration file, `docs/doc-config.ini`. If you are looking at add a module, put the module name under the `APIDOC` heading. If you are adding a demo notebook to demonstrate how to use the code, place the path from the `docs/` directory to the notebook under the `DEMO` heading. If you are adding an example notebook that shows off how to use `CLMM` to do science, place the path from the `docs/` directory to the notebook under the `EXAMPLE` heading. 
+
+Once it has been added to the config file, simply run `./update_docs` from the top level directory of the repository and your documentation should compile and be linked in the correct places!
 
 
 ## Reviewing an open pull request
