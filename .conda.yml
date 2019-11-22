@@ -15,6 +15,7 @@ dependencies:
   # - ipykernal
   - sphinx
   - sphinx_rtd_theme
+  - jupyter_client
   - nbconvert
   - pip:
       - git+https://github.com/tmcclintock/cluster_toolkit.git
