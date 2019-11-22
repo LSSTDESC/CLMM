@@ -68,38 +68,6 @@ def test_scale_factor_redshift_conversion():
     assert_allclose(md._get_z_from_a(md._get_a_from_z(testval)), testval, **TOLERANCE)
 
 
-def test_evolve_omega_m_flatlcdm():
-    # Test against astropy for several values of omega_m(z=0)
-    omega_m0_list = [0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45]
-    zlist = [0.1, 0.2, 0.3, 0.5, 0.6418, 1.0, 1.3, 30., 119.328]
-
-    for omega_m0 in omega_m0_list:
-        # Build some base objects
-        truth = {'H0': 70., 'Om0': omega_m0, 'Ob0': 0.05}
-        apycosmo = FlatLambdaCDM(**truth)
-        cclcosmo = {'Omega_c': truth['Om0'] - truth['Ob0'], 'Omega_b': truth['Ob0'],
-                    'h': truth['H0']/100., 'H0': truth['H0']}
-
-        # Test passing in: scalar, list, ndarray
-        assert_allclose(md._evolve_omega_m_flatlcdm(cclcosmo, zlist[0]),
-                        apycosmo.Om(zlist[0]), **TOLERANCE)
-        assert_allclose(md._evolve_omega_m_flatlcdm(cclcosmo, zlist[:3]),
-                apycosmo.Om(zlist[:3]), **TOLERANCE)
-        assert_allclose(md._evolve_omega_m_flatlcdm(cclcosmo, np.array(zlist)),
-                        apycosmo.Om(np.array(zlist)), **TOLERANCE)
-
-    # Check that at redshift zero nothing changes
-    truth = {'H0': 70., 'Om0': 0.3, 'Ob0': 0.05}
-    apycosmo = FlatLambdaCDM(**truth)
-    cclcosmo = {'Omega_c': truth['Om0'] - truth['Ob0'], 'Omega_b': truth['Ob0'],
-                'h': truth['H0']/100., 'H0': truth['H0']}
-    assert_allclose(md._evolve_omega_m_flatlcdm(cclcosmo, 0.0), truth['Om0'], **TOLERANCE)
-
-    # Combine some pieces! Test after ccl-ifying the astropy cosmology
-    assert_allclose(md._evolve_omega_m_flatlcdm(md.cclify_astropy_cosmo(apycosmo), zlist),
-                    apycosmo.Om(zlist), **TOLERANCE)
-
-
 def test_get_3d_density():
     pass
 

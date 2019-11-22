@@ -4,6 +4,7 @@ import cluster_toolkit as ct
 import numpy as np
 from .constants import Constants as const
 from astropy.cosmology import LambdaCDM
+from .cluster_toolkit_patches import _patch_zevolution_cluster_toolkit_rho_m
 
 
 def cclify_astropy_cosmo(cosmoin):
@@ -78,35 +79,6 @@ def _get_z_from_a(scale_factor):
     return 1. / scale_factor - 1.
 
 
-def _evolve_omega_m_flatlcdm(cosmo, redshift):
-    r""" Evolve the matter density in units of critical density in redshift
-
-    We currently use this as a patch to fix `cluster_toolkit`'s z=0 limitation.
-    It works by passing :math:`\Omega_m(z)` instead of :math:`\Omega_m(z=0)` to
-    `cluster_toolkit` functions.
-
-    This is done via :math:`\Omega_m(z) = \Omega_m(z=0)\ (1+z)^3 \frac{1}{E^2(z)}
-
-    This currently only supports Flat LambdaCDM cosmologies.
-
-    Parameters
-    ----------
-    cosmo : dict
-        A CCL-like dictionary of cosmology
-    redshift: array_like
-        Redshift
-
-    Returns
-    -------
-    omega_m : float
-        Mean matter density evolved in redshift
-    """
-    redshift = np.array(redshift)
-    omega_m0 = cosmo['Omega_c'] + cosmo['Omega_b']
-    dimensionless_hubble_sq = omega_m0 * (1.0 + redshift)**3 + (1.0 - omega_m0)
-    return omega_m0 * (1.0 + redshift)**3 / dimensionless_hubble_sq
-
-
 def get_reduced_shear_from_convergence(shear, convergence):
     """Calculates reduced shear from shear and convergence
     
@@ -123,6 +95,7 @@ def get_reduced_shear_from_convergence(shear, convergence):
     """
     reduced_shear = shear/(1-convergence)
     return reduced_shear
+
 
 def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profile_model='nfw'):
     r"""Retrieve the 3d density :math:`\rho(r)`.
@@ -171,10 +144,11 @@ def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profil
     and use another structure to take the arguments necessary for specific models
     """
     cosmo = cclify_astropy_cosmo(cosmo)
-    omega_m_z = _ct_omega_m_fix(cosmo['Omega_c'] + cosmo['Omega_b'], z_cl)
+    omega_m = cosmo['Omega_c'] + cosmo['Omega_b']
+    omega_m_transformed = _patch_zevolution_cluster_toolkit_rho_m(omega_m, z_cl)
 
     if halo_profile_model == 'nfw':
-        rho = ct.density.rho_nfw_at_r(r3d, mdelta, cdelta, omega_m_z, delta=delta_mdef)
+        rho = ct.density.rho_nfw_at_r(r3d, mdelta, cdelta, omega_m_transformed, delta=delta_mdef)
     else:
         raise ValueError("Profile models other than nfw not currently supported")
     return rho
