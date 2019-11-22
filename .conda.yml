@@ -12,7 +12,7 @@ dependencies:
   - gsl
   - astropy
   - matplotlib
-  - ipykernal
+  - ipykernel
   - sphinx
   - sphinx_rtd_theme
   - jupyter_client
