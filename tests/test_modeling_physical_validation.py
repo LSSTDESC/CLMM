@@ -8,18 +8,14 @@ from numpy import testing as tst
 import numpy as np
 import clmm
 
-import pickle as pkl
 import os
 code_path = '/'.join(os.path.abspath(__file__).split('/')[:-2])
-#example_case = pkl.load( open( "%s/examples/support/example_case.p"%code_path, "rb" ) )
 import ast
-
-with open('%s/validation_values/dvals.txt'%code_path, 'r') as f:
+with open('%s/tests/physical_values_nc/dvals.txt'%code_path, 'r') as f:
     test_case = ast.literal_eval(f.read())
 f.close()
-nc_prof = np.genfromtxt('%s/validation_values/numcosmo_profiles.txt'%code_path, names=True)
-nc_dist = np.genfromtxt('%s/validation_values/numcosmo_angular_diameter_distance.txt'%code_path, names=True)
-test_case = pkl.load( open( "%s/examples/support/example_case.p"%code_path, "rb" ) )
+nc_prof = np.genfromtxt('%s/tests/physical_values_nc/numcosmo_profiles.txt'%code_path, names=True)
+nc_dist = np.genfromtxt('%s/tests/physical_values_nc/numcosmo_angular_diameter_distance.txt'%code_path, names=True)
 
 r3d = np.array(nc_prof['r3d'])
 
