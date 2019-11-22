@@ -11,10 +11,13 @@ sphinx:
   configuration: docs/conf.py
   fail_on_warning: true
 
+conda:
+    environment: .conda.yml
+
 # Optionally set the version of Python and requirements required to build your docs
-python:
-  version: 3.7
-  install:
-    - requirements: requirements.txt
-    - requirements: docs/requirements_first.txt
-    - requirements: docs/requirements.txt
+# python:
+#   version: 3.7
+#   install:
+#     - requirements: requirements.txt
+#     - requirements: docs/requirements_first.txt
+#     - requirements: docs/requirements.txt
