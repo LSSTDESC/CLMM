@@ -14,10 +14,3 @@ sphinx:
 # Required for notebook execution on rtd. Not 100% yet though.
 conda:
     environment: .conda.yml
-
-# Optionally set the version of Python and requirements required to build your docs
-# python:
-#   version: 3.7
-#   install:
-#     - requirements: requirements.txt
-#     - requirements: docs/requirements.txt

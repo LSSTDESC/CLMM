@@ -1,4 +1,0 @@
-sphinxcontrib-napoleon
-jupyter
-ipython
-nbconvert

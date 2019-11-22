@@ -8,6 +8,8 @@ sys.path.insert(0, os.path.abspath('..'))
 
 # -- RTD Fix for cluster_toolkit -----------------------------------------
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+
+# This code will execute only on readthedocs
 if on_rtd:
     try:
         from unittest.mock import MagicMock
@@ -19,28 +21,20 @@ if on_rtd:
         def __getattr__(cls, name):
             return MagicMock()
 
-    MOCK_MODULES = [#'numpy',
-            'cluster_toolkit']#,
-            # 'ctypes',
-            # 'cffi',
-            # 'ctypes.c_double',
-            # 'ctypes.c_int',
-            # '_cluster_toolkit.so']
-    # MOCK_MODULES = ['numpy','ctypes','cffi','ctypes.c_double','ctypes.c_int',
-    #                 '_cluster_toolkit.so']
+    # For these modules, do a mock import
+    MOCK_MODULES = ['cluster_toolkit']
     sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 
 # -- General configuration ------------------------------------------------
 extensions = ['sphinx.ext.autodoc',
-              # 'sphinx.ext.autosummary',
+              'sphinx.ext.autosummary',
+              'sphinx.ext.viewcode',
               'sphinx.ext.napoleon',
               'IPython.sphinxext.ipython_console_highlighting']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
-
-# The suffix(es) of source filenames.
 source_suffix = ['.rst', '.md']
 
 # The master toctree document.
@@ -50,24 +44,22 @@ master_doc = 'index'
 project = 'CLMM'
 copyright = '2018-2019, LSST DESC CLMM Contributors'
 author = 'LSST DESC CLMM Contributors'
+language = 'en'
 
 # version is short X.Y, release is full including alpha/beta/rc
 version = '0.0.1'
 release = '0.0.1'
 
-# Language of the documentation
-language = 'en'
+# Files to ignore when looking for source files
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store',
+                    'api/clmm.rst', 'source/index_body.rst']
 
-# List of patterns, relative to source directory, that match files and
-# directories to ignore when looking for source files.
-# This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'api/clmm.rst', 'source/index_body.rst']
-
-# The name of the Pygments (syntax highlighting) style to use.
+# Some style options
+highlight_language = 'python3'
 pygments_style = 'sphinx'
-
-# If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
+add_function_parentheses = True
+add_module_names = True
 
 
 # -- Options for HTML output ----------------------------------------------
@@ -106,7 +98,7 @@ def setup(app):
     app.connect('builder-inited', run_apidoc)
 
 
-# -- Compile the examples into rst----------------------------------------
+# -- Load from the config file -------------------------------------------
 config = open('doc-config.ini').read().strip().split('\n')
 apilist, demofiles, examplefiles = [], [], []
 apion, demoon, exon = False, False, False
@@ -129,6 +121,8 @@ for entry in config:
     elif exon:
         examplefiles += [entry]
 
+
+# -- Compile the examples into rst----------------------------------------
 outdir = 'compiled-examples/'
 nbconvert_opts = ['--to rst',
                   # '--execute',
