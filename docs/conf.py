@@ -1,6 +1,8 @@
 # CLMM documentation build configuration file, created by
 import os
 import subprocess
+import sys
+sys.path.insert(0, os.path.abspath('../clmm'))
 
 
 # -- General configuration ------------------------------------------------
