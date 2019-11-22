@@ -1,4 +1,10 @@
 from setuptools import setup, find_packages
+import sys
+
+version = sys.version_info
+required_py_version = '3.7'
+if version[0] < 3 or (version[0] == 3 and version[1] < 7):
+    raise SystemError("Minimum supported python version is "+required_py_version)
 
 setup(
       name='clmm',
@@ -21,5 +27,5 @@ setup(
         "Programming Language :: Python"
         ],
       install_requires=["astropy", "numpy", "scipy"],
-      python_requires='>3.7'
+      python_requires='>'+required_py_version
 )
