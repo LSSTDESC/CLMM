@@ -129,6 +129,18 @@ def test_Sigmac():
     tst.assert_allclose(test_case['ds'], d_s , 1e-8)
     tst.assert_allclose(test_case['dsl'], d_ls , 1e-8)
     tst.assert_allclose(test_case['nc_Sigmac'], sigmacrit , 1e-8)
+
+    # test new constants
+
+    CLIGHT_KMS = constants.c.to(u.km/u.s).value
+    clight_pc_s_new = CLIGHT_KMS.value * 1000. / const.PC_TO_METER.value
+    tst.assert_allclose(clight_pc_s, clight_pc_s_new, 1e-8)
+
+    GNEWT = astropyconst.G.to(u.m**3/u.kg/u.s**2).value
+    PC_TO_METER = 3.08567758149e16
+    SOLAR_MASS = 1.98892e30
+    gnewt_pc3_msun_s2_new = GNEWT * SOLAR_MASS / PC_TO_METER**3
+    tst.assert_allclose(gnewt_pc3_msun_s2, gnewt_pc3_msun_s2_new, 1e-8)
     # final test
     Sigmac = clmm.get_critical_surface_density(cosmo_ccl,
         z_cluster=test_case['z_cluster'],
