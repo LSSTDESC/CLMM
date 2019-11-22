@@ -111,42 +111,11 @@ def test_get_angular_diameter_distance_a():
     tst.assert_allclose(test_case['dsl'], dsl, 1e-10+unc_units)
 
 def test_Sigmac():
-    # test parts
-    clight_pc_s = constants.c.to(units.pc/units.s).value
-    gnewt_pc3_msun_s2 = constants.G.to(units.pc**3/units.M_sun/units.s**2).value
-    aexp_cluster = clmm.modeling._get_a_from_z(test_case['z_cluster'])
-    aexp_src = clmm.modeling._get_a_from_z(test_case['z_source'])
-    d_l = clmm.modeling.get_angular_diameter_distance_a(cosmo_ccl, test_case['aexp_cluster'])
-    d_s = clmm.modeling.get_angular_diameter_distance_a(cosmo_ccl, test_case['aexp_source'])
-    d_ls = clmm.modeling.get_angular_diameter_distance_a(cosmo_ccl, test_case['aexp_source'], test_case['aexp_cluster'])
-    sigmacrit = d_s / (d_l * d_ls) * clight_pc_s * clight_pc_s / (4.0 * np.pi * gnewt_pc3_msun_s2)
-
-    tst.assert_allclose(test_case['lightspeed'], clight_pc_s , 1e-8)
-    tst.assert_allclose(test_case['G'], gnewt_pc3_msun_s2 , 1e-8)
-    tst.assert_allclose(test_case['aexp_cluster'], aexp_cluster , 1e-8)
-    tst.assert_allclose(test_case['aexp_source'], aexp_src , 1e-8)
-    tst.assert_allclose(test_case['dl'], d_l , 1e-8)
-    tst.assert_allclose(test_case['ds'], d_s , 1e-8)
-    tst.assert_allclose(test_case['dsl'], d_ls , 1e-8)
-    tst.assert_allclose(test_case['nc_Sigmac'], sigmacrit , 1e-8)
-
-    # test new constants
-
-    CLIGHT_KMS = constants.c.to(u.km/u.s).value
-    clight_pc_s_new = CLIGHT_KMS.value * 1000. / const.PC_TO_METER.value
-    tst.assert_allclose(clight_pc_s, clight_pc_s_new, 1e-8)
-
-    GNEWT = astropyconst.G.to(u.m**3/u.kg/u.s**2).value
-    PC_TO_METER = 3.08567758149e16
-    SOLAR_MASS = 1.98892e30
-    gnewt_pc3_msun_s2_new = GNEWT * SOLAR_MASS / PC_TO_METER**3
-    tst.assert_allclose(gnewt_pc3_msun_s2, gnewt_pc3_msun_s2_new, 1e-8)
     # final test
     Sigmac = clmm.get_critical_surface_density(cosmo_ccl,
         z_cluster=test_case['z_cluster'],
         z_source=test_case['z_source'])
     # physical value test
-    tst.assert_allclose(sigmacrit, Sigmac, 1e-8)
     tst.assert_allclose(test_case['nc_Sigmac'], Sigmac, 1e-8)
 
 def test_gammat():
