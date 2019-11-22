@@ -32,7 +32,7 @@ class Constants(Enum):
     Same source as CCL, revise to CCL when available
     """
 
-    SOLAR_MASS = 1.98892e30
+    SOLAR_MASS = 1.9884754153381438e+30
     """ Solar mass (kg)
 
     Source: GSL
