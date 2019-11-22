@@ -20,5 +20,6 @@ setup(
         "Operating System :: OS Independent",
         "Programming Language :: Python"
         ],
-      install_requires=["astropy", "numpy", "scipy"]
+      install_requires=["astropy", "numpy", "scipy"],
+      python_requires='>3.7'
 )
