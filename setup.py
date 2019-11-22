@@ -2,8 +2,10 @@ from setuptools import setup, find_packages
 import sys
 
 version = sys.version_info
-required_py_version = '3.7'
-if version[0] < 3 or (version[0] == 3 and version[1] < 7):
+required_py_version = 3.6
+if version[0] < int(required_py_version) or\
+   (version[0] == int(required_py_version) and\
+    version[1] < required_py_version - int(required_py_version)):
     raise SystemError("Minimum supported python version is "+required_py_version)
 
 setup(
@@ -27,5 +29,5 @@ setup(
         "Programming Language :: Python"
         ],
       install_requires=["astropy", "numpy", "scipy"],
-      python_requires='>'+required_py_version
+      python_requires='>'+str(required_py_version)
 )
