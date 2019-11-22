@@ -3,19 +3,41 @@ Tests for modeling
 """
 
 
+def test_cclify_astropy_cosmo():
+    pass
 
+def test_get_a_from_z():
+    pass
 
+def test_get_z_from_z():
+    pass
 
+def test_ct_omega_m_fix():
+    pass
 
+def test_get_3d_density():
+    pass
 
+def test_predict_surface_density():
+    pass
 
+def test_predict_excess_surface_density():
+    pass
 
+def test_get_angular_diameter_distance_a():
+    pass
 
+def test_get_critical_surface_density():
+    pass
 
+def test_predict_tangential_shear():
+    pass
 
+def test_predict_convergence():
+    pass
 
-
-
+def test_predict_reduced_tangential_shear():
+    pass
 
 
 
