@@ -78,25 +78,34 @@ def _get_z_from_a(scale_factor):
     return 1. / scale_factor - 1.
 
 
-def _ct_omega_m_fix(omega_m, redshift):
-    r"""
-    Patch to fix `cluster_toolkit` z=0 limitation. It works by passing
-    :math:`\Omega_m(z)` instead of :math:`\Omega_m(z=0)` to
+def _evolve_omega_m_flatlcdm(cosmo, redshift):
+    r""" Evolve the matter density in units of critical density in redshift
+
+    We currently use this as a patch to fix `cluster_toolkit`'s z=0 limitation.
+    It works by passing :math:`\Omega_m(z)` instead of :math:`\Omega_m(z=0)` to
     `cluster_toolkit` functions.
+
+    This is done via :math:`\Omega_m(z) = \Omega_m(z=0)\ (1+z)^3 \frac{1}{E^2(z)}
+
+    This currently only supports Flat LambdaCDM cosmologies.
 
     Parameters
     ----------
-    omega_m: float
-        :math:`\Omega_m(z=0)`
-    redshift: float
-        Redshift of the conversion
+    cosmo : dict
+        A CCL-like dictionary of cosmology
+    redshift: array_like
+        Redshift
 
     Returns
     -------
-    float
-        :math:`\Omega_m(z)=\Omega_m(z=0)(1+z)^3`
+    omega_m : float
+        Mean matter density evolved in redshift
     """
-    return omega_m*(1.0 + redshift)**3
+    redshift = np.array(redshift)
+    omega_m0 = cosmo['Omega_c'] + cosmo['Omega_b']
+    dimensionless_hubble_sq = omega_m0 * (1.0 + redshift)**3 + (1.0 - omega_m0)
+    return omega_m0 * (1.0 + redshift)**3 / dimensionless_hubble_sq
+
 
 def get_reduced_shear_from_convergence(shear, convergence):
     """Calculates reduced shear from shear and convergence
