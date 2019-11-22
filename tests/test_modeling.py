@@ -95,6 +95,10 @@ def test_evolve_omega_m_flatlcdm():
                 'h': truth['H0']/100., 'H0': truth['H0']}
     assert_allclose(md._evolve_omega_m_flatlcdm(cclcosmo, 0.0), truth['Om0'], **TOLERANCE)
 
+    # Combine some pieces! Test after ccl-ifying the astropy cosmology
+    assert_allclose(md._evolve_omega_m_flatlcdm(md.cclify_astropy_cosmo(apycosmo), zlist),
+                    apycosmo.Om(zlist), **TOLERANCE)
+
 
 def test_get_3d_density():
     pass
