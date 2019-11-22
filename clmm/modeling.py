@@ -41,37 +41,42 @@ def cclify_astropy_cosmo(cosmoin):
 
 
 def _get_a_from_z(redshift):
-    """Convert redshift to scale factor
+    """ Convert redshift to scale factor
 
     Parameters
     ----------
-    redshift : array_like, float
-        redshift
+    redshift : array_like
+        Redshift
 
     Returns
     -------
-    scale_factor : array_like, float
-        scale factor
+    scale_factor : array_like
+        Scale factor
     """
-    scale_factor = 1. / (1. + redshift)
-    return scale_factor
+    redshift = np.array(redshift)
+    if np.any(redshift < 0.0):
+        raise ValueError(f"Cannot convert negative redshift to scale factor")
+    return 1. / (1. + redshift)
 
 
 def _get_z_from_a(scale_factor):
-    """Convert scale factor to redshift
+    """ Convert scale factor to redshift
 
     Parameters
     ----------
-    scale_factor : array_like, float
-        scale factor
+    scale_factor : array_like
+        Scale factor
 
     Returns
     -------
-    redshift : array_like, float
-        redshift
+    redshift : array_like
+        Redshift
     """
-    redshift = 1. / scale_factor - 1.
-    return redshift
+    scale_factor = np.array(scale_factor)
+    if np.any(scale_factor > 1.0):
+        raise ValueError(f"Cannot convert invalid scale factor a > 1 to redshift")
+    return 1. / scale_factor - 1.
+
 
 def _ct_omega_m_fix(omega_m, redshift):
     r"""

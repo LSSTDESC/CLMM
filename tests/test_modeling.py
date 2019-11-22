@@ -4,7 +4,9 @@ from numpy.testing import assert_raises, assert_allclose, assert_equal
 from astropy.cosmology import FlatLambdaCDM, LambdaCDM
 import clmm.modeling as md
 
+
 TOLERANCE = {'rtol': 1.0e-6, 'atol': 1.0e-6}
+
 
 def test_cclify_astropy_cosmo():
     # Make some base objects
@@ -31,12 +33,39 @@ def test_cclify_astropy_cosmo():
     assert_raises(TypeError, md.cclify_astropy_cosmo, [70., 0.3, 0.25, 0.05])
 
 
+def test_scale_factor_redshift_conversion():
+    # Convert from a to z
+    assert_allclose(md._get_a_from_z(0.5), 2./3., **TOLERANCE)
+    assert_allclose(md._get_a_from_z(np.array([0.1, 0.2, 0.3, 0.4])),
+                    np.array([10./11., 5./6., 10./13., 5./7.]), **TOLERANCE)
+    assert_allclose(md._get_a_from_z(np.array([0.0, 1300.])),
+                    np.array([1.0, 1./1301.]), **TOLERANCE)
 
-def test_get_a_from_z():
-    pass
+    # Convert from z to a
+    assert_allclose(md._get_z_from_a(2./3.), 0.5, **TOLERANCE)
+    assert_allclose(md._get_z_from_a(np.array([10./11., 5./6., 10./13., 5./7.])),
+                    np.array([0.1, 0.2, 0.3, 0.4]), **TOLERANCE)
+    assert_allclose(md._get_z_from_a(np.array([1.0, 1./1301.])),
+                    np.array([0.0, 1300.]), **TOLERANCE)
 
-def test_get_z_from_z():
-    pass
+    # Test for exceptions when outside of domains
+    assert_raises(ValueError, md._get_a_from_z, -5.0)
+    assert_raises(ValueError, md._get_a_from_z, [-5.0, 5.0])
+    assert_raises(ValueError, md._get_z_from_a, 5.0)
+    assert_raises(ValueError, md._get_z_from_a, [-5.0, 5.0])
+
+    # Convert from a to z to a (and vice versa)
+    testval = 0.5
+    assert_allclose(md._get_a_from_z(md._get_z_from_a(testval)), testval, **TOLERANCE)
+    assert_allclose(md._get_z_from_a(md._get_a_from_z(testval)), testval, **TOLERANCE)
+
+
+
+
+
+
+
+
 
 def test_ct_omega_m_fix():
     pass
@@ -84,15 +113,6 @@ def test_predict_reduced_tangential_shear():
 # cluster_mass = 1.e15
 # cluster_concentration = 4
 # z_cluster = 1.
-#
-# cosmo_ccl = ccl.Cosmology(Omega_c=0.27, Omega_b=0.045, h=0.67, A_s=2.1e-9, n_s=0.96)
-# cosmo_apy= astropy.cosmology.core.FlatLambdaCDM(H0=70, Om0=0.27, Ob0=0.045)
-# cosmo_ccl = clmm.cclify_astropy_cosmo(cosmo_apy)
-#
-# def test_cosmo_type():
-#     tst.assert_equal(type(cosmo_apy), astropy.cosmology.core.FlatLambdaCDM)
-#     tst.assert_equal(type(cosmo_ccl), dict)
-#     tst.assert_equal(cosmo_ccl['Omega_c'] + cosmo_ccl['Omega_b'], cosmo_apy.Odm0 + cosmo_apy.Ob0)
 #
 # r3d = np.logspace(-2, 2, 100)
 # r3d_one = r3d[-1]
