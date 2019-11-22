@@ -21,6 +21,9 @@ install:
   - sudo apt-get install pandoc -y
   - pip install sphinx==2.1.2 sphinx_rtd_theme nbconvert ipython jupyter_client
 
+  - pip install ipykernel
+  - python -m ipykernel install --user --name python3 --display-name python3
+
   # Install coveralls for test coverage
   - pip install coveralls pytest-cov
 
