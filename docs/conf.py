@@ -20,6 +20,7 @@ if on_rtd:
             return MagicMock()
 
     MOCK_MODULES = [#'numpy',
+            'cluster_toolkit',
             # 'ctypes',
             # 'cffi',
             # 'ctypes.c_double',
