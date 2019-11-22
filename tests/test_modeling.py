@@ -1,10 +1,36 @@
-"""
-Tests for modeling
-"""
+"""Tests for modeling.py"""
+import numpy as np
+from numpy.testing import assert_raises, assert_allclose, assert_equal
+from astropy.cosmology import FlatLambdaCDM, LambdaCDM
+import clmm.modeling as md
 
+TOLERANCE = {'rtol': 1.0e-6, 'atol': 1.0e-6}
 
 def test_cclify_astropy_cosmo():
-    pass
+    # Make some base objects
+    truth = {'H0': 70., 'Om0': 0.3, 'Ob0': 0.05}
+    apycosmo_flcdm = FlatLambdaCDM(**truth)
+    apycosmo_lcdm = LambdaCDM(Ode0=1.0-truth['Om0'], **truth)
+    cclcosmo = {'Omega_c': truth['Om0'] - truth['Ob0'], 'Omega_b': truth['Ob0'],
+                'h': truth['H0']/100., 'H0': truth['H0']}
+
+    # Test for exception if missing baryon density (everything else required)
+    missbaryons = FlatLambdaCDM(H0=truth['H0'], Om0=truth['Om0'])
+    assert_raises(KeyError, md.cclify_astropy_cosmo, missbaryons)
+
+    # Test output if we pass FlatLambdaCDM and LambdaCDM objects
+    x = md.cclify_astropy_cosmo(apycosmo_flcdm)
+    assert_equal(md.cclify_astropy_cosmo(apycosmo_flcdm), cclcosmo)
+    assert_equal(md.cclify_astropy_cosmo(apycosmo_lcdm), cclcosmo)
+
+    # Test output if we pass a CCL object (a dict right now)
+    assert_equal(md.cclify_astropy_cosmo(cclcosmo), cclcosmo)
+
+    # Test for exception if anything else is passed in
+    assert_raises(TypeError, md.cclify_astropy_cosmo, 70.)
+    assert_raises(TypeError, md.cclify_astropy_cosmo, [70., 0.3, 0.25, 0.05])
+
+
 
 def test_get_a_from_z():
     pass

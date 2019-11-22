@@ -1,24 +1,23 @@
-"""@file.py modeling.py
-Functions for theoretical models.  Default is NFW.
-"""
+""" Functions to model halo profiles """
 from astropy import cosmology, units
 import cluster_toolkit as ct
 import numpy as np
 from .constants import Constants as const
+from astropy.cosmology import LambdaCDM
 
 
-def cclify_astropy_cosmo(apy_cosmo):
-    """Generates a ccl-looking cosmology object (with all values needed for modeling) from
-    an astropy cosmology object.
+def cclify_astropy_cosmo(cosmoin):
+    """ Given an astropy.cosmology object, creates a CCL-like dictionary
+    of the relevant model parameters.
 
     Parameters
     ----------
-    apy_cosmo : astropy.cosmology.core.FlatLambdaCDM or pyccl.core.Cosmology
+    cosmoin : astropy.cosmology.core.FlatLambdaCDM or pyccl.core.Cosmology
         astropy or CCL cosmology object
 
     Returns
     -------
-    ccl_cosmo : dictionary
+    cosmodict : dictionary
         modified astropy cosmology object
 
     Notes
@@ -31,14 +30,14 @@ def cclify_astropy_cosmo(apy_cosmo):
     astropy_cosmology_object = FlatLambdaCDM(H0=70, Om0=0.27, Ob0=0.045)
     cosmo_ccl = cclify_astropy_cosmo(astropy_cosmology_object)``
     """
-    if isinstance(apy_cosmo, cosmology.core.FlatLambdaCDM):
-        ccl_cosmo = {'Omega_c': apy_cosmo.Odm0,
-                     'Omega_b': apy_cosmo.Ob0,
-                     'h': apy_cosmo.h,
-                     'H0': apy_cosmo.H0.value}
-    else:
-        ccl_cosmo = apy_cosmo
-    return ccl_cosmo
+    if isinstance(cosmoin, dict):
+        return cosmoin
+    elif isinstance(cosmoin, LambdaCDM):
+        if cosmoin.Ob0 is None:
+            raise KeyError("Cosmology object must have a defined baryon density.")
+        return {'Omega_c': cosmoin.Odm0, 'Omega_b': cosmoin.Ob0,
+                'h': cosmoin.h, 'H0': cosmoin.H0.value}
+    raise TypeError("Only astropy LambdaCDM objects or dicts can be made CCL-like.")
 
 
 def _get_a_from_z(redshift):
