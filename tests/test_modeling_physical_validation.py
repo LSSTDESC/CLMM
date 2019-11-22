@@ -25,7 +25,6 @@ unc_units = unc_G
 
 # Cosmology
 #cosmo_apy= astropy.cosmology.core.FlatLambdaCDM(H0=70, Om0=0.27, Ob0=0.045)
-#cosmo_apy = test_case['astropy_cosmology_object']
 cosmo_apy= astropy.cosmology.core.FlatLambdaCDM(H0=test_case['cosmo_H0'],
         Om0=test_case['cosmo_Om0'], Ob0=test_case['cosmo_Ob0'])
 cosmo_ccl = clmm.cclify_astropy_cosmo(cosmo_apy)
@@ -112,10 +111,30 @@ def test_get_angular_diameter_distance_a():
     tst.assert_allclose(test_case['dsl'], dsl, 1e-10+unc_units)
 
 def test_Sigmac():
+    # test parts
+    clight_pc_s = constants.c.to(units.pc/units.s).value
+    gnewt_pc3_msun_s2 = constants.G.to(units.pc**3/units.M_sun/units.s**2).value
+    aexp_cluster = clmm.modeling._get_a_from_z(test_case['z_cluster'])
+    aexp_src = clmm.modeling._get_a_from_z(test_case['z_source'])
+    d_l = clmm.modeling.get_angular_diameter_distance_a(cosmo_ccl, test_case['aexp_cluster'])
+    d_s = clmm.modeling.get_angular_diameter_distance_a(cosmo_ccl, test_case['aexp_source'])
+    d_ls = clmm.modeling.get_angular_diameter_distance_a(cosmo_ccl, test_case['aexp_source'], test_case['aexp_cluster'])
+    sigmacrit = d_s / (d_l * d_ls) * clight_pc_s * clight_pc_s / (4.0 * np.pi * gnewt_pc3_msun_s2)
+
+    tst.assert_allclose(test_case['lightspeed'], clight_pc_s , 1e-8)
+    tst.assert_allclose(test_case['G'], gnewt_pc3_msun_s2 , 1e-8)
+    tst.assert_allclose(test_case['aexp_cluster'], aexp_cluster , 1e-8)
+    tst.assert_allclose(test_case['aexp_source'], aexp_src , 1e-8)
+    tst.assert_allclose(test_case['dl'], d_l , 1e-8)
+    tst.assert_allclose(test_case['ds'], d_s , 1e-8)
+    tst.assert_allclose(test_case['dsl'], d_ls , 1e-8)
+    tst.assert_allclose(test_case['nc_Sigmac'], sigmacrit , 1e-8)
+    # final test
     Sigmac = clmm.get_critical_surface_density(cosmo_ccl,
         z_cluster=test_case['z_cluster'],
         z_source=test_case['z_source'])
     # physical value test
+    tst.assert_allclose(sigmacrit, Sigmac, 1e-8)
     tst.assert_allclose(test_case['nc_Sigmac'], Sigmac, 1e-8)
 
 def test_gammat():
