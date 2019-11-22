@@ -20,12 +20,12 @@ if on_rtd:
             return MagicMock()
 
     MOCK_MODULES = [#'numpy',
-            'cluster_toolkit',
+            'cluster_toolkit']#,
             # 'ctypes',
             # 'cffi',
             # 'ctypes.c_double',
             # 'ctypes.c_int',
-            '_cluster_toolkit.so']
+            # '_cluster_toolkit.so']
     # MOCK_MODULES = ['numpy','ctypes','cffi','ctypes.c_double','ctypes.c_int',
     #                 '_cluster_toolkit.so']
     sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
