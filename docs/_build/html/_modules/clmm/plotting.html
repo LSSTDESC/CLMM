@@ -1,0 +1,299 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>clmm.plotting &mdash; CLMM 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> CLMM
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../source/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/citing.html">Citing CLMM</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit Halo Mass from a Shear Catalog</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Usage Demos</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_polaraveraging_functionality.html">Measure a Profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_modeling_functionality.html">Model a Galaxy Cluster</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.constants.html">clmm.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.gcdata.html">clmm.gcdata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.lsst.html">clmm.lsst package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/clmm.lsst.load_clusters_with_gcr.html">clmm.lsst.load_clusters_with_gcr module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.modeling.html">clmm.modeling module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.plotting.html">clmm.plotting module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.polaraveraging.html">clmm.polaraveraging module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.utils.html">clmm.utils module</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">CLMM</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>clmm.plotting</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for clmm.plotting</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;A collection of scripts that can be used to plot the various quantities that CLMM models.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">.galaxycluster</span> <span class="k">import</span> <span class="n">GalaxyCluster</span>
+
+
+<div class="viewcode-block" id="plot_profiles"><a class="viewcode-back" href="../../api/clmm.plotting.html#clmm.plotting.plot_profiles">[docs]</a><span class="k">def</span> <span class="nf">plot_profiles</span><span class="p">(</span><span class="n">cluster</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rbins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tangential_shear</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tangential_shear_error</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                  <span class="n">cross_shear</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cross_shear_error</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">r_units</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plot shear profiles</span>
+
+<span class="sd">    This function can be called by either passing in an instance of `GalaxyCluster` or as an</span>
+<span class="sd">    attribute of an instance of a `GalaxyCluster` object assuming that that instance has had</span>
+<span class="sd">    a shear profile computed and saved as a `.profile` attribute. This function can also be</span>
+<span class="sd">    called by passing in `rbins` along with the respective shears.</span>
+
+<span class="sd">    We require at least `rbins` information and `tangential_shear` information.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cluster: GalaxyCluster, optional</span>
+<span class="sd">        Instance of `GalaxyCluster()` that contains a `.profile` attribute.</span>
+<span class="sd">    rbins: array_like, optional</span>
+<span class="sd">        The centers of the radial bins that was used to compute the shears.</span>
+<span class="sd">    tangential_shear: array_like, optional</span>
+<span class="sd">        The tangential shear at the radii of `rbins`</span>
+<span class="sd">    tangential_shear_error: array_like, optional</span>
+<span class="sd">        The uncertainty on the tangential shear</span>
+<span class="sd">    cross_shear: array_like, optional</span>
+<span class="sd">        The cross shear at the radii of `rbins`</span>
+<span class="sd">    cross_shear_error: array_like, optional</span>
+<span class="sd">        The uncertainty on the cross shear</span>
+<span class="sd">    r_units: str, optional</span>
+<span class="sd">        Units of `rbins` for x-axis label</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    fig:</span>
+<span class="sd">        The matplotlib figure object that has been plotted to.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># If a cluster object was passed, use these arrays</span>
+    <span class="k">if</span> <span class="n">cluster</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">cluster</span><span class="p">,</span> <span class="s1">&#39;profile&#39;</span><span class="p">):</span>
+        <span class="n">rbins</span> <span class="o">=</span> <span class="n">cluster</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">]</span>
+        <span class="n">r_units</span> <span class="o">=</span> <span class="n">cluster</span><span class="o">.</span><span class="n">profile_bin_units</span>
+        <span class="n">tangential_shear</span> <span class="o">=</span> <span class="n">cluster</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;gt&#39;</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">tangential_shear_error</span> <span class="o">=</span> <span class="n">cluster</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;gt_err&#39;</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cross_shear</span> <span class="o">=</span> <span class="n">cluster</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;gx&#39;</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cross_shear_error</span> <span class="o">=</span> <span class="n">cluster</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;gx_err&#39;</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="c1"># Plot the tangential shears</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">rbins</span><span class="p">,</span> <span class="n">tangential_shear</span><span class="p">,</span>
+                  <span class="n">yerr</span><span class="o">=</span><span class="n">tangential_shear_error</span><span class="p">,</span>
+                  <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;bo-&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Tangential Shear&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Plot the cross shears</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rbins</span><span class="p">,</span> <span class="n">cross_shear</span><span class="p">,</span>
+                 <span class="n">yerr</span><span class="o">=</span><span class="n">cross_shear_error</span><span class="p">,</span>
+                 <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;ro-&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Cross Shear&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">gx</span><span class="p">,</span> <span class="n">gxerr</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="n">axes</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Radius [</span><span class="si">{r_units}</span><span class="s1">]&#39;</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$\gamma$&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span></div>
+
+<span class="n">GalaxyCluster</span><span class="o">.</span><span class="n">plot_profiles</span> <span class="o">=</span> <span class="n">plot_profiles</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018-2019, LSST DESC CLMM Contributors
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,344 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>clmm.polaraveraging module &mdash; CLMM 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="clmm.utils module" href="clmm.utils.html" />
+    <link rel="prev" title="clmm.plotting module" href="clmm.plotting.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> CLMM
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../source/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../source/citing.html">Citing CLMM</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit Halo Mass from a Shear Catalog</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Usage Demos</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_polaraveraging_functionality.html">Measure a Profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_modeling_functionality.html">Model a Galaxy Cluster</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="clmm.constants.html">clmm.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.gcdata.html">clmm.gcdata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.lsst.html">clmm.lsst package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="clmm.lsst.load_clusters_with_gcr.html">clmm.lsst.load_clusters_with_gcr module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.modeling.html">clmm.modeling module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.plotting.html">clmm.plotting module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">clmm.polaraveraging module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.utils.html">clmm.utils module</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CLMM</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../api.html">API Documentation</a> &raquo;</li>
+        
+      <li>clmm.polaraveraging module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/clmm.polaraveraging.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-clmm.polaraveraging">
+<span id="clmm-polaraveraging-module"></span><h1>clmm.polaraveraging module<a class="headerlink" href="#module-clmm.polaraveraging" title="Permalink to this headline">¶</a></h1>
+<p>Functions to compute polar/azimuthal averages in radial bins</p>
+<dl class="function">
+<dt id="clmm.polaraveraging.compute_shear">
+<code class="sig-prename descclassname">clmm.polaraveraging.</code><code class="sig-name descname">compute_shear</code><span class="sig-paren">(</span><em class="sig-param">cluster=None</em>, <em class="sig-param">ra_lens=None</em>, <em class="sig-param">dec_lens=None</em>, <em class="sig-param">ra_source_list=None</em>, <em class="sig-param">dec_source_list=None</em>, <em class="sig-param">shear1=None</em>, <em class="sig-param">shear2=None</em>, <em class="sig-param">geometry='flat'</em>, <em class="sig-param">add_to_cluster=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/polaraveraging.html#compute_shear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.polaraveraging.compute_shear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes tangential shear, cross shear, and angular separation</p>
+<p>To compute the shear, we need the right ascension and declination of the lens and of
+all of the sources. We also need the two shear components of all of the sources.</p>
+<p>These quantities can be handed to <cite>compute_shear</cite> in three ways</p>
+<ol class="arabic">
+<li><p>Pass in each as parameters:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">compute_shear</span><span class="p">(</span><span class="n">ra_lens</span><span class="p">,</span> <span class="n">dec_lens</span><span class="p">,</span> <span class="n">ra_source_list</span><span class="p">,</span> <span class="n">dec_source_list</span><span class="p">,</span> <span class="n">shear1</span><span class="p">,</span> <span class="n">shear2</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p>Given a <cite>GalaxyCluster</cite> object:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">compute_shear</span><span class="p">(</span><span class="n">cluster</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p>As a method of <cite>GalaxyCluster</cite>:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">cluster</span><span class="o">.</span><span class="n">compute_shear</span><span class="p">()</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>The angular separation between the source and the lens, <span class="math notranslate nohighlight">\(\theta\)</span>, and the azimuthal
+position of the source relative to the lens, <span class="math notranslate nohighlight">\(\phi\)</span>, are computed within the function
+and the angular separation is returned.</p>
+<p>In the flat sky approximation, these angles are calculated using (_l: lens, _s: source, RA is from right to left)</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\theta^2 = &amp; \left(\delta_s - \delta_l\right)^2 +
+\left(\alpha_l-\alpha_s\right)^2\cos^2(\delta_l)\\
+\tan\phi = &amp; \frac{\delta_s - \delta_l}{\left(\alpha_l - \alpha_s\right)\cos(\delta_l)}\end{split}\]</div>
+<p>The tangential, <span class="math notranslate nohighlight">\(g_t\)</span>, and cross, <span class="math notranslate nohighlight">\(g_x\)</span>, shears are calculated using the two
+shear components <span class="math notranslate nohighlight">\(g_1\)</span> and <span class="math notranslate nohighlight">\(g_2\)</span> of the source galaxies, following Eq.7 and Eq.8
+in Schrabback et al. (2018), arXiv:1611:03866
+also checked arxiv: 0509252</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}g_t =&amp; -\left( g_1\cos\left(2\phi\right) - g_2\sin\left(2\phi\right)\right)\\
+g_x =&amp; g_1 \sin\left(2\phi\right) - g_2\cos\left(2\phi\right)\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cluster</strong> (<a class="reference internal" href="clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster" title="clmm.galaxycluster.GalaxyCluster"><em>GalaxyCluster</em></a><em>, </em><em>optional</em>) – Instance of <cite>GalaxyCluster()</cite> and must contain right ascension and declinations of both
+the lens and sources and the two shear components all of the sources. If this
+object is specified, right ascension, declination, and shear inputs are ignored.</p></li>
+<li><p><strong>ra_lens</strong> (<em>float</em><em>, </em><em>optional</em>) – Right ascension of the lensing cluster</p></li>
+<li><p><strong>dec_lens</strong> (<em>float</em><em>, </em><em>optional</em>) – Declination of the lensing cluster</p></li>
+<li><p><strong>ra_source_list</strong> (<em>array_like</em><em>, </em><em>optional</em>) – Right ascensions of each source galaxy</p></li>
+<li><p><strong>dec_source_list</strong> (<em>array_like</em><em>, </em><em>optional</em>) – Declinations of each source galaxy</p></li>
+<li><p><strong>shear1</strong> (<em>array_like</em><em>, </em><em>optional</em>) – The measured shear of the source galaxies</p></li>
+<li><p><strong>shear2</strong> (<em>array_like</em><em>, </em><em>optional</em>) – The measured shear of the source galaxies</p></li>
+<li><p><strong>geometry</strong> (<em>str</em><em>, </em><em>optional</em>) – Sky geometry to compute angular separation.
+Flat is currently the only supported option.</p></li>
+<li><p><strong>add_to_cluster</strong> (<em>bool</em>) – If <cite>True</cite> and a cluster was input, add the computed shears to the <cite>GalaxyCluster</cite> object</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>angsep</strong> (<em>array_like</em>) – Angular separation between lens and each source galaxy in radians</p></li>
+<li><p><strong>tangential_shear</strong> (<em>array_like</em>) – Tangential shear for each source galaxy</p></li>
+<li><p><strong>cross_shear</strong> (<em>array_like</em>) – Cross shear for each source galaxy</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="clmm.polaraveraging.make_shear_profile">
+<code class="sig-prename descclassname">clmm.polaraveraging.</code><code class="sig-name descname">make_shear_profile</code><span class="sig-paren">(</span><em class="sig-param">cluster</em>, <em class="sig-param">angsep_units</em>, <em class="sig-param">bin_units</em>, <em class="sig-param">bins=10</em>, <em class="sig-param">cosmo=None</em>, <em class="sig-param">add_to_cluster=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/polaraveraging.html#make_shear_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.polaraveraging.make_shear_profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the shear profile of the cluster</p>
+<p>We assume that the cluster object contains information on the cross and
+tangential shears and angular separation of the source galaxies</p>
+<p>This function can be called in two ways using an instance of GalaxyCluster</p>
+<ol class="arabic">
+<li><p>Pass an instance of GalaxyCluster into the function:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">make_shear_profile</span><span class="p">(</span><span class="n">cluster</span><span class="p">,</span> <span class="s1">&#39;radians&#39;</span><span class="p">,</span> <span class="s1">&#39;radians&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p>Call it as a method of a GalaxyCluster instance:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">cluster</span><span class="o">.</span><span class="n">make_shear_profile</span><span class="p">(</span><span class="s1">&#39;radians&#39;</span><span class="p">,</span> <span class="s1">&#39;radians&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cluster</strong> (<a class="reference internal" href="clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster" title="clmm.galaxycluster.GalaxyCluster"><em>GalaxyCluster</em></a>) – Instance of GalaxyCluster that contains the cross and tangential shears of
+each source galaxy in its <cite>galcat</cite></p></li>
+<li><p><strong>angsep_units</strong> (<em>str</em>) – Units of the calculated separation of the source galaxies
+Allowed Options = [“radians”]</p></li>
+<li><p><strong>bin_units</strong> (<em>str</em>) – Units to use for the radial bins of the shear profile
+Allowed Options = [“radians”, deg”, “arcmin”, “arcsec”, kpc”, “Mpc”]</p></li>
+<li><p><strong>bins</strong> (<em>array_like</em><em>, </em><em>optional</em>) – User defined bins to use for the shear profile. If a list is provided, use that as
+the bin edges. If a scalar is provided, create that many equally spaced bins between
+the minimum and maximum angular separations in bin_units. If nothing is provided,
+default to 10 equally spaced bins.</p></li>
+<li><p><strong>cosmo</strong> (<em>dict</em><em>, </em><em>optional</em>) – Cosmology parameters to convert angular separations to physical distances</p></li>
+<li><p><strong>add_to_cluster</strong> (<em>bool</em><em>, </em><em>optional</em>) – Attach the profile to the cluster object as <cite>cluster.profile</cite></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>profile</strong> – Output table containing the radius grid points, the tangential and cross shear profiles
+on that grid, and the errors in the two shear profiles. The errors are defined as the
+standard errors in each bin.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>astropy.table.Table</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018-2019, LSST DESC CLMM Contributors
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

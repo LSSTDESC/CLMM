@@ -1,0 +1,260 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>clmm.plotting module &mdash; CLMM 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="clmm.polaraveraging module" href="clmm.polaraveraging.html" />
+    <link rel="prev" title="clmm.modeling module" href="clmm.modeling.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> CLMM
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../source/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../source/citing.html">Citing CLMM</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit Halo Mass from a Shear Catalog</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Usage Demos</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_polaraveraging_functionality.html">Measure a Profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_modeling_functionality.html">Model a Galaxy Cluster</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="clmm.constants.html">clmm.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.gcdata.html">clmm.gcdata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.lsst.html">clmm.lsst package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="clmm.lsst.load_clusters_with_gcr.html">clmm.lsst.load_clusters_with_gcr module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.modeling.html">clmm.modeling module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">clmm.plotting module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.polaraveraging.html">clmm.polaraveraging module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.utils.html">clmm.utils module</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CLMM</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../api.html">API Documentation</a> &raquo;</li>
+        
+      <li>clmm.plotting module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/clmm.plotting.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-clmm.plotting">
+<span id="clmm-plotting-module"></span><h1>clmm.plotting module<a class="headerlink" href="#module-clmm.plotting" title="Permalink to this headline">¶</a></h1>
+<p>A collection of scripts that can be used to plot the various quantities that CLMM models.</p>
+<dl class="function">
+<dt id="clmm.plotting.plot_profiles">
+<code class="sig-prename descclassname">clmm.plotting.</code><code class="sig-name descname">plot_profiles</code><span class="sig-paren">(</span><em class="sig-param">cluster=None</em>, <em class="sig-param">rbins=None</em>, <em class="sig-param">tangential_shear=None</em>, <em class="sig-param">tangential_shear_error=None</em>, <em class="sig-param">cross_shear=None</em>, <em class="sig-param">cross_shear_error=None</em>, <em class="sig-param">r_units=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/plotting.html#plot_profiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.plotting.plot_profiles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot shear profiles</p>
+<p>This function can be called by either passing in an instance of <cite>GalaxyCluster</cite> or as an
+attribute of an instance of a <cite>GalaxyCluster</cite> object assuming that that instance has had
+a shear profile computed and saved as a <cite>.profile</cite> attribute. This function can also be
+called by passing in <cite>rbins</cite> along with the respective shears.</p>
+<p>We require at least <cite>rbins</cite> information and <cite>tangential_shear</cite> information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cluster</strong> (<a class="reference internal" href="clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster" title="clmm.galaxycluster.GalaxyCluster"><em>GalaxyCluster</em></a><em>, </em><em>optional</em>) – Instance of <cite>GalaxyCluster()</cite> that contains a <cite>.profile</cite> attribute.</p></li>
+<li><p><strong>rbins</strong> (<em>array_like</em><em>, </em><em>optional</em>) – The centers of the radial bins that was used to compute the shears.</p></li>
+<li><p><strong>tangential_shear</strong> (<em>array_like</em><em>, </em><em>optional</em>) – The tangential shear at the radii of <cite>rbins</cite></p></li>
+<li><p><strong>tangential_shear_error</strong> (<em>array_like</em><em>, </em><em>optional</em>) – The uncertainty on the tangential shear</p></li>
+<li><p><strong>cross_shear</strong> (<em>array_like</em><em>, </em><em>optional</em>) – The cross shear at the radii of <cite>rbins</cite></p></li>
+<li><p><strong>cross_shear_error</strong> (<em>array_like</em><em>, </em><em>optional</em>) – The uncertainty on the cross shear</p></li>
+<li><p><strong>r_units</strong> (<em>str</em><em>, </em><em>optional</em>) – Units of <cite>rbins</cite> for x-axis label</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The matplotlib figure object that has been plotted to.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>fig</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018-2019, LSST DESC CLMM Contributors
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
