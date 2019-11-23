@@ -255,8 +255,9 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
     omega_m = cosmo['Omega_c'] + cosmo['Omega_b']
     omega_m_transformed = _patch_zevolution_cluster_toolkit_rho_m(omega_m, z_cl)
 
+    sigma_r_proj = np.logspace(-3, 4, 1000)
+
     if halo_profile_model.lower() == 'nfw':
-        sigma_r_proj = np.logspace(-3, 4, 1000)
         sigma = ct.deltasigma.Sigma_nfw_at_R(sigma_r_proj, mdelta, cdelta,
                                              omega_m_transformed, delta=delta_mdef)
         # ^ Note: Let's not use this naming convention when transfering ct to ccl....

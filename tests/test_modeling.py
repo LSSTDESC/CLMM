@@ -109,7 +109,16 @@ def test_predict_surface_density():
 
 
 def test_predict_excess_surface_density():
-    pass
+    # TODO: Validation test for NFW profile
+    # TODO: Revise docstring, not clear what parameters are
+    # TODO: z_src_model not currently implemented
+    # TODO: Why do we hard code sigma_r_proj in here? I moved it out of the NFW block
+
+    # Test for exception if other profiles models are passed
+    cclcosmo = {'Omega_c': 0.25, 'Omega_b': 0.05}
+    assert_raises(ValueError, md.predict_excess_surface_density, None, None, None, 0.2,
+                  cclcosmo, 200, 'bleh')
+
 
 def test_get_angular_diameter_distance_a():
     pass
