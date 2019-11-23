@@ -70,6 +70,13 @@ Loading this into a CLMM cluster object centered on (0,0)
           "; dec:", cl.dec, "; z_l :", cl.z)
     print("The number of source galaxies is :", len(cl.galcat))
 
+
+.. parsed-literal::
+
+    Cluster info = ID: Awesome_cluster ; ra: 0.0 ; dec: 0.0 ; z_l : 0.3
+    The number of source galaxies is : 1000
+
+
 Plot cluster and galaxy positions
 
 .. code:: ipython3
@@ -78,6 +85,19 @@ Plot cluster and galaxy positions
     plt.plot(cl.ra, cl.dec, 'ro')
     plt.ylabel('dec', fontsize="large")
     plt.xlabel('ra', fontsize="large")
+
+
+
+
+.. parsed-literal::
+
+    Text(0.5, 0, 'ra')
+
+
+
+
+.. image:: demo_polaraveraging_functionality_files/demo_polaraveraging_functionality_12_1.png
+
 
 Check the ellipticities
 
@@ -91,6 +111,19 @@ Check the ellipticities
     ax1.set_aspect('equal', 'datalim')
     ax1.axvline(0, linestyle='dotted', color='black')
     ax1.axhline(0, linestyle='dotted', color='black')
+
+
+
+
+.. parsed-literal::
+
+    <matplotlib.lines.Line2D at 0x1276a6f10>
+
+
+
+
+.. image:: demo_polaraveraging_functionality_files/demo_polaraveraging_functionality_14_1.png
+
 
 3) Compute and plot shear profiles
 ----------------------------------
@@ -110,11 +143,29 @@ accessed in the galaxy cluster object, cl.
     plt.hist(cl.galcat['gt'],bins=100)
     plt.xlabel('$\\gamma_t$',fontsize='xx-large')
 
+
+
+
+.. parsed-literal::
+
+    Text(0.5, 0, '$\\gamma_t$')
+
+
+
+
+.. image:: demo_polaraveraging_functionality_files/demo_polaraveraging_functionality_19_1.png
+
+
 .. code:: ipython3
 
     plt.hist(cl.galcat['gx'],bins=100)
     plt.xlabel('$\\gamma_x$',fontsize='xx-large')
     plt.yscale('log')
+
+
+
+.. image:: demo_polaraveraging_functionality_files/demo_polaraveraging_functionality_20_0.png
+
 
 Compute transversal and cross shear profiles in units defined by user,
 using defaults binning
@@ -129,6 +180,11 @@ Use function to plot the profiles
 
     fig, ax = plot_profiles(cl)
 
+
+
+.. image:: demo_polaraveraging_functionality_files/demo_polaraveraging_functionality_24_0.png
+
+
 Shear Profile example in degrees
 
 .. code:: ipython3
@@ -136,6 +192,11 @@ Shear Profile example in degrees
     new_profiles = make_shear_profile(cl, "radians", "degrees",
                                          cosmo=cosmo)
     fig1, ax1 = plot_profiles(cl, "degrees")
+
+
+
+.. image:: demo_polaraveraging_functionality_files/demo_polaraveraging_functionality_26_0.png
+
 
 With user defined binning, compute transversal and cross shear profiles
 in units defined by user, plot the new profiles
@@ -149,6 +210,11 @@ in units defined by user, plot the new profiles
     
     fig1, ax1 = plot_profiles(cl, "Mpc", r_units='Mpc')
 
+
+
+.. image:: demo_polaraveraging_functionality_files/demo_polaraveraging_functionality_28_0.png
+
+
 You can also access the individual profile quantities
 
 .. code:: ipython3
@@ -160,5 +226,18 @@ You can also access the individual profile quantities
     plt.axhline(0, linestyle='dotted', color='black')
     plt.xlabel("Radius [Mpc]")
     plt.ylabel('$\\gamma_x$')
+
+
+
+
+.. parsed-literal::
+
+    Text(0, 0.5, '$\\gamma_x$')
+
+
+
+
+.. image:: demo_polaraveraging_functionality_files/demo_polaraveraging_functionality_30_1.png
+
 
 
