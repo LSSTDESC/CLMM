@@ -273,10 +273,13 @@ def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
                                                     xbins=bins, error_model='std/n')
     r_avg, gx_avg, gx_err = compute_radial_averages(source_seps, cluster.galcat['gx'].data,
                                                     xbins=bins, error_model='std/n')
+    r_avg, z_avg, z_err = compute_radial_averages(source_seps, cluster.galcat['z'].data,
+                                                    xbins=bins, error_model='std/n')
 
-    profile_table = Table([bins[:-1], r_avg, bins[1:], gt_avg, gt_err, gx_avg, gx_err],
+    profile_table = Table([bins[:-1], r_avg, bins[1:], gt_avg, gt_err, gx_avg, gx_err,
+                           z_avg, z_err],
                           names=('radius_min', 'radius', 'radius_max', 'gt', 'gt_err',
-                                 'gx', 'gx_err'))
+                                 'gx', 'gx_err', 'z_avg', 'z_err',))
 
     if add_to_cluster:
         cluster.profile = profile_table
