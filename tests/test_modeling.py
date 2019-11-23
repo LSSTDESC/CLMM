@@ -121,6 +121,9 @@ def test_predict_excess_surface_density():
 
 
 def test_get_angular_diameter_distance_a():
+    # TODO: THoughts on renaming this to `calc_distance_lens_source` or something?
+    # the current name is pretty general even though the function is not.
+    # TODO: Can we rename the parameters as well? asource, alens or something
     pass
 
 def test_get_critical_surface_density():
