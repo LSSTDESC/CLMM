@@ -93,12 +93,20 @@ def test_get_3d_density():
     # TODO: z_src_model not currently implemented
 
     # Test for exception if other profiles models are passed
-    assert_raises(ValueError, md.get_3d_density, None, None, None, 0.2,
-                  {'Omega_c': 0.25, 'Omega_b': 0.05}, 200, 'bleh')
+    cclcosmo = {'Omega_c': 0.25, 'Omega_b': 0.05}
+    assert_raises(ValueError, md.get_3d_density, None, None, None, 0.2, cclcosmo, 200, 'bleh')
 
 
 def test_predict_surface_density():
-    pass
+    # TODO: Validation test for NFW profile
+    # TODO: Revise docstring, not clear what parameters are
+    # TODO: z_src_model not currently implemented
+
+    # Test for exception if other profiles models are passed
+    cclcosmo = {'Omega_c': 0.25, 'Omega_b': 0.05}
+    assert_raises(ValueError, md.predict_surface_density, None, None, None, 0.2,
+                  cclcosmo, 200, 'bleh')
+
 
 def test_predict_excess_surface_density():
     pass
@@ -138,21 +146,6 @@ def test_predict_reduced_tangential_shear():
 # cluster_concentration = 4
 # z_cluster = 1.
 #
-# r3d = np.logspace(-2, 2, 100)
-# r3d_one = r3d[-1]
-#
-# rho = clmm.get_3d_density(r3d, mdelta=cluster_mass, cdelta=cluster_concentration, z_cl=z_cluster, cosmo=cosmo_ccl)
-# rho_one = clmm.get_3d_density(r3d_one, mdelta=cluster_mass, cdelta=cluster_concentration, z_cl=z_cluster, cosmo=cosmo_ccl)
-#
-# def test_rho():
-#     tst.assert_equal(rho[-1], rho_one)
-#
-# Sigma = clmm.predict_surface_density(r3d, cluster_mass, cluster_concentration, z_cl=z_cluster, cosmo=cosmo_ccl, delta_mdef=200, halo_profile_model='nfw')
-# Sigma_one = clmm.predict_surface_density(r3d_one, cluster_mass, cluster_concentration, z_cl=z_cluster, cosmo=cosmo_ccl, delta_mdef=200, halo_profile_model='nfw')
-#
-# def test_Sigma():
-#     assert(np.all(Sigma > 0.))
-#     tst.assert_equal(Sigma[-1], Sigma_one)
 #
 # DeltaSigma = clmm.predict_excess_surface_density(r3d, cluster_mass, cluster_concentration, z_cl=z_cluster, cosmo=cosmo_ccl, delta_mdef=200, halo_profile_model='nfw')
 # DeltaSigma_one = clmm.predict_excess_surface_density(r3d_one, cluster_mass, cluster_concentration, z_cl=z_cluster, cosmo=cosmo_ccl, delta_mdef=200, halo_profile_model='nfw')

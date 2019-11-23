@@ -199,12 +199,14 @@ def predict_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     another structure to take the arguments necessary for specific models.
     """
     cosmo = cclify_astropy_cosmo(cosmo)
-    omega_m_z = _ct_omega_m_fix(cosmo['Omega_c'] + cosmo['Omega_b'], z_cl)
+    omega_m = cosmo['Omega_c'] + cosmo['Omega_b']
+    omega_m_transformed = _patch_zevolution_cluster_toolkit_rho_m(omega_m, z_cl)
 
-    if halo_profile_model == 'nfw':
-        sigma = ct.deltasigma.Sigma_nfw_at_R(r_proj, mdelta, cdelta, omega_m_z, delta=delta_mdef)
+    if halo_profile_model.lower() == 'nfw':
+        sigma = ct.deltasigma.Sigma_nfw_at_R(r_proj, mdelta, cdelta, omega_m_transformed,
+                                             delta=delta_mdef)
     else:
-        raise ValueError("Profile models other than nfw not currently supported")
+        raise ValueError(f"Profile model {halo_profile_model} not currently supported")
     return sigma
 
 
@@ -250,18 +252,19 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
         Excess surface density, DeltaSigma in units of [:math:`h M_\odot/pc^2`].
     """
     cosmo = cclify_astropy_cosmo(cosmo)
-    omega_m_z = _ct_omega_m_fix(cosmo['Omega_c'] + cosmo['Omega_b'], z_cl)
+    omega_m = cosmo['Omega_c'] + cosmo['Omega_b']
+    omega_m_transformed = _patch_zevolution_cluster_toolkit_rho_m(omega_m, z_cl)
 
-    if halo_profile_model == 'nfw':
+    if halo_profile_model.lower() == 'nfw':
         sigma_r_proj = np.logspace(-3, 4, 1000)
         sigma = ct.deltasigma.Sigma_nfw_at_R(sigma_r_proj, mdelta, cdelta,
-                                             omega_m_z, delta=delta_mdef)
+                                             omega_m_transformed, delta=delta_mdef)
         # ^ Note: Let's not use this naming convention when transfering ct to ccl....
         deltasigma = ct.deltasigma.DeltaSigma_at_R(r_proj, sigma_r_proj,
                                                    sigma, mdelta, cdelta,
-                                                   omega_m_z, delta=delta_mdef)
+                                                   omega_m_transformed, delta=delta_mdef)
     else:
-        raise ValueError("Profile models other than nfw not currently supported")
+        raise ValueError(f"Profile model {halo_profile_model} not currently supported")
     return deltasigma
 
 
