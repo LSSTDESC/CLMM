@@ -1,7 +1,0 @@
-clmm.gcdata module
-==================
-
-.. automodule:: clmm.gcdata
-   :members:
-   :undoc-members:
-   :show-inheritance:
