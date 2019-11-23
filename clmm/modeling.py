@@ -148,10 +148,10 @@ def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profil
     omega_m = cosmo['Omega_c'] + cosmo['Omega_b']
     omega_m_transformed = _patch_zevolution_cluster_toolkit_rho_m(omega_m, z_cl)
 
-    if halo_profile_model == 'nfw':
+    if halo_profile_model.lower() == 'nfw':
         rho = ct.density.rho_nfw_at_r(r3d, mdelta, cdelta, omega_m_transformed, delta=delta_mdef)
     else:
-        raise ValueError("Profile models other than nfw not currently supported")
+        raise ValueError(f"Profile model {halo_profile_model} not currently supported")
     return rho
 
 

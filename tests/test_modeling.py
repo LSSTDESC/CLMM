@@ -88,7 +88,14 @@ def test_get_reduced_shear():
 
 
 def test_get_3d_density():
-    pass
+    # TODO: Validation test for NFW profile
+    # TODO: Revise docstring, not clear what parameters are
+    # TODO: z_src_model not currently implemented
+
+    # Test for exception if other profiles models are passed
+    assert_raises(ValueError, md.get_3d_density, None, None, None, 0.2,
+                  {'Omega_c': 0.25, 'Omega_b': 0.05}, 200, 'bleh')
+
 
 def test_predict_surface_density():
     pass
