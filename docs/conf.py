@@ -126,7 +126,7 @@ for entry in config:
 # -- Compile the examples into rst----------------------------------------
 outdir = 'compiled-examples/'
 nbconvert_opts = ['--to rst',
-                  # '--execute',
+                  '--execute',
                   f'--output-dir {outdir}']
 
 for demo in [*demofiles, *examplefiles]:
