@@ -270,23 +270,23 @@ galaxies at z=0.8</p>
 </pre></div>
 </div>
 <i>Table length=3</i>
-<table id="table4997079952" class="table-striped table-bordered table-condensed">
+<table id="table4823218256" class="table-striped table-bordered table-condensed">
 <thead><tr><th>ra</th><th>dec</th><th>e1</th><th>e2</th><th>z</th><th>id</th></tr></thead>
 <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>int64</th></tr></thead>
-<tr><td>0.17154259720508103</td><td>-0.15640563880793024</td><td>-0.0010361809440075156</td><td>-0.011200723276359925</td><td>0.8</td><td>0</td></tr>
-<tr><td>0.23408188077358869</td><td>-0.0449502237562685</td><td>-0.010110583969129432</td><td>-0.004031693328677537</td><td>0.8</td><td>1</td></tr>
-<tr><td>0.07598841728530942</td><td>0.28271706408087344</td><td>0.007243672907491822</td><td>0.004197102476277573</td><td>0.8</td><td>2</td></tr>
+<tr><td>-0.0392812766284939</td><td>0.22376765643283456</td><td>0.01086181730321864</td><td>-0.0039347264357670695</td><td>0.8</td><td>0</td></tr>
+<tr><td>0.3509861423685997</td><td>0.20203467887960416</td><td>-0.002715166070566668</td><td>0.004674724570835385</td><td>0.8</td><td>1</td></tr>
+<tr><td>-0.023631257804547896</td><td>0.18827578929872243</td><td>0.013909086225530005</td><td>-0.0035474574895646266</td><td>0.8</td><td>2</td></tr>
 </table><p>With photo-z errors</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">noisy_data_photoz</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
 </pre></div>
 </div>
 <i>Table length=3</i>
-<table id="table4997082064" class="table-striped table-bordered table-condensed">
+<table id="table4825070160" class="table-striped table-bordered table-condensed">
 <thead><tr><th>ra</th><th>dec</th><th>e1</th><th>e2</th><th>z</th><th>pzbins [34]</th><th>pzpdf [34]</th><th>id</th></tr></thead>
 <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>int64</th></tr></thead>
-<tr><td>0.02248559140470792</td><td>-0.05286084098371737</td><td>0.026437311368953578</td><td>-0.027460163327281777</td><td>0.6840054126395304</td><td>0.20276413803808535 .. 1.1927641380380853</td><td>1.5185003364765326e-07 .. 3.006034572961618e-07</td><td>0</td></tr>
-<tr><td>0.22793849380922787</td><td>-0.1688890719300258</td><td>-0.0019768564673275663</td><td>-0.006495414551828998</td><td>0.6377746200205943</td><td>0.08116197580039708 .. 1.071161975800397</td><td>1.0407067112534782e-08 .. 2.2976269405891888e-08</td><td>1</td></tr>
-<tr><td>0.03757767773328766</td><td>-0.016866308197671747</td><td>-0.04525718844784712</td><td>-0.050875513416318414</td><td>1.1366670358808233</td><td>0.6629912777331892 .. 1.65299127773319</td><td>8.424233151577594e-05 .. 0.00012862578333749057</td><td>2</td></tr>
+<tr><td>0.026276071503130872</td><td>-0.17817485665907684</td><td>0.013703821165429427</td><td>-0.004131760545430609</td><td>0.4337756455220653</td><td>-0.06557975295726448 .. 0.9244202470427355</td><td>1.554685152783574e-10 .. 4.0697323723792555e-10</td><td>0</td></tr>
+<tr><td>-0.3282198131443848</td><td>-0.19385251485528968</td><td>-0.007188331273721686</td><td>0.013039773657638424</td><td>0.8495625219828421</td><td>0.3185608706011205 .. 1.3085608706011214</td><td>1.1919174983776805e-06 .. 2.1689944970739656e-06</td><td>1</td></tr>
+<tr><td>-0.3391028072038778</td><td>-0.1890909158918944</td><td>-0.002258499783812182</td><td>0.0036553854346634183</td><td>0.6415420438435552</td><td>0.17255185264262585 .. 1.162551852642626</td><td>8.244726875960056e-08 .. 1.6732725538280174e-07</td><td>2</td></tr>
 </table><div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Histogram of the redshift distribution of bkg galaxies (starting at z_cluster + 0.1)</span>
 <span class="n">hist</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">allsystematics</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Source Redshift&#39;</span><span class="p">)</span>
