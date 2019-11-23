@@ -117,7 +117,7 @@ Check the ellipticities
 
 .. parsed-literal::
 
-    <matplotlib.lines.Line2D at 0x113d65210>
+    <matplotlib.lines.Line2D at 0x1234d97d0>
 
 
 
