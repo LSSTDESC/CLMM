@@ -31,6 +31,7 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.autosummary',
               'sphinx.ext.viewcode',
               'sphinx.ext.napoleon',
+              'sphinx.ext.githubpages',
               'IPython.sphinxext.ipython_console_highlighting']
 
 # Add any paths that contain templates here, relative to this directory.
@@ -125,7 +126,7 @@ for entry in config:
 # -- Compile the examples into rst----------------------------------------
 outdir = 'compiled-examples/'
 nbconvert_opts = ['--to rst',
-                  # '--execute',
+                  '--execute',
                   f'--output-dir {outdir}']
 
 for demo in [*demofiles, *examplefiles]:
