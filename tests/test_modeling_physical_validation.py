@@ -7,11 +7,13 @@ from astropy import cosmology, constants, units
 from numpy import testing as tst
 import numpy as np
 import clmm
+from clmm.constants import Constants as clmmconst
 
+# Read test case
 import os
 code_path = '/'.join(os.path.abspath(__file__).split('/')[:-2])
 import ast
-with open('%s/tests/physical_values_nc/dvals.txt'%code_path, 'r') as f:
+with open('%s/tests/physical_values_nc/float_vals.txt'%code_path, 'r') as f:
     test_case = ast.literal_eval(f.read())
 f.close()
 nc_prof = np.genfromtxt('%s/tests/physical_values_nc/numcosmo_profiles.txt'%code_path, names=True)
@@ -19,9 +21,11 @@ nc_dist = np.genfromtxt('%s/tests/physical_values_nc/numcosmo_angular_diameter_d
 
 r3d = np.array(nc_prof['r3d'])
 
-# Account for values of constants in different versions of astropy
-unc_G = abs(1.-constants.G.to(units.pc**3/units.M_sun/units.s**2).value/test_case['G'])
-unc_units = unc_G
+# Physical Constants
+G_physconst_correction = test_case['G[m3/km.s2]']/clmmconst.GNEWT.value
+clmm_sigmac_physical_constant = (clmmconst.CLIGHT_KMS.value * 1000. / clmmconst.PC_TO_METER.value)**2/(clmmconst.GNEWT.value * clmmconst.SOLAR_MASS.value / clmmconst.PC_TO_METER.value**3)
+test_case_sigmac_physical_constant = (test_case['lightspeed[km/s]']*1000./test_case['pc_to_m'])**2/(test_case['G[m3/km.s2]']*test_case['Msun[kg]']/test_case['pc_to_m']**3)
+sigmac_physconst_correction = test_case_sigmac_physical_constant/clmm_sigmac_physical_constant
 
 # Cosmology
 #cosmo_apy= astropy.cosmology.core.FlatLambdaCDM(H0=70, Om0=0.27, Ob0=0.045)
@@ -63,8 +67,11 @@ def test_cosmo_type():
     tst.assert_equal(cosmo_ccl['Omega_c'] + cosmo_ccl['Omega_b'], cosmo_apy.Odm0 + cosmo_apy.Ob0)
 
 def test_physical_constants():
-    tst.assert_allclose(test_case['G'], constants.G.to(units.pc**3/units.M_sun/units.s**2).value, 1e-10)
-    tst.assert_allclose(test_case['lightspeed'], constants.c.to(units.pc/units.s).value, 1e-10)
+    tst.assert_allclose(test_case['lightspeed[km/s]'], clmmconst.CLIGHT_KMS.value, 1e-3)
+    tst.assert_allclose(test_case['G[m3/km.s2]'], clmmconst.GNEWT.value, 1e-3)
+    tst.assert_allclose(test_case['pc_to_m'], clmmconst.PC_TO_METER.value, 1e-6)
+    tst.assert_allclose(test_case['Msun[kg]'], clmmconst.SOLAR_MASS.value, 1e-2)
+    tst.assert_allclose(test_case_sigmac_physical_constant, clmm_sigmac_physical_constant, 1e-2)
 
 def test_rho():
     rho = clmm.get_3d_density(r3d, **rho_params)
@@ -72,7 +79,7 @@ def test_rho():
     # consistency test
     tst.assert_equal(rho[-1], rho_one)
     # physical value test
-    tst.assert_allclose(nc_prof['rho'], rho, 1e-11+unc_units)
+    tst.assert_allclose(nc_prof['rho'], rho*G_physconst_correction, 1e-11)
 
 def test_Sigma():
     Sigma = clmm.predict_surface_density(r3d, **Sigma_params)
@@ -81,7 +88,7 @@ def test_Sigma():
     assert(np.all(Sigma > 0.))
     tst.assert_equal(Sigma[-1], Sigma_one)
     # physical value test
-    tst.assert_allclose(nc_prof['Sigma'], Sigma, 1e-9+unc_units)
+    tst.assert_allclose(nc_prof['Sigma'], Sigma*G_physconst_correction, 1e-9)
 
 def test_DeltaSigma():
     DeltaSigma = clmm.predict_excess_surface_density(r3d, **Sigma_params)
@@ -91,7 +98,7 @@ def test_DeltaSigma():
     assert(np.all(DeltaSigma > 0.))
     assert(DeltaSigma_one > 0.)
     # physical value test
-    tst.assert_allclose(nc_prof['DeltaSigma'], DeltaSigma, 1e-8+unc_units)
+    tst.assert_allclose(nc_prof['DeltaSigma'], DeltaSigma*G_physconst_correction, 1e-8)
 
 def test_modeling_get_a_from_z():
     aexp_cluster = clmm.modeling._get_a_from_z(test_case['z_cluster'])
@@ -106,9 +113,9 @@ def test_get_angular_diameter_distance_a():
         test_case['aexp_source'])
     dsl = clmm.modeling.get_angular_diameter_distance_a(cosmo_ccl,
         test_case['aexp_source'], test_case['aexp_cluster'])
-    tst.assert_allclose(test_case['dl'], dl, 1e-10+unc_units)
-    tst.assert_allclose(test_case['ds'], ds, 1e-10+unc_units)
-    tst.assert_allclose(test_case['dsl'], dsl, 1e-10+unc_units)
+    tst.assert_allclose(test_case['dl'], dl, 1e-10)
+    tst.assert_allclose(test_case['ds'], ds, 1e-10)
+    tst.assert_allclose(test_case['dsl'], dsl, 1e-10)
 
 def test_Sigmac():
     # final test
@@ -116,7 +123,7 @@ def test_Sigmac():
         z_cluster=test_case['z_cluster'],
         z_source=test_case['z_source'])
     # physical value test
-    tst.assert_allclose(test_case['nc_Sigmac'], Sigmac, 1e-8)
+    tst.assert_allclose(test_case['nc_Sigmac'], Sigmac*sigmac_physconst_correction, 1e-8)
 
 def test_gammat():
     DeltaSigma = clmm.predict_excess_surface_density(r3d, **Sigma_params)
@@ -129,7 +136,7 @@ def test_gammat():
     tst.assert_equal(gammat, DeltaSigma / Sigmac)
     tst.assert_equal(gammat_one, DeltaSigma_one / Sigmac)
     # physical value test
-    tst.assert_allclose(nc_prof['gammat'], gammat, 1e-8+unc_units)
+    tst.assert_allclose(nc_prof['gammat'], gammat/sigmac_physconst_correction, 1e-8)
 
 def test_kappa():
     kappa = clmm.predict_convergence(r3d, **gamma_params)
@@ -139,7 +146,7 @@ def test_kappa():
     assert(kappa_one > 0.)
     assert(np.all(kappa > 0.))
     # physical value test
-    tst.assert_allclose(nc_prof['kappa'], kappa, 1e-8+unc_units)
+    tst.assert_allclose(nc_prof['kappa'], kappa/sigmac_physconst_correction, 1e-8)
 
 def test_gt():
     gammat = clmm.predict_tangential_shear(r3d, **gamma_params)
@@ -153,12 +160,13 @@ def test_gt():
     tst.assert_equal(gt, gammat / (1. - kappa))
     tst.assert_equal(gt_one, gammat_one / (1. - kappa_one))
     # physical value test
-    tst.assert_allclose(nc_prof['gt'], gt, 1e-6+unc_units)
+    tst.assert_allclose(nc_prof['gt'], gammat/(sigmac_physconst_correction-kappa), 1e-6)
 
 # others: test that inputs are as expected, values from demos
 # positive values from sigma onwards
 if __name__=='__main__':
     test_cosmo_type()
+    test_physical_constants()
     test_rho()
     test_Sigma()
     test_modeling_get_a_from_z()
