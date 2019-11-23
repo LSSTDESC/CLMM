@@ -1,9 +1,0 @@
-build
-dist
-*~
-__pycache__
-.cache*
-*.pyc
-*.egg*
-.ipynb*
-*.pkl

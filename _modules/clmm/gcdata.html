@@ -1,0 +1,320 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>clmm.gcdata &mdash; CLMM 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> CLMM
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../source/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/citing.html">Citing CLMM</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit Halo Mass from a Shear Catalog</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Usage Demos</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_polaraveraging_functionality.html">Measure a Profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_modeling_functionality.html">Model a Galaxy Cluster</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.constants.html">clmm.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.gcdata.html">clmm.gcdata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.lsst.html">clmm.lsst package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/clmm.lsst.load_clusters_with_gcr.html">clmm.lsst.load_clusters_with_gcr module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.modeling.html">clmm.modeling module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.plotting.html">clmm.plotting module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.polaraveraging.html">clmm.polaraveraging module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.utils.html">clmm.utils module</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">CLMM</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>clmm.gcdata</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for clmm.gcdata</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Define the custom data type</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># from astropy import table</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+
+
+<span class="n">GCData_</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;GCData&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;creator&#39;</span><span class="p">,</span> <span class="s1">&#39;specs&#39;</span><span class="p">,</span> <span class="s1">&#39;values&#39;</span><span class="p">])</span>
+
+
+<div class="viewcode-block" id="GCData"><a class="viewcode-back" href="../../api/clmm.gcdata.html#clmm.gcdata.GCData">[docs]</a><span class="k">class</span> <span class="nc">GCData</span><span class="p">(</span><span class="n">GCData_</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    GCData: A namedtuple tying values with units to the metadata of where the values came from</span>
+<span class="sd">    and thus how the values are used</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    creator: string</span>
+<span class="sd">        Super class of the object that made the data.</span>
+<span class="sd">    specs: dict</span>
+<span class="sd">        Specifications of how the data was created, what are the properties of the data.</span>
+<span class="sd">        If the data was created by a function, what inputs were used.</span>
+<span class="sd">    values: astropy.Table</span>
+<span class="sd">        Data with units</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Additional functions specific to clmm.GCData</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="confirm_GCData"><a class="viewcode-back" href="../../api/clmm.gcdata.html#clmm.gcdata.confirm_GCData">[docs]</a><span class="k">def</span> <span class="nf">confirm_GCData</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Typechecks GCData elements</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># if not (type(data.creator) == str and type(data.specs) == dict and type(data.values) == astropy.Table):</span>
+    <span class="c1">#     raise TypeError(&#39;GCData creator should be string, specs should be dict, values should be astropy table&#39;)</span>
+    <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="read_GCData"><a class="viewcode-back" href="../../api/clmm.gcdata.html#clmm.gcdata.read_GCData">[docs]</a><span class="k">def</span> <span class="nf">read_GCData</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads GCData from file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="write_GCData"><a class="viewcode-back" href="../../api/clmm.gcdata.html#clmm.gcdata.write_GCData">[docs]</a><span class="k">def</span> <span class="nf">write_GCData</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Writes GCData to file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="check_subdict"><a class="viewcode-back" href="../../api/clmm.gcdata.html#clmm.gcdata.check_subdict">[docs]</a><span class="k">def</span> <span class="nf">check_subdict</span><span class="p">(</span><span class="n">lookup_dict</span><span class="p">,</span> <span class="n">reference_dict</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Checks if a dictionary is a subset of another dictionary, with the same keys and values</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    lookup_dict: dict</span>
+<span class="sd">        Subset dictionary</span>
+<span class="sd">    reference_dict: dict</span>
+<span class="sd">        Main dictionary</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bool</span>
+<span class="sd">        If a lookup_dict is a subset of reference_dict</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">lookup_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="n">reference_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="find_in_datalist"><a class="viewcode-back" href="../../api/clmm.gcdata.html#clmm.gcdata.find_in_datalist">[docs]</a><span class="k">def</span> <span class="nf">find_in_datalist</span><span class="p">(</span><span class="n">lookup_specs</span><span class="p">,</span> <span class="n">datalist</span><span class="p">,</span> <span class="n">exact</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Finds data with given specs in a datalist, allows for partial match</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    datalist: list</span>
+<span class="sd">        List of clmm.GCData objects to search for lookup_specs</span>
+<span class="sd">    lookup_specs: dict</span>
+<span class="sd">        Specs required</span>
+<span class="sd">    exact: boolean, optional</span>
+<span class="sd">        Does the match have to be symmetric?</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    found: list</span>
+<span class="sd">        List of clmm.GCData object data with required creator and set of specs</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">found</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">datalist</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">check_subdict</span><span class="p">(</span><span class="n">lookup_specs</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">specs</span><span class="p">)</span> <span class="p">:</span>
+            <span class="n">found</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">exact</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">found</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">check_subdict</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">specs</span><span class="p">,</span> <span class="n">lookup_specs</span><span class="p">):</span>
+                <span class="k">return</span> <span class="p">[</span><span class="n">match</span><span class="p">]</span>
+        <span class="n">found</span> <span class="o">=</span> <span class="p">[]</span> 
+    <span class="k">return</span> <span class="n">found</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018-2019, LSST DESC CLMM Contributors
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

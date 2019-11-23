@@ -1,0 +1,7 @@
+clmm.polaraveraging module
+==========================
+
+.. automodule:: clmm.polaraveraging
+   :members:
+   :undoc-members:
+   :show-inheritance:

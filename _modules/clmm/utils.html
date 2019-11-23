@@ -1,0 +1,390 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>clmm.utils &mdash; CLMM 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> CLMM
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../source/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/citing.html">Citing CLMM</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit Halo Mass from a Shear Catalog</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Usage Demos</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_polaraveraging_functionality.html">Measure a Profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_modeling_functionality.html">Model a Galaxy Cluster</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.constants.html">clmm.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.gcdata.html">clmm.gcdata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.lsst.html">clmm.lsst package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/clmm.lsst.load_clusters_with_gcr.html">clmm.lsst.load_clusters_with_gcr module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.modeling.html">clmm.modeling module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.plotting.html">clmm.plotting module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.polaraveraging.html">clmm.polaraveraging module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.utils.html">clmm.utils module</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">CLMM</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>clmm.utils</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for clmm.utils</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;General utility functions that are used in multiple modules&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="k">import</span> <span class="n">binned_statistic</span>
+<span class="kn">from</span> <span class="nn">astropy</span> <span class="k">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">u</span>
+
+
+<div class="viewcode-block" id="compute_radial_averages"><a class="viewcode-back" href="../../api/clmm.utils.html#clmm.utils.compute_radial_averages">[docs]</a><span class="k">def</span> <span class="nf">compute_radial_averages</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">yvals</span><span class="p">,</span> <span class="n">xbins</span><span class="p">,</span> <span class="n">error_model</span><span class="o">=</span><span class="s1">&#39;std/n&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Given a list of xvalss, yvals and bins, sort into bins</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    xvals : array_like</span>
+<span class="sd">        Values to be binned</span>
+<span class="sd">    yvals : array_like</span>
+<span class="sd">        Values to compute statistics on</span>
+<span class="sd">    xbins: array_like</span>
+<span class="sd">        Bin edges to sort into</span>
+<span class="sd">    error_model : str, optional</span>
+<span class="sd">        Error model to use for y uncertainties.</span>
+<span class="sd">        std/n - Standard Deviation/Counts (Default)</span>
+<span class="sd">        std - Standard deviation</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    meanx : array_like</span>
+<span class="sd">        Mean x value in each bin</span>
+<span class="sd">    meany : array_like</span>
+<span class="sd">        Mean y value in each bin</span>
+<span class="sd">    yerr : array_like</span>
+<span class="sd">        Error on the mean y value in each bin. Specified by error_model</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">meanx</span> <span class="o">=</span> <span class="n">binned_statistic</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">xvals</span><span class="p">,</span> <span class="n">statistic</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">xbins</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">meany</span> <span class="o">=</span> <span class="n">binned_statistic</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">yvals</span><span class="p">,</span> <span class="n">statistic</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">xbins</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">error_model</span> <span class="o">==</span> <span class="s1">&#39;std&#39;</span><span class="p">:</span>
+        <span class="n">yerr</span> <span class="o">=</span> <span class="n">binned_statistic</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">yvals</span><span class="p">,</span> <span class="n">statistic</span><span class="o">=</span><span class="s1">&#39;std&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">xbins</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">error_model</span> <span class="o">==</span> <span class="s1">&#39;std/n&#39;</span><span class="p">:</span>
+        <span class="n">yerr</span> <span class="o">=</span> <span class="n">binned_statistic</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">yvals</span><span class="p">,</span> <span class="n">statistic</span><span class="o">=</span><span class="s1">&#39;std&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">xbins</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">yerr</span> <span class="o">=</span> <span class="n">yerr</span><span class="o">/</span><span class="n">binned_statistic</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">yvals</span><span class="p">,</span> <span class="n">statistic</span><span class="o">=</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">xbins</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{error_model}</span><span class="s2"> not supported err model for binned stats&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">meanx</span><span class="p">,</span> <span class="n">meany</span><span class="p">,</span> <span class="n">yerr</span></div>
+
+
+<div class="viewcode-block" id="make_bins"><a class="viewcode-back" href="../../api/clmm.utils.html#clmm.utils.make_bins">[docs]</a><span class="k">def</span> <span class="nf">make_bins</span><span class="p">(</span><span class="n">rmin</span><span class="p">,</span> <span class="n">rmax</span><span class="p">,</span> <span class="n">nbins</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;evenwidth&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Define bin edges</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    rmin : float</span>
+<span class="sd">        Minimum bin edges wanted</span>
+<span class="sd">    rmax : float</span>
+<span class="sd">        Maximum bin edges wanted</span>
+<span class="sd">    nbins : float</span>
+<span class="sd">        Number of bins you want to create, default to 10.</span>
+<span class="sd">    method : str, optional</span>
+<span class="sd">        Binning method to use</span>
+<span class="sd">        &#39;evenwidth&#39; - Default, evenly spaced bins between rmin and rmax</span>
+<span class="sd">        &#39;evenlog10width&#39; - Logspaced bins with even width in log10 between rmin and rmax</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    binedges: array_like, float</span>
+<span class="sd">        n_bins+1 dimensional array that defines bin edges</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">rmin</span> <span class="o">&gt;</span> <span class="n">rmax</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">rmin</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">rmax</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Invalid bin endpoints in make_bins, </span><span class="si">{rmin}</span><span class="s2"> </span><span class="si">{rmax}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">nbins</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nbins</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Invalid nbins=</span><span class="si">{nbins}</span><span class="s2">. Must be integer greater than 0.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;evenwidth&#39;</span><span class="p">:</span>
+        <span class="n">binedges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">rmin</span><span class="p">,</span> <span class="n">rmax</span><span class="p">,</span> <span class="n">nbins</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;evenlog10width&#39;</span><span class="p">:</span>
+        <span class="n">binedges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">rmin</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">rmax</span><span class="p">),</span> <span class="n">nbins</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Binning method &#39;</span><span class="si">{method}</span><span class="s2">&#39; is not currently supported&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">binedges</span></div>
+
+
+<div class="viewcode-block" id="convert_units"><a class="viewcode-back" href="../../api/clmm.utils.html#clmm.utils.convert_units">[docs]</a><span class="k">def</span> <span class="nf">convert_units</span><span class="p">(</span><span class="n">dist1</span><span class="p">,</span> <span class="n">unit1</span><span class="p">,</span> <span class="n">unit2</span><span class="p">,</span> <span class="n">redshift</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Convenience wrapper to convert between a combination of angular and physical units.</span>
+
+<span class="sd">    Supported units: radians, degrees, arcmin, arcsec, Mpc, kpc, pc</span>
+
+<span class="sd">    To convert between angular and physical units you must provide both</span>
+<span class="sd">    a redshift and a cosmology object.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dist1 : array_like</span>
+<span class="sd">        Input distances</span>
+<span class="sd">    unit1 : str</span>
+<span class="sd">        Unit for the input distances</span>
+<span class="sd">    unit2 : str</span>
+<span class="sd">        Unit for the output distances</span>
+<span class="sd">    redshift : float</span>
+<span class="sd">        Redshift used to convert between angular and physical units</span>
+<span class="sd">    cosmo : astropy.cosmology</span>
+<span class="sd">        Astropy cosmology object to compute angular diameter distance to</span>
+<span class="sd">        convert between physical and angular units</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dist2: array_like</span>
+<span class="sd">        Input distances converted to unit2</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">angular_bank</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;radians&quot;</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">rad</span><span class="p">,</span> <span class="s2">&quot;degrees&quot;</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="s2">&quot;arcmin&quot;</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">arcmin</span><span class="p">,</span> <span class="s2">&quot;arcsec&quot;</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span><span class="p">}</span>
+    <span class="n">physical_bank</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;pc&quot;</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">pc</span><span class="p">,</span> <span class="s2">&quot;kpc&quot;</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">kpc</span><span class="p">,</span> <span class="s2">&quot;Mpc&quot;</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Mpc</span><span class="p">}</span>
+    <span class="n">units_bank</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">angular_bank</span><span class="p">,</span> <span class="o">**</span><span class="n">physical_bank</span><span class="p">}</span>
+
+    <span class="c1"># Some error checking</span>
+    <span class="k">if</span> <span class="n">unit1</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">units_bank</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Input units (</span><span class="si">{unit1}</span><span class="s2">) not supported&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">unit2</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">units_bank</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Output units (</span><span class="si">{unit2}</span><span class="s2">) not supported&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Try automated astropy unit conversion</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">dist1</span> <span class="o">*</span> <span class="n">units_bank</span><span class="p">[</span><span class="n">unit1</span><span class="p">])</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">units_bank</span><span class="p">[</span><span class="n">unit2</span><span class="p">])</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="c1"># Otherwise do manual conversion</span>
+    <span class="k">except</span> <span class="n">u</span><span class="o">.</span><span class="n">UnitConversionError</span><span class="p">:</span>
+        <span class="c1"># Make sure that we were passed a redshift and cosmology</span>
+        <span class="k">if</span> <span class="n">redshift</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">cosmo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Redshift and cosmology must be specified to convert units&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Redshift must be greater than zero for this approx</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">redshift</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Redshift must be greater than 0.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Convert angular to physical</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">unit1</span> <span class="ow">in</span> <span class="n">angular_bank</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">unit2</span> <span class="ow">in</span> <span class="n">physical_bank</span><span class="p">):</span>
+            <span class="n">dist1_rad</span> <span class="o">=</span> <span class="p">(</span><span class="n">dist1</span> <span class="o">*</span> <span class="n">units_bank</span><span class="p">[</span><span class="n">unit1</span><span class="p">])</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">rad</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+            <span class="n">dist1_mpc</span> <span class="o">=</span> <span class="n">_convert_rad_to_mpc</span><span class="p">(</span><span class="n">dist1_rad</span><span class="p">,</span> <span class="n">redshift</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">do_inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">dist1_mpc</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">Mpc</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">units_bank</span><span class="p">[</span><span class="n">unit2</span><span class="p">])</span><span class="o">.</span><span class="n">value</span>
+
+        <span class="c1"># Otherwise physical to angular</span>
+        <span class="n">dist1_mpc</span> <span class="o">=</span> <span class="p">(</span><span class="n">dist1</span> <span class="o">*</span> <span class="n">units_bank</span><span class="p">[</span><span class="n">unit1</span><span class="p">])</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">Mpc</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">dist1_rad</span> <span class="o">=</span> <span class="n">_convert_rad_to_mpc</span><span class="p">(</span><span class="n">dist1_mpc</span><span class="p">,</span> <span class="n">redshift</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">do_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">dist1_rad</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">rad</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">units_bank</span><span class="p">[</span><span class="n">unit2</span><span class="p">])</span><span class="o">.</span><span class="n">value</span></div>
+
+
+<span class="k">def</span> <span class="nf">_convert_rad_to_mpc</span><span class="p">(</span><span class="n">dist1</span><span class="p">,</span> <span class="n">redshift</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">do_inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Convert between radians and Mpc using the small angle approximation</span>
+<span class="sd">    and :math:`d = D_A \theta`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ==========</span>
+<span class="sd">    dist1 : array_like</span>
+<span class="sd">        Input distances</span>
+<span class="sd">    redshift : float</span>
+<span class="sd">        Redshift used to convert between angular and physical units</span>
+<span class="sd">    cosmo : astropy.cosmology</span>
+<span class="sd">        Astropy cosmology object to compute angular diameter distance to</span>
+<span class="sd">        convert between physical and angular units</span>
+<span class="sd">    do_inverse : bool</span>
+<span class="sd">        If true, converts Mpc to radians</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    =======</span>
+<span class="sd">    dist2 : array_like</span>
+<span class="sd">        Converted distances</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">d_a</span> <span class="o">=</span> <span class="n">cosmo</span><span class="o">.</span><span class="n">angular_diameter_distance</span><span class="p">(</span><span class="n">redshift</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;Mpc&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+    <span class="k">if</span> <span class="n">do_inverse</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dist1</span> <span class="o">/</span> <span class="n">d_a</span>
+    <span class="k">return</span> <span class="n">dist1</span> <span class="o">*</span> <span class="n">d_a</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018-2019, LSST DESC CLMM Contributors
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
