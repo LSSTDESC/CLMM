@@ -59,14 +59,8 @@ gamma_params = {
         'z_src_model':'single_plane',
         }
 
-
-def test_cosmo_type():
-    # consistency test
-    tst.assert_equal(type(cosmo_apy), astropy.cosmology.core.FlatLambdaCDM)
-    tst.assert_equal(type(cosmo_ccl), dict)
-    tst.assert_equal(cosmo_ccl['Omega_c'] + cosmo_ccl['Omega_b'], cosmo_apy.Odm0 + cosmo_apy.Ob0)
-
 def test_physical_constants():
+    # the precision set for these tests are somewhat arbitrary, has to be better defined at some point
     tst.assert_allclose(test_case['lightspeed[km/s]'], clmmconst.CLIGHT_KMS.value, 1e-3)
     tst.assert_allclose(test_case['G[m3/km.s2]'], clmmconst.GNEWT.value, 1e-3)
     tst.assert_allclose(test_case['pc_to_m'], clmmconst.PC_TO_METER.value, 1e-6)
@@ -75,29 +69,14 @@ def test_physical_constants():
 
 def test_rho():
     rho = clmm.get_3d_density(r3d, **rho_params)
-    rho_one = clmm.get_3d_density(r3d[-1], **rho_params)
-    # consistency test
-    tst.assert_equal(rho[-1], rho_one)
-    # physical value test
     tst.assert_allclose(nc_prof['rho'], rho*G_physconst_correction, 1e-11)
 
 def test_Sigma():
     Sigma = clmm.predict_surface_density(r3d, **Sigma_params)
-    Sigma_one = clmm.predict_surface_density(r3d[-1], **Sigma_params)
-    # consistency test
-    assert(np.all(Sigma > 0.))
-    tst.assert_equal(Sigma[-1], Sigma_one)
-    # physical value test
     tst.assert_allclose(nc_prof['Sigma'], Sigma*G_physconst_correction, 1e-9)
 
 def test_DeltaSigma():
     DeltaSigma = clmm.predict_excess_surface_density(r3d, **Sigma_params)
-    DeltaSigma_one = clmm.predict_excess_surface_density(r3d[-1], **Sigma_params)
-    # consistency test
-    tst.assert_equal(DeltaSigma[-1], DeltaSigma_one)
-    assert(np.all(DeltaSigma > 0.))
-    assert(DeltaSigma_one > 0.)
-    # physical value test
     tst.assert_allclose(nc_prof['DeltaSigma'], DeltaSigma*G_physconst_correction, 1e-8)
 
 def test_modeling_get_a_from_z():
@@ -118,48 +97,22 @@ def test_get_angular_diameter_distance_a():
     tst.assert_allclose(test_case['dsl'], dsl, 1e-10)
 
 def test_Sigmac():
-    # final test
     Sigmac = clmm.get_critical_surface_density(cosmo_ccl,
         z_cluster=test_case['z_cluster'],
         z_source=test_case['z_source'])
-    # physical value test
     tst.assert_allclose(test_case['nc_Sigmac'], Sigmac*sigmac_physconst_correction, 1e-8)
 
 def test_gammat():
-    DeltaSigma = clmm.predict_excess_surface_density(r3d, **Sigma_params)
-    DeltaSigma_one = clmm.predict_excess_surface_density(r3d[-1], **Sigma_params)
-    Sigmac = clmm.get_critical_surface_density(cosmo_ccl, z_cluster=test_case['z_cluster'], z_source=test_case['z_source'])
     gammat = clmm.predict_tangential_shear(r3d, **gamma_params)
-    gammat_one = clmm.predict_tangential_shear(r3d[-1], **gamma_params)
-    # consistency test
-    tst.assert_equal(gammat[-1], gammat_one)
-    tst.assert_equal(gammat, DeltaSigma / Sigmac)
-    tst.assert_equal(gammat_one, DeltaSigma_one / Sigmac)
-    # physical value test
     tst.assert_allclose(nc_prof['gammat'], gammat/sigmac_physconst_correction, 1e-8)
 
 def test_kappa():
     kappa = clmm.predict_convergence(r3d, **gamma_params)
-    kappa_one = clmm.predict_convergence(r3d[-1], **gamma_params)
-    # consistency test
-    tst.assert_equal(kappa[-1], kappa_one)
-    assert(kappa_one > 0.)
-    assert(np.all(kappa > 0.))
-    # physical value test
     tst.assert_allclose(nc_prof['kappa'], kappa/sigmac_physconst_correction, 1e-8)
 
 def test_gt():
     gammat = clmm.predict_tangential_shear(r3d, **gamma_params)
-    gammat_one = clmm.predict_tangential_shear(r3d[-1], **gamma_params)
     kappa = clmm.predict_convergence(r3d, **gamma_params)
-    kappa_one = clmm.predict_convergence(r3d[-1], **gamma_params)
-    gt = clmm.predict_reduced_tangential_shear(r3d, **gamma_params)
-    gt_one = clmm.predict_reduced_tangential_shear(r3d[-1], **gamma_params)
-    # consistency test
-    tst.assert_equal(gt[-1], gt_one)
-    tst.assert_equal(gt, gammat / (1. - kappa))
-    tst.assert_equal(gt_one, gammat_one / (1. - kappa_one))
-    # physical value test
     tst.assert_allclose(nc_prof['gt'], gammat/(sigmac_physconst_correction-kappa), 1e-6)
 
 # others: test that inputs are as expected, values from demos
