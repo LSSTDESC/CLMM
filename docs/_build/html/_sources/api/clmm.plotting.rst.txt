@@ -1,0 +1,7 @@
+clmm.plotting module
+====================
+
+.. automodule:: clmm.plotting
+   :members:
+   :undoc-members:
+   :show-inheritance:
