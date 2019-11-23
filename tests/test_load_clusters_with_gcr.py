@@ -1,7 +1,7 @@
 """
-Tests for io.py
+Tests for load_clusters_with_gcr.py
 """
-
+import os
 from numpy import testing
 import clmm
 
@@ -30,3 +30,8 @@ def test_values():
                          ['galaxy_id', 'ra', 'dec', 'e1', 'e2', 'z', 'kappa'])
     testing.assert_equal(c.galcat[5]['e1'], 2.)
     testing.assert_equal(c.galcat[4]['z'], 0.4)
+    
+    for file in os.listdir('.'):
+        if file[-2:]=='.p':
+            os.remove(file)
+
