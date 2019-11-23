@@ -68,6 +68,25 @@ def test_scale_factor_redshift_conversion():
     assert_allclose(md._get_z_from_a(md._get_a_from_z(testval)), testval, **TOLERANCE)
 
 
+def test_get_reduced_shear():
+    # Make some base objects
+    shear = [0.5, 0.75, 1.25, 0.0]
+    convergence = [0.75, -0.2, 0.0, 2.3]
+    truth = [2., 0.625, 1.25, 0.0]
+
+    # Test for exception if shear and convergence are not the same length
+    assert_raises(ValueError, md.get_reduced_shear_from_convergence, shear[:3], convergence[:2])
+    assert_raises(ValueError, md.get_reduced_shear_from_convergence, shear[:2], convergence[:3])
+
+    # Check output including: float, list, ndarray
+    assert_allclose(md.get_reduced_shear_from_convergence(shear[0], convergence[0]),
+                 truth[0], **TOLERANCE)
+    assert_allclose(md.get_reduced_shear_from_convergence(shear, convergence),
+                 truth, **TOLERANCE)
+    assert_allclose(md.get_reduced_shear_from_convergence(np.array(shear), np.array(convergence)),
+                 np.array(truth), **TOLERANCE)
+
+
 def test_get_3d_density():
     pass
 

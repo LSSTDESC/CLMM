@@ -80,20 +80,21 @@ def _get_z_from_a(scale_factor):
 
 
 def get_reduced_shear_from_convergence(shear, convergence):
-    """Calculates reduced shear from shear and convergence
+    """ Calculates reduced shear from shear and convergence
     
     Parameters
     ----------
-    shear : array_like, float
-        shear
-    convergence : array_like, float
-        convergence
+    shear : array_like
+        Shear
+    convergence : array_like
+        Convergence
     
     Returns:
-    reduced_shear : array_like, float
-        reduced shear
+    reduced_shear : array_like
+        Reduced shear
     """
-    reduced_shear = shear/(1-convergence)
+    shear, convergence = np.array(shear), np.array(convergence)
+    reduced_shear = shear / (1. - convergence)
     return reduced_shear
 
 
