@@ -109,6 +109,13 @@ Any saved ``clmm.GalaxyCluster`` object may be read in for analysis.
     ra_s = cl.galcat['ra']
     dec_s = cl.galcat['dec']
 
+
+.. parsed-literal::
+
+    Cluster info = ID: Awesome_cluster ; ra: 0.0 ; dec: 0.0 ; z_l : 0.3
+    The number of source galaxies is : 10000
+
+
 We can visualize the distribution of galaxies on the sky.
 
 .. code:: ipython3
@@ -126,6 +133,11 @@ We can visualize the distribution of galaxies on the sky.
     plt.gca().set_title('Source Galaxies', fontsize=fsize)
     
     plt.show()
+
+
+
+.. image:: Example1_Fit_Halo_Mass_to_Shear_Catalog_files/Example1_Fit_Halo_Mass_to_Shear_Catalog_22_0.png
+
 
 ``clmm`` separates cosmology-dependent and cosmology-independent
 functionality.
@@ -155,6 +167,19 @@ We can visualize the shear field at each galaxy location.
     fig.gca().loglog(theta, g_t, '.')
     plt.ylabel("reduced shear", fontsize=fsize)
     plt.xlabel("angular distance [deg]", fontsize=fsize)
+
+
+
+
+.. parsed-literal::
+
+    Text(0.5, 0, 'angular distance [deg]')
+
+
+
+
+.. image:: Example1_Fit_Halo_Mass_to_Shear_Catalog_files/Example1_Fit_Halo_Mass_to_Shear_Catalog_29_1.png
+
 
 Radially binning the data
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -202,6 +227,19 @@ We visualize the radially binned shear for our mock galaxies.
     plt.gca().set_xlabel(r'$r\;[Mpc]$', fontsize=fsize)
     plt.gca().set_ylabel(r'$g_t$', fontsize=fsize)
 
+
+
+
+.. parsed-literal::
+
+    Text(0, 0.5, '$g_t$')
+
+
+
+
+.. image:: Example1_Fit_Halo_Mass_to_Shear_Catalog_files/Example1_Fit_Halo_Mass_to_Shear_Catalog_38_1.png
+
+
 After running ``clmm.polaraveraging.make_shear_profile`` on a
 ``clmm.GalaxyCluster`` object, the object acquires the
 ``clmm.GalaxyCluster.profile`` attribute.
@@ -209,6 +247,29 @@ After running ``clmm.polaraveraging.make_shear_profile`` on a
 .. code:: ipython3
 
     cl.profile
+
+
+
+
+.. raw:: html
+
+    <i>Table length=10</i>
+    <table id="table4978082512" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>radius_min</th><th>radius</th><th>radius_max</th><th>gt</th><th>gt_err</th><th>gx</th><th>gx_err</th></tr></thead>
+    <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th></tr></thead>
+    <tr><td>0.01</td><td>0.24930919821579364</td><td>0.37900000000000006</td><td>0.09768565054216119</td><td>0.0005420841850835284</td><td>1.0748556020330432e-18</td><td>3.9128807859325034e-19</td></tr>
+    <tr><td>0.37900000000000006</td><td>0.5902793849680694</td><td>0.7480000000000001</td><td>0.06277656017990946</td><td>5.966681190057714e-05</td><td>-1.2429603477423104e-18</td><td>1.155225670312519e-19</td></tr>
+    <tr><td>0.7480000000000001</td><td>0.9414367137116434</td><td>1.1170000000000002</td><td>0.04551410517319618</td><td>2.4592528052935214e-05</td><td>9.74021886775127e-19</td><td>6.104223640202531e-20</td></tr>
+    <tr><td>1.1170000000000002</td><td>1.3039791150504512</td><td>1.4860000000000002</td><td>0.034797307583887487</td><td>1.1155365847015047e-05</td><td>-1.8753767307857375e-19</td><td>2.3045044935595476e-20</td></tr>
+    <tr><td>1.4860000000000002</td><td>1.687529838181072</td><td>1.8550000000000002</td><td>0.027376685939286945</td><td>5.99934493092316e-06</td><td>-4.487239346934954e-19</td><td>1.38786672428616e-20</td></tr>
+    <tr><td>1.8550000000000002</td><td>2.050925556430633</td><td>2.224</td><td>0.022469184174831406</td><td>3.2824515206178223e-06</td><td>1.6719816928754523e-19</td><td>8.585824266389477e-21</td></tr>
+    <tr><td>2.224</td><td>2.410370849538204</td><td>2.593</td><td>0.018894851345828082</td><td>2.041119426640753e-06</td><td>7.576011609112309e-20</td><td>5.84850457688413e-21</td></tr>
+    <tr><td>2.593</td><td>2.780569565824375</td><td>2.962</td><td>0.016086031848285245</td><td>1.3746627805404911e-06</td><td>2.2671286660377627e-20</td><td>5.990050821620951e-21</td></tr>
+    <tr><td>2.962</td><td>3.1449204933318096</td><td>3.3310000000000004</td><td>0.013931346854169918</td><td>9.690788632130362e-07</td><td>-8.572880439041322e-20</td><td>3.1717624541408025e-21</td></tr>
+    <tr><td>3.3310000000000004</td><td>3.5135624015616203</td><td>3.7</td><td>0.012188514292016091</td><td>7.347422860787051e-07</td><td>-1.3523309435831841e-19</td><td>2.909965869288646e-21</td></tr>
+    </table>
+
+
 
 Modeling the data
 -----------------
@@ -256,6 +317,12 @@ binning schemes.
     
     print((m_est1, m_est2))
 
+
+.. parsed-literal::
+
+    (array([1.00200493e+15]), array([1.02982063e+15]))
+
+
 Next, we calculate the reduced tangential shear predicted by the two
 models.
 
@@ -297,3 +364,16 @@ We visualize the two predictions of reduced tangential shear.
     plt.legend()
     plt.xlabel('R [Mpc]', fontsize=fsize)
     plt.ylabel('reduced tangential shear', fontsize=fsize)
+
+
+
+
+.. parsed-literal::
+
+    Text(0, 0.5, 'reduced tangential shear')
+
+
+
+
+.. image:: Example1_Fit_Halo_Mass_to_Shear_Catalog_files/Example1_Fit_Halo_Mass_to_Shear_Catalog_51_1.png
+
