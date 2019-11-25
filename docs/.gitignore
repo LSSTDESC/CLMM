@@ -1,4 +1,7 @@
-compiled-examples/
 index.rst
-api*
+api.rst
+api/*.rst
+compiled-examples/*.rst
+compiled-examples/*_files/*.png
+
 _build/
