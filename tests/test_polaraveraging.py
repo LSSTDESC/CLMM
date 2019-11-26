@@ -5,7 +5,6 @@ from numpy import testing
 import numpy as np
 from astropy.table import Table
 import os
-import pytest
 
 
 rtol = 1.e-7
@@ -190,9 +189,10 @@ def test_make_shear_profiles():
     dec_source_list = np.array([41.9, 42.2, 42.2])
     shear1 = np.array([0.2, 0.4, 0.4])
     shear2 = np.array([0.3, 0.5, 0.5])
+    z_sources = np.ones(3)
     cluster = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=0.5,
-                                 galcat=Table([ra_source_list, dec_source_list, shear1, shear2],
-                                              names=('ra', 'dec', 'e1', 'e2')))
+                                 galcat=Table([ra_source_list, dec_source_list, shear1, shear2, z_sources],
+                                              names=('ra', 'dec', 'e1', 'e2', 'z')))
     angsep, tshear, xshear = pa.compute_shear(cluster=cluster, add_to_cluster=True)
 
     # Test the outputs of compute_shear just to be save
@@ -234,3 +234,9 @@ def test_make_shear_profiles():
                             err_msg="Cross shear in bin not expected")
 
 
+if __name__=='__main__':
+    test_compute_cross_shear()
+    test_compute_tangential_shear()
+    test_compute_lensing_angles_flatsky()
+    test_compute_shear()
+    test_make_shear_profiles()
