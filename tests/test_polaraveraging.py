@@ -30,12 +30,12 @@ def test_compute_cross_shear():
     testing.assert_allclose(pa._compute_cross_shear(0., 0., 0.3), 0.)
 
     # Edge case tests
-    testing.assert_allclose(pa._compute_cross_shear(100., 0., 0.), 0.0,atol=atol)
-    testing.assert_allclose(pa._compute_cross_shear(100., 0., np.pi/2), 0.0,atol=atol)
-    testing.assert_allclose(pa._compute_cross_shear(0., 100., 0.), -100.0,atol=atol)
-    testing.assert_allclose(pa._compute_cross_shear(0., 100., np.pi/2), 100.0,atol=atol)
-    testing.assert_allclose(pa._compute_cross_shear(0., 100., np.pi/4.), 0.0,atol=atol)
-    testing.assert_allclose(pa._compute_cross_shear(0., 0., 0.3), 0.,atol=atol)
+    testing.assert_allclose(pa._compute_cross_shear(100., 0., 0.), 0.0, atol=atol)
+    testing.assert_allclose(pa._compute_cross_shear(100., 0., np.pi/2), 0.0, atol=atol)
+    testing.assert_allclose(pa._compute_cross_shear(0., 100., 0.), -100.0, atol=atol)
+    testing.assert_allclose(pa._compute_cross_shear(0., 100., np.pi/2), 100.0, atol=atol)
+    testing.assert_allclose(pa._compute_cross_shear(0., 100., np.pi/4.), 0.0, atol=atol)
+    testing.assert_allclose(pa._compute_cross_shear(0., 0., 0.3), 0., atol=atol)
 
 
 def test_compute_tangential_shear():
@@ -56,23 +56,32 @@ def test_compute_tangential_shear():
     testing.assert_almost_equal(pa._compute_tangential_shear(0., 100., np.pi/4.), -100.0)
     testing.assert_almost_equal(pa._compute_tangential_shear(0., 0., 0.3), 0.)
 
-    
+
 def test_compute_lensing_angles_flatsky():
     ra_l, dec_l = 161., 65.
     ra_s, dec_s = np.array([-355., 355.]), np.array([-85., 85.])
 
     # Test domains on inputs
-    testing.assert_raises(ValueError, pa._compute_lensing_angles_flatsky, -365., dec_l, ra_s, dec_s)
-    testing.assert_raises(ValueError, pa._compute_lensing_angles_flatsky, 365., dec_l, ra_s, dec_s)
-    testing.assert_raises(ValueError, pa._compute_lensing_angles_flatsky, ra_l, 95., ra_s, dec_s)
-    testing.assert_raises(ValueError, pa._compute_lensing_angles_flatsky, ra_l, -95., ra_s, dec_s)
-    testing.assert_raises(ValueError, pa._compute_lensing_angles_flatsky, ra_l, dec_l, ra_s-10., dec_s)
-    testing.assert_raises(ValueError, pa._compute_lensing_angles_flatsky, ra_l, dec_l, ra_s+10., dec_s)
-    testing.assert_raises(ValueError, pa._compute_lensing_angles_flatsky, ra_l, dec_l, ra_s, dec_s-10.)
-    testing.assert_raises(ValueError, pa._compute_lensing_angles_flatsky, ra_l, dec_l, ra_s, dec_s+10.)
+    testing.assert_raises(ValueError, pa._compute_lensing_angles_flatsky,
+                          -365., dec_l, ra_s, dec_s)
+    testing.assert_raises(ValueError, pa._compute_lensing_angles_flatsky,
+                          365., dec_l, ra_s, dec_s)
+    testing.assert_raises(ValueError, pa._compute_lensing_angles_flatsky,
+                          ra_l, 95., ra_s, dec_s)
+    testing.assert_raises(ValueError, pa._compute_lensing_angles_flatsky,
+                          ra_l, -95., ra_s, dec_s)
+    testing.assert_raises(ValueError, pa._compute_lensing_angles_flatsky,
+                          ra_l, dec_l, ra_s-10., dec_s)
+    testing.assert_raises(ValueError, pa._compute_lensing_angles_flatsky,
+                          ra_l, dec_l, ra_s+10., dec_s)
+    testing.assert_raises(ValueError, pa._compute_lensing_angles_flatsky,
+                          ra_l, dec_l, ra_s, dec_s-10.)
+    testing.assert_raises(ValueError, pa._compute_lensing_angles_flatsky,
+                          ra_l, dec_l, ra_s, dec_s+10.)
 
     # Ensure that we throw a warning with >1 deg separation
-    testing.assert_warns(UserWarning,pa._compute_lensing_angles_flatsky, ra_l, dec_l, np.array([151.32, 161.34]), np.array([41.49, 51.55]))
+    testing.assert_warns(UserWarning, pa._compute_lensing_angles_flatsky,
+                         ra_l, dec_l, np.array([151.32, 161.34]), np.array([41.49, 51.55]))
 
     # Test outputs for reasonable values
     ra_l, dec_l = 161.32, 51.49
@@ -90,7 +99,7 @@ def test_compute_lensing_angles_flatsky():
 
 
 
-    
+
     # lens and source at the same ra
     testing.assert_allclose(pa._compute_lensing_angles_flatsky(ra_l, dec_l, np.array([161.32, 161.34]), dec_s),
                             [[0.00069813170079771690, 0.00106951489719733675], [-1.57079632679489655800, 1.77544123918164542530]],
@@ -109,26 +118,26 @@ def test_compute_lensing_angles_flatsky():
     #                         rtol, err_msg="Failure when lens and a source share an RA and a DEC")
 
     # This test throws a warning!
-    # testing.assert_allclose(pa._compute_lensing_angles_flatsky(0.1, dec_l, np.array([359.9,180.1]), dec_s),
-    #                         [[2.37312589, 1.95611677], [-2.94182333e-04,  3.14105731e+00]],
-    #                         rtol, err_msg="Failure when ra_l and ra_s are close but on the two sides of the 0 axis")   
+    # testing.assert_allclose(pa._compute_lensing_angles_flatsky(0.1, dec_l, np.array([359.9, 180.1]), dec_s),
+    #                         [[2.37312589, 1.95611677], [-2.94182333e-04, 3.14105731e+00]],
+    #                         rtol, err_msg="Failure when ra_l and ra_s are close but on the two sides of the 0 axis")
 
     # This test throws a warning!
-    # testing.assert_allclose(pa._compute_lensing_angles_flatsky(0, dec_l, np.array([359.9,180.1]), dec_s),
-    #                         [[2.37203916, 1.9572035], [-2.94317111e-04,  3.14105761e+00]],
-    #                         rtol, err_msg="Failure when ra_l and ra_s are separated by pi + epsilon")  
+    # testing.assert_allclose(pa._compute_lensing_angles_flatsky(0, dec_l, np.array([359.9, 180.1]), dec_s),
+    #                         [[2.37203916, 1.9572035], [-2.94317111e-04, 3.14105761e+00]],
+    #                         rtol, err_msg="Failure when ra_l and ra_s are separated by pi + epsilon")
 
     # This test throws a warning!
-    # testing.assert_allclose(pa._compute_lensing_angles_flatsky(-180, dec_l, np.array([180.1,-90]), dec_s),
-    #                         [[2.36986569, 0.97805881], [-2.94587036e-04,  3.14052196e+00]],
-    #                         rtol, err_msg="Failure when ra_l and ra_s are the same but one is defined negative")     
+    # testing.assert_allclose(pa._compute_lensing_angles_flatsky(-180, dec_l, np.array([180.1, -90]), dec_s),
+    #                         [[2.36986569, 0.97805881], [-2.94587036e-04, 3.14052196e+00]],
+    #                         rtol, err_msg="Failure when ra_l and ra_s are the same but one is defined negative")
 
     # This test throws a warning!
-    # testing.assert_allclose(pa._compute_lensing_angles_flatsky(ra_l, 90, ra_s, np.array([51.45,-90])),
+    # testing.assert_allclose(pa._compute_lensing_angles_flatsky(ra_l, 90, ra_s, np.array([51.45, -90])),
     #                         [[0.67282443, 3.14159265], [-1.57079633, -1.57079633]],
     #                         rtol, err_msg="Failure when dec_l and dec_s are separated by 180 deg")
 
-    
+
 
 def test_compute_shear():
     # Input values
@@ -191,7 +200,8 @@ def test_make_shear_profiles():
     shear2 = np.array([0.3, 0.5, 0.5])
     z_sources = np.ones(3)
     cluster = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=0.5,
-                                 galcat=Table([ra_source_list, dec_source_list, shear1, shear2, z_sources],
+                                 galcat=Table([ra_source_list, dec_source_list,
+                                               shear1, shear2, z_sources],
                                               names=('ra', 'dec', 'e1', 'e2', 'z')))
     angsep, tshear, xshear = pa.compute_shear(cluster=cluster, add_to_cluster=True)
 
@@ -226,15 +236,15 @@ def test_make_shear_profiles():
                             err_msg="Minimum radius in bin not expected.")
     testing.assert_allclose(profile2['radius'], [0.0021745039090962414, 0.0037238407383072053], rtol=rtol, atol=atol,
                             err_msg="Mean radius in bin not expected.")
-    testing.assert_allclose(profile2['radius_max'], [0.003, 0.004], rtol=rtol,atol=atol,
+    testing.assert_allclose(profile2['radius_max'], [0.003, 0.004], rtol=rtol, atol=atol,
                             err_msg="Maximum radius in bin not expected.")
-    testing.assert_allclose(profile2['gt'], [-0.22956126563459447, -0.02354769805831558], rtol=rtol,atol=atol,
+    testing.assert_allclose(profile2['gt'], [-0.22956126563459447, -0.02354769805831558], rtol=rtol, atol=atol,
                             err_msg="Tangential shear in bin not expected")
     testing.assert_allclose(profile2['gx'], expected_cross_shear[:-1], rtol=rtol, atol=atol,
                             err_msg="Cross shear in bin not expected")
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
     test_compute_cross_shear()
     test_compute_tangential_shear()
     test_compute_lensing_angles_flatsky()
