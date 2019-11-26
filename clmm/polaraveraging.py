@@ -256,6 +256,8 @@ def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
     if not all([t_ in cluster.galcat.columns for t_ in ('gt', 'gx', 'theta')]):
         raise TypeError('Shear information is missing in galaxy catalog must have tangential' +\
                         'and cross shears (gt,gx). Run compute_shear first!')
+    if 'z' not in cluster.galcat.columns:
+        raise TypeError('Missing galaxy redshifs!')
 
     # Check to see if we need to do a unit conversion
     if angsep_units is not bin_units:
