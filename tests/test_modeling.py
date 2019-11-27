@@ -88,24 +88,52 @@ def test_get_reduced_shear():
 
 
 def test_get_3d_density():
-    # TODO: Validation test for NFW profile
     # TODO: Revise docstring, not clear what parameters are
-    # TODO: z_src_model not currently implemented
+    # Make some base objects
+    r3d = np.logspace(-2, 2, 100)
+    mdelta = 1.0e15
+    cdelta = 4.0
+    z_cl = 0.2
+    cclcosmo = {'Omega_c': 0.25, 'Omega_b': 0.05}
 
     # Test for exception if other profiles models are passed
-    cclcosmo = {'Omega_c': 0.25, 'Omega_b': 0.05}
-    assert_raises(ValueError, md.get_3d_density, None, None, None, 0.2, cclcosmo, 200, 'bleh')
+    assert_raises(ValueError, md.get_3d_density, r3d, mdelta, cdelta, z_cl, cclcosmo, 200, 'bleh')
+
+    # Test defaults
+    defaulttruth = md.get_3d_density(r3d, mdelta, cdelta, z_cl, cclcosmo, delta_mdef=200,
+                                     halo_profile_model='nfw')
+    assert_allclose(md.get_3d_density(r3d, mdelta, cdelta, z_cl, cclcosmo,
+                                      halo_profile_model='nfw'), defaulttruth, **TOLERANCE)
+    assert_allclose(md.get_3d_density(r3d, mdelta, cdelta, z_cl, cclcosmo, delta_mdef=200),
+                                      defaulttruth, **TOLERANCE)
+
+    # TODO: Validation test for NFW profile
 
 
 def test_predict_surface_density():
-    # TODO: Validation test for NFW profile
     # TODO: Revise docstring, not clear what parameters are
-    # TODO: z_src_model not currently implemented
+    # Make some base objects
+    rproj = np.logspace(-2, 2, 100)
+    mdelta = 1.0e15
+    cdelta = 4.0
+    z_cl = 0.2
+    cclcosmo = {'Omega_c': 0.25, 'Omega_b': 0.05}
 
     # Test for exception if other profiles models are passed
-    cclcosmo = {'Omega_c': 0.25, 'Omega_b': 0.05}
-    assert_raises(ValueError, md.predict_surface_density, None, None, None, 0.2,
+    assert_raises(ValueError, md.predict_surface_density, rproj, mdelta, cdelta, z_cl,
                   cclcosmo, 200, 'bleh')
+
+    # Test default parameter values
+    defaulttruth = md.predict_excess_surface_density(rproj, mdelta, cdelta, z_cl, cclcosmo,
+                                                     delta_mdef=200, halo_profile_model='nfw')
+    assert_allclose(md.predict_excess_surface_density(rproj, mdelta, cdelta, z_cl, cclcosmo,
+                                                      halo_profile_model='nfw'),
+                    defaulttruth, **TOLERANCE)
+    assert_allclose(md.predict_excess_surface_density(rproj, mdelta, cdelta, z_cl, cclcosmo,
+                                                      delta_mdef=200),
+                    defaulttruth, **TOLERANCE)
+
+    # TODO: Validation test for NFW profile
 
 
 def test_predict_excess_surface_density():
