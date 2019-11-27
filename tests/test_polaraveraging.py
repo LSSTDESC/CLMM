@@ -211,6 +211,9 @@ def test_make_shear_profiles():
                                               names=('ra', 'dec', 'e1', 'e2')))
     testing.assert_raises(TypeError, pa.make_shear_profile, cluster_noz, 'radians', 'radians')
 
+    # Test error of missing shear
+    testing.assert_raises(TypeError, pa.make_shear_profile, cluster, 'radians', 'radians')
+    
     angsep, tshear, xshear = pa.compute_shear(cluster=cluster, add_to_cluster=True)
     # Test the outputs of compute_shear just to be safe
     expected_angsep = np.array([0.0021745039090962414, 0.0037238407383072053, 0.0037238407383072053])
