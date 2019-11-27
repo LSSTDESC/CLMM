@@ -203,9 +203,16 @@ def test_make_shear_profiles():
                                  galcat=Table([ra_source_list, dec_source_list,
                                                shear1, shear2, z_sources],
                                               names=('ra', 'dec', 'e1', 'e2', 'z')))
-    angsep, tshear, xshear = pa.compute_shear(cluster=cluster, add_to_cluster=True)
 
-    # Test the outputs of compute_shear just to be save
+    # Test error of missing redshift
+    cluster_noz = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=0.5,
+                                 galcat=Table([ra_source_list, dec_source_list,
+                                               shear1, shear2],
+                                              names=('ra', 'dec', 'e1', 'e2')))
+    testing.assert_raises(TypeError, pa.make_shear_profile, cluster_noz, 'radians', 'radians')
+
+    angsep, tshear, xshear = pa.compute_shear(cluster=cluster, add_to_cluster=True)
+    # Test the outputs of compute_shear just to be safe
     expected_angsep = np.array([0.0021745039090962414, 0.0037238407383072053, 0.0037238407383072053])
     expected_cross_shear = np.array([0.2780316984090899, 0.6398792901134982, 0.6398792901134982])
     expected_tan_shear = np.array([-0.22956126563459447, -0.02354769805831558, -0.02354769805831558])
