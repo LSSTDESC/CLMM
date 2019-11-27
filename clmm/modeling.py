@@ -328,12 +328,8 @@ def get_angular_diameter_distance_a(cosmo, scale_factor2, scale_factor1=1.):
     """
     redshift1 = _get_z_from_a(scale_factor1)
     redshift2 = _get_z_from_a(scale_factor2)
-    if isinstance(cosmo, cosmology.core.FlatLambdaCDM):
-        ap_cosmo = cosmo
-    else:
-        omega_m = cosmo['Omega_b'] + cosmo['Omega_c']
-        ap_cosmo = cosmology.core.FlatLambdaCDM(H0=cosmo['H0'], Om0=omega_m,
-                                                Ob0=cosmo['Omega_b'])
+    ap_cosmo = astropyify_ccl_cosmo(cosmo)
+
     # astropy angular diameter distance in Mpc
     # need to return in pc/h
     return ap_cosmo.angular_diameter_distance_z1z2(redshift1, redshift2).to_value(units.pc)\
