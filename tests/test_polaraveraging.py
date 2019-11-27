@@ -226,6 +226,12 @@ def test_make_shear_profiles():
     testing.assert_allclose(xshear, expected_cross_shear, rtol=rtol,
                             err_msg="Cross Shear not correct when testing shear profiles")
 
+    # Tests passing int as bins arg makes the correct bins 
+    bins = 2
+    vec_bins = clmm.utils.make_bins(np.min(cluster.galcat['theta']),
+                                    np.max(cluster.galcat['theta']), bins)
+    testing.assert_array_equal(pa.make_shear_profile(cluster, 'radians', 'radians', bins=bins),
+                         pa.make_shear_profile(cluster, 'radians', 'radians', bins=vec_bins))
     # Make the shear profile and check it
     bins_radians = np.array([0.002, 0.003, 0.004])
     profile = pa.make_shear_profile(cluster, 'radians', 'radians', bins=bins_radians)
