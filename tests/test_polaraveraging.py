@@ -203,6 +203,7 @@ def test_make_shear_profiles():
                                      galcat=Table([ra_source_list, dec_source_list,
                                                    shear1, shear2],
                                                   names=('ra', 'dec', 'e1', 'e2')))
+    cluster_noz.compute_shear()
     testing.assert_raises(TypeError, pa.make_shear_profile, cluster_noz, 'radians', 'radians')
 
     # Test error of missing shear
