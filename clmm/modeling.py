@@ -41,6 +41,37 @@ def cclify_astropy_cosmo(cosmoin):
     raise TypeError("Only astropy LambdaCDM objects or dicts can be made CCL-like.")
 
 
+def astropyify_ccl_cosmo(cosmoin):
+    """ Given a CCL cosmology object, create an astropy cosmology object
+
+    Parameters
+    ----------
+    cosmoin : astropy.cosmology.FlatLambdaCDM or pyccl.core.Cosmology
+        astropy or CCL cosmology object
+
+    Returns
+    -------
+    cosmodict : astropy.cosmology.LambdaCDM
+        Astropy cosmology object
+
+    Notes
+    -----
+    Need to replace:
+    `import pyccl as ccl
+    cosmo_ccl = ccl.Cosmology(Omega_c=0.27, Omega_b=0.045, h=0.67, A_s=2.1e-9, n_s=0.96)`
+    with
+    `from astropy.cosmology import FlatLambdaCDM
+    astropy_cosmology_object = FlatLambdaCDM(H0=70, Om0=0.27, Ob0=0.045)
+    cosmo_ccl = cclify_astropy_cosmo(astropy_cosmology_object)``
+    """
+    if isinstance(cosmoin, LambdaCDM):
+        return cosmoin
+    elif isinstance(cosmoin, dict):
+        omega_m = cosmoin['Omega_b'] + cosmoin['Omega_c']
+        return LambdaCDM(H0=cosmoin['H0'], Om0=omega_m, Ob0=cosmoin['Omega_b'], Ode0=1.0-omega_m)
+    raise TypeError("Only astropy LambdaCDM objects or dicts can be converted to astropy.")
+
+
 def _get_a_from_z(redshift):
     """ Convert redshift to scale factor
 

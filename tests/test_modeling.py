@@ -21,7 +21,6 @@ def test_cclify_astropy_cosmo():
     assert_raises(KeyError, md.cclify_astropy_cosmo, missbaryons)
 
     # Test output if we pass FlatLambdaCDM and LambdaCDM objects
-    x = md.cclify_astropy_cosmo(apycosmo_flcdm)
     assert_equal(md.cclify_astropy_cosmo(apycosmo_flcdm), cclcosmo)
     assert_equal(md.cclify_astropy_cosmo(apycosmo_lcdm), cclcosmo)
 
@@ -31,6 +30,27 @@ def test_cclify_astropy_cosmo():
     # Test for exception if anything else is passed in
     assert_raises(TypeError, md.cclify_astropy_cosmo, 70.)
     assert_raises(TypeError, md.cclify_astropy_cosmo, [70., 0.3, 0.25, 0.05])
+
+
+def test_astropyify_ccl_cosmo():
+    # Make a bse object
+    truth = {'H0': 70., 'Om0': 0.3, 'Ob0': 0.05}
+    apycosmo_flcdm = FlatLambdaCDM(**truth)
+    apycosmo_lcdm = LambdaCDM(Ode0=1.0-truth['Om0'], **truth)
+    cclcosmo = {'Omega_c': truth['Om0'] - truth['Ob0'], 'Omega_b': truth['Ob0'],
+                'h': truth['H0']/100., 'H0': truth['H0']}
+
+    # Test output if we pass FlatLambdaCDM and LambdaCDM objects
+    assert_equal(md.astropyify_ccl_cosmo(apycosmo_flcdm), apycosmo_flcdm)
+    assert_equal(md.astropyify_ccl_cosmo(apycosmo_lcdm), apycosmo_lcdm)
+
+    # Test output if we pass a CCL object, compare the dicts
+    assert_equal(md.cclify_astropy_cosmo(md.astropyify_ccl_cosmo(cclcosmo)),
+                 md.cclify_astropy_cosmo(apycosmo_lcdm))
+
+    # Test for exception if anything else is passed in
+    assert_raises(TypeError, md.astropyify_ccl_cosmo, 70.)
+    assert_raises(TypeError, md.astropyify_ccl_cosmo, [70., 0.3, 0.25, 0.05])
 
 
 def test_scale_factor_redshift_conversion():
@@ -167,7 +187,25 @@ def test_get_angular_diameter_distance_a():
     # TODO: THoughts on renaming this to `calc_distance_lens_source` or something?
     # the current name is pretty general even though the function is not.
     # TODO: Can we rename the parameters as well? asource, alens or something
-    pass
+
+    # Make some base objects
+    truth = {'H0': 70., 'Om0': 0.3, 'Ob0': 0.05}
+    apycosmo = FlatLambdaCDM(**truth)
+    cclcosmo = {'Omega_c': truth['Om0'] - truth['Ob0'], 'Omega_b': truth['Ob0'],
+                'h': truth['H0']/100., 'H0': truth['H0']}
+
+    # Test if we pass in CCL cosmo or astropy cosmo
+    sf1, sf2 = 0.56, 0.78
+    assert_allclose(md.get_angular_diameter_distance_a(cclcosmo, sf1, sf2),
+                    md.get_angular_diameter_distance_a(apycosmo, sf1, sf2), **TOLERANCE)
+
+    # Test default values
+    assert_allclose(md.get_angular_diameter_distance_a(cclcosmo, sf1),
+                    md.get_angular_diameter_distance_a(apycosmo, sf1, scale_factor1=1.),
+                    **TOLERANCE)
+
+    # TODO: Validation test
+
 
 def test_get_critical_surface_density():
     pass
