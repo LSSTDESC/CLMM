@@ -90,48 +90,40 @@ def test_sigma():
     '''
     Test physical values of sigma
     '''
-    Sigma = clmm.predict_surface_density(R3D, **SIGMA_PARAMS)
-    tst.assert_allclose(NC_PROF['Sigma'], Sigma*G_PHYSCONST_CORRECTION, 1e-9)
+    tst.assert_allclose(NC_PROF['Sigma'], G_PHYSCONST_CORRECTION*\
+                        clmm.predict_surface_density(R3D, **SIGMA_PARAMS), 1e-9)
 
 def test_delta_sigma():
     '''
     Test physical values of delta_sigma
     '''
-    DeltaSigma = clmm.predict_excess_surface_density(R3D, **SIGMA_PARAMS)
-    tst.assert_allclose(NC_PROF['DeltaSigma'], DeltaSigma*G_PHYSCONST_CORRECTION, 1e-8)
-
-def test_modeling_get_a_from_z():
-    '''
-    Test physical values of _get_a_from_z
-    '''
-    aexp_cluster = clmm.modeling._get_a_from_z(TEST_CASE['z_cluster'])
-    aexp_source = clmm.modeling._get_a_from_z(TEST_CASE['z_source'])
-    tst.assert_allclose(TEST_CASE['aexp_cluster'], aexp_cluster, 1e-10)
-    tst.assert_allclose(TEST_CASE['aexp_source'], aexp_source, 1e-10)
+    tst.assert_allclose(NC_PROF['DeltaSigma'], G_PHYSCONST_CORRECTION*\
+                        clmm.predict_excess_surface_density(R3D, **SIGMA_PARAMS), 1e-8)
 
 def test_get_da():
     '''
     Test physical values of Da
     '''
-    dl = clmm.modeling.get_angular_diameter_distance_a(COSMO_CCL,
-                                                       TEST_CASE['aexp_cluster'])
-    ds = clmm.modeling.get_angular_diameter_distance_a(COSMO_CCL,
-                                                       TEST_CASE['aexp_source'])
-    dsl = clmm.modeling.get_angular_diameter_distance_a(COSMO_CCL,
-                                                        TEST_CASE['aexp_source'],
-                                                        TEST_CASE['aexp_cluster'])
-    tst.assert_allclose(TEST_CASE['dl'], dl, 1e-10)
-    tst.assert_allclose(TEST_CASE['ds'], ds, 1e-10)
-    tst.assert_allclose(TEST_CASE['dsl'], dsl, 1e-10)
+    dl_clmm = clmm.modeling.get_angular_diameter_distance_a(COSMO_CCL,
+                                                            TEST_CASE['aexp_cluster'])
+    ds_clmm = clmm.modeling.get_angular_diameter_distance_a(COSMO_CCL,
+                                                            TEST_CASE['aexp_source'])
+    dsl_clmm = clmm.modeling.get_angular_diameter_distance_a(COSMO_CCL,
+                                                             TEST_CASE['aexp_source'],
+                                                             TEST_CASE['aexp_cluster'])
+    tst.assert_allclose(TEST_CASE['dl'], dl_clmm, 1e-10)
+    tst.assert_allclose(TEST_CASE['ds'], ds_clmm, 1e-10)
+    tst.assert_allclose(TEST_CASE['dsl'], dsl_clmm, 1e-10)
 
 def test_sigmac():
     '''
     Test physical values of Sigmac
     '''
-    Sigmac = clmm.get_critical_surface_density(COSMO_CCL,
-                                               z_cluster=TEST_CASE['z_cluster'],
-                                               z_source=TEST_CASE['z_source'])
-    tst.assert_allclose(TEST_CASE['nc_Sigmac'], Sigmac*SIGMAC_PHYSCONST_CORRECTION, 1e-8)
+    tst.assert_allclose(TEST_CASE['nc_Sigmac'], SIGMAC_PHYSCONST_CORRECTION*\
+                        clmm.get_critical_surface_density(COSMO_CCL,
+                                                          z_cluster=TEST_CASE['z_cluster'],
+                                                          z_source=TEST_CASE['z_source']),
+                        1e-8)
 
 def test_gammat():
     '''
@@ -161,7 +153,6 @@ if __name__ == '__main__':
     test_physical_constants()
     test_rho()
     test_sigma()
-    test_modeling_get_a_from_z()
     test_get_da()
     test_sigmac()
     test_delta_sigma()
