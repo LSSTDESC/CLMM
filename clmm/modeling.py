@@ -1,9 +1,9 @@
 """ Functions to model halo profiles """
-from astropy import cosmology, units
 import cluster_toolkit as ct
 import numpy as np
-from .constants import Constants as const
+from astropy import units
 from astropy.cosmology import LambdaCDM
+from .constants import Constants as const
 from .cluster_toolkit_patches import _patch_zevolution_cluster_toolkit_rho_m
 
 
@@ -33,7 +33,7 @@ def cclify_astropy_cosmo(cosmoin):
     """
     if isinstance(cosmoin, dict):
         return cosmoin
-    elif isinstance(cosmoin, LambdaCDM):
+    if isinstance(cosmoin, LambdaCDM):
         if cosmoin.Ob0 is None:
             raise KeyError("Cosmology object must have a defined baryon density.")
         return {'Omega_c': cosmoin.Odm0, 'Omega_b': cosmoin.Ob0,
@@ -66,7 +66,7 @@ def astropyify_ccl_cosmo(cosmoin):
     """
     if isinstance(cosmoin, LambdaCDM):
         return cosmoin
-    elif isinstance(cosmoin, dict):
+    if isinstance(cosmoin, dict):
         omega_m = cosmoin['Omega_b'] + cosmoin['Omega_c']
         return LambdaCDM(H0=cosmoin['H0'], Om0=omega_m, Ob0=cosmoin['Omega_b'], Ode0=1.0-omega_m)
     raise TypeError("Only astropy LambdaCDM objects or dicts can be converted to astropy.")
@@ -112,14 +112,14 @@ def _get_z_from_a(scale_factor):
 
 def get_reduced_shear_from_convergence(shear, convergence):
     """ Calculates reduced shear from shear and convergence
-    
+
     Parameters
     ----------
     shear : array_like
         Shear
     convergence : array_like
         Convergence
-    
+
     Returns:
     reduced_shear : array_like
         Reduced shear

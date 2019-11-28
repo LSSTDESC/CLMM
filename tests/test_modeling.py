@@ -100,11 +100,11 @@ def test_get_reduced_shear():
 
     # Check output including: float, list, ndarray
     assert_allclose(md.get_reduced_shear_from_convergence(shear[0], convergence[0]),
-                 truth[0], **TOLERANCE)
+                    truth[0], **TOLERANCE)
     assert_allclose(md.get_reduced_shear_from_convergence(shear, convergence),
-                 truth, **TOLERANCE)
+                    truth, **TOLERANCE)
     assert_allclose(md.get_reduced_shear_from_convergence(np.array(shear), np.array(convergence)),
-                 np.array(truth), **TOLERANCE)
+                    np.array(truth), **TOLERANCE)
 
 
 def helper_profiles(func):
@@ -210,7 +210,7 @@ def test_shear_convergence_unittests():
 
 def test_shear_convergence_validation():
     """ These tests should test our functions against an external code base
-    to ensure that our physical results are valid. 
+    to ensure that our physical results are valid.
     - predict_tangential_shear
     - predict_convergence
     - predict_reduced_tangential_shear
@@ -218,4 +218,3 @@ def test_shear_convergence_validation():
     # TODO: Validation tests for predict_tangential_shear
     # TODO: Validation tests for predict_convergence
     # TODO: Validation tests for predict_reduced_tangential_shear
-    pass
