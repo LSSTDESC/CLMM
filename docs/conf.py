@@ -53,7 +53,8 @@ release = '0.0.1'
 
 # Files to ignore when looking for source files
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store',
-                    'api/clmm.rst', 'source/index_body.rst']
+                    'api/clmm.rst', 'source/index_body.rst',
+                    'api/clmm.cluster_toolkit_patches.rst']
 
 # Some style options
 highlight_language = 'python3'
