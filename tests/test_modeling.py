@@ -208,10 +208,42 @@ def test_get_angular_diameter_distance_a():
 
 
 def test_get_critical_surface_density():
+    # TODO: Validation test
     pass
 
+
 def test_predict_tangential_shear():
-    pass
+    # Make some base objects
+    rproj = np.logspace(-2, 2, 100)
+    mdelta = 1.0e15
+    cdelta = 4.0
+    z_cl = 0.2
+    z_src = 0.45
+    cosmo = {'Omega_c': 0.25, 'Omega_b': 0.05, 'H0': 70.}
+
+    # Test defaults
+    defaulttruth = md.predict_tangential_shear(rproj, mdelta, cdelta, z_cl, z_src, cosmo,
+                                               delta_mdef=200, halo_profile_model='nfw',
+                                               z_src_model='single_plane')
+    assert_allclose(md.predict_tangential_shear(rproj, mdelta, cdelta, z_cl, z_src, cosmo,
+                                                halo_profile_model='nfw',
+                                                z_src_model='single_plane'),
+                    defaulttruth, **TOLERANCE)
+    assert_allclose(md.predict_tangential_shear(rproj, mdelta, cdelta, z_cl, z_src, cosmo,
+                                                delta_mdef=200, z_src_model='single_plane'),
+                    defaulttruth, **TOLERANCE)
+    assert_allclose(md.predict_tangential_shear(rproj, mdelta, cdelta, z_cl, z_src, cosmo,
+                                                delta_mdef=200, halo_profile_model='nfw'),
+                    defaulttruth, **TOLERANCE)
+
+    # Test for exception on unsupported z_src_model
+    assert_raises(ValueError, md.predict_tangential_shear, rproj, mdelta, cdelta, z_cl, z_src,
+                  cosmo, 200, 'bleh', 'single_plane')
+    assert_raises(ValueError, md.predict_tangential_shear, rproj, mdelta, cdelta, z_cl, z_src,
+                  cosmo, 200, 'nfw', 'bleh')
+
+    # TODO: Validation test
+
 
 def test_predict_convergence():
     pass

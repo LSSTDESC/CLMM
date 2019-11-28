@@ -420,6 +420,7 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
 
     Notes
     -----
+    TODO: Implement `known_z_src` and `z_src_distribution` options
     We will need :math:`\gamma_\infty` and :math:`\kappa_\infty` for alternative
     z_src_models using :math:`\beta_s`.
     Need to figure out if we want to raise exceptions rather than errors here?
@@ -431,12 +432,12 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     if z_src_model == 'single_plane':
         sigma_c = get_critical_surface_density(cosmo, z_cluster, z_source)
         gammat = delta_sigma / sigma_c
-    elif z_src_model == 'known_z_src': # Discrete case
-        raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +
-                                  'delta_sigma/sigma_c gamma_t = Beta_s*gamma_inf')
-    elif z_src_model == 'z_src_distribution': # Continuous ( from a distribution) case
-        raise NotImplementedError('Need to implement Beta_s calculation from integrating' +
-                                  'distribution of redshifts in each radial bin')
+    # elif z_src_model == 'known_z_src': # Discrete case
+    #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +
+    #                               'delta_sigma/sigma_c gamma_t = Beta_s*gamma_inf')
+    # elif z_src_model == 'z_src_distribution': # Continuous ( from a distribution) case
+    #     raise NotImplementedError('Need to implement Beta_s calculation from integrating' +
+    #                               'distribution of redshifts in each radial bin')
     else:
         raise ValueError("Unsupported z_src_model")
     return gammat
