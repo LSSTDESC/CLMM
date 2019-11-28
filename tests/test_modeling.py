@@ -150,11 +150,8 @@ def test_profiles_validation():
     pass
 
 
-def test_get_angular_diameter_distance_a():
-    # TODO: THoughts on renaming this to `calc_distance_lens_source` or something?
-    # the current name is pretty general even though the function is not.
+def test_angular_diameter_dist_a1a2():
     # TODO: Can we rename the parameters as well? asource, alens or something
-
     # Make some base objects
     truth = {'H0': 70., 'Om0': 0.3, 'Ob0': 0.05}
     apycosmo = FlatLambdaCDM(**truth)
@@ -163,12 +160,12 @@ def test_get_angular_diameter_distance_a():
 
     # Test if we pass in CCL cosmo or astropy cosmo
     sf1, sf2 = 0.56, 0.78
-    assert_allclose(md.get_angular_diameter_distance_a(cclcosmo, sf1, sf2),
-                    md.get_angular_diameter_distance_a(apycosmo, sf1, sf2), **TOLERANCE)
+    assert_allclose(md.angular_diameter_dist_a1a2(cclcosmo, sf1, sf2),
+                    md.angular_diameter_dist_a1a2(apycosmo, sf1, sf2), **TOLERANCE)
 
     # Test default values
-    assert_allclose(md.get_angular_diameter_distance_a(cclcosmo, sf1),
-                    md.get_angular_diameter_distance_a(apycosmo, sf1, scale_factor1=1.),
+    assert_allclose(md.angular_diameter_dist_a1a2(cclcosmo, sf1),
+                    md.angular_diameter_dist_a1a2(apycosmo, sf1, a2=1.),
                     **TOLERANCE)
 
     # TODO: Validation test

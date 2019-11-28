@@ -300,9 +300,13 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
     return deltasigma
 
 
-def get_angular_diameter_distance_a(cosmo, scale_factor2, scale_factor1=1.):
-    r"""This is a function to calculate d_LS (angular distance between lens
-    and source) because CCL cannot yet do it.
+def angular_diameter_dist_a1a2(cosmo, a1, a2=1.):
+    r"""This is a function to calculate the angular diameter distance
+    between two scale factors because CCL cannot yet do it.
+
+    If only a1 is specified, this function returns the angular diameter
+    distance from a=1 to a1. If both a1 and a2 are specified, this function
+    returns the angular diameter distance between a1 and a2.
 
     Temporarily using the astropy implementation.
 
@@ -310,15 +314,15 @@ def get_angular_diameter_distance_a(cosmo, scale_factor2, scale_factor1=1.):
     ----------
     cosmo : pyccl.core.Cosmology object
             CCL Cosmology object
-    scale_factor2 : float
-        smaller scale factor
-    scale_factor1 : float, optional
-        larger scale factor; defaults to 1.
+    a1 : float
+        Scale factor.
+    a2 : float, optional
+        Scale factor.
 
     Returns
     -------
     d_a : float
-        angular diameter distance in :math:`\mathrm{Mpc\ h}^{-1}`
+        Angular diameter distance in units :math:`\mathrm{Mpc\ h}^{-1}`
 
     Notes
     -----
@@ -326,8 +330,8 @@ def get_angular_diameter_distance_a(cosmo, scale_factor2, scale_factor1=1.):
     so we'll have to revise this later. We need to switch angular_diameter_distance_z1z2
     to CCL equivalent angular distance once implemented
     """
-    redshift1 = _get_z_from_a(scale_factor1)
-    redshift2 = _get_z_from_a(scale_factor2)
+    redshift1 = _get_z_from_a(a2)
+    redshift2 = _get_z_from_a(a1)
     ap_cosmo = astropyify_ccl_cosmo(cosmo)
 
     # astropy angular diameter distance in Mpc
@@ -367,9 +371,9 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     aexp_cluster = _get_a_from_z(z_cluster)
     aexp_src = _get_a_from_z(z_source)
 
-    d_l = get_angular_diameter_distance_a(cosmo, aexp_cluster)
-    d_s = get_angular_diameter_distance_a(cosmo, aexp_src)
-    d_ls = get_angular_diameter_distance_a(cosmo, aexp_src, aexp_cluster)
+    d_l = angular_diameter_dist_a1a2(cosmo, aexp_cluster, 1.0)
+    d_s = angular_diameter_dist_a1a2(cosmo, aexp_src, 1.0)
+    d_ls = angular_diameter_dist_a1a2(cosmo, aexp_src, aexp_cluster)
 
     sigmacrit = d_s / (d_l * d_ls) * clight_pc_s * clight_pc_s / (4.0 * np.pi * gnewt_pc3_msun_s2)
     return sigmacrit
