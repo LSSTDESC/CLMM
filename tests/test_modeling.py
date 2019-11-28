@@ -134,12 +134,9 @@ def helper_profiles(func):
 
 
 def test_profiles_unittests():
-    # TODO: Revise docstring, not clear what parameters are
     helper_profiles(md.get_3d_density)
-    # TODO: Revise docstring, not clear what parameters are
     helper_profiles(md.predict_surface_density)
     # TODO: Why do we hard code sigma_r_proj in here? I moved it out of the NFW block
-    # TODO: Revise docstring, not clear what parameters are
     helper_profiles(md.predict_excess_surface_density)
 
 

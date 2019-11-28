@@ -140,35 +140,26 @@ def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profil
     Parameters
     ----------
     r3d : array_like, float
-        The radial positions in :math:`M\!pc/h`.
+        Radial position from the cluster center in :math:`M\!pc\ h^{-1}`.
     mdelta : float
-        Galaxy cluster mass in :math:`M_\odot/h`.
+        Galaxy cluster mass in :math:`M_\odot\ h^{-1}`.
     cdelta : float
-        Galaxy cluster NFW concentration.
+        Galaxy cluster concentration
     z_cl: float
         Redshift of the cluster
     cosmo : pyccl.core.Cosmology object
         CCL Cosmology object
-    delta_mdef: int, optional
+    delta_mdef : int, optional
         Mass overdensity definition; defaults to 200.
     halo_profile_model : str, optional
         Profile model parameterization, with the following supported options:
 
             `nfw` (default)
-    z_src_model : str, optional
-        Source redshift model, with the following supported options:
-
-            `single_plane` (default) - all sources at one redshift
-
-            `known_z_src` - known individual source galaxy redshifts, e.g. discrete case
-
-            `z_src_distribution` - known source redshift distribution, e.g. continuous case
-            requiring integration.
 
     Returns
     -------
     rho : array_like, float
-        3-dimensional mass density
+        3-dimensional mass density in units of :math:`h^2\ M_\odot\ pc^{-3}` DOUBLE CHECK THIS
 
     Notes
     -----
@@ -188,7 +179,7 @@ def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profil
 
 def predict_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
                             halo_profile_model='nfw'):
-    r"""Computes the surface mass density
+    r""" Computes the surface mass density
 
     .. math::
         \Sigma(R) = \Omega_m \rho_{crit} \int^\infty_{-\infty} dz \Xi_{hm} (\sqrt{R^2+z^2}),
@@ -198,11 +189,11 @@ def predict_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     Parameters
     ----------
     r_proj : array_like
-        The projected radial positions in :math:`M\!pc/h`.
+        Projected radial position from the cluster center in :math:`M\!pc\ h^{-1}`.
     mdelta : float
-        Galaxy cluster mass in :math:`M_\odot/h`.
+        Galaxy cluster mass in :math:`M_\odot\ h^{-1}`.
     cdelta : float
-        Galaxy cluster NFW concentration.
+        Galaxy cluster concentration
     z_cl: float
         Redshift of the cluster
     cosmo : pyccl.core.Cosmology object
@@ -211,18 +202,13 @@ def predict_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
         Mass overdensity definition; defaults to 200.
     halo_profile_model : str, optional
         Profile model parameterization, with the following supported options:
-        `nfw` (default) - [insert citation here]
-    z_src_model : str, optional
-        Source redshift model, with the following supported options:
-        `single_plane` (default) - all sources at one redshift
-        `known_z_src` - known individual source galaxy redshifts e.g. discrete case
-        `z_src_distribution` - known source redshift distribution e.g. continuous
-        case requiring integration.
+
+            `nfw` (default)
 
     Returns
     -------
     sigma : array_like, float
-        Surface density, Sigma in units of [:math:`h M_\odot/pc^2`]
+        2D projected surface density in units of :math:`h M_\odot\ pc^{-2}`
 
     Notes
     -----
@@ -243,7 +229,7 @@ def predict_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
 
 def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
                                    halo_profile_model='nfw'):
-    r"""Computes the excess surface density
+    r""" Computes the excess surface density
 
     .. math::
         \Delta\Sigma(R) = \bar{\Sigma}(<R)-\Sigma(R),
@@ -256,11 +242,11 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
     Parameters
     ----------
     r_proj : array_like
-        The projected radial positions in :math:`M\!pc/h`.
+        Projected radial position from the cluster center in :math:`M\!pc\ h^{-1}`.
     mdelta : float
-        Galaxy cluster mass in :math:`M_\odot/h`.
+        Galaxy cluster mass in :math:`M_\odot\ h^{-1}`.
     cdelta : float
-        Galaxy cluster NFW concentration.
+        Galaxy cluster concentration
     z_cl: float
         Redshift of the cluster
     cosmo : pyccl.core.Cosmology object
@@ -269,18 +255,13 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
         Mass overdensity definition; defaults to 200.
     halo_profile_model : str, optional
         Profile model parameterization, with the following supported options:
-        `nfw` (default) - [insert citation here]
-    z_src_model : str, optional
-        Source redshift model, with the following supported options:
-        `single_plane` (default) - all sources at one redshift
-        `known_z_src` - known individual source galaxy redshifts e.g. discrete case
-        `z_src_distribution` - known source redshift distribution e.g. continuous
-        case requiring integration.
+
+            `nfw` (default)
 
     Returns
     -------
     deltasigma : array_like, float
-        Excess surface density, DeltaSigma in units of [:math:`h M_\odot/pc^2`].
+        Excess surface density in units of :math:`h\ M_\odot\ pc^{-2}`.
     """
     cosmo = cclify_astropy_cosmo(cosmo)
     omega_m = cosmo['Omega_c'] + cosmo['Omega_b']
@@ -322,7 +303,7 @@ def angular_diameter_dist_a1a2(cosmo, a1, a2=1.):
     Returns
     -------
     d_a : float
-        Angular diameter distance in units :math:`\mathrm{Mpc\ h}^{-1}`
+        Angular diameter distance in units :math:`M\!pc\ h^{-1}`
 
     Notes
     -----
@@ -358,7 +339,7 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     Returns
     -------
     sigmacrit : float
-        Cosmology-dependent critical surface density in units of :math:`h M_\odot/pc^2`
+        Cosmology-dependent critical surface density in units of :math:`h\ M_\odot\ pc^{-2}`
 
     Notes
     -----
@@ -394,9 +375,9 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     Parameters
     ----------
     r_proj : array_like
-        The projected radial positions in :math:`M\!pc/h`.
+        The projected radial positions in :math:`M\!pc\ h^{-1}`.
     mdelta : float
-        Galaxy cluster mass in :math:`M_\odot/h`.
+        Galaxy cluster mass in :math:`M_\odot\ h^{-1}`.
     cdelta : float
         Galaxy cluster NFW concentration.
     z_cluster : float
@@ -462,9 +443,9 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     Parameters
     ----------
     r_proj : array_like
-        The projected radial positions in :math:`M\!pc/h`.
+        The projected radial positions in :math:`M\!pc\ h^{-1}`.
     mdelta : float
-        Galaxy cluster mass in :math:`M_\odot/h`.
+        Galaxy cluster mass in :math:`M_\odot\ h^{-1}`.
     cdelta : float
         Galaxy cluster NFW concentration.
     z_cluster : float
@@ -519,9 +500,9 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
     Parameters
     ----------
     r_proj : array_like
-        The projected radial positions in :math:`M\!pc/h`.
+        The projected radial positions in :math:`M\!pc\ h^{-1}`.
     mdelta : float
-        Galaxy cluster mass in :math:`M_\odot/h`.
+        Galaxy cluster mass in :math:`M_\odot\ h^{-1}`.
     cdelta : float
         Galaxy cluster NFW concentration.
     z_cluster : float
