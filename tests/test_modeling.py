@@ -107,8 +107,13 @@ def test_get_reduced_shear():
                  np.array(truth), **TOLERANCE)
 
 
-def test_get_3d_density():
-    # TODO: Revise docstring, not clear what parameters are
+def helper_profiles(func):
+    """ A helper function that is used to repeat all of the unit tests
+    on the profile functions below.
+    - get_3d_density
+    - predict_surface_density
+    - predict_excess_surface_density
+    """
     # Make some base objects
     r3d = np.logspace(-2, 2, 100)
     mdelta = 1.0e15
@@ -117,70 +122,32 @@ def test_get_3d_density():
     cclcosmo = {'Omega_c': 0.25, 'Omega_b': 0.05}
 
     # Test for exception if other profiles models are passed
-    assert_raises(ValueError, md.get_3d_density, r3d, mdelta, cdelta, z_cl, cclcosmo, 200, 'bleh')
+    assert_raises(ValueError, func, r3d, mdelta, cdelta, z_cl, cclcosmo, 200, 'bleh')
 
     # Test defaults
-    defaulttruth = md.get_3d_density(r3d, mdelta, cdelta, z_cl, cclcosmo, delta_mdef=200,
-                                     halo_profile_model='nfw')
-    assert_allclose(md.get_3d_density(r3d, mdelta, cdelta, z_cl, cclcosmo,
-                                      halo_profile_model='nfw'), defaulttruth, **TOLERANCE)
-    assert_allclose(md.get_3d_density(r3d, mdelta, cdelta, z_cl, cclcosmo, delta_mdef=200),
-                                      defaulttruth, **TOLERANCE)
-
-    # TODO: Validation test for NFW profile
+    defaulttruth = func(r3d, mdelta, cdelta, z_cl, cclcosmo, delta_mdef=200,
+                        halo_profile_model='nfw')
+    assert_allclose(func(r3d, mdelta, cdelta, z_cl, cclcosmo, halo_profile_model='nfw'),
+                    defaulttruth, **TOLERANCE)
+    assert_allclose(func(r3d, mdelta, cdelta, z_cl, cclcosmo, delta_mdef=200),
+                    defaulttruth, **TOLERANCE)
 
 
-def test_predict_surface_density():
+def test_profiles_unittests():
     # TODO: Revise docstring, not clear what parameters are
-    # Make some base objects
-    rproj = np.logspace(-2, 2, 100)
-    mdelta = 1.0e15
-    cdelta = 4.0
-    z_cl = 0.2
-    cclcosmo = {'Omega_c': 0.25, 'Omega_b': 0.05}
-
-    # Test for exception if other profiles models are passed
-    assert_raises(ValueError, md.predict_surface_density, rproj, mdelta, cdelta, z_cl,
-                  cclcosmo, 200, 'bleh')
-
-    # Test default parameter values
-    defaulttruth = md.predict_surface_density(rproj, mdelta, cdelta, z_cl, cclcosmo,
-                                              delta_mdef=200, halo_profile_model='nfw')
-    assert_allclose(md.predict_surface_density(rproj, mdelta, cdelta, z_cl, cclcosmo,
-                                               halo_profile_model='nfw'),
-                    defaulttruth, **TOLERANCE)
-    assert_allclose(md.predict_surface_density(rproj, mdelta, cdelta, z_cl, cclcosmo,
-                                               delta_mdef=200),
-                    defaulttruth, **TOLERANCE)
-
-    # TODO: Validation test for NFW profile
-
-
-def test_predict_excess_surface_density():
+    helper_profiles(md.get_3d_density)
+    # TODO: Revise docstring, not clear what parameters are
+    helper_profiles(md.predict_surface_density)
     # TODO: Why do we hard code sigma_r_proj in here? I moved it out of the NFW block
     # TODO: Revise docstring, not clear what parameters are
-    # Make some base objects
-    rproj = np.logspace(-2, 2, 100)
-    mdelta = 1.0e15
-    cdelta = 4.0
-    z_cl = 0.2
-    cclcosmo = {'Omega_c': 0.25, 'Omega_b': 0.05}
+    helper_profiles(md.predict_excess_surface_density)
 
-    # Test for exception if other profiles models are passed
-    assert_raises(ValueError, md.predict_excess_surface_density, rproj, mdelta, cdelta, z_cl,
-                  cclcosmo, 200, 'bleh')
 
-    # Test default parameter values
-    defaulttruth = md.predict_excess_surface_density(rproj, mdelta, cdelta, z_cl, cclcosmo,
-                                                     delta_mdef=200, halo_profile_model='nfw')
-    assert_allclose(md.predict_excess_surface_density(rproj, mdelta, cdelta, z_cl, cclcosmo,
-                                                      halo_profile_model='nfw'),
-                    defaulttruth, **TOLERANCE)
-    assert_allclose(md.predict_excess_surface_density(rproj, mdelta, cdelta, z_cl, cclcosmo,
-                                                      delta_mdef=200),
-                    defaulttruth, **TOLERANCE)
-
-    # TODO: Validation test for NFW profile
+def test_profiles_validation():
+    # TODO: Validation tests for `get_3d_density` for the NFW profile
+    # TODO: Validation tests for `predict_surface_density` for the NFW profile
+    # TODO: Validation tests for `test_predict_excess_surface_density`
+    pass
 
 
 def test_get_angular_diameter_distance_a():
@@ -212,7 +179,11 @@ def test_get_critical_surface_density():
     pass
 
 
-def test_predict_tangential_shear():
+def helper_physics_functions(func):
+    """ We have several functions with identical call signitures.
+    Rather than repeat the same exact code to test each one, I am
+    writing this helper that can be used to test things like
+    defaults and exceptions """
     # Make some base objects
     rproj = np.logspace(-2, 2, 100)
     mdelta = 1.0e15
@@ -222,33 +193,36 @@ def test_predict_tangential_shear():
     cosmo = {'Omega_c': 0.25, 'Omega_b': 0.05, 'H0': 70.}
 
     # Test defaults
-    defaulttruth = md.predict_tangential_shear(rproj, mdelta, cdelta, z_cl, z_src, cosmo,
-                                               delta_mdef=200, halo_profile_model='nfw',
-                                               z_src_model='single_plane')
-    assert_allclose(md.predict_tangential_shear(rproj, mdelta, cdelta, z_cl, z_src, cosmo,
-                                                halo_profile_model='nfw',
-                                                z_src_model='single_plane'),
-                    defaulttruth, **TOLERANCE)
-    assert_allclose(md.predict_tangential_shear(rproj, mdelta, cdelta, z_cl, z_src, cosmo,
-                                                delta_mdef=200, z_src_model='single_plane'),
-                    defaulttruth, **TOLERANCE)
-    assert_allclose(md.predict_tangential_shear(rproj, mdelta, cdelta, z_cl, z_src, cosmo,
-                                                delta_mdef=200, halo_profile_model='nfw'),
-                    defaulttruth, **TOLERANCE)
+    defaulttruth = func(rproj, mdelta, cdelta, z_cl, z_src, cosmo, delta_mdef=200,
+                        halo_profile_model='nfw', z_src_model='single_plane')
+    assert_allclose(func(rproj, mdelta, cdelta, z_cl, z_src, cosmo, halo_profile_model='nfw',
+                         z_src_model='single_plane'), defaulttruth, **TOLERANCE)
+    assert_allclose(func(rproj, mdelta, cdelta, z_cl, z_src, cosmo, delta_mdef=200,
+                         z_src_model='single_plane'), defaulttruth, **TOLERANCE)
+    assert_allclose(func(rproj, mdelta, cdelta, z_cl, z_src, cosmo, delta_mdef=200,
+                         halo_profile_model='nfw'), defaulttruth, **TOLERANCE)
 
-    # Test for exception on unsupported z_src_model
-    assert_raises(ValueError, md.predict_tangential_shear, rproj, mdelta, cdelta, z_cl, z_src,
-                  cosmo, 200, 'bleh', 'single_plane')
-    assert_raises(ValueError, md.predict_tangential_shear, rproj, mdelta, cdelta, z_cl, z_src,
-                  cosmo, 200, 'nfw', 'bleh')
-
-    # TODO: Validation test
+    # Test for exception on unsupported z_src_model and halo profiles
+    assert_raises(ValueError, func, rproj, mdelta, cdelta, z_cl, z_src, cosmo,
+                  200, 'bleh', 'single_plane')
+    assert_raises(ValueError, func, rproj, mdelta, cdelta, z_cl, z_src, cosmo,
+                  200, 'nfw', 'bleh')
 
 
-def test_predict_convergence():
+def test_shear_convergence_unittests():
+    helper_physics_functions(md.predict_tangential_shear)
+    helper_physics_functions(md.predict_convergence)
+    helper_physics_functions(md.predict_reduced_tangential_shear)
+
+
+def test_shear_convergence_validation():
+    """ These tests should test our functions against an external code base
+    to ensure that our physical results are valid. 
+    - predict_tangential_shear
+    - predict_convergence
+    - predict_reduced_tangential_shear
+    """
+    # TODO: Validation tests for predict_tangential_shear
+    # TODO: Validation tests for predict_convergence
+    # TODO: Validation tests for predict_reduced_tangential_shear
     pass
-
-def test_predict_reduced_tangential_shear():
-    pass
-
-
