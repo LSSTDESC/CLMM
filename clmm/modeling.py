@@ -496,12 +496,12 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     if z_src_model == 'single_plane':
         sigma_c = get_critical_surface_density(cosmo, z_cluster, z_source)
         kappa = sigma / sigma_c
-    elif z_src_model == 'known_z_src': # Discrete case
-        raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +\
-                                  'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
-    elif z_src_model == 'z_src_distribution': # Continuous ( from a distribution) case
-        raise NotImplementedError('Need to implement Beta_s calculation from integrating' +\
-                                  'distribution of redshifts in each radial bin')
+    # elif z_src_model == 'known_z_src': # Discrete case
+    #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +\
+    #                               'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
+    # elif z_src_model == 'z_src_distribution': # Continuous ( from a distribution) case
+    #     raise NotImplementedError('Need to implement Beta_s calculation from integrating' +\
+    #                               'distribution of redshifts in each radial bin')
     else:
         raise ValueError("Unsupported z_src_model")
     return kappa
@@ -554,12 +554,12 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
         gamma_t = predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
                                            delta_mdef, halo_profile_model, z_src_model)
         red_tangential_shear = gamma_t / (1 - kappa)
-    elif z_src_model == 'known_z_src': # Discrete case
-        raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +
-                                  'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
-    elif z_src_model == 'z_src_distribution': # Continuous ( from a distribution) case
-        raise NotImplementedError('Need to implement Beta_s and Beta_s2 calculation from' +
-                                  'integrating distribution of redshifts in each radial bin')
+    # elif z_src_model == 'known_z_src': # Discrete case
+    #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +
+    #                               'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
+    # elif z_src_model == 'z_src_distribution': # Continuous ( from a distribution) case
+    #     raise NotImplementedError('Need to implement Beta_s and Beta_s2 calculation from' +
+    #                               'integrating distribution of redshifts in each radial bin')
     else:
         raise ValueError("Unsupported z_src_model")
     return red_tangential_shear
