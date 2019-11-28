@@ -151,7 +151,6 @@ def test_profiles_validation():
 
 
 def test_angular_diameter_dist_a1a2():
-    # TODO: Can we rename the parameters as well? asource, alens or something
     # Make some base objects
     truth = {'H0': 70., 'Om0': 0.3, 'Ob0': 0.05}
     apycosmo = FlatLambdaCDM(**truth)
