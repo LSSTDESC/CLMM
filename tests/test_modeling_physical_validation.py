@@ -11,8 +11,7 @@ from clmm import modeling
 from clmm.constants import Constants as clmmconst
 
 # Read test case
-CODE_PATH = '/'.join(os.path.abspath(__file__).split('/')[:-2])
-VAL_FILES_PATH = '%s/tests/data/numcosmo/'%CODE_PATH
+VAL_FILES_PATH = 'tests/data/numcosmo/'
 with open('%s/config.txt'%VAL_FILES_PATH, 'r') as f:
     TEST_CASE = ast.literal_eval(f.read())
 f.close()
