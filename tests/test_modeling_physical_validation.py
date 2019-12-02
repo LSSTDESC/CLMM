@@ -195,13 +195,3 @@ def test_gt():
 
 # others: test that inputs are as expected, values from demos
 # positive values from sigma onwards
-if __name__ == '__main__':
-    test_physical_constants()
-    test_rho()
-    test_sigma()
-    test_get_da()
-    test_sigmac()
-    test_delta_sigma()
-    test_gammat()
-    test_kappa()
-    test_gt()
