@@ -7,7 +7,7 @@ import ast
 import astropy
 from numpy import testing as tst
 import numpy as np
-import clmm
+from clmm import modeling
 from clmm.constants import Constants as clmmconst
 
 # Read test case
@@ -36,7 +36,7 @@ SIGMAC_PHYSCONST_CORRECTION = TEST_CASE_SIGMAC_PHYSICAL_CONSTANT/CLMM_SIGMAC_PHY
 COSMO_APY = astropy.cosmology.core.FlatLambdaCDM(H0=TEST_CASE['cosmo_H0'],
                                                  Om0=TEST_CASE['cosmo_Om0'],
                                                  Ob0=TEST_CASE['cosmo_Ob0'])
-COSMO_CCL = clmm.cclify_astropy_cosmo(COSMO_APY)
+COSMO_CCL = modeling.cclify_astropy_cosmo(COSMO_APY)
 
 # Sets of parameters to be used by multiple functions
 RHO_PARAMS = {
@@ -83,7 +83,7 @@ def test_rho():
     '''
     Test physical values of rho
     '''
-    rho = clmm.get_3d_density(R3D, **RHO_PARAMS)
+    rho = modeling.get_3d_density(R3D, **RHO_PARAMS)
     tst.assert_allclose(NC_PROF['rho'], rho*G_PHYSCONST_CORRECTION, 1e-11)
 
 def test_sigma():
@@ -91,24 +91,24 @@ def test_sigma():
     Test physical values of sigma
     '''
     tst.assert_allclose(NC_PROF['Sigma'], G_PHYSCONST_CORRECTION*\
-                        clmm.predict_surface_density(R3D, **SIGMA_PARAMS), 1e-9)
+                        modeling.predict_surface_density(R3D, **SIGMA_PARAMS), 1e-9)
 
 def test_delta_sigma():
     '''
     Test physical values of delta_sigma
     '''
     tst.assert_allclose(NC_PROF['DeltaSigma'], G_PHYSCONST_CORRECTION*\
-                        clmm.predict_excess_surface_density(R3D, **SIGMA_PARAMS), 1e-8)
+                        modeling.predict_excess_surface_density(R3D, **SIGMA_PARAMS), 1e-8)
 
 def test_get_da():
     '''
     Test physical values of Da
     '''
-    dl_clmm = clmm.modeling.get_angular_diameter_distance_a(COSMO_CCL,
+    dl_clmm = modeling.get_angular_diameter_distance_a(COSMO_CCL,
                                                             TEST_CASE['aexp_cluster'])
-    ds_clmm = clmm.modeling.get_angular_diameter_distance_a(COSMO_CCL,
+    ds_clmm = modeling.get_angular_diameter_distance_a(COSMO_CCL,
                                                             TEST_CASE['aexp_source'])
-    dsl_clmm = clmm.modeling.get_angular_diameter_distance_a(COSMO_CCL,
+    dsl_clmm = modeling.get_angular_diameter_distance_a(COSMO_CCL,
                                                              TEST_CASE['aexp_source'],
                                                              TEST_CASE['aexp_cluster'])
     tst.assert_allclose(TEST_CASE['dl'], dl_clmm, 1e-10)
@@ -120,7 +120,7 @@ def test_sigmac():
     Test physical values of Sigmac
     '''
     tst.assert_allclose(TEST_CASE['nc_Sigmac'], SIGMAC_PHYSCONST_CORRECTION*\
-                        clmm.get_critical_surface_density(COSMO_CCL,
+                        modeling.get_critical_surface_density(COSMO_CCL,
                                                           z_cluster=TEST_CASE['z_cluster'],
                                                           z_source=TEST_CASE['z_source']),
                         1e-8)
@@ -129,22 +129,22 @@ def test_gammat():
     '''
     Test physical values of gammat
     '''
-    gammat = clmm.predict_tangential_shear(R3D, **GAMMA_PARAMS)
+    gammat = modeling.predict_tangential_shear(R3D, **GAMMA_PARAMS)
     tst.assert_allclose(NC_PROF['gammat'], gammat/SIGMAC_PHYSCONST_CORRECTION, 1e-8)
 
 def test_kappa():
     '''
     Test physical values of kappa
     '''
-    kappa = clmm.predict_convergence(R3D, **GAMMA_PARAMS)
+    kappa = modeling.predict_convergence(R3D, **GAMMA_PARAMS)
     tst.assert_allclose(NC_PROF['kappa'], kappa/SIGMAC_PHYSCONST_CORRECTION, 1e-8)
 
 def test_gt():
     '''
     Test physical values of gt
     '''
-    gammat = clmm.predict_tangential_shear(R3D, **GAMMA_PARAMS)
-    kappa = clmm.predict_convergence(R3D, **GAMMA_PARAMS)
+    gammat = modeling.predict_tangential_shear(R3D, **GAMMA_PARAMS)
+    kappa = modeling.predict_convergence(R3D, **GAMMA_PARAMS)
     tst.assert_allclose(NC_PROF['gt'], gammat/(SIGMAC_PHYSCONST_CORRECTION-kappa), 1e-6)
 
 # others: test that inputs are as expected, values from demos
