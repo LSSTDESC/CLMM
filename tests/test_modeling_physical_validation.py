@@ -98,14 +98,14 @@ def load_validation_config():
 
 
 def test_physical_constants():
-    '''
+    """
     Test physical values of physical_constants
 
     Notes
     -----
         The precision set for these tests put in here right now are somewhat arbitrary,
         has to be improved to values provided by CCL
-    '''
+    """
     cf = load_validation_config()
     tst.assert_allclose(cf.TEST_CASE['lightspeed[km/s]'], clc.CLIGHT_KMS.value, 1e-3)
     tst.assert_allclose(cf.TEST_CASE['G[m3/km.s2]'], clc.GNEWT.value, 1e-3)
@@ -114,33 +114,33 @@ def test_physical_constants():
     tst.assert_allclose(cf.TEST_CASE_SIGMAC_PCST, cf.CLMM_SIGMAC_PCST, 1e-2)
 
 def test_rho():
-    '''
+    """
     Test physical values of rho
-    '''
+    """
     cf = load_validation_config()
     rho = get_3d_density(cf.r3d, **cf.RHO_PARAMS)
     tst.assert_allclose(cf.NC_PROF['rho'], rho*cf.G_PHYSCONST_CORRECTION, 1e-11)
 
 def test_sigma():
-    '''
+    """
     Test physical values of sigma
-    '''
+    """
     cf = load_validation_config()
     tst.assert_allclose(cf.NC_PROF['Sigma'], cf.G_PHYSCONST_CORRECTION*\
                         predict_surface_density(cf.r3d, **cf.SIGMA_PARAMS), 1e-9)
 
 def test_delta_sigma():
-    '''
+    """
     Test physical values of delta_sigma
-    '''
+    """
     cf = load_validation_config()
     tst.assert_allclose(cf.NC_PROF['DeltaSigma'], cf.G_PHYSCONST_CORRECTION*\
                         predict_excess_surface_density(cf.r3d, **cf.SIGMA_PARAMS), 1e-8)
 
 def test_get_da():
-    '''
+    """
     Test physical values of Da
-    '''
+    """
     cf = load_validation_config()
     tst.assert_allclose(cf.TEST_CASE['dl'],
                         get_angular_diameter_distance_a(cf.cosmo_ccl,
@@ -157,9 +157,9 @@ def test_get_da():
                         1e-10)
 
 def test_sigmac():
-    '''
+    """
     Test physical values of Sigmac
-    '''
+    """
     cf = load_validation_config()
     tst.assert_allclose(cf.TEST_CASE['nc_Sigmac'], cf.SIGMAC_PHYSCONST_CORRECTION*\
                         get_critical_surface_density(
@@ -169,25 +169,25 @@ def test_sigmac():
                         1e-8)
 
 def test_gammat():
-    '''
+    """
     Test physical values of gammat
-    '''
+    """
     cf = load_validation_config()
     gammat = predict_tangential_shear(cf.r3d, **cf.GAMMA_PARAMS)
     tst.assert_allclose(cf.NC_PROF['gammat'], gammat/cf.SIGMAC_PHYSCONST_CORRECTION, 1e-8)
 
 def test_kappa():
-    '''
+    """
     Test physical values of kappa
-    '''
+    """
     cf = load_validation_config()
     kappa = predict_convergence(cf.r3d, **cf.GAMMA_PARAMS)
     tst.assert_allclose(cf.NC_PROF['kappa'], kappa/cf.SIGMAC_PHYSCONST_CORRECTION, 1e-8)
 
 def test_gt():
-    '''
+    """
     Test physical values of gt
-    '''
+    """
     cf = load_validation_config()
     gammat = predict_tangential_shear(cf.r3d, **cf.GAMMA_PARAMS)
     kappa = predict_convergence(cf.r3d, **cf.GAMMA_PARAMS)
