@@ -12,13 +12,13 @@ from clmm.constants import Constants as clmmconst
 
 # Read test case
 CODE_PATH = '/'.join(os.path.abspath(__file__).split('/')[:-2])
-VAL_FILES_PATH = '%s/tests/physical_values_nc'%CODE_PATH
-with open('%s/float_vals.txt'%VAL_FILES_PATH, 'r') as f:
+VAL_FILES_PATH = '%s/tests/data/numcosmo/'%CODE_PATH
+with open('%s/config.txt'%VAL_FILES_PATH, 'r') as f:
     TEST_CASE = ast.literal_eval(f.read())
 f.close()
-NC_PROF = np.genfromtxt('%s/numcosmo_profiles.txt'%VAL_FILES_PATH,
+NC_PROF = np.genfromtxt('%s/radial_profiles.txt'%VAL_FILES_PATH,
                         names=True)
-NC_DIST = np.genfromtxt('%s/numcosmo_angular_diameter_distance.txt'%
+NC_DIST = np.genfromtxt('%s/angular_diameter_distance.txt'%
                         VAL_FILES_PATH, names=True)
 
 R3D = np.array(NC_PROF['r3d'])
