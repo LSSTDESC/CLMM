@@ -28,17 +28,17 @@ def test_compute_cross_shear():
 
     # Edge case tests
     testing.assert_allclose(pa._compute_cross_shear(100., 0., 0.), 0.0,
-                            atol=TOLERANCE['atol'])
+                            **TOLERANCE)
     testing.assert_allclose(pa._compute_cross_shear(100., 0., np.pi/2), 0.0,
-                            atol=TOLERANCE['atol'])
+                            **TOLERANCE)
     testing.assert_allclose(pa._compute_cross_shear(0., 100., 0.), -100.0,
-                            atol=TOLERANCE['atol'])
+                            **TOLERANCE)
     testing.assert_allclose(pa._compute_cross_shear(0., 100., np.pi/2), 100.0,
-                            atol=TOLERANCE['atol'])
+                            **TOLERANCE)
     testing.assert_allclose(pa._compute_cross_shear(0., 100., np.pi/4.), 0.0,
-                            atol=TOLERANCE['atol'])
+                            **TOLERANCE)
     testing.assert_allclose(pa._compute_cross_shear(0., 0., 0.3), 0.,
-                            atol=TOLERANCE['atol'])
+                            **TOLERANCE)
 
 
 def test_compute_tangential_shear():
@@ -91,10 +91,10 @@ def test_compute_lensing_angles_flatsky():
     ra_s, dec_s = np.array([161.29, 161.34]), np.array([51.45, 51.55])
     thetas, phis = pa._compute_lensing_angles_flatsky(ra_l, dec_l, ra_s, dec_s)
     testing.assert_allclose(thetas, np.array([0.00077050407583119666, 0.00106951489719733675]),
-                            rtol=TOLERANCE['rtol'],
+                            **TOLERANCE,
                             err_msg="Reasonable values with flat sky not matching to precision for theta")
     testing.assert_allclose(phis, np.array([-1.13390499136495481736, 1.77544123918164542530]),
-                            rtol=TOLERANCE['rtol'],
+                            **TOLERANCE,
                             err_msg="Reasonable values with flat sky not matching to precision for phi")
 
     # ra and dec are 0.0 - THROWS A WARNING
@@ -109,12 +109,12 @@ def test_compute_lensing_angles_flatsky():
     # lens and source at the same ra
     testing.assert_allclose(pa._compute_lensing_angles_flatsky(ra_l, dec_l, np.array([161.32, 161.34]), dec_s),
                             [[0.00069813170079771690, 0.00106951489719733675], [-1.57079632679489655800, 1.77544123918164542530]],
-                            TOLERANCE['rtol'], err_msg="Failure when lens and a source share an RA")
+                            **TOLERANCE, err_msg="Failure when lens and a source share an RA")
 
     # lens and source at the same dec
     testing.assert_allclose(pa._compute_lensing_angles_flatsky(ra_l, dec_l, ra_s, np.array([51.49, 51.55])),
                             [[0.00032601941539388962, 0.00106951489719733675], [0.00000000000000000000, 1.77544123918164542530]],
-                            TOLERANCE['rtol'], err_msg="Failure when lens and a source share a DEC")
+                            **TOLERANCE, err_msg="Failure when lens and a source share a DEC")
 
     # lens and source at the same ra and dec - I dont think we want this to raise an error. It just wont be in the bins, so no problemo
     # The second test is not working!!! Find out why!!!
@@ -167,31 +167,29 @@ def test_compute_shear():
                                               dec_source_list=dec_source_list,
                                               shear1=shear1, shear2=shear2,
                                               add_to_cluster=False)
-    testing.assert_allclose(angsep, expected_angsep, rtol=TOLERANCE['rtol'], atol=TOLERANCE['atol'],
+    testing.assert_allclose(angsep, expected_angsep, **TOLERANCE,
                             err_msg="Angular Separation not correct when passing lists")
-    testing.assert_allclose(tshear, expected_tangential_shear,
-                            rtol=TOLERANCE['rtol'], atol=TOLERANCE['atol'],
+    testing.assert_allclose(tshear, expected_tangential_shear, **TOLERANCE,
                             err_msg="Tangential Shear not correct when passing lists")
-    testing.assert_allclose(xshear, expected_cross_shear,
-                            rtol=TOLERANCE['rtol'], atol=TOLERANCE['atol'],
+    testing.assert_allclose(xshear, expected_cross_shear, **TOLERANCE,
                             err_msg="Cross Shear not correct when passing lists")
 
     # Pass cluster object into the function
     angsep2, tshear2, xshear2 = pa.compute_shear(cluster=cluster)
-    testing.assert_allclose(angsep2, expected_angsep, rtol=TOLERANCE['rtol'],
+    testing.assert_allclose(angsep2, expected_angsep, **TOLERANCE,
                             err_msg="Angular Separation not correct when passing cluster")
-    testing.assert_allclose(tshear2, expected_tangential_shear, rtol=TOLERANCE['rtol'],
+    testing.assert_allclose(tshear2, expected_tangential_shear, **TOLERANCE,
                             err_msg="Tangential Shear not correct when passing cluster")
-    testing.assert_allclose(xshear2, expected_cross_shear, rtol=TOLERANCE['rtol'],
+    testing.assert_allclose(xshear2, expected_cross_shear, **TOLERANCE,
                             err_msg="Cross Shear not correct when passing cluster")
 
     # Use the cluster method
     angsep3, tshear3, xshear3 = cluster.compute_shear()
-    testing.assert_allclose(angsep3, expected_angsep, rtol=TOLERANCE['rtol'],
+    testing.assert_allclose(angsep3, expected_angsep, **TOLERANCE, 
                             err_msg="Angular Separation not correct when using cluster method")
-    testing.assert_allclose(tshear3, expected_tangential_shear, rtol=TOLERANCE['rtol'],
+    testing.assert_allclose(tshear3, expected_tangential_shear, **TOLERANCE, 
                             err_msg="Tangential Shear not correct when using cluster method")
-    testing.assert_allclose(xshear3, expected_cross_shear, rtol=TOLERANCE['rtol'],
+    testing.assert_allclose(xshear3, expected_cross_shear, **TOLERANCE, 
                             err_msg="Cross Shear not correct when using cluster method")
 
 def test_make_shear_profiles():
@@ -223,11 +221,11 @@ def test_make_shear_profiles():
     expected_angsep = np.array([0.0021745039090962414, 0.0037238407383072053, 0.0037238407383072053])
     expected_cross_shear = np.array([0.2780316984090899, 0.6398792901134982, 0.6398792901134982])
     expected_tan_shear = np.array([-0.22956126563459447, -0.02354769805831558, -0.02354769805831558])
-    testing.assert_allclose(angsep, expected_angsep, rtol=TOLERANCE['rtol'],
+    testing.assert_allclose(angsep, expected_angsep, **TOLERANCE, 
                             err_msg="Angular Separation not correct when testing shear profiles")
-    testing.assert_allclose(tshear, expected_tan_shear, rtol=TOLERANCE['rtol'],
+    testing.assert_allclose(tshear, expected_tan_shear, **TOLERANCE, 
                             err_msg="Tangential Shear not correct when testing shear profiles")
-    testing.assert_allclose(xshear, expected_cross_shear, rtol=TOLERANCE['rtol'],
+    testing.assert_allclose(xshear, expected_cross_shear, **TOLERANCE, 
                             err_msg="Cross Shear not correct when testing shear profiles")
 
     # Tests passing int as bins arg makes the correct bins
@@ -239,32 +237,28 @@ def test_make_shear_profiles():
     # Make the shear profile and check it
     bins_radians = np.array([0.002, 0.003, 0.004])
     profile = pa.make_shear_profile(cluster, 'radians', 'radians', bins=bins_radians)
-    testing.assert_allclose(profile['radius_min'], bins_radians[:-1], rtol=TOLERANCE['rtol'],
+    testing.assert_allclose(profile['radius_min'], bins_radians[:-1],  **TOLERANCE, 
                             err_msg="Minimum radius in bin not expected.")
     testing.assert_allclose(profile['radius'], [0.0021745039090962414, 0.0037238407383072053],
-                            rtol=TOLERANCE['rtol'],
+                            **TOLERANCE, 
                             err_msg="Mean radius in bin not expected.")
-    testing.assert_allclose(profile['radius_max'], bins_radians[1:], rtol=TOLERANCE['rtol'],
+    testing.assert_allclose(profile['radius_max'], bins_radians[1:], **TOLERANCE, 
                             err_msg="Maximum radius in bin not expected.")
-    testing.assert_allclose(profile['gt'], expected_tan_shear[:-1], rtol=TOLERANCE['rtol'],
+    testing.assert_allclose(profile['gt'], expected_tan_shear[:-1], **TOLERANCE, 
                             err_msg="Tangential shear in bin not expected")
-    testing.assert_allclose(profile['gx'], expected_cross_shear[:-1], rtol=TOLERANCE['rtol'],
+    testing.assert_allclose(profile['gx'], expected_cross_shear[:-1], **TOLERANCE, 
                             err_msg="Cross shear in bin not expected")
 
     # Repeat the same tests when we call make_shear_profile through the GalaxyCluster method
     profile2 = cluster.make_shear_profile('radians', 'radians', bins=bins_radians)
-    testing.assert_allclose(profile2['radius_min'], [0.002, 0.003],
-                            rtol=TOLERANCE['rtol'], atol=TOLERANCE['atol'],
+    testing.assert_allclose(profile2['radius_min'], [0.002, 0.003], **TOLERANCE,
                             err_msg="Minimum radius in bin not expected.")
     testing.assert_allclose(profile2['radius'], [0.0021745039090962414, 0.0037238407383072053],
-                            rtol=TOLERANCE['rtol'], atol=TOLERANCE['atol'],
                             err_msg="Mean radius in bin not expected.")
-    testing.assert_allclose(profile2['radius_max'], [0.003, 0.004],
-                            rtol=TOLERANCE['rtol'], atol=TOLERANCE['atol'],
+    testing.assert_allclose(profile2['radius_max'], [0.003, 0.004], **TOLERANCE,
                             err_msg="Maximum radius in bin not expected.")
     testing.assert_allclose(profile2['gt'], [-0.22956126563459447, -0.02354769805831558],
-                            rtol=TOLERANCE['rtol'], atol=TOLERANCE['atol'],
+                            **TOLERANCE,
                             err_msg="Tangential shear in bin not expected")
-    testing.assert_allclose(profile2['gx'], expected_cross_shear[:-1],
-                            rtol=TOLERANCE['rtol'], atol=TOLERANCE['atol'],
+    testing.assert_allclose(profile2['gx'], expected_cross_shear[:-1], **TOLERANCE,
                             err_msg="Cross shear in bin not expected")
