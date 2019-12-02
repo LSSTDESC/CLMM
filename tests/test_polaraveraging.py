@@ -253,11 +253,3 @@ def test_make_shear_profiles():
                             err_msg="Tangential shear in bin not expected")
     testing.assert_allclose(profile2['gx'], expected_cross_shear[:-1], rtol=RTOL, atol=ATOL,
                             err_msg="Cross shear in bin not expected")
-
-
-if __name__ == '__main__':
-    test_compute_cross_shear()
-    test_compute_tangential_shear()
-    test_compute_lensing_angles_flatsky()
-    test_compute_shear()
-    test_make_shear_profiles()
