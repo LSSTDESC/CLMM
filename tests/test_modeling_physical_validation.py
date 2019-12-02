@@ -142,13 +142,19 @@ def test_get_da():
     Test physical values of Da
     '''
     cf = load_validation_config()
-    dl_clmm = get_angular_diameter_distance_a(cf.cosmo_ccl, cf.TEST_CASE['aexp_cluster'])
-    ds_clmm = get_angular_diameter_distance_a(cf.cosmo_ccl, cf.TEST_CASE['aexp_source'])
-    dsl_clmm = get_angular_diameter_distance_a(cf.cosmo_ccl, cf.TEST_CASE['aexp_source'],
-                                               cf.TEST_CASE['aexp_cluster'])
-    tst.assert_allclose(cf.TEST_CASE['dl'], dl_clmm, 1e-10)
-    tst.assert_allclose(cf.TEST_CASE['ds'], ds_clmm, 1e-10)
-    tst.assert_allclose(cf.TEST_CASE['dsl'], dsl_clmm, 1e-10)
+    tst.assert_allclose(cf.TEST_CASE['dl'],
+                        get_angular_diameter_distance_a(cf.cosmo_ccl,
+                                                        cf.TEST_CASE['aexp_cluster']),
+                        1e-10)
+    tst.assert_allclose(cf.TEST_CASE['ds'],
+                        get_angular_diameter_distance_a(cf.cosmo_ccl,
+                                                        cf.TEST_CASE['aexp_source']),
+                        1e-10)
+    tst.assert_allclose(cf.TEST_CASE['dsl'],
+                        get_angular_diameter_distance_a(cf.cosmo_ccl,
+                                                        cf.TEST_CASE['aexp_source'],
+                                                        cf.TEST_CASE['aexp_cluster']),
+                        1e-10)
 
 def test_sigmac():
     '''
