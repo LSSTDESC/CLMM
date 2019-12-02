@@ -49,7 +49,8 @@ def compute_shear(cluster=None, ra_lens=None, dec_lens=None, ra_source_list=None
     position of the source relative to the lens, :math:`\phi`, are computed within the function
     and the angular separation is returned.
 
-    In the flat sky approximation, these angles are calculated using (_l: lens, _s: source, RA is from right to left)
+    In the flat sky approximation, these angles are calculated using (_lens: lens, _source: source,
+    RA is from right to left)
 
     .. math::
 
@@ -256,6 +257,8 @@ def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
     if not all([t_ in cluster.galcat.columns for t_ in ('gt', 'gx', 'theta')]):
         raise TypeError('Shear information is missing in galaxy catalog must have tangential' +\
                         'and cross shears (gt,gx). Run compute_shear first!')
+    if 'z' not in cluster.galcat.columns:
+        raise TypeError('Missing galaxy redshifs!')
 
     # Check to see if we need to do a unit conversion
     if angsep_units is not bin_units:
@@ -273,10 +276,13 @@ def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
                                                     xbins=bins, error_model='std/n')
     r_avg, gx_avg, gx_err = compute_radial_averages(source_seps, cluster.galcat['gx'].data,
                                                     xbins=bins, error_model='std/n')
+    r_avg, z_avg, z_err = compute_radial_averages(source_seps, cluster.galcat['z'].data,
+                                                  xbins=bins, error_model='std/n')
 
-    profile_table = Table([bins[:-1], r_avg, bins[1:], gt_avg, gt_err, gx_avg, gx_err],
+    profile_table = Table([bins[:-1], r_avg, bins[1:], gt_avg, gt_err, gx_avg, gx_err,
+                           z_avg, z_err],
                           names=('radius_min', 'radius', 'radius_max', 'gt', 'gt_err',
-                                 'gx', 'gx_err'))
+                                 'gx', 'gx_err', 'z', 'z_err',))
 
     if add_to_cluster:
         cluster.profile = profile_table
