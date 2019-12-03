@@ -5,6 +5,8 @@ import sys
 sys.path.insert(0, os.path.abspath('../clmm'))
 sys.path.insert(0, os.path.abspath('..'))
 
+import clmm
+
 
 # -- RTD Fix for cluster_toolkit -----------------------------------------
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
@@ -25,6 +27,9 @@ if on_rtd:
     MOCK_MODULES = ['cluster_toolkit']
     sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
+# -- Load the version number ----------------------------------------------
+version = clmm.__version__
+release = version
 
 # -- General configuration ------------------------------------------------
 extensions = ['sphinx.ext.autodoc',
@@ -46,10 +51,6 @@ project = 'CLMM'
 copyright = '2018-2019, LSST DESC CLMM Contributors'
 author = 'LSST DESC CLMM Contributors'
 language = 'en'
-
-# version is short X.Y, release is full including alpha/beta/rc
-version = '0.0.1'
-release = '0.0.1'
 
 # Files to ignore when looking for source files
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store',
