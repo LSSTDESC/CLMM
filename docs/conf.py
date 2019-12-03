@@ -25,6 +25,18 @@ if on_rtd:
     MOCK_MODULES = ['cluster_toolkit']
     sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
+# -- Load the version number ----------------------------------------------
+# adapted from pip's def, https://github.com/pypa/pip/blob/master/setup.py
+def get_version(rel_path):
+    with open(rel_path) as file:
+        for line in file:
+            if line.startswith('__version__'):
+                delim = '"' if '"' in line else "'"
+                version = line.split(delim)[1]
+                return version
+    raise RuntimeError("Unable to find version string.")
+version = get_version('../clmm/__init__.py')
+release = version
 
 # -- General configuration ------------------------------------------------
 extensions = ['sphinx.ext.autodoc',
@@ -46,10 +58,6 @@ project = 'CLMM'
 copyright = '2018-2019, LSST DESC CLMM Contributors'
 author = 'LSST DESC CLMM Contributors'
 language = 'en'
-
-# version is short X.Y, release is full including alpha/beta/rc
-version = '0.0.1'
-release = '0.0.1'
 
 # Files to ignore when looking for source files
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store',
