@@ -5,6 +5,8 @@ import sys
 sys.path.insert(0, os.path.abspath('../clmm'))
 sys.path.insert(0, os.path.abspath('..'))
 
+import clmm
+
 
 # -- RTD Fix for cluster_toolkit -----------------------------------------
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
@@ -26,16 +28,7 @@ if on_rtd:
     sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 # -- Load the version number ----------------------------------------------
-# adapted from pip's def, https://github.com/pypa/pip/blob/master/setup.py
-def get_version(rel_path):
-    with open(rel_path) as file:
-        for line in file:
-            if line.startswith('__version__'):
-                delim = '"' if '"' in line else "'"
-                version = line.split(delim)[1]
-                return version
-    raise RuntimeError("Unable to find version string.")
-version = get_version('../clmm/__init__.py')
+version = clmm.__version__
 release = version
 
 # -- General configuration ------------------------------------------------
