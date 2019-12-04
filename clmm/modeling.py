@@ -294,8 +294,9 @@ def get_angular_diameter_distance_a(cosmo, scale_factor2, scale_factor1=1.):
 
     Returns
     -------
-    d_a : float
+    float
         angular diameter distance in :math:`\mathrm{Mpc\ h}^{-1}`
+
 
     Notes
     -----
