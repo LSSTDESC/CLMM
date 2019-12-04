@@ -1,11 +1,115 @@
 """Tests for modeling.py"""
+import ast
 import numpy as np
 from numpy.testing import assert_raises, assert_allclose, assert_equal
 from astropy.cosmology import FlatLambdaCDM, LambdaCDM
 import clmm.modeling as md
+from clmm.constants import Constants as clc
 
 
 TOLERANCE = {'rtol': 1.0e-6, 'atol': 1.0e-6}
+
+# ----------- Some Helper Functions for the Validation Tests ---------------
+def compute_sigmac_physical_constant(lightspeed, gnewt, msun, pc_to_m):
+    """
+    Computes physical constant used to in Sigma_crit
+
+    Parameters
+    ----------
+    lightspeed,: float
+        Lightspeed in km/s
+    gnewt: float
+        Gravitational constant in m^3/(km s^2)
+    msun: float
+        Solar mass in kg
+    pc_to_m: float
+        Value of 1 parsec in meters
+
+    Returns
+    -------
+    float
+        lightspeed^2/G[Msun/pc]
+    """
+    return (lightspeed*1000./pc_to_m)**2/(gnewt*msun/pc_to_m**3)
+
+
+def load_validation_config():
+    """
+    Loads values precomputed by numcosmo for comparison
+    """
+
+    class Config:
+        """
+        Object to pass loaded values
+        """
+        VAL_FILES_PATH = 'tests/data/numcosmo/'
+        with open('tests/data/numcosmo/config.txt', 'r') as f:
+            TEST_CASE = ast.literal_eval(f.read())
+        f.close()
+        NC_PROF = np.genfromtxt('tests/data/numcosmo/radial_profiles.txt', names=True)
+        NC_DIST = np.genfromtxt('tests/data/numcosmo/angular_diameter_distance.txt', names=True)
+
+        r3d = np.array(NC_PROF['r3d'])
+        # Physical Constants
+        G_PHYSCONST_CORRECTION = TEST_CASE['G[m3/km.s2]']/clc.GNEWT.value
+
+        CLMM_SIGMAC_PCST = compute_sigmac_physical_constant(
+            clc.CLIGHT_KMS.value, clc.GNEWT.value,
+            clc.SOLAR_MASS.value, clc.PC_TO_METER.value)
+        TEST_CASE_SIGMAC_PCST = compute_sigmac_physical_constant(
+            TEST_CASE['lightspeed[km/s]'], TEST_CASE['G[m3/km.s2]'],
+            TEST_CASE['Msun[kg]'], TEST_CASE['pc_to_m'])
+        SIGMAC_PHYSCONST_CORRECTION = TEST_CASE_SIGMAC_PCST/CLMM_SIGMAC_PCST
+
+        # Cosmology
+        cosmo = md.cclify_astropy_cosmo(FlatLambdaCDM(H0=TEST_CASE['cosmo_H0'],
+                                        Om0=TEST_CASE['cosmo_Om0'],
+                                        Ob0=TEST_CASE['cosmo_Ob0']))
+
+        # Sets of parameters to be used by multiple functions
+        RHO_PARAMS = {
+            'mdelta':TEST_CASE['cluster_mass'],
+            'cdelta':TEST_CASE['cluster_concentration'],
+            'z_cl':TEST_CASE['z_cluster'],
+            'cosmo':cosmo,
+            }
+        SIGMA_PARAMS = {
+            'mdelta':TEST_CASE['cluster_mass'],
+            'cdelta':TEST_CASE['cluster_concentration'],
+            'z_cl':TEST_CASE['z_cluster'],
+            'cosmo':cosmo,
+            'delta_mdef':TEST_CASE['mass_Delta'],
+            'halo_profile_model':TEST_CASE['density_profile_parametrization'],
+            }
+        GAMMA_PARAMS = {
+            'mdelta':TEST_CASE['cluster_mass'],
+            'cdelta':TEST_CASE['cluster_concentration'],
+            'z_cluster':TEST_CASE['z_cluster'],
+            'z_source':TEST_CASE['z_source'],
+            'cosmo':cosmo,
+            'delta_mdef':TEST_CASE['mass_Delta'],
+            'halo_profile_model':TEST_CASE['density_profile_parametrization'],
+            'z_src_model':'single_plane',
+            }
+
+    return Config
+# --------------------------------------------------------------------------
+
+def test_physical_constants():
+    """
+    Test physical values of physical_constants
+
+    Notes
+    -----
+        The precision set for these tests put in here right now are somewhat arbitrary,
+        has to be improved to values provided by CCL
+    """
+    cfg = load_validation_config()
+    assert_allclose(cfg.TEST_CASE['lightspeed[km/s]'], clc.CLIGHT_KMS.value, 1e-3)
+    assert_allclose(cfg.TEST_CASE['G[m3/km.s2]'], clc.GNEWT.value, 1e-3)
+    assert_allclose(cfg.TEST_CASE['pc_to_m'], clc.PC_TO_METER.value, 1e-6)
+    assert_allclose(cfg.TEST_CASE['Msun[kg]'], clc.SOLAR_MASS.value, 1e-2)
+    assert_allclose(cfg.TEST_CASE_SIGMAC_PCST, cfg.CLMM_SIGMAC_PCST, 1e-2)
 
 
 def test_cclify_astropy_cosmo():
@@ -141,10 +245,14 @@ def test_profiles_unittests():
 
 
 def test_profiles_validation():
-    # TODO: Validation tests for `get_3d_density` for the NFW profile
-    # TODO: Validation tests for `predict_surface_density` for the NFW profile
-    # TODO: Validation tests for `test_predict_excess_surface_density`
-    pass
+    cfg = load_validation_config()
+    g_correction = cfg.G_PHYSCONST_CORRECTION
+    assert_allclose(md.get_3d_density(cfg.r3d, **cfg.RHO_PARAMS)*g_correction,
+                    cfg.NC_PROF['rho'], 1.0e-11)
+    assert_allclose(md.predict_surface_density(cfg.r3d, **cfg.SIGMA_PARAMS),
+                    cfg.NC_PROF['Sigma'], 1.0e-9)
+    assert_allclose(md.predict_excess_surface_density(cfg.r3d, **cfg.SIGMA_PARAMS)*g_correction,
+                    cfg.NC_PROF['DeltaSigma'], 1.0e-8)
 
 
 def test_angular_diameter_dist_a1a2():
@@ -164,12 +272,24 @@ def test_angular_diameter_dist_a1a2():
                     md.angular_diameter_dist_a1a2(apycosmo, sf1, a2=1.),
                     **TOLERANCE)
 
-    # TODO: Validation test
+    # Validation tests
+    cfg = load_validation_config()
+    assert_allclose(md.angular_diameter_dist_a1a2(cfg.cosmo, cfg.TEST_CASE['aexp_cluster']),
+                    cfg.TEST_CASE['dl'], 1.0e-10)
+    assert_allclose(md.angular_diameter_dist_a1a2(cfg.cosmo, cfg.TEST_CASE['aexp_source']),
+                    cfg.TEST_CASE['ds'], 1.0e-10)
+    assert_allclose(md.angular_diameter_dist_a1a2(cfg.cosmo, cfg.TEST_CASE['aexp_source'],
+                                                  cfg.TEST_CASE['aexp_cluster']),
+                    cfg.TEST_CASE['dsl'], 1.0e-10)
 
 
 def test_get_critical_surface_density():
-    # TODO: Validation test
-    pass
+    cfg = load_validation_config()
+    assert_allclose(cfg.SIGMAC_PHYSCONST_CORRECTION*\
+                    md.get_critical_surface_density(cfg.cosmo,
+                                                    z_cluster=cfg.TEST_CASE['z_cluster'],
+                                                    z_source=cfg.TEST_CASE['z_source']),
+                    cfg.TEST_CASE['nc_Sigmac'], 1.0e-8)
 
 
 def helper_physics_functions(func):
@@ -215,6 +335,18 @@ def test_shear_convergence_validation():
     - predict_convergence
     - predict_reduced_tangential_shear
     """
-    # TODO: Validation tests for predict_tangential_shear
-    # TODO: Validation tests for predict_convergence
-    # TODO: Validation tests for predict_reduced_tangential_shear
+    cfg = load_validation_config()
+    sigcrit_corr = cfg.SIGMAC_PHYSCONST_CORRECTION
+
+    # Validate tangential shear
+    gammat = md.predict_tangential_shear(cfg.r3d, **cfg.GAMMA_PARAMS)
+    assert_allclose(gammat/sigcrit_corr, cfg.NC_PROF['gammat'], 1.0e-8)
+
+    # Validate convergence
+    kappa = md.predict_convergence(cfg.r3d, **cfg.GAMMA_PARAMS)
+    assert_allclose(kappa/sigcrit_corr, cfg.NC_PROF['kappa'], 1.0e-8)
+
+    # Validate reduced tangential shear
+    assert_allclose(md.predict_reduced_tangential_shear(cfg.r3d, **cfg.GAMMA_PARAMS),
+                    gammat/(1.0 - kappa), 1.0e-10)
+    assert_allclose(gammat/(sigcrit_corr - kappa), cfg.NC_PROF['gt'], 1.0e-6)
