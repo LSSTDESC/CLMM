@@ -74,6 +74,7 @@ def _get_z_from_a(scale_factor):
     redshift = 1. / scale_factor - 1.
     return redshift
 
+
 def _ct_omega_m_fix(omega_m, redshift):
     r"""
     Patch to fix `cluster_toolkit` z=0 limitation. It works by passing
@@ -94,6 +95,7 @@ def _ct_omega_m_fix(omega_m, redshift):
     """
     return omega_m*(1.0 + redshift)**3
 
+
 def get_reduced_shear_from_convergence(shear, convergence):
     """Calculates reduced shear from shear and convergence
     
@@ -110,6 +112,7 @@ def get_reduced_shear_from_convergence(shear, convergence):
     """
     reduced_shear = shear/(1-convergence)
     return reduced_shear
+
 
 def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profile_model='nfw'):
     r"""Retrieve the 3d density :math:`\rho(r)`.
