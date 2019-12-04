@@ -137,15 +137,6 @@ def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profil
         Profile model parameterization, with the following supported options:
 
             `nfw` (default)
-    z_src_model : str, optional
-        Source redshift model, with the following supported options:
-
-            `single_plane` (default) - all sources at one redshift
-
-            `known_z_src` - known individual source galaxy redshifts, e.g. discrete case
-
-            `z_src_distribution` - known source redshift distribution, e.g. continuous case
-            requiring integration.
 
     Returns
     -------
@@ -174,7 +165,7 @@ def predict_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     .. math::
         \Sigma(R) = \Omega_m \rho_{crit} \int^\infty_{-\infty} dz \Xi_{hm} (\sqrt{R^2+z^2}),
 
-    where :math:`\Xi_{hm}` is the halo mass function.
+    where :math:`\Xi_{hm}` is the halo-matter correlation function.
 
     Parameters
     ----------
