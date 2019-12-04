@@ -34,11 +34,9 @@ def compute_sigmac_physical_constant(lightspeed, gnewt, msun, pc_to_m):
 
 def load_validation_config():
     """ Loads values precomputed by numcosmo for comparison """
-
-    # Load the NumCosmo results
     numcosmo_path = 'tests/data/numcosmo/'
-    with open(numcosmo_path+'config.txt', 'r') as f:
-        testcase = ast.literal_eval(f.read())
+    with open(numcosmo_path+'config.txt', 'r') as fin:
+        testcase = ast.literal_eval(fin.read())
     numcosmo_profile = np.genfromtxt(numcosmo_path+'radial_profiles.txt', names=True)
 
     # Physical Constants
@@ -111,6 +109,7 @@ def test_physical_constants():
 
 
 def test_cclify_astropy_cosmo():
+    """ Unit tests for md.cllify_astropy_cosmo """
     # Make some base objects
     truth = {'H0': 70., 'Om0': 0.3, 'Ob0': 0.05}
     apycosmo_flcdm = FlatLambdaCDM(**truth)
@@ -135,6 +134,7 @@ def test_cclify_astropy_cosmo():
 
 
 def test_astropyify_ccl_cosmo():
+    """ Unit tests for astropyify_ccl_cosmo """
     # Make a bse object
     truth = {'H0': 70., 'Om0': 0.3, 'Ob0': 0.05}
     apycosmo_flcdm = FlatLambdaCDM(**truth)
@@ -156,6 +156,7 @@ def test_astropyify_ccl_cosmo():
 
 
 def test_scale_factor_redshift_conversion():
+    """ Unit tests for redshift and scalefactor conversion """
     # Convert from a to z - scalar, list, ndarray
     assert_allclose(md._get_a_from_z(0.5), 2./3., **TOLERANCE)
     assert_allclose(md._get_a_from_z([0.1, 0.2, 0.3, 0.4]),
@@ -191,6 +192,7 @@ def test_scale_factor_redshift_conversion():
 
 
 def test_get_reduced_shear():
+    """ Unit tests for get_reduced_shear """
     # Make some base objects
     shear = [0.5, 0.75, 1.25, 0.0]
     convergence = [0.75, -0.2, 0.0, 2.3]
@@ -235,14 +237,14 @@ def helper_profiles(func):
                     defaulttruth, **TOLERANCE)
 
 
-def test_profiles_unittests():
+def test_profiles():
+    """ Tests for profile functions, get_3d_density, predict_surface_density,
+    and predict_excess_surface_density """
     helper_profiles(md.get_3d_density)
     helper_profiles(md.predict_surface_density)
-    # TODO: Why do we hard code sigma_r_proj in here? I moved it out of the NFW block
     helper_profiles(md.predict_excess_surface_density)
 
-
-def test_profiles_validation():
+    # Validate tests
     cfg = load_validation_config()
     g_correction = cfg['G_PHYSCONST_CORRECTION']
     assert_allclose(md.get_3d_density(**cfg['RHO_PARAMS'])*g_correction,
@@ -254,6 +256,8 @@ def test_profiles_validation():
 
 
 def test_angular_diameter_dist_a1a2():
+    """ Test function that computes angular diameter distance between
+    two scale factors. """
     # Make some base objects
     truth = {'H0': 70., 'Om0': 0.3, 'Ob0': 0.05}
     apycosmo = FlatLambdaCDM(**truth)
@@ -282,6 +286,7 @@ def test_angular_diameter_dist_a1a2():
 
 
 def test_get_critical_surface_density():
+    """ Validation test for critical surface density """
     cfg = load_validation_config()
     assert_allclose(cfg['SIGMAC_PHYSCONST_CORRECTION']*\
                     md.get_critical_surface_density(cfg['cosmo'],
@@ -321,18 +326,12 @@ def helper_physics_functions(func):
 
 
 def test_shear_convergence_unittests():
+    """ Unit and validation tests for the shear and convergence calculations """
     helper_physics_functions(md.predict_tangential_shear)
     helper_physics_functions(md.predict_convergence)
     helper_physics_functions(md.predict_reduced_tangential_shear)
 
-
-def test_shear_convergence_validation():
-    """ These tests should test our functions against an external code base
-    to ensure that our physical results are valid.
-    - predict_tangential_shear
-    - predict_convergence
-    - predict_reduced_tangential_shear
-    """
+    # Validation Tests
     cfg = load_validation_config()
     sigcrit_corr = cfg['SIGMAC_PHYSCONST_CORRECTION']
 
