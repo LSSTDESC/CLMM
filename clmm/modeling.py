@@ -110,6 +110,7 @@ def _get_z_from_a(scale_factor):
     return 1. / scale_factor - 1.
 
 
+
 def get_reduced_shear_from_convergence(shear, convergence):
     """ Calculates reduced shear from shear and convergence
 
@@ -184,7 +185,7 @@ def predict_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     .. math::
         \Sigma(R) = \Omega_m \rho_{crit} \int^\infty_{-\infty} dz \Xi_{hm} (\sqrt{R^2+z^2}),
 
-    where :math:`\Xi_{hm}` is the halo mass function.
+    where :math:`\Xi_{hm}` is the halo-matter correlation function.
 
     Parameters
     ----------
