@@ -212,11 +212,15 @@ def test_get_reduced_shear():
 
 
 def helper_profiles(func):
-    """ A helper function that is used to repeat all of the unit tests
-    on the profile functions below.
-    - get_3d_density
-    - predict_surface_density
-    - predict_excess_surface_density
+    """ A helper function to repeat a set of unit tests on several functions
+    that expect the same inputs.
+
+    Tests the following functions: get_3d_density, predict_surface_density,
+                                   predict_excess_surface_density
+
+    Tests that the functions:
+    1. Throw an error if an invalid profile model is passed
+    2. Test each default parameter to ensure that the defaults are not changed.
     """
     # Make some base objects
     r3d = np.logspace(-2, 2, 100)
@@ -296,10 +300,16 @@ def test_get_critical_surface_density():
 
 
 def helper_physics_functions(func):
-    """ We have several functions with identical call signitures.
-    Rather than repeat the same exact code to test each one, I am
-    writing this helper that can be used to test things like
-    defaults and exceptions """
+    """ A helper function to repeat a set of unit tests on several functions
+    that expect the same inputs.
+
+    Tests the following functions: predict_tangential_shear, predict_convergence,
+                                   predict_reduced_tangential_shear
+
+    Tests that the functions:
+    1. Test each default parameter to ensure that the defaults are not changed.
+    2. Test that exceptions are thrown for unsupported zsource models and profiles
+    """
     # Make some base objects
     rproj = np.logspace(-2, 2, 100)
     mdelta = 1.0e15
