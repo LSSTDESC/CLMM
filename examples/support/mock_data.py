@@ -9,7 +9,7 @@ import clmm
 
 def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta_SO, zsrc,
                             zsrc_max=7., shapenoise=None, photoz_sigma_unscaled=None, nretry=5):
-    r"""Generates a mock dataset of sheared background galaxies.
+    """Generates a mock dataset of sheared background galaxies.
 
     We build galaxy catalogs following a series of steps.
 
@@ -190,6 +190,10 @@ def _draw_source_redshifts(zsrc, cluster_z, zsrc_max, ngals):
 
         uniform_deviate = np.random.uniform(probdist.min(), probdist.max(), ngals)
         zsrc_list = interp1d(probdist, zsrc_domain, kind='linear')(uniform_deviate)
+    
+    # Draw zsrc from a uniform distribution between zmin and zmax
+    elif zsrc == 'uniform':
+        zsrc_list = np.random.uniform(cluster_z + 0.1, zsrc_max, ngals)
 
     # Invalid entry
     else:
