@@ -7,6 +7,16 @@ This is a brief guide to contributing to CLMM, including information about ident
 Action items for CLMM code improvements are listed as [GitHub Issues](https://github.com/LSSTDESC/CLMM/issues).
 Issues marked with the label `good first issue` are well-suited for new contributors.
 
+## Access to the proper environment on cori.nersc.gov
+
+If you have access to nersc, this will likely be the easiest to make sure you have the appropriate environment.  After logging into cori.nersc.gov, you will need to execute the following:
+
+```bash
+	bash source 
+```
+
+The above allows you to access a set of environments in your jupyter notebook.  To open up a notebook from nersc in your browser, you will need to go to the [nersc jupyter portal](https://jupyter.nersc.gov) and sign in.  Clicking on the upper right corner of the notebook will provide options for your kernel.
+
 ## Making a local copy of CLMM
 
 As a newcomer, you likely will not have edit access to the main CLMM repository.
