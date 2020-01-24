@@ -7,7 +7,7 @@ from astropy import units
 import clmm
 
 
-def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta_SO, zsrc,
+def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta_SO, zsrc, zsrc_min=0.02,
                             zsrc_max=7., shapenoise=None, photoz_sigma_unscaled=None, nretry=5):
     r"""Generates a mock dataset of sheared background galaxies.
 
@@ -97,13 +97,13 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta
     Much of this code in this function was adapted from the Dallas group
     """
     params = {'cluster_m' : cluster_m, 'cluster_z' : cluster_z, 'cluster_c' : cluster_c,
-              'cosmo' : cosmo, 'Delta_SO' : Delta_SO, 'zsrc' : zsrc, 'zsrc_max' : zsrc_max,
-              'shapenoise' : shapenoise, 'photoz_sigma_unscaled' : photoz_sigma_unscaled}
+              'cosmo' : cosmo, 'Delta_SO' : Delta_SO, 'zsrc' : zsrc, 'zsrc_min' : zsrc_min,
+              'zsrc_max' : zsrc_max,'shapenoise' : shapenoise, 'photoz_sigma_unscaled' : photoz_sigma_unscaled}
     galaxy_catalog = _generate_galaxy_catalog(ngals=ngals, **params)
 
     # Check for bad galaxies and replace them
     for i in range(nretry):
-        nbad, badids = _find_aphysical_galaxies(galaxy_catalog)
+        nbad, badids = _find_aphysical_galaxies(galaxy_catalog, cluster_z)
         if nbad < 1:
             break
         replacements = _generate_galaxy_catalog(ngals=nbad, **params)
@@ -120,7 +120,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta
 
 
 def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta_SO, zsrc,
-                             zsrc_min=0.1, zsrc_max=7., shapenoise=None, photoz_sigma_unscaled=None):
+                             zsrc_min=0.02, zsrc_max=7., shapenoise=None, photoz_sigma_unscaled=None):
     """A private function that skips the sanity checks on derived properties. This
     function should only be used when called directly from `generate_galaxy_catalog`.
     Takes the same parameters and returns the same things as the before mentioned function.
@@ -178,9 +178,9 @@ def _draw_source_redshifts(zsrc, cluster_z, zsrc_min, zsrc_max, ngals):
             alpha, beta, z0 = 1.24, 1.01, 0.51
             return (z**alpha)*np.exp(-(z/z0)**beta)
 
-        def integrated_pzfxn(zmin, zmax, func):
+        def integrated_pzfxn(zmax, func):
             """Integrated redshift distribution function for transformation method"""
-            val, _ = integrate.quad(func, zmin, zmax)
+            val, _ = integrate.quad(func, zsrc_min, zmax)
             return val
         vectorization_integrated_pzfxn = np.vectorize(integrated_pzfxn)
 
@@ -271,7 +271,7 @@ def _find_aphysical_galaxies(galaxy_catalog, cluster_z):
     """
     badgals = np.where((np.abs(galaxy_catalog['e1']) > 1.0) |
                        (np.abs(galaxy_catalog['e2']) > 1.0) |
-                       galaxy_catalog['z'] < cluster_z + 0.05
+                       (galaxy_catalog['z'] < cluster_z + 0.05)
                       )[0]
     nbad = len(badgals)
     return nbad, badgals
