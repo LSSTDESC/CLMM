@@ -1,6 +1,6 @@
 # Contributing to CLMM
 
-This is a brief guide to contributing to CLMM, including information about identifiying code issues and submitting code changes.
+This is a brief guide to contributing to CLMM, including information about identifiying code issues and submitting code changes or documentation.
 
 ## Identifying Issues
 
@@ -49,7 +49,7 @@ To do this, follow the following steps from within your local copy of CLMM (fork
 2. Make your changes in the files stored in your local directory.
 3. Commit and push your changes to the `branchname` branch of the remote repository.
     ```bash
-    git add .
+    git add NAMES-OF-CHANGED-FILES
     git commit -m "Insert a descriptive commit message here"
     git pull origin master
     git push origin branchname
@@ -60,10 +60,17 @@ To do this, follow the following steps from within your local copy of CLMM (fork
     Select `branchname`, fill out a title and description for the pull request, and, optionally, request review by a CLMM team member.
     Once the pull request is approved, it will be merged into the CLMM master branch.
 
-NOTE: Code is not complete without unit tests and documentation.
-Please ensure that unit tests (both new and old) all pass and that docs compile successfully.
-To test this, first install the code by running `python setup.py install --user`. To run all of the unit tests, run `pytest` in the root package directory.
-To test the docs, in the root package directory, run `./compile-docs` to delete any existing documents and to rebuild the documentation. You can view the compiled docs by running `open docs/_build/html/index.html`.
+NOTE: Code is not complete without unit tests and documentation. Please ensure that unit tests (both new and old) all pass and that docs compile successfully.
+
+To test this, first install the code by running `python setup.py install --user` (required after any change whatsoever to the `.py` files in `clmm/` directory). To run all of the unit tests, run `pytest` in the root package directory. To test the docs, in the root package directory after installing, run `./update_docs`. This script both deletes the old compiled documentation files and rebuilds them. You can view the compiled docs by running `open docs/_build/html/index.html`.
+
+## Adding documentation
+
+If you are adding documentation either in the form of example jupyter notebooks or new python modules, your documentation will need to compile for our online documentation hosted by readthedocs.io.
+
+We have done most of the hard work for you. Simply edit the configuration file, `docs/doc-config.ini`. If you are looking at add a module, put the module name under the `APIDOC` heading. If you are adding a demo notebook to demonstrate how to use the code, place the path from the `docs/` directory to the notebook under the `DEMO` heading. If you are adding an example notebook that shows off how to use `CLMM` to do science, place the path from the `docs/` directory to the notebook under the `EXAMPLE` heading. 
+
+Once it has been added to the config file, simply run `./update_docs` from the top level directory of the repository and your documentation should compile and be linked in the correct places!
 
 
 ## Reviewing an open pull request
@@ -75,8 +82,8 @@ To review an open pull request submitted by another developer, there are several
 3. Double check any relevant documentation. For any new or changed code, ensure that the documentation is accurate (i.e. references, equations, parameter descriptions).
 4. Next, checkout the branch to a location that you can run `CLMM`. From the top level package directory (the directory that has `setup.py`) install the code via `python setup.py install --user`. Then, run `pytest` to run the full testing suite.
 5. Now that tests are passing, the code likely works (assuming we have sufficient tests!) so we want to finalize the new code. We can do this by running a linter on any new or changed files `pylint {filename}`. This will take a look at the file and identify any style problems. If there are only a couple, feel free to resolve them yourself, otherwise leave a comment in your review that the author should perform this step.
-6. We can now check that the documentation looks as it should. We provide a convenient bash script to compile the documentation. To completely rebuild the documentation, AFTER INSTALLING (if you made any changes, even to docstrings), run `./compile-docs`. This will delete any compiled documentation that may already exist and rebuild it. If this runs without error, you can then take a look by `open docs/_build/html/index.html`. Make sure any docstrings that were changed compile correctly.
-7. Finally, install (`python setup.py install --user`), run tests (`pytest`), and compile documentation (`./compile-docs`) one file time and if everything passes, accept the review!
+6. We can now check that the documentation looks as it should. We provide a convenient bash script to compile the documentation. To completely rebuild the documentation, AFTER INSTALLING (if you made any changes, even to docstrings), run `./update_docs`. This will delete any compiled documentation that may already exist and rebuild it. If this runs without error, you can then take a look by `open docs/_build/html/index.html`. Make sure any docstrings that were changed compile correctly.
+7. Finally, install (`python setup.py install --user`), run tests (`pytest`), and compile documentation (`./update_docs`) one file time and if everything passes, accept the review!
 
 NOTE: We have had several branches that have exploded in commit number. If you are merging a branch and it has more than ~20 commits, strongly recommend using the "Squash and Merge" option for merging a branch.
 

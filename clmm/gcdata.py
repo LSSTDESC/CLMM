@@ -31,6 +31,7 @@ class GCData(GCData_):
 """
 Additional functions specific to clmm.GCData
 """
+
 def confirm_GCData(data):
     """
     Typechecks GCData elements
@@ -39,17 +40,20 @@ def confirm_GCData(data):
     #     raise TypeError('GCData creator should be string, specs should be dict, values should be astropy table')
     pass
 
+
 def read_GCData(filename):
     """
     Reads GCData from file
     """
     pass
 
+
 def write_GCData(data, filename):
     """
     Writes GCData to file
     """
     pass
+
 
 def check_subdict(lookup_dict, reference_dict):
     '''
@@ -68,6 +72,7 @@ def check_subdict(lookup_dict, reference_dict):
         If a lookup_dict is a subset of reference_dict
     '''
     return lookup_dict.items() <= reference_dict.items()
+
 
 def find_in_datalist(lookup_specs, datalist, exact=False):
     '''
