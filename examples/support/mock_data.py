@@ -103,14 +103,14 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta
 
     # Check for bad galaxies and replace them
     for i in range(nretry):
-        nbad, badids = _find_aphysical_galaxies(galaxy_catalog, cluster_z)
+        nbad, badids = _find_aphysical_galaxies(galaxy_catalog, zsrc_min)
         if nbad < 1:
             break
         replacements = _generate_galaxy_catalog(ngals=nbad, **params)
         galaxy_catalog[badids] = replacements
 
     # Final check to see if there are bad galaxies left
-    nbad, _ = _find_aphysical_galaxies(galaxy_catalog, cluster_z)
+    nbad, _ = _find_aphysical_galaxies(galaxy_catalog, zsrc_min)
     if nbad > 1:
         print("Not able to remove {} aphysical objects after {} iterations".format(nbad, nretry))
 
@@ -248,7 +248,7 @@ def _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo):
     return galaxy_catalog
 
 
-def _find_aphysical_galaxies(galaxy_catalog, cluster_z):
+def _find_aphysical_galaxies(galaxy_catalog, zsrc_min):
     r"""Finds the galaxies that have aphysical derived values due to large systematic choices.
 
     Currently checks the following conditions
@@ -271,7 +271,7 @@ def _find_aphysical_galaxies(galaxy_catalog, cluster_z):
     """
     badgals = np.where((np.abs(galaxy_catalog['e1']) > 1.0) |
                        (np.abs(galaxy_catalog['e2']) > 1.0) |
-                       (galaxy_catalog['z'] < cluster_z + 0.05)
+                       (galaxy_catalog['z'] < zsrc_min)
                       )[0]
     nbad = len(badgals)
     return nbad, badgals
