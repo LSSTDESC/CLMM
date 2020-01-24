@@ -16,7 +16,9 @@ If you have access to nersc, this will likely be the easiest to make sure you ha
 	conda create --name clmmenv  # Create an anaconda environment for clmm
 	source activate clmmenv  # switch to your newly created environment
 	conda install pip  # need pip to install everything else necessary for clmm	
+	conda install ipython # need to have the ipython tied to this environment
 	conda install -c conda-forge firefox  # Need a browser to view jupyter notebooks  
+	conda install jupyter # need to have jupyter notebook tied to this environment, you can then see the environment in jupyter.nersc.gov
 ```
 
 You can now go through the steps in the Requirements section of README.md.  Note, you'll need to separately install cluster-toolkit in the current version of CLMM.  Since cluster-toolkit has a gsl dependency, you'll also need gsl.
@@ -29,18 +31,37 @@ You can now go through the steps in the Requirements section of README.md.  Note
 	python setup.py install
 ```
 
-
+Now, you should have cluster_toolkit installed, and are ready to install CLMM (NOTE: CURRENTLY NOT WORKING!)
 
 ```bash
 	pip install numpy scipy astropy matplotlib
 	pip install pytest sphinx sphinx_rtd_theme
-	git clone https://github.com/LSSTDESC/CLMM.git
+	git clone https://github.com/LSSTDESC/CLMM.git  # For those with edit access to CLMM, see below for otherwise
   	cd CLMM   
   	python setup.py install --user     # build from source
 ```
 
-The above allows you to access a set of environments in your jupyter notebook.  To open up a notebook from nersc in your browser, you will need to go to the [nersc jupyter portal](https://jupyter.nersc.gov) and sign in.  Clicking on the upper right corner of the notebook will provide options for your kernel.
+The above allows you to develop in NERSC and run pytests.
 
+To open up a notebook from nersc in your browser, you will need to go to the [nersc jupyter portal](https://jupyter.nersc.gov) and sign in.  Clicking on the upper right corner of the notebook will provide options for your kernel.  You will need to do a temporary install of both cluster_toolkit and clmm in the first cell of your jupyter notebook:
+
+```python
+
+def install_clmm_pipeline(upgrade=False):
+    import sys
+    try:
+        import clmm
+        installed = True
+    except ImportError:
+        installed = False
+    if not upgrade:
+        print('clmm is already installed and upgrade is False')
+    else:
+        !{sys.executable} -m pip install --user --upgrade git+https://github.com/tmcclintock/cluster_toolkit.git
+        !{sys.executable} -m pip install --user --upgrade git+https://github.com/LSSTDESC/CLMM
+install_clmm_pipeline(upgrade=True)  # Comment this if you do not need to adjust your environment, but this is useful in cori
+
+```
 
 
 ## Making a local copy of CLMM
