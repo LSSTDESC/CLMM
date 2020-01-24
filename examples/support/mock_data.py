@@ -78,6 +78,8 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta
         float : All sources galaxies at this fixed redshift
         str : Draws individual source gal redshifts from predefined distribution. Options
               are: chang13
+    zsrc_min : float, optional
+        The minimum source redshift allowed.
     zsrc_max : float, optional
         If source redshifts are drawn, the maximum source redshift
     shapenoise : float, optional
@@ -254,6 +256,7 @@ def _find_aphysical_galaxies(galaxy_catalog, zsrc_min):
     Currently checks the following conditions
     e1 \in [-1, 1]
     e2 \in [-1, 1]
+    z  < zsrc_min
     This was converted to a seperate function to allow for ease of extension without needing
     to change the same code in multiple locations.
 
@@ -261,6 +264,8 @@ def _find_aphysical_galaxies(galaxy_catalog, zsrc_min):
     ----------
     galaxy_catalog : astropy.table.Table
         Galaxy source catalog
+    zsrc_min : float
+        Minimum galaxy redshift allowed 
 
     Returns
     -------
