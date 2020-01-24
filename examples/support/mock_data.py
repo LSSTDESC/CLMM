@@ -120,7 +120,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta
 
 
 def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta_SO, zsrc,
-                             zsrc_max=7., shapenoise=None, photoz_sigma_unscaled=None):
+                             zsrc_min=0.1, zsrc_max=7., shapenoise=None, photoz_sigma_unscaled=None):
     """A private function that skips the sanity checks on derived properties. This
     function should only be used when called directly from `generate_galaxy_catalog`.
     Takes the same parameters and returns the same things as the before mentioned function.
@@ -129,7 +129,7 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delt
     `generate_galaxy_catalog`.
     """
     # Set the source galaxy redshifts
-    galaxy_catalog = _draw_source_redshifts(zsrc, cluster_z, zsrc_max, ngals)
+    galaxy_catalog = _draw_source_redshifts(zsrc, cluster_z, zsrc_min, zsrc_max, ngals)
 
     # Add photo-z errors and pdfs to source galaxy redshifts
     if photoz_sigma_unscaled is not None:
@@ -160,7 +160,7 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delt
     return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z']
 
 
-def _draw_source_redshifts(zsrc, cluster_z, zsrc_max, ngals):
+def _draw_source_redshifts(zsrc, cluster_z, zsrc_min, zsrc_max, ngals):
     """Set source galaxy redshifts either set to a fixed value or draw from a predefined
     distribution. Return an astropy table of the source galaxies
 
@@ -178,13 +178,12 @@ def _draw_source_redshifts(zsrc, cluster_z, zsrc_max, ngals):
             alpha, beta, z0 = 1.24, 1.01, 0.51
             return (z**alpha)*np.exp(-(z/z0)**beta)
 
-        def integrated_pzfxn(zmax, func):
+        def integrated_pzfxn(zmin, zmax, func):
             """Integrated redshift distribution function for transformation method"""
-            val, _ = integrate.quad(func, cluster_z+0.1, zmax)
+            val, _ = integrate.quad(func, zmin, zmax)
             return val
         vectorization_integrated_pzfxn = np.vectorize(integrated_pzfxn)
 
-        zsrc_min = cluster_z + 0.1
         zsrc_domain = np.arange(zsrc_min, zsrc_max, 0.001)
         probdist = vectorization_integrated_pzfxn(zsrc_domain, pzfxn)
 
