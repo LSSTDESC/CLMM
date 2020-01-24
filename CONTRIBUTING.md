@@ -28,6 +28,7 @@ You can now go through the steps in the Requirements section of README.md.  Note
 	git clone https://github.com/tmcclintock/cluster_toolkit.git
 	cd cluster_toolkit
 	python setup.py install
+	cd ..
 ```
 
 Now, you should have cluster_toolkit installed, and are ready to install CLMM (NOTE: CURRENTLY NOT WORKING!)
