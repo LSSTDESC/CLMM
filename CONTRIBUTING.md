@@ -25,7 +25,6 @@ You can now go through the steps in the Requirements section of README.md.  Note
 
 ```bash
 	conda install gsl
-	cd ..
 	git clone https://github.com/tmcclintock/cluster_toolkit.git
 	cd cluster_toolkit
 	python setup.py install
