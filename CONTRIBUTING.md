@@ -12,10 +12,36 @@ Issues marked with the label `good first issue` are well-suited for new contribu
 If you have access to nersc, this will likely be the easiest to make sure you have the appropriate environment.  After logging into cori.nersc.gov, you will need to execute the following:
 
 ```bash
-	bash source 
+	module load python  # Also loads anaconda
+	conda create --name clmmenv  # Create an anaconda environment for clmm
+	source activate clmmenv  # switch to your newly created environment
+	conda install pip  # need pip to install everything else necessary for clmm	
+	conda install -c conda-forge firefox  # Need a browser to view jupyter notebooks  
+```
+
+You can now go through the steps in the Requirements section of README.md.  Note, you'll need to separately install cluster-toolkit in the current version of CLMM.  Since cluster-toolkit has a gsl dependency, you'll also need gsl.
+
+```bash
+	conda install gsl
+	cd ..
+	git clone https://github.com/tmcclintock/cluster_toolkit.git
+	cd cluster_toolkit
+	python setup.py install
+```
+
+
+
+```bash
+	pip install numpy scipy astropy matplotlib
+	pip install pytest sphinx sphinx_rtd_theme
+	git clone https://github.com/LSSTDESC/CLMM.git
+  	cd CLMM   
+  	python setup.py install --user     # build from source
 ```
 
 The above allows you to access a set of environments in your jupyter notebook.  To open up a notebook from nersc in your browser, you will need to go to the [nersc jupyter portal](https://jupyter.nersc.gov) and sign in.  Clicking on the upper right corner of the notebook will provide options for your kernel.
+
+
 
 ## Making a local copy of CLMM
 
