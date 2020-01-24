@@ -7,7 +7,7 @@ from astropy import units
 import clmm
 
 
-def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta_SO, zsrc, zsrc_min=0.02,
+def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta_SO, zsrc, zsrc_min=0.4,
                             zsrc_max=7., shapenoise=None, photoz_sigma_unscaled=None, nretry=5):
     r"""Generates a mock dataset of sheared background galaxies.
 
@@ -122,7 +122,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta
 
 
 def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta_SO, zsrc,
-                             zsrc_min=0.02, zsrc_max=7., shapenoise=None, photoz_sigma_unscaled=None):
+                             zsrc_min=0.4, zsrc_max=7., shapenoise=None, photoz_sigma_unscaled=None):
     """A private function that skips the sanity checks on derived properties. This
     function should only be used when called directly from `generate_galaxy_catalog`.
     Takes the same parameters and returns the same things as the before mentioned function.
