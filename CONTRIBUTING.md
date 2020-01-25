@@ -163,7 +163,7 @@ Here's a list of additional resources which you may find helpful in navigating g
 ## Contact (alphabetical order)
 * [Michel Aguena](https://github.com/m-aguena) (LIneA)
 * [Doug Applegate](https://github.com/deapplegate) (Novartis)
-* [Camille Avestruz](https://github.com/cavestruz) (UChicago)
+* [Camille Avestruz](https://github.com/cavestruz) (University of Michigan)
 * [Lucie Baumont](https://github.com/lbaumo) (SBU)
 * [Miyoung Choi](https://github.com/mchoi8739) (UTD)
 * [Celine Combet](https://github.com/combet) (LPSC)
