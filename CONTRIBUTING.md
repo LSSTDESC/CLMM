@@ -83,7 +83,7 @@ To ensure consistency between our code and documentation, we need to take care o
 
 1. Change the version number of the code located in `clmm/__init__.py`, commit the change to the branch, and push. If you are unsure of how you should change the version number, don't hesitate to ask!
 
-We use [semantic versioning](https://semver.org/), X.Y.Z.. If the PR makes a small change, such as a bug fix, documentation updates, style changes, etc., increment Z. If the PR adds a new feature, such as adding support for a new profile, increment Y (and reset Z to 1). If a PR adds a feature or makes a change that breaks the old API, increment X (and reset Y and Z to 1). After the first tagged release of CLMM, anything that is a candidate to increment X should be extensively discussed beforehand. 
+We use [semantic versioning](https://semver.org/), X.Y.Z.. If the PR makes a small change, such as a bug fix, documentation updates, style changes, etc., increment Z. If the PR adds a new feature, such as adding support for a new profile, increment Y (and reset Z to 0). If a PR adds a feature or makes a change that breaks the old API, increment X (and reset Y and Z to 0). After the first tagged release of CLMM, anything that is a candidate to increment X should be extensively discussed beforehand. 
 
 2. "Squash and Merge" the pull request into master. It asks for a squashed commit message. This should be descriptive of the feature or bug resolved in the PR and should be pre-prended by a [conventional commit scope](https://www.conventionalcommits.org/).
 
