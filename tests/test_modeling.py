@@ -1,5 +1,5 @@
 """Tests for modeling.py"""
-import ast
+import json
 import numpy as np
 from numpy.testing import assert_raises, assert_allclose, assert_equal
 from astropy.cosmology import FlatLambdaCDM, LambdaCDM
@@ -35,12 +35,11 @@ def compute_sigmac_physical_constant(lightspeed, gnewt, msun, pc_to_m):
 def load_validation_config():
     """ Loads values precomputed by numcosmo for comparison """
     numcosmo_path = 'tests/data/numcosmo/'
-    with open(numcosmo_path+'config.txt', 'r') as fin:
-        testcase = ast.literal_eval(fin.read())
+    with open(numcosmo_path+'config.json', 'r') as fin:
+        testcase = json.load(fin)
     numcosmo_profile = np.genfromtxt(numcosmo_path+'radial_profiles.txt', names=True)
 
     # Physical Constants
-    G_PHYSCONST_CORRECTION = testcase['G[m3/km.s2]']/clc.GNEWT.value
     CLMM_SIGMAC_PCST = compute_sigmac_physical_constant(clc.CLIGHT_KMS.value,
                                                         clc.GNEWT.value,
                                                         clc.SOLAR_MASS.value,
@@ -62,14 +61,12 @@ def load_validation_config():
         'mdelta':testcase['cluster_mass'],
         'cdelta':testcase['cluster_concentration'],
         'z_cl':testcase['z_cluster'],
-        'cosmo':cosmo,
         }
     SIGMA_PARAMS = {
         'r_proj': np.array(numcosmo_profile['r3d']),
         'mdelta':testcase['cluster_mass'],
         'cdelta':testcase['cluster_concentration'],
         'z_cl':testcase['z_cluster'],
-        'cosmo':cosmo,
         'delta_mdef':testcase['mass_Delta'],
         'halo_profile_model':testcase['density_profile_parametrization'],
         }
@@ -79,13 +76,12 @@ def load_validation_config():
         'cdelta': testcase['cluster_concentration'],
         'z_cluster': testcase['z_cluster'],
         'z_source': testcase['z_source'],
-        'cosmo': cosmo,
         'delta_mdef': testcase['mass_Delta'],
         'halo_profile_model': testcase['density_profile_parametrization'],
         'z_src_model': 'single_plane',
         }
 
-    return {'TEST_CASE': testcase, 'G_PHYSCONST_CORRECTION': G_PHYSCONST_CORRECTION,
+    return {'TEST_CASE': testcase, 'z_source': testcase['z_source'],
             'SIGMAC_PHYSCONST_CORRECTION': SIGMAC_PHYSCONST_CORRECTION, 'cosmo': cosmo,
             'RHO_PARAMS': RHO_PARAMS, 'SIGMA_PARAMS': SIGMA_PARAMS, 'GAMMA_PARAMS': GAMMA_PARAMS,
             'numcosmo_profiles': numcosmo_profile, 'TEST_CASE_SIGMAC_PCST': testcase_SIGMAC_PCST,
@@ -248,15 +244,21 @@ def test_profiles():
     helper_profiles(md.predict_surface_density)
     helper_profiles(md.predict_excess_surface_density)
 
-    # Validate tests
+    # Validation tests
+    # NumCosmo makes different choices for constants (Msun). We make this conversion
+    # by passing the ratio of SOLAR_MASS in kg from numcosmo and CLMM
     cfg = load_validation_config()
-    g_correction = cfg['G_PHYSCONST_CORRECTION']
-    assert_allclose(md.get_3d_density(**cfg['RHO_PARAMS'])*g_correction,
-                    cfg['numcosmo_profiles']['rho'], 1.0e-11)
-    assert_allclose(md.predict_surface_density(**cfg['SIGMA_PARAMS']),
-                    cfg['numcosmo_profiles']['Sigma'], 1.0e-9)
-    assert_allclose(md.predict_excess_surface_density(**cfg['SIGMA_PARAMS'])*g_correction,
-                    cfg['numcosmo_profiles']['DeltaSigma'], 1.0e-8)
+    constants_conversion = clc.SOLAR_MASS.value/cfg['TEST_CASE']['Msun[kg]']
+    cosmo = cfg['cosmo']
+    cosmo['Omega_c'] = cosmo['Omega_c']*constants_conversion
+    cosmo['Omega_b'] = cosmo['Omega_b']*constants_conversion
+
+    assert_allclose(md.get_3d_density(cosmo=cosmo, **cfg['RHO_PARAMS']),
+                    cfg['numcosmo_profiles']['rho'], 2.0e-9)
+    assert_allclose(md.predict_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS']),
+                    cfg['numcosmo_profiles']['Sigma'], 2.0e-9)
+    assert_allclose(md.predict_excess_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS']),
+                    cfg['numcosmo_profiles']['DeltaSigma'], 2.0e-9)
 
 
 def test_angular_diameter_dist_a1a2():
@@ -281,12 +283,12 @@ def test_angular_diameter_dist_a1a2():
     # Validation tests
     cfg = load_validation_config()
     assert_allclose(md.angular_diameter_dist_a1a2(cfg['cosmo'], cfg['TEST_CASE']['aexp_cluster']),
-                    cfg['TEST_CASE']['dl'], 1.0e-10)
+                    cfg['TEST_CASE']['dl'], 1.0e-8)
     assert_allclose(md.angular_diameter_dist_a1a2(cfg['cosmo'], cfg['TEST_CASE']['aexp_source']),
-                    cfg['TEST_CASE']['ds'], 1.0e-10)
+                    cfg['TEST_CASE']['ds'], 1.0e-8)
     assert_allclose(md.angular_diameter_dist_a1a2(cfg['cosmo'], cfg['TEST_CASE']['aexp_source'],
                                                   cfg['TEST_CASE']['aexp_cluster']),
-                    cfg['TEST_CASE']['dsl'], 1.0e-10)
+                    cfg['TEST_CASE']['dsl'], 1.0e-8)
 
 
 def test_get_critical_surface_density():
@@ -341,19 +343,36 @@ def test_shear_convergence_unittests():
     helper_physics_functions(md.predict_convergence)
     helper_physics_functions(md.predict_reduced_tangential_shear)
 
-    # Validation Tests
+    # Validation Tests =========================
+    # NumCosmo makes different choices for constants (Msun). We make this conversion
+    # by passing the ratio of SOLAR_MASS in kg from numcosmo and CLMM
     cfg = load_validation_config()
+    constants_conversion = clc.SOLAR_MASS.value/cfg['TEST_CASE']['Msun[kg]']
+    
+    # First compute SigmaCrit to correct cosmology changes
+    cosmo = cfg['cosmo']
+    sigma_c = md.get_critical_surface_density(cosmo, cfg['GAMMA_PARAMS']['z_cluster'],
+                                              cfg['z_source'])
+
+    # Patch a conversion for cluster_toolkit computations
+    cosmo['Omega_c'] = cosmo['Omega_c']*constants_conversion
+    cosmo['Omega_b'] = cosmo['Omega_b']*constants_conversion
+
+    # Compute sigma_c in the new cosmology and get a correction factor
     sigcrit_corr = cfg['SIGMAC_PHYSCONST_CORRECTION']
+    sigma_c_undo = md.get_critical_surface_density(cosmo, cfg['GAMMA_PARAMS']['z_cluster'],
++                                               cfg['z_source'])
+    sigmac_corr = sigma_c_undo/sigma_c/sigcrit_corr
 
     # Validate tangential shear
-    gammat = md.predict_tangential_shear(**cfg['GAMMA_PARAMS'])
-    assert_allclose(gammat/sigcrit_corr, cfg['numcosmo_profiles']['gammat'], 1.0e-8)
+    gammat = md.predict_tangential_shear(cosmo=cosmo, **cfg['GAMMA_PARAMS'])
+    assert_allclose(gammat*sigmac_corr, cfg['numcosmo_profiles']['gammat'], 1.0e-8)
 
     # Validate convergence
-    kappa = md.predict_convergence(**cfg['GAMMA_PARAMS'])
-    assert_allclose(kappa/sigcrit_corr, cfg['numcosmo_profiles']['kappa'], 1.0e-8)
+    kappa = md.predict_convergence(cosmo=cosmo, **cfg['GAMMA_PARAMS'])
+    assert_allclose(kappa*sigmac_corr, cfg['numcosmo_profiles']['kappa'], 1.0e-8)
 
     # Validate reduced tangential shear
-    assert_allclose(md.predict_reduced_tangential_shear(**cfg['GAMMA_PARAMS']),
+    assert_allclose(md.predict_reduced_tangential_shear(cosmo=cosmo, **cfg['GAMMA_PARAMS']),
                     gammat/(1.0 - kappa), 1.0e-10)
-    assert_allclose(gammat/(sigcrit_corr - kappa), cfg['numcosmo_profiles']['gt'], 1.0e-6)
+    assert_allclose(gammat/(1./sigmac_corr - kappa), cfg['numcosmo_profiles']['gt'], 1.0e-6)

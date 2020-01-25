@@ -1,5 +1,6 @@
 """ Patches for cluster_toolkit """
 import numpy as np
+from .constants import Constants as c
 
 def _patch_zevolution_cluster_toolkit_rho_m(omega_m, redshift):
     r""" Evolve the matter density, rho_m, in cluster_toolkit with redshift
@@ -23,4 +24,9 @@ def _patch_zevolution_cluster_toolkit_rho_m(omega_m, redshift):
         Transformed mean matter density
     """
     redshift = np.array(redshift)
-    return omega_m * (1.0 + redshift)**3
+
+    rhocrit_mks = 3.*100.*100./(8.*np.pi*c.GNEWT.value)
+    rhocrit_cosmo = rhocrit_mks * 1000. * 1000. * c.PC_TO_METER.value * 1.e6 / c.SOLAR_MASS.value
+    rhocrit_cltk = 2.77533742639e+11
+
+    return omega_m * (1.0 + redshift)**3 * (rhocrit_cosmo/rhocrit_cltk)
