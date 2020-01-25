@@ -18,7 +18,6 @@ If you have access to nersc, this will likely be the easiest to make sure you ha
 	conda install pip  # need pip to install everything else necessary for clmm	
 	conda install ipython # need to have the ipython tied to this environment
 	conda install -c conda-forge firefox  # Need a browser to view jupyter notebooks  
-	conda install jupyter # need to have jupyter notebook tied to this environment, you can then see the environment in jupyter.nersc.gov
 ```
 
 You can now go through the steps in the Requirements section of README.md.  Note, you'll need to separately install cluster-toolkit in the current version of CLMM.  Since cluster-toolkit has a gsl dependency, you'll also need gsl.
@@ -31,11 +30,12 @@ You can now go through the steps in the Requirements section of README.md.  Note
 	cd ..
 ```
 
-Now, you should have cluster_toolkit installed, and are ready to install CLMM (NOTE: CURRENTLY NOT WORKING!)
+Now, you should have cluster_toolkit installed, and are ready to install CLMM
 
 ```bash
 	pip install numpy scipy astropy matplotlib
 	pip install pytest sphinx sphinx_rtd_theme
+	pip install jupyter  # need to have jupyter notebook tied to this environment, you can then see the environment in jupyter.nersc.gov
 	git clone https://github.com/LSSTDESC/CLMM.git  # For those with edit access to CLMM, see below for otherwise
   	cd CLMM   
   	python setup.py install --user     # build from source
