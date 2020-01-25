@@ -134,6 +134,24 @@ To review an open pull request submitted by another developer, there are several
 
 NOTE: We have had several branches that have exploded in commit number. If you are merging a branch and it has more than ~20 commits, strongly recommend using the "Squash and Merge" option for merging a branch.
 
+## Steps to merging a pull request
+
+To ensure consistency between our code and documentation, we need to take care of a couple of more things after accepting a review on a PR into master.
+
+1. Change the version number of the code located in `clmm/__init__.py`, commit the change to the branch, and push. If you are unsure of how you should change the version number, don't hesitate to ask!
+
+We use [semantic versioning](https://semver.org/), X.Y.Z.. If the PR makes a small change, such as a bug fix, documentation updates, style changes, etc., increment Z. If the PR adds a new feature, such as adding support for a new profile, increment Y (and reset Z to 0). If a PR adds a feature or makes a change that breaks the old API, increment X (and reset Y and Z to 0). After the first tagged release of CLMM, anything that is a candidate to increment X should be extensively discussed beforehand. 
+
+2. "Squash and Merge" the pull request into master. It asks for a squashed commit message. This should be descriptive of the feature or bug resolved in the PR and should be pre-prended by a [conventional commit scope](https://www.conventionalcommits.org/).
+
+Please choose from `fix:`, `feat:`, `build:`, `chore:`, `ci:`, `docs:`, `style:`, `refactor:`, `perf:`, `test:`. If this commit breaks the previous API, add an explanation mark (for example, `fix!:`). Definitions of each scope can be found at the above link.
+
+Note: `fix:` should correspond to version changes to Y. The rest of the scopes above should be version changes to Z.
+
+3. Update the public documentation.
+
+This is easy! On your local computer just `git checkout publish-docs` to access the branch that hosts the compiled documentation. Next, from the main CLMM directory (the one that contains `setup.py`) run `./publish_docs` and it does all of the work for you!
+
 ## Additional resources
 
 Here's a list of additional resources which you may find helpful in navigating git for the first time.
@@ -145,7 +163,7 @@ Here's a list of additional resources which you may find helpful in navigating g
 ## Contact (alphabetical order)
 * [Michel Aguena](https://github.com/m-aguena) (LIneA)
 * [Doug Applegate](https://github.com/deapplegate) (Novartis)
-* [Camille Avestruz](https://github.com/cavestruz) (UChicago)
+* [Camille Avestruz](https://github.com/cavestruz) (University of Michigan)
 * [Lucie Baumont](https://github.com/lbaumo) (SBU)
 * [Miyoung Choi](https://github.com/mchoi8739) (UTD)
 * [Celine Combet](https://github.com/combet) (LPSC)
