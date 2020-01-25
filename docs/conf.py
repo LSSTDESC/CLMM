@@ -54,7 +54,8 @@ language = 'en'
 
 # Files to ignore when looking for source files
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store',
-                    'api/clmm.rst', 'source/index_body.rst']
+                    'api/clmm.rst', 'source/index_body.rst',
+                    'api/clmm.cluster_toolkit_patches.rst']
 
 # Some style options
 highlight_language = 'python3'
@@ -127,6 +128,7 @@ for entry in config:
 # -- Compile the examples into rst----------------------------------------
 outdir = 'compiled-examples/'
 nbconvert_opts = ['--to rst',
+                  '--ExecutePreprocessor.kernel_name=python3',
                   # '--execute',
                   f'--output-dir {outdir}']
 

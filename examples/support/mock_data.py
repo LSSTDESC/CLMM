@@ -4,12 +4,12 @@ from astropy.table import Table
 from scipy import integrate
 from scipy.interpolate import interp1d
 from astropy import units
-import clmm
+from clmm.modeling import predict_reduced_tangential_shear, angular_diameter_dist_a1a2
 
 
 def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta_SO, zsrc, zsrc_min=0.4,
                             zsrc_max=7., shapenoise=None, photoz_sigma_unscaled=None, nretry=5):
-    r"""Generates a mock dataset of sheared background galaxies.
+    """Generates a mock dataset of sheared background galaxies.
 
     We build galaxy catalogs following a series of steps.
 
@@ -141,11 +141,11 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delt
     galaxy_catalog = _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo)
 
     # Compute the shear on each source galaxy
-    gamt = clmm.predict_reduced_tangential_shear(galaxy_catalog['r_mpc'], mdelta=cluster_m,
-                                                 cdelta=cluster_c, z_cluster=cluster_z,
-                                                 z_source=galaxy_catalog['z'], cosmo=cosmo,
-                                                 delta_mdef=Delta_SO, halo_profile_model='nfw',
-                                                 z_src_model='single_plane')
+    gamt = predict_reduced_tangential_shear(galaxy_catalog['r_mpc'], mdelta=cluster_m,
+                                            cdelta=cluster_c, z_cluster=cluster_z,
+                                            z_source=galaxy_catalog['z'], cosmo=cosmo,
+                                            delta_mdef=Delta_SO, halo_profile_model='nfw',
+                                            z_src_model='single_plane')
     galaxy_catalog['gammat'] = gamt
 
     # Add shape noise to source galaxy shears
@@ -191,6 +191,10 @@ def _draw_source_redshifts(zsrc, cluster_z, zsrc_min, zsrc_max, ngals):
 
         uniform_deviate = np.random.uniform(probdist.min(), probdist.max(), ngals)
         zsrc_list = interp1d(probdist, zsrc_domain, kind='linear')(uniform_deviate)
+    
+    # Draw zsrc from a uniform distribution between zmin and zmax
+    elif zsrc == 'uniform':
+        zsrc_list = np.random.uniform(cluster_z + 0.1, zsrc_max, ngals)
 
     # Invalid entry
     else:
@@ -240,7 +244,7 @@ def _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo):
     galaxy_catalog : astropy.table.Table
         Source galaxy catalog with positions added
     """
-    Dl = clmm.get_angular_diameter_distance_a(cosmo, 1./(1.+cluster_z))*units.pc.to(units.Mpc)
+    Dl = angular_diameter_dist_a1a2(cosmo, 1./(1.+cluster_z))*units.pc.to(units.Mpc)
     galaxy_catalog['x_mpc'] = np.random.uniform(-4., 4., size=ngals)
     galaxy_catalog['y_mpc'] = np.random.uniform(-4., 4., size=ngals)
     galaxy_catalog['r_mpc'] = np.sqrt(galaxy_catalog['x_mpc']**2 + galaxy_catalog['y_mpc']**2)
