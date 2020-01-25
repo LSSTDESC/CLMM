@@ -51,6 +51,7 @@ def install_clmm_pipeline(upgrade=False):
     import sys
     try:
         import clmm
+	import cluster_toolkit
         installed = True
     except ImportError:
         installed = False
