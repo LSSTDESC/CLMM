@@ -7,6 +7,63 @@ This is a brief guide to contributing to CLMM, including information about ident
 Action items for CLMM code improvements are listed as [GitHub Issues](https://github.com/LSSTDESC/CLMM/issues).
 Issues marked with the label `good first issue` are well-suited for new contributors.
 
+## Access to the proper environment on cori.nersc.gov
+
+If you have access to nersc, this will likely be the easiest to make sure you have the appropriate environment.  After logging into cori.nersc.gov, you will need to execute the following:
+
+```bash
+	module load python  # Also loads anaconda
+	conda create --name clmmenv  # Create an anaconda environment for clmm
+	source activate clmmenv  # switch to your newly created environment
+	conda install pip  # need pip to install everything else necessary for clmm	
+	conda install ipython # need to have the ipython tied to this environment
+	conda install -c conda-forge firefox  # Need a browser to view jupyter notebooks  
+```
+
+You can now go through the steps in the Requirements section of README.md.  Note, you'll need to separately install cluster-toolkit in the current version of CLMM.  Since cluster-toolkit has a gsl dependency, you'll also need gsl.
+
+```bash
+	conda install gsl
+	git clone https://github.com/tmcclintock/cluster_toolkit.git
+	cd cluster_toolkit
+	python setup.py install
+	cd ..
+```
+
+Now, you should have cluster_toolkit installed, and are ready to install CLMM
+
+```bash
+	pip install numpy scipy astropy matplotlib
+	pip install pytest sphinx sphinx_rtd_theme
+	pip install jupyter  # need to have jupyter notebook tied to this environment, you can then see the environment in jupyter.nersc.gov
+	git clone https://github.com/LSSTDESC/CLMM.git  # For those with edit access to CLMM, see below for otherwise
+  	cd CLMM   
+  	python setup.py install --user     # build from source
+```
+
+The above allows you to develop in NERSC and run pytest.  Your workflow as a developer would be to make your changes, do a `python setup.py install --user` then `pytest` to make sure your changes did not break any tests.
+
+To open up a notebook from nersc in your browser, you will need to go to the [nersc jupyter portal](https://jupyter.nersc.gov) and sign in.  Clicking on the upper right corner of the notebook will provide options for your kernel.  Choose your `conda env:conda-clmmenv` that you just created.  You will need to do a temporary install of both cluster_toolkit and clmm in the first cell of your jupyter notebook:
+
+```python
+
+def install_clmm_pipeline(upgrade=False):
+    import sys
+    try:
+        import clmm
+	import cluster_toolkit
+        installed = True
+    except ImportError:
+        installed = False
+    if not upgrade:
+        print('clmm is already installed and upgrade is False')
+    else:
+        !{sys.executable} -m pip install --user --upgrade git+https://github.com/tmcclintock/cluster_toolkit.git
+        !{sys.executable} -m pip install --user --upgrade git+https://github.com/LSSTDESC/CLMM
+install_clmm_pipeline(upgrade=True)  # Comment this if you do not need to adjust your environment, but this is useful in cori
+
+```
+
 ## Making a local copy of CLMM
 
 As a newcomer, you likely will not have edit access to the main CLMM repository.
@@ -109,7 +166,7 @@ Here's a list of additional resources which you may find helpful in navigating g
 * [Camille Avestruz](https://github.com/cavestruz) (UChicago)
 * [Lucie Baumont](https://github.com/lbaumo) (SBU)
 * [Miyoung Choi](https://github.com/mchoi8739) (UTD)
-* [Celine Combet](https://github.com/combet) (LSPC)
+* [Celine Combet](https://github.com/combet) (LPSC)
 * [Matthew Fong](https://github.com/matthewwf2001) (UTD)
 * [Shenming Fu](https://github.com/shenmingfu)(Brown)
 * [Matthew Ho](https://github.com/maho3) (CMU)
