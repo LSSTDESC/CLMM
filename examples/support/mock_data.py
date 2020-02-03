@@ -4,12 +4,12 @@ from astropy.table import Table
 from scipy import integrate
 from scipy.interpolate import interp1d
 from astropy import units
-import clmm
+from clmm.modeling import predict_reduced_tangential_shear, angular_diameter_dist_a1a2
 
 
-def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta_SO, zsrc,
+def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta_SO, zsrc, zsrc_min=0.4,
                             zsrc_max=7., shapenoise=None, photoz_sigma_unscaled=None, nretry=5):
-    r"""Generates a mock dataset of sheared background galaxies.
+    """Generates a mock dataset of sheared background galaxies.
 
     We build galaxy catalogs following a series of steps.
 
@@ -78,6 +78,8 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta
         float : All sources galaxies at this fixed redshift
         str : Draws individual source gal redshifts from predefined distribution. Options
               are: chang13
+    zsrc_min : float, optional
+        The minimum source redshift allowed.
     zsrc_max : float, optional
         If source redshifts are drawn, the maximum source redshift
     shapenoise : float, optional
@@ -97,20 +99,20 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta
     Much of this code in this function was adapted from the Dallas group
     """
     params = {'cluster_m' : cluster_m, 'cluster_z' : cluster_z, 'cluster_c' : cluster_c,
-              'cosmo' : cosmo, 'Delta_SO' : Delta_SO, 'zsrc' : zsrc, 'zsrc_max' : zsrc_max,
-              'shapenoise' : shapenoise, 'photoz_sigma_unscaled' : photoz_sigma_unscaled}
+              'cosmo' : cosmo, 'Delta_SO' : Delta_SO, 'zsrc' : zsrc, 'zsrc_min' : zsrc_min,
+              'zsrc_max' : zsrc_max,'shapenoise' : shapenoise, 'photoz_sigma_unscaled' : photoz_sigma_unscaled}
     galaxy_catalog = _generate_galaxy_catalog(ngals=ngals, **params)
 
     # Check for bad galaxies and replace them
     for i in range(nretry):
-        nbad, badids = _find_aphysical_galaxies(galaxy_catalog)
+        nbad, badids = _find_aphysical_galaxies(galaxy_catalog, zsrc_min)
         if nbad < 1:
             break
         replacements = _generate_galaxy_catalog(ngals=nbad, **params)
         galaxy_catalog[badids] = replacements
 
     # Final check to see if there are bad galaxies left
-    nbad, _ = _find_aphysical_galaxies(galaxy_catalog)
+    nbad, _ = _find_aphysical_galaxies(galaxy_catalog, zsrc_min)
     if nbad > 1:
         print("Not able to remove {} aphysical objects after {} iterations".format(nbad, nretry))
 
@@ -120,7 +122,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta
 
 
 def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta_SO, zsrc,
-                             zsrc_max=7., shapenoise=None, photoz_sigma_unscaled=None):
+                             zsrc_min=0.4, zsrc_max=7., shapenoise=None, photoz_sigma_unscaled=None):
     """A private function that skips the sanity checks on derived properties. This
     function should only be used when called directly from `generate_galaxy_catalog`.
     Takes the same parameters and returns the same things as the before mentioned function.
@@ -129,7 +131,7 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delt
     `generate_galaxy_catalog`.
     """
     # Set the source galaxy redshifts
-    galaxy_catalog = _draw_source_redshifts(zsrc, cluster_z, zsrc_max, ngals)
+    galaxy_catalog = _draw_source_redshifts(zsrc, cluster_z, zsrc_min, zsrc_max, ngals)
 
     # Add photo-z errors and pdfs to source galaxy redshifts
     if photoz_sigma_unscaled is not None:
@@ -139,11 +141,11 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delt
     galaxy_catalog = _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo)
 
     # Compute the shear on each source galaxy
-    gamt = clmm.predict_reduced_tangential_shear(galaxy_catalog['r_mpc'], mdelta=cluster_m,
-                                                 cdelta=cluster_c, z_cluster=cluster_z,
-                                                 z_source=galaxy_catalog['z'], cosmo=cosmo,
-                                                 delta_mdef=Delta_SO, halo_profile_model='nfw',
-                                                 z_src_model='single_plane')
+    gamt = predict_reduced_tangential_shear(galaxy_catalog['r_mpc'], mdelta=cluster_m,
+                                            cdelta=cluster_c, z_cluster=cluster_z,
+                                            z_source=galaxy_catalog['z'], cosmo=cosmo,
+                                            delta_mdef=Delta_SO, halo_profile_model='nfw',
+                                            z_src_model='single_plane')
     galaxy_catalog['gammat'] = gamt
 
     # Add shape noise to source galaxy shears
@@ -160,7 +162,7 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delt
     return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z']
 
 
-def _draw_source_redshifts(zsrc, cluster_z, zsrc_max, ngals):
+def _draw_source_redshifts(zsrc, cluster_z, zsrc_min, zsrc_max, ngals):
     """Set source galaxy redshifts either set to a fixed value or draw from a predefined
     distribution. Return an astropy table of the source galaxies
 
@@ -180,16 +182,19 @@ def _draw_source_redshifts(zsrc, cluster_z, zsrc_max, ngals):
 
         def integrated_pzfxn(zmax, func):
             """Integrated redshift distribution function for transformation method"""
-            val, _ = integrate.quad(func, cluster_z+0.1, zmax)
+            val, _ = integrate.quad(func, zsrc_min, zmax)
             return val
         vectorization_integrated_pzfxn = np.vectorize(integrated_pzfxn)
 
-        zsrc_min = cluster_z + 0.1
         zsrc_domain = np.arange(zsrc_min, zsrc_max, 0.001)
         probdist = vectorization_integrated_pzfxn(zsrc_domain, pzfxn)
 
         uniform_deviate = np.random.uniform(probdist.min(), probdist.max(), ngals)
         zsrc_list = interp1d(probdist, zsrc_domain, kind='linear')(uniform_deviate)
+    
+    # Draw zsrc from a uniform distribution between zmin and zmax
+    elif zsrc == 'uniform':
+        zsrc_list = np.random.uniform(cluster_z + 0.1, zsrc_max, ngals)
 
     # Invalid entry
     else:
@@ -239,7 +244,7 @@ def _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo):
     galaxy_catalog : astropy.table.Table
         Source galaxy catalog with positions added
     """
-    Dl = clmm.get_angular_diameter_distance_a(cosmo, 1./(1.+cluster_z))*units.pc.to(units.Mpc)
+    Dl = angular_diameter_dist_a1a2(cosmo, 1./(1.+cluster_z))*units.pc.to(units.Mpc)
     galaxy_catalog['x_mpc'] = np.random.uniform(-4., 4., size=ngals)
     galaxy_catalog['y_mpc'] = np.random.uniform(-4., 4., size=ngals)
     galaxy_catalog['r_mpc'] = np.sqrt(galaxy_catalog['x_mpc']**2 + galaxy_catalog['y_mpc']**2)
@@ -249,12 +254,13 @@ def _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo):
     return galaxy_catalog
 
 
-def _find_aphysical_galaxies(galaxy_catalog):
+def _find_aphysical_galaxies(galaxy_catalog, zsrc_min):
     r"""Finds the galaxies that have aphysical derived values due to large systematic choices.
 
     Currently checks the following conditions
     e1 \in [-1, 1]
     e2 \in [-1, 1]
+    z  < zsrc_min
     This was converted to a seperate function to allow for ease of extension without needing
     to change the same code in multiple locations.
 
@@ -262,6 +268,8 @@ def _find_aphysical_galaxies(galaxy_catalog):
     ----------
     galaxy_catalog : astropy.table.Table
         Galaxy source catalog
+    zsrc_min : float
+        Minimum galaxy redshift allowed 
 
     Returns
     -------
@@ -271,7 +279,8 @@ def _find_aphysical_galaxies(galaxy_catalog):
         A list of the indicies in galaxy_catalog that need to be redrawn
     """
     badgals = np.where((np.abs(galaxy_catalog['e1']) > 1.0) |
-                       (np.abs(galaxy_catalog['e2']) > 1.0)
+                       (np.abs(galaxy_catalog['e2']) > 1.0) |
+                       (galaxy_catalog['z'] < zsrc_min)
                       )[0]
     nbad = len(badgals)
     return nbad, badgals

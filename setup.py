@@ -6,7 +6,7 @@ required_py_version = 3.6
 if version[0] < int(required_py_version) or\
    (version[0] == int(required_py_version) and\
     version[1] < required_py_version - int(required_py_version)):
-    raise SystemError("Minimum supported python version is "+required_py_version)
+    raise SystemError("Minimum supported python version is %.2f"%required_py_version)
 
 
 # adapted from pip's definition, https://github.com/pypa/pip/blob/master/setup.py
