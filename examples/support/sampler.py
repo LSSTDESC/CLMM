@@ -3,14 +3,14 @@ Functions for sampling (output either peak or full distribution)
 
 """
 
-def sciopt() :
+def sciopt(nfw_to_shear_profile, logm_0, args) :
     ''' Uses scipy optimize minimize to output the peak'''
     from scipy import optimize as spo
 
-    # spo.minimize(nfw_to_shear_profile, logm_0,
-    #                     args=[r1, gt_profile1, z1]).x
+    spo.minimize(nfw_to_shear_profile, logm_0,
+                 args=[r1, gt_profile1, z1]).x
 
-    pass
+    return logm_0
 
 
 
