@@ -11,8 +11,28 @@ def sciopt(model_to_shear_profile, logm_0, args) :
                  args=args).x
 
 
+def scicurve_fit(profile_model,radius,profile,err_profile,bounds=None,p0=None):
+    '''Uses scipy.optimize.curve_fit to find best fit parameters'''
+    from scipy import optimize as spo
+    
+    if bounds is None:
+        return spo.curve_fit(profile_model, 
+                    radius, profile,
+                    sigma=err_profile, p0=p0)
+    else:    
+        return spo.curve_fit(profile_model, 
+                    radius, profile, 
+                    sigma=err_profile, bounds=bounds, p0=p0)
+    
+
+
 
 samplers = {
     'minimize':sciopt,
+    
+    }
+
+fitters = {
+    'curve_fit':scicurve_fit,
     
     }
