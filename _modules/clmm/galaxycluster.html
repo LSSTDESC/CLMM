@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.galaxycluster &mdash; CLMM 0.0.1 documentation</title>
+  <title>clmm.galaxycluster &mdash; CLMM 0.1.0 documentation</title>
   
 
   
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.0.1
+                0.1.0
               </div>
             
           
@@ -91,6 +91,7 @@
 <p class="caption"><span class="caption-text">Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit Halo Mass from a Shear Catalog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit Halo Mass from a Shear Catalog</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Usage Demos</span></p>
 <ul>
@@ -181,12 +182,14 @@
 <span class="sd">The GalaxyCluster class</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">pickle</span>
-<span class="kn">from</span> <span class="nn">astropy.table</span> <span class="k">import</span> <span class="n">Table</span>
+<span class="kn">from</span> <span class="nn">astropy.table</span> <span class="kn">import</span> <span class="n">Table</span>
+
 
 <div class="viewcode-block" id="load_cluster"><a class="viewcode-back" href="../../api/clmm.galaxycluster.html#clmm.galaxycluster.load_cluster">[docs]</a><span class="k">def</span> <span class="nf">load_cluster</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Loads GalaxyCluster object from filename using Pickle&quot;&quot;&quot;</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fin</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fin</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="GalaxyCluster"><a class="viewcode-back" href="../../api/clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster">[docs]</a><span class="k">class</span> <span class="nc">GalaxyCluster</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Object that contains the galaxy cluster metadata and background galaxy data</span>
@@ -204,33 +207,33 @@
 <span class="sd">    galcat : astropy Table</span>
 <span class="sd">        Table of background galaxy data including galaxy_id, ra, dec, e1, e2, z, kappa</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ra</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dec</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ra</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dec</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
                  <span class="n">galcat</span><span class="p">:</span> <span class="n">Table</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">unique_id</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">)):</span> <span class="c1"># should unique_id be a float?</span>
             <span class="n">unique_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">unique_id</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;unique_id incorrect type: {type(unique_id)}&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;unique_id incorrect type: {type(unique_id)}&#39;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">ra</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;ra incorrect type: {type(ra)}&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ra incorrect type: {type(ra)}&#39;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">dec</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;dec incorrect type: {type(dec)}&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;dec incorrect type: {type(dec)}&#39;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">z</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;z incorrect type: {type(z)}&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;z incorrect type: {type(z)}&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">galcat</span><span class="p">,</span> <span class="n">Table</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;galcat incorrect type: {type(galcat)}&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;galcat incorrect type: {type(galcat)}&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="o">-</span><span class="mf">360.</span> <span class="o">&lt;=</span> <span class="n">ra</span> <span class="o">&lt;=</span> <span class="mf">360.</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;ra=</span><span class="si">{ra}</span><span class="s1"> not in valid bounds: [-360, 360]&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ra=</span><span class="si">{ra}</span><span class="s1"> not in valid bounds: [-360, 360]&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="o">-</span><span class="mf">90.</span> <span class="o">&lt;=</span> <span class="n">dec</span> <span class="o">&lt;=</span> <span class="mf">90.</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;dec=</span><span class="si">{dec}</span><span class="s1"> not in valid bounds: [-90, 90]&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;dec=</span><span class="si">{dec}</span><span class="s1"> not in valid bounds: [-90, 90]&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">z</span> <span class="o">&lt;</span> <span class="mf">0.</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;z=</span><span class="si">{z}</span><span class="s1"> must be greater than 0&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;z=</span><span class="si">{z}</span><span class="s1"> must be greater than 0&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span> <span class="o">=</span> <span class="n">unique_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ra</span> <span class="o">=</span> <span class="n">ra</span>
@@ -243,13 +246,13 @@
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fin</span><span class="p">:</span>
             <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fin</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Generates string for print(GalaxyCluster)&quot;&quot;&quot;</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;GalaxyCluster </span><span class="si">{self.unique_id}</span><span class="s1">: &#39;</span> <span class="o">+</span>\
-                 <span class="n">f</span><span class="s1">&#39;(ra=</span><span class="si">{self.ra}</span><span class="s1">, dec=</span><span class="si">{self.dec}</span><span class="s1">) at z=</span><span class="si">{self.z}</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span>\
-                 <span class="n">f</span><span class="s1">&#39;&gt; {len(self.galcat)} source galaxies</span><span class="se">\n</span><span class="s1">&gt; With columns:&#39;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;GalaxyCluster </span><span class="si">{self.unique_id}</span><span class="s1">: &#39;</span> <span class="o">+</span>\
+                 <span class="sa">f</span><span class="s1">&#39;(ra=</span><span class="si">{self.ra}</span><span class="s1">, dec=</span><span class="si">{self.dec}</span><span class="s1">) at z=</span><span class="si">{self.z}</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span>\
+                 <span class="sa">f</span><span class="s1">&#39;&gt; {len(self.galcat)} source galaxies</span><span class="se">\n</span><span class="s1">&gt; With columns:&#39;</span>
         <span class="k">for</span> <span class="n">colname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">colnames</span><span class="p">:</span>
-            <span class="n">output</span> <span class="o">+=</span> <span class="n">f</span><span class="s1">&#39; </span><span class="si">{colname}</span><span class="s1">&#39;</span>
+            <span class="n">output</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{colname}</span><span class="s1">&#39;</span>
         <span class="k">return</span> <span class="n">output</span></div>
 </pre></div>
 

@@ -26,6 +26,12 @@ Imports specific to clmm
     import clmm
     import clmm.modeling as m
 
+Make sure we know which version we’re using
+
+.. code:: ipython3
+
+    clmm.__version__
+
 Define a cosmology using astropy
 
 .. code:: ipython3
@@ -112,52 +118,23 @@ Plot the predicted profiles
 
     plot_profile(r3d, rho, '$\\rho_{\\rm 3d}$')
 
-
-
-.. image:: demo_modeling_functionality_files/demo_modeling_functionality_20_0.png
-
-
 .. code:: ipython3
 
     plot_profile(r3d, Sigma, '$\\Sigma_{\\rm 2d}$')
-
-
-
-.. image:: demo_modeling_functionality_files/demo_modeling_functionality_21_0.png
-
 
 .. code:: ipython3
 
     plot_profile(r3d, DeltaSigma, '$\\Delta\\Sigma_{\\rm 2d}$')
 
-
-
-.. image:: demo_modeling_functionality_files/demo_modeling_functionality_22_0.png
-
-
 .. code:: ipython3
 
     plot_profile(r3d, kappa, '$\\kappa$')
-
-
-
-.. image:: demo_modeling_functionality_files/demo_modeling_functionality_23_0.png
-
 
 .. code:: ipython3
 
     plot_profile(r3d, gammat, '$\\gamma_t$')
 
-
-
-.. image:: demo_modeling_functionality_files/demo_modeling_functionality_24_0.png
-
-
 .. code:: ipython3
 
     plot_profile(r3d, gt, '$g_t$')
-
-
-
-.. image:: demo_modeling_functionality_files/demo_modeling_functionality_25_0.png
 

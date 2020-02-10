@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.gcdata &mdash; CLMM 0.0.1 documentation</title>
+  <title>clmm.gcdata &mdash; CLMM 0.1.0 documentation</title>
   
 
   
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.0.1
+                0.1.0
               </div>
             
           
@@ -91,6 +91,7 @@
 <p class="caption"><span class="caption-text">Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit Halo Mass from a Shear Catalog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit Halo Mass from a Shear Catalog</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Usage Demos</span></p>
 <ul>
@@ -182,7 +183,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="c1"># from astropy import table</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
 <span class="kn">import</span> <span class="nn">pickle</span>
 
 
@@ -210,6 +211,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Additional functions specific to clmm.GCData</span>
 <span class="sd">&quot;&quot;&quot;</span>
+
 <div class="viewcode-block" id="confirm_GCData"><a class="viewcode-back" href="../../api/clmm.gcdata.html#clmm.gcdata.confirm_GCData">[docs]</a><span class="k">def</span> <span class="nf">confirm_GCData</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Typechecks GCData elements</span>
@@ -218,17 +220,20 @@
     <span class="c1">#     raise TypeError(&#39;GCData creator should be string, specs should be dict, values should be astropy table&#39;)</span>
     <span class="k">pass</span></div>
 
+
 <div class="viewcode-block" id="read_GCData"><a class="viewcode-back" href="../../api/clmm.gcdata.html#clmm.gcdata.read_GCData">[docs]</a><span class="k">def</span> <span class="nf">read_GCData</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads GCData from file</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
+
 <div class="viewcode-block" id="write_GCData"><a class="viewcode-back" href="../../api/clmm.gcdata.html#clmm.gcdata.write_GCData">[docs]</a><span class="k">def</span> <span class="nf">write_GCData</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Writes GCData to file</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
+
 
 <div class="viewcode-block" id="check_subdict"><a class="viewcode-back" href="../../api/clmm.gcdata.html#clmm.gcdata.check_subdict">[docs]</a><span class="k">def</span> <span class="nf">check_subdict</span><span class="p">(</span><span class="n">lookup_dict</span><span class="p">,</span> <span class="n">reference_dict</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
@@ -247,6 +252,7 @@
 <span class="sd">        If a lookup_dict is a subset of reference_dict</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">lookup_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="n">reference_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span></div>
+
 
 <div class="viewcode-block" id="find_in_datalist"><a class="viewcode-back" href="../../api/clmm.gcdata.html#clmm.gcdata.find_in_datalist">[docs]</a><span class="k">def</span> <span class="nf">find_in_datalist</span><span class="p">(</span><span class="n">lookup_specs</span><span class="p">,</span> <span class="n">datalist</span><span class="p">,</span> <span class="n">exact</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>

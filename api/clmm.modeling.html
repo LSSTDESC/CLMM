@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.modeling module &mdash; CLMM 0.0.1 documentation</title>
+  <title>clmm.modeling module &mdash; CLMM 0.1.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.0.1
+                0.1.0
               </div>
             
           
@@ -93,6 +93,7 @@
 <p class="caption"><span class="caption-text">Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit Halo Mass from a Shear Catalog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit Halo Mass from a Shear Catalog</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Usage Demos</span></p>
 <ul>
@@ -184,19 +185,73 @@
             
   <div class="section" id="module-clmm.modeling">
 <span id="clmm-modeling-module"></span><h1>clmm.modeling module<a class="headerlink" href="#module-clmm.modeling" title="Permalink to this headline">¶</a></h1>
-<p>&#64;file.py modeling.py
-Functions for theoretical models.  Default is NFW.</p>
+<p>Functions to model halo profiles</p>
 <dl class="function">
-<dt id="clmm.modeling.cclify_astropy_cosmo">
-<code class="sig-prename descclassname">clmm.modeling.</code><code class="sig-name descname">cclify_astropy_cosmo</code><span class="sig-paren">(</span><em class="sig-param">apy_cosmo</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/modeling.html#cclify_astropy_cosmo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.modeling.cclify_astropy_cosmo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generates a ccl-looking cosmology object (with all values needed for modeling) from
-an astropy cosmology object.</p>
+<dt id="clmm.modeling.angular_diameter_dist_a1a2">
+<code class="sig-prename descclassname">clmm.modeling.</code><code class="sig-name descname">angular_diameter_dist_a1a2</code><span class="sig-paren">(</span><em class="sig-param">cosmo</em>, <em class="sig-param">a1</em>, <em class="sig-param">a2=1.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/modeling.html#angular_diameter_dist_a1a2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.modeling.angular_diameter_dist_a1a2" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a function to calculate the angular diameter distance
+between two scale factors because CCL cannot yet do it.</p>
+<p>If only a1 is specified, this function returns the angular diameter
+distance from a=1 to a1. If both a1 and a2 are specified, this function
+returns the angular diameter distance between a1 and a2.</p>
+<p>Temporarily using the astropy implementation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>apy_cosmo</strong> (<em>astropy.cosmology.core.FlatLambdaCDM</em><em> or </em><em>pyccl.core.Cosmology</em>) – astropy or CCL cosmology object</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cosmo</strong> (<em>pyccl.core.Cosmology object</em>) – CCL Cosmology object</p></li>
+<li><p><strong>a1</strong> (<em>float</em>) – Scale factor.</p></li>
+<li><p><strong>a2</strong> (<em>float</em><em>, </em><em>optional</em>) – Scale factor.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>ccl_cosmo</strong> – modified astropy cosmology object</p>
+<dd class="field-even"><p><strong>d_a</strong> – Angular diameter distance in units <span class="math notranslate nohighlight">\(M\!pc\ h^{-1}\)</span></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This is definitely broken if other cosmological parameter specifications differ,
+so we’ll have to revise this later. We need to switch angular_diameter_distance_z1z2
+to CCL equivalent angular distance once implemented</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="clmm.modeling.astropyify_ccl_cosmo">
+<code class="sig-prename descclassname">clmm.modeling.</code><code class="sig-name descname">astropyify_ccl_cosmo</code><span class="sig-paren">(</span><em class="sig-param">cosmoin</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/modeling.html#astropyify_ccl_cosmo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.modeling.astropyify_ccl_cosmo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a CCL cosmology object, create an astropy cosmology object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cosmoin</strong> (<em>astropy.cosmology.FlatLambdaCDM</em><em> or </em><em>pyccl.core.Cosmology</em>) – astropy or CCL cosmology object</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>cosmodict</strong> – Astropy cosmology object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>astropy.cosmology.LambdaCDM</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Need to replace:
+<cite>import pyccl as ccl
+cosmo_ccl = ccl.Cosmology(Omega_c=0.27, Omega_b=0.045, h=0.67, A_s=2.1e-9, n_s=0.96)</cite>
+with
+<cite>from astropy.cosmology import FlatLambdaCDM
+astropy_cosmology_object = FlatLambdaCDM(H0=70, Om0=0.27, Ob0=0.045)
+cosmo_ccl = cclify_astropy_cosmo(astropy_cosmology_object)`</cite></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="clmm.modeling.cclify_astropy_cosmo">
+<code class="sig-prename descclassname">clmm.modeling.</code><code class="sig-name descname">cclify_astropy_cosmo</code><span class="sig-paren">(</span><em class="sig-param">cosmoin</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/modeling.html#cclify_astropy_cosmo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.modeling.cclify_astropy_cosmo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given an astropy.cosmology object, creates a CCL-like dictionary
+of the relevant model parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cosmoin</strong> (<em>astropy.cosmology.core.FlatLambdaCDM</em><em> or </em><em>pyccl.core.Cosmology</em>) – astropy or CCL cosmology object</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>cosmodict</strong> – modified astropy cosmology object</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>dictionary</p>
@@ -224,9 +279,9 @@ cosmo_ccl = cclify_astropy_cosmo(astropy_cosmology_object)`</cite></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>r3d</strong> (<em>array_like</em><em>, </em><em>float</em>) – The radial positions in <span class="math notranslate nohighlight">\(M\!pc/h\)</span>.</p></li>
-<li><p><strong>mdelta</strong> (<em>float</em>) – Galaxy cluster mass in <span class="math notranslate nohighlight">\(M_\odot/h\)</span>.</p></li>
-<li><p><strong>cdelta</strong> (<em>float</em>) – Galaxy cluster NFW concentration.</p></li>
+<li><p><strong>r3d</strong> (<em>array_like</em><em>, </em><em>float</em>) – Radial position from the cluster center in <span class="math notranslate nohighlight">\(M\!pc\ h^{-1}\)</span>.</p></li>
+<li><p><strong>mdelta</strong> (<em>float</em>) – Galaxy cluster mass in <span class="math notranslate nohighlight">\(M_\odot\ h^{-1}\)</span>.</p></li>
+<li><p><strong>cdelta</strong> (<em>float</em>) – Galaxy cluster concentration</p></li>
 <li><p><strong>z_cl</strong> (<em>float</em>) – Redshift of the cluster</p></li>
 <li><p><strong>cosmo</strong> (<em>pyccl.core.Cosmology object</em>) – CCL Cosmology object</p></li>
 <li><p><strong>delta_mdef</strong> (<em>int</em><em>, </em><em>optional</em>) – Mass overdensity definition; defaults to 200.</p></li>
@@ -235,18 +290,10 @@ cosmo_ccl = cclify_astropy_cosmo(astropy_cosmology_object)`</cite></p>
 <div><p><cite>nfw</cite> (default)</p>
 </div></blockquote>
 </p></li>
-<li><p><strong>z_src_model</strong> (<em>str</em><em>, </em><em>optional</em>) – <p>Source redshift model, with the following supported options:</p>
-<blockquote>
-<div><p><cite>single_plane</cite> (default) - all sources at one redshift</p>
-<p><cite>known_z_src</cite> - known individual source galaxy redshifts, e.g. discrete case</p>
-<p><cite>z_src_distribution</cite> - known source redshift distribution, e.g. continuous case
-requiring integration.</p>
-</div></blockquote>
-</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>rho</strong> – 3-dimensional mass density</p>
+<dd class="field-even"><p><strong>rho</strong> – 3-dimensional mass density in units of <span class="math notranslate nohighlight">\(h^2\ M_\odot\ pc^{-3}\)</span> DOUBLE CHECK THIS</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>array_like, float</p>
@@ -255,33 +302,6 @@ requiring integration.</p>
 <p class="rubric">Notes</p>
 <p>Need to refactor later so we only require arguments that are necessary for all profiles
 and use another structure to take the arguments necessary for specific models</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="clmm.modeling.get_angular_diameter_distance_a">
-<code class="sig-prename descclassname">clmm.modeling.</code><code class="sig-name descname">get_angular_diameter_distance_a</code><span class="sig-paren">(</span><em class="sig-param">cosmo</em>, <em class="sig-param">scale_factor2</em>, <em class="sig-param">scale_factor1=1.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/modeling.html#get_angular_diameter_distance_a"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.modeling.get_angular_diameter_distance_a" title="Permalink to this definition">¶</a></dt>
-<dd><p>This is a function to calculate d_LS (angular distance between lens
-and source) because CCL cannot yet do it.</p>
-<p>Temporarily using the astropy implementation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>cosmo</strong> (<em>pyccl.core.Cosmology object</em>) – CCL Cosmology object</p></li>
-<li><p><strong>scale_factor2</strong> (<em>float</em>) – smaller scale factor</p></li>
-<li><p><strong>scale_factor1</strong> (<em>float</em><em>, </em><em>optional</em>) – larger scale factor; defaults to 1.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>d_a</strong> – angular diameter distance in <span class="math notranslate nohighlight">\(\mathrm{Mpc\ h}^{-1}\)</span></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<p>This is definitely broken if other cosmological parameter specifications differ,
-so we’ll have to revise this later. We need to switch angular_diameter_distance_z1z2
-to CCL equivalent angular distance once implemented</p>
 </dd></dl>
 
 <dl class="function">
@@ -299,7 +319,7 @@ to CCL equivalent angular distance once implemented</p>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>sigmacrit</strong> – Cosmology-dependent critical surface density in units of <span class="math notranslate nohighlight">\(h M_\odot/pc^2\)</span></p>
+<dd class="field-even"><p><strong>sigmacrit</strong> – Cosmology-dependent critical surface density in units of <span class="math notranslate nohighlight">\(h\ M_\odot\ pc^{-2}\)</span></p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>float</p>
@@ -317,10 +337,10 @@ z_src_models using <span class="math notranslate nohighlight">\(\beta_s\)</span>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>shear</strong> (<em>array_like</em><em>, </em><em>float</em>) – shear</p></li>
-<li><p><strong>convergence</strong> (<em>array_like</em><em>, </em><em>float</em>) – convergence</p></li>
+<li><p><strong>shear</strong> (<em>array_like</em>) – Shear</p></li>
+<li><p><strong>convergence</strong> (<em>array_like</em>) – Convergence</p></li>
 <li><p><strong>Returns</strong> – </p></li>
-<li><p><strong>reduced_shear</strong> (<em>array_like</em><em>, </em><em>float</em>) – reduced shear</p></li>
+<li><p><strong>reduced_shear</strong> (<em>array_like</em>) – Reduced shear</p></li>
 </ul>
 </dd>
 </dl>
@@ -338,8 +358,8 @@ z_src_models using <span class="math notranslate nohighlight">\(\beta_s\)</span>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>r_proj</strong> (<em>array_like</em>) – The projected radial positions in <span class="math notranslate nohighlight">\(M\!pc/h\)</span>.</p></li>
-<li><p><strong>mdelta</strong> (<em>float</em>) – Galaxy cluster mass in <span class="math notranslate nohighlight">\(M_\odot/h\)</span>.</p></li>
+<li><p><strong>r_proj</strong> (<em>array_like</em>) – The projected radial positions in <span class="math notranslate nohighlight">\(M\!pc\ h^{-1}\)</span>.</p></li>
+<li><p><strong>mdelta</strong> (<em>float</em>) – Galaxy cluster mass in <span class="math notranslate nohighlight">\(M_\odot\ h^{-1}\)</span>.</p></li>
 <li><p><strong>cdelta</strong> (<em>float</em>) – Galaxy cluster NFW concentration.</p></li>
 <li><p><strong>z_cluster</strong> (<em>float</em>) – Galaxy cluster redshift</p></li>
 <li><p><strong>z_source</strong> (<em>array_like</em><em>, </em><em>float</em>) – Background source galaxy redshift(s)</p></li>
@@ -377,23 +397,21 @@ case requiring integration.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>r_proj</strong> (<em>array_like</em>) – The projected radial positions in <span class="math notranslate nohighlight">\(M\!pc/h\)</span>.</p></li>
-<li><p><strong>mdelta</strong> (<em>float</em>) – Galaxy cluster mass in <span class="math notranslate nohighlight">\(M_\odot/h\)</span>.</p></li>
-<li><p><strong>cdelta</strong> (<em>float</em>) – Galaxy cluster NFW concentration.</p></li>
+<li><p><strong>r_proj</strong> (<em>array_like</em>) – Projected radial position from the cluster center in <span class="math notranslate nohighlight">\(M\!pc\ h^{-1}\)</span>.</p></li>
+<li><p><strong>mdelta</strong> (<em>float</em>) – Galaxy cluster mass in <span class="math notranslate nohighlight">\(M_\odot\ h^{-1}\)</span>.</p></li>
+<li><p><strong>cdelta</strong> (<em>float</em>) – Galaxy cluster concentration</p></li>
 <li><p><strong>z_cl</strong> (<em>float</em>) – Redshift of the cluster</p></li>
 <li><p><strong>cosmo</strong> (<em>pyccl.core.Cosmology object</em>) – CCL Cosmology object</p></li>
 <li><p><strong>delta_mdef</strong> (<em>int</em><em>, </em><em>optional</em>) – Mass overdensity definition; defaults to 200.</p></li>
-<li><p><strong>halo_profile_model</strong> (<em>str</em><em>, </em><em>optional</em>) – Profile model parameterization, with the following supported options:
-<cite>nfw</cite> (default) - [insert citation here]</p></li>
-<li><p><strong>z_src_model</strong> (<em>str</em><em>, </em><em>optional</em>) – Source redshift model, with the following supported options:
-<cite>single_plane</cite> (default) - all sources at one redshift
-<cite>known_z_src</cite> - known individual source galaxy redshifts e.g. discrete case
-<cite>z_src_distribution</cite> - known source redshift distribution e.g. continuous
-case requiring integration.</p></li>
+<li><p><strong>halo_profile_model</strong> (<em>str</em><em>, </em><em>optional</em>) – <p>Profile model parameterization, with the following supported options:</p>
+<blockquote>
+<div><p><cite>nfw</cite> (default)</p>
+</div></blockquote>
+</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>deltasigma</strong> – Excess surface density, DeltaSigma in units of [<span class="math notranslate nohighlight">\(h M_\odot/pc^2\)</span>].</p>
+<dd class="field-even"><p><strong>deltasigma</strong> – Excess surface density in units of <span class="math notranslate nohighlight">\(h\ M_\odot\ pc^{-2}\)</span>.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>array_like, float</p>
@@ -408,8 +426,8 @@ case requiring integration.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>r_proj</strong> (<em>array_like</em>) – The projected radial positions in <span class="math notranslate nohighlight">\(M\!pc/h\)</span>.</p></li>
-<li><p><strong>mdelta</strong> (<em>float</em>) – Galaxy cluster mass in <span class="math notranslate nohighlight">\(M_\odot/h\)</span>.</p></li>
+<li><p><strong>r_proj</strong> (<em>array_like</em>) – The projected radial positions in <span class="math notranslate nohighlight">\(M\!pc\ h^{-1}\)</span>.</p></li>
+<li><p><strong>mdelta</strong> (<em>float</em>) – Galaxy cluster mass in <span class="math notranslate nohighlight">\(M_\odot\ h^{-1}\)</span>.</p></li>
 <li><p><strong>cdelta</strong> (<em>float</em>) – Galaxy cluster NFW concentration.</p></li>
 <li><p><strong>z_cluster</strong> (<em>float</em>) – Galaxy cluster redshift</p></li>
 <li><p><strong>z_source</strong> (<em>array_like</em><em>, </em><em>float</em>) – Background source galaxy redshift(s)</p></li>
@@ -441,27 +459,25 @@ case requiring integration.</p></li>
 <dd><p>Computes the surface mass density</p>
 <div class="math notranslate nohighlight">
 \[\Sigma(R) = \Omega_m \rho_{crit} \int^\infty_{-\infty} dz \Xi_{hm} (\sqrt{R^2+z^2}),\]</div>
-<p>where <span class="math notranslate nohighlight">\(\Xi_{hm}\)</span> is the halo mass function.</p>
+<p>where <span class="math notranslate nohighlight">\(\Xi_{hm}\)</span> is the halo-matter correlation function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>r_proj</strong> (<em>array_like</em>) – The projected radial positions in <span class="math notranslate nohighlight">\(M\!pc/h\)</span>.</p></li>
-<li><p><strong>mdelta</strong> (<em>float</em>) – Galaxy cluster mass in <span class="math notranslate nohighlight">\(M_\odot/h\)</span>.</p></li>
-<li><p><strong>cdelta</strong> (<em>float</em>) – Galaxy cluster NFW concentration.</p></li>
+<li><p><strong>r_proj</strong> (<em>array_like</em>) – Projected radial position from the cluster center in <span class="math notranslate nohighlight">\(M\!pc\ h^{-1}\)</span>.</p></li>
+<li><p><strong>mdelta</strong> (<em>float</em>) – Galaxy cluster mass in <span class="math notranslate nohighlight">\(M_\odot\ h^{-1}\)</span>.</p></li>
+<li><p><strong>cdelta</strong> (<em>float</em>) – Galaxy cluster concentration</p></li>
 <li><p><strong>z_cl</strong> (<em>float</em>) – Redshift of the cluster</p></li>
 <li><p><strong>cosmo</strong> (<em>pyccl.core.Cosmology object</em>) – CCL Cosmology object</p></li>
 <li><p><strong>delta_mdef</strong> (<em>int</em><em>, </em><em>optional</em>) – Mass overdensity definition; defaults to 200.</p></li>
-<li><p><strong>halo_profile_model</strong> (<em>str</em><em>, </em><em>optional</em>) – Profile model parameterization, with the following supported options:
-<cite>nfw</cite> (default) - [insert citation here]</p></li>
-<li><p><strong>z_src_model</strong> (<em>str</em><em>, </em><em>optional</em>) – Source redshift model, with the following supported options:
-<cite>single_plane</cite> (default) - all sources at one redshift
-<cite>known_z_src</cite> - known individual source galaxy redshifts e.g. discrete case
-<cite>z_src_distribution</cite> - known source redshift distribution e.g. continuous
-case requiring integration.</p></li>
+<li><p><strong>halo_profile_model</strong> (<em>str</em><em>, </em><em>optional</em>) – <p>Profile model parameterization, with the following supported options:</p>
+<blockquote>
+<div><p><cite>nfw</cite> (default)</p>
+</div></blockquote>
+</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>sigma</strong> – Surface density, Sigma in units of [<span class="math notranslate nohighlight">\(h M_\odot/pc^2\)</span>]</p>
+<dd class="field-even"><p><strong>sigma</strong> – 2D projected surface density in units of <span class="math notranslate nohighlight">\(h M_\odot\ pc^{-2}\)</span></p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>array_like, float</p>
@@ -484,8 +500,8 @@ another structure to take the arguments necessary for specific models.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>r_proj</strong> (<em>array_like</em>) – The projected radial positions in <span class="math notranslate nohighlight">\(M\!pc/h\)</span>.</p></li>
-<li><p><strong>mdelta</strong> (<em>float</em>) – Galaxy cluster mass in <span class="math notranslate nohighlight">\(M_\odot/h\)</span>.</p></li>
+<li><p><strong>r_proj</strong> (<em>array_like</em>) – The projected radial positions in <span class="math notranslate nohighlight">\(M\!pc\ h^{-1}\)</span>.</p></li>
+<li><p><strong>mdelta</strong> (<em>float</em>) – Galaxy cluster mass in <span class="math notranslate nohighlight">\(M_\odot\ h^{-1}\)</span>.</p></li>
 <li><p><strong>cdelta</strong> (<em>float</em>) – Galaxy cluster NFW concentration.</p></li>
 <li><p><strong>z_cluster</strong> (<em>float</em>) – Galaxy cluster redshift</p></li>
 <li><p><strong>z_source</strong> (<em>array_like</em><em>, </em><em>float</em>) – Background source galaxy redshift(s)</p></li>
@@ -508,7 +524,8 @@ case requiring integration.</p></li>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>We will need <span class="math notranslate nohighlight">\(\gamma_\infty\)</span> and <span class="math notranslate nohighlight">\(\kappa_\infty\)</span> for alternative
+<p>TODO: Implement <cite>known_z_src</cite> and <cite>z_src_distribution</cite> options
+We will need <span class="math notranslate nohighlight">\(\gamma_\infty\)</span> and <span class="math notranslate nohighlight">\(\kappa_\infty\)</span> for alternative
 z_src_models using <span class="math notranslate nohighlight">\(\beta_s\)</span>.
 Need to figure out if we want to raise exceptions rather than errors here?</p>
 </dd></dl>
