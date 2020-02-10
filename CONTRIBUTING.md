@@ -150,7 +150,7 @@ Note: `fix:` should correspond to version changes to Y. The rest of the scopes a
 
 3. Update the public documentation.
 
-This is easy! On your local computer just `git checkout publish-docs` to access the branch that hosts the compiled documentation. Next, from the main CLMM directory (the one that contains `setup.py`) run `./publish_docs` and it does all of the work for you!
+This is easy! On your local computer just `git checkout publish-docs` to access the branch that hosts the compiled documentation.   You will then need to merge all of the latest changes from master `git merge master`.  Next, from the main CLMM directory (the one that contains `setup.py`) run `./publish_docs` and it does all of the work for you (including automatically pushing changes to Github)!  Note, you will want to execute all cells of demo notebooks before running`./publish_docs` in order for the output to show in the public documentation.
 
 ## Additional resources
 
