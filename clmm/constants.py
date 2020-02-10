@@ -3,6 +3,7 @@ from enum import Enum
 import astropy.constants as astropyconst
 import astropy.units as u
 
+
 class Constants(Enum):
     """ A set of constants for consistency throughout the
     code and dependencies. """
