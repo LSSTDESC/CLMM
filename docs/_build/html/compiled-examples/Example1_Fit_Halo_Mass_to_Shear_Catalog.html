@@ -216,6 +216,9 @@ mass from observations of a galaxy cluster.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clmm</span><span class="o">.</span><span class="n">__version__</span>
 </pre></div>
 </div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;0.1.0&#39;</span>
+</pre></div>
+</div>
 <p>We then import a support modules for a specific data sets. <code class="docutils literal notranslate"><span class="pre">clmm</span></code>
 includes support modules that enable the user to generate mock data in a
 format compatible with <code class="docutils literal notranslate"><span class="pre">clmm</span></code>. We also provide support modules for
@@ -282,6 +285,10 @@ object.</p>
 <span class="n">dec_s</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;dec&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Cluster</span> <span class="n">info</span> <span class="o">=</span> <span class="n">ID</span><span class="p">:</span> <span class="n">Awesome_cluster</span> <span class="p">;</span> <span class="n">ra</span><span class="p">:</span> <span class="mf">0.0</span> <span class="p">;</span> <span class="n">dec</span><span class="p">:</span> <span class="mf">0.0</span> <span class="p">;</span> <span class="n">z_l</span> <span class="p">:</span> <span class="mf">0.3</span>
+<span class="n">The</span> <span class="n">number</span> <span class="n">of</span> <span class="n">source</span> <span class="n">galaxies</span> <span class="ow">is</span> <span class="p">:</span> <span class="mi">10000</span>
+</pre></div>
+</div>
 <p>We can visualize the distribution of galaxies on the sky.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fsize</span> <span class="o">=</span> <span class="mi">15</span>
 
@@ -298,6 +305,7 @@ object.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
+<img alt="../_images/Example1_Fit_Halo_Mass_to_Shear_Catalog_24_0.png" src="../_images/Example1_Fit_Halo_Mass_to_Shear_Catalog_24_0.png" />
 <p><code class="docutils literal notranslate"><span class="pre">clmm</span></code> separates cosmology-dependent and cosmology-independent
 functionality.</p>
 </div>
@@ -320,6 +328,10 @@ cross shears for each source galaxy in the cluster.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;angular distance [deg]&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fsize</span><span class="p">)</span>
 </pre></div>
 </div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Text</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;angular distance [deg]&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../_images/Example1_Fit_Halo_Mass_to_Shear_Catalog_31_1.png" src="../_images/Example1_Fit_Halo_Mass_to_Shear_Catalog_31_1.png" />
 </div>
 <div class="section" id="radially-binning-the-data">
 <h3>Radially binning the data<a class="headerlink" href="#radially-binning-the-data" title="Permalink to this headline">¶</a></h3>
@@ -360,11 +372,29 @@ tangential shear.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$g_t$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fsize</span><span class="p">)</span>
 </pre></div>
 </div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Text</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;$g_t$&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../_images/Example1_Fit_Halo_Mass_to_Shear_Catalog_40_1.png" src="../_images/Example1_Fit_Halo_Mass_to_Shear_Catalog_40_1.png" />
 <p>After running <code class="docutils literal notranslate"><span class="pre">clmm.polaraveraging.make_shear_profile</span></code> on a
 <code class="docutils literal notranslate"><span class="pre">clmm.GalaxyCluster</span></code> object, the object acquires the
 <code class="docutils literal notranslate"><span class="pre">clmm.GalaxyCluster.profile</span></code> attribute.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">cl</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">colnames</span><span class="p">:</span> <span class="n">cl</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">format</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%6.3e</span><span class="s2">&quot;</span>
 <span class="n">cl</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">max_width</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">radius_min</span>   <span class="n">radius</span>  <span class="n">radius_max</span>     <span class="n">gt</span>      <span class="n">gt_err</span>      <span class="n">gx</span>       <span class="n">gx_err</span>      <span class="n">z</span>       <span class="n">z_err</span>
+<span class="o">----------</span> <span class="o">---------</span> <span class="o">----------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">----------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">---------</span>
+ <span class="mf">1.000e-02</span> <span class="mf">2.361e-01</span>  <span class="mf">3.790e-01</span> <span class="mf">1.027e-01</span> <span class="mf">6.733e-04</span> <span class="o">-</span><span class="mf">1.875e-18</span> <span class="mf">4.144e-19</span> <span class="mf">8.000e-01</span> <span class="mf">3.084e-18</span>
+ <span class="mf">3.790e-01</span> <span class="mf">5.740e-01</span>  <span class="mf">7.480e-01</span> <span class="mf">6.389e-02</span> <span class="mf">6.311e-05</span> <span class="o">-</span><span class="mf">1.602e-19</span> <span class="mf">8.945e-20</span> <span class="mf">8.000e-01</span> <span class="mf">2.000e-18</span>
+ <span class="mf">7.480e-01</span> <span class="mf">9.572e-01</span>  <span class="mf">1.117e+00</span> <span class="mf">4.495e-02</span> <span class="mf">2.118e-05</span> <span class="o">-</span><span class="mf">2.617e-19</span> <span class="mf">4.150e-20</span> <span class="mf">8.000e-01</span> <span class="mf">6.202e-19</span>
+ <span class="mf">1.117e+00</span> <span class="mf">1.317e+00</span>  <span class="mf">1.486e+00</span> <span class="mf">3.449e-02</span> <span class="mf">1.180e-05</span> <span class="o">-</span><span class="mf">1.163e-19</span> <span class="mf">3.667e-20</span> <span class="mf">8.000e-01</span> <span class="mf">5.237e-19</span>
+ <span class="mf">1.486e+00</span> <span class="mf">1.676e+00</span>  <span class="mf">1.855e+00</span> <span class="mf">2.756e-02</span> <span class="mf">6.057e-06</span> <span class="o">-</span><span class="mf">9.529e-20</span> <span class="mf">1.167e-20</span> <span class="mf">8.000e-01</span> <span class="mf">3.855e-19</span>
+ <span class="mf">1.855e+00</span> <span class="mf">2.050e+00</span>  <span class="mf">2.224e+00</span> <span class="mf">2.248e-02</span> <span class="mf">3.266e-06</span> <span class="o">-</span><span class="mf">1.120e-19</span> <span class="mf">1.090e-20</span> <span class="mf">8.000e-01</span> <span class="mf">6.067e-19</span>
+ <span class="mf">2.224e+00</span> <span class="mf">2.416e+00</span>  <span class="mf">2.593e+00</span> <span class="mf">1.884e-02</span> <span class="mf">2.115e-06</span> <span class="o">-</span><span class="mf">2.973e-19</span> <span class="mf">8.131e-21</span> <span class="mf">8.000e-01</span> <span class="mf">2.625e-19</span>
+ <span class="mf">2.593e+00</span> <span class="mf">2.781e+00</span>  <span class="mf">2.962e+00</span> <span class="mf">1.608e-02</span> <span class="mf">1.440e-06</span>  <span class="mf">1.396e-19</span> <span class="mf">5.473e-21</span> <span class="mf">8.000e-01</span> <span class="mf">0.000e+00</span>
+ <span class="mf">2.962e+00</span> <span class="mf">3.142e+00</span>  <span class="mf">3.331e+00</span> <span class="mf">1.394e-02</span> <span class="mf">1.052e-06</span> <span class="o">-</span><span class="mf">6.571e-20</span> <span class="mf">4.531e-21</span> <span class="mf">8.000e-01</span> <span class="mf">2.103e-19</span>
+ <span class="mf">3.331e+00</span> <span class="mf">3.518e+00</span>  <span class="mf">3.700e+00</span> <span class="mf">1.217e-02</span> <span class="mf">7.276e-07</span>  <span class="mf">3.094e-20</span> <span class="mf">2.941e-21</span> <span class="mf">8.000e-01</span> <span class="mf">0.000e+00</span>
 </pre></div>
 </div>
 </div>
@@ -408,6 +438,9 @@ binning schemes.</p>
 <span class="nb">print</span><span class="p">((</span><span class="n">m_est1</span><span class="p">,</span> <span class="n">m_est2</span><span class="p">))</span>
 </pre></div>
 </div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">array</span><span class="p">([</span><span class="mf">1.00502644e+15</span><span class="p">]),</span> <span class="n">array</span><span class="p">([</span><span class="mf">3.68442261e+16</span><span class="p">]))</span>
+</pre></div>
+</div>
 <p>Next, we calculate the reduced tangential shear predicted by the two
 models.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span> <span class="mi">100</span><span class="p">)</span>
@@ -446,6 +479,10 @@ models.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;reduced tangential shear&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fsize</span><span class="p">)</span>
 </pre></div>
 </div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Text</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;reduced tangential shear&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../_images/Example1_Fit_Halo_Mass_to_Shear_Catalog_53_1.png" src="../_images/Example1_Fit_Halo_Mass_to_Shear_Catalog_53_1.png" />
 </div>
 </div>
 </div>
