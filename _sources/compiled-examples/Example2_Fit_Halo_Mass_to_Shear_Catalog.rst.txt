@@ -117,21 +117,9 @@ Any saved ``clmm.GalaxyCluster`` object may be read in for analysis.
     print("Cluster info = ID:", cl2.unique_id, "; ra:", cl2.ra, "; dec:", cl2.dec, "; z_l :", cl2.z)
     print("The number of source galaxies is :", len(cl2.galcat))
 
-
-.. parsed-literal::
-
-    Cluster info = ID: CL_ideal_z ; ra: 0.0 ; dec: 0.0 ; z_l : 0.3
-    The number of source galaxies is : 2000
-
-
 .. code:: ipython3
 
     h = plt.hist(cl2.galcat['z'], bins=50)
-
-
-
-.. image:: Example2_Fit_Halo_Mass_to_Shear_Catalog_files/Example2_Fit_Halo_Mass_to_Shear_Catalog_19_0.png
-
 
 Deriving observables
 --------------------
@@ -173,28 +161,6 @@ After running ``clmm.polaraveraging.make_shear_profile`` on a
     for n in cl1.profile.colnames: cl1.profile[n].format = "%6.3e"
     cl1.profile.pprint(max_width=-1)
 
-
-.. parsed-literal::
-
-    radius_min   radius  radius_max     gt      gt_err      gx       gx_err      z       z_err  
-    ---------- --------- ---------- --------- --------- ---------- --------- --------- ---------
-     7.000e-01 7.588e-01  7.863e-01 5.289e-02 2.836e-04  1.735e-18 4.337e-19 8.000e-01 0.000e+00
-     7.863e-01 8.511e-01  8.831e-01 4.877e-02 7.106e-05  2.602e-19 7.988e-19 8.000e-01 0.000e+00
-     8.831e-01 9.312e-01  9.920e-01 4.565e-02 8.414e-05 -3.831e-18 6.270e-19 8.000e-01 9.252e-18
-     9.920e-01 1.064e+00  1.114e+00 4.114e-02 1.215e-04 -8.240e-19 2.111e-19 8.000e-01 0.000e+00
-     1.114e+00 1.195e+00  1.251e+00 3.739e-02 5.622e-05  1.269e-18 2.117e-19 8.000e-01 0.000e+00
-     1.251e+00 1.352e+00  1.406e+00 3.358e-02 4.903e-05  1.276e-20 5.773e-19 8.000e-01 0.000e+00
-     1.406e+00 1.490e+00  1.579e+00 3.074e-02 4.228e-05  1.009e-18 1.362e-19 8.000e-01 9.654e-18
-     1.579e+00 1.665e+00  1.773e+00 2.766e-02 3.231e-05  2.809e-19 7.183e-20 8.000e-01 1.009e-17
-     1.773e+00 1.881e+00  1.992e+00 2.452e-02 1.727e-05  4.046e-19 8.698e-20 8.000e-01 5.287e-18
-     1.992e+00 2.118e+00  2.237e+00 2.170e-02 1.731e-05  6.650e-19 7.211e-20 8.000e-01 7.401e-18
-     2.237e+00 2.390e+00  2.513e+00 1.905e-02 1.146e-05  2.989e-19 1.943e-20 8.000e-01 1.948e-18
-     2.513e+00 2.669e+00  2.823e+00 1.685e-02 5.840e-06 -4.705e-19 2.754e-20 8.000e-01 1.047e-18
-     2.823e+00 2.998e+00  3.171e+00 1.474e-02 5.294e-06 -1.989e-21 2.825e-20 8.000e-01 1.019e-18
-     3.171e+00 3.364e+00  3.561e+00 1.285e-02 4.726e-06 -9.855e-20 2.288e-20 8.000e-01 9.571e-19
-     3.561e+00 3.784e+00  4.000e+00 1.113e-02 3.061e-06 -7.848e-20 7.493e-21 8.000e-01 7.256e-19
-
-
 We visualize the radially binned shear for the 3 configurations
 
 .. code:: ipython3
@@ -213,19 +179,6 @@ We visualize the radially binned shear for the 3 configurations
     plt.gca().set_xlabel(r'$r\;[Mpc]$', fontsize=fsize)
     plt.gca().set_ylabel(r'$g_t$', fontsize=fsize)
     plt.legend()
-
-
-
-
-.. parsed-literal::
-
-    <matplotlib.legend.Legend at 0x2aaae04c49a0>
-
-
-
-
-.. image:: Example2_Fit_Halo_Mass_to_Shear_Catalog_files/Example2_Fit_Halo_Mass_to_Shear_Catalog_31_1.png
-
 
 Create the halo model
 ---------------------
@@ -300,14 +253,6 @@ distribution.
     print(f'Best fit mass for cluster 2 = {m_est2:.2e} +/- {m_est_err2:.2e} Msun')
     print(f'Best fit mass for cluster 3 = {m_est3:.2e} +/- {m_est_err3:.2e} Msun')
 
-
-.. parsed-literal::
-
-    Best fit mass for cluster 1 = 1.00e+15 +/- 8.39e+10 Msun
-    Best fit mass for cluster 2 = 8.60e+14 +/- 3.45e+12 Msun
-    Best fit mass for cluster 3 = 8.51e+14 +/- 5.53e+13 Msun
-
-
 As expected, the reconstructed mass is biased whenever the sources are
 not located at a single redshift as this was not accounted for in the
 model.
@@ -375,8 +320,4 @@ data
     axes[1].set_ylabel('reduced tangential shear', fontsize=fsize)
     
     fig.tight_layout()
-
-
-
-.. image:: Example2_Fit_Halo_Mass_to_Shear_Catalog_files/Example2_Fit_Halo_Mass_to_Shear_Catalog_41_0.png
 

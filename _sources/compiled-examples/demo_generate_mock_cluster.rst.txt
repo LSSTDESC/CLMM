@@ -24,15 +24,6 @@ Make sure we know which version we’re using
 
     clmm.__version__
 
-
-
-
-.. parsed-literal::
-
-    '0.1.0'
-
-
-
 Import mock data module and setup the configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -123,17 +114,6 @@ Sanity check: checking that no galaxies where drawn below zsrc_min
     print('ideal_with_src_dist:',np.sum(ideal_with_src_dist['z']<zsrc_min))
     print('allsystematics:',np.sum(allsystematics['z']<zsrc_min))
 
-
-.. parsed-literal::
-
-    Number of galaxies below zsrc_min:
-    ideal_data: 0
-    noisy_data_src_z: 0
-    noisy_data_photoz: 0
-    ideal_with_src_dist: 0
-    allsystematics: 0
-
-
 Inspect the catalog data
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -147,16 +127,6 @@ galaxies at z=0.8
             ideal_data[n].format = "%6.3e" 
     ideal_data[0:3].pprint(max_width=-1)
 
-
-.. parsed-literal::
-
-        ra       dec         e1         e2         z      id
-    --------- ---------- ---------- ---------- --------- ---
-    1.522e-01 -1.086e-01 -4.752e-03 -1.381e-02 8.000e-01   0
-    2.872e-01 -1.172e-01 -5.544e-03 -5.428e-03 8.000e-01   1
-    9.189e-02  2.269e-01  7.560e-03  7.323e-03 8.000e-01   2
-
-
 With photo-z errors
 
 .. code:: ipython3
@@ -166,34 +136,11 @@ With photo-z errors
             noisy_data_photoz[n].format = "%6.3e"
     noisy_data_photoz[0:3].pprint(max_width=-1)
 
-
-.. parsed-literal::
-
-        ra        dec         e1        e2         z          pzbins [34]             pzpdf [34]        id
-    ---------- ---------- --------- ---------- --------- ---------------------- ---------------------- ---
-     2.255e-01 -3.295e-01 1.859e-02 -4.788e-02 8.573e-01 3.000e-01 .. 1.290e+00 8.802e-07 .. 1.622e-06   0
-    -4.502e-02  1.237e-01 1.757e-02 -1.474e-02 7.613e-01 3.000e-01 .. 1.290e+00 8.802e-07 .. 1.622e-06   1
-    -1.597e-02  9.317e-02 6.197e-02 -2.189e-02 8.152e-01 3.000e-01 .. 1.290e+00 8.802e-07 .. 1.622e-06   2
-
-
 .. code:: ipython3
 
     # Histogram of the redshift distribution of bkg galaxies (starting at z_cluster + 0.1)
     hist = plt.hist(allsystematics['z'], bins=50)
     plt.xlabel('Source Redshift')
-
-
-
-
-.. parsed-literal::
-
-    Text(0.5, 0, 'Source Redshift')
-
-
-
-
-.. image:: demo_generate_mock_cluster_files/demo_generate_mock_cluster_30_1.png
-
 
 .. code:: ipython3
 
@@ -201,19 +148,6 @@ With photo-z errors
     plt.plot(allsystematics['pzbins'][0], allsystematics['pzpdf'][0])
     plt.xlabel('Redshift')
     plt.ylabel('Photo-z Probability Distribution')
-
-
-
-
-.. parsed-literal::
-
-    Text(0, 0.5, 'Photo-z Probability Distribution')
-
-
-
-
-.. image:: demo_generate_mock_cluster_files/demo_generate_mock_cluster_31_1.png
-
 
 Populate in a galaxy cluster object
 
@@ -235,16 +169,4 @@ Plot source galaxy ellipticities
     plt.ylim(-0.2, 0.2)
     plt.xlabel('Ellipticity 1',fontsize='x-large')
     plt.ylabel('Ellipticity 2',fontsize='x-large')
-
-
-
-
-.. parsed-literal::
-
-    Text(0, 0.5, 'Ellipticity 2')
-
-
-
-
-.. image:: demo_generate_mock_cluster_files/demo_generate_mock_cluster_35_1.png
 
