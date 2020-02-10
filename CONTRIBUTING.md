@@ -113,7 +113,7 @@ To test this, first install the code by running `python setup.py install --user`
 
 ## Adding documentation
 
-If you are adding documentation either in the form of example jupyter notebooks or new python modules, your documentation will need to compile for our online documentation hosted by readthedocs.io.
+If you are adding documentation either in the form of example jupyter notebooks or new python modules, your documentation will need to compile for our online documentation hosted by the LSST-DESC website: http://lsstdesc.org/CLMM/
 
 We have done most of the hard work for you. Simply edit the configuration file, `docs/doc-config.ini`. If you are looking at add a module, put the module name under the `APIDOC` heading. If you are adding a demo notebook to demonstrate how to use the code, place the path from the `docs/` directory to the notebook under the `DEMO` heading. If you are adding an example notebook that shows off how to use `CLMM` to do science, place the path from the `docs/` directory to the notebook under the `EXAMPLE` heading. 
 
