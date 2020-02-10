@@ -1,15 +1,41 @@
 Measure a Profile
 =================
 
+Note
+----
+
+All functions in this section using the cluster object as first argument
+are also internal functions of the cluster object, and should be used as
+such. They are just explicitely used here for clarity.
+
+Ex:
+
+::
+
+   theta, g_t, g_x = compute_shear(cl, geometry="flat")
+
+should be done by the user as:
+
+::
+
+   theta, g_t, g_x = cl.compute_shear(geometry="flat")
+
 .. code:: ipython3
 
     import matplotlib.pyplot as plt
+    import clmm
     from clmm.polaraveraging import compute_shear, make_shear_profile, make_bins
     from clmm.plotting import plot_profiles
     from clmm.galaxycluster import GalaxyCluster
     import sys
     sys.path.append('./support')
     import mock_data as mock
+
+Make sure we know which version we’re using
+
+.. code:: ipython3
+
+    clmm.__version__
 
 Define cosmology object
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -34,6 +60,8 @@ Define toy cluster parameters for mock data generation
     ngals = 1000
     Delta = 200
     
+    zsrc_min = cluster_z + 0.1 # we only want to draw background galaxies
+    
     noisy_data_z = mock.generate_galaxy_catalog(cluster_m,
                                                 cluster_z,
                                                 concentration,
@@ -41,6 +69,7 @@ Define toy cluster parameters for mock data generation
                                                 ngals,
                                                 Delta,
                                                 'chang13',
+                                                zsrc_min = zsrc_min,
                                                 shapenoise=0.005,
                                                 photoz_sigma_unscaled=0.05)
 
@@ -70,34 +99,32 @@ Loading this into a CLMM cluster object centered on (0,0)
           "; dec:", cl.dec, "; z_l :", cl.z)
     print("The number of source galaxies is :", len(cl.galcat))
 
-
-.. parsed-literal::
-
-    Cluster info = ID: Awesome_cluster ; ra: 0.0 ; dec: 0.0 ; z_l : 0.3
-    The number of source galaxies is : 1000
-
-
-Plot cluster and galaxy positions
+Plot cluster and galaxy positions, and redshift distribution
 
 .. code:: ipython3
 
-    plt.scatter(cl.galcat['ra'], cl.galcat['dec'], color='blue', s=1, alpha=0.3)
-    plt.plot(cl.ra, cl.dec, 'ro')
-    plt.ylabel('dec', fontsize="large")
-    plt.xlabel('ra', fontsize="large")
+    f, ax = plt.subplots(1, 2, figsize=(12, 4))
+    
+    ax[0].scatter(cl.galcat['ra'], cl.galcat['dec'], color='blue', s=1, alpha=0.3)
+    ax[0].plot(cl.ra, cl.dec, 'ro')
+    ax[0].set_ylabel('dec', fontsize="large")
+    ax[0].set_xlabel('ra', fontsize="large")
+    
+    hist = ax[1].hist(cl.galcat['z'], bins=40)[0]
+    ax[1].axvline(cl.z, c='r', ls='--')
+    ax[1].set_xlabel('$z_{source}$', fontsize="large")
+    xt = {t:f'{t}' for t in ax[1].get_xticks() if t!=0}
+    xt[cl.z] ='$z_{cl}$'
+    xto = sorted(list(xt.keys())+[cl.z])
+    ax[1].set_xticks(xto)
+    ax[1].set_xticklabels(xt[t] for t in xto)
+    ax[1].get_xticklabels()[xto.index(cl.z)].set_color('red')
+    plt.xlim(0, max(xto))
+    plt.show()
 
+.. code:: ipython3
 
-
-
-.. parsed-literal::
-
-    Text(0.5, 0, 'ra')
-
-
-
-
-.. image:: demo_polaraveraging_functionality_files/demo_polaraveraging_functionality_12_1.png
-
+    min(cl.galcat['z']), cl.z
 
 Check the ellipticities
 
@@ -111,19 +138,6 @@ Check the ellipticities
     ax1.set_aspect('equal', 'datalim')
     ax1.axvline(0, linestyle='dotted', color='black')
     ax1.axhline(0, linestyle='dotted', color='black')
-
-
-
-
-.. parsed-literal::
-
-    <matplotlib.lines.Line2D at 0x1234d97d0>
-
-
-
-
-.. image:: demo_polaraveraging_functionality_files/demo_polaraveraging_functionality_14_1.png
-
 
 3) Compute and plot shear profiles
 ----------------------------------
@@ -140,32 +154,14 @@ accessed in the galaxy cluster object, cl.
 
 .. code:: ipython3
 
-    plt.hist(cl.galcat['gt'],bins=100)
-    plt.xlabel('$\\gamma_t$',fontsize='xx-large')
-
-
-
-
-.. parsed-literal::
-
-    Text(0.5, 0, '$\\gamma_t$')
-
-
-
-
-.. image:: demo_polaraveraging_functionality_files/demo_polaraveraging_functionality_19_1.png
-
-
-.. code:: ipython3
-
-    plt.hist(cl.galcat['gx'],bins=100)
-    plt.xlabel('$\\gamma_x$',fontsize='xx-large')
-    plt.yscale('log')
-
-
-
-.. image:: demo_polaraveraging_functionality_files/demo_polaraveraging_functionality_20_0.png
-
+    f, ax = plt.subplots(1, 2, figsize=(12, 4))
+    
+    ax[0].hist(cl.galcat['gt'],bins=100)
+    ax[0].set_xlabel('$\\gamma_t$',fontsize='xx-large')
+    
+    ax[1].hist(cl.galcat['gx'],bins=100)
+    ax[1].set_xlabel('$\\gamma_x$',fontsize='xx-large')
+    ax[1].set_yscale('log')
 
 Compute transversal and cross shear profiles in units defined by user,
 using defaults binning
@@ -180,11 +176,6 @@ Use function to plot the profiles
 
     fig, ax = plot_profiles(cl)
 
-
-
-.. image:: demo_polaraveraging_functionality_files/demo_polaraveraging_functionality_24_0.png
-
-
 Shear Profile example in degrees
 
 .. code:: ipython3
@@ -192,11 +183,6 @@ Shear Profile example in degrees
     new_profiles = make_shear_profile(cl, "radians", "degrees",
                                          cosmo=cosmo)
     fig1, ax1 = plot_profiles(cl, "degrees")
-
-
-
-.. image:: demo_polaraveraging_functionality_files/demo_polaraveraging_functionality_26_0.png
-
 
 With user defined binning, compute transversal and cross shear profiles
 in units defined by user, plot the new profiles
@@ -210,11 +196,6 @@ in units defined by user, plot the new profiles
     
     fig1, ax1 = plot_profiles(cl, "Mpc", r_units='Mpc')
 
-
-
-.. image:: demo_polaraveraging_functionality_files/demo_polaraveraging_functionality_28_0.png
-
-
 You can also access the individual profile quantities
 
 .. code:: ipython3
@@ -222,22 +203,16 @@ You can also access the individual profile quantities
     plt.title('cross shear test')
     plt.errorbar(new_profiles['radius'], new_profiles['gx'],
                  new_profiles['gx_err'])
-    plt.title('cross shear test')
     plt.axhline(0, linestyle='dotted', color='black')
     plt.xlabel("Radius [Mpc]")
     plt.ylabel('$\\gamma_x$')
-
-
-
-
-.. parsed-literal::
-
-    Text(0, 0.5, '$\\gamma_x$')
-
-
-
-
-.. image:: demo_polaraveraging_functionality_files/demo_polaraveraging_functionality_30_1.png
-
-
-
+    plt.show()
+    
+    plt.title('Average redshift in radial bins')
+    plt.errorbar(new_profiles['radius'], new_profiles['z'],
+                 new_profiles['z_err'])
+    plt.axhline(cl.z, linestyle='dotted', color='r')
+    plt.text(1, cl.z*1.1, '$z_{cl}$', c='r')
+    plt.xlabel("Radius [Mpc]")
+    plt.ylabel('$\langle z\\rangle$')
+    plt.show()

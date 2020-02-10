@@ -13,13 +13,20 @@ First, we import some standard packages.
 
 .. code:: ipython3
 
-    from astropy.cosmology import FlatLambdaCDM
-    import matplotlib.pyplot as plt
-    # %matplotlib inline
-    import numpy as np
-    from numpy import random
-    from scipy import optimize as spo
     import sys
+    sys.path.append('./support')
+    try: import clmm
+    except:
+        import notebook_install
+        notebook_install.install_clmm_pipeline(upgrade=False)
+        import clmm
+    import numpy as np
+    import matplotlib.pyplot as plt
+    %matplotlib inline
+    
+    from astropy.cosmology import FlatLambdaCDM
+    
+    from numpy import random
 
 Next, we import ``clmm``\ ’s core modules.
 
@@ -29,6 +36,12 @@ Next, we import ``clmm``\ ’s core modules.
     import clmm.polaraveraging as pa
     import clmm.galaxycluster as gc
     import clmm.modeling as modeling
+
+Make sure we know which version we’re using
+
+.. code:: ipython3
+
+    clmm.__version__
 
 We then import a support modules for a specific data sets. ``clmm``
 includes support modules that enable the user to generate mock data in a
@@ -43,6 +56,7 @@ use.
 
     sys.path.append('./support')
     import mock_data as mock
+    from sampler import samplers
 
 Making mock data
 ----------------
@@ -109,13 +123,6 @@ Any saved ``clmm.GalaxyCluster`` object may be read in for analysis.
     ra_s = cl.galcat['ra']
     dec_s = cl.galcat['dec']
 
-
-.. parsed-literal::
-
-    Cluster info = ID: Awesome_cluster ; ra: 0.0 ; dec: 0.0 ; z_l : 0.3
-    The number of source galaxies is : 10000
-
-
 We can visualize the distribution of galaxies on the sky.
 
 .. code:: ipython3
@@ -133,11 +140,6 @@ We can visualize the distribution of galaxies on the sky.
     plt.gca().set_title('Source Galaxies', fontsize=fsize)
     
     plt.show()
-
-
-
-.. image:: Example1_Fit_Halo_Mass_to_Shear_Catalog_files/Example1_Fit_Halo_Mass_to_Shear_Catalog_22_0.png
-
 
 ``clmm`` separates cosmology-dependent and cosmology-independent
 functionality.
@@ -168,19 +170,6 @@ We can visualize the shear field at each galaxy location.
     plt.ylabel("reduced shear", fontsize=fsize)
     plt.xlabel("angular distance [deg]", fontsize=fsize)
 
-
-
-
-.. parsed-literal::
-
-    Text(0.5, 0, 'angular distance [deg]')
-
-
-
-
-.. image:: Example1_Fit_Halo_Mass_to_Shear_Catalog_files/Example1_Fit_Halo_Mass_to_Shear_Catalog_29_1.png
-
-
 Radially binning the data
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -209,9 +198,11 @@ tangential shear.
 
     gt_profile1 = res1['gt']
     r1 = res1['radius']
+    z1 = res1['z']
     
     gt_profile2 = res2['gt']
     r2 = res2['radius']
+    z2 = res2['z']
 
 We visualize the radially binned shear for our mock galaxies.
 
@@ -227,49 +218,14 @@ We visualize the radially binned shear for our mock galaxies.
     plt.gca().set_xlabel(r'$r\;[Mpc]$', fontsize=fsize)
     plt.gca().set_ylabel(r'$g_t$', fontsize=fsize)
 
-
-
-
-.. parsed-literal::
-
-    Text(0, 0.5, '$g_t$')
-
-
-
-
-.. image:: Example1_Fit_Halo_Mass_to_Shear_Catalog_files/Example1_Fit_Halo_Mass_to_Shear_Catalog_38_1.png
-
-
 After running ``clmm.polaraveraging.make_shear_profile`` on a
 ``clmm.GalaxyCluster`` object, the object acquires the
 ``clmm.GalaxyCluster.profile`` attribute.
 
 .. code:: ipython3
 
-    cl.profile
-
-
-
-
-.. raw:: html
-
-    <i>Table length=10</i>
-    <table id="table4828561296" class="table-striped table-bordered table-condensed">
-    <thead><tr><th>radius_min</th><th>radius</th><th>radius_max</th><th>gt</th><th>gt_err</th><th>gx</th><th>gx_err</th></tr></thead>
-    <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th></tr></thead>
-    <tr><td>0.01</td><td>0.21855903269265953</td><td>0.37900000000000006</td><td>0.10338891707507368</td><td>0.0004444946978343731</td><td>4.565061778886334e-19</td><td>5.137559388728687e-19</td></tr>
-    <tr><td>0.37900000000000006</td><td>0.5841922340126758</td><td>0.7480000000000001</td><td>0.06327428420722986</td><td>7.847337077896479e-05</td><td>-5.269455720037075e-19</td><td>7.72178358776862e-20</td></tr>
-    <tr><td>0.7480000000000001</td><td>0.9494192322684128</td><td>1.1170000000000002</td><td>0.04522310383461236</td><td>2.3230325906031298e-05</td><td>-2.2066507406261723e-19</td><td>4.245826429543733e-20</td></tr>
-    <tr><td>1.1170000000000002</td><td>1.2954229261674164</td><td>1.4860000000000002</td><td>0.034986807744716235</td><td>1.172770079789405e-05</td><td>-2.068940872154811e-19</td><td>2.768244839558964e-20</td></tr>
-    <tr><td>1.4860000000000002</td><td>1.6777101877477796</td><td>1.8550000000000002</td><td>0.027531282102124677</td><td>6.047078336870024e-06</td><td>-3.1945242582162184e-21</td><td>1.6019559885573365e-20</td></tr>
-    <tr><td>1.8550000000000002</td><td>2.0547557486637977</td><td>2.224</td><td>0.02242736587323155</td><td>3.242037429049726e-06</td><td>-2.578643004830389e-20</td><td>9.083241785325992e-21</td></tr>
-    <tr><td>2.224</td><td>2.4206184891699545</td><td>2.593</td><td>0.01880283882976864</td><td>2.0254400667518857e-06</td><td>-7.25579035095795e-20</td><td>6.433883436521812e-21</td></tr>
-    <tr><td>2.593</td><td>2.783066525495814</td><td>2.962</td><td>0.016072041663480575</td><td>1.413006842709956e-06</td><td>-2.5155718214346893e-20</td><td>5.552000724645363e-21</td></tr>
-    <tr><td>2.962</td><td>3.1466213648822956</td><td>3.3310000000000004</td><td>0.013922485835717759</td><td>1.0277077246334208e-06</td><td>2.859162036216344e-20</td><td>4.72762630377245e-21</td></tr>
-    <tr><td>3.3310000000000004</td><td>3.5254911445897528</td><td>3.7</td><td>0.012137823818881576</td><td>6.670989250453991e-07</td><td>1.0636868790841159e-19</td><td>3.028157477314982e-21</td></tr>
-    </table>
-
-
+    for n in cl.profile.colnames: cl.profile[n].format = "%6.3e"
+    cl.profile.pprint(max_width=-1)
 
 Modeling the data
 -----------------
@@ -288,11 +244,11 @@ cosmology-independent, with units of :math:`Mpc`.
 .. code:: ipython3
 
     def nfw_to_shear_profile(logm, profile_info):
-        [r, gt_profile] = profile_info
+        [r, gt_profile, z_src_rbin] = profile_info
         m = 10.**logm
         gt_model = clmm.predict_reduced_tangential_shear(r*cosmo.h,
                                                          m, concentration,
-                                                         cluster_z, src_z, cosmo,
+                                                         cluster_z, z_src_rbin, cosmo,
                                                          delta_mdef=200,
                                                          halo_profile_model='nfw')
         return sum((gt_model - gt_profile)**2)
@@ -307,21 +263,15 @@ binning schemes.
 
     logm_0 = random.uniform(13., 17., 1)[0]
     
-    logm_est1 = spo.minimize(nfw_to_shear_profile, logm_0,
-                             args=[r1, gt_profile1]).x
-    logm_est2 = spo.minimize(nfw_to_shear_profile, logm_0,
-                             args=[r2, gt_profile2]).x
+    logm_est1 = samplers['minimize'](nfw_to_shear_profile, logm_0,
+                             args=[r1, gt_profile1, z1])
+    logm_est2 = samplers['minimize'](nfw_to_shear_profile, logm_0,
+                             args=[r2, gt_profile2, z2])
     
     m_est1 = 10.**logm_est1
     m_est2 = 10.**logm_est2
     
     print((m_est1, m_est2))
-
-
-.. parsed-literal::
-
-    (array([1.61795546e+17]), array([8.28406234e+16]))
-
 
 Next, we calculate the reduced tangential shear predicted by the two
 models.
@@ -365,15 +315,4 @@ We visualize the two predictions of reduced tangential shear.
     plt.xlabel('R [Mpc]', fontsize=fsize)
     plt.ylabel('reduced tangential shear', fontsize=fsize)
 
-
-
-
-.. parsed-literal::
-
-    Text(0, 0.5, 'reduced tangential shear')
-
-
-
-
-.. image:: Example1_Fit_Halo_Mass_to_Shear_Catalog_files/Example1_Fit_Halo_Mass_to_Shear_Catalog_51_1.png
 

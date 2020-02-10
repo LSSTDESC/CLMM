@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.polaraveraging &mdash; CLMM 0.0.1 documentation</title>
+  <title>clmm.polaraveraging &mdash; CLMM 0.1.0 documentation</title>
   
 
   
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.0.1
+                0.1.0
               </div>
             
           
@@ -91,6 +91,7 @@
 <p class="caption"><span class="caption-text">Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit Halo Mass from a Shear Catalog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit Halo Mass from a Shear Catalog</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Usage Demos</span></p>
 <ul>
@@ -185,9 +186,9 @@
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">astropy.table</span> <span class="k">import</span> <span class="n">Table</span>
-<span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">compute_radial_averages</span><span class="p">,</span> <span class="n">make_bins</span><span class="p">,</span> <span class="n">convert_units</span>
-<span class="kn">from</span> <span class="nn">.galaxycluster</span> <span class="k">import</span> <span class="n">GalaxyCluster</span>
+<span class="kn">from</span> <span class="nn">astropy.table</span> <span class="kn">import</span> <span class="n">Table</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">compute_radial_averages</span><span class="p">,</span> <span class="n">make_bins</span><span class="p">,</span> <span class="n">convert_units</span>
+<span class="kn">from</span> <span class="nn">.galaxycluster</span> <span class="kn">import</span> <span class="n">GalaxyCluster</span>
 
 <span class="c1"># def _astropy_to_CCL_cosmo_object(astropy_cosmology_object): # 7481794</span>
 <span class="c1">#     &quot;&quot;&quot;Generates a ccl cosmology object from an GCR or astropy cosmology object.</span>
@@ -228,7 +229,8 @@
 <span class="sd">    position of the source relative to the lens, :math:`\phi`, are computed within the function</span>
 <span class="sd">    and the angular separation is returned.</span>
 
-<span class="sd">    In the flat sky approximation, these angles are calculated using (_l: lens, _s: source, RA is from right to left)</span>
+<span class="sd">    In the flat sky approximation, these angles are calculated using (_lens: lens, _source: source,</span>
+<span class="sd">    RA is from right to left)</span>
 
 <span class="sd">    .. math::</span>
 
@@ -308,7 +310,7 @@
         <span class="n">angsep</span><span class="p">,</span> <span class="n">phi</span> <span class="o">=</span> <span class="n">_compute_lensing_angles_flatsky</span><span class="p">(</span><span class="n">ra_lens</span><span class="p">,</span> <span class="n">dec_lens</span><span class="p">,</span> <span class="n">ra_source_list</span><span class="p">,</span>
                                                       <span class="n">dec_source_list</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Sky geometry </span><span class="si">{geometry}</span><span class="s2"> is not currently supported&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sky geometry </span><span class="si">{geometry}</span><span class="s2"> is not currently supported&quot;</span><span class="p">)</span>
 
     <span class="c1"># Compute the tangential and cross shears</span>
     <span class="n">tangential_shear</span> <span class="o">=</span> <span class="n">_compute_tangential_shear</span><span class="p">(</span><span class="n">shear1</span><span class="p">,</span> <span class="n">shear2</span><span class="p">,</span> <span class="n">phi</span><span class="p">)</span>
@@ -336,9 +338,9 @@
 <span class="sd">    For extended descriptions of parameters, see `compute_shear()` documentation.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="o">-</span><span class="mf">360.</span> <span class="o">&lt;=</span> <span class="n">ra_lens</span> <span class="o">&lt;=</span> <span class="mf">360.</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;ra = </span><span class="si">{ra_lens}</span><span class="s2"> of lens if out of domain&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ra = </span><span class="si">{ra_lens}</span><span class="s2"> of lens if out of domain&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="o">-</span><span class="mf">90.</span> <span class="o">&lt;=</span> <span class="n">dec_lens</span> <span class="o">&lt;=</span> <span class="mf">90.</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;dec = </span><span class="si">{dec_lens}</span><span class="s2"> of lens if out of domain&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;dec = </span><span class="si">{dec_lens}</span><span class="s2"> of lens if out of domain&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="o">-</span><span class="mf">360.</span> <span class="o">&lt;=</span> <span class="n">x_</span> <span class="o">&lt;=</span> <span class="mf">360.</span> <span class="k">for</span> <span class="n">x_</span> <span class="ow">in</span> <span class="n">ra_source_list</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cluster has an invalid ra in source catalog&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="o">-</span><span class="mf">90.</span> <span class="o">&lt;=</span> <span class="n">x_</span> <span class="o">&lt;=</span> <span class="mi">90</span> <span class="k">for</span> <span class="n">x_</span> <span class="ow">in</span> <span class="n">dec_source_list</span><span class="p">):</span>
@@ -435,6 +437,8 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="n">t_</span> <span class="ow">in</span> <span class="n">cluster</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">columns</span> <span class="k">for</span> <span class="n">t_</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;gt&#39;</span><span class="p">,</span> <span class="s1">&#39;gx&#39;</span><span class="p">,</span> <span class="s1">&#39;theta&#39;</span><span class="p">)]):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Shear information is missing in galaxy catalog must have tangential&#39;</span> <span class="o">+</span>\
                         <span class="s1">&#39;and cross shears (gt,gx). Run compute_shear first!&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;z&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cluster</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Missing galaxy redshifts!&#39;</span><span class="p">)</span>
 
     <span class="c1"># Check to see if we need to do a unit conversion</span>
     <span class="k">if</span> <span class="n">angsep_units</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">bin_units</span><span class="p">:</span>
@@ -452,10 +456,13 @@
                                                     <span class="n">xbins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">error_model</span><span class="o">=</span><span class="s1">&#39;std/n&#39;</span><span class="p">)</span>
     <span class="n">r_avg</span><span class="p">,</span> <span class="n">gx_avg</span><span class="p">,</span> <span class="n">gx_err</span> <span class="o">=</span> <span class="n">compute_radial_averages</span><span class="p">(</span><span class="n">source_seps</span><span class="p">,</span> <span class="n">cluster</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;gx&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
                                                     <span class="n">xbins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">error_model</span><span class="o">=</span><span class="s1">&#39;std/n&#39;</span><span class="p">)</span>
+    <span class="n">r_avg</span><span class="p">,</span> <span class="n">z_avg</span><span class="p">,</span> <span class="n">z_err</span> <span class="o">=</span> <span class="n">compute_radial_averages</span><span class="p">(</span><span class="n">source_seps</span><span class="p">,</span> <span class="n">cluster</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+                                                  <span class="n">xbins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">error_model</span><span class="o">=</span><span class="s1">&#39;std/n&#39;</span><span class="p">)</span>
 
-    <span class="n">profile_table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">([</span><span class="n">bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">r_avg</span><span class="p">,</span> <span class="n">bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">gt_avg</span><span class="p">,</span> <span class="n">gt_err</span><span class="p">,</span> <span class="n">gx_avg</span><span class="p">,</span> <span class="n">gx_err</span><span class="p">],</span>
+    <span class="n">profile_table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">([</span><span class="n">bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">r_avg</span><span class="p">,</span> <span class="n">bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">gt_avg</span><span class="p">,</span> <span class="n">gt_err</span><span class="p">,</span> <span class="n">gx_avg</span><span class="p">,</span> <span class="n">gx_err</span><span class="p">,</span>
+                           <span class="n">z_avg</span><span class="p">,</span> <span class="n">z_err</span><span class="p">],</span>
                           <span class="n">names</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;radius_min&#39;</span><span class="p">,</span> <span class="s1">&#39;radius&#39;</span><span class="p">,</span> <span class="s1">&#39;radius_max&#39;</span><span class="p">,</span> <span class="s1">&#39;gt&#39;</span><span class="p">,</span> <span class="s1">&#39;gt_err&#39;</span><span class="p">,</span>
-                                 <span class="s1">&#39;gx&#39;</span><span class="p">,</span> <span class="s1">&#39;gx_err&#39;</span><span class="p">))</span>
+                                 <span class="s1">&#39;gx&#39;</span><span class="p">,</span> <span class="s1">&#39;gx_err&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;z_err&#39;</span><span class="p">,))</span>
 
     <span class="k">if</span> <span class="n">add_to_cluster</span><span class="p">:</span>
         <span class="n">cluster</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="n">profile_table</span>

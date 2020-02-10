@@ -7,18 +7,28 @@ and shape noise. We then populate a galaxy cluster object
 
 .. code:: ipython3
 
-    import clmm
+    import sys
+    sys.path.append('./support')
+    try: import clmm
+    except:
+        import notebook_install
+        notebook_install.install_clmm_pipeline(upgrade=False)
+        import clmm
     import numpy as np
     import matplotlib.pyplot as plt
     %matplotlib inline
+
+Make sure we know which version we’re using
+
+.. code:: ipython3
+
+    clmm.__version__
 
 Import mock data module and setup the configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code:: ipython3
 
-    import sys
-    sys.path.append('./support')
     import mock_data as mock
 
 Mock data generation requires a defined cosmology
@@ -51,45 +61,37 @@ Clean data: no noise, all galaxies at the same redshift
 
 .. code:: ipython3
 
-    ideal_data = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration,
-                                              cosmo, ngals, Delta, src_z)
+    zsrc_min=cluster_z+0.1
+
+.. code:: ipython3
+
+    ideal_data = mock.generate_galaxy_catalog(
+        cluster_m, cluster_z, concentration, cosmo, ngals, Delta, src_z, zsrc_min=zsrc_min)
 
 Noisy data: shape noise, all galaxies at the same redshift
 
 .. code:: ipython3
 
-    noisy_data_src_z = mock.generate_galaxy_catalog(cluster_m,
-                                                cluster_z,
-                                                concentration,
-                                                cosmo,
-                                                ngals,
-                                                Delta,
-                                                src_z,
-                                                shapenoise=0.005,
-                                                photoz_sigma_unscaled=0.05)
-
+    noisy_data_src_z = mock.generate_galaxy_catalog(
+        cluster_m, cluster_z, concentration, cosmo, ngals, Delta, src_z, zsrc_min=zsrc_min,
+        shapenoise=0.05)
 
 Noisy data: photo-z errors (and pdfs!), all galaxies at the same
 redshift
 
 .. code:: ipython3
 
-    noisy_data_photoz = mock.generate_galaxy_catalog(cluster_m,
-                                                cluster_z,
-                                                concentration,
-                                                cosmo,
-                                                ngals,
-                                                Delta,
-                                                'chang13',
-                                                shapenoise=0.005,
-                                                photoz_sigma_unscaled=0.05)
+    noisy_data_photoz = mock.generate_galaxy_catalog(
+        cluster_m, cluster_z, concentration, cosmo, ngals, Delta, src_z, zsrc_min=zsrc_min,
+        shapenoise=0.05, photoz_sigma_unscaled=0.05)
 
 Clean data: source galaxy redshifts drawn from Chang et al. 2013
 
 .. code:: ipython3
 
-    ideal_with_src_dist = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration,
-                                              cosmo, ngals, Delta, 'chang13',zsrc_max=7.0)
+    ideal_with_src_dist = mock.generate_galaxy_catalog(
+        cluster_m, cluster_z, concentration, cosmo, ngals, Delta, 'chang13', zsrc_min=zsrc_min,
+        zsrc_max=7.0)
 
 
 Noisy data: galaxies following redshift distribution, redshift error,
@@ -97,9 +99,20 @@ shape noise
 
 .. code:: ipython3
 
-    allsystematics = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration,
-                                              cosmo, ngals, Delta, 'chang13',zsrc_max=7.0,
-                                                  shapenoise=0.005, photoz_sigma_unscaled=0.05)
+    allsystematics = mock.generate_galaxy_catalog(
+        cluster_m, cluster_z, concentration, cosmo, ngals, Delta, 'chang13', zsrc_min=zsrc_min,
+        zsrc_max=7.0, shapenoise=0.005, photoz_sigma_unscaled=0.05)
+
+Sanity check: checking that no galaxies where drawn below zsrc_min
+
+.. code:: ipython3
+
+    print('Number of galaxies below zsrc_min:')
+    print('ideal_data:',np.sum(ideal_data['z']<zsrc_min))
+    print('noisy_data_src_z:',np.sum(noisy_data_src_z['z']<zsrc_min))
+    print('noisy_data_photoz:',np.sum(noisy_data_photoz['z']<zsrc_min))
+    print('ideal_with_src_dist:',np.sum(ideal_with_src_dist['z']<zsrc_min))
+    print('allsystematics:',np.sum(allsystematics['z']<zsrc_min))
 
 Inspect the catalog data
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -109,45 +122,19 @@ galaxies at z=0.8
 
 .. code:: ipython3
 
-    ideal_data[0:3]
-
-
-
-
-.. raw:: html
-
-    <i>Table length=3</i>
-    <table id="table4943547600" class="table-striped table-bordered table-condensed">
-    <thead><tr><th>ra</th><th>dec</th><th>e1</th><th>e2</th><th>z</th><th>id</th></tr></thead>
-    <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>int64</th></tr></thead>
-    <tr><td>-0.09576559139644657</td><td>0.1832214523228913</td><td>0.007398583430419036</td><td>-0.010641220272251072</td><td>0.8</td><td>0</td></tr>
-    <tr><td>0.03314296921511936</td><td>-0.3487744301732372</td><td>0.00647560283795064</td><td>-0.0012419282948284466</td><td>0.8</td><td>1</td></tr>
-    <tr><td>0.21137868961682144</td><td>-0.14155398986260342</td><td>-0.003818875651592516</td><td>-0.009273589740555234</td><td>0.8</td><td>2</td></tr>
-    </table>
-
-
+    for n in ideal_data.colnames: 
+        if n!='id':
+            ideal_data[n].format = "%6.3e" 
+    ideal_data[0:3].pprint(max_width=-1)
 
 With photo-z errors
 
 .. code:: ipython3
 
-    noisy_data_photoz[0:3]
-
-
-
-
-.. raw:: html
-
-    <i>Table length=3</i>
-    <table id="table4945622288" class="table-striped table-bordered table-condensed">
-    <thead><tr><th>ra</th><th>dec</th><th>e1</th><th>e2</th><th>z</th><th>pzbins [34]</th><th>pzpdf [34]</th><th>id</th></tr></thead>
-    <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>int64</th></tr></thead>
-    <tr><td>-0.20940091625320012</td><td>0.30444475659812914</td><td>0.0017597095956550341</td><td>-0.004594110051498344</td><td>1.1347196875107168</td><td>0.713272117135332 .. 1.7032721171353329</td><td>0.00013305719492919712 .. 0.0001993333163174267</td><td>0</td></tr>
-    <tr><td>-0.14372416366993354</td><td>0.05130754666101221</td><td>-0.016492729009126586</td><td>-0.013495166952940221</td><td>1.4226225018529628</td><td>0.8427177485458999 .. 1.8327177485459007</td><td>0.0003764357400908481 .. 0.0005399697220838204</td><td>1</td></tr>
-    <tr><td>-0.07526133272688695</td><td>0.2724072914536979</td><td>0.013466058367567379</td><td>-0.008055782700247618</td><td>1.5265969732187301</td><td>1.1412894725154983 .. 2.1312894725154994</td><td>0.0023309406490779247 .. 0.0030959211580955546</td><td>2</td></tr>
-    </table>
-
-
+    for n in noisy_data_photoz.colnames: 
+        if n!='id':
+            noisy_data_photoz[n].format = "%6.3e"
+    noisy_data_photoz[0:3].pprint(max_width=-1)
 
 .. code:: ipython3
 
@@ -155,38 +142,12 @@ With photo-z errors
     hist = plt.hist(allsystematics['z'], bins=50)
     plt.xlabel('Source Redshift')
 
-
-
-
-.. parsed-literal::
-
-    Text(0.5, 0, 'Source Redshift')
-
-
-
-
-.. image:: demo_generate_mock_cluster_files/demo_generate_mock_cluster_25_1.png
-
-
 .. code:: ipython3
 
     # pdz for the first galaxy in the catalog
     plt.plot(allsystematics['pzbins'][0], allsystematics['pzpdf'][0])
     plt.xlabel('Redshift')
     plt.ylabel('Photo-z Probability Distribution')
-
-
-
-
-.. parsed-literal::
-
-    Text(0, 0.5, 'Photo-z Probability Distribution')
-
-
-
-
-.. image:: demo_generate_mock_cluster_files/demo_generate_mock_cluster_26_1.png
-
 
 Populate in a galaxy cluster object
 
@@ -208,17 +169,4 @@ Plot source galaxy ellipticities
     plt.ylim(-0.2, 0.2)
     plt.xlabel('Ellipticity 1',fontsize='x-large')
     plt.ylabel('Ellipticity 2',fontsize='x-large')
-
-
-
-
-.. parsed-literal::
-
-    Text(0, 0.5, 'Ellipticity 2')
-
-
-
-
-.. image:: demo_generate_mock_cluster_files/demo_generate_mock_cluster_30_1.png
-
 
