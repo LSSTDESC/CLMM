@@ -10,6 +10,7 @@ python:
 jobs:
     allow_failures:
         - python: nightly
+    fast_finish: true
 
 install:
   # Update apt-get and install GSL
