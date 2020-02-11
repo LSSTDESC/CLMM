@@ -3,8 +3,8 @@ language: python
 cache: pip
 
 python:
-- "3.6" # Minimum supported version
-- "3.9-dev" # Why not also test cutting edge?
+# - "3.6" # Minimum supported version
+- "nightly" # Why not also test cutting edge?
 
 install:
   # Update apt-get and install GSL
