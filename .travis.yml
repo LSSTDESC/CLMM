@@ -3,8 +3,13 @@ language: python
 cache: pip
 
 python:
-- "3.6" # Minimum supported version
-- "nightly" # Why not also test cutting edge?
+- 3.6
+- nightly
+
+# We don't want travis to fail if a new experimental feature breaks us
+jobs:
+    allow_failures:
+        - python: nightly
 
 install:
   # Update apt-get and install GSL
