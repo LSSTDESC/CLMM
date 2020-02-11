@@ -4,7 +4,7 @@ cache: pip
 
 python:
 - "3.6" # Minimum supported version
-- "3.8-dev" # Why not also test cutting edge?
+- "3.9-dev" # Why not also test cutting edge?
 
 install:
   # Update apt-get and install GSL
