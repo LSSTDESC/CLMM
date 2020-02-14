@@ -236,7 +236,8 @@ def test_make_shear_profiles():
                                pa.make_shear_profile(cluster, 'radians', 'radians', bins=vec_bins))
     # Make the shear profile and check it
     bins_radians = np.array([0.002, 0.003, 0.004])
-    profile = pa.make_shear_profile(cluster, 'radians', 'radians', bins=bins_radians)
+    profile = pa.make_shear_profile(cluster, 'radians', 'radians', bins=bins_radians,
+                                    include_empty_bins=True)
     testing.assert_allclose(profile['radius_min'], bins_radians[:-1],  **TOLERANCE, 
                             err_msg="Minimum radius in bin not expected.")
     testing.assert_allclose(profile['radius'], [0.0021745039090962414, 0.0037238407383072053],
@@ -250,7 +251,7 @@ def test_make_shear_profiles():
                             err_msg="Cross shear in bin not expected")
 
     # Repeat the same tests when we call make_shear_profile through the GalaxyCluster method
-    profile2 = cluster.make_shear_profile('radians', 'radians', bins=bins_radians)
+    profile2 = cluster.make_shear_profile('radians', 'radians', bins=bins_radians, include_empty_bins=True)
     testing.assert_allclose(profile2['radius_min'], [0.002, 0.003], **TOLERANCE,
                             err_msg="Minimum radius in bin not expected.")
     testing.assert_allclose(profile2['radius'], [0.0021745039090962414, 0.0037238407383072053],
@@ -262,3 +263,5 @@ def test_make_shear_profiles():
                             err_msg="Tangential shear in bin not expected")
     testing.assert_allclose(profile2['gx'], expected_cross_shear[:-1], **TOLERANCE,
                             err_msg="Cross shear in bin not expected")
+
+    # CRISTOBAL: need to add tests when running with include_empty_bins=False
