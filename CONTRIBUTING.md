@@ -13,12 +13,12 @@ This is a brief guide to contributing to CLMM, including information about ident
 8. [Additional resources](#additional_resources)
 9. [Contact](#contact)
 
-## Identifying Issues <a name="#identifying_issues"></a>
+## Identifying Issues <a name="identifying_issues"></a>
 
 Action items for CLMM code improvements are listed as [GitHub Issues](https://github.com/LSSTDESC/CLMM/issues).
 Issues marked with the label `good first issue` are well-suited for new contributors.
 
-## Access to the proper environment on cori.nersc.gov <a name="#access_to_the_proper_environment_on_cori"></a>
+## Access to the proper environment on cori.nersc.gov <a name="access_to_the_proper_environment_on_cori"></a>
 
 If you have access to nersc, this will likely be the easiest to make sure you have the appropriate environment.  After logging into cori.nersc.gov, you will need to execute the following:
 
@@ -75,7 +75,7 @@ install_clmm_pipeline(upgrade=True)  # Comment this if you do not need to adjust
 
 ```
 
-## Making a local copy of CLMM <a name="#making_a_local_copy_of_clmm"></a>
+## Making a local copy of CLMM <a name="making_a_local_copy_of_clmm"></a>
 
 As a newcomer, you likely will not have edit access to the main CLMM repository.
 Without edit privileges, you won't be able to create or push changes to branches in the base repository.
@@ -93,7 +93,7 @@ If you do have edit privileges to CLMM, it may be easier to simply clone the bas
     git clone git@github.com:LSSTDESC/CLMM.git
 ```
 
-## Making and submitting changes <a name="#making_and_submitting_changes"></a>
+## Making and submitting changes <a name="making_and_submitting_changes"></a>
 Once you've created a local copy of CLMM on your machine, you can begin making changes to the code and submitting them for review.
 To do this, follow the following steps from within your local copy of CLMM (forked or base).
 
@@ -122,7 +122,7 @@ NOTE: Code is not complete without unit tests and documentation. Please ensure t
 
 To test this, first install the code by running `python setup.py install --user` (required after any change whatsoever to the `.py` files in `clmm/` directory). To run all of the unit tests, run `pytest` in the root package directory. To test the docs, in the root package directory after installing, run `./update_docs`. This script both deletes the old compiled documentation files and rebuilds them. You can view the compiled docs by running `open docs/_build/html/index.html`.
 
-## Adding documentation <a name="#adding_documentation"></a>
+## Adding documentation <a name="adding_documentation"></a>
 
 If you are adding documentation either in the form of example jupyter notebooks or new python modules, your documentation will need to compile for our online documentation hosted by the LSST-DESC website: http://lsstdesc.org/CLMM/
 
@@ -131,7 +131,7 @@ We have done most of the hard work for you. Simply edit the configuration file, 
 Once it has been added to the config file, simply run `./update_docs` from the top level directory of the repository and your documentation should compile and be linked in the correct places!
 
 
-## Reviewing an open pull request <a name="#reviewing_an_open_pull_request"></a>
+## Reviewing an open pull request <a name="reviewing_an_open_pull_request"></a>
 
 To review an open pull request submitted by another developer, there are several steps that you should take.
 
@@ -145,7 +145,7 @@ To review an open pull request submitted by another developer, there are several
 
 NOTE: We have had several branches that have exploded in commit number. If you are merging a branch and it has more than ~20 commits, strongly recommend using the "Squash and Merge" option for merging a branch.
 
-## Steps to merging a pull request <a name="#steps_to_merging_a_pull_request"></a>
+## Steps to merging a pull request <a name="steps_to_merging_a_pull_request"></a>
 
 To ensure consistency between our code and documentation, we need to take care of a couple of more things after accepting a review on a PR into master.
 
@@ -163,7 +163,7 @@ Note: `fix:` should correspond to version changes to Y. The rest of the scopes a
 
 This is easy! On your local computer just `git checkout publish-docs` to access the branch that hosts the compiled documentation.   You will then need to merge all of the latest changes from master `git merge master`.  Next, from the main CLMM directory (the one that contains `setup.py`) run `./publish_docs` and it does all of the work for you (including automatically pushing changes to Github)!  Note, you will want to execute all cells of demo notebooks before running`./publish_docs` in order for the output to show in the public documentation.
 
-## Additional resources <a name="#additional_resources"></a>
+## Additional resources <a name="additional_resources"></a>
 
 Here's a list of additional resources which you may find helpful in navigating git for the first time.
 * The DESC Confluence page on [Getting Started with Git and Github](https://confluence.slac.stanford.edu/display/LSSTDESC/Getting+Started+with+Git+and+GitHub)
@@ -171,7 +171,7 @@ Here's a list of additional resources which you may find helpful in navigating g
 * [Phil Marshall's Git tutorial video lesson](https://www.youtube.com/watch?v=2g9lsbJBPEs)
 * [The Github Help Pages](https://help.github.com/)
 
-## Contact (alphabetical order) <a name="#contact"></a>
+## Contact (alphabetical order) <a name="contact"></a>
 * [Michel Aguena](https://github.com/m-aguena) (LIneA)
 * [Doug Applegate](https://github.com/deapplegate) (Novartis)
 * [Camille Avestruz](https://github.com/cavestruz) (University of Michigan)
