@@ -1,3 +1,4 @@
+
 Generate Mock Data
 ==================
 
@@ -18,7 +19,7 @@ and shape noise. We then populate a galaxy cluster object
     import matplotlib.pyplot as plt
     %matplotlib inline
 
-Make sure we know which version we’re using
+Make sure we know which version we're using
 
 .. code:: ipython3
 
@@ -85,7 +86,7 @@ redshift
         cluster_m, cluster_z, concentration, cosmo, ngals, Delta, src_z, zsrc_min=zsrc_min,
         shapenoise=0.05, photoz_sigma_unscaled=0.05)
 
-Clean data: source galaxy redshifts drawn from Chang et al. 2013
+Clean data: source galaxy redshifts drawn from Chang et al. 2013
 
 .. code:: ipython3
 
@@ -103,7 +104,7 @@ shape noise
         cluster_m, cluster_z, concentration, cosmo, ngals, Delta, 'chang13', zsrc_min=zsrc_min,
         zsrc_max=7.0, shapenoise=0.005, photoz_sigma_unscaled=0.05)
 
-Sanity check: checking that no galaxies where drawn below zsrc_min
+Sanity check: checking that no galaxies where drawn below zsrc\_min
 
 .. code:: ipython3
 
@@ -169,4 +170,3 @@ Plot source galaxy ellipticities
     plt.ylim(-0.2, 0.2)
     plt.xlabel('Ellipticity 1',fontsize='x-large')
     plt.ylabel('Ellipticity 2',fontsize='x-large')
-

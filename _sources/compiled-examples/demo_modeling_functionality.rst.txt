@@ -1,3 +1,4 @@
+
 Model a Galaxy Cluster
 ======================
 
@@ -26,7 +27,7 @@ Imports specific to clmm
     import clmm
     import clmm.modeling as m
 
-Make sure we know which version we’re using
+Make sure we know which version we're using
 
 .. code:: ipython3
 
@@ -137,4 +138,3 @@ Plot the predicted profiles
 .. code:: ipython3
 
     plot_profile(r3d, gt, '$g_t$')
-

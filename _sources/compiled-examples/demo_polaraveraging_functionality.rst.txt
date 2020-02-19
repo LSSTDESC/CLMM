@@ -1,3 +1,4 @@
+
 Measure a Profile
 =================
 
@@ -12,13 +13,13 @@ Ex:
 
 ::
 
-   theta, g_t, g_x = compute_shear(cl, geometry="flat")
+    theta, g_t, g_x = compute_shear(cl, geometry="flat")
 
 should be done by the user as:
 
 ::
 
-   theta, g_t, g_x = cl.compute_shear(geometry="flat")
+    theta, g_t, g_x = cl.compute_shear(geometry="flat")
 
 .. code:: ipython3
 
@@ -31,7 +32,7 @@ should be done by the user as:
     sys.path.append('./support')
     import mock_data as mock
 
-Make sure we know which version we’re using
+Make sure we know which version we're using
 
 .. code:: ipython3
 
@@ -85,12 +86,10 @@ Loading this into a CLMM cluster object centered on (0,0)
 2) Load cluster object containing:
 ----------------------------------
 
-   Lens properties (ra_l, dec_l, z_l)
+    Lens properties (ra\_l, dec\_l, z\_l)
 
-..
-
-   Source properties (ra_s, dec_s, e1, e2) ### Note, if loading from
-   mock data, use: > cl = gc.load_cluster(“GC_from_mock_data.pkl”)
+    Source properties (ra\_s, dec\_s, e1, e2) ### Note, if loading from
+    mock data, use: > cl = gc.load\_cluster("GC\_from\_mock\_data.pkl")
 
 .. code:: ipython3
 

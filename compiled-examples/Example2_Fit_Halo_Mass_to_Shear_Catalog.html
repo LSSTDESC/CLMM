@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Fit Halo Mass from a Shear Catalog &mdash; CLMM 0.1.1 documentation</title>
+  <title>Fit Halo Mass from a Shear Catalog &mdash; CLMM 0.1.2 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.1.1
+                0.1.2
               </div>
             
           
@@ -199,26 +199,26 @@ the model.</p>
 <span class="k">try</span><span class="p">:</span> <span class="kn">import</span> <span class="nn">clmm</span>
 <span class="k">except</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">notebook_install</span>
-    <span class="n">notebook_install</span><span class="o">.</span><span class="n">install_clmm_pipeline</span><span class="p">(</span><span class="n">upgrade</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">notebook_install</span><span class="o">.</span><span class="n">install_clmm_pipeline</span><span class="p">(</span><span class="n">upgrade</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
     <span class="kn">import</span> <span class="nn">clmm</span>
 <span class="kn">from</span> <span class="nn">astropy.cosmology</span> <span class="kn">import</span> <span class="n">FlatLambdaCDM</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 <span class="c1"># %matplotlib inline</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">random</span>
 <span class="kn">from</span> <span class="nn">sampler</span> <span class="kn">import</span> <span class="n">fitters</span>
 </pre></div>
 </div>
 <p>Next, we import <code class="docutils literal notranslate"><span class="pre">clmm</span></code>’s core modules.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">clmm.polaraveraging</span> <span class="k">as</span> <span class="nn">pa</span>
-<span class="kn">import</span> <span class="nn">clmm.galaxycluster</span> <span class="k">as</span> <span class="nn">gc</span>
-<span class="kn">import</span> <span class="nn">clmm.modeling</span> <span class="k">as</span> <span class="nn">modeling</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">clmm.polaraveraging</span> <span class="kn">as</span> <span class="nn">pa</span>
+<span class="kn">import</span> <span class="nn">clmm.galaxycluster</span> <span class="kn">as</span> <span class="nn">gc</span>
+<span class="kn">import</span> <span class="nn">clmm.modeling</span> <span class="kn">as</span> <span class="nn">modeling</span>
 </pre></div>
 </div>
 <p>We then import a support modules for a specific data sets. <code class="docutils literal notranslate"><span class="pre">clmm</span></code>
 includes support modules that enable the user to generate mock data in a
 format compatible with <code class="docutils literal notranslate"><span class="pre">clmm</span></code>.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">mock_data</span> <span class="k">as</span> <span class="nn">mock</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">mock_data</span> <span class="kn">as</span> <span class="nn">mock</span>
 </pre></div>
 </div>
 </div>
@@ -276,8 +276,8 @@ may be saved for later use.</p>
 <span class="n">cl2</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">load_cluster</span><span class="p">(</span><span class="s1">&#39;ideal_GC_z.pkl&#39;</span><span class="p">)</span> <span class="c1"># background galaxies distributed according to Chang et al. (2013)</span>
 <span class="n">cl3</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">load_cluster</span><span class="p">(</span><span class="s1">&#39;noisy_GC_z.pkl&#39;</span><span class="p">)</span> <span class="c1"># same as cl2 but with photoz error and shape noise</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cluster info = ID:&quot;</span><span class="p">,</span> <span class="n">cl2</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="s2">&quot;; ra:&quot;</span><span class="p">,</span> <span class="n">cl2</span><span class="o">.</span><span class="n">ra</span><span class="p">,</span> <span class="s2">&quot;; dec:&quot;</span><span class="p">,</span> <span class="n">cl2</span><span class="o">.</span><span class="n">dec</span><span class="p">,</span> <span class="s2">&quot;; z_l :&quot;</span><span class="p">,</span> <span class="n">cl2</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The number of source galaxies is :&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cl2</span><span class="o">.</span><span class="n">galcat</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Cluster info = ID:&quot;</span><span class="p">,</span> <span class="n">cl2</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="s2">&quot;; ra:&quot;</span><span class="p">,</span> <span class="n">cl2</span><span class="o">.</span><span class="n">ra</span><span class="p">,</span> <span class="s2">&quot;; dec:&quot;</span><span class="p">,</span> <span class="n">cl2</span><span class="o">.</span><span class="n">dec</span><span class="p">,</span> <span class="s2">&quot;; z_l :&quot;</span><span class="p">,</span> <span class="n">cl2</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;The number of source galaxies is :&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cl2</span><span class="o">.</span><span class="n">galcat</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">h</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">cl2</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
@@ -356,7 +356,7 @@ data is cosmology-independent, with units of <span class="math notranslate nohig
 <p>We estimate the best-fit mass using <code class="docutils literal notranslate"><span class="pre">scipy.optimize.curve_fit</span></code>.</p>
 <p>Here, to build the model we make the WRONG assumption that the average
 shear in bin <span class="math notranslate nohighlight">\(i\)</span> equals the shear at the average redshift in the
-bin; i.e. we assume that
+bin; i.e. we assume that
 <span class="math notranslate nohighlight">\(\langle g_t\rangle_i = g_t(\langle z\rangle_i)\)</span>. This should not
 impact <code class="docutils literal notranslate"><span class="pre">cluster</span> <span class="pre">1</span></code> as all sources are located at the same redshift.
 However, this yields a bias in the econstructed mass for <code class="docutils literal notranslate"><span class="pre">cluster</span> <span class="pre">2</span></code>
@@ -395,9 +395,9 @@ distribution.</p>
 
 
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Best fit mass for cluster 1 = </span><span class="si">{m_est1:.2e}</span><span class="s1"> +/- </span><span class="si">{m_est_err1:.2e}</span><span class="s1"> Msun&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Best fit mass for cluster 2 = </span><span class="si">{m_est2:.2e}</span><span class="s1"> +/- </span><span class="si">{m_est_err2:.2e}</span><span class="s1"> Msun&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Best fit mass for cluster 3 = </span><span class="si">{m_est3:.2e}</span><span class="s1"> +/- </span><span class="si">{m_est_err3:.2e}</span><span class="s1"> Msun&#39;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Best fit mass for cluster 1 = {m_est1:.2e} +/- {m_est_err1:.2e} Msun&#39;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Best fit mass for cluster 2 = {m_est2:.2e} +/- {m_est_err2:.2e} Msun&#39;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Best fit mass for cluster 3 = {m_est3:.2e} +/- {m_est_err3:.2e} Msun&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>As expected, the reconstructed mass is biased whenever the sources are

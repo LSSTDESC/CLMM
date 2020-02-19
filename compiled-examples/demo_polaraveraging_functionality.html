@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Measure a Profile &mdash; CLMM 0.1.1 documentation</title>
+  <title>Measure a Profile &mdash; CLMM 0.1.2 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.1.1
+                0.1.2
               </div>
             
           
@@ -196,14 +196,14 @@ such. They are just explicitely used here for clarity.</p>
 <div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">theta</span><span class="p">,</span> <span class="n">g_t</span><span class="p">,</span> <span class="n">g_x</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">compute_shear</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;flat&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">clmm</span>
 <span class="kn">from</span> <span class="nn">clmm.polaraveraging</span> <span class="kn">import</span> <span class="n">compute_shear</span><span class="p">,</span> <span class="n">make_shear_profile</span><span class="p">,</span> <span class="n">make_bins</span>
 <span class="kn">from</span> <span class="nn">clmm.plotting</span> <span class="kn">import</span> <span class="n">plot_profiles</span>
 <span class="kn">from</span> <span class="nn">clmm.galaxycluster</span> <span class="kn">import</span> <span class="n">GalaxyCluster</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;./support&#39;</span><span class="p">)</span>
-<span class="kn">import</span> <span class="nn">mock_data</span> <span class="k">as</span> <span class="nn">mock</span>
+<span class="kn">import</span> <span class="nn">mock_data</span> <span class="kn">as</span> <span class="nn">mock</span>
 </pre></div>
 </div>
 <p>Make sure we know which version we’re using</p>
@@ -255,15 +255,13 @@ such. They are just explicitely used here for clarity.</p>
 <h2>2) Load cluster object containing:<a class="headerlink" href="#load-cluster-object-containing" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>Lens properties (ra_l, dec_l, z_l)</p>
-</div></blockquote>
-<blockquote>
-<div><p>Source properties (ra_s, dec_s, e1, e2) ### Note, if loading from
+<p>Source properties (ra_s, dec_s, e1, e2) ### Note, if loading from
 mock data, use: &gt; cl = gc.load_cluster(“GC_from_mock_data.pkl”)</p>
 </div></blockquote>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cl</span> <span class="o">=</span> <span class="n">gc_object</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cluster info = ID:&quot;</span><span class="p">,</span> <span class="n">cl</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="s2">&quot;; ra:&quot;</span><span class="p">,</span> <span class="n">cl</span><span class="o">.</span><span class="n">ra</span><span class="p">,</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Cluster info = ID:&quot;</span><span class="p">,</span> <span class="n">cl</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="s2">&quot;; ra:&quot;</span><span class="p">,</span> <span class="n">cl</span><span class="o">.</span><span class="n">ra</span><span class="p">,</span>
       <span class="s2">&quot;; dec:&quot;</span><span class="p">,</span> <span class="n">cl</span><span class="o">.</span><span class="n">dec</span><span class="p">,</span> <span class="s2">&quot;; z_l :&quot;</span><span class="p">,</span> <span class="n">cl</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The number of source galaxies is :&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;The number of source galaxies is :&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>Plot cluster and galaxy positions, and redshift distribution</p>
@@ -276,9 +274,9 @@ mock data, use: &gt; cl = gc.load_cluster(“GC_from_mock_data.pkl”)</p>
 
 <span class="n">hist</span> <span class="o">=</span> <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">40</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;$z_</span><span class="si">{source}</span><span class="s1">$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="s2">&quot;large&quot;</span><span class="p">)</span>
-<span class="n">xt</span> <span class="o">=</span> <span class="p">{</span><span class="n">t</span><span class="p">:</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{t}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get_xticks</span><span class="p">()</span> <span class="k">if</span> <span class="n">t</span><span class="o">!=</span><span class="mi">0</span><span class="p">}</span>
-<span class="n">xt</span><span class="p">[</span><span class="n">cl</span><span class="o">.</span><span class="n">z</span><span class="p">]</span> <span class="o">=</span><span class="s1">&#39;$z_</span><span class="si">{cl}</span><span class="s1">$&#39;</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;$z_{source}$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="s2">&quot;large&quot;</span><span class="p">)</span>
+<span class="n">xt</span> <span class="o">=</span> <span class="p">{</span><span class="n">t</span><span class="p">:</span><span class="n">f</span><span class="s1">&#39;{t}&#39;</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get_xticks</span><span class="p">()</span> <span class="k">if</span> <span class="n">t</span><span class="o">!=</span><span class="mi">0</span><span class="p">}</span>
+<span class="n">xt</span><span class="p">[</span><span class="n">cl</span><span class="o">.</span><span class="n">z</span><span class="p">]</span> <span class="o">=</span><span class="s1">&#39;$z_{cl}$&#39;</span>
 <span class="n">xto</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">xt</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">+</span><span class="p">[</span><span class="n">cl</span><span class="o">.</span><span class="n">z</span><span class="p">])</span>
 <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">xto</span><span class="p">)</span>
 <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">xt</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">xto</span><span class="p">)</span>
@@ -359,7 +357,7 @@ in units defined by user, plot the new profiles</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">new_profiles</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="n">new_profiles</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">],</span>
              <span class="n">new_profiles</span><span class="p">[</span><span class="s1">&#39;z_err&#39;</span><span class="p">])</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;dotted&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">cl</span><span class="o">.</span><span class="n">z</span><span class="o">*</span><span class="mf">1.1</span><span class="p">,</span> <span class="s1">&#39;$z_</span><span class="si">{cl}</span><span class="s1">$&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">cl</span><span class="o">.</span><span class="n">z</span><span class="o">*</span><span class="mf">1.1</span><span class="p">,</span> <span class="s1">&#39;$z_{cl}$&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Radius [Mpc]&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;$\langle z</span><span class="se">\\</span><span class="s1">rangle$&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
