@@ -1,3 +1,4 @@
+
 Fit Halo Mass from a Shear Catalog
 ==================================
 
@@ -28,7 +29,7 @@ First, we import some standard packages.
     
     from numpy import random
 
-Next, we import ``clmm``\ ’s core modules.
+Next, we import ``clmm``'s core modules.
 
 .. code:: ipython3
 
@@ -37,7 +38,7 @@ Next, we import ``clmm``\ ’s core modules.
     import clmm.galaxycluster as gc
     import clmm.modeling as modeling
 
-Make sure we know which version we’re using
+Make sure we know which version we're using
 
 .. code:: ipython3
 
@@ -62,7 +63,7 @@ Making mock data
 ----------------
 
 To create mock data, we need to define a true cosmology, which is
-currently done with ```astropy``\ ’s cosmology
+currently done with ```astropy``'s cosmology
 library <http://docs.astropy.org/en/stable/cosmology/index.html>`__.
 
 .. code:: ipython3
@@ -191,7 +192,7 @@ of the galaxy catalog in bins of radius.
     res2 = pa.make_shear_profile(cl, "radians", "Mpc", bins=bin_edges2,
                                  cosmo=cosmo)
 
-For later use, we’ll define some variables for the binned radius and
+For later use, we'll define some variables for the binned radius and
 tangential shear.
 
 .. code:: ipython3
@@ -314,5 +315,3 @@ We visualize the two predictions of reduced tangential shear.
     plt.legend()
     plt.xlabel('R [Mpc]', fontsize=fsize)
     plt.ylabel('reduced tangential shear', fontsize=fsize)
-
-

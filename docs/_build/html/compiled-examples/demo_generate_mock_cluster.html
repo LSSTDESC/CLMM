@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Generate Mock Data &mdash; CLMM 0.1.1 documentation</title>
+  <title>Generate Mock Data &mdash; CLMM 0.1.2 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.1.1
+                0.1.2
               </div>
             
           
@@ -191,10 +191,10 @@ and shape noise. We then populate a galaxy cluster object</p>
 <span class="k">try</span><span class="p">:</span> <span class="kn">import</span> <span class="nn">clmm</span>
 <span class="k">except</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">notebook_install</span>
-    <span class="n">notebook_install</span><span class="o">.</span><span class="n">install_clmm_pipeline</span><span class="p">(</span><span class="n">upgrade</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">notebook_install</span><span class="o">.</span><span class="n">install_clmm_pipeline</span><span class="p">(</span><span class="n">upgrade</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
     <span class="kn">import</span> <span class="nn">clmm</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 <span class="o">%</span><span class="k">matplotlib</span> inline
 </pre></div>
 </div>
@@ -204,7 +204,7 @@ and shape noise. We then populate a galaxy cluster object</p>
 </div>
 <div class="section" id="import-mock-data-module-and-setup-the-configuration">
 <h2>Import mock data module and setup the configuration<a class="headerlink" href="#import-mock-data-module-and-setup-the-configuration" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">mock_data</span> <span class="k">as</span> <span class="nn">mock</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">mock_data</span> <span class="kn">as</span> <span class="nn">mock</span>
 </pre></div>
 </div>
 <p>Mock data generation requires a defined cosmology</p>
@@ -249,7 +249,7 @@ redshift</p>
     <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Clean data: source galaxy redshifts drawn from Chang et al. 2013</p>
+<p>Clean data: source galaxy redshifts drawn from Chang et al. 2013</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ideal_with_src_dist</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span>
     <span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">ngals</span><span class="p">,</span> <span class="n">Delta</span><span class="p">,</span> <span class="s1">&#39;chang13&#39;</span><span class="p">,</span> <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span>
     <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.0</span><span class="p">)</span>
@@ -263,12 +263,12 @@ shape noise</p>
 </pre></div>
 </div>
 <p>Sanity check: checking that no galaxies where drawn below zsrc_min</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of galaxies below zsrc_min:&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ideal_data:&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ideal_data</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="n">zsrc_min</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;noisy_data_src_z:&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">noisy_data_src_z</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="n">zsrc_min</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;noisy_data_photoz:&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">noisy_data_photoz</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="n">zsrc_min</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ideal_with_src_dist:&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ideal_with_src_dist</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="n">zsrc_min</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;allsystematics:&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">allsystematics</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="n">zsrc_min</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="s1">&#39;Number of galaxies below zsrc_min:&#39;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;ideal_data:&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ideal_data</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="n">zsrc_min</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;noisy_data_src_z:&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">noisy_data_src_z</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="n">zsrc_min</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;noisy_data_photoz:&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">noisy_data_photoz</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="n">zsrc_min</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;ideal_with_src_dist:&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ideal_with_src_dist</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="n">zsrc_min</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;allsystematics:&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">allsystematics</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="n">zsrc_min</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>

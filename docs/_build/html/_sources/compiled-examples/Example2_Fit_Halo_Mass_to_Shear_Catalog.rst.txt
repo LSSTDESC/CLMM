@@ -1,3 +1,4 @@
+
 Fit Halo Mass from a Shear Catalog
 ==================================
 
@@ -32,7 +33,7 @@ First, we import some standard packages.
     from numpy import random
     from sampler import fitters
 
-Next, we import ``clmm``\ ’s core modules.
+Next, we import ``clmm``'s core modules.
 
 .. code:: ipython3
 
@@ -52,7 +53,7 @@ Making mock data
 ----------------
 
 To create mock data, we need to define a true cosmology, which is
-currently done with ```astropy``\ ’s cosmology
+currently done with ```astropy``'s cosmology
 library <http://docs.astropy.org/en/stable/cosmology/index.html>`__.
 
 .. code:: ipython3
@@ -207,7 +208,7 @@ We estimate the best-fit mass using ``scipy.optimize.curve_fit``.
 
 Here, to build the model we make the WRONG assumption that the average
 shear in bin :math:`i` equals the shear at the average redshift in the
-bin; i.e. we assume that
+bin; i.e. we assume that
 :math:`\langle g_t\rangle_i = g_t(\langle z\rangle_i)`. This should not
 impact ``cluster 1`` as all sources are located at the same redshift.
 However, this yields a bias in the econstructed mass for ``cluster 2``
@@ -320,4 +321,3 @@ data
     axes[1].set_ylabel('reduced tangential shear', fontsize=fsize)
     
     fig.tight_layout()
-

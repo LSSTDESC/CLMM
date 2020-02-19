@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.plotting &mdash; CLMM 0.1.1 documentation</title>
+  <title>clmm.plotting &mdash; CLMM 0.1.2 documentation</title>
   
 
   
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.1.1
+                0.1.2
               </div>
             
           
@@ -180,7 +180,7 @@
   <h1>Source code for clmm.plotting</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;A collection of scripts that can be used to plot the various quantities that CLMM models.&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">.galaxycluster</span> <span class="kn">import</span> <span class="n">GalaxyCluster</span>
+<span class="kn">from</span> <span class="nn">.galaxycluster</span> <span class="k">import</span> <span class="n">GalaxyCluster</span>
 
 
 <div class="viewcode-block" id="plot_profiles"><a class="viewcode-back" href="../../api/clmm.plotting.html#clmm.plotting.plot_profiles">[docs]</a><span class="k">def</span> <span class="nf">plot_profiles</span><span class="p">(</span><span class="n">cluster</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rbins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tangential_shear</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tangential_shear_error</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -250,7 +250,7 @@
         <span class="k">pass</span>
 
     <span class="n">axes</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-    <span class="n">axes</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Radius [</span><span class="si">{r_units}</span><span class="s1">]&#39;</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Radius [</span><span class="si">{r_units}</span><span class="s1">]&#39;</span><span class="p">)</span>
     <span class="n">axes</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$\gamma$&#39;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span></div>
