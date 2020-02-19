@@ -160,7 +160,7 @@ Please choose from `fix:`, `feat:`, `build:`, `chore:`, `ci:`, `docs:`, `style:`
 
 Note: `fix:` should correspond to version changes to Y. The rest of the scopes above should be version changes to Z.
 
-## Updating Public Documentation on lsstdesc.org <a name="updating_public_docs"><\a>
+## Updating Public Documentation on lsstdesc.org <a name="updating_public_docs"></a>
 
 This is easy! Once you have merged all approved changes into master, you will want to update the public documentation.  On your local computer just `git checkout publish-docs` to access the branch that hosts the compiled documentation.   You will then need to merge all of the latest changes from master `git merge master`.  Next, from the main CLMM directory (the one that contains `setup.py`) run `./publish_docs` and it does all of the work for you (including automatically pushing changes to Github)!  Note, you will want to execute all cells of demo notebooks before running`./publish_docs` in order for the output to show in the public documentation.
 
