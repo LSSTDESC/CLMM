@@ -44,6 +44,15 @@ Make sure we know which version we're using
 
     clmm.__version__
 
+
+
+
+.. parsed-literal::
+
+    '0.1.0'
+
+
+
 We then import a support modules for a specific data sets. ``clmm``
 includes support modules that enable the user to generate mock data in a
 format compatible with ``clmm``. We also provide support modules for
@@ -124,6 +133,13 @@ Any saved ``clmm.GalaxyCluster`` object may be read in for analysis.
     ra_s = cl.galcat['ra']
     dec_s = cl.galcat['dec']
 
+
+.. parsed-literal::
+
+    Cluster info = ID: Awesome_cluster ; ra: 0.0 ; dec: 0.0 ; z_l : 0.3
+    The number of source galaxies is : 10000
+
+
 We can visualize the distribution of galaxies on the sky.
 
 .. code:: ipython3
@@ -141,6 +157,11 @@ We can visualize the distribution of galaxies on the sky.
     plt.gca().set_title('Source Galaxies', fontsize=fsize)
     
     plt.show()
+
+
+
+.. image:: Example1_Fit_Halo_Mass_to_Shear_Catalog_files/Example1_Fit_Halo_Mass_to_Shear_Catalog_24_0.png
+
 
 ``clmm`` separates cosmology-dependent and cosmology-independent
 functionality.
@@ -170,6 +191,19 @@ We can visualize the shear field at each galaxy location.
     fig.gca().loglog(theta, g_t, '.')
     plt.ylabel("reduced shear", fontsize=fsize)
     plt.xlabel("angular distance [deg]", fontsize=fsize)
+
+
+
+
+.. parsed-literal::
+
+    Text(0.5, 0, 'angular distance [deg]')
+
+
+
+
+.. image:: Example1_Fit_Halo_Mass_to_Shear_Catalog_files/Example1_Fit_Halo_Mass_to_Shear_Catalog_31_1.png
+
 
 Radially binning the data
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -219,6 +253,19 @@ We visualize the radially binned shear for our mock galaxies.
     plt.gca().set_xlabel(r'$r\;[Mpc]$', fontsize=fsize)
     plt.gca().set_ylabel(r'$g_t$', fontsize=fsize)
 
+
+
+
+.. parsed-literal::
+
+    Text(0, 0.5, '$g_t$')
+
+
+
+
+.. image:: Example1_Fit_Halo_Mass_to_Shear_Catalog_files/Example1_Fit_Halo_Mass_to_Shear_Catalog_40_1.png
+
+
 After running ``clmm.polaraveraging.make_shear_profile`` on a
 ``clmm.GalaxyCluster`` object, the object acquires the
 ``clmm.GalaxyCluster.profile`` attribute.
@@ -227,6 +274,23 @@ After running ``clmm.polaraveraging.make_shear_profile`` on a
 
     for n in cl.profile.colnames: cl.profile[n].format = "%6.3e"
     cl.profile.pprint(max_width=-1)
+
+
+.. parsed-literal::
+
+    radius_min   radius  radius_max     gt      gt_err      gx       gx_err      z       z_err  
+    ---------- --------- ---------- --------- --------- ---------- --------- --------- ---------
+     1.000e-02 2.503e-01  3.790e-01 1.007e-01 7.324e-04  7.584e-18 7.229e-19 8.000e-01 0.000e+00
+     3.790e-01 5.813e-01  7.480e-01 6.348e-02 6.545e-05  7.273e-19 9.226e-20 8.000e-01 0.000e+00
+     7.480e-01 9.469e-01  1.117e+00 4.532e-02 2.083e-05  4.434e-19 3.956e-20 8.000e-01 6.034e-19
+     1.117e+00 1.312e+00  1.486e+00 3.459e-02 9.882e-06  5.324e-19 1.827e-20 8.000e-01 4.765e-19
+     1.486e+00 1.674e+00  1.855e+00 2.759e-02 5.683e-06 -3.475e-19 1.843e-20 8.000e-01 3.726e-19
+     1.855e+00 2.045e+00  2.224e+00 2.254e-02 3.432e-06  5.077e-20 1.028e-20 8.000e-01 3.067e-19
+     2.224e+00 2.416e+00  2.593e+00 1.884e-02 2.086e-06 -1.608e-19 6.283e-21 8.000e-01 2.558e-19
+     2.593e+00 2.784e+00  2.962e+00 1.607e-02 1.387e-06  4.276e-20 5.003e-21 8.000e-01 0.000e+00
+     2.962e+00 3.142e+00  3.331e+00 1.395e-02 9.890e-07 -5.639e-20 4.128e-21 8.000e-01 1.955e-19
+     3.331e+00 3.520e+00  3.700e+00 1.216e-02 7.431e-07 -1.220e-20 2.515e-21 8.000e-01 1.796e-19
+
 
 Modeling the data
 -----------------
@@ -274,6 +338,12 @@ binning schemes.
     
     print((m_est1, m_est2))
 
+
+.. parsed-literal::
+
+    (array([1.00258705e+15]), array([1.05730662e+15]))
+
+
 Next, we calculate the reduced tangential shear predicted by the two
 models.
 
@@ -315,3 +385,16 @@ We visualize the two predictions of reduced tangential shear.
     plt.legend()
     plt.xlabel('R [Mpc]', fontsize=fsize)
     plt.ylabel('reduced tangential shear', fontsize=fsize)
+
+
+
+
+.. parsed-literal::
+
+    Text(0, 0.5, 'reduced tangential shear')
+
+
+
+
+.. image:: Example1_Fit_Halo_Mass_to_Shear_Catalog_files/Example1_Fit_Halo_Mass_to_Shear_Catalog_53_1.png
+
