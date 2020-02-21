@@ -118,9 +118,21 @@ Any saved ``clmm.GalaxyCluster`` object may be read in for analysis.
     print("Cluster info = ID:", cl2.unique_id, "; ra:", cl2.ra, "; dec:", cl2.dec, "; z_l :", cl2.z)
     print("The number of source galaxies is :", len(cl2.galcat))
 
+
+.. parsed-literal::
+
+    Cluster info = ID: CL_ideal_z ; ra: 0.0 ; dec: 0.0 ; z_l : 0.3
+    The number of source galaxies is : 2000
+
+
 .. code:: ipython3
 
     h = plt.hist(cl2.galcat['z'], bins=50)
+
+
+
+.. image:: Example2_Fit_Halo_Mass_to_Shear_Catalog_files/Example2_Fit_Halo_Mass_to_Shear_Catalog_19_0.png
+
 
 Deriving observables
 --------------------
@@ -153,6 +165,13 @@ of the galaxy catalog in bins of radius.
     profile2 = cl2.make_shear_profile("radians", "Mpc", bins=bin_edges,cosmo=cosmo)
     profile3 = cl3.make_shear_profile("radians", "Mpc", bins=bin_edges,cosmo=cosmo)
 
+
+.. parsed-literal::
+
+    /Users/combet/anaconda3/lib/python3.6/site-packages/scipy/stats/_binned_statistic.py:563: RuntimeWarning: invalid value encountered in sqrt
+      (flatsum[a] / flatcount[a]) ** 2)
+
+
 After running ``clmm.polaraveraging.make_shear_profile`` on a
 ``clmm.GalaxyCluster`` object, the object acquires the
 ``clmm.GalaxyCluster.profile`` attribute.
@@ -161,6 +180,28 @@ After running ``clmm.polaraveraging.make_shear_profile`` on a
 
     for n in cl1.profile.colnames: cl1.profile[n].format = "%6.3e"
     cl1.profile.pprint(max_width=-1)
+
+
+.. parsed-literal::
+
+    radius_min   radius  radius_max     gt      gt_err      gx       gx_err      z       z_err  
+    ---------- --------- ---------- --------- --------- ---------- --------- --------- ---------
+     7.000e-01 7.806e-01  7.863e-01 5.185e-02 4.030e-06  1.735e-18 8.674e-19 8.000e-01 0.000e+00
+     7.863e-01 8.275e-01  8.831e-01 4.978e-02 1.130e-04 -1.735e-19 1.970e-19 8.000e-01 1.825e-09
+     8.831e-01 9.326e-01  9.920e-01 4.559e-02 9.161e-05  8.319e-18 1.467e-18 8.000e-01 1.659e-09
+     9.920e-01 1.064e+00  1.114e+00 4.114e-02 5.112e-05  5.102e-19 6.503e-20 8.000e-01 6.198e-10
+     1.114e+00 1.187e+00  1.251e+00 3.759e-02 9.381e-05 -4.944e-18 1.025e-18 8.000e-01 1.825e-09
+     1.251e+00 1.332e+00  1.406e+00 3.403e-02 3.885e-05  1.145e-18 4.275e-19 8.000e-01 0.000e+00
+     1.406e+00 1.488e+00  1.579e+00 3.079e-02 3.930e-05  1.094e-18 2.534e-19 8.000e-01 0.000e+00
+     1.579e+00 1.687e+00  1.773e+00 2.732e-02 2.800e-05 -1.044e-18 1.233e-19 8.000e-01       nan
+     1.773e+00 1.884e+00  1.992e+00 2.449e-02 1.903e-05 -1.746e-19 6.134e-20 8.000e-01 3.465e-10
+     1.992e+00 2.123e+00  2.237e+00 2.164e-02 1.524e-05  1.060e-19 5.843e-20 8.000e-01 4.056e-10
+     2.237e+00 2.377e+00  2.513e+00 1.916e-02 9.098e-06 -2.906e-19 3.805e-20 8.000e-01 6.379e-10
+     2.513e+00 2.660e+00  2.823e+00 1.691e-02 6.445e-06 -1.714e-19 1.699e-20 8.000e-01 5.597e-10
+     2.823e+00 3.002e+00  3.171e+00 1.471e-02 6.223e-06  1.677e-21 2.589e-20 8.000e-01 5.539e-10
+     3.171e+00 3.364e+00  3.561e+00 1.285e-02 4.181e-06  1.872e-19 1.103e-20 8.000e-01 4.850e-10
+     3.561e+00 3.773e+00  4.000e+00 1.117e-02 2.403e-06  2.469e-19 8.885e-21 8.000e-01 9.605e-11
+
 
 We visualize the radially binned shear for the 3 configurations
 
@@ -180,6 +221,19 @@ We visualize the radially binned shear for the 3 configurations
     plt.gca().set_xlabel(r'$r\;[Mpc]$', fontsize=fsize)
     plt.gca().set_ylabel(r'$g_t$', fontsize=fsize)
     plt.legend()
+
+
+
+
+.. parsed-literal::
+
+    <matplotlib.legend.Legend at 0x115c179b0>
+
+
+
+
+.. image:: Example2_Fit_Halo_Mass_to_Shear_Catalog_files/Example2_Fit_Halo_Mass_to_Shear_Catalog_31_1.png
+
 
 Create the halo model
 ---------------------
@@ -254,6 +308,14 @@ distribution.
     print(f'Best fit mass for cluster 2 = {m_est2:.2e} +/- {m_est_err2:.2e} Msun')
     print(f'Best fit mass for cluster 3 = {m_est3:.2e} +/- {m_est_err3:.2e} Msun')
 
+
+.. parsed-literal::
+
+    Best fit mass for cluster 1 = 1.00e+15 +/- 2.11e+11 Msun
+    Best fit mass for cluster 2 = 8.81e+14 +/- 2.40e+12 Msun
+    Best fit mass for cluster 3 = 5.55e+14 +/- 1.11e+14 Msun
+
+
 As expected, the reconstructed mass is biased whenever the sources are
 not located at a single redshift as this was not accounted for in the
 model.
@@ -321,3 +383,8 @@ data
     axes[1].set_ylabel('reduced tangential shear', fontsize=fsize)
     
     fig.tight_layout()
+
+
+
+.. image:: Example2_Fit_Halo_Mass_to_Shear_Catalog_files/Example2_Fit_Halo_Mass_to_Shear_Catalog_41_0.png
+
