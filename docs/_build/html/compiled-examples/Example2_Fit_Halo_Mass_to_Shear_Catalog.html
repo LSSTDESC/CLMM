@@ -280,9 +280,14 @@ may be saved for later use.</p>
 <span class="k">print</span><span class="p">(</span><span class="s2">&quot;The number of source galaxies is :&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cl2</span><span class="o">.</span><span class="n">galcat</span><span class="p">))</span>
 </pre></div>
 </div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Cluster</span> <span class="n">info</span> <span class="o">=</span> <span class="n">ID</span><span class="p">:</span> <span class="n">CL_ideal_z</span> <span class="p">;</span> <span class="n">ra</span><span class="p">:</span> <span class="mf">0.0</span> <span class="p">;</span> <span class="n">dec</span><span class="p">:</span> <span class="mf">0.0</span> <span class="p">;</span> <span class="n">z_l</span> <span class="p">:</span> <span class="mf">0.3</span>
+<span class="n">The</span> <span class="n">number</span> <span class="n">of</span> <span class="n">source</span> <span class="n">galaxies</span> <span class="ow">is</span> <span class="p">:</span> <span class="mi">2000</span>
+</pre></div>
+</div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">h</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">cl2</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
 </pre></div>
 </div>
+<img alt="../_images/Example2_Fit_Halo_Mass_to_Shear_Catalog_19_0.png" src="../_images/Example2_Fit_Halo_Mass_to_Shear_Catalog_19_0.png" />
 </div>
 <div class="section" id="deriving-observables">
 <h2>Deriving observables<a class="headerlink" href="#deriving-observables" title="Permalink to this headline">¶</a></h2>
@@ -308,11 +313,34 @@ of the galaxy catalog in bins of radius.</p>
 <span class="n">profile3</span> <span class="o">=</span> <span class="n">cl3</span><span class="o">.</span><span class="n">make_shear_profile</span><span class="p">(</span><span class="s2">&quot;radians&quot;</span><span class="p">,</span> <span class="s2">&quot;Mpc&quot;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bin_edges</span><span class="p">,</span><span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
 </pre></div>
 </div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">combet</span><span class="o">/</span><span class="n">anaconda3</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">6</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">scipy</span><span class="o">/</span><span class="n">stats</span><span class="o">/</span><span class="n">_binned_statistic</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">563</span><span class="p">:</span> <span class="ne">RuntimeWarning</span><span class="p">:</span> <span class="n">invalid</span> <span class="n">value</span> <span class="n">encountered</span> <span class="ow">in</span> <span class="n">sqrt</span>
+  <span class="p">(</span><span class="n">flatsum</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">/</span> <span class="n">flatcount</span><span class="p">[</span><span class="n">a</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>After running <code class="docutils literal notranslate"><span class="pre">clmm.polaraveraging.make_shear_profile</span></code> on a
 <code class="docutils literal notranslate"><span class="pre">clmm.GalaxyCluster</span></code> object, the object acquires the
 <code class="docutils literal notranslate"><span class="pre">clmm.GalaxyCluster.profile</span></code> attribute.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">cl1</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">colnames</span><span class="p">:</span> <span class="n">cl1</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">format</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%6.3e</span><span class="s2">&quot;</span>
 <span class="n">cl1</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">max_width</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">radius_min</span>   <span class="n">radius</span>  <span class="n">radius_max</span>     <span class="n">gt</span>      <span class="n">gt_err</span>      <span class="n">gx</span>       <span class="n">gx_err</span>      <span class="n">z</span>       <span class="n">z_err</span>
+<span class="o">----------</span> <span class="o">---------</span> <span class="o">----------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">----------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">---------</span>
+ <span class="mf">7.000e-01</span> <span class="mf">7.806e-01</span>  <span class="mf">7.863e-01</span> <span class="mf">5.185e-02</span> <span class="mf">4.030e-06</span>  <span class="mf">1.735e-18</span> <span class="mf">8.674e-19</span> <span class="mf">8.000e-01</span> <span class="mf">0.000e+00</span>
+ <span class="mf">7.863e-01</span> <span class="mf">8.275e-01</span>  <span class="mf">8.831e-01</span> <span class="mf">4.978e-02</span> <span class="mf">1.130e-04</span> <span class="o">-</span><span class="mf">1.735e-19</span> <span class="mf">1.970e-19</span> <span class="mf">8.000e-01</span> <span class="mf">1.825e-09</span>
+ <span class="mf">8.831e-01</span> <span class="mf">9.326e-01</span>  <span class="mf">9.920e-01</span> <span class="mf">4.559e-02</span> <span class="mf">9.161e-05</span>  <span class="mf">8.319e-18</span> <span class="mf">1.467e-18</span> <span class="mf">8.000e-01</span> <span class="mf">1.659e-09</span>
+ <span class="mf">9.920e-01</span> <span class="mf">1.064e+00</span>  <span class="mf">1.114e+00</span> <span class="mf">4.114e-02</span> <span class="mf">5.112e-05</span>  <span class="mf">5.102e-19</span> <span class="mf">6.503e-20</span> <span class="mf">8.000e-01</span> <span class="mf">6.198e-10</span>
+ <span class="mf">1.114e+00</span> <span class="mf">1.187e+00</span>  <span class="mf">1.251e+00</span> <span class="mf">3.759e-02</span> <span class="mf">9.381e-05</span> <span class="o">-</span><span class="mf">4.944e-18</span> <span class="mf">1.025e-18</span> <span class="mf">8.000e-01</span> <span class="mf">1.825e-09</span>
+ <span class="mf">1.251e+00</span> <span class="mf">1.332e+00</span>  <span class="mf">1.406e+00</span> <span class="mf">3.403e-02</span> <span class="mf">3.885e-05</span>  <span class="mf">1.145e-18</span> <span class="mf">4.275e-19</span> <span class="mf">8.000e-01</span> <span class="mf">0.000e+00</span>
+ <span class="mf">1.406e+00</span> <span class="mf">1.488e+00</span>  <span class="mf">1.579e+00</span> <span class="mf">3.079e-02</span> <span class="mf">3.930e-05</span>  <span class="mf">1.094e-18</span> <span class="mf">2.534e-19</span> <span class="mf">8.000e-01</span> <span class="mf">0.000e+00</span>
+ <span class="mf">1.579e+00</span> <span class="mf">1.687e+00</span>  <span class="mf">1.773e+00</span> <span class="mf">2.732e-02</span> <span class="mf">2.800e-05</span> <span class="o">-</span><span class="mf">1.044e-18</span> <span class="mf">1.233e-19</span> <span class="mf">8.000e-01</span>       <span class="n">nan</span>
+ <span class="mf">1.773e+00</span> <span class="mf">1.884e+00</span>  <span class="mf">1.992e+00</span> <span class="mf">2.449e-02</span> <span class="mf">1.903e-05</span> <span class="o">-</span><span class="mf">1.746e-19</span> <span class="mf">6.134e-20</span> <span class="mf">8.000e-01</span> <span class="mf">3.465e-10</span>
+ <span class="mf">1.992e+00</span> <span class="mf">2.123e+00</span>  <span class="mf">2.237e+00</span> <span class="mf">2.164e-02</span> <span class="mf">1.524e-05</span>  <span class="mf">1.060e-19</span> <span class="mf">5.843e-20</span> <span class="mf">8.000e-01</span> <span class="mf">4.056e-10</span>
+ <span class="mf">2.237e+00</span> <span class="mf">2.377e+00</span>  <span class="mf">2.513e+00</span> <span class="mf">1.916e-02</span> <span class="mf">9.098e-06</span> <span class="o">-</span><span class="mf">2.906e-19</span> <span class="mf">3.805e-20</span> <span class="mf">8.000e-01</span> <span class="mf">6.379e-10</span>
+ <span class="mf">2.513e+00</span> <span class="mf">2.660e+00</span>  <span class="mf">2.823e+00</span> <span class="mf">1.691e-02</span> <span class="mf">6.445e-06</span> <span class="o">-</span><span class="mf">1.714e-19</span> <span class="mf">1.699e-20</span> <span class="mf">8.000e-01</span> <span class="mf">5.597e-10</span>
+ <span class="mf">2.823e+00</span> <span class="mf">3.002e+00</span>  <span class="mf">3.171e+00</span> <span class="mf">1.471e-02</span> <span class="mf">6.223e-06</span>  <span class="mf">1.677e-21</span> <span class="mf">2.589e-20</span> <span class="mf">8.000e-01</span> <span class="mf">5.539e-10</span>
+ <span class="mf">3.171e+00</span> <span class="mf">3.364e+00</span>  <span class="mf">3.561e+00</span> <span class="mf">1.285e-02</span> <span class="mf">4.181e-06</span>  <span class="mf">1.872e-19</span> <span class="mf">1.103e-20</span> <span class="mf">8.000e-01</span> <span class="mf">4.850e-10</span>
+ <span class="mf">3.561e+00</span> <span class="mf">3.773e+00</span>  <span class="mf">4.000e+00</span> <span class="mf">1.117e-02</span> <span class="mf">2.403e-06</span>  <span class="mf">2.469e-19</span> <span class="mf">8.885e-21</span> <span class="mf">8.000e-01</span> <span class="mf">9.605e-11</span>
 </pre></div>
 </div>
 <p>We visualize the radially binned shear for the 3 configurations</p>
@@ -332,6 +360,10 @@ of the galaxy catalog in bins of radius.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 </pre></div>
 </div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x115c179b0</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<img alt="../_images/Example2_Fit_Halo_Mass_to_Shear_Catalog_31_1.png" src="../_images/Example2_Fit_Halo_Mass_to_Shear_Catalog_31_1.png" />
 </div>
 </div>
 <div class="section" id="create-the-halo-model">
@@ -400,6 +432,11 @@ distribution.</p>
 <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Best fit mass for cluster 3 = {m_est3:.2e} +/- {m_est_err3:.2e} Msun&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Best</span> <span class="n">fit</span> <span class="n">mass</span> <span class="k">for</span> <span class="n">cluster</span> <span class="mi">1</span> <span class="o">=</span> <span class="mf">1.00e+15</span> <span class="o">+/-</span> <span class="mf">2.11e+11</span> <span class="n">Msun</span>
+<span class="n">Best</span> <span class="n">fit</span> <span class="n">mass</span> <span class="k">for</span> <span class="n">cluster</span> <span class="mi">2</span> <span class="o">=</span> <span class="mf">8.81e+14</span> <span class="o">+/-</span> <span class="mf">2.40e+12</span> <span class="n">Msun</span>
+<span class="n">Best</span> <span class="n">fit</span> <span class="n">mass</span> <span class="k">for</span> <span class="n">cluster</span> <span class="mi">3</span> <span class="o">=</span> <span class="mf">5.55e+14</span> <span class="o">+/-</span> <span class="mf">1.11e+14</span> <span class="n">Msun</span>
+</pre></div>
+</div>
 <p>As expected, the reconstructed mass is biased whenever the sources are
 not located at a single redshift as this was not accounted for in the
 model.</p>
@@ -464,6 +501,7 @@ data</p>
 <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
+<img alt="../_images/Example2_Fit_Halo_Mass_to_Shear_Catalog_41_0.png" src="../_images/Example2_Fit_Halo_Mass_to_Shear_Catalog_41_0.png" />
 </div>
 </div>
 
