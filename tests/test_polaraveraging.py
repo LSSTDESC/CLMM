@@ -105,7 +105,6 @@ def test_compute_lensing_angles_flatsky():
 
 
 
-
     # lens and source at the same ra
     testing.assert_allclose(pa._compute_lensing_angles_flatsky(ra_l, dec_l, np.array([161.32, 161.34]), dec_s),
                             [[0.00069813170079771690, 0.00106951489719733675], [-1.57079632679489655800, 1.77544123918164542530]],
@@ -236,32 +235,64 @@ def test_make_shear_profiles():
                                pa.make_shear_profile(cluster, 'radians', 'radians', bins=vec_bins))
     # Make the shear profile and check it
     bins_radians = np.array([0.002, 0.003, 0.004])
+    expected_radius = [0.0021745039090962414, 0.0037238407383072053]
+    # remember that include_empty_bins=False excludes all bins with N>=1
     profile = pa.make_shear_profile(cluster, 'radians', 'radians', bins=bins_radians,
-                                    include_empty_bins=True)
-    testing.assert_allclose(profile['radius_min'], bins_radians[:-1],  **TOLERANCE, 
+                                    include_empty_bins=False)
+    testing.assert_allclose(profile['radius_min'], bins_radians[1],  **TOLERANCE,
                             err_msg="Minimum radius in bin not expected.")
-    testing.assert_allclose(profile['radius'], [0.0021745039090962414, 0.0037238407383072053],
-                            **TOLERANCE, 
+    testing.assert_allclose(profile['radius'], expected_radius[1], **TOLERANCE,
                             err_msg="Mean radius in bin not expected.")
-    testing.assert_allclose(profile['radius_max'], bins_radians[1:], **TOLERANCE, 
+    testing.assert_allclose(profile['radius_max'], bins_radians[2], **TOLERANCE,
                             err_msg="Maximum radius in bin not expected.")
-    testing.assert_allclose(profile['gt'], expected_tan_shear[:-1], **TOLERANCE, 
+    testing.assert_allclose(profile['gt'], expected_tan_shear[1], **TOLERANCE,
                             err_msg="Tangential shear in bin not expected")
-    testing.assert_allclose(profile['gx'], expected_cross_shear[:-1], **TOLERANCE, 
+    testing.assert_allclose(profile['gx'], expected_cross_shear[1], **TOLERANCE,
                             err_msg="Cross shear in bin not expected")
+    testing.assert_array_equal(profile['n_src'], [2])
 
     # Repeat the same tests when we call make_shear_profile through the GalaxyCluster method
-    profile2 = cluster.make_shear_profile('radians', 'radians', bins=bins_radians, include_empty_bins=True)
-    testing.assert_allclose(profile2['radius_min'], [0.002, 0.003], **TOLERANCE,
+    profile2 = cluster.make_shear_profile(
+        'radians', 'radians', bins=bins_radians, include_empty_bins=False)
+    testing.assert_allclose(profile2['radius_min'], bins_radians[1], **TOLERANCE,
                             err_msg="Minimum radius in bin not expected.")
-    testing.assert_allclose(profile2['radius'], [0.0021745039090962414, 0.0037238407383072053],
+    testing.assert_allclose(profile2['radius'], expected_radius[1], **TOLERANCE,
                             err_msg="Mean radius in bin not expected.")
-    testing.assert_allclose(profile2['radius_max'], [0.003, 0.004], **TOLERANCE,
+    testing.assert_allclose(profile2['radius_max'], bins_radians[2], **TOLERANCE,
                             err_msg="Maximum radius in bin not expected.")
-    testing.assert_allclose(profile2['gt'], [-0.22956126563459447, -0.02354769805831558],
-                            **TOLERANCE,
+    testing.assert_allclose(profile2['gt'], expected_tan_shear[1], **TOLERANCE,
                             err_msg="Tangential shear in bin not expected")
-    testing.assert_allclose(profile2['gx'], expected_cross_shear[:-1], **TOLERANCE,
+    testing.assert_allclose(profile2['gx'], expected_cross_shear[1], **TOLERANCE,
                             err_msg="Cross shear in bin not expected")
+    testing.assert_array_equal(profile['n_src'], [2])
 
-    # CRISTOBAL: need to add tests when running with include_empty_bins=False
+    # including empty bins
+    profile3 = pa.make_shear_profile(
+        cluster, 'radians', 'radians', bins=bins_radians, include_empty_bins=True)
+    testing.assert_allclose(profile3['radius_min'], bins_radians[:-1],  **TOLERANCE,
+                            err_msg="Minimum radius in bin not expected.")
+    testing.assert_allclose(profile3['radius'], expected_radius, **TOLERANCE,
+                            err_msg="Mean radius in bin not expected.")
+    testing.assert_allclose(profile3['radius_max'], bins_radians[1:], **TOLERANCE,
+                            err_msg="Maximum radius in bin not expected.")
+    testing.assert_allclose(profile3['gt'], expected_tan_shear[:-1], **TOLERANCE,
+                            err_msg="Tangential shear in bin not expected")
+    testing.assert_allclose(profile3['gx'], expected_cross_shear[:-1], **TOLERANCE,
+                            err_msg="Cross shear in bin not expected")
+    testing.assert_array_equal(profile3['n_src'], [1,2])
+
+    # Repeat the same tests when we call make_shear_profile through the GalaxyCluster method
+    profile4 = cluster.make_shear_profile(
+        'radians', 'radians', bins=bins_radians, include_empty_bins=True)
+    testing.assert_allclose(profile4['radius_min'], bins_radians[:-1], **TOLERANCE,
+                            err_msg="Minimum radius in bin not expected.")
+    testing.assert_allclose(profile4['radius'], expected_radius,
+                            err_msg="Mean radius in bin not expected.")
+    testing.assert_allclose(profile4['radius_max'], bins_radians[1:], **TOLERANCE,
+                            err_msg="Maximum radius in bin not expected.")
+    testing.assert_allclose(profile4['gt'], expected_tan_shear[:-1], **TOLERANCE,
+                            err_msg="Tangential shear in bin not expected")
+    testing.assert_allclose(profile4['gx'], expected_cross_shear[:-1], **TOLERANCE,
+                            err_msg="Cross shear in bin not expected")
+    testing.assert_array_equal(profile4['n_src'], [1,2])
+
