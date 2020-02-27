@@ -7,4 +7,4 @@ from .modeling import cclify_astropy_cosmo, get_reduced_shear_from_convergence, 
 from . import lsst
 
 
-__version__ = '0.1.0'
+__version__ = '0.1.2'
