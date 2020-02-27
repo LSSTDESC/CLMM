@@ -28,9 +28,13 @@ def compute_radial_averages(xvals, yvals, xbins, error_model='std/n'):
         Mean y value in each bin
     yerr : array_like
         Error on the mean y value in each bin. Specified by error_model
+    n : array_like
+        Number of objects in each bin
     """
-    meanx = binned_statistic(xvals, xvals, statistic='mean', bins=xbins)[0]
+    meanx, xbins = binned_statistic(xvals, xvals, statistic='mean', bins=xbins)[:2]
     meany = binned_statistic(xvals, yvals, statistic='mean', bins=xbins)[0]
+    # number of objects
+    n = np.histogram(xvals, xbins)[0]
 
     if error_model == 'std':
         yerr = binned_statistic(xvals, yvals, statistic='std', bins=xbins)[0]
@@ -40,7 +44,7 @@ def compute_radial_averages(xvals, yvals, xbins, error_model='std/n'):
     else:
         raise ValueError(f"{error_model} not supported err model for binned stats")
 
-    return meanx, meany, yerr
+    return meanx, meany, yerr, n
 
 
 def make_bins(rmin, rmax, nbins=10, method='evenwidth'):
