@@ -4,7 +4,7 @@ from scipy.stats import binned_statistic
 from astropy import units as u
 
 
-def compute_radial_averages(xvals, yvals, xbins, error_model='std/n'):
+def compute_radial_averages(xvals, yvals, xbins, error_model='std/sqrt_n'):
     """ Given a list of xvalss, yvals and bins, sort into bins
 
     Parameters
@@ -17,7 +17,7 @@ def compute_radial_averages(xvals, yvals, xbins, error_model='std/n'):
         Bin edges to sort into
     error_model : str, optional
         Error model to use for y uncertainties.
-        std/n - Standard Deviation/Counts (Default)
+        std/sqrt_n - Standard Deviation/sqrt(Counts) (Default)
         std - Standard deviation
 
     Returns
@@ -38,9 +38,9 @@ def compute_radial_averages(xvals, yvals, xbins, error_model='std/n'):
 
     if error_model == 'std':
         yerr = binned_statistic(xvals, yvals, statistic='std', bins=xbins)[0]
-    elif error_model == 'std/n':
+    elif error_model == 'std/sqrt_n':
         yerr = binned_statistic(xvals, yvals, statistic='std', bins=xbins)[0]
-        yerr = yerr/binned_statistic(xvals, yvals, statistic='count', bins=xbins)[0]
+        yerr = yerr/np.sqrt(binned_statistic(xvals, yvals, statistic='count', bins=xbins)[0])
     else:
         raise ValueError(f"{error_model} not supported err model for binned stats")
 
