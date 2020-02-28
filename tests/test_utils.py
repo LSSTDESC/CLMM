@@ -27,7 +27,7 @@ def test_compute_radial_averages():
                     **TOLERANCE)
 
     # Test 3 objects in one bin with various error models
-    assert_allclose(compute_radial_averages(binvals, binvals, xbins1, error_model='std/n'),
+    assert_allclose(compute_radial_averages(binvals, binvals, xbins1, error_model='std/sqrt_n'),
                     [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)/len(binvals)], [6]],
                     **TOLERANCE)
     assert_allclose(compute_radial_averages(binvals, binvals, xbins1, error_model='std'),
@@ -36,7 +36,7 @@ def test_compute_radial_averages():
     # A slightly more complicated case with two bins
     inbin1 = binvals[(binvals > xbins2[0]) & (binvals < xbins2[1])]
     inbin2 = binvals[(binvals > xbins2[1]) & (binvals < xbins2[2])]
-    assert_allclose(compute_radial_averages(binvals, binvals, xbins2, error_model='std/n'),
+    assert_allclose(compute_radial_averages(binvals, binvals, xbins2, error_model='std/sqrt_n'),
                     [[np.mean(inbin1), np.mean(inbin2)], [np.mean(inbin1), np.mean(inbin2)],
                      [np.std(inbin1)/len(inbin1), np.std(inbin2)/len(inbin2)], [3,3]], **TOLERANCE)
     assert_allclose(compute_radial_averages(binvals, binvals, xbins2, error_model='std'),
@@ -49,7 +49,7 @@ def test_compute_radial_averages():
     inbin1 = binvals[(binvals > xbins2[0]) & (binvals < xbins2[1])]
     inbin2 = binvals[(binvals > xbins2[1]) & (binvals < xbins2[2])]
     inbin3 = binvals[(binvals > xbins2[2]) & (binvals < xbins2[3])]
-    assert_allclose(compute_radial_averages(binvals, binvals, xbins2, error_model='std/n'),
+    assert_allclose(compute_radial_averages(binvals, binvals, xbins2, error_model='std/sqrt_n'),
                     [[np.mean(inbin1), np.mean(inbin2), np.mean(inbin3)],
                      [np.mean(inbin1), np.mean(inbin2), np.mean(inbin3)],
                      [np.std(inbin1)/len(inbin1), np.std(inbin2)/len(inbin2),
