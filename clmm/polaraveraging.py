@@ -210,7 +210,7 @@ def _compute_cross_shear(shear1, shear2, phi):
 
 
 def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
-                       add_to_cluster=True):
+                       add_to_cluster=True, include_empty_bins=False):
     r"""Compute the shear profile of the cluster
 
     We assume that the cluster object contains information on the cross and
@@ -246,6 +246,8 @@ def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
         Cosmology parameters to convert angular separations to physical distances
     add_to_cluster: bool, optional
         Attach the profile to the cluster object as `cluster.profile`
+    include_empty_bins: bool, optional
+        Also include empty bins in the returned table
 
     Returns
     -------
@@ -272,17 +274,20 @@ def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
         bins = make_bins(np.min(source_seps), np.max(source_seps), bins)
 
     # Compute the binned average shears and associated errors
-    r_avg, gt_avg, gt_err = compute_radial_averages(source_seps, cluster.galcat['gt'].data,
-                                                    xbins=bins, error_model='std/n')
-    r_avg, gx_avg, gx_err = compute_radial_averages(source_seps, cluster.galcat['gx'].data,
-                                                    xbins=bins, error_model='std/n')
-    r_avg, z_avg, z_err = compute_radial_averages(source_seps, cluster.galcat['z'].data,
-                                                  xbins=bins, error_model='std/n')
+    r_avg, gt_avg, gt_err, nsrc = compute_radial_averages(
+        source_seps, cluster.galcat['gt'].data, xbins=bins, error_model='std/n')
+    r_avg, gx_avg, gx_err, _ = compute_radial_averages(
+        source_seps, cluster.galcat['gx'].data, xbins=bins, error_model='std/n')
+    r_avg, z_avg, z_err, _ = compute_radial_averages(
+        source_seps, cluster.galcat['z'].data, xbins=bins, error_model='std/n')
 
     profile_table = Table([bins[:-1], r_avg, bins[1:], gt_avg, gt_err, gx_avg, gx_err,
-                           z_avg, z_err],
+                           z_avg, z_err, nsrc],
                           names=('radius_min', 'radius', 'radius_max', 'gt', 'gt_err',
-                                 'gx', 'gx_err', 'z', 'z_err',))
+                                 'gx', 'gx_err', 'z', 'z_err', 'n_src'))
+    # return empty bins?
+    if not include_empty_bins:
+        profile_table = profile_table[profile_table['n_src'] > 1]
 
     if add_to_cluster:
         cluster.profile = profile_table
