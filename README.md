@@ -10,11 +10,11 @@ CLMM is descended from [clmassmod](https://github.com/deapplegate/clmassmod) but
 1. [Requirements](#requirements)
 2. [Installation](#installation)
 3. [Overview](#overview)
-    1. [The `GalaxyCluster` object](#the_galaxycluster_object)
+    * [The `GalaxyCluster` object](#the_galaxycluster_object)
 4. [Mock data generation](#mock_data_generation)
-    1. [Weak lensing signal measurement with `polaraveraging.py`](#weak_lensing_signal_measurement_with_polaraveraging)
+    * [Weak lensing signal measurement with `polaraveraging.py`](#weak_lensing_signal_measurement_with_polaraveraging)
 5. [Profile and cosmology models with `modeling.py`](#profile_and_cosmology_models_with_modeling)
-    1. [Galaxy cluster mass estimation](#galaxy_cluster_mass_estimation)
+    * [Galaxy cluster mass estimation](#galaxy_cluster_mass_estimation)
 
 ## Requirements <a name="requirements"></a>
 
