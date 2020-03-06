@@ -275,11 +275,11 @@ def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
 
     # Compute the binned average shears and associated errors
     r_avg, gt_avg, gt_err, nsrc = compute_radial_averages(
-        source_seps, cluster.galcat['gt'].data, xbins=bins, error_model='std/n')
+        source_seps, cluster.galcat['gt'].data, xbins=bins, error_model='std/sqrt_n')
     r_avg, gx_avg, gx_err, _ = compute_radial_averages(
-        source_seps, cluster.galcat['gx'].data, xbins=bins, error_model='std/n')
+        source_seps, cluster.galcat['gx'].data, xbins=bins, error_model='std/sqrt_n')
     r_avg, z_avg, z_err, _ = compute_radial_averages(
-        source_seps, cluster.galcat['z'].data, xbins=bins, error_model='std/n')
+        source_seps, cluster.galcat['z'].data, xbins=bins, error_model='std/sqrt_n')
 
     profile_table = Table([bins[:-1], r_avg, bins[1:], gt_avg, gt_err, gx_avg, gx_err,
                            z_avg, z_err, nsrc],
