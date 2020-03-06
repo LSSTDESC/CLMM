@@ -162,8 +162,10 @@ Note: `fix:` should correspond to version changes to Y. The rest of the scopes a
 
 3. Tag this new version of the code. In the `master` branch use the following commands:
 
+    ```bash
     git tag X.Y.Z
     git push --tag
+    ```
 
 of course replacing `X.Y.Z` by the new version.
 
