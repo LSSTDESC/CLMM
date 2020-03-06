@@ -160,7 +160,7 @@ Please choose from `fix:`, `feat:`, `build:`, `chore:`, `ci:`, `docs:`, `style:`
 
 Note: `fix:` should correspond to version changes to Y. The rest of the scopes above should be version changes to Z.
 
-3. Tag this new version of the code. In the `master` branch use the following commands:
+3. Tag and push this new version of the code. In the `master` branch use the following commands:
 
     ```bash
     git tag X.Y.Z
