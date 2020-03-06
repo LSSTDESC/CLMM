@@ -150,7 +150,7 @@ NOTE: We have had several branches that have exploded in commit number. If you a
 
 To ensure consistency between our code and documentation, we need to take care of a couple of more things after accepting a review on a PR into master.
 
-1. Change the version number of the code located in `clmm/__init__.py`, commit the change to the branch, and push. If you are unsure of how you should change the version number, don't hesitate to ask!
+1. In the branch of the pull request, change the version number of the code located in `clmm/__init__.py`, commit and push. If you are unsure of how you should change the version number, don't hesitate to ask!
 
 We use [semantic versioning](https://semver.org/), X.Y.Z.. If the PR makes a small change, such as a bug fix, documentation updates, style changes, etc., increment Z. If the PR adds a new feature, such as adding support for a new profile, increment Y (and reset Z to 0). If a PR adds a feature or makes a change that breaks the old API, increment X (and reset Y and Z to 0). After the first tagged release of CLMM, anything that is a candidate to increment X should be extensively discussed beforehand. 
 
@@ -159,6 +159,13 @@ We use [semantic versioning](https://semver.org/), X.Y.Z.. If the PR makes a sma
 Please choose from `fix:`, `feat:`, `build:`, `chore:`, `ci:`, `docs:`, `style:`, `refactor:`, `perf:`, `test:`. If this commit breaks the previous API, add an explanation mark (for example, `fix!:`). Definitions of each scope can be found at the above link.
 
 Note: `fix:` should correspond to version changes to Y. The rest of the scopes above should be version changes to Z.
+
+3. Tag this new version of the code. In the `master` branch use the following commands:
+
+    git tag X.Y.Z
+    git push --tag
+
+of course replacing `X.Y.Z` by the new version.
 
 ## Updating Public Documentation on lsstdesc.org <a name="updating_public_docs"></a>
 
