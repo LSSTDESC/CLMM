@@ -160,7 +160,7 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delt
     galaxy_catalog['e1'] = -galaxy_catalog['gammat']*np.cos(2*galaxy_catalog['posangle']) \
                            + galaxy_catalog['gammax']*np.sin(2*galaxy_catalog['posangle'])
     galaxy_catalog['e2'] = -galaxy_catalog['gammat']*np.sin(2*galaxy_catalog['posangle']) \
-                           + galaxy_catalog['gammax']*np.cos(2*galaxy_catalog['posangle'])
+                           - galaxy_catalog['gammax']*np.cos(2*galaxy_catalog['posangle'])
 
     if photoz_sigma_unscaled is not None:
         return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z', 'pzbins', 'pzpdf']
