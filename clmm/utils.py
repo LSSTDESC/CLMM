@@ -205,7 +205,7 @@ def convert_shapes_to_epsilon(shape_1,shape_2, shape_definition='epsilon',kappa=
     if shape_definition=='epsilon' or shape_definition=='reduced_shear':
         return shape_1,shape_2
     elif shape_definition=='chi':
-        chi_conversion = 1./(1.+(1-shape_1**2 + shape_2**2)**0.5)
+        chi_conversion = 1./(1.+(1-(shape_1**2 + shape_2**2))**0.5)
         return shape_1*chi_conversion,shape_2*chi_conversion
     elif shape_definition=='shear':
         return shape_1/(1-kappa), shape_2/(1-kappa)
