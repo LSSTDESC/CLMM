@@ -11,6 +11,7 @@ The documentation of the code can be found [here](http://lsstdesc.org/CLMM/).
 1. [Requirements](#requirements)
 2. [Installation](#installation)
 3. [Overview](#overview)
+3. [Contributing](#contributing)
 
 ## Requirements <a name="requirements"></a>
 
@@ -64,3 +65,7 @@ To run the tests you can do:
 ## Overview <a name="overview"></a>
 
 Overview of the code can be found [here](OVERVIEW.md)
+
+## Contributing <a name="contributing"></a>
+
+Contributing documentation can be found [here](CONTRIBUTING.md)
