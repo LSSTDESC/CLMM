@@ -2,6 +2,8 @@
 
 This is a brief guide to contributing to CLMM, including information about identifiying code issues and submitting code changes or documentation.
 
+* [Main readme](README.md)
+
 ## Table of contents
 1. [Identifying Issues](#identifying_issues)
 2. [Access to the proper environment on cori.nersc.gov](#access_to_the_proper_environment_on_cori)
