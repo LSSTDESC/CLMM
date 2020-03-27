@@ -1,17 +1,16 @@
-# Overview
+# Overview (back to main [readme](README.md))
 CLMM (Cluster Lensing Mass Modeling) provides a tool to estimate cluster masses based on weak lensing data.
 It also includes a routine to make mock catalogs based on cluster_toolkit.
 CLMM consists of the building blocks for an end-to-end weak lensing cosmology pipeline that can be validated on mock data and run on real data from LSST or other telescopes.
 We provide [examples](https://github.com/LSSTDESC/CLMM/tree/master/examples) of its usage in this repository.
 
-* [Main readme](README.md)
 
 ## Table of contents
 1. [The `GalaxyCluster` object](#the_galaxycluster_object)
-2. [Mock data generation](#mock_data_generation)
-    * [Weak lensing signal measurement with `polaraveraging.py`](#weak_lensing_signal_measurement_with_polaraveraging)
+2. [Weak lensing signal measurement with `polaraveraging.py`](#weak_lensing_signal_measurement_with_polaraveraging)
 3. [Profile and cosmology models with `modeling.py`](#profile_and_cosmology_models_with_modeling)
-    * [Galaxy cluster mass estimation](#galaxy_cluster_mass_estimation)
+4. [Galaxy cluster mass estimation](#galaxy_cluster_mass_estimation)
+5. [Mock data generation](#mock_data_generation)
 
 
 ## The `GalaxyCluster` object <a name="the_galaxycluster_object"></a>
@@ -20,10 +19,7 @@ We provide [examples](https://github.com/LSSTDESC/CLMM/tree/master/examples) of 
   * Background galaxy data: astropy Table containing galaxy_id, ra, dec, e1, e2, z, kappa
   * ra/dec are in decimal degrees
 
-## Mock data generation <a name="mock_data_generation"></a>
-  * examples/generate_mock_data.ipynb
-
-### Weak lensing signal measurement with `polaraveraging.py` <a name="weak_lensing_signal_measurement_with_polaraveraging"></a>
+## Weak lensing signal measurement with `polaraveraging.py` <a name="weak_lensing_signal_measurement_with_polaraveraging"></a>
 
   * The function `computeshear` calculates tangential shear, cross shear, and angular separation of each source galaxy relative to the (ra, dec) coordinates of the center of the cluster.
   * A shear profile may be constructed with the user's choice of binning via `make_bins`.
@@ -36,5 +32,9 @@ We provide [examples](https://github.com/LSSTDESC/CLMM/tree/master/examples) of 
   * The default is to use an NFW profile, but more halo profile parameterizations will be added soon.
   * See examples/modeling_demo.ipynb for example usage.
 
-### Galaxy cluster mass estimation <a name="galaxy_cluster_mass_estimation"></a>
-  * See examples/demo-pipeline.ipynb for example usage of an end-to-end measurement.
+## Mock data generation <a name="mock_data_generation"></a>
+  * [examples/demo_generate_mock_cluster.ipynb](examples/demo_generate_mock_cluster.ipynb)
+
+
+## Galaxy cluster mass estimation <a name="galaxy_cluster_mass_estimation"></a>
+  * See [examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.ipynb](examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.ipynb) for example usage of an end-to-end measurement.
