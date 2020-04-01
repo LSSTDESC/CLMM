@@ -603,7 +603,7 @@ def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
                                     halo_profile_model,
                                     z_src_model)
     
-        gammat = predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,delta_mdef,
+        gammat = predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,delta_mdef,
                                     halo_profile_model,
                                     z_src_model)
         
