@@ -83,6 +83,36 @@ def make_bins(rmin, rmax, nbins=10, method='evenwidth'):
     return binedges
 
 
+def make_bins_with_same_ngal(separation_arr, separation_units, bin_units, cl_redshift=None, cosmo=None,nbins=10):
+    """ Given the galaxy distances from the center of the cluster, 
+        define bin edges so that each bins contains the same number of galaxies.
+
+    Parameters
+    ----------
+    separation_arr : array-like
+        Array containing the angular distance of the galaxies to the cluster center
+    separation_units : str
+        Units of the distance in the distance array
+    bin_units : str
+        Units of the bin edges that will be returned
+    nbins : float
+        Number of bins you want to create, default to 10.
+
+    Returns
+    -------
+    binedges: array_like, float
+        n_bins+1 dimensional array that defines bin edges
+    """
+    if separation_units is not bin_units:
+        source_seps = convert_units(separation_arr, separation_units, bin_units,
+                                    redshift=cl_redshift, cosmo=cosmo)
+    else:
+        source_seps = distance_arr
+
+    return np.percentile(source_seps,np.linspace(0,100,nbins+1))
+
+
+
 def convert_units(dist1, unit1, unit2, redshift=None, cosmo=None):
     """ Convenience wrapper to convert between a combination of angular and physical units.
 
