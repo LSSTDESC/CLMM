@@ -113,11 +113,24 @@ def make_bins_with_same_ngal(separation_arr, separation_units, bin_units,\
         n_bins+1 dimensional array that defines bin edges
     """
 
-    if separation_units is not bin_units:
+    angular_bank = {"radians": u.rad, "degrees": u.deg, "arcmin": u.arcmin, "arcsec": u.arcsec}
+    physical_bank = {"pc": u.pc, "kpc": u.kpc, "Mpc": u.Mpc}
+    units_bank = {**angular_bank, **physical_bank}
+
+# Some error checking
+    if bin_units not in units_bank:
+        raise ValueError(f"Input units ({bin_units}) not supported")
+    if separation_units not in units_bank:
+        raise ValueError(f"Output units ({separation_units}) not supported")
+
+    if (bin_units in angular_bank and separation_units in physical_bank)\
+    or (bin_units in physical_bank and separation_units in angular_bank):
+
+    #if separation_units is not bin_units:
         source_seps = convert_units(separation_arr, separation_units, bin_units,
                                     redshift=cl_redshift, cosmo=cosmo)
     else:
-        source_seps = separation_arr
+        source_seps = convert_units(separation_arr, separation_units, bin_units)
 
     # by default, keep all galaxies 
     mask = np.full(len(source_seps), True)
@@ -126,6 +139,9 @@ def make_bins_with_same_ngal(separation_arr, separation_units, bin_units,\
         if rmin is None: rmin = np.min(source_seps)
         if rmax is None: rmax = np.max(source_seps)
         mask = (np.array(source_seps)>=rmin)*(np.array(source_seps)<=rmax)
+
+    if np.sum(mask)==0:
+           raise ValueError(f"No galaxies in the radius range") 
 
     return np.percentile(source_seps[mask],np.linspace(0,100,nbins+1))
 
