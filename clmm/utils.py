@@ -117,7 +117,7 @@ def make_bins_with_same_ngal(separation_arr, separation_units, bin_units,\
     physical_bank = {"pc": u.pc, "kpc": u.kpc, "Mpc": u.Mpc}
     units_bank = {**angular_bank, **physical_bank}
 
-# Some error checking
+    # Some error checking
     if bin_units not in units_bank:
         raise ValueError(f"Input units ({bin_units}) not supported")
     if separation_units not in units_bank:
@@ -125,13 +125,16 @@ def make_bins_with_same_ngal(separation_arr, separation_units, bin_units,\
 
     if (bin_units in angular_bank and separation_units in physical_bank)\
     or (bin_units in physical_bank and separation_units in angular_bank):
-
-    #if separation_units is not bin_units:
+    # separation_units and bin_units are not the same type (e.g. angular vs physical)
         source_seps = convert_units(separation_arr, separation_units, bin_units,
                                     redshift=cl_redshift, cosmo=cosmo)
+    elif bin_units==separation_units:
+    # same units nothing to do
+        source_seps = separation_arr
     else:
+    # separation_units and bin_units are different but of the same type
         source_seps = convert_units(separation_arr, separation_units, bin_units)
-
+   
     # by default, keep all galaxies 
     mask = np.full(len(source_seps), True)
     if rmin is not None or rmax is not None:
