@@ -119,6 +119,7 @@ def make_bins_with_same_ngal(separation_arr, separation_units, bin_units,\
     else:
         source_seps = separation_arr
 
+    # by default, keep all galaxies 
     mask = np.full(len(source_seps), True)
     if rmin is not None or rmax is not None:
     # Need to filter source_seps to only keep galaxies in the [rmin, rmax]
