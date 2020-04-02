@@ -83,14 +83,23 @@ def make_bins(rmin, rmax, nbins=10, method='evenwidth'):
     return binedges
 
 
-def make_bins_with_same_ngal(separation_arr, separation_units, bin_units, cl_redshift=None, cosmo=None,nbins=10):
+def make_bins_with_same_ngal(separation_arr, separation_units, bin_units,\
+                             rmin=None, rmax=None, cl_redshift=None, cosmo=None,nbins=10):
     """ Given the galaxy distances from the center of the cluster, 
         define bin edges so that each bins contains the same number of galaxies.
 
     Parameters
     ----------
-    separation_arr : array-like
+    separation_arr : array
         Array containing the angular distance of the galaxies to the cluster center
+    rmin : float
+        The minimum radius to consider to compute the bins. The unit should be the 
+        same as bin_units
+        By default the minimum separation found in separation_arr is used.
+    rmax : float
+        The minimum radius to consider to compute the bins. The unit should be the 
+        same as bin_units
+        By default the maximum separation found in separation_arr is used.
     separation_units : str
         Units of the distance in the distance array
     bin_units : str
@@ -103,13 +112,21 @@ def make_bins_with_same_ngal(separation_arr, separation_units, bin_units, cl_red
     binedges: array_like, float
         n_bins+1 dimensional array that defines bin edges
     """
+
     if separation_units is not bin_units:
         source_seps = convert_units(separation_arr, separation_units, bin_units,
                                     redshift=cl_redshift, cosmo=cosmo)
     else:
-        source_seps = distance_arr
+        source_seps = separation_arr
 
-    return np.percentile(source_seps,np.linspace(0,100,nbins+1))
+    mask = np.full(len(source_seps), True)
+    if rmin is not None or rmax is not None:
+    # Need to filter source_seps to only keep galaxies in the [rmin, rmax]
+        if rmin is None: rmin = np.min(source_seps)
+        if rmax is None: rmax = np.max(source_seps)
+        mask = (np.array(source_seps)>=rmin)*(np.array(source_seps)<=rmax)
+
+    return np.percentile(source_seps[mask],np.linspace(0,100,nbins+1))
 
 
 
