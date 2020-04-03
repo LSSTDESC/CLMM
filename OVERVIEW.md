@@ -21,16 +21,17 @@ We provide [examples](https://github.com/LSSTDESC/CLMM/tree/master/examples) of 
 
 ## Weak lensing signal measurement with `polaraveraging.py` <a name="weak_lensing_signal_measurement_with_polaraveraging"></a>
 
-  * The function `computeshear` calculates tangential shear, cross shear, and angular separation of each source galaxy relative to the (ra, dec) coordinates of the center of the cluster.
+  * The function `compute_shear` calculates tangential shear, cross shear, and angular separation of each source galaxy relative to the (ra, dec) coordinates of the center of the cluster.
   * A shear profile may be constructed with the user's choice of binning via `make_bins`.
   * `make_shear_profile` takes the average over shear of each source galaxy over radial bins in rad, deg, arcmin, arcsec, kpc, or Mpc.
-  * See demo_of_polaraveraging.ipynb for detailed examples.
+  * See [examples/demo_polaraveraging_functionality.ipynb](examples/demo_polaraveraging_functionality.ipynb) for detailed examples.
 
 ## Profile and cosmology models with `modeling.py` <a name="profile_and_cosmology_models_with_modeling"></a>
 
   * modeling.py holds functions for evaluating theoretical models.
   * The default is to use an NFW profile, but more halo profile parameterizations will be added soon.
   * See examples/modeling_demo.ipynb for example usage.
+  * See [examples/demo_modeling_functionality.ipynb](examples/demo_modeling_functionality.ipynb) for detailed examples.
 
 ## Mock data generation <a name="mock_data_generation"></a>
   * [examples/demo_generate_mock_cluster.ipynb](examples/demo_generate_mock_cluster.ipynb)
