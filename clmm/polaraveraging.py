@@ -292,8 +292,7 @@ def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
     else:
         if 'id' not in cluster.galcat.columns:
             raise TypeError('Missing galaxy IDs!')
-        mask = [binnumber==i+1 for i in np.arange(len(r_avg))]
-        gal_id = [list(cluster.galcat['id'][mask[i]]) for i in np.arange(len(r_avg))]
+        gal_id = [list(cluster.galcat['id'][binnumber==i+1]) for i in np.arange(len(r_avg))]
         profile_table = Table([bins[:-1], r_avg, bins[1:], gt_avg, gt_err, gx_avg, gx_err,
                                z_avg, z_err, nsrc, gal_id],
                                names=('radius_min', 'radius', 'radius_max', 'gt', 'gt_err',
