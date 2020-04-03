@@ -9,8 +9,8 @@ We provide [examples](https://github.com/LSSTDESC/CLMM/tree/master/examples) of 
 1. [The `GalaxyCluster` object](#the_galaxycluster_object)
 2. [Weak lensing signal measurement with `polaraveraging.py`](#weak_lensing_signal_measurement_with_polaraveraging)
 3. [Profile and cosmology models with `modeling.py`](#profile_and_cosmology_models_with_modeling)
-4. [Galaxy cluster mass estimation](#galaxy_cluster_mass_estimation)
-5. [Mock data generation](#mock_data_generation)
+4. [Mock data generation](#mock_data_generation)
+5. [Galaxy cluster mass estimation](#galaxy_cluster_mass_estimation)
 
 
 ## The `GalaxyCluster` object <a name="the_galaxycluster_object"></a>
