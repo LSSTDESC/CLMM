@@ -196,13 +196,14 @@ def test_make_shear_profiles():
     ra_lens, dec_lens = 120., 42.
     ra_source_list = np.array([120.1, 119.9, 119.9])
     dec_source_list = np.array([41.9, 42.2, 42.2])
+    id_source_list = np.array([1, 2, 3])
     shear1 = np.array([0.2, 0.4, 0.4])
     shear2 = np.array([0.3, 0.5, 0.5])
     z_sources = np.ones(3)
     cluster = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=0.5,
                                  galcat=Table([ra_source_list, dec_source_list,
-                                               shear1, shear2, z_sources],
-                                              names=('ra', 'dec', 'e1', 'e2', 'z')))
+                                               shear1, shear2, z_sources, id_source_list],
+                                              names=('ra', 'dec', 'e1', 'e2', 'z', 'id')))
 
     # Test error of missing redshift
     cluster_noz = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=0.5,
@@ -295,4 +296,27 @@ def test_make_shear_profiles():
     testing.assert_allclose(profile4['gx'], expected_cross_shear[:-1], **TOLERANCE,
                             err_msg="Cross shear in bin not expected")
     testing.assert_array_equal(profile4['n_src'], [1,2])
+
+    # Repeat the same tests but also asking for list of galaxy IDs in each bin
+    cluster_noid = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=0.5,
+                                 galcat=Table([ra_source_list, dec_source_list,
+                                               shear1, shear2, z_sources],
+                                              names=('ra', 'dec', 'e1', 'e2', 'z')))
+    cluster_noid.compute_shear()
+    testing.assert_raises(TypeError, pa.make_shear_profile, cluster_noid, 'radians', 'radians', gal_ids_in_bins=True)
+   
+    profile5 = cluster.make_shear_profile(
+        'radians', 'radians', bins=bins_radians, include_empty_bins=True, gal_ids_in_bins=True)
+    testing.assert_allclose(profile5['radius_min'], bins_radians[:-1], **TOLERANCE,
+                            err_msg="Minimum radius in bin not expected.")
+    testing.assert_allclose(profile5['radius'], expected_radius,
+                            err_msg="Mean radius in bin not expected.")
+    testing.assert_allclose(profile5['radius_max'], bins_radians[1:], **TOLERANCE,
+                            err_msg="Maximum radius in bin not expected.")
+    testing.assert_allclose(profile5['gt'], expected_tan_shear[:-1], **TOLERANCE,
+                            err_msg="Tangential shear in bin not expected")
+    testing.assert_allclose(profile5['gx'], expected_cross_shear[:-1], **TOLERANCE,
+                            err_msg="Cross shear in bin not expected")
+    testing.assert_array_equal(profile5['n_src'], [1,2])
+    testing.assert_array_equal(profile5['gal_id'], [[1],[2,3]])
 
