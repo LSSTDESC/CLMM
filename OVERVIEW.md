@@ -34,7 +34,7 @@ We provide [examples](https://github.com/LSSTDESC/CLMM/tree/master/examples) of 
   * See [examples/demo_modeling_functionality.ipynb](examples/demo_modeling_functionality.ipynb) for detailed examples.
 
 ## Mock data generation <a name="mock_data_generation"></a>
-  * [examples/demo_generate_mock_cluster.ipynb](examples/demo_generate_mock_cluster.ipynb)
+  * See [examples/demo_generate_mock_cluster.ipynb](examples/demo_generate_mock_cluster.ipynb).
 
 
 ## Galaxy cluster mass estimation <a name="galaxy_cluster_mass_estimation"></a>
