@@ -47,7 +47,7 @@ def compute_radial_averages(xvals, yvals, xbins, error_model='std/sqrt_n'):
     return meanx, meany, yerr, n
 
 
-def make_bins(rmin, rmax, nbins=10, method='evenwidth'):
+def make_bins(rmin, rmax, nbins=10, method='evenwidth', source_seps=None):
     """ Define bin edges
 
     Parameters
@@ -62,6 +62,7 @@ def make_bins(rmin, rmax, nbins=10, method='evenwidth'):
         Binning method to use
         'evenwidth' - Default, evenly spaced bins between rmin and rmax
         'evenlog10width' - Logspaced bins with even width in log10 between rmin and rmax
+        'equaloccupation' - Bins with equal occupation numbers
 
     Returns
     -------
@@ -77,77 +78,21 @@ def make_bins(rmin, rmax, nbins=10, method='evenwidth'):
         binedges = np.linspace(rmin, rmax, nbins+1, endpoint=True)
     elif method == 'evenlog10width':
         binedges = np.logspace(np.log10(rmin), np.log10(rmax), nbins+1, endpoint=True)
+    elif method == 'equaloccupation':
+        if source_seps is None:
+            raise ValueError(f"Binning method '{method}' requires source separations array")
+        # by default, keep all galaxies 
+        mask = np.full(len(source_seps), True)
+        if rmin is not None or rmax is not None:
+        # Need to filter source_seps to only keep galaxies in the [rmin, rmax]
+            if rmin is None: rmin = np.min(source_seps)
+            if rmax is None: rmax = np.max(source_seps)
+            mask = (np.array(source_seps)>=rmin)*(np.array(source_seps)<=rmax)
+        binedges = np.percentile(source_seps[mask], tuple(np.linspace(0,100,nbins+1, endpoint=True)))
     else:
         raise ValueError(f"Binning method '{method}' is not currently supported")
 
     return binedges
-
-
-def make_bins_with_same_ngal(separation_arr, separation_units, bin_units,\
-                             rmin=None, rmax=None, cl_redshift=None, cosmo=None,nbins=10):
-    """ Given the galaxy distances from the center of the cluster, 
-        define bin edges so that each bins contains the same number of galaxies.
-
-    Parameters
-    ----------
-    separation_arr : array
-        Array containing the angular distance of the galaxies to the cluster center
-    rmin : float
-        The minimum radius to consider to compute the bins. The unit should be the 
-        same as bin_units
-        By default the minimum separation found in separation_arr is used.
-    rmax : float
-        The minimum radius to consider to compute the bins. The unit should be the 
-        same as bin_units
-        By default the maximum separation found in separation_arr is used.
-    separation_units : str
-        Units of the distance in the distance array
-    bin_units : str
-        Units of the bin edges that will be returned
-    nbins : float
-        Number of bins you want to create, default to 10.
-
-    Returns
-    -------
-    binedges: array_like, float
-        n_bins+1 dimensional array that defines bin edges
-    """
-
-    angular_bank = {"radians": u.rad, "degrees": u.deg, "arcmin": u.arcmin, "arcsec": u.arcsec}
-    physical_bank = {"pc": u.pc, "kpc": u.kpc, "Mpc": u.Mpc}
-    units_bank = {**angular_bank, **physical_bank}
-
-    # Some error checking
-    if bin_units not in units_bank:
-        raise ValueError(f"Input units ({bin_units}) not supported")
-    if separation_units not in units_bank:
-        raise ValueError(f"Output units ({separation_units}) not supported")
-
-    if (bin_units in angular_bank and separation_units in physical_bank)\
-    or (bin_units in physical_bank and separation_units in angular_bank):
-    # separation_units and bin_units are not the same type (e.g. angular vs physical)
-        source_seps = convert_units(separation_arr, separation_units, bin_units,
-                                    redshift=cl_redshift, cosmo=cosmo)
-    elif bin_units==separation_units:
-    # same units nothing to do
-        source_seps = separation_arr
-    else:
-    # separation_units and bin_units are different but of the same type
-        source_seps = convert_units(separation_arr, separation_units, bin_units)
-   
-    # by default, keep all galaxies 
-    mask = np.full(len(source_seps), True)
-    if rmin is not None or rmax is not None:
-    # Need to filter source_seps to only keep galaxies in the [rmin, rmax]
-        if rmin is None: rmin = np.min(source_seps)
-        if rmax is None: rmax = np.max(source_seps)
-        mask = (np.array(source_seps)>=rmin)*(np.array(source_seps)<=rmax)
-
-    if np.sum(mask)==0:
-           raise ValueError(f"No galaxies in the radius range") 
-
-    return np.percentile(source_seps[mask],np.linspace(0,100,nbins+1))
-
 
 
 def convert_units(dist1, unit1, unit2, redshift=None, cosmo=None):
