@@ -210,7 +210,7 @@ def _compute_cross_shear(shear1, shear2, phi):
 
 
 def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
-                       add_to_cluster=True, include_empty_bins=False):
+                       add_to_cluster=True, include_empty_bins=False, gal_ids_in_bins=False):
     r"""Compute the shear profile of the cluster
 
     We assume that the cluster object contains information on the cross and
@@ -248,6 +248,8 @@ def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
         Attach the profile to the cluster object as `cluster.profile`
     include_empty_bins: bool, optional
         Also include empty bins in the returned table
+    gal_ids_in_bins: bool, optional
+        Also include the list of galaxies ID belonging to each bin in the returned table
 
     Returns
     -------
@@ -261,7 +263,7 @@ def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
                         'and cross shears (gt,gx). Run compute_shear first!')
     if 'z' not in cluster.galcat.columns:
         raise TypeError('Missing galaxy redshifts!')
-
+    
     # Check to see if we need to do a unit conversion
     if angsep_units is not bin_units:
         source_seps = convert_units(cluster.galcat['theta'], angsep_units, bin_units,
@@ -274,17 +276,28 @@ def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
         bins = make_bins(np.min(source_seps), np.max(source_seps), bins)
 
     # Compute the binned average shears and associated errors
-    r_avg, gt_avg, gt_err, nsrc = compute_radial_averages(
+    r_avg, gt_avg, gt_err, nsrc, binnumber = compute_radial_averages(
         source_seps, cluster.galcat['gt'].data, xbins=bins, error_model='std/sqrt_n')
-    r_avg, gx_avg, gx_err, _ = compute_radial_averages(
+    r_avg, gx_avg, gx_err, _, _ = compute_radial_averages(
         source_seps, cluster.galcat['gx'].data, xbins=bins, error_model='std/sqrt_n')
-    r_avg, z_avg, z_err, _ = compute_radial_averages(
+    r_avg, z_avg, z_err, _, _ = compute_radial_averages(
         source_seps, cluster.galcat['z'].data, xbins=bins, error_model='std/sqrt_n')
 
-    profile_table = Table([bins[:-1], r_avg, bins[1:], gt_avg, gt_err, gx_avg, gx_err,
-                           z_avg, z_err, nsrc],
-                          names=('radius_min', 'radius', 'radius_max', 'gt', 'gt_err',
+
+    if not gal_ids_in_bins:
+        profile_table = Table([bins[:-1], r_avg, bins[1:], gt_avg, gt_err, gx_avg, gx_err,
+                               z_avg, z_err, nsrc],
+                               names=('radius_min', 'radius', 'radius_max', 'gt', 'gt_err',
                                  'gx', 'gx_err', 'z', 'z_err', 'n_src'))
+    else:
+        if 'id' not in cluster.galcat.columns:
+            raise TypeError('Missing galaxy IDs!')
+        gal_id = [list(cluster.galcat['id'][binnumber==i+1]) for i in np.arange(len(r_avg))]
+        profile_table = Table([bins[:-1], r_avg, bins[1:], gt_avg, gt_err, gx_avg, gx_err,
+                               z_avg, z_err, nsrc, gal_id],
+                               names=('radius_min', 'radius', 'radius_max', 'gt', 'gt_err',
+                                 'gx', 'gx_err', 'z', 'z_err', 'n_src', 'gal_id'))
+
     # return empty bins?
     if not include_empty_bins:
         profile_table = profile_table[profile_table['n_src'] > 1]
