@@ -5,7 +5,7 @@ from astropy import units
 from astropy.cosmology import LambdaCDM
 from .constants import Constants as const
 from .cluster_toolkit_patches import _patch_zevolution_cluster_toolkit_rho_m
-
+import warnings
 
 def cclify_astropy_cosmo(cosmoin):
     """ Given an astropy.cosmology object, creates a CCL-like dictionary
@@ -267,6 +267,9 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
     cosmo = cclify_astropy_cosmo(cosmo)
     omega_m = cosmo['Omega_c'] + cosmo['Omega_b']
     omega_m_transformed = _patch_zevolution_cluster_toolkit_rho_m(omega_m, z_cl)
+
+    if r_proj[0]<1.e-11:
+        raise ValueError(f"Rmin = {r_proj[0]:.2e} Mpc/h! This value is too small and may cause computational issues.")
 
     # Computing sigma on a larger range than the radial range requested
     sigma_r_proj = np.logspace(np.log10(r_proj[0])-1, np.log10(r_proj[-1])+1, len(r_proj)*10)
