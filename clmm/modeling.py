@@ -5,7 +5,6 @@ from astropy import units
 from astropy.cosmology import LambdaCDM
 from .constants import Constants as const
 from .cluster_toolkit_patches import _patch_zevolution_cluster_toolkit_rho_m
-import warnings
 
 def cclify_astropy_cosmo(cosmoin):
     """ Given an astropy.cosmology object, creates a CCL-like dictionary
