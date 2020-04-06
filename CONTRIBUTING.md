@@ -55,6 +55,13 @@ Now, you should have cluster_toolkit installed, and are ready to install CLMM
 
 The above allows you to develop in NERSC and run pytest.  Your workflow as a developer would be to make your changes, do a `python setup.py install --user` then `pytest` to make sure your changes did not break any tests.
 
+If you are a DESC member you may also add to your CLMM environment the GCR and GCRCatalog packages to access the DC2 datasets at NERSC. Once in your CLMM environment (`source activate clmmenv`), run
+
+```bash
+    pip install GCR
+    pip install https://github.com/LSSTDESC/gcr-catalogs/archive/master.zip
+```
+
 To open up a notebook from nersc in your browser, you will need to go to the [nersc jupyter portal](https://jupyter.nersc.gov) and sign in.  Clicking on the upper right corner of the notebook will provide options for your kernel.  Choose your `conda env:conda-clmmenv` that you just created.  You will need to do a temporary install of both cluster_toolkit and clmm in the first cell of your jupyter notebook:
 
 ```python
