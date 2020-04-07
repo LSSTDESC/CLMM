@@ -3,6 +3,7 @@ import cluster_toolkit as ct
 import numpy as np
 from astropy import units
 from astropy.cosmology import LambdaCDM
+import warnings
 from .constants import Constants as const
 from .cluster_toolkit_patches import _patch_zevolution_cluster_toolkit_rho_m
 
@@ -356,8 +357,11 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     d_l = angular_diameter_dist_a1a2(cosmo, aexp_cluster, 1.0)
     d_s = angular_diameter_dist_a1a2(cosmo, aexp_src, 1.0)
     d_ls = angular_diameter_dist_a1a2(cosmo, aexp_src, aexp_cluster)
+    
+    if np.sum(z_source<z_cluster)!=0:
+        warnings.warn("The redhift of the source is lower than the lens", UserWarning)
 
-    sigmacrit = d_s / (d_l * d_ls) * clight_pc_s * clight_pc_s / (4.0 * np.pi * gnewt_pc3_msun_s2)
+    sigmacrit = np.heaviside((z_source>z_cluster),0) * d_s / (d_l * d_ls) * clight_pc_s * clight_pc_s / (4.0 * np.pi * gnewt_pc3_msun_s2)
     return sigmacrit
 
 
@@ -417,7 +421,8 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
 
     if z_src_model == 'single_plane':
         sigma_c = get_critical_surface_density(cosmo, z_cluster, z_source)
-        gammat = delta_sigma / sigma_c
+        gammat = np.heaviside((z_source>z_cluster),0) * (delta_sigma / sigma_c)
+
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +
     #                               'delta_sigma/sigma_c gamma_t = Beta_s*gamma_inf')
@@ -480,8 +485,12 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
                                     delta_mdef=delta_mdef, halo_profile_model=halo_profile_model)
 
     if z_src_model == 'single_plane':
+        
         sigma_c = get_critical_surface_density(cosmo, z_cluster, z_source)
-        kappa = sigma / sigma_c
+        
+        kappa =  np.heaviside((z_source>z_cluster),0) * sigma / sigma_c
+
+
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +\
     #                               'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
@@ -607,7 +616,7 @@ def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
                                     halo_profile_model,
                                     z_src_model)
         
-        mu = 1 / ((1-kappa)**2-abs(gammat)**2)
+        mu =  1 / ((1-kappa)**2-abs(gammat)**2)
     
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +\
