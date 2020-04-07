@@ -361,7 +361,7 @@ def test_shear_convergence_unittests():
     # Compute sigma_c in the new cosmology and get a correction factor
     sigcrit_corr = cfg['SIGMAC_PHYSCONST_CORRECTION']
     sigma_c_undo = md.get_critical_surface_density(cosmo, cfg['GAMMA_PARAMS']['z_cluster'],
-+                                               cfg['z_source'])
+                                                   cfg['z_source'])
     sigmac_corr = sigma_c_undo/sigma_c/sigcrit_corr
 
     # Validate tangential shear
@@ -376,3 +376,29 @@ def test_shear_convergence_unittests():
     assert_allclose(md.predict_reduced_tangential_shear(cosmo=cosmo, **cfg['GAMMA_PARAMS']),
                     gammat/(1.0 - kappa), 1.0e-10)
     assert_allclose(gammat/(1./sigmac_corr - kappa), cfg['numcosmo_profiles']['gt'], 1.0e-6)
+
+    # Check that shear and convergence return zero if source is in front of the cluster
+    # First, check for a array of radius and single source z
+    r = np.logspace(-2,-2,10)
+    z_cluster = 0.3
+    z_source = 0.2
+
+    assert_allclose(md.predict_convergence(r, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
+                    np.zeros(len(r)), 1.0e-10)
+    assert_allclose(md.predict_tangential_shear(r, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
+                    np.zeros(len(r)), 1.0e-10)
+    assert_allclose(md.predict_reduced_tangential_shear(r, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
+                    np.zeros(len(r)), 1.0e-10)
+
+    # Second, check a single radius and array of source z
+    r = 1.
+    z_source = [0.25, 0.1, 0.14, 0.02]
+    assert_allclose(md.predict_convergence(r, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
+                    np.zeros(len(z_source)), 1.0e-10)
+    assert_allclose(md.predict_tangential_shear(r, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
+                    np.zeros(len(z_source)), 1.0e-10)
+    assert_allclose(md.predict_reduced_tangential_shear(r, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
+                    np.zeros(len(z_source)), 1.0e-10)
+
+
+

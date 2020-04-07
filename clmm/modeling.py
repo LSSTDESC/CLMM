@@ -5,7 +5,7 @@ from astropy import units
 from astropy.cosmology import LambdaCDM
 from .constants import Constants as const
 from .cluster_toolkit_patches import _patch_zevolution_cluster_toolkit_rho_m
-
+import warnings
 
 def cclify_astropy_cosmo(cosmoin):
     """ Given an astropy.cosmology object, creates a CCL-like dictionary
@@ -414,7 +414,6 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     delta_sigma = predict_excess_surface_density(r_proj, mdelta, cdelta, z_cluster, cosmo,
                                                  delta_mdef=delta_mdef,
                                                  halo_profile_model=halo_profile_model)
-
     if z_src_model == 'single_plane':
         sigma_c = get_critical_surface_density(cosmo, z_cluster, z_source)
         gammat = delta_sigma / sigma_c
@@ -426,6 +425,13 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     #                               'distribution of redshifts in each radial bin')
     else:
         raise ValueError("Unsupported z_src_model")
+    
+    mask = (np.array(z_source)<=z_cluster)
+    if np.sum(mask)>0:
+        warnings.warn(f'Some source redshifts are lower than the cluster redshift. Returning 0 for those galaxies.')
+        if type(gammat) is float: gammat = 0.
+        if type(delta_sigma) is np.ndarray: gammat[mask] = 0.
+
     return gammat
 
 
@@ -490,6 +496,13 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     #                               'distribution of redshifts in each radial bin')
     else:
         raise ValueError("Unsupported z_src_model")
+    
+    mask = (np.array(z_source)<=z_cluster)
+    if np.sum(mask)>0:
+        warnings.warn(f'Some source redshifts are lower than the cluster redshift. Returning 0 for those galaxies.')
+        if type(kappa) is float: kappa = 0.
+        if type(kappa) is np.ndarray: kappa[mask] = 0.
+    
     return kappa
 
 
@@ -548,4 +561,11 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
     #                               'integrating distribution of redshifts in each radial bin')
     else:
         raise ValueError("Unsupported z_src_model")
+    
+    mask = (np.array(z_source)<=z_cluster)
+    if np.sum(mask)>0:
+        warnings.warn(f'Some source redshifts are lower than the cluster redshift. Returning 0 for those galaxies.')
+        if type(red_tangential_shear) is float: red_tangential_shear = 0.
+        if type(red_tangential_shear) is np.ndarray: red_tangential_shear[mask] = 0.
+
     return red_tangential_shear
