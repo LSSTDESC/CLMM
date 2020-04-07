@@ -347,6 +347,7 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     We will need :math:`\gamma_\infty` and :math:`\kappa_\infty` for alternative
     z_src_models using :math:`\beta_s`.
     """
+
     clight_pc_s = const.CLIGHT_KMS.value * 1000. / const.PC_TO_METER.value
     gnewt_pc3_msun_s2 = const.GNEWT.value * const.SOLAR_MASS.value / const.PC_TO_METER.value**3
 
@@ -358,6 +359,12 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     d_ls = angular_diameter_dist_a1a2(cosmo, aexp_src, aexp_cluster)
 
     sigmacrit = d_s / (d_l * d_ls) * clight_pc_s * clight_pc_s / (4.0 * np.pi * gnewt_pc3_msun_s2)
+    
+    mask = (np.array(z_source)<=z_cluster)
+    if np.sum(mask)>0:
+        warnings.warn(f'Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.')
+        if type(sigmacrit) is np.float64: sigmacrit = np.infty
+        if type(sigmacrit) is np.ndarray: sigmacrit[mask] = np.infty
     return sigmacrit
 
 
@@ -426,11 +433,8 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     else:
         raise ValueError("Unsupported z_src_model")
     
-    mask = (np.array(z_source)<=z_cluster)
-    if np.sum(mask)>0:
-        warnings.warn(f'Some source redshifts are lower than the cluster redshift. Returning 0 for those galaxies.')
-        if type(gammat) is float: gammat = 0.
-        if type(delta_sigma) is np.ndarray: gammat[mask] = 0.
+    if np.sum(np.array(z_source)<=z_cluster):
+        warnings.warn(f'Some source redshifts are lower than the cluster redshift. shear = 0 for those galaxies.')
 
     return gammat
 
@@ -497,12 +501,9 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     else:
         raise ValueError("Unsupported z_src_model")
     
-    mask = (np.array(z_source)<=z_cluster)
-    if np.sum(mask)>0:
-        warnings.warn(f'Some source redshifts are lower than the cluster redshift. Returning 0 for those galaxies.')
-        if type(kappa) is float: kappa = 0.
-        if type(kappa) is np.ndarray: kappa[mask] = 0.
-    
+    if np.sum(np.array(z_source)<=z_cluster):
+        warnings.warn(f'Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.')
+
     return kappa
 
 
@@ -562,10 +563,8 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
     else:
         raise ValueError("Unsupported z_src_model")
     
-    mask = (np.array(z_source)<=z_cluster)
-    if np.sum(mask)>0:
-        warnings.warn(f'Some source redshifts are lower than the cluster redshift. Returning 0 for those galaxies.')
-        if type(red_tangential_shear) is float: red_tangential_shear = 0.
-        if type(red_tangential_shear) is np.ndarray: red_tangential_shear[mask] = 0.
+    if np.sum(np.array(z_source)<=z_cluster):
+        warnings.warn(f'Some source redshifts are lower than the cluster redshift. shear = 0 for those galaxies.')
+
 
     return red_tangential_shear

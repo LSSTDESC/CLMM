@@ -299,6 +299,16 @@ def test_get_critical_surface_density():
                                                     z_cluster=cfg['TEST_CASE']['z_cluster'],
                                                     z_source=cfg['TEST_CASE']['z_source']),
                     cfg['TEST_CASE']['nc_Sigmac'], 1.0e-8)
+    
+    # Check behaviour when sources are in front of the lens
+    z_cluster = 0.3
+    z_source = 0.2
+    assert_allclose(md.get_critical_surface_density(cfg['cosmo'],z_cluster=z_cluster, z_source=z_source),
+                    np.inf, 1.0e-10)
+
+    z_source = [0.2,0.12,0.25]
+    assert_allclose(md.get_critical_surface_density(cfg['cosmo'],z_cluster=z_cluster, z_source=z_source),
+                    [np.inf,np.inf, np.inf], 1.0e-10)
 
 
 def helper_physics_functions(func):
