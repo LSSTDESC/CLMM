@@ -267,11 +267,11 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
     omega_m = cosmo['Omega_c'] + cosmo['Omega_b']
     omega_m_transformed = _patch_zevolution_cluster_toolkit_rho_m(omega_m, z_cl)
 
-    if r_proj[0]<1.e-11:
-        raise ValueError(f"Rmin = {r_proj[0]:.2e} Mpc/h! This value is too small and may cause computational issues.")
+    if np.min(r_proj)<1.e-11:
+        raise ValueError(f"Rmin = {np.min(r_proj):.2e} Mpc/h! This value is too small and may cause computational issues.")
 
     # Computing sigma on a larger range than the radial range requested
-    sigma_r_proj = np.logspace(np.log10(r_proj[0])-1, np.log10(r_proj[-1])+1, len(r_proj)*10)
+    sigma_r_proj = np.logspace(np.log10(np.min(r_proj))-1, np.log10(np.max(r_proj))+1, len(r_proj)*10)
 
     if halo_profile_model.lower() == 'nfw':
         sigma = ct.deltasigma.Sigma_nfw_at_R(sigma_r_proj, mdelta, cdelta,
