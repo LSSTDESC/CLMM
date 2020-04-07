@@ -379,7 +379,7 @@ def test_shear_convergence_unittests():
 
     # Check that shear and convergence return zero if source is in front of the cluster
     # First, check for a array of radius and single source z
-    r = np.logspace(-2,-2,10)
+    r = np.logspace(-2,2,10)
     z_cluster = 0.3
     z_source = 0.2
 
