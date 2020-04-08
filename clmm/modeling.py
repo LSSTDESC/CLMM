@@ -424,6 +424,11 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     if z_src_model == 'single_plane':
         sigma_c = get_critical_surface_density(cosmo, z_cluster, z_source)
         gammat = delta_sigma / sigma_c
+        if np.invert(np.isfinite(sigma_c)).sum()>0:
+            if type(gamma_t) is np.float64: gamma_t=0
+            if type(gamma_t) is np.ndarray: 
+                gamma_t[np.invert(np.isfinite(sigma_c))]=0
+        
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +
     #                               'delta_sigma/sigma_c gamma_t = Beta_s*gamma_inf')
@@ -492,6 +497,10 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     if z_src_model == 'single_plane':
         sigma_c = get_critical_surface_density(cosmo, z_cluster, z_source)
         kappa = sigma / sigma_c
+        if np.invert(np.isfinite(sigma_c)).sum()>0:
+            if type(gamma_t) is np.float64: kappa=0
+            if type(gamma_t) is np.ndarray: 
+                kappa[np.invert(np.isfinite(sigma_c))]=0
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +\
     #                               'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
