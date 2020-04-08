@@ -498,8 +498,8 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
         sigma_c = get_critical_surface_density(cosmo, z_cluster, z_source)
         kappa = sigma / sigma_c
         if np.invert(np.isfinite(sigma_c)).sum()>0:
-            if type(gamma_t) is np.float64: kappa=0
-            if type(gamma_t) is np.ndarray: 
+            if type(kappa) is np.float64: kappa=0
+            if type(kappa) is np.ndarray: 
                 kappa[np.invert(np.isfinite(sigma_c))]=0
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +\
