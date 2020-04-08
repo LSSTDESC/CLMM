@@ -425,9 +425,9 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
         sigma_c = get_critical_surface_density(cosmo, z_cluster, z_source)
         gammat = delta_sigma / sigma_c
         if np.invert(np.isfinite(sigma_c)).sum()>0:
-            if type(gamma_t) is np.float64: gamma_t=0
-            if type(gamma_t) is np.ndarray: 
-                gamma_t[np.invert(np.isfinite(sigma_c))]=0
+            if type(gammat) is np.float64: gammat=0
+            if type(gammat) is np.ndarray: 
+                gammat[np.invert(np.isfinite(sigma_c))]=0
         
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +
