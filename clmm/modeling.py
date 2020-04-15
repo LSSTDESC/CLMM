@@ -550,7 +550,7 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
                                     z_src_model)
         gamma_t = predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
                                            delta_mdef, halo_profile_model, z_src_model)
-        red_tangential_shear = np.anan_to_num(np.divide(gamma_t , (1 - kappa)))
+        red_tangential_shear = np.nan_to_num(np.divide(gamma_t , (1 - kappa)))
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +
     #                               'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
