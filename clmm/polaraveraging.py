@@ -60,7 +60,7 @@ def compute_shear(cluster=None, ra_lens=None, dec_lens=None, ra_source_list=None
 
     The tangential, :math:`g_t`, and cross, :math:`g_x`, shears are calculated using the two
     shear components :math:`g_1` and :math:`g_2` of the source galaxies, following Eq.7 and Eq.8
-    in Schrabback et al. (2018), arXiv:1611:03866
+    in Schrabback et al. (2018), arXiv:1611.03866
     also checked arxiv: 0509252
 
     .. math::
@@ -165,16 +165,21 @@ def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_sourc
         raise ValueError("Cluster has an invalid ra in source catalog")
     if not all(-90. <= x_ <= 90 for x_ in dec_source_list):
         raise ValueError("Cluster has an invalid dec in the source catalog")
+    
+    # Put angles between -pi and pi
+    r2pi = lambda x: x - np.round(x/(2.0*math.pi))*2.0*math.pi
 
-    deltax = np.radians(ra_source_list - ra_lens) * math.cos(math.radians(dec_lens))
+    deltax = r2pi (np.radians(ra_source_list - ra_lens)) * math.cos(math.radians(dec_lens))
     deltay = np.radians(dec_source_list - dec_lens)
-
+    
     # Ensure that abs(delta ra) < pi
-    deltax[deltax >= np.pi] = deltax[deltax >= np.pi] - 2.*np.pi
-    deltax[deltax < -np.pi] = deltax[deltax < -np.pi] + 2.*np.pi
+    #deltax[deltax >= np.pi] = deltax[deltax >= np.pi] - 2.*np.pi
+    #deltax[deltax < -np.pi] = deltax[deltax < -np.pi] + 2.*np.pi
 
     angsep = np.sqrt(deltax**2 + deltay**2)
     phi = np.arctan2(deltay, -deltax)
+    # Forcing phi to be zero everytime angsep is zero. This is necessary due to arctan2 features (it returns ).
+    phi[angsep==0.0] = 0.0
 
     if np.any(angsep > np.pi/180.):
         warnings.warn("Using the flat-sky approximation with separations >1 deg may be inaccurate")

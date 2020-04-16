@@ -40,7 +40,9 @@ def compute_radial_averages(xvals, yvals, xbins, error_model='std/sqrt_n'):
         yerr = binned_statistic(xvals, yvals, statistic='std', bins=xbins)[0]
     elif error_model == 'std/sqrt_n':
         yerr = binned_statistic(xvals, yvals, statistic='std', bins=xbins)[0]
-        yerr = yerr/np.sqrt(binned_statistic(xvals, yvals, statistic='count', bins=xbins)[0])
+        sqrt_n = np.sqrt(binned_statistic(xvals, yvals, statistic='count', bins=xbins)[0])
+        sqrt_n[sqrt_n==0.0] = 1.0
+        yerr = yerr/sqrt_n
     else:
         raise ValueError(f"{error_model} not supported err model for binned stats")
 
