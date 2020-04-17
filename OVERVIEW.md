@@ -1,9 +1,10 @@
-# Overview (back to main [readme](README.md))
+# Overview
 CLMM (Cluster Lensing Mass Modeling) provides a tool to estimate cluster masses based on weak lensing data.
 It also includes a routine to make mock catalogs based on cluster_toolkit.
 CLMM consists of the building blocks for an end-to-end weak lensing cosmology pipeline that can be validated on mock data and run on real data from LSST or other telescopes.
 We provide [examples](https://github.com/LSSTDESC/CLMM/tree/master/examples) of its usage in this repository.
 
+* [Main readme](README.md)
 
 ## Table of contents
 1. [The `GalaxyCluster` object](#the_galaxycluster_object)
@@ -16,14 +17,14 @@ We provide [examples](https://github.com/LSSTDESC/CLMM/tree/master/examples) of 
 ## The `GalaxyCluster` object <a name="the_galaxycluster_object"></a>
 
   * The GalaxyCluster object contains the galaxy cluster metadata (unique_id, ra, dec, z) as well as the background galaxy data
-  * Background galaxy data: astropy Table containing galaxy_id, ra, dec, e1, e2, z, kappa
+  * Background galaxy data: astropy Table containing at least galaxy_id, ra, dec, e1, e2, z
   * ra/dec are in decimal degrees
 
 ## Weak lensing signal measurement with `polaraveraging.py` <a name="weak_lensing_signal_measurement_with_polaraveraging"></a>
 
   * The function `compute_shear` calculates tangential shear, cross shear, and angular separation of each source galaxy relative to the (ra, dec) coordinates of the center of the cluster.
   * A shear profile may be constructed with the user's choice of binning via `make_bins`.
-  * `make_shear_profile` takes the average over shear of each source galaxy over radial bins in rad, deg, arcmin, arcsec, kpc, or Mpc.
+  * `make_shear_profile` averages the shear of galaxies in each radial bin in rad, deg, arcmin, arcsec, kpc, or Mpc.
   * See [examples/demo_polaraveraging_functionality.ipynb](examples/demo_polaraveraging_functionality.ipynb) for detailed examples.
 
 ## Profile and cosmology models with `modeling.py` <a name="profile_and_cosmology_models_with_modeling"></a>
