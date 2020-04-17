@@ -364,6 +364,9 @@ def test_shear_convergence_unittests():
 +                                               cfg['z_source'])
     sigmac_corr = sigma_c_undo/sigma_c/sigcrit_corr
 
+    # Chech error is raised if too small radius   
+    assert_raises(ValueError, md.predict_tangential_shear, 1.e-12, 1.e15, 4, 0.2, 0.45, cosmo)
+
     # Validate tangential shear
     gammat = md.predict_tangential_shear(cosmo=cosmo, **cfg['GAMMA_PARAMS'])
     assert_allclose(gammat*sigmac_corr, cfg['numcosmo_profiles']['gammat'], 1.0e-8)
