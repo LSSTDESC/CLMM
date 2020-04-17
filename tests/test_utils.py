@@ -96,7 +96,19 @@ def test_make_bins():
                     np.linspace(0.0, 10., 11), **TOLERANCE)
     assert_allclose(make_bins(1.0, 10., nbins=10, method='evenlog10width'),
                     np.logspace(np.log10(1.0), np.log10(10.), 11), **TOLERANCE)
-
+    
+    # Test equaloccupation method. It needs a source_seps array, so create one
+    test_array = np.sqrt(np.random.uniform(-10,10,1361)**2 + np.random.uniform(-10,10,1361)**2)
+    test_bins = make_bins(1.0, 10., nbins=10, method='equaloccupation', source_seps=test_array)
+    # Check that all bins have roughly equal occupation. 
+    # Assert needs atol=2, because len(source_seps)/nbins may not be an integer, 
+    # and for some random arrays atol=1 is not enough. 
+    assert_allclose(np.diff(np.histogram(test_array,bins=test_bins)[0]),
+                    np.zeros(9), atol=2)
+    test_bins = make_bins(0.51396, 6.78, nbins=23, method='equaloccupation', source_seps=test_array)
+    assert_allclose(np.diff(np.histogram(test_array,bins=test_bins)[0]),
+                    np.zeros(22), atol=2)
+                    
 
 def _rad_to_mpc_helper(dist, redshift, cosmo, do_inverse):
     """ Helper function to clean up test_convert_rad_to_mpc. Truth is computed using
