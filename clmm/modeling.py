@@ -358,13 +358,12 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     d_s = angular_diameter_dist_a1a2(cosmo, aexp_src, 1.0)
     d_ls = angular_diameter_dist_a1a2(cosmo, aexp_src, aexp_cluster)
 
-    sigmacrit = d_s / (d_l * d_ls) * clight_pc_s * clight_pc_s / (4.0 * np.pi * gnewt_pc3_msun_s2)
+    beta_s = np.maximum(0, d_ls/d_s)
+    sigmacrit = clight_pc_s * clight_pc_s / (4.0 * np.pi * gnewt_pc3_msun_s2) * 1/d_l * np.divide(1., beta_s)
     
     mask = (np.array(z_source)<=z_cluster)
     if np.sum(mask)>0:
         warnings.warn(f'Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.')
-        if type(sigmacrit) is np.float64: sigmacrit = np.infty
-        if type(sigmacrit) is np.ndarray: sigmacrit[mask] = np.infty
     return sigmacrit
 
 
@@ -423,11 +422,7 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
                                                  halo_profile_model=halo_profile_model)
     if z_src_model == 'single_plane':
         sigma_c = get_critical_surface_density(cosmo, z_cluster, z_source)
-        gammat = delta_sigma / sigma_c
-        if np.invert(np.isfinite(sigma_c)).sum()>0:
-            if type(gammat) is np.float64: gammat=0
-            if type(gammat) is np.ndarray: 
-                gammat[np.invert(np.isfinite(sigma_c))]=0
+        gammat = np.nan_to_num(delta_sigma / sigma_c)
         
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +
@@ -496,11 +491,8 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
 
     if z_src_model == 'single_plane':
         sigma_c = get_critical_surface_density(cosmo, z_cluster, z_source)
-        kappa = sigma / sigma_c
-        if np.invert(np.isfinite(sigma_c)).sum()>0:
-            if type(kappa) is np.float64: kappa=0
-            if type(kappa) is np.ndarray: 
-                kappa[np.invert(np.isfinite(sigma_c))]=0
+        kappa = np.nan_to_num(sigma / sigma_c)
+        
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +\
     #                               'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
@@ -562,7 +554,8 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
                                     z_src_model)
         gamma_t = predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
                                            delta_mdef, halo_profile_model, z_src_model)
-        red_tangential_shear = gamma_t / (1 - kappa)
+        red_tangential_shear = np.nan_to_num(np.divide(gamma_t , (1 - kappa)))
+        
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +
     #                               'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
