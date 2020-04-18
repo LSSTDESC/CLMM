@@ -2,6 +2,8 @@
 
 This is a brief guide to contributing to CLMM, including information about identifiying code issues and submitting code changes or documentation.
 
+* [Main readme](README.md)
+
 ## Table of contents
 1. [Identifying Issues](#identifying_issues)
 2. [Access to the proper environment on cori.nersc.gov](#access_to_the_proper_environment_on_cori)
@@ -21,7 +23,7 @@ Issues marked with the label `good first issue` are well-suited for new contribu
 
 ## Access to the proper environment on cori.nersc.gov <a name="access_to_the_proper_environment_on_cori"></a>
 
-If you have access to nersc, this will likely be the easiest to make sure you have the appropriate environment.  After logging into cori.nersc.gov, you will need to execute the following:
+If you have access to NERSC, this will likely be the easiest to make sure you have the appropriate environment.  After logging into cori.nersc.gov, you will need to execute the following:
 
 ```bash
 	module load python  # Also loads anaconda
