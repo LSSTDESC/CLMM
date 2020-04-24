@@ -144,14 +144,14 @@ def test_compute_lensing_angles_flatsky():
 
 def test_compute_shear():
     # Input values
-    ra_lens, dec_lens = 120., 42.
+    ra_lens, dec_lens, z_lens = 120., 42., 0.5
     ra_source_list = np.array([120.1, 119.9])
     dec_source_list = np.array([41.9, 42.2])
     shear1 = np.array([0.2, 0.4])
     shear2 = np.array([0.3, 0.5])
 
     # Make GalaxyCluster object
-    cluster = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=0.5,
+    cluster = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
                                  galcat=Table([ra_source_list, dec_source_list, shear1, shear2],
                                               names=('ra', 'dec', 'e1', 'e2')))
 
@@ -193,20 +193,20 @@ def test_compute_shear():
 
 def test_make_shear_profiles():
     # Set up a cluster object and compute cross and tangential shears
-    ra_lens, dec_lens = 120., 42.
+    ra_lens, dec_lens, z_lens = 120., 42., 0.5
     ra_source_list = np.array([120.1, 119.9, 119.9])
     dec_source_list = np.array([41.9, 42.2, 42.2])
     id_source_list = np.array([1, 2, 3])
     shear1 = np.array([0.2, 0.4, 0.4])
     shear2 = np.array([0.3, 0.5, 0.5])
     z_sources = np.ones(3)
-    cluster = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=0.5,
+    cluster = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
                                  galcat=Table([ra_source_list, dec_source_list,
                                                shear1, shear2, z_sources, id_source_list],
                                               names=('ra', 'dec', 'e1', 'e2', 'z', 'id')))
 
     # Test error of missing redshift
-    cluster_noz = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=0.5,
+    cluster_noz = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
                                      galcat=Table([ra_source_list, dec_source_list,
                                                    shear1, shear2],
                                                   names=('ra', 'dec', 'e1', 'e2')))
@@ -298,7 +298,7 @@ def test_make_shear_profiles():
     testing.assert_array_equal(profile4['n_src'], [1,2])
 
     # Repeat the same tests but also asking for list of galaxy IDs in each bin
-    cluster_noid = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=0.5,
+    cluster_noid = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
                                  galcat=Table([ra_source_list, dec_source_list,
                                                shear1, shear2, z_sources],
                                               names=('ra', 'dec', 'e1', 'e2', 'z')))
