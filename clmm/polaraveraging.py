@@ -283,20 +283,17 @@ def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
     r_avg, z_avg, z_err, _, _ = compute_radial_averages(
         source_seps, cluster.galcat['z'].data, xbins=bins, error_model='std/sqrt_n')
 
-
-    if not gal_ids_in_bins:
-        profile_table = Table([bins[:-1], r_avg, bins[1:], gt_avg, gt_err, gx_avg, gx_err,
-                               z_avg, z_err, nsrc],
-                               names=('radius_min', 'radius', 'radius_max', 'gt', 'gt_err',
-                                 'gx', 'gx_err', 'z', 'z_err', 'n_src'))
-    else:
+    # Make out table
+    profile_table = Table([bins[:-1], r_avg, bins[1:], gt_avg, gt_err, gx_avg, gx_err,
+                            z_avg, z_err, nsrc],
+                            names=('radius_min', 'radius', 'radius_max', 'gt', 'gt_err',
+                            'gx', 'gx_err', 'z', 'z_err', 'n_src'))
+    # add galaxy IDs
+    if gal_ids_in_bins:
         if 'id' not in cluster.galcat.columns:
             raise TypeError('Missing galaxy IDs!')
-        gal_id = [list(cluster.galcat['id'][binnumber==i+1]) for i in np.arange(len(r_avg))]
-        profile_table = Table([bins[:-1], r_avg, bins[1:], gt_avg, gt_err, gx_avg, gx_err,
-                               z_avg, z_err, nsrc, gal_id],
-                               names=('radius_min', 'radius', 'radius_max', 'gt', 'gt_err',
-                                 'gx', 'gx_err', 'z', 'z_err', 'n_src', 'gal_id'))
+        profile_table['gal_id'] = [list(cluster.galcat['id'][binnumber==i+1])
+                                    for i in np.arange(len(r_avg))]
 
     # return empty bins?
     if not include_empty_bins:
