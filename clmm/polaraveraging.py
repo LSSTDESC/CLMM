@@ -302,6 +302,10 @@ def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
     if not include_empty_bins:
         profile_table = profile_table[profile_table['n_src'] > 1]
 
+    # Add metadata to profile_table
+    profile_table.meta['cosmo'] = cosmo
+    profile_table.meta['bin_units'] = bin_units
+
     if add_to_cluster:
         cluster.profile = profile_table
         cluster.profile_bin_units = bin_units
