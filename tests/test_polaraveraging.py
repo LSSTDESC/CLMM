@@ -253,6 +253,10 @@ def test_make_shear_profiles():
                             err_msg="Cross shear in bin not expected")
     testing.assert_array_equal(profile['n_src'], [2])
 
+    # Test metadata
+    testing.assert_array_equal(profile.meta['bin_units'], bin_units)
+    testing.assert_array_equal(profile.meta['cosmo'], None)
+
     # Repeat the same tests when we call make_shear_profile through the GalaxyCluster method
     profile2 = cluster.make_shear_profile(
         angsep_units, bin_units, bins=bins_radians, include_empty_bins=False)
