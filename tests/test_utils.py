@@ -198,12 +198,6 @@ def test_shape_conversion():
     epsilon ellipticities or reduced shear. Both can be used for the galcat in 
     the GalaxyCluster object"""
     
-    def ellipticities(q20,q11,q02):
-        """Build ellipticties from second moments
-        """
-        x1,x2 = (q20-q02)/(q20+q02),(2*q11)/(q20+q02)
-        e1,e2 = (q20-q02)/(q20+q02+2*np.sqrt(q20*q02-q11*q11)),(2*q11)/(q20+q02+2*np.sqrt(q20*q02-q11*q11))
-        return x1,x2, e1,e2
     
     # Number of random ellipticities to check
     niter=25
@@ -212,7 +206,7 @@ def test_shape_conversion():
     q20,q02 = np.random.randint(0,20,(2,niter))
     # Q11 seperate to avoid a whole bunch of nans
     q11 = np.random.uniform(-1,1,niter)*np.sqrt(q20*q02)
-    x1,x2,e1,e2 = ellipticities(q20,q11,q02)
+    x1,x2,e1,e2 = utils.build_ellipticities(q20,q11,q02)
     
     # Test conversion from 'chi' to epsilon
     e1_2,e2_2 = convert_shapes_to_epsilon(x1,x2,shape_definition='chi')

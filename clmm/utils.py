@@ -213,3 +213,11 @@ def convert_shapes_to_epsilon(shape_1,shape_2, shape_definition='epsilon',kappa=
     
     else:
         raise TypeError("Please choose epsilon, chi, shear, reduced_shear")
+        
+
+def build_ellipticities(q20,q11,q02):
+    """Build ellipticties from second moments
+    """
+    x1,x2 = (q20-q02)/(q20+q02),(2*q11)/(q20+q02)
+    e1,e2 = (q20-q02)/(q20+q02+2*np.sqrt(q20*q02-q11*q11)),(2*q11)/(q20+q02+2*np.sqrt(q20*q02-q11*q11))
+    return x1,x2, e1,e2
