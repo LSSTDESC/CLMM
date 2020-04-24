@@ -207,8 +207,7 @@ def test_convert_units():
     truth = r_kpc * (1.0 / d_a) * (180. / np.pi) * 60.
     assert_allclose(utils.convert_units(r_kpc, 'kpc', 'arcmin', redshift, cosmo),
                     truth, **TOLERANCE)
-
-    
+   
     
 def test_shape_conversion():
     """ Test the helper function that convert user defined shapes into
