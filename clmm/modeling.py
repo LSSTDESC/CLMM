@@ -343,7 +343,7 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
 
     Returns
     -------
-    sigmacrit : float
+    sigma_c : float
         Cosmology-dependent critical surface density in units of :math:`h\ M_\odot\ pc^{-2}`
 
     Notes
@@ -363,12 +363,12 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     d_ls = angular_diameter_dist_a1a2(cosmo, aexp_src, aexp_cluster)
 
     beta_s = np.maximum(0, d_ls/d_s)
-    sigmacrit = clight_pc_s * clight_pc_s / (4.0 * np.pi * gnewt_pc3_msun_s2) * 1/d_l * np.divide(1., beta_s)
+    sigma_c = clight_pc_s * clight_pc_s / (4.0 * np.pi * gnewt_pc3_msun_s2) * 1/d_l * np.divide(1., beta_s)
     
     mask = (np.array(z_source)<=z_cluster)
     if np.sum(mask)>0:
         warnings.warn(f'Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.')
-    return sigmacrit
+    return sigma_c
 
 
 def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
