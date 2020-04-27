@@ -230,27 +230,25 @@ def convert_shapes_to_epsilon(shape_1,shape_2, shape_definition='epsilon',kappa=
         
 
 def build_ellipticities(q11,q22,q12):    
-    """ Build ellipticties from second moments
+    """ Build ellipticties from second moments. See, e.g., Schneider et al. (2006)
     
     Parameters
     ==========
     q11 : float or array
-        Second moment brightness tensor, component (1,1)
+        Second brightness moment tensor, component (1,1)
     q22 : float or array
-        Second moment brightness tensor, component (2,2)
+        Second brightness moment tensor, component (2,2)
     q12 :  float or array
-        Second moment brightness tensor, component (1,2)
+        Second brightness moment tensor, component (1,2)
 
     Returns
     =======
-    x1, x2 : float or array_like
+    x1, x2 : float or array
         Ellipticities using the "chi definition"
-    e1, e2 : float or array-like
+    e1, e2 : float or array
         Ellipticities using the "epsilon definition"
     """
-
-#     x1,x2 = (q20-q02)/(q20+q02),(2*q11)/(q20+q02)
-#     e1,e2 = (q20-q02)/(q20+q02+2*np.sqrt(q20*q02-q11*q11)),(2*q11)/(q20+q02+2*np.sqrt(q20*q02-q11*q11))
+    
     x1,x2 = (q11-q22)/(q11+q22),(2*q12)/(q11+q22)
-    e1,e2 = (q11-q22)/(q11+q22+2*np.sqrt(q11*q22-q12*q12)),(2*q12)/(q11+q22+2*np.sqrt(q11*q22-q12*q12))s
+    e1,e2 = (q11-q22)/(q11+q22+2*np.sqrt(q11*q22-q12*q12)),(2*q12)/(q11+q22+2*np.sqrt(q11*q22-q12*q12))
     return x1,x2, e1,e2

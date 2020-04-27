@@ -208,18 +208,25 @@ def test_convert_units():
     assert_allclose(utils.convert_units(r_kpc, 'kpc', 'arcmin', redshift, cosmo),
                     truth, **TOLERANCE)
 
-# def test_build_ellipticities():
+def test_build_ellipticities():
     
-#     q20 = 1.
-#     q02 = 2.
-#     q11 = 0.
+    # second moments are floats
+    q11 = 0.5
+    q22 = 0.3
+    q12 = 0.02
     
-#     assert_allclose(utils.build_ellipticities(q20,q11,q02),(-0.3333333333333333, 0.0, -0.1715728752538099, 0.0), **TOLERANCEs
+    assert_allclose(utils.build_ellipticities(q11,q22,q12),(0.25, 0.05, 0.12710007580505459, 
+                                                            0.025420015161010917), **TOLERANCE)
     
-#     q20 = [1.,2]
-#     q02 = [2.,-1]
-#     q11 = [0.,3]
- 
+    # second moments are numpy array
+    q11 = np.array([0.5,0.3])
+    q22 = np.array([0.8,0.2])
+    q12 = np.array([0.01,0.01])
+
+    assert_allclose(utils.build_ellipticities(q11,q22,q12),([-0.23076923,  0.2],
+                                                            [0.01538462, 0.04],
+                                                            [-0.11697033,  0.10106221],
+                                                            [0.00779802, 0.02021244]), **TOLERANCE)
     
 def test_shape_conversion():
     """ Test the helper function that convert user defined shapes into
