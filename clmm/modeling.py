@@ -362,7 +362,7 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     d_s = angular_diameter_dist_a1a2(cosmo, aexp_src, 1.0)
     d_ls = angular_diameter_dist_a1a2(cosmo, aexp_src, aexp_cluster)
 
-    beta_s = np.maximum(0, d_ls/d_s)
+    beta_s = np.maximum(0., d_ls/d_s)
     sigma_c = clight_pc_s * clight_pc_s / (4.0 * np.pi * gnewt_pc3_msun_s2) * 1/d_l * np.divide(1., beta_s)
     
     if np.any(np.array(z_source)<=z_cluster):
