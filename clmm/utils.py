@@ -227,3 +227,28 @@ Definitions used here based on Bartelmann & Schneider 2001 (https://arxiv.org/pd
     
     else:
         raise TypeError("Please choose epsilon, chi, shear, reduced_shear")
+        
+
+def build_ellipticities(q11,q22,q12):    
+    """ Build ellipticties from second moments. See, e.g., Schneider et al. (2006)
+    
+    Parameters
+    ==========
+    q11 : float or array
+        Second brightness moment tensor, component (1,1)
+    q22 : float or array
+        Second brightness moment tensor, component (2,2)
+    q12 :  float or array
+        Second brightness moment tensor, component (1,2)
+
+    Returns
+    =======
+    x1, x2 : float or array
+        Ellipticities using the "chi definition"
+    e1, e2 : float or array
+        Ellipticities using the "epsilon definition"
+    """
+    
+    x1,x2 = (q11-q22)/(q11+q22),(2*q12)/(q11+q22)
+    e1,e2 = (q11-q22)/(q11+q22+2*np.sqrt(q11*q22-q12*q12)),(2*q12)/(q11+q22+2*np.sqrt(q11*q22-q12*q12))
+    return x1,x2, e1,e2

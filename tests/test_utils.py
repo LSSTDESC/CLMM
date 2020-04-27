@@ -208,28 +208,40 @@ def test_convert_units():
     assert_allclose(utils.convert_units(r_kpc, 'kpc', 'arcmin', redshift, cosmo),
                     truth, **TOLERANCE)
 
+def test_build_ellipticities():
     
+    # second moments are floats
+    q11 = 0.5
+    q22 = 0.3
+    q12 = 0.02
+    
+    assert_allclose(utils.build_ellipticities(q11,q22,q12),(0.25, 0.05, 0.12710007580505459, 
+                                                            0.025420015161010917), **TOLERANCE)
+    
+    # second moments are numpy array
+    q11 = np.array([0.5,0.3])
+    q22 = np.array([0.8,0.2])
+    q12 = np.array([0.01,0.01])
+
+    assert_allclose(utils.build_ellipticities(q11,q22,q12),([-0.23076923,  0.2],
+                                                            [0.01538462, 0.04],
+                                                            [-0.11697033,  0.10106221],
+                                                            [0.00779802, 0.02021244]), **TOLERANCE)
     
 def test_shape_conversion():
     """ Test the helper function that convert user defined shapes into
     epsilon ellipticities or reduced shear. Both can be used for the galcat in 
     the GalaxyCluster object"""
     
-    def ellipticities(q20,q11,q02):
-        """Build ellipticties from second moments
-        """
-        x1,x2 = (q20-q02)/(q20+q02),(2*q11)/(q20+q02)
-        e1,e2 = (q20-q02)/(q20+q02+2*np.sqrt(q20*q02-q11*q11)),(2*q11)/(q20+q02+2*np.sqrt(q20*q02-q11*q11))
-        return x1,x2, e1,e2
     
     # Number of random ellipticities to check
     niter=25
 
     # Create random second moments and from that random ellipticities
-    q20,q02 = np.random.randint(0,20,(2,niter))
+    q11,q22 = np.random.randint(0,20,(2,niter))
     # Q11 seperate to avoid a whole bunch of nans
-    q11 = np.random.uniform(-1,1,niter)*np.sqrt(q20*q02)
-    x1,x2,e1,e2 = ellipticities(q20,q11,q02)
+    q12 = np.random.uniform(-1,1,niter)*np.sqrt(q11*q22)
+    x1,x2,e1,e2 = utils.build_ellipticities(q11,q22,q12)
     
     # Test conversion from 'chi' to epsilon
     e1_2,e2_2 = convert_shapes_to_epsilon(x1,x2,shape_definition='chi')
