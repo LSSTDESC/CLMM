@@ -207,7 +207,19 @@ def test_convert_units():
     truth = r_kpc * (1.0 / d_a) * (180. / np.pi) * 60.
     assert_allclose(utils.convert_units(r_kpc, 'kpc', 'arcmin', redshift, cosmo),
                     truth, **TOLERANCE)
-   
+
+# def test_build_ellipticities():
+    
+#     q20 = 1.
+#     q02 = 2.
+#     q11 = 0.
+    
+#     assert_allclose(utils.build_ellipticities(q20,q11,q02),(-0.3333333333333333, 0.0, -0.1715728752538099, 0.0), **TOLERANCEs
+    
+#     q20 = [1.,2]
+#     q02 = [2.,-1]
+#     q11 = [0.,3]
+ 
     
 def test_shape_conversion():
     """ Test the helper function that convert user defined shapes into
@@ -219,10 +231,10 @@ def test_shape_conversion():
     niter=25
 
     # Create random second moments and from that random ellipticities
-    q20,q02 = np.random.randint(0,20,(2,niter))
+    q11,q22 = np.random.randint(0,20,(2,niter))
     # Q11 seperate to avoid a whole bunch of nans
-    q11 = np.random.uniform(-1,1,niter)*np.sqrt(q20*q02)
-    x1,x2,e1,e2 = utils.build_ellipticities(q20,q11,q02)
+    q12 = np.random.uniform(-1,1,niter)*np.sqrt(q11*q22)
+    x1,x2,e1,e2 = utils.build_ellipticities(q11,q22,q12)
     
     # Test conversion from 'chi' to epsilon
     e1_2,e2_2 = convert_shapes_to_epsilon(x1,x2,shape_definition='chi')
