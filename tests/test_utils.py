@@ -5,7 +5,7 @@ from numpy.testing import assert_raises, assert_allclose
 from astropy.cosmology import FlatLambdaCDM
 
 import clmm.utils as utils
-from clmm.utils import compute_radial_averages, make_bins
+from clmm.utils import compute_radial_averages, make_bins, convert_shapes_to_epsilon
 
 
 TOLERANCE = {'rtol': 1.0e-6, 'atol': 0}
@@ -207,3 +207,58 @@ def test_convert_units():
     truth = r_kpc * (1.0 / d_a) * (180. / np.pi) * 60.
     assert_allclose(utils.convert_units(r_kpc, 'kpc', 'arcmin', redshift, cosmo),
                     truth, **TOLERANCE)
+
+def test_build_ellipticities():
+    
+    # second moments are floats
+    q11 = 0.5
+    q22 = 0.3
+    q12 = 0.02
+    
+    assert_allclose(utils.build_ellipticities(q11,q22,q12),(0.25, 0.05, 0.12710007580505459, 
+                                                            0.025420015161010917), **TOLERANCE)
+    
+    # second moments are numpy array
+    q11 = np.array([0.5,0.3])
+    q22 = np.array([0.8,0.2])
+    q12 = np.array([0.01,0.01])
+
+    assert_allclose(utils.build_ellipticities(q11,q22,q12),([-0.23076923,  0.2],
+                                                            [0.01538462, 0.04],
+                                                            [-0.11697033,  0.10106221],
+                                                            [0.00779802, 0.02021244]), **TOLERANCE)
+    
+def test_shape_conversion():
+    """ Test the helper function that convert user defined shapes into
+    epsilon ellipticities or reduced shear. Both can be used for the galcat in 
+    the GalaxyCluster object"""
+    
+    
+    # Number of random ellipticities to check
+    niter=25
+
+    # Create random second moments and from that random ellipticities
+    q11,q22 = np.random.randint(0,20,(2,niter))
+    # Q11 seperate to avoid a whole bunch of nans
+    q12 = np.random.uniform(-1,1,niter)*np.sqrt(q11*q22)
+    x1,x2,e1,e2 = utils.build_ellipticities(q11,q22,q12)
+    
+    # Test conversion from 'chi' to epsilon
+    e1_2,e2_2 = convert_shapes_to_epsilon(x1,x2,shape_definition='chi')
+    assert_allclose(e1,e1_2, **TOLERANCE)
+    assert_allclose(e2,e2_2, **TOLERANCE)
+    
+    # Test that 'epsilon' just returns the same values
+    e1_2,e2_2 = convert_shapes_to_epsilon(e1,e2,shape_definition='epsilon')
+    assert_allclose(e1,e1_2, **TOLERANCE)
+    assert_allclose(e2,e2_2, **TOLERANCE)
+    
+    # Test that 'reduced_shear' just returns the same values
+    e1_2,e2_2 = convert_shapes_to_epsilon(e1,e2,shape_definition='reduced_shear')
+    assert_allclose(e1,e1_2, **TOLERANCE)
+    assert_allclose(e2,e2_2, **TOLERANCE)
+    
+    # Test that 'shear' just returns the right values for reduced shear
+    e1_2,e2_2 = convert_shapes_to_epsilon(e1,e2,shape_definition='shear',kappa=0.2)
+    assert_allclose(e1/0.8,e1_2, **TOLERANCE)
+    assert_allclose(e2/0.8,e2_2, **TOLERANCE)

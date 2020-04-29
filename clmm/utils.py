@@ -185,3 +185,70 @@ def _convert_rad_to_mpc(dist1, redshift, cosmo, do_inverse=False):
     if do_inverse:
         return dist1 / d_a
     return dist1 * d_a
+
+
+def convert_shapes_to_epsilon(shape_1,shape_2, shape_definition='epsilon',kappa=0):
+    """ Given shapes and their definition, convert them to epsilon ellipticities or reduced shears, which can be used in GalaxyCluster.galcat
+    Definitions used here based on Bartelmann & Schneider 2001 (https://arxiv.org/pdf/astro-ph/9912508.pdf):
+    axis ratio (q) and position angle (phi) (Not implemented)
+    epsilon = (1-q/(1+q) exp(2i phi)
+    chi = (1-q^2/(1+q^2) exp(2i phi)
+    shear (gamma) 
+    reduced_shear (g) = gamma/(1-kappa)
+    convergence (kappa)
+    
+
+    Parameters
+    ==========
+    shape_1 : array_like
+        Input shapes or shears along principal axis (g1 or e1)
+    shape_2 : array_like
+        Input shapes or shears along secondary axis (g2 or e2)
+    shape_definition : str
+        Definition of the input shapes, can be ellipticities 'epsilon' or 'chi' or shears 'shear' or 'reduced_shear'
+    kappa : array_like
+        Convergence for transforming to a reduced shear. Default is 0
+
+    Returns
+    =======
+    epsilon_1 : array_like
+        Epsilon ellipticity along principal axis (epsilon1)
+    epsilon_2 : array_like
+        Epsilon ellipticity along secondary axis (epsilon2)
+    """
+    
+    if shape_definition=='epsilon' or shape_definition=='reduced_shear':
+        return shape_1,shape_2
+    elif shape_definition=='chi':
+        chi_to_eps_conversion = 1./(1.+(1-(shape_1**2 + shape_2**2))**0.5)
+        return shape_1*chi_to_eps_conversion,shape_2*chi_to_eps_conversion
+    elif shape_definition=='shear':
+        return shape_1/(1.-kappa), shape_2/(1.-kappa)
+    
+    else:
+        raise TypeError("Please choose epsilon, chi, shear, reduced_shear")
+        
+
+def build_ellipticities(q11,q22,q12):    
+    """ Build ellipticties from second moments. See, e.g., Schneider et al. (2006)
+    
+    Parameters
+    ==========
+    q11 : float or array
+        Second brightness moment tensor, component (1,1)
+    q22 : float or array
+        Second brightness moment tensor, component (2,2)
+    q12 :  float or array
+        Second brightness moment tensor, component (1,2)
+
+    Returns
+    =======
+    x1, x2 : float or array
+        Ellipticities using the "chi definition"
+    e1, e2 : float or array
+        Ellipticities using the "epsilon definition"
+    """
+    
+    x1,x2 = (q11-q22)/(q11+q22),(2*q12)/(q11+q22)
+    e1,e2 = (q11-q22)/(q11+q22+2*np.sqrt(q11*q22-q12*q12)),(2*q12)/(q11+q22+2*np.sqrt(q11*q22-q12*q12))
+    return x1,x2, e1,e2

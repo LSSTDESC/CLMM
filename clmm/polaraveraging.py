@@ -105,7 +105,8 @@ def compute_shear(cluster=None, ra_lens=None, dec_lens=None, ra_source_list=None
     if cluster is not None:
         required_cols = ['ra', 'dec', 'e1', 'e2']
         if not all([t_ in cluster.galcat.columns for t_ in required_cols]):
-            raise TypeError('GalaxyCluster\'s galaxy catalog missing required columns.')
+            raise TypeError('GalaxyCluster\'s galaxy catalog missing required columns.' +\
+                            'Do you mean to first convert column names?')
 
         ra_lens, dec_lens = cluster.ra, cluster.dec
         ra_source_list, dec_source_list = cluster.galcat['ra'], cluster.galcat['dec']
