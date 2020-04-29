@@ -5,6 +5,7 @@ from astropy import units
 from astropy.cosmology import LambdaCDM
 from .constants import Constants as const
 from .cluster_toolkit_patches import _patch_zevolution_cluster_toolkit_rho_m
+import warnings
 
 def cclify_astropy_cosmo(cosmoin):
     """ Given an astropy.cosmology object, creates a CCL-like dictionary
@@ -342,7 +343,7 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
 
     Returns
     -------
-    sigmacrit : float
+    sigma_c : float
         Cosmology-dependent critical surface density in units of :math:`h\ M_\odot\ pc^{-2}`
 
     Notes
@@ -350,6 +351,7 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     We will need :math:`\gamma_\infty` and :math:`\kappa_\infty` for alternative
     z_src_models using :math:`\beta_s`.
     """
+
     clight_pc_s = const.CLIGHT_KMS.value * 1000. / const.PC_TO_METER.value
     gnewt_pc3_msun_s2 = const.GNEWT.value * const.SOLAR_MASS.value / const.PC_TO_METER.value**3
 
@@ -360,8 +362,12 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     d_s = angular_diameter_dist_a1a2(cosmo, aexp_src, 1.0)
     d_ls = angular_diameter_dist_a1a2(cosmo, aexp_src, aexp_cluster)
 
-    sigmacrit = d_s / (d_l * d_ls) * clight_pc_s * clight_pc_s / (4.0 * np.pi * gnewt_pc3_msun_s2)
-    return sigmacrit
+    beta_s = np.maximum(0., d_ls/d_s)
+    sigma_c = clight_pc_s * clight_pc_s / (4.0 * np.pi * gnewt_pc3_msun_s2) * 1/d_l * np.divide(1., beta_s)
+    
+    if np.any(np.array(z_source)<=z_cluster):
+        warnings.warn(f'Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.')
+    return sigma_c
 
 
 def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
@@ -417,10 +423,10 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     delta_sigma = predict_excess_surface_density(r_proj, mdelta, cdelta, z_cluster, cosmo,
                                                  delta_mdef=delta_mdef,
                                                  halo_profile_model=halo_profile_model)
-
     if z_src_model == 'single_plane':
         sigma_c = get_critical_surface_density(cosmo, z_cluster, z_source)
-        gammat = delta_sigma / sigma_c
+        gammat = np.nan_to_num(delta_sigma / sigma_c,  nan=np.nan, posinf=np.inf, neginf=-np.inf)
+        
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +
     #                               'delta_sigma/sigma_c gamma_t = Beta_s*gamma_inf')
@@ -429,6 +435,10 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     #                               'distribution of redshifts in each radial bin')
     else:
         raise ValueError("Unsupported z_src_model")
+    
+    if np.any(np.array(z_source)<=z_cluster):
+        warnings.warn(f'Some source redshifts are lower than the cluster redshift. shear = 0 for those galaxies.')
+
     return gammat
 
 
@@ -484,7 +494,8 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
 
     if z_src_model == 'single_plane':
         sigma_c = get_critical_surface_density(cosmo, z_cluster, z_source)
-        kappa = sigma / sigma_c
+        kappa = np.nan_to_num(sigma / sigma_c,  nan=np.nan, posinf=np.inf, neginf=-np.inf)
+        
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +\
     #                               'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
@@ -493,6 +504,10 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     #                               'distribution of redshifts in each radial bin')
     else:
         raise ValueError("Unsupported z_src_model")
+    
+    if np.any(np.array(z_source)<=z_cluster):
+        warnings.warn(f'Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.')
+
     return kappa
 
 
@@ -542,7 +557,8 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
                                     z_src_model)
         gamma_t = predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
                                            delta_mdef, halo_profile_model, z_src_model)
-        red_tangential_shear = gamma_t / (1 - kappa)
+        red_tangential_shear = np.nan_to_num(np.divide(gamma_t , (1 - kappa)),  nan=np.nan, posinf=np.inf, neginf=-np.inf)
+        
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +
     #                               'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
@@ -551,4 +567,9 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
     #                               'integrating distribution of redshifts in each radial bin')
     else:
         raise ValueError("Unsupported z_src_model")
+    
+    if np.any(np.array(z_source)<=z_cluster):
+        warnings.warn(f'Some source redshifts are lower than the cluster redshift. shear = 0 for those galaxies.')
+
+
     return red_tangential_shear

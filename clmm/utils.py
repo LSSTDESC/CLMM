@@ -189,8 +189,7 @@ def _convert_rad_to_mpc(dist1, redshift, cosmo, do_inverse=False):
 
 def convert_shapes_to_epsilon(shape_1,shape_2, shape_definition='epsilon',kappa=0):
     """ Given shapes and their definition, convert them to epsilon ellipticities or reduced shears, which can be used in GalaxyCluster.galcat
-
-Definitions used here based on Bartelmann & Schneider 2001 (https://arxiv.org/pdf/astro-ph/9912508.pdf):
+    Definitions used here based on Bartelmann & Schneider 2001 (https://arxiv.org/pdf/astro-ph/9912508.pdf):
     axis ratio (q) and position angle (phi) (Not implemented)
     epsilon = (1-q/(1+q) exp(2i phi)
     chi = (1-q^2/(1+q^2) exp(2i phi)
@@ -208,7 +207,6 @@ Definitions used here based on Bartelmann & Schneider 2001 (https://arxiv.org/pd
         Definition of the input shapes, can be ellipticities 'epsilon' or 'chi' or shears 'shear' or 'reduced_shear'
     kappa : array_like
         Convergence for transforming to a reduced shear. Default is 0
-
     Returns
     =======
     epsilon_1 : array_like
