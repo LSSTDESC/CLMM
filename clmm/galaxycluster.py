@@ -25,7 +25,7 @@ class GalaxyCluster():
     z : float
         Redshift of galaxy cluster center
     galcat : astropy Table
-        Table of background galaxy data including galaxy_id, ra, dec, e1, e2, z, kappa
+        Table of background galaxy data containing at least galaxy_id, ra, dec, e1, e2, z
     """
     def __init__(self, unique_id: str, ra: float, dec: float, z: float,
                  galcat: Table):
