@@ -643,7 +643,7 @@ def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
         raise ValueError("Unsupported z_src_model")
         
     if np.any(np.array(z_source)<=z_cluster):
-    warnings.warn(f'Some source redshifts are lower than the cluster redshift. mu = 1 for those galaxies.')
+        warnings.warn(f'Some source redshifts are lower than the cluster redshift. mu = 1 for those galaxies.')
 
         
     return mu
