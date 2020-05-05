@@ -573,3 +573,77 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
 
 
     return red_tangential_shear
+
+
+
+def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
+                        halo_profile_model='nfw', z_src_model='single_plane'):
+    r"""Computes the magnification
+
+    .. math::
+        \mu = \frac{1}{(1 - \kappa)^2 - |\gamma_t|^2}
+
+
+
+    Parameters
+    ----------
+    r_proj : array_like
+        The projected radial positions in :math:`M\!pc\ h^{-1}`.
+    mdelta : float
+        Galaxy cluster mass in :math:`M_\odot\ h^{-1}`.
+    cdelta : float
+        Galaxy cluster NFW concentration.
+    z_cluster : float
+        Galaxy cluster redshift
+    z_source : array_like, float
+        Background source galaxy redshift(s)
+    cosmo : pyccl.core.Cosmology object
+        CCL Cosmology object
+    delta_mdef : int, optional
+        Mass overdensity definition.  Defaults to 200.
+    halo_profile_model : str, optional
+        Profile model parameterization, with the following supported options:
+        `nfw` (default) - [insert citation here]
+    z_src_model : str, optional
+        Source redshift model, with the following supported options:
+        `single_plane` (default) - all sources at one redshift
+        `known_z_src` - known individual source galaxy redshifts e.g. discrete case
+        `z_src_distribution` - known source redshift distribution e.g. continuous
+        case requiring integration.
+
+    Returns
+    -------
+    mu : array_like, float
+        magnification, mu.
+
+    Notes
+    -----
+    Need to figure out if we want to raise exceptions rather than errors here?
+    """
+    
+    if z_src_model == 'single_plane':
+        
+        kappa = predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef,
+                                    halo_profile_model,
+                                    z_src_model)
+    
+        gammat = predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,delta_mdef,
+                                    halo_profile_model,
+                                    z_src_model)
+        
+        mu =  1 / ((1-kappa)**2-abs(gammat)**2)
+    
+    # elif z_src_model == 'known_z_src': # Discrete case
+    #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +\
+    #                               'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
+    # elif z_src_model == 'z_src_distribution': # Continuous ( from a distribution) case
+    #     raise NotImplementedError('Need to implement Beta_s calculation from integrating' +\
+    #                               'distribution of redshifts in each radial bin')
+    else:
+        raise ValueError("Unsupported z_src_model")
+        
+    if np.any(np.array(z_source)<=z_cluster):
+    warnings.warn(f'Some source redshifts are lower than the cluster redshift. mu = 1 for those galaxies.')
+
+        
+    return mu
