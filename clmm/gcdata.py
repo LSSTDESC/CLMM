@@ -2,7 +2,7 @@
 Define the custom data type
 """
 
-# from astropy import table
+from astropy.table import Table as APtable
 from collections import namedtuple
 import pickle
 
@@ -10,7 +10,8 @@ import pickle
 GCData_ = namedtuple('GCData', ['creator', 'specs', 'values'])
 
 
-class GCData(GCData_):
+class GCData(APtable):
+    def __init__(self, *args, **kargs):
     """
     GCData: A namedtuple tying values with units to the metadata of where the values came from
     and thus how the values are used
@@ -25,7 +26,7 @@ class GCData(GCData_):
     values: astropy.Table
         Data with units
     """
-    pass
+    APtable.__init__(self, *args, **kargs)
 
 
 """

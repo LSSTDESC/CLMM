@@ -6,7 +6,8 @@
 import math
 import warnings
 import numpy as np
-from astropy.table import Table
+#from astropy.table import Table
+from .gcdata import GCData as Table
 from .utils import compute_radial_averages, make_bins, convert_units
 from .galaxycluster import GalaxyCluster
 
