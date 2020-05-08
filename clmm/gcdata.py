@@ -11,7 +11,6 @@ GCData_ = namedtuple('GCData', ['creator', 'specs', 'values'])
 
 
 class GCData(APtable):
-    def __init__(self, *args, **kargs):
     """
     GCData: A namedtuple tying values with units to the metadata of where the values came from
     and thus how the values are used
@@ -26,7 +25,8 @@ class GCData(APtable):
     values: astropy.Table
         Data with units
     """
-    APtable.__init__(self, *args, **kargs)
+    def __init__(self, *args, **kargs):
+        APtable.__init__(self, *args, **kargs)
 
 
 """
