@@ -2,7 +2,7 @@
 The GalaxyCluster class
 """
 import pickle
-from astropy.table import Table
+from .gcdata import GCData
 
 
 def load_cluster(filename, **kwargs):
@@ -24,11 +24,11 @@ class GalaxyCluster():
         Declination of galaxy cluster center (in degrees)
     z : float
         Redshift of galaxy cluster center
-    galcat : astropy Table
+    galcat : GCData
         Table of background galaxy data containing at least galaxy_id, ra, dec, e1, e2, z
     """
     def __init__(self, unique_id: str, ra: float, dec: float, z: float,
-                 galcat: Table):
+                 galcat: GCData):
         if isinstance(unique_id, (int, str)): # should unique_id be a float?
             unique_id = str(unique_id)
         else:
@@ -45,7 +45,7 @@ class GalaxyCluster():
             z = float(z)
         except ValueError:
             raise TypeError(f'z incorrect type: {type(z)}')
-        if not isinstance(galcat, Table):
+        if not isinstance(galcat, GCData):
             raise TypeError(f'galcat incorrect type: {type(galcat)}')
 
         if not -360. <= ra <= 360.:

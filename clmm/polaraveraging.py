@@ -6,8 +6,7 @@
 import math
 import warnings
 import numpy as np
-#from astropy.table import Table
-from .gcdata import GCData as Table
+from .gcdata import GCData
 from .utils import compute_radial_averages, make_bins, convert_units
 from .galaxycluster import GalaxyCluster
 
@@ -255,7 +254,7 @@ def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
 
     Returns
     -------
-    profile : astropy.table.Table
+    profile : GCData
         Output table containing the radius grid points, the tangential and cross shear profiles
         on that grid, and the errors in the two shear profiles. The errors are defined as the
         standard errors in each bin.
@@ -286,7 +285,7 @@ def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
         source_seps, cluster.galcat['z'].data, xbins=bins, error_model='std/sqrt_n')
 
     # Make out table
-    profile_table = Table([bins[:-1], r_avg, bins[1:], gt_avg, gt_err, gx_avg, gx_err,
+    profile_table = GCData([bins[:-1], r_avg, bins[1:], gt_avg, gt_err, gx_avg, gx_err,
                             z_avg, z_err, nsrc],
                             names=('radius_min', 'radius', 'radius_max', 'gt', 'gt_err',
                             'gx', 'gx_err', 'z', 'z_err', 'n_src'))

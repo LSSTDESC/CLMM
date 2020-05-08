@@ -1,29 +1,16 @@
 """
 Define the custom data type
 """
-
 from astropy.table import Table as APtable
-from collections import namedtuple
 import pickle
-
-
-GCData_ = namedtuple('GCData', ['creator', 'specs', 'values'])
-
 
 class GCData(APtable):
     """
-    GCData: A namedtuple tying values with units to the metadata of where the values came from
-    and thus how the values are used
+    GCData: A data objetc for gcdata. Right now it behaves as an astropy table.
 
     Parameters
     ----------
-    creator: string
-        Super class of the object that made the data.
-    specs: dict
-        Specifications of how the data was created, what are the properties of the data.
-        If the data was created by a function, what inputs were used.
-    values: astropy.Table
-        Data with units
+    Same as astropy tables
     """
     def __init__(self, *args, **kargs):
         APtable.__init__(self, *args, **kargs)
