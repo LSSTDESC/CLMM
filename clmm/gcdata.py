@@ -10,10 +10,65 @@ class GCData(APtable):
 
     Parameters
     ----------
+    metadata: dict
+        Dictionary with metadata for this object
+
     Same as astropy tables
     """
     def __init__(self, *args, **kargs):
+        meta = {}
+        if 'metadata' in kargs:
+            meta = kargs['metadata']
+        kargs.pop('metadata', None)
         APtable.__init__(self, *args, **kargs)
+        self.metadata = self.meta
+        self.metadata.update(meta)
+    def add_meta(self, name, value):
+        """
+        Add metadata to GCData
+
+        Parameters
+        ----------
+        name: str
+            Name of metadata
+        value:
+            Value of metadata
+
+        Returns
+        -------
+        None
+        """
+        self.metadata[name] = value
+        return
+    def add_metas(self, names, values):
+        """
+        Add metadatas to GCData
+
+        Parameters
+        ----------
+        names: list
+            List of metadata names
+        values: list
+            List of metadata values
+
+        Returns
+        -------
+        None
+        """
+        for name, vale in zip(names, values):
+            self.add_meta(name, value)
+        return
+    def __repr__(self):
+        """Generates string for print(GCData)"""
+        output = f'GCData\n> defined by:'
+        output += ', '.join([f'{key}={str(value)}'
+            for key, value in self.metadata.items()])
+        output += f'\n> with columns: '
+        output += ', '.join(self.colnames)
+        return output
+    def __str__(self):
+        """Generates string for print(GCData)"""
+        return self.__repr__()
 
 
 """

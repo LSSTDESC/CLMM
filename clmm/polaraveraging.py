@@ -288,7 +288,9 @@ def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
     profile_table = GCData([bins[:-1], r_avg, bins[1:], gt_avg, gt_err, gx_avg, gx_err,
                             z_avg, z_err, nsrc],
                             names=('radius_min', 'radius', 'radius_max', 'gt', 'gt_err',
-                            'gx', 'gx_err', 'z', 'z_err', 'n_src'))
+                            'gx', 'gx_err', 'z', 'z_err', 'n_src'),
+                            metadata={'cosmo':cosmo, 'bin_units':bin_units}, # Add metadata
+                            )
     # add galaxy IDs
     if gal_ids_in_bins:
         if 'id' not in cluster.galcat.columns:
@@ -299,10 +301,6 @@ def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
     # return empty bins?
     if not include_empty_bins:
         profile_table = profile_table[profile_table['n_src'] > 1]
-
-    # Add metadata to profile_table
-    profile_table.meta['cosmo'] = cosmo
-    profile_table.meta['bin_units'] = bin_units
 
     if add_to_cluster:
         cluster.profile = profile_table
