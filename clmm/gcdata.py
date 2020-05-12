@@ -16,13 +16,11 @@ class GCData(APtable):
     Same as astropy tables
     """
     def __init__(self, *args, **kargs):
-        meta = {}
+        self.metadata = self.meta
         if 'metadata' in kargs:
-            meta = kargs['metadata']
+            self.metadata.update(kargs['metadata'])
         kargs.pop('metadata', None)
         APtable.__init__(self, *args, **kargs)
-        self.metadata = self.meta
-        self.metadata.update(meta)
     def add_meta(self, name, value):
         """
         Add metadata to GCData
@@ -69,6 +67,10 @@ class GCData(APtable):
     def __str__(self):
         """Generates string for print(GCData)"""
         return self.__repr__()
+    def __getitem__(self, arg):
+        out = APtable.__getitem__(self, arg)
+        out.metadata = self.metadata
+        return out
 
 
 """
