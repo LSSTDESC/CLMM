@@ -631,7 +631,7 @@ def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
                                     halo_profile_model,
                                     z_src_model)
         
-        mu =  1 / ((1-kappa)**2-abs(gammat)**2)
+        mu =  1. / ((1-kappa)**2-abs(gammat)**2)
     
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +\
