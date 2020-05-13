@@ -12,6 +12,8 @@ class GCData(APtable):
     ----------
     metadata: dict
         Dictionary with metadata for this object
+    size: int
+        Number of rows in the table
 
     Same as astropy tables
     """
@@ -21,6 +23,7 @@ class GCData(APtable):
             self.metadata.update(kargs['metadata'])
         kargs.pop('metadata', None)
         APtable.__init__(self, *args, **kargs)
+        self.size = len(self)
     def add_meta(self, name, value):
         """
         Add metadata to GCData
@@ -68,8 +71,17 @@ class GCData(APtable):
         """Generates string for print(GCData)"""
         return self.__repr__()
     def __getitem__(self, arg):
+        """
+        Makes sure GCData keeps its properties after [] operations are used
+
+        Returns
+        -------
+        GCData
+            Data with [] operations applied
+        """
         out = APtable.__getitem__(self, arg)
         out.metadata = self.metadata
+        out.size = len(out)
         return out
 
 
