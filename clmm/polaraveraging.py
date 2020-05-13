@@ -61,8 +61,8 @@ def compute_shear(cluster=None,
         \left(\alpha_l-\alpha_s\right)^2\cos^2(\delta_l)\\
         \tan\phi = & \frac{\delta_s - \delta_l}{\left(\alpha_l - \alpha_s\right)\cos(\delta_l)}
 
-    The tangential, :math:`g_t`, and cross, :math:`g_x`, shears are calculated using the two
-    shear components :math:`g_1` and :math:`g_2` of the source galaxies, following Eq.7 and Eq.8
+    The tangential, :math:`g_t`, and cross, :math:`g_x`, ellipticity/shear components are calculated using the two
+    ellipticity/shear components :math:`g_1` and :math:`g_2` of the source galaxies, following Eq.7 and Eq.8
     in Schrabback et al. (2018), arXiv:1611:03866
     also checked arxiv: 0509252
 
@@ -78,6 +78,20 @@ def compute_shear(cluster=None,
         Instance of `GalaxyCluster()` and must contain right ascension and declinations of both
         the lens and sources and the two shear components all of the sources. If this
         object is specified, right ascension, declination, and shear inputs are ignored.
+    shape_component1: string, optional
+        Name of the column in the `galcat` astropy table of the cluser object that contains
+        the shape measurement along the first axis. Default: `e1`
+    shape_component1: string, optional
+        Name of the column in the `galcat` astropy table of the cluser object that contains
+        the shape measurement along the second axis. Default: `e2`
+    tan_component: string, optional
+        Name of the column to be added to the `galcat` astropy table that will contain the
+        tangential component computed from columns `shape_component1` and `shape_component2`.
+        Default: `et`
+    cross_component: string, optional
+        Name of the column to be added to the `galcat` astropy table that will contain the
+        cross component computed from columns `shape_component1` and `shape_component2`.
+        Default: `ex`
     ra_lens: float, optional
         Right ascension of the lensing cluster
     dec_lens: float, optional
@@ -251,6 +265,18 @@ def make_shear_profile(cluster,
         default to 10 equally spaced bins.
     cosmo: dict, optional
         Cosmology parameters to convert angular separations to physical distances
+    tan_component_in: string, optional
+        Name of the column in the `galcat` astropy table of the `cluster` object that contains
+        the tangential component to be binned. Default: 'et'
+    tan_component_out: string, optional
+        Name of the column in the `profile` table of the `cluster` object that will contain 
+        the binned profile of the tangential component. Default: 'gx'
+    cross_component_in: string, optional
+        Name of the column in the `galcat` astropy table of the `cluster` object that contains
+        the cross component to be binned. Default: 'ex'
+    cross_component_out: string, optional
+        Name of the column in the `profile` table of the `cluster` object that will contain 
+        the  binned profile of the cross component. Default: 'gx'
     add_to_cluster: bool, optional
         Attach the profile to the cluster object as `cluster.profile`
     include_empty_bins: bool, optional
