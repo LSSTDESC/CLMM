@@ -16,6 +16,13 @@ class GCData(APtable):
     Same as astropy tables
     """
     def __init__(self, *args, **kargs):
+        """
+        Parameters
+        ----------
+        metadata: dict
+            Dictionary with information to be stored in self.metadata
+        *args, **kargs: Same used for astropy tables
+        """
         self.metadata = self.meta
         if 'metadata' in kargs:
             self.metadata.update(kargs['metadata'])
