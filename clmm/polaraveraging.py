@@ -23,7 +23,10 @@ from .galaxycluster import GalaxyCluster
 #     return ccl_cosmo
 
 
-def compute_shear(cluster=None, ra_lens=None, dec_lens=None, ra_source_list=None,
+def compute_shear(cluster=None, 
+                  shape_component1='e1', shape_component2='e2', 
+                  tan_component='et', cross_component='ex',
+                  ra_lens=None, dec_lens=None, ra_source_list=None,
                   dec_source_list=None, shear1=None, shear2=None, geometry='flat',
                   add_to_cluster=True):
     r"""Computes tangential shear, cross shear, and angular separation
@@ -103,7 +106,7 @@ def compute_shear(cluster=None, ra_lens=None, dec_lens=None, ra_source_list=None
         Cross shear for each source galaxy
     """
     if cluster is not None:
-        required_cols = ['ra', 'dec', 'e1', 'e2']
+        required_cols = ['ra', 'dec', shape_component1, shape_component2]
         if not all([t_ in cluster.galcat.columns for t_ in required_cols]):
             raise TypeError('GalaxyCluster\'s galaxy catalog missing required columns.' +\
                             'Do you mean to first convert column names?')
@@ -139,8 +142,8 @@ def compute_shear(cluster=None, ra_lens=None, dec_lens=None, ra_source_list=None
 
     if add_to_cluster:
         cluster.galcat['theta'] = angsep
-        cluster.galcat['gt'] = tangential_shear
-        cluster.galcat['gx'] = cross_shear
+        cluster.galcat[tan_component] = tangential_shear
+        cluster.galcat[cross_component] = cross_shear
 
     return angsep, tangential_shear, cross_shear
 
@@ -210,7 +213,10 @@ def _compute_cross_shear(shear1, shear2, phi):
     return shear1 * np.sin(2.*phi) - shear2 * np.cos(2.*phi)
 
 
-def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
+def make_shear_profile(cluster,
+                       angsep_units, bin_units, bins=10, cosmo=None,
+                       tan_component_in='et', cross_component_in='ex',
+                       tan_component_out='gt', cross_component_out='gx',
                        add_to_cluster=True, include_empty_bins=False, gal_ids_in_bins=False):
     r"""Compute the shear profile of the cluster
 
@@ -259,7 +265,7 @@ def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
         on that grid, and the errors in the two shear profiles. The errors are defined as the
         standard errors in each bin.
     """
-    if not all([t_ in cluster.galcat.columns for t_ in ('gt', 'gx', 'theta')]):
+    if not all([t_ in cluster.galcat.columns for t_ in (tan_component_in, cross_component_in, 'theta')]):
         raise TypeError('Shear information is missing in galaxy catalog must have tangential' +\
                         'and cross shears (gt,gx). Run compute_shear first!')
     if 'z' not in cluster.galcat.columns:
@@ -276,19 +282,21 @@ def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
     if not hasattr(bins, '__len__'):
         bins = make_bins(np.min(source_seps), np.max(source_seps), bins)
 
-    # Compute the binned average shears and associated errors
+    # Compute the binned averages and associated errors
     r_avg, gt_avg, gt_err, nsrc, binnumber = compute_radial_averages(
-        source_seps, cluster.galcat['gt'].data, xbins=bins, error_model='std/sqrt_n')
+        source_seps, cluster.galcat[tan_component_in].data, xbins=bins, error_model='std/sqrt_n')
     r_avg, gx_avg, gx_err, _, _ = compute_radial_averages(
-        source_seps, cluster.galcat['gx'].data, xbins=bins, error_model='std/sqrt_n')
+        source_seps, cluster.galcat[cross_component_in].data, xbins=bins, error_model='std/sqrt_n')
     r_avg, z_avg, z_err, _, _ = compute_radial_averages(
         source_seps, cluster.galcat['z'].data, xbins=bins, error_model='std/sqrt_n')
 
     # Make out table
     profile_table = Table([bins[:-1], r_avg, bins[1:], gt_avg, gt_err, gx_avg, gx_err,
                             z_avg, z_err, nsrc],
-                            names=('radius_min', 'radius', 'radius_max', 'gt', 'gt_err',
-                            'gx', 'gx_err', 'z', 'z_err', 'n_src'))
+                            names=('radius_min', 'radius', 'radius_max', 
+                                   tan_component_out, tan_component_out+'_err',
+                                   cross_component_out, cross_component_out+'_err',
+                                   'z', 'z_err', 'n_src'))
     # add galaxy IDs
     if gal_ids_in_bins:
         if 'id' not in cluster.galcat.columns:
