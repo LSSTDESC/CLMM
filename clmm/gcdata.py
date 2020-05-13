@@ -67,7 +67,7 @@ class GCData(APtable):
     def __str__(self):
         """Generates string for print(GCData)"""
         return self.__repr__()
-    def __getitem__(self, arg):
+    def __getitem__(self, item):
         """
         Makes sure GCData keeps its properties after [] operations are used
 
@@ -76,7 +76,7 @@ class GCData(APtable):
         GCData
             Data with [] operations applied
         """
-        out = APtable.__getitem__(self, arg)
+        out = APtable.__getitem__(self, item)
         out.metadata = self.metadata
         return out
 
