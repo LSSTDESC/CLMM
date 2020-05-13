@@ -72,7 +72,7 @@ class GalaxyCluster():
         with open(filename, 'wb') as fin:
             pickle.dump(self, fin, **kwargs)
         return
-    def load(self, filename, **kwargs):
+    def load(filename, **kwargs):
         """Loads GalaxyCluster object to filename using Pickle"""
         with open(filename, 'rb') as fin:
             self = pickle.load(fin, **kwargs)
