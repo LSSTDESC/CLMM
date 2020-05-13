@@ -197,6 +197,7 @@ def convert_shapes_to_epsilon(shape_1,shape_2, shape_definition='epsilon',kappa=
     reduced_shear (g) = gamma/(1-kappa)
     convergence (kappa)
     
+
     Parameters
     ==========
     shape_1 : array_like
@@ -207,6 +208,7 @@ def convert_shapes_to_epsilon(shape_1,shape_2, shape_definition='epsilon',kappa=
         Definition of the input shapes, can be ellipticities 'epsilon' or 'chi' or shears 'shear' or 'reduced_shear'
     kappa : array_like
         Convergence for transforming to a reduced shear. Default is 0
+
     Returns
     =======
     epsilon_1 : array_like
