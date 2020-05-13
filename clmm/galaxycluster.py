@@ -77,7 +77,7 @@ class GalaxyCluster():
         with open(filename, 'rb') as fin:
             self = pickle.load(fin, **kwargs)
         self._check_types()
-        return
+        return self
     def __repr__(self):
         """Generates string for print(GalaxyCluster)"""
         output = f'GalaxyCluster {self.unique_id}: ' +\
