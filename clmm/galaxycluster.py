@@ -5,12 +5,6 @@ import pickle
 from astropy.table import Table
 
 
-def load_cluster(filename, **kwargs):
-    """Loads GalaxyCluster object from filename using Pickle"""
-    with open(filename, 'rb') as fin:
-        return pickle.load(fin, **kwargs)
-
-
 class GalaxyCluster():
     """Object that contains the galaxy cluster metadata and background galaxy data
 
@@ -80,7 +74,8 @@ class GalaxyCluster():
         return
     def load(self, filename, **kwargs):
         """Loads GalaxyCluster object to filename using Pickle"""
-        self = load_cluster(filename, **kwargs)
+        with open(filename, 'rb') as fin:
+            self = pickle.load(fin, **kwargs)
         self._check_types()
         return
     def __repr__(self):
