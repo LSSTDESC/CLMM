@@ -4,7 +4,6 @@ The GalaxyCluster class
 import pickle
 from astropy.table import Table
 
-
 class GalaxyCluster():
     """Object that contains the galaxy cluster metadata and background galaxy data
 
