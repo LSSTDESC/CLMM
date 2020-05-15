@@ -23,7 +23,7 @@ from .galaxycluster import GalaxyCluster
 #     return ccl_cosmo
 
 
-def compute_shear(cluster=None, 
+def compute_tangential_cross_components(cluster=None, 
                   shape_component1='e1', shape_component2='e2', 
                   tan_component='et', cross_component='ex',
                   ra_lens=None, dec_lens=None, ra_source_list=None,
@@ -227,7 +227,7 @@ def _compute_cross_shear(shear1, shear2, phi):
     return shear1 * np.sin(2.*phi) - shear2 * np.cos(2.*phi)
 
 
-def make_shear_profile(cluster,
+def make_binned_profile(cluster,
                        angsep_units, bin_units, bins=10, cosmo=None,
                        tan_component_in='et', cross_component_in='ex',
                        tan_component_out='gt', cross_component_out='gx',
@@ -346,5 +346,5 @@ def make_shear_profile(cluster,
 
 
 # Monkey patch functions onto Galaxy Cluster object
-GalaxyCluster.compute_shear = compute_shear
-GalaxyCluster.make_shear_profile = make_shear_profile
+GalaxyCluster.compute_tangential_cross_components = compute_tangential_cross_components
+GalaxyCluster.make_binned_profile = make_binned_profile
