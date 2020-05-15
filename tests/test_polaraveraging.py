@@ -142,7 +142,7 @@ def test_compute_lensing_angles_flatsky():
     #                         [[0.67282443, 3.14159265], [-1.57079633, -1.57079633]],
     #                         TOLERANCE['rtol'], err_msg="Failure when dec_l and dec_s are separated by 180 deg")
 
-def test_compute_shear():
+def test_compute_tangential_cross_components():
     # Input values
     ra_lens, dec_lens, z_lens = 120., 42., 0.5
     ra_source_list = np.array([120.1, 119.9])
@@ -161,7 +161,7 @@ def test_compute_shear():
     expected_tangential_shear = np.array([-0.22956126563459447, -0.02354769805831558])
 
     # Pass arrays directly into function
-    angsep, tshear, xshear = pa.compute_shear(ra_lens=ra_lens, dec_lens=dec_lens,
+    angsep, tshear, xshear = pa.compute_tangential_cross_components(ra_lens=ra_lens, dec_lens=dec_lens,
                                               ra_source_list=ra_source_list,
                                               dec_source_list=dec_source_list,
                                               shear1=shear1, shear2=shear2,
@@ -174,7 +174,7 @@ def test_compute_shear():
                             err_msg="Cross Shear not correct when passing lists")
 
     # Pass cluster object into the function
-    angsep2, tshear2, xshear2 = pa.compute_shear(cluster=cluster)
+    angsep2, tshear2, xshear2 = pa.compute_tangential_cross_components(cluster=cluster)
     testing.assert_allclose(angsep2, expected_angsep, **TOLERANCE,
                             err_msg="Angular Separation not correct when passing cluster")
     testing.assert_allclose(tshear2, expected_tangential_shear, **TOLERANCE,
@@ -183,7 +183,7 @@ def test_compute_shear():
                             err_msg="Cross Shear not correct when passing cluster")
 
     # Use the cluster method
-    angsep3, tshear3, xshear3 = cluster.compute_shear()
+    angsep3, tshear3, xshear3 = cluster.compute_tangential_cross_components()
     testing.assert_allclose(angsep3, expected_angsep, **TOLERANCE, 
                             err_msg="Angular Separation not correct when using cluster method")
     testing.assert_allclose(tshear3, expected_tangential_shear, **TOLERANCE, 
@@ -191,7 +191,7 @@ def test_compute_shear():
     testing.assert_allclose(xshear3, expected_cross_shear, **TOLERANCE, 
                             err_msg="Cross Shear not correct when using cluster method")
 
-def test_make_shear_profiles():
+def test_make_binned_profiles():
     # Set up a cluster object and compute cross and tangential shears
     ra_lens, dec_lens, z_lens = 120., 42., 0.5
     ra_source_list = np.array([120.1, 119.9, 119.9])
@@ -211,14 +211,14 @@ def test_make_shear_profiles():
                                      galcat=Table([ra_source_list, dec_source_list,
                                                    shear1, shear2],
                                                   names=('ra', 'dec', 'e1', 'e2')))
-    cluster_noz.compute_shear()
-    testing.assert_raises(TypeError, pa.make_shear_profile, cluster_noz, angsep_units, bin_units)
+    cluster_noz.compute_tangential_cross_components()
+    testing.assert_raises(TypeError, pa.make_binned_profile, cluster_noz, angsep_units, bin_units)
 
     # Test error of missing shear
-    testing.assert_raises(TypeError, pa.make_shear_profile, cluster, angsep_units, bin_units)
+    testing.assert_raises(TypeError, pa.make_binned_profile, cluster, angsep_units, bin_units)
 
-    angsep, tshear, xshear = pa.compute_shear(cluster=cluster, add_to_cluster=True)
-    # Test the outputs of compute_shear just to be safe
+    angsep, tshear, xshear = pa.compute_tangential_cross_components(cluster=cluster, add_to_cluster=True)
+    # Test the outputs of compute_tangential_cross_components just to be safe
     expected_angsep = np.array([0.0021745039090962414, 0.0037238407383072053, 0.0037238407383072053])
     expected_cross_shear = np.array([0.2780316984090899, 0.6398792901134982, 0.6398792901134982])
     expected_tan_shear = np.array([-0.22956126563459447, -0.02354769805831558, -0.02354769805831558])
@@ -233,13 +233,13 @@ def test_make_shear_profiles():
     bins = 2
     vec_bins = clmm.utils.make_bins(np.min(cluster.galcat['theta']),
                                     np.max(cluster.galcat['theta']), bins)
-    testing.assert_array_equal(pa.make_shear_profile(cluster, angsep_units, bin_units, bins=bins),
-                               pa.make_shear_profile(cluster, angsep_units, bin_units, bins=vec_bins))
+    testing.assert_array_equal(pa.make_binned_profile(cluster, angsep_units, bin_units, bins=bins),
+                               pa.make_binned_profile(cluster, angsep_units, bin_units, bins=vec_bins))
     # Make the shear profile and check it
     bins_radians = np.array([0.002, 0.003, 0.004])
     expected_radius = [0.0021745039090962414, 0.0037238407383072053]
     # remember that include_empty_bins=False excludes all bins with N>=1
-    profile = pa.make_shear_profile(cluster, angsep_units, bin_units, bins=bins_radians,
+    profile = pa.make_binned_profile(cluster, angsep_units, bin_units, bins=bins_radians,
                                     include_empty_bins=False)
     testing.assert_allclose(profile['radius_min'], bins_radians[1],  **TOLERANCE,
                             err_msg="Minimum radius in bin not expected.")
@@ -257,8 +257,8 @@ def test_make_shear_profiles():
     testing.assert_array_equal(profile.meta['bin_units'], bin_units)
     testing.assert_array_equal(profile.meta['cosmo'], None)
 
-    # Repeat the same tests when we call make_shear_profile through the GalaxyCluster method
-    profile2 = cluster.make_shear_profile(
+    # Repeat the same tests when we call make_binned_profile through the GalaxyCluster method
+    profile2 = cluster.make_binned_profile(
         angsep_units, bin_units, bins=bins_radians, include_empty_bins=False)
     testing.assert_allclose(profile2['radius_min'], bins_radians[1], **TOLERANCE,
                             err_msg="Minimum radius in bin not expected.")
@@ -273,7 +273,7 @@ def test_make_shear_profiles():
     testing.assert_array_equal(profile['n_src'], [2])
 
     # including empty bins
-    profile3 = pa.make_shear_profile(
+    profile3 = pa.make_binned_profile(
         cluster, angsep_units, bin_units, bins=bins_radians, include_empty_bins=True)
     testing.assert_allclose(profile3['radius_min'], bins_radians[:-1],  **TOLERANCE,
                             err_msg="Minimum radius in bin not expected.")
@@ -287,8 +287,8 @@ def test_make_shear_profiles():
                             err_msg="Cross shear in bin not expected")
     testing.assert_array_equal(profile3['n_src'], [1,2])
 
-    # Repeat the same tests when we call make_shear_profile through the GalaxyCluster method
-    profile4 = cluster.make_shear_profile(
+    # Repeat the same tests when we call make_binned_profile through the GalaxyCluster method
+    profile4 = cluster.make_binned_profile(
         angsep_units, bin_units, bins=bins_radians, include_empty_bins=True)
     testing.assert_allclose(profile4['radius_min'], bins_radians[:-1], **TOLERANCE,
                             err_msg="Minimum radius in bin not expected.")
@@ -307,10 +307,10 @@ def test_make_shear_profiles():
                                  galcat=Table([ra_source_list, dec_source_list,
                                                shear1, shear2, z_sources],
                                               names=('ra', 'dec', 'e1', 'e2', 'z')))
-    cluster_noid.compute_shear()
-    testing.assert_raises(TypeError, pa.make_shear_profile, cluster_noid, angsep_units, bin_units, gal_ids_in_bins=True)
+    cluster_noid.compute_tangential_cross_components()
+    testing.assert_raises(TypeError, pa.make_binned_profile, cluster_noid, angsep_units, bin_units, gal_ids_in_bins=True)
    
-    profile5 = cluster.make_shear_profile(
+    profile5 = cluster.make_binned_profile(
         angsep_units, bin_units, bins=bins_radians, include_empty_bins=True, gal_ids_in_bins=True)
     testing.assert_allclose(profile5['radius_min'], bins_radians[:-1], **TOLERANCE,
                             err_msg="Minimum radius in bin not expected.")
