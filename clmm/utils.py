@@ -252,3 +252,37 @@ def build_ellipticities(q11,q22,q12):
     x1,x2 = (q11-q22)/(q11+q22),(2*q12)/(q11+q22)
     e1,e2 = (q11-q22)/(q11+q22+2*np.sqrt(q11*q22-q12*q12)),(2*q12)/(q11+q22+2*np.sqrt(q11*q22-q12*q12))
     return x1,x2, e1,e2
+
+
+def compute_lensed_ellipticity(ellipticity1_true, ellipticity2_true, shear1, shear2, convergence):
+    """ Compute lensed ellipticities from the intrinsic ellipticities, shear and convergence. 
+    Following Schneider et al. (2006),
+        :math:`\epsilon_{\rm lensed} = \frac{\epsilon_{\rm true} + g}{1+g^\star \epsilon_{\rm true}} `, 
+    The complex reduced shear :math:`g` is obtained from the shear :math:`\gamma=\gamma_1+i\gamma_2` \
+    and convergence :math:`\kappa` 
+        :math:`g = \frac{\gamma}{1-\kappa}`
+    The complex intrinsic ellipticity is :math:`\epsilon^{\rm true}=\epsilon^{\rm true}_2+i\epsilon^{\rm true}_2`
+
+    Parameters
+    ==========
+    ellipticity1_true : float or array
+        Intrinsic ellipticity of the sources along the principal axis
+    ellipticity2_true : float or array
+        Intrinsic ellipticity of the sources along the second axis
+    shear1 :  float or array
+        Shear component along the principal axis at the source location 
+    shear2 :  float or array
+        Shear component along the second axis at the source location
+    convergence :  float or array
+        Convergence at the source location
+    Returns
+    =======
+    e1, e2 : float or array
+        Lensed ellipicity along both reference axes.
+    """
+
+    shear = shear1 + shear2*1j # shear (as a complex number)
+    ellipticity_true = ellipticity1_true + ellipticity2_true*1j # intrinsic ellipticity (as a complex number)
+    reduced_shear = shear / (1.0 - convergence) # reduced shear
+    e = (ellipticity_true + reduced_shear) / (1.0 + reduced_shear.conjugate()*ellipticity_true) # lensed ellipticity
+    return np.real(e), np.imag(e)
