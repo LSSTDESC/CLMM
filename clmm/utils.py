@@ -256,15 +256,14 @@ def build_ellipticities(q11,q22,q12):
 
 def compute_lensed_ellipticity(ellipticity1_true, ellipticity2_true, shear1, shear2, convergence):
     r""" Compute lensed ellipticities from the intrinsic ellipticities, shear and convergence. 
-    Following Schneider et al. (2006)
+    Following Schneider et al. (2006) 
+
     .. math::
-    \epsilon_{\rm lensed}=\frac{\epsilon_{\rm true}+g}{1+g^\star\epsilon_{\rm true}}
-    where, 
-    - the complex reduced shear :math:`g` is obtained from the shear :math:`\gamma=\gamma_1+i\gamma_2`
-    and convergence :math:`\kappa` 
-    .. math::
-    g = \frac{\gamma}{1-\kappa}
-    - the complex intrinsic ellipticity is :math:`\epsilon^{\rm true}=\epsilon^{\rm true}_2+i\epsilon^{\rm true}_2`
+        \epsilon^{\rm lensed}=\epsilon^{\rm lensed}_1+i\epsilon^{\rm lensed}_2=\frac{\epsilon^{\rm true}+g}{1+g^\ast\epsilon^{\rm true}},
+
+    where, the complex reduced shear :math:`g` is obtained from the shear :math:`\gamma=\gamma_1+i\gamma_2`
+    and convergence :math:`\kappa` as :math:`g = \gamma/(1-\kappa)`, and the complex intrinsic ellipticity 
+    is :math:`\epsilon^{\rm true}=\epsilon^{\rm true}_1+i\epsilon^{\rm true}_2`
 
     
     Parameters
