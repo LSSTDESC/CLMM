@@ -257,7 +257,8 @@ def compute_deltasigma(cluster=None, ra_lens=None, z_lens=None, dec_lens=None, r
     if add_to_cluster:
         cluster.galcat['DeltaSigma_t'] = DeltaSigma_t
         cluster.galcat['DeltaSigma_x'] = DeltaSigma_x
-
+        cluster.galcat['Sigma_c'] = Sigma_c
+        
     return angsep, DeltaSigma_t, DeltaSigma_x
 
 
