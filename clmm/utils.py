@@ -35,19 +35,23 @@ def compute_radial_averages(xvals, yvals, xbins, error_model='std/sqrt_n'):
     meany = binned_statistic(xvals, yvals, statistic='mean', bins=xbins)[0]
     # number of objects
     n = np.histogram(xvals, xbins)[0]
+    n_zero = n==0
 
     if error_model == 'std':
         yerr = binned_statistic(xvals, yvals, statistic='std', bins=xbins)[0]
     elif error_model == 'std/sqrt_n':
         yerr = binned_statistic(xvals, yvals, statistic='std', bins=xbins)[0]
         sqrt_n = np.sqrt(binned_statistic(xvals, yvals, statistic='count', bins=xbins)[0])
-        sqrt_n[sqrt_n==0.0] = 1.0
+        sqrt_n[n_zero] = 1.0
         yerr = yerr/sqrt_n
     else:
         raise ValueError(f"{error_model} not supported err model for binned stats")
 
-    return meanx, meany, yerr, n, binnumber
+    meanx[n_zero] = 0
+    meany[n_zero] = 0
+    yerr[n_zero]  = 0
 
+    return meanx, meany, yerr, n, binnumber
 
 def make_bins(rmin, rmax, nbins=10, method='evenwidth'):
     """ Define bin edges
