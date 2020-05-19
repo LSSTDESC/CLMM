@@ -230,7 +230,7 @@ def _compute_cross_shear(shear1, shear2, phi):
 def make_binned_profile(cluster,
                        angsep_units, bin_units, bins=10, cosmo=None,
                        tan_component_in='et', cross_component_in='ex',
-                       tan_component_out='gt', cross_component_out='gx',
+                       tan_component_out='gt', cross_component_out='gx', table_name='profile',
                        add_to_cluster=True, include_empty_bins=False, gal_ids_in_bins=False):
     r"""Compute the shear profile of the cluster
 
@@ -339,8 +339,7 @@ def make_binned_profile(cluster,
     profile_table.meta['bin_units'] = bin_units
 
     if add_to_cluster:
-        cluster.profile = profile_table
-        cluster.profile_bin_units = bin_units
+        setattr(cluster, table_name, profile_table)
 
     return profile_table
 
