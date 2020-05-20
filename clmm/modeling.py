@@ -575,7 +575,8 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
     return red_tangential_shear
 
 
-
+# The magnification is computed taking into account just the tangential shear. This is valid for 
+# spherically averaged profiles, e.g., NFW and Einasto (by construction the cross shear is zero).
 def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
                         halo_profile_model='nfw', z_src_model='single_plane'):
     r"""Computes the magnification
