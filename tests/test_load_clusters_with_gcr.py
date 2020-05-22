@@ -24,7 +24,7 @@ def test_ranges():
 def test_values():
     clmm.lsst.load_from_dc2(10, 'cosmoDC2_v1.1.4_small', '.', _reader='test')
     
-    c = clmm.load_cluster('./3.p')
+    c = clmm.GalaxyCluster.load('./3.p')
     testing.assert_equal(len(c.galcat), 10)
     testing.assert_equal(c.galcat.columns.keys(), 
                          ['galaxy_id', 'ra', 'dec', 'e1', 'e2', 'z', 'kappa'])
