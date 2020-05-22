@@ -105,7 +105,8 @@ def compute_shear(cluster=None, ra_lens=None, dec_lens=None, ra_source_list=None
     if cluster is not None:
         required_cols = ['ra', 'dec', 'e1', 'e2']
         if not all([t_ in cluster.galcat.columns for t_ in required_cols]):
-            raise TypeError('GalaxyCluster\'s galaxy catalog missing required columns.')
+            raise TypeError('GalaxyCluster\'s galaxy catalog missing required columns.' +\
+                            'Do you mean to first convert column names?')
 
         ra_lens, dec_lens = cluster.ra, cluster.dec
         ra_source_list, dec_source_list = cluster.galcat['ra'], cluster.galcat['dec']
@@ -288,24 +289,25 @@ def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
     r_avg, z_avg, z_err, _, _ = compute_radial_averages(
         source_seps, cluster.galcat['z'].data, xbins=bins, error_model='std/sqrt_n')
 
-
-    if not gal_ids_in_bins:
-        profile_table = Table([bins[:-1], r_avg, bins[1:], gt_avg, gt_err, gx_avg, gx_err,
-                               z_avg, z_err, nsrc],
-                               names=('radius_min', 'radius', 'radius_max', 'gt', 'gt_err',
-                                 'gx', 'gx_err', 'z', 'z_err', 'n_src'))
-    else:
+    # Make out table
+    profile_table = Table([bins[:-1], r_avg, bins[1:], gt_avg, gt_err, gx_avg, gx_err,
+                            z_avg, z_err, nsrc],
+                            names=('radius_min', 'radius', 'radius_max', 'gt', 'gt_err',
+                            'gx', 'gx_err', 'z', 'z_err', 'n_src'))
+    # add galaxy IDs
+    if gal_ids_in_bins:
         if 'id' not in cluster.galcat.columns:
             raise TypeError('Missing galaxy IDs!')
-        gal_id = [list(cluster.galcat['id'][binnumber==i+1]) for i in np.arange(len(r_avg))]
-        profile_table = Table([bins[:-1], r_avg, bins[1:], gt_avg, gt_err, gx_avg, gx_err,
-                               z_avg, z_err, nsrc, gal_id],
-                               names=('radius_min', 'radius', 'radius_max', 'gt', 'gt_err',
-                                 'gx', 'gx_err', 'z', 'z_err', 'n_src', 'gal_id'))
+        profile_table['gal_id'] = [list(cluster.galcat['id'][binnumber==i+1])
+                                    for i in np.arange(len(r_avg))]
 
     # return empty bins?
     if not include_empty_bins:
         profile_table = profile_table[profile_table['n_src'] > 1]
+
+    # Add metadata to profile_table
+    profile_table.meta['cosmo'] = cosmo
+    profile_table.meta['bin_units'] = bin_units
 
     if add_to_cluster:
         cluster.profile = profile_table

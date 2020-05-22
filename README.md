@@ -11,11 +11,7 @@ The documentation of the code can be found [here](http://lsstdesc.org/CLMM/).
 1. [Requirements](#requirements)
 2. [Installation](#installation)
 3. [Overview](#overview)
-    * [The `GalaxyCluster` object](#the_galaxycluster_object)
-4. [Mock data generation](#mock_data_generation)
-    * [Weak lensing signal measurement with `polaraveraging.py`](#weak_lensing_signal_measurement_with_polaraveraging)
-5. [Profile and cosmology models with `modeling.py`](#profile_and_cosmology_models_with_modeling)
-    * [Galaxy cluster mass estimation](#galaxy_cluster_mass_estimation)
+3. [Contributing](#contributing)
 
 ## Requirements <a name="requirements"></a>
 
@@ -68,32 +64,8 @@ To run the tests you can do:
 
 ## Overview <a name="overview"></a>
 
-CLMM (Cluster Lensing Mass Modeling) provides a tool to estimate cluster masses based on weak lensing data.
-It also includes a routine to make mock catalogs based on cluster_toolkit.
-CLMM consists of the building blocks for an end-to-end weak lensing cosmology pipeline that can be validated on mock data and run on real data from LSST or other telescopes.
-We provide [examples](https://github.com/LSSTDESC/CLMM/tree/master/examples) of its usage in this repository.
+Overview of the code can be found [here](OVERVIEW.md)
 
-### The `GalaxyCluster` object <a name="the_galaxycluster_object"></a>
+## Contributing <a name="contributing"></a>
 
-  * The GalaxyCluster object contains the galaxy cluster metadata (unique_id, ra, dec, z) as well as the background galaxy data
-  * Background galaxy data: astropy Table containing galaxy_id, ra, dec, e1, e2, z, kappa
-  * ra/dec are in decimal degrees
-
-## Mock data generation <a name="mock_data_generation"></a>
-  * examples/generate_mock_data.ipynb
-
-### Weak lensing signal measurement with `polaraveraging.py` <a name="weak_lensing_signal_measurement_with_polaraveraging"></a>
-
-  * The function `computeshear` calculates tangential shear, cross shear, and angular separation of each source galaxy relative to the (ra, dec) coordinates of the center of the cluster.
-  * A shear profile may be constructed with the user's choice of binning via `make_bins`.
-  * `make_shear_profile` takes the average over shear of each source galaxy over radial bins in rad, deg, arcmin, arcsec, kpc, or Mpc.
-  * See demo_of_polaraveraging.ipynb for detailed examples.
-
-### Profile and cosmology models with `modeling.py` <a name="profile_and_cosmology_models_with_modeling"></a>
-
-  * modeling.py holds functions for evaluating theoretical models.
-  * The default is to use an NFW profile, but more halo profile parameterizations will be added soon.
-  * See examples/modeling_demo.ipynb for example usage.
-
-### Galaxy cluster mass estimation <a name="galaxy_cluster_mass_estimation"></a>
-  * See examples/demo-pipeline.ipynb for example usage of an end-to-end measurement.
+Contributing documentation can be found [here](CONTRIBUTING.md)
