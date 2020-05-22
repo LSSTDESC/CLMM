@@ -21,11 +21,6 @@ def test_compute_cross_shear():
     cross_shear = pa._compute_cross_shear(shear1, shear2, phi)
     testing.assert_allclose(cross_shear, expected_cross_shear)
 
-    # Some additional edge cases
-    testing.assert_allclose(pa._compute_cross_shear(100., 0., 0.), 0.0)
-    # testing.assert_allclose(pa._compute_cross_shear(0., 100., np.pi/4.), 0.0)
-    testing.assert_allclose(pa._compute_cross_shear(0., 0., 0.3), 0.)
-
     # Edge case tests
     testing.assert_allclose(pa._compute_cross_shear(100., 0., 0.), 0.0,
                             **TOLERANCE)
@@ -90,20 +85,14 @@ def test_compute_lensing_angles_flatsky():
     ra_l, dec_l = 161.32, 51.49
     ra_s, dec_s = np.array([161.29, 161.34]), np.array([51.45, 51.55])
     thetas, phis = pa._compute_lensing_angles_flatsky(ra_l, dec_l, ra_s, dec_s)
+
     testing.assert_allclose(thetas, np.array([0.00077050407583119666, 0.00106951489719733675]),
                             **TOLERANCE,
                             err_msg="Reasonable values with flat sky not matching to precision for theta")
+
     testing.assert_allclose(phis, np.array([-1.13390499136495481736, 1.77544123918164542530]),
                             **TOLERANCE,
                             err_msg="Reasonable values with flat sky not matching to precision for phi")
-
-    # ra and dec are 0.0 - THROWS A WARNING
-    # testing.assert_allclose(pa._compute_lensing_angles_flatsky(0.0, 0.0, ra_s, dec_s),
-    #                         [[2.95479482616592248334, 2.95615695795537858359],
-    #                          [2.83280558128919901506, 2.83233281390148761147]],
-    #                         TOLERANCE['rtol'], err_msg="Failure when RA_lens=DEC_lens=0.0")
-
-
 
     # lens and source at the same ra
     testing.assert_allclose(pa._compute_lensing_angles_flatsky(ra_l, dec_l, np.array([161.32, 161.34]), dec_s),
@@ -115,32 +104,20 @@ def test_compute_lensing_angles_flatsky():
                             [[0.00032601941539388962, 0.00106951489719733675], [0.00000000000000000000, 1.77544123918164542530]],
                             **TOLERANCE, err_msg="Failure when lens and a source share a DEC")
 
-    # lens and source at the same ra and dec - I dont think we want this to raise an error. It just wont be in the bins, so no problemo
-    # The second test is not working!!! Find out why!!!
-    # testing.assert_raises(ValueError, pa._compute_lensing_angles_flatsky, ra_l, dec_l, np.array([161.32, 161.34]), np.array([51.49, 51.55]))
-    # testing.assert_allclose(pa._compute_lensing_angles_flatsky(ra_l, dec_l, np.array([ra_l, 161.34]), np.array([dec_l, 51.55])),
-    #                         [[0.00000000000000000000, 0.00106951489719733675], [0.00000000000000000000, 1.77544123918164542530]],
-    #                         TOLERANCE['rtol'], err_msg="Failure when lens and a source share an RA and a DEC")
+    # lens and source at the same ra and dec
+    testing.assert_allclose(pa._compute_lensing_angles_flatsky(ra_l, dec_l, np.array([ra_l, 161.34]), np.array([dec_l, 51.55])),
+                            [[0.00000000000000000000, 0.00106951489719733675], [0.00000000000000000000, 1.77544123918164542530]],
+                            TOLERANCE['rtol'], err_msg="Failure when lens and a source share an RA and a DEC")
 
-    # This test throws a warning!
-    # testing.assert_allclose(pa._compute_lensing_angles_flatsky(0.1, dec_l, np.array([359.9, 180.1]), dec_s),
-    #                         [[2.37312589, 1.95611677], [-2.94182333e-04, 3.14105731e+00]],
-    #                         TOLERANCE['rtol'], err_msg="Failure when ra_l and ra_s are close but on the two sides of the 0 axis")
+    # angles over the branch cut between 0 and 360
+    testing.assert_allclose(pa._compute_lensing_angles_flatsky(0.1, dec_l, np.array([359.9, 359.5]), dec_s),
+                            [[0.0022828333888309108, 0.006603944760273219], [-0.31079754672938664, 0.15924369771830643]],
+                            TOLERANCE['rtol'], err_msg="Failure when ra_l and ra_s are close but on the opposite sides of the 0 axis")
 
-    # This test throws a warning!
-    # testing.assert_allclose(pa._compute_lensing_angles_flatsky(0, dec_l, np.array([359.9, 180.1]), dec_s),
-    #                         [[2.37203916, 1.9572035], [-2.94317111e-04, 3.14105761e+00]],
-    #                         TOLERANCE['rtol'], err_msg="Failure when ra_l and ra_s are separated by pi + epsilon")
-
-    # This test throws a warning!
-    # testing.assert_allclose(pa._compute_lensing_angles_flatsky(-180, dec_l, np.array([180.1, -90]), dec_s),
-    #                         [[2.36986569, 0.97805881], [-2.94587036e-04, 3.14052196e+00]],
-    #                         TOLERANCE['rtol'], err_msg="Failure when ra_l and ra_s are the same but one is defined negative")
-
-    # This test throws a warning!
-    # testing.assert_allclose(pa._compute_lensing_angles_flatsky(ra_l, 90, ra_s, np.array([51.45, -90])),
-    #                         [[0.67282443, 3.14159265], [-1.57079633, -1.57079633]],
-    #                         TOLERANCE['rtol'], err_msg="Failure when dec_l and dec_s are separated by 180 deg")
+    # angles over the branch cut between 0 and 360
+    testing.assert_allclose(pa._compute_lensing_angles_flatsky(-180, dec_l, np.array([180.1, 179.7]), dec_s),
+                            [[0.0012916551296819666, 0.003424250083245557], [-2.570568636904587, 0.31079754672944354]],
+                            TOLERANCE['rtol'], err_msg="Failure when ra_l and ra_s are the same but one is defined negative")
 
 def test_compute_shear():
     # Input values
