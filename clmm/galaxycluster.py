@@ -20,14 +20,14 @@ class GalaxyCluster():
     galcat : astropy Table
         Table of background galaxy data containing at least galaxy_id, ra, dec, e1, e2, z
     """
-    def __init__(self, *args, **kargs):
+    def __init__(self, *args, **kwargs):
         self.unique_id = None
         self.ra = None
         self.dec = None
         self.z = None
         self.galcat = None
-        if len(args)>0 or len(kargs)>0:
-            self._add_values(*args, **kargs)
+        if len(args)>0 or len(kwargs)>0:
+            self._add_values(*args, **kwargs)
             self._check_types()
     def _add_values(self, unique_id: str, ra: float, dec: float, z: float,
                  galcat: Table):
