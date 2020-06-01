@@ -34,6 +34,8 @@ If you have access to NERSC, this will likely be the easiest to make sure you ha
 	conda install -c conda-forge firefox  # Need a browser to view jupyter notebooks  
 ```
 
+Note, for regular contributions and use, we recommend adding `module load python` to your `~/.bashrc` so you have anaconda installed every time you log in.  You will subseqeuntly also want to be in the correct environment whenever working with `clmm`, which means running `source activate clmmenv` at the start of each session.
+
 You can now go through the steps in the Requirements section of README.md.  Note, you'll need to separately install cluster-toolkit in the current version of CLMM.  Since cluster-toolkit has a gsl dependency, you'll also need gsl.
 
 ```bash
