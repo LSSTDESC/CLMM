@@ -23,7 +23,7 @@ Issues marked with the label `good first issue` are well-suited for new contribu
 
 ## Access to the proper environment on cori.nersc.gov <a name="access_to_the_proper_environment_on_cori"></a>
 
-If you have access to NERSC, this will likely be the easiest to make sure you have the appropriate environment.  After logging into cori.nersc.gov, you will need to execute the following:
+If you have access to NERSC, this will likely be the easiest to make sure you have the appropriate environment.  After logging into cori.nersc.gov, you will need to execute the following.  We recommend executing line-by-line to avoid errors:
 
 ```bash
 	module load python  # Also loads anaconda
@@ -33,6 +33,8 @@ If you have access to NERSC, this will likely be the easiest to make sure you ha
 	conda install ipython # need to have the ipython tied to this environment
 	conda install -c conda-forge firefox  # Need a browser to view jupyter notebooks  
 ```
+
+Note, for regular contributions and use, we recommend adding `module load python` to your `~/.bashrc` so you have anaconda installed every time you log in.  You will subseqeuntly also want to be in the correct environment whenever working with `clmm`, which means running `source activate clmmenv` at the start of each session.
 
 You can now go through the steps in the Requirements section of README.md.  Note, you'll need to separately install cluster-toolkit in the current version of CLMM.  Since cluster-toolkit has a gsl dependency, you'll also need gsl.
 
@@ -57,11 +59,13 @@ Now, you should have cluster_toolkit installed, and are ready to install CLMM
 
 The above allows you to develop in NERSC and run pytest.  Your workflow as a developer would be to make your changes, do a `python setup.py install --user` then `pytest` to make sure your changes did not break any tests.
 
-If you are a DESC member you may also add to your CLMM environment the GCR and GCRCatalog packages to access the DC2 datasets at NERSC. Once in your CLMM environment (`source activate clmmenv`), run
+If you are a DESC member you may also add to your CLMM environment the GCR and GCRCatalog packages to access the DC2 datasets at NERSC. To run the DC2 example notebooks provided in CLMM, the following need to be installed in your CLMM environment at NERSC. Once in your CLMM environment (`source activate clmmenv`), run
 
 ```bash
+    pip install h5py
     pip install GCR
     pip install https://github.com/LSSTDESC/gcr-catalogs/archive/master.zip
+    pip install https://github.com/yymao/FoFCatalogMatching/archive/master.zip
 ```
 
 To open up a notebook from nersc in your browser, you will need to go to the [nersc jupyter portal](https://jupyter.nersc.gov) and sign in.  Clicking on the upper right corner of the notebook will provide options for your kernel.  Choose your `conda env:conda-clmmenv` that you just created.  You will need to do a temporary install of both cluster_toolkit and clmm in the first cell of your jupyter notebook:
