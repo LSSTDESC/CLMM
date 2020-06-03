@@ -72,7 +72,7 @@ def install_clmm_pipeline(upgrade=False):
     import sys
     try:
         import clmm
-	import cluster_toolkit
+        import cluster_toolkit
         installed = True
     except ImportError:
         installed = False
@@ -211,11 +211,12 @@ Here's a list of additional resources which you may find helpful in navigating g
 * [Alex Malz](https://github.com/aimalz) (NYU --> RUB)
 * [Tom McClintock](https://github.com/tmcclintock) (BNL)
 * [Hironao Miyatake](https://github.com/HironaoMiyatake) (Nagoya)
-* [Mariana Penna-Lima](https://github.com/pennalima) (UBrasilia)
+* [Mariana Penna-Lima](https://github.com/pennalima) (UnB - Brasilia / LIneA)
 * [Marina Ricci](https://github.com/marina-ricci) (LAPP)
 * [Cristobal Sifon](https://github.com/cristobal-sifon) (Princeton)
 * [Melanie Simet](https://github.com/msimet) (JPL)
 * [Martin Sommer](https://github.com/sipplund) (Bonn)
+* [Sandro Vitenti](https://github.com/vitenti) (LIneA / UEL - Londrina)
 * [Heidi Wu](https://github.com/hywu) (Ohio)
 * [Mijin Yoon](https://github.com/mijinyoon) (RUB)
 
