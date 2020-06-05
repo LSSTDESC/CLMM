@@ -50,7 +50,7 @@ def test_integrity(): # Converge on name
 def test_save_load():
     cl1 = clmm.GalaxyCluster(unique_id='1', ra=161.3, dec=34., z=0.3, galcat=GCData())
     cl1.save('testcluster.pkl')
-    cl2 = clmm.load_cluster('testcluster.pkl')
+    cl2 = clmm.GalaxyCluster.load('testcluster.pkl')
     os.system('rm testcluster.pkl')
 
     testing.assert_equal(cl2.unique_id, cl1.unique_id)
