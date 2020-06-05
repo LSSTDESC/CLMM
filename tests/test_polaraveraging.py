@@ -254,8 +254,8 @@ def test_make_shear_profiles():
     testing.assert_array_equal(profile['n_src'], [2])
 
     # Test metadata
-    testing.assert_array_equal(profile.metadata['bin_units'], bin_units)
-    testing.assert_array_equal(profile.metadata['cosmo'], None)
+    testing.assert_array_equal(profile.meta['bin_units'], bin_units)
+    testing.assert_array_equal(profile.meta['cosmo'], None)
 
     # Repeat the same tests when we call make_shear_profile through the GalaxyCluster method
     profile2 = cluster.make_shear_profile(

@@ -10,7 +10,7 @@ class GCData(APtable):
 
     Parameters
     ----------
-    metadata: dict
+    meta: dict
         Dictionary with metadata for this object
 
     Same as astropy tables
@@ -19,14 +19,8 @@ class GCData(APtable):
         """
         Parameters
         ----------
-        metadata: dict
-            Dictionary with information to be stored in self.metadata
         *args, **kargs: Same used for astropy tables
         """
-        self.metadata = self.meta
-        if 'metadata' in kargs:
-            self.metadata.update(kargs['metadata'])
-        kargs.pop('metadata', None)
         APtable.__init__(self, *args, **kargs)
     def add_meta(self, name, value):
         """
@@ -43,7 +37,7 @@ class GCData(APtable):
         -------
         None
         """
-        self.metadata[name] = value
+        self.meta[name] = value
         return
     def add_metas(self, names, values):
         """
@@ -67,7 +61,7 @@ class GCData(APtable):
         """Generates string for repr(GCData)"""
         output = f'{self.__class__.__name__}('
         output += ', '.join([f'{key}={value!r}'
-            for key, value in self.metadata.items()]
+            for key, value in self.meta.items()]
             + ['columns: '+', '.join(self.colnames)])
         output += ')'
         return output
@@ -75,7 +69,7 @@ class GCData(APtable):
         """Generates string for print(GCData)"""
         output = f'self.__class__.__name__\n> defined by:'
         output += ', '.join([f'{key}={str(value)}'
-            for key, value in self.metadata.items()])
+            for key, value in self.meta.items()])
         output += f'\n> with columns: '
         output += ', '.join(self.colnames)
         return output
@@ -89,7 +83,6 @@ class GCData(APtable):
             Data with [] operations applied
         """
         out = APtable.__getitem__(self, item)
-        out.metadata = self.metadata
         return out
 
 

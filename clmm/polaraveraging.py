@@ -289,7 +289,7 @@ def make_shear_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None,
                             z_avg, z_err, nsrc],
                             names=('radius_min', 'radius', 'radius_max', 'gt', 'gt_err',
                             'gx', 'gx_err', 'z', 'z_err', 'n_src'),
-                            metadata={'cosmo':cosmo, 'bin_units':bin_units}, # Add metadata
+                            meta={'cosmo':cosmo, 'bin_units':bin_units}, # Add metadata
                             )
     # add galaxy IDs
     if gal_ids_in_bins:
