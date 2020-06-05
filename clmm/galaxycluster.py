@@ -20,7 +20,6 @@ class GalaxyCluster():
     galcat : GCData
         Table of background galaxy data containing at least galaxy_id, ra, dec, e1, e2, z
     """
-                 galcat: GCData):
     def __init__(self, *args, **kwargs):
         self.unique_id = None
         self.ra = None
@@ -31,7 +30,7 @@ class GalaxyCluster():
             self._add_values(*args, **kwargs)
             self._check_types()
     def _add_values(self, unique_id: str, ra: float, dec: float, z: float,
-                 galcat: Table):
+                 galcat: GCData):
         """Add values for all attributes"""
         self.unique_id = unique_id
         self.ra = ra
