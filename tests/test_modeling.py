@@ -352,6 +352,7 @@ def test_shear_convergence_unittests():
     helper_physics_functions(md.predict_tangential_shear)
     helper_physics_functions(md.predict_convergence)
     helper_physics_functions(md.predict_reduced_tangential_shear)
+    helper_physics_functions(md.predict_magnification)
 
     # Validation Tests =========================
     # NumCosmo makes different choices for constants (Msun). We make this conversion
@@ -372,7 +373,7 @@ def test_shear_convergence_unittests():
     sigcrit_corr = cfg['SIGMAC_PHYSCONST_CORRECTION']
     sigma_c_undo = md.get_critical_surface_density(cosmo, cfg['GAMMA_PARAMS']['z_cluster'],
                                                    cfg['z_source'])
-    sigmac_corr = sigma_c_undo/sigma_c/sigcrit_corr
+    sigmac_corr = (sigma_c_undo/sigma_c) * (1./sigcrit_corr)
 
     # Chech error is raised if too small radius   
     assert_raises(ValueError, md.predict_tangential_shear, 1.e-12, 1.e15, 4, 0.2, 0.45, cosmo)
@@ -388,9 +389,15 @@ def test_shear_convergence_unittests():
     # Validate reduced tangential shear
     assert_allclose(md.predict_reduced_tangential_shear(cosmo=cosmo, **cfg['GAMMA_PARAMS']),
                     gammat/(1.0 - kappa), 1.0e-10)
-    assert_allclose(gammat/(1./sigmac_corr - kappa), cfg['numcosmo_profiles']['gt'], 1.0e-6)
+    assert_allclose(gammat*sigmac_corr/(1. - (kappa*sigmac_corr)), cfg['numcosmo_profiles']['gt'], 1.0e-6)
+    
+    # Validate magnification
+    assert_allclose(md.predict_magnification(cosmo=cosmo, **cfg['GAMMA_PARAMS']),
+                    1. / ((1-kappa)**2-abs(gammat)**2), 1.0e-10)
+    assert_allclose(1. / ((1-kappa*sigmac_corr)**2-abs(gammat*sigmac_corr)**2), cfg['numcosmo_profiles']['mu'], 1.0e-7)
+    
 
-    # Check that shear and convergence return zero if source is in front of the cluster
+    # Check that shear, reduced shear and convergence return zero and magnification returns one if source is in front of the cluster
     # First, check for a array of radius and single source z
     r = np.logspace(-2,2,10)
     z_cluster = 0.3
@@ -405,7 +412,10 @@ def test_shear_convergence_unittests():
     assert_allclose(md.predict_reduced_tangential_shear(r, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, 
                     z_source=z_source, cosmo=cosmo),
                     np.zeros(len(r)), 1.0e-10)
-
+    assert_allclose(md.predict_magnification(r, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, 
+                    z_source=z_source, cosmo=cosmo),
+                    np.ones(len(r)), 1.0e-10)
+    
     # Second, check a single radius and array of source z
     r = 1.
     z_source = [0.25, 0.1, 0.14, 0.02]
@@ -415,6 +425,8 @@ def test_shear_convergence_unittests():
                     np.zeros(len(z_source)), 1.0e-10)
     assert_allclose(md.predict_reduced_tangential_shear(r, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
                     np.zeros(len(z_source)), 1.0e-10)
+    assert_allclose(md.predict_magnification(r, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
+                    np.ones(len(z_source)), 1.0e-10)
     
     
     
