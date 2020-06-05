@@ -15,13 +15,13 @@ class GCData(APtable):
 
     Same as astropy tables
     """
-    def __init__(self, *args, **kargs):
+    def __init__(self, *args, **kwargs):
         """
         Parameters
         ----------
-        *args, **kargs: Same used for astropy tables
+        *args, **kwargs: Same used for astropy tables
         """
-        APtable.__init__(self, *args, **kargs)
+        APtable.__init__(self, *args, **kwargs)
     def add_meta(self, name, value):
         """
         Add metadata to GCData
