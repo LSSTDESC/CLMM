@@ -23,7 +23,7 @@ from .galaxycluster import GalaxyCluster
 #     return ccl_cosmo
 
 
-def compute_tangential_cross_components(cluster=None,
+def compute_tangential_and_cross_components(cluster=None,
                   shape_component1='e1', shape_component2='e2',
                   tan_component='et', cross_component='ex',
                   ra_lens=None, dec_lens=None, ra_source_list=None,
@@ -79,10 +79,10 @@ def compute_tangential_cross_components(cluster=None,
         the lens and sources and the two shear components all of the sources. If this
         object is specified, right ascension, declination, and shear or ellipticity inputs are ignored.
     shape_component1: string, optional
-        Name of the column in the `galcat` astropy table of the cluser object that contains
+        Name of the column in the `galcat` astropy table of the cluster object that contains
         the shape or shear measurement along the first axis. Default: `e1`
     shape_component1: string, optional
-        Name of the column in the `galcat` astropy table of the cluser object that contains
+        Name of the column in the `galcat` astropy table of the cluster object that contains
         the shape or shear measurement along the second axis. Default: `e2`
     tan_component: string, optional
         Name of the column to be added to the `galcat` astropy table that will contain the
@@ -101,9 +101,9 @@ def compute_tangential_cross_components(cluster=None,
     dec_source_list: array_like, optional
         Declinations of each source galaxy
     shear1: array_like, optional
-        The measured shear of the source galaxies
+        The measured shear (or reduced shear or ellipticity) of the source galaxies
     shear2: array_like, optional
-        The measured shear of the source galaxies
+        The measured shear (or reduced shear or ellipticity) of the source galaxies
     geometry: str, optional
         Sky geometry to compute angular separation.
         Flat is currently the only supported option.
@@ -127,7 +127,7 @@ def compute_tangential_cross_components(cluster=None,
 
         ra_lens, dec_lens = cluster.ra, cluster.dec
         ra_source_list, dec_source_list = cluster.galcat['ra'], cluster.galcat['dec']
-        shear1, shear2 = cluster.galcat['e1'], cluster.galcat['e2']
+        shear1, shear2 = cluster.galcat[shape_component1], cluster.galcat[shape_component2]
 
     # If a cluster object is not specified, we require all of these inputs
     elif any(t_ is None for t_ in (ra_lens, dec_lens, ra_source_list, dec_source_list,
@@ -297,7 +297,7 @@ def make_binned_profile(cluster,
     """
     if not all([t_ in cluster.galcat.columns for t_ in (tan_component_in, cross_component_in, 'theta')]):
         raise TypeError('Shear or ellipticity information is missing!  Galaxy catalog must have tangential' +\
-                        'and cross shears (gt,gx) or ellipticities (et,ex). Run compute_tangential_cross_components first.')
+                        'and cross shears (gt,gx) or ellipticities (et,ex). Run compute_tangential_and_cross_components first.')
     if 'z' not in cluster.galcat.columns:
         raise TypeError('Missing galaxy redshifts!')
 
@@ -349,5 +349,5 @@ def make_binned_profile(cluster,
 
 
 # Monkey patch functions onto Galaxy Cluster object
-GalaxyCluster.compute_tangential_cross_components = compute_tangential_cross_components
+GalaxyCluster.compute_tangential_and_cross_components = compute_tangential_and_cross_components
 GalaxyCluster.make_binned_profile = make_binned_profile
