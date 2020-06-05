@@ -56,7 +56,7 @@ class GalaxyCluster():
             self.z = float(self.z)
         except ValueError:
             raise TypeError(f'z incorrect type: {type(self.z)}')
-        if not isinstance(galcat, GCData):
+        if not isinstance(self.galcat, GCData):
             raise TypeError(f'galcat incorrect type: {type(self.galcat)}')
 
         if not -360. <= self.ra <= 360.:
