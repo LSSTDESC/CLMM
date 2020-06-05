@@ -1,9 +1,9 @@
 """Tests for polaraveraging.py"""
 import numpy as np
 from numpy import testing
-from astropy.table import Table
 
 import clmm
+from clmm import GCData
 import clmm.polaraveraging as pa
 
 TOLERANCE = {'atol':1.e-7, 'rtol':1.e-7}
@@ -129,7 +129,7 @@ def test_compute_shear():
 
     # Make GalaxyCluster object
     cluster = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
-                                 galcat=Table([ra_source_list, dec_source_list, shear1, shear2],
+                                 galcat=GCData([ra_source_list, dec_source_list, shear1, shear2],
                                               names=('ra', 'dec', 'e1', 'e2')))
 
     # Correct values
@@ -179,13 +179,13 @@ def test_make_shear_profiles():
     z_sources = np.ones(3)
     angsep_units, bin_units = 'radians', 'radians'
     cluster = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
-                                 galcat=Table([ra_source_list, dec_source_list,
+                                 galcat=GCData([ra_source_list, dec_source_list,
                                                shear1, shear2, z_sources, id_source_list],
                                               names=('ra', 'dec', 'e1', 'e2', 'z', 'id')))
 
     # Test error of missing redshift
     cluster_noz = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
-                                     galcat=Table([ra_source_list, dec_source_list,
+                                     galcat=GCData([ra_source_list, dec_source_list,
                                                    shear1, shear2],
                                                   names=('ra', 'dec', 'e1', 'e2')))
     cluster_noz.compute_shear()
@@ -281,7 +281,7 @@ def test_make_shear_profiles():
 
     # Repeat the same tests but also asking for list of galaxy IDs in each bin
     cluster_noid = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
-                                 galcat=Table([ra_source_list, dec_source_list,
+                                 galcat=GCData([ra_source_list, dec_source_list,
                                                shear1, shear2, z_sources],
                                               names=('ra', 'dec', 'e1', 'e2', 'z')))
     cluster_noid.compute_shear()
