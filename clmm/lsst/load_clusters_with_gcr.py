@@ -4,7 +4,7 @@ Contains functions to interact with the General Catalog Reader
 from collections.abc import Sequence
 import os
 import numpy as np
-from astropy.table import Table
+from ..gcdata import GCData
 from ..galaxycluster import GalaxyCluster
 from ..modeling import get_reduced_shear_from_convergence
 
@@ -125,8 +125,8 @@ def load_from_dc2(nclusters, catalog_name, save_dir, ra_range=(-0.3, 0.3), dec_r
         g1 = get_reduced_shear_from_convergence(gals['shear_1'], gals['convergence'])
         g2 = get_reduced_shear_from_convergence(gals['shear_2'], gals['convergence'])
 
-        # store the results into an astropy table
-        t = Table([gals['galaxy_id'], gals['ra'], gals['dec'],
+        # store the results into a GCData
+        t = GCData([gals['galaxy_id'], gals['ra'], gals['dec'],
                    2*g1, 2*g2,
                    gals['redshift'], gals['convergence']],
                   names=('galaxy_id', 'ra', 'dec', 'e1', 'e2', 'z', 'kappa'))

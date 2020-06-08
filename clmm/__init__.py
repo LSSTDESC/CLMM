@@ -1,4 +1,5 @@
 """ CLMM is a cluster mass modeling code. """
+from .gcdata import GCData
 from .galaxycluster import load_cluster, GalaxyCluster
 from .polaraveraging import compute_tangential_and_cross_components, make_binned_profile
 from .utils import compute_radial_averages, make_bins, convert_units

@@ -2,7 +2,7 @@
 The GalaxyCluster class
 """
 import pickle
-from astropy.table import Table
+from .gcdata import GCData
 
 class GalaxyCluster():
     """Object that contains the galaxy cluster metadata and background galaxy data
@@ -17,7 +17,7 @@ class GalaxyCluster():
         Declination of galaxy cluster center (in degrees)
     z : float
         Redshift of galaxy cluster center
-    galcat : astropy Table
+    galcat : GCData
         Table of background galaxy data containing at least galaxy_id, ra, dec, e1, e2, z
     """
     def __init__(self, *args, **kwargs):
@@ -30,7 +30,7 @@ class GalaxyCluster():
             self._add_values(*args, **kwargs)
             self._check_types()
     def _add_values(self, unique_id: str, ra: float, dec: float, z: float,
-                 galcat: Table):
+                 galcat: GCData):
         """Add values for all attributes"""
         self.unique_id = unique_id
         self.ra = ra
@@ -56,7 +56,7 @@ class GalaxyCluster():
             self.z = float(self.z)
         except ValueError:
             raise TypeError(f'z incorrect type: {type(self.z)}')
-        if not isinstance(self.galcat, Table):
+        if not isinstance(self.galcat, GCData):
             raise TypeError(f'galcat incorrect type: {type(self.galcat)}')
 
         if not -360. <= self.ra <= 360.:
