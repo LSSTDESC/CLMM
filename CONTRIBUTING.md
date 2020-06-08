@@ -54,7 +54,7 @@ Now, you should have cluster_toolkit installed, and are ready to install CLMM
 	pip install jupyter  # need to have jupyter notebook tied to this environment, you can then see the environment in jupyter.nersc.gov
 	git clone https://github.com/LSSTDESC/CLMM.git  # For those with edit access to CLMM, see below for otherwise
   	cd CLMM   
-  	python setup.py install --user     # build from source
+  	python setup.py install     # build from source
 ```
 
 The above allows you to develop in NERSC and run pytest.  Your workflow as a developer would be to make your changes, do a `python setup.py install --user` then `pytest` to make sure your changes did not break any tests.
@@ -62,6 +62,9 @@ The above allows you to develop in NERSC and run pytest.  Your workflow as a dev
 If you are a DESC member you may also add to your CLMM environment the GCR and GCRCatalog packages to access the DC2 datasets at NERSC. To run the DC2 example notebooks provided in CLMM, the following need to be installed in your CLMM environment at NERSC. Once in your CLMM environment (`source activate clmmenv`), run
 
 ```bash
+    pip install pandas
+    pip install pyarrow
+    pip install healpy
     pip install h5py
     pip install GCR
     pip install https://github.com/LSSTDESC/gcr-catalogs/archive/master.zip
