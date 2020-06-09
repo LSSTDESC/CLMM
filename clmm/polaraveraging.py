@@ -332,7 +332,7 @@ def make_binned_profile(cluster,
                             names=('radius_min', 'radius', 'radius_max',
                                    tan_component_out, tan_component_out+'_err',
                                    cross_component_out, cross_component_out+'_err',
-                                   'z', 'z_err', 'n_src'))
+                                   'z', 'z_err', 'n_src'),
                             meta={'cosmo':cosmo, 'bin_units':bin_units}, # Add metadata
                             )
     # add galaxy IDs
