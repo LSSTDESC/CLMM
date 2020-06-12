@@ -1,7 +1,7 @@
 """ Tests for the cluster_toolkit patches"""
 import numpy as np
 from numpy.testing import assert_allclose
-from clmm.cluster_toolkit_patches import _patch_zevolution_cluster_toolkit_rho_m as patch1
+from clmm.modbackend.cluster_toolkit_patches import _patch_zevolution_cluster_toolkit_rho_m as patch1
 from clmm.constants import Constants as c
 
 

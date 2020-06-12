@@ -1,6 +1,6 @@
 """ Patches for cluster_toolkit """
 import numpy as np
-from .constants import Constants as c
+from ..constants import Constants as c
 
 def _patch_zevolution_cluster_toolkit_rho_m(omega_m, redshift):
     r""" Evolve the matter density, rho_m, in cluster_toolkit with redshift
