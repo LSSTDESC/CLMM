@@ -1,11 +1,5 @@
 """ Functions to model halo profiles """
 
-import gi
-gi.require_version('NumCosmo', '1.0')
-gi.require_version('NumCosmoMath', '1.0')
-from gi.repository import NumCosmo as Nc
-from gi.repository import NumCosmoMath as Ncm
-
 import pyccl as ccl
 
 from .cluster_toolkit_patches import _patch_zevolution_cluster_toolkit_rho_m
