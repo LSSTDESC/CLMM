@@ -5,11 +5,11 @@ import sys
 sys.path.insert(0, os.path.abspath('../clmm'))
 sys.path.insert(0, os.path.abspath('..'))
 
-import mock
+from unittest.mock import MagicMock
  
 MOCK_MODULES = ['gi', 'gi.repository', 'gi.repository.NumCosmoMath', 'gi.repository.NumCosmo', 'pyccl']
 for mod_name in MOCK_MODULES:
-    sys.modules[mod_name] = mock.Mock()
+    sys.modules[mod_name] = MagicMock()
 
 import clmm
 
