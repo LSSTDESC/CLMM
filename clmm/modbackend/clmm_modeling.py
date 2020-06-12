@@ -1,4 +1,4 @@
-
+# CLMModeling abstract class
 
 class CLMModeling:
     def set_cosmo_params_dict (self, cosmo_dict):

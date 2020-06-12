@@ -1,4 +1,4 @@
-""" Functions to model halo profiles """
+# Functions to model halo profiles 
 
 import pyccl as ccl
 

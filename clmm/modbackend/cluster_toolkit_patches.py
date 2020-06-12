@@ -1,4 +1,5 @@
-""" Patches for cluster_toolkit """
+# Patches for cluster_toolkit
+
 import numpy as np
 from ..constants import Constants as c
 

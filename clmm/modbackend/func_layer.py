@@ -1,8 +1,6 @@
-""" 
-    Thin functonal layer on top of the class implementation of CLMModeling .
-    The functions expect a global instance of the actual CLMModeling named
-    `gcm'.
-"""
+# Thin functonal layer on top of the class implementation of CLMModeling .
+# The functions expect a global instance of the actual CLMModeling named
+# `gcm'.
 
 import numpy as np
 import warnings

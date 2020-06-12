@@ -1,4 +1,4 @@
-""" NumCosmo implementation of CLMModeling """
+# NumCosmo implementation of CLMModeling
 
 import gi
 gi.require_version('NumCosmo', '1.0')
