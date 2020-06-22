@@ -2,14 +2,7 @@
 The GalaxyCluster class
 """
 import pickle
-from astropy.table import Table
-
-
-def load_cluster(filename, **kwargs):
-    """Loads GalaxyCluster object from filename using Pickle"""
-    with open(filename, 'rb') as fin:
-        return pickle.load(fin, **kwargs)
-
+from .gcdata import GCData
 
 class GalaxyCluster():
     """Object that contains the galaxy cluster metadata and background galaxy data
@@ -24,48 +17,66 @@ class GalaxyCluster():
         Declination of galaxy cluster center (in degrees)
     z : float
         Redshift of galaxy cluster center
-    galcat : astropy Table
+    galcat : GCData
         Table of background galaxy data containing at least galaxy_id, ra, dec, e1, e2, z
     """
-    def __init__(self, unique_id: str, ra: float, dec: float, z: float,
-                 galcat: Table):
-        if isinstance(unique_id, (int, str)): # should unique_id be a float?
-            unique_id = str(unique_id)
-        else:
-            raise TypeError(f'unique_id incorrect type: {type(unique_id)}')
-        try:
-            ra = float(ra)
-        except ValueError:
-            raise TypeError(f'ra incorrect type: {type(ra)}')
-        try:
-            dec = float(dec)
-        except ValueError:
-            raise TypeError(f'dec incorrect type: {type(dec)}')
-        try:
-            z = float(z)
-        except ValueError:
-            raise TypeError(f'z incorrect type: {type(z)}')
-        if not isinstance(galcat, Table):
-            raise TypeError(f'galcat incorrect type: {type(galcat)}')
-
-        if not -360. <= ra <= 360.:
-            raise ValueError(f'ra={ra} not in valid bounds: [-360, 360]')
-        if not -90. <= dec <= 90.:
-            raise ValueError(f'dec={dec} not in valid bounds: [-90, 90]')
-        if z < 0.:
-            raise ValueError(f'z={z} must be greater than 0')
-
+    def __init__(self, *args, **kwargs):
+        self.unique_id = None
+        self.ra = None
+        self.dec = None
+        self.z = None
+        self.galcat = None
+        if len(args)>0 or len(kwargs)>0:
+            self._add_values(*args, **kwargs)
+            self._check_types()
+    def _add_values(self, unique_id: str, ra: float, dec: float, z: float,
+                 galcat: GCData):
+        """Add values for all attributes"""
         self.unique_id = unique_id
         self.ra = ra
         self.dec = dec
         self.z = z
         self.galcat = galcat
+        return
+    def _check_types(self):
+        """Check types of all attributes"""
+        if isinstance(self.unique_id, (int, str)): # should unique_id be a float?
+            self.unique_id = str(self.unique_id)
+        else:
+            raise TypeError(f'unique_id incorrect type: {type(unique_id)}')
+        try:
+            self.ra = float(self.ra)
+        except ValueError:
+            raise TypeError(f'ra incorrect type: {type(self.ra)}')
+        try:
+            self.dec = float(self.dec)
+        except ValueError:
+            raise TypeError(f'dec incorrect type: {type(self.dec)}')
+        try:
+            self.z = float(self.z)
+        except ValueError:
+            raise TypeError(f'z incorrect type: {type(self.z)}')
+        if not isinstance(self.galcat, GCData):
+            raise TypeError(f'galcat incorrect type: {type(self.galcat)}')
 
+        if not -360. <= self.ra <= 360.:
+            raise ValueError(f'ra={self.ra} not in valid bounds: [-360, 360]')
+        if not -90. <= self.dec <= 90.:
+            raise ValueError(f'dec={self.dec} not in valid bounds: [-90, 90]')
+        if self.z < 0.:
+            raise ValueError(f'z={self.z} must be greater than 0')
+        return
     def save(self, filename, **kwargs):
         """Saves GalaxyCluster object to filename using Pickle"""
         with open(filename, 'wb') as fin:
             pickle.dump(self, fin, **kwargs)
-
+        return
+    def load(filename, **kwargs):
+        """Loads GalaxyCluster object to filename using Pickle"""
+        with open(filename, 'rb') as fin:
+            self = pickle.load(fin, **kwargs)
+        self._check_types()
+        return self
     def __repr__(self):
         """Generates string for print(GalaxyCluster)"""
         output = f'GalaxyCluster {self.unique_id}: ' +\
