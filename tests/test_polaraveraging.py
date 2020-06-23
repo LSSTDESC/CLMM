@@ -5,6 +5,7 @@ from numpy import testing
 import clmm
 from clmm import GCData
 import clmm.polaraveraging as pa
+from astropy.cosmology import FlatLambdaCDM
 
 TOLERANCE = {'atol':1.e-7, 'rtol':1.e-7}
 
@@ -125,6 +126,7 @@ def test_compute_tangential_and_cross_components():
     ra_source_list = np.array([120.1, 119.9])
     dec_source_list = np.array([41.9, 42.2])
     z_source_list = np.array([1.,2.])
+    
     shear1 = np.array([0.2, 0.4])
     shear2 = np.array([0.3, 0.5])
 
@@ -137,7 +139,11 @@ def test_compute_tangential_and_cross_components():
     expected_angsep = np.array([0.0021745039090962414, 0.0037238407383072053])
     expected_cross_shear = np.array([0.2780316984090899, 0.6398792901134982])
     expected_tangential_shear = np.array([-0.22956126563459447, -0.02354769805831558])
-
+    
+    # DeltaSigma expected values for FlatLambdaCDM(H0=70., Om0=0.3, Ob0=0.025)    
+    expected_cross_DS = np.array([1224.3326297393244, 1899.6061989365176])
+    expected_tangential_DS = np.array([-1010.889584349285, -69.9059242788237])
+    
     # Pass arrays directly into function
     angsep, tshear, xshear = pa.compute_tangential_and_cross_components(ra_lens=ra_lens, dec_lens=dec_lens,
                                               ra_source_list=ra_source_list,
@@ -179,8 +185,17 @@ def test_compute_tangential_and_cross_components():
                                  galcat=GCData([ra_source_list, dec_source_list, shear1, shear2, z_source_list],
                                                names=('ra', 'dec', 'e1', 'e2','z')))
     testing.assert_raises(TypeError, cluster.compute_tangential_and_cross_components, is_deltasigma=True)
-
     
+    # check values for DeltaSigma
+    cosmo = FlatLambdaCDM(H0=70., Om0=0.3, Ob0=0.025)
+    angsep_DS, tDS, xDS = cluster.compute_tangential_and_cross_components(cosmo=cosmo, is_deltasigma=True)
+    testing.assert_allclose(angsep_DS, expected_angsep, **TOLERANCE, 
+                            err_msg="Angular Separation not correct when using cluster method")
+    testing.assert_allclose(tDS, expected_tangential_DS, **TOLERANCE, 
+                            err_msg="Tangential Shear not correct when using cluster method")
+    testing.assert_allclose(xDS, expected_cross_DS, **TOLERANCE, 
+                            err_msg="Cross Shear not correct when using cluster method")
+   
 def test_make_binned_profiles():
     # Set up a cluster object and compute cross and tangential shears
     ra_lens, dec_lens, z_lens = 120., 42., 0.5
