@@ -124,6 +124,7 @@ def test_compute_tangential_and_cross_components():
     ra_lens, dec_lens, z_lens = 120., 42., 0.5
     ra_source_list = np.array([120.1, 119.9])
     dec_source_list = np.array([41.9, 42.2])
+    z_source_list = np.array([1.,2.])
     shear1 = np.array([0.2, 0.4])
     shear2 = np.array([0.3, 0.5])
 
@@ -167,7 +168,19 @@ def test_compute_tangential_and_cross_components():
                             err_msg="Tangential Shear not correct when using cluster method")
     testing.assert_allclose(xshear3, expected_cross_shear, **TOLERANCE, 
                             err_msg="Cross Shear not correct when using cluster method")
+    
+    
+    # Check behaviour for the deltasigma option
+    # cluster object missing source redshift, and function call missing cosmology
+    testing.assert_raises(TypeError, cluster.compute_tangential_and_cross_components, is_deltasigma=True)
 
+    # cluster object OK but function call missing cosmology
+    cluster = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
+                                 galcat=GCData([ra_source_list, dec_source_list, shear1, shear2, z_source_list],
+                                               names=('ra', 'dec', 'e1', 'e2','z')))
+    testing.assert_raises(TypeError, cluster.compute_tangential_and_cross_components, is_deltasigma=True)
+
+    
 def test_make_binned_profiles():
     # Set up a cluster object and compute cross and tangential shears
     ra_lens, dec_lens, z_lens = 120., 42., 0.5
