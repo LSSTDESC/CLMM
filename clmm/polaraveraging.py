@@ -186,6 +186,10 @@ def compute_tangential_and_cross_components(cluster=None,
         cluster.galcat['theta'] = angsep
         cluster.galcat[tan_component] = tangential_comp
         cluster.galcat[cross_component] = cross_comp
+        if is_deltasigma: 
+            # also save Sigma_c as new column as it is often
+            # used in the weighing scheme when stacking data
+            cluster.galcat['sigma_c'] = Sigma_c
 
     return angsep, tangential_comp, cross_comp
 

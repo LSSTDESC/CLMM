@@ -170,7 +170,7 @@ def test_compute_tangential_and_cross_components():
                             err_msg="Cross Shear not correct when using cluster method")
     
     
-    # Check behaviour for the deltasigma option
+    # Check behaviour for the deltasigma option.
     # cluster object missing source redshift, and function call missing cosmology
     testing.assert_raises(TypeError, cluster.compute_tangential_and_cross_components, is_deltasigma=True)
 
