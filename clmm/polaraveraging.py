@@ -28,7 +28,7 @@ def compute_tangential_and_cross_components(cluster=None,
                   tan_component='et', cross_component='ex',
                   ra_lens=None, dec_lens=None, ra_source_list=None,
                   dec_source_list=None, shear1=None, shear2=None, geometry='flat',
-                  add_to_cluster=True):
+                  add_to_cluster=True,  is_deltasigma=False, cosmo=None):
     r"""Computes tangential- and cross- components for shear or ellipticity
 
     To compute the shear, we need the right ascension and declination of the lens and of
@@ -110,16 +110,22 @@ def compute_tangential_and_cross_components(cluster=None,
         Flat is currently the only supported option.
     add_to_cluster: bool
         If `True` and a cluster was input, add the computed shears to the `GalaxyCluster` object
+    is_deltasigma: bool
+        If `True`, the tangential and cross components returned are multiplied by Sigma_crit. Results in units of :math:`h\ M_\odot\ pc^{-2}`
+
+    cosmo: astropy cosmology object
+        Specifying a cosmology is required if `is_deltasigma` is True
 
     Returns
     -------
     angsep: array_like
         Angular separation between lens and each source galaxy in radians
-    tangential_shear: array_like
-        Tangential shear for each source galaxy
-    cross_shear: array_like
-        Cross shear for each source galaxy
+    tangential_component: array_like
+        Tangential shear (or assimilated quantity) for each source galaxy
+    cross_component: array_like
+        Cross shear (or assimilated quantity) for each source galaxy
     """
+    
     if cluster is not None:
         required_cols = ['ra', 'dec', shape_component1, shape_component2]
         if not all([t_ in cluster.galcat.columns for t_ in required_cols]):
@@ -129,6 +135,7 @@ def compute_tangential_and_cross_components(cluster=None,
         ra_lens, dec_lens = cluster.ra, cluster.dec
         ra_source_list, dec_source_list = cluster.galcat['ra'], cluster.galcat['dec']
         shear1, shear2 = cluster.galcat[shape_component1], cluster.galcat[shape_component2]
+        
 
     # If a cluster object is not specified, we require all of these inputs
     elif any(t_ is None for t_ in (ra_lens, dec_lens, ra_source_list, dec_source_list,
@@ -141,7 +148,7 @@ def compute_tangential_and_cross_components(cluster=None,
         pass
     # Otherwise, check that the length of all of the inputs match
     elif not all(len(t_) == len(ra_source_list) for t_ in [dec_source_list, shear1, shear2]):
-        raise TypeError('To compute the tangential- and cross- components of shear or ellipticity you should supply the same number of source' +\
+        raise TypeError('To compute the tangential- and cross- shape components you should supply the same number of source' +\
                         'positions and shear or ellipticity.')
 
     # Compute the lensing angles
@@ -152,132 +159,34 @@ def compute_tangential_and_cross_components(cluster=None,
         raise NotImplementedError(f"Sky geometry {geometry} is not currently supported")
 
     # Compute the tangential and cross shears
-    tangential_shear = _compute_tangential_shear(shear1, shear2, phi)
-    cross_shear = _compute_cross_shear(shear1, shear2, phi)
+    tangential_comp = _compute_tangential_shear(shear1, shear2, phi)
+    cross_comp = _compute_cross_shear(shear1, shear2, phi)
+    
+    # If the is_deltasigma flag is True, multiply the results by Sigma_crit.
+    # Need to verify that cosmology and redshifts are provided
+    if is_deltasigma:
+        if cluster is not None: 
+            if 'z' not in cluster.galcat.columns:
+                raise TypeError('GalaxyCluster\'s galaxy catalog missing the redshift column.' +\
+                                'Cannot compute DeltaSigma')
+            z_lens = cluster.z
+            z_source_list = cluster.galcat['z']
+            if cosmo is None:
+                raise TypeError('To compute DeltaSigma, please provide a cosmology')
 
+        elif any(t_ is None for t_ in (z_lens,z_source_list,cosmo)):
+            raise TypeError('To compute DeltaSigma, please provide a i) cosmology, ii) redshift of lens and sources')
+
+        Sigma_c = get_critical_surface_density(cosmo, z_lens, z_source_list)
+        tangential_comp *= Sigma_c
+        cross_comp *= Sigma_c
+    
     if add_to_cluster:
         cluster.galcat['theta'] = angsep
-        cluster.galcat[tan_component] = tangential_shear
-        cluster.galcat[cross_component] = cross_shear
+        cluster.galcat[tan_component] = tangential_comp
+        cluster.galcat[cross_component] = cross_comp
 
-    return angsep, tangential_shear, cross_shear
-
-
-def compute_deltasigma(cluster=None, ra_lens=None, z_lens=None, dec_lens=None, ra_source_list=None,
-                  dec_source_list=None, z_source_list=None, shear1=None, shear2=None, geometry='flat',
-                  add_to_cluster=False, cosmo=None):
-    r"""Computes tangential and cross DeltaSigma components, and angular separation
-
-    To compute DeltaSigma, we need the right ascension and declination of the lens and of
-    all of the sources. We also need the two shape/shear components of all of the sources.
-
-    These quantities can be handed to `compute_deltasigma` in three ways
-
-    1. Pass in each as parameters::
-
-        compute_deltasigma(ra_lens, dec_lens, ra_source_list, dec_source_list, shear1, shear2)
-
-    2. Given a `GalaxyCluster` object::
-
-        compute_deltasigma(cluster)
-
-    3. As a method of `GalaxyCluster`::
-
-        cluster.compute_deltasigma()
-
-    The angular separation between the source and the lens, :math:`\theta`, and the azimuthal
-    position of the source relative to the lens, :math:`\phi`, are computed within the function
-    and the angular separation is returned.
-
-    In the flat sky approximation, these angles are calculated using (_lens: lens, _source: source,
-    RA is from right to left)
-
-    .. math::
-
-        \theta^2 = & \left(\delta_s - \delta_l\right)^2 +
-        \left(\alpha_l-\alpha_s\right)^2\cos^2(\delta_l)\\
-        \tan\phi = & \frac{\delta_s - \delta_l}{\left(\alpha_l - \alpha_s\right)\cos(\delta_l)}
-
-    The tangential, :math:`\DeltaSigma_t`, and cross, :math:`DeltaSigma_x` components are computed from
-
-    .. math::
-
-        DeltaSigma_t =& g_t \times \Sigma_c\\
-        DeltaSigma_x =& g_x \times \Sigma_c\\
-    
-    where :math:`\Sigma_c` is the critical surface density of the observer-lens-source system and :math:`(g_t,g_x)`
-    are the tangential and cross shear components.
-
-    Parameters
-    ----------
-    cluster: GalaxyCluster, optional
-        Instance of `GalaxyCluster()` and must contain right ascension and declinations of both
-        the lens and sources and the two shear components all of the sources. If this
-        object is specified, right ascension, declination, and shear inputs are ignored.
-    ra_lens: float, optional
-        Right ascension of the lensing cluster
-    dec_lens: float, optional
-        Declination of the lensing cluster
-    ra_source_list: array_like, optional
-        Right ascensions of each source galaxy
-    dec_source_list: array_like, optional
-        Declinations of each source galaxy
-    shear1: array_like, optional
-        The measured shear of the source galaxies
-    shear2: array_like, optional
-        The measured shear of the source galaxies
-    geometry: str, optional
-        Sky geometry to compute angular separation.
-        Flat is currently the only supported option.
-    add_to_cluster: bool
-        If `True` and a cluster was input, add the computed shears to the `GalaxyCluster` object
-
-    Returns
-    -------
-    angsep: array_like
-        Angular separation between lens and each source galaxy in radians
-    tangential_shear: array_like
-        Tangential shear for each source galaxy
-    cross_shear: array_like
-        Cross shear for each source galaxy
-    """
-    
-     angsep, tangential_shear, cross_shear = compute_shear(cluster, ra_lens, dec_lens, 
-                                                           ra_source_list,dec_source_list, 
-                                                           shear1, shear2, geometry='flat',
-                                                           add_to_cluster)        
-            
-    if cluster is not None:
-        if 'z' not in cluster.galcat.columns:
-            raise TypeError('GalaxyCluster\'s galaxy catalog missing the redshift column.' +\
-                            'Cannot compute DeltaSigma')
-
-    # If a cluster object is not specified, we require all of these inputs
-    elif any(t_ is None for t_ in (ra_lens, dec_lens, z_lens, 
-                                   ra_source_list, dec_source_list, z_source_list,
-                                   shear1, shear2, cosmo)):
-        raise TypeError('To compute DeltaSigma, please provide a i) cosmology, ii) a GalaxyCluster object'+\
-                        'or ra, dec and redshift of lens and sources and both shears or ellipticities'+\
-                        'of the sources.')
-
-    # If there is only 1 source, make sure everything is a scalar
-    if all(not hasattr(t_, '__len__') for t_ in [ra_source_list, dec_source_list, shear1, shear2]):
-        pass
-    # Otherwise, check that the length of all of the inputs match
-    elif not all(len(t_) == len(ra_source_list) for t_ in [z_source_list]):
-        raise TypeError('To compute DeltaSigma you should supply the same number of source' +\
-                        'positions and redshifts')
-
-    Sigma_c = get_critical_surface_density(cosmo, z_lens, z_source_list)
-    DeltaSigma_t = tangential_shear / Sigma_c
-    DeltaSigma_x = cross_shear / Sigma_c
-
-    if add_to_cluster:
-        cluster.galcat['DeltaSigma_t'] = DeltaSigma_t
-        cluster.galcat['DeltaSigma_x'] = DeltaSigma_x
-        cluster.galcat['Sigma_c'] = Sigma_c
-        
-    return angsep, DeltaSigma_t, DeltaSigma_x
+    return angsep, tangential_comp, cross_comp
 
 
 def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_source_list):
