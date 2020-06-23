@@ -9,6 +9,7 @@ import numpy as np
 from .gcdata import GCData
 from .utils import compute_radial_averages, make_bins, convert_units
 from .galaxycluster import GalaxyCluster
+from .modeling import get_critical_surface_density
 
 # def _astropy_to_CCL_cosmo_object(astropy_cosmology_object): # 7481794
 #     """Generates a ccl cosmology object from an GCR or astropy cosmology object.
