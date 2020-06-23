@@ -1,6 +1,6 @@
 """Functions to generate mock source galaxy distributions to demo lensing code"""
 import numpy as np
-from astropy.table import Table
+from clmm import GCData
 from scipy import integrate
 from scipy.interpolate import interp1d
 from astropy import units
@@ -91,7 +91,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta
 
     Returns
     -------
-    galaxy_catalog : astropy.table.Table
+    galaxy_catalog : clmm.GCData
         Table of source galaxies with drawn and derived properties required for lensing studies
 
     Notes
@@ -169,7 +169,7 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delt
 
 def _draw_source_redshifts(zsrc, cluster_z, zsrc_min, zsrc_max, ngals):
     """Set source galaxy redshifts either set to a fixed value or draw from a predefined
-    distribution. Return an astropy table of the source galaxies
+    distribution. Return a table (GCData) of the source galaxies
 
     Uses a sampling technique found in Numerical Recipes in C, Chap 7.2: Transformation Method.
     Pulling out random values from a given probability distribution.
@@ -205,7 +205,7 @@ def _draw_source_redshifts(zsrc, cluster_z, zsrc_min, zsrc_max, ngals):
     else:
         raise ValueError("zsrc must be a float or chang13. You set: {}".format(zsrc))
 
-    return Table([zsrc_list, zsrc_list], names=('ztrue', 'z'))
+    return GCData([zsrc_list, zsrc_list], names=('ztrue', 'z'))
 
 
 def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled, ngals):
@@ -234,7 +234,7 @@ def _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo):
 
     Parameters
     ----------
-    galaxy_catalog : astropy.table.Table
+    galaxy_catalog : clmm.GCData
         Source galaxy catalog
     ngals : float
         The number of source galaxies to draw
@@ -246,7 +246,7 @@ def _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo):
 
     Returns
     -------
-    galaxy_catalog : astropy.table.Table
+    galaxy_catalog : clmm.GCData
         Source galaxy catalog with positions added
     """
     Dl = angular_diameter_dist_a1a2(cosmo, 1./(1.+cluster_z))*units.pc.to(units.Mpc)
@@ -271,7 +271,7 @@ def _find_aphysical_galaxies(galaxy_catalog, zsrc_min):
 
     Parameters
     ----------
-    galaxy_catalog : astropy.table.Table
+    galaxy_catalog : clmm.GCData
         Galaxy source catalog
     zsrc_min : float
         Minimum galaxy redshift allowed 
