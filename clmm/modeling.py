@@ -4,7 +4,7 @@ import numpy as np
 from astropy import units
 from astropy.cosmology import LambdaCDM
 from .constants import Constants as const
-from .cluster_toolkit_patches import _patch_zevolution_cluster_toolkit_rho_m
+from .cluster_toolkit_patches import _patch_comoving_coord_cluster_toolkit_rho_m
 import warnings
 
 def cclify_astropy_cosmo(cosmoin):
@@ -169,7 +169,7 @@ def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profil
     """
     cosmo = cclify_astropy_cosmo(cosmo)
     omega_m = cosmo['Omega_c'] + cosmo['Omega_b']
-    omega_m_transformed = _patch_zevolution_cluster_toolkit_rho_m(omega_m, z_cl)
+    omega_m_transformed = _patch_comoving_coord_cluster_toolkit_rho_m(omega_m, z_cl)
 
     if halo_profile_model.lower() == 'nfw':
         rho = ct.density.rho_nfw_at_r(r3d, mdelta, cdelta, omega_m_transformed, delta=delta_mdef)
@@ -218,7 +218,7 @@ def predict_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     """
     cosmo = cclify_astropy_cosmo(cosmo)
     omega_m = cosmo['Omega_c'] + cosmo['Omega_b']
-    omega_m_transformed = _patch_zevolution_cluster_toolkit_rho_m(omega_m, z_cl)
+    omega_m_transformed = _patch_comoving_coord_cluster_toolkit_rho_m(omega_m, z_cl)
 
     if halo_profile_model.lower() == 'nfw':
         sigma = ct.deltasigma.Sigma_nfw_at_R(r_proj, mdelta, cdelta, omega_m_transformed,
@@ -266,7 +266,7 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
     """
     cosmo = cclify_astropy_cosmo(cosmo)
     omega_m = cosmo['Omega_c'] + cosmo['Omega_b']
-    omega_m_transformed = _patch_zevolution_cluster_toolkit_rho_m(omega_m, z_cl)
+    omega_m_transformed = _patch_comoving_coord_cluster_toolkit_rho_m(omega_m, z_cl)
 
     if np.min(r_proj)<1.e-11:
         raise ValueError(f"Rmin = {np.min(r_proj):.2e} Mpc/h! This value is too small and may cause computational issues.")
