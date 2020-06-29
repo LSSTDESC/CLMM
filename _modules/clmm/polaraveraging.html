@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.polaraveraging &mdash; CLMM 0.1.2 documentation</title>
+  <title>clmm.polaraveraging &mdash; CLMM 0.3.0 documentation</title>
   
 
   
@@ -21,11 +21,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.1.2
+                0.3.0
               </div>
             
           
@@ -98,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_polaraveraging_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_modeling_functionality.html">Model a Galaxy Cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Reference</span></p>
 <ul>
@@ -186,9 +187,9 @@
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">astropy.table</span> <span class="k">import</span> <span class="n">Table</span>
-<span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">compute_radial_averages</span><span class="p">,</span> <span class="n">make_bins</span><span class="p">,</span> <span class="n">convert_units</span>
-<span class="kn">from</span> <span class="nn">.galaxycluster</span> <span class="k">import</span> <span class="n">GalaxyCluster</span>
+<span class="kn">from</span> <span class="nn">.gcdata</span> <span class="kn">import</span> <span class="n">GCData</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">compute_radial_averages</span><span class="p">,</span> <span class="n">make_bins</span><span class="p">,</span> <span class="n">convert_units</span>
+<span class="kn">from</span> <span class="nn">.galaxycluster</span> <span class="kn">import</span> <span class="n">GalaxyCluster</span>
 
 <span class="c1"># def _astropy_to_CCL_cosmo_object(astropy_cosmology_object): # 7481794</span>
 <span class="c1">#     &quot;&quot;&quot;Generates a ccl cosmology object from an GCR or astropy cosmology object.</span>
@@ -203,10 +204,13 @@
 <span class="c1">#     return ccl_cosmo</span>
 
 
-<div class="viewcode-block" id="compute_shear"><a class="viewcode-back" href="../../api/clmm.polaraveraging.html#clmm.galaxycluster.compute_shear">[docs]</a><span class="k">def</span> <span class="nf">compute_shear</span><span class="p">(</span><span class="n">cluster</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ra_lens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dec_lens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ra_source_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="compute_tangential_and_cross_components"><a class="viewcode-back" href="../../api/clmm.polaraveraging.html#clmm.galaxycluster.compute_tangential_and_cross_components">[docs]</a><span class="k">def</span> <span class="nf">compute_tangential_and_cross_components</span><span class="p">(</span><span class="n">cluster</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                  <span class="n">shape_component1</span><span class="o">=</span><span class="s1">&#39;e1&#39;</span><span class="p">,</span> <span class="n">shape_component2</span><span class="o">=</span><span class="s1">&#39;e2&#39;</span><span class="p">,</span>
+                  <span class="n">tan_component</span><span class="o">=</span><span class="s1">&#39;et&#39;</span><span class="p">,</span> <span class="n">cross_component</span><span class="o">=</span><span class="s1">&#39;ex&#39;</span><span class="p">,</span>
+                  <span class="n">ra_lens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dec_lens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ra_source_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                   <span class="n">dec_source_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shear1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shear2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="s1">&#39;flat&#39;</span><span class="p">,</span>
                   <span class="n">add_to_cluster</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes tangential shear, cross shear, and angular separation</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes tangential- and cross- components for shear or ellipticity</span>
 
 <span class="sd">    To compute the shear, we need the right ascension and declination of the lens and of</span>
 <span class="sd">    all of the sources. We also need the two shear components of all of the sources.</span>
@@ -215,7 +219,7 @@
 
 <span class="sd">    1. Pass in each as parameters::</span>
 
-<span class="sd">        compute_shear(ra_lens, dec_lens, ra_source_list, dec_source_list, shear1, shear2)</span>
+<span class="sd">        compute_shear(ra_lens, dec_lens, ra_source_list, dec_source_list, shape_component1, shape_component2)</span>
 
 <span class="sd">    2. Given a `GalaxyCluster` object::</span>
 
@@ -238,10 +242,11 @@
 <span class="sd">        \left(\alpha_l-\alpha_s\right)^2\cos^2(\delta_l)\\</span>
 <span class="sd">        \tan\phi = &amp; \frac{\delta_s - \delta_l}{\left(\alpha_l - \alpha_s\right)\cos(\delta_l)}</span>
 
-<span class="sd">    The tangential, :math:`g_t`, and cross, :math:`g_x`, shears are calculated using the two</span>
-<span class="sd">    shear components :math:`g_1` and :math:`g_2` of the source galaxies, following Eq.7 and Eq.8</span>
+<span class="sd">    The tangential, :math:`g_t`, and cross, :math:`g_x`, ellipticity/shear components are calculated using the two</span>
+<span class="sd">    ellipticity/shear components :math:`g_1` and :math:`g_2` of the source galaxies, following Eq.7 and Eq.8</span>
 <span class="sd">    in Schrabback et al. (2018), arXiv:1611:03866</span>
-<span class="sd">    also checked arxiv: 0509252</span>
+<span class="sd">    which is consistent with arXiv:0509252</span>
+
 
 <span class="sd">    .. math::</span>
 
@@ -254,7 +259,21 @@
 <span class="sd">    cluster: GalaxyCluster, optional</span>
 <span class="sd">        Instance of `GalaxyCluster()` and must contain right ascension and declinations of both</span>
 <span class="sd">        the lens and sources and the two shear components all of the sources. If this</span>
-<span class="sd">        object is specified, right ascension, declination, and shear inputs are ignored.</span>
+<span class="sd">        object is specified, right ascension, declination, and shear or ellipticity inputs are ignored.</span>
+<span class="sd">    shape_component1: string, optional</span>
+<span class="sd">        Name of the column in the `galcat` astropy table of the cluster object that contains</span>
+<span class="sd">        the shape or shear measurement along the first axis. Default: `e1`</span>
+<span class="sd">    shape_component1: string, optional</span>
+<span class="sd">        Name of the column in the `galcat` astropy table of the cluster object that contains</span>
+<span class="sd">        the shape or shear measurement along the second axis. Default: `e2`</span>
+<span class="sd">    tan_component: string, optional</span>
+<span class="sd">        Name of the column to be added to the `galcat` astropy table that will contain the</span>
+<span class="sd">        tangential component computed from columns `shape_component1` and `shape_component2`.</span>
+<span class="sd">        Default: `et`</span>
+<span class="sd">    cross_component: string, optional</span>
+<span class="sd">        Name of the column to be added to the `galcat` astropy table that will contain the</span>
+<span class="sd">        cross component computed from columns `shape_component1` and `shape_component2`.</span>
+<span class="sd">        Default: `ex`</span>
 <span class="sd">    ra_lens: float, optional</span>
 <span class="sd">        Right ascension of the lensing cluster</span>
 <span class="sd">    dec_lens: float, optional</span>
@@ -264,9 +283,9 @@
 <span class="sd">    dec_source_list: array_like, optional</span>
 <span class="sd">        Declinations of each source galaxy</span>
 <span class="sd">    shear1: array_like, optional</span>
-<span class="sd">        The measured shear of the source galaxies</span>
+<span class="sd">        The measured shear (or reduced shear or ellipticity) of the source galaxies</span>
 <span class="sd">    shear2: array_like, optional</span>
-<span class="sd">        The measured shear of the source galaxies</span>
+<span class="sd">        The measured shear (or reduced shear or ellipticity) of the source galaxies</span>
 <span class="sd">    geometry: str, optional</span>
 <span class="sd">        Sky geometry to compute angular separation.</span>
 <span class="sd">        Flat is currently the only supported option.</span>
@@ -283,34 +302,35 @@
 <span class="sd">        Cross shear for each source galaxy</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">cluster</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">required_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ra&#39;</span><span class="p">,</span> <span class="s1">&#39;dec&#39;</span><span class="p">,</span> <span class="s1">&#39;e1&#39;</span><span class="p">,</span> <span class="s1">&#39;e2&#39;</span><span class="p">]</span>
+        <span class="n">required_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ra&#39;</span><span class="p">,</span> <span class="s1">&#39;dec&#39;</span><span class="p">,</span> <span class="n">shape_component1</span><span class="p">,</span> <span class="n">shape_component2</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="n">t_</span> <span class="ow">in</span> <span class="n">cluster</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">columns</span> <span class="k">for</span> <span class="n">t_</span> <span class="ow">in</span> <span class="n">required_cols</span><span class="p">]):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;GalaxyCluster</span><span class="se">\&#39;</span><span class="s1">s galaxy catalog missing required columns.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;GalaxyCluster</span><span class="se">\&#39;</span><span class="s1">s galaxy catalog missing required columns.&#39;</span> <span class="o">+</span>\
+                            <span class="s1">&#39;Do you mean to first convert column names?&#39;</span><span class="p">)</span>
 
         <span class="n">ra_lens</span><span class="p">,</span> <span class="n">dec_lens</span> <span class="o">=</span> <span class="n">cluster</span><span class="o">.</span><span class="n">ra</span><span class="p">,</span> <span class="n">cluster</span><span class="o">.</span><span class="n">dec</span>
         <span class="n">ra_source_list</span><span class="p">,</span> <span class="n">dec_source_list</span> <span class="o">=</span> <span class="n">cluster</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;ra&#39;</span><span class="p">],</span> <span class="n">cluster</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;dec&#39;</span><span class="p">]</span>
-        <span class="n">shear1</span><span class="p">,</span> <span class="n">shear2</span> <span class="o">=</span> <span class="n">cluster</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;e1&#39;</span><span class="p">],</span> <span class="n">cluster</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;e2&#39;</span><span class="p">]</span>
+        <span class="n">shear1</span><span class="p">,</span> <span class="n">shear2</span> <span class="o">=</span> <span class="n">cluster</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="n">shape_component1</span><span class="p">],</span> <span class="n">cluster</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="n">shape_component2</span><span class="p">]</span>
 
     <span class="c1"># If a cluster object is not specified, we require all of these inputs</span>
     <span class="k">elif</span> <span class="nb">any</span><span class="p">(</span><span class="n">t_</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">t_</span> <span class="ow">in</span> <span class="p">(</span><span class="n">ra_lens</span><span class="p">,</span> <span class="n">dec_lens</span><span class="p">,</span> <span class="n">ra_source_list</span><span class="p">,</span> <span class="n">dec_source_list</span><span class="p">,</span>
                                    <span class="n">shear1</span><span class="p">,</span> <span class="n">shear2</span><span class="p">)):</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;To compute shear, please provide a GalaxyCluster object or ra and dec&#39;</span> <span class="o">+</span>\
-                        <span class="s1">&#39;of lens and sources and both shears or ellipticities of the sources.&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;To compute tangential- and cross- shape components, please provide a GalaxyCluster object or ra and dec&#39;</span> <span class="o">+</span>\
+                        <span class="s1">&#39;of lens and sources and shears or ellipticities of the sources.&#39;</span><span class="p">)</span>
 
     <span class="c1"># If there is only 1 source, make sure everything is a scalar</span>
     <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">t_</span><span class="p">,</span> <span class="s1">&#39;__len__&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">t_</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ra_source_list</span><span class="p">,</span> <span class="n">dec_source_list</span><span class="p">,</span> <span class="n">shear1</span><span class="p">,</span> <span class="n">shear2</span><span class="p">]):</span>
         <span class="k">pass</span>
     <span class="c1"># Otherwise, check that the length of all of the inputs match</span>
     <span class="k">elif</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">t_</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">ra_source_list</span><span class="p">)</span> <span class="k">for</span> <span class="n">t_</span> <span class="ow">in</span> <span class="p">[</span><span class="n">dec_source_list</span><span class="p">,</span> <span class="n">shear1</span><span class="p">,</span> <span class="n">shear2</span><span class="p">]):</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;To compute the shear you should supply the same number of source&#39;</span> <span class="o">+</span>\
-                        <span class="s1">&#39;positions and shear.&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;To compute the tangential- and cross- components of shear or ellipticity you should supply the same number of source&#39;</span> <span class="o">+</span>\
+                        <span class="s1">&#39;positions and shear or ellipticity.&#39;</span><span class="p">)</span>
 
     <span class="c1"># Compute the lensing angles</span>
     <span class="k">if</span> <span class="n">geometry</span> <span class="o">==</span> <span class="s1">&#39;flat&#39;</span><span class="p">:</span>
         <span class="n">angsep</span><span class="p">,</span> <span class="n">phi</span> <span class="o">=</span> <span class="n">_compute_lensing_angles_flatsky</span><span class="p">(</span><span class="n">ra_lens</span><span class="p">,</span> <span class="n">dec_lens</span><span class="p">,</span> <span class="n">ra_source_list</span><span class="p">,</span>
                                                       <span class="n">dec_source_list</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Sky geometry </span><span class="si">{geometry}</span><span class="s2"> is not currently supported&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sky geometry </span><span class="si">{</span><span class="n">geometry</span><span class="si">}</span><span class="s2"> is not currently supported&quot;</span><span class="p">)</span>
 
     <span class="c1"># Compute the tangential and cross shears</span>
     <span class="n">tangential_shear</span> <span class="o">=</span> <span class="n">_compute_tangential_shear</span><span class="p">(</span><span class="n">shear1</span><span class="p">,</span> <span class="n">shear2</span><span class="p">,</span> <span class="n">phi</span><span class="p">)</span>
@@ -318,8 +338,8 @@
 
     <span class="k">if</span> <span class="n">add_to_cluster</span><span class="p">:</span>
         <span class="n">cluster</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;theta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">angsep</span>
-        <span class="n">cluster</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;gt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tangential_shear</span>
-        <span class="n">cluster</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;gx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cross_shear</span>
+        <span class="n">cluster</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="n">tan_component</span><span class="p">]</span> <span class="o">=</span> <span class="n">tangential_shear</span>
+        <span class="n">cluster</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="n">cross_component</span><span class="p">]</span> <span class="o">=</span> <span class="n">cross_shear</span>
 
     <span class="k">return</span> <span class="n">angsep</span><span class="p">,</span> <span class="n">tangential_shear</span><span class="p">,</span> <span class="n">cross_shear</span></div>
 
@@ -338,23 +358,28 @@
 <span class="sd">    For extended descriptions of parameters, see `compute_shear()` documentation.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="o">-</span><span class="mf">360.</span> <span class="o">&lt;=</span> <span class="n">ra_lens</span> <span class="o">&lt;=</span> <span class="mf">360.</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;ra = </span><span class="si">{ra_lens}</span><span class="s2"> of lens if out of domain&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ra = </span><span class="si">{</span><span class="n">ra_lens</span><span class="si">}</span><span class="s2"> of lens if out of domain&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="o">-</span><span class="mf">90.</span> <span class="o">&lt;=</span> <span class="n">dec_lens</span> <span class="o">&lt;=</span> <span class="mf">90.</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;dec = </span><span class="si">{dec_lens}</span><span class="s2"> of lens if out of domain&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;dec = </span><span class="si">{</span><span class="n">dec_lens</span><span class="si">}</span><span class="s2"> of lens if out of domain&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="o">-</span><span class="mf">360.</span> <span class="o">&lt;=</span> <span class="n">x_</span> <span class="o">&lt;=</span> <span class="mf">360.</span> <span class="k">for</span> <span class="n">x_</span> <span class="ow">in</span> <span class="n">ra_source_list</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cluster has an invalid ra in source catalog&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="o">-</span><span class="mf">90.</span> <span class="o">&lt;=</span> <span class="n">x_</span> <span class="o">&lt;=</span> <span class="mi">90</span> <span class="k">for</span> <span class="n">x_</span> <span class="ow">in</span> <span class="n">dec_source_list</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cluster has an invalid dec in the source catalog&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># Put angles between -pi and pi</span>
+    <span class="n">r2pi</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="p">(</span><span class="mf">2.0</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span><span class="o">*</span><span class="mf">2.0</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span>
 
-    <span class="n">deltax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">ra_source_list</span> <span class="o">-</span> <span class="n">ra_lens</span><span class="p">)</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">dec_lens</span><span class="p">))</span>
+    <span class="n">deltax</span> <span class="o">=</span> <span class="n">r2pi</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">ra_source_list</span> <span class="o">-</span> <span class="n">ra_lens</span><span class="p">))</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">dec_lens</span><span class="p">))</span>
     <span class="n">deltay</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">dec_source_list</span> <span class="o">-</span> <span class="n">dec_lens</span><span class="p">)</span>
-
+    
     <span class="c1"># Ensure that abs(delta ra) &lt; pi</span>
-    <span class="n">deltax</span><span class="p">[</span><span class="n">deltax</span> <span class="o">&gt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">]</span> <span class="o">=</span> <span class="n">deltax</span><span class="p">[</span><span class="n">deltax</span> <span class="o">&gt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">]</span> <span class="o">-</span> <span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
-    <span class="n">deltax</span><span class="p">[</span><span class="n">deltax</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">]</span> <span class="o">=</span> <span class="n">deltax</span><span class="p">[</span><span class="n">deltax</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">]</span> <span class="o">+</span> <span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+    <span class="c1">#deltax[deltax &gt;= np.pi] = deltax[deltax &gt;= np.pi] - 2.*np.pi</span>
+    <span class="c1">#deltax[deltax &lt; -np.pi] = deltax[deltax &lt; -np.pi] + 2.*np.pi</span>
 
     <span class="n">angsep</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">deltax</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">deltay</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
     <span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">deltay</span><span class="p">,</span> <span class="o">-</span><span class="n">deltax</span><span class="p">)</span>
+    <span class="c1"># Forcing phi to be zero everytime angsep is zero. This is necessary due to arctan2 features (it returns ).</span>
+    <span class="n">phi</span><span class="p">[</span><span class="n">angsep</span><span class="o">==</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
 
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">angsep</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">180.</span><span class="p">):</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Using the flat-sky approximation with separations &gt;1 deg may be inaccurate&quot;</span><span class="p">)</span>
@@ -389,12 +414,15 @@
     <span class="k">return</span> <span class="n">shear1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">phi</span><span class="p">)</span> <span class="o">-</span> <span class="n">shear2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">phi</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="make_shear_profile"><a class="viewcode-back" href="../../api/clmm.polaraveraging.html#clmm.galaxycluster.make_shear_profile">[docs]</a><span class="k">def</span> <span class="nf">make_shear_profile</span><span class="p">(</span><span class="n">cluster</span><span class="p">,</span> <span class="n">angsep_units</span><span class="p">,</span> <span class="n">bin_units</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                       <span class="n">add_to_cluster</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compute the shear profile of the cluster</span>
+<div class="viewcode-block" id="make_binned_profile"><a class="viewcode-back" href="../../api/clmm.polaraveraging.html#clmm.galaxycluster.make_binned_profile">[docs]</a><span class="k">def</span> <span class="nf">make_binned_profile</span><span class="p">(</span><span class="n">cluster</span><span class="p">,</span>
+                       <span class="n">angsep_units</span><span class="p">,</span> <span class="n">bin_units</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                       <span class="n">tan_component_in</span><span class="o">=</span><span class="s1">&#39;et&#39;</span><span class="p">,</span> <span class="n">cross_component_in</span><span class="o">=</span><span class="s1">&#39;ex&#39;</span><span class="p">,</span>
+                       <span class="n">tan_component_out</span><span class="o">=</span><span class="s1">&#39;gt&#39;</span><span class="p">,</span> <span class="n">cross_component_out</span><span class="o">=</span><span class="s1">&#39;gx&#39;</span><span class="p">,</span> <span class="n">table_name</span><span class="o">=</span><span class="s1">&#39;profile&#39;</span><span class="p">,</span>
+                       <span class="n">add_to_cluster</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">include_empty_bins</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gal_ids_in_bins</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compute the shear or ellipticity profile of the cluster</span>
 
 <span class="sd">    We assume that the cluster object contains information on the cross and</span>
-<span class="sd">    tangential shears and angular separation of the source galaxies</span>
+<span class="sd">    tangential shears or ellipticities and angular separation of the source galaxies</span>
 
 <span class="sd">    This function can be called in two ways using an instance of GalaxyCluster</span>
 
@@ -409,7 +437,7 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    cluster : GalaxyCluster</span>
-<span class="sd">        Instance of GalaxyCluster that contains the cross and tangential shears of</span>
+<span class="sd">        Instance of GalaxyCluster that contains the cross and tangential shears or ellipticities of</span>
 <span class="sd">        each source galaxy in its `galcat`</span>
 <span class="sd">    angsep_units : str</span>
 <span class="sd">        Units of the calculated separation of the source galaxies</span>
@@ -424,19 +452,39 @@
 <span class="sd">        default to 10 equally spaced bins.</span>
 <span class="sd">    cosmo: dict, optional</span>
 <span class="sd">        Cosmology parameters to convert angular separations to physical distances</span>
+<span class="sd">    tan_component_in: string, optional</span>
+<span class="sd">        Name of the column in the `galcat` astropy table of the `cluster` object that contains</span>
+<span class="sd">        the tangential component to be binned. Default: &#39;et&#39;</span>
+<span class="sd">    tan_component_out: string, optional</span>
+<span class="sd">        Name of the column in the `profile` table of the `cluster` object that will contain</span>
+<span class="sd">        the binned profile of the tangential component. Default: &#39;gx&#39;</span>
+<span class="sd">    cross_component_in: string, optional</span>
+<span class="sd">        Name of the column in the `galcat` astropy table of the `cluster` object that contains</span>
+<span class="sd">        the cross component to be binned. Default: &#39;ex&#39;</span>
+<span class="sd">    cross_component_out: string, optional</span>
+<span class="sd">        Name of the column in the `profile` table of the `cluster` object that will contain</span>
+<span class="sd">        the  binned profile of the cross component. Default: &#39;gx&#39;</span>
 <span class="sd">    add_to_cluster: bool, optional</span>
 <span class="sd">        Attach the profile to the cluster object as `cluster.profile`</span>
+<span class="sd">    include_empty_bins: bool, optional</span>
+<span class="sd">        Also include empty bins in the returned table</span>
+<span class="sd">    gal_ids_in_bins: bool, optional</span>
+<span class="sd">        Also include the list of galaxies ID belonging to each bin in the returned table</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    profile : astropy.table.Table</span>
+<span class="sd">    profile : GCData</span>
 <span class="sd">        Output table containing the radius grid points, the tangential and cross shear profiles</span>
 <span class="sd">        on that grid, and the errors in the two shear profiles. The errors are defined as the</span>
 <span class="sd">        standard errors in each bin.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    This is an example of a place where the cosmology-dependence can be sequestered to another module.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="n">t_</span> <span class="ow">in</span> <span class="n">cluster</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">columns</span> <span class="k">for</span> <span class="n">t_</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;gt&#39;</span><span class="p">,</span> <span class="s1">&#39;gx&#39;</span><span class="p">,</span> <span class="s1">&#39;theta&#39;</span><span class="p">)]):</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Shear information is missing in galaxy catalog must have tangential&#39;</span> <span class="o">+</span>\
-                        <span class="s1">&#39;and cross shears (gt,gx). Run compute_shear first!&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="n">t_</span> <span class="ow">in</span> <span class="n">cluster</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">columns</span> <span class="k">for</span> <span class="n">t_</span> <span class="ow">in</span> <span class="p">(</span><span class="n">tan_component_in</span><span class="p">,</span> <span class="n">cross_component_in</span><span class="p">,</span> <span class="s1">&#39;theta&#39;</span><span class="p">)]):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Shear or ellipticity information is missing!  Galaxy catalog must have tangential&#39;</span> <span class="o">+</span>\
+                        <span class="s1">&#39;and cross shears (gt,gx) or ellipticities (et,ex). Run compute_tangential_and_cross_components first.&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="s1">&#39;z&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cluster</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Missing galaxy redshifts!&#39;</span><span class="p">)</span>
 
@@ -451,29 +499,43 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="s1">&#39;__len__&#39;</span><span class="p">):</span>
         <span class="n">bins</span> <span class="o">=</span> <span class="n">make_bins</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">source_seps</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">source_seps</span><span class="p">),</span> <span class="n">bins</span><span class="p">)</span>
 
-    <span class="c1"># Compute the binned average shears and associated errors</span>
-    <span class="n">r_avg</span><span class="p">,</span> <span class="n">gt_avg</span><span class="p">,</span> <span class="n">gt_err</span> <span class="o">=</span> <span class="n">compute_radial_averages</span><span class="p">(</span><span class="n">source_seps</span><span class="p">,</span> <span class="n">cluster</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;gt&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-                                                    <span class="n">xbins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">error_model</span><span class="o">=</span><span class="s1">&#39;std/n&#39;</span><span class="p">)</span>
-    <span class="n">r_avg</span><span class="p">,</span> <span class="n">gx_avg</span><span class="p">,</span> <span class="n">gx_err</span> <span class="o">=</span> <span class="n">compute_radial_averages</span><span class="p">(</span><span class="n">source_seps</span><span class="p">,</span> <span class="n">cluster</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;gx&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-                                                    <span class="n">xbins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">error_model</span><span class="o">=</span><span class="s1">&#39;std/n&#39;</span><span class="p">)</span>
-    <span class="n">r_avg</span><span class="p">,</span> <span class="n">z_avg</span><span class="p">,</span> <span class="n">z_err</span> <span class="o">=</span> <span class="n">compute_radial_averages</span><span class="p">(</span><span class="n">source_seps</span><span class="p">,</span> <span class="n">cluster</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-                                                  <span class="n">xbins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">error_model</span><span class="o">=</span><span class="s1">&#39;std/n&#39;</span><span class="p">)</span>
+    <span class="c1"># Compute the binned averages and associated errors</span>
+    <span class="n">r_avg</span><span class="p">,</span> <span class="n">gt_avg</span><span class="p">,</span> <span class="n">gt_err</span><span class="p">,</span> <span class="n">nsrc</span><span class="p">,</span> <span class="n">binnumber</span> <span class="o">=</span> <span class="n">compute_radial_averages</span><span class="p">(</span>
+        <span class="n">source_seps</span><span class="p">,</span> <span class="n">cluster</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="n">tan_component_in</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">xbins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">error_model</span><span class="o">=</span><span class="s1">&#39;std/sqrt_n&#39;</span><span class="p">)</span>
+    <span class="n">r_avg</span><span class="p">,</span> <span class="n">gx_avg</span><span class="p">,</span> <span class="n">gx_err</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">compute_radial_averages</span><span class="p">(</span>
+        <span class="n">source_seps</span><span class="p">,</span> <span class="n">cluster</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="n">cross_component_in</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">xbins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">error_model</span><span class="o">=</span><span class="s1">&#39;std/sqrt_n&#39;</span><span class="p">)</span>
+    <span class="n">r_avg</span><span class="p">,</span> <span class="n">z_avg</span><span class="p">,</span> <span class="n">z_err</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">compute_radial_averages</span><span class="p">(</span>
+        <span class="n">source_seps</span><span class="p">,</span> <span class="n">cluster</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">xbins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">error_model</span><span class="o">=</span><span class="s1">&#39;std/sqrt_n&#39;</span><span class="p">)</span>
 
-    <span class="n">profile_table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">([</span><span class="n">bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">r_avg</span><span class="p">,</span> <span class="n">bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">gt_avg</span><span class="p">,</span> <span class="n">gt_err</span><span class="p">,</span> <span class="n">gx_avg</span><span class="p">,</span> <span class="n">gx_err</span><span class="p">,</span>
-                           <span class="n">z_avg</span><span class="p">,</span> <span class="n">z_err</span><span class="p">],</span>
-                          <span class="n">names</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;radius_min&#39;</span><span class="p">,</span> <span class="s1">&#39;radius&#39;</span><span class="p">,</span> <span class="s1">&#39;radius_max&#39;</span><span class="p">,</span> <span class="s1">&#39;gt&#39;</span><span class="p">,</span> <span class="s1">&#39;gt_err&#39;</span><span class="p">,</span>
-                                 <span class="s1">&#39;gx&#39;</span><span class="p">,</span> <span class="s1">&#39;gx_err&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;z_err&#39;</span><span class="p">,))</span>
+    <span class="c1"># Make out table</span>
+    <span class="n">profile_table</span> <span class="o">=</span> <span class="n">GCData</span><span class="p">([</span><span class="n">bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">r_avg</span><span class="p">,</span> <span class="n">bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">gt_avg</span><span class="p">,</span> <span class="n">gt_err</span><span class="p">,</span> <span class="n">gx_avg</span><span class="p">,</span> <span class="n">gx_err</span><span class="p">,</span>
+                            <span class="n">z_avg</span><span class="p">,</span> <span class="n">z_err</span><span class="p">,</span> <span class="n">nsrc</span><span class="p">],</span>
+                            <span class="n">names</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;radius_min&#39;</span><span class="p">,</span> <span class="s1">&#39;radius&#39;</span><span class="p">,</span> <span class="s1">&#39;radius_max&#39;</span><span class="p">,</span>
+                                   <span class="n">tan_component_out</span><span class="p">,</span> <span class="n">tan_component_out</span><span class="o">+</span><span class="s1">&#39;_err&#39;</span><span class="p">,</span>
+                                   <span class="n">cross_component_out</span><span class="p">,</span> <span class="n">cross_component_out</span><span class="o">+</span><span class="s1">&#39;_err&#39;</span><span class="p">,</span>
+                                   <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;z_err&#39;</span><span class="p">,</span> <span class="s1">&#39;n_src&#39;</span><span class="p">),</span>
+                            <span class="n">meta</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;cosmo&#39;</span><span class="p">:</span><span class="n">cosmo</span><span class="p">,</span> <span class="s1">&#39;bin_units&#39;</span><span class="p">:</span><span class="n">bin_units</span><span class="p">},</span> <span class="c1"># Add metadata</span>
+                            <span class="p">)</span>
+    <span class="c1"># add galaxy IDs</span>
+    <span class="k">if</span> <span class="n">gal_ids_in_bins</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;id&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cluster</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Missing galaxy IDs!&#39;</span><span class="p">)</span>
+        <span class="n">profile_table</span><span class="p">[</span><span class="s1">&#39;gal_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">cluster</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">][</span><span class="n">binnumber</span><span class="o">==</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+                                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">r_avg</span><span class="p">))]</span>
+
+    <span class="c1"># return empty bins?</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">include_empty_bins</span><span class="p">:</span>
+        <span class="n">profile_table</span> <span class="o">=</span> <span class="n">profile_table</span><span class="p">[</span><span class="n">profile_table</span><span class="p">[</span><span class="s1">&#39;n_src&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="n">add_to_cluster</span><span class="p">:</span>
-        <span class="n">cluster</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="n">profile_table</span>
-        <span class="n">cluster</span><span class="o">.</span><span class="n">profile_bin_units</span> <span class="o">=</span> <span class="n">bin_units</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">cluster</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">profile_table</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">profile_table</span></div>
 
 
 <span class="c1"># Monkey patch functions onto Galaxy Cluster object</span>
-<span class="n">GalaxyCluster</span><span class="o">.</span><span class="n">compute_shear</span> <span class="o">=</span> <span class="n">compute_shear</span>
-<span class="n">GalaxyCluster</span><span class="o">.</span><span class="n">make_shear_profile</span> <span class="o">=</span> <span class="n">make_shear_profile</span>
+<span class="n">GalaxyCluster</span><span class="o">.</span><span class="n">compute_tangential_and_cross_components</span> <span class="o">=</span> <span class="n">compute_tangential_and_cross_components</span>
+<span class="n">GalaxyCluster</span><span class="o">.</span><span class="n">make_binned_profile</span> <span class="o">=</span> <span class="n">make_binned_profile</span>
 </pre></div>
 
            </div>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.gcdata &mdash; CLMM 0.1.2 documentation</title>
+  <title>clmm.gcdata &mdash; CLMM 0.3.0 documentation</title>
   
 
   
@@ -21,11 +21,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.1.2
+                0.3.0
               </div>
             
           
@@ -98,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_polaraveraging_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_modeling_functionality.html">Model a Galaxy Cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Reference</span></p>
 <ul>
@@ -181,107 +182,166 @@
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Define the custom data type</span>
 <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="c1"># from astropy import table</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
+<span class="kn">from</span> <span class="nn">astropy.table</span> <span class="kn">import</span> <span class="n">Table</span> <span class="k">as</span> <span class="n">APtable</span>
 <span class="kn">import</span> <span class="nn">pickle</span>
 
-
-<span class="n">GCData_</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;GCData&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;creator&#39;</span><span class="p">,</span> <span class="s1">&#39;specs&#39;</span><span class="p">,</span> <span class="s1">&#39;values&#39;</span><span class="p">])</span>
-
-
-<div class="viewcode-block" id="GCData"><a class="viewcode-back" href="../../api/clmm.gcdata.html#clmm.gcdata.GCData">[docs]</a><span class="k">class</span> <span class="nc">GCData</span><span class="p">(</span><span class="n">GCData_</span><span class="p">):</span>
+<div class="viewcode-block" id="GCData"><a class="viewcode-back" href="../../api/clmm.gcdata.html#clmm.gcdata.GCData">[docs]</a><span class="k">class</span> <span class="nc">GCData</span><span class="p">(</span><span class="n">APtable</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    GCData: A namedtuple tying values with units to the metadata of where the values came from</span>
-<span class="sd">    and thus how the values are used</span>
+<span class="sd">    GCData: A data objetc for gcdata. Right now it behaves as an astropy table.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    creator: string</span>
-<span class="sd">        Super class of the object that made the data.</span>
-<span class="sd">    specs: dict</span>
-<span class="sd">        Specifications of how the data was created, what are the properties of the data.</span>
-<span class="sd">        If the data was created by a function, what inputs were used.</span>
-<span class="sd">    values: astropy.Table</span>
-<span class="sd">        Data with units</span>
+<span class="sd">    meta: dict</span>
+<span class="sd">        Dictionary with metadata for this object</span>
+
+<span class="sd">    Same as astropy tables</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span></div>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        *args, **kwargs: Same used for astropy tables</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">APtable</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="viewcode-block" id="GCData.add_meta"><a class="viewcode-back" href="../../api/clmm.gcdata.html#clmm.gcdata.GCData.add_meta">[docs]</a>    <span class="k">def</span> <span class="nf">add_meta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add metadata to GCData</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name: str</span>
+<span class="sd">            Name of metadata</span>
+<span class="sd">        value:</span>
+<span class="sd">            Value of metadata</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">return</span></div>
+<div class="viewcode-block" id="GCData.add_metas"><a class="viewcode-back" href="../../api/clmm.gcdata.html#clmm.gcdata.GCData.add_metas">[docs]</a>    <span class="k">def</span> <span class="nf">add_metas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add metadatas to GCData</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        names: list</span>
+<span class="sd">            List of metadata names</span>
+<span class="sd">        values: list</span>
+<span class="sd">            List of metadata values</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">vale</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_meta</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span></div>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generates string for repr(GCData)&quot;&quot;&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">(&#39;</span>
+        <span class="n">output</span> <span class="o">+=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s1">&#39;</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+            <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;columns: &#39;</span><span class="o">+</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">colnames</span><span class="p">)])</span>
+        <span class="n">output</span> <span class="o">+=</span> <span class="s1">&#39;)&#39;</span>
+        <span class="k">return</span> <span class="n">output</span>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generates string for print(GCData)&quot;&quot;&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;self.__class__.__name__</span><span class="se">\n</span><span class="s1">&gt; defined by:&#39;</span>
+        <span class="n">output</span> <span class="o">+=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+        <span class="n">output</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&gt; with columns: &#39;</span>
+        <span class="n">output</span> <span class="o">+=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">colnames</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Makes sure GCData keeps its properties after [] operations are used</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        GCData</span>
+<span class="sd">            Data with [] operations applied</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">APtable</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">out</span></div>
 
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Additional functions specific to clmm.GCData</span>
+<span class="sd">Note: Not being used anymore</span>
 <span class="sd">&quot;&quot;&quot;</span>
-
-<div class="viewcode-block" id="confirm_GCData"><a class="viewcode-back" href="../../api/clmm.gcdata.html#clmm.gcdata.confirm_GCData">[docs]</a><span class="k">def</span> <span class="nf">confirm_GCData</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Typechecks GCData elements</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># if not (type(data.creator) == str and type(data.specs) == dict and type(data.values) == astropy.Table):</span>
-    <span class="c1">#     raise TypeError(&#39;GCData creator should be string, specs should be dict, values should be astropy table&#39;)</span>
-    <span class="k">pass</span></div>
-
-
-<div class="viewcode-block" id="read_GCData"><a class="viewcode-back" href="../../api/clmm.gcdata.html#clmm.gcdata.read_GCData">[docs]</a><span class="k">def</span> <span class="nf">read_GCData</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Reads GCData from file</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span></div>
-
-
-<div class="viewcode-block" id="write_GCData"><a class="viewcode-back" href="../../api/clmm.gcdata.html#clmm.gcdata.write_GCData">[docs]</a><span class="k">def</span> <span class="nf">write_GCData</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Writes GCData to file</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span></div>
-
-
-<div class="viewcode-block" id="check_subdict"><a class="viewcode-back" href="../../api/clmm.gcdata.html#clmm.gcdata.check_subdict">[docs]</a><span class="k">def</span> <span class="nf">check_subdict</span><span class="p">(</span><span class="n">lookup_dict</span><span class="p">,</span> <span class="n">reference_dict</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Checks if a dictionary is a subset of another dictionary, with the same keys and values</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    lookup_dict: dict</span>
-<span class="sd">        Subset dictionary</span>
-<span class="sd">    reference_dict: dict</span>
-<span class="sd">        Main dictionary</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    bool</span>
-<span class="sd">        If a lookup_dict is a subset of reference_dict</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">return</span> <span class="n">lookup_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="n">reference_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="find_in_datalist"><a class="viewcode-back" href="../../api/clmm.gcdata.html#clmm.gcdata.find_in_datalist">[docs]</a><span class="k">def</span> <span class="nf">find_in_datalist</span><span class="p">(</span><span class="n">lookup_specs</span><span class="p">,</span> <span class="n">datalist</span><span class="p">,</span> <span class="n">exact</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Finds data with given specs in a datalist, allows for partial match</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    datalist: list</span>
-<span class="sd">        List of clmm.GCData objects to search for lookup_specs</span>
-<span class="sd">    lookup_specs: dict</span>
-<span class="sd">        Specs required</span>
-<span class="sd">    exact: boolean, optional</span>
-<span class="sd">        Does the match have to be symmetric?</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    found: list</span>
-<span class="sd">        List of clmm.GCData object data with required creator and set of specs</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">found</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">datalist</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">check_subdict</span><span class="p">(</span><span class="n">lookup_specs</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">specs</span><span class="p">)</span> <span class="p">:</span>
-            <span class="n">found</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">exact</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">found</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">check_subdict</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">specs</span><span class="p">,</span> <span class="n">lookup_specs</span><span class="p">):</span>
-                <span class="k">return</span> <span class="p">[</span><span class="n">match</span><span class="p">]</span>
-        <span class="n">found</span> <span class="o">=</span> <span class="p">[]</span> 
-    <span class="k">return</span> <span class="n">found</span></div>
+<span class="c1">#</span>
+<span class="c1">#def confirm_GCData(data):</span>
+<span class="c1">#    &quot;&quot;&quot;</span>
+<span class="c1">#    Typechecks GCData elements</span>
+<span class="c1">#    &quot;&quot;&quot;</span>
+<span class="c1">#    # if not (type(data.creator) == str and type(data.specs) == dict and type(data.values) == astropy.Table):</span>
+<span class="c1">#    #     raise TypeError(&#39;GCData creator should be string, specs should be dict, values should be astropy table&#39;)</span>
+<span class="c1">#    pass</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="c1">#def read_GCData(filename):</span>
+<span class="c1">#    &quot;&quot;&quot;</span>
+<span class="c1">#    Reads GCData from file</span>
+<span class="c1">#    &quot;&quot;&quot;</span>
+<span class="c1">#    pass</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="c1">#def write_GCData(data, filename):</span>
+<span class="c1">#    &quot;&quot;&quot;</span>
+<span class="c1">#    Writes GCData to file</span>
+<span class="c1">#    &quot;&quot;&quot;</span>
+<span class="c1">#    pass</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="c1">#def check_subdict(lookup_dict, reference_dict):</span>
+<span class="c1">#    &#39;&#39;&#39;</span>
+<span class="c1">#    Checks if a dictionary is a subset of another dictionary, with the same keys and values</span>
+<span class="c1">#</span>
+<span class="c1">#    Parameters</span>
+<span class="c1">#    ----------</span>
+<span class="c1">#    lookup_dict: dict</span>
+<span class="c1">#        Subset dictionary</span>
+<span class="c1">#    reference_dict: dict</span>
+<span class="c1">#        Main dictionary</span>
+<span class="c1">#</span>
+<span class="c1">#    Returns</span>
+<span class="c1">#    -------</span>
+<span class="c1">#    bool</span>
+<span class="c1">#        If a lookup_dict is a subset of reference_dict</span>
+<span class="c1">#    &#39;&#39;&#39;</span>
+<span class="c1">#    return lookup_dict.items() &lt;= reference_dict.items()</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="c1">#def find_in_datalist(lookup_specs, datalist, exact=False):</span>
+<span class="c1">#    &#39;&#39;&#39;</span>
+<span class="c1">#    Finds data with given specs in a datalist, allows for partial match</span>
+<span class="c1">#</span>
+<span class="c1">#    Parameters</span>
+<span class="c1">#    ----------</span>
+<span class="c1">#    datalist: list</span>
+<span class="c1">#        List of clmm.GCData objects to search for lookup_specs</span>
+<span class="c1">#    lookup_specs: dict</span>
+<span class="c1">#        Specs required</span>
+<span class="c1">#    exact: boolean, optional</span>
+<span class="c1">#        Does the match have to be symmetric?</span>
+<span class="c1">#</span>
+<span class="c1">#    Returns</span>
+<span class="c1">#    -------</span>
+<span class="c1">#    found: list</span>
+<span class="c1">#        List of clmm.GCData object data with required creator and set of specs</span>
+<span class="c1">#    &#39;&#39;&#39;</span>
+<span class="c1">#    found = []</span>
+<span class="c1">#    for data in datalist:</span>
+<span class="c1">#        if check_subdict(lookup_specs, data.specs) :</span>
+<span class="c1">#            found.append(data)</span>
+<span class="c1">#    if exact:</span>
+<span class="c1">#        for match in found:</span>
+<span class="c1">#            if check_subdict(match.specs, lookup_specs):</span>
+<span class="c1">#                return [match]</span>
+<span class="c1">#        found = [] </span>
+<span class="c1">#    return found</span>
 </pre></div>
 
            </div>

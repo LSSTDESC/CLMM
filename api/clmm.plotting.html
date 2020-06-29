@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.plotting module &mdash; CLMM 0.1.2 documentation</title>
+  <title>clmm.plotting module &mdash; CLMM 0.3.0 documentation</title>
   
 
   
@@ -21,11 +21,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.1.2
+                0.3.0
               </div>
             
           
@@ -100,6 +100,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_polaraveraging_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_modeling_functionality.html">Model a Galaxy Cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Reference</span></p>
 <ul class="current">
@@ -188,23 +189,26 @@
 <p>A collection of scripts that can be used to plot the various quantities that CLMM models.</p>
 <dl class="function">
 <dt id="clmm.plotting.plot_profiles">
-<code class="sig-prename descclassname">clmm.plotting.</code><code class="sig-name descname">plot_profiles</code><span class="sig-paren">(</span><em class="sig-param">cluster=None</em>, <em class="sig-param">rbins=None</em>, <em class="sig-param">tangential_shear=None</em>, <em class="sig-param">tangential_shear_error=None</em>, <em class="sig-param">cross_shear=None</em>, <em class="sig-param">cross_shear_error=None</em>, <em class="sig-param">r_units=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/plotting.html#plot_profiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.plotting.plot_profiles" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">clmm.plotting.</code><code class="sig-name descname">plot_profiles</code><span class="sig-paren">(</span><em class="sig-param">cluster=None</em>, <em class="sig-param">rbins=None</em>, <em class="sig-param">tangential_component=None</em>, <em class="sig-param">tangential_component_error=None</em>, <em class="sig-param">cross_component=None</em>, <em class="sig-param">cross_component_error=None</em>, <em class="sig-param">r_units=None</em>, <em class="sig-param">table_name='profile'</em>, <em class="sig-param">xscale='linear'</em>, <em class="sig-param">yscale='linear'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/plotting.html#plot_profiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.plotting.plot_profiles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot shear profiles</p>
 <p>This function can be called by either passing in an instance of <cite>GalaxyCluster</cite> or as an
 attribute of an instance of a <cite>GalaxyCluster</cite> object assuming that that instance has had
 a shear profile computed and saved as a <cite>.profile</cite> attribute. This function can also be
 called by passing in <cite>rbins</cite> along with the respective shears.</p>
-<p>We require at least <cite>rbins</cite> information and <cite>tangential_shear</cite> information.</p>
+<p>We require at least <cite>rbins</cite> information and <cite>tangential_component</cite> information.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cluster</strong> (<a class="reference internal" href="clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster" title="clmm.galaxycluster.GalaxyCluster"><em>GalaxyCluster</em></a><em>, </em><em>optional</em>) – Instance of <cite>GalaxyCluster()</cite> that contains a <cite>.profile</cite> attribute.</p></li>
 <li><p><strong>rbins</strong> (<em>array_like</em><em>, </em><em>optional</em>) – The centers of the radial bins that was used to compute the shears.</p></li>
-<li><p><strong>tangential_shear</strong> (<em>array_like</em><em>, </em><em>optional</em>) – The tangential shear at the radii of <cite>rbins</cite></p></li>
-<li><p><strong>tangential_shear_error</strong> (<em>array_like</em><em>, </em><em>optional</em>) – The uncertainty on the tangential shear</p></li>
-<li><p><strong>cross_shear</strong> (<em>array_like</em><em>, </em><em>optional</em>) – The cross shear at the radii of <cite>rbins</cite></p></li>
-<li><p><strong>cross_shear_error</strong> (<em>array_like</em><em>, </em><em>optional</em>) – The uncertainty on the cross shear</p></li>
+<li><p><strong>tangential_component</strong> (<em>array_like</em><em>, </em><em>optional</em>) – The tangential component at the radii of <cite>rbins</cite>, or the name of the column in the galcat Table corresponding to the tangential component of the shear or reduced shear (Delta Sigma not yet implemented). Default: ‘gt’</p></li>
+<li><p><strong>tangential_component_error</strong> (<em>array_like</em><em>, </em><em>optional</em>) – The uncertainty in the tangential component or the name of the column in the galcat Table corresponding to the uncertainty in tangential component of the shear or reduced shear. Default: ‘gt_err’</p></li>
+<li><p><strong>cross_component</strong> (<em>array_like</em><em>, </em><em>optional</em>) – The cross component at the radii of <cite>rbins</cite> or the name of the column in the galcat Table corresponding to the cross component of the shear or reduced shear. Default: ‘gx’</p></li>
+<li><p><strong>cross_component_error</strong> (<em>array_like</em><em>, </em><em>optional</em>) – The uncertainty in the cross component or the name of the column in the galcat Table corresponding to the uncertainty in the cross component of the shear or reduced shear. Default: ‘gx_err’</p></li>
 <li><p><strong>r_units</strong> (<em>str</em><em>, </em><em>optional</em>) – Units of <cite>rbins</cite> for x-axis label</p></li>
+<li><p><strong>table_name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of the GalaxyCluster() <cite>.profile</cite> attribute. Default: ‘profile’</p></li>
+<li><p><strong>xscale</strong> – matplotlib.pyplot.xscale parameter to set x-axis scale (e.g. to logarithmic axis)</p></li>
+<li><p><strong>yscale</strong> – matplotlib.pyplot.yscale parameter to set y-axis scale (e.g. to logarithmic axis)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>

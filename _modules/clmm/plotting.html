@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.plotting &mdash; CLMM 0.1.2 documentation</title>
+  <title>clmm.plotting &mdash; CLMM 0.3.0 documentation</title>
   
 
   
@@ -21,11 +21,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.1.2
+                0.3.0
               </div>
             
           
@@ -98,6 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_polaraveraging_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_modeling_functionality.html">Model a Galaxy Cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Reference</span></p>
 <ul>
@@ -180,11 +181,12 @@
   <h1>Source code for clmm.plotting</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;A collection of scripts that can be used to plot the various quantities that CLMM models.&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">.galaxycluster</span> <span class="k">import</span> <span class="n">GalaxyCluster</span>
+<span class="kn">from</span> <span class="nn">.galaxycluster</span> <span class="kn">import</span> <span class="n">GalaxyCluster</span>
 
 
-<div class="viewcode-block" id="plot_profiles"><a class="viewcode-back" href="../../api/clmm.plotting.html#clmm.plotting.plot_profiles">[docs]</a><span class="k">def</span> <span class="nf">plot_profiles</span><span class="p">(</span><span class="n">cluster</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rbins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tangential_shear</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tangential_shear_error</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                  <span class="n">cross_shear</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cross_shear_error</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">r_units</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="plot_profiles"><a class="viewcode-back" href="../../api/clmm.plotting.html#clmm.plotting.plot_profiles">[docs]</a><span class="k">def</span> <span class="nf">plot_profiles</span><span class="p">(</span><span class="n">cluster</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rbins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tangential_component</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tangential_component_error</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                  <span class="n">cross_component</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cross_component_error</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">r_units</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">table_name</span><span class="o">=</span><span class="s1">&#39;profile&#39;</span><span class="p">,</span>
+                  <span class="n">xscale</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span><span class="n">yscale</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Plot shear profiles</span>
 
 <span class="sd">    This function can be called by either passing in an instance of `GalaxyCluster` or as an</span>
@@ -192,7 +194,7 @@
 <span class="sd">    a shear profile computed and saved as a `.profile` attribute. This function can also be</span>
 <span class="sd">    called by passing in `rbins` along with the respective shears.</span>
 
-<span class="sd">    We require at least `rbins` information and `tangential_shear` information.</span>
+<span class="sd">    We require at least `rbins` information and `tangential_component` information.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -200,59 +202,80 @@
 <span class="sd">        Instance of `GalaxyCluster()` that contains a `.profile` attribute.</span>
 <span class="sd">    rbins: array_like, optional</span>
 <span class="sd">        The centers of the radial bins that was used to compute the shears.</span>
-<span class="sd">    tangential_shear: array_like, optional</span>
-<span class="sd">        The tangential shear at the radii of `rbins`</span>
-<span class="sd">    tangential_shear_error: array_like, optional</span>
-<span class="sd">        The uncertainty on the tangential shear</span>
-<span class="sd">    cross_shear: array_like, optional</span>
-<span class="sd">        The cross shear at the radii of `rbins`</span>
-<span class="sd">    cross_shear_error: array_like, optional</span>
-<span class="sd">        The uncertainty on the cross shear</span>
+<span class="sd">    tangential_component: array_like, optional</span>
+<span class="sd">        The tangential component at the radii of `rbins`, or the name of the column in the galcat Table corresponding to the tangential component of the shear or reduced shear (Delta Sigma not yet implemented). Default: &#39;gt&#39;</span>
+<span class="sd">    tangential_component_error: array_like, optional</span>
+<span class="sd">        The uncertainty in the tangential component or the name of the column in the galcat Table corresponding to the uncertainty in tangential component of the shear or reduced shear. Default: &#39;gt_err&#39;</span>
+<span class="sd">    cross_component: array_like, optional</span>
+<span class="sd">        The cross component at the radii of `rbins` or the name of the column in the galcat Table corresponding to the cross component of the shear or reduced shear. Default: &#39;gx&#39;</span>
+<span class="sd">    cross_component_error: array_like, optional</span>
+<span class="sd">        The uncertainty in the cross component or the name of the column in the galcat Table corresponding to the uncertainty in the cross component of the shear or reduced shear. Default: &#39;gx_err&#39;</span>
 <span class="sd">    r_units: str, optional</span>
 <span class="sd">        Units of `rbins` for x-axis label</span>
-
+<span class="sd">    table_name: str, optional</span>
+<span class="sd">        Name of the GalaxyCluster() `.profile` attribute. Default: &#39;profile&#39;</span>
+<span class="sd">    xscale:</span>
+<span class="sd">        matplotlib.pyplot.xscale parameter to set x-axis scale (e.g. to logarithmic axis)</span>
+<span class="sd">    yscale:</span>
+<span class="sd">        matplotlib.pyplot.yscale parameter to set y-axis scale (e.g. to logarithmic axis)</span>
+<span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    fig:</span>
 <span class="sd">        The matplotlib figure object that has been plotted to.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    
     <span class="c1"># If a cluster object was passed, use these arrays</span>
-    <span class="k">if</span> <span class="n">cluster</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">cluster</span><span class="p">,</span> <span class="s1">&#39;profile&#39;</span><span class="p">):</span>
-        <span class="n">rbins</span> <span class="o">=</span> <span class="n">cluster</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">]</span>
-        <span class="n">r_units</span> <span class="o">=</span> <span class="n">cluster</span><span class="o">.</span><span class="n">profile_bin_units</span>
-        <span class="n">tangential_shear</span> <span class="o">=</span> <span class="n">cluster</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;gt&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">cluster</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">cluster</span><span class="p">,</span> <span class="n">table_name</span><span class="p">):</span>
+        <span class="n">cluster_profile</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">cluster</span><span class="p">,</span><span class="n">table_name</span><span class="p">)</span>
+        <span class="n">rbins</span> <span class="o">=</span> <span class="n">cluster_profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">]</span>
+        <span class="n">r_units</span> <span class="o">=</span> <span class="n">cluster_profile</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;bin_units&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">tangential_component</span><span class="p">)</span><span class="o">==</span><span class="nb">str</span><span class="p">:</span>
+            <span class="n">tangential_component</span> <span class="o">=</span> <span class="n">cluster_profile</span><span class="p">[</span><span class="n">tangential_component</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tangential_component</span> <span class="o">=</span> <span class="n">cluster_profile</span><span class="p">[</span><span class="s1">&#39;gt&#39;</span><span class="p">]</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">tangential_shear_error</span> <span class="o">=</span> <span class="n">cluster</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;gt_err&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">tangential_component_error</span><span class="p">)</span><span class="o">==</span><span class="nb">str</span><span class="p">:</span>
+                <span class="n">tangential_component_error</span> <span class="o">=</span> <span class="n">cluster_profile</span><span class="p">[</span><span class="n">tangential_component_error</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">tangential_component_error</span> <span class="o">=</span> <span class="n">cluster_profile</span><span class="p">[</span><span class="s1">&#39;gt_err&#39;</span><span class="p">]</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">cross_shear</span> <span class="o">=</span> <span class="n">cluster</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;gx&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">cross_component</span><span class="p">)</span><span class="o">==</span><span class="nb">str</span><span class="p">:</span>
+                <span class="n">cross_component</span> <span class="o">=</span> <span class="n">cluster_profile</span><span class="p">[</span><span class="n">cross_component</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cross_component</span> <span class="o">=</span> <span class="n">cluster_profile</span><span class="p">[</span><span class="s1">&#39;gx&#39;</span><span class="p">]</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">cross_shear_error</span> <span class="o">=</span> <span class="n">cluster</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;gx_err&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">cross_component_error</span><span class="p">)</span><span class="o">==</span><span class="nb">str</span><span class="p">:</span>
+                <span class="n">cross_component_error</span> <span class="o">=</span> <span class="n">cluster_profile</span><span class="p">[</span><span class="n">cross_component_error</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cross_component_error</span> <span class="o">=</span> <span class="n">cluster_profile</span><span class="p">[</span><span class="s1">&#39;gx_err&#39;</span><span class="p">]</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="k">pass</span>
 
     <span class="c1"># Plot the tangential shears</span>
     <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
-    <span class="n">axes</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">rbins</span><span class="p">,</span> <span class="n">tangential_shear</span><span class="p">,</span>
-                  <span class="n">yerr</span><span class="o">=</span><span class="n">tangential_shear_error</span><span class="p">,</span>
-                  <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;bo-&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Tangential Shear&quot;</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">rbins</span><span class="p">,</span> <span class="n">tangential_component</span><span class="p">,</span>
+                  <span class="n">yerr</span><span class="o">=</span><span class="n">tangential_component_error</span><span class="p">,</span>
+                  <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;bo-&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Tangential component&quot;</span><span class="p">)</span>
 
     <span class="c1"># Plot the cross shears</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rbins</span><span class="p">,</span> <span class="n">cross_shear</span><span class="p">,</span>
-                 <span class="n">yerr</span><span class="o">=</span><span class="n">cross_shear_error</span><span class="p">,</span>
-                 <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;ro-&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Cross Shear&quot;</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">gx</span><span class="p">,</span> <span class="n">gxerr</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">rbins</span><span class="p">,</span> <span class="n">cross_component</span><span class="p">,</span>
+                 <span class="n">yerr</span><span class="o">=</span><span class="n">cross_component_error</span><span class="p">,</span>
+                 <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;ro-&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Cross component&quot;</span><span class="p">)</span>
     <span class="k">except</span><span class="p">:</span>
         <span class="k">pass</span>
-
+    
+    <span class="n">axes</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="n">xscale</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="n">yscale</span><span class="p">)</span>
     <span class="n">axes</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-    <span class="n">axes</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Radius [</span><span class="si">{r_units}</span><span class="s1">]&#39;</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Radius [</span><span class="si">{</span><span class="n">r_units</span><span class="si">}</span><span class="s1">]&#39;</span><span class="p">)</span>
     <span class="n">axes</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$\gamma$&#39;</span><span class="p">)</span>
-
+    
     <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span></div>
 
 <span class="n">GalaxyCluster</span><span class="o">.</span><span class="n">plot_profiles</span> <span class="o">=</span> <span class="n">plot_profiles</span>
