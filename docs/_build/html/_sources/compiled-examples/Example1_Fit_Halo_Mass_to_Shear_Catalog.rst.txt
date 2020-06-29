@@ -1,4 +1,3 @@
-
 Fit Halo Mass from a Shear Catalog
 ==================================
 
@@ -29,7 +28,7 @@ First, we import some standard packages.
     
     from numpy import random
 
-Next, we import ``clmm``'s core modules.
+Next, we import ``clmm``\ ’s core modules.
 
 .. code:: ipython3
 
@@ -38,7 +37,7 @@ Next, we import ``clmm``'s core modules.
     import clmm.galaxycluster as gc
     import clmm.modeling as modeling
 
-Make sure we know which version we're using
+Make sure we know which version we’re using
 
 .. code:: ipython3
 
@@ -49,7 +48,7 @@ Make sure we know which version we're using
 
 .. parsed-literal::
 
-    '0.1.0'
+    '0.3.0'
 
 
 
@@ -71,8 +70,12 @@ use.
 Making mock data
 ----------------
 
+.. code:: ipython3
+
+    np.random.seed(12)
+
 To create mock data, we need to define a true cosmology, which is
-currently done with ```astropy``'s cosmology
+currently done with ```astropy``\ ’s cosmology
 library <http://docs.astropy.org/en/stable/cosmology/index.html>`__.
 
 .. code:: ipython3
@@ -120,7 +123,7 @@ Any saved ``clmm.GalaxyCluster`` object may be read in for analysis.
 
 .. code:: ipython3
 
-    cl = clmm.load_cluster('mock_GC.pkl')
+    cl = clmm.GalaxyCluster.load('mock_GC.pkl')
     print("Cluster info = ID:", cl.unique_id, "; ra:", cl.ra, "; dec:", cl.dec,
           "; z_l :", cl.z)
     print("The number of source galaxies is :", len(cl.galcat))
@@ -160,7 +163,7 @@ We can visualize the distribution of galaxies on the sky.
 
 
 
-.. image:: Example1_Fit_Halo_Mass_to_Shear_Catalog_files/Example1_Fit_Halo_Mass_to_Shear_Catalog_24_0.png
+.. image:: Example1_Fit_Halo_Mass_to_Shear_Catalog_files/Example1_Fit_Halo_Mass_to_Shear_Catalog_25_0.png
 
 
 ``clmm`` separates cosmology-dependent and cosmology-independent
@@ -175,12 +178,13 @@ without assuming a cosmology.
 Computing shear
 ~~~~~~~~~~~~~~~
 
-``clmm.polaraveraging.compute_shear`` calculates the tangential and
-cross shears for each source galaxy in the cluster.
+``clmm.polaraveraging.compute_tangential_and_cross_components``
+calculates the tangential and cross shears for each source galaxy in the
+cluster.
 
 .. code:: ipython3
 
-    theta, g_t, g_x = pa.compute_shear(cl, geometry="flat")
+    theta, g_t, g_x = pa.compute_tangential_and_cross_components(cl, geometry="flat")
 
 We can visualize the shear field at each galaxy location.
 
@@ -190,19 +194,19 @@ We can visualize the shear field at each galaxy location.
     
     fig.gca().loglog(theta, g_t, '.')
     plt.ylabel("reduced shear", fontsize=fsize)
-    plt.xlabel("angular distance [deg]", fontsize=fsize)
+    plt.xlabel("angular distance [rad]", fontsize=fsize)
 
 
 
 
 .. parsed-literal::
 
-    Text(0.5, 0, 'angular distance [deg]')
+    Text(0.5, 0, 'angular distance [rad]')
 
 
 
 
-.. image:: Example1_Fit_Halo_Mass_to_Shear_Catalog_files/Example1_Fit_Halo_Mass_to_Shear_Catalog_31_1.png
+.. image:: Example1_Fit_Halo_Mass_to_Shear_Catalog_files/Example1_Fit_Halo_Mass_to_Shear_Catalog_32_1.png
 
 
 Radially binning the data
@@ -216,17 +220,45 @@ definitions.
     bin_edges1 = pa.make_bins(0.01, 3.7, 50)
     bin_edges2 = pa.make_bins(0.01, 3.7, 10)
 
-``clmm.polaraveraging.make_shear_profile`` evaluates the average shear
+``clmm.polaraveraging.make_binned_profile`` evaluates the average shear
 of the galaxy catalog in bins of radius.
 
 .. code:: ipython3
 
-    res1 = pa.make_shear_profile(cl, "radians", "Mpc", bins=bin_edges1,
-                                 cosmo=cosmo)
-    res2 = pa.make_shear_profile(cl, "radians", "Mpc", bins=bin_edges2,
-                                 cosmo=cosmo)
+    res1 = pa.make_binned_profile(
+        cl, "radians", "Mpc", bins=bin_edges1, cosmo=cosmo, include_empty_bins=False)
+    res2 = pa.make_binned_profile(
+        cl, "radians", "Mpc", bins=bin_edges2, cosmo=cosmo, include_empty_bins=False)
 
-For later use, we'll define some variables for the binned radius and
+Note that we set ``include_empty_bins=False`` explicitly here even
+though it is the default behavior. Setting the argument to ``True``
+would also return empty bins (that is, bins with *at most one* data
+point in them), which would have to be excluded manually when fitting,
+though it might be useful e.g., when combining datasets. To clarify the
+behavior, consider the following comparison:
+
+.. code:: ipython3
+
+    res_with_empty = pa.make_binned_profile(
+        cl, "radians", "Mpc", bins=1000, cosmo=cosmo, include_empty_bins=True)
+    # this is the default behavior
+    res_without_empty = pa.make_binned_profile(
+        cl, "radians", "Mpc", bins=1000, cosmo=cosmo, include_empty_bins=False)
+    res_with_empty['n_src'].size, res_without_empty['n_src'].size
+
+
+
+
+.. parsed-literal::
+
+    (1000, 871)
+
+
+
+i.e., 108 bins have fewer than two sources in them and are excluded by
+default (when setting the random seed to 11).
+
+For later use, we’ll define some variables for the binned radius and
 tangential shear.
 
 .. code:: ipython3
@@ -263,10 +295,10 @@ We visualize the radially binned shear for our mock galaxies.
 
 
 
-.. image:: Example1_Fit_Halo_Mass_to_Shear_Catalog_files/Example1_Fit_Halo_Mass_to_Shear_Catalog_40_1.png
+.. image:: Example1_Fit_Halo_Mass_to_Shear_Catalog_files/Example1_Fit_Halo_Mass_to_Shear_Catalog_44_1.png
 
 
-After running ``clmm.polaraveraging.make_shear_profile`` on a
+After running ``clmm.polaraveraging.make_binned_profile`` on a
 ``clmm.GalaxyCluster`` object, the object acquires the
 ``clmm.GalaxyCluster.profile`` attribute.
 
@@ -278,18 +310,31 @@ After running ``clmm.polaraveraging.make_shear_profile`` on a
 
 .. parsed-literal::
 
-    radius_min   radius  radius_max     gt      gt_err      gx       gx_err      z       z_err  
-    ---------- --------- ---------- --------- --------- ---------- --------- --------- ---------
-     1.000e-02 2.503e-01  3.790e-01 1.007e-01 7.324e-04  7.584e-18 7.229e-19 8.000e-01 0.000e+00
-     3.790e-01 5.813e-01  7.480e-01 6.348e-02 6.545e-05  7.273e-19 9.226e-20 8.000e-01 0.000e+00
-     7.480e-01 9.469e-01  1.117e+00 4.532e-02 2.083e-05  4.434e-19 3.956e-20 8.000e-01 6.034e-19
-     1.117e+00 1.312e+00  1.486e+00 3.459e-02 9.882e-06  5.324e-19 1.827e-20 8.000e-01 4.765e-19
-     1.486e+00 1.674e+00  1.855e+00 2.759e-02 5.683e-06 -3.475e-19 1.843e-20 8.000e-01 3.726e-19
-     1.855e+00 2.045e+00  2.224e+00 2.254e-02 3.432e-06  5.077e-20 1.028e-20 8.000e-01 3.067e-19
-     2.224e+00 2.416e+00  2.593e+00 1.884e-02 2.086e-06 -1.608e-19 6.283e-21 8.000e-01 2.558e-19
-     2.593e+00 2.784e+00  2.962e+00 1.607e-02 1.387e-06  4.276e-20 5.003e-21 8.000e-01 0.000e+00
-     2.962e+00 3.142e+00  3.331e+00 1.395e-02 9.890e-07 -5.639e-20 4.128e-21 8.000e-01 1.955e-19
-     3.331e+00 3.520e+00  3.700e+00 1.216e-02 7.431e-07 -1.220e-20 2.515e-21 8.000e-01 1.796e-19
+    radius_min   radius  radius_max     gt      gt_err      gx       gx_err      z       z_err     n_src  
+    ---------- --------- ---------- --------- --------- ---------- --------- --------- --------- ---------
+     2.046e-01 2.114e-01  2.126e-01 1.011e-01 9.646e-05  0.000e+00 0.000e+00 8.000e-01 0.000e+00 2.000e+00
+     2.447e-01 2.468e-01  2.527e-01 9.519e-02 8.915e-05  0.000e+00 0.000e+00 8.000e-01 0.000e+00 2.000e+00
+     2.767e-01 2.813e-01  2.848e-01 9.024e-02 1.771e-04  1.735e-18 3.975e-18 8.000e-01 0.000e+00 4.000e+00
+     3.409e-01 3.455e-01  3.489e-01 8.245e-02 1.596e-04  2.313e-18 1.889e-18 8.000e-01 6.410e-17 3.000e+00
+     3.809e-01 3.858e-01  3.890e-01 7.826e-02 1.223e-04  1.156e-18 9.443e-19 8.000e-01 6.410e-17 3.000e+00
+     3.890e-01 3.933e-01  3.970e-01 7.752e-02 1.128e-05  8.674e-19 6.133e-19 8.000e-01 0.000e+00 2.000e+00
+     4.050e-01 4.074e-01  4.130e-01 7.618e-02 1.223e-04  0.000e+00 0.000e+00 8.000e-01 0.000e+00 2.000e+00
+     4.290e-01 4.349e-01  4.371e-01 7.370e-02 8.070e-05  0.000e+00 0.000e+00 8.000e-01 6.410e-17 3.000e+00
+     4.371e-01 4.401e-01  4.451e-01 7.325e-02 1.574e-04  4.915e-18 3.665e-18 8.000e-01 6.410e-17 3.000e+00
+     4.451e-01 4.494e-01  4.531e-01 7.245e-02 1.327e-04 -4.337e-19 5.409e-19 8.000e-01 6.410e-17 3.000e+00
+           ...       ...        ...       ...       ...        ...       ...       ...       ...       ...
+     7.603e+00 7.609e+00  7.611e+00 4.367e-03 4.448e-09  0.000e+00 0.000e+00 8.000e-01 0.000e+00 2.000e+00
+     7.611e+00 7.616e+00  7.619e+00 4.362e-03 9.640e-07  2.711e-20 1.278e-20 8.000e-01 6.410e-17 3.000e+00
+     7.635e+00 7.639e+00  7.643e+00 4.343e-03 1.049e-06 -1.355e-20 1.174e-20 8.000e-01 0.000e+00 4.000e+00
+     7.643e+00 7.647e+00  7.651e+00 4.336e-03 1.549e-06  4.608e-19 3.642e-19 8.000e-01 0.000e+00 2.000e+00
+     7.651e+00 7.655e+00  7.659e+00 4.330e-03 1.062e-06  3.388e-21 4.226e-21 8.000e-01 6.410e-17 3.000e+00
+     7.659e+00 7.663e+00  7.667e+00 4.324e-03 8.382e-07 -4.659e-19 9.975e-19 8.000e-01 0.000e+00 4.000e+00
+     7.667e+00 7.672e+00  7.675e+00 4.316e-03 5.698e-07  2.575e-19 2.076e-19 8.000e-01 0.000e+00 4.000e+00
+     7.683e+00 7.688e+00  7.691e+00 4.304e-03 1.139e-06 -9.035e-21 2.660e-20 8.000e-01 6.410e-17 3.000e+00
+     7.691e+00 7.694e+00  7.699e+00 4.298e-03 1.289e-06  2.711e-20 1.917e-20 8.000e-01 0.000e+00 2.000e+00
+     7.747e+00 7.752e+00  7.755e+00 4.253e-03 3.222e-07 -4.811e-19 3.402e-19 8.000e-01 0.000e+00 2.000e+00
+     7.803e+00 7.805e+00  7.811e+00 4.212e-03 3.485e-07 -1.247e-18 1.013e-18 8.000e-01 6.410e-17 3.000e+00
+    Length = 871 rows
 
 
 Modeling the data
@@ -341,7 +386,7 @@ binning schemes.
 
 .. parsed-literal::
 
-    (array([1.00258705e+15]), array([1.05730662e+15]))
+    (array([1.00379218e+15]), array([1.04728433e+15]))
 
 
 Next, we calculate the reduced tangential shear predicted by the two
@@ -370,12 +415,12 @@ We visualize the two predictions of reduced tangential shear.
     fig = plt.figure(figsize=(10, 6))
     
     fig.gca().scatter(r1, gt_profile1, color='orange',
-                      label='binned mock data 1, M_input = %.3e Msun' % cluster_m)
+                      label='binned mock data 1, M_input = %.3e Msun/h' % cluster_m)
     fig.gca().plot(rr, gt_model1, color='orange',
                    label='best fit model 1, M_fit = %.3e' % m_est1)
     
     fig.gca().scatter(r2, gt_profile2, color='blue', alpha=0.5,
-                      label='binned mock data 2, M_input = %.3e Msun' % cluster_m)
+                      label='binned mock data 2, M_input = %.3e Msun/h' % cluster_m)
     fig.gca().plot(rr, gt_model1, color='blue', linestyle='--', alpha=0.5,
                    label='best fit model 2, M_fit = %.3e' % m_est2)
     
@@ -396,5 +441,5 @@ We visualize the two predictions of reduced tangential shear.
 
 
 
-.. image:: Example1_Fit_Halo_Mass_to_Shear_Catalog_files/Example1_Fit_Halo_Mass_to_Shear_Catalog_53_1.png
+.. image:: Example1_Fit_Halo_Mass_to_Shear_Catalog_files/Example1_Fit_Halo_Mass_to_Shear_Catalog_57_1.png
 

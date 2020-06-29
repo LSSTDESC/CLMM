@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.modeling module &mdash; CLMM 0.1.2 documentation</title>
+  <title>clmm.modeling module &mdash; CLMM 0.3.0 documentation</title>
   
 
   
@@ -21,11 +21,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.1.2
+                0.3.0
               </div>
             
           
@@ -100,6 +100,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_polaraveraging_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_modeling_functionality.html">Model a Galaxy Cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Reference</span></p>
 <ul class="current">
@@ -319,7 +320,7 @@ and use another structure to take the arguments necessary for specific models</p
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>sigmacrit</strong> – Cosmology-dependent critical surface density in units of <span class="math notranslate nohighlight">\(h\ M_\odot\ pc^{-2}\)</span></p>
+<dd class="field-even"><p><strong>sigma_c</strong> – Cosmology-dependent critical surface density in units of <span class="math notranslate nohighlight">\(h\ M_\odot\ pc^{-2}\)</span></p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>float</p>
@@ -417,6 +418,42 @@ case requiring integration.</p></li>
 <dd class="field-odd"><p>array_like, float</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="clmm.modeling.predict_magnification">
+<code class="sig-prename descclassname">clmm.modeling.</code><code class="sig-name descname">predict_magnification</code><span class="sig-paren">(</span><em class="sig-param">r_proj</em>, <em class="sig-param">mdelta</em>, <em class="sig-param">cdelta</em>, <em class="sig-param">z_cluster</em>, <em class="sig-param">z_source</em>, <em class="sig-param">cosmo</em>, <em class="sig-param">delta_mdef=200</em>, <em class="sig-param">halo_profile_model='nfw'</em>, <em class="sig-param">z_src_model='single_plane'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/modeling.html#predict_magnification"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.modeling.predict_magnification" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the magnification</p>
+<div class="math notranslate nohighlight">
+\[\mu = \frac{1}{(1 - \kappa)^2 - |\gamma_t|^2}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r_proj</strong> (<em>array_like</em>) – The projected radial positions in <span class="math notranslate nohighlight">\(M\!pc\ h^{-1}\)</span>.</p></li>
+<li><p><strong>mdelta</strong> (<em>float</em>) – Galaxy cluster mass in <span class="math notranslate nohighlight">\(M_\odot\ h^{-1}\)</span>.</p></li>
+<li><p><strong>cdelta</strong> (<em>float</em>) – Galaxy cluster NFW concentration.</p></li>
+<li><p><strong>z_cluster</strong> (<em>float</em>) – Galaxy cluster redshift</p></li>
+<li><p><strong>z_source</strong> (<em>array_like</em><em>, </em><em>float</em>) – Background source galaxy redshift(s)</p></li>
+<li><p><strong>cosmo</strong> (<em>pyccl.core.Cosmology object</em>) – CCL Cosmology object</p></li>
+<li><p><strong>delta_mdef</strong> (<em>int</em><em>, </em><em>optional</em>) – Mass overdensity definition.  Defaults to 200.</p></li>
+<li><p><strong>halo_profile_model</strong> (<em>str</em><em>, </em><em>optional</em>) – Profile model parameterization, with the following supported options:
+<cite>nfw</cite> (default) - [insert citation here]</p></li>
+<li><p><strong>z_src_model</strong> (<em>str</em><em>, </em><em>optional</em>) – Source redshift model, with the following supported options:
+<cite>single_plane</cite> (default) - all sources at one redshift
+<cite>known_z_src</cite> - known individual source galaxy redshifts e.g. discrete case
+<cite>z_src_distribution</cite> - known source redshift distribution e.g. continuous
+case requiring integration.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>mu</strong> – magnification, mu.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array_like, float</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Need to figure out if we want to raise exceptions rather than errors here?</p>
 </dd></dl>
 
 <dl class="function">

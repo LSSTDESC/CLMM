@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Generate Mock Data &mdash; CLMM 0.1.2 documentation</title>
+  <title>Generate Mock Data &mdash; CLMM 0.3.0 documentation</title>
   
 
   
@@ -21,11 +21,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.1.2
+                0.3.0
               </div>
             
           
@@ -100,6 +100,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Generate Mock Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demo_polaraveraging_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demo_modeling_functionality.html">Model a Galaxy Cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Reference</span></p>
 <ul>
@@ -191,10 +192,10 @@ and shape noise. We then populate a galaxy cluster object</p>
 <span class="k">try</span><span class="p">:</span> <span class="kn">import</span> <span class="nn">clmm</span>
 <span class="k">except</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">notebook_install</span>
-    <span class="n">notebook_install</span><span class="o">.</span><span class="n">install_clmm_pipeline</span><span class="p">(</span><span class="n">upgrade</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">notebook_install</span><span class="o">.</span><span class="n">install_clmm_pipeline</span><span class="p">(</span><span class="n">upgrade</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="kn">import</span> <span class="nn">clmm</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="o">%</span><span class="k">matplotlib</span> inline
 </pre></div>
 </div>
@@ -202,9 +203,12 @@ and shape noise. We then populate a galaxy cluster object</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clmm</span><span class="o">.</span><span class="n">__version__</span>
 </pre></div>
 </div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;0.3.0&#39;</span>
+</pre></div>
+</div>
 <div class="section" id="import-mock-data-module-and-setup-the-configuration">
 <h2>Import mock data module and setup the configuration<a class="headerlink" href="#import-mock-data-module-and-setup-the-configuration" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">mock_data</span> <span class="kn">as</span> <span class="nn">mock</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">mock_data</span> <span class="k">as</span> <span class="nn">mock</span>
 </pre></div>
 </div>
 <p>Mock data generation requires a defined cosmology</p>
@@ -249,7 +253,7 @@ redshift</p>
     <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Clean data: source galaxy redshifts drawn from Chang et al. 2013</p>
+<p>Clean data: source galaxy redshifts drawn from Chang et al. 2013</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ideal_with_src_dist</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span>
     <span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">ngals</span><span class="p">,</span> <span class="n">Delta</span><span class="p">,</span> <span class="s1">&#39;chang13&#39;</span><span class="p">,</span> <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span>
     <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.0</span><span class="p">)</span>
@@ -263,12 +267,20 @@ shape noise</p>
 </pre></div>
 </div>
 <p>Sanity check: checking that no galaxies where drawn below zsrc_min</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="s1">&#39;Number of galaxies below zsrc_min:&#39;</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;ideal_data:&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ideal_data</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="n">zsrc_min</span><span class="p">))</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;noisy_data_src_z:&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">noisy_data_src_z</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="n">zsrc_min</span><span class="p">))</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;noisy_data_photoz:&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">noisy_data_photoz</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="n">zsrc_min</span><span class="p">))</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;ideal_with_src_dist:&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ideal_with_src_dist</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="n">zsrc_min</span><span class="p">))</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;allsystematics:&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">allsystematics</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="n">zsrc_min</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of galaxies below zsrc_min:&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ideal_data:&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ideal_data</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="n">zsrc_min</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;noisy_data_src_z:&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">noisy_data_src_z</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="n">zsrc_min</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;noisy_data_photoz:&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">noisy_data_photoz</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="n">zsrc_min</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ideal_with_src_dist:&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ideal_with_src_dist</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="n">zsrc_min</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;allsystematics:&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">allsystematics</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="n">zsrc_min</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Number</span> <span class="n">of</span> <span class="n">galaxies</span> <span class="n">below</span> <span class="n">zsrc_min</span><span class="p">:</span>
+<span class="n">ideal_data</span><span class="p">:</span> <span class="mi">0</span>
+<span class="n">noisy_data_src_z</span><span class="p">:</span> <span class="mi">0</span>
+<span class="n">noisy_data_photoz</span><span class="p">:</span> <span class="mi">0</span>
+<span class="n">ideal_with_src_dist</span><span class="p">:</span> <span class="mi">0</span>
+<span class="n">allsystematics</span><span class="p">:</span> <span class="mi">0</span>
 </pre></div>
 </div>
 </div>
@@ -282,6 +294,13 @@ galaxies at z=0.8</p>
 <span class="n">ideal_data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">max_width</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>    <span class="n">ra</span>        <span class="n">dec</span>         <span class="n">e1</span>         <span class="n">e2</span>         <span class="n">z</span>      <span class="nb">id</span>
+<span class="o">----------</span> <span class="o">----------</span> <span class="o">----------</span> <span class="o">----------</span> <span class="o">---------</span> <span class="o">---</span>
+<span class="o">-</span><span class="mf">3.219e-01</span> <span class="o">-</span><span class="mf">1.291e-01</span> <span class="o">-</span><span class="mf">4.833e-03</span>  <span class="mf">4.618e-03</span> <span class="mf">8.000e-01</span>   <span class="mi">0</span>
+<span class="o">-</span><span class="mf">1.960e-01</span>  <span class="mf">3.027e-01</span>  <span class="mf">2.594e-03</span> <span class="o">-</span><span class="mf">5.785e-03</span> <span class="mf">8.000e-01</span>   <span class="mi">1</span>
+<span class="o">-</span><span class="mf">1.213e-01</span> <span class="o">-</span><span class="mf">3.114e-01</span>  <span class="mf">5.174e-03</span>  <span class="mf">4.753e-03</span> <span class="mf">8.000e-01</span>   <span class="mi">2</span>
+</pre></div>
+</div>
 <p>With photo-z errors</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">noisy_data_photoz</span><span class="o">.</span><span class="n">colnames</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">n</span><span class="o">!=</span><span class="s1">&#39;id&#39;</span><span class="p">:</span>
@@ -289,17 +308,32 @@ galaxies at z=0.8</p>
 <span class="n">noisy_data_photoz</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">max_width</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>    <span class="n">ra</span>        <span class="n">dec</span>         <span class="n">e1</span>         <span class="n">e2</span>        <span class="n">z</span>          <span class="n">pzbins</span> <span class="p">[</span><span class="mi">34</span><span class="p">]</span>             <span class="n">pzpdf</span> <span class="p">[</span><span class="mi">34</span><span class="p">]</span>        <span class="nb">id</span>
+<span class="o">----------</span> <span class="o">----------</span> <span class="o">----------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">----------------------</span> <span class="o">----------------------</span> <span class="o">---</span>
+<span class="o">-</span><span class="mf">2.067e-01</span>  <span class="mf">3.318e-01</span> <span class="o">-</span><span class="mf">4.683e-02</span> <span class="mf">5.276e-02</span> <span class="mf">8.428e-01</span> <span class="mf">3.000e-01</span> <span class="o">..</span> <span class="mf">1.290e+00</span> <span class="mf">8.802e-07</span> <span class="o">..</span> <span class="mf">1.622e-06</span>   <span class="mi">0</span>
+ <span class="mf">8.338e-02</span>  <span class="mf">5.912e-02</span> <span class="o">-</span><span class="mf">4.406e-02</span> <span class="mf">4.684e-03</span> <span class="mf">6.743e-01</span> <span class="mf">3.000e-01</span> <span class="o">..</span> <span class="mf">1.290e+00</span> <span class="mf">8.802e-07</span> <span class="o">..</span> <span class="mf">1.622e-06</span>   <span class="mi">1</span>
+ <span class="mf">1.484e-01</span> <span class="o">-</span><span class="mf">3.412e-01</span> <span class="o">-</span><span class="mf">1.185e-02</span> <span class="mf">6.717e-03</span> <span class="mf">6.495e-01</span> <span class="mf">3.000e-01</span> <span class="o">..</span> <span class="mf">1.290e+00</span> <span class="mf">8.802e-07</span> <span class="o">..</span> <span class="mf">1.622e-06</span>   <span class="mi">2</span>
+</pre></div>
+</div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Histogram of the redshift distribution of bkg galaxies (starting at z_cluster + 0.1)</span>
 <span class="n">hist</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">allsystematics</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Source Redshift&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Text</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;Source Redshift&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../_images/demo_generate_mock_cluster_30_1.png" src="../_images/demo_generate_mock_cluster_30_1.png" />
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># pdz for the first galaxy in the catalog</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">allsystematics</span><span class="p">[</span><span class="s1">&#39;pzbins&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">allsystematics</span><span class="p">[</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Redshift&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Photo-z Probability Distribution&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Text</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;Photo-z Probability Distribution&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../_images/demo_generate_mock_cluster_31_1.png" src="../_images/demo_generate_mock_cluster_31_1.png" />
 <p>Populate in a galaxy cluster object</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># At the moment mock data only allow for a cluster centred on (0,0)</span>
 <span class="n">cluster_ra</span> <span class="o">=</span> <span class="mf">0.0</span>
@@ -317,6 +351,10 @@ galaxies at z=0.8</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Ellipticity 2&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="s1">&#39;x-large&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Text</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;Ellipticity 2&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../_images/demo_generate_mock_cluster_35_1.png" src="../_images/demo_generate_mock_cluster_35_1.png" />
 </div>
 </div>
 

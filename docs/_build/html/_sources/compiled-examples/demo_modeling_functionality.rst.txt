@@ -1,4 +1,3 @@
-
 Model a Galaxy Cluster
 ======================
 
@@ -27,11 +26,20 @@ Imports specific to clmm
     import clmm
     import clmm.modeling as m
 
-Make sure we know which version we're using
+Make sure we know which version we’re using
 
 .. code:: ipython3
 
     clmm.__version__
+
+
+
+
+.. parsed-literal::
+
+    '0.3.0'
+
+
 
 Define a cosmology using astropy
 
@@ -106,6 +114,15 @@ Quick test of all modeling functionality
                                             z_src_model='single_plane')
             
 
+.. code:: ipython3
+
+    mu = m.predict_magnification(r3d, mdelta=cluster_mass, cdelta=cluster_concentration, 
+                                            z_cluster=z_cl, z_source=z_source, cosmo=cosmo_ccl, 
+                                            delta_mdef=mass_Delta, 
+                                            halo_profile_model=density_profile_parametrization, 
+                                            z_src_model='single_plane')
+
+
 Plot the predicted profiles
 
 .. code:: ipython3
@@ -119,22 +136,61 @@ Plot the predicted profiles
 
     plot_profile(r3d, rho, '$\\rho_{\\rm 3d}$')
 
+
+
+.. image:: demo_modeling_functionality_files/demo_modeling_functionality_23_0.png
+
+
 .. code:: ipython3
 
     plot_profile(r3d, Sigma, '$\\Sigma_{\\rm 2d}$')
+
+
+
+.. image:: demo_modeling_functionality_files/demo_modeling_functionality_24_0.png
+
 
 .. code:: ipython3
 
     plot_profile(r3d, DeltaSigma, '$\\Delta\\Sigma_{\\rm 2d}$')
 
+
+
+.. image:: demo_modeling_functionality_files/demo_modeling_functionality_25_0.png
+
+
 .. code:: ipython3
 
     plot_profile(r3d, kappa, '$\\kappa$')
+
+
+
+.. image:: demo_modeling_functionality_files/demo_modeling_functionality_26_0.png
+
 
 .. code:: ipython3
 
     plot_profile(r3d, gammat, '$\\gamma_t$')
 
+
+
+.. image:: demo_modeling_functionality_files/demo_modeling_functionality_27_0.png
+
+
 .. code:: ipython3
 
     plot_profile(r3d, gt, '$g_t$')
+
+
+
+.. image:: demo_modeling_functionality_files/demo_modeling_functionality_28_0.png
+
+
+.. code:: ipython3
+
+    plot_profile(r3d, mu, '$\mu$')
+
+
+
+.. image:: demo_modeling_functionality_files/demo_modeling_functionality_29_0.png
+

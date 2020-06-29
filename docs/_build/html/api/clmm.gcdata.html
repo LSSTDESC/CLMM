@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.gcdata module &mdash; CLMM 0.1.2 documentation</title>
+  <title>clmm.gcdata module &mdash; CLMM 0.3.0 documentation</title>
   
 
   
@@ -21,11 +21,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.1.2
+                0.3.0
               </div>
             
           
@@ -100,6 +100,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_polaraveraging_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_modeling_functionality.html">Model a Galaxy Cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Reference</span></p>
 <ul class="current">
@@ -188,85 +189,57 @@
 <p>Define the custom data type</p>
 <dl class="class">
 <dt id="clmm.gcdata.GCData">
-<em class="property">class </em><code class="sig-prename descclassname">clmm.gcdata.</code><code class="sig-name descname">GCData</code><a class="reference internal" href="../_modules/clmm/gcdata.html#GCData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.gcdata.GCData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#clmm.gcdata.GCData" title="clmm.gcdata.GCData"><code class="xref py py-class docutils literal notranslate"><span class="pre">clmm.gcdata.GCData</span></code></a></p>
-<p>GCData: A namedtuple tying values with units to the metadata of where the values came from
-and thus how the values are used</p>
+<em class="property">class </em><code class="sig-prename descclassname">clmm.gcdata.</code><code class="sig-name descname">GCData</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/gcdata.html#GCData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.gcdata.GCData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">astropy.table.table.Table</span></code></p>
+<p>GCData: A data objetc for gcdata. Right now it behaves as an astropy table.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>creator</strong> (<em>string</em>) – Super class of the object that made the data.</p></li>
-<li><p><strong>specs</strong> (<em>dict</em>) – Specifications of how the data was created, what are the properties of the data.
-If the data was created by a function, what inputs were used.</p></li>
-<li><p><strong>values</strong> (<em>astropy.Table</em>) – Data with units</p></li>
+<li><p><strong>meta</strong> (<em>dict</em>) – Dictionary with metadata for this object</p></li>
+<li><p><strong>as astropy tables</strong> (<em>Same</em>) – </p></li>
 </ul>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="clmm.gcdata.GCData_">
-<code class="sig-prename descclassname">clmm.gcdata.</code><code class="sig-name descname">GCData_</code><a class="headerlink" href="#clmm.gcdata.GCData_" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="#clmm.gcdata.GCData" title="clmm.gcdata.GCData"><code class="xref py py-class docutils literal notranslate"><span class="pre">clmm.gcdata.GCData</span></code></a></p>
-</dd></dl>
-
-<dl class="function">
-<dt id="clmm.gcdata.check_subdict">
-<code class="sig-prename descclassname">clmm.gcdata.</code><code class="sig-name descname">check_subdict</code><span class="sig-paren">(</span><em class="sig-param">lookup_dict</em>, <em class="sig-param">reference_dict</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/gcdata.html#check_subdict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.gcdata.check_subdict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks if a dictionary is a subset of another dictionary, with the same keys and values</p>
+<dl class="method">
+<dt id="clmm.gcdata.GCData.add_meta">
+<code class="sig-name descname">add_meta</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/gcdata.html#GCData.add_meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.gcdata.GCData.add_meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add metadata to GCData</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>lookup_dict</strong> (<em>dict</em>) – Subset dictionary</p></li>
-<li><p><strong>reference_dict</strong> (<em>dict</em>) – Main dictionary</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of metadata</p></li>
+<li><p><strong>value</strong> – Value of metadata</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>If a lookup_dict is a subset of reference_dict</p>
+<dd class="field-even"><p></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
+<dd class="field-odd"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="clmm.gcdata.confirm_GCData">
-<code class="sig-prename descclassname">clmm.gcdata.</code><code class="sig-name descname">confirm_GCData</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/gcdata.html#confirm_GCData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.gcdata.confirm_GCData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Typechecks GCData elements</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="clmm.gcdata.find_in_datalist">
-<code class="sig-prename descclassname">clmm.gcdata.</code><code class="sig-name descname">find_in_datalist</code><span class="sig-paren">(</span><em class="sig-param">lookup_specs</em>, <em class="sig-param">datalist</em>, <em class="sig-param">exact=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/gcdata.html#find_in_datalist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.gcdata.find_in_datalist" title="Permalink to this definition">¶</a></dt>
-<dd><p>Finds data with given specs in a datalist, allows for partial match</p>
+<dl class="method">
+<dt id="clmm.gcdata.GCData.add_metas">
+<code class="sig-name descname">add_metas</code><span class="sig-paren">(</span><em class="sig-param">names</em>, <em class="sig-param">values</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/gcdata.html#GCData.add_metas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.gcdata.GCData.add_metas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add metadatas to GCData</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>datalist</strong> (<em>list</em>) – List of clmm.GCData objects to search for lookup_specs</p></li>
-<li><p><strong>lookup_specs</strong> (<em>dict</em>) – Specs required</p></li>
-<li><p><strong>exact</strong> (<em>boolean</em><em>, </em><em>optional</em>) – Does the match have to be symmetric?</p></li>
+<li><p><strong>names</strong> (<em>list</em>) – List of metadata names</p></li>
+<li><p><strong>values</strong> (<em>list</em>) – List of metadata values</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>found</strong> – List of clmm.GCData object data with required creator and set of specs</p>
+<dd class="field-even"><p></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>list</p>
+<dd class="field-odd"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="clmm.gcdata.read_GCData">
-<code class="sig-prename descclassname">clmm.gcdata.</code><code class="sig-name descname">read_GCData</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/gcdata.html#read_GCData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.gcdata.read_GCData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reads GCData from file</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="clmm.gcdata.write_GCData">
-<code class="sig-prename descclassname">clmm.gcdata.</code><code class="sig-name descname">write_GCData</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/gcdata.html#write_GCData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.gcdata.write_GCData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Writes GCData to file</p>
 </dd></dl>
 
 </div>

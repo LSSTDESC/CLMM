@@ -1,0 +1,314 @@
+Basic usage of the cosmoDC2 extragalactic catalog with CLMM
+===========================================================
+
+This notebook can be run at NERSC or CC-IN2P3 where the DESC DC2
+products are stored. You need to be a DESC member to be able to access
+those.
+
+.. code:: ipython3
+
+    import matplotlib.pyplot as plt
+    import numpy as np
+    from astropy.table import Table
+    import GCRCatalogs
+    try: import clmm
+    except:
+        import notebook_install
+        notebook_install.install_clmm_pipeline(upgrade=False)
+        import clmm
+
+
+.. parsed-literal::
+
+    /pbs/home/c/ccombet/.conda/envs/mydesc/lib/python3.7/site-packages/GCRCatalogs/register.py:136: UserWarning: Site determined from env variable DESC_GCR_SITE = in2p3, which differs from node name 137584ad0af3
+      self._DESC_SITE_ENV, site_from_env, site_from_socket
+
+
+Check what version we’re using
+
+.. code:: ipython3
+
+    clmm.__version__
+
+
+
+
+.. parsed-literal::
+
+    '0.3.0'
+
+
+
+1. Prepare a CLMM GalaxyCluster object from cosmoDC2
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Read in the extragalactic catalog cosmoDC2
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code:: ipython3
+
+    extragalactic_cat = GCRCatalogs.load_catalog('cosmoDC2_v1.1.4_small')
+
+.. code:: ipython3
+
+    cosmo = extragalactic_cat.cosmology
+    cosmo
+
+
+
+
+.. parsed-literal::
+
+    FlatLambdaCDM(H0=71 km / (Mpc s), Om0=0.265, Tcmb0=0 K, Neff=3.04, m_nu=None, Ob0=0.0448)
+
+
+
+Get the list of halos with ``M > mmin`` in the redshift range ``[zmin, zmax]``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code:: ipython3
+
+    # get list of massive halos in a given redshift and mass range
+    mmin = 5.e14 # Msun
+    zmin = 0.3
+    zmax = 0.4
+    
+    massive_halos = extragalactic_cat.get_quantities(['halo_mass','hostHaloMass','redshift','ra', 'dec', 'halo_id'],
+                                                     filters=[f'halo_mass > {mmin}','is_central==True',
+                                                              f'redshift>{zmin}', f'redshift<{zmax}'])
+    N_cl = len(massive_halos['halo_mass'])
+    print(f'There are {N_cl} clusters in this mass and redshift range')
+
+
+.. parsed-literal::
+
+    There are 4 clusters in this mass and redshift range
+
+
+Check the units of halo masses in the catalog
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+We have filtered the catalog using the ``halo_mass`` field. There are
+two related fields in the catalog: ``halo_mass`` and ``hostHaloMass``.
+In the `cosmoDC2 preprint <https://arxiv.org/abs/1907.06530>`__, Table 2
+in appendix B mentions the halo mass to be in units of
+M\ :math:`_{\odot}\; h^{-1}`. However, the `SCHEMA
+cosmoDC2 <https://github.com/LSSTDESC/gcr-catalogs/blob/master/GCRCatalogs/SCHEMA.md>`__
+mentions M\ :math:`_{\odot}` for ``halo_mass``. Below, we see that
+``halo_mass`` equals ``hostHaloMass``/h. So\ ``halo_mass`` is indeed in
+units of M\ :math:`_{\odot}`, while ``hostHaloMass`` is in
+M\ :math:`_{\odot}\; h^{-1}`.
+
+.. code:: ipython3
+
+    print(f"hostHaloMass:   {massive_halos['hostHaloMass']}")
+    print(f"hostHaloMass/h: {massive_halos['hostHaloMass']/cosmo.h}")
+    print(f"halo_mass:      {massive_halos['halo_mass']}")
+
+
+.. parsed-literal::
+
+    hostHaloMass:   [4.11498904e+14 4.51343114e+14 4.28283670e+14 3.59993019e+14]
+    hostHaloMass/h: [5.79575921e+14 6.35694527e+14 6.03216436e+14 5.07032421e+14]
+    halo_mass:      [5.79575921e+14 6.35694527e+14 6.03216436e+14 5.07032421e+14]
+
+
+Below, we use ``halo_mass``.
+
+Select the most massive one
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code:: ipython3
+
+    # Selecting the most massive one
+    
+    select = massive_halos['halo_mass'] == np.max(massive_halos['halo_mass'])
+    
+    ra_cl = massive_halos['ra'][select][0]
+    dec_cl = massive_halos['dec'][select][0]
+    z_cl = massive_halos['redshift'][select][0]
+    mass_cl =massive_halos['halo_mass'][select][0]
+    id_cl = massive_halos['halo_id'][select][0]
+    
+    print (f'The most massive cluster is halo {id_cl} in ra = {ra_cl:.2f} deg, dec = {dec_cl:.2f} deg, z = {z_cl:.2f}, with mass = {mass_cl:.2e} Msun')
+
+
+.. parsed-literal::
+
+    The most massive cluster is halo 95600097373 in ra = 64.26 deg, dec = -34.47 deg, z = 0.32, with mass = 6.36e+14 Msun
+
+
+Apply coordinates, redshift and magnitude cuts to select backgroud galaxies around the cluster
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+-  Box of 0.6 deg around the cluster center
+-  Galaxies with z > z_cluster + 0.1
+-  Galaxies with mag_i < 25
+
+Here, we’re directly gathering the shear components :math:`\gamma_{1,2}`
+and the convergence :math:`\kappa` from the cosmoDC2 catalog. See the
+``DC2_gt_profiles`` notebook to see how to also use the intrinsic
+ellipticities of the galaxies to compute observed ellipticities
+including intrinsic and shear components.
+
+.. code:: ipython3
+
+    ra_min, ra_max = ra_cl - 0.3, ra_cl + 0.3
+    dec_min, dec_max = dec_cl - 0.3, dec_cl + 0.3
+    z_min = z_cl + 0.1
+    mag_i_max = 25
+    
+    coord_filters = ['ra >= {}'.format(ra_min),'ra < {}'.format(ra_max),'dec >= {}'.format(dec_min),'dec < {}'.format(dec_max)]
+    z_filters = ['redshift >= {}'.format(z_min)]
+    mag_filters = ['mag_i < {}'.format(mag_i_max)]
+    gal_cat = extragalactic_cat.get_quantities(['galaxy_id', 'ra', 'dec', 
+                                                'shear_1', 'shear_2',
+                                                'redshift', 'convergence'],
+                                               filters=(coord_filters + z_filters + mag_filters))
+
+To compute a reduced tangential shear profile using CLMM, we first need to transform the shear into ellipticities.
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+-  The CLMM function ``convert_shapes_to_epsilon`` convert any shape
+   measurements into the corresponding ellipticities (:math:`\epsilon`
+   definition).
+-  Then, we build the astropy table of the galaxy catalog that will be
+   used to instantiate a CLMM GalaxyCluster object.
+
+.. code:: ipython3
+
+    e1, e2 = clmm.utils.convert_shapes_to_epsilon(gal_cat['shear_1'],gal_cat['shear_2'],\
+                                                  shape_definition='shear',kappa=gal_cat['convergence'])
+    
+    #store the results into an CLMM GCData (currently it's simply an astropy table)
+    dat = clmm.GCData([gal_cat['ra'],gal_cat['dec'],
+                 e1, e2,
+                 gal_cat['redshift'],gal_cat['galaxy_id']], 
+                names=('ra','dec', 'e1', 'e2', 'z','id'))
+    
+    cl = clmm.GalaxyCluster(str(id_cl), ra_cl, dec_cl, z_cl, dat)   
+
+.. code:: ipython3
+
+    # Quick check of the redshift distribution of the galaxies in the catalog
+    
+    print(f'Number of galaxies in the catalog: Ngal = {len(cl.galcat)}')
+    plt.hist(cl.galcat['z'], bins=30);
+    plt.xlabel('z')
+    plt.ylabel('Count')
+
+
+.. parsed-literal::
+
+    Number of galaxies in the catalog: Ngal = 36403
+
+
+
+
+.. parsed-literal::
+
+    Text(0, 0.5, 'Count')
+
+
+
+
+.. image:: data_and_model_demo_DC2_files/data_and_model_demo_DC2_19_2.png
+
+
+2. Use CLMM to compute the reduced tangential shear profile
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Compute the tangential and cross shear profiles
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+NB: Check out the ``demo_polarvaveraging`` notebook to see examples of
+all available options of the functions below.
+
+.. code:: ipython3
+
+    bin_edges = clmm.polaraveraging.make_bins(0.15, 10, 15, method='evenlog10width') # in Mpc
+    cl.compute_tangential_and_cross_components(geometry="flat")
+    cl.make_binned_profile("radians", "Mpc", bins=bin_edges,cosmo=cosmo, add_to_cluster=True, include_empty_bins=False, gal_ids_in_bins=False)
+
+
+
+
+.. raw:: html
+
+    <i>GCData length=14</i>
+    <table id="table140533318064528" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>radius_min</th><th>radius</th><th>radius_max</th><th>gt</th><th>gt_err</th><th>gx</th><th>gx_err</th><th>z</th><th>z_err</th><th>n_src</th></tr></thead>
+    <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>int64</th></tr></thead>
+    <tr><td>0.15</td><td>0.17636942351321439</td><td>0.19846556968648293</td><td>0.02037417866393367</td><td>0.0035284277510696086</td><td>0.006753624804594845</td><td>0.003687532406500275</td><td>0.971778890840735</td><td>0.05041615834029067</td><td>34</td></tr>
+    <tr><td>0.19846556968648293</td><td>0.23218089353404303</td><td>0.26259054900653483</td><td>0.02679741876302726</td><td>0.0027189139082722186</td><td>0.0007119377886252487</td><td>0.0023036485227813878</td><td>1.020568689467205</td><td>0.058193913495320986</td><td>53</td></tr>
+    <tr><td>0.26259054900653483</td><td>0.3059704420440446</td><td>0.3474345526857884</td><td>0.041066700638701485</td><td>0.0019084106346784952</td><td>0.0016804474260400152</td><td>0.0014455222242051205</td><td>1.0265077465792039</td><td>0.04849007345410995</td><td>82</td></tr>
+    <tr><td>0.3474345526857884</td><td>0.4072589534929289</td><td>0.45969197618368907</td><td>0.04650956621608166</td><td>0.0011971729597659692</td><td>0.0009971665591332357</td><td>0.0007991042517062868</td><td>1.0393406936116252</td><td>0.03719695065774041</td><td>130</td></tr>
+    <tr><td>0.45969197618368907</td><td>0.5396605648750517</td><td>0.60822019955734</td><td>0.049171216690907904</td><td>0.0006989442328396026</td><td>0.00015119088451375306</td><td>0.0003589668969936726</td><td>0.9758493108139988</td><td>0.023369400483367962</td><td>261</td></tr>
+    <tr><td>0.60822019955734</td><td>0.7076302276523957</td><td>0.8047384559998256</td><td>0.03782777299821912</td><td>0.0004936163860593951</td><td>0.00022641596737203016</td><td>0.00037354499832125955</td><td>0.9192423022575893</td><td>0.01632509783150775</td><td>464</td></tr>
+    <tr><td>0.8047384559998256</td><td>0.9424747432620386</td><td>1.0647525074575073</td><td>0.02515375248528569</td><td>0.0003594902655390658</td><td>-0.00017164485861469967</td><td>0.0003212987611452593</td><td>0.9769176552238986</td><td>0.014443458340591367</td><td>730</td></tr>
+    <tr><td>1.0647525074575073</td><td>1.2470483876853413</td><td>1.4087780864511024</td><td>0.02463116395646268</td><td>0.0002893234018049065</td><td>0.0006363728882482774</td><td>0.00028139378807150476</td><td>0.9826323955808695</td><td>0.010498800725560982</td><td>1194</td></tr>
+    <tr><td>1.4087780864511024</td><td>1.6514264711112452</td><td>1.8639596365956759</td><td>0.014253470998703497</td><td>0.00028271094659568864</td><td>0.0008274010881759553</td><td>0.0003006187514405246</td><td>0.9901527835609454</td><td>0.008637894700042961</td><td>2076</td></tr>
+    <tr><td>1.8639596365956759</td><td>2.1822210761522407</td><td>2.46621207433047</td><td>0.008628420140502508</td><td>0.00023756635906010436</td><td>0.00019895276766396553</td><td>0.00020004388211464276</td><td>1.007896876117697</td><td>0.006940609004742</td><td>3479</td></tr>
+    <tr><td>2.46621207433047</td><td>2.882309069446668</td><td>3.263054561997864</td><td>0.012365497276165687</td><td>0.0001645113422592457</td><td>0.00029444375202460055</td><td>0.00014773664641759505</td><td>0.9946389967286835</td><td>0.00494113559622797</td><td>6188</td></tr>
+    <tr><td>3.263054561997864</td><td>3.8082066394891894</td><td>4.317359883766556</td><td>0.009314295931979242</td><td>9.767093549814181e-05</td><td>-0.0005616934167879528</td><td>0.00011970052009903858</td><td>0.9922200832905932</td><td>0.0036853682845281502</td><td>10849</td></tr>
+    <tr><td>4.317359883766556</td><td>4.870379641763282</td><td>5.7123152591553135</td><td>0.004856151087230271</td><td>0.00010748824629726481</td><td>-0.001094113267983147</td><td>0.0001152492377082557</td><td>0.9845351614502101</td><td>0.0038856989848474258</td><td>9755</td></tr>
+    <tr><td>5.7123152591553135</td><td>5.960000520868773</td><td>7.557986014246993</td><td>0.0015568135977910237</td><td>0.00032133518711172164</td><td>-0.003681832431586525</td><td>0.0002807912665247582</td><td>1.0026333220591057</td><td>0.012217109891328161</td><td>1052</td></tr>
+    </table>
+
+
+
+3. Sanity check: use CLMM to compute the corresponding NFW model, given the halo mass
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  The mass definition used in cosmoDC2 is the friend-of-friend mass
+   with linking length b=0.168. In CLMM, the default mass definition is
+   :math:`M_{200,m}`: it uses an overdensity parameter
+   :math:`\Delta=200` with respect to the matter density. Here, we are
+   directly using :math:`M_{\rm fof}` in the modeling functions of CLMM,
+   which is inconsistent. However, the goal here is to check that model
+   and data are roughly in agreement.
+-  The model should take into account the redshift distribution of the
+   background galaxies. Here, we simply use the average redshift of the
+   galaxy catalog as this is a quick sanity check that things behave as
+   expected.
+-  For the model, we use a concentration :math:`c = 4`.
+-  The error bars on the data computed by ``make_shear_profile`` simply
+   corresponds to the standard error of the mean in the bin
+   (:math:`\sigma_{\rm bin}/\sqrt{N_{\rm gal\_in\_bin}}`).
+
+.. code:: ipython3
+
+    # CLMM modeling works in Mpc/h and Msun/h, hence the multiplication by cosmo.h below.
+    concentration = 4.
+    reduced_shear = clmm.predict_reduced_tangential_shear(cl.profile['radius']*cosmo.h, mass_cl*cosmo.h, 
+                                                          concentration ,z_cl, cl.profile['z'], cosmo,
+                                                          halo_profile_model='nfw')  
+
+.. code:: ipython3
+
+    plt.errorbar(cl.profile['radius'],cl.profile['gt'],yerr=cl.profile['gt_err'], label='measured profile')
+    plt.plot(cl.profile['radius'],reduced_shear, label='model shear')
+    plt.legend()
+    plt.xscale('log')
+    plt.yscale('log')
+    plt.xlabel('R (Mpc)')
+    plt.ylabel(r'Reduced shear $\langle g_t\rangle$')
+
+
+
+
+.. parsed-literal::
+
+    Text(0, 0.5, 'Reduced shear $\\langle g_t\\rangle$')
+
+
+
+
+.. image:: data_and_model_demo_DC2_files/data_and_model_demo_DC2_25_1.png
+
+
+Data and model are in rough agreement at large radii. In the inner
+region, the lack of resolution of the DC2 simulations yield an
+unphysical attenuation of the signal. This was remarked upon in the
+`cosmoDC2 paper <https://arxiv.org/abs/1907.06530>`__ in the context of
+galaxy-galaxy lensing.

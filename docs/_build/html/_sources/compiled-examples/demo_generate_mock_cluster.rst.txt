@@ -1,4 +1,3 @@
-
 Generate Mock Data
 ==================
 
@@ -19,11 +18,20 @@ and shape noise. We then populate a galaxy cluster object
     import matplotlib.pyplot as plt
     %matplotlib inline
 
-Make sure we know which version we're using
+Make sure we know which version we’re using
 
 .. code:: ipython3
 
     clmm.__version__
+
+
+
+
+.. parsed-literal::
+
+    '0.3.0'
+
+
 
 Import mock data module and setup the configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -86,7 +94,7 @@ redshift
         cluster_m, cluster_z, concentration, cosmo, ngals, Delta, src_z, zsrc_min=zsrc_min,
         shapenoise=0.05, photoz_sigma_unscaled=0.05)
 
-Clean data: source galaxy redshifts drawn from Chang et al. 2013
+Clean data: source galaxy redshifts drawn from Chang et al. 2013
 
 .. code:: ipython3
 
@@ -104,7 +112,7 @@ shape noise
         cluster_m, cluster_z, concentration, cosmo, ngals, Delta, 'chang13', zsrc_min=zsrc_min,
         zsrc_max=7.0, shapenoise=0.005, photoz_sigma_unscaled=0.05)
 
-Sanity check: checking that no galaxies where drawn below zsrc\_min
+Sanity check: checking that no galaxies where drawn below zsrc_min
 
 .. code:: ipython3
 
@@ -114,6 +122,17 @@ Sanity check: checking that no galaxies where drawn below zsrc\_min
     print('noisy_data_photoz:',np.sum(noisy_data_photoz['z']<zsrc_min))
     print('ideal_with_src_dist:',np.sum(ideal_with_src_dist['z']<zsrc_min))
     print('allsystematics:',np.sum(allsystematics['z']<zsrc_min))
+
+
+.. parsed-literal::
+
+    Number of galaxies below zsrc_min:
+    ideal_data: 0
+    noisy_data_src_z: 0
+    noisy_data_photoz: 0
+    ideal_with_src_dist: 0
+    allsystematics: 0
+
 
 Inspect the catalog data
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -128,6 +147,16 @@ galaxies at z=0.8
             ideal_data[n].format = "%6.3e" 
     ideal_data[0:3].pprint(max_width=-1)
 
+
+.. parsed-literal::
+
+        ra        dec         e1         e2         z      id
+    ---------- ---------- ---------- ---------- --------- ---
+    -3.219e-01 -1.291e-01 -4.833e-03  4.618e-03 8.000e-01   0
+    -1.960e-01  3.027e-01  2.594e-03 -5.785e-03 8.000e-01   1
+    -1.213e-01 -3.114e-01  5.174e-03  4.753e-03 8.000e-01   2
+
+
 With photo-z errors
 
 .. code:: ipython3
@@ -137,11 +166,34 @@ With photo-z errors
             noisy_data_photoz[n].format = "%6.3e"
     noisy_data_photoz[0:3].pprint(max_width=-1)
 
+
+.. parsed-literal::
+
+        ra        dec         e1         e2        z          pzbins [34]             pzpdf [34]        id
+    ---------- ---------- ---------- --------- --------- ---------------------- ---------------------- ---
+    -2.067e-01  3.318e-01 -4.683e-02 5.276e-02 8.428e-01 3.000e-01 .. 1.290e+00 8.802e-07 .. 1.622e-06   0
+     8.338e-02  5.912e-02 -4.406e-02 4.684e-03 6.743e-01 3.000e-01 .. 1.290e+00 8.802e-07 .. 1.622e-06   1
+     1.484e-01 -3.412e-01 -1.185e-02 6.717e-03 6.495e-01 3.000e-01 .. 1.290e+00 8.802e-07 .. 1.622e-06   2
+
+
 .. code:: ipython3
 
     # Histogram of the redshift distribution of bkg galaxies (starting at z_cluster + 0.1)
     hist = plt.hist(allsystematics['z'], bins=50)
     plt.xlabel('Source Redshift')
+
+
+
+
+.. parsed-literal::
+
+    Text(0.5, 0, 'Source Redshift')
+
+
+
+
+.. image:: demo_generate_mock_cluster_files/demo_generate_mock_cluster_30_1.png
+
 
 .. code:: ipython3
 
@@ -149,6 +201,19 @@ With photo-z errors
     plt.plot(allsystematics['pzbins'][0], allsystematics['pzpdf'][0])
     plt.xlabel('Redshift')
     plt.ylabel('Photo-z Probability Distribution')
+
+
+
+
+.. parsed-literal::
+
+    Text(0, 0.5, 'Photo-z Probability Distribution')
+
+
+
+
+.. image:: demo_generate_mock_cluster_files/demo_generate_mock_cluster_31_1.png
+
 
 Populate in a galaxy cluster object
 
@@ -170,3 +235,17 @@ Plot source galaxy ellipticities
     plt.ylim(-0.2, 0.2)
     plt.xlabel('Ellipticity 1',fontsize='x-large')
     plt.ylabel('Ellipticity 2',fontsize='x-large')
+
+
+
+
+.. parsed-literal::
+
+    Text(0, 0.5, 'Ellipticity 2')
+
+
+
+
+.. image:: demo_generate_mock_cluster_files/demo_generate_mock_cluster_35_1.png
+
+

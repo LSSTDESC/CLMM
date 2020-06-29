@@ -1,4 +1,3 @@
-
 Measure a Profile
 =================
 
@@ -13,30 +12,41 @@ Ex:
 
 ::
 
-    theta, g_t, g_x = compute_shear(cl, geometry="flat")
+   theta, g_t, g_x = compute_tangential_and_cross_components(cl, geometry="flat")
 
 should be done by the user as:
 
 ::
 
-    theta, g_t, g_x = cl.compute_shear(geometry="flat")
+   theta, g_t, g_x = cl.compute_tangential_and_cross_components(geometry="flat")
 
 .. code:: ipython3
 
     import matplotlib.pyplot as plt
     import clmm
-    from clmm.polaraveraging import compute_shear, make_shear_profile, make_bins
+    import clmm.polaraveraging
+    from clmm.polaraveraging import compute_tangential_and_cross_components, make_binned_profile, make_bins
     from clmm.plotting import plot_profiles
     from clmm.galaxycluster import GalaxyCluster
+    import clmm.utils as u
     import sys
     sys.path.append('./support')
     import mock_data as mock
 
-Make sure we know which version we're using
+Make sure we know which version we’re using
 
 .. code:: ipython3
 
     clmm.__version__
+
+
+
+
+.. parsed-literal::
+
+    '0.3.0'
+
+
 
 Define cosmology object
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -46,8 +56,11 @@ Define cosmology object
     from astropy.cosmology import FlatLambdaCDM
     mock_cosmo = FlatLambdaCDM(H0=70., Om0=0.3, Ob0=0.025)
 
-1) Generate cluster object with mock data with shape noise, galaxies from redshift distribution and a pdz for each source galaxy
---------------------------------------------------------------------------------------------------------------------------------
+1. Generate cluster object from mock data
+-----------------------------------------
+
+In this example, the mock data includes: shape noise, galaxies drawn
+from redshift distribution and photoz errors.
 
 Define toy cluster parameters for mock data generation
 
@@ -74,31 +87,53 @@ Define toy cluster parameters for mock data generation
                                                 shapenoise=0.005,
                                                 photoz_sigma_unscaled=0.05)
 
+
+.. parsed-literal::
+
+    /pbs/home/c/ccombet/.conda/envs/mydesc/lib/python3.7/site-packages/clmm-0.3.0-py3.7.egg/clmm/modeling.py:366: RuntimeWarning: divide by zero encountered in true_divide
+    /pbs/home/c/ccombet/.conda/envs/mydesc/lib/python3.7/site-packages/clmm-0.3.0-py3.7.egg/clmm/modeling.py:369: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
+    /pbs/home/c/ccombet/.conda/envs/mydesc/lib/python3.7/site-packages/clmm-0.3.0-py3.7.egg/clmm/modeling.py:509: UserWarning: Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.
+    /pbs/home/c/ccombet/.conda/envs/mydesc/lib/python3.7/site-packages/clmm-0.3.0-py3.7.egg/clmm/modeling.py:440: UserWarning: Some source redshifts are lower than the cluster redshift. shear = 0 for those galaxies.
+    /pbs/home/c/ccombet/.conda/envs/mydesc/lib/python3.7/site-packages/clmm-0.3.0-py3.7.egg/clmm/modeling.py:572: UserWarning: Some source redshifts are lower than the cluster redshift. shear = 0 for those galaxies.
+
+
 Loading this into a CLMM cluster object centered on (0,0)
 
 .. code:: ipython3
 
     cluster_ra = 0.0
     cluster_dec = 0.0
-    gc_object = GalaxyCluster(cluster_id, cluster_ra, cluster_dec, 
+    cl = GalaxyCluster(cluster_id, cluster_ra, cluster_dec, 
                                    cluster_z, noisy_data_z)
 
-2) Load cluster object containing:
-----------------------------------
+2. Load cluster object containing:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    Lens properties (ra\_l, dec\_l, z\_l)
+   Lens properties (ra_l, dec_l, z_l)
 
-    Source properties (ra\_s, dec\_s, e1, e2) ### Note, if loading from
-    mock data, use: > cl = gc.load\_cluster("GC\_from\_mock\_data.pkl")
+..
+
+   Source properties (ra_s, dec_s, e1, e2) ### Note, if loading from
+   mock data, use: > cl = gc.GalaxyCluster.load(“GC_from_mock_data.pkl”)
 
 .. code:: ipython3
 
-    cl = gc_object
     print("Cluster info = ID:", cl.unique_id, "; ra:", cl.ra,
           "; dec:", cl.dec, "; z_l :", cl.z)
     print("The number of source galaxies is :", len(cl.galcat))
 
-Plot cluster and galaxy positions, and redshift distribution
+
+.. parsed-literal::
+
+    Cluster info = ID: Awesome_cluster ; ra: 0.0 ; dec: 0.0 ; z_l : 0.3
+    The number of source galaxies is : 1000
+
+
+2. Basic checks and plots
+-------------------------
+
+-  galaxy positions
+-  redshift distribution
 
 .. code:: ipython3
 
@@ -121,11 +156,12 @@ Plot cluster and galaxy positions, and redshift distribution
     plt.xlim(0, max(xto))
     plt.show()
 
-.. code:: ipython3
 
-    min(cl.galcat['z']), cl.z
 
-Check the ellipticities
+.. image:: demo_polaraveraging_functionality_files/demo_polaraveraging_functionality_15_0.png
+
+
+-  Check ellipticities
 
 .. code:: ipython3
 
@@ -138,70 +174,224 @@ Check the ellipticities
     ax1.axvline(0, linestyle='dotted', color='black')
     ax1.axhline(0, linestyle='dotted', color='black')
 
-3) Compute and plot shear profiles
+
+
+
+.. parsed-literal::
+
+    <matplotlib.lines.Line2D at 0x7f6aa84b4490>
+
+
+
+
+.. image:: demo_polaraveraging_functionality_files/demo_polaraveraging_functionality_17_1.png
+
+
+3. Compute and plot shear profiles
 ----------------------------------
 
-Compute angular separation, cross and tangential shear for each source
-galaxy
+3.1 Compute angular separation, cross and tangential shear for each source galaxy
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  By defaut, ``compute_tangential_and_cross_components`` uses columns
+   named ``e1`` and ``e2`` of the ``galcat`` table
 
 .. code:: ipython3
 
-    theta, g_t, g_x = compute_shear(cl, geometry="flat")
+    theta, e_t, g_x = compute_tangential_and_cross_components(cl, geometry="flat",add_to_cluster=True)
+    # With the option add_to_cluster the cl object has theta, et and ex new columns 
+    # (default: takes in columns named 'e1' and 'e2' and save the results in 'et' and 'ex')
+    cl
 
-Plot tangential and shear distributions for verification, which can be
-accessed in the galaxy cluster object, cl.
+
+
+
+.. parsed-literal::
+
+    GalaxyCluster Awesome_cluster: (ra=0.0, dec=0.0) at z=0.3
+    > 1000 source galaxies
+    > With columns: ra dec e1 e2 z pzbins pzpdf id theta et ex
+
+
+
+-  But it’s also possible to choose which columns to use for input and
+   output, e.g. Below we’re storing the results in ``e_tan`` and
+   ``e_cross`` instead (explicitely taking ``e1`` and ``e2`` as input)
+
+.. code:: ipython3
+
+    theta, e_t, g_x = compute_tangential_and_cross_components(cl, geometry="flat",
+                                                          shape_component1='e1', shape_component2='e2', 
+                                                          tan_component='e_tan', cross_component='e_cross',
+                                                          add_to_cluster=True)
+    cl
+
+
+
+
+.. parsed-literal::
+
+    GalaxyCluster Awesome_cluster: (ra=0.0, dec=0.0) at z=0.3
+    > 1000 source galaxies
+    > With columns: ra dec e1 e2 z pzbins pzpdf id theta et ex e_tan e_cross
+
+
+
+Plot tangential and cross ellipticity distributions for verification,
+which can be accessed in the galaxy cluster object, cl.
 
 .. code:: ipython3
 
     f, ax = plt.subplots(1, 2, figsize=(12, 4))
     
-    ax[0].hist(cl.galcat['gt'],bins=100)
-    ax[0].set_xlabel('$\\gamma_t$',fontsize='xx-large')
+    ax[0].hist(cl.galcat['et'],bins=50)
+    ax[0].set_xlabel('$\\epsilon_t$',fontsize='xx-large')
     
-    ax[1].hist(cl.galcat['gx'],bins=100)
-    ax[1].set_xlabel('$\\gamma_x$',fontsize='xx-large')
+    ax[1].hist(cl.galcat['ex'],bins=50)
+    ax[1].set_xlabel('$\\epsilon_x$',fontsize='xx-large')
     ax[1].set_yscale('log')
+
+
+
+.. image:: demo_polaraveraging_functionality_files/demo_polaraveraging_functionality_25_0.png
+
 
 Compute transversal and cross shear profiles in units defined by user,
 using defaults binning
 
+3.2 Compute shear profile in radial bins
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Given the separations in “radians” computed in the previous step, the
+user may ask for a binned profile in various projected distance units.
+The GCData corresponding to the binning profiled is attached as a new
+attribute of the galaxy cluster object. #### 3.2.1 Default binning -
+default binning using kpc:
+
 .. code:: ipython3
 
-    profiles = make_shear_profile(cl, "radians", "kpc", cosmo=cosmo)
+    profiles = make_binned_profile(cl, "radians", "kpc", cosmo=cosmo)
+    cl.profile
+
+
+
+
+.. raw:: html
+
+    <i>GCData length=10</i>
+    <table id="table140096064112208" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>radius_min</th><th>radius</th><th>radius_max</th><th>gt</th><th>gt_err</th><th>gx</th><th>gx_err</th><th>z</th><th>z_err</th><th>n_src</th></tr></thead>
+    <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>int64</th></tr></thead>
+    <tr><td>279.877705832643</td><td>742.6319845816886</td><td>1046.9824578060338</td><td>0.0701103016571471</td><td>0.00436854906513088</td><td>-0.0004028335045803577</td><td>0.0010681411042043447</td><td>1.4101952891656142</td><td>0.1178904591885835</td><td>27</td></tr>
+    <tr><td>1046.9824578060338</td><td>1496.773003750208</td><td>1814.0872097794247</td><td>0.0352371962917054</td><td>0.001268203741375512</td><td>-0.00010339743609857567</td><td>0.0006384920487771279</td><td>1.3246516166889915</td><td>0.1070844308054641</td><td>56</td></tr>
+    <tr><td>1814.0872097794247</td><td>2196.147119051884</td><td>2581.1919617528156</td><td>0.02368338886518528</td><td>0.0008037185535745175</td><td>-4.940341822550048e-05</td><td>0.0005332626664517322</td><td>1.2803663976925033</td><td>0.07682839650826177</td><td>83</td></tr>
+    <tr><td>2581.1919617528156</td><td>2925.608993282508</td><td>3348.2967137262067</td><td>0.016511170792968294</td><td>0.0006169701225907747</td><td>0.0001798530369771283</td><td>0.000464965979622937</td><td>1.2077015625322232</td><td>0.07268928548678182</td><td>114</td></tr>
+    <tr><td>3348.2967137262067</td><td>3733.1298109702943</td><td>4115.401465699598</td><td>0.014040957589245867</td><td>0.00047980580739165595</td><td>0.0003544022359694762</td><td>0.00046571647906210826</td><td>1.2750820508750782</td><td>0.05304550007544703</td><td>140</td></tr>
+    <tr><td>4115.401465699598</td><td>4485.9392064236645</td><td>4882.506217672988</td><td>0.010568949883343129</td><td>0.00043875514381870996</td><td>-4.064472573083541e-05</td><td>0.0004180772382414155</td><td>1.4322366095567183</td><td>0.06691968453059836</td><td>146</td></tr>
+    <tr><td>4882.506217672988</td><td>5263.601904330001</td><td>5649.610969646379</td><td>0.007997844450107157</td><td>0.0004098168500682388</td><td>-0.0002621511843901836</td><td>0.0003505309483784525</td><td>1.2479324790304316</td><td>0.04709894989138894</td><td>186</td></tr>
+    <tr><td>5649.610969646379</td><td>5980.480142003459</td><td>6416.71572161977</td><td>0.006903183745577328</td><td>0.00042564061200637914</td><td>-0.0003674066313147953</td><td>0.0004248455022142135</td><td>1.3338746412212303</td><td>0.06350621833865468</td><td>144</td></tr>
+    <tr><td>6416.71572161977</td><td>6804.171702214796</td><td>7183.820473593161</td><td>0.005754676775136183</td><td>0.0006349247677350064</td><td>-0.0005849859361244197</td><td>0.0005387186807279545</td><td>1.2649205223906643</td><td>0.08424177840143568</td><td>70</td></tr>
+    <tr><td>7183.820473593161</td><td>7492.315104399635</td><td>7950.9252255665515</td><td>0.004746557369699984</td><td>0.0007695252858711037</td><td>-0.0015422538685476773</td><td>0.0007384274016970924</td><td>1.2724195657680257</td><td>0.1014569956848413</td><td>34</td></tr>
+    </table>
+
+
 
 Use function to plot the profiles
 
 .. code:: ipython3
 
-    fig, ax = plot_profiles(cl)
+    fig, ax = plot_profiles(cl,xscale='log')
 
-Shear Profile example in degrees
+
+
+.. image:: demo_polaraveraging_functionality_files/demo_polaraveraging_functionality_30_0.png
+
+
+-  default binning using degrees:
 
 .. code:: ipython3
 
-    new_profiles = make_shear_profile(cl, "radians", "degrees",
-                                         cosmo=cosmo)
+    new_profiles = make_binned_profile(cl, "radians", "degrees",cosmo=cosmo)
     fig1, ax1 = plot_profiles(cl, "degrees")
 
-With user defined binning, compute transversal and cross shear profiles
-in units defined by user, plot the new profiles
+
+
+.. image:: demo_polaraveraging_functionality_files/demo_polaraveraging_functionality_32_0.png
+
+
+3.2.2 User-defined binning
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The users may also provide their own binning, in user-defined units, to
+compute the transversal and cross shear profiles. The ``make_bins``
+function is provided in ``utils.py`` and allow for various options.
+
+-  e.g., generate 20 bins between 1 and 6 Mpc, linearly spaced.
 
 .. code:: ipython3
 
-    new_bins = make_bins(1, 6, 20)
+    new_bins = make_bins(1, 6, nbins=20, method='evenwidth')
     
-    new_profiles = make_shear_profile(cl, "radians", "Mpc",
-                                         bins=new_bins, cosmo=cosmo)
+    # Make the shear profile in this binning
+    new_profiles = make_binned_profile(cl, "radians", "Mpc",
+                                      bins=new_bins, cosmo=cosmo)
     
     fig1, ax1 = plot_profiles(cl, "Mpc", r_units='Mpc')
 
-You can also access the individual profile quantities
+
+
+.. image:: demo_polaraveraging_functionality_files/demo_polaraveraging_functionality_34_0.png
+
+
+-  e.g., generate 20 bins between 1 and 6 Mpc, evenly spaced in log
+   space.
+
+.. code:: ipython3
+
+    new_bins = make_bins(1, 6, nbins=20, method='evenlog10width')
+    
+    new_profiles = make_binned_profile(cl, "radians", "Mpc",
+                                      bins=new_bins, cosmo=cosmo)
+    fig1, ax1 = plot_profiles(cl, "Mpc", r_units='Mpc')
+    ax1.set_xscale('log')
+
+
+
+.. image:: demo_polaraveraging_functionality_files/demo_polaraveraging_functionality_36_0.png
+
+
+-  e.g., generate 20 bins between 1 and 6 Mpc, each contaning the same
+   number of galaxies
+
+.. code:: ipython3
+
+    # First, convert the source separation table to Mpc
+    seps = u.convert_units(cl.galcat["theta"], "radians", "Mpc", redshift=cl.z, cosmo=cosmo)
+    
+    new_bins = make_bins(1, 6, nbins=20, method='equaloccupation', source_seps=seps)
+    new_profiles = make_binned_profile(cl, "radians", "Mpc",bins=new_bins, cosmo=cosmo)
+    
+    print(f"number of galaxies in each bin: {list(cl.profile['n_src'])}")
+    fig1, ax1 = plot_profiles(cl, "Mpc", r_units='Mpc')
+
+
+.. parsed-literal::
+
+    number of galaxies in each bin: [41, 40, 40, 41, 40, 40, 41, 40, 40, 40, 41, 40, 40, 41, 40, 40, 41, 40, 40, 41]
+
+
+
+.. image:: demo_polaraveraging_functionality_files/demo_polaraveraging_functionality_38_1.png
+
+
+3.2.3 Other individual profile quantities may also be accessed
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code:: ipython3
 
     plt.title('cross shear test')
     plt.errorbar(new_profiles['radius'], new_profiles['gx'],
-                 new_profiles['gx_err'])
+                 new_profiles['gx_err'], marker = 'o')
     plt.axhline(0, linestyle='dotted', color='black')
     plt.xlabel("Radius [Mpc]")
     plt.ylabel('$\\gamma_x$')
@@ -209,9 +399,117 @@ You can also access the individual profile quantities
     
     plt.title('Average redshift in radial bins')
     plt.errorbar(new_profiles['radius'], new_profiles['z'],
-                 new_profiles['z_err'])
+                 new_profiles['z_err'], marker = 'o')
     plt.axhline(cl.z, linestyle='dotted', color='r')
-    plt.text(1, cl.z*1.1, '$z_{cl}$', c='r')
+    plt.text(1, cl.z*1.1, '$z_{cl}$', color='r')
     plt.xlabel("Radius [Mpc]")
     plt.ylabel('$\langle z\\rangle$')
     plt.show()
+
+
+
+.. image:: demo_polaraveraging_functionality_files/demo_polaraveraging_functionality_40_0.png
+
+
+
+.. image:: demo_polaraveraging_functionality_files/demo_polaraveraging_functionality_40_1.png
+
+
+4. Focus on some options
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+4.1. The ``gal_ids_in_bins`` option adds a ``gal_id`` field to the
+profile GCData. For each bin of the profile, this is filled with the
+list of galaxy IDs for the galaxies that have fallen in that bin.
+
+.. code:: ipython3
+
+    profiles = make_binned_profile(cl, "radians", "Mpc", cosmo=cosmo, gal_ids_in_bins=True)
+
+.. code:: ipython3
+
+    # Here the list of galaxy IDs that are in the first bin of the tangential shear profile
+    import numpy as np
+    gal_list = profiles['gal_id'][0]
+    print(gal_list)
+
+
+.. parsed-literal::
+
+    [19, 25, 130, 135, 170, 186, 268, 310, 314, 325, 345, 391, 393, 399, 417, 512, 582, 633, 643, 701, 788, 797, 818, 884, 917, 942, 947]
+
+
+4.2. User-defined naming scheme
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The user may specify which columns to use from the ``galcat`` table to
+perform the binned average. If none is specified, the code looks for
+columns names ``et`` and ``ex``. Below, we average in bins the
+columns\ ``e_tan`` and ``e_cross`` of ``galcat`` and store the results
+in the columns ``g_tan`` and ``g_cross`` of the ``profile`` table of the
+cluster object.
+
+.. code:: ipython3
+
+    cl.make_binned_profile("radians", "kpc", cosmo=cosmo, 
+                           tan_component_in='e_tan', cross_component_in='e_cross',
+                           tan_component_out='g_tan', cross_component_out='g_cross');
+    cl.profile
+
+
+
+
+.. raw:: html
+
+    <i>GCData length=10</i>
+    <table id="table140095840835728" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>radius_min</th><th>radius</th><th>radius_max</th><th>g_tan</th><th>g_tan_err</th><th>g_cross</th><th>g_cross_err</th><th>z</th><th>z_err</th><th>n_src</th></tr></thead>
+    <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>int64</th></tr></thead>
+    <tr><td>279.877705832643</td><td>742.6319845816886</td><td>1046.9824578060338</td><td>0.0701103016571471</td><td>0.00436854906513088</td><td>-0.0004028335045803577</td><td>0.0010681411042043447</td><td>1.4101952891656142</td><td>0.1178904591885835</td><td>27</td></tr>
+    <tr><td>1046.9824578060338</td><td>1496.773003750208</td><td>1814.0872097794247</td><td>0.0352371962917054</td><td>0.001268203741375512</td><td>-0.00010339743609857567</td><td>0.0006384920487771279</td><td>1.3246516166889915</td><td>0.1070844308054641</td><td>56</td></tr>
+    <tr><td>1814.0872097794247</td><td>2196.147119051884</td><td>2581.1919617528156</td><td>0.02368338886518528</td><td>0.0008037185535745175</td><td>-4.940341822550048e-05</td><td>0.0005332626664517322</td><td>1.2803663976925033</td><td>0.07682839650826177</td><td>83</td></tr>
+    <tr><td>2581.1919617528156</td><td>2925.608993282508</td><td>3348.2967137262067</td><td>0.016511170792968294</td><td>0.0006169701225907747</td><td>0.0001798530369771283</td><td>0.000464965979622937</td><td>1.2077015625322232</td><td>0.07268928548678182</td><td>114</td></tr>
+    <tr><td>3348.2967137262067</td><td>3733.1298109702943</td><td>4115.401465699598</td><td>0.014040957589245867</td><td>0.00047980580739165595</td><td>0.0003544022359694762</td><td>0.00046571647906210826</td><td>1.2750820508750782</td><td>0.05304550007544703</td><td>140</td></tr>
+    <tr><td>4115.401465699598</td><td>4485.9392064236645</td><td>4882.506217672988</td><td>0.010568949883343129</td><td>0.00043875514381870996</td><td>-4.064472573083541e-05</td><td>0.0004180772382414155</td><td>1.4322366095567183</td><td>0.06691968453059836</td><td>146</td></tr>
+    <tr><td>4882.506217672988</td><td>5263.601904330001</td><td>5649.610969646379</td><td>0.007997844450107157</td><td>0.0004098168500682388</td><td>-0.0002621511843901836</td><td>0.0003505309483784525</td><td>1.2479324790304316</td><td>0.04709894989138894</td><td>186</td></tr>
+    <tr><td>5649.610969646379</td><td>5980.480142003459</td><td>6416.71572161977</td><td>0.006903183745577328</td><td>0.00042564061200637914</td><td>-0.0003674066313147953</td><td>0.0004248455022142135</td><td>1.3338746412212303</td><td>0.06350621833865468</td><td>144</td></tr>
+    <tr><td>6416.71572161977</td><td>6804.171702214796</td><td>7183.820473593161</td><td>0.005754676775136183</td><td>0.0006349247677350064</td><td>-0.0005849859361244197</td><td>0.0005387186807279545</td><td>1.2649205223906643</td><td>0.08424177840143568</td><td>70</td></tr>
+    <tr><td>7183.820473593161</td><td>7492.315104399635</td><td>7950.9252255665515</td><td>0.004746557369699984</td><td>0.0007695252858711037</td><td>-0.0015422538685476773</td><td>0.0007384274016970924</td><td>1.2724195657680257</td><td>0.1014569956848413</td><td>34</td></tr>
+    </table>
+
+
+
+The user may also define the name of the output table attribute. Below,
+we asked the binned profile to be saved into the ``shear_profile``
+attribute
+
+.. code:: ipython3
+
+    cl.make_binned_profile("radians", "kpc", cosmo=cosmo, 
+                           tan_component_in='e_tan', cross_component_in='e_cross',
+                           tan_component_out='g_tan', cross_component_out='g_cross',
+                           table_name='reduced_shear_profile');
+    cl.reduced_shear_profile
+
+
+
+
+.. raw:: html
+
+    <i>GCData length=10</i>
+    <table id="table140095841272976" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>radius_min</th><th>radius</th><th>radius_max</th><th>g_tan</th><th>g_tan_err</th><th>g_cross</th><th>g_cross_err</th><th>z</th><th>z_err</th><th>n_src</th></tr></thead>
+    <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>int64</th></tr></thead>
+    <tr><td>279.877705832643</td><td>742.6319845816886</td><td>1046.9824578060338</td><td>0.0701103016571471</td><td>0.00436854906513088</td><td>-0.0004028335045803577</td><td>0.0010681411042043447</td><td>1.4101952891656142</td><td>0.1178904591885835</td><td>27</td></tr>
+    <tr><td>1046.9824578060338</td><td>1496.773003750208</td><td>1814.0872097794247</td><td>0.0352371962917054</td><td>0.001268203741375512</td><td>-0.00010339743609857567</td><td>0.0006384920487771279</td><td>1.3246516166889915</td><td>0.1070844308054641</td><td>56</td></tr>
+    <tr><td>1814.0872097794247</td><td>2196.147119051884</td><td>2581.1919617528156</td><td>0.02368338886518528</td><td>0.0008037185535745175</td><td>-4.940341822550048e-05</td><td>0.0005332626664517322</td><td>1.2803663976925033</td><td>0.07682839650826177</td><td>83</td></tr>
+    <tr><td>2581.1919617528156</td><td>2925.608993282508</td><td>3348.2967137262067</td><td>0.016511170792968294</td><td>0.0006169701225907747</td><td>0.0001798530369771283</td><td>0.000464965979622937</td><td>1.2077015625322232</td><td>0.07268928548678182</td><td>114</td></tr>
+    <tr><td>3348.2967137262067</td><td>3733.1298109702943</td><td>4115.401465699598</td><td>0.014040957589245867</td><td>0.00047980580739165595</td><td>0.0003544022359694762</td><td>0.00046571647906210826</td><td>1.2750820508750782</td><td>0.05304550007544703</td><td>140</td></tr>
+    <tr><td>4115.401465699598</td><td>4485.9392064236645</td><td>4882.506217672988</td><td>0.010568949883343129</td><td>0.00043875514381870996</td><td>-4.064472573083541e-05</td><td>0.0004180772382414155</td><td>1.4322366095567183</td><td>0.06691968453059836</td><td>146</td></tr>
+    <tr><td>4882.506217672988</td><td>5263.601904330001</td><td>5649.610969646379</td><td>0.007997844450107157</td><td>0.0004098168500682388</td><td>-0.0002621511843901836</td><td>0.0003505309483784525</td><td>1.2479324790304316</td><td>0.04709894989138894</td><td>186</td></tr>
+    <tr><td>5649.610969646379</td><td>5980.480142003459</td><td>6416.71572161977</td><td>0.006903183745577328</td><td>0.00042564061200637914</td><td>-0.0003674066313147953</td><td>0.0004248455022142135</td><td>1.3338746412212303</td><td>0.06350621833865468</td><td>144</td></tr>
+    <tr><td>6416.71572161977</td><td>6804.171702214796</td><td>7183.820473593161</td><td>0.005754676775136183</td><td>0.0006349247677350064</td><td>-0.0005849859361244197</td><td>0.0005387186807279545</td><td>1.2649205223906643</td><td>0.08424177840143568</td><td>70</td></tr>
+    <tr><td>7183.820473593161</td><td>7492.315104399635</td><td>7950.9252255665515</td><td>0.004746557369699984</td><td>0.0007695252858711037</td><td>-0.0015422538685476773</td><td>0.0007384274016970924</td><td>1.2724195657680257</td><td>0.1014569956848413</td><td>34</td></tr>
+    </table>
+
+
