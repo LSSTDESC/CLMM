@@ -62,14 +62,14 @@ if not __backends[be_nick]['available']:
     loaded = False
     for be1 in __backends:
         if __backends[be1]['available']:
-            backend = importlib.import_module (".modbackend." + __backends[be1]['module'], __package__)
+            backend = importlib.import_module (".modbackend." + __backends[be1]['module'], package = __package__)
             loaded = True
             be_nick = be1
             break
     if not loaded:
         raise ImportError ("No modeling backend available.") 
 else:
-    backend = importlib.import_module (".modbackend." + __backends[be_nick]['module'], __package__)
+    backend = importlib.import_module (".modbackend." + __backends[be_nick]['module'], package = __package__)
 
 #  Import all backend symbols:
 #    Updates __all__ with the exported symbols from the backend and
