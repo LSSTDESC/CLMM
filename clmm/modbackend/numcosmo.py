@@ -100,7 +100,7 @@ class NumCosmoCLMModeling (CLMModeling):
         h   = self.cosmo.h ()
         fac = self.cor_factor * 1.0e-12 / h
                 
-        f = lambda z_len, z_src: self.smd.sigma_critical (self.cosmo, z_src, z_len, z_len) * fac if z_src > z_len else np.inf
+        f = lambda z_len, z_src: self.smd.sigma_critical (self.cosmo, z_src, z_len, z_len) * fac
         return np.vectorize (f) (z_len, z_src)
 
     def eval_density (self, r3d, z_cl):
@@ -135,7 +135,31 @@ class NumCosmoCLMModeling (CLMModeling):
     def eval_shear (self, r_proj, z_cl, z_src):
         h   = self.cosmo.h ()
 
-        f = lambda r_proj, z_src, z_cl: self.smd.shear (self.hdpm, self.cosmo, r_proj / h, z_src, z_cl, z_cl) if z_src > z_cl else 0.0
+        f = lambda r_proj, z_src, z_cl: self.smd.shear (self.hdpm, self.cosmo, r_proj / h, z_src, z_cl, z_cl)
+        return np.vectorize (f) (r_proj, z_src, z_cl)
+
+    def eval_convergence (self, r_proj, z_cl, z_src):
+        h   = self.cosmo.h ()
+
+        f = lambda r_proj, z_src, z_cl: self.smd.convergence (self.hdpm, self.cosmo, r_proj / h, z_src, z_cl, z_cl)
+        return np.vectorize (f) (r_proj, z_src, z_cl)
+
+    def eval_reduced_shear (self, r_proj, z_cl, z_src):
+        h   = self.cosmo.h ()
+        
+        return self.smd.reduced_shear_array (self.hdpm, self.cosmo, np.atleast_1d (r_proj), 1.0 / h, 1.0, np.atleast_1d (z_src), z_cl, z_cl)
+
+        #f = lambda r_proj, z_src, z_cl: self.smd.reduced_shear (self.hdpm, self.cosmo, r_proj / h, z_src, z_cl, z_cl)
+        #BLE = np.vectorize (f) (r_proj, z_src, z_cl)
+        
+        #print (BLA - BLE)
+        
+        #return BLE
+
+    def eval_magnification (self, r_proj, z_cl, z_src):
+        h   = self.cosmo.h ()
+
+        f = lambda r_proj, z_src, z_cl: self.smd.magnification (self.hdpm, self.cosmo, r_proj / h, z_src, z_cl, z_cl)
         return np.vectorize (f) (r_proj, z_src, z_cl)
 
 func_layer.gcm = NumCosmoCLMModeling ()

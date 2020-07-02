@@ -346,8 +346,14 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
                                     delta_mdef=delta_mdef, halo_profile_model=halo_profile_model)
 
     if z_src_model == 'single_plane':
-        sigma_c = get_critical_surface_density(cosmo, z_cluster, z_source)
-        kappa = np.nan_to_num(sigma / sigma_c,  nan=np.nan, posinf=np.inf, neginf=-np.inf)
+        cosmo = cclify_astropy_cosmo(cosmo)
+
+        gcm.set_cosmo_params_dict (cosmo)
+        gcm.set_halo_density_profile (halo_profile_model = halo_profile_model, delta_mdef = delta_mdef)
+        gcm.set_concentration (cdelta)
+        gcm.set_mass (mdelta)
+        
+        kappa = gcm.eval_convergence (r_proj, z_cluster, z_source)
         
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +\
@@ -405,12 +411,14 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
     Need to figure out if we want to raise exceptions rather than errors here?
     """
     if z_src_model == 'single_plane':
-        kappa = predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef,
-                                    halo_profile_model,
-                                    z_src_model)
-        gamma_t = predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
-                                           delta_mdef, halo_profile_model, z_src_model)
-        red_tangential_shear = np.nan_to_num(np.divide(gamma_t , (1 - kappa)),  nan=np.nan, posinf=np.inf, neginf=-np.inf)
+        cosmo = cclify_astropy_cosmo(cosmo)
+
+        gcm.set_cosmo_params_dict (cosmo)
+        gcm.set_halo_density_profile (halo_profile_model = halo_profile_model, delta_mdef = delta_mdef)
+        gcm.set_concentration (cdelta)
+        gcm.set_mass (mdelta)
+        
+        red_tangential_shear = gcm.eval_reduced_shear (r_proj, z_cluster, z_source)
         
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +
@@ -477,15 +485,14 @@ def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
     
     if z_src_model == 'single_plane':
         
-        kappa = predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef,
-                                    halo_profile_model,
-                                    z_src_model)
-    
-        gammat = predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,delta_mdef,
-                                    halo_profile_model,
-                                    z_src_model)
+        cosmo = cclify_astropy_cosmo(cosmo)
+
+        gcm.set_cosmo_params_dict (cosmo)
+        gcm.set_halo_density_profile (halo_profile_model = halo_profile_model, delta_mdef = delta_mdef)
+        gcm.set_concentration (cdelta)
+        gcm.set_mass (mdelta)
         
-        mu =  1. / ((1-kappa)**2-abs(gammat)**2)
+        mu = gcm.eval_magnification (r_proj, z_cluster, z_source)
     
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +\
