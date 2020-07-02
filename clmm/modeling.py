@@ -1,4 +1,4 @@
-""" Functions to model halo profiles """
+"""Cosmology-dependent functions to model halo profiles"""
 import cluster_toolkit as ct
 import numpy as np
 from astropy import units
@@ -6,6 +6,8 @@ from astropy.cosmology import LambdaCDM
 from .constants import Constants as const
 from .cluster_toolkit_patches import _patch_zevolution_cluster_toolkit_rho_m
 import warnings
+
+from .utils import _get_a_from_z, _get_z_from_a
 
 def cclify_astropy_cosmo(cosmoin):
     """ Given an astropy.cosmology object, creates a CCL-like dictionary
@@ -70,45 +72,6 @@ def astropyify_ccl_cosmo(cosmoin):
         omega_m = cosmoin['Omega_b'] + cosmoin['Omega_c']
         return LambdaCDM(H0=cosmoin['H0'], Om0=omega_m, Ob0=cosmoin['Omega_b'], Ode0=1.0-omega_m)
     raise TypeError("Only astropy LambdaCDM objects or dicts can be converted to astropy.")
-
-
-def _get_a_from_z(redshift):
-    """ Convert redshift to scale factor
-
-    Parameters
-    ----------
-    redshift : array_like
-        Redshift
-
-    Returns
-    -------
-    scale_factor : array_like
-        Scale factor
-    """
-    redshift = np.array(redshift)
-    if np.any(redshift < 0.0):
-        raise ValueError(f"Cannot convert negative redshift to scale factor")
-    return 1. / (1. + redshift)
-
-
-def _get_z_from_a(scale_factor):
-    """ Convert scale factor to redshift
-
-    Parameters
-    ----------
-    scale_factor : array_like
-        Scale factor
-
-    Returns
-    -------
-    redshift : array_like
-        Redshift
-    """
-    scale_factor = np.array(scale_factor)
-    if np.any(scale_factor > 1.0):
-        raise ValueError(f"Cannot convert invalid scale factor a > 1 to redshift")
-    return 1. / scale_factor - 1.
-
 
 
 def get_reduced_shear_from_convergence(shear, convergence):
@@ -178,8 +141,7 @@ def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profil
     return rho
 
 
-def predict_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
-                            halo_profile_model='nfw'):
+def predict_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profile_model='nfw'):
     r""" Computes the surface mass density
 
     .. math::
@@ -228,8 +190,7 @@ def predict_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     return sigma
 
 
-def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
-                                   halo_profile_model='nfw'):
+def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profile_model='nfw'):
     r""" Computes the excess surface density
 
     .. math::
@@ -273,7 +234,7 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
 
     # Computing sigma on a larger range than the radial range requested, with at least 1000 points.
     sigma_r_proj = np.logspace(np.log10(np.min(r_proj))-1, np.log10(np.max(r_proj))+1, np.max([1000,10*np.array(r_proj).size]))
-  
+
     if halo_profile_model.lower() == 'nfw':
         sigma = ct.deltasigma.Sigma_nfw_at_R(sigma_r_proj, mdelta, cdelta,
                                              omega_m_transformed, delta=delta_mdef)
@@ -364,14 +325,13 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
 
     beta_s = np.maximum(0., d_ls/d_s)
     sigma_c = clight_pc_s * clight_pc_s / (4.0 * np.pi * gnewt_pc3_msun_s2) * 1/d_l * np.divide(1., beta_s)
-    
+
     if np.any(np.array(z_source)<=z_cluster):
         warnings.warn(f'Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.')
     return sigma_c
 
 
-def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
-                             halo_profile_model='nfw', z_src_model='single_plane'):
+def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200, halo_profile_model='nfw', z_src_model='single_plane'):
     r"""Computes the tangential shear
 
     .. math::
@@ -426,7 +386,7 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     if z_src_model == 'single_plane':
         sigma_c = get_critical_surface_density(cosmo, z_cluster, z_source)
         gammat = np.nan_to_num(delta_sigma / sigma_c,  nan=np.nan, posinf=np.inf, neginf=-np.inf)
-        
+
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +
     #                               'delta_sigma/sigma_c gamma_t = Beta_s*gamma_inf')
@@ -435,15 +395,14 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     #                               'distribution of redshifts in each radial bin')
     else:
         raise ValueError("Unsupported z_src_model")
-    
+
     if np.any(np.array(z_source)<=z_cluster):
         warnings.warn(f'Some source redshifts are lower than the cluster redshift. shear = 0 for those galaxies.')
 
     return gammat
 
 
-def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
-                        halo_profile_model='nfw', z_src_model='single_plane'):
+def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200, halo_profile_model='nfw', z_src_model='single_plane'):
     r"""Computes the mass convergence
 
     .. math::
@@ -495,7 +454,7 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     if z_src_model == 'single_plane':
         sigma_c = get_critical_surface_density(cosmo, z_cluster, z_source)
         kappa = np.nan_to_num(sigma / sigma_c,  nan=np.nan, posinf=np.inf, neginf=-np.inf)
-        
+
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +\
     #                               'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
@@ -504,16 +463,14 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     #                               'distribution of redshifts in each radial bin')
     else:
         raise ValueError("Unsupported z_src_model")
-    
+
     if np.any(np.array(z_source)<=z_cluster):
         warnings.warn(f'Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.')
 
     return kappa
 
 
-def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
-                                     delta_mdef=200, halo_profile_model='nfw',
-                                     z_src_model='single_plane'):
+def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200, halo_profile_model='nfw', z_src_model='single_plane'):
     r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
 
     Parameters
@@ -558,7 +515,7 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
         gamma_t = predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
                                            delta_mdef, halo_profile_model, z_src_model)
         red_tangential_shear = np.nan_to_num(np.divide(gamma_t , (1 - kappa)),  nan=np.nan, posinf=np.inf, neginf=-np.inf)
-        
+
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +
     #                               'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
@@ -567,7 +524,7 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
     #                               'integrating distribution of redshifts in each radial bin')
     else:
         raise ValueError("Unsupported z_src_model")
-    
+
     if np.any(np.array(z_source)<=z_cluster):
         warnings.warn(f'Some source redshifts are lower than the cluster redshift. shear = 0 for those galaxies.')
 
@@ -575,10 +532,9 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
     return red_tangential_shear
 
 
-# The magnification is computed taking into account just the tangential shear. This is valid for 
+# The magnification is computed taking into account just the tangential shear. This is valid for
 # spherically averaged profiles, e.g., NFW and Einasto (by construction the cross shear is zero).
-def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
-                        halo_profile_model='nfw', z_src_model='single_plane'):
+def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200, halo_profile_model='nfw', z_src_model='single_plane'):
     r"""Computes the magnification
 
     .. math::
@@ -621,19 +577,19 @@ def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
     -----
     Need to figure out if we want to raise exceptions rather than errors here?
     """
-    
+
     if z_src_model == 'single_plane':
-        
+
         kappa = predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef,
                                     halo_profile_model,
                                     z_src_model)
-    
+
         gammat = predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,delta_mdef,
                                     halo_profile_model,
                                     z_src_model)
-        
+
         mu =  1. / ((1-kappa)**2-abs(gammat)**2)
-    
+
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +\
     #                               'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
@@ -642,9 +598,9 @@ def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
     #                               'distribution of redshifts in each radial bin')
     else:
         raise ValueError("Unsupported z_src_model")
-        
+
     if np.any(np.array(z_source)<=z_cluster):
         warnings.warn(f'Some source redshifts are lower than the cluster redshift. mu = 1 for those galaxies.')
 
-        
+
     return mu

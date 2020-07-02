@@ -29,6 +29,7 @@ class GalaxyCluster():
         if len(args)>0 or len(kwargs)>0:
             self._add_values(*args, **kwargs)
             self._check_types()
+
     def _add_values(self, unique_id: str, ra: float, dec: float, z: float,
                  galcat: GCData):
         """Add values for all attributes"""
@@ -38,6 +39,7 @@ class GalaxyCluster():
         self.z = z
         self.galcat = galcat
         return
+
     def _check_types(self):
         """Check types of all attributes"""
         if isinstance(self.unique_id, (int, str)): # should unique_id be a float?
@@ -66,17 +68,20 @@ class GalaxyCluster():
         if self.z < 0.:
             raise ValueError(f'z={self.z} must be greater than 0')
         return
+
     def save(self, filename, **kwargs):
         """Saves GalaxyCluster object to filename using Pickle"""
         with open(filename, 'wb') as fin:
             pickle.dump(self, fin, **kwargs)
         return
+
     def load(filename, **kwargs):
         """Loads GalaxyCluster object to filename using Pickle"""
         with open(filename, 'rb') as fin:
             self = pickle.load(fin, **kwargs)
         self._check_types()
         return self
+
     def __repr__(self):
         """Generates string for print(GalaxyCluster)"""
         output = f'GalaxyCluster {self.unique_id}: ' +\

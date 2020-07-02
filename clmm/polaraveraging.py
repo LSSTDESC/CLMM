@@ -1,4 +1,4 @@
-"""Functions to compute polar/azimuthal averages in radial bins"""
+"""Functions to compute polar/azimuthal averages of data in radial bins"""
 # try: # 7481794
 #     import pyccl as ccl
 # except ImportError:
@@ -9,18 +9,6 @@ import numpy as np
 from .gcdata import GCData
 from .utils import compute_radial_averages, make_bins, convert_units
 from .galaxycluster import GalaxyCluster
-
-# def _astropy_to_CCL_cosmo_object(astropy_cosmology_object): # 7481794
-#     """Generates a ccl cosmology object from an GCR or astropy cosmology object.
-#
-#     Adapted from https://github.com/LSSTDESC/CLMM/blob/issue/111/model-definition/clmm/modeling.py
-#     """
-#     apy_cosmo = astropy_cosmology_object
-#     ccl_cosmo = ccl.Cosmology(Omega_c=(apy_cosmo.Odm0-apy_cosmo.Ob0), Omega_b=apy_cosmo.Ob0,
-#                               h=apy_cosmo.h, n_s=apy_cosmo.n_s, sigma8=apy_cosmo.sigma8,
-#                               Omega_k=apy_cosmo.Ok0)
-#
-#     return ccl_cosmo
 
 
 def compute_tangential_and_cross_components(cluster=None,
@@ -184,13 +172,13 @@ def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_sourc
         raise ValueError("Cluster has an invalid ra in source catalog")
     if not all(-90. <= x_ <= 90 for x_ in dec_source_list):
         raise ValueError("Cluster has an invalid dec in the source catalog")
-    
+
     # Put angles between -pi and pi
     r2pi = lambda x: x - np.round(x/(2.0*math.pi))*2.0*math.pi
 
     deltax = r2pi (np.radians(ra_source_list - ra_lens)) * math.cos(math.radians(dec_lens))
     deltay = np.radians(dec_source_list - dec_lens)
-    
+
     # Ensure that abs(delta ra) < pi
     #deltax[deltax >= np.pi] = deltax[deltax >= np.pi] - 2.*np.pi
     #deltax[deltax < -np.pi] = deltax[deltax < -np.pi] + 2.*np.pi
@@ -231,125 +219,6 @@ def _compute_cross_shear(shear1, shear2, phi):
     For extended descriptions of parameters, see `compute_shear()` documentation.
     """
     return shear1 * np.sin(2.*phi) - shear2 * np.cos(2.*phi)
-
-
-def make_binned_profile(cluster,
-                       angsep_units, bin_units, bins=10, cosmo=None,
-                       tan_component_in='et', cross_component_in='ex',
-                       tan_component_out='gt', cross_component_out='gx', table_name='profile',
-                       add_to_cluster=True, include_empty_bins=False, gal_ids_in_bins=False):
-    r"""Compute the shear or ellipticity profile of the cluster
-
-    We assume that the cluster object contains information on the cross and
-    tangential shears or ellipticities and angular separation of the source galaxies
-
-    This function can be called in two ways using an instance of GalaxyCluster
-
-    1. Pass an instance of GalaxyCluster into the function::
-
-        make_shear_profile(cluster, 'radians', 'radians')
-
-    2. Call it as a method of a GalaxyCluster instance::
-
-        cluster.make_shear_profile('radians', 'radians')
-
-    Parameters
-    ----------
-    cluster : GalaxyCluster
-        Instance of GalaxyCluster that contains the cross and tangential shears or ellipticities of
-        each source galaxy in its `galcat`
-    angsep_units : str
-        Units of the calculated separation of the source galaxies
-        Allowed Options = ["radians"]
-    bin_units : str
-        Units to use for the radial bins of the shear profile
-        Allowed Options = ["radians", deg", "arcmin", "arcsec", kpc", "Mpc"]
-    bins : array_like, optional
-        User defined bins to use for the shear profile. If a list is provided, use that as
-        the bin edges. If a scalar is provided, create that many equally spaced bins between
-        the minimum and maximum angular separations in bin_units. If nothing is provided,
-        default to 10 equally spaced bins.
-    cosmo: dict, optional
-        Cosmology parameters to convert angular separations to physical distances
-    tan_component_in: string, optional
-        Name of the column in the `galcat` astropy table of the `cluster` object that contains
-        the tangential component to be binned. Default: 'et'
-    tan_component_out: string, optional
-        Name of the column in the `profile` table of the `cluster` object that will contain
-        the binned profile of the tangential component. Default: 'gx'
-    cross_component_in: string, optional
-        Name of the column in the `galcat` astropy table of the `cluster` object that contains
-        the cross component to be binned. Default: 'ex'
-    cross_component_out: string, optional
-        Name of the column in the `profile` table of the `cluster` object that will contain
-        the  binned profile of the cross component. Default: 'gx'
-    add_to_cluster: bool, optional
-        Attach the profile to the cluster object as `cluster.profile`
-    include_empty_bins: bool, optional
-        Also include empty bins in the returned table
-    gal_ids_in_bins: bool, optional
-        Also include the list of galaxies ID belonging to each bin in the returned table
-
-    Returns
-    -------
-    profile : GCData
-        Output table containing the radius grid points, the tangential and cross shear profiles
-        on that grid, and the errors in the two shear profiles. The errors are defined as the
-        standard errors in each bin.
-
-    Notes
-    -----
-    This is an example of a place where the cosmology-dependence can be sequestered to another module.
-    """
-    if not all([t_ in cluster.galcat.columns for t_ in (tan_component_in, cross_component_in, 'theta')]):
-        raise TypeError('Shear or ellipticity information is missing!  Galaxy catalog must have tangential' +\
-                        'and cross shears (gt,gx) or ellipticities (et,ex). Run compute_tangential_and_cross_components first.')
-    if 'z' not in cluster.galcat.columns:
-        raise TypeError('Missing galaxy redshifts!')
-
-    # Check to see if we need to do a unit conversion
-    if angsep_units is not bin_units:
-        source_seps = convert_units(cluster.galcat['theta'], angsep_units, bin_units,
-                                    redshift=cluster.z, cosmo=cosmo)
-    else:
-        source_seps = cluster.galcat['theta']
-
-    # Make bins if they are not provided
-    if not hasattr(bins, '__len__'):
-        bins = make_bins(np.min(source_seps), np.max(source_seps), bins)
-
-    # Compute the binned averages and associated errors
-    r_avg, gt_avg, gt_err, nsrc, binnumber = compute_radial_averages(
-        source_seps, cluster.galcat[tan_component_in].data, xbins=bins, error_model='std/sqrt_n')
-    r_avg, gx_avg, gx_err, _, _ = compute_radial_averages(
-        source_seps, cluster.galcat[cross_component_in].data, xbins=bins, error_model='std/sqrt_n')
-    r_avg, z_avg, z_err, _, _ = compute_radial_averages(
-        source_seps, cluster.galcat['z'].data, xbins=bins, error_model='std/sqrt_n')
-
-    # Make out table
-    profile_table = GCData([bins[:-1], r_avg, bins[1:], gt_avg, gt_err, gx_avg, gx_err,
-                            z_avg, z_err, nsrc],
-                            names=('radius_min', 'radius', 'radius_max',
-                                   tan_component_out, tan_component_out+'_err',
-                                   cross_component_out, cross_component_out+'_err',
-                                   'z', 'z_err', 'n_src'),
-                            meta={'cosmo':cosmo, 'bin_units':bin_units}, # Add metadata
-                            )
-    # add galaxy IDs
-    if gal_ids_in_bins:
-        if 'id' not in cluster.galcat.columns:
-            raise TypeError('Missing galaxy IDs!')
-        profile_table['gal_id'] = [list(cluster.galcat['id'][binnumber==i+1])
-                                    for i in np.arange(len(r_avg))]
-
-    # return empty bins?
-    if not include_empty_bins:
-        profile_table = profile_table[profile_table['n_src'] > 1]
-
-    if add_to_cluster:
-        setattr(cluster, table_name, profile_table)
-
-    return profile_table
 
 
 # Monkey patch functions onto Galaxy Cluster object

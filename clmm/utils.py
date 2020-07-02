@@ -1,7 +1,45 @@
-"""General utility functions that are used in multiple modules"""
+"""General data- and model-independent utility functions that are used in multiple modules"""
 import numpy as np
 from scipy.stats import binned_statistic
 from astropy import units as u
+from .hybrid import _convert_rad_to_mpc
+
+def _get_a_from_z(redshift):
+    """ Convert redshift to scale factor
+
+    Parameters
+    ----------
+    redshift : array_like
+        Redshift
+
+    Returns
+    -------
+    scale_factor : array_like
+        Scale factor
+    """
+    redshift = np.array(redshift)
+    if np.any(redshift < 0.0):
+        raise ValueError(f"Cannot convert negative redshift to scale factor")
+    return 1. / (1. + redshift)
+
+
+def _get_z_from_a(scale_factor):
+    """ Convert scale factor to redshift
+
+    Parameters
+    ----------
+    scale_factor : array_like
+        Scale factor
+
+    Returns
+    -------
+    redshift : array_like
+        Redshift
+    """
+    scale_factor = np.array(scale_factor)
+    if np.any(scale_factor > 1.0):
+        raise ValueError(f"Cannot convert invalid scale factor a > 1 to redshift")
+    return 1. / scale_factor - 1.
 
 
 def compute_radial_averages(xvals, yvals, xbins, error_model='std/sqrt_n'):
@@ -53,6 +91,7 @@ def compute_radial_averages(xvals, yvals, xbins, error_model='std/sqrt_n'):
 
     return meanx, meany, yerr, n, binnumber
 
+
 def make_bins(rmin, rmax, nbins=10, method='evenwidth', source_seps=None):
     """ Define bin edges
 
@@ -69,7 +108,7 @@ def make_bins(rmin, rmax, nbins=10, method='evenwidth', source_seps=None):
         'evenwidth' - Default, evenly spaced bins between rmin and rmax
         'evenlog10width' - Logspaced bins with even width in log10 between rmin and rmax
         'equaloccupation' - Bins with equal occupation numbers
-    source_seps : array-like 
+    source_seps : array-like
         Radial distance of source separations
 
     Returns
@@ -89,7 +128,7 @@ def make_bins(rmin, rmax, nbins=10, method='evenwidth', source_seps=None):
     elif method == 'equaloccupation':
         if source_seps is None:
             raise ValueError(f"Binning method '{method}' requires source separations array")
-        # by default, keep all galaxies 
+        # by default, keep all galaxies
         mask = np.full(len(source_seps), True)
         if rmin is not None or rmax is not None:
         # Need to filter source_seps to only keep galaxies in the [rmin, rmax]
@@ -103,106 +142,16 @@ def make_bins(rmin, rmax, nbins=10, method='evenwidth', source_seps=None):
     return binedges
 
 
-def convert_units(dist1, unit1, unit2, redshift=None, cosmo=None):
-    """ Convenience wrapper to convert between a combination of angular and physical units.
-
-    Supported units: radians, degrees, arcmin, arcsec, Mpc, kpc, pc
-
-    To convert between angular and physical units you must provide both
-    a redshift and a cosmology object.
-
-    Parameters
-    ----------
-    dist1 : array_like
-        Input distances
-    unit1 : str
-        Unit for the input distances
-    unit2 : str
-        Unit for the output distances
-    redshift : float
-        Redshift used to convert between angular and physical units
-    cosmo : astropy.cosmology
-        Astropy cosmology object to compute angular diameter distance to
-        convert between physical and angular units
-
-    Returns
-    -------
-    dist2: array_like
-        Input distances converted to unit2
-    """
-    angular_bank = {"radians": u.rad, "degrees": u.deg, "arcmin": u.arcmin, "arcsec": u.arcsec}
-    physical_bank = {"pc": u.pc, "kpc": u.kpc, "Mpc": u.Mpc}
-    units_bank = {**angular_bank, **physical_bank}
-
-    # Some error checking
-    if unit1 not in units_bank:
-        raise ValueError(f"Input units ({unit1}) not supported")
-    if unit2 not in units_bank:
-        raise ValueError(f"Output units ({unit2}) not supported")
-
-    # Try automated astropy unit conversion
-    try:
-        return (dist1 * units_bank[unit1]).to(units_bank[unit2]).value
-
-    # Otherwise do manual conversion
-    except u.UnitConversionError:
-        # Make sure that we were passed a redshift and cosmology
-        if redshift is None or cosmo is None:
-            raise TypeError("Redshift and cosmology must be specified to convert units")
-
-        # Redshift must be greater than zero for this approx
-        if not redshift > 0.0:
-            raise ValueError("Redshift must be greater than 0.")
-
-        # Convert angular to physical
-        if (unit1 in angular_bank) and (unit2 in physical_bank):
-            dist1_rad = (dist1 * units_bank[unit1]).to(u.rad).value
-            dist1_mpc = _convert_rad_to_mpc(dist1_rad, redshift, cosmo, do_inverse=False)
-            return (dist1_mpc * u.Mpc).to(units_bank[unit2]).value
-
-        # Otherwise physical to angular
-        dist1_mpc = (dist1 * units_bank[unit1]).to(u.Mpc).value
-        dist1_rad = _convert_rad_to_mpc(dist1_mpc, redshift, cosmo, do_inverse=True)
-        return (dist1_rad * u.rad).to(units_bank[unit2]).value
-
-
-def _convert_rad_to_mpc(dist1, redshift, cosmo, do_inverse=False):
-    r""" Convert between radians and Mpc using the small angle approximation
-    and :math:`d = D_A \theta`.
-
-    Parameters
-    ==========
-    dist1 : array_like
-        Input distances
-    redshift : float
-        Redshift used to convert between angular and physical units
-    cosmo : astropy.cosmology
-        Astropy cosmology object to compute angular diameter distance to
-        convert between physical and angular units
-    do_inverse : bool
-        If true, converts Mpc to radians
-
-    Returns
-    =======
-    dist2 : array_like
-        Converted distances
-    """
-    d_a = cosmo.angular_diameter_distance(redshift).to('Mpc').value
-    if do_inverse:
-        return dist1 / d_a
-    return dist1 * d_a
-
-
-def convert_shapes_to_epsilon(shape_1,shape_2, shape_definition='epsilon',kappa=0):
+def convert_shapes_to_epsilon(shape_1, shape_2, shape_definition='epsilon', kappa=0):
     """ Given shapes and their definition, convert them to epsilon ellipticities or reduced shears, which can be used in GalaxyCluster.galcat
     Definitions used here based on Bartelmann & Schneider 2001 (https://arxiv.org/pdf/astro-ph/9912508.pdf):
     axis ratio (q) and position angle (phi) (Not implemented)
     epsilon = (1-q/(1+q) exp(2i phi)
     chi = (1-q^2/(1+q^2) exp(2i phi)
-    shear (gamma) 
+    shear (gamma)
     reduced_shear (g) = gamma/(1-kappa)
     convergence (kappa)
-    
+
 
     Parameters
     ==========
@@ -222,7 +171,7 @@ def convert_shapes_to_epsilon(shape_1,shape_2, shape_definition='epsilon',kappa=
     epsilon_2 : array_like
         Epsilon ellipticity along secondary axis (epsilon2)
     """
-    
+
     if shape_definition=='epsilon' or shape_definition=='reduced_shear':
         return shape_1,shape_2
     elif shape_definition=='chi':
@@ -230,14 +179,14 @@ def convert_shapes_to_epsilon(shape_1,shape_2, shape_definition='epsilon',kappa=
         return shape_1*chi_to_eps_conversion,shape_2*chi_to_eps_conversion
     elif shape_definition=='shear':
         return shape_1/(1.-kappa), shape_2/(1.-kappa)
-    
+
     else:
         raise TypeError("Please choose epsilon, chi, shear, reduced_shear")
-        
 
-def build_ellipticities(q11,q22,q12):    
+
+def build_ellipticities(q11,q22,q12):
     """ Build ellipticties from second moments. See, e.g., Schneider et al. (2006)
-    
+
     Parameters
     ==========
     q11 : float or array
@@ -254,24 +203,24 @@ def build_ellipticities(q11,q22,q12):
     e1, e2 : float or array
         Ellipticities using the "epsilon definition"
     """
-    
+
     x1,x2 = (q11-q22)/(q11+q22),(2*q12)/(q11+q22)
     e1,e2 = (q11-q22)/(q11+q22+2*np.sqrt(q11*q22-q12*q12)),(2*q12)/(q11+q22+2*np.sqrt(q11*q22-q12*q12))
     return x1,x2, e1,e2
 
 
 def compute_lensed_ellipticity(ellipticity1_true, ellipticity2_true, shear1, shear2, convergence):
-    r""" Compute lensed ellipticities from the intrinsic ellipticities, shear and convergence. 
-    Following Schneider et al. (2006) 
+    r""" Compute lensed ellipticities from the intrinsic ellipticities, shear and convergence.
+    Following Schneider et al. (2006)
 
     .. math::
         \epsilon^{\rm lensed}=\epsilon^{\rm lensed}_1+i\epsilon^{\rm lensed}_2=\frac{\epsilon^{\rm true}+g}{1+g^\ast\epsilon^{\rm true}},
 
     where, the complex reduced shear :math:`g` is obtained from the shear :math:`\gamma=\gamma_1+i\gamma_2`
-    and convergence :math:`\kappa` as :math:`g = \gamma/(1-\kappa)`, and the complex intrinsic ellipticity 
+    and convergence :math:`\kappa` as :math:`g = \gamma/(1-\kappa)`, and the complex intrinsic ellipticity
     is :math:`\epsilon^{\rm true}=\epsilon^{\rm true}_1+i\epsilon^{\rm true}_2`
 
-    
+
     Parameters
     ==========
     ellipticity1_true : float or array
@@ -279,7 +228,7 @@ def compute_lensed_ellipticity(ellipticity1_true, ellipticity2_true, shear1, she
     ellipticity2_true : float or array
         Intrinsic ellipticity of the sources along the second axis
     shear1 :  float or array
-        Shear component along the principal axis at the source location 
+        Shear component along the principal axis at the source location
     shear2 :  float or array
         Shear component along the second axis at the source location
     convergence :  float or array
