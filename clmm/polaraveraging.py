@@ -32,10 +32,10 @@ def compute_tangential_and_cross_components(cluster=None,
                   add_to_cluster=True,  is_deltasigma=False, cosmo=None):
     r"""Computes tangential- and cross- components for shear or ellipticity
 
-    To compute the shear, we need the right ascension and declination of the lens and of
-    all of the sources. We also need the two shear components of all of the sources.
+    To do so, we need the right ascension and declination of the lens and of
+    all of the sources. We also need the two shape components of all of the sources.
 
-    These quantities can be handed to `compute_shear` in three ways
+    These quantities can be handed to `tangential_and_cross_components` in three ways
 
     1. Pass in each as parameters::
 
@@ -47,7 +47,7 @@ def compute_tangential_and_cross_components(cluster=None,
 
     3. As a method of `GalaxyCluster`::
 
-        cluster.compute_shear()
+        cluster.tangential_and_cross_components()
 
     The angular separation between the source and the lens, :math:`\theta`, and the azimuthal
     position of the source relative to the lens, :math:`\phi`, are computed within the function
@@ -73,6 +73,13 @@ def compute_tangential_and_cross_components(cluster=None,
         g_t =& -\left( g_1\cos\left(2\phi\right) - g_2\sin\left(2\phi\right)\right)\\
         g_x =& g_1 \sin\left(2\phi\right) - g_2\cos\left(2\phi\right)
 
+    Finally, and if requested by the user throught the `is_deltasigma` flag, an estimate of the excess surface density 
+    :math:`\Delta\Sigma` is obtained from
+    
+    .. math::
+
+        \Delta\Sigma_{t,x} = g_{t,x} \time \Sigma_c(cosmo, z_L, z_{\rm src})
+    where :math:`\Sigma_c` is the critical surface density that depends on the cosmology and on the lens and source redshifts.
 
     Parameters
     ----------
@@ -113,7 +120,6 @@ def compute_tangential_and_cross_components(cluster=None,
         If `True` and a cluster was input, add the computed shears to the `GalaxyCluster` object
     is_deltasigma: bool
         If `True`, the tangential and cross components returned are multiplied by Sigma_crit. Results in units of :math:`h\ M_\odot\ pc^{-2}`
-
     cosmo: astropy cosmology object
         Specifying a cosmology is required if `is_deltasigma` is True
 
