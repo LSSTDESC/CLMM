@@ -39,17 +39,17 @@ def compute_tangential_and_cross_components(cluster=None,
 
     1. Pass in each as parameters::
 
-        compute_shear(ra_lens, dec_lens, ra_source_list, dec_source_list, shape_component1, shape_component2)
+        compute_tangential_and_cross_components(ra_lens, dec_lens, ra_source_list, dec_source_list, shape_component1, shape_component2)
 
     2. Given a `GalaxyCluster` object::
 
-        compute_shear(cluster)
+        compute_tangential_and_cross_components(cluster)
 
     3. As a method of `GalaxyCluster`::
-
+    
         cluster.tangential_and_cross_components()
 
-    The angular separation between the source and the lens, :math:`\theta`, and the azimuthal
+    The angular separation between the source and the lens, :math:`\theta`, and the azimuthal 
     position of the source relative to the lens, :math:`\phi`, are computed within the function
     and the angular separation is returned.
 
@@ -67,18 +67,17 @@ def compute_tangential_and_cross_components(cluster=None,
     in Schrabback et al. (2018), arXiv:1611:03866
     which is consistent with arXiv:0509252
 
-
     .. math::
 
         g_t =& -\left( g_1\cos\left(2\phi\right) - g_2\sin\left(2\phi\right)\right)\\
         g_x =& g_1 \sin\left(2\phi\right) - g_2\cos\left(2\phi\right)
 
-    Finally, and if requested by the user throught the `is_deltasigma` flag, an estimate of the excess surface density 
-    :math:`\Delta\Sigma` is obtained from
+    Finally, and if requested by the user throught the `is_deltasigma` flag, an estimate of the excess surface density :math:`\hat{\Delta\Sigma}` is obtained from
     
     .. math::
 
-        \Delta\Sigma_{t,x} = g_{t,x} \time \Sigma_c(cosmo, z_L, z_{\rm src})
+        \hat{\Delta\Sigma_{t,x}} = g_{t,x} \time \Sigma_c(cosmo, z_L, z_{\rm src})
+        
     where :math:`\Sigma_c` is the critical surface density that depends on the cosmology and on the lens and source redshifts.
 
     Parameters
