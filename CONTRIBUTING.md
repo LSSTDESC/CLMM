@@ -218,6 +218,7 @@ Here's a list of additional resources which you may find helpful in navigating g
 * [Alex Malz](https://github.com/aimalz) (NYU --> RUB)
 * [Tom McClintock](https://github.com/tmcclintock) (BNL)
 * [Hironao Miyatake](https://github.com/HironaoMiyatake) (Nagoya)
+* [Constantin Payerne](https://github.com/payerne) (LPSC)
 * [Mariana Penna-Lima](https://github.com/pennalima) (UnB - Brasilia / LIneA)
 * [Marina Ricci](https://github.com/marina-ricci) (LAPP)
 * [Cristobal Sifon](https://github.com/cristobal-sifon) (Princeton)
@@ -227,4 +228,4 @@ Here's a list of additional resources which you may find helpful in navigating g
 * [Heidi Wu](https://github.com/hywu) (Ohio)
 * [Mijin Yoon](https://github.com/mijinyoon) (RUB)
 
-The current administrators of the repository are Michel Aguena, Camille Avestruz, Matthew Kirby, and Alex Malz.
+The current administrators of the repository are Michel Aguena, Camille Avestruz, Céline Combet, Matthew Kirby, and Alex Malz.
