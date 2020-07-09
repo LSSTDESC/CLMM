@@ -1,7 +1,9 @@
-"""General data- and model-independent utility functions that are used in multiple modules"""
+"""General data- and model- and GCData- independent utility functions that are used in multiple modules"""
+import math
 import numpy as np
 from scipy.stats import binned_statistic
-from astropy import units as u
+import warnings
+
 from .hybrid import _convert_rad_to_mpc
 
 def _get_a_from_z(redshift):
@@ -173,10 +175,10 @@ def convert_shapes_to_epsilon(shape_1, shape_2, shape_definition='epsilon', kapp
     """
 
     if shape_definition=='epsilon' or shape_definition=='reduced_shear':
-        return shape_1,shape_2
+        return shape_1, shape_2
     elif shape_definition=='chi':
         chi_to_eps_conversion = 1./(1.+(1-(shape_1**2 + shape_2**2))**0.5)
-        return shape_1*chi_to_eps_conversion,shape_2*chi_to_eps_conversion
+        return shape_1*chi_to_eps_conversion, shape_2*chi_to_eps_conversion
     elif shape_definition=='shear':
         return shape_1/(1.-kappa), shape_2/(1.-kappa)
 
@@ -184,7 +186,7 @@ def convert_shapes_to_epsilon(shape_1, shape_2, shape_definition='epsilon', kapp
         raise TypeError("Please choose epsilon, chi, shear, reduced_shear")
 
 
-def build_ellipticities(q11,q22,q12):
+def build_ellipticities(q11, q22, q12):
     """ Build ellipticties from second moments. See, e.g., Schneider et al. (2006)
 
     Parameters
@@ -204,8 +206,8 @@ def build_ellipticities(q11,q22,q12):
         Ellipticities using the "epsilon definition"
     """
 
-    x1,x2 = (q11-q22)/(q11+q22),(2*q12)/(q11+q22)
-    e1,e2 = (q11-q22)/(q11+q22+2*np.sqrt(q11*q22-q12*q12)),(2*q12)/(q11+q22+2*np.sqrt(q11*q22-q12*q12))
+    x1, x2 = (q11-q22)/(q11+q22), (2*q12)/(q11+q22)
+    e1, e2 = (q11-q22)/(q11+q22+2*np.sqrt(q11*q22-q12*q12)), (2*q12)/(q11+q22+2*np.sqrt(q11*q22-q12*q12))
     return x1,x2, e1,e2
 
 
@@ -244,3 +246,92 @@ def compute_lensed_ellipticity(ellipticity1_true, ellipticity2_true, shear1, she
     reduced_shear = shear / (1.0 - convergence) # reduced shear
     e = (ellipticity_true + reduced_shear) / (1.0 + reduced_shear.conjugate()*ellipticity_true) # lensed ellipticity
     return np.real(e), np.imag(e)
+
+
+def _compute_tangential_shear(shear1, shear2, phi):#project_tangential
+    r"""Compute the tangential shear given the two shears and azimuthal positions for
+    a single source or list of sources.
+
+    We compute the tangential shear following Eq. 7 of Schrabback et al. 2018, arXiv:1611:03866
+    .. math::
+        g_t = -\left( g_1\cos\left(2\phi\right) - g_2\sin\left(2\phi\right)\right)
+
+    For extended descriptions of parameters, see `compute_shear()` documentation.
+    """
+    return - (shear1 * np.cos(2.*phi) + shear2 * np.sin(2.*phi))
+
+
+def _compute_cross_shear(shear1, shear2, phi):#project_cross
+    r"""Compute the cross shear given the two shears and azimuthal position for a single
+    source of list of sources.
+
+    We compute the cross shear following Eq. 8 of Schrabback et al. 2018, arXiv:1611:03866
+    also checked arxiv 0509252
+    .. math::
+        g_x = g_1 \sin\left(2\phi\right) - g_2\cos\left(2\phi\right)
+
+    For extended descriptions of parameters, see `compute_shear()` documentation.
+    """
+    return shear1 * np.sin(2.*phi) - shear2 * np.cos(2.*phi)
+
+
+def get_reduced_shear_from_convergence(shear, convergence):
+    """ Calculates reduced shear from shear and convergence
+
+    Parameters
+    ----------
+    shear : array_like
+        Shear
+    convergence : array_like
+        Convergence
+
+    Returns:
+    reduced_shear : array_like
+        Reduced shear
+    """
+    shear, convergence = np.array(shear), np.array(convergence)
+    reduced_shear = shear / (1. - convergence)
+    return reduced_shear
+
+
+def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_source_list):
+    r"""Compute the angular separation between the lens and the source and the azimuthal
+    angle from the lens to the source in radians.
+
+    In the flat sky approximation, these angles are calculated using
+    .. math::
+        \theta = \sqrt{\left(\delta_s - \delta_l\right)^2 +
+        \left(\alpha_l-\alpha_s\right)^2\cos^2(\delta_l)}
+
+        \tan\phi = \frac{\delta_s - \delta_l}{\left(\alpha_l - \alpha_s\right)\cos(\delta_l)}
+
+    For extended descriptions of parameters, see `compute_shear()` documentation.
+    """
+    if not -360. <= ra_lens <= 360.:
+        raise ValueError(f"ra = {ra_lens} of lens if out of domain")
+    if not -90. <= dec_lens <= 90.:
+        raise ValueError(f"dec = {dec_lens} of lens if out of domain")
+    if not all(-360. <= x_ <= 360. for x_ in ra_source_list):
+        raise ValueError("Cluster has an invalid ra in source catalog")
+    if not all(-90. <= x_ <= 90 for x_ in dec_source_list):
+        raise ValueError("Cluster has an invalid dec in the source catalog")
+
+    # Put angles between -pi and pi
+    r2pi = lambda x: x - np.round(x/(2.0*math.pi))*2.0*math.pi
+
+    deltax = r2pi (np.radians(ra_source_list - ra_lens)) * math.cos(math.radians(dec_lens))
+    deltay = np.radians(dec_source_list - dec_lens)
+
+    # Ensure that abs(delta ra) < pi
+    #deltax[deltax >= np.pi] = deltax[deltax >= np.pi] - 2.*np.pi
+    #deltax[deltax < -np.pi] = deltax[deltax < -np.pi] + 2.*np.pi
+
+    angsep = np.sqrt(deltax**2 + deltay**2)
+    phi = np.arctan2(deltay, -deltax)
+    # Forcing phi to be zero everytime angsep is zero. This is necessary due to arctan2 features (it returns ).
+    phi[angsep==0.0] = 0.0
+
+    if np.any(angsep > np.pi/180.):
+        warnings.warn("Using the flat-sky approximation with separations >1 deg may be inaccurate")
+
+    return angsep, phi

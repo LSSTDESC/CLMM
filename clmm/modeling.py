@@ -1,12 +1,12 @@
 """Cosmology-dependent functions to model halo profiles"""
-import cluster_toolkit as ct
-import numpy as np
 from astropy import units
 from astropy.cosmology import LambdaCDM
-from .constants import Constants as const
-from .cluster_toolkit_patches import _patch_zevolution_cluster_toolkit_rho_m
+import cluster_toolkit as ct
+import numpy as np
 import warnings
 
+from .constants import Constants as const
+from .cluster_toolkit_patches import _patch_zevolution_cluster_toolkit_rho_m
 from .utils import _get_a_from_z, _get_z_from_a
 
 def cclify_astropy_cosmo(cosmoin):
@@ -74,23 +74,31 @@ def astropyify_ccl_cosmo(cosmoin):
     raise TypeError("Only astropy LambdaCDM objects or dicts can be converted to astropy.")
 
 
-def get_reduced_shear_from_convergence(shear, convergence):
-    """ Calculates reduced shear from shear and convergence
+def _convert_rad_to_mpc(dist1, redshift, cosmo, do_inverse=False):
+    r""" Convert between radians and Mpc using the small angle approximation
+    and :math:`d = D_A \theta`.
 
     Parameters
-    ----------
-    shear : array_like
-        Shear
-    convergence : array_like
-        Convergence
+    ==========
+    dist1 : array_like
+        Input distances
+    redshift : float
+        Redshift used to convert between angular and physical units
+    cosmo : astropy.cosmology
+        Astropy cosmology object to compute angular diameter distance to
+        convert between physical and angular units
+    do_inverse : bool
+        If true, converts Mpc to radians
 
-    Returns:
-    reduced_shear : array_like
-        Reduced shear
+    Returns
+    =======
+    dist2 : array_like
+        Converted distances
     """
-    shear, convergence = np.array(shear), np.array(convergence)
-    reduced_shear = shear / (1. - convergence)
-    return reduced_shear
+    d_a = cosmo.angular_diameter_distance(redshift).to('Mpc').value
+    if do_inverse:
+        return dist1 / d_a
+    return dist1 * d_a
 
 
 def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profile_model='nfw'):

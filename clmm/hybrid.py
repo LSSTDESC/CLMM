@@ -1,4 +1,7 @@
-"""Functions requiring both data and model assumptions"""
+"""Functions requiring both model and GCData assumptions"""
+
+from astropy import units as u
+
 # function pointer instead of keywords as cosmo.sigma_crit_filter
 # compute tangential and cross in util and appears in calls for polaraveraging
 #
@@ -9,32 +12,6 @@
 #
 # agnostic version in utils, can call directly if user specifies everything or call from 3 modules with our objects
 # base versions in util, dataoperations in
-
-def _convert_rad_to_mpc(dist1, redshift, cosmo, do_inverse=False):
-    r""" Convert between radians and Mpc using the small angle approximation
-    and :math:`d = D_A \theta`.
-
-    Parameters
-    ==========
-    dist1 : array_like
-        Input distances
-    redshift : float
-        Redshift used to convert between angular and physical units
-    cosmo : astropy.cosmology
-        Astropy cosmology object to compute angular diameter distance to
-        convert between physical and angular units
-    do_inverse : bool
-        If true, converts Mpc to radians
-
-    Returns
-    =======
-    dist2 : array_like
-        Converted distances
-    """
-    d_a = cosmo.angular_diameter_distance(redshift).to('Mpc').value
-    if do_inverse:
-        return dist1 / d_a
-    return dist1 * d_a
 
 def convert_units(dist1, unit1, unit2, redshift=None, cosmo=None):
     """ Convenience wrapper to convert between a combination of angular and physical units.
@@ -62,6 +39,10 @@ def convert_units(dist1, unit1, unit2, redshift=None, cosmo=None):
     -------
     dist2: array_like
         Input distances converted to unit2
+
+    Notes
+    -----
+    Should we make this two separate functions, one cosmology-dependent and one cosmology-independent?
     """
     angular_bank = {"radians": u.rad, "degrees": u.deg, "arcmin": u.arcmin, "arcsec": u.arcsec}
     physical_bank = {"pc": u.pc, "kpc": u.kpc, "Mpc": u.Mpc}
@@ -99,11 +80,7 @@ def convert_units(dist1, unit1, unit2, redshift=None, cosmo=None):
         return (dist1_rad * u.rad).to(units_bank[unit2]).value
 
 
-def make_binned_profile(cluster,
-                       angsep_units, bin_units, bins=10, cosmo=None,
-                       tan_component_in='et', cross_component_in='ex',
-                       tan_component_out='gt', cross_component_out='gx', table_name='profile',
-                       add_to_cluster=True, include_empty_bins=False, gal_ids_in_bins=False):
+def make_binned_profile(cluster, angsep_units, bin_units, bins=10, cosmo=None, tan_component_in='et', cross_component_in='ex', tan_component_out='gt', cross_component_out='gx', table_name='profile', add_to_cluster=True, include_empty_bins=False, gal_ids_in_bins=False):
     r"""Compute the shear or ellipticity profile of the cluster
 
     We assume that the cluster object contains information on the cross and
