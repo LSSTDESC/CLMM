@@ -46,10 +46,10 @@ def compute_tangential_and_cross_components(cluster=None,
         compute_tangential_and_cross_components(cluster)
 
     3. As a method of `GalaxyCluster`::
-    
+
         cluster.tangential_and_cross_components()
 
-    The angular separation between the source and the lens, :math:`\theta`, and the azimuthal 
+    The angular separation between the source and the lens, :math:`\theta`, and the azimuthal
     position of the source relative to the lens, :math:`\phi`, are computed within the function
     and the angular separation is returned.
 
@@ -73,11 +73,11 @@ def compute_tangential_and_cross_components(cluster=None,
         g_x =& g_1 \sin\left(2\phi\right) - g_2\cos\left(2\phi\right)
 
     Finally, and if requested by the user throught the `is_deltasigma` flag, an estimate of the excess surface density :math:`\widehat{\Delta\Sigma}` is obtained from
-    
+
     .. math::
 
         \widehat{\Delta\Sigma_{t,x}} = g_{t,x} \times \Sigma_c(cosmo, z_L, z_{\rm src})
-        
+
     where :math:`\Sigma_c` is the critical surface density that depends on the cosmology and on the lens and source redshifts. If :math:`g_{t,x}` correspond to the shear, the above expression is an accurate. However, if :math:`g_{t,x}` correspond to ellipticities or reduced shear, this expression only gives an estimate :math:`\widehat{\Delta\Sigma_{t,x}}`, valid only in the weal lensing regime.
 
     Parameters
@@ -131,7 +131,7 @@ def compute_tangential_and_cross_components(cluster=None,
     cross_component: array_like
         Cross shear (or assimilated quantity) for each source galaxy
     """
-    
+
     if cluster is not None:
         required_cols = ['ra', 'dec', shape_component1, shape_component2]
         if not all([t_ in cluster.galcat.columns for t_ in required_cols]):
@@ -141,7 +141,7 @@ def compute_tangential_and_cross_components(cluster=None,
         ra_lens, dec_lens = cluster.ra, cluster.dec
         ra_source_list, dec_source_list = cluster.galcat['ra'], cluster.galcat['dec']
         shear1, shear2 = cluster.galcat[shape_component1], cluster.galcat[shape_component2]
-        
+
 
     # If a cluster object is not specified, we require all of these inputs
     elif any(t_ is None for t_ in (ra_lens, dec_lens, ra_source_list, dec_source_list,
@@ -167,11 +167,11 @@ def compute_tangential_and_cross_components(cluster=None,
     # Compute the tangential and cross shears
     tangential_comp = _compute_tangential_shear(shear1, shear2, phi)
     cross_comp = _compute_cross_shear(shear1, shear2, phi)
-    
+
     # If the is_deltasigma flag is True, multiply the results by Sigma_crit.
     # Need to verify that cosmology and redshifts are provided
     if is_deltasigma:
-        if cluster is not None: 
+        if cluster is not None:
             if 'z' not in cluster.galcat.columns:
                 raise TypeError('GalaxyCluster\'s galaxy catalog missing the redshift column.' +\
                                 'Cannot compute DeltaSigma')
@@ -186,12 +186,12 @@ def compute_tangential_and_cross_components(cluster=None,
         Sigma_c = get_critical_surface_density(cosmo, z_lens, z_source_list)
         tangential_comp *= Sigma_c
         cross_comp *= Sigma_c
-    
+
     if add_to_cluster:
         cluster.galcat['theta'] = angsep
         cluster.galcat[tan_component] = tangential_comp
         cluster.galcat[cross_component] = cross_comp
-        if is_deltasigma: 
+        if is_deltasigma:
             # also save Sigma_c as new column as it is often
             # used in the weighing scheme when stacking data
             cluster.galcat['sigma_c'] = Sigma_c
@@ -220,13 +220,13 @@ def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_sourc
         raise ValueError("Cluster has an invalid ra in source catalog")
     if not all(-90. <= x_ <= 90 for x_ in dec_source_list):
         raise ValueError("Cluster has an invalid dec in the source catalog")
-    
+
     # Put angles between -pi and pi
     r2pi = lambda x: x - np.round(x/(2.0*math.pi))*2.0*math.pi
 
     deltax = r2pi (np.radians(ra_source_list - ra_lens)) * math.cos(math.radians(dec_lens))
     deltay = np.radians(dec_source_list - dec_lens)
-    
+
     # Ensure that abs(delta ra) < pi
     #deltax[deltax >= np.pi] = deltax[deltax >= np.pi] - 2.*np.pi
     #deltax[deltax < -np.pi] = deltax[deltax < -np.pi] + 2.*np.pi
