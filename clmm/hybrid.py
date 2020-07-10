@@ -2,6 +2,9 @@
 
 from astropy import units as u
 
+from .modeling import _convert_rad_to_mpc
+from .utils import compute_radial_averages, make_bins
+
 # function pointer instead of keywords as cosmo.sigma_crit_filter
 # compute tangential and cross in util and appears in calls for polaraveraging
 #

@@ -1,7 +1,7 @@
 """ Provide a consistent set of constants to use through CLMM """
-from enum import Enum
 import astropy.constants as astropyconst
 import astropy.units as u
+from enum import Enum
 
 
 class Constants(Enum):

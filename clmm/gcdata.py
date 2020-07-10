@@ -22,6 +22,7 @@ class GCData(APtable):
         *args, **kwargs: Same used for astropy tables
         """
         APtable.__init__(self, *args, **kwargs)
+
     def add_meta(self, name, value):
         """
         Add metadata to GCData
@@ -39,6 +40,7 @@ class GCData(APtable):
         """
         self.meta[name] = value
         return
+
     def add_metas(self, names, values):
         """
         Add metadatas to GCData
@@ -57,6 +59,7 @@ class GCData(APtable):
         for name, vale in zip(names, values):
             self.add_meta(name, value)
         return
+
     def __repr__(self):
         """Generates string for repr(GCData)"""
         output = f'{self.__class__.__name__}('
@@ -65,6 +68,7 @@ class GCData(APtable):
             + ['columns: '+', '.join(self.colnames)])
         output += ')'
         return output
+
     def __str__(self):
         """Generates string for print(GCData)"""
         output = f'self.__class__.__name__\n> defined by:'
@@ -73,6 +77,7 @@ class GCData(APtable):
         output += f'\n> with columns: '
         output += ', '.join(self.colnames)
         return output
+        
     def __getitem__(self, item):
         """
         Makes sure GCData keeps its properties after [] operations are used
@@ -159,5 +164,5 @@ Note: Not being used anymore
 #        for match in found:
 #            if check_subdict(match.specs, lookup_specs):
 #                return [match]
-#        found = [] 
+#        found = []
 #    return found

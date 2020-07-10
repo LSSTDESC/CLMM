@@ -8,11 +8,8 @@ import warnings
 
 from .galaxycluster import GalaxyCluster
 from .gcdata import GCData
-from .utils import compute_radial_averages, make_bins, convert_units, _compute_tangential_shear, _compute_cross_shear
-
 from .hybrid import make_binned_profile
-from .modeling import cclify_astropy_cosmo, angular_diameter_dist_a1a2, predict_tangential_shear, predict_convergence, predict_reduced_tangential_shear, astropyify_ccl_cosmo, predict_magnification
-from .utils import compute_radial_averages, make_bins, convert_shapes_to_epsilon, build_ellipticities, compute_lensed_ellipticity, get_reduced_shear_from_convergence
+from .utils import _compute_tangential_shear, _compute_cross_shear, _compute_lensing_angles_flatsky
 
 
 def compute_tangential_and_cross_components(cluster=None, shape_component1='e1', shape_component2='e2', tan_component='et', cross_component='ex', ra_lens=None, dec_lens=None, ra_source_list=None, dec_source_list=None, shear1=None, shear2=None, geometry='flat', add_to_cluster=True):

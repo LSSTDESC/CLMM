@@ -4,7 +4,6 @@ import numpy as np
 from scipy.stats import binned_statistic
 import warnings
 
-from .hybrid import _convert_rad_to_mpc
 
 def _get_a_from_z(redshift):
     """ Convert redshift to scale factor
@@ -172,6 +171,10 @@ def convert_shapes_to_epsilon(shape_1, shape_2, shape_definition='epsilon', kapp
         Epsilon ellipticity along principal axis (epsilon1)
     epsilon_2 : array_like
         Epsilon ellipticity along secondary axis (epsilon2)
+
+    Notes
+    -----
+    TODO: change name `epsilon`-->`ellipticities`
     """
 
     if shape_definition=='epsilon' or shape_definition=='reduced_shear':
