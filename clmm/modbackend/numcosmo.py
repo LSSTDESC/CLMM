@@ -6,7 +6,7 @@ gi.require_version('NumCosmoMath', '1.0')
 from gi.repository import NumCosmo as Nc
 from gi.repository import NumCosmoMath as Ncm
 
-from .cluster_toolkit_patches import _patch_zevolution_cluster_toolkit_rho_m
+from .cluster_toolkit_patches import _patch_comoving_coord_cluster_toolkit_rho_m
 
 import numpy as np
 import warnings
@@ -46,7 +46,7 @@ class NumCosmoCLMModeling (CLMModeling):
         self.smd = Nc.WLSurfaceMassDensity.new (self.dist)
         self.smd.prepare (self.cosmo)
         
-        self.cor_factor = 2.77533742639e+11 * _patch_zevolution_cluster_toolkit_rho_m (1.0, 0.0) / Ncm.C.crit_mass_density_h2_solar_mass_Mpc3 ()
+        self.cor_factor = 2.77533742639e+11 * _patch_comoving_coord_cluster_toolkit_rho_m (1.0, 0.0) / Ncm.C.crit_mass_density_h2_solar_mass_Mpc3 ()
 
     def set_cosmo_params_dict (self, cosmo_dict):
         if 'H0' in cosmo_dict:

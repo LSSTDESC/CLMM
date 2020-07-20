@@ -2,7 +2,7 @@
 
 import pyccl as ccl
 
-from .cluster_toolkit_patches import _patch_zevolution_cluster_toolkit_rho_m
+from .cluster_toolkit_patches import _patch_comoving_coord_cluster_toolkit_rho_m
 
 import numpy as np
 import warnings
@@ -32,7 +32,7 @@ class CCLCLMModeling (CLMModeling):
         self.set_cosmo_params_dict ({})
         self.set_halo_density_profile (halo_profile_model, massdef, delta_mdef)
         
-        self.cor_factor = 1.0 #2.77533742639e+11 * _patch_zevolution_cluster_toolkit_rho_m (1.0, 0.0) / Ncm.C.crit_mass_density_h2_solar_mass_Mpc3 ()
+        self.cor_factor = 1.0 #2.77533742639e+11 * _patch_comoving_coord_cluster_toolkit_rho_m (1.0, 0.0) / Ncm.C.crit_mass_density_h2_solar_mass_Mpc3 ()
 
     def set_cosmo_params_dict (self, cosmo_dict):
         h = 0.67

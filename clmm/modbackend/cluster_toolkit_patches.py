@@ -3,14 +3,12 @@
 import numpy as np
 from ..constants import Constants as c
 
-def _patch_zevolution_cluster_toolkit_rho_m(omega_m, redshift):
-    r""" Evolve the matter density, rho_m, in cluster_toolkit with redshift
-
-    We currently use this as a patch to fix `cluster_toolkit`'s z=0 limitation.
-    It works by passing :math:`\Omega_m * (1+z)^3` instead of :math:`\Omega_m(z=0)`.
-    This density is only used to compute :math:`\rho_m` to convert between mass and
-    radius. So we are able to get the redshift evolution of :math:`rho_m` by passing
-    in the evolution alongside :math:`\Omega_m`
+def _patch_comoving_coord_cluster_toolkit_rho_m(omega_m, redshift):
+    r""" Make use of proper distances instead of comoving in cluster_toolkit
+    cluster_toolkit works in comoving coordinates, so the distances have to be converted
+    We are able to make this correction by passing :math:`\Omega_m * (1+z)^3` instead
+    of :math:`\Omega_m(z=0)`. It works because `\Omega_m` is only used in cluster_toolkit
+    to convert between mass and radius.
 
     Parameters
     ----------

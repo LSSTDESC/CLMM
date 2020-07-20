@@ -5,7 +5,6 @@ import numpy as np
 from astropy import units
 from astropy.cosmology import LambdaCDM
 from ..constants import Constants as const
-from .cluster_toolkit_patches import _patch_zevolution_cluster_toolkit_rho_m
 import warnings
 
 __all__ = ['astropyify_ccl_cosmo', 'cclify_astropy_cosmo', '_get_a_from_z', 
