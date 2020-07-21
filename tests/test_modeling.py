@@ -394,7 +394,7 @@ def test_shear_convergence_unittests(modeling_data):
     # Validate magnification
     assert_allclose(md.predict_magnification(cosmo=cosmo, **cfg['GAMMA_PARAMS']),
                     1. / ((1-kappa)**2-abs(gammat)**2), 1.0e-10)
-    assert_allclose(1. / ((1-kappa*sigmac_corr)**2-abs(gammat*sigmac_corr)**2), cfg['numcosmo_profiles']['mu'], 1.0e-7)
+    assert_allclose(1. / ((1-kappa*sigmac_corr)**2-abs(gammat*sigmac_corr)**2), cfg['numcosmo_profiles']['mu'], 4.0e-7)
     
 
     # Check that shear, reduced shear and convergence return zero and magnification returns one if source is in front of the cluster

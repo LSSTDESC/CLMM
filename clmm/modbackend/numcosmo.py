@@ -146,15 +146,7 @@ class NumCosmoCLMModeling (CLMModeling):
 
     def eval_reduced_shear (self, r_proj, z_cl, z_src):
         h   = self.cosmo.h ()
-        
         return self.smd.reduced_shear_array (self.hdpm, self.cosmo, np.atleast_1d (r_proj), 1.0 / h, 1.0, np.atleast_1d (z_src), z_cl, z_cl)
-
-        #f = lambda r_proj, z_src, z_cl: self.smd.reduced_shear (self.hdpm, self.cosmo, r_proj / h, z_src, z_cl, z_cl)
-        #BLE = np.vectorize (f) (r_proj, z_src, z_cl)
-        
-        #print (BLA - BLE)
-        
-        #return BLE
 
     def eval_magnification (self, r_proj, z_cl, z_src):
         h   = self.cosmo.h ()

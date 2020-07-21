@@ -3,7 +3,7 @@ import importlib
 import clmm
 import os
 
-@pytest.fixture (scope = "module", params = ["ct", "nc"]) #, "ccl"]) # Removed CCL for now
+@pytest.fixture (scope = "module", params = ["ct", "nc", "ccl"])
 def modeling_data (request):
     param = request.param
 
