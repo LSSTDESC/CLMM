@@ -15,7 +15,7 @@ from . import func_layer
 from . func_layer import *
 from . clmm_modeling import CLMModeling
 
-__all__ = ['NumCosmoCLMModeling'] + func_layer.__all__
+__all__ = ['NumCosmoCLMModeling', 'Modeling'] + func_layer.__all__
 
 class NumCosmoCLMModeling (CLMModeling):
     def __init__ (self, massdef = 'mean', delta_mdef = 200, halo_profile_model = 'nfw', z_max = 5.0):
@@ -153,6 +153,8 @@ class NumCosmoCLMModeling (CLMModeling):
 
         f = lambda r_proj, z_src, z_cl: self.smd.magnification (self.hdpm, self.cosmo, r_proj / h, z_src, z_cl, z_cl)
         return np.vectorize (f) (r_proj, z_src, z_cl)
+
+Modeling = NumCosmoCLMModeling
 
 func_layer.gcm = NumCosmoCLMModeling ()
 

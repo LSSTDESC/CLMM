@@ -13,7 +13,7 @@ __all__ = generic.__all__ + ['get_3d_density', 'predict_surface_density',
            'predict_excess_surface_density', 'angular_diameter_dist_a1a2',
            'get_critical_surface_density', 'predict_tangential_shear',
            'predict_convergence', 'predict_reduced_tangential_shear',
-           'predict_magnification']
+           'predict_magnification', 'Modeling']
 
 
 def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profile_model='nfw'):
@@ -534,3 +534,9 @@ def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
 
         
     return mu
+
+def ctCLMModeling():
+    raise NotImplementedError ("cluster_toolkit does not implement an OO interface.")
+
+Modeling = ctCLMModeling
+

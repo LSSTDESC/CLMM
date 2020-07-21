@@ -11,7 +11,7 @@ from . import func_layer
 from . func_layer import *
 from . clmm_modeling import CLMModeling
 
-__all__ = ['CCLCLMModeling'] + func_layer.__all__
+__all__ = ['CCLCLMModeling', 'Modeling'] + func_layer.__all__
 
 class CCLCLMModeling (CLMModeling):
     def __init__ (self, massdef = 'mean', delta_mdef = 200, halo_profile_model = 'nfw', z_max = 5.0):
@@ -155,6 +155,8 @@ class CCLCLMModeling (CLMModeling):
 
         return 1.0 / ((1.0 - kappa)**2 - np.abs (gamma_t)**2)
 
+
+Modeling = CCLCLMModeling
 
 func_layer.gcm = CCLCLMModeling ()
 
