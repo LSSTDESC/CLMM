@@ -1,6 +1,5 @@
 # Functions to model halo profiles
 
-import cluster_toolkit as ct
 import numpy as np
 from astropy import units
 from astropy.cosmology import LambdaCDM
