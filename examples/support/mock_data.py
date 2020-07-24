@@ -8,7 +8,7 @@ from clmm.modeling import predict_reduced_tangential_shear, angular_diameter_dis
 
 
 def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta_SO, zsrc, zsrc_min=cluster_z,
-                            zsrc_max=7., field_size=4., shapenoise=None, photoz_sigma_unscaled=None, nretry=5):
+                            zsrc_max=7., field_size=8., shapenoise=None, photoz_sigma_unscaled=None, nretry=5):
     """Generates a mock dataset of sheared background galaxies.
 
     We build galaxy catalogs following a series of steps.
