@@ -83,7 +83,8 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta
     zsrc_max : float, optional
         If source redshifts are drawn, the maximum source redshift
     field_size : float
-        The size of the field (field_size x field_size) to be simulated. In Mpc/h at the cluster redshift
+        The size of the field (field_size x field_size) to be simulated. 
+        Proper distance in Mpc/h at the cluster redshift.
     shapenoise : float, optional
         If set, applies Gaussian shape noise to the galaxy shapes with a width set by `shapenoise`
     photoz_sigma_unscaled : float, optional
@@ -180,6 +181,32 @@ def _draw_source_redshifts(zsrc, cluster_z, zsrc_min, zsrc_max, ngals):
 
     Uses a sampling technique found in Numerical Recipes in C, Chap 7.2: Transformation Method.
     Pulling out random values from a given probability distribution.
+    
+        Parameters
+    ----------
+    cluster_z : float
+        Cluster redshift
+    ngals : float
+        Number of galaxies to generate
+    zsrc : float or str
+        Choose the source galaxy distribution to be fixed or drawn from a predefined distribution.
+        float : All sources galaxies at this fixed redshift
+        str : Draws individual source gal redshifts from predefined distribution. Options
+              are: chang13
+    zsrc_min : float
+        The minimum source redshift allowed.
+    zsrc_max : float, optional
+        If source redshifts are drawn, the maximum source redshift
+
+    Returns
+    -------
+    galaxy_catalog : clmm.GCData
+        Table of true and 'measured' redshifts, which here the same. Photometric errors
+        are then added with the _compute_photoz_pdfs.
+
+    Notes
+    -----
+    Much of this code in this function was adapted from the Dallas group   
     """
     # Set zsrc to constant value
     if isinstance(zsrc, float):
@@ -251,7 +278,8 @@ def _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo, field_size):
         Dictionary of cosmological parameters. Must contain at least, Omega_c, Omega_b,
         and H0
     field_size : float
-        The size of the field (field_size x field_size) to be simulated around the cluster center. In Mpc at the cluster redshift
+        The size of the field (field_size x field_size) to be simulated around the cluster center. 
+        Proper distance in Mpc/h at the cluster redshift.
 
     Returns
     -------
