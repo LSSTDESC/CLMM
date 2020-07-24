@@ -30,6 +30,10 @@ def compute_radial_averages(xvals, yvals, xbins, error_model='std/sqrt_n'):
         Error on the mean y value in each bin. Specified by error_model
     n : array_like
         Number of objects in each bin
+    binnumber: 1-D ndarray of ints
+        Indices of the bins (corresponding to `xbins`) in which each value
+        of `xvals` belongs.  Same length as `yvals`.  A binnumber of `i` means the
+        corresponding value is between (xbins[i-1], xbins[i]).
     """
     meanx, xbins, binnumber = binned_statistic(xvals, xvals, statistic='mean', bins=xbins)[:3]
     meany = binned_statistic(xvals, yvals, statistic='mean', bins=xbins)[0]
