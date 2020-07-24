@@ -7,8 +7,8 @@ from astropy import units
 from clmm.modeling import predict_reduced_tangential_shear, angular_diameter_dist_a1a2
 
 
-def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta_SO, zsrc, zsrc_min=0.4,
-                            zsrc_max=7., shapenoise=None, photoz_sigma_unscaled=None, nretry=5):
+def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta_SO, zsrc, zsrc_min=cluster_z,
+                            zsrc_max=7., field_size=4., shapenoise=None, photoz_sigma_unscaled=None, nretry=5):
     """Generates a mock dataset of sheared background galaxies.
 
     We build galaxy catalogs following a series of steps.
@@ -82,6 +82,8 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta
         The minimum source redshift allowed.
     zsrc_max : float, optional
         If source redshifts are drawn, the maximum source redshift
+    field_size : float
+        The size of the field (field_size x field_size) to be simulated. In Mpc/h at the cluster redshift
     shapenoise : float, optional
         If set, applies Gaussian shape noise to the galaxy shapes with a width set by `shapenoise`
     photoz_sigma_unscaled : float, optional
@@ -122,7 +124,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta
 
 
 def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta_SO, zsrc,
-                             zsrc_min=0.4, zsrc_max=7., shapenoise=None, photoz_sigma_unscaled=None):
+                             zsrc_min=None, zsrc_max=None, shapenoise=None, photoz_sigma_unscaled=None, field_size=None):
     """A private function that skips the sanity checks on derived properties. This
     function should only be used when called directly from `generate_galaxy_catalog`.
     Takes the same parameters and returns the same things as the before mentioned function.
@@ -138,7 +140,7 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delt
         galaxy_catalog = _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled, ngals)
 
     # Draw galaxy positions
-    galaxy_catalog = _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo)
+    galaxy_catalog = _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo, field_size)
 
     # Compute the shear on each source galaxy
     gamt = predict_reduced_tangential_shear(galaxy_catalog['r_mpc'], mdelta=cluster_m,
@@ -226,7 +228,7 @@ def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled, ngals):
     return galaxy_catalog
 
 
-def _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo):
+def _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo, field_size=None):
     """Draw positions of source galaxies around lens
 
     We draw physical x and y positions from uniform distribution with -4 and 4 Mpc of the
@@ -243,6 +245,8 @@ def _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo):
     cosmo : dict
         Dictionary of cosmological parameters. Must contain at least, Omega_c, Omega_b,
         and H0
+    field_size : float
+        The size of the field (field_size x field_size) to be simulated around the cluster center. In Mpc at the cluster redshift
 
     Returns
     -------
@@ -250,8 +254,8 @@ def _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo):
         Source galaxy catalog with positions added
     """
     Dl = angular_diameter_dist_a1a2(cosmo, 1./(1.+cluster_z))*units.pc.to(units.Mpc)
-    galaxy_catalog['x_mpc'] = np.random.uniform(-4., 4., size=ngals)
-    galaxy_catalog['y_mpc'] = np.random.uniform(-4., 4., size=ngals)
+    galaxy_catalog['x_mpc'] = np.random.uniform(-field_size/2., field_size/2., size=ngals)
+    galaxy_catalog['y_mpc'] = np.random.uniform(-field_size/2., field_size/2., size=ngals)
     galaxy_catalog['r_mpc'] = np.sqrt(galaxy_catalog['x_mpc']**2 + galaxy_catalog['y_mpc']**2)
     galaxy_catalog['ra'] = -(galaxy_catalog['x_mpc']/Dl)*(180./np.pi)
     galaxy_catalog['dec'] = (galaxy_catalog['y_mpc']/Dl)*(180./np.pi)
