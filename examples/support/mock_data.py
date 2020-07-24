@@ -7,7 +7,7 @@ from astropy import units
 from clmm.modeling import predict_reduced_tangential_shear, angular_diameter_dist_a1a2
 
 
-def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta_SO, zsrc, zsrc_min=None,
+def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta_SO, zsrc, halo_profile_model='nfw', zsrc_min=None,
                             zsrc_max=7., field_size=8., shapenoise=None, photoz_sigma_unscaled=None, nretry=5):
     """Generates a mock dataset of sheared background galaxies.
 
@@ -104,7 +104,8 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta
     if zsrc_min is None: zsrc_min = cluster_z + 0.1
     
     params = {'cluster_m' : cluster_m, 'cluster_z' : cluster_z, 'cluster_c' : cluster_c,
-              'cosmo' : cosmo, 'Delta_SO' : Delta_SO, 'zsrc' : zsrc, 'zsrc_min' : zsrc_min,
+              'cosmo' : cosmo, 'Delta_SO' : Delta_SO, 'zsrc' : zsrc, 'halo_profile_model' : halo_profile_model,
+              'zsrc_min' : zsrc_min,
               'zsrc_max' : zsrc_max,'shapenoise' : shapenoise, 'photoz_sigma_unscaled' : photoz_sigma_unscaled, 
               'field_size' : field_size}
     galaxy_catalog = _generate_galaxy_catalog(ngals=ngals, **params)
@@ -127,7 +128,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta
     return galaxy_catalog
 
 
-def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta_SO, zsrc,
+def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta_SO, zsrc, halo_profile_model=None,
                              zsrc_min=None, zsrc_max=None, shapenoise=None, photoz_sigma_unscaled=None, field_size=None):
     """A private function that skips the sanity checks on derived properties. This
     function should only be used when called directly from `generate_galaxy_catalog`.
@@ -150,7 +151,7 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delt
     gamt = predict_reduced_tangential_shear(galaxy_catalog['r_mpc'], mdelta=cluster_m,
                                             cdelta=cluster_c, z_cluster=cluster_z,
                                             z_source=galaxy_catalog['z'], cosmo=cosmo,
-                                            delta_mdef=Delta_SO, halo_profile_model='nfw',
+                                            delta_mdef=Delta_SO, halo_profile_model=halo_profile_model,
                                             z_src_model='single_plane')
     galaxy_catalog['gammat'] = gamt
     galaxy_catalog['gammax'] = np.zeros(ngals)
