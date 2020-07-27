@@ -82,7 +82,20 @@ class NumCosmoCLMModeling (CLMModeling):
             if cur_values:
                 self.hdpm.props.cDelta = cur_cdelta
                 self.hdpm.props.MDelta = cur_mdelta
+                
+    def get_mset (self):
+        mset = Ncm.MSet.empty_new ()
+        mset.set (self.cosmo)
+        mset.set (self.hdpm)        
+        return mset
+        
+    def set_mset (self, mset):
+        self.cosmo = mset.get (Nc.HICosmo.id ())
+        self.hdpm = mset.get (Nc.HaloDensityProfile.id ())
 
+        self.dist.prepare_if_needed (self.cosmo)
+        self.smd.prepare_if_needed (self.cosmo)
+        
     def set_concentration (self, cdelta):
         self.hdpm.props.cDelta = cdelta
 
@@ -146,7 +159,11 @@ class NumCosmoCLMModeling (CLMModeling):
 
     def eval_reduced_shear (self, r_proj, z_cl, z_src):
         h   = self.cosmo.h ()
-        return self.smd.reduced_shear_array (self.hdpm, self.cosmo, np.atleast_1d (r_proj), 1.0 / h, 1.0, np.atleast_1d (z_src), z_cl, z_cl)
+        
+        if isinstance(r_proj,(list,np.ndarray)) and isinstance(z_src,(list,np.ndarray)) and len (r_proj) == len (z_src):
+            return self.smd.reduced_shear_array_equal (self.hdpm, self.cosmo, np.atleast_1d (r_proj), 1.0 / h, 1.0, np.atleast_1d (z_src), z_cl, z_cl)
+        else:        
+            return self.smd.reduced_shear_array (self.hdpm, self.cosmo, np.atleast_1d (r_proj), 1.0 / h, 1.0, np.atleast_1d (z_src), z_cl, z_cl)
 
     def eval_magnification (self, r_proj, z_cl, z_src):
         h   = self.cosmo.h ()
