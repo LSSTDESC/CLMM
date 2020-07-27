@@ -262,3 +262,23 @@ def test_shape_conversion():
     e1_2,e2_2 = convert_shapes_to_epsilon(e1,e2,shape_definition='shear',kappa=0.2)
     assert_allclose(e1/0.8,e1_2, **TOLERANCE)
     assert_allclose(e2/0.8,e2_2, **TOLERANCE)
+
+def test_compute_lensed_ellipticities():
+    
+    # Validation test with floats
+    es1 = 0
+    es2 = 0
+    gamma1 = 0.2
+    gamma2 = 0.2
+    kappa = 0.5   
+    assert_allclose(utils.compute_lensed_ellipticity(es1, es2, gamma1, gamma2, kappa),(0.4,0.4), **TOLERANCE)
+    
+    # Validation test with array
+    es1 = np.array([0,0.5])
+    es2 = np.array([0,0.1])
+    gamma1 = np.array([0.2,0.])
+    gamma2 = np.array([0.2,0.3])
+    kappa = np.array([0.5,0.2])   
+    
+    assert_allclose(utils.compute_lensed_ellipticity(es1, es2, gamma1, gamma2, kappa),
+                    ([0.4, 0.38656171],[0.4, 0.52769188]), **TOLERANCE)
