@@ -8,6 +8,7 @@ from gi.repository import NumCosmoMath as Ncm
 
 from .cluster_toolkit_patches import _patch_comoving_coord_cluster_toolkit_rho_m
 
+import math
 import numpy as np
 import warnings
 
@@ -18,10 +19,13 @@ from . clmm_modeling import CLMModeling
 __all__ = ['NumCosmoCLMModeling', 'Modeling'] + func_layer.__all__
 
 class NumCosmoCLMModeling (CLMModeling):
-    def __init__ (self, massdef = 'mean', delta_mdef = 200, halo_profile_model = 'nfw', z_max = 5.0):
+    def __init__ (self, massdef = 'mean', delta_mdef = 200, halo_profile_model = 'nfw', z_max = 15.0):
         Ncm.cfg_init ()
         self.cosmo = Nc.HICosmo.new_from_name (Nc.HICosmo, "NcHICosmoDEXcdm")
+
+        self.cosmo.param_set_lower_bound (Nc.HICosmoDESParams.T_GAMMA0, 0.0)        
         self.cosmo.omega_x2omega_k ()
+        
         self.cosmo.param_set_by_name ("w",      -1.0)
         self.cosmo.param_set_by_name ("Omegak",  0.0)
         self.cosmo.param_set_by_name ("Tgamma0", 0.0)
@@ -75,23 +79,25 @@ class NumCosmoCLMModeling (CLMModeling):
             cur_values = False
             if self.hdpm:
                 cur_cdelta = self.hdpm.props.cDelta
-                cur_mdelta = self.hdpm.props.MDelta
+                cur_log10_mdelta = self.hdpm.props.log10MDelta
                 cur_values = True
             
             self.hdpm = self.hdpm_dict[halo_profile_model] (self.mdef_dict[massdef], delta_mdef)
             if cur_values:
                 self.hdpm.props.cDelta = cur_cdelta
-                self.hdpm.props.MDelta = cur_mdelta
+                self.hdpm.props.log10MDelta = cur_log10_mdelta
                 
     def get_mset (self):
         mset = Ncm.MSet.empty_new ()
         mset.set (self.cosmo)
-        mset.set (self.hdpm)        
+        mset.set (self.hdpm)
+        mset.set (self.smd)
         return mset
         
     def set_mset (self, mset):
         self.cosmo = mset.get (Nc.HICosmo.id ())
-        self.hdpm = mset.get (Nc.HaloDensityProfile.id ())
+        self.hdpm  = mset.get (Nc.HaloDensityProfile.id ())
+        self.smd   = mset.get (Nc.WLSurfaceMassDensity.id ())
 
         self.dist.prepare_if_needed (self.cosmo)
         self.smd.prepare_if_needed (self.cosmo)
@@ -100,7 +106,7 @@ class NumCosmoCLMModeling (CLMModeling):
         self.hdpm.props.cDelta = cdelta
 
     def set_mass (self, mdelta):
-        self.hdpm.props.MDelta = mdelta / self.cosmo.h () / self.cor_factor
+        self.hdpm.props.log10MDelta = math.log10 (mdelta / self.cosmo.h () / self.cor_factor)
 
     def eval_da_z1z2 (self, z1, z2):
         h   = self.cosmo.h ()
