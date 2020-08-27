@@ -162,14 +162,14 @@ def compute_tangential_and_cross_components(cluster=None,
 
     # Compute the lensing angles
     if geometry == 'flat':
-        angsep, phi = _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list,
-                                                      dec_source_list)
+        angsep, phi = _compute_lensing_angles_flatsky(ra_lens, dec_lens, np.array(ra_source_list),
+                                                      np.array(dec_source_list))
     else:
         raise NotImplementedError(f"Sky geometry {geometry} is not currently supported")
 
     # Compute the tangential and cross shears
-    tangential_comp = _compute_tangential_shear(shear1, shear2, phi)
-    cross_comp = _compute_cross_shear(shear1, shear2, phi)
+    tangential_comp = _compute_tangential_shear(np.array(shear1), np.array(shear2), phi)
+    cross_comp = _compute_cross_shear(np.array(shear1), np.array(shear2), phi)
 
     # If the is_deltasigma flag is True, multiply the results by Sigma_crit.
     # Need to verify that cosmology and redshifts are provided
