@@ -132,6 +132,9 @@ def compute_tangential_and_cross_components(cluster=None,
         Cross shear (or assimilated quantity) for each source galaxy
     """
 
+    if cluster is None:
+        add_to_cluster=False
+    
     if cluster is not None:
         required_cols = ['ra', 'dec', shape_component1, shape_component2]
         if not all([t_ in cluster.galcat.columns for t_ in required_cols]):
