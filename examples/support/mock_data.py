@@ -5,10 +5,10 @@ from scipy import integrate
 from scipy.interpolate import interp1d
 from astropy import units
 from clmm.modeling import predict_reduced_tangential_shear, angular_diameter_dist_a1a2
-
+from clmm.utils import convert_units
 
 def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta_SO, zsrc, halo_profile_model='nfw', zsrc_min=None,
-                            zsrc_max=7., field_size=8., shapenoise=None, photoz_sigma_unscaled=None, nretry=5):
+                            zsrc_max=7., field_size=8., shapenoise=None, photoz_sigma_unscaled=None, nretry=5, ngal_density=None):
     """Generates a mock dataset of sheared background galaxies.
 
     We build galaxy catalogs following a series of steps.
@@ -91,6 +91,9 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta
         If set, applies photo-z errors to source redshifts
     nretry : int, optional
         The number of times that we re-draw each galaxy with non-sensical derived properties
+    ngal_density : float, optional
+        The number density of galaxies (in galaxies per square arcminute) to generate. 
+        If specified, the ngals argument will be ignored.
 
     Returns
     -------
@@ -109,6 +112,9 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta
               'zsrc_min' : zsrc_min,
               'zsrc_max' : zsrc_max,'shapenoise' : shapenoise, 'photoz_sigma_unscaled' : photoz_sigma_unscaled, 
               'field_size' : field_size}
+    if ngal_density is not None:
+        field_size_arcmin = convert_units(field_size, 'Mpc', 'arcmin', redshift=cluster_z, cosmo=cosmo)
+        ngals = int(ngal_density * field_size_arcmin*field_size_arcmin)
     galaxy_catalog = _generate_galaxy_catalog(ngals=ngals, **params)
 
     # Check for bad galaxies and replace them
