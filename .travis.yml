@@ -15,11 +15,12 @@ jobs:
 install:
   # Update apt-get and install GSL
   - sudo apt-get update
-  - sudo apt-get install libgsl0-dev swig3.0 -y
+  - sudo apt-get install libgsl0-dev swig3.0 libfftw3-dev gobject-introspection python-gobject -y
 
   # Install the dependencies
   - git clone https://github.com/tmcclintock/cluster_toolkit.git ; cd cluster_toolkit ; python setup.py install ; cd -
   - git clone https://github.com/LSSTDESC/CCL ; cd CCL ; python setup.py install ; cd -
+  - wget https://github.com/NumCosmo/NumCosmo/releases/download/v0.15.2/numcosmo-0.15.2.tar.gz && tar xvhf numcosmo-0.15.2.tar.gz && cd numcosmo-0.15.2 && ./configure --prefix=/usr && make -j4 && make install
   - pip install -r requirements.txt
 
   # Install the package
