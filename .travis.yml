@@ -20,8 +20,9 @@ install:
   # Install the dependencies
   - git clone https://github.com/tmcclintock/cluster_toolkit.git ; cd cluster_toolkit ; python setup.py install ; cd -
   - git clone https://github.com/LSSTDESC/CCL ; cd CCL ; python setup.py install ; cd -
-  - wget https://github.com/NumCosmo/NumCosmo/releases/download/v0.15.2/numcosmo-0.15.2.tar.gz && tar xf numcosmo-0.15.2.tar.gz && cd numcosmo-0.15.2 && ./configure --prefix=/usr && make -j4 && sudo make install && python3 examples/example_simple.py && cd -
+  - wget https://github.com/NumCosmo/NumCosmo/releases/download/v0.15.2/numcosmo-0.15.2.tar.gz && tar xf numcosmo-0.15.2.tar.gz && cd numcosmo-0.15.2 && ./configure --prefix=/usr && make -j4 && sudo make install && cd -
   - pip install pygobject
+  - python3 numcosmo-0.15.2/examples/example_simple.py
   - pip install -r requirements.txt
 
   #- export GI_TYPELIB_PATH="${GI_TYPELIB_PATH}:/usr/share/gir-1.0"
