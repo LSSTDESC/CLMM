@@ -15,6 +15,8 @@ __all__ = ['CCLCLMModeling', 'Modeling'] + func_layer.__all__
 
 class CCLCLMModeling (CLMModeling):
     def __init__ (self, massdef = 'mean', delta_mdef = 200, halo_profile_model = 'nfw', z_max = 5.0):
+        
+        self.backend   = 'ccl'
 
         self.mdef_dict = {'mean':      'matter', 
                           'critial':   'critical',

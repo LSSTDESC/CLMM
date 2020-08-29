@@ -21,6 +21,9 @@ __all__ = ['NumCosmoCLMModeling', 'Modeling'] + func_layer.__all__
 class NumCosmoCLMModeling (CLMModeling):
     def __init__ (self, massdef = 'mean', delta_mdef = 200, halo_profile_model = 'nfw', z_max = 15.0):
         Ncm.cfg_init ()
+        
+        self.backend = 'nc'
+        
         self.cosmo = Nc.HICosmo.new_from_name (Nc.HICosmo, "NcHICosmoDEXcdm")
 
         self.cosmo.param_set_lower_bound (Nc.HICosmoDESParams.T_GAMMA0, 0.0)        
