@@ -15,7 +15,7 @@ jobs:
 install:
   # Update apt-get and install GSL
   - sudo apt-get update
-  - sudo apt-get install libgsl0-dev swig3.0 libfftw3-dev gobject-introspection python-gobject gfortran libmpfr-dev libhdf5-dev liblapack-dev libnlopt-dev libcfitsio3-dev gir1.2-glib-2.0 libgirepository1.0-dev python3-gi -y
+  - sudo apt-get install libgsl0-dev swig3.0 libfftw3-dev gobject-introspection python-gobject gfortran libmpfr-dev libhdf5-dev liblapack-dev libnlopt-dev libcfitsio3-dev gir1.2-glib-2.0 libgirepository1.0-dev python3-gi python-gi -y
 
   # Install the dependencies
   - git clone https://github.com/tmcclintock/cluster_toolkit.git ; cd cluster_toolkit ; python setup.py install ; cd -
