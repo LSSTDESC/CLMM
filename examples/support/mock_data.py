@@ -239,7 +239,7 @@ def _draw_source_redshifts(zsrc, cluster_z, zsrc_min, zsrc_max, ngals):
     
     # Draw zsrc from a uniform distribution between zmin and zmax
     elif zsrc == 'uniform':
-        zsrc_list = np.random.uniform(cluster_z + 0.1, zsrc_max, ngals)
+        zsrc_list = np.random.uniform(zsrc_min, zsrc_max, ngals)
 
     # Invalid entry
     else:
