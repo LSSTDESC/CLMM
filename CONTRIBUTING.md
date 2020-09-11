@@ -36,7 +36,25 @@ If you have access to NERSC, this will likely be the easiest to make sure you ha
 
 Note, for regular contributions and use, we recommend adding `module load python` to your `~/.bashrc` so you have anaconda installed every time you log in.  You will subseqeuntly also want to be in the correct environment whenever working with `clmm`, which means running `source activate clmmenv` at the start of each session.
 
-You can now go through the steps in the Requirements section of README.md.  Note, you'll need to separately install cluster-toolkit in the current version of CLMM.  Since cluster-toolkit has a gsl dependency, you'll also need gsl.
+You can now go through the steps in the Requirements section of README.md.  Note, you'll need to separately install ccl, numcosmo, and/or cluster_toolkit as cosmology backends to complete your installation in the current version of CLMM.  To install ccl for the cosmology backends, you'll need to run,
+
+```bash
+	conda install -c conda-forge swig
+	conda install -c conda-forge cmake
+	git clone git@github.com:LSSTDESC/CCL.git
+	#  If the above line does not work, you may need to instead use:
+	# git clone https://github.com/LSSTDESC/CCL.git
+	pip install -e .
+
+```
+
+To install numcosmo for a cosmology backend,
+
+```bash
+	conda install -c conda-forge numcosmo
+```
+
+Now, to install cluster-toolkit, cluster-toolkit has a gsl dependency, you'll also need gsl.
 
 ```bash
 	conda install gsl
@@ -46,7 +64,9 @@ You can now go through the steps in the Requirements section of README.md.  Note
 	cd ..
 ```
 
-Now, you should have cluster_toolkit installed, and are ready to install CLMM
+Note, you may choose to install some or all of the ccl, numcosmo, and/or cluster_toolkit packages.  You need at least one.  If you install cluster_toolkit and others, then you need to install cluster_toolkit *last*.   If you have already installed cluster_toolkit before the other packages, simply run, `pip uninstall cluster_toolkit` then re-install cluster_toolkit.
+
+Now, you can install CLMM.
 
 ```bash
 	pip install numpy scipy astropy matplotlib
