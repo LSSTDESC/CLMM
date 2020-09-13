@@ -555,7 +555,7 @@ def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
         
     return mu
 
-def ctCLMModeling():
+def ctCLMModeling (*args, **kwargs):
     raise NotImplementedError ("cluster_toolkit does not implement an OO interface.")
 
 Modeling = ctCLMModeling
