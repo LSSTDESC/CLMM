@@ -51,6 +51,14 @@ def plot_profiles(cluster=None, rbins=None, tangential_component=None, tangentia
         cluster_profile = getattr(cluster,table_name)
         rbins = cluster_profile['radius']
         r_units = cluster_profile.meta['bin_units']
+        if tangential_component != 'gt':
+            ValueError("The function requires a column called 'gt' to run.")
+        if cross_component != 'gx':
+            ValueError("The function requires a column called 'gx' to run.")
+        if 'gt' not in cluster_profile.colnames:
+            ValueError("The function requires a column called 'gt' to run.")
+        if 'gx' not in cluster_profile.colnames:
+            ValueError("The function requires a column called 'gx' to run.")
         if type(tangential_component)==str:
             tangential_component = cluster_profile[tangential_component]
         else:
