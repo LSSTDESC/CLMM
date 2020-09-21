@@ -157,7 +157,7 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delt
     # Compute the shear and convergence from lensing on each source galaxy
     gamt = predict_reduced_tangential_shear(galaxy_catalog['r_mpc'], mdelta=cluster_m,
                                             cdelta=cluster_c, z_cluster=cluster_z,
-                                            z_source=galaxy_catalog['z'], cosmo=cosmo,
+                                            z_source=galaxy_catalog['ztrue'], cosmo=cosmo,
                                             delta_mdef=Delta_SO, halo_profile_model=halo_profile_model,
                                             z_src_model='single_plane')
     
@@ -165,7 +165,7 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delt
     
     kappa = predict_convergence(galaxy_catalog['r_mpc'], mdelta=cluster_m,
                                 cdelta=cluster_c, z_cluster=cluster_z,
-                                z_source=galaxy_catalog['z'], cosmo=cosmo,
+                                z_source=galaxy_catalog['ztrue'], cosmo=cosmo,
                                 delta_mdef=Delta_SO, halo_profile_model=halo_profile_model,
                                 z_src_model='single_plane')
 
@@ -191,8 +191,8 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delt
     galaxy_catalog['e1'],galaxy_catalog['e2']=compute_lensed_ellipticity(e1_intrinsic, e2_intrinsic, g1, g2, kappa)
     
     if photoz_sigma_unscaled is not None:
-        return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z', 'pzbins', 'pzpdf']
-    return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z']
+        return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z', 'ztrue', 'pzbins', 'pzpdf']
+    return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z', 'ztrue']
 
 
 def _draw_source_redshifts(zsrc, cluster_z, zsrc_min, zsrc_max, ngals):
@@ -343,7 +343,7 @@ def _find_aphysical_galaxies(galaxy_catalog, zsrc_min):
     """
     badgals = np.where((np.abs(galaxy_catalog['e1']) > 1.0) |
                        (np.abs(galaxy_catalog['e2']) > 1.0) |
-                       (galaxy_catalog['z'] < zsrc_min)
+                       (galaxy_catalog['ztrue'] < zsrc_min)
                       )[0]
     nbad = len(badgals)
     return nbad, badgals
