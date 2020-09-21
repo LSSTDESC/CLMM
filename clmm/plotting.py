@@ -42,6 +42,8 @@ def plot_profiles(cluster=None, rbins=None, tangential_component=None, tangentia
     -------
     fig:
         The matplotlib figure object that has been plotted to.
+    axes:
+        The matplotlib axes object that has been plotted to.
     """
     
     # If a cluster object was passed, use these arrays
