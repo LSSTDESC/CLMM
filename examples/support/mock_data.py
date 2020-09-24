@@ -92,7 +92,8 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta
     nretry : int, optional
         The number of times that we re-draw each galaxy with non-sensical derived properties
     ngal_density : float, optional
-        The number density of galaxies (in galaxies per square arcminute) to generate. 
+        The number density of galaxies (in galaxies per square arcminute, from z=0 to z=infty).
+        The number of galaxies to be drawn will then depend on the redshift distribution and user-defined redshift range.
         If specified, the ngals argument will be ignored.
 
     Returns
@@ -112,9 +113,11 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta
               'zsrc_min' : zsrc_min,
               'zsrc_max' : zsrc_max,'shapenoise' : shapenoise, 'photoz_sigma_unscaled' : photoz_sigma_unscaled, 
               'field_size' : field_size}
+ 
     if ngal_density is not None:
-        field_size_arcmin = convert_units(field_size, 'Mpc', 'arcmin', redshift=cluster_z, cosmo=cosmo)
-        ngals = int(ngal_density * field_size_arcmin*field_size_arcmin)
+        # Compute the number of galaxies to be drawn
+        ngals = _compute_ngals(ngal_density, field_size, cosmo, cluster_z, zsrc, zsrc_min=zsrc_min, zsrc_max=zsrc_max)
+
     galaxy_catalog = _generate_galaxy_catalog(ngals=ngals, **params)
 
     # Check for bad galaxies and replace them
@@ -134,6 +137,29 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta
     galaxy_catalog['id'] = np.arange(ngals)
     return galaxy_catalog
 
+def _chang_distrib(z):
+    """
+    A private function that returns the Chang et al (2013) galaxy redshift distribution function
+    """
+    alpha, beta, z0 = 1.24, 1.01, 0.51
+    return (z**alpha)*np.exp(-(z/z0)**beta)
+
+def _compute_ngals(ngal_density, field_size, cosmo, cluster_z, zsrc, zsrc_min=None, zsrc_max=None):
+    """
+    A private function that computes the number of galaxies to draw given the user-defined
+    field size, galaxy density, cosmology, cluster redshift, galaxy redshift distribution 
+    and requested redshift range.
+    """
+    field_size_arcmin = convert_units(field_size, 'Mpc', 'arcmin', redshift=cluster_z, cosmo=cosmo)
+    ngals = int(ngal_density * field_size_arcmin*field_size_arcmin)
+    
+    if isinstance(zsrc, float):    
+        return int(ngals)
+    elif zsrc=='chang13':
+        norm, _ = integrate.quad(_chang_distrib, 0., 100) 
+        prob = integrate.quad(_chang_distrib, zsrc_min, zsrc_max)[0]/norm 
+        return int(ngals*prob)
+        
 
 def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta_SO, zsrc, halo_profile_model=None,
                              zsrc_min=None, zsrc_max=None, shapenoise=None, photoz_sigma_unscaled=None, field_size=None):
@@ -234,11 +260,6 @@ def _draw_source_redshifts(zsrc, cluster_z, zsrc_min, zsrc_max, ngals):
 
     # Draw zsrc from Chang et al. 2013
     elif zsrc == 'chang13':
-        def pzfxn(z):
-            """Redshift distribution function"""
-            alpha, beta, z0 = 1.24, 1.01, 0.51
-            return (z**alpha)*np.exp(-(z/z0)**beta)
-
         def integrated_pzfxn(zmax, func):
             """Integrated redshift distribution function for transformation method"""
             val, _ = integrate.quad(func, zsrc_min, zmax)
@@ -246,7 +267,7 @@ def _draw_source_redshifts(zsrc, cluster_z, zsrc_min, zsrc_max, ngals):
         vectorization_integrated_pzfxn = np.vectorize(integrated_pzfxn)
 
         zsrc_domain = np.arange(zsrc_min, zsrc_max, 0.001)
-        probdist = vectorization_integrated_pzfxn(zsrc_domain, pzfxn)
+        probdist = vectorization_integrated_pzfxn(zsrc_domain, _chang_distrib)
 
         uniform_deviate = np.random.uniform(probdist.min(), probdist.max(), ngals)
         zsrc_list = interp1d(probdist, zsrc_domain, kind='linear')(uniform_deviate)
