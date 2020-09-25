@@ -280,10 +280,10 @@ def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled, ngals):
 
     pzbins_grid, pzpdf_grid = [], []
     for row in galaxy_catalog:
-        zmin, zmax = row['ztrue'] - 0.5, row['ztrue'] + 0.5
+        zmin, zmax = row['z'] - 0.5, row['z'] + 0.5
         zbins = np.arange(zmin, zmax, 0.03)
         pzbins_grid.append(zbins)
-        pzpdf_grid.append(np.exp(-0.5*((zbins - row['ztrue'])/row['pzsigma'])**2)/np.sqrt(2*np.pi*row['pzsigma']**2))
+        pzpdf_grid.append(np.exp(-0.5*((zbins - row['z'])/row['pzsigma'])**2)/np.sqrt(2*np.pi*row['pzsigma']**2))
     galaxy_catalog['pzbins'] = pzbins_grid
     galaxy_catalog['pzpdf'] = pzpdf_grid
 
