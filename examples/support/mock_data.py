@@ -172,7 +172,6 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delt
     """A private function that skips the sanity checks on derived properties. This
     function should only be used when called directly from `generate_galaxy_catalog`.
     Takes the same parameters and returns the same things as the before mentioned function.
-
     For a more detailed description of each of the parameters, see the documentation of
     `generate_galaxy_catalog`.
     """
@@ -182,46 +181,30 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delt
     # Add photo-z errors and pdfs to source galaxy redshifts
     if photoz_sigma_unscaled is not None:
         galaxy_catalog = _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled, ngals)
-
     # Draw galaxy positions
     galaxy_catalog = _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo, field_size)
-
-    # Compute the shear and convergence from lensing on each source galaxy
+    # Compute the shear on each source galaxy
     gamt = predict_reduced_tangential_shear(galaxy_catalog['r_mpc'], mdelta=cluster_m,
                                             cdelta=cluster_c, z_cluster=cluster_z,
                                             z_source=galaxy_catalog['ztrue'], cosmo=cosmo,
-                                            delta_mdef=Delta_SO, halo_profile_model=halo_profile_model,
+                                            delta_mdef=Delta_SO, halo_profile_model='nfw',
                                             z_src_model='single_plane')
-    
-    gamx = np.zeros(ngals)
-    
-    kappa = predict_convergence(galaxy_catalog['r_mpc'], mdelta=cluster_m,
-                                cdelta=cluster_c, z_cluster=cluster_z,
-                                z_source=galaxy_catalog['ztrue'], cosmo=cosmo,
-                                delta_mdef=Delta_SO, halo_profile_model=halo_profile_model,
-                                z_src_model='single_plane')
-
     galaxy_catalog['gammat'] = gamt
-    galaxy_catalog['gammax'] = gamx
-    
-    # Position angle of each galaxy
-    galaxy_catalog['posangle'] = np.arctan2(galaxy_catalog['y_mpc'], galaxy_catalog['x_mpc'])
-    
-    # corresponding shear1,2 components
-    g1 = -gamt*np.cos(2*galaxy_catalog['posangle']) + gamx*np.sin(2*galaxy_catalog['posangle'])
-    g2 = -gamt*np.sin(2*galaxy_catalog['posangle']) - gamx*np.sin(2*galaxy_catalog['posangle'])
-    
-    # galaxy intrisic ellipticity (shape noise)
-    e1_intrinsic = 0
-    e2_intrinsic = 0
+    galaxy_catalog['gammax'] = np.zeros(ngals)
 
-    # Draw intrinsic ellipticity from Gaussian
+    # Add shape noise to source galaxy shears
     if shapenoise is not None:
-        e1_intrinsic = shapenoise*np.random.standard_normal(ngals)
-        e2_intrinsic = shapenoise*np.random.standard_normal(ngals)
+        galaxy_catalog['gammat'] += shapenoise*np.random.standard_normal(ngals)
+        galaxy_catalog['gammax'] += shapenoise*np.random.standard_normal(ngals)
 
-    galaxy_catalog['e1'],galaxy_catalog['e2']=compute_lensed_ellipticity(e1_intrinsic, e2_intrinsic, g1, g2, kappa)
-    
+    # Compute ellipticities
+    galaxy_catalog['posangle'] = np.arctan2(galaxy_catalog['y_mpc'], galaxy_catalog['x_mpc'])
+
+    galaxy_catalog['e1'] = -galaxy_catalog['gammat']*np.cos(2*galaxy_catalog['posangle']) \
+                           + galaxy_catalog['gammax']*np.sin(2*galaxy_catalog['posangle'])
+    galaxy_catalog['e2'] = -galaxy_catalog['gammat']*np.sin(2*galaxy_catalog['posangle']) \
+                           - galaxy_catalog['gammax']*np.cos(2*galaxy_catalog['posangle'])
+
     if photoz_sigma_unscaled is not None:
         return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z', 'ztrue', 'pzbins', 'pzpdf']
     return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z', 'ztrue']
