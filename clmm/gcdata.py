@@ -85,7 +85,6 @@ class GCData(APtable):
         out = APtable.__getitem__(self, item)
         return out
 
-
 """
 Additional functions specific to clmm.GCData
 Note: Not being used anymore
