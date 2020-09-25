@@ -7,8 +7,8 @@ from astropy import units
 from clmm.modeling import predict_reduced_tangential_shear, predict_convergence, angular_diameter_dist_a1a2
 from clmm.utils import convert_units,compute_lensed_ellipticity
 
-def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta_SO, zsrc, halo_profile_model='nfw', zsrc_min=None,
-                            zsrc_max=7., field_size=8., shapenoise=None, photoz_sigma_unscaled=None, nretry=5, ngal_density=None):
+def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, Delta_SO, zsrc, halo_profile_model='nfw', zsrc_min=None,
+                            zsrc_max=7., field_size=8., shapenoise=None, photoz_sigma_unscaled=None, nretry=5, ngals=None, ngal_density=None):
     """Generates a mock dataset of sheared background galaxies.
 
     We build galaxy catalogs following a series of steps.
@@ -36,7 +36,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta
     redshift.
 
     3. Draw galaxy positions. Positions are drawn in a square box around the lens position with
-    a side length of 4 Mpc. We then convert to right ascension and declination using the
+    a side length of 8 Mpc. We then convert to right ascension and declination using the
     cosmology defined in `cosmo`.
 
     4. We predict the reduced tangential shear of each using the radial distances of each source
@@ -114,6 +114,12 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta
               'zsrc_max' : zsrc_max,'shapenoise' : shapenoise, 'photoz_sigma_unscaled' : photoz_sigma_unscaled, 
               'field_size' : field_size}
  
+    if ngals is None and ngal_density is None:
+         raise ValueError('Either the number of galaxies "ngals" or the galaxy density "ngal_density" keyword must be specified')
+
+    if ngals is not None and ngal_density is not None:
+         raise ValueError('The "ngals" and "ngal_density" keywords cannot both be set. Please use one only')
+            
     if ngal_density is not None:
         # Compute the number of galaxies to be drawn
         ngals = _compute_ngals(ngal_density, field_size, cosmo, cluster_z, zsrc, zsrc_min=zsrc_min, zsrc_max=zsrc_max)
@@ -156,7 +162,7 @@ def _compute_ngals(ngal_density, field_size, cosmo, cluster_z, zsrc, zsrc_min=No
     if isinstance(zsrc, float):    
         return int(ngals)
     elif zsrc=='chang13':
-        norm, _ = integrate.quad(_chang_distrib, 0., 100) 
+        norm, _ = integrate.quad(_chang_distrib, 0., 100)
         prob = integrate.quad(_chang_distrib, zsrc_min, zsrc_max)[0]/norm 
         return int(ngals*prob)
         
