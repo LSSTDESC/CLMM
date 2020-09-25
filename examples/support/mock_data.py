@@ -65,8 +65,6 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, Delta_SO, zs
     cosmo : dict
         Dictionary of cosmological parameters. Must contain at least, Omega_c, Omega_b,
         and H0
-    ngals : float
-        Number of galaxies to generate
     Delta_SO : float
         Overdensity density contrast used to compute the cluster mass and concentration. The
         spherical overdensity mass is computed as the mass enclosed within the radius
@@ -91,6 +89,8 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, Delta_SO, zs
         If set, applies photo-z errors to source redshifts
     nretry : int, optional
         The number of times that we re-draw each galaxy with non-sensical derived properties
+    ngals : float, optional
+        Number of galaxies to generate
     ngal_density : float, optional
         The number density of galaxies (in galaxies per square arcminute, from z=0 to z=infty).
         The number of galaxies to be drawn will then depend on the redshift distribution and user-defined redshift range.
