@@ -6,7 +6,6 @@ from scipy.interpolate import interp1d
 from astropy import units
 from clmm.modeling import predict_reduced_tangential_shear, angular_diameter_dist_a1a2
 
-
 def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta_SO, zsrc, zsrc_min=0.4,
                             zsrc_max=7., shapenoise=None, photoz_sigma_unscaled=None, nretry=5):
     """Generates a mock dataset of sheared background galaxies.
@@ -102,7 +101,6 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta
               'cosmo' : cosmo, 'Delta_SO' : Delta_SO, 'zsrc' : zsrc, 'zsrc_min' : zsrc_min,
               'zsrc_max' : zsrc_max,'shapenoise' : shapenoise, 'photoz_sigma_unscaled' : photoz_sigma_unscaled}
     galaxy_catalog = _generate_galaxy_catalog(ngals=ngals, **params)
-
     # Check for bad galaxies and replace them
     for i in range(nretry):
         nbad, badids = _find_aphysical_galaxies(galaxy_catalog, zsrc_min)
@@ -136,14 +134,12 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delt
     # Add photo-z errors and pdfs to source galaxy redshifts
     if photoz_sigma_unscaled is not None:
         galaxy_catalog = _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled, ngals)
-
     # Draw galaxy positions
     galaxy_catalog = _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo)
-
     # Compute the shear on each source galaxy
     gamt = predict_reduced_tangential_shear(galaxy_catalog['r_mpc'], mdelta=cluster_m,
                                             cdelta=cluster_c, z_cluster=cluster_z,
-                                            z_source=galaxy_catalog['z'], cosmo=cosmo,
+                                            z_source=galaxy_catalog['ztrue'], cosmo=cosmo,
                                             delta_mdef=Delta_SO, halo_profile_model='nfw',
                                             z_src_model='single_plane')
     galaxy_catalog['gammat'] = gamt
@@ -163,8 +159,8 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delt
                            - galaxy_catalog['gammax']*np.cos(2*galaxy_catalog['posangle'])
 
     if photoz_sigma_unscaled is not None:
-        return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z', 'pzbins', 'pzpdf']
-    return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z']
+        return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z', 'ztrue', 'pzbins', 'pzpdf']
+    return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z', 'ztrue']
 
 
 def _draw_source_redshifts(zsrc, cluster_z, zsrc_min, zsrc_max, ngals):
@@ -213,7 +209,6 @@ def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled, ngals):
     galaxy_catalog['pzsigma'] = photoz_sigma_unscaled*(1.+galaxy_catalog['ztrue'])
     galaxy_catalog['z'] = galaxy_catalog['ztrue'] + \
                           galaxy_catalog['pzsigma']*np.random.standard_normal(ngals)
-
     pzbins_grid, pzpdf_grid = [], []
     for row in galaxy_catalog:
         zmin, zmax = row['ztrue'] - 0.5, row['ztrue'] + 0.5
@@ -285,7 +280,7 @@ def _find_aphysical_galaxies(galaxy_catalog, zsrc_min):
     """
     badgals = np.where((np.abs(galaxy_catalog['e1']) > 1.0) |
                        (np.abs(galaxy_catalog['e2']) > 1.0) |
-                       (galaxy_catalog['z'] < zsrc_min)
+                       (galaxy_catalog['ztrue'] < zsrc_min)
                       )[0]
     nbad = len(badgals)
     return nbad, badgals
