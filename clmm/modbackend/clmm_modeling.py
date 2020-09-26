@@ -11,6 +11,14 @@ class CLMModeling:
         raise NotImplementedError
 
     def set_mass (self, mdelta):
+        r""" Sets the value of the :math:`M_\Delta` 
+        
+        Parameters
+        ----------
+        mdelta : float
+            Galaxy cluster mass :math:`M_\Delta` in units of :math:`M_\odot h^{-1}`
+        
+        """
         raise NotImplementedError
 
     def eval_da_z1z2 (self, z1, z2):
