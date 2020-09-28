@@ -104,13 +104,13 @@ def compute_tangential_and_cross_components(cluster=None,
         Right ascension of the lensing cluster
     dec_lens: float, optional
         Declination of the lensing cluster
-    ra_source_list: array_like, optional
+    ra_source: array, optional
         Right ascensions of each source galaxy
-    dec_source_list: array_like, optional
+    dec_source: array, optional
         Declinations of each source galaxy
-    shear1: array_like, optional
+    shear1: array, optional
         The measured shear (or reduced shear or ellipticity) of the source galaxies
-    shear2: array_like, optional
+    shear2: array, optional
         The measured shear (or reduced shear or ellipticity) of the source galaxies
     geometry: str, optional
         Sky geometry to compute angular separation.
@@ -162,8 +162,8 @@ def compute_tangential_and_cross_components(cluster=None,
 
     # Compute the lensing angles
     if geometry == 'flat':
-        angsep, phi = _compute_lensing_angles_flatsky(ra_lens, dec_lens, np.array(ra_source_list),
-                                                      np.array(dec_source_list))
+        angsep, phi = _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list,
+                                                      dec_source_list)
     else:
         raise NotImplementedError(f"Sky geometry {geometry} is not currently supported")
 
@@ -199,7 +199,7 @@ def compute_tangential_and_cross_components(cluster=None,
             # used in the weighing scheme when stacking data
             cluster.galcat['sigma_c'] = Sigma_c
 
-    return angsep, tangential_comp, cross_comp
+    return np.array(angsep), np.array(tangential_comp), np.array(cross_comp)
 
 
 def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_source_list):
