@@ -28,7 +28,7 @@ def compute_radial_averages(xvals, yvals, xbins, error_model='std/sqrt_n'):
         Mean y value in each bin
     yerr : array_like
         Error on the mean y value in each bin. Specified by error_model
-    n : array_like
+    num_objects : array_like
         Number of objects in each bin
     binnumber: 1-D ndarray of ints
         Indices of the bins (corresponding to `xbins`) in which each value
@@ -55,7 +55,7 @@ def compute_radial_averages(xvals, yvals, xbins, error_model='std/sqrt_n'):
     meany[n_zero] = 0
     yerr[n_zero]  = 0
 
-    return meanx, meany, yerr, n, binnumber
+    return meanx, meany, yerr, num_objects, binnumber
 
 def make_bins(rmin, rmax, nbins=10, method='evenwidth', source_seps=None):
     """ Define bin edges
