@@ -4,7 +4,8 @@ from clmm import GCData
 from scipy import integrate
 from scipy.interpolate import interp1d
 from astropy import units
-from clmm.modeling import predict_reduced_tangential_shear, angular_diameter_dist_a1a2
+from clmm.modeling import predict_reduced_tangential_shear, predict_convergence, angular_diameter_dist_a1a2
+from clmm.utils import compute_lensed_ellipticity
 
 
 def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta_SO, zsrc, zsrc_min=0.4,
@@ -160,13 +161,13 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delt
     galaxy_catalog['posangle'] = np.arctan2(galaxy_catalog['y_mpc'],
                                             galaxy_catalog['x_mpc'])
 
-    #corresponding shear1,2 components
+    #corresponding shear1,2 components: TO BE CHECKED !!
     g1 = -gamt*np.cos(2*galaxy_catalog['posangle']) + gamx*np.sin(2*galaxy_catalog['posangle'])
     g2 = -gamt*np.sin(2*galaxy_catalog['posangle']) - gamx*np.sin(2*galaxy_catalog['posangle'])
     
     #instrinsic ellipticities
     e1_intrinsic = 0
-    e2_instrinsic = 0
+    e2_intrinsic = 0
     
     # Add shape noise to source galaxy shears
     if shapenoise is not None:
