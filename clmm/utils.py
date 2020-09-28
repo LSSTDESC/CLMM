@@ -38,8 +38,8 @@ def compute_radial_averages(xvals, yvals, xbins, error_model='std/sqrt_n'):
     meanx, xbins, binnumber = binned_statistic(xvals, xvals, statistic='mean', bins=xbins)[:3]
     meany = binned_statistic(xvals, yvals, statistic='mean', bins=xbins)[0]
     # number of objects
-    n = np.histogram(xvals, xbins)[0]
-    n_zero = n==0
+    num_objects = np.histogram(xvals, xbins)[0]
+    n_zero = num_objects==0
 
     if error_model == 'std':
         yerr = binned_statistic(xvals, yvals, statistic='std', bins=xbins)[0]
