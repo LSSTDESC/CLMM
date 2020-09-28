@@ -146,25 +146,39 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delt
                                             z_source=galaxy_catalog['z'], cosmo=cosmo,
                                             delta_mdef=Delta_SO, halo_profile_model='nfw',
                                             z_src_model='single_plane')
+ 
+    gamx = np.zeros(ngals)
+    kappa = predict_convergence(galaxy_catalog['r_mpc'], mdelta=cluster_m,
+                                            cdelta=cluster_c, z_cluster=cluster_z,
+                                            z_source=galaxy_catalog['z'], cosmo=cosmo,
+                                            delta_mdef=Delta_SO, halo_profile_model='nfw',
+                                            z_src_model='single_plane')
+    
     galaxy_catalog['gammat'] = gamt
     galaxy_catalog['gammax'] = np.zeros(ngals)
 
+    galaxy_catalog['posangle'] = np.arctan2(galaxy_catalog['y_mpc'],
+                                            galaxy_catalog['x_mpc'])
+
+    #corresponding shear1,2 components
+    g1 = -gamt*np.cos(2*galaxy_catalog['posangle']) + gamx*np.sin(2*galaxy_catalog['posangle'])
+    g2 = -gamt*np.sin(2*galaxy_catalog['posangle']) - gamx*np.sin(2*galaxy_catalog['posangle'])
+    
+    #instrinsic ellipticities
+    e1_intrinsic = 0
+    e2_instrinsic = 0
+    
     # Add shape noise to source galaxy shears
     if shapenoise is not None:
-        galaxy_catalog['gammat'] += shapenoise*np.random.standard_normal(ngals)
-        galaxy_catalog['gammax'] += shapenoise*np.random.standard_normal(ngals)
+        e1_intrinsic = shapenoise*np.random.standard_normal(ngals)
+        e2_intrinsic = shapenoise*np.random.standard_normal(ngals)
 
     # Compute ellipticities
-    galaxy_catalog['posangle'] = np.arctan2(galaxy_catalog['y_mpc'], galaxy_catalog['x_mpc'])
-
-    galaxy_catalog['e1'] = -galaxy_catalog['gammat']*np.cos(2*galaxy_catalog['posangle']) \
-                           + galaxy_catalog['gammax']*np.sin(2*galaxy_catalog['posangle'])
-    galaxy_catalog['e2'] = -galaxy_catalog['gammat']*np.sin(2*galaxy_catalog['posangle']) \
-                           - galaxy_catalog['gammax']*np.cos(2*galaxy_catalog['posangle'])
-
+    galaxy_catalog['e1'],galaxy_catalog['e2']=compute_lensed_ellipticity(e1_intrinsic, e2_intrinsic, g1, g2, kappa)
+    
     if photoz_sigma_unscaled is not None:
-        return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z', 'pzbins', 'pzpdf']
-    return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z']
+        return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z', 'ztrue', 'pzbins', 'pzpdf']
+    return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z', 'ztrue']
 
 
 def _draw_source_redshifts(zsrc, cluster_z, zsrc_min, zsrc_max, ngals):
