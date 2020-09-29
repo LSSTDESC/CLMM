@@ -4,7 +4,7 @@ from clmm import GCData
 from scipy import integrate
 from scipy.interpolate import interp1d
 from astropy import units
-from clmm.modeling import predict_reduced_tangential_shear, predict_convergence, angular_diameter_dist_a1a2
+from clmm.modeling import predict_tangential_shear, predict_convergence, angular_diameter_dist_a1a2
 from clmm.utils import compute_lensed_ellipticity
 
 
@@ -142,7 +142,7 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delt
     galaxy_catalog = _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo)
 
     # Compute the shear on each source galaxy
-    gamt = predict_reduced_tangential_shear(galaxy_catalog['r_mpc'], mdelta=cluster_m,
+    gamt = predict_tangential_shear(galaxy_catalog['r_mpc'], mdelta=cluster_m,
                                             cdelta=cluster_c, z_cluster=cluster_z,
                                             z_source=galaxy_catalog['z'], cosmo=cosmo,
                                             delta_mdef=Delta_SO, halo_profile_model='nfw',
@@ -162,8 +162,8 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delt
                                             galaxy_catalog['x_mpc'])
 
     #corresponding shear1,2 components: TO BE CHECKED !!
-    g1 = -gamt*np.cos(2*galaxy_catalog['posangle']) + gamx*np.sin(2*galaxy_catalog['posangle'])
-    g2 = -gamt*np.sin(2*galaxy_catalog['posangle']) - gamx*np.sin(2*galaxy_catalog['posangle'])
+    gam1 = -gamt*np.cos(2*galaxy_catalog['posangle']) + gamx*np.sin(2*galaxy_catalog['posangle'])
+    gam2 = -gamt*np.sin(2*galaxy_catalog['posangle']) - gamx*np.sin(2*galaxy_catalog['posangle'])
     
     #instrinsic ellipticities
     e1_intrinsic = 0
@@ -175,7 +175,7 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delt
         e2_intrinsic = shapenoise*np.random.standard_normal(ngals)
 
     # Compute ellipticities
-    galaxy_catalog['e1'],galaxy_catalog['e2']=compute_lensed_ellipticity(e1_intrinsic, e2_intrinsic, g1, g2, kappa)
+    galaxy_catalog['e1'],galaxy_catalog['e2']=compute_lensed_ellipticity(e1_intrinsic, e2_intrinsic, gam1, gam2, kappa)
     
     if photoz_sigma_unscaled is not None:
         return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z', 'ztrue', 'pzbins', 'pzpdf']
