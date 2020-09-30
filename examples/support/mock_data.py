@@ -125,7 +125,6 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, Delta_SO, zs
         ngals = _compute_ngals(ngal_density, field_size, cosmo, cluster_z, zsrc, zsrc_min=zsrc_min, zsrc_max=zsrc_max)
 
     galaxy_catalog = _generate_galaxy_catalog(ngals=ngals, **params)
-
     # Check for bad galaxies and replace them
     for i in range(nretry):
         nbad, badids = _find_aphysical_galaxies(galaxy_catalog, zsrc_min)

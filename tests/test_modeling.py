@@ -88,7 +88,7 @@ def load_validation_config():
             'CLMM_SIGMAC_PCST': CLMM_SIGMAC_PCST}
 # --------------------------------------------------------------------------
 
-def test_physical_constants():
+def test_physical_constants(modeling_data):
     """ Test physical values of physical_constants
 
     Notes
@@ -104,7 +104,7 @@ def test_physical_constants():
     assert_allclose(cfg['TEST_CASE_SIGMAC_PCST'], cfg['CLMM_SIGMAC_PCST'], 1e-2)
 
 
-def test_cclify_astropy_cosmo():
+def test_cclify_astropy_cosmo(modeling_data):
     """ Unit tests for md.cllify_astropy_cosmo """
     # Make some base objects
     truth = {'H0': 70., 'Om0': 0.3, 'Ob0': 0.05}
@@ -129,7 +129,7 @@ def test_cclify_astropy_cosmo():
     assert_raises(TypeError, md.cclify_astropy_cosmo, [70., 0.3, 0.25, 0.05])
 
 
-def test_astropyify_ccl_cosmo():
+def test_astropyify_ccl_cosmo(modeling_data):
     """ Unit tests for astropyify_ccl_cosmo """
     # Make a bse object
     truth = {'H0': 70., 'Om0': 0.3, 'Ob0': 0.05}
@@ -151,7 +151,7 @@ def test_astropyify_ccl_cosmo():
     assert_raises(TypeError, md.astropyify_ccl_cosmo, [70., 0.3, 0.25, 0.05])
 
 
-def test_scale_factor_redshift_conversion():
+def test_scale_factor_redshift_conversion(modeling_data):
     """ Unit tests for redshift and scalefactor conversion """
     # Convert from a to z - scalar, list, ndarray
     assert_allclose(md._get_a_from_z(0.5), 2./3., **TOLERANCE)
@@ -187,7 +187,7 @@ def test_scale_factor_redshift_conversion():
     assert_allclose(md._get_z_from_a(md._get_a_from_z(testval)), testval, **TOLERANCE)
 
 
-def test_get_reduced_shear():
+def test_get_reduced_shear(modeling_data):
     """ Unit tests for get_reduced_shear """
     # Make some base objects
     shear = [0.5, 0.75, 1.25, 0.0]
@@ -237,7 +237,7 @@ def helper_profiles(func):
                     defaulttruth, **TOLERANCE)
 
 
-def test_profiles():
+def test_profiles(modeling_data):
     """ Tests for profile functions, get_3d_density, predict_surface_density,
     and predict_excess_surface_density """
     helper_profiles(md.get_3d_density)
@@ -261,7 +261,7 @@ def test_profiles():
                     cfg['numcosmo_profiles']['DeltaSigma'], 2.0e-9)
 
 
-def test_angular_diameter_dist_a1a2():
+def test_angular_diameter_dist_a1a2(modeling_data):
     """ Test function that computes angular diameter distance between
     two scale factors. """
     # Make some base objects
@@ -283,22 +283,22 @@ def test_angular_diameter_dist_a1a2():
     # Validation tests
     cfg = load_validation_config()
     assert_allclose(md.angular_diameter_dist_a1a2(cfg['cosmo'], cfg['TEST_CASE']['aexp_cluster']),
-                    cfg['TEST_CASE']['dl'], 1.0e-8)
+                    cfg['TEST_CASE']['dl'], 1.2e-8)
     assert_allclose(md.angular_diameter_dist_a1a2(cfg['cosmo'], cfg['TEST_CASE']['aexp_source']),
-                    cfg['TEST_CASE']['ds'], 1.0e-8)
+                    cfg['TEST_CASE']['ds'], 1.2e-8)
     assert_allclose(md.angular_diameter_dist_a1a2(cfg['cosmo'], cfg['TEST_CASE']['aexp_source'],
                                                   cfg['TEST_CASE']['aexp_cluster']),
-                    cfg['TEST_CASE']['dsl'], 1.0e-8)
+                    cfg['TEST_CASE']['dsl'], 1.2e-8)
 
 
-def test_get_critical_surface_density():
+def test_get_critical_surface_density(modeling_data):
     """ Validation test for critical surface density """
     cfg = load_validation_config()
     assert_allclose(cfg['SIGMAC_PHYSCONST_CORRECTION']*\
                     md.get_critical_surface_density(cfg['cosmo'],
                                                     z_cluster=cfg['TEST_CASE']['z_cluster'],
                                                     z_source=cfg['TEST_CASE']['z_source']),
-                    cfg['TEST_CASE']['nc_Sigmac'], 1.0e-8)
+                    cfg['TEST_CASE']['nc_Sigmac'], 1.2e-8)
     
     # Check behaviour when sources are in front of the lens
     z_cluster = 0.3
@@ -347,7 +347,7 @@ def helper_physics_functions(func):
                   200, 'nfw', 'bleh')
 
 
-def test_shear_convergence_unittests():
+def test_shear_convergence_unittests(modeling_data):
     """ Unit and validation tests for the shear and convergence calculations """
     helper_physics_functions(md.predict_tangential_shear)
     helper_physics_functions(md.predict_convergence)
@@ -394,7 +394,7 @@ def test_shear_convergence_unittests():
     # Validate magnification
     assert_allclose(md.predict_magnification(cosmo=cosmo, **cfg['GAMMA_PARAMS']),
                     1. / ((1-kappa)**2-abs(gammat)**2), 1.0e-10)
-    assert_allclose(1. / ((1-kappa*sigmac_corr)**2-abs(gammat*sigmac_corr)**2), cfg['numcosmo_profiles']['mu'], 1.0e-7)
+    assert_allclose(1. / ((1-kappa*sigmac_corr)**2-abs(gammat*sigmac_corr)**2), cfg['numcosmo_profiles']['mu'], 4.0e-7)
     
 
     # Check that shear, reduced shear and convergence return zero and magnification returns one if source is in front of the cluster
