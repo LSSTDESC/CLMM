@@ -145,7 +145,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, Delta_SO, zs
 
 def _chang_z_distrib(z):
     """
-    A private function that returns the Chang et al (2013) galaxy redshift distribution function,
+    A private function that returns the Chang et al (2013) unnormalized galaxy redshift distribution function,
     with the fiducial set of parameters.
     
     Parameters
