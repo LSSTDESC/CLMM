@@ -143,9 +143,19 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, Delta_SO, zs
     galaxy_catalog['id'] = np.arange(ngals)
     return galaxy_catalog
 
-def _chang_distrib(z):
+def _chang_z_distrib(z):
     """
-    A private function that returns the Chang et al (2013) galaxy redshift distribution function
+    A private function that returns the Chang et al (2013) galaxy redshift distribution function,
+    with the fiducial set of parameters.
+    
+    Parameters
+    ----------
+    z : float
+        Galaxy redshift
+        
+    Returns
+    -------
+    The value of the distribution at z
     """
     alpha, beta, z0 = 1.24, 1.01, 0.51
     return (z**alpha)*np.exp(-(z/z0)**beta)
@@ -155,6 +165,8 @@ def _compute_ngals(ngal_density, field_size, cosmo, cluster_z, zsrc, zsrc_min=No
     A private function that computes the number of galaxies to draw given the user-defined
     field size, galaxy density, cosmology, cluster redshift, galaxy redshift distribution 
     and requested redshift range.
+    For a more detailed description of each of the parameters, see the documentation of
+    `generate_galaxy_catalog`.
     """
     field_size_arcmin = convert_units(field_size, 'Mpc', 'arcmin', redshift=cluster_z, cosmo=cosmo)
     ngals = int(ngal_density * field_size_arcmin*field_size_arcmin)
@@ -162,8 +174,10 @@ def _compute_ngals(ngal_density, field_size, cosmo, cluster_z, zsrc, zsrc_min=No
     if isinstance(zsrc, float):    
         return int(ngals)
     elif zsrc=='chang13':
-        norm, _ = integrate.quad(_chang_distrib, 0., 100)
-        prob = integrate.quad(_chang_distrib, zsrc_min, zsrc_max)[0]/norm 
+        # Compute the normalisation for the redshift distribution function (z=[0,\infty])
+        norm, _ = integrate.quad(_chang_z_distrib, 0., 100) 
+        # Probability to find the galaxy in the requested redshift range
+        prob = integrate.quad(_chang_z_distrib, zsrc_min, zsrc_max)[0]/norm
         return int(ngals*prob)
         
 
@@ -171,8 +185,7 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delt
                              zsrc_min=None, zsrc_max=None, shapenoise=None, photoz_sigma_unscaled=None, field_size=None):
     """A private function that skips the sanity checks on derived properties. This
     function should only be used when called directly from `generate_galaxy_catalog`.
-    Takes the same parameters and returns the same things as the before mentioned function.
-    For a more detailed description of each of the parameters, see the documentation of
+    For a detailed description of each of the parameters, see the documentation of
     `generate_galaxy_catalog`.
     """
     # Set the source galaxy redshifts
@@ -217,7 +230,7 @@ def _draw_source_redshifts(zsrc, cluster_z, zsrc_min, zsrc_max, ngals):
     Uses a sampling technique found in Numerical Recipes in C, Chap 7.2: Transformation Method.
     Pulling out random values from a given probability distribution.
     
-        Parameters
+    Parameters
     ----------
     cluster_z : float
         Cluster redshift
@@ -256,7 +269,9 @@ def _draw_source_redshifts(zsrc, cluster_z, zsrc_min, zsrc_max, ngals):
         vectorization_integrated_pzfxn = np.vectorize(integrated_pzfxn)
 
         zsrc_domain = np.arange(zsrc_min, zsrc_max, 0.001)
-        probdist = vectorization_integrated_pzfxn(zsrc_domain, _chang_distrib)
+        
+        # Cumulative probability function of the redshift distribution
+        probdist = vectorization_integrated_pzfxn(zsrc_domain, _chang_z_distrib)
 
         uniform_deviate = np.random.uniform(probdist.min(), probdist.max(), ngals)
         zsrc_list = interp1d(probdist, zsrc_domain, kind='linear')(uniform_deviate)
@@ -273,7 +288,23 @@ def _draw_source_redshifts(zsrc, cluster_z, zsrc_min, zsrc_max, ngals):
 
 
 def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled, ngals):
-    r"""Add photo-z errors and PDFs to the mock catalog."""
+    """Private function to add photo-z errors and PDFs to the mock catalog.
+    
+    Parameters
+    ----------   
+    galaxy_catalog : clmm.GCData
+        Input galaxy catalog to which photoz PDF will be added
+    photoz_sigma_unscaled : float
+        Width of the Gaussian PDF, without the (1+z) factor
+    nglas : int
+        Number of galaxies in the catalog
+
+    Returns
+    -------
+    galaxy_catalog : clmm.GCData
+        Output galaxy catalog with columns corresponding to the bins 
+        and values of the redshift PDF for each galaxy.
+    """
     galaxy_catalog['pzsigma'] = photoz_sigma_unscaled*(1.+galaxy_catalog['ztrue'])
     galaxy_catalog['z'] = galaxy_catalog['ztrue'] + \
                           galaxy_catalog['pzsigma']*np.random.standard_normal(ngals)
