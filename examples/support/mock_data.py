@@ -193,7 +193,7 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delt
 
     # Add photo-z errors and pdfs to source galaxy redshifts
     if photoz_sigma_unscaled is not None:
-        galaxy_catalog = _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled, ngals)
+        galaxy_catalog = _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled)
     # Draw galaxy positions
     galaxy_catalog = _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo, field_size)
     # Compute the shear on each source galaxy
@@ -287,7 +287,7 @@ def _draw_source_redshifts(zsrc, cluster_z, zsrc_min, zsrc_max, ngals):
     return GCData([zsrc_list, zsrc_list], names=('ztrue', 'z'))
 
 
-def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled, ngals):
+def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled):
     """Private function to add photo-z errors and PDFs to the mock catalog.
     
     Parameters
@@ -296,8 +296,6 @@ def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled, ngals):
         Input galaxy catalog to which photoz PDF will be added
     photoz_sigma_unscaled : float
         Width of the Gaussian PDF, without the (1+z) factor
-    nglas : int
-        Number of galaxies in the catalog
 
     Returns
     -------
@@ -307,7 +305,7 @@ def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled, ngals):
     """
     galaxy_catalog['pzsigma'] = photoz_sigma_unscaled*(1.+galaxy_catalog['ztrue'])
     galaxy_catalog['z'] = galaxy_catalog['ztrue'] + \
-                          galaxy_catalog['pzsigma']*np.random.standard_normal(ngals)
+                          galaxy_catalog['pzsigma']*np.random.standard_normal(len(galaxy_catalog))
 
     pzbins_grid, pzpdf_grid = [], []
     for row in galaxy_catalog:
