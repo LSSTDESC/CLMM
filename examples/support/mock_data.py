@@ -188,7 +188,7 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delt
     `generate_galaxy_catalog`.
     """
     # Set the source galaxy redshifts
-    galaxy_catalog = _draw_source_redshifts(zsrc, cluster_z, zsrc_min, zsrc_max, ngals)
+    galaxy_catalog = _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals)
 
     # Add photo-z errors and pdfs to source galaxy redshifts
     if photoz_sigma_unscaled is not None:
@@ -222,7 +222,7 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delt
     return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z', 'ztrue']
 
 
-def _draw_source_redshifts(zsrc, cluster_z, zsrc_min, zsrc_max, ngals):
+def _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals):
     """Set source galaxy redshifts either set to a fixed value or draw from a predefined
     distribution. Return a table (GCData) of the source galaxies
 
@@ -231,8 +231,6 @@ def _draw_source_redshifts(zsrc, cluster_z, zsrc_min, zsrc_max, ngals):
     
     Parameters
     ----------
-    cluster_z : float
-        Cluster redshift
     ngals : float
         Number of galaxies to generate
     zsrc : float or str
