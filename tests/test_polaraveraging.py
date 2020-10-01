@@ -123,16 +123,16 @@ def test_compute_lensing_angles_flatsky():
 def test_compute_tangential_and_cross_components():
     # Input values
     ra_lens, dec_lens, z_lens = 120., 42., 0.5
-    ra_source_list = np.array([120.1, 119.9])
-    dec_source_list = np.array([41.9, 42.2])
-    z_source_list = np.array([1.,2.])
+    ra_source = np.array([120.1, 119.9])
+    dec_source = np.array([41.9, 42.2])
+    z_source = np.array([1.,2.])
     
     shear1 = np.array([0.2, 0.4])
     shear2 = np.array([0.3, 0.5])
 
     # Make GalaxyCluster object
     cluster = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
-                                 galcat=GCData([ra_source_list, dec_source_list, shear1, shear2],
+                                 galcat=GCData([ra_source, dec_source, shear1, shear2],
                                               names=('ra', 'dec', 'e1', 'e2')))
 
     # Correct values
@@ -146,8 +146,8 @@ def test_compute_tangential_and_cross_components():
     
     # Pass arrays directly into function
     angsep, tshear, xshear = pa.compute_tangential_and_cross_components(ra_lens=ra_lens, dec_lens=dec_lens,
-                                              ra_source_list=ra_source_list,
-                                              dec_source_list=dec_source_list,
+                                              ra_source=ra_source,
+                                              dec_source=dec_source,
                                               shear1=shear1, shear2=shear2,
                                               add_to_cluster=False)
     testing.assert_allclose(angsep, expected_angsep, **TOLERANCE,
@@ -182,7 +182,7 @@ def test_compute_tangential_and_cross_components():
 
     # cluster object OK but function call missing cosmology
     cluster = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
-                                 galcat=GCData([ra_source_list, dec_source_list, shear1, shear2, z_source_list],
+                                 galcat=GCData([ra_source, dec_source, shear1, shear2, z_source],
                                                names=('ra', 'dec', 'e1', 'e2','z')))
     testing.assert_raises(TypeError, cluster.compute_tangential_and_cross_components, is_deltasigma=True)
     
@@ -199,21 +199,21 @@ def test_compute_tangential_and_cross_components():
 def test_make_binned_profiles():
     # Set up a cluster object and compute cross and tangential shears
     ra_lens, dec_lens, z_lens = 120., 42., 0.5
-    ra_source_list = np.array([120.1, 119.9, 119.9])
-    dec_source_list = np.array([41.9, 42.2, 42.2])
-    id_source_list = np.array([1, 2, 3])
+    ra_source = np.array([120.1, 119.9, 119.9])
+    dec_source = np.array([41.9, 42.2, 42.2])
+    id_source = np.array([1, 2, 3])
     shear1 = np.array([0.2, 0.4, 0.4])
     shear2 = np.array([0.3, 0.5, 0.5])
     z_sources = np.ones(3)
     angsep_units, bin_units = 'radians', 'radians'
     cluster = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
-                                 galcat=GCData([ra_source_list, dec_source_list,
-                                               shear1, shear2, z_sources, id_source_list],
+                                 galcat=GCData([ra_source, dec_source,
+                                               shear1, shear2, z_sources, id_source],
                                               names=('ra', 'dec', 'e1', 'e2', 'z', 'id')))
 
     # Test error of missing redshift
     cluster_noz = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
-                                     galcat=GCData([ra_source_list, dec_source_list,
+                                     galcat=GCData([ra_source, dec_source,
                                                    shear1, shear2],
                                                   names=('ra', 'dec', 'e1', 'e2')))
     cluster_noz.compute_tangential_and_cross_components()
@@ -309,7 +309,7 @@ def test_make_binned_profiles():
 
     # Repeat the same tests but also asking for list of galaxy IDs in each bin
     cluster_noid = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
-                                 galcat=GCData([ra_source_list, dec_source_list,
+                                 galcat=GCData([ra_source, dec_source,
                                                shear1, shear2, z_sources],
                                               names=('ra', 'dec', 'e1', 'e2', 'z')))
     cluster_noid.compute_tangential_and_cross_components()
