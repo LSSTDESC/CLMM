@@ -36,7 +36,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, Delta_SO, zs
     redshift.
 
     3. Draw galaxy positions. Positions are drawn in a square box around the lens position with
-    a side length of 8 Mpc. We then convert to right ascension and declination using the
+    a side length of 8 Mpc/h. We then convert to right ascension and declination using the
     cosmology defined in `cosmo`.
 
     4. We predict the reduced tangential shear of each using the radial distances of each source
@@ -76,10 +76,13 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, Delta_SO, zs
         float : All sources galaxies at this fixed redshift
         str : Draws individual source gal redshifts from predefined distribution. Options
               are: chang13
-    zsrc_min : float
-        The minimum source redshift allowed.
+    zsrc_min : float, optional
+        The minimum true redshift of the sources. If photoz errors are included, the observed redshift
+        may be smaller than zsrc_min.
     zsrc_max : float, optional
-        If source redshifts are drawn, the maximum source redshift
+        The maximum true redshift of the sources, apllied when galaxy redshifts are drawn from 
+        a redshift distribution. If photoz errirs are included, the observed redshift may be larger than
+        zsrc_max.
     field_size : float
         The size of the field (field_size x field_size) to be simulated. 
         Proper distance in Mpc/h at the cluster redshift.
