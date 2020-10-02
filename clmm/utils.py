@@ -28,14 +28,18 @@ def compute_radial_averages(xvals, yvals, xbins, error_model='std/sqrt_n'):
         Mean y value in each bin
     yerr : array_like
         Error on the mean y value in each bin. Specified by error_model
-    n : array_like
+    num_objects : array_like
         Number of objects in each bin
+    binnumber: 1-D ndarray of ints
+        Indices of the bins (corresponding to `xbins`) in which each value
+        of `xvals` belongs.  Same length as `yvals`.  A binnumber of `i` means the
+        corresponding value is between (xbins[i-1], xbins[i]).
     """
     meanx, xbins, binnumber = binned_statistic(xvals, xvals, statistic='mean', bins=xbins)[:3]
     meany = binned_statistic(xvals, yvals, statistic='mean', bins=xbins)[0]
     # number of objects
-    n = np.histogram(xvals, xbins)[0]
-    n_zero = n==0
+    num_objects = np.histogram(xvals, xbins)[0]
+    n_zero = num_objects==0
 
     if error_model == 'std':
         yerr = binned_statistic(xvals, yvals, statistic='std', bins=xbins)[0]
@@ -51,7 +55,7 @@ def compute_radial_averages(xvals, yvals, xbins, error_model='std/sqrt_n'):
     meany[n_zero] = 0
     yerr[n_zero]  = 0
 
-    return meanx, meany, yerr, n, binnumber
+    return meanx, meany, yerr, num_objects, binnumber
 
 def make_bins(rmin, rmax, nbins=10, method='evenwidth', source_seps=None):
     """ Define bin edges
