@@ -81,7 +81,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, Delta_SO, zs
         may be smaller than zsrc_min.
     zsrc_max : float, optional
         The maximum true redshift of the sources, apllied when galaxy redshifts are drawn from 
-        a redshift distribution. If photoz errirs are included, the observed redshift may be larger than
+        a redshift distribution. If photoz errors are included, the observed redshift may be larger than
         zsrc_max.
     field_size : float
         The size of the field (field_size x field_size) to be simulated. 
@@ -263,8 +263,8 @@ def _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals):
     Returns
     -------
     galaxy_catalog : clmm.GCData
-        Table of true and 'measured' redshifts, which here the same. Photometric errors
-        are then added with the _compute_photoz_pdfs.
+        Table of true and 'measured' redshifts, which here the same. Redshift photometric errors
+        are then added using _compute_photoz_pdfs.
 
     Notes
     -----
