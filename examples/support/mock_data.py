@@ -323,7 +323,8 @@ def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled):
 
     pzbins_grid, pzpdf_grid = [], []
     for row in galaxy_catalog:
-        zmin, zmax = row['z'] - 0.5, row['z'] + 0.5
+        pdf_range = row['pzsigma']*10.
+        zmin, zmax = row['z'] - pdf_range, row['z'] + pdf_range
         zbins = np.arange(zmin, zmax, 0.03)
         pzbins_grid.append(zbins)
         pzpdf_grid.append(np.exp(-0.5*((zbins - row['z'])/row['pzsigma'])**2)/np.sqrt(2*np.pi*row['pzsigma']**2))
