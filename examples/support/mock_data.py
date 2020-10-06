@@ -218,9 +218,9 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delt
     galaxy_catalog['posangle'] = np.arctan2(galaxy_catalog['y_mpc'],
                                             galaxy_catalog['x_mpc'])
 
-    #corresponding shear1,2 components: TO BE CHECKED !!
+    #corresponding shear1,2 components
     gam1 = -gamt*np.cos(2*galaxy_catalog['posangle']) + gamx*np.sin(2*galaxy_catalog['posangle'])
-    gam2 = -gamt*np.sin(2*galaxy_catalog['posangle']) - gamx*np.sin(2*galaxy_catalog['posangle'])
+    gam2 = -gamt*np.sin(2*galaxy_catalog['posangle']) - gamx*np.cos(2*galaxy_catalog['posangle'])
     
     #instrinsic ellipticities
     e1_intrinsic = 0
