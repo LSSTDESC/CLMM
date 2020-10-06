@@ -21,6 +21,7 @@ install:
   - git clone https://github.com/tmcclintock/cluster_toolkit.git ; cd cluster_toolkit ; python setup.py install ; cd -
   - git clone https://github.com/LSSTDESC/CCL ; cd CCL ; python setup.py install ; cd -
   - wget https://github.com/NumCosmo/NumCosmo/releases/download/v0.15.2/numcosmo-0.15.2.tar.gz && tar xf numcosmo-0.15.2.tar.gz && cd numcosmo-0.15.2 && ./configure --prefix=/usr && make -j4 && sudo make install && cd -
+  - pip install pycairo==1.19.1
   - pip install pygobject
   - export MPLBACKEND="agg"
   - pip install matplotlib
