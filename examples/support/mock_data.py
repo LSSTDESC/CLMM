@@ -263,7 +263,7 @@ def _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals):
     Returns
     -------
     galaxy_catalog : clmm.GCData
-        Table of true and 'measured' redshifts, which here the same. Redshift photometric errors
+        Table of true and 'measured' photometric redshifts, which here the same. Redshift photometric errors
         are then added using _compute_photoz_pdfs.
 
     Notes
