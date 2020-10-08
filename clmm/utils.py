@@ -283,9 +283,9 @@ def compute_lensed_ellipticity(ellipticity1_true, ellipticity2_true, shear1, she
     ellipticity2_true : float or array
         Intrinsic ellipticity of the sources along the second axis
     shear1 :  float or array
-        Shear component along the principal axis at the source location 
+        Shear component (not reduced shear) along the principal axis at the source location 
     shear2 :  float or array
-        Shear component along the second axis at the source location
+        Shear component (not reduced shear) along the 45-degree axis at the source location
     convergence :  float or array
         Convergence at the source location
     Returns
