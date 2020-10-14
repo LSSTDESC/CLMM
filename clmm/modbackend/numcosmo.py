@@ -11,10 +11,7 @@ import numpy as np
 import warnings
 
 from . import func_layer
-from . func_layer import get_reduced_shear_from_convergencem, get_3d_density,
-    predict_surface_density, predict_excess_surface_density, angular_diameter_dist_a1a2,
-    get_critical_surface_density, predict_tangential_shear, predict_convergence,
-    predict_reduced_tangential_shear, predict_magnification
+from . func_layer import *
 from .. clmm_cosmo import CLMMCosmology
 from .. clmm_modeling import CLMModeling
 
