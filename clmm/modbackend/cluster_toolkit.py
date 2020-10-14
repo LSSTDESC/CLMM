@@ -8,7 +8,7 @@ from astropy.cosmology import LambdaCDM, FlatLambdaCDM
 
 from .. constants import Constants as const
 from . import generic
-from . generic import *
+from . generic import get_reduced_shear_from_convergence
 
 from .. clmm_cosmo import CLMMCosmology
 
