@@ -6,32 +6,24 @@ gi.require_version('NumCosmoMath', '1.0')
 from gi.repository import NumCosmo as Nc
 from gi.repository import NumCosmoMath as Ncm
 
-from .cluster_toolkit_patches import _patch_comoving_coord_cluster_toolkit_rho_m
-
 import math
 import numpy as np
 import warnings
 
 from . import func_layer
 from . func_layer import *
-from . clmm_modeling import CLMModeling
+from .. clmm_cosmo import CLMMCosmology
+from .. clmm_modeling import CLMModeling
 
-__all__ = ['NumCosmoCLMModeling', 'Modeling'] + func_layer.__all__
+__all__ = ['NumCosmoCLMModeling', 'Modeling', 'Cosmology'] + func_layer.__all__
 
 class NumCosmoCLMModeling (CLMModeling):
-    def __init__ (self, massdef = 'mean', delta_mdef = 200, halo_profile_model = 'nfw', z_max = 15.0):
+    def __init__ (self, massdef = 'mean', delta_mdef = 200, halo_profile_model = 'nfw'):
         Ncm.cfg_init ()
         
         self.backend = 'nc'
         
-        self.cosmo = Nc.HICosmo.new_from_name (Nc.HICosmo, "NcHICosmoDEXcdm")
-
-        self.cosmo.param_set_lower_bound (Nc.HICosmoDESParams.T_GAMMA0, 0.0)        
-        self.cosmo.omega_x2omega_k ()
-        
-        self.cosmo.param_set_by_name ("w",      -1.0)
-        self.cosmo.param_set_by_name ("Omegak",  0.0)
-        self.cosmo.param_set_by_name ("Tgamma0", 0.0)
+        self.set_cosmo (None)
         
         self.mdef_dict = {'mean':      Nc.HaloDensityProfileMassDef.MEAN, 
                           'critial':   Nc.HaloDensityProfileMassDef.CRITICAL,
@@ -47,23 +39,15 @@ class NumCosmoCLMModeling (CLMModeling):
 
         self.set_halo_density_profile (halo_profile_model, massdef, delta_mdef)
         
-        self.dist = Nc.Distance.new (z_max)
-        self.dist.prepare (self.cosmo)
-        
-        self.smd = Nc.WLSurfaceMassDensity.new (self.dist)
-        self.smd.prepare (self.cosmo)
-        
-        self.cor_factor = 2.77533742639e+11 * _patch_comoving_coord_cluster_toolkit_rho_m (1.0, 0.0) / Ncm.C.crit_mass_density_h2_solar_mass_Mpc3 ()
+    def set_cosmo (self, cosmo):
+        if cosmo:
+            assert isinstance (cosmo, NumCosmoCosmology)
+            self.cosmo = cosmo
+        else:
+            self.cosmo = NumCosmoCosmology ()
 
-    def set_cosmo_params_dict (self, cosmo_dict):
-        if 'H0' in cosmo_dict:
-            self.cosmo.param_set_by_name ("H0", cosmo_dict['H0'])
-        if 'Omega_b' in cosmo_dict:
-            self.cosmo.param_set_by_name ("Omegab", cosmo_dict['Omega_b'])
-        if 'Omega_c' in cosmo_dict:
-            self.cosmo.param_set_by_name ("Omegac", cosmo_dict['Omega_c'])
-        self.dist.prepare_if_needed (self.cosmo)
-        self.smd.prepare_if_needed (self.cosmo)
+        self.smd = Nc.WLSurfaceMassDensity.new (self.cosmo.dist)
+        self.smd.prepare_if_needed (self.cosmo.be_cosmo)
 
     def set_halo_density_profile (self, halo_profile_model = 'nfw', massdef = 'mean', delta_mdef = 200):
         # Check if choices are supported
@@ -92,95 +76,176 @@ class NumCosmoCLMModeling (CLMModeling):
                 
     def get_mset (self):
         mset = Ncm.MSet.empty_new ()
-        mset.set (self.cosmo)
+        mset.set (self.cosmo.be_cosmo)
         mset.set (self.hdpm)
         mset.set (self.smd)
         return mset
         
     def set_mset (self, mset):
-        self.cosmo = mset.get (Nc.HICosmo.id ())
+        
+        self.cosmo.set_be_cosmo (mset.get (Nc.HICosmo.id ()))
+    
         self.hdpm  = mset.get (Nc.HaloDensityProfile.id ())
         self.smd   = mset.get (Nc.WLSurfaceMassDensity.id ())
 
-        self.dist.prepare_if_needed (self.cosmo)
-        self.smd.prepare_if_needed (self.cosmo)
+        self.smd.prepare_if_needed (self.cosmo.be_cosmo)
         
     def set_concentration (self, cdelta):
         self.hdpm.props.cDelta = cdelta
 
     def set_mass (self, mdelta):
-        self.hdpm.props.log10MDelta = math.log10 (mdelta / self.cosmo.h () / self.cor_factor)
+        self.hdpm.props.log10MDelta = math.log10 (mdelta)
 
     def eval_da_z1z2 (self, z1, z2):
-        h   = self.cosmo.h ()
-        fac = self.cosmo.RH_Mpc () * h * 1.0e6
+        fac = self.cosmo.be_cosmo.RH_Mpc ()
                 
-        f = lambda zi, zf: self.dist.angular_diameter_z1_z2 (self.cosmo, zi, zf) * fac
+        f = lambda zi, zf: self.cosmo.dist.angular_diameter_z1_z2 (self.cosmo.be_cosmo, zi, zf) * fac
         return np.vectorize (f) (z1, z2)
 
     def eval_sigma_crit (self, z_len, z_src):
-        h   = self.cosmo.h ()
-        fac = self.cor_factor * 1.0e-12 / h
-                
-        f = lambda z_len, z_src: self.smd.sigma_critical (self.cosmo, z_src, z_len, z_len) * fac
+    
+        self.smd.prepare_if_needed (self.cosmo.be_cosmo)
+        f = lambda z_len, z_src: self.smd.sigma_critical (self.cosmo.be_cosmo, z_src, z_len, z_len)
         return np.vectorize (f) (z_len, z_src)
 
     def eval_density (self, r3d, z_cl):
-        h   = self.cosmo.h ()
-        h2  = h * h
-        fac = self.cor_factor / h2
         
-        f = lambda r3d, z_cl: self.hdpm.eval_density (self.cosmo, r3d / h, z_cl) * fac
+        f = lambda r3d, z_cl: self.hdpm.eval_density (self.cosmo.be_cosmo, r3d, z_cl)
         return np.vectorize (f) (r3d, z_cl)
 
     def eval_sigma (self, r_proj, z_cl):
-        h   = self.cosmo.h ()
-        fac = self.cor_factor * 1.0e-12 / h
         
-        f = lambda r_proj, z_cl: self.smd.sigma (self.hdpm, self.cosmo, r_proj / h, z_cl) * fac
+        self.smd.prepare_if_needed (self.cosmo.be_cosmo)
+        f = lambda r_proj, z_cl: self.smd.sigma (self.hdpm, self.cosmo.be_cosmo, r_proj, z_cl)
         return np.vectorize (f) (r_proj, z_cl)
 
     def eval_sigma_mean (self, r_proj, z_cl):
-        h   = self.cosmo.h ()
-        fac = self.cor_factor * 1.0e-12 / h
                 
-        f = lambda r_proj, z_cl: self.smd.sigma_mean (self.hdpm, self.cosmo, r_proj / h, z_cl) * fac
+        self.smd.prepare_if_needed (self.cosmo.be_cosmo)
+        f = lambda r_proj, z_cl: self.smd.sigma_mean (self.hdpm, self.cosmo.be_cosmo, r_proj, z_cl)
         return np.vectorize (f) (r_proj, z_cl)
 
     def eval_sigma_excess (self, r_proj, z_cl):
-        h   = self.cosmo.h ()
-        fac = self.cor_factor * 1.0e-12 / h
 
-        f = lambda r_proj, z_cl: self.smd.sigma_excess (self.hdpm, self.cosmo, r_proj / h, z_cl) * fac
+        self.smd.prepare_if_needed (self.cosmo.be_cosmo)
+        f = lambda r_proj, z_cl: self.smd.sigma_excess (self.hdpm, self.cosmo.be_cosmo, r_proj, z_cl) 
         return np.vectorize (f) (r_proj, z_cl)
 
     def eval_shear (self, r_proj, z_cl, z_src):
-        h   = self.cosmo.h ()
 
-        f = lambda r_proj, z_src, z_cl: self.smd.shear (self.hdpm, self.cosmo, r_proj / h, z_src, z_cl, z_cl)
+        self.smd.prepare_if_needed (self.cosmo.be_cosmo)
+        f = lambda r_proj, z_src, z_cl: self.smd.shear (self.hdpm, self.cosmo.be_cosmo, r_proj, z_src, z_cl, z_cl)
         return np.vectorize (f) (r_proj, z_src, z_cl)
 
     def eval_convergence (self, r_proj, z_cl, z_src):
-        h   = self.cosmo.h ()
 
-        f = lambda r_proj, z_src, z_cl: self.smd.convergence (self.hdpm, self.cosmo, r_proj / h, z_src, z_cl, z_cl)
+        self.smd.prepare_if_needed (self.cosmo.be_cosmo)
+        f = lambda r_proj, z_src, z_cl: self.smd.convergence (self.hdpm, self.cosmo.be_cosmo, r_proj, z_src, z_cl, z_cl)
         return np.vectorize (f) (r_proj, z_src, z_cl)
 
     def eval_reduced_shear (self, r_proj, z_cl, z_src):
-        h   = self.cosmo.h ()
         
+        self.smd.prepare_if_needed (self.cosmo.be_cosmo)
         if isinstance(r_proj,(list,np.ndarray)) and isinstance(z_src,(list,np.ndarray)) and len (r_proj) == len (z_src):
-            return self.smd.reduced_shear_array_equal (self.hdpm, self.cosmo, np.atleast_1d (r_proj), 1.0 / h, 1.0, np.atleast_1d (z_src), z_cl, z_cl)
+            return self.smd.reduced_shear_array_equal (self.hdpm, self.cosmo.be_cosmo, np.atleast_1d (r_proj), 1.0, 1.0, np.atleast_1d (z_src), z_cl, z_cl)
         else:        
-            return self.smd.reduced_shear_array (self.hdpm, self.cosmo, np.atleast_1d (r_proj), 1.0 / h, 1.0, np.atleast_1d (z_src), z_cl, z_cl)
+            return self.smd.reduced_shear_array (self.hdpm, self.cosmo.be_cosmo, np.atleast_1d (r_proj), 1.0, 1.0, np.atleast_1d (z_src), z_cl, z_cl)
 
     def eval_magnification (self, r_proj, z_cl, z_src):
-        h   = self.cosmo.h ()
 
-        f = lambda r_proj, z_src, z_cl: self.smd.magnification (self.hdpm, self.cosmo, r_proj / h, z_src, z_cl, z_cl)
+        self.smd.prepare_if_needed (self.cosmo.be_cosmo)
+        f = lambda r_proj, z_src, z_cl: self.smd.magnification (self.hdpm, self.cosmo.be_cosmo, r_proj, z_src, z_cl, z_cl)
         return np.vectorize (f) (r_proj, z_src, z_cl)
 
+# CLMM Cosmology object - NumCosmo implementation
+
+class NumCosmoCosmology (CLMMCosmology):
+    def __init__(self, dist = None, dist_zmax = 15.0, **kwargs):
+        
+        self.dist = None
+        
+        super(NumCosmoCosmology, self).__init__ (**kwargs)
+        
+        self.name = 'nc'
+        
+        if dist:
+            self.set_dist (dist)
+        else:
+            self.set_dist (Nc.Distance.new (dist_zmax))
+        
+    def _init_from_cosmo (self, be_cosmo):
+    
+        assert isinstance (be_cosmo, Nc.HICosmo)
+        self.be_cosmo = be_cosmo
+        
+        if self.dist:
+            self.dist.prepare_if_needed (self.be_cosmo)
+
+    def _init_from_params (self, H0, Omega_b0, Omega_dm0, Omega_k0):
+
+        if not self.be_cosmo:
+            self.be_cosmo = Nc.HICosmo.new_from_name (Nc.HICosmo, "NcHICosmoDEXcdm")
+            self.be_cosmo.param_set_lower_bound (Nc.HICosmoDESParams.T_GAMMA0, 0.0)        
+            self.be_cosmo.omega_x2omega_k ()
+            self.be_cosmo.param_set_by_name ("w",      -1.0)
+            self.be_cosmo.param_set_by_name ("Tgamma0", 0.0)
+        else:
+            assert isinstance (cosmo, Nc.HICosmoDEXcdm)
+            assert isinstance (cosmo.peek_reparam, Nc.HICosmoDEReparamOk)
+
+        self.be_cosmo.param_set_by_name ("H0",     H0)
+        self.be_cosmo.param_set_by_name ("Omegab", Omega_b0)
+        self.be_cosmo.param_set_by_name ("Omegac", Omega_dm0)
+        self.be_cosmo.param_set_by_name ("Omegak", Omega_k0)
+        
+        if self.dist:
+            self.dist.prepare_if_needed (self.be_cosmo)
+
+    def _set_param (self, value):
+        if key == "Omega_b0":
+            self.be_cosmo.param_set_by_name ("Omegab", value)
+        elif key == "Omega_dm0":
+            self.be_cosmo.param_set_by_name ("Omegac", value)
+        elif key == 'h':
+            self.be_cosmo.param_set_by_name ("H0",     value * 100.0)
+        elif key == 'H0':
+            self.be_cosmo.param_set_by_name ("H0",     value)
+        else:
+            raise ValueError (f"Unsupported parameter {key}")
+
+    def _get_param (self, key):
+        if key == "Omega_m0":
+            return self.be_cosmo.Omega_m0 ()
+        elif key == "Omega_k0":
+            return self.be_cosmo.Omega_k0 ()
+        elif key == "Omega_b0":
+            return self.be_cosmo.Omega_b0 ()
+        elif key == "Omega_dm0":
+            return self.be_cosmo.Omega_c0 ()
+        elif key == 'h':
+            return self.be_cosmo.h ()
+        elif key == 'H0':
+            return self.be_cosmo.H0 ()
+        else:
+            raise ValueError (f"Unsupported parameter {key}")
+
+    def set_dist (self, dist):
+
+        assert isinstance (dist, Nc.Distance)
+        self.dist = dist
+        self.dist.prepare_if_needed (self.be_cosmo)
+
+    def get_Omega_m (self, z):
+    
+        return self.be_cosmo.Omega_m (z)
+
+    def get_E2Omega_m (self, z):
+    
+        return self.be_cosmo.E2Omega_m (z)
+
+    def eval_da_z1z2 (self, z1, z2):
+    
+        return np.vectorize (self.dist.angular_diameter_z1_z2) (self.be_cosmo, z1, z2) * self.be_cosmo.RH_Mpc ()
+
 Modeling = NumCosmoCLMModeling
-
-func_layer.gcm = NumCosmoCLMModeling ()
-
+Cosmology = NumCosmoCosmology

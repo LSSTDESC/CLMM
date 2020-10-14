@@ -81,6 +81,13 @@ else:
 __all__ = backend.__all__
 globals().update({k: getattr (backend, k) for k in backend.__all__})
 
+from .modbackend import func_layer
+
+try: 
+    func_layer.gcm = Modeling ()
+except NotImplementedError:
+    func_layer.gcm = None
+
 def backend_is_available (be1):
     if not be1 in __backends:
         raise ValueError ("CLMM Backend `%s' is not supported" % (be1))
