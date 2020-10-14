@@ -5,7 +5,7 @@ from numpy import testing
 import clmm
 from clmm import GCData
 import clmm.polaraveraging as pa
-from astropy.cosmology import FlatLambdaCDM
+import clmm.modeling as md
 
 TOLERANCE = {'atol':1.e-7, 'rtol':1.e-7}
 
@@ -120,7 +120,7 @@ def test_compute_lensing_angles_flatsky():
                             [[0.0012916551296819666, 0.003424250083245557], [-2.570568636904587, 0.31079754672944354]],
                             TOLERANCE['rtol'], err_msg="Failure when ra_l and ra_s are the same but one is defined negative")
 
-def test_compute_tangential_and_cross_components():
+def test_compute_tangential_and_cross_components(modeling_data):
     # Input values
     ra_lens, dec_lens, z_lens = 120., 42., 0.5
     ra_source = np.array([120.1, 119.9])
@@ -140,10 +140,10 @@ def test_compute_tangential_and_cross_components():
     expected_cross_shear = np.array([0.2780316984090899, 0.6398792901134982])
     expected_tangential_shear = np.array([-0.22956126563459447, -0.02354769805831558])
     
-    # DeltaSigma expected values for FlatLambdaCDM(H0=70., Om0=0.3, Ob0=0.025)    
-    expected_cross_DS = np.array([1224.3326297393244, 1899.6061989365176])
-    expected_tangential_DS = np.array([-1010.889584349285, -69.9059242788237])
-    
+    # DeltaSigma expected values for md.Cosmology (H0=70.0, Omega_dm0 = 0.275, Omega_b0 = 0.025)    
+    expected_cross_DS = np.array([1224.3326297393244, 1899.6061989365176]) * 0.7 * 1.0e12 * 1.0002565513832675
+    expected_tangential_DS = np.array([-1010.889584349285, -69.9059242788237]) * 0.7 * 1.0e12 * 1.0002565513832675
+
     # Pass arrays directly into function
     angsep, tshear, xshear = pa.compute_tangential_and_cross_components(ra_lens=ra_lens, dec_lens=dec_lens,
                                               ra_source=ra_source,
@@ -187,7 +187,8 @@ def test_compute_tangential_and_cross_components():
     testing.assert_raises(TypeError, cluster.compute_tangential_and_cross_components, is_deltasigma=True)
     
     # check values for DeltaSigma
-    cosmo = FlatLambdaCDM(H0=70., Om0=0.3, Ob0=0.025)
+    cosmo = md.Cosmology (H0=70.0, Omega_dm0 = 0.275, Omega_b0 = 0.025)
+
     angsep_DS, tDS, xDS = cluster.compute_tangential_and_cross_components(cosmo=cosmo, is_deltasigma=True)
     testing.assert_allclose(angsep_DS, expected_angsep, **TOLERANCE, 
                             err_msg="Angular Separation not correct when using cluster method")

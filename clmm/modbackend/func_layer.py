@@ -52,9 +52,8 @@ def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profil
     Need to refactor later so we only require arguments that are necessary for all profiles
     and use another structure to take the arguments necessary for specific models
     """
-    cosmo = cclify_astropy_cosmo(cosmo)
 
-    gcm.set_cosmo_params_dict (cosmo)
+    gcm.set_cosmo (cosmo)
     gcm.set_halo_density_profile (halo_profile_model = halo_profile_model, delta_mdef = delta_mdef)
     gcm.set_concentration (cdelta)
     gcm.set_mass (mdelta)
@@ -100,9 +99,7 @@ def predict_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     another structure to take the arguments necessary for specific models.
     """
 
-    cosmo = cclify_astropy_cosmo(cosmo)
-
-    gcm.set_cosmo_params_dict (cosmo)
+    gcm.set_cosmo (cosmo)
     gcm.set_halo_density_profile (halo_profile_model = halo_profile_model, delta_mdef = delta_mdef)
     gcm.set_concentration (cdelta)
     gcm.set_mass (mdelta)
@@ -147,9 +144,7 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
         Excess surface density in units of :math:`h\ M_\odot\ pc^{-2}`.
     """
 
-    cosmo = cclify_astropy_cosmo(cosmo)
-
-    gcm.set_cosmo_params_dict (cosmo)
+    gcm.set_cosmo (cosmo)
     gcm.set_halo_density_profile (halo_profile_model = halo_profile_model, delta_mdef = delta_mdef)
     gcm.set_concentration (cdelta)
     gcm.set_mass (mdelta)
@@ -187,11 +182,10 @@ def angular_diameter_dist_a1a2(cosmo, a1, a2=1.):
     so we'll have to revise this later. We need to switch angular_diameter_distance_z1z2
     to CCL equivalent angular distance once implemented
     """
-    redshift1 = _get_z_from_a(a2)
-    redshift2 = _get_z_from_a(a1)
-    cosmo = cclify_astropy_cosmo(cosmo)
+    redshift1 = cosmo._get_z_from_a(a2)
+    redshift2 = cosmo._get_z_from_a(a1)
 
-    gcm.set_cosmo_params_dict (cosmo)
+    gcm.set_cosmo (cosmo)
     return gcm.eval_da_z1z2 (redshift1, redshift2)
 
 
@@ -221,9 +215,7 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     z_src_models using :math:`\beta_s`.
     """
 
-    cosmo = cclify_astropy_cosmo(cosmo)
-
-    gcm.set_cosmo_params_dict (cosmo)
+    gcm.set_cosmo (cosmo)
     return gcm.eval_sigma_crit (z_cluster, z_source)
 
 
@@ -278,9 +270,8 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     Need to figure out if we want to raise exceptions rather than errors here?
     """
     if z_src_model == 'single_plane':
-        cosmo = cclify_astropy_cosmo(cosmo)
 
-        gcm.set_cosmo_params_dict (cosmo)
+        gcm.set_cosmo (cosmo)
         gcm.set_halo_density_profile (halo_profile_model = halo_profile_model, delta_mdef = delta_mdef)
         gcm.set_concentration (cdelta)
         gcm.set_mass (mdelta)
@@ -346,9 +337,8 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
                                     delta_mdef=delta_mdef, halo_profile_model=halo_profile_model)
 
     if z_src_model == 'single_plane':
-        cosmo = cclify_astropy_cosmo(cosmo)
 
-        gcm.set_cosmo_params_dict (cosmo)
+        gcm.set_cosmo (cosmo)
         gcm.set_halo_density_profile (halo_profile_model = halo_profile_model, delta_mdef = delta_mdef)
         gcm.set_concentration (cdelta)
         gcm.set_mass (mdelta)
@@ -411,9 +401,8 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
     Need to figure out if we want to raise exceptions rather than errors here?
     """
     if z_src_model == 'single_plane':
-        cosmo = cclify_astropy_cosmo(cosmo)
 
-        gcm.set_cosmo_params_dict (cosmo)
+        gcm.set_cosmo (cosmo)
         gcm.set_halo_density_profile (halo_profile_model = halo_profile_model, delta_mdef = delta_mdef)
         gcm.set_concentration (cdelta)
         gcm.set_mass (mdelta)
@@ -485,9 +474,7 @@ def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
     
     if z_src_model == 'single_plane':
         
-        cosmo = cclify_astropy_cosmo(cosmo)
-
-        gcm.set_cosmo_params_dict (cosmo)
+        gcm.set_cosmo (cosmo)
         gcm.set_halo_density_profile (halo_profile_model = halo_profile_model, delta_mdef = delta_mdef)
         gcm.set_concentration (cdelta)
         gcm.set_mass (mdelta)

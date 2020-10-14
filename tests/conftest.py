@@ -11,13 +11,17 @@ def modeling_data (request):
         avail = clmm.modeling.backend_is_available (param)
     except ValueError:
         avail = False
-        
     
     if (not avail):
         pytest.skip (f"Unsupported backend `{param}'.")
 
     os.environ['CLMM_MODELING_BACKEND'] = param
-    importlib.reload (clmm.modeling)    
+    importlib.reload (clmm.modeling)
+    importlib.reload (clmm.polaraveraging)
+    importlib.reload (clmm)
+    
+    print (clmm.modeling)
+    
     return param
 
 

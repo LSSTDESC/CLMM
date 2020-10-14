@@ -2,18 +2,36 @@
 
 import cluster_toolkit as ct
 import numpy as np
+
 from astropy import units
-from ..constants import Constants as const
-from .cluster_toolkit_patches import _patch_comoving_coord_cluster_toolkit_rho_m
+from astropy.cosmology import LambdaCDM, FlatLambdaCDM
+
+from .. constants import Constants as const
 from . import generic
 from . generic import *
+
+from .. clmm_cosmo import CLMMCosmology
+
 import warnings
 
 __all__ = generic.__all__ + ['get_3d_density', 'predict_surface_density', 
            'predict_excess_surface_density', 'angular_diameter_dist_a1a2',
            'get_critical_surface_density', 'predict_tangential_shear',
            'predict_convergence', 'predict_reduced_tangential_shear',
-           'predict_magnification', 'Modeling']
+           'predict_magnification', 'Modeling', 'Cosmology']
+
+
+def _patch_ct_to_cd2018 ():
+    r""" Convertion factor from cluster_toolkit hardcoded rho_crit to 
+    CODATA 2018 + IAU 2015
+    
+    """
+
+    rhocrit_mks = 3.0 * 100.0 * 100.0 / (8.0 * np.pi * const.GNEWT.value)
+    rhocrit_cd2018 = rhocrit_mks * 1000.0 * 1000.0 * const.PC_TO_METER.value * 1.0e6 / const.SOLAR_MASS.value
+    rhocrit_cltk = 2.77533742639e+11
+
+    return rhocrit_cd2018 / rhocrit_cltk
 
 
 def _assert_correct_type_ct(a):
@@ -47,9 +65,9 @@ def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profil
     Parameters
     ----------
     r3d : array_like, float
-        Radial position from the cluster center in :math:`M\!pc\ h^{-1}`.
+        Radial position from the cluster center in :math:`M\!pc`.
     mdelta : float
-        Galaxy cluster mass in :math:`M_\odot\ h^{-1}`.
+        Galaxy cluster mass in :math:`M_\odot`.
     cdelta : float
         Galaxy cluster concentration
     z_cl: float
@@ -66,19 +84,19 @@ def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profil
     Returns
     -------
     rho : array_like, float
-        3-dimensional mass density in units of :math:`h^2\ M_\odot\ pc^{-3}` DOUBLE CHECK THIS
+        3-dimensional mass density in units of :math:`M_\odot\ Mpc^{-3}` DOUBLE CHECK THIS
 
     Notes
     -----
     Need to refactor later so we only require arguments that are necessary for all profiles
     and use another structure to take the arguments necessary for specific models
     """
-    cosmo = cclify_astropy_cosmo(cosmo)
-    omega_m = cosmo['Omega_c'] + cosmo['Omega_b']
-    omega_m_transformed = _patch_comoving_coord_cluster_toolkit_rho_m(omega_m, z_cl)
+    Omega_m = cosmo.get_E2Omega_m (z_cl)
+    h       = cosmo['h']
+    cf      = _patch_ct_to_cd2018 ()
 
     if halo_profile_model.lower() == 'nfw':
-        rho = ct.density.rho_nfw_at_r(_assert_correct_type_ct (r3d), mdelta, cdelta, omega_m_transformed, delta=delta_mdef)
+        rho = ct.density.rho_nfw_at_r (_assert_correct_type_ct (r3d) * h, mdelta * h, cdelta, Omega_m * cf, delta = delta_mdef) * h**2
     else:
         raise ValueError(f"Profile model {halo_profile_model} not currently supported")
     return rho
@@ -96,9 +114,9 @@ def predict_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     Parameters
     ----------
     r_proj : array_like
-        Projected radial position from the cluster center in :math:`M\!pc\ h^{-1}`.
+        Projected radial position from the cluster center in :math:`M\!pc`.
     mdelta : float
-        Galaxy cluster mass in :math:`M_\odot\ h^{-1}`.
+        Galaxy cluster mass in :math:`M_\odot`.
     cdelta : float
         Galaxy cluster concentration
     z_cl: float
@@ -115,20 +133,20 @@ def predict_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     Returns
     -------
     sigma : array_like, float
-        2D projected surface density in units of :math:`h M_\odot\ pc^{-2}`
+        2D projected surface density in units of :math:`M_\odot\ Mpc^{-2}`
 
     Notes
     -----
     Need to refactory so we only require arguments that are necessary for all models and use
     another structure to take the arguments necessary for specific models.
     """
-    cosmo = cclify_astropy_cosmo(cosmo)
-    omega_m = cosmo['Omega_c'] + cosmo['Omega_b']
-    omega_m_transformed = _patch_comoving_coord_cluster_toolkit_rho_m(omega_m, z_cl)
+    Omega_m = cosmo.get_E2Omega_m (z_cl)
+    h       = cosmo['h']
+    cf      = _patch_ct_to_cd2018 ()
 
     if halo_profile_model.lower() == 'nfw':
-        sigma = ct.deltasigma.Sigma_nfw_at_R(_assert_correct_type_ct(r_proj), mdelta, cdelta, omega_m_transformed,
-                                             delta=delta_mdef)
+        sigma = ct.deltasigma.Sigma_nfw_at_R (_assert_correct_type_ct (r_proj) * h, mdelta * h, cdelta, Omega_m * cf,
+                                              delta=delta_mdef) * h * 1.0e12 # pc**-2 to Mpc**-2
     else:
         raise ValueError(f"Profile model {halo_profile_model} not currently supported")
     return sigma
@@ -149,9 +167,9 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
     Parameters
     ----------
     r_proj : array_like
-        Projected radial position from the cluster center in :math:`M\!pc\ h^{-1}`.
+        Projected radial position from the cluster center in :math:`M\!pc`.
     mdelta : float
-        Galaxy cluster mass in :math:`M_\odot\ h^{-1}`.
+        Galaxy cluster mass in :math:`M_\odot`.
     cdelta : float
         Galaxy cluster concentration
     z_cl: float
@@ -168,25 +186,26 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
     Returns
     -------
     deltasigma : array_like, float
-        Excess surface density in units of :math:`h\ M_\odot\ pc^{-2}`.
+        Excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
     """
-    cosmo = cclify_astropy_cosmo(cosmo)
-    omega_m = cosmo['Omega_c'] + cosmo['Omega_b']
-    omega_m_transformed = _patch_comoving_coord_cluster_toolkit_rho_m(omega_m, z_cl)
+    Omega_m = cosmo.get_E2Omega_m (z_cl)
+    h       = cosmo['h']
+    cf      = _patch_ct_to_cd2018 ()
 
     if np.min(r_proj)<1.e-11:
-        raise ValueError(f"Rmin = {np.min(r_proj):.2e} Mpc/h! This value is too small and may cause computational issues.")
+        raise ValueError(f"Rmin = {np.min(r_proj):.2e} Mpc! This value is too small and may cause computational issues.")
+
+    r_proj   = _assert_correct_type_ct (r_proj) * h
+    mdeltah  = mdelta * h
+    Omega_mc = Omega_m * cf
 
     # Computing sigma on a larger range than the radial range requested, with at least 1000 points.
     sigma_r_proj = np.logspace(np.log10(np.min(r_proj))-1, np.log10(np.max(r_proj))+1, np.max([1000,10*np.array(r_proj).size]))
   
     if halo_profile_model.lower() == 'nfw':
-        sigma = ct.deltasigma.Sigma_nfw_at_R(sigma_r_proj, mdelta, cdelta,
-                                             omega_m_transformed, delta=delta_mdef)
+        sigma = ct.deltasigma.Sigma_nfw_at_R (sigma_r_proj, mdeltah, cdelta, Omega_mc, delta=delta_mdef)
         # ^ Note: Let's not use this naming convention when transfering ct to ccl....
-        deltasigma = ct.deltasigma.DeltaSigma_at_R(_assert_correct_type_ct(r_proj), sigma_r_proj,
-                                                   sigma, mdelta, cdelta,
-                                                   omega_m_transformed, delta=delta_mdef)
+        deltasigma = ct.deltasigma.DeltaSigma_at_R (r_proj, sigma_r_proj, sigma, mdeltah, cdelta, Omega_mc, delta=delta_mdef) * h * 1.0e12 # pc**-2 to Mpc**-2
     else:
         raise ValueError(f"Profile model {halo_profile_model} not currently supported")
     return deltasigma
@@ -214,7 +233,7 @@ def angular_diameter_dist_a1a2(cosmo, a1, a2=1.):
     Returns
     -------
     d_a : float
-        Angular diameter distance in units :math:`M\!pc\ h^{-1}`
+        Angular diameter distance in units :math:`M\!pc`
 
     Notes
     -----
@@ -222,14 +241,11 @@ def angular_diameter_dist_a1a2(cosmo, a1, a2=1.):
     so we'll have to revise this later. We need to switch angular_diameter_distance_z1z2
     to CCL equivalent angular distance once implemented
     """
-    redshift1 = _get_z_from_a(a2)
-    redshift2 = _get_z_from_a(a1)
-    ap_cosmo = astropyify_ccl_cosmo(cosmo)
-
-    # astropy angular diameter distance in Mpc
-    # need to return in pc/h
-    return ap_cosmo.angular_diameter_distance_z1z2(redshift1, redshift2).to_value(units.pc)\
-           * ap_cosmo.H0.value*.01
+    
+    z1 = cosmo._get_z_from_a (a2)
+    z2 = cosmo._get_z_from_a (a1)
+    
+    return cosmo.eval_da_z1z2 (z1, z2)
 
 
 def get_critical_surface_density(cosmo, z_cluster, z_source):
@@ -250,30 +266,32 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     Returns
     -------
     sigma_c : float
-        Cosmology-dependent critical surface density in units of :math:`h\ M_\odot\ pc^{-2}`
+        Cosmology-dependent critical surface density in units of :math:`h\ M_\odot\ Mpc`
 
     Notes
     -----
     We will need :math:`\gamma_\infty` and :math:`\kappa_\infty` for alternative
     z_src_models using :math:`\beta_s`.
     """
-
+    h  = cosmo['h']
+    
     clight_pc_s = const.CLIGHT_KMS.value * 1000. / const.PC_TO_METER.value
     gnewt_pc3_msun_s2 = const.GNEWT.value * const.SOLAR_MASS.value / const.PC_TO_METER.value**3
 
-    aexp_cluster = _get_a_from_z(z_cluster)
-    aexp_src = _get_a_from_z(z_source)
+    aexp_cluster = cosmo._get_a_from_z(z_cluster)
+    aexp_src = cosmo._get_a_from_z(z_source)
 
     d_l = angular_diameter_dist_a1a2(cosmo, aexp_cluster, 1.0)
     d_s = angular_diameter_dist_a1a2(cosmo, aexp_src, 1.0)
     d_ls = angular_diameter_dist_a1a2(cosmo, aexp_src, aexp_cluster)
 
     beta_s = np.maximum(0., d_ls/d_s)
-    sigma_c = clight_pc_s * clight_pc_s / (4.0 * np.pi * gnewt_pc3_msun_s2) * 1/d_l * np.divide(1., beta_s)
-    
+    sigma_c = clight_pc_s * clight_pc_s / (4.0 * np.pi * gnewt_pc3_msun_s2) * 1 / d_l * np.divide(1., beta_s)
+
     if np.any(np.array(z_source)<=z_cluster):
         warnings.warn(f'Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.')
-    return sigma_c
+
+    return sigma_c * 1.0e6
 
 
 def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
@@ -291,9 +309,9 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     Parameters
     ----------
     r_proj : array_like
-        The projected radial positions in :math:`M\!pc\ h^{-1}`.
+        The projected radial positions in :math:`M\!pc`.
     mdelta : float
-        Galaxy cluster mass in :math:`M_\odot\ h^{-1}`.
+        Galaxy cluster mass in :math:`M_\odot`.
     cdelta : float
         Galaxy cluster NFW concentration.
     z_cluster : float
@@ -363,9 +381,9 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     Parameters
     ----------
     r_proj : array_like
-        The projected radial positions in :math:`M\!pc\ h^{-1}`.
+        The projected radial positions in :math:`M\!pc`.
     mdelta : float
-        Galaxy cluster mass in :math:`M_\odot\ h^{-1}`.
+        Galaxy cluster mass in :math:`M_\odot`.
     cdelta : float
         Galaxy cluster NFW concentration.
     z_cluster : float
@@ -399,7 +417,7 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
                                     delta_mdef=delta_mdef, halo_profile_model=halo_profile_model)
 
     if z_src_model == 'single_plane':
-        sigma_c = get_critical_surface_density(cosmo, z_cluster, z_source)
+        sigma_c = get_critical_surface_density (cosmo, z_cluster, z_source)
         kappa = np.nan_to_num(sigma / sigma_c,  nan=np.nan, posinf=np.inf, neginf=-np.inf)
         
     # elif z_src_model == 'known_z_src': # Discrete case
@@ -425,9 +443,9 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
     Parameters
     ----------
     r_proj : array_like
-        The projected radial positions in :math:`M\!pc\ h^{-1}`.
+        The projected radial positions in :math:`M\!pc`.
     mdelta : float
-        Galaxy cluster mass in :math:`M_\odot\ h^{-1}`.
+        Galaxy cluster mass in :math:`M_\odot`.
     cdelta : float
         Galaxy cluster NFW concentration.
     z_cluster : float
@@ -495,9 +513,9 @@ def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
     Parameters
     ----------
     r_proj : array_like
-        The projected radial positions in :math:`M\!pc\ h^{-1}`.
+        The projected radial positions in :math:`M\!pc`.
     mdelta : float
-        Galaxy cluster mass in :math:`M_\odot\ h^{-1}`.
+        Galaxy cluster mass in :math:`M_\odot`.
     cdelta : float
         Galaxy cluster NFW concentration.
     z_cluster : float
@@ -551,12 +569,70 @@ def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
         
     if np.any(np.array(z_source)<=z_cluster):
         warnings.warn(f'Some source redshifts are lower than the cluster redshift. mu = 1 for those galaxies.')
-
         
     return mu
+
+# CLMM Cosmology object - clustertoolkit + astropy implementation
+
+class AstroPyCosmology (CLMMCosmology):
+    def __init__ (self, **kwargs):
+        super (AstroPyCosmology, self).__init__ (**kwargs)
+        self.name = 'ct'
+
+        assert isinstance (self.be_cosmo, LambdaCDM)
+    
+    def _init_from_cosmo (self, be_cosmo):
+    
+        assert isinstance (be_cosmo, LambdaCDM)
+        self.be_cosmo = be_cosmo
+        
+    def _init_from_params (self, H0, Omega_b0, Omega_dm0, Omega_k0):
+        
+        Om0  = Omega_b0 + Omega_dm0
+        Ob0  = Omega_b0
+        Ode0 = 1.0 - Om0 - Omega_k0
+        
+        self.be_cosmo = LambdaCDM (H0 = H0, Om0 = Om0, Ob0 = Ob0, Ode0 = Ode0)
+
+    def _set_param (self, key, value):
+        if key == "Omega_m0":
+            self.be_cosmo.Om0 = value
+        elif key == "Omega_b0":
+            self.be_cosmo.Ob0 = value
+        elif key == "Omega_dm0":
+            self.be_cosmo.Odm0 = value
+        elif key == 'h':
+            self.be_cosmo.H0 = value * 100.0
+        elif key == 'H0':
+            self.be_cosmo.H0 = value
+        else:
+            raise ValueError (f"Unsupported parameter {key}")
+
+    def _get_param (self, key):
+        if key == "Omega_m0":
+            return self.be_cosmo.Om0
+        elif key == "Omega_b0":
+            return self.be_cosmo.Ob0
+        elif key == "Omega_dm0":
+            return self.be_cosmo.Odm0
+        elif key == 'h':
+            return self.be_cosmo.H0.to_value () / 100.0
+        elif key == 'H0':
+            return self.be_cosmo.H0.to_value ()
+        else:
+            raise ValueError (f"Unsupported parameter {key}")
+
+    def get_Omega_m (self, z):
+        return self.be_cosmo.Om (z)
+
+    def get_E2Omega_m (self, z):
+        return self.be_cosmo.Om (z) * (self.be_cosmo.H (z) / self.be_cosmo.H0)**2
+
+    def eval_da_z1z2 (self, z1, z2):
+        return self.be_cosmo.angular_diameter_distance_z1z2 (z1, z2).to_value (units.Mpc)
 
 def ctCLMModeling (*args, **kwargs):
     raise NotImplementedError ("cluster_toolkit does not implement an OO interface.")
 
 Modeling = ctCLMModeling
-
+Cosmology = AstroPyCosmology
