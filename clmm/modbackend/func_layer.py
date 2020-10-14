@@ -6,8 +6,7 @@ import numpy as np
 import warnings
 
 from . import generic
-from . generic import *
-
+from . generic import get_reduced_shear_from_convergence
 
 __all__ = generic.__all__ + ['get_3d_density', 'predict_surface_density', 
            'predict_excess_surface_density', 'angular_diameter_dist_a1a2',
