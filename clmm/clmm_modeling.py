@@ -1,7 +1,13 @@
 # CLMModeling abstract class
 
+import numpy as np
+
 class CLMModeling:
+<<<<<<< HEAD
     def set_cosmo_params_dict(self, cosmo_dict):
+=======
+    def set_cosmo (self, cosmo):
+>>>>>>> 70ffd74e5562679e0f46f2f118ec259d7cd822ee
         raise NotImplementedError
 
     def set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
@@ -126,4 +132,3 @@ class CLMModeling:
             tangential shear
         """
         raise NotImplementedError
-    

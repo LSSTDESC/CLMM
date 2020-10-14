@@ -147,43 +147,6 @@ def test_astropyify_ccl_cosmo(modeling_data):
     #assert_raises(TypeError, md.astropyify_ccl_cosmo, 70.)
     #assert_raises(TypeError, md.astropyify_ccl_cosmo, [70., 0.3, 0.25, 0.05])
 
-
-def test_scale_factor_redshift_conversion(modeling_data):
-    """ Unit tests for redshift and scalefactor conversion """
-    # Convert from a to z - scalar, list, ndarray
-    assert_allclose(md._get_a_from_z(0.5), 2./3., **TOLERANCE)
-    assert_allclose(md._get_a_from_z([0.1, 0.2, 0.3, 0.4]),
-                    [10./11., 5./6., 10./13., 5./7.], **TOLERANCE)
-    assert_allclose(md._get_a_from_z(np.array([0.1, 0.2, 0.3, 0.4])),
-                    np.array([10./11., 5./6., 10./13., 5./7.]), **TOLERANCE)
-
-    # Convert from z to a - scalar, list, ndarray
-    assert_allclose(md._get_z_from_a(2./3.), 0.5, **TOLERANCE)
-    assert_allclose(md._get_z_from_a([10./11., 5./6., 10./13., 5./7.]),
-                    [0.1, 0.2, 0.3, 0.4], **TOLERANCE)
-    assert_allclose(md._get_z_from_a(np.array([10./11., 5./6., 10./13., 5./7.])),
-                    np.array([0.1, 0.2, 0.3, 0.4]), **TOLERANCE)
-
-    # Some potential corner-cases for the two funcs
-    assert_allclose(md._get_a_from_z(np.array([0.0, 1300.])),
-                    np.array([1.0, 1./1301.]), **TOLERANCE)
-    assert_allclose(md._get_z_from_a(np.array([1.0, 1./1301.])),
-                    np.array([0.0, 1300.]), **TOLERANCE)
-
-    # Test for exceptions when outside of domains
-    assert_raises(ValueError, md._get_a_from_z, -5.0)
-    assert_raises(ValueError, md._get_a_from_z, [-5.0, 5.0])
-    assert_raises(ValueError, md._get_a_from_z, np.array([-5.0, 5.0]))
-    assert_raises(ValueError, md._get_z_from_a, 5.0)
-    assert_raises(ValueError, md._get_z_from_a, [-5.0, 5.0])
-    assert_raises(ValueError, md._get_z_from_a, np.array([-5.0, 5.0]))
-
-    # Convert from a to z to a (and vice versa)
-    testval = 0.5
-    assert_allclose(md._get_a_from_z(md._get_z_from_a(testval)), testval, **TOLERANCE)
-    assert_allclose(md._get_z_from_a(md._get_a_from_z(testval)), testval, **TOLERANCE)
-
-
 def test_get_reduced_shear(modeling_data):
     """ Unit tests for get_reduced_shear """
     # Make some base objects
