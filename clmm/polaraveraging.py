@@ -372,7 +372,8 @@ def make_binned_profile(cluster,
                                    tan_component_out, tan_component_out+'_err',
                                    cross_component_out, cross_component_out+'_err',
                                    'z', 'z_err', 'n_src'),
-                            meta={'cosmo':cosmo, 'bin_units':bin_units}, # Add metadata
+                            meta={'cosmo' : cosmo.get_desc () if cosmo else None, 
+                                  'bin_units' : bin_units}, # Add metadata
                             )
     # add galaxy IDs
     if gal_ids_in_bins:

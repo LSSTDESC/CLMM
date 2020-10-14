@@ -634,18 +634,7 @@ class AstroPyCosmology (CLMMCosmology):
         self.be_cosmo = LambdaCDM (H0 = H0, Om0 = Om0, Ob0 = Ob0, Ode0 = Ode0)
 
     def _set_param (self, key, value):
-        if key == "Omega_m0":
-            self.be_cosmo.Om0 = value
-        elif key == "Omega_b0":
-            self.be_cosmo.Ob0 = value
-        elif key == "Omega_dm0":
-            self.be_cosmo.Odm0 = value
-        elif key == 'h':
-            self.be_cosmo.H0 = value * 100.0
-        elif key == 'H0':
-            self.be_cosmo.H0 = value
-        else:
-            raise ValueError (f"Unsupported parameter {key}")
+        raise NotImplementedError ("Astropy do not support changing parameters") 
 
     def _get_param (self, key):
         if key == "Omega_m0":
@@ -654,6 +643,8 @@ class AstroPyCosmology (CLMMCosmology):
             return self.be_cosmo.Ob0
         elif key == "Omega_dm0":
             return self.be_cosmo.Odm0
+        elif key == "Omega_k0":
+            return self.be_cosmo.Ok0
         elif key == 'h':
             return self.be_cosmo.H0.to_value () / 100.0
         elif key == 'H0':

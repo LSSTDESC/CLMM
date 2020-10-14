@@ -206,6 +206,8 @@ class NumCosmoCosmology (CLMMCosmology):
             self.be_cosmo.param_set_by_name ("Omegab", value)
         elif key == "Omega_dm0":
             self.be_cosmo.param_set_by_name ("Omegac", value)
+        elif key == "Omega_k0":
+            self.be_cosmo.param_set_by_name ("Omegak", value)
         elif key == 'h':
             self.be_cosmo.param_set_by_name ("H0",     value * 100.0)
         elif key == 'H0':
@@ -216,12 +218,12 @@ class NumCosmoCosmology (CLMMCosmology):
     def _get_param (self, key):
         if key == "Omega_m0":
             return self.be_cosmo.Omega_m0 ()
-        elif key == "Omega_k0":
-            return self.be_cosmo.Omega_k0 ()
         elif key == "Omega_b0":
             return self.be_cosmo.Omega_b0 ()
         elif key == "Omega_dm0":
             return self.be_cosmo.Omega_c0 ()
+        elif key == "Omega_k0":
+            return self.be_cosmo.Omega_k0 ()
         elif key == 'h':
             return self.be_cosmo.h ()
         elif key == 'H0':
