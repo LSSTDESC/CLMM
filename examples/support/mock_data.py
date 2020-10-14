@@ -346,7 +346,7 @@ def _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo, field_size):
         Source galaxy catalog with positions added
     """
 #    Dl = angular_diameter_dist_a1a2(cosmo, 1./(1.+cluster_z))*units.pc.to(units.Mpc)
-    Dl = angular_diameter_dist_a1a2(cosmo, 1./(1.+cluster_z)) # Mpc
+    Dl = cosmo.eval_da(cluster_z) # Mpc
     
     galaxy_catalog['x_mpc'] = np.random.uniform(-(field_size/2.), field_size/2., size=ngals)
     galaxy_catalog['y_mpc'] = np.random.uniform(-(field_size/2.), field_size/2., size=ngals)
