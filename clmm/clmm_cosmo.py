@@ -1,5 +1,7 @@
 # CLMM Cosmology object abstract superclass
 
+import numpy as np
+
 class CLMMCosmology:
     """
     Cosmology object superclass for supporting multiple back-end cosmology objects
@@ -104,3 +106,65 @@ class CLMMCosmology:
         Describe the vectorization.
         """        
         raise NotImplementedError
+
+    def eval_da (self, z):
+        r"""Computes the angular diameter distance between 0.0 and z.
+
+        .. math::
+            d_a (z) = \dots.
+
+        Parameters
+        ----------
+        z : float
+            Redshift.
+
+        Returns
+        -------
+        angular diameter distance : array_like, float
+            :math:`d_a (z)`.
+
+        Notes
+        -----
+        Describe the vectorization.
+        """        
+        
+        return self.eval_da_z1z2 (0.0, z)
+
+    def _get_a_from_z (self, z):
+        """ Convert redshift to scale factor
+
+        Parameters
+        ----------
+        z : array_like
+            Redshift
+
+        Returns
+        -------
+        scale_factor : array_like
+            Scale factor
+        """
+        z = np.array (z)
+        if np.any (z < 0.0):
+            raise ValueError (f"Cannot convert negative redshift to scale factor")
+        return 1.0 / (1.0 + z)
+
+
+    def _get_z_from_a (self, a):
+        """ Convert scale factor to redshift
+
+        Parameters
+        ----------
+        a : array_like
+            Scale factor
+
+        Returns
+        -------
+        z : array_like
+            Redshift
+        """
+        a = np.array (a)
+        if np.any (a > 1.0):
+            raise ValueError (f"Cannot convert invalid scale factor a > 1 to redshift")
+        return (1.0 / a) - 1.0
+
+

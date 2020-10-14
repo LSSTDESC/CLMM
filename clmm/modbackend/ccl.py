@@ -84,11 +84,11 @@ class CCLCLMModeling (CLMModeling):
         self.MDelta = mdelta / self.cor_factor
 
     def eval_da_z1z2 (self, z1, z2):
-        return np.vectorize (ccl.angular_diameter_distance) (self.cosmo.be_cosmo, _get_a_from_z (z1), _get_a_from_z (z2))
+        return np.vectorize (ccl.angular_diameter_distance) (self.cosmo.be_cosmo, self.cosmo._get_a_from_z (z1), self.cosmo._get_a_from_z (z2))
 
     def eval_sigma_crit (self, z_len, z_src):
-        a_len = _get_a_from_z (z_len)
-        a_src = np.atleast_1d (_get_a_from_z (z_src))
+        a_len = self.cosmo._get_a_from_z (z_len)
+        a_src = np.atleast_1d (self.cosmo._get_a_from_z (z_src))
         cte   = ccl.physical_constants.CLIGHT**2 / (4.0 * np.pi * ccl.physical_constants.GNEWT * ccl.physical_constants.SOLAR_MASS) * ccl.physical_constants.MPC_TO_METER
 
         z_cut = (a_src < a_len)
@@ -109,23 +109,23 @@ class CCLCLMModeling (CLMModeling):
         return np.squeeze (res)
 
     def eval_density (self, r3d, z_cl):
-        a_cl = _get_a_from_z (z_cl)
+        a_cl = self.cosmo._get_a_from_z (z_cl)
         return self.hdpm.real (self.cosmo.be_cosmo, r3d / a_cl, self.MDelta, a_cl, self.mdef) * self.cor_factor / a_cl**3
 
     def eval_sigma (self, r_proj, z_cl):
-        a_cl = _get_a_from_z (z_cl)
+        a_cl = self.cosmo._get_a_from_z (z_cl)
         return self.hdpm.projected (self.cosmo.be_cosmo, r_proj / a_cl, self.MDelta, a_cl, self.mdef) * self.cor_factor / a_cl**2
 
     def eval_sigma_mean (self, r_proj, z_cl):
-        a_cl = _get_a_from_z (z_cl)
-        return self.hdpm.cumul2d (self.cosmo.be_cosmo, r_proj / a_cl, self.MDelta, _get_a_from_z (z_cl), self.mdef) * self.cor_factor / a_cl**2
+        a_cl = self.cosmo._get_a_from_z (z_cl)
+        return self.hdpm.cumul2d (self.cosmo.be_cosmo, r_proj / a_cl, self.MDelta, self.cosmo._get_a_from_z (z_cl), self.mdef) * self.cor_factor / a_cl**2
 
     def eval_sigma_excess (self, r_proj, z_cl):
-        a_cl = _get_a_from_z (z_cl)
+        a_cl = self.cosmo._get_a_from_z (z_cl)
         r_cor = r_proj / a_cl
         
-        return (self.hdpm.cumul2d (self.cosmo.be_cosmo, r_cor, self.MDelta, _get_a_from_z (z_cl), self.mdef) - 
-                self.hdpm.projected (self.cosmo.be_cosmo, r_cor, self.MDelta, _get_a_from_z (z_cl), self.mdef)) * self.cor_factor / a_cl**2
+        return (self.hdpm.cumul2d (self.cosmo.be_cosmo, r_cor, self.MDelta, self.cosmo._get_a_from_z (z_cl), self.mdef) - 
+                self.hdpm.projected (self.cosmo.be_cosmo, r_cor, self.MDelta, self.cosmo._get_a_from_z (z_cl), self.mdef)) * self.cor_factor / a_cl**2
 
     def eval_shear (self, r_proj, z_cl, z_src):
         sigma_excess = self.eval_sigma_excess (r_proj, z_cl) 

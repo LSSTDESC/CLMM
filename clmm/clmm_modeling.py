@@ -1,7 +1,9 @@
 # CLMModeling abstract class
 
+import numpy as np
+
 class CLMModeling:
-    def set_cosmo_params_dict (self, cosmo_dict):
+    def set_cosmo (self, cosmo):
         raise NotImplementedError
 
     def set_halo_density_profile (self, halo_profile_model = 'nfw', massdef = 'mean', delta_mdef = 200):
@@ -41,4 +43,4 @@ class CLMModeling:
 
     def eval_shear (self, r_proj, z_cl, z_src):
         raise NotImplementedError
-    
+

@@ -182,8 +182,8 @@ def angular_diameter_dist_a1a2(cosmo, a1, a2=1.):
     so we'll have to revise this later. We need to switch angular_diameter_distance_z1z2
     to CCL equivalent angular distance once implemented
     """
-    redshift1 = _get_z_from_a(a2)
-    redshift2 = _get_z_from_a(a1)
+    redshift1 = cosmo._get_z_from_a(a2)
+    redshift2 = cosmo._get_z_from_a(a1)
 
     gcm.set_cosmo (cosmo)
     return gcm.eval_da_z1z2 (redshift1, redshift2)

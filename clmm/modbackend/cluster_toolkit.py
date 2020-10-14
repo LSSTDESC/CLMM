@@ -242,8 +242,8 @@ def angular_diameter_dist_a1a2(cosmo, a1, a2=1.):
     to CCL equivalent angular distance once implemented
     """
     
-    z1 = _get_z_from_a(a2)
-    z2 = _get_z_from_a(a1)
+    z1 = cosmo._get_z_from_a (a2)
+    z2 = cosmo._get_z_from_a (a1)
     
     return cosmo.eval_da_z1z2 (z1, z2)
 
@@ -278,8 +278,8 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     clight_pc_s = const.CLIGHT_KMS.value * 1000. / const.PC_TO_METER.value
     gnewt_pc3_msun_s2 = const.GNEWT.value * const.SOLAR_MASS.value / const.PC_TO_METER.value**3
 
-    aexp_cluster = _get_a_from_z(z_cluster)
-    aexp_src = _get_a_from_z(z_source)
+    aexp_cluster = cosmo._get_a_from_z(z_cluster)
+    aexp_src = cosmo._get_a_from_z(z_source)
 
     d_l = angular_diameter_dist_a1a2(cosmo, aexp_cluster, 1.0)
     d_s = angular_diameter_dist_a1a2(cosmo, aexp_src, 1.0)
