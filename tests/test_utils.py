@@ -2,9 +2,9 @@
 """ Tests for utils.py """
 import numpy as np
 from numpy.testing import assert_raises, assert_allclose
-from astropy.cosmology import FlatLambdaCDM
 
 import clmm.utils as utils
+import clmm.modeling as md
 from clmm.utils import compute_radial_averages, make_bins, convert_shapes_to_epsilon
 
 
@@ -114,7 +114,8 @@ def _rad_to_mpc_helper(dist, redshift, cosmo, do_inverse):
     """ Helper function to clean up test_convert_rad_to_mpc. Truth is computed using
     astropy so this test is very circular. Once we swap to CCL very soon this will be
     a good source of truth. """
-    d_a = cosmo.angular_diameter_distance(redshift).to('Mpc').value
+#    d_a = cosmo.angular_diameter_distance(redshift).to('Mpc').value
+    d_a = cosmo.eval_da(redshift) #Mpc
     if do_inverse:
         truth = dist / d_a
     else:
@@ -127,8 +128,8 @@ def test_convert_rad_to_mpc():
     """ Test conversion between physical and angular units and vice-versa. """
     # Set some default values if I want them
     redshift = 0.25
-    cosmo = FlatLambdaCDM(H0=70., Om0=0.3)
-
+#    cosmo = FlatLambdaCDM(H0=70., Om0=0.3)
+    cosmo = md.Cosmology(H0 = 70.0, Omega_dm0 = 0.3 - 0.045, Omega_b0 = 0.045)
     # Test the default behavior
     assert_allclose(utils._convert_rad_to_mpc(0.33, redshift, cosmo),
                     utils._convert_rad_to_mpc(0.33, redshift, cosmo, False), **TOLERANCE)
@@ -149,13 +150,17 @@ def test_convert_rad_to_mpc():
 
     # Test some different H0
     for oneh0 in [30., 50., 67.3, 74.7, 100.]:
-        _rad_to_mpc_helper(0.33, 0.5, FlatLambdaCDM(H0=oneh0, Om0=0.3), do_inverse=False)
-        _rad_to_mpc_helper(1.0, 0.5, FlatLambdaCDM(H0=oneh0, Om0=0.3), do_inverse=True)
+#        _rad_to_mpc_helper(0.33, 0.5, FlatLambdaCDM(H0=oneh0, Om0=0.3), do_inverse=False)
+#        _rad_to_mpc_helper(1.0, 0.5, FlatLambdaCDM(H0=oneh0, Om0=0.3), do_inverse=True)
+        _rad_to_mpc_helper(0.33, 0.5, md.Cosmology(H0 = oneh0, Omega_dm0 = 0.3 - 0.045, Omega_b0 = 0.045), do_inverse=False)
+        _rad_to_mpc_helper(1.0, 0.5, md.Cosmology(H0 = oneh0, Omega_dm0 = 0.3 - 0.045, Omega_b0 = 0.045), do_inverse=True)
 
     # Test some different Omega_M
     for oneomm in [0.1, 0.3, 0.5, 1.0]:
-        _rad_to_mpc_helper(0.33, 0.5, FlatLambdaCDM(H0=70., Om0=oneomm), do_inverse=False)
-        _rad_to_mpc_helper(1.0, 0.5, FlatLambdaCDM(H0=70., Om0=oneomm), do_inverse=True)
+#        _rad_to_mpc_helper(0.33, 0.5, FlatLambdaCDM(H0=70., Om0=oneomm), do_inverse=False)
+#        _rad_to_mpc_helper(1.0, 0.5, FlatLambdaCDM(H0=70., Om0=oneomm), do_inverse=True)
+        _rad_to_mpc_helper(0.33, 0.5, md.Cosmology(H0 = 70.0, Omega_dm0 = oneomm - 0.045, Omega_b0 = 0.045), do_inverse=False)
+        _rad_to_mpc_helper(1.0, 0.5, md.Cosmology(H0 = 70.0, Omega_dm0 = oneomm - 0.045, Omega_b0 = 0.045), do_inverse=True)
 
 
 def test_convert_units():
@@ -164,7 +169,8 @@ def test_convert_units():
     and the error handling.
     """
     # Make an astropy cosmology object for testing
-    cosmo = FlatLambdaCDM(H0=70., Om0=0.3)
+ #   cosmo = FlatLambdaCDM(H0=70., Om0=0.3)
+    cosmo = md.Cosmology(H0 = 70.0, Omega_dm0 = 0.3 - 0.045, Omega_b0 = 0.045)
 
     # Test that each unit is supported
     utils.convert_units(1.0, 'radians', 'degrees')
@@ -194,7 +200,8 @@ def test_convert_units():
     # Using astropy, circular now but this will be fine since we are going to be
     # swapping to CCL soon and then its kosher
     r_arcmin, redshift = 20.0, 0.5
-    d_a = cosmo.angular_diameter_distance(redshift).to('kpc').value
+#    d_a = cosmo.angular_diameter_distance(redshift).to('kpc').value
+    d_a = cosmo.eval_da(redshift) * 1.e3 #kpc
     truth = r_arcmin * (1.0 / 60.0) * (np.pi / 180.0) * d_a
     assert_allclose(utils.convert_units(r_arcmin, 'arcmin', 'kpc', redshift, cosmo),
                     truth, **TOLERANCE)
@@ -203,7 +210,8 @@ def test_convert_units():
     # Using astropy, circular now but this will be fine since we are going to be
     # swapping to CCL soon and then its kosher
     r_kpc, redshift = 20.0, 0.5
-    d_a = cosmo.angular_diameter_distance(redshift).to('kpc').value
+#    d_a = cosmo.angular_diameter_distance(redshift).to('kpc').value
+    d_a = cosmo.eval_da(redshift) * 1.e3 #kpc
     truth = r_kpc * (1.0 / d_a) * (180. / np.pi) * 60.
     assert_allclose(utils.convert_units(r_kpc, 'kpc', 'arcmin', redshift, cosmo),
                     truth, **TOLERANCE)
