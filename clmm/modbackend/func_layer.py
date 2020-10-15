@@ -44,7 +44,7 @@ def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profil
     massdef : str, optional
         Profile mass definition, with the following supported options:
             `mean` (default)
-            `critial`
+            `critical`
             `virial`
 
     Returns
@@ -96,7 +96,7 @@ def predict_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     massdef : str, optional
         Profile mass definition, with the following supported options:
             `mean` (default)
-            `critial`
+            `critical`
             `virial`
 
     Returns
@@ -152,7 +152,7 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
     massdef : str, optional
         Profile mass definition, with the following supported options:
             `mean` (default)
-            `critial`
+            `critical`
             `virial`
 
     Returns
@@ -272,7 +272,7 @@ def predict_tangential_shear (r_proj, mdelta, cdelta, z_cluster, z_source, cosmo
     massdef : str, optional
         Profile mass definition, with the following supported options:
             `mean` (default)
-            `critial`
+            `critical`
             `virial`
     z_src_model : str, optional
         Source redshift model, with the following supported options:
@@ -346,7 +346,7 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     massdef : str, optional
         Profile mass definition, with the following supported options:
             `mean` (default)
-            `critial`
+            `critical`
             `virial`
     z_src_model : str, optional
         Source redshift model, with the following supported options:
@@ -421,7 +421,7 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
     massdef : str, optional
         Profile mass definition, with the following supported options:
             `mean` (default)
-            `critial`
+            `critical`
             `virial`
     z_src_model : str, optional
         Source redshift model, with the following supported options:
@@ -499,7 +499,7 @@ def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
     massdef : str, optional
         Profile mass definition, with the following supported options:
             `mean` (default)
-            `critial`
+            `critical`
             `virial`
     z_src_model : str, optional
         Source redshift model, with the following supported options:

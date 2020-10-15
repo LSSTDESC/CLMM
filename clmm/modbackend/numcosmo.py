@@ -26,7 +26,7 @@ class NumCosmoCLMModeling (CLMModeling):
         self.set_cosmo (None)
         
         self.mdef_dict = {'mean':      Nc.HaloDensityProfileMassDef.MEAN, 
-                          'critial':   Nc.HaloDensityProfileMassDef.CRITICAL,
+                          'critical':   Nc.HaloDensityProfileMassDef.CRITICAL,
                           'virial':    Nc.HaloDensityProfileMassDef.VIRIAL}
         self.hdpm_dict = {'nfw':       Nc.HaloDensityProfileNFW.new, 
                           'einasto':   Nc.HaloDensityProfileEinasto.new,
