@@ -6,8 +6,7 @@ import numpy as np
 import warnings
 
 from . import generic
-from . generic import *
-
+from . generic import get_reduced_shear_from_convergence
 
 __all__ = generic.__all__ + ['get_3d_density', 'predict_surface_density', 
            'predict_excess_surface_density', 'angular_diameter_dist_a1a2',
@@ -15,7 +14,7 @@ __all__ = generic.__all__ + ['get_3d_density', 'predict_surface_density',
            'predict_convergence', 'predict_reduced_tangential_shear',
            'predict_magnification']
 
-def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profile_model='nfw'):
+def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profile_model='nfw', massdef = 'mean'):
     r"""Retrieve the 3d density :math:`\rho(r)`.
 
     Profiles implemented so far are:
@@ -39,8 +38,14 @@ def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profil
         Mass overdensity definition; defaults to 200.
     halo_profile_model : str, optional
         Profile model parameterization, with the following supported options:
-
             `nfw` (default)
+            `einasto`
+            `hernquist`
+    massdef : str, optional
+        Profile mass definition, with the following supported options:
+            `mean` (default)
+            `critial`
+            `virial`
 
     Returns
     -------
@@ -54,14 +59,14 @@ def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profil
     """
 
     gcm.set_cosmo (cosmo)
-    gcm.set_halo_density_profile (halo_profile_model = halo_profile_model, delta_mdef = delta_mdef)
+    gcm.set_halo_density_profile (halo_profile_model = halo_profile_model, massdef = massdef, delta_mdef = delta_mdef)
     gcm.set_concentration (cdelta)
     gcm.set_mass (mdelta)
 
     return gcm.eval_density (r3d, z_cl)
 
 def predict_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
-                            halo_profile_model='nfw'):
+                            halo_profile_model='nfw', massdef = 'mean'):
     r""" Computes the surface mass density
 
     .. math::
@@ -85,8 +90,14 @@ def predict_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
         Mass overdensity definition; defaults to 200.
     halo_profile_model : str, optional
         Profile model parameterization, with the following supported options:
-
             `nfw` (default)
+            `einasto`
+            `hernquist`
+    massdef : str, optional
+        Profile mass definition, with the following supported options:
+            `mean` (default)
+            `critial`
+            `virial`
 
     Returns
     -------
@@ -100,15 +111,15 @@ def predict_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     """
 
     gcm.set_cosmo (cosmo)
-    gcm.set_halo_density_profile (halo_profile_model = halo_profile_model, delta_mdef = delta_mdef)
+    gcm.set_halo_density_profile (halo_profile_model = halo_profile_model, massdef = massdef, delta_mdef = delta_mdef)
     gcm.set_concentration (cdelta)
     gcm.set_mass (mdelta)
 
     return gcm.eval_sigma (r_proj, z_cl)
 
 
-def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
-                                   halo_profile_model='nfw'):
+def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef = 200,
+                                   halo_profile_model = 'nfw', massdef = 'mean'):
     r""" Computes the excess surface density
 
     .. math::
@@ -135,8 +146,14 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
         Mass overdensity definition; defaults to 200.
     halo_profile_model : str, optional
         Profile model parameterization, with the following supported options:
-
             `nfw` (default)
+            `einasto`
+            `hernquist`
+    massdef : str, optional
+        Profile mass definition, with the following supported options:
+            `mean` (default)
+            `critial`
+            `virial`
 
     Returns
     -------
@@ -145,7 +162,7 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
     """
 
     gcm.set_cosmo (cosmo)
-    gcm.set_halo_density_profile (halo_profile_model = halo_profile_model, delta_mdef = delta_mdef)
+    gcm.set_halo_density_profile (halo_profile_model = halo_profile_model, massdef = massdef, delta_mdef = delta_mdef)
     gcm.set_concentration (cdelta)
     gcm.set_mass (mdelta)
 
@@ -219,8 +236,8 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     return gcm.eval_sigma_crit (z_cluster, z_source)
 
 
-def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
-                             halo_profile_model='nfw', z_src_model='single_plane'):
+def predict_tangential_shear (r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef = 200,
+                              halo_profile_model = 'nfw', massdef = 'mean', z_src_model = 'single_plane'):
     r"""Computes the tangential shear
 
     .. math::
@@ -249,7 +266,14 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
         Mass overdensity definition.  Defaults to 200.
     halo_profile_model : str, optional
         Profile model parameterization, with the following supported options:
-        `nfw` (default) - [insert citation here]
+            `nfw` (default)
+            `einasto`
+            `hernquist`
+    massdef : str, optional
+        Profile mass definition, with the following supported options:
+            `mean` (default)
+            `critial`
+            `virial`
     z_src_model : str, optional
         Source redshift model, with the following supported options:
         `single_plane` (default) - all sources at one redshift
@@ -272,7 +296,7 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     if z_src_model == 'single_plane':
 
         gcm.set_cosmo (cosmo)
-        gcm.set_halo_density_profile (halo_profile_model = halo_profile_model, delta_mdef = delta_mdef)
+        gcm.set_halo_density_profile (halo_profile_model = halo_profile_model, massdef = massdef, delta_mdef = delta_mdef)
         gcm.set_concentration (cdelta)
         gcm.set_mass (mdelta)
         
@@ -286,8 +310,8 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     return gammat
 
 
-def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
-                        halo_profile_model='nfw', z_src_model='single_plane'):
+def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef = 200,
+                        halo_profile_model = 'nfw', massdef = 'mean', z_src_model = 'single_plane'):
     r"""Computes the mass convergence
 
     .. math::
@@ -316,7 +340,14 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
         Mass overdensity definition.  Defaults to 200.
     halo_profile_model : str, optional
         Profile model parameterization, with the following supported options:
-        `nfw` (default) - [insert citation here]
+            `nfw` (default)
+            `einasto`
+            `hernquist`
+    massdef : str, optional
+        Profile mass definition, with the following supported options:
+            `mean` (default)
+            `critial`
+            `virial`
     z_src_model : str, optional
         Source redshift model, with the following supported options:
         `single_plane` (default) - all sources at one redshift
@@ -334,12 +365,13 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     Need to figure out if we want to raise exceptions rather than errors here?
     """
     sigma = predict_surface_density(r_proj, mdelta, cdelta, z_cluster, cosmo,
-                                    delta_mdef=delta_mdef, halo_profile_model=halo_profile_model)
+                                    delta_mdef = delta_mdef, halo_profile_model = halo_profile_model,
+                                    massdef = massdef)
 
     if z_src_model == 'single_plane':
 
         gcm.set_cosmo (cosmo)
-        gcm.set_halo_density_profile (halo_profile_model = halo_profile_model, delta_mdef = delta_mdef)
+        gcm.set_halo_density_profile (halo_profile_model = halo_profile_model, massdef = massdef, delta_mdef = delta_mdef)
         gcm.set_concentration (cdelta)
         gcm.set_mass (mdelta)
         
@@ -361,8 +393,8 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
 
 
 def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
-                                     delta_mdef=200, halo_profile_model='nfw',
-                                     z_src_model='single_plane'):
+                                     delta_mdef = 200, halo_profile_model = 'nfw', massdef = 'mean',
+                                     z_src_model = 'single_plane'):
     r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
 
     Parameters
@@ -383,7 +415,14 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
         Mass overdensity definition.  Defaults to 200.
     halo_profile_model : str, optional
         Profile model parameterization, with the following supported options:
-        `nfw` (default) - [insert citation here]
+            `nfw` (default)
+            `einasto`
+            `hernquist`
+    massdef : str, optional
+        Profile mass definition, with the following supported options:
+            `mean` (default)
+            `critial`
+            `virial`
     z_src_model : str, optional
         Source redshift model, with the following supported options:
         `single_plane` (default) - all sources at one redshift
@@ -403,7 +442,7 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
     if z_src_model == 'single_plane':
 
         gcm.set_cosmo (cosmo)
-        gcm.set_halo_density_profile (halo_profile_model = halo_profile_model, delta_mdef = delta_mdef)
+        gcm.set_halo_density_profile (halo_profile_model = halo_profile_model, massdef = massdef, delta_mdef = delta_mdef)
         gcm.set_concentration (cdelta)
         gcm.set_mass (mdelta)
         
@@ -427,8 +466,8 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
 
 # The magnification is computed taking into account just the tangential shear. This is valid for 
 # spherically averaged profiles, e.g., NFW and Einasto (by construction the cross shear is zero).
-def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
-                        halo_profile_model='nfw', z_src_model='single_plane'):
+def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef = 200,
+                        halo_profile_model = 'nfw', massdef = 'mean', z_src_model = 'single_plane'):
     r"""Computes the magnification
 
     .. math::
@@ -454,7 +493,14 @@ def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
         Mass overdensity definition.  Defaults to 200.
     halo_profile_model : str, optional
         Profile model parameterization, with the following supported options:
-        `nfw` (default) - [insert citation here]
+            `nfw` (default)
+            `einasto`
+            `hernquist`
+    massdef : str, optional
+        Profile mass definition, with the following supported options:
+            `mean` (default)
+            `critial`
+            `virial`
     z_src_model : str, optional
         Source redshift model, with the following supported options:
         `single_plane` (default) - all sources at one redshift
@@ -475,7 +521,7 @@ def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
     if z_src_model == 'single_plane':
         
         gcm.set_cosmo (cosmo)
-        gcm.set_halo_density_profile (halo_profile_model = halo_profile_model, delta_mdef = delta_mdef)
+        gcm.set_halo_density_profile (halo_profile_model = halo_profile_model, massdef = massdef, delta_mdef = delta_mdef)
         gcm.set_concentration (cdelta)
         gcm.set_mass (mdelta)
         

@@ -8,7 +8,7 @@ from astropy.cosmology import LambdaCDM, FlatLambdaCDM
 
 from .. constants import Constants as const
 from . import generic
-from . generic import *
+from . generic import get_reduced_shear_from_convergence
 
 from .. clmm_cosmo import CLMMCosmology
 
@@ -54,7 +54,7 @@ def _assert_correct_type_ct(a):
     else:
         return np.array(a).astype (np.float64, order='C', copy=False)
 
-def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profile_model='nfw'):
+def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profile_model='nfw', massdef = 'mean'):
     r"""Retrieve the 3d density :math:`\rho(r)`.
 
     Profiles implemented so far are:
@@ -79,7 +79,11 @@ def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profil
     halo_profile_model : str, optional
         Profile model parameterization, with the following supported options:
 
-            `nfw` (default)
+            `nfw` (default)            
+    massdef : str, optional
+        Profile mass definition, with the following supported options:
+
+            `mean` (default)
 
     Returns
     -------
@@ -95,15 +99,18 @@ def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profil
     h       = cosmo['h']
     cf      = _patch_ct_to_cd2018 ()
 
+    if massdef != "mean":
+        raise ValueError(f"Mass definition {massdef} not currently supported by {__package__}")
+
     if halo_profile_model.lower() == 'nfw':
         rho = ct.density.rho_nfw_at_r (_assert_correct_type_ct (r3d) * h, mdelta * h, cdelta, Omega_m * cf, delta = delta_mdef) * h**2
     else:
-        raise ValueError(f"Profile model {halo_profile_model} not currently supported")
+        raise ValueError(f"Profile model {halo_profile_model} not currently supported by {__package__}")
     return rho
 
 
 def predict_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
-                            halo_profile_model='nfw'):
+                            halo_profile_model='nfw', massdef = 'mean'):
     r""" Computes the surface mass density
 
     .. math::
@@ -129,6 +136,10 @@ def predict_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
         Profile model parameterization, with the following supported options:
 
             `nfw` (default)
+    massdef : str, optional
+        Profile mass definition, with the following supported options:
+
+            `mean` (default)
 
     Returns
     -------
@@ -144,16 +155,19 @@ def predict_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     h       = cosmo['h']
     cf      = _patch_ct_to_cd2018 ()
 
+    if massdef != "mean":
+        raise ValueError(f"Mass definition {massdef} not currently supported by {__package__}")
+
     if halo_profile_model.lower() == 'nfw':
         sigma = ct.deltasigma.Sigma_nfw_at_R (_assert_correct_type_ct (r_proj) * h, mdelta * h, cdelta, Omega_m * cf,
                                               delta=delta_mdef) * h * 1.0e12 # pc**-2 to Mpc**-2
     else:
-        raise ValueError(f"Profile model {halo_profile_model} not currently supported")
+        raise ValueError(f"Profile model {halo_profile_model} not currently supported by {__package__}")
     return sigma
 
 
 def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
-                                   halo_profile_model='nfw'):
+                                   halo_profile_model='nfw', massdef = 'mean'):
     r""" Computes the excess surface density
 
     .. math::
@@ -182,6 +196,10 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
         Profile model parameterization, with the following supported options:
 
             `nfw` (default)
+    massdef : str, optional
+        Profile mass definition, with the following supported options:
+
+            `mean` (default)
 
     Returns
     -------
@@ -191,6 +209,7 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
     Omega_m = cosmo.get_E2Omega_m (z_cl)
     h       = cosmo['h']
     cf      = _patch_ct_to_cd2018 ()
+
 
     if np.min(r_proj)<1.e-11:
         raise ValueError(f"Rmin = {np.min(r_proj):.2e} Mpc! This value is too small and may cause computational issues.")
@@ -202,12 +221,15 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
     # Computing sigma on a larger range than the radial range requested, with at least 1000 points.
     sigma_r_proj = np.logspace(np.log10(np.min(r_proj))-1, np.log10(np.max(r_proj))+1, np.max([1000,10*np.array(r_proj).size]))
   
+    if massdef != "mean":
+        raise ValueError(f"Mass definition {massdef} not currently supported by {__package__}")
+
     if halo_profile_model.lower() == 'nfw':
         sigma = ct.deltasigma.Sigma_nfw_at_R (sigma_r_proj, mdeltah, cdelta, Omega_mc, delta=delta_mdef)
         # ^ Note: Let's not use this naming convention when transfering ct to ccl....
         deltasigma = ct.deltasigma.DeltaSigma_at_R (r_proj, sigma_r_proj, sigma, mdeltah, cdelta, Omega_mc, delta=delta_mdef) * h * 1.0e12 # pc**-2 to Mpc**-2
     else:
-        raise ValueError(f"Profile model {halo_profile_model} not currently supported")
+        raise ValueError(f"Profile model {halo_profile_model} not currently supported by {__package__}")
     return deltasigma
 
 
@@ -295,7 +317,7 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
 
 
 def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
-                             halo_profile_model='nfw', z_src_model='single_plane'):
+                             halo_profile_model='nfw', massdef = 'mean', z_src_model='single_plane'):
     r"""Computes the tangential shear
 
     .. math::
@@ -325,6 +347,10 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     halo_profile_model : str, optional
         Profile model parameterization, with the following supported options:
         `nfw` (default) - [insert citation here]
+    massdef : str, optional
+        Profile mass definition, with the following supported options:
+
+            `mean` (default)
     z_src_model : str, optional
         Source redshift model, with the following supported options:
         `single_plane` (default) - all sources at one redshift
@@ -346,7 +372,8 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     """
     delta_sigma = predict_excess_surface_density(r_proj, mdelta, cdelta, z_cluster, cosmo,
                                                  delta_mdef=delta_mdef,
-                                                 halo_profile_model=halo_profile_model)
+                                                 halo_profile_model=halo_profile_model,
+                                                 massdef=massdef)
     if z_src_model == 'single_plane':
         sigma_c = get_critical_surface_density(cosmo, z_cluster, z_source)
         gammat = np.nan_to_num(delta_sigma / sigma_c,  nan=np.nan, posinf=np.inf, neginf=-np.inf)
@@ -367,7 +394,7 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
 
 
 def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
-                        halo_profile_model='nfw', z_src_model='single_plane'):
+                        halo_profile_model='nfw', massdef = 'mean', z_src_model='single_plane'):
     r"""Computes the mass convergence
 
     .. math::
@@ -397,6 +424,10 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     halo_profile_model : str, optional
         Profile model parameterization, with the following supported options:
         `nfw` (default) - [insert citation here]
+    massdef : str, optional
+        Profile mass definition, with the following supported options:
+
+            `mean` (default)
     z_src_model : str, optional
         Source redshift model, with the following supported options:
         `single_plane` (default) - all sources at one redshift
@@ -414,7 +445,7 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     Need to figure out if we want to raise exceptions rather than errors here?
     """
     sigma = predict_surface_density(r_proj, mdelta, cdelta, z_cluster, cosmo,
-                                    delta_mdef=delta_mdef, halo_profile_model=halo_profile_model)
+                                    delta_mdef=delta_mdef, halo_profile_model=halo_profile_model, massdef=massdef)
 
     if z_src_model == 'single_plane':
         sigma_c = get_critical_surface_density (cosmo, z_cluster, z_source)
@@ -436,7 +467,7 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
 
 
 def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
-                                     delta_mdef=200, halo_profile_model='nfw',
+                                     delta_mdef=200, halo_profile_model='nfw', massdef = 'mean',
                                      z_src_model='single_plane'):
     r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
 
@@ -459,6 +490,10 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
     halo_profile_model : str, optional
         Profile model parameterization, with the following supported options:
         `nfw` (default) - [insert citation here]
+    massdef : str, optional
+        Profile mass definition, with the following supported options:
+
+            `mean` (default)
     z_src_model : str, optional
         Source redshift model, with the following supported options:
         `single_plane` (default) - all sources at one redshift
@@ -477,10 +512,10 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
     """
     if z_src_model == 'single_plane':
         kappa = predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef,
-                                    halo_profile_model,
+                                    halo_profile_model, massdef,
                                     z_src_model)
         gamma_t = predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
-                                           delta_mdef, halo_profile_model, z_src_model)
+                                           delta_mdef, halo_profile_model, massdef, z_src_model)
         red_tangential_shear = np.nan_to_num(np.divide(gamma_t , (1 - kappa)),  nan=np.nan, posinf=np.inf, neginf=-np.inf)
         
     # elif z_src_model == 'known_z_src': # Discrete case
@@ -502,7 +537,7 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
 # The magnification is computed taking into account just the tangential shear. This is valid for 
 # spherically averaged profiles, e.g., NFW and Einasto (by construction the cross shear is zero).
 def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
-                        halo_profile_model='nfw', z_src_model='single_plane'):
+                        halo_profile_model='nfw', massdef = 'mean', z_src_model='single_plane'):
     r"""Computes the magnification
 
     .. math::
@@ -529,6 +564,10 @@ def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
     halo_profile_model : str, optional
         Profile model parameterization, with the following supported options:
         `nfw` (default) - [insert citation here]
+    massdef : str, optional
+        Profile mass definition, with the following supported options:
+
+            `mean` (default)
     z_src_model : str, optional
         Source redshift model, with the following supported options:
         `single_plane` (default) - all sources at one redshift
@@ -549,11 +588,11 @@ def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
     if z_src_model == 'single_plane':
         
         kappa = predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef,
-                                    halo_profile_model,
+                                    halo_profile_model, massdef,
                                     z_src_model)
     
         gammat = predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,delta_mdef,
-                                    halo_profile_model,
+                                    halo_profile_model, massdef,
                                     z_src_model)
         
         mu =  1. / ((1-kappa)**2-abs(gammat)**2)
@@ -566,7 +605,7 @@ def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
     #                               'distribution of redshifts in each radial bin')
     else:
         raise ValueError("Unsupported z_src_model")
-        
+
     if np.any(np.array(z_source)<=z_cluster):
         warnings.warn(f'Some source redshifts are lower than the cluster redshift. mu = 1 for those galaxies.')
         
@@ -595,18 +634,7 @@ class AstroPyCosmology (CLMMCosmology):
         self.be_cosmo = LambdaCDM (H0 = H0, Om0 = Om0, Ob0 = Ob0, Ode0 = Ode0)
 
     def _set_param (self, key, value):
-        if key == "Omega_m0":
-            self.be_cosmo.Om0 = value
-        elif key == "Omega_b0":
-            self.be_cosmo.Ob0 = value
-        elif key == "Omega_dm0":
-            self.be_cosmo.Odm0 = value
-        elif key == 'h':
-            self.be_cosmo.H0 = value * 100.0
-        elif key == 'H0':
-            self.be_cosmo.H0 = value
-        else:
-            raise ValueError (f"Unsupported parameter {key}")
+        raise NotImplementedError ("Astropy do not support changing parameters") 
 
     def _get_param (self, key):
         if key == "Omega_m0":
@@ -615,6 +643,8 @@ class AstroPyCosmology (CLMMCosmology):
             return self.be_cosmo.Ob0
         elif key == "Omega_dm0":
             return self.be_cosmo.Odm0
+        elif key == "Omega_k0":
+            return self.be_cosmo.Ok0
         elif key == 'h':
             return self.be_cosmo.H0.to_value () / 100.0
         elif key == 'H0':

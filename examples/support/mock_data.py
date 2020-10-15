@@ -57,7 +57,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, Delta_SO, zs
     Parameters
     ----------
     cluster_m : float
-        Cluster mass
+        Cluster mass in Msun
     cluster_z : float
         Cluster redshift
     cluster_c : float
@@ -85,7 +85,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, Delta_SO, zs
         zsrc_max.
     field_size : float
         The size of the field (field_size x field_size) to be simulated. 
-        Proper distance in Mpc/h at the cluster redshift.
+        Proper distance in Mpc  at the cluster redshift.
     shapenoise : float, optional
         If set, applies Gaussian shape noise to the galaxy shapes with a width set by `shapenoise`
     photoz_sigma_unscaled : float, optional
@@ -353,14 +353,15 @@ def _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo, field_size):
         and H0
     field_size : float
         The size of the field (field_size x field_size) to be simulated around the cluster center. 
-        Proper distance in Mpc/h at the cluster redshift.
+        Proper distance in Mpc at the cluster redshift.
 
     Returns
     -------
     galaxy_catalog : clmm.GCData
         Source galaxy catalog with positions added
     """
-    Dl = angular_diameter_dist_a1a2(cosmo, 1./(1.+cluster_z))*units.pc.to(units.Mpc)
+#    Dl = angular_diameter_dist_a1a2(cosmo, 1./(1.+cluster_z))*units.pc.to(units.Mpc)
+    Dl = cosmo.eval_da(cluster_z) # Mpc
     
     galaxy_catalog['x_mpc'] = np.random.uniform(-(field_size/2.), field_size/2., size=ngals)
     galaxy_catalog['y_mpc'] = np.random.uniform(-(field_size/2.), field_size/2., size=ngals)

@@ -181,6 +181,8 @@ class CCLCosmology (CLMMCosmology):
             return self.be_cosmo['Omega_b']
         elif key == "Omega_dm0":
             return self.be_cosmo['Omega_c']
+        elif key == "Omega_k0":
+            return self.be_cosmo['Omega_k']
         elif key == 'h':
             return self.be_cosmo['h']
         elif key == 'H0':

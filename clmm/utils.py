@@ -191,7 +191,8 @@ def _convert_rad_to_mpc(dist1, redshift, cosmo, do_inverse=False):
     dist2 : array_like
         Converted distances
     """
-    d_a = cosmo.angular_diameter_distance(redshift).to('Mpc').value
+#    d_a = cosmo.angular_diameter_distance(redshift).to('Mpc').value
+    d_a = cosmo.eval_da(redshift) #Mpc
     if do_inverse:
         return dist1 / d_a
     return dist1 * d_a
