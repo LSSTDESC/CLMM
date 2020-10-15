@@ -74,4 +74,11 @@ def test_z_and_a (modeling_data):
     testval = 0.5
     assert_allclose (cosmo._get_a_from_z (cosmo._get_z_from_a (testval)), testval, **TOLERANCE)
     assert_allclose (cosmo._get_z_from_a (cosmo._get_a_from_z (testval)), testval, **TOLERANCE)
+
+    Omega_m0 = cosmo['Omega_m0']
+    assert_allclose (cosmo.get_Omega_m(0.0), Omega_m0, **TOLERANCE)
+    assert_allclose (cosmo.get_E2Omega_m(0.0), Omega_m0, **TOLERANCE)
     
+    #assert_allclose (cosmo.eval_da_z1z2 (0.1, 0.7), , **TOLERANCE)
+    
+        

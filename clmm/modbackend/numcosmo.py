@@ -41,7 +41,8 @@ class NumCosmoCLMModeling (CLMModeling):
         
     def set_cosmo (self, cosmo):
         if cosmo:
-            assert isinstance (cosmo, NumCosmoCosmology)
+            if not isinstance (cosmo, NumCosmoCosmology):
+                raise ValueError (f"Incompatible cosmology object {cosmo}.")
             self.cosmo = cosmo
         else:
             self.cosmo = NumCosmoCosmology ()
@@ -237,7 +238,7 @@ class NumCosmoCosmology (CLMMCosmology):
 
     def get_Omega_m (self, z):
     
-        return self.be_cosmo.Omega_m (z)
+        return self.be_cosmo.E2Omega_m (z) / self.be_cosmo.E2 (z)
 
     def get_E2Omega_m (self, z):
     

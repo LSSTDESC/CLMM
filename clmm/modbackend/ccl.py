@@ -43,10 +43,11 @@ class CCLCLMModeling (CLMModeling):
         rhocrit_mks = 3.0 * 100.0 * 100.0 / (8.0 * np.pi * const.GNEWT.value)
         rhocrit_cd2018 = rhocrit_mks * 1000.0 * 1000.0 * const.PC_TO_METER.value * 1.0e6 / const.SOLAR_MASS.value
         self.cor_factor = rhocrit_cd2018 / ccl.physical_constants.RHO_CRITICAL
-
+        
     def set_cosmo (self, cosmo):
         if cosmo:
-            assert isinstance (cosmo, CCLCosmology)
+            if not isinstance (cosmo, CCLCosmology):
+                raise ValueError (f"Incompatible cosmology object {cosmo}.")
             self.cosmo = cosmo
         else:
             self.cosmo = CCLCosmology ()        
@@ -71,7 +72,7 @@ class CCLCLMModeling (CLMModeling):
                 cur_values = True
             
             self.mdef = ccl.halos.MassDef (delta_mdef, self.mdef_dict[massdef])
-            self.conc = ccl.halos.ConcentrationConstant (self.mdef)
+            self.conc = ccl.halos.ConcentrationConstant (c = 4.0, mdef = self.mdef)
             self.mdef.concentration = self.conc
             self.hdpm = self.hdpm_dict[halo_profile_model] (self.conc, **self.hdpm_opts[halo_profile_model])
             if cur_values:
@@ -192,7 +193,7 @@ class CCLCosmology (CLMMCosmology):
 
     def get_E2Omega_m (self, z):
         a = 1.0 / (1.0 + z)
-        return ccl.omega_x (self.be_cosmo, a, "matter") * (h_over_h0 (self.be_cosmo, a))**2
+        return ccl.omega_x (self.be_cosmo, a, "matter") * (ccl.h_over_h0 (self.be_cosmo, a))**2
 
     def eval_da_z1z2 (self, z1, z2):
         a1 = 1.0 / (1.0 + z1)
