@@ -32,7 +32,10 @@ __backends = {'ct':  {'name': 'cluster_toolkit+astropy', 'available': False,
                       'preload': __numcosmo_preload},
               'ccl': {'name': 'ccl', 'available': False,
                       'module': 'ccl',
-                      'prereqs': ['pyccl']}}
+                      'prereqs': ['pyccl']},
+              'notabackend': {'name': 'notaname', 'available': False, 
+                              'module': 'notamodule',
+                              'prereqs': ['notaprerq']}}
 
 #  Backend check:
 #    Checks all backends and set available to True for those that can be 
@@ -91,6 +94,5 @@ except NotImplementedError:
 def backend_is_available (be1):
     if not be1 in __backends:
         raise ValueError ("CLMM Backend `%s' is not supported" % (be1))
-        return False
     else:
         return __backends[be1]['available']

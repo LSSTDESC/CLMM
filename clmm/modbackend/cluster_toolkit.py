@@ -616,7 +616,8 @@ def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
 class AstroPyCosmology (CLMMCosmology):
     def __init__ (self, **kwargs):
         super (AstroPyCosmology, self).__init__ (**kwargs)
-        self.name = 'ct'
+
+        self.backend = 'ct'
 
         assert isinstance (self.be_cosmo, LambdaCDM)
     

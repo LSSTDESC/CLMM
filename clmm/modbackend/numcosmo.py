@@ -167,7 +167,7 @@ class NumCosmoCosmology (CLMMCosmology):
         
         super(NumCosmoCosmology, self).__init__ (**kwargs)
         
-        self.name = 'nc'
+        self.backend = 'nc'
         
         if dist:
             self.set_dist (dist)
@@ -179,9 +179,6 @@ class NumCosmoCosmology (CLMMCosmology):
         assert isinstance (be_cosmo, Nc.HICosmo)
         self.be_cosmo = be_cosmo
         
-        if self.dist:
-            self.dist.prepare_if_needed (self.be_cosmo)
-
     def _init_from_params (self, H0, Omega_b0, Omega_dm0, Omega_k0):
 
         if not self.be_cosmo:
@@ -199,10 +196,7 @@ class NumCosmoCosmology (CLMMCosmology):
         self.be_cosmo.param_set_by_name ("Omegac", Omega_dm0)
         self.be_cosmo.param_set_by_name ("Omegak", Omega_k0)
         
-        if self.dist:
-            self.dist.prepare_if_needed (self.be_cosmo)
-
-    def _set_param (self, value):
+    def _set_param (self, key, value):
         if key == "Omega_b0":
             self.be_cosmo.param_set_by_name ("Omegab", value)
         elif key == "Omega_dm0":

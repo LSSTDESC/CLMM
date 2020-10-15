@@ -21,7 +21,7 @@ def test_unimplemented (modeling_data):
 
 TOLERANCE = {'rtol': 1.0e-15}
 
-def test_z_and_a (modeling_data):
+def test_z_and_a (modeling_data, cosmo_init):
     """ Unit tests abstract class z and a methdods """
 
     cosmo = md.Cosmology ()
@@ -75,10 +75,31 @@ def test_z_and_a (modeling_data):
     assert_allclose (cosmo._get_a_from_z (cosmo._get_z_from_a (testval)), testval, **TOLERANCE)
     assert_allclose (cosmo._get_z_from_a (cosmo._get_a_from_z (testval)), testval, **TOLERANCE)
 
+def test_cosmo_basic (modeling_data, cosmo_init):
+    """ Unit tests abstract class z and a methdods """
+
+    cosmo = md.Cosmology (**cosmo_init)
+
     Omega_m0 = cosmo['Omega_m0']
     assert_allclose (cosmo.get_Omega_m(0.0), Omega_m0, **TOLERANCE)
     assert_allclose (cosmo.get_E2Omega_m(0.0), Omega_m0, **TOLERANCE)
     
+    for param in cosmo_init.keys ():
+        assert_allclose (cosmo_init[param], cosmo[param], **TOLERANCE)
+        
+    
+    if cosmo.backend == 'nc':
+        for param in cosmo_init.keys ():
+            cosmo[param] = cosmo_init[param] * 1.01
+    
+        assert_raises (ValueError, cosmo._set_param, "nonexistent", 0.0)
+    else:
+        assert_raises (NotImplementedError, cosmo._set_param, "nonexistent", 0.0)
+    
+    assert_raises (ValueError, cosmo._get_param, "nonexistent")
+    
     #assert_allclose (cosmo.eval_da_z1z2 (0.1, 0.7), , **TOLERANCE)
     
+    test_cosmo = md.Cosmology (be_cosmo = cosmo.be_cosmo)
+
         

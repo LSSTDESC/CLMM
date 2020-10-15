@@ -1,4 +1,6 @@
 """Tests for modeling.py"""
+
+import sys
 import json
 import numpy as np
 from numpy.testing import assert_raises, assert_allclose, assert_equal
@@ -26,10 +28,9 @@ def test_unimplemented (modeling_data):
 def test_instantiate (modeling_data):
     """ Unit tests for modeling objects' instantiation """
     
-    print (md.be_nick)
     if md.be_nick == 'ct':
         assert_raises (NotImplementedError, md.Modeling)
-        # Nothing else to check. CT does not implement an oject-oriented interface.
+        # Nothing else to check. CT does not implement an object-oriented interface.
         return
          
     m = md.Modeling ()
@@ -72,14 +73,17 @@ def test_instantiate (modeling_data):
     assert_allclose (reduced_shear, shear / (1.0 - convergence), rtol = 8.0e-15)
     assert_allclose (magnification, 1.0 / ((1.0 - convergence)**2 - np.abs (shear)**2), rtol = 5.0e-15) 
     
+    reduced_shear = m.eval_reduced_shear (r_proj, z_cl, np.repeat (z_src, len (r_proj)))
+    assert_allclose (reduced_shear, shear / (1.0 - convergence), rtol = 8.0e-15)
+
+    z = np.linspace (0.0, 10.0, 1000)
+
+    assert_allclose (m.cosmo.eval_da (z), m.eval_da_z1z2 (0.0, z), rtol = 8.0e-15)
+    assert_allclose (m.cosmo.eval_da_z1z2 (0.0, z), m.eval_da_z1z2 (0.0, z), rtol = 8.0e-15)
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-     
+
+
+
+
+
+        

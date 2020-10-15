@@ -157,7 +157,8 @@ class CCLCLMModeling (CLMModeling):
 class CCLCosmology (CLMMCosmology):
     def __init__(self, **kwargs):
         super (CCLCosmology, self).__init__ (**kwargs)
-        self.name = 'ccl'
+
+        self.backend = 'ccl'
 
         assert isinstance (self.be_cosmo, ccl.Cosmology)
 
@@ -171,7 +172,7 @@ class CCLCosmology (CLMMCosmology):
         self.be_cosmo = ccl.Cosmology (Omega_c = Omega_dm0, Omega_b = Omega_b0, Omega_k = Omega_k0, h = H0 / 100.0, sigma8 = 0.8, n_s = 0.96, T_CMB = 0.0, Neff = 0.0,
                                        transfer_function='bbks', matter_power_spectrum='linear')
 
-    def _set_param (self, value):
+    def _set_param (self, key, value):
         raise NotImplementedError ("CCL do not support changing parameters")
 
     def _get_param (self, key):
@@ -200,7 +201,7 @@ class CCLCosmology (CLMMCosmology):
     def eval_da_z1z2 (self, z1, z2):
         a1 = 1.0 / (1.0 + z1)
         a2 = 1.0 / (1.0 + z2)
-        return ccl.angular_diameter_distance (self.be_cosmo, a1, a2)
+        return np.vectorize (ccl.angular_diameter_distance) (self.be_cosmo, a1, a2)
 
 Modeling = CCLCLMModeling
 Cosmology = CCLCosmology
