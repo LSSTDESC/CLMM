@@ -5,7 +5,8 @@ from astropy import units as u
 
 
 def compute_radial_averages(xvals, yvals, xbins, error_model='std/sqrt_n'):
-    """ Given a list of xvalss, yvals and bins, sort into bins
+    """ Given a list of xvals, yvals and bins, sort into bins. If xvals or yvals
+    contain non-finite values, these are filtered.
 
     Parameters
     ----------
@@ -35,17 +36,20 @@ def compute_radial_averages(xvals, yvals, xbins, error_model='std/sqrt_n'):
         of `xvals` belongs.  Same length as `yvals`.  A binnumber of `i` means the
         corresponding value is between (xbins[i-1], xbins[i]).
     """
-    meanx, xbins, binnumber = binned_statistic(xvals, xvals, statistic='mean', bins=xbins)[:3]
-    meany = binned_statistic(xvals, yvals, statistic='mean', bins=xbins)[0]
+    # binned_statics throus an error in case of non-finite values, so filtering those out
+    filt = np.isfinite(xvals) * np.isfinite(yvals)
+    
+    meanx, xbins, binnumber = binned_statistic(xvals[filt], xvals[filt], statistic='mean', bins=xbins)[:3]
+    meany = binned_statistic(xvals[filt], yvals[filt], statistic='mean', bins=xbins)[0]
     # number of objects
-    num_objects = np.histogram(xvals, xbins)[0]
+    num_objects = np.histogram(xvals[filt], xbins)[0]
     n_zero = num_objects==0
 
     if error_model == 'std':
-        yerr = binned_statistic(xvals, yvals, statistic='std', bins=xbins)[0]
+        yerr = binned_statistic(xvals[filt], yvals[filt], statistic='std', bins=xbins)[0]
     elif error_model == 'std/sqrt_n':
-        yerr = binned_statistic(xvals, yvals, statistic='std', bins=xbins)[0]
-        sqrt_n = np.sqrt(binned_statistic(xvals, yvals, statistic='count', bins=xbins)[0])
+        yerr = binned_statistic(xvals[filt], yvals[filt], statistic='std', bins=xbins)[0]
+        sqrt_n = np.sqrt(binned_statistic(xvals[filt], yvals[filt], statistic='count', bins=xbins)[0])
         sqrt_n[n_zero] = 1.0
         yerr = yerr/sqrt_n
     else:
