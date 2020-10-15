@@ -118,7 +118,7 @@ def compute_tangential_and_cross_components(cluster=None,
     add_to_cluster: bool
         If `True` and a cluster was input, add the computed shears to the `GalaxyCluster` object
     is_deltasigma: bool
-        If `True`, the tangential and cross components returned are multiplied by Sigma_crit. Results in units of :math:`h\ M_\odot\ pc^{-2}`
+        If `True`, the tangential and cross components returned are multiplied by Sigma_crit. Results in units of :math:`M_\odot\ Mpc^{-2}`
     cosmo: astropy cosmology object
         Specifying a cosmology is required if `is_deltasigma` is True
 
