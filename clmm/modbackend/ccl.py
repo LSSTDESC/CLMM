@@ -20,7 +20,7 @@ class CCLCLMModeling (CLMModeling):
         self.backend   = 'ccl'
 
         self.mdef_dict = {'mean':      'matter', 
-                          'critial':   'critical',
+                          'critical':   'critical',
                           'virial':    'critical'}
         self.hdpm_dict = {'nfw':       ccl.halos.HaloProfileNFW, 
                           'einasto':   ccl.halos.HaloProfileEinasto,
