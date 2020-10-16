@@ -174,3 +174,47 @@ class CLMMCosmology:
         return (1.0 / a) - 1.0
 
 
+    def rad2mpc(self, dist1, redshift):
+        r""" Convert between radians and Mpc using the small angle approximation
+        and :math:`d = D_A \theta`.
+
+        Parameters
+        ==========
+        dist1 : array_like
+            Input distances in radians
+        redshift : float
+            Redshift used to convert between angular and physical units
+        cosmo : astropy.cosmology
+            Astropy cosmology object to compute angular diameter distance to
+            convert between physical and angular units
+        do_inverse : bool
+            If true, converts Mpc to radians
+
+        Returns
+        =======
+        dist2 : array_like
+            Distances in Mpc
+        """
+    return dist1*self.eval_da(redshift)
+    def mpc2rad(self, dist1, redshift):
+        r""" Convert between radians and Mpc using the small angle approximation
+        and :math:`d = D_A \theta`.
+
+        Parameters
+        ==========
+        dist1 : array_like
+            Input distances in Mpc
+        redshift : float
+            Redshift used to convert between angular and physical units
+        cosmo : astropy.cosmology
+            Astropy cosmology object to compute angular diameter distance to
+            convert between physical and angular units
+        do_inverse : bool
+            If true, converts Mpc to radians
+
+        Returns
+        =======
+        dist2 : array_like
+            Distances in radians
+        """
+    return dist1/self.eval_da(redshift)

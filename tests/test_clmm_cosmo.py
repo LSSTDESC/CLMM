@@ -101,5 +101,37 @@ def test_cosmo_basic (modeling_data, cosmo_init):
     #assert_allclose (cosmo.eval_da_z1z2 (0.1, 0.7), , **TOLERANCE)
     
     test_cosmo = md.Cosmology (be_cosmo = cosmo.be_cosmo)
-
         
+def _rad2mpc_helper(dist, redshift, cosmo, do_inverse):
+    """ Helper function to clean up test_convert_rad_to_mpc. Truth is computed using
+    astropy so this test is very circular. Once we swap to CCL very soon this will be
+    a good source of truth. """
+    d_a = cosmo.eval_da(redshift) #Mpc
+    if do_inverse:
+        assert_allclose(cosmo.mpc2rad(dist, redshift), dist/d_a, **TOLERANCE)
+    else:
+        assert_allclose(cosmo.rad2mpc(dist, redshift), dist*d_a, **TOLERANCE)
+def test_convert_rad_to_mpc():
+    """ Test conversion between physical and angular units and vice-versa. """
+    # Set some default values if I want them
+    redshift = 0.25
+    cosmo = md.Cosmology(H0 = 70.0, Omega_dm0 = 0.3 - 0.045, Omega_b0 = 0.045)
+    # Test basic conversions each way
+    _rad2mpc_helper(0.003, redshift, cosmo, do_inverse=False)
+    _rad2mpc_helper(1.0, redshift, cosmo, do_inverse=True)
+    # Convert back and forth and make sure I get the same answer
+    midtest = cosmo.rad2mpc(0.003, redshift)
+    assert_allclose(cosmo.mpc2rad(midtest, redshift),
+                    0.003, **TOLERANCE)
+    # Test some different redshifts
+    for onez in [0.1, 0.25, 0.5, 1.0, 2.0, 3.0]:
+        _rad2mpc_helper(0.33, onez, cosmo, do_inverse=False)
+        _rad2mpc_helper(1.0, onez, cosmo, do_inverse=True)
+    # Test some different H0
+    for oneh0 in [30., 50., 67.3, 74.7, 100.]:
+        _rad2mpc_helper(0.33, 0.5, md.Cosmology(H0 = oneh0, Omega_dm0 = 0.3 - 0.045, Omega_b0 = 0.045), do_inverse=False)
+        _rad2mpc_helper(1.0, 0.5, md.Cosmology(H0 = oneh0, Omega_dm0 = 0.3 - 0.045, Omega_b0 = 0.045), do_inverse=True)
+    # Test some different Omega_M
+    for oneomm in [0.1, 0.3, 0.5, 1.0]:
+        _rad2mpc_helper(0.33, 0.5, md.Cosmology(H0 = 70.0, Omega_dm0 = oneomm - 0.045, Omega_b0 = 0.045), do_inverse=False)
+        _rad2mpc_helper(1.0, 0.5, md.Cosmology(H0 = 70.0, Omega_dm0 = oneomm - 0.045, Omega_b0 = 0.045), do_inverse=True)

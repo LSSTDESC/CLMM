@@ -162,45 +162,16 @@ def convert_units(dist1, unit1, unit2, redshift=None, cosmo=None):
         if not redshift > 0.0:
             raise ValueError("Redshift must be greater than 0.")
 
-        # Convert angular to physical
         if (unit1 in angular_bank) and (unit2 in physical_bank):
+            # Convert angular to physical
             dist1_rad = (dist1 * units_bank[unit1]).to(u.rad).value
-            dist1_mpc = _convert_rad_to_mpc(dist1_rad, redshift, cosmo, do_inverse=False)
+            dist1_mpc = cosmo.rad2mpc(dist1_rad, redshift)
             return (dist1_mpc * u.Mpc).to(units_bank[unit2]).value
-
-        # Otherwise physical to angular
-        dist1_mpc = (dist1 * units_bank[unit1]).to(u.Mpc).value
-        dist1_rad = _convert_rad_to_mpc(dist1_mpc, redshift, cosmo, do_inverse=True)
-        return (dist1_rad * u.rad).to(units_bank[unit2]).value
-
-
-def _convert_rad_to_mpc(dist1, redshift, cosmo, do_inverse=False):
-    r""" Convert between radians and Mpc using the small angle approximation
-    and :math:`d = D_A \theta`.
-
-    Parameters
-    ==========
-    dist1 : array_like
-        Input distances
-    redshift : float
-        Redshift used to convert between angular and physical units
-    cosmo : astropy.cosmology
-        Astropy cosmology object to compute angular diameter distance to
-        convert between physical and angular units
-    do_inverse : bool
-        If true, converts Mpc to radians
-
-    Returns
-    =======
-    dist2 : array_like
-        Converted distances
-    """
-#    d_a = cosmo.angular_diameter_distance(redshift).to('Mpc').value
-    d_a = cosmo.eval_da(redshift) #Mpc
-    if do_inverse:
-        return dist1 / d_a
-    return dist1 * d_a
-
+        else:
+            # Otherwise physical to angular
+            dist1_mpc = (dist1 * units_bank[unit1]).to(u.Mpc).value
+            dist1_rad = cosmo.mpc2rad(dist1_mpc, redshift)
+            return (dist1_rad * u.rad).to(units_bank[unit2]).value
 
 def convert_shapes_to_epsilon(shape_1,shape_2, shape_definition='epsilon',kappa=0):
     """ Given shapes and their definition, convert them to epsilon ellipticities or reduced shears, which can be used in GalaxyCluster.galcat
