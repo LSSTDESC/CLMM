@@ -195,7 +195,7 @@ class CLMMCosmology:
         dist2 : array_like
             Distances in Mpc
         """
-    return dist1*self.eval_da(redshift)
+        return dist1*self.eval_da(redshift)
     def mpc2rad(self, dist1, redshift):
         r""" Convert between radians and Mpc using the small angle approximation
         and :math:`d = D_A \theta`.
@@ -217,4 +217,4 @@ class CLMMCosmology:
         dist2 : array_like
             Distances in radians
         """
-    return dist1/self.eval_da(redshift)
+        return dist1/self.eval_da(redshift)
