@@ -183,7 +183,7 @@ def helper_profiles(func):
     mdelta = 1.0e15
     cdelta = 4.0
     z_cl = 0.2
-    cclcosmo = md.Cosmology(Omega_dm0=0.25, Omega_b0=0.05) 
+    cclcosmo = md.Cosmology(Omega_dm0=0.25, Omega_b0=0.05)
 
     # Test for exception if other profiles models are passed
     assert_raises(ValueError, func, r3d, mdelta, cdelta, z_cl, cclcosmo, 200, 'bleh')
@@ -225,7 +225,7 @@ def test_get_critical_surface_density(modeling_data):
                                                     z_cluster=cfg['TEST_CASE']['z_cluster'],
                                                     z_source=cfg['TEST_CASE']['z_source']),
                     cfg['TEST_CASE']['nc_Sigmac'], 1.2e-8)
-    
+
     # Check behaviour when sources are in front of the lens
     z_cluster = 0.3
     z_source = 0.2
@@ -285,7 +285,7 @@ def test_shear_convergence_unittests(modeling_data):
     # by passing the ratio of SOLAR_MASS in kg from numcosmo and CLMM
     cfg = load_validation_config()
     constants_conversion = clc.SOLAR_MASS.value/cfg['TEST_CASE']['Msun[kg]']
-    
+
     # First compute SigmaCrit to correct cosmology changes
     cosmo = cfg['cosmo']
     sigma_c = md.get_critical_surface_density(cosmo, cfg['GAMMA_PARAMS']['z_cluster'],
@@ -296,7 +296,7 @@ def test_shear_convergence_unittests(modeling_data):
                                                    cfg['z_source'])
     sigmac_corr = (sigma_c_undo/sigma_c)
 
-    # Chech error is raised if too small radius   
+    # Chech error is raised if too small radius
     assert_raises(ValueError, md.predict_tangential_shear, 1.e-12, 1.e15, 4, 0.2, 0.45, cosmo)
 
     # Validate tangential shear
@@ -311,12 +311,12 @@ def test_shear_convergence_unittests(modeling_data):
     assert_allclose(md.predict_reduced_tangential_shear(cosmo=cosmo, **cfg['GAMMA_PARAMS']),
                     gammat/(1.0-kappa), 1.0e-10)
     assert_allclose(gammat*sigmac_corr/(1.-(kappa*sigmac_corr)), cfg['numcosmo_profiles']['gt'], 1.0e-6)
-    
+
     # Validate magnification
     assert_allclose(md.predict_magnification(cosmo=cosmo, **cfg['GAMMA_PARAMS']),
                     1./((1-kappa)**2-abs(gammat)**2), 1.0e-10)
     assert_allclose(1./((1-kappa)**2-abs(gammat)**2), cfg['numcosmo_profiles']['mu'], 4.0e-7)
-    
+
 
     # Check that shear, reduced shear and convergence return zero and magnification returns one if source is in front of the cluster
     # First, check for a array of radius and single source z
@@ -330,13 +330,13 @@ def test_shear_convergence_unittests(modeling_data):
     assert_allclose(md.predict_tangential_shear(r, mdelta=1.e15, cdelta=4., z_cluster=z_cluster,
                     z_source=z_source, cosmo=cosmo),
                     np.zeros(len(r)), 1.0e-10)
-    assert_allclose(md.predict_reduced_tangential_shear(r, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, 
+    assert_allclose(md.predict_reduced_tangential_shear(r, mdelta=1.e15, cdelta=4., z_cluster=z_cluster,
                     z_source=z_source, cosmo=cosmo),
                     np.zeros(len(r)), 1.0e-10)
-    assert_allclose(md.predict_magnification(r, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, 
+    assert_allclose(md.predict_magnification(r, mdelta=1.e15, cdelta=4., z_cluster=z_cluster,
                     z_source=z_source, cosmo=cosmo),
                     np.ones(len(r)), 1.0e-10)
-    
+
     # Second, check a single radius and array of source z
     r = 1.
     z_source = [0.25, 0.1, 0.14, 0.02]
@@ -348,6 +348,6 @@ def test_shear_convergence_unittests(modeling_data):
                     np.zeros(len(z_source)), 1.0e-10)
     assert_allclose(md.predict_magnification(r, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
                     np.ones(len(z_source)), 1.0e-10)
-    
-    
-    
+
+
+

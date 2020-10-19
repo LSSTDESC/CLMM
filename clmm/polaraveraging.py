@@ -134,7 +134,7 @@ def compute_tangential_and_cross_components(cluster=None,
 
     if cluster is None:
         add_to_cluster=False
-    
+
     if cluster is not None:
         required_cols = ['ra', 'dec', shape_component1, shape_component2]
         if not all([t_ in cluster.galcat.columns for t_ in required_cols]):
@@ -372,7 +372,7 @@ def make_binned_profile(cluster,
                                    tan_component_out, tan_component_out+'_err',
                                    cross_component_out, cross_component_out+'_err',
                                    'z', 'z_err', 'n_src'),
-                            meta={'cosmo' : cosmo.get_desc() if cosmo else None, 
+                            meta={'cosmo' : cosmo.get_desc() if cosmo else None,
                                   'bin_units' : bin_units}, # Add metadata
                             )
     # add galaxy IDs

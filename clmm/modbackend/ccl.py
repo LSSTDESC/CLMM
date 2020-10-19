@@ -1,4 +1,4 @@
-# Functions to model halo profiles 
+# Functions to model halo profiles
 
 import pyccl as ccl
 
@@ -16,17 +16,17 @@ __all__ = ['CCLCLMModeling', 'Modeling', 'Cosmology']+func_layer.__all__
 
 class CCLCLMModeling(CLMModeling):
     def __init__(self, massdef='mean', delta_mdef=200, halo_profile_model='nfw', z_max=5.0):
-        
+
         self.backend = 'ccl'
 
-        self.mdef_dict = {'mean':      'matter', 
+        self.mdef_dict = {'mean':      'matter',
                           'critical':   'critical',
                           'virial':    'critical'}
-        self.hdpm_dict = {'nfw':       ccl.halos.HaloProfileNFW, 
+        self.hdpm_dict = {'nfw':       ccl.halos.HaloProfileNFW,
                           'einasto':   ccl.halos.HaloProfileEinasto,
                           'hernquist': ccl.halos.HaloProfileHernquist}
-        self.hdpm_opts = {'nfw': {'truncated': False, 
-                                  'projected_analytic': True, 
+        self.hdpm_opts = {'nfw': {'truncated': False,
+                                  'projected_analytic': True,
                                   'cumul2d_analytic': True},
                           'einasto': {},
                           'hernquist': {}}
@@ -39,18 +39,18 @@ class CCLCLMModeling(CLMModeling):
 
         self.set_cosmo(None)
         self.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
-        
+
         rhocrit_mks = 3.0*100.0*100.0/(8.0*np.pi*const.GNEWT.value)
         rhocrit_cd2018 = rhocrit_mks*1000.0*1000.0*const.PC_TO_METER.value*1.0e6/const.SOLAR_MASS.value
         self.cor_factor = rhocrit_cd2018/ccl.physical_constants.RHO_CRITICAL
-        
+
     def set_cosmo(self, cosmo):
         if cosmo:
             if not isinstance(cosmo, CCLCosmology):
                 raise ValueError(f"Incompatible cosmology object {cosmo}.")
             self.cosmo = cosmo
         else:
-            self.cosmo = CCLCosmology()        
+            self.cosmo = CCLCosmology()
 
     def set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
         # Check if choices are supported
@@ -63,14 +63,14 @@ class CCLCLMModeling(CLMModeling):
         if not((halo_profile_model == self.halo_profile_model) and(massdef == self.massdef) and(delta_mdef == self.delta_mdef)):
             self.halo_profile_model = halo_profile_model
             self.massdef = massdef
-            
+
             cur_cdelta = 0.0
             cur_mdelta = 0.0
             cur_values = False
             if self.hdpm:
                 cur_cdelta = self.conc.c
                 cur_values = True
-            
+
             self.mdef = ccl.halos.MassDef(delta_mdef, self.mdef_dict[massdef])
             self.conc = ccl.halos.ConcentrationConstant(c=4.0, mdef=self.mdef)
             self.mdef.concentration = self.conc
@@ -94,12 +94,12 @@ class CCLCLMModeling(CLMModeling):
             a_len = np.repeat(a_len, len(a_src))
 
         res = np.zeros_like(a_src)
-        
+
         if np.any(z_cut):
             Ds = ccl.angular_diameter_distance(self.cosmo.be_cosmo, a_src[z_cut])
             Dl = ccl.angular_diameter_distance(self.cosmo.be_cosmo, a_len)
             Dls = ccl.angular_diameter_distance(self.cosmo.be_cosmo, a_len, a_src[z_cut])
-        
+
             res[z_cut] = (cte*Ds/(Dl*Dls))*self.cor_factor
 
         res[~z_cut] = np.Inf
@@ -121,26 +121,26 @@ class CCLCLMModeling(CLMModeling):
     def eval_sigma_excess(self, r_proj, z_cl):
         a_cl = self.cosmo._get_a_from_z(z_cl)
         r_cor = r_proj/a_cl
-        
+
         return (self.hdpm.cumul2d(self.cosmo.be_cosmo, r_cor, self.MDelta, self.cosmo._get_a_from_z(z_cl), self.mdef)-
                 self.hdpm.projected(self.cosmo.be_cosmo, r_cor, self.MDelta, self.cosmo._get_a_from_z(z_cl), self.mdef))*self.cor_factor/a_cl**2
 
     def eval_shear(self, r_proj, z_cl, z_src):
-        sigma_excess = self.eval_sigma_excess(r_proj, z_cl) 
+        sigma_excess = self.eval_sigma_excess(r_proj, z_cl)
         sigma_crit = self.eval_sigma_crit(z_cl, z_src)
-        
+
         return sigma_excess/sigma_crit
 
     def eval_convergence(self, r_proj, z_cl, z_src):
-        sigma = self.eval_sigma(r_proj, z_cl) 
+        sigma = self.eval_sigma(r_proj, z_cl)
         sigma_crit = self.eval_sigma_crit(z_cl, z_src)
-        
+
         return np.nan_to_num(sigma/sigma_crit, nan=np.nan, posinf=np.inf, neginf=-np.inf)
 
     def eval_reduced_shear(self, r_proj, z_cl, z_src):
         kappa = self.eval_convergence(r_proj, z_cl, z_src)
         gamma_t = self.eval_shear(r_proj, z_cl, z_src)
-        
+
         return np.nan_to_num(np.divide(gamma_t, (1-kappa)), nan=np.nan, posinf=np.inf, neginf=-np.inf)
 
     def eval_magnification(self, r_proj, z_cl, z_src):
@@ -160,12 +160,12 @@ class CCLCosmology(CLMMCosmology):
         assert isinstance(self.be_cosmo, ccl.Cosmology)
 
     def _init_from_cosmo(self, be_cosmo):
-    
+
         assert isinstance(be_cosmo, ccl.Cosmology)
         self.be_cosmo = be_cosmo
 
     def _init_from_params(self, H0, Omega_b0, Omega_dm0, Omega_k0):
-    
+
         self.be_cosmo = ccl.Cosmology(Omega_c=Omega_dm0, Omega_b=Omega_b0, Omega_k=Omega_k0, h=H0/100.0, sigma8=0.8, n_s=0.96, T_CMB=0.0, Neff=0.0,
                                        transfer_function='bbks', matter_power_spectrum='linear')
 

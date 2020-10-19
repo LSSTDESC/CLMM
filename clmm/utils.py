@@ -38,7 +38,7 @@ def compute_radial_averages(xvals, yvals, xbins, error_model='std/sqrt_n'):
     """
     # binned_statics throus an error in case of non-finite values, so filtering those out
     filt = np.isfinite(xvals)*np.isfinite(yvals)
-    
+
     meanx, xbins, binnumber = binned_statistic(xvals[filt], xvals[filt], statistic='mean', bins=xbins)[:3]
     meany = binned_statistic(xvals[filt], yvals[filt], statistic='mean', bins=xbins)[0]
     # number of objects
@@ -77,7 +77,7 @@ def make_bins(rmin, rmax, nbins=10, method='evenwidth', source_seps=None):
         'evenwidth' - Default, evenly spaced bins between rmin and rmax
         'evenlog10width' - Logspaced bins with even width in log10 between rmin and rmax
         'equaloccupation' - Bins with equal occupation numbers
-    source_seps : array-like 
+    source_seps : array-like
         Radial distance of source separations
 
     Returns
@@ -97,7 +97,7 @@ def make_bins(rmin, rmax, nbins=10, method='evenwidth', source_seps=None):
     elif method == 'equaloccupation':
         if source_seps is None:
             raise ValueError(f"Binning method '{method}' requires source separations array")
-        # by default, keep all galaxies 
+        # by default, keep all galaxies
         mask = np.full(len(source_seps), True)
         if rmin is not None or rmax is not None:
         # Need to filter source_seps to only keep galaxies in the [rmin, rmax]
@@ -179,10 +179,10 @@ def convert_shapes_to_epsilon(shape_1,shape_2, shape_definition='epsilon',kappa=
     axis ratio (q) and position angle (phi) (Not implemented)
     epsilon = (1-q/(1+q) exp(2i phi)
     chi = (1-q^2/(1+q^2) exp(2i phi)
-    shear(gamma) 
+    shear(gamma)
     reduced_shear(g) = gamma/(1-kappa)
     convergence(kappa)
-    
+
 
     Parameters
     ----------
@@ -202,7 +202,7 @@ def convert_shapes_to_epsilon(shape_1,shape_2, shape_definition='epsilon',kappa=
     epsilon_2 : array_like
         Epsilon ellipticity along secondary axis (epsilon2)
     """
-    
+
     if shape_definition=='epsilon' or shape_definition=='reduced_shear':
         return shape_1,shape_2
     elif shape_definition=='chi':
@@ -210,14 +210,14 @@ def convert_shapes_to_epsilon(shape_1,shape_2, shape_definition='epsilon',kappa=
         return shape_1*chi_to_eps_conversion,shape_2*chi_to_eps_conversion
     elif shape_definition=='shear':
         return shape_1/(1.-kappa), shape_2/(1.-kappa)
-    
+
     else:
         raise TypeError("Please choose epsilon, chi, shear, reduced_shear")
-        
 
-def build_ellipticities(q11,q22,q12):    
+
+def build_ellipticities(q11,q22,q12):
     """ Build ellipticties from second moments. See, e.g., Schneider et al. (2006)
-    
+
     Parameters
     ----------
     q11 : float or array
@@ -234,24 +234,24 @@ def build_ellipticities(q11,q22,q12):
     e1, e2 : float or array
         Ellipticities using the "epsilon definition"
     """
-    
+
     x1,x2 = (q11-q22)/(q11+q22),(2*q12)/(q11+q22)
     e1,e2 = (q11-q22)/(q11+q22+2*np.sqrt(q11*q22-q12*q12)),(2*q12)/(q11+q22+2*np.sqrt(q11*q22-q12*q12))
     return x1,x2, e1,e2
 
 
 def compute_lensed_ellipticity(ellipticity1_true, ellipticity2_true, shear1, shear2, convergence):
-    r""" Compute lensed ellipticities from the intrinsic ellipticities, shear and convergence. 
-    Following Schneider et al. (2006) 
+    r""" Compute lensed ellipticities from the intrinsic ellipticities, shear and convergence.
+    Following Schneider et al. (2006)
 
     .. math::
         \epsilon^{\rm lensed}=\epsilon^{\rm lensed}_1+i\epsilon^{\rm lensed}_2=\frac{\epsilon^{\rm true}+g}{1+g^\ast\epsilon^{\rm true}},
 
     where, the complex reduced shear :math:`g` is obtained from the shear :math:`\gamma=\gamma_1+i\gamma_2`
-    and convergence :math:`\kappa` as :math:`g = \gamma/(1-\kappa)`, and the complex intrinsic ellipticity 
+    and convergence :math:`\kappa` as :math:`g = \gamma/(1-\kappa)`, and the complex intrinsic ellipticity
     is :math:`\epsilon^{\rm true}=\epsilon^{\rm true}_1+i\epsilon^{\rm true}_2`
 
-    
+
     Parameters
     ----------
     ellipticity1_true : float or array
@@ -259,7 +259,7 @@ def compute_lensed_ellipticity(ellipticity1_true, ellipticity2_true, shear1, she
     ellipticity2_true : float or array
         Intrinsic ellipticity of the sources along the second axis
     shear1 :  float or array
-        Shear component (not reduced shear) along the principal axis at the source location 
+        Shear component (not reduced shear) along the principal axis at the source location
     shear2 :  float or array
         Shear component (not reduced shear) along the 45-degree axis at the source location
     convergence :  float or array

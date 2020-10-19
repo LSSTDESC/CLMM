@@ -14,7 +14,7 @@ from .. clmm_cosmo import CLMMCosmology
 
 import warnings
 
-__all__ = generic.__all__+['get_3d_density', 'predict_surface_density', 
+__all__ = generic.__all__+['get_3d_density', 'predict_surface_density',
            'predict_excess_surface_density', 'get_critical_surface_density',
            'predict_tangential_shear', 'predict_convergence',
            'predict_reduced_tangential_shear', 'predict_magnification',
@@ -22,9 +22,9 @@ __all__ = generic.__all__+['get_3d_density', 'predict_surface_density',
 
 
 def _patch_ct_to_cd2018():
-    r""" Convertion factor from cluster_toolkit hardcoded rho_crit to 
+    r""" Convertion factor from cluster_toolkit hardcoded rho_crit to
     CODATA 2018+IAU 2015
-    
+
     """
 
     rhocrit_mks = 3.0*100.0*100.0/(8.0*np.pi*const.GNEWT.value)
@@ -37,10 +37,10 @@ def _patch_ct_to_cd2018():
 def _assert_correct_type_ct(a):
     """ Convert the argument to a type compatible with cluster_toolkit
     cluster_toolkit does not handle correctly scalar arguments that are
-    not float or numpy array and others that contain non-float64 elements. 
-    It only convert lists to the correct type. To circumvent this we 
+    not float or numpy array and others that contain non-float64 elements.
+    It only convert lists to the correct type. To circumvent this we
     pre-convert all arguments going to cluster_toolkit to the appropriated
-    types.    
+    types.
     Parameters
     ----------
     a : array_like or scalar
@@ -79,7 +79,7 @@ def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profil
     halo_profile_model : str, optional
         Profile model parameterization, with the following supported options:
 
-            `nfw` (default)            
+            `nfw` (default)
     massdef : str, optional
         Profile mass definition, with the following supported options:
 
@@ -220,7 +220,7 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
 
     # Computing sigma on a larger range than the radial range requested, with at least 1000 points.
     sigma_r_proj = np.logspace(np.log10(np.min(r_proj))-1, np.log10(np.max(r_proj))+1, np.max([1000,10*np.array(r_proj).size]))
-  
+
     if massdef != "mean":
         raise ValueError(f"Mass definition {massdef} not currently supported by {__package__}")
 
@@ -258,7 +258,7 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     z_src_models using :math:`\beta_s`.
     """
     h = cosmo['h']
-    
+
     clight_pc_s = const.CLIGHT_KMS.value*1000./const.PC_TO_METER.value
     gnewt_pc3_msun_s2 = const.GNEWT.value*const.SOLAR_MASS.value/const.PC_TO_METER.value**3
 
@@ -339,7 +339,7 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     if z_src_model == 'single_plane':
         sigma_c = get_critical_surface_density(cosmo, z_cluster, z_source)
         gammat = np.nan_to_num(delta_sigma/sigma_c, nan=np.nan, posinf=np.inf, neginf=-np.inf)
-        
+
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average'+
     #                               'delta_sigma/sigma_c gamma_t = Beta_s*gamma_inf')
@@ -348,7 +348,7 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     #                               'distribution of redshifts in each radial bin')
     else:
         raise ValueError("Unsupported z_src_model")
-    
+
     if np.any(np.array(z_source)<=z_cluster):
         warnings.warn(f'Some source redshifts are lower than the cluster redshift. shear = 0 for those galaxies.')
 
@@ -412,7 +412,7 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     if z_src_model == 'single_plane':
         sigma_c = get_critical_surface_density(cosmo, z_cluster, z_source)
         kappa = np.nan_to_num(sigma/sigma_c, nan=np.nan, posinf=np.inf, neginf=-np.inf)
-        
+
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average'+\
     #                               'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
@@ -421,7 +421,7 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     #                               'distribution of redshifts in each radial bin')
     else:
         raise ValueError("Unsupported z_src_model")
-    
+
     if np.any(np.array(z_source)<=z_cluster):
         warnings.warn(f'Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.')
 
@@ -479,7 +479,7 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
         gamma_t = predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
                                            delta_mdef, halo_profile_model, massdef, z_src_model)
         red_tangential_shear = np.nan_to_num(np.divide(gamma_t, (1-kappa)), nan=np.nan, posinf=np.inf, neginf=-np.inf)
-        
+
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average'+
     #                               'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
@@ -488,7 +488,7 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
     #                               'integrating distribution of redshifts in each radial bin')
     else:
         raise ValueError("Unsupported z_src_model")
-    
+
     if np.any(np.array(z_source)<=z_cluster):
         warnings.warn(f'Some source redshifts are lower than the cluster redshift. shear = 0 for those galaxies.')
 
@@ -496,7 +496,7 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
     return red_tangential_shear
 
 
-# The magnification is computed taking into account just the tangential shear. This is valid for 
+# The magnification is computed taking into account just the tangential shear. This is valid for
 # spherically averaged profiles, e.g., NFW and Einasto (by construction the cross shear is zero).
 def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
                         halo_profile_model='nfw', massdef = 'mean', z_src_model='single_plane'):
@@ -546,19 +546,19 @@ def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
     -----
     Need to figure out if we want to raise exceptions rather than errors here?
     """
-    
+
     if z_src_model == 'single_plane':
-        
+
         kappa = predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef,
                                     halo_profile_model, massdef,
                                     z_src_model)
-    
+
         gammat = predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,delta_mdef,
                                     halo_profile_model, massdef,
                                     z_src_model)
-        
+
         mu =  1./((1-kappa)**2-abs(gammat)**2)
-    
+
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average'+\
     #                               'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
@@ -570,7 +570,7 @@ def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
 
     if np.any(np.array(z_source)<=z_cluster):
         warnings.warn(f'Some source redshifts are lower than the cluster redshift. mu = 1 for those galaxies.')
-        
+
     return mu
 
 # CLMM Cosmology object - clustertoolkit+astropy implementation
@@ -582,22 +582,22 @@ class AstroPyCosmology(CLMMCosmology):
         self.backend = 'ct'
 
         assert isinstance(self.be_cosmo, LambdaCDM)
-    
+
     def _init_from_cosmo(self, be_cosmo):
-    
+
         assert isinstance(be_cosmo, LambdaCDM)
         self.be_cosmo = be_cosmo
-        
+
     def _init_from_params(self, H0, Omega_b0, Omega_dm0, Omega_k0):
-        
+
         Om0 = Omega_b0+Omega_dm0
         Ob0 = Omega_b0
         Ode0 = 1.0-Om0-Omega_k0
-        
+
         self.be_cosmo = LambdaCDM(H0=H0, Om0=Om0, Ob0=Ob0, Ode0=Ode0)
 
     def _set_param(self, key, value):
-        raise NotImplementedError("Astropy do not support changing parameters") 
+        raise NotImplementedError("Astropy do not support changing parameters")
 
     def _get_param(self, key):
         if key == "Omega_m0":

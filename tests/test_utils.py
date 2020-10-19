@@ -33,7 +33,7 @@ def test_compute_radial_averages():
                     [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)/np.sqrt(len(binvals))], [6]],
                     **TOLERANCE)
     assert_allclose(compute_radial_averages(binvals, binvals, xbins1, error_model='std')[:4],
-                    [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)], 
+                    [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)],
                     [6]], **TOLERANCE)
 
     # A slightly more complicated case with two bins
@@ -45,7 +45,7 @@ def test_compute_radial_averages():
                      [3,3]], **TOLERANCE)
     assert_allclose(compute_radial_averages(binvals, binvals, xbins2, error_model='std')[:4],
                     [[np.mean(inbin1), np.mean(inbin2)], [np.mean(inbin1), np.mean(inbin2)],
-                     [np.std(inbin1), np.std(inbin2)], 
+                     [np.std(inbin1), np.std(inbin2)],
                      [3,3]], **TOLERANCE)
 
     # Test a much larger, random sample with unevenly spaced bins
@@ -96,13 +96,13 @@ def test_make_bins():
                     np.linspace(0.0, 10., 11), **TOLERANCE)
     assert_allclose(make_bins(1.0, 10., nbins=10, method='evenlog10width'),
                     np.logspace(np.log10(1.0), np.log10(10.), 11), **TOLERANCE)
-    
+
     # Test equaloccupation method. It needs a source_seps array, so create one
     test_array = np.sqrt(np.random.uniform(-10,10,1361)**2+np.random.uniform(-10,10,1361)**2)
     test_bins = make_bins(1.0, 10., nbins=10, method='equaloccupation', source_seps=test_array)
-    # Check that all bins have roughly equal occupation. 
-    # Assert needs atol=2, because len(source_seps)/nbins may not be an integer, 
-    # and for some random arrays atol=1 is not enough. 
+    # Check that all bins have roughly equal occupation.
+    # Assert needs atol=2, because len(source_seps)/nbins may not be an integer,
+    # and for some random arrays atol=1 is not enough.
     assert_allclose(np.diff(np.histogram(test_array,bins=test_bins)[0]),
                     np.zeros(9), atol=2)
     test_bins = make_bins(0.51396, 6.78, nbins=23, method='equaloccupation', source_seps=test_array)
@@ -110,7 +110,7 @@ def test_make_bins():
                     np.zeros(22), atol=2)
     assert_raises(ValueError, make_bins, -10., -5., 10, 'equaloccupation', None)
     assert_raises(ValueError, make_bins, -10., -5., 10, 'undefinedmethod')
-                    
+
 
 
 
@@ -168,15 +168,15 @@ def test_convert_units():
                     truth, **TOLERANCE)
 
 def test_build_ellipticities():
-    
+
     # second moments are floats
     q11 = 0.5
     q22 = 0.3
     q12 = 0.02
-    
-    assert_allclose(utils.build_ellipticities(q11,q22,q12),(0.25, 0.05, 0.12710007580505459, 
+
+    assert_allclose(utils.build_ellipticities(q11,q22,q12),(0.25, 0.05, 0.12710007580505459,
                                                             0.025420015161010917), **TOLERANCE)
-    
+
     # second moments are numpy array
     q11 = np.array([0.5,0.3])
     q22 = np.array([0.8,0.2])
@@ -186,13 +186,13 @@ def test_build_ellipticities():
                                                             [0.01538462, 0.04],
                                                             [-0.11697033, 0.10106221],
                                                             [0.00779802, 0.02021244]), **TOLERANCE)
-    
+
 def test_shape_conversion():
     """ Test the helper function that convert user defined shapes into
-    epsilon ellipticities or reduced shear. Both can be used for the galcat in 
+    epsilon ellipticities or reduced shear. Both can be used for the galcat in
     the GalaxyCluster object"""
-    
-    
+
+
     # Number of random ellipticities to check
     niter=25
 
@@ -201,22 +201,22 @@ def test_shape_conversion():
     # Q11 seperate to avoid a whole bunch of nans
     q12 = np.random.uniform(-1,1,niter)*np.sqrt(q11*q22)
     x1,x2,e1,e2 = utils.build_ellipticities(q11,q22,q12)
-    
+
     # Test conversion from 'chi' to epsilon
     e1_2,e2_2 = convert_shapes_to_epsilon(x1,x2,shape_definition='chi')
     assert_allclose(e1,e1_2, **TOLERANCE)
     assert_allclose(e2,e2_2, **TOLERANCE)
-    
+
     # Test that 'epsilon' just returns the same values
     e1_2,e2_2 = convert_shapes_to_epsilon(e1,e2,shape_definition='epsilon')
     assert_allclose(e1,e1_2, **TOLERANCE)
     assert_allclose(e2,e2_2, **TOLERANCE)
-    
+
     # Test that 'reduced_shear' just returns the same values
     e1_2,e2_2 = convert_shapes_to_epsilon(e1,e2,shape_definition='reduced_shear')
     assert_allclose(e1,e1_2, **TOLERANCE)
     assert_allclose(e2,e2_2, **TOLERANCE)
-    
+
     # Test that 'shear' just returns the right values for reduced shear
     e1_2,e2_2 = convert_shapes_to_epsilon(e1,e2,shape_definition='shear',kappa=0.2)
     assert_allclose(e1/0.8,e1_2, **TOLERANCE)
@@ -225,21 +225,21 @@ def test_shape_conversion():
     assert_raises(TypeError, convert_shapes_to_epsilon, e1, e2, shape_definition='undefinedSD')
 
 def test_compute_lensed_ellipticities():
-    
+
     # Validation test with floats
     es1 = 0
     es2 = 0
     gamma1 = 0.2
     gamma2 = 0.2
-    kappa = 0.5   
+    kappa = 0.5
     assert_allclose(utils.compute_lensed_ellipticity(es1, es2, gamma1, gamma2, kappa),(0.4,0.4), **TOLERANCE)
-    
+
     # Validation test with array
     es1 = np.array([0,0.5])
     es2 = np.array([0,0.1])
     gamma1 = np.array([0.2,0.])
     gamma2 = np.array([0.2,0.3])
-    kappa = np.array([0.5,0.2])   
-    
+    kappa = np.array([0.5,0.2])
+
     assert_allclose(utils.compute_lensed_ellipticity(es1, es2, gamma1, gamma2, kappa),
                     ([0.4, 0.38656171],[0.4, 0.52769188]), **TOLERANCE)

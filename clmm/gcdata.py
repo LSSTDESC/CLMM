@@ -158,5 +158,5 @@ Note: Not being used anymore
 #        for match in found:
 #            if check_subdict(match.specs, lookup_specs):
 #                return [match]
-#        found = [] 
+#        found = []
 #    return found

@@ -11,7 +11,7 @@ class CLMModeling:
         raise NotImplementedError
     def set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
         r""" Sets the definitios for the halo profile
-        
+
         Parameters
         ----------
         halo_profile_model: str
@@ -32,8 +32,8 @@ class CLMModeling:
         """
         raise NotImplementedError
     def set_mass(self, mdelta):
-        r""" Sets the value of the :math:`M_\Delta` 
-        
+        r""" Sets the value of the :math:`M_\Delta`
+
         Parameters
         ----------
         mdelta : float
@@ -42,14 +42,14 @@ class CLMModeling:
         raise NotImplementedError
     def eval_sigma_crit(self, z_len, z_src):
         r"""Computes the critical surface density
-        
+
         Parameters
         ----------
         z_len : float
             Lens redshift
         z_src : array_like, float
             Background source galaxy redshift(s)
-        
+
         Returns
         -------
         float
@@ -58,14 +58,14 @@ class CLMModeling:
         raise NotImplementedError
     def eval_density(self, r3d, z_cl):
         r"""Retrieve the 3d density :math:`\rho(r)`.
-        
+
         Parameters
         ----------
         r3d : array_like, float
             Radial position from the cluster center in :math:`M\!pc`.
         z_cl: float
             Redshift of the cluster
-        
+
         Returns
         -------
         array_like, float
@@ -74,14 +74,14 @@ class CLMModeling:
         raise NotImplementedError
     def eval_sigma(self, r_proj, z_cl):
         r""" Computes the surface mass density
-        
+
         Parameters
         ----------
         r_proj : array_like
             Projected radial position from the cluster center in :math:`M\!pc`.
         z_cl: float
             Redshift of the cluster
-        
+
         Returns
         -------
         array_like, float
@@ -96,7 +96,7 @@ class CLMModeling:
             Projected radial position from the cluster center in :math:`M\!pc`.
         z_cl: float
             Redshift of the cluster
-        
+
         Returns
         -------
         array_like, float
@@ -111,7 +111,7 @@ class CLMModeling:
             Projected radial position from the cluster center in :math:`M\!pc`.
         z_cl: float
             Redshift of the cluster
-        
+
         Returns
         -------
         array_like, float
@@ -120,7 +120,7 @@ class CLMModeling:
         raise NotImplementedError
     def eval_shear(self, r_proj, z_cl, z_src):
         r"""Computes the tangential shear
-        
+
         Parameters
         ----------
         r_proj : array_like
@@ -129,7 +129,7 @@ class CLMModeling:
             Galaxy cluster redshift
         z_src : array_like, float
             Background source galaxy redshift(s)
-        
+
         Returns
         -------
         array_like, float

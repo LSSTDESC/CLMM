@@ -37,7 +37,7 @@ def plot_profiles(cluster=None, rbins=None, tangential_component=None, tangentia
         matplotlib.pyplot.xscale parameter to set x-axis scale (e.g. to logarithmic axis)
     yscale:
         matplotlib.pyplot.yscale parameter to set y-axis scale (e.g. to logarithmic axis)
-    
+
     Returns
     -------
     fig:
@@ -45,7 +45,7 @@ def plot_profiles(cluster=None, rbins=None, tangential_component=None, tangentia
     axes:
         The matplotlib axes object that has been plotted to.
     """
-    
+
     # If a cluster object was passed, use these arrays
     if cluster is not None and hasattr(cluster, table_name):
         cluster_profile = getattr(cluster,table_name)
@@ -98,13 +98,13 @@ def plot_profiles(cluster=None, rbins=None, tangential_component=None, tangentia
                  fmt='ro-', label="Cross component")
     except:
         pass
-    
+
     axes.set_xscale(xscale)
     axes.set_yscale(yscale)
     axes.legend()
     axes.set_xlabel(f'Radius [{r_units}]')
     axes.set_ylabel(r'$\gamma$')
-    
+
     return fig, axes
 
 GalaxyCluster.plot_profiles = plot_profiles

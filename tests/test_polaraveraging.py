@@ -126,7 +126,7 @@ def test_compute_tangential_and_cross_components(modeling_data):
     ra_source = np.array([120.1, 119.9])
     dec_source = np.array([41.9, 42.2])
     z_source = np.array([1.,2.])
-    
+
     shear1 = np.array([0.2, 0.4])
     shear2 = np.array([0.3, 0.5])
 
@@ -139,8 +139,8 @@ def test_compute_tangential_and_cross_components(modeling_data):
     expected_angsep = np.array([0.0021745039090962414, 0.0037238407383072053])
     expected_cross_shear = np.array([0.2780316984090899, 0.6398792901134982])
     expected_tangential_shear = np.array([-0.22956126563459447, -0.02354769805831558])
-    
-    # DeltaSigma expected values for md.Cosmology(H0=70.0, Omega_dm0=0.275, Omega_b0=0.025)    
+
+    # DeltaSigma expected values for md.Cosmology(H0=70.0, Omega_dm0=0.275, Omega_b0=0.025)
     expected_cross_DS = np.array([1224.3326297393244, 1899.6061989365176])*0.7*1.0e12*1.0002565513832675
     expected_tangential_DS = np.array([-1010.889584349285, -69.9059242788237])*0.7*1.0e12*1.0002565513832675
 
@@ -168,14 +168,14 @@ def test_compute_tangential_and_cross_components(modeling_data):
 
     # Use the cluster method
     angsep3, tshear3, xshear3 = cluster.compute_tangential_and_cross_components()
-    testing.assert_allclose(angsep3, expected_angsep, **TOLERANCE, 
+    testing.assert_allclose(angsep3, expected_angsep, **TOLERANCE,
                             err_msg="Angular Separation not correct when using cluster method")
-    testing.assert_allclose(tshear3, expected_tangential_shear, **TOLERANCE, 
+    testing.assert_allclose(tshear3, expected_tangential_shear, **TOLERANCE,
                             err_msg="Tangential Shear not correct when using cluster method")
-    testing.assert_allclose(xshear3, expected_cross_shear, **TOLERANCE, 
+    testing.assert_allclose(xshear3, expected_cross_shear, **TOLERANCE,
                             err_msg="Cross Shear not correct when using cluster method")
-    
-    
+
+
     # Check behaviour for the deltasigma option.
     # cluster object missing source redshift, and function call missing cosmology
     testing.assert_raises(TypeError, cluster.compute_tangential_and_cross_components, is_deltasigma=True)
@@ -185,18 +185,18 @@ def test_compute_tangential_and_cross_components(modeling_data):
                                  galcat=GCData([ra_source, dec_source, shear1, shear2, z_source],
                                                names=('ra', 'dec', 'e1', 'e2','z')))
     testing.assert_raises(TypeError, cluster.compute_tangential_and_cross_components, is_deltasigma=True)
-    
+
     # check values for DeltaSigma
     cosmo = md.Cosmology(H0=70.0, Omega_dm0=0.275, Omega_b0=0.025)
 
     angsep_DS, tDS, xDS = cluster.compute_tangential_and_cross_components(cosmo=cosmo, is_deltasigma=True)
-    testing.assert_allclose(angsep_DS, expected_angsep, **TOLERANCE, 
+    testing.assert_allclose(angsep_DS, expected_angsep, **TOLERANCE,
                             err_msg="Angular Separation not correct when using cluster method")
-    testing.assert_allclose(tDS, expected_tangential_DS, **TOLERANCE, 
+    testing.assert_allclose(tDS, expected_tangential_DS, **TOLERANCE,
                             err_msg="Tangential Shear not correct when using cluster method")
-    testing.assert_allclose(xDS, expected_cross_DS, **TOLERANCE, 
+    testing.assert_allclose(xDS, expected_cross_DS, **TOLERANCE,
                             err_msg="Cross Shear not correct when using cluster method")
-   
+
 def test_make_binned_profiles():
     # Set up a cluster object and compute cross and tangential shears
     ra_lens, dec_lens, z_lens = 120., 42., 0.5
@@ -228,11 +228,11 @@ def test_make_binned_profiles():
     expected_angsep = np.array([0.0021745039090962414, 0.0037238407383072053, 0.0037238407383072053])
     expected_cross_shear = np.array([0.2780316984090899, 0.6398792901134982, 0.6398792901134982])
     expected_tan_shear = np.array([-0.22956126563459447, -0.02354769805831558, -0.02354769805831558])
-    testing.assert_allclose(angsep, expected_angsep, **TOLERANCE, 
+    testing.assert_allclose(angsep, expected_angsep, **TOLERANCE,
                             err_msg="Angular Separation not correct when testing shear profiles")
-    testing.assert_allclose(tshear, expected_tan_shear, **TOLERANCE, 
+    testing.assert_allclose(tshear, expected_tan_shear, **TOLERANCE,
                             err_msg="Tangential Shear not correct when testing shear profiles")
-    testing.assert_allclose(xshear, expected_cross_shear, **TOLERANCE, 
+    testing.assert_allclose(xshear, expected_cross_shear, **TOLERANCE,
                             err_msg="Cross Shear not correct when testing shear profiles")
 
     # Tests passing int as bins arg makes the correct bins
@@ -315,7 +315,7 @@ def test_make_binned_profiles():
                                               names=('ra', 'dec', 'e1', 'e2', 'z')))
     cluster_noid.compute_tangential_and_cross_components()
     testing.assert_raises(TypeError, pa.make_binned_profile, cluster_noid, angsep_units, bin_units, gal_ids_in_bins=True)
-   
+
     profile5 = cluster.make_binned_profile(
         angsep_units, bin_units, bins=bins_radians, include_empty_bins=True, gal_ids_in_bins=True)
     testing.assert_allclose(profile5['radius_min'], bins_radians[:-1], **TOLERANCE,

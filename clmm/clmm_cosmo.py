@@ -57,7 +57,7 @@ class CLMMCosmology:
         else:
             self._init_from_params(H0=H0, Omega_b0=Omega_b0, Omega_dm0=Omega_dm0, Omega_k0=Omega_k0)
     def get_Omega_m(self, z):
-        r"""Gets the value of the dimensionless matter density 
+        r"""Gets the value of the dimensionless matter density
         .. math::
             \Omega_m(z) = \frac{\rho_m(z)}{\rho_\mathrm{crit}(z)}.
         Parameters
@@ -71,7 +71,7 @@ class CLMMCosmology:
         Notes
         -----
         Need to decide if non-relativist neutrinos will contribute here.
-        """        
+        """
         raise NotImplementedError
     def eval_da_z1z2(self, z1, z2):
         r"""Computes the angular diameter distance between z1 and z2.
@@ -90,7 +90,7 @@ class CLMMCosmology:
         Notes
         -----
         Describe the vectorization.
-        """        
+        """
         raise NotImplementedError
     def eval_da(self, z):
         r"""Computes the angular diameter distance between 0.0 and z.
@@ -107,27 +107,27 @@ class CLMMCosmology:
         Notes
         -----
         Describe the vectorization.
-        """        
+        """
         return self.eval_da_z1z2(0.0, z)
     def eval_da_a1a2(self, a1, a2=1.):
         r"""This is a function to calculate the angular diameter distance
         between two scale factors.
         .. math::
             d_a(a1, a2) = \frac{c}{H_0}a2\int_{a2}^{a1}\frac{da'}{a'^2E(a')}
-    
+
         If only a1 is specified, this function returns the angular diameter
         distance from a=1 to a1. If both a1 and a2 are specified, this function
         returns the angular diameter distance between a1 and a2.
         .. math::
             d_a(a) = \frac{c}{H_0}a\int_{a}^{1}\frac{da'}{a'^2E(a')}
-    
+
         Parameters
         ----------
         a1 : float
             Scale factor.
         a2 : float, optional
             Scale factor.
-    
+
         Returns
         -------
         float

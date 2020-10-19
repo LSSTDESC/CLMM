@@ -38,21 +38,21 @@ def test_z_and_a(modeling_data, cosmo_init):
     """ Unit tests abstract class z and a methdods """
 
     cosmo = md.Cosmology()
-    
+
     z = np.linspace(0.0, 10.0, 1000)
-    
+
     assert_raises(ValueError, cosmo._get_a_from_z, z-1.0)
-    
+
     a = cosmo._get_a_from_z(z)
-    
+
     assert_raises(ValueError, cosmo._get_z_from_a, a*2.0)
-    
+
     z_cpy = cosmo._get_z_from_a(a)
-    
+
     assert_allclose(z_cpy, z, **TOLERANCE)
 
     a_cpy = cosmo._get_a_from_z(z_cpy)
-    
+
     assert_allclose(a_cpy, a, **TOLERANCE)
 
     # Convert from a to z - scalar, list, ndarray
@@ -125,7 +125,7 @@ def test_cosmo_basic(modeling_data, cosmo_init):
 
     # Test initializing cosmo
     test_cosmo = md.Cosmology(be_cosmo=cosmo.be_cosmo)
-        
+
 def _rad2mpc_helper(dist, redshift, cosmo, do_inverse):
     """ Helper function to clean up test_convert_rad_to_mpc. Truth is computed using
     astropy so this test is very circular. Once we swap to CCL very soon this will be

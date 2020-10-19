@@ -1,10 +1,10 @@
 #------------------------------------------------------------------------------
-# Modeling backend loader  
+# Modeling backend loader
 import importlib
 import warnings
 import os
 
-#  Preload functions: 
+#  Preload functions:
 #    Some backends depend on more complicated modules and thus on a preload
 #    function.
 def __numcosmo_preload():
@@ -28,17 +28,17 @@ __backends = {'ct':  {'name': 'cluster_toolkit+astropy', 'available': False,
                       'prereqs': ['cluster_toolkit', 'astropy']},
               'nc':  {'name': 'NumCosmo', 'available': False,
                       'module': 'numcosmo',
-                      'prereqs': ['gi.repository.NumCosmoMath', 'gi.repository.NumCosmo'], 
+                      'prereqs': ['gi.repository.NumCosmoMath', 'gi.repository.NumCosmo'],
                       'preload': __numcosmo_preload},
               'ccl': {'name': 'ccl', 'available': False,
                       'module': 'ccl',
                       'prereqs': ['pyccl']},
-              'notabackend': {'name': 'notaname', 'available': False, 
+              'notabackend': {'name': 'notaname', 'available': False,
                               'module': 'notamodule',
                               'prereqs': ['notaprerq']}}
 
 #  Backend check:
-#    Checks all backends and set available to True for those that can be 
+#    Checks all backends and set available to True for those that can be
 #    corretly loaded.
 for _, be in __backends.items():
     try:
@@ -51,7 +51,7 @@ for _, be in __backends.items():
         pass
 
 #  Backend nick:
-#    If the environment variable CLMM_MODELING_BACKEND is set it gets its value, 
+#    If the environment variable CLMM_MODELING_BACKEND is set it gets its value,
 #    falls back to 'ct' => cluster_toolkit if CLMM_MODELING_BACKEND is not set.
 be_nick = os.environ.get('CLMM_MODELING_BACKEND', 'ct')
 if not be_nick in __backends:
@@ -73,7 +73,7 @@ if not __backends[be_nick]['available']:
             be_nick = be1
             break
     if not loaded:
-        raise ImportError("No modeling backend available.") 
+        raise ImportError("No modeling backend available.")
 else:
     backend = importlib.import_module(".modbackend."+__backends[be_nick]['module'], package=base_package)
 
@@ -86,7 +86,7 @@ globals().update({k: getattr(backend, k) for k in backend.__all__})
 
 from .modbackend import func_layer
 
-try: 
+try:
     func_layer.gcm = Modeling()
 except NotImplementedError:
     func_layer.gcm = None

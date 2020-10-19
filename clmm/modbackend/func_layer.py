@@ -8,7 +8,7 @@ import warnings
 from . import generic
 from . generic import get_reduced_shear_from_convergence
 
-__all__ = generic.__all__+['get_3d_density', 'predict_surface_density', 
+__all__ = generic.__all__+['get_3d_density', 'predict_surface_density',
            'predict_excess_surface_density', 'get_critical_surface_density',
            'predict_tangential_shear', 'predict_convergence',
            'predict_reduced_tangential_shear', 'predict_magnification']
@@ -261,14 +261,14 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
         gcm.set_halo_density_profile(halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
         gcm.set_concentration(cdelta)
         gcm.set_mass(mdelta)
-        
+
         if np.min(r_proj) < 1.e-11:
             raise ValueError(f"Rmin = {np.min(r_proj):.2e} Mpc/h! This value is too small and may cause computational issues.")
 
         gammat = gcm.eval_shear(r_proj, z_cluster, z_source)
     else:
         raise ValueError("Unsupported z_src_model")
-    
+
     return gammat
 
 
@@ -336,9 +336,9 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
         gcm.set_halo_density_profile(halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
         gcm.set_concentration(cdelta)
         gcm.set_mass(mdelta)
-        
+
         kappa = gcm.eval_convergence(r_proj, z_cluster, z_source)
-        
+
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average'+\
     #                               'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
@@ -347,7 +347,7 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     #                               'distribution of redshifts in each radial bin')
     else:
         raise ValueError("Unsupported z_src_model")
-    
+
     if np.any(np.array(z_source)<=z_cluster):
         warnings.warn(f'Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.')
 
@@ -407,9 +407,9 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
         gcm.set_halo_density_profile(halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
         gcm.set_concentration(cdelta)
         gcm.set_mass(mdelta)
-        
+
         red_tangential_shear = gcm.eval_reduced_shear(r_proj, z_cluster, z_source)
-        
+
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average'+
     #                               'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
@@ -418,7 +418,7 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
     #                               'integrating distribution of redshifts in each radial bin')
     else:
         raise ValueError("Unsupported z_src_model")
-    
+
     if np.any(np.array(z_source)<=z_cluster):
         warnings.warn(f'Some source redshifts are lower than the cluster redshift. shear = 0 for those galaxies.')
 
@@ -426,7 +426,7 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
     return red_tangential_shear
 
 
-# The magnification is computed taking into account just the tangential shear. This is valid for 
+# The magnification is computed taking into account just the tangential shear. This is valid for
 # spherically averaged profiles, e.g., NFW and Einasto (by construction the cross shear is zero).
 def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
                         halo_profile_model='nfw', massdef='mean', z_src_model='single_plane'):
@@ -479,16 +479,16 @@ def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
     -----
     Need to figure out if we want to raise exceptions rather than errors here?
     """
-    
+
     if z_src_model == 'single_plane':
-        
+
         gcm.set_cosmo(cosmo)
         gcm.set_halo_density_profile(halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
         gcm.set_concentration(cdelta)
         gcm.set_mass(mdelta)
-        
+
         mu = gcm.eval_magnification(r_proj, z_cluster, z_source)
-    
+
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average'+\
     #                               'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
@@ -497,7 +497,7 @@ def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
     #                               'distribution of redshifts in each radial bin')
     else:
         raise ValueError("Unsupported z_src_model")
-        
+
     if np.any(np.array(z_source)<=z_cluster):
         warnings.warn(f'Some source redshifts are lower than the cluster redshift. mu = 1 for those galaxies.')
 
