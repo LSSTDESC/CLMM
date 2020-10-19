@@ -96,10 +96,10 @@ def test_cosmo_basic (modeling_data, cosmo_init):
         assert_raises (NotImplementedError, cosmo._set_param, "nonexistent", 0.0)
     # Test missing parameter
     assert_raises (ValueError, cosmo._get_param, "nonexistent")
-    # Test da
+    # Test da(z) = da12(0, z)
     z = np.linspace (0.0, 10.0, 1000)
-    assert_allclose (m.cosmo.eval_da (z), m.eval_da_z1z2 (0.0, z), rtol = 8.0e-15)
-    assert_allclose (m.cosmo.eval_da_z1z2 (0.0, z), m.eval_da_z1z2 (0.0, z), rtol = 8.0e-15)
+    assert_allclose (cosmo.eval_da (z), cosmo.eval_da_z1z2(0.0, z), rtol = 8.0e-15)
+    assert_allclose (cosmo.eval_da_z1z2(0.0, z), cosmo.eval_da_z1z2(0.0, z), rtol = 8.0e-15)
     # Test initializing cosmo
     test_cosmo = md.Cosmology (be_cosmo = cosmo.be_cosmo)
         
