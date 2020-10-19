@@ -84,9 +84,6 @@ class CCLCLMModeling (CLMModeling):
     def set_mass (self, mdelta):
         self.MDelta = mdelta / self.cor_factor
 
-    def eval_da_z1z2 (self, z1, z2):
-        return np.vectorize (ccl.angular_diameter_distance) (self.cosmo.be_cosmo, self.cosmo._get_a_from_z (z1), self.cosmo._get_a_from_z (z2))
-
     def eval_sigma_crit (self, z_len, z_src):
         a_len = self.cosmo._get_a_from_z (z_len)
         a_src = np.atleast_1d (self.cosmo._get_a_from_z (z_src))

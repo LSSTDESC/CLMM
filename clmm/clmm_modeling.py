@@ -23,23 +23,6 @@ class CLMModeling:
         """
         raise NotImplementedError
 
-    def eval_da_z1z2(self, z1, z2):
-        r"""Calculate the angular diameter distance between two scale factors.
-        
-        Parameters
-        ----------
-        z1 : float
-            Redshift.
-        z2 : float, optional
-            Redshift.
-        
-        Returns
-        -------
-        float
-            Angular diameter distance in units :math:`M\!pc\ h^{-1}`
-        """
-        raise NotImplementedError
-
     def eval_sigma_crit(self, z_len, z_src):
         r"""Computes the critical surface density
         

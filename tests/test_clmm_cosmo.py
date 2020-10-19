@@ -1,4 +1,4 @@
-"""Tests for modeling.py"""
+"""Tests for clmm_cosmo.py"""
 import json
 import numpy as np
 from numpy.testing import assert_raises, assert_allclose, assert_equal
@@ -80,26 +80,27 @@ def test_cosmo_basic (modeling_data, cosmo_init):
 
     cosmo = md.Cosmology (**cosmo_init)
 
+    # Test get_<PAR>(z)
     Omega_m0 = cosmo['Omega_m0']
     assert_allclose (cosmo.get_Omega_m(0.0), Omega_m0, **TOLERANCE)
     assert_allclose (cosmo.get_E2Omega_m(0.0), Omega_m0, **TOLERANCE)
-    
+    # Test params
     for param in cosmo_init.keys ():
         assert_allclose (cosmo_init[param], cosmo[param], **TOLERANCE)
-        
-    
+    # Test for NumCosmo
     if cosmo.backend == 'nc':
         for param in cosmo_init.keys ():
             cosmo[param] = cosmo_init[param] * 1.01
-    
         assert_raises (ValueError, cosmo._set_param, "nonexistent", 0.0)
     else:
         assert_raises (NotImplementedError, cosmo._set_param, "nonexistent", 0.0)
-    
+    # Test missing parameter
     assert_raises (ValueError, cosmo._get_param, "nonexistent")
-    
-    #assert_allclose (cosmo.eval_da_z1z2 (0.1, 0.7), , **TOLERANCE)
-    
+    # Test da
+    z = np.linspace (0.0, 10.0, 1000)
+    assert_allclose (m.cosmo.eval_da (z), m.eval_da_z1z2 (0.0, z), rtol = 8.0e-15)
+    assert_allclose (m.cosmo.eval_da_z1z2 (0.0, z), m.eval_da_z1z2 (0.0, z), rtol = 8.0e-15)
+    # Test initializing cosmo
     test_cosmo = md.Cosmology (be_cosmo = cosmo.be_cosmo)
         
 def _rad2mpc_helper(dist, redshift, cosmo, do_inverse):

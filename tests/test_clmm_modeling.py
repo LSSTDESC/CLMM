@@ -16,7 +16,6 @@ def test_unimplemented (modeling_data):
     assert_raises (NotImplementedError, m.set_halo_density_profile)
     assert_raises (NotImplementedError, m.set_concentration, 4.0)
     assert_raises (NotImplementedError, m.set_mass,          1.0e15)
-    assert_raises (NotImplementedError, m.eval_da_z1z2,      0.0, 1.0)
     assert_raises (NotImplementedError, m.eval_sigma_crit,   0.4, 0.5)
     assert_raises (NotImplementedError, m.eval_density,      [0.3], 0.3)
     assert_raises (NotImplementedError, m.eval_sigma,        [0.3], 0.3)
@@ -75,15 +74,3 @@ def test_instantiate (modeling_data):
     
     reduced_shear = m.eval_reduced_shear (r_proj, z_cl, np.repeat (z_src, len (r_proj)))
     assert_allclose (reduced_shear, shear / (1.0 - convergence), rtol = 8.0e-15)
-
-    z = np.linspace (0.0, 10.0, 1000)
-
-    assert_allclose (m.cosmo.eval_da (z), m.eval_da_z1z2 (0.0, z), rtol = 8.0e-15)
-    assert_allclose (m.cosmo.eval_da_z1z2 (0.0, z), m.eval_da_z1z2 (0.0, z), rtol = 8.0e-15)
-    
-
-
-
-
-
-        
