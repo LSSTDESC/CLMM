@@ -4,6 +4,19 @@ import numpy as np
 from numpy.testing import assert_raises, assert_allclose, assert_equal
 import clmm.modeling as md
 from clmm.clmm_cosmo import CLMMCosmology
+# ----------- Some Helper Functions for the Validation Tests ---------------
+def load_validation_config():
+    """ Loads values precomputed by numcosmo for comparison """
+    numcosmo_path = 'tests/data/numcosmo/'
+    with open(numcosmo_path+'config.json', 'r') as fin:
+        testcase = json.load(fin)
+    numcosmo_profile = np.genfromtxt(numcosmo_path+'radial_profiles.txt', names=True)
+
+    # Cosmology
+    cosmo = md.Cosmology (H0 = testcase['cosmo_H0'], Omega_dm0 = testcase['cosmo_Om0'] - testcase['cosmo_Ob0'], Omega_b0 = testcase['cosmo_Ob0'])
+
+    return cosmo, testcase
+# --------------------------------------------------------------------------
 
 def test_unimplemented (modeling_data):
     """ Unit tests abstract class unimplemented methdods """
@@ -100,6 +113,16 @@ def test_cosmo_basic (modeling_data, cosmo_init):
     z = np.linspace (0.0, 10.0, 1000)
     assert_allclose (cosmo.eval_da (z), cosmo.eval_da_z1z2(0.0, z), rtol = 8.0e-15)
     assert_allclose (cosmo.eval_da_z1z2(0.0, z), cosmo.eval_da_z1z2(0.0, z), rtol = 8.0e-15)
+    # Test da(a1, a1)
+    cosmo, testcase = load_validation_config()
+    assert_allclose(cosmo.eval_da_a1a2(testcase['aexp_cluster']),
+                    testcase['dl'], 1.2e-8)
+    assert_allclose(cosmo.eval_da_a1a2(testcase['aexp_source']),
+                    testcase['ds'], 1.2e-8)
+    assert_allclose(cosmo.eval_da_a1a2(testcase['aexp_source'],
+                                       testcase['aexp_cluster']),
+                    testcase['dsl'], 1.2e-8)
+
     # Test initializing cosmo
     test_cosmo = md.Cosmology (be_cosmo = cosmo.be_cosmo)
         

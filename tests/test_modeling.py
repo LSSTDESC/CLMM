@@ -218,21 +218,6 @@ def test_profiles(modeling_data):
                     cfg['numcosmo_profiles']['DeltaSigma'], 2.0e-9)
 
 
-def test_angular_diameter_dist_a1a2(modeling_data):
-    """ Test function that computes angular diameter distance between
-    two scale factors. """
-
-    # Validation tests
-    cfg = load_validation_config()
-    assert_allclose(md.angular_diameter_dist_a1a2(cfg['cosmo'], cfg['TEST_CASE']['aexp_cluster']),
-                    cfg['TEST_CASE']['dl'], 1.2e-8)
-    assert_allclose(md.angular_diameter_dist_a1a2(cfg['cosmo'], cfg['TEST_CASE']['aexp_source']),
-                    cfg['TEST_CASE']['ds'], 1.2e-8)
-    assert_allclose(md.angular_diameter_dist_a1a2(cfg['cosmo'], cfg['TEST_CASE']['aexp_source'],
-                                                  cfg['TEST_CASE']['aexp_cluster']),
-                    cfg['TEST_CASE']['dsl'], 1.2e-8)
-
-
 def test_get_critical_surface_density(modeling_data):
     """ Validation test for critical surface density """
     cfg = load_validation_config()

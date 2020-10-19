@@ -135,7 +135,29 @@ class CLMMCosmology:
         """        
         
         return self.eval_da_z1z2 (0.0, z)
-
+    def eval_da_a1a2(self, a1, a2=1.):
+        r"""This is a function to calculate the angular diameter distance
+        between two scale factors.
+    
+        If only a1 is specified, this function returns the angular diameter
+        distance from a=1 to a1. If both a1 and a2 are specified, this function
+        returns the angular diameter distance between a1 and a2.
+    
+        Parameters
+        ----------
+        a1 : float
+            Scale factor.
+        a2 : float, optional
+            Scale factor.
+    
+        Returns
+        -------
+        d_a : float
+            Angular diameter distance in units :math:`M\!pc\ h^{-1}`
+        """
+        z1 = self._get_z_from_a(a2)
+        z2 = self._get_z_from_a(a1)
+        return self.eval_da_z1z2(z1, z2)
     def _get_a_from_z (self, z):
         """ Convert redshift to scale factor
 
@@ -153,8 +175,6 @@ class CLMMCosmology:
         if np.any (z < 0.0):
             raise ValueError (f"Cannot convert negative redshift to scale factor")
         return 1.0 / (1.0 + z)
-
-
     def _get_z_from_a (self, a):
         """ Convert scale factor to redshift
 

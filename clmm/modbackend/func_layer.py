@@ -9,10 +9,9 @@ from . import generic
 from . generic import get_reduced_shear_from_convergence
 
 __all__ = generic.__all__ + ['get_3d_density', 'predict_surface_density', 
-           'predict_excess_surface_density', 'angular_diameter_dist_a1a2',
-           'get_critical_surface_density', 'predict_tangential_shear',
-           'predict_convergence', 'predict_reduced_tangential_shear',
-           'predict_magnification']
+           'predict_excess_surface_density', 'get_critical_surface_density',
+           'predict_tangential_shear', 'predict_convergence',
+           'predict_reduced_tangential_shear', 'predict_magnification']
 
 def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profile_model='nfw', massdef = 'mean'):
     r"""Retrieve the 3d density :math:`\rho(r)`.
@@ -167,43 +166,6 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
     gcm.set_mass (mdelta)
 
     return gcm.eval_sigma_excess (r_proj, z_cl)
-
-
-def angular_diameter_dist_a1a2(cosmo, a1, a2=1.):
-    r"""This is a function to calculate the angular diameter distance
-    between two scale factors because CCL cannot yet do it.
-
-    If only a1 is specified, this function returns the angular diameter
-    distance from a=1 to a1. If both a1 and a2 are specified, this function
-    returns the angular diameter distance between a1 and a2.
-
-    Temporarily using the astropy implementation.
-
-    Parameters
-    ----------
-    cosmo : pyccl.core.Cosmology object
-            CCL Cosmology object
-    a1 : float
-        Scale factor.
-    a2 : float, optional
-        Scale factor.
-
-    Returns
-    -------
-    d_a : float
-        Angular diameter distance in units :math:`M\!pc\ h^{-1}`
-
-    Notes
-    -----
-    This is definitely broken if other cosmological parameter specifications differ,
-    so we'll have to revise this later. We need to switch angular_diameter_distance_z1z2
-    to CCL equivalent angular distance once implemented
-    """
-    redshift1 = cosmo._get_z_from_a(a2)
-    redshift2 = cosmo._get_z_from_a(a1)
-
-    gcm.set_cosmo (cosmo)
-    return gcm.eval_da_z1z2 (redshift1, redshift2)
 
 
 def get_critical_surface_density(cosmo, z_cluster, z_source):

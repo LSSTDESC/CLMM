@@ -15,10 +15,10 @@ from .. clmm_cosmo import CLMMCosmology
 import warnings
 
 __all__ = generic.__all__ + ['get_3d_density', 'predict_surface_density', 
-           'predict_excess_surface_density', 'angular_diameter_dist_a1a2',
-           'get_critical_surface_density', 'predict_tangential_shear',
-           'predict_convergence', 'predict_reduced_tangential_shear',
-           'predict_magnification', 'Modeling', 'Cosmology']
+           'predict_excess_surface_density', 'get_critical_surface_density',
+           'predict_tangential_shear', 'predict_convergence',
+           'predict_reduced_tangential_shear', 'predict_magnification',
+           'Modeling', 'Cosmology']
 
 
 def _patch_ct_to_cd2018 ():
@@ -232,44 +232,6 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
         raise ValueError(f"Profile model {halo_profile_model} not currently supported by {__package__}")
     return deltasigma
 
-
-def angular_diameter_dist_a1a2(cosmo, a1, a2=1.):
-    r"""This is a function to calculate the angular diameter distance
-    between two scale factors because CCL cannot yet do it.
-
-    If only a1 is specified, this function returns the angular diameter
-    distance from a=1 to a1. If both a1 and a2 are specified, this function
-    returns the angular diameter distance between a1 and a2.
-
-    Temporarily using the astropy implementation.
-
-    Parameters
-    ----------
-    cosmo : pyccl.core.Cosmology object
-            CCL Cosmology object
-    a1 : float
-        Scale factor.
-    a2 : float, optional
-        Scale factor.
-
-    Returns
-    -------
-    d_a : float
-        Angular diameter distance in units :math:`M\!pc`
-
-    Notes
-    -----
-    This is definitely broken if other cosmological parameter specifications differ,
-    so we'll have to revise this later. We need to switch angular_diameter_distance_z1z2
-    to CCL equivalent angular distance once implemented
-    """
-    
-    z1 = cosmo._get_z_from_a (a2)
-    z2 = cosmo._get_z_from_a (a1)
-    
-    return cosmo.eval_da_z1z2 (z1, z2)
-
-
 def get_critical_surface_density(cosmo, z_cluster, z_source):
     r"""Computes the critical surface density
 
@@ -303,9 +265,9 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     aexp_cluster = cosmo._get_a_from_z(z_cluster)
     aexp_src = cosmo._get_a_from_z(z_source)
 
-    d_l = angular_diameter_dist_a1a2(cosmo, aexp_cluster, 1.0)
-    d_s = angular_diameter_dist_a1a2(cosmo, aexp_src, 1.0)
-    d_ls = angular_diameter_dist_a1a2(cosmo, aexp_src, aexp_cluster)
+    d_l = cosmo.eval_da_a1a2(aexp_cluster, 1.0)
+    d_s = cosmo.eval_da_a1a2(aexp_src, 1.0)
+    d_ls = cosmo.eval_da_a1a2(aexp_src, aexp_cluster)
 
     beta_s = np.maximum(0., d_ls/d_s)
     sigma_c = clight_pc_s * clight_pc_s / (4.0 * np.pi * gnewt_pc3_msun_s2) * 1 / d_l * np.divide(1., beta_s)

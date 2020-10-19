@@ -4,7 +4,7 @@ from clmm import GCData
 from scipy import integrate
 from scipy.interpolate import interp1d
 from astropy import units
-from clmm.modeling import predict_tangential_shear, predict_convergence, angular_diameter_dist_a1a2
+from clmm.modeling import predict_tangential_shear, predict_convergence
 from clmm.utils import convert_units, compute_lensed_ellipticity
 
 def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, Delta_SO, zsrc, halo_profile_model='nfw', zsrc_min=None,
@@ -360,7 +360,6 @@ def _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo, field_size):
     galaxy_catalog : clmm.GCData
         Source galaxy catalog with positions added
     """
-#    Dl = angular_diameter_dist_a1a2(cosmo, 1./(1.+cluster_z))*units.pc.to(units.Mpc)
     Dl = cosmo.eval_da(cluster_z) # Mpc
     
     galaxy_catalog['x_mpc'] = np.random.uniform(-(field_size/2.), field_size/2., size=ngals)
