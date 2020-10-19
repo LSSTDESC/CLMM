@@ -3,10 +3,33 @@ import numpy as np
 
 class CLMModeling:
     def set_cosmo(self, cosmo):
+        r""" Sets the cosmology to the internal cosmology object
+
+        cosmo: clmm.Comology
+            CLMM Cosmology object
+        """
         raise NotImplementedError
     def set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
+        r""" Sets the definitios for the halo profile
+        
+        Parameters
+        ----------
+        halo_profile_model: str
+            Halo mass profile, current options are 'nfw'
+        massdef: str
+            Mass definition, current options are 'mean'
+        delta_mdef: int
+            Overdensity number
+        """
         raise NotImplementedError
     def set_concentration(self, cdelta):
+        r""" Sets the concentration
+
+        Parameters
+        ----------
+        cdelta: float
+            Concentration
+        """
         raise NotImplementedError
     def set_mass(self, mdelta):
         r""" Sets the value of the :math:`M_\Delta` 
@@ -66,6 +89,19 @@ class CLMModeling:
         """
         raise NotImplementedError
     def eval_sigma_mean(self, r_proj, z_cl):
+        r""" Computes the mean value of surface density inside radius r_proj
+        Parameters
+        ----------
+        r_proj : array_like
+            Projected radial position from the cluster center in :math:`M\!pc`.
+        z_cl: float
+            Redshift of the cluster
+        
+        Returns
+        -------
+        array_like, float
+            Excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
+        """
         raise NotImplementedError
     def eval_sigma_excess(self, r_proj, z_cl):
         r""" Computes the excess surface density
