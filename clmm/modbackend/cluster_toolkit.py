@@ -250,7 +250,7 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     Returns
     -------
     sigma_c : float
-        Cosmology-dependent critical surface density in units of :math:`h\ M_\odot\ Mpc`
+        Cosmology-dependent critical surface density in units of :math:`M_\odot\ Mpc`
 
     Notes
     -----
