@@ -29,7 +29,7 @@ def compute_tangential_and_cross_components(cluster=None,
                   tan_component='et', cross_component='ex',
                   ra_lens=None, dec_lens=None, ra_source=None,
                   dec_source=None, shear1=None, shear2=None, geometry='flat',
-                  add_to_cluster=True,  is_deltasigma=False, cosmo=None):
+                  add_to_cluster=True, is_deltasigma=False, cosmo=None):
     r"""Computes tangential- and cross- components for shear or ellipticity
 
     To do so, we need the right ascension and declination of the lens and of
@@ -58,9 +58,9 @@ def compute_tangential_and_cross_components(cluster=None,
 
     .. math::
 
-        \theta^2 = & \left(\delta_s - \delta_l\right)^2 +
+        \theta^2 = & \left(\delta_s-\delta_l\right)^2+
         \left(\alpha_l-\alpha_s\right)^2\cos^2(\delta_l)\\
-        \tan\phi = & \frac{\delta_s - \delta_l}{\left(\alpha_l - \alpha_s\right)\cos(\delta_l)}
+        \tan\phi = & \frac{\delta_s-\delta_l}{\left(\alpha_l-\alpha_s\right)\cos(\delta_l)}
 
     The tangential, :math:`g_t`, and cross, :math:`g_x`, ellipticity/shear components are calculated using the two
     ellipticity/shear components :math:`g_1` and :math:`g_2` of the source galaxies, following Eq.7 and Eq.8
@@ -69,8 +69,8 @@ def compute_tangential_and_cross_components(cluster=None,
 
     .. math::
 
-        g_t =& -\left( g_1\cos\left(2\phi\right) - g_2\sin\left(2\phi\right)\right)\\
-        g_x =& g_1 \sin\left(2\phi\right) - g_2\cos\left(2\phi\right)
+        g_t =& -\left( g_1\cos\left(2\phi\right)-g_2\sin\left(2\phi\right)\right)\\
+        g_x =& g_1 \sin\left(2\phi\right)-g_2\cos\left(2\phi\right)
 
     Finally, and if requested by the user throught the `is_deltasigma` flag, an estimate of the excess surface density :math:`\widehat{\Delta\Sigma}` is obtained from
 
@@ -138,7 +138,7 @@ def compute_tangential_and_cross_components(cluster=None,
     if cluster is not None:
         required_cols = ['ra', 'dec', shape_component1, shape_component2]
         if not all([t_ in cluster.galcat.columns for t_ in required_cols]):
-            raise TypeError('GalaxyCluster\'s galaxy catalog missing required columns.' +\
+            raise TypeError('GalaxyCluster\'s galaxy catalog missing required columns.'+\
                             'Do you mean to first convert column names?')
 
         ra_lens, dec_lens = cluster.ra, cluster.dec
@@ -149,7 +149,7 @@ def compute_tangential_and_cross_components(cluster=None,
     # If a cluster object is not specified, we require all of these inputs
     elif any(t_ is None for t_ in (ra_lens, dec_lens, ra_source, dec_source,
                                    shear1, shear2)):
-        raise TypeError('To compute tangential- and cross- shape components, please provide a GalaxyCluster object or ra and dec' +\
+        raise TypeError('To compute tangential- and cross- shape components, please provide a GalaxyCluster object or ra and dec'+\
                         'of lens and sources and shears or ellipticities of the sources.')
 
     # If there is only 1 source, make sure everything is a scalar
@@ -157,7 +157,7 @@ def compute_tangential_and_cross_components(cluster=None,
         pass
     # Otherwise, check that the length of all of the inputs match
     elif not all(len(t_) == len(ra_source) for t_ in [dec_source, shear1, shear2]):
-        raise TypeError('To compute the tangential- and cross- shape components you should supply the same number of source' +\
+        raise TypeError('To compute the tangential- and cross- shape components you should supply the same number of source'+\
                         'positions and shear or ellipticity.')
 
     # Compute the lensing angles
@@ -176,7 +176,7 @@ def compute_tangential_and_cross_components(cluster=None,
     if is_deltasigma:
         if cluster is not None:
             if 'z' not in cluster.galcat.columns:
-                raise TypeError('GalaxyCluster\'s galaxy catalog missing the redshift column.' +\
+                raise TypeError('GalaxyCluster\'s galaxy catalog missing the redshift column.'+\
                                 'Cannot compute DeltaSigma')
             z_lens = cluster.z
             z_source = cluster.galcat['z']
@@ -187,8 +187,8 @@ def compute_tangential_and_cross_components(cluster=None,
             raise TypeError('To compute DeltaSigma, please provide a i) cosmology, ii) redshift of lens and sources')
 
         Sigma_c = get_critical_surface_density(cosmo, z_lens, z_source)
-        tangential_comp *= Sigma_c
-        cross_comp *= Sigma_c
+        tangential_comp*= Sigma_c
+        cross_comp*= Sigma_c
 
     if add_to_cluster:
         cluster.galcat['theta'] = angsep
@@ -208,10 +208,10 @@ def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_sourc
 
     In the flat sky approximation, these angles are calculated using
     .. math::
-        \theta = \sqrt{\left(\delta_s - \delta_l\right)^2 +
+        \theta = \sqrt{\left(\delta_s-\delta_l\right)^2+
         \left(\alpha_l-\alpha_s\right)^2\cos^2(\delta_l)}
 
-        \tan\phi = \frac{\delta_s - \delta_l}{\left(\alpha_l - \alpha_s\right)\cos(\delta_l)}
+        \tan\phi = \frac{\delta_s-\delta_l}{\left(\alpha_l-\alpha_s\right)\cos(\delta_l)}
 
     For extended descriptions of parameters, see `compute_shear()` documentation.
     """
@@ -225,16 +225,16 @@ def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_sourc
         raise ValueError("Cluster has an invalid dec in the source catalog")
 
     # Put angles between -pi and pi
-    r2pi = lambda x: x - np.round(x/(2.0*math.pi))*2.0*math.pi
+    r2pi = lambda x: x-np.round(x/(2.0*math.pi))*2.0*math.pi
 
-    deltax = r2pi (np.radians(ra_source_list - ra_lens)) * math.cos(math.radians(dec_lens))
-    deltay = np.radians(dec_source_list - dec_lens)
+    deltax = r2pi(np.radians(ra_source_list-ra_lens))*math.cos(math.radians(dec_lens))
+    deltay = np.radians(dec_source_list-dec_lens)
 
     # Ensure that abs(delta ra) < pi
-    #deltax[deltax >= np.pi] = deltax[deltax >= np.pi] - 2.*np.pi
-    #deltax[deltax < -np.pi] = deltax[deltax < -np.pi] + 2.*np.pi
+    #deltax[deltax >= np.pi] = deltax[deltax >= np.pi]-2.*np.pi
+    #deltax[deltax < -np.pi] = deltax[deltax < -np.pi]+2.*np.pi
 
-    angsep = np.sqrt(deltax**2 + deltay**2)
+    angsep = np.sqrt(deltax**2+deltay**2)
     phi = np.arctan2(deltay, -deltax)
     # Forcing phi to be zero everytime angsep is zero. This is necessary due to arctan2 features (it returns ).
     phi[angsep==0.0] = 0.0
@@ -251,11 +251,11 @@ def _compute_tangential_shear(shear1, shear2, phi):
 
     We compute the tangential shear following Eq. 7 of Schrabback et al. 2018, arXiv:1611:03866
     .. math::
-        g_t = -\left( g_1\cos\left(2\phi\right) - g_2\sin\left(2\phi\right)\right)
+        g_t = -\left( g_1\cos\left(2\phi\right)-g_2\sin\left(2\phi\right)\right)
 
     For extended descriptions of parameters, see `compute_shear()` documentation.
     """
-    return - (shear1 * np.cos(2.*phi) + shear2 * np.sin(2.*phi))
+    return -(shear1*np.cos(2.*phi)+shear2*np.sin(2.*phi))
 
 
 def _compute_cross_shear(shear1, shear2, phi):
@@ -265,11 +265,11 @@ def _compute_cross_shear(shear1, shear2, phi):
     We compute the cross shear following Eq. 8 of Schrabback et al. 2018, arXiv:1611:03866
     also checked arxiv 0509252
     .. math::
-        g_x = g_1 \sin\left(2\phi\right) - g_2\cos\left(2\phi\right)
+        g_x = g_1 \sin\left(2\phi\right)-g_2\cos\left(2\phi\right)
 
     For extended descriptions of parameters, see `compute_shear()` documentation.
     """
-    return shear1 * np.sin(2.*phi) - shear2 * np.cos(2.*phi)
+    return shear1*np.sin(2.*phi)-shear2*np.cos(2.*phi)
 
 
 def make_binned_profile(cluster,
@@ -341,7 +341,7 @@ def make_binned_profile(cluster,
     This is an example of a place where the cosmology-dependence can be sequestered to another module.
     """
     if not all([t_ in cluster.galcat.columns for t_ in (tan_component_in, cross_component_in, 'theta')]):
-        raise TypeError('Shear or ellipticity information is missing!  Galaxy catalog must have tangential' +\
+        raise TypeError('Shear or ellipticity information is missing!  Galaxy catalog must have tangential'+\
                         'and cross shears (gt,gx) or ellipticities (et,ex). Run compute_tangential_and_cross_components first.')
     if 'z' not in cluster.galcat.columns:
         raise TypeError('Missing galaxy redshifts!')
@@ -372,7 +372,7 @@ def make_binned_profile(cluster,
                                    tan_component_out, tan_component_out+'_err',
                                    cross_component_out, cross_component_out+'_err',
                                    'z', 'z_err', 'n_src'),
-                            meta={'cosmo' : cosmo.get_desc () if cosmo else None, 
+                            meta={'cosmo' : cosmo.get_desc() if cosmo else None, 
                                   'bin_units' : bin_units}, # Add metadata
                             )
     # add galaxy IDs

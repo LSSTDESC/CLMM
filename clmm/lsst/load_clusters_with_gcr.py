@@ -112,9 +112,9 @@ def load_from_dc2(nclusters, catalog_name, save_dir, ra_range=(-0.3, 0.3), dec_r
 
         # get galaxies around cluster
         
-        filters = (_make_GCR_filter('ra', cl_ra + ra_range[0], cl_ra + ra_range[1]) + 
-                   _make_GCR_filter('dec', cl_dec + dec_range[0], cl_dec + dec_range[1]) + 
-                   _make_GCR_filter('redshift', cl_z + z_range[0], cl_z + z_range[1]))
+        filters = (_make_GCR_filter('ra', cl_ra+ra_range[0], cl_ra+ra_range[1])+
+                   _make_GCR_filter('dec', cl_dec+dec_range[0], cl_dec+dec_range[1])+
+                   _make_GCR_filter('redshift', cl_z+z_range[0], cl_z+z_range[1]))
 
         gals = catalog.get_quantities(['galaxy_id', 'ra', 'dec',
                                        'shear_1', 'shear_2',

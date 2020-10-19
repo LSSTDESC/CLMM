@@ -50,7 +50,7 @@ def load_validation_config():
                                                             testcase['pc_to_m'])
 
     # Cosmology
-    cosmo = md.Cosmology (H0 = testcase['cosmo_H0'], Omega_dm0 = testcase['cosmo_Om0'] - testcase['cosmo_Ob0'], Omega_b0 = testcase['cosmo_Ob0'])
+    cosmo = md.Cosmology(H0=testcase['cosmo_H0'], Omega_dm0=testcase['cosmo_Om0']-testcase['cosmo_Ob0'], Omega_b0=testcase['cosmo_Ob0'])
 
     # Sets of parameters to be used by multiple functions
     RHO_PARAMS = {
@@ -107,7 +107,7 @@ def test_cclify_astropy_cosmo(modeling_data):
     truth = {'H0': 70., 'Om0': 0.3, 'Ob0': 0.05}
     apycosmo_flcdm = FlatLambdaCDM(**truth)
     apycosmo_lcdm = LambdaCDM(Ode0=1.0-truth['Om0'], **truth)
-    cclcosmo = {'Omega_c': truth['Om0'] - truth['Ob0'], 'Omega_b': truth['Ob0'],
+    cclcosmo = {'Omega_c': truth['Om0']-truth['Ob0'], 'Omega_b': truth['Ob0'],
                 'h': truth['H0']/100., 'H0': truth['H0']}
 
     # Test for exception if missing baryon density (everything else required)
@@ -132,7 +132,7 @@ def test_astropyify_ccl_cosmo(modeling_data):
     truth = {'H0': 70., 'Om0': 0.3, 'Ob0': 0.05}
     apycosmo_flcdm = FlatLambdaCDM(**truth)
     apycosmo_lcdm = LambdaCDM(Ode0=1.0-truth['Om0'], **truth)
-    cclcosmo = {'Omega_c': truth['Om0'] - truth['Ob0'], 'Omega_b': truth['Ob0'],
+    cclcosmo = {'Omega_c': truth['Om0']-truth['Ob0'], 'Omega_b': truth['Ob0'],
                 'h': truth['H0']/100., 'H0': truth['H0']}
 
     # Test output if we pass FlatLambdaCDM and LambdaCDM objects
@@ -183,7 +183,7 @@ def helper_profiles(func):
     mdelta = 1.0e15
     cdelta = 4.0
     z_cl = 0.2
-    cclcosmo = md.Cosmology (Omega_dm0 = 0.25, Omega_b0 = 0.05) 
+    cclcosmo = md.Cosmology(Omega_dm0=0.25, Omega_b0=0.05) 
 
     # Test for exception if other profiles models are passed
     assert_raises(ValueError, func, r3d, mdelta, cdelta, z_cl, cclcosmo, 200, 'bleh')
@@ -254,7 +254,7 @@ def helper_physics_functions(func):
     cdelta = 4.0
     z_cl = 0.2
     z_src = 0.45
-    cosmo = md.Cosmology (Omega_dm0 = 0.25, Omega_b0 = 0.05, H0 = 70.0)
+    cosmo = md.Cosmology(Omega_dm0=0.25, Omega_b0=0.05, H0=70.0)
 
     # Test defaults
     defaulttruth = func(rproj, mdelta, cdelta, z_cl, z_src, cosmo, delta_mdef=200,
@@ -280,7 +280,7 @@ def test_shear_convergence_unittests(modeling_data):
     helper_physics_functions(md.predict_reduced_tangential_shear)
     helper_physics_functions(md.predict_magnification)
 
-    # Validation Tests =========================
+    # Validation Tests -------------------------
     # NumCosmo makes different choices for constants (Msun). We make this conversion
     # by passing the ratio of SOLAR_MASS in kg from numcosmo and CLMM
     cfg = load_validation_config()
@@ -294,7 +294,7 @@ def test_shear_convergence_unittests(modeling_data):
     # Compute sigma_c in the new cosmology and get a correction factor
     sigma_c_undo = md.get_critical_surface_density(cosmo, cfg['GAMMA_PARAMS']['z_cluster'],
                                                    cfg['z_source'])
-    sigmac_corr = (sigma_c_undo / sigma_c)
+    sigmac_corr = (sigma_c_undo/sigma_c)
 
     # Chech error is raised if too small radius   
     assert_raises(ValueError, md.predict_tangential_shear, 1.e-12, 1.e15, 4, 0.2, 0.45, cosmo)
@@ -309,13 +309,13 @@ def test_shear_convergence_unittests(modeling_data):
 
     # Validate reduced tangential shear
     assert_allclose(md.predict_reduced_tangential_shear(cosmo=cosmo, **cfg['GAMMA_PARAMS']),
-                    gammat/(1.0 - kappa), 1.0e-10)
-    assert_allclose(gammat*sigmac_corr/(1. - (kappa*sigmac_corr)), cfg['numcosmo_profiles']['gt'], 1.0e-6)
+                    gammat/(1.0-kappa), 1.0e-10)
+    assert_allclose(gammat*sigmac_corr/(1.-(kappa*sigmac_corr)), cfg['numcosmo_profiles']['gt'], 1.0e-6)
     
     # Validate magnification
     assert_allclose(md.predict_magnification(cosmo=cosmo, **cfg['GAMMA_PARAMS']),
-                    1. / ((1-kappa)**2-abs(gammat)**2), 1.0e-10)
-    assert_allclose(1. / ((1-kappa)**2-abs(gammat)**2), cfg['numcosmo_profiles']['mu'], 4.0e-7)
+                    1./((1-kappa)**2-abs(gammat)**2), 1.0e-10)
+    assert_allclose(1./((1-kappa)**2-abs(gammat)**2), cfg['numcosmo_profiles']['mu'], 4.0e-7)
     
 
     # Check that shear, reduced shear and convergence return zero and magnification returns one if source is in front of the cluster

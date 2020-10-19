@@ -98,7 +98,7 @@ def test_make_bins():
                     np.logspace(np.log10(1.0), np.log10(10.), 11), **TOLERANCE)
     
     # Test equaloccupation method. It needs a source_seps array, so create one
-    test_array = np.sqrt(np.random.uniform(-10,10,1361)**2 + np.random.uniform(-10,10,1361)**2)
+    test_array = np.sqrt(np.random.uniform(-10,10,1361)**2+np.random.uniform(-10,10,1361)**2)
     test_bins = make_bins(1.0, 10., nbins=10, method='equaloccupation', source_seps=test_array)
     # Check that all bins have roughly equal occupation. 
     # Assert needs atol=2, because len(source_seps)/nbins may not be an integer, 
@@ -121,7 +121,7 @@ def test_convert_units():
     """
     # Make an astropy cosmology object for testing
  #   cosmo = FlatLambdaCDM(H0=70., Om0=0.3)
-    cosmo = md.Cosmology(H0 = 70.0, Omega_dm0 = 0.3 - 0.045, Omega_b0 = 0.045)
+    cosmo = md.Cosmology(H0=70.0, Omega_dm0=0.3-0.045, Omega_b0=0.045)
 
     # Test that each unit is supported
     utils.convert_units(1.0, 'radians', 'degrees')
@@ -152,8 +152,8 @@ def test_convert_units():
     # Using astropy, circular now but this will be fine since we are going to be
     # swapping to CCL soon and then its kosher
     r_arcmin, redshift = 20.0, 0.5
-    d_a = cosmo.eval_da(redshift) * 1.e3 #kpc
-    truth = r_arcmin * (1.0 / 60.0) * (np.pi / 180.0) * d_a
+    d_a = cosmo.eval_da(redshift)*1.e3 #kpc
+    truth = r_arcmin*(1.0/60.0)*(np.pi/180.0)*d_a
     assert_allclose(utils.convert_units(r_arcmin, 'arcmin', 'kpc', redshift, cosmo),
                     truth, **TOLERANCE)
 
@@ -162,8 +162,8 @@ def test_convert_units():
     # swapping to CCL soon and then its kosher
     r_kpc, redshift = 20.0, 0.5
 #    d_a = cosmo.angular_diameter_distance(redshift).to('kpc').value
-    d_a = cosmo.eval_da(redshift) * 1.e3 #kpc
-    truth = r_kpc * (1.0 / d_a) * (180. / np.pi) * 60.
+    d_a = cosmo.eval_da(redshift)*1.e3 #kpc
+    truth = r_kpc*(1.0/d_a)*(180./np.pi)*60.
     assert_allclose(utils.convert_units(r_kpc, 'kpc', 'arcmin', redshift, cosmo),
                     truth, **TOLERANCE)
 
@@ -182,9 +182,9 @@ def test_build_ellipticities():
     q22 = np.array([0.8,0.2])
     q12 = np.array([0.01,0.01])
 
-    assert_allclose(utils.build_ellipticities(q11,q22,q12),([-0.23076923,  0.2],
+    assert_allclose(utils.build_ellipticities(q11,q22,q12),([-0.23076923, 0.2],
                                                             [0.01538462, 0.04],
-                                                            [-0.11697033,  0.10106221],
+                                                            [-0.11697033, 0.10106221],
                                                             [0.00779802, 0.02021244]), **TOLERANCE)
     
 def test_shape_conversion():

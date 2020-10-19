@@ -79,9 +79,9 @@ class GalaxyCluster():
         return self
     def __repr__(self):
         """Generates string for print(GalaxyCluster)"""
-        output = f'GalaxyCluster {self.unique_id}: ' +\
-                 f'(ra={self.ra}, dec={self.dec}) at z={self.z}\n' +\
+        output = f'GalaxyCluster {self.unique_id}: '+\
+                 f'(ra={self.ra}, dec={self.dec}) at z={self.z}\n'+\
                  f'> {len(self.galcat)} source galaxies\n> With columns:'
         for colname in self.galcat.colnames:
-            output += f' {colname}'
+            output+= f' {colname}'
         return output

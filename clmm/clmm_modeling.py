@@ -3,7 +3,7 @@
 import numpy as np
 
 class CLMModeling:
-    def set_cosmo (self, cosmo):
+    def set_cosmo(self, cosmo):
         raise NotImplementedError
 
     def set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):

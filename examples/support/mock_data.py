@@ -109,7 +109,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, Delta_SO, zs
     Much of this code in this function was adapted from the Dallas group
     """
     
-    if zsrc_min is None: zsrc_min = cluster_z + 0.1
+    if zsrc_min is None: zsrc_min = cluster_z+0.1
     
     params = {'cluster_m' : cluster_m, 'cluster_z' : cluster_z, 'cluster_c' : cluster_c,
               'cosmo' : cosmo, 'Delta_SO' : Delta_SO, 'zsrc' : zsrc, 'halo_profile_model' : halo_profile_model,
@@ -171,7 +171,7 @@ def _compute_ngals(ngal_density, field_size, cosmo, cluster_z, zsrc, zsrc_min=No
     `generate_galaxy_catalog`.
     """
     field_size_arcmin = convert_units(field_size, 'Mpc', 'arcmin', redshift=cluster_z, cosmo=cosmo)
-    ngals = int(ngal_density * field_size_arcmin*field_size_arcmin)
+    ngals = int(ngal_density*field_size_arcmin*field_size_arcmin)
     
     if isinstance(zsrc, float):    
         return int(ngals)
@@ -219,8 +219,8 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delt
                                             galaxy_catalog['x_mpc'])
 
     #corresponding shear1,2 components
-    gam1 = -gamt*np.cos(2*galaxy_catalog['posangle']) + gamx*np.sin(2*galaxy_catalog['posangle'])
-    gam2 = -gamt*np.sin(2*galaxy_catalog['posangle']) - gamx*np.cos(2*galaxy_catalog['posangle'])
+    gam1 = -gamt*np.cos(2*galaxy_catalog['posangle'])+gamx*np.sin(2*galaxy_catalog['posangle'])
+    gam2 = -gamt*np.sin(2*galaxy_catalog['posangle'])-gamx*np.cos(2*galaxy_catalog['posangle'])
     
     #instrinsic ellipticities
     e1_intrinsic = 0
@@ -318,16 +318,16 @@ def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled):
         and values of the redshift PDF for each galaxy.
     """
     galaxy_catalog['pzsigma'] = photoz_sigma_unscaled*(1.+galaxy_catalog['ztrue'])
-    galaxy_catalog['z'] = galaxy_catalog['ztrue'] + \
+    galaxy_catalog['z'] = galaxy_catalog['ztrue']+\
                           galaxy_catalog['pzsigma']*np.random.standard_normal(len(galaxy_catalog))
 
     pzbins_grid, pzpdf_grid = [], []
     for row in galaxy_catalog:
         pdf_range = row['pzsigma']*10.
-        zmin, zmax = row['z'] - pdf_range, row['z'] + pdf_range
+        zmin, zmax = row['z']-pdf_range, row['z']+pdf_range
         zbins = np.arange(zmin, zmax, 0.03)
         pzbins_grid.append(zbins)
-        pzpdf_grid.append(np.exp(-0.5*((zbins - row['z'])/row['pzsigma'])**2)/np.sqrt(2*np.pi*row['pzsigma']**2))
+        pzpdf_grid.append(np.exp(-0.5*((zbins-row['z'])/row['pzsigma'])**2)/np.sqrt(2*np.pi*row['pzsigma']**2))
     galaxy_catalog['pzbins'] = pzbins_grid
     galaxy_catalog['pzpdf'] = pzpdf_grid
 
@@ -364,7 +364,7 @@ def _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo, field_size):
     
     galaxy_catalog['x_mpc'] = np.random.uniform(-(field_size/2.), field_size/2., size=ngals)
     galaxy_catalog['y_mpc'] = np.random.uniform(-(field_size/2.), field_size/2., size=ngals)
-    galaxy_catalog['r_mpc'] = np.sqrt(galaxy_catalog['x_mpc']**2 + galaxy_catalog['y_mpc']**2)
+    galaxy_catalog['r_mpc'] = np.sqrt(galaxy_catalog['x_mpc']**2+galaxy_catalog['y_mpc']**2)
     galaxy_catalog['ra'] = -(galaxy_catalog['x_mpc']/Dl)*(180./np.pi)
     galaxy_catalog['dec'] = (galaxy_catalog['y_mpc']/Dl)*(180./np.pi)
 

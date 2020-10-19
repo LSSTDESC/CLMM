@@ -60,18 +60,18 @@ class GCData(APtable):
     def __repr__(self):
         """Generates string for repr(GCData)"""
         output = f'{self.__class__.__name__}('
-        output += ', '.join([f'{key}={value!r}'
+        output+= ', '.join([f'{key}={value!r}'
             for key, value in self.meta.items()]
-            + ['columns: '+', '.join(self.colnames)])
-        output += ')'
+                +['columns: '+', '.join(self.colnames)])
+        output+= ')'
         return output
     def __str__(self):
         """Generates string for print(GCData)"""
         output = f'self.__class__.__name__\n> defined by:'
-        output += ', '.join([f'{key}={str(value)}'
+        output+= ', '.join([f'{key}={str(value)}'
             for key, value in self.meta.items()])
-        output += f'\n> with columns: '
-        output += ', '.join(self.colnames)
+        output+= f'\n> with columns: '
+        output+= ', '.join(self.colnames)
         return output
     def __getitem__(self, item):
         """

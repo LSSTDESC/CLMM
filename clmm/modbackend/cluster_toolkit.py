@@ -14,24 +14,24 @@ from .. clmm_cosmo import CLMMCosmology
 
 import warnings
 
-__all__ = generic.__all__ + ['get_3d_density', 'predict_surface_density', 
+__all__ = generic.__all__+['get_3d_density', 'predict_surface_density', 
            'predict_excess_surface_density', 'get_critical_surface_density',
            'predict_tangential_shear', 'predict_convergence',
            'predict_reduced_tangential_shear', 'predict_magnification',
            'Modeling', 'Cosmology']
 
 
-def _patch_ct_to_cd2018 ():
+def _patch_ct_to_cd2018():
     r""" Convertion factor from cluster_toolkit hardcoded rho_crit to 
-    CODATA 2018 + IAU 2015
+    CODATA 2018+IAU 2015
     
     """
 
-    rhocrit_mks = 3.0 * 100.0 * 100.0 / (8.0 * np.pi * const.GNEWT.value)
-    rhocrit_cd2018 = rhocrit_mks * 1000.0 * 1000.0 * const.PC_TO_METER.value * 1.0e6 / const.SOLAR_MASS.value
+    rhocrit_mks = 3.0*100.0*100.0/(8.0*np.pi*const.GNEWT.value)
+    rhocrit_cd2018 = rhocrit_mks*1000.0*1000.0*const.PC_TO_METER.value*1.0e6/const.SOLAR_MASS.value
     rhocrit_cltk = 2.77533742639e+11
 
-    return rhocrit_cd2018 / rhocrit_cltk
+    return rhocrit_cd2018/rhocrit_cltk
 
 
 def _assert_correct_type_ct(a):
@@ -49,12 +49,12 @@ def _assert_correct_type_ct(a):
     scale_factor : array_like
         Scale factor
     """
-    if np.isscalar (a):
-        return float (a)
+    if np.isscalar(a):
+        return float(a)
     else:
-        return np.array(a).astype (np.float64, order='C', copy=False)
+        return np.array(a).astype(np.float64, order='C', copy=False)
 
-def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profile_model='nfw', massdef = 'mean'):
+def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profile_model='nfw', massdef='mean'):
     r"""Retrieve the 3d density :math:`\rho(r)`.
 
     Profiles implemented so far are:
@@ -95,15 +95,15 @@ def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profil
     Need to refactor later so we only require arguments that are necessary for all profiles
     and use another structure to take the arguments necessary for specific models
     """
-    Omega_m = cosmo.get_E2Omega_m (z_cl)
-    h       = cosmo['h']
-    cf      = _patch_ct_to_cd2018 ()
+    Omega_m = cosmo.get_E2Omega_m(z_cl)
+    h = cosmo['h']
+    cf = _patch_ct_to_cd2018()
 
     if massdef != "mean":
         raise ValueError(f"Mass definition {massdef} not currently supported by {__package__}")
 
     if halo_profile_model.lower() == 'nfw':
-        rho = ct.density.rho_nfw_at_r (_assert_correct_type_ct (r3d) * h, mdelta * h, cdelta, Omega_m * cf, delta = delta_mdef) * h**2
+        rho = ct.density.rho_nfw_at_r(_assert_correct_type_ct(r3d)*h, mdelta*h, cdelta, Omega_m*cf, delta=delta_mdef)*h**2
     else:
         raise ValueError(f"Profile model {halo_profile_model} not currently supported by {__package__}")
     return rho
@@ -151,16 +151,16 @@ def predict_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     Need to refactory so we only require arguments that are necessary for all models and use
     another structure to take the arguments necessary for specific models.
     """
-    Omega_m = cosmo.get_E2Omega_m (z_cl)
-    h       = cosmo['h']
-    cf      = _patch_ct_to_cd2018 ()
+    Omega_m = cosmo.get_E2Omega_m(z_cl)
+    h = cosmo['h']
+    cf = _patch_ct_to_cd2018()
 
     if massdef != "mean":
         raise ValueError(f"Mass definition {massdef} not currently supported by {__package__}")
 
     if halo_profile_model.lower() == 'nfw':
-        sigma = ct.deltasigma.Sigma_nfw_at_R (_assert_correct_type_ct (r_proj) * h, mdelta * h, cdelta, Omega_m * cf,
-                                              delta=delta_mdef) * h * 1.0e12 # pc**-2 to Mpc**-2
+        sigma = ct.deltasigma.Sigma_nfw_at_R(_assert_correct_type_ct(r_proj)*h, mdelta*h, cdelta, Omega_m*cf,
+                                              delta=delta_mdef)*h*1.0e12 # pc**-2 to Mpc**-2
     else:
         raise ValueError(f"Profile model {halo_profile_model} not currently supported by {__package__}")
     return sigma
@@ -206,17 +206,17 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
     deltasigma : array_like, float
         Excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
     """
-    Omega_m = cosmo.get_E2Omega_m (z_cl)
-    h       = cosmo['h']
-    cf      = _patch_ct_to_cd2018 ()
+    Omega_m = cosmo.get_E2Omega_m(z_cl)
+    h = cosmo['h']
+    cf = _patch_ct_to_cd2018()
 
 
     if np.min(r_proj)<1.e-11:
         raise ValueError(f"Rmin = {np.min(r_proj):.2e} Mpc! This value is too small and may cause computational issues.")
 
-    r_proj   = _assert_correct_type_ct (r_proj) * h
-    mdeltah  = mdelta * h
-    Omega_mc = Omega_m * cf
+    r_proj = _assert_correct_type_ct(r_proj)*h
+    mdeltah = mdelta*h
+    Omega_mc = Omega_m*cf
 
     # Computing sigma on a larger range than the radial range requested, with at least 1000 points.
     sigma_r_proj = np.logspace(np.log10(np.min(r_proj))-1, np.log10(np.max(r_proj))+1, np.max([1000,10*np.array(r_proj).size]))
@@ -225,9 +225,9 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
         raise ValueError(f"Mass definition {massdef} not currently supported by {__package__}")
 
     if halo_profile_model.lower() == 'nfw':
-        sigma = ct.deltasigma.Sigma_nfw_at_R (sigma_r_proj, mdeltah, cdelta, Omega_mc, delta=delta_mdef)
+        sigma = ct.deltasigma.Sigma_nfw_at_R(sigma_r_proj, mdeltah, cdelta, Omega_mc, delta=delta_mdef)
         # ^ Note: Let's not use this naming convention when transfering ct to ccl....
-        deltasigma = ct.deltasigma.DeltaSigma_at_R (r_proj, sigma_r_proj, sigma, mdeltah, cdelta, Omega_mc, delta=delta_mdef) * h * 1.0e12 # pc**-2 to Mpc**-2
+        deltasigma = ct.deltasigma.DeltaSigma_at_R(r_proj, sigma_r_proj, sigma, mdeltah, cdelta, Omega_mc, delta=delta_mdef)*h*1.0e12 # pc**-2 to Mpc**-2
     else:
         raise ValueError(f"Profile model {halo_profile_model} not currently supported by {__package__}")
     return deltasigma
@@ -257,10 +257,10 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     We will need :math:`\gamma_\infty` and :math:`\kappa_\infty` for alternative
     z_src_models using :math:`\beta_s`.
     """
-    h  = cosmo['h']
+    h = cosmo['h']
     
-    clight_pc_s = const.CLIGHT_KMS.value * 1000. / const.PC_TO_METER.value
-    gnewt_pc3_msun_s2 = const.GNEWT.value * const.SOLAR_MASS.value / const.PC_TO_METER.value**3
+    clight_pc_s = const.CLIGHT_KMS.value*1000./const.PC_TO_METER.value
+    gnewt_pc3_msun_s2 = const.GNEWT.value*const.SOLAR_MASS.value/const.PC_TO_METER.value**3
 
     aexp_cluster = cosmo._get_a_from_z(z_cluster)
     aexp_src = cosmo._get_a_from_z(z_source)
@@ -270,12 +270,12 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     d_ls = cosmo.eval_da_a1a2(aexp_src, aexp_cluster)
 
     beta_s = np.maximum(0., d_ls/d_s)
-    sigma_c = clight_pc_s * clight_pc_s / (4.0 * np.pi * gnewt_pc3_msun_s2) * 1 / d_l * np.divide(1., beta_s)
+    sigma_c = clight_pc_s*clight_pc_s/(4.0*np.pi*gnewt_pc3_msun_s2)*1/d_l*np.divide(1., beta_s)
 
     if np.any(np.array(z_source)<=z_cluster):
         warnings.warn(f'Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.')
 
-    return sigma_c * 1.0e6
+    return sigma_c*1.0e6
 
 
 def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
@@ -338,13 +338,13 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
                                                  massdef=massdef)
     if z_src_model == 'single_plane':
         sigma_c = get_critical_surface_density(cosmo, z_cluster, z_source)
-        gammat = np.nan_to_num(delta_sigma / sigma_c,  nan=np.nan, posinf=np.inf, neginf=-np.inf)
+        gammat = np.nan_to_num(delta_sigma/sigma_c, nan=np.nan, posinf=np.inf, neginf=-np.inf)
         
     # elif z_src_model == 'known_z_src': # Discrete case
-    #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +
+    #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average'+
     #                               'delta_sigma/sigma_c gamma_t = Beta_s*gamma_inf')
     # elif z_src_model == 'z_src_distribution': # Continuous ( from a distribution) case
-    #     raise NotImplementedError('Need to implement Beta_s calculation from integrating' +
+    #     raise NotImplementedError('Need to implement Beta_s calculation from integrating'+
     #                               'distribution of redshifts in each radial bin')
     else:
         raise ValueError("Unsupported z_src_model")
@@ -410,14 +410,14 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
                                     delta_mdef=delta_mdef, halo_profile_model=halo_profile_model, massdef=massdef)
 
     if z_src_model == 'single_plane':
-        sigma_c = get_critical_surface_density (cosmo, z_cluster, z_source)
-        kappa = np.nan_to_num(sigma / sigma_c,  nan=np.nan, posinf=np.inf, neginf=-np.inf)
+        sigma_c = get_critical_surface_density(cosmo, z_cluster, z_source)
+        kappa = np.nan_to_num(sigma/sigma_c, nan=np.nan, posinf=np.inf, neginf=-np.inf)
         
     # elif z_src_model == 'known_z_src': # Discrete case
-    #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +\
+    #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average'+\
     #                               'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
     # elif z_src_model == 'z_src_distribution': # Continuous ( from a distribution) case
-    #     raise NotImplementedError('Need to implement Beta_s calculation from integrating' +\
+    #     raise NotImplementedError('Need to implement Beta_s calculation from integrating'+\
     #                               'distribution of redshifts in each radial bin')
     else:
         raise ValueError("Unsupported z_src_model")
@@ -478,13 +478,13 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
                                     z_src_model)
         gamma_t = predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
                                            delta_mdef, halo_profile_model, massdef, z_src_model)
-        red_tangential_shear = np.nan_to_num(np.divide(gamma_t , (1 - kappa)),  nan=np.nan, posinf=np.inf, neginf=-np.inf)
+        red_tangential_shear = np.nan_to_num(np.divide(gamma_t, (1-kappa)), nan=np.nan, posinf=np.inf, neginf=-np.inf)
         
     # elif z_src_model == 'known_z_src': # Discrete case
-    #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +
+    #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average'+
     #                               'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
     # elif z_src_model == 'z_src_distribution': # Continuous ( from a distribution) case
-    #     raise NotImplementedError('Need to implement Beta_s and Beta_s2 calculation from' +
+    #     raise NotImplementedError('Need to implement Beta_s and Beta_s2 calculation from'+
     #                               'integrating distribution of redshifts in each radial bin')
     else:
         raise ValueError("Unsupported z_src_model")
@@ -503,7 +503,7 @@ def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
     r"""Computes the magnification
 
     .. math::
-        \mu = \frac{1}{(1 - \kappa)^2 - |\gamma_t|^2}
+        \mu = \frac{1}{(1-\kappa)^2-|\gamma_t|^2}
 
 
 
@@ -557,13 +557,13 @@ def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
                                     halo_profile_model, massdef,
                                     z_src_model)
         
-        mu =  1. / ((1-kappa)**2-abs(gammat)**2)
+        mu =  1./((1-kappa)**2-abs(gammat)**2)
     
     # elif z_src_model == 'known_z_src': # Discrete case
-    #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +\
+    #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average'+\
     #                               'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
     # elif z_src_model == 'z_src_distribution': # Continuous ( from a distribution) case
-    #     raise NotImplementedError('Need to implement Beta_s calculation from integrating' +\
+    #     raise NotImplementedError('Need to implement Beta_s calculation from integrating'+\
     #                               'distribution of redshifts in each radial bin')
     else:
         raise ValueError("Unsupported z_src_model")
@@ -573,33 +573,33 @@ def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
         
     return mu
 
-# CLMM Cosmology object - clustertoolkit + astropy implementation
+# CLMM Cosmology object - clustertoolkit+astropy implementation
 
-class AstroPyCosmology (CLMMCosmology):
-    def __init__ (self, **kwargs):
-        super (AstroPyCosmology, self).__init__ (**kwargs)
+class AstroPyCosmology(CLMMCosmology):
+    def __init__(self, **kwargs):
+        super(AstroPyCosmology, self).__init__(**kwargs)
 
         self.backend = 'ct'
 
-        assert isinstance (self.be_cosmo, LambdaCDM)
+        assert isinstance(self.be_cosmo, LambdaCDM)
     
-    def _init_from_cosmo (self, be_cosmo):
+    def _init_from_cosmo(self, be_cosmo):
     
-        assert isinstance (be_cosmo, LambdaCDM)
+        assert isinstance(be_cosmo, LambdaCDM)
         self.be_cosmo = be_cosmo
         
-    def _init_from_params (self, H0, Omega_b0, Omega_dm0, Omega_k0):
+    def _init_from_params(self, H0, Omega_b0, Omega_dm0, Omega_k0):
         
-        Om0  = Omega_b0 + Omega_dm0
-        Ob0  = Omega_b0
-        Ode0 = 1.0 - Om0 - Omega_k0
+        Om0 = Omega_b0+Omega_dm0
+        Ob0 = Omega_b0
+        Ode0 = 1.0-Om0-Omega_k0
         
-        self.be_cosmo = LambdaCDM (H0 = H0, Om0 = Om0, Ob0 = Ob0, Ode0 = Ode0)
+        self.be_cosmo = LambdaCDM(H0=H0, Om0=Om0, Ob0=Ob0, Ode0=Ode0)
 
-    def _set_param (self, key, value):
-        raise NotImplementedError ("Astropy do not support changing parameters") 
+    def _set_param(self, key, value):
+        raise NotImplementedError("Astropy do not support changing parameters") 
 
-    def _get_param (self, key):
+    def _get_param(self, key):
         if key == "Omega_m0":
             return self.be_cosmo.Om0
         elif key == "Omega_b0":
@@ -609,23 +609,23 @@ class AstroPyCosmology (CLMMCosmology):
         elif key == "Omega_k0":
             return self.be_cosmo.Ok0
         elif key == 'h':
-            return self.be_cosmo.H0.to_value () / 100.0
+            return self.be_cosmo.H0.to_value()/100.0
         elif key == 'H0':
-            return self.be_cosmo.H0.to_value ()
+            return self.be_cosmo.H0.to_value()
         else:
-            raise ValueError (f"Unsupported parameter {key}")
+            raise ValueError(f"Unsupported parameter {key}")
 
-    def get_Omega_m (self, z):
-        return self.be_cosmo.Om (z)
+    def get_Omega_m(self, z):
+        return self.be_cosmo.Om(z)
 
-    def get_E2Omega_m (self, z):
-        return self.be_cosmo.Om (z) * (self.be_cosmo.H (z) / self.be_cosmo.H0)**2
+    def get_E2Omega_m(self, z):
+        return self.be_cosmo.Om(z)*(self.be_cosmo.H(z)/self.be_cosmo.H0)**2
 
-    def eval_da_z1z2 (self, z1, z2):
-        return self.be_cosmo.angular_diameter_distance_z1z2 (z1, z2).to_value (units.Mpc)
+    def eval_da_z1z2(self, z1, z2):
+        return self.be_cosmo.angular_diameter_distance_z1z2(z1, z2).to_value(units.Mpc)
 
-def ctCLMModeling (*args, **kwargs):
-    raise NotImplementedError ("cluster_toolkit does not implement an OO interface.")
+def ctCLMModeling(*args, **kwargs):
+    raise NotImplementedError("cluster_toolkit does not implement an OO interface.")
 
 Modeling = ctCLMModeling
 Cosmology = AstroPyCosmology

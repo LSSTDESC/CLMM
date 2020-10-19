@@ -140,9 +140,9 @@ def test_compute_tangential_and_cross_components(modeling_data):
     expected_cross_shear = np.array([0.2780316984090899, 0.6398792901134982])
     expected_tangential_shear = np.array([-0.22956126563459447, -0.02354769805831558])
     
-    # DeltaSigma expected values for md.Cosmology (H0=70.0, Omega_dm0 = 0.275, Omega_b0 = 0.025)    
-    expected_cross_DS = np.array([1224.3326297393244, 1899.6061989365176]) * 0.7 * 1.0e12 * 1.0002565513832675
-    expected_tangential_DS = np.array([-1010.889584349285, -69.9059242788237]) * 0.7 * 1.0e12 * 1.0002565513832675
+    # DeltaSigma expected values for md.Cosmology(H0=70.0, Omega_dm0=0.275, Omega_b0=0.025)    
+    expected_cross_DS = np.array([1224.3326297393244, 1899.6061989365176])*0.7*1.0e12*1.0002565513832675
+    expected_tangential_DS = np.array([-1010.889584349285, -69.9059242788237])*0.7*1.0e12*1.0002565513832675
 
     # Pass arrays directly into function
     angsep, tshear, xshear = pa.compute_tangential_and_cross_components(ra_lens=ra_lens, dec_lens=dec_lens,
@@ -187,7 +187,7 @@ def test_compute_tangential_and_cross_components(modeling_data):
     testing.assert_raises(TypeError, cluster.compute_tangential_and_cross_components, is_deltasigma=True)
     
     # check values for DeltaSigma
-    cosmo = md.Cosmology (H0=70.0, Omega_dm0 = 0.275, Omega_b0 = 0.025)
+    cosmo = md.Cosmology(H0=70.0, Omega_dm0=0.275, Omega_b0=0.025)
 
     angsep_DS, tDS, xDS = cluster.compute_tangential_and_cross_components(cosmo=cosmo, is_deltasigma=True)
     testing.assert_allclose(angsep_DS, expected_angsep, **TOLERANCE, 
@@ -247,7 +247,7 @@ def test_make_binned_profiles():
     # remember that include_empty_bins=False excludes all bins with N>=1
     profile = pa.make_binned_profile(cluster, angsep_units, bin_units, bins=bins_radians,
                                     include_empty_bins=False)
-    testing.assert_allclose(profile['radius_min'], bins_radians[1],  **TOLERANCE,
+    testing.assert_allclose(profile['radius_min'], bins_radians[1], **TOLERANCE,
                             err_msg="Minimum radius in bin not expected.")
     testing.assert_allclose(profile['radius'], expected_radius[1], **TOLERANCE,
                             err_msg="Mean radius in bin not expected.")
@@ -281,7 +281,7 @@ def test_make_binned_profiles():
     # including empty bins
     profile3 = pa.make_binned_profile(
         cluster, angsep_units, bin_units, bins=bins_radians, include_empty_bins=True)
-    testing.assert_allclose(profile3['radius_min'], bins_radians[:-1],  **TOLERANCE,
+    testing.assert_allclose(profile3['radius_min'], bins_radians[:-1], **TOLERANCE,
                             err_msg="Minimum radius in bin not expected.")
     testing.assert_allclose(profile3['radius'], expected_radius, **TOLERANCE,
                             err_msg="Mean radius in bin not expected.")
