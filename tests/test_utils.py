@@ -108,6 +108,8 @@ def test_make_bins():
     test_bins = make_bins(0.51396, 6.78, nbins=23, method='equaloccupation', source_seps=test_array)
     assert_allclose(np.diff(np.histogram(test_array,bins=test_bins)[0]),
                     np.zeros(22), atol=2)
+    assert_raises(ValueError, make_bins, -10., -5., 10, 'equaloccupation', None)
+    assert_raises(ValueError, make_bins, -10., -5., 10, 'undefinedmethod')
                     
 
 
@@ -133,6 +135,7 @@ def test_convert_units():
     assert_raises(TypeError, utils.convert_units, 1.0, 'arcsec', 'Mpc')
     assert_raises(TypeError, utils.convert_units, 1.0, 'arcsec', 'Mpc', None, cosmo)
     assert_raises(TypeError, utils.convert_units, 1.0, 'arcsec', 'Mpc', 0.5, None)
+    assert_raises(ValueError, utils.convert_units, 1.0, 'arcsec', 'Mpc', -0.5, cosmo)
 
     # Test cases to make sure angular -> angular is fitting together
     assert_allclose(utils.convert_units(np.pi, 'radians', 'degrees'), 180., **TOLERANCE)
@@ -218,6 +221,8 @@ def test_shape_conversion():
     e1_2,e2_2 = convert_shapes_to_epsilon(e1,e2,shape_definition='shear',kappa=0.2)
     assert_allclose(e1/0.8,e1_2, **TOLERANCE)
     assert_allclose(e2/0.8,e2_2, **TOLERANCE)
+    # Test known shape_definition
+    assert_raises(TypeError, convert_shapes_to_epsilon, e1, e2, shape_definition='undefinedSD')
 
 def test_compute_lensed_ellipticities():
     
