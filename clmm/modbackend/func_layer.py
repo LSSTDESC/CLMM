@@ -24,9 +24,9 @@ def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profil
     Parameters
     ----------
     r3d : array_like, float
-        Radial position from the cluster center in :math:`M\!pc\ h^{-1}`.
+        Radial position from the cluster center in :math:`M\!pc`.
     mdelta : float
-        Galaxy cluster mass in :math:`M_\odot\ h^{-1}`.
+        Galaxy cluster mass in :math:`M_\odot`.
     cdelta : float
         Galaxy cluster concentration
     z_cl: float
@@ -49,7 +49,7 @@ def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profil
     Returns
     -------
     rho : array_like, float
-        3-dimensional mass density in units of :math:`h^2\ M_\odot\ pc^{-3}` DOUBLE CHECK THIS
+        3-dimensional mass density in units of :math:`M_\odot\ Mpc^{-3}` 
 
     Notes
     -----
@@ -76,9 +76,9 @@ def predict_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     Parameters
     ----------
     r_proj : array_like
-        Projected radial position from the cluster center in :math:`M\!pc\ h^{-1}`.
+        Projected radial position from the cluster center in :math:`M\!pc`.
     mdelta : float
-        Galaxy cluster mass in :math:`M_\odot\ h^{-1}`.
+        Galaxy cluster mass in :math:`M_\odot`.
     cdelta : float
         Galaxy cluster concentration
     z_cl: float
@@ -101,7 +101,7 @@ def predict_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     Returns
     -------
     sigma : array_like, float
-        2D projected surface density in units of :math:`h M_\odot\ pc^{-2}`
+        2D projected surface density in units of :math:`M_\odot\ Mpc^{-2}`
 
     Notes
     -----
@@ -132,9 +132,9 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
     Parameters
     ----------
     r_proj : array_like
-        Projected radial position from the cluster center in :math:`M\!pc\ h^{-1}`.
+        Projected radial position from the cluster center in :math:`M\!pc`.
     mdelta : float
-        Galaxy cluster mass in :math:`M_\odot\ h^{-1}`.
+        Galaxy cluster mass in :math:`M_\odot`.
     cdelta : float
         Galaxy cluster concentration
     z_cl: float
@@ -157,7 +157,7 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
     Returns
     -------
     deltasigma : array_like, float
-        Excess surface density in units of :math:`h\ M_\odot\ pc^{-2}`.
+        Excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
     """
 
     gcm.set_cosmo(cosmo)
@@ -186,7 +186,7 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     Returns
     -------
     sigma_c : float
-        Cosmology-dependent critical surface density in units of :math:`h\ M_\odot\ pc^{-2}`
+        Cosmology-dependent critical surface density in units of :math:`M_\odot\ Mpc^{-2}`
 
     Notes
     -----
@@ -213,9 +213,9 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     Parameters
     ----------
     r_proj : array_like
-        The projected radial positions in :math:`M\!pc\ h^{-1}`.
+        The projected radial positions in :math:`M\!pc`.
     mdelta : float
-        Galaxy cluster mass in :math:`M_\odot\ h^{-1}`.
+        Galaxy cluster mass in :math:`M_\odot`.
     cdelta : float
         Galaxy cluster NFW concentration.
     z_cluster : float
@@ -287,9 +287,9 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     Parameters
     ----------
     r_proj : array_like
-        The projected radial positions in :math:`M\!pc\ h^{-1}`.
+        The projected radial positions in :math:`M\!pc`.
     mdelta : float
-        Galaxy cluster mass in :math:`M_\odot\ h^{-1}`.
+        Galaxy cluster mass in :math:`M_\odot`.
     cdelta : float
         Galaxy cluster NFW concentration.
     z_cluster : float
@@ -362,9 +362,9 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
     Parameters
     ----------
     r_proj : array_like
-        The projected radial positions in :math:`M\!pc\ h^{-1}`.
+        The projected radial positions in :math:`M\!pc`.
     mdelta : float
-        Galaxy cluster mass in :math:`M_\odot\ h^{-1}`.
+        Galaxy cluster mass in :math:`M_\odot`.
     cdelta : float
         Galaxy cluster NFW concentration.
     z_cluster : float
@@ -440,9 +440,9 @@ def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
     Parameters
     ----------
     r_proj : array_like
-        The projected radial positions in :math:`M\!pc\ h^{-1}`.
+        The projected radial positions in :math:`M\!pc`.
     mdelta : float
-        Galaxy cluster mass in :math:`M_\odot\ h^{-1}`.
+        Galaxy cluster mass in :math:`M_\odot`.
     cdelta : float
         Galaxy cluster NFW concentration.
     z_cluster : float

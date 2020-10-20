@@ -88,7 +88,7 @@ def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profil
     Returns
     -------
     rho : array_like, float
-        3-dimensional mass density in units of :math:`M_\odot\ Mpc^{-3}` DOUBLE CHECK THIS
+        3-dimensional mass density in units of :math:`M_\odot\ Mpc^{-3}` 
 
     Notes
     -----
@@ -250,7 +250,7 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     Returns
     -------
     sigma_c : float
-        Cosmology-dependent critical surface density in units of :math:`M_\odot\ Mpc`
+        Cosmology-dependent critical surface density in units of :math:`M_\odot\ Mpc^{-2}`
 
     Notes
     -----

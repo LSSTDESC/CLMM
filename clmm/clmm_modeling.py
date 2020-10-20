@@ -53,7 +53,7 @@ class CLMModeling:
         Returns
         -------
         float
-            Cosmology-dependent critical surface density in units of :math:`M_\odot\ pc^{-2}`
+            Cosmology-dependent critical surface density in units of :math:`M_\odot\ Mpc^{-2}`
         """
         raise NotImplementedError
     def eval_density(self, r3d, z_cl):
@@ -69,7 +69,7 @@ class CLMModeling:
         Returns
         -------
         array_like, float
-            3-dimensional mass density in units of :math:`M_\odot\ pc^{-3}` DOUBLE CHECK THIS
+            3-dimensional mass density in units of :math:`M_\odot\ Mpc^{-3}` 
         """
         raise NotImplementedError
     def eval_sigma(self, r_proj, z_cl):
@@ -90,6 +90,7 @@ class CLMModeling:
         raise NotImplementedError
     def eval_sigma_mean(self, r_proj, z_cl):
         r""" Computes the mean value of surface density inside radius r_proj
+        
         Parameters
         ----------
         r_proj : array_like
@@ -105,6 +106,7 @@ class CLMModeling:
         raise NotImplementedError
     def eval_sigma_excess(self, r_proj, z_cl):
         r""" Computes the excess surface density
+
         Parameters
         ----------
         r_proj : array_like

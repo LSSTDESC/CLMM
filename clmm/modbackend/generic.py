@@ -20,7 +20,8 @@ def get_reduced_shear_from_convergence(shear, convergence):
     convergence : array_like
         Convergence
 
-    Returns:
+    Returns
+    -------
     reduced_shear : array_like
         Reduced shear
     """
