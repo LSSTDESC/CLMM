@@ -395,11 +395,17 @@ def _find_aphysical_galaxies(galaxy_catalog, zsrc_min):
     badgals : array_like
         A list of the indicies in galaxy_catalog that need to be redrawn
     """
-    badgals = np.where((np.abs(galaxy_catalog['e1']) > 1.0) |
-                       (np.abs(galaxy_catalog['e2']) > 1.0) |
-                       (galaxy_catalog['ztrue'] < zsrc_min)
-                      )[0]
+    etot = np.sqrt(galaxy_catalog['e1'] * galaxy_catalog['e1'] 
+                   + galaxy_catalog['e2'] * galaxy_catalog['e2'])
+
+#     badgals = np.where((np.abs(galaxy_catalog['e1']) > 1.0) |
+#                        (np.abs(galaxy_catalog['e2']) > 1.0) |
+#                        (galaxy_catalog['ztrue'] < zsrc_min)
+#                       )[0]
+    
+    badgals = np.where((etot > 1.0) | (galaxy_catalog['ztrue'] < zsrc_min))[0]
     nbad = len(badgals)
+    print(nbad)
     return nbad, badgals
 
 
