@@ -4,8 +4,8 @@ from clmm import GCData
 from scipy import integrate
 from scipy.interpolate import interp1d
 from astropy import units
-from clmm.modeling import predict_reduced_tangential_shear, predict_convergence, angular_diameter_dist_a1a2
-from clmm.utils import convert_units,compute_lensed_ellipticity
+from clmm.modeling import predict_tangential_shear, predict_convergence, angular_diameter_dist_a1a2
+from clmm.utils import convert_units, compute_lensed_ellipticity
 
 def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, Delta_SO, zsrc, halo_profile_model='nfw', zsrc_min=None,
                             zsrc_max=7., field_size=8., shapenoise=None, photoz_sigma_unscaled=None, nretry=5, ngals=None, ngal_density=None):
@@ -81,7 +81,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, Delta_SO, zs
         may be smaller than zsrc_min.
     zsrc_max : float, optional
         The maximum true redshift of the sources, apllied when galaxy redshifts are drawn from 
-        a redshift distribution. If photoz errirs are included, the observed redshift may be larger than
+        a redshift distribution. If photoz errors are included, the observed redshift may be larger than
         zsrc_max.
     field_size : float
         The size of the field (field_size x field_size) to be simulated. 
@@ -199,27 +199,41 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delt
     # Draw galaxy positions
     galaxy_catalog = _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo, field_size)
     # Compute the shear on each source galaxy
-    gamt = predict_reduced_tangential_shear(galaxy_catalog['r_mpc'], mdelta=cluster_m,
+    gamt = predict_tangential_shear(galaxy_catalog['r_mpc'], mdelta=cluster_m,
                                             cdelta=cluster_c, z_cluster=cluster_z,
                                             z_source=galaxy_catalog['ztrue'], cosmo=cosmo,
                                             delta_mdef=Delta_SO, halo_profile_model='nfw',
                                             z_src_model='single_plane')
+ 
+    gamx = np.zeros(ngals)
+    kappa = predict_convergence(galaxy_catalog['r_mpc'], mdelta=cluster_m,
+                                            cdelta=cluster_c, z_cluster=cluster_z,
+                                            z_source=galaxy_catalog['z'], cosmo=cosmo,
+                                            delta_mdef=Delta_SO, halo_profile_model='nfw',
+                                            z_src_model='single_plane')
+    
     galaxy_catalog['gammat'] = gamt
     galaxy_catalog['gammax'] = np.zeros(ngals)
 
+    galaxy_catalog['posangle'] = np.arctan2(galaxy_catalog['y_mpc'],
+                                            galaxy_catalog['x_mpc'])
+
+    #corresponding shear1,2 components
+    gam1 = -gamt*np.cos(2*galaxy_catalog['posangle']) + gamx*np.sin(2*galaxy_catalog['posangle'])
+    gam2 = -gamt*np.sin(2*galaxy_catalog['posangle']) - gamx*np.cos(2*galaxy_catalog['posangle'])
+    
+    #instrinsic ellipticities
+    e1_intrinsic = 0
+    e2_intrinsic = 0
+    
     # Add shape noise to source galaxy shears
     if shapenoise is not None:
-        galaxy_catalog['gammat'] += shapenoise*np.random.standard_normal(ngals)
-        galaxy_catalog['gammax'] += shapenoise*np.random.standard_normal(ngals)
+        e1_intrinsic = shapenoise*np.random.standard_normal(ngals)
+        e2_intrinsic = shapenoise*np.random.standard_normal(ngals)
 
     # Compute ellipticities
-    galaxy_catalog['posangle'] = np.arctan2(galaxy_catalog['y_mpc'], galaxy_catalog['x_mpc'])
-
-    galaxy_catalog['e1'] = -galaxy_catalog['gammat']*np.cos(2*galaxy_catalog['posangle']) \
-                           + galaxy_catalog['gammax']*np.sin(2*galaxy_catalog['posangle'])
-    galaxy_catalog['e2'] = -galaxy_catalog['gammat']*np.sin(2*galaxy_catalog['posangle']) \
-                           - galaxy_catalog['gammax']*np.cos(2*galaxy_catalog['posangle'])
-
+    galaxy_catalog['e1'],galaxy_catalog['e2']=compute_lensed_ellipticity(e1_intrinsic, e2_intrinsic, gam1, gam2, kappa)
+    
     if photoz_sigma_unscaled is not None:
         return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z', 'ztrue', 'pzbins', 'pzpdf']
     return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z', 'ztrue']
@@ -249,8 +263,8 @@ def _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals):
     Returns
     -------
     galaxy_catalog : clmm.GCData
-        Table of true and 'measured' redshifts, which here the same. Photometric errors
-        are then added with the _compute_photoz_pdfs.
+        Table of true and 'measured' photometric redshifts, which here the same. Redshift photometric errors
+        are then added using _compute_photoz_pdfs.
 
     Notes
     -----
@@ -309,7 +323,8 @@ def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled):
 
     pzbins_grid, pzpdf_grid = [], []
     for row in galaxy_catalog:
-        zmin, zmax = row['z'] - 0.5, row['z'] + 0.5
+        pdf_range = row['pzsigma']*10.
+        zmin, zmax = row['z'] - pdf_range, row['z'] + pdf_range
         zbins = np.arange(zmin, zmax, 0.03)
         pzbins_grid.append(zbins)
         pzpdf_grid.append(np.exp(-0.5*((zbins - row['z'])/row['pzsigma'])**2)/np.sqrt(2*np.pi*row['pzsigma']**2))
