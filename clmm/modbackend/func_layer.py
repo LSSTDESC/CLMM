@@ -6,16 +6,14 @@ import numpy as np
 import warnings
 
 from . import generic
-from . generic import *
+from . generic import get_reduced_shear_from_convergence
 
+__all__ = generic.__all__+['get_3d_density', 'predict_surface_density',
+           'predict_excess_surface_density', 'get_critical_surface_density',
+           'predict_tangential_shear', 'predict_convergence',
+           'predict_reduced_tangential_shear', 'predict_magnification']
 
-__all__ = generic.__all__ + ['get_3d_density', 'predict_surface_density', 
-           'predict_excess_surface_density', 'angular_diameter_dist_a1a2',
-           'get_critical_surface_density', 'predict_tangential_shear',
-           'predict_convergence', 'predict_reduced_tangential_shear',
-           'predict_magnification']
-
-def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profile_model='nfw'):
+def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profile_model='nfw', massdef='mean'):
     r"""Retrieve the 3d density :math:`\rho(r)`.
 
     Profiles implemented so far are:
@@ -26,9 +24,9 @@ def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profil
     Parameters
     ----------
     r3d : array_like, float
-        Radial position from the cluster center in :math:`M\!pc\ h^{-1}`.
+        Radial position from the cluster center in :math:`M\!pc`.
     mdelta : float
-        Galaxy cluster mass in :math:`M_\odot\ h^{-1}`.
+        Galaxy cluster mass in :math:`M_\odot`.
     cdelta : float
         Galaxy cluster concentration
     z_cl: float
@@ -39,30 +37,35 @@ def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profil
         Mass overdensity definition; defaults to 200.
     halo_profile_model : str, optional
         Profile model parameterization, with the following supported options:
-
             `nfw` (default)
+            `einasto`
+            `hernquist`
+    massdef : str, optional
+        Profile mass definition, with the following supported options:
+            `mean` (default)
+            `critical`
+            `virial`
 
     Returns
     -------
     rho : array_like, float
-        3-dimensional mass density in units of :math:`h^2\ M_\odot\ pc^{-3}` DOUBLE CHECK THIS
+        3-dimensional mass density in units of :math:`M_\odot\ Mpc^{-3}` 
 
     Notes
     -----
     Need to refactor later so we only require arguments that are necessary for all profiles
     and use another structure to take the arguments necessary for specific models
     """
-    cosmo = cclify_astropy_cosmo(cosmo)
 
-    gcm.set_cosmo_params_dict (cosmo)
-    gcm.set_halo_density_profile (halo_profile_model = halo_profile_model, delta_mdef = delta_mdef)
-    gcm.set_concentration (cdelta)
-    gcm.set_mass (mdelta)
+    gcm.set_cosmo(cosmo)
+    gcm.set_halo_density_profile(halo_profile_model = halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
+    gcm.set_concentration(cdelta)
+    gcm.set_mass(mdelta)
 
-    return gcm.eval_density (r3d, z_cl)
+    return gcm.eval_density(r3d, z_cl)
 
 def predict_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
-                            halo_profile_model='nfw'):
+                            halo_profile_model='nfw', massdef = 'mean'):
     r""" Computes the surface mass density
 
     .. math::
@@ -73,9 +76,9 @@ def predict_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     Parameters
     ----------
     r_proj : array_like
-        Projected radial position from the cluster center in :math:`M\!pc\ h^{-1}`.
+        Projected radial position from the cluster center in :math:`M\!pc`.
     mdelta : float
-        Galaxy cluster mass in :math:`M_\odot\ h^{-1}`.
+        Galaxy cluster mass in :math:`M_\odot`.
     cdelta : float
         Galaxy cluster concentration
     z_cl: float
@@ -86,13 +89,19 @@ def predict_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
         Mass overdensity definition; defaults to 200.
     halo_profile_model : str, optional
         Profile model parameterization, with the following supported options:
-
             `nfw` (default)
+            `einasto`
+            `hernquist`
+    massdef : str, optional
+        Profile mass definition, with the following supported options:
+            `mean` (default)
+            `critical`
+            `virial`
 
     Returns
     -------
     sigma : array_like, float
-        2D projected surface density in units of :math:`h M_\odot\ pc^{-2}`
+        2D projected surface density in units of :math:`M_\odot\ Mpc^{-2}`
 
     Notes
     -----
@@ -100,18 +109,16 @@ def predict_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     another structure to take the arguments necessary for specific models.
     """
 
-    cosmo = cclify_astropy_cosmo(cosmo)
+    gcm.set_cosmo(cosmo)
+    gcm.set_halo_density_profile(halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
+    gcm.set_concentration(cdelta)
+    gcm.set_mass(mdelta)
 
-    gcm.set_cosmo_params_dict (cosmo)
-    gcm.set_halo_density_profile (halo_profile_model = halo_profile_model, delta_mdef = delta_mdef)
-    gcm.set_concentration (cdelta)
-    gcm.set_mass (mdelta)
-
-    return gcm.eval_sigma (r_proj, z_cl)
+    return gcm.eval_sigma(r_proj, z_cl)
 
 
 def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
-                                   halo_profile_model='nfw'):
+                                   halo_profile_model='nfw', massdef='mean'):
     r""" Computes the excess surface density
 
     .. math::
@@ -125,9 +132,9 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
     Parameters
     ----------
     r_proj : array_like
-        Projected radial position from the cluster center in :math:`M\!pc\ h^{-1}`.
+        Projected radial position from the cluster center in :math:`M\!pc`.
     mdelta : float
-        Galaxy cluster mass in :math:`M_\odot\ h^{-1}`.
+        Galaxy cluster mass in :math:`M_\odot`.
     cdelta : float
         Galaxy cluster concentration
     z_cl: float
@@ -138,61 +145,27 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
         Mass overdensity definition; defaults to 200.
     halo_profile_model : str, optional
         Profile model parameterization, with the following supported options:
-
             `nfw` (default)
+            `einasto`
+            `hernquist`
+    massdef : str, optional
+        Profile mass definition, with the following supported options:
+            `mean` (default)
+            `critical`
+            `virial`
 
     Returns
     -------
     deltasigma : array_like, float
-        Excess surface density in units of :math:`h\ M_\odot\ pc^{-2}`.
+        Excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
     """
 
-    cosmo = cclify_astropy_cosmo(cosmo)
+    gcm.set_cosmo(cosmo)
+    gcm.set_halo_density_profile(halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
+    gcm.set_concentration(cdelta)
+    gcm.set_mass(mdelta)
 
-    gcm.set_cosmo_params_dict (cosmo)
-    gcm.set_halo_density_profile (halo_profile_model = halo_profile_model, delta_mdef = delta_mdef)
-    gcm.set_concentration (cdelta)
-    gcm.set_mass (mdelta)
-
-    return gcm.eval_sigma_excess (r_proj, z_cl)
-
-
-def angular_diameter_dist_a1a2(cosmo, a1, a2=1.):
-    r"""This is a function to calculate the angular diameter distance
-    between two scale factors because CCL cannot yet do it.
-
-    If only a1 is specified, this function returns the angular diameter
-    distance from a=1 to a1. If both a1 and a2 are specified, this function
-    returns the angular diameter distance between a1 and a2.
-
-    Temporarily using the astropy implementation.
-
-    Parameters
-    ----------
-    cosmo : pyccl.core.Cosmology object
-            CCL Cosmology object
-    a1 : float
-        Scale factor.
-    a2 : float, optional
-        Scale factor.
-
-    Returns
-    -------
-    d_a : float
-        Angular diameter distance in units :math:`M\!pc\ h^{-1}`
-
-    Notes
-    -----
-    This is definitely broken if other cosmological parameter specifications differ,
-    so we'll have to revise this later. We need to switch angular_diameter_distance_z1z2
-    to CCL equivalent angular distance once implemented
-    """
-    redshift1 = _get_z_from_a(a2)
-    redshift2 = _get_z_from_a(a1)
-    cosmo = cclify_astropy_cosmo(cosmo)
-
-    gcm.set_cosmo_params_dict (cosmo)
-    return gcm.eval_da_z1z2 (redshift1, redshift2)
+    return gcm.eval_sigma_excess(r_proj, z_cl)
 
 
 def get_critical_surface_density(cosmo, z_cluster, z_source):
@@ -213,7 +186,7 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     Returns
     -------
     sigma_c : float
-        Cosmology-dependent critical surface density in units of :math:`h\ M_\odot\ pc^{-2}`
+        Cosmology-dependent critical surface density in units of :math:`M_\odot\ Mpc^{-2}`
 
     Notes
     -----
@@ -221,14 +194,12 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     z_src_models using :math:`\beta_s`.
     """
 
-    cosmo = cclify_astropy_cosmo(cosmo)
-
-    gcm.set_cosmo_params_dict (cosmo)
-    return gcm.eval_sigma_crit (z_cluster, z_source)
+    gcm.set_cosmo(cosmo)
+    return gcm.eval_sigma_crit(z_cluster, z_source)
 
 
 def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
-                             halo_profile_model='nfw', z_src_model='single_plane'):
+                              halo_profile_model='nfw', massdef='mean', z_src_model='single_plane'):
     r"""Computes the tangential shear
 
     .. math::
@@ -242,9 +213,9 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     Parameters
     ----------
     r_proj : array_like
-        The projected radial positions in :math:`M\!pc\ h^{-1}`.
+        The projected radial positions in :math:`M\!pc`.
     mdelta : float
-        Galaxy cluster mass in :math:`M_\odot\ h^{-1}`.
+        Galaxy cluster mass in :math:`M_\odot`.
     cdelta : float
         Galaxy cluster NFW concentration.
     z_cluster : float
@@ -257,7 +228,14 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
         Mass overdensity definition.  Defaults to 200.
     halo_profile_model : str, optional
         Profile model parameterization, with the following supported options:
-        `nfw` (default) - [insert citation here]
+            `nfw` (default)
+            `einasto`
+            `hernquist`
+    massdef : str, optional
+        Profile mass definition, with the following supported options:
+            `mean` (default)
+            `critical`
+            `virial`
     z_src_model : str, optional
         Source redshift model, with the following supported options:
         `single_plane` (default) - all sources at one redshift
@@ -278,25 +256,24 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     Need to figure out if we want to raise exceptions rather than errors here?
     """
     if z_src_model == 'single_plane':
-        cosmo = cclify_astropy_cosmo(cosmo)
 
-        gcm.set_cosmo_params_dict (cosmo)
-        gcm.set_halo_density_profile (halo_profile_model = halo_profile_model, delta_mdef = delta_mdef)
-        gcm.set_concentration (cdelta)
-        gcm.set_mass (mdelta)
-        
-        if np.min (r_proj) < 1.e-11:
-            raise ValueError (f"Rmin = {np.min(r_proj):.2e} Mpc/h! This value is too small and may cause computational issues.")
+        gcm.set_cosmo(cosmo)
+        gcm.set_halo_density_profile(halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
+        gcm.set_concentration(cdelta)
+        gcm.set_mass(mdelta)
 
-        gammat = gcm.eval_shear (r_proj, z_cluster, z_source)
+        if np.min(r_proj) < 1.e-11:
+            raise ValueError(f"Rmin = {np.min(r_proj):.2e} Mpc/h! This value is too small and may cause computational issues.")
+
+        gammat = gcm.eval_shear(r_proj, z_cluster, z_source)
     else:
         raise ValueError("Unsupported z_src_model")
-    
+
     return gammat
 
 
 def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
-                        halo_profile_model='nfw', z_src_model='single_plane'):
+                        halo_profile_model='nfw', massdef='mean', z_src_model='single_plane'):
     r"""Computes the mass convergence
 
     .. math::
@@ -310,9 +287,9 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     Parameters
     ----------
     r_proj : array_like
-        The projected radial positions in :math:`M\!pc\ h^{-1}`.
+        The projected radial positions in :math:`M\!pc`.
     mdelta : float
-        Galaxy cluster mass in :math:`M_\odot\ h^{-1}`.
+        Galaxy cluster mass in :math:`M_\odot`.
     cdelta : float
         Galaxy cluster NFW concentration.
     z_cluster : float
@@ -325,7 +302,14 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
         Mass overdensity definition.  Defaults to 200.
     halo_profile_model : str, optional
         Profile model parameterization, with the following supported options:
-        `nfw` (default) - [insert citation here]
+            `nfw` (default)
+            `einasto`
+            `hernquist`
+    massdef : str, optional
+        Profile mass definition, with the following supported options:
+            `mean` (default)
+            `critical`
+            `virial`
     z_src_model : str, optional
         Source redshift model, with the following supported options:
         `single_plane` (default) - all sources at one redshift
@@ -343,27 +327,27 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     Need to figure out if we want to raise exceptions rather than errors here?
     """
     sigma = predict_surface_density(r_proj, mdelta, cdelta, z_cluster, cosmo,
-                                    delta_mdef=delta_mdef, halo_profile_model=halo_profile_model)
+                                    delta_mdef=delta_mdef, halo_profile_model=halo_profile_model,
+                                    massdef=massdef)
 
     if z_src_model == 'single_plane':
-        cosmo = cclify_astropy_cosmo(cosmo)
 
-        gcm.set_cosmo_params_dict (cosmo)
-        gcm.set_halo_density_profile (halo_profile_model = halo_profile_model, delta_mdef = delta_mdef)
-        gcm.set_concentration (cdelta)
-        gcm.set_mass (mdelta)
-        
-        kappa = gcm.eval_convergence (r_proj, z_cluster, z_source)
-        
+        gcm.set_cosmo(cosmo)
+        gcm.set_halo_density_profile(halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
+        gcm.set_concentration(cdelta)
+        gcm.set_mass(mdelta)
+
+        kappa = gcm.eval_convergence(r_proj, z_cluster, z_source)
+
     # elif z_src_model == 'known_z_src': # Discrete case
-    #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +\
+    #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average'+\
     #                               'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
     # elif z_src_model == 'z_src_distribution': # Continuous ( from a distribution) case
-    #     raise NotImplementedError('Need to implement Beta_s calculation from integrating' +\
+    #     raise NotImplementedError('Need to implement Beta_s calculation from integrating'+\
     #                               'distribution of redshifts in each radial bin')
     else:
         raise ValueError("Unsupported z_src_model")
-    
+
     if np.any(np.array(z_source)<=z_cluster):
         warnings.warn(f'Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.')
 
@@ -371,16 +355,16 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
 
 
 def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
-                                     delta_mdef=200, halo_profile_model='nfw',
+                                     delta_mdef=200, halo_profile_model='nfw', massdef='mean',
                                      z_src_model='single_plane'):
     r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
 
     Parameters
     ----------
     r_proj : array_like
-        The projected radial positions in :math:`M\!pc\ h^{-1}`.
+        The projected radial positions in :math:`M\!pc`.
     mdelta : float
-        Galaxy cluster mass in :math:`M_\odot\ h^{-1}`.
+        Galaxy cluster mass in :math:`M_\odot`.
     cdelta : float
         Galaxy cluster NFW concentration.
     z_cluster : float
@@ -393,7 +377,14 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
         Mass overdensity definition.  Defaults to 200.
     halo_profile_model : str, optional
         Profile model parameterization, with the following supported options:
-        `nfw` (default) - [insert citation here]
+            `nfw` (default)
+            `einasto`
+            `hernquist`
+    massdef : str, optional
+        Profile mass definition, with the following supported options:
+            `mean` (default)
+            `critical`
+            `virial`
     z_src_model : str, optional
         Source redshift model, with the following supported options:
         `single_plane` (default) - all sources at one redshift
@@ -411,24 +402,23 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
     Need to figure out if we want to raise exceptions rather than errors here?
     """
     if z_src_model == 'single_plane':
-        cosmo = cclify_astropy_cosmo(cosmo)
 
-        gcm.set_cosmo_params_dict (cosmo)
-        gcm.set_halo_density_profile (halo_profile_model = halo_profile_model, delta_mdef = delta_mdef)
-        gcm.set_concentration (cdelta)
-        gcm.set_mass (mdelta)
-        
-        red_tangential_shear = gcm.eval_reduced_shear (r_proj, z_cluster, z_source)
-        
+        gcm.set_cosmo(cosmo)
+        gcm.set_halo_density_profile(halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
+        gcm.set_concentration(cdelta)
+        gcm.set_mass(mdelta)
+
+        red_tangential_shear = gcm.eval_reduced_shear(r_proj, z_cluster, z_source)
+
     # elif z_src_model == 'known_z_src': # Discrete case
-    #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +
+    #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average'+
     #                               'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
     # elif z_src_model == 'z_src_distribution': # Continuous ( from a distribution) case
-    #     raise NotImplementedError('Need to implement Beta_s and Beta_s2 calculation from' +
+    #     raise NotImplementedError('Need to implement Beta_s and Beta_s2 calculation from'+
     #                               'integrating distribution of redshifts in each radial bin')
     else:
         raise ValueError("Unsupported z_src_model")
-    
+
     if np.any(np.array(z_source)<=z_cluster):
         warnings.warn(f'Some source redshifts are lower than the cluster redshift. shear = 0 for those galaxies.')
 
@@ -436,23 +426,23 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
     return red_tangential_shear
 
 
-# The magnification is computed taking into account just the tangential shear. This is valid for 
+# The magnification is computed taking into account just the tangential shear. This is valid for
 # spherically averaged profiles, e.g., NFW and Einasto (by construction the cross shear is zero).
 def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
-                        halo_profile_model='nfw', z_src_model='single_plane'):
+                        halo_profile_model='nfw', massdef='mean', z_src_model='single_plane'):
     r"""Computes the magnification
 
     .. math::
-        \mu = \frac{1}{(1 - \kappa)^2 - |\gamma_t|^2}
+        \mu = \frac{1}{(1-\kappa)^2-|\gamma_t|^2}
 
 
 
     Parameters
     ----------
     r_proj : array_like
-        The projected radial positions in :math:`M\!pc\ h^{-1}`.
+        The projected radial positions in :math:`M\!pc`.
     mdelta : float
-        Galaxy cluster mass in :math:`M_\odot\ h^{-1}`.
+        Galaxy cluster mass in :math:`M_\odot`.
     cdelta : float
         Galaxy cluster NFW concentration.
     z_cluster : float
@@ -465,7 +455,14 @@ def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
         Mass overdensity definition.  Defaults to 200.
     halo_profile_model : str, optional
         Profile model parameterization, with the following supported options:
-        `nfw` (default) - [insert citation here]
+            `nfw` (default)
+            `einasto`
+            `hernquist`
+    massdef : str, optional
+        Profile mass definition, with the following supported options:
+            `mean` (default)
+            `critical`
+            `virial`
     z_src_model : str, optional
         Source redshift model, with the following supported options:
         `single_plane` (default) - all sources at one redshift
@@ -482,27 +479,25 @@ def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
     -----
     Need to figure out if we want to raise exceptions rather than errors here?
     """
-    
-    if z_src_model == 'single_plane':
-        
-        cosmo = cclify_astropy_cosmo(cosmo)
 
-        gcm.set_cosmo_params_dict (cosmo)
-        gcm.set_halo_density_profile (halo_profile_model = halo_profile_model, delta_mdef = delta_mdef)
-        gcm.set_concentration (cdelta)
-        gcm.set_mass (mdelta)
-        
-        mu = gcm.eval_magnification (r_proj, z_cluster, z_source)
-    
+    if z_src_model == 'single_plane':
+
+        gcm.set_cosmo(cosmo)
+        gcm.set_halo_density_profile(halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
+        gcm.set_concentration(cdelta)
+        gcm.set_mass(mdelta)
+
+        mu = gcm.eval_magnification(r_proj, z_cluster, z_source)
+
     # elif z_src_model == 'known_z_src': # Discrete case
-    #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average' +\
+    #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average'+\
     #                               'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
     # elif z_src_model == 'z_src_distribution': # Continuous ( from a distribution) case
-    #     raise NotImplementedError('Need to implement Beta_s calculation from integrating' +\
+    #     raise NotImplementedError('Need to implement Beta_s calculation from integrating'+\
     #                               'distribution of redshifts in each radial bin')
     else:
         raise ValueError("Unsupported z_src_model")
-        
+
     if np.any(np.array(z_source)<=z_cluster):
         warnings.warn(f'Some source redshifts are lower than the cluster redshift. mu = 1 for those galaxies.')
 
