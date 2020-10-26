@@ -75,7 +75,8 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_
         spherical overdensity mass is computed as the mass enclosed within the radius
         :math:`R_{\Delta{\rm SO}}` where the mean density is :math:`\Delta_{\rm SO}` times
         the mean density of the Universe at the cluster redshift
-        :math:`M_{\Delta{\rm SO}}=4/3\pi\Delta_{\rm SO}\rho_{m}(z_{\rm lens})R_{\Delta{\rm SO}}^3`zsrc_min : float, optional
+        :math:`M_{\Delta{\rm SO}}=4/3\pi\Delta_{\rm SO}\rho_{m}(z_{\rm lens})R_{\Delta{\rm SO}}^3`
+    zsrc_min : float, optional
         The minimum true redshift of the sources. If photoz errors are included, the observed redshift
         may be smaller than zsrc_min.
     massdef : string, optional
