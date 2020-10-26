@@ -413,7 +413,6 @@ def _find_aphysical_galaxies(galaxy_catalog, zsrc_min):
     
     badgals = np.where((etot > 1.0) | (galaxy_catalog['ztrue'] < zsrc_min))[0]
     nbad = len(badgals)
-    print(nbad)
     return nbad, badgals
 
 
