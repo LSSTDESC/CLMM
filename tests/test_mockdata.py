@@ -5,10 +5,6 @@ from astropy.cosmology import FlatLambdaCDM
 import clmm
 import clmm.polaraveraging as pa
 import sys
-
-import matplotlib.pyplot as plt
-
-
 sys.path.append('examples/support')
 import mock_data as mock
 from sampler import fitters
@@ -108,15 +104,23 @@ def test_shapenoise():
     """
     Test the redshift distribution
     """    
-    data = mock.generate_galaxy_catalog(10**15., 0.3, 4, cosmo, 200, 0.8, ngals=50000,shapenoise=0.25)
-    # Check that there are no galaxies with |e|>1
-    assert_equal(np.count_nonzero((data['e1']>1) | (data['e1']<-1)),0)
-    assert_equal(np.count_nonzero((data['e2']>1) | (data['e2']<-1)),0)
     
+    np.random.seed(285713)
+
     
     data = mock.generate_galaxy_catalog(10**15., 0.3, 4, cosmo, 200, 0.8, ngals=50000,shapenoise=0.5)
     # Check that there are no galaxies with |e|>1
     assert_equal(np.count_nonzero((data['e1']>1) | (data['e1']<-1)),0)
     assert_equal(np.count_nonzero((data['e2']>1) | (data['e2']<-1)),0)
     
+    
+    data = mock.generate_galaxy_catalog(10**12., 0.3, 4, cosmo, 200, 0.8, ngals=50000,shapenoise=0.5)
+    # Check that there are no galaxies with |e|>1
+    assert_equal(np.count_nonzero((data['e1']>1) | (data['e1']<-1)),0)
+    assert_equal(np.count_nonzero((data['e2']>1) | (data['e2']<-1)),0)
+    # Check that shape noise is Guassian with correct std dev
+    bins=np.arange(-1,1.1,0.1)
+    gauss = 5250*np.exp(-0.5*(bins[:-1]+0.05)**2/0.5**2)/(0.5*np.sqrt(2*np.pi))
+    assert_allclose(np.histogram(data['e1'],bins=bins)[0],gauss,atol=50,rtol=0.05)
+    assert_allclose(np.histogram(data['e2'],bins=bins)[0],gauss,atol=50,rtol=0.05)
     
