@@ -5,17 +5,21 @@ from astropy.cosmology import FlatLambdaCDM
 import clmm
 import clmm.polaraveraging as pa
 import sys
+
+import matplotlib.pyplot as plt
+
+
 sys.path.append('examples/support')
 import mock_data as mock
 from sampler import fitters
 
 TOLERANCE = {'rtol': 5.0e-4, 'atol': 1.e-4}
+cosmo = FlatLambdaCDM(H0=70, Om0=0.27, Ob0=0.045)
 
 
 def test_mock_data():
     """ Run generate_galaxy_catalog 1000 times and assert that retrieved mass is always consistent with input
     """
-    cosmo = FlatLambdaCDM(H0=70, Om0=0.27, Ob0=0.045)
     
     
     def nfw_shear_profile(r, logm, z_src):
@@ -62,7 +66,57 @@ def test_mock_data():
     assert_allclose(meas_masses,input_masses, **TOLERANCE)
 
     
-# Test the Chang distribution
-#def test_chang_z_distr():
+def test_z_distr():
+    """
+    Test the redshift distribution
+    """    
+    
+    np.random.seed(256429)
+    
+    # Set up mock cluster
+    ngals=50000; mass=15.
+    zmin=0.4; zmax=3.0
+    bins = np.arange(zmin,zmax+0.1,0.1)
+    
+    data = mock.generate_galaxy_catalog(10**mass, 0.3, 4, cosmo, 200, 0.8, ngals=ngals)
+    # Check that all galaxies are at z=0.8
+    assert_equal(np.count_nonzero(data['z']!=0.8),0)
+    
+    
+    data = mock.generate_galaxy_catalog(10**mass, 0.3, 4, cosmo, 200, 'uniform', ngals=260000,
+                                        zsrc_min=zmin, zsrc_max=zmax)
+    # Check that all galaxies are within the given limits
+    assert_equal(np.count_nonzero((data['z']<zmin)|(data['z']>zmax)),0)
+    # Check that the z distribution is uniform
+    hist = np.histogram(data['z'],bins=bins)
+    assert_allclose(hist[0],10000*np.ones(len(hist[0])),atol=200,rtol=0.02)
+    
+    
+    data = mock.generate_galaxy_catalog(10**mass, 0.3, 4, cosmo, 200, 'chang13', ngals=ngals,
+                                        zsrc_min=zmin, zsrc_max=zmax)
+    # Check that there all galaxies are within the given limits
+    assert_equal(np.count_nonzero((data['z']<zmin)|(data['z']>zmax)),0)
+    # Check that the z distribution follows Chang13 distribution
+    hist = np.histogram(data['z'],bins=bins)
+    chang = np.array([mock._chang_z_distrib(z) for z in bins[:-1]+0.05])
+    assert_allclose(hist[0],chang*ngals/2,atol=100,rtol=0.1)
+    
+    
+    
+    
+def test_shapenoise():
+    """
+    Test the redshift distribution
+    """    
+    data = mock.generate_galaxy_catalog(10**15., 0.3, 4, cosmo, 200, 0.8, ngals=50000,shapenoise=0.25)
+    # Check that there are no galaxies with |e|>1
+    assert_equal(np.count_nonzero((data['e1']>1) | (data['e1']<-1)),0)
+    assert_equal(np.count_nonzero((data['e2']>1) | (data['e2']<-1)),0)
+    
+    
+    data = mock.generate_galaxy_catalog(10**15., 0.3, 4, cosmo, 200, 0.8, ngals=50000,shapenoise=0.5)
+    # Check that there are no galaxies with |e|>1
+    assert_equal(np.count_nonzero((data['e1']>1) | (data['e1']<-1)),0)
+    assert_equal(np.count_nonzero((data['e2']>1) | (data['e2']<-1)),0)
     
     
