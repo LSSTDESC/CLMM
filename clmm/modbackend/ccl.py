@@ -97,8 +97,8 @@ class CCLCLMModeling(CLMModeling):
 
         if np.any(z_cut):
             Ds = ccl.angular_diameter_distance(self.cosmo.be_cosmo, a_src[z_cut])
-            Dl = ccl.angular_diameter_distance(self.cosmo.be_cosmo, a_len)
-            Dls = ccl.angular_diameter_distance(self.cosmo.be_cosmo, a_len, a_src[z_cut])
+            Dl = ccl.angular_diameter_distance(self.cosmo.be_cosmo, a_len[z_cut])
+            Dls = ccl.angular_diameter_distance(self.cosmo.be_cosmo, a_len[z_cut], a_src[z_cut])
 
             res[z_cut] = (cte*Ds/(Dl*Dls))*self.cor_factor
 
