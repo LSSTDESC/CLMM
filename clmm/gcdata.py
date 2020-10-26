@@ -54,7 +54,7 @@ class GCData(APtable):
         -------
         None
         """
-        for name, vale in zip(names, values):
+        for name, value in zip(names, values):
             self.add_meta(name, value)
         return
     def __repr__(self):
