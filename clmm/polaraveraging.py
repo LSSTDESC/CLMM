@@ -132,8 +132,14 @@ def compute_tangential_and_cross_components(cluster=None,
         Cross shear (or assimilated quantity) for each source galaxy
     """
 
+    # If a cluster object is not specified, we require all of these inputs
     if cluster is None:
         add_to_cluster=False
+        if any(t_ is None for t_ in (ra_lens, dec_lens, ra_source, dec_source,
+                                   shear1, shear2)):
+            raise TypeError('To compute tangential- and cross- shape components, please provide a GalaxyCluster object or ra and dec'+\
+                        'of lens and sources and shears or ellipticities of the sources.')
+
     else:
         required_cols = ['ra', 'dec', shape_component1, shape_component2]
         if not all([t_ in cluster.galcat.columns for t_ in required_cols]):
@@ -143,12 +149,6 @@ def compute_tangential_and_cross_components(cluster=None,
         ra_lens, dec_lens = cluster.ra, cluster.dec
         ra_source, dec_source = cluster.galcat['ra'], cluster.galcat['dec']
         shear1, shear2 = cluster.galcat[shape_component1], cluster.galcat[shape_component2]
-
-    # If a cluster object is not specified, we require all of these inputs
-    elif any(t_ is None for t_ in (ra_lens, dec_lens, ra_source, dec_source,
-                                   shear1, shear2)):
-        raise TypeError('To compute tangential- and cross- shape components, please provide a GalaxyCluster object or ra and dec'+\
-                        'of lens and sources and shears or ellipticities of the sources.')
 
     # If there is only 1 source, make sure everything is a scalar
     if all(not hasattr(t_, '__len__') for t_ in [ra_source, dec_source, shear1, shear2]):
