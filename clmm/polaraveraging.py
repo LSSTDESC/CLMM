@@ -7,7 +7,7 @@ import math
 import warnings
 import numpy as np
 from .gcdata import GCData
-from .utils import compute_radial_averages, make_bins, convert_units
+from .utils import compute_radial_averages, make_bins, convert_units, valid_cosmo
 from .galaxycluster import GalaxyCluster
 from .modeling import get_critical_surface_density
 
@@ -134,8 +134,7 @@ def compute_tangential_and_cross_components(cluster=None,
 
     if cluster is None:
         add_to_cluster=False
-
-    if cluster is not None:
+    else:
         required_cols = ['ra', 'dec', shape_component1, shape_component2]
         if not all([t_ in cluster.galcat.columns for t_ in required_cols]):
             raise TypeError('GalaxyCluster\'s galaxy catalog missing required columns.'+\
@@ -144,7 +143,6 @@ def compute_tangential_and_cross_components(cluster=None,
         ra_lens, dec_lens = cluster.ra, cluster.dec
         ra_source, dec_source = cluster.galcat['ra'], cluster.galcat['dec']
         shear1, shear2 = cluster.galcat[shape_component1], cluster.galcat[shape_component2]
-
 
     # If a cluster object is not specified, we require all of these inputs
     elif any(t_ is None for t_ in (ra_lens, dec_lens, ra_source, dec_source,
@@ -198,10 +196,9 @@ def compute_tangential_and_cross_components(cluster=None,
             # also save Sigma_c as new column as it is often
             # used in the weighing scheme when stacking data
             cluster.galcat['sigma_c'] = Sigma_c
+            cluster.galcat.meta['cosmo'] = valid_cosmo(cluster.galcat, cosmo, overwrite=True)
 
     return np.array(angsep), np.array(tangential_comp), np.array(cross_comp)
-
-
 def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_source_list):
     r"""Compute the angular separation between the lens and the source and the azimuthal
     angle from the lens to the source in radians.
@@ -372,9 +369,10 @@ def make_binned_profile(cluster,
                                    tan_component_out, tan_component_out+'_err',
                                    cross_component_out, cross_component_out+'_err',
                                    'z', 'z_err', 'n_src'),
-                            meta={'cosmo' : cosmo.get_desc() if cosmo else None,
-                                  'bin_units' : bin_units}, # Add metadata
+                            meta={'bin_units' : bin_units}, # Add metadata
                             )
+    if add_to_cluster:
+        profile_table.meta['cosmo'] = valid_cosmo(cluster.galcat, cosmo, overwrite=False)
     # add galaxy IDs
     if gal_ids_in_bins:
         if 'id' not in cluster.galcat.columns:
