@@ -281,12 +281,12 @@ def valid_cosmo(table, cosmo, overwrite=True):
     
     Parameters
     ----------
-    table: astropy table
+    table: GCData
         Table to check if same cosmology
-    cosmo: astropy cosmology object
-        Specifying a cosmology is required if `is_deltasigma` is True
+    cosmo: clmm.Cosmology
+        Cosmology
     overwrite: bool
-        Overwrites the current cosmology on cluster.galcat. If false raises Error.
+        Overwrites the current cosmology on table. If false raises Error.
 
     Returns
     -------
@@ -295,7 +295,7 @@ def valid_cosmo(table, cosmo, overwrite=True):
     """
     cosmo_desc = cosmo.get_desc() if cosmo else None
     cosmo_table = table.meta['cosmo'] if 'cosmo' in table.meta else None
-    if cosmo_table != cosmo_desc:
+    if cosmo_desc and cosmo_table and cosmo_table != cosmo_desc:
         if overwrite:
             warnings.warn(f'input cosmo ({cosmo_desc}) overwriting table cosmo ({cosmo_table})')
         else:
