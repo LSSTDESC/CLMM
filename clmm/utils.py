@@ -1,5 +1,6 @@
 """General utility functions that are used in multiple modules"""
 import numpy as np
+import warnings
 from scipy.stats import binned_statistic
 from astropy import units as u
 
