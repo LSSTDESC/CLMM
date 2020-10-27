@@ -196,7 +196,8 @@ def compute_tangential_and_cross_components(cluster=None,
             # also save Sigma_c as new column as it is often
             # used in the weighing scheme when stacking data
             cluster.galcat['sigma_c'] = Sigma_c
-            cluster.galcat.meta['cosmo'] = valid_cosmo(cluster.galcat, cosmo, overwrite=True)
+            #cluster.galcat.add_meta('cosmo', valid_cosmo(cluster.galcat, cosmo, overwrite=True))
+            cluster.galcat.update_cosmo(cosmo, overwrite=True)
 
     return np.array(angsep), np.array(tangential_comp), np.array(cross_comp)
 def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_source_list):
@@ -372,7 +373,8 @@ def make_binned_profile(cluster,
                             meta={'bin_units' : bin_units}, # Add metadata
                             )
     if add_to_cluster:
-        profile_table.meta['cosmo'] = valid_cosmo(cluster.galcat, cosmo, overwrite=False)
+        #profile_table.add_meta('cosmo', valid_cosmo(cluster.galcat, cosmo, overwrite=False))
+        profile_table.update_cosmo_external(cluster.galcat, cosmo, overwrite=False)
     # add galaxy IDs
     if gal_ids_in_bins:
         if 'id' not in cluster.galcat.columns:

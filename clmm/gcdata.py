@@ -3,6 +3,7 @@ Define the custom data type
 """
 from astropy.table import Table as APtable
 import pickle
+from .utils import valid_cosmo
 
 class GCData(APtable):
     """
@@ -84,6 +85,42 @@ class GCData(APtable):
         """
         out = APtable.__getitem__(self, item)
         return out
+    def update_cosmo_external(self, table, cosmo, overwrite=True):
+        r"""Updates cosmo metadata if the same as check table
+
+        Paramters
+        ---------
+        table: GCData
+            Table to check if same cosmology
+        cosmo: clmm.Cosmology
+            Cosmology
+        overwrite: bool
+            Overwrites the current cosmo metadata. If false raises Error when cosmologies are different.
+
+        Returns
+        -------
+        None
+        """
+        cosmo_desc = valid_cosmo(table, cosmo, overwrite=overwrite)
+        if cosmo_desc or 'cosmo' not in self.meta:
+            self.add_meta('cosmo', cosmo_desc)
+        return
+    def update_cosmo(self, cosmo, overwrite=True):
+        r"""Updates cosmo metadata if not present
+
+        Paramters
+        ---------
+        table: GCData
+            Table to check if same cosmology
+        overwrite: bool
+            Overwrites the current cosmo metadata. If false raises Error when cosmologies are different.
+
+        Returns
+        -------
+        None
+        """
+        self.update_cosmo_external(self, cosmo, overwrite=overwrite)
+        return
 
 """
 Additional functions specific to clmm.GCData
