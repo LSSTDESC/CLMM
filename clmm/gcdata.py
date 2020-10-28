@@ -86,12 +86,12 @@ class GCData(APtable):
         """
         out = APtable.__getitem__(self, item)
         return out
-    def update_cosmo_ext_valid(self, table, cosmo, overwrite=False):
-        r"""Updates cosmo metadata if the same as check table
+    def update_cosmo_ext_valid(self, gcdata, cosmo, overwrite=False):
+        r"""Updates cosmo metadata if the same as in gcdata
 
-        Paramters
-        ---------
-        table: GCData
+        Parameters
+        ----------
+        gcdata: GCData
             Table to check if same cosmology
         cosmo: clmm.Cosmology
             Cosmology
