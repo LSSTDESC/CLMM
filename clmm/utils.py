@@ -1,6 +1,5 @@
 """General utility functions that are used in multiple modules"""
 import numpy as np
-import warnings
 from scipy.stats import binned_statistic
 from astropy import units as u
 
@@ -276,28 +275,3 @@ def compute_lensed_ellipticity(ellipticity1_true, ellipticity2_true, shear1, she
     reduced_shear = shear/(1.0-convergence) # reduced shear
     e = (ellipticity_true+reduced_shear)/(1.0+reduced_shear.conjugate()*ellipticity_true) # lensed ellipticity
     return np.real(e), np.imag(e)
-def valid_cosmo(table, cosmo, overwrite=True):
-    r"""Checks if the cosmology present in the table is the same being used
-    
-    Parameters
-    ----------
-    table: GCData
-        Table to check if same cosmology
-    cosmo: clmm.Cosmology
-        Cosmology
-    overwrite: bool
-        Overwrites the current cosmology on table. If false raises Error.
-
-    Returns
-    -------
-    str, None
-        Cosmo description
-    """
-    cosmo_desc = cosmo.get_desc() if cosmo else None
-    cosmo_table = table.meta['cosmo'] if 'cosmo' in table.meta else None
-    if cosmo_desc and cosmo_table and cosmo_table != cosmo_desc:
-        if overwrite:
-            warnings.warn(f'input cosmo ({cosmo_desc}) overwriting table cosmo ({cosmo_table})')
-        else:
-            raise TypeError(f'input cosmo ({cosmo_desc}) differs from table cosmo ({cosmo_table})')
-    return cosmo_desc

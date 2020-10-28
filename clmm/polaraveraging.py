@@ -7,7 +7,7 @@ import math
 import warnings
 import numpy as np
 from .gcdata import GCData
-from .utils import compute_radial_averages, make_bins, convert_units, valid_cosmo
+from .utils import compute_radial_averages, make_bins, convert_units
 from .galaxycluster import GalaxyCluster
 from .modeling import get_critical_surface_density
 
@@ -374,7 +374,7 @@ def make_binned_profile(cluster,
                             )
     if add_to_cluster:
         #profile_table.add_meta('cosmo', valid_cosmo(cluster.galcat, cosmo, overwrite=False))
-        profile_table.update_cosmo_external(cluster.galcat, cosmo, overwrite=False)
+        profile_table.update_cosmo_ext_valid(cluster.galcat, cosmo, overwrite=False)
     # add galaxy IDs
     if gal_ids_in_bins:
         if 'id' not in cluster.galcat.columns:

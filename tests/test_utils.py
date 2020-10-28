@@ -1,9 +1,8 @@
 # pylint: disable=no-member, protected-access
 """ Tests for utils.py """
 import numpy as np
-from numpy.testing import assert_raises, assert_allclose, assert_equal
+from numpy.testing import assert_raises, assert_allclose
 
-from clmm import GCData
 import clmm.utils as utils
 import clmm.modeling as md
 from clmm.utils import compute_radial_averages, make_bins, convert_shapes_to_epsilon
@@ -244,29 +243,3 @@ def test_compute_lensed_ellipticities():
 
     assert_allclose(utils.compute_lensed_ellipticity(es1, es2, gamma1, gamma2, kappa),
                     ([0.4, 0.38656171],[0.4, 0.52769188]), **TOLERANCE)
-
-def test_valid_cosmo():
-    cosmo1 = md.Cosmology(H0=70.0, Omega_dm0=0.3-0.045, Omega_b0=0.045)
-    desc1 = cosmo1.get_desc()
-
-    table = GCData()
-    # Table without 'cosmo'
-    assert_equal(desc1, utils.valid_cosmo(table, cosmo1, overwrite=True))
-    assert_equal(desc1, utils.valid_cosmo(table, cosmo1, overwrite=False))
-    assert_equal(None, utils.valid_cosmo(table, None, overwrite=True))
-    assert_equal(None, utils.valid_cosmo(table, None, overwrite=False))
-
-    # Table with 'cosmo' == input cosmo or input cosmos is None
-    table.add_meta('cosmo', desc1)
-    assert_equal(desc1, utils.valid_cosmo(table, cosmo1, overwrite=True))
-    assert_equal(desc1, utils.valid_cosmo(table, cosmo1, overwrite=False))
-    assert_equal(None, utils.valid_cosmo(table, None, overwrite=True))
-    assert_equal(None, utils.valid_cosmo(table, None, overwrite=False))
-
-
-    # Table with 'cosmo' != input cosmo
-    cosmo2 = md.Cosmology(H0=60.0, Omega_dm0=0.3-0.045, Omega_b0=0.045)
-    desc2 = cosmo2.get_desc()
-
-    assert_equal(desc2, utils.valid_cosmo(table, cosmo2, overwrite=True))
-    assert_raises(TypeError, utils.valid_cosmo, table, cosmo2, overwrite=False)

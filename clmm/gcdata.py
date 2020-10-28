@@ -2,8 +2,8 @@
 Define the custom data type
 """
 from astropy.table import Table as APtable
+import warnings
 import pickle
-from .utils import valid_cosmo
 
 class GCData(APtable):
     """
@@ -23,6 +23,7 @@ class GCData(APtable):
         *args, **kwargs: Same used for astropy tables
         """
         APtable.__init__(self, *args, **kwargs)
+        self.meta['cosmo'] = None
     def add_meta(self, name, value):
         """
         Add metadata to GCData
@@ -85,7 +86,7 @@ class GCData(APtable):
         """
         out = APtable.__getitem__(self, item)
         return out
-    def update_cosmo_external(self, table, cosmo, overwrite=True):
+    def update_cosmo_ext_valid(self, table, cosmo, overwrite=False):
         r"""Updates cosmo metadata if the same as check table
 
         Paramters
@@ -101,11 +102,17 @@ class GCData(APtable):
         -------
         None
         """
-        cosmo_desc = valid_cosmo(table, cosmo, overwrite=overwrite)
-        if cosmo_desc or 'cosmo' not in self.meta:
+        cosmo_desc = cosmo.get_desc() if cosmo else None
+        if cosmo_desc:
+            cosmo_table = table.meta['cosmo']
+            if cosmo_table and cosmo_table != cosmo_desc:
+                if overwrite:
+                    warnings.warn(f'input cosmo ({cosmo_desc}) overwriting table cosmo ({cosmo_table})')
+                else:
+                    raise TypeError(f'input cosmo ({cosmo_desc}) differs from table cosmo ({cosmo_table})')
             self.add_meta('cosmo', cosmo_desc)
         return
-    def update_cosmo(self, cosmo, overwrite=True):
+    def update_cosmo(self, cosmo, overwrite=False):
         r"""Updates cosmo metadata if not present
 
         Paramters
@@ -119,7 +126,7 @@ class GCData(APtable):
         -------
         None
         """
-        self.update_cosmo_external(self, cosmo, overwrite=overwrite)
+        self.update_cosmo_ext_valid(self, cosmo, overwrite=overwrite)
         return
 
 """
