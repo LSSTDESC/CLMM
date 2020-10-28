@@ -12,6 +12,18 @@ def test_init():
     assert_equal(None, gcdata.meta['cosmo'])
 
 def test_update_cosmo():
+    # manual update
+    cosmo1 = Cosmology(H0=70.0, Omega_dm0=0.3-0.045, Omega_b0=0.045)
+    desc1 = cosmo1.get_desc()
+
+    gcdata = GCData()
+    gcdata.update_cosmo_ext_valid(gcdata, cosmo1, overwrite=False)
+    assert_equal(desc1, gcdata.meta['cosmo'])
+
+    assert_raises(ValueError, gcdata.meta.__setitem__, 'cosmo', None)
+    assert_raises(ValueError, gcdata.meta.__setitem__, 'cosmo', cosmo1)
+
+    # update_cosmo funcs
     # input_cosmo=None, data_cosmo=None
     gcdata = GCData()
     gcdata.update_cosmo_ext_valid(gcdata, None, overwrite=False)
@@ -30,13 +42,6 @@ def test_update_cosmo():
     assert_equal(None, gcdata.meta['cosmo'])
 
     # input_cosmo!=None, data_cosmo=None
-    cosmo1 = Cosmology(H0=70.0, Omega_dm0=0.3-0.045, Omega_b0=0.045)
-    desc1 = cosmo1.get_desc()
-
-    gcdata = GCData()
-    gcdata.update_cosmo_ext_valid(gcdata, cosmo1, overwrite=False)
-    assert_equal(desc1, gcdata.meta['cosmo'])
-
     gcdata = GCData()
     gcdata.update_cosmo_ext_valid(gcdata, cosmo1, overwrite=True)
     assert_equal(desc1, gcdata.meta['cosmo'])

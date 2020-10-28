@@ -5,6 +5,27 @@ from astropy.table import Table as APtable
 import warnings
 import pickle
 
+from collections import OrderedDict
+class GCMetaData(OrderedDict):
+    r"""Object to store metadata, it always has a cosmo key with protective changes
+
+    Attributes
+    ----------
+    protected: bool
+        Protect cosmo key
+    OrderedDict attributes
+    """
+    def __init__(self, *args, **kwargs):
+        OrderedDict.__init__(self, *args, **kwargs)
+        if 'cosmo' not in self:
+            self.__setitem__('cosmo', None, True)
+    def __setitem__(self, item, value, force=False):
+        if item == 'cosmo' and not force and \
+            (self['cosmo'] is not None if 'cosmo' in self else False):
+            raise ValueError('cosmo must be changed via update_cosmo or update_cosmo_ext_valid method')
+        else:
+            OrderedDict.__setitem__(self, item, value)
+        return
 class GCData(APtable):
     """
     GCData: A data objetc for gcdata. Right now it behaves as an astropy table.
@@ -23,42 +44,9 @@ class GCData(APtable):
         *args, **kwargs: Same used for astropy tables
         """
         APtable.__init__(self, *args, **kwargs)
-        self.meta['cosmo'] = None
-    def add_meta(self, name, value):
-        """
-        Add metadata to GCData
-
-        Parameters
-        ----------
-        name: str
-            Name of metadata
-        value:
-            Value of metadata
-
-        Returns
-        -------
-        None
-        """
-        self.meta[name] = value
-        return
-    def add_metas(self, names, values):
-        """
-        Add metadatas to GCData
-
-        Parameters
-        ----------
-        names: list
-            List of metadata names
-        values: list
-            List of metadata values
-
-        Returns
-        -------
-        None
-        """
-        for name, vale in zip(names, values):
-            self.add_meta(name, value)
-        return
+        metakwargs = kwargs['meta'] if 'meta' in kwargs else {}
+        metawkargs = {} if metakwargs is None else metakwargs
+        self.meta = GCMetaData(**metakwargs)
     def __repr__(self):
         """Generates string for repr(GCData)"""
         output = f'{self.__class__.__name__}('
@@ -110,7 +98,7 @@ class GCData(APtable):
                     warnings.warn(f'input cosmo ({cosmo_desc}) overwriting gcdata cosmo ({cosmo_gcdata})')
                 else:
                     raise TypeError(f'input cosmo ({cosmo_desc}) differs from gcdata cosmo ({cosmo_gcdata})')
-            self.add_meta('cosmo', cosmo_desc)
+            self.meta.__setitem__('cosmo', cosmo_desc, force=True)
         return
     def update_cosmo(self, cosmo, overwrite=False):
         r"""Updates cosmo metadata if not present
