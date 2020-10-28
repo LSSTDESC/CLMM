@@ -104,21 +104,21 @@ class GCData(APtable):
         """
         cosmo_desc = cosmo.get_desc() if cosmo else None
         if cosmo_desc:
-            cosmo_table = table.meta['cosmo']
-            if cosmo_table and cosmo_table != cosmo_desc:
+            cosmo_gcdata = gcdata.meta['cosmo']
+            if cosmo_gcdata and cosmo_gcdata != cosmo_desc:
                 if overwrite:
-                    warnings.warn(f'input cosmo ({cosmo_desc}) overwriting table cosmo ({cosmo_table})')
+                    warnings.warn(f'input cosmo ({cosmo_desc}) overwriting gcdata cosmo ({cosmo_gcdata})')
                 else:
-                    raise TypeError(f'input cosmo ({cosmo_desc}) differs from table cosmo ({cosmo_table})')
+                    raise TypeError(f'input cosmo ({cosmo_desc}) differs from gcdata cosmo ({cosmo_gcdata})')
             self.add_meta('cosmo', cosmo_desc)
         return
     def update_cosmo(self, cosmo, overwrite=False):
         r"""Updates cosmo metadata if not present
 
-        Paramters
-        ---------
-        table: GCData
-            Table to check if same cosmology
+        Parameters
+        ----------
+        cosmo: clmm.Cosmology
+            Cosmology
         overwrite: bool
             Overwrites the current cosmo metadata. If false raises Error when cosmologies are different.
 
