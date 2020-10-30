@@ -87,7 +87,7 @@ class GalaxyCluster():
         for colname in self.galcat.colnames:
             output+= f' {colname}'
         return output
-    def get_critical_surface_density(self, cosmo):
+    def add_critical_surface_density(self, cosmo):
         r"""Computes the critical surface density for each galaxy in `galcat`.
         It only runs if input cosmo != galcat cosmo or if `sigma_c` not in `galcat`.
 
@@ -162,7 +162,7 @@ class GalaxyCluster():
             raise TypeError('Galaxy catalog missing required columns.'
                             'Do you mean to first convert column names?')
         if is_deltasigma:
-            self.get_critical_surface_density(cosmo)
+            self.add_critical_surface_density(cosmo)
         # compute shears
         angsep, tangential_comp, cross_comp = compute_tangential_and_cross_components(
                 ra_lens=self.ra, dec_lens=self.dec,
