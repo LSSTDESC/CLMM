@@ -3,6 +3,8 @@ The GalaxyCluster class
 """
 import pickle
 from .gcdata import GCData
+from .dataops import compute_tangential_and_cross_components, make_binned_profile
+from .modeling import get_critical_surface_density
 
 class GalaxyCluster():
     """Object that contains the galaxy cluster metadata and background galaxy data
@@ -85,3 +87,93 @@ class GalaxyCluster():
         for colname in self.galcat.colnames:
             output+= f' {colname}'
         return output
+    def get_critical_surface_density(self, cosmo):
+        r"""Computes the critical surface density for each galaxy in `galcat`.
+        It only runs if input cosmo != galcat cosmo or if `sigma_c` not in `galcat`.
+
+        Parameters
+        ----------
+        cosmo : clmm.Cosmology object
+            CLMM Cosmology object
+
+        Returns
+        -------
+        None
+        """
+        if cosmo is None:
+            raise TypeError('To compute Sigma_crit, please provide a cosmology')
+        if cosmo.get_desc() != self.galcat.meta['cosmo'] or 'sigma_c' not in self.galcat:
+            if self.z is None:
+                raise TypeError('Cluster\'s redshift is None. Cannot compute Sigma_crit')
+            if 'z' not in self.galcat.columns:
+                raise TypeError('Galaxy catalog missing the redshift column. '
+                                'Cannot compute Sigma_crit')
+            self.galcat.update_cosmo(cosmo, overwrite=True)
+            self.galcat['sigma_c'] = get_critical_surface_density(cosmo=cosmo, z_cluster=self.z,
+                                                                  z_source=self.galcat['z'])
+        return
+    def compute_tangential_and_cross_components(self,
+                      shape_component1='e1', shape_component2='e2',
+                      tan_component='et', cross_component='ex',
+                      geometry='flat', is_deltasigma=False, cosmo=None,
+                      add=True):
+        r"""Adds a tangential- and cross- components for shear or ellipticity to self
+
+        Calls `clmm.dataops.compute_tangential_and_cross_components with the following arguments::
+
+
+        Parameters
+        ----------
+        shape_component1: string, optional
+            Name of the column in the `galcat` astropy table of the cluster object that contains
+            the shape or shear measurement along the first axis. Default: `e1`
+        shape_component1: string, optional
+            Name of the column in the `galcat` astropy table of the cluster object that contains
+            the shape or shear measurement along the second axis. Default: `e2`
+        tan_component: string, optional
+            Name of the column to be added to the `galcat` astropy table that will contain the
+            tangential component computed from columns `shape_component1` and `shape_component2`.
+            Default: `et`
+        cross_component: string, optional
+            Name of the column to be added to the `galcat` astropy table that will contain the
+            cross component computed from columns `shape_component1` and `shape_component2`.
+            Default: `ex`
+        geometry: str, optional
+            Sky geometry to compute angular separation.
+            Flat is currently the only supported option.
+        is_deltasigma: bool
+            If `True`, the tangential and cross components returned are multiplied by Sigma_crit. Results in units of :math:`M_\odot\ Mpc^{-2}`
+        cosmo: astropy cosmology object
+            Specifying a cosmology is required if `is_deltasigma` is True
+        add: bool
+            If `True`, adds the computed shears to the `galcat`
+
+        Returns
+        -------
+        angsep: array_like
+            Angular separation between lens and each source galaxy in radians
+        tangential_component: array_like
+            Tangential shear (or assimilated quantity) for each source galaxy
+        cross_component: array_like
+            Cross shear (or assimilated quantity) for each source galaxy
+        """
+        # Check is all the required data is available
+        if not all([t_ in self.galcat.columns for t_ in ('ra', 'dec', shape_component1, shape_component2)]):
+            raise TypeError('Galaxy catalog missing required columns.'
+                            'Do you mean to first convert column names?')
+        if is_deltasigma:
+            self.get_critical_surface_density(cosmo)
+        # compute shears
+        angsep, tangential_comp, cross_comp = compute_tangential_and_cross_components(
+                ra_lens=self.ra, dec_lens=self.dec,
+                ra_source=self.galcat['ra'], dec_source=self.galcat['dec'],
+                shear1=self.galcat[shape_component1], shear2=self.galcat[shape_component2],
+                geometry=geometry, is_deltasigma=is_deltasigma,
+                sigma_c=self.galcat['sigma_c'] if 'sigma_c' in self.galcat.columns else None)
+        if add:
+            self.galcat['theta'] = angsep
+            self.galcat[tan_component] = tangential_comp
+            self.galcat[cross_component] = cross_comp
+        return angsep, tangential_comp, cross_comp
+# Monkey patch functions onto Galaxy Cluster object
+GalaxyCluster.make_binned_profile = make_binned_profile
