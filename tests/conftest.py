@@ -20,7 +20,7 @@ def modeling_data(request):
 
     os.environ['CLMM_MODELING_BACKEND'] = param
     importlib.reload(clmm.modeling)
-    importlib.reload(clmm.polaraveraging)
+    importlib.reload(clmm.dataops)
     importlib.reload(clmm)
 
     return param

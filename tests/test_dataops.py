@@ -1,10 +1,10 @@
-"""Tests for polaraveraging.py"""
+"""Tests for dataops.py"""
 import numpy as np
 from numpy import testing
 
 import clmm
 from clmm import GCData
-import clmm.polaraveraging as pa
+import clmm.dataops as pa
 import clmm.modeling as md
 
 TOLERANCE = {'atol':1.e-7, 'rtol':1.e-7}

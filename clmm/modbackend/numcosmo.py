@@ -228,7 +228,7 @@ class NumCosmoCosmology(CLMMCosmology):
 
     def set_dist(self, dist):
 
-        assert isinstance(dist, Nc.Distance)
+        #assert isinstance(dist, Nc.Distance)
         self.dist = dist
         self.dist.prepare_if_needed(self.be_cosmo)
 
