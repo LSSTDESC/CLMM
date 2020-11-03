@@ -78,7 +78,24 @@ def test_print_gc():
     cl = clmm.GalaxyCluster(unique_id='1', ra=161.3, dec=34., z=0.3, galcat=GCData())
     print(cl)
     assert isinstance(cl.__str__(), str)
-
+def test_integrity_of_lensfuncs():
+    ra_source, dec_source = [120.1, 119.9, 119.9], [41.9, 42.2, 42.2]
+    id_source, z_sources = [1, 2, 3], [1, 1, 1]
+    galcat = GCData([ra_source, dec_source, z_sources, id_source],
+                  names=('ra', 'dec', 'z', 'id'))
+    galcatNoZ = GCData([ra_source, dec_source, id_source],
+                  names=('ra', 'dec', 'id'))
+    cosmo = clmm.Cosmology(H0=70.0, Omega_dm0=0.275, Omega_b0=0.025)
+    # Missing cosmo
+    cl = clmm.GalaxyCluster(unique_id='1', ra=161.3, dec=34., z=0.3, galcat=galcat)
+    assert_raises(TypeError, cl.add_critical_surface_density, None)
+    # Missing cl redshift
+    cl = clmm.GalaxyCluster(unique_id='1', ra=161.3, dec=34., z=0.3, galcat=galcat)
+    cl.z = None
+    assert_raises(TypeError, cl.add_critical_surface_density, cosmo)
+    # Missing galaxy redshift
+    cl = clmm.GalaxyCluster(unique_id='1', ra=161.3, dec=34., z=0.3, galcat=galcatNoZ)
+    assert_raises(TypeError, cl.add_critical_surface_density, cosmo)
 if __name__ == "__main__":
     test_initialization()
     test_integrity()
