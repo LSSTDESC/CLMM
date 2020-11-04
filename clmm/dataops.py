@@ -106,12 +106,9 @@ def compute_tangential_and_cross_components(
     z_source: array, optional
         Redshift of the source, required if `is_deltasigma` is True and `sigma_c` not provided.
         Not used if `sigma_c` is provided.
-    z_source: array, optional
-        Redshift of the source, required if `is_deltasigma` is True and `sigma_c` not provided.
-        Not used if `sigma_c` is provided.
     sigma_c : float, optional
         Critical surface density in units of :math:`M_\odot\ Mpc^{-2}`, 
-        if provided, `cosmo`, `z_lens`, `z_source` and `z_source` are not used.
+        if provided, `cosmo`, `z_lens` and `z_source` are not used.
 
     Returns
     -------
@@ -206,12 +203,10 @@ def _compute_cross_shear(shear1, shear2, phi):
     For extended descriptions of parameters, see `compute_shear()` documentation.
     """
     return shear1*np.sin(2.*phi)-shear2*np.cos(2.*phi)
-def make_binned_profile(cluster,
-                       angsep_units, bin_units, bins=10, cosmo=None,
-                       tan_component_in='et', cross_component_in='ex',
-                       tan_component_out='gt', cross_component_out='gx', table_name='profile',
-                       add_to_cluster=True, include_empty_bins=False, gal_ids_in_bins=False):
-    r"""Compute the shear or ellipticity profile of the cluster
+def make_binned_profile(components, angsep, angsep_units, bin_units,
+                        bins=10, include_empty_bins=False, 
+                        cosmo=None, z_source=None):
+    r"""Compute the angular profile of given components
 
     We assume that the cluster object contains information on the cross and
     tangential shears or ellipticities and angular separation of the source galaxies
@@ -228,9 +223,10 @@ def make_binned_profile(cluster,
 
     Parameters
     ----------
-    cluster : GalaxyCluster
-        Instance of GalaxyCluster that contains the cross and tangential shears or ellipticities of
-        each source galaxy in its `galcat`
+    components: list of arrays
+        List of arrays to be binned in the radial profile
+    angsep: array
+        Transvesal distances between the sources and the lens
     angsep_units : str
         Units of the calculated separation of the source galaxies
         Allowed Options = ["radians"]
@@ -242,86 +238,52 @@ def make_binned_profile(cluster,
         the bin edges. If a scalar is provided, create that many equally spaced bins between
         the minimum and maximum angular separations in bin_units. If nothing is provided,
         default to 10 equally spaced bins.
-    cosmo: dict, optional
-        Cosmology parameters to convert angular separations to physical distances
-    tan_component_in: string, optional
-        Name of the column in the `galcat` astropy table of the `cluster` object that contains
-        the tangential component to be binned. Default: 'et'
-    tan_component_out: string, optional
-        Name of the column in the `profile` table of the `cluster` object that will contain
-        the binned profile of the tangential component. Default: 'gx'
-    cross_component_in: string, optional
-        Name of the column in the `galcat` astropy table of the `cluster` object that contains
-        the cross component to be binned. Default: 'ex'
-    cross_component_out: string, optional
-        Name of the column in the `profile` table of the `cluster` object that will contain
-        the  binned profile of the cross component. Default: 'gx'
-    add_to_cluster: bool, optional
-        Attach the profile to the cluster object as `cluster.profile`
     include_empty_bins: bool, optional
         Also include empty bins in the returned table
     gal_ids_in_bins: bool, optional
         Also include the list of galaxies ID belonging to each bin in the returned table
+    cosmo: dict, optional
+        Cosmology parameters to convert angular separations to physical distances
+    z_source: array, optional
+        Redshift of the sources
 
     Returns
     -------
     profile : GCData
-        Output table containing the radius grid points, the tangential and cross shear profiles
-        on that grid, and the errors in the two shear profiles. The errors are defined as the
-        standard errors in each bin.
+        Output table containing the radius grid points, the profile of the components `p_i`, errors `p_i_err` and number of sources.
+        The errors are defined as the standard errors in each bin.
+    binnumber: 1-D ndarray of ints
+        Indices of the bins (corresponding to `xbins`) in which each value
+        of `xvals` belongs.  Same length as `yvals`.  A binnumber of `i` means the
+        corresponding value is between (xbins[i-1], xbins[i]).
 
     Notes
     -----
     This is an example of a place where the cosmology-dependence can be sequestered to another module.
     """
-    if not all([t_ in cluster.galcat.columns for t_ in (tan_component_in, cross_component_in, 'theta')]):
-        raise TypeError('Shear or ellipticity information is missing!  Galaxy catalog must have tangential '
-                        'and cross shears (gt,gx) or ellipticities (et,ex). Run compute_tangential_and_cross_components first.')
-    if 'z' not in cluster.galcat.columns:
-        raise TypeError('Missing galaxy redshifts!')
-
     # Check to see if we need to do a unit conversion
     if angsep_units is not bin_units:
-        source_seps = convert_units(cluster.galcat['theta'], angsep_units, bin_units,
-                                    redshift=cluster.z, cosmo=cosmo)
+        source_seps = convert_units(angsep, angsep_units, bin_units,
+                                    redshift=z_source, cosmo=cosmo)
     else:
-        source_seps = cluster.galcat['theta']
-
+        source_seps = angsep
     # Make bins if they are not provided
     if not hasattr(bins, '__len__'):
         bins = make_bins(np.min(source_seps), np.max(source_seps), bins)
-
+    # Create output table
+    profile_table = GCData([bins[:-1], np.zeros(len(bins)-1), bins[1:]],
+                           names=('radius_min', 'radius', 'radius_max'),
+                           meta={'bin_units' : bin_units}, # Add metadata
+                          )
     # Compute the binned averages and associated errors
-    r_avg, gt_avg, gt_err, nsrc, binnumber = compute_radial_averages(
-        source_seps, cluster.galcat[tan_component_in].data, xbins=bins, error_model='std/sqrt_n')
-    r_avg, gx_avg, gx_err, _, _ = compute_radial_averages(
-        source_seps, cluster.galcat[cross_component_in].data, xbins=bins, error_model='std/sqrt_n')
-    r_avg, z_avg, z_err, _, _ = compute_radial_averages(
-        source_seps, cluster.galcat['z'].data, xbins=bins, error_model='std/sqrt_n')
-
-    # Make out table
-    profile_table = GCData([bins[:-1], r_avg, bins[1:], gt_avg, gt_err, gx_avg, gx_err,
-                            z_avg, z_err, nsrc],
-                            names=('radius_min', 'radius', 'radius_max',
-                                   tan_component_out, tan_component_out+'_err',
-                                   cross_component_out, cross_component_out+'_err',
-                                   'z', 'z_err', 'n_src'),
-                            meta={'bin_units' : bin_units}, # Add metadata
-                            )
-    if add_to_cluster:
-        profile_table.update_cosmo_ext_valid(cluster.galcat, cosmo, overwrite=False)
-    # add galaxy IDs
-    if gal_ids_in_bins:
-        if 'id' not in cluster.galcat.columns:
-            raise TypeError('Missing galaxy IDs!')
-        profile_table['gal_id'] = [list(cluster.galcat['id'][binnumber==i+1])
-                                    for i in np.arange(len(r_avg))]
-
+    for i, component in enumerate(components):
+        r_avg, comp_avg, comp_err, nsrc, binnumber = compute_radial_averages(
+            source_seps, component, xbins=bins, error_model='std/sqrt_n')
+        profile_table[f'p_{i}'] = comp_avg
+        profile_table[f'p_{i}_err'] = comp_err
+    profile_table['radius'] = r_avg
+    profile_table['n_src'] = nsrc
     # return empty bins?
     if not include_empty_bins:
-        profile_table = profile_table[profile_table['n_src'] > 1]
-
-    if add_to_cluster:
-        setattr(cluster, table_name, profile_table)
-
-    return profile_table
+        profile_table = profile_table[nsrc>1]
+    return profile_table, binnumber

@@ -177,6 +177,25 @@ def test_compute_tangential_and_cross_components(modeling_data):
                             err_msg="Tangential Shear not correct when using cluster method")
     testing.assert_allclose(xDS, expected_cross_DS, **TOLERANCE,
                             err_msg="Cross Shear not correct when using cluster method")
+def _test_profile_table_output(profile, expected_rmin, expected_radius, expected_rmax,
+                               expected_p0, expected_p1, expected_nsrc,
+                               expected_gal_id=None, p0='p_0', p1='p_1'):
+    """Func to make the validation of the table with the expected values
+    """
+    testing.assert_allclose(profile['radius_min'], expected_rmin, **TOLERANCE,
+                            err_msg="Minimum radius in bin not expected.")
+    testing.assert_allclose(profile['radius'], expected_radius, **TOLERANCE,
+                            err_msg="Mean radius in bin not expected.")
+    testing.assert_allclose(profile['radius_max'], expected_rmax, **TOLERANCE,
+                            err_msg="Maximum radius in bin not expected.")
+    testing.assert_allclose(profile[p0], expected_p0, **TOLERANCE,
+                            err_msg="Tangential shear in bin not expected")
+    testing.assert_allclose(profile[p1], expected_p1, **TOLERANCE,
+                            err_msg="Cross shear in bin not expected")
+    testing.assert_array_equal(profile['n_src'], expected_nsrc)
+    if expected_gal_id is not None:
+        testing.assert_array_equal(profile['gal_id'], expected_gal_id)
+    return
 def test_make_binned_profiles():
     # Set up a cluster object and compute cross and tangential shears
     ra_lens, dec_lens, z_lens = 120., 42., 0.5
@@ -187,23 +206,20 @@ def test_make_binned_profiles():
     shear2 = np.array([0.3, 0.5, 0.5])
     z_sources = np.ones(3)
     angsep_units, bin_units = 'radians', 'radians'
-    cluster = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
-                                 galcat=GCData([ra_source, dec_source,
-                                               shear1, shear2, z_sources, id_source],
-                                              names=('ra', 'dec', 'e1', 'e2', 'z', 'id')))
-
-    # Test error of missing redshift
-    cluster_noz = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
-                                     galcat=GCData([ra_source, dec_source,
-                                                   shear1, shear2],
-                                                  names=('ra', 'dec', 'e1', 'e2')))
-    cluster_noz.compute_tangential_and_cross_components()
-    testing.assert_raises(TypeError, da.make_binned_profile, cluster_noz, angsep_units, bin_units)
-
-    # Test error of missing shear
-    testing.assert_raises(TypeError, da.make_binned_profile, cluster, angsep_units, bin_units)
-
-    angsep, tshear, xshear = cluster.compute_tangential_and_cross_components()
+    # Set up radial values
+    bins_radians = np.array([0.002, 0.003, 0.004])
+    expected_radius = [0.0021745039090962414, 0.0037238407383072053]
+    #######################################
+    ### Use without cluster object ########
+    #######################################
+    angsep, tshear, xshear = da.compute_tangential_and_cross_components(ra_lens=ra_lens, dec_lens=dec_lens,
+                                              ra_source=ra_source, dec_source=dec_source,
+                                              shear1=shear1, shear2=shear2)
+    # Tests passing int as bins arg makes the correct bins
+    bins = 2
+    vec_bins = clmm.utils.make_bins(np.min(angsep), np.max(angsep), bins)
+    testing.assert_array_equal(da.make_binned_profile([tshear, xshear, z_sources], angsep, angsep_units, bin_units, bins=bins)[0],
+                               da.make_binned_profile([tshear, xshear, z_sources], angsep, angsep_units, bin_units, bins=vec_bins)[0])
     # Test the outputs of compute_tangential_and_cross_components just to be safe
     expected_angsep = np.array([0.0021745039090962414, 0.0037238407383072053, 0.0037238407383072053])
     expected_cross_shear = np.array([0.2780316984090899, 0.6398792901134982, 0.6398792901134982])
@@ -214,100 +230,67 @@ def test_make_binned_profiles():
                             err_msg="Tangential Shear not correct when testing shear profiles")
     testing.assert_allclose(xshear, expected_cross_shear, **TOLERANCE,
                             err_msg="Cross Shear not correct when testing shear profiles")
-
-    # Tests passing int as bins arg makes the correct bins
-    bins = 2
-    vec_bins = clmm.utils.make_bins(np.min(cluster.galcat['theta']),
-                                    np.max(cluster.galcat['theta']), bins)
-    testing.assert_array_equal(da.make_binned_profile(cluster, angsep_units, bin_units, bins=bins),
-                               da.make_binned_profile(cluster, angsep_units, bin_units, bins=vec_bins))
-    # Make the shear profile and check it
-    bins_radians = np.array([0.002, 0.003, 0.004])
-    expected_radius = [0.0021745039090962414, 0.0037238407383072053]
-    # remember that include_empty_bins=False excludes all bins with N>=1
-    profile = da.make_binned_profile(cluster, angsep_units, bin_units, bins=bins_radians,
-                                    include_empty_bins=False)
-    testing.assert_allclose(profile['radius_min'], bins_radians[1], **TOLERANCE,
-                            err_msg="Minimum radius in bin not expected.")
-    testing.assert_allclose(profile['radius'], expected_radius[1], **TOLERANCE,
-                            err_msg="Mean radius in bin not expected.")
-    testing.assert_allclose(profile['radius_max'], bins_radians[2], **TOLERANCE,
-                            err_msg="Maximum radius in bin not expected.")
-    testing.assert_allclose(profile['gt'], expected_tan_shear[1], **TOLERANCE,
-                            err_msg="Tangential shear in bin not expected")
-    testing.assert_allclose(profile['gx'], expected_cross_shear[1], **TOLERANCE,
-                            err_msg="Cross shear in bin not expected")
-    testing.assert_array_equal(profile['n_src'], [2])
-
+    # Test default behavior, remember that include_empty_bins=False excludes all bins with N>=1
+    profile, _ = da.make_binned_profile([tshear, xshear, z_sources], angsep, angsep_units, bin_units,
+                                     bins=bins_radians, include_empty_bins=False)
+    _test_profile_table_output(profile, bins_radians[1], expected_radius[1], bins_radians[2],
+                               expected_tan_shear[1], expected_cross_shear[1], [2])
     # Test metadata
     testing.assert_array_equal(profile.meta['bin_units'], bin_units)
     testing.assert_array_equal(profile.meta['cosmo'], None)
-
-    # Repeat the same tests when we call make_binned_profile through the GalaxyCluster method
-    profile2 = cluster.make_binned_profile(
-        angsep_units, bin_units, bins=bins_radians, include_empty_bins=False)
-    testing.assert_allclose(profile2['radius_min'], bins_radians[1], **TOLERANCE,
-                            err_msg="Minimum radius in bin not expected.")
-    testing.assert_allclose(profile2['radius'], expected_radius[1], **TOLERANCE,
-                            err_msg="Mean radius in bin not expected.")
-    testing.assert_allclose(profile2['radius_max'], bins_radians[2], **TOLERANCE,
-                            err_msg="Maximum radius in bin not expected.")
-    testing.assert_allclose(profile2['gt'], expected_tan_shear[1], **TOLERANCE,
-                            err_msg="Tangential shear in bin not expected")
-    testing.assert_allclose(profile2['gx'], expected_cross_shear[1], **TOLERANCE,
-                            err_msg="Cross shear in bin not expected")
-    testing.assert_array_equal(profile['n_src'], [2])
-
     # including empty bins
-    profile3 = da.make_binned_profile(
-        cluster, angsep_units, bin_units, bins=bins_radians, include_empty_bins=True)
-    testing.assert_allclose(profile3['radius_min'], bins_radians[:-1], **TOLERANCE,
-                            err_msg="Minimum radius in bin not expected.")
-    testing.assert_allclose(profile3['radius'], expected_radius, **TOLERANCE,
-                            err_msg="Mean radius in bin not expected.")
-    testing.assert_allclose(profile3['radius_max'], bins_radians[1:], **TOLERANCE,
-                            err_msg="Maximum radius in bin not expected.")
-    testing.assert_allclose(profile3['gt'], expected_tan_shear[:-1], **TOLERANCE,
-                            err_msg="Tangential shear in bin not expected")
-    testing.assert_allclose(profile3['gx'], expected_cross_shear[:-1], **TOLERANCE,
-                            err_msg="Cross shear in bin not expected")
-    testing.assert_array_equal(profile3['n_src'], [1,2])
-
-    # Repeat the same tests when we call make_binned_profile through the GalaxyCluster method
-    profile4 = cluster.make_binned_profile(
-        angsep_units, bin_units, bins=bins_radians, include_empty_bins=True)
-    testing.assert_allclose(profile4['radius_min'], bins_radians[:-1], **TOLERANCE,
-                            err_msg="Minimum radius in bin not expected.")
-    testing.assert_allclose(profile4['radius'], expected_radius,
-                            err_msg="Mean radius in bin not expected.")
-    testing.assert_allclose(profile4['radius_max'], bins_radians[1:], **TOLERANCE,
-                            err_msg="Maximum radius in bin not expected.")
-    testing.assert_allclose(profile4['gt'], expected_tan_shear[:-1], **TOLERANCE,
-                            err_msg="Tangential shear in bin not expected")
-    testing.assert_allclose(profile4['gx'], expected_cross_shear[:-1], **TOLERANCE,
-                            err_msg="Cross shear in bin not expected")
-    testing.assert_array_equal(profile4['n_src'], [1,2])
-
-    # Repeat the same tests but also asking for list of galaxy IDs in each bin
+    profile, _ = da.make_binned_profile([tshear, xshear, z_sources], angsep, angsep_units, bin_units,
+                                     bins=bins_radians, include_empty_bins=True)
+    _test_profile_table_output(profile, bins_radians[:-1], expected_radius, bins_radians[1:],
+                               expected_tan_shear[:-1], expected_cross_shear[:-1], [1,2])
+    ###################################
+    ### Test with cluster object ######
+    ###################################
+    # Test error of missing redshift
+    cluster = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
+                                     galcat=GCData([ra_source, dec_source,
+                                                   shear1, shear2],
+                                                  names=('ra', 'dec', 'e1', 'e2')))
+    cluster.compute_tangential_and_cross_components()
+    testing.assert_raises(TypeError, cluster.make_binned_profile, bin_units)
+    # Test error of missing shear
+    cluster = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
+                                 galcat=GCData([ra_source, dec_source,
+                                               shear1, shear2, z_sources, id_source],
+                                              names=('ra', 'dec', 'e1', 'e2', 'z', 'id')))
+    testing.assert_raises(TypeError, cluster.make_binned_profile, bin_units)
+    # Test default behavior, remember that include_empty_bins=False excludes all bins with N>=1
+    cluster.compute_tangential_and_cross_components()
+    cluster.make_binned_profile(bin_units, bins=bins_radians, include_empty_bins=False)
+    _test_profile_table_output(cluster.profile, bins_radians[1], expected_radius[1], bins_radians[2], 
+                               expected_tan_shear[1], expected_cross_shear[1], [2],
+                               p0='gt', p1='gx')
+    # including empty bins
+    cluster.make_binned_profile(bin_units, bins=bins_radians, include_empty_bins=True, table_name='profile2')
+    _test_profile_table_output(cluster.profile2, bins_radians[:-1], expected_radius, bins_radians[1:], 
+                               expected_tan_shear[:-1], expected_cross_shear[:-1], [1,2],
+                               p0='gt', p1='gx')
+    # Test with galaxy id's
+    cluster.make_binned_profile(bin_units, bins=bins_radians, include_empty_bins=True,
+                                gal_ids_in_bins=True, table_name='profile3')
+    _test_profile_table_output(cluster.profile3, bins_radians[:-1], expected_radius, bins_radians[1:], 
+                               expected_tan_shear[:-1], expected_cross_shear[:-1], [1,2], [[1],[2,3]],
+                               p0='gt', p1='gx')
+    # Test overwriting table
+    cluster.make_binned_profile(bin_units, bins=bins_radians, include_empty_bins=True,
+                                gal_ids_in_bins=True, table_name='profile3')
+    cluster.make_binned_profile(bin_units, bins=bins_radians, include_empty_bins=True,
+                                gal_ids_in_bins=True, table_name='profile3')
+    _test_profile_table_output(cluster.profile3, bins_radians[:-1], expected_radius, bins_radians[1:], 
+                               expected_tan_shear[:-1], expected_cross_shear[:-1], [1,2], [[1],[2,3]],
+                               p0='gt', p1='gx')
+    # Test error with overwrite=False
+    testing.assert_raises(AttributeError, cluster.make_binned_profile, bin_units, bins=bins_radians,
+                            include_empty_bins=True, gal_ids_in_bins=True, table_name='profile3', overwrite=False)
+    # Check error of missing id's
     cluster_noid = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
                                  galcat=GCData([ra_source, dec_source,
                                                shear1, shear2, z_sources],
                                               names=('ra', 'dec', 'e1', 'e2', 'z')))
     cluster_noid.compute_tangential_and_cross_components()
-    testing.assert_raises(TypeError, da.make_binned_profile, cluster_noid, angsep_units, bin_units, gal_ids_in_bins=True)
-
-    profile5 = cluster.make_binned_profile(
-        angsep_units, bin_units, bins=bins_radians, include_empty_bins=True, gal_ids_in_bins=True)
-    testing.assert_allclose(profile5['radius_min'], bins_radians[:-1], **TOLERANCE,
-                            err_msg="Minimum radius in bin not expected.")
-    testing.assert_allclose(profile5['radius'], expected_radius,
-                            err_msg="Mean radius in bin not expected.")
-    testing.assert_allclose(profile5['radius_max'], bins_radians[1:], **TOLERANCE,
-                            err_msg="Maximum radius in bin not expected.")
-    testing.assert_allclose(profile5['gt'], expected_tan_shear[:-1], **TOLERANCE,
-                            err_msg="Tangential shear in bin not expected")
-    testing.assert_allclose(profile5['gx'], expected_cross_shear[:-1], **TOLERANCE,
-                            err_msg="Cross shear in bin not expected")
-    testing.assert_array_equal(profile5['n_src'], [1,2])
-    testing.assert_array_equal(profile5['gal_id'], [[1],[2,3]])
-
+    testing.assert_raises(TypeError, cluster_noid.make_binned_profile, bin_units, gal_ids_in_bins=True)
