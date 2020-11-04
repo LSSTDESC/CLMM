@@ -119,17 +119,16 @@ class GalaxyCluster():
                       add=True):
         r"""Adds a tangential- and cross- components for shear or ellipticity to self
 
-        Calls `clmm.dataops.compute_tangential_and_cross_components` with the following arguments::
-
-            ra_lens: cluster Ra
-            dec_lens: cluster Dec
-            ra_source: `galcat` Ra
-            dec_source: `galcat` Dec
-            shear1: `galcat` shape_component1
-            shear2: `galcat` shape_component2
-            geometry: `input` geometry
-            is_deltasigma: `input` is_deltasigma
-            sigma_c: `galcat` sigma_c | None
+        Calls `clmm.dataops.compute_tangential_and_cross_components` with the following arguments:
+        ra_lens: cluster Ra
+        dec_lens: cluster Dec
+        ra_source: `galcat` Ra
+        dec_source: `galcat` Dec
+        shear1: `galcat` shape_component1
+        shear2: `galcat` shape_component2
+        geometry: `input` geometry
+        is_deltasigma: `input` is_deltasigma
+        sigma_c: `galcat` sigma_c | None
 
         Parameters
         ----------
@@ -195,16 +194,15 @@ class GalaxyCluster():
         We assume that the cluster object contains information on the cross and
         tangential shears or ellipticities and angular separation of the source galaxies
 
-        Calls `clmm.dataops.make_binned_profile` with the following arguments::
-
-            components: `galcat` components (tan_component_in, cross_component_in, z)
-            angsep: `galcat` theta
-            angsep_units: radians
-            bin_units: `input` bin_units
-            bins: `input` bins
-            include_empty_bins: `input` include_empty_bins
-            cosmo: `input` cosmo
-            z_source: `galcat` z
+        Calls `clmm.dataops.make_binned_profile` with the following arguments:
+        components: `galcat` components (tan_component_in, cross_component_in, z)
+        angsep: `galcat` theta
+        angsep_units: radians
+        bin_units: `input` bin_units
+        bins: `input` bins
+        include_empty_bins: `input` include_empty_bins
+        cosmo: `input` cosmo
+        z_source: `galcat` z
 
         Parameters
         ----------
