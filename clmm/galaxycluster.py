@@ -202,7 +202,7 @@ class GalaxyCluster():
         bins: `input` bins
         include_empty_bins: `input` include_empty_bins
         cosmo: `input` cosmo
-        z_source: `galcat` z
+        z_lens: cluster z
 
         Parameters
         ----------
@@ -261,7 +261,7 @@ class GalaxyCluster():
             [self.galcat[n].data for n in (tan_component_in, cross_component_in, 'z')],
             angsep=self.galcat['theta'], angsep_units='radians',
             bin_units=bin_units, bins=bins, include_empty_bins=include_empty_bins,
-            cosmo=cosmo, z_source=self.galcat['z'])
+            cosmo=cosmo, z_lens=self.z)
         # Reaname table columns
         for i, n in enumerate([tan_component_out, cross_component_out, 'z']):
             profile_table.rename_column(f'p_{i}', n)

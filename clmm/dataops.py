@@ -205,7 +205,7 @@ def _compute_cross_shear(shear1, shear2, phi):
     return shear1*np.sin(2.*phi)-shear2*np.cos(2.*phi)
 def make_binned_profile(components, angsep, angsep_units, bin_units,
                         bins=10, include_empty_bins=False, 
-                        cosmo=None, z_source=None):
+                        cosmo=None, z_lens=None):
     r"""Compute the angular profile of given components
 
     We assume that the cluster object contains information on the cross and
@@ -244,8 +244,8 @@ def make_binned_profile(components, angsep, angsep_units, bin_units,
         Also include the list of galaxies ID belonging to each bin in the returned table
     cosmo: dict, optional
         Cosmology parameters to convert angular separations to physical distances
-    z_source: array, optional
-        Redshift of the sources
+    z_lens: array, optional
+        Redshift of the lens
 
     Returns
     -------
@@ -264,7 +264,7 @@ def make_binned_profile(components, angsep, angsep_units, bin_units,
     # Check to see if we need to do a unit conversion
     if angsep_units is not bin_units:
         source_seps = convert_units(angsep, angsep_units, bin_units,
-                                    redshift=z_source, cosmo=cosmo)
+                                    redshift=z_lens, cosmo=cosmo)
     else:
         source_seps = angsep
     # Make bins if they are not provided
