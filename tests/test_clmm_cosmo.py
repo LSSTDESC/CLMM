@@ -11,18 +11,16 @@ def load_validation_config():
     with open(numcosmo_path+'config.json', 'r') as fin:
         testcase = json.load(fin)
     numcosmo_profile = np.genfromtxt(numcosmo_path+'radial_profiles.txt', names=True)
-
     # Cosmology
     cosmo = md.Cosmology(H0=testcase['cosmo_H0'], Omega_dm0=testcase['cosmo_Om0']-testcase['cosmo_Ob0'], Omega_b0=testcase['cosmo_Ob0'])
-
     return cosmo, testcase
 # --------------------------------------------------------------------------
-
-def test_unimplemented(modeling_data):
-    """ Unit tests abstract class unimplemented methdods """
-
-    cosmo = md.Cosmology()
-
+def test_class(modeling_data):
+    """ Unit tests abstract class and unimplemented methdods """
+    # Test basic
+    assert_raises(TypeError, CLMMCosmology.__getitem__, None)
+    assert_raises(TypeError, CLMMCosmology.__setitem__, None, None)
+    # Unimplemented methods
     assert_raises(NotImplementedError, CLMMCosmology._init_from_cosmo, None, None)
     assert_raises(NotImplementedError, CLMMCosmology._init_from_params, None)
     assert_raises(NotImplementedError, CLMMCosmology._set_param, None, None, None)
@@ -31,9 +29,7 @@ def test_unimplemented(modeling_data):
     assert_raises(NotImplementedError, CLMMCosmology.get_Omega_m, None, None)
     assert_raises(NotImplementedError, CLMMCosmology.eval_da_z1z2, None, None, None)
     assert_raises(AttributeError, CLMMCosmology.eval_da, None, None)
-
 TOLERANCE = {'rtol': 1.0e-15}
-
 def test_z_and_a(modeling_data, cosmo_init):
     """ Unit tests abstract class z and a methdods """
 
@@ -90,9 +86,7 @@ def test_z_and_a(modeling_data, cosmo_init):
 
 def test_cosmo_basic(modeling_data, cosmo_init):
     """ Unit tests abstract class z and a methdods """
-
     cosmo = md.Cosmology(**cosmo_init)
-
     # Test get_<PAR>(z)
     Omega_m0 = cosmo['Omega_m0']
     assert_allclose(cosmo.get_Omega_m(0.0), Omega_m0, **TOLERANCE)
