@@ -205,6 +205,7 @@ def _compute_cross_shear(shear1, shear2, phi):
     return shear1*np.sin(2.*phi)-shear2*np.cos(2.*phi)
 def make_transversal_profile(components, angsep, angsep_units, bin_units,
                         bins=10, include_empty_bins=False, 
+                        return_binnumber=False,
                         cosmo=None, z_lens=None):
     r"""Compute the angular profile of given components
 
@@ -242,6 +243,8 @@ def make_transversal_profile(components, angsep, angsep_units, bin_units,
         Also include empty bins in the returned table
     gal_ids_in_bins: bool, optional
         Also include the list of galaxies ID belonging to each bin in the returned table
+    return_binnumber: bool, optional
+        Also returns the indices of the bins for each object
     cosmo: dict, optional
         Cosmology parameters to convert angular separations to physical distances
     z_lens: array, optional
@@ -252,7 +255,7 @@ def make_transversal_profile(components, angsep, angsep_units, bin_units,
     profile : GCData
         Output table containing the radius grid points, the profile of the components `p_i`, errors `p_i_err` and number of sources.
         The errors are defined as the standard errors in each bin.
-    binnumber: 1-D ndarray of ints
+    binnumber: 1-D ndarray of ints, optional
         Indices of the bins (corresponding to `xbins`) in which each value
         of `xvals` belongs.  Same length as `yvals`.  A binnumber of `i` means the
         corresponding value is between (xbins[i-1], xbins[i]).
@@ -286,4 +289,6 @@ def make_transversal_profile(components, angsep, angsep_units, bin_units,
     # return empty bins?
     if not include_empty_bins:
         profile_table = profile_table[nsrc>1]
-    return profile_table, binnumber
+    if return_binnumber:
+        return profile_table, binnumber
+    return profile_table

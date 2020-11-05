@@ -231,7 +231,7 @@ def test_make_transversal_profiles():
     testing.assert_allclose(xshear, expected_cross_shear, **TOLERANCE,
                             err_msg="Cross Shear not correct when testing shear profiles")
     # Test default behavior, remember that include_empty_bins=False excludes all bins with N>=1
-    profile, _ = da.make_transversal_profile([tshear, xshear, z_sources], angsep, angsep_units, bin_units,
+    profile = da.make_transversal_profile([tshear, xshear, z_sources], angsep, angsep_units, bin_units,
                                      bins=bins_radians, include_empty_bins=False)
     _test_profile_table_output(profile, bins_radians[1], expected_radius[1], bins_radians[2],
                                expected_tan_shear[1], expected_cross_shear[1], [2])
@@ -239,10 +239,16 @@ def test_make_transversal_profiles():
     testing.assert_array_equal(profile.meta['bin_units'], bin_units)
     testing.assert_array_equal(profile.meta['cosmo'], None)
     # including empty bins
-    profile, _ = da.make_transversal_profile([tshear, xshear, z_sources], angsep, angsep_units, bin_units,
+    profile = da.make_transversal_profile([tshear, xshear, z_sources], angsep, angsep_units, bin_units,
                                      bins=bins_radians, include_empty_bins=True)
     _test_profile_table_output(profile, bins_radians[:-1], expected_radius, bins_radians[1:],
                                expected_tan_shear[:-1], expected_cross_shear[:-1], [1,2])
+    # test with return_binnumber
+    profile, binnumber = da.make_transversal_profile([tshear, xshear, z_sources], angsep, angsep_units, bin_units,
+                                     bins=bins_radians, include_empty_bins=True, return_binnumber=True)
+    _test_profile_table_output(profile, bins_radians[:-1], expected_radius, bins_radians[1:],
+                               expected_tan_shear[:-1], expected_cross_shear[:-1], [1,2])
+    testing.assert_array_equal(binnumber, [1, 2, 2])
     ###################################
     ### Test with cluster object ######
     ###################################

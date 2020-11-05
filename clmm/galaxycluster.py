@@ -261,6 +261,7 @@ class GalaxyCluster():
             [self.galcat[n].data for n in (tan_component_in, cross_component_in, 'z')],
             angsep=self.galcat['theta'], angsep_units='radians',
             bin_units=bin_units, bins=bins, include_empty_bins=include_empty_bins,
+            return_binnumber=True,
             cosmo=cosmo, z_lens=self.z)
         # Reaname table columns
         for i, n in enumerate([tan_component_out, cross_component_out, 'z']):
