@@ -126,14 +126,8 @@ def test_compute_tangential_and_cross_components(modeling_data):
     ra_source = np.array([120.1, 119.9])
     dec_source = np.array([41.9, 42.2])
     z_source = np.array([1.,2.])
-
     shear1 = np.array([0.2, 0.4])
     shear2 = np.array([0.3, 0.5])
-
-    # Make GalaxyCluster object
-    cluster = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
-                                 galcat=GCData([ra_source, dec_source, shear1, shear2],
-                                              names=('ra', 'dec', 'e1', 'e2')))
     # Correct values
     expected_angsep = np.array([0.0021745039090962414, 0.0037238407383072053])
     expected_cross_shear = np.array([0.2780316984090899, 0.6398792901134982])
@@ -148,6 +142,10 @@ def test_compute_tangential_and_cross_components(modeling_data):
     testing.assert_raises(TypeError, da.compute_tangential_and_cross_components,
         ra_lens=ra_lens, dec_lens=dec_lens, ra_source=ra_source[:1], dec_source=dec_source,
         shear1=shear1, shear2=shear2)
+    # test not implemented geometry
+    testing.assert_raises(NotImplementedError, da.compute_tangential_and_cross_components,
+        ra_lens=ra_lens, dec_lens=dec_lens, ra_source=ra_source, dec_source=dec_source,
+        shear1=shear1, shear2=shear2, geometry='something crazy')
     # Pass arrays directly into function
     angsep, tshear, xshear = da.compute_tangential_and_cross_components(ra_lens=ra_lens, dec_lens=dec_lens,
                                               ra_source=ra_source, dec_source=dec_source,
@@ -159,6 +157,9 @@ def test_compute_tangential_and_cross_components(modeling_data):
     testing.assert_allclose(xshear, expected_cross_shear, **TOLERANCE,
                             err_msg="Cross Shear not correct when passing lists")
     # Use the cluster method
+    cluster = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
+                                 galcat=GCData([ra_source, dec_source, shear1, shear2],
+                                              names=('ra', 'dec', 'e1', 'e2')))
     angsep3, tshear3, xshear3 = cluster.compute_tangential_and_cross_components()
     testing.assert_allclose(angsep3, expected_angsep, **TOLERANCE,
                             err_msg="Angular Separation not correct when using cluster method")
@@ -167,7 +168,34 @@ def test_compute_tangential_and_cross_components(modeling_data):
     testing.assert_allclose(xshear3, expected_cross_shear, **TOLERANCE,
                             err_msg="Cross Shear not correct when using cluster method")
     # Check behaviour for the deltasigma option.
+    cosmo = clmm.Cosmology(H0=70.0, Omega_dm0=0.275, Omega_b0=0.025)
+    # test missing info for is_deltasigma=True
+    testing.assert_raises(TypeError, da.compute_tangential_and_cross_components,
+        ra_lens=ra_lens, dec_lens=dec_lens, ra_source=ra_source, dec_source=dec_source,
+        shear1=shear1, shear2=shear2, is_deltasigma=True, cosmo=None, z_lens=z_lens, z_source=z_source)
+    testing.assert_raises(TypeError, da.compute_tangential_and_cross_components,
+        ra_lens=ra_lens, dec_lens=dec_lens, ra_source=ra_source, dec_source=dec_source,
+        shear1=shear1, shear2=shear2, is_deltasigma=True, cosmo=cosmo, z_lens=None, z_source=z_source)
+    testing.assert_raises(TypeError, da.compute_tangential_and_cross_components,
+        ra_lens=ra_lens, dec_lens=dec_lens, ra_source=ra_source, dec_source=dec_source,
+        shear1=shear1, shear2=shear2, is_deltasigma=True, cosmo=cosmo, z_lens=z_lens, z_source=None)
+    # check values for DeltaSigma
+    angsep_DS, tDS, xDS = da.compute_tangential_and_cross_components(
+        ra_lens=ra_lens, dec_lens=dec_lens,
+        ra_source=ra_source, dec_source=dec_source,
+        shear1=shear1, shear2=shear2, is_deltasigma=True,
+        cosmo=cosmo, z_lens=z_lens, z_source=z_source)
+    testing.assert_allclose(angsep_DS, expected_angsep, **TOLERANCE,
+                            err_msg="Angular Separation not correct")
+    testing.assert_allclose(tDS, expected_tangential_DS, **TOLERANCE,
+                            err_msg="Tangential Shear not correct")
+    testing.assert_allclose(xDS, expected_cross_DS, **TOLERANCE,
+                            err_msg="Cross Shear not correct")
+    # Tests with the cluster object
     # cluster object missing source redshift, and function call missing cosmology
+    cluster = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
+                                 galcat=GCData([ra_source, dec_source, shear1, shear2],
+                                              names=('ra', 'dec', 'e1', 'e2')))
     testing.assert_raises(TypeError, cluster.compute_tangential_and_cross_components, is_deltasigma=True)
     # cluster object OK but function call missing cosmology
     cluster = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
@@ -175,7 +203,6 @@ def test_compute_tangential_and_cross_components(modeling_data):
                                                names=('ra', 'dec', 'e1', 'e2','z')))
     testing.assert_raises(TypeError, cluster.compute_tangential_and_cross_components, is_deltasigma=True)
     # check values for DeltaSigma
-    cosmo = clmm.Cosmology(H0=70.0, Omega_dm0=0.275, Omega_b0=0.025)
     angsep_DS, tDS, xDS = cluster.compute_tangential_and_cross_components(cosmo=cosmo, is_deltasigma=True)
     testing.assert_allclose(angsep_DS, expected_angsep, **TOLERANCE,
                             err_msg="Angular Separation not correct when using cluster method")
@@ -244,6 +271,11 @@ def test_make_transversal_profiles():
     # Test metadata
     testing.assert_array_equal(profile.meta['bin_units'], bin_units)
     testing.assert_array_equal(profile.meta['cosmo'], None)
+    # Test simple unit convesion
+    profile = da.make_transversal_profile([tshear, xshear, z_sources], angsep*180./np.pi, 'degrees', bin_units,
+                                     bins=bins_radians, include_empty_bins=False)
+    _test_profile_table_output(profile, bins_radians[1], expected_radius[1], bins_radians[2],
+                               expected_tan_shear[1], expected_cross_shear[1], [2])
     # including empty bins
     profile = da.make_transversal_profile([tshear, xshear, z_sources], angsep, angsep_units, bin_units,
                                      bins=bins_radians, include_empty_bins=True)
