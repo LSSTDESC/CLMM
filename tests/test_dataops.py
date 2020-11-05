@@ -141,10 +141,16 @@ def test_compute_tangential_and_cross_components(modeling_data):
     # DeltaSigma expected values for clmm.Cosmology(H0=70.0, Omega_dm0=0.275, Omega_b0=0.025)
     expected_cross_DS = np.array([1224.3326297393244, 1899.6061989365176])*0.7*1.0e12*1.0002565513832675
     expected_tangential_DS = np.array([-1010.889584349285, -69.9059242788237])*0.7*1.0e12*1.0002565513832675
+    # test incosnsitent data
+    testing.assert_raises(TypeError, da.compute_tangential_and_cross_components,
+        ra_lens=ra_lens, dec_lens=dec_lens, ra_source=ra_source[0], dec_source=dec_source,
+        shear1=shear1, shear2=shear2)
+    testing.assert_raises(TypeError, da.compute_tangential_and_cross_components,
+        ra_lens=ra_lens, dec_lens=dec_lens, ra_source=ra_source[:1], dec_source=dec_source,
+        shear1=shear1, shear2=shear2)
     # Pass arrays directly into function
     angsep, tshear, xshear = da.compute_tangential_and_cross_components(ra_lens=ra_lens, dec_lens=dec_lens,
-                                              ra_source=ra_source,
-                                              dec_source=dec_source,
+                                              ra_source=ra_source, dec_source=dec_source,
                                               shear1=shear1, shear2=shear2)
     testing.assert_allclose(angsep, expected_angsep, **TOLERANCE,
                             err_msg="Angular Separation not correct when passing lists")

@@ -9,20 +9,6 @@ import numpy as np
 from .gcdata import GCData
 from .utils import compute_radial_averages, make_bins, convert_units
 from .modeling import get_critical_surface_density
-
-# def _astropy_to_CCL_cosmo_object(astropy_cosmology_object): # 7481794
-#     """Generates a ccl cosmology object from an GCR or astropy cosmology object.
-#
-#     Adapted from https://github.com/LSSTDESC/CLMM/blob/issue/111/model-definition/clmm/modeling.py
-#     """
-#     apy_cosmo = astropy_cosmology_object
-#     ccl_cosmo = ccl.Cosmology(Omega_c=(apy_cosmo.Odm0-apy_cosmo.Ob0), Omega_b=apy_cosmo.Ob0,
-#                               h=apy_cosmo.h, n_s=apy_cosmo.n_s, sigma8=apy_cosmo.sigma8,
-#                               Omega_k=apy_cosmo.Ok0)
-#
-#     return ccl_cosmo
-
-
 def compute_tangential_and_cross_components(
                 ra_lens, dec_lens, ra_source, dec_source,
                 shear1, shear2, geometry='flat',
@@ -103,7 +89,7 @@ def compute_tangential_and_cross_components(
         Redshift of the source, required if `is_deltasigma` is True and `sigma_c` not provided.
         Not used if `sigma_c` is provided.
     sigma_c : float, optional
-        Critical surface density in units of :math:`M_\odot\ Mpc^{-2}`, 
+        Critical surface density in units of :math:`M_\odot\ Mpc^{-2}`,
         if provided, `cosmo`, `z_lens` and `z_source` are not used.
 
     Returns
@@ -115,17 +101,16 @@ def compute_tangential_and_cross_components(
     cross_component: array_like
         Cross shear (or assimilated quantity) for each source galaxy
     """
-    # If there is only 1 source, make sure everything is a scalar
-    if all(not hasattr(t_, '__len__') for t_ in [ra_source, dec_source, shear1, shear2]):
-        pass
-    # Otherwise, check that the length of all of the inputs match
-    elif not all(len(t_) == len(ra_source) for t_ in [dec_source, shear1, shear2]):
+    if (any(len(t_) != len(ra_source) for t_ in [dec_source, shear1, shear2]) # Check that the length of all of the inputs match
+        if hasattr(ra_source, '__len__') else
+        any(hasattr(t_, '__len__') for t_ in [dec_source, shear1, shear2]) # If there is only 1 source, make sure everything is a scalar
+        ):
         raise TypeError('To compute the tangential- and cross- shape components you should supply the same number of source '
                         'positions and shear or ellipticity.')
     # Compute the lensing angles
     if geometry == 'flat':
-        angsep, phi = _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source,
-                                                          dec_source)
+        angsep, phi = _compute_lensing_angles_flatsky(ra_lens, dec_lens,
+                                                      ra_source, dec_source)
     else:
         raise NotImplementedError(f"Sky geometry {geometry} is not currently supported")
     # Compute the tangential and cross shears
@@ -200,7 +185,7 @@ def _compute_cross_shear(shear1, shear2, phi):
     """
     return shear1*np.sin(2.*phi)-shear2*np.cos(2.*phi)
 def make_transversal_profile(components, angsep, angsep_units, bin_units,
-                        bins=10, include_empty_bins=False, 
+                        bins=10, include_empty_bins=False,
                         return_binnumber=False,
                         cosmo=None, z_lens=None):
     r"""Compute the angular profile of given components
