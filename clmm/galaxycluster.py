@@ -271,9 +271,9 @@ class GalaxyCluster():
         if gal_ids_in_bins:
             if 'id' not in self.galcat.columns:
                 raise TypeError('Missing galaxy IDs!')
-            nbins = len(bins) if hasattr(bins, '__len__') else bins
+            nbins = len(bins)-1 if hasattr(bins, '__len__') else bins
             gal_ids = [list(self.galcat['id'][binnumber==i+1])
-                        for i in range(nbins-1)]
+                        for i in range(nbins)]
             if not include_empty_bins:
                 gal_ids = [g_id for g_id in gal_ids if len(g_id)>1]
             profile_table['gal_id'] = gal_ids

@@ -282,9 +282,10 @@ def test_make_transversal_profiles():
     _test_profile_table_output(cluster.profile3, bins_radians[:-1], expected_radius, bins_radians[1:], 
                                expected_tan_shear[:-1], expected_cross_shear[:-1], [1,2], [[1],[2,3]],
                                p0='gt', p1='gx')
-    # Test overwriting table
-    cluster.make_transversal_profile(bin_units, bins=bins_radians, include_empty_bins=True,
+    # Test it runs with galaxy id's and int bins
+    cluster.make_transversal_profile(bin_units, bins=5, include_empty_bins=True,
                                 gal_ids_in_bins=True, table_name='profile3')
+    # And overwriting table
     cluster.make_transversal_profile(bin_units, bins=bins_radians, include_empty_bins=True,
                                 gal_ids_in_bins=True, table_name='profile3')
     _test_profile_table_output(cluster.profile3, bins_radians[:-1], expected_radius, bins_radians[1:], 
