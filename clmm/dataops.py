@@ -203,7 +203,7 @@ def _compute_cross_shear(shear1, shear2, phi):
     For extended descriptions of parameters, see `compute_shear()` documentation.
     """
     return shear1*np.sin(2.*phi)-shear2*np.cos(2.*phi)
-def make_binned_profile(components, angsep, angsep_units, bin_units,
+def make_transversal_profile(components, angsep, angsep_units, bin_units,
                         bins=10, include_empty_bins=False, 
                         cosmo=None, z_lens=None):
     r"""Compute the angular profile of given components

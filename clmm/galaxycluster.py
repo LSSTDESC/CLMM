@@ -4,7 +4,7 @@ The GalaxyCluster class
 import pickle
 import warnings
 from .gcdata import GCData
-from .dataops import compute_tangential_and_cross_components, make_binned_profile
+from .dataops import compute_tangential_and_cross_components, make_transversal_profile
 from .modeling import get_critical_surface_density
 
 class GalaxyCluster():
@@ -183,7 +183,7 @@ class GalaxyCluster():
             self.galcat[tan_component] = tangential_comp
             self.galcat[cross_component] = cross_comp
         return angsep, tangential_comp, cross_comp
-    def make_binned_profile(self,
+    def make_transversal_profile(self,
                             bin_units, bins=10, cosmo=None,
                             tan_component_in='et', cross_component_in='ex',
                             tan_component_out='gt', cross_component_out='gx',
@@ -194,7 +194,7 @@ class GalaxyCluster():
         We assume that the cluster object contains information on the cross and
         tangential shears or ellipticities and angular separation of the source galaxies
 
-        Calls `clmm.dataops.make_binned_profile` with the following arguments:
+        Calls `clmm.dataops.make_transversal_profile` with the following arguments:
         components: `galcat` components (tan_component_in, cross_component_in, z)
         angsep: `galcat` theta
         angsep_units: radians
@@ -257,7 +257,7 @@ class GalaxyCluster():
         if 'z' not in self.galcat.columns:
             raise TypeError('Missing galaxy redshifts!')
         # Compute the binned averages and associated errors
-        profile_table, binnumber = make_binned_profile(
+        profile_table, binnumber = make_transversal_profile(
             [self.galcat[n].data for n in (tan_component_in, cross_component_in, 'z')],
             angsep=self.galcat['theta'], angsep_units='radians',
             bin_units=bin_units, bins=bins, include_empty_bins=include_empty_bins,
