@@ -33,17 +33,13 @@ def compute_tangential_and_cross_components(
     To do so, we need the right ascension and declination of the lens and of
     all of the sources. We also need the two shape components of all of the sources.
 
-    These quantities can be handed to `tangential_and_cross_components` in three ways
+    These quantities can be handed to `tangential_and_cross_components` in two ways
 
     1. Pass in each as parameters::
 
         compute_tangential_and_cross_components(ra_lens, dec_lens, ra_source, dec_source, shape_component1, shape_component2)
 
-    2. Given a `GalaxyCluster` object::
-
-        compute_tangential_and_cross_components(cluster)
-
-    3. As a method of `GalaxyCluster`::
+    2. As a method of `GalaxyCluster`::
 
         cluster.tangential_and_cross_components()
 
@@ -212,15 +208,15 @@ def make_transversal_profile(components, angsep, angsep_units, bin_units,
     We assume that the cluster object contains information on the cross and
     tangential shears or ellipticities and angular separation of the source galaxies
 
-    This function can be called in two ways using an instance of GalaxyCluster
+    This function can be called in two ways:
 
-    1. Pass an instance of GalaxyCluster into the function::
+    1. Pass explict arguments::
 
-        make_shear_profile(cluster, 'radians', 'radians')
+        make_transversal_profile([component1, component2], distances, 'radians')
 
     2. Call it as a method of a GalaxyCluster instance::
 
-        cluster.make_shear_profile('radians', 'radians')
+        cluster.make_transversal_profile('radians', 'radians')
 
     Parameters
     ----------
