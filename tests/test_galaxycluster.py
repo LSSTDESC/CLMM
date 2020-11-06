@@ -15,8 +15,7 @@ def test_initialization():
     assert_equal(testdict1['dec'], cl1.dec)
     assert_equal(testdict1['z'], cl1.z)
     assert isinstance(cl1.galcat, GCData)
-
-
+    assert isinstance(cl1.__repr__(), str)
 def test_integrity(): # Converge on name
     # Ensure we have all necessary values to make a GalaxyCluster
     assert_raises(TypeError, clmm.GalaxyCluster, ra=161.3, dec=34., z=0.3, galcat=GCData())
@@ -32,6 +31,7 @@ def test_integrity(): # Converge on name
     assert_raises(ValueError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=34., z=-0.3, galcat=GCData())
 
     # Test that inputs are the correct type
+    assert_raises(TypeError, clmm.GalaxyCluster, unique_id=None, ra=161.3, dec=34., z=0.3, galcat=GCData())
     assert_raises(TypeError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=34., z=0.3, galcat=1)
     assert_raises(TypeError, clmm.GalaxyCluster, unique_id=1, ra=161.3, dec=34., z=0.3, galcat=[])
     assert_raises(TypeError, clmm.GalaxyCluster, unique_id=1, ra=None, dec=34., z=0.3, galcat=GCData())

@@ -46,18 +46,18 @@ class GalaxyCluster():
         if isinstance(self.unique_id, (int, str)): # should unique_id be a float?
             self.unique_id = str(self.unique_id)
         else:
-            raise TypeError(f'unique_id incorrect type: {type(unique_id)}')
+            raise TypeError(f'unique_id incorrect type: {type(self.unique_id)}')
         try:
             self.ra = float(self.ra)
-        except ValueError:
+        except:
             raise TypeError(f'ra incorrect type: {type(self.ra)}')
         try:
             self.dec = float(self.dec)
-        except ValueError:
+        except:
             raise TypeError(f'dec incorrect type: {type(self.dec)}')
         try:
             self.z = float(self.z)
-        except ValueError:
+        except:
             raise TypeError(f'z incorrect type: {type(self.z)}')
         if not isinstance(self.galcat, GCData):
             raise TypeError(f'galcat incorrect type: {type(self.galcat)}')
