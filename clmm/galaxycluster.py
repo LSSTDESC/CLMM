@@ -166,9 +166,11 @@ class GalaxyCluster():
             Cross shear (or assimilated quantity) for each source galaxy
         """
         # Check is all the required data is available
-        if not all([t_ in self.galcat.columns for t_ in ('ra', 'dec', shape_component1, shape_component2)]):
-            raise TypeError('Galaxy catalog missing required columns.'
-                            'Do you mean to first convert column names?')
+        missing_cols = ', '.join([f"'{t_}'" for t_ in ('ra', 'dec', shape_component1, shape_component2)
+                                    if t_ not in self.galcat.columns])
+        if len(missing_cols)>0:
+            raise TypeError('Galaxy catalog missing required columns: '+missing_cols+\
+                            '. Do you mean to first convert column names?')
         if is_deltasigma:
             self.add_critical_surface_density(cosmo)
         # compute shears

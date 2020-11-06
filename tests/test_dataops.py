@@ -160,6 +160,10 @@ def test_compute_tangential_and_cross_components(modeling_data):
     cluster = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
                                  galcat=GCData([ra_source, dec_source, shear1, shear2],
                                               names=('ra', 'dec', 'e1', 'e2')))
+    # Test error with bad name/missing column
+    testing.assert_raises(TypeError, cluster.compute_tangential_and_cross_components,
+                          shape_component1='crazy name')
+    # Test output
     angsep3, tshear3, xshear3 = cluster.compute_tangential_and_cross_components()
     testing.assert_allclose(angsep3, expected_angsep, **TOLERANCE,
                             err_msg="Angular Separation not correct when using cluster method")
