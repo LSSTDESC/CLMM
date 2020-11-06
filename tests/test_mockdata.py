@@ -8,9 +8,10 @@ import sys
 sys.path.append('examples/support')
 import mock_data as mock
 from sampler import fitters
+from clmm import Cosmology
 
 TOLERANCE = {'rtol': 5.0e-4, 'atol': 1.e-4}
-cosmo = FlatLambdaCDM(H0=70, Om0=0.27, Ob0=0.045)
+mock_cosmo = Cosmology(H0 = 70.0, Omega_dm0 = 0.27 - 0.045, Omega_b0 = 0.045, Omega_k0 = 0.0)
 
 
 def test_mock_data():
