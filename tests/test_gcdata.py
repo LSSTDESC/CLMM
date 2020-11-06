@@ -17,8 +17,8 @@ def test_update_cosmo():
     desc1 = cosmo1.get_desc()
     gcdata = GCData()
     # check it has __str__ adn __repr__
-    gcdata.__str__
-    gcdata.__repr__
+    gcdata.__str__()
+    gcdata.__repr__()
     # manual update
     gcdata.update_cosmo_ext_valid(gcdata, cosmo1, overwrite=False)
     assert_equal(desc1, gcdata.meta['cosmo'])
