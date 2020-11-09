@@ -73,18 +73,18 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_
     Delta_SO : float, optional
         Overdensity density contrast used to compute the cluster mass and concentration. The
         spherical overdensity mass is computed as the mass enclosed within the radius
-        :math:`R_{\Delta{\rm SO}}` where the mean density is :math:`\Delta_{\rm SO}` times
-        the mean density of the Universe at the cluster redshift
+        :math:`R_{\Delta{\rm SO}}` where the mean matter density is :math:`\Delta_{\rm SO}` times
+        the mean (or critical, depending on the massdef keyword) density of the Universe at the cluster redshift
         :math:`M_{\Delta{\rm SO}}=4/3\pi\Delta_{\rm SO}\rho_{m}(z_{\rm lens})R_{\Delta{\rm SO}}^3`
-    zsrc_min : float, optional
-        The minimum true redshift of the sources. If photoz errors are included, the observed redshift
-        may be smaller than zsrc_min.
     massdef : string, optional
         Definition the mass overdensity with respect to the 'mean' or 'critical' density of the univers. Default is 'mean' as it works
         for all modeling backends. The NumCosmo and CCL backends also allow the use of 'critical'.
     halo_profile_model : string, optional
         Halo density profile. Default is 'nfw', which works for all modeling backends. The NumCosmo backend allow for more
         options, e.g. 'einasto' or 'burkert' profiles.
+    zsrc_min : float, optional
+        The minimum true redshift of the sources. If photoz errors are included, the observed redshift
+        may be smaller than zsrc_min.
     zsrc_max : float, optional
         The maximum true redshift of the sources, apllied when galaxy redshifts are drawn from
         a redshift distribution. If photoz errors are included, the observed redshift may be larger than
