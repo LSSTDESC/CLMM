@@ -22,7 +22,7 @@ def test_update_cosmo():
     # manual update
     gcdata.update_cosmo_ext_valid(gcdata, cosmo1, overwrite=False)
     assert_equal(desc1, gcdata.meta['cosmo'])
-    # check tahat adding cosmo metadata manually is forbidden
+    # check that adding cosmo metadata manually is forbidden
     assert_raises(ValueError, gcdata.meta.__setitem__, 'cosmo', None)
     assert_raises(ValueError, gcdata.meta.__setitem__, 'cosmo', cosmo1)
     # update_cosmo funcs
