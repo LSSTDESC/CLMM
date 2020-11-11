@@ -69,7 +69,7 @@ class CLMModeling:
         Returns
         -------
         array_like, float
-            3-dimensional mass density in units of :math:`M_\odot\ Mpc^{-3}` 
+            3-dimensional mass density in units of :math:`M_\odot\ Mpc^{-3}`
         """
         raise NotImplementedError
     def eval_sigma(self, r_proj, z_cl):
@@ -90,7 +90,7 @@ class CLMModeling:
         raise NotImplementedError
     def eval_sigma_mean(self, r_proj, z_cl):
         r""" Computes the mean value of surface density inside radius r_proj
-        
+
         Parameters
         ----------
         r_proj : array_like

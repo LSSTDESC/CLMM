@@ -88,7 +88,7 @@ def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profil
     Returns
     -------
     rho : array_like, float
-        3-dimensional mass density in units of :math:`M_\odot\ Mpc^{-3}` 
+        3-dimensional mass density in units of :math:`M_\odot\ Mpc^{-3}`
 
     Notes
     -----

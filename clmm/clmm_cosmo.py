@@ -58,10 +58,10 @@ class CLMMCosmology:
             self._init_from_params(H0=H0, Omega_b0=Omega_b0, Omega_dm0=Omega_dm0, Omega_k0=Omega_k0)
     def get_Omega_m(self, z):
         r"""Gets the value of the dimensionless matter density
-        
+
         .. math::
             \Omega_m(z) = \frac{\rho_m(z)}{\rho_\mathrm{crit}(z)}.
-        
+
         Parameters
         ----------
         z : float
@@ -99,9 +99,9 @@ class CLMMCosmology:
     def eval_da(self, z):
         r"""Computes the angular diameter distance between 0.0 and z.
 
-        .. math::     
+        .. math::
             d_a(z) = \frac{c}{H_0}\frac{1}{1+z}\int_{0}^{z}\frac{dz'}{E(z')}
-        
+
         Parameters
         ----------
         z : float
@@ -125,7 +125,7 @@ class CLMMCosmology:
         If only a1 is specified, this function returns the angular diameter
         distance from a=1 to a1. If both a1 and a2 are specified, this function
         returns the angular diameter distance between a1 and a2.
-        
+
         .. math::
             d_a(a) = \frac{c}{H_0}a\int_{a}^{1}\frac{da'}{a'^2E(a')}
 
@@ -148,7 +148,7 @@ class CLMMCosmology:
         Parameters
         ----------
         z : array_like
-            Redshift        
+            Redshift
         Returns
         -------
         scale_factor : array_like
@@ -159,7 +159,7 @@ class CLMMCosmology:
             raise ValueError(f"Cannot convert negative redshift to scale factor")
         return 1.0/(1.0+z)
     def _get_z_from_a(self, a):
-        """ Convert scale factor to redshift 
+        """ Convert scale factor to redshift
         Parameters
         ----------
         a : array_like
@@ -197,7 +197,7 @@ class CLMMCosmology:
     def mpc2rad(self, dist1, redshift):
         r""" Convert between radians and Mpc using the small angle approximation
         and :math:`d = D_A \theta`.
-        
+
         Parameters
         ----------
         dist1 : array_like
