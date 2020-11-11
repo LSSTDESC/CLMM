@@ -5,6 +5,8 @@ from numpy.testing import assert_raises, assert_allclose, assert_equal
 import clmm.modeling as md
 from clmm.clmm_cosmo import CLMMCosmology
 # ----------- Some Helper Functions for the Validation Tests ---------------
+
+
 def load_validation_config():
     """ Loads values precomputed by numcosmo for comparison """
     numcosmo_path = 'tests/data/numcosmo/'
@@ -15,6 +17,8 @@ def load_validation_config():
     cosmo = md.Cosmology(H0=testcase['cosmo_H0'], Omega_dm0=testcase['cosmo_Om0']-testcase['cosmo_Ob0'], Omega_b0=testcase['cosmo_Ob0'])
     return cosmo, testcase
 # --------------------------------------------------------------------------
+
+
 def test_class(modeling_data):
     """ Unit tests abstract class and unimplemented methdods """
     # Test basic
@@ -30,6 +34,8 @@ def test_class(modeling_data):
     assert_raises(NotImplementedError, CLMMCosmology.eval_da_z1z2, None, None, None)
     assert_raises(AttributeError, CLMMCosmology.eval_da, None, None)
 TOLERANCE = {'rtol': 1.0e-15}
+
+
 def test_z_and_a(modeling_data, cosmo_init):
     """ Unit tests abstract class z and a methdods """
 
@@ -84,6 +90,7 @@ def test_z_and_a(modeling_data, cosmo_init):
     assert_allclose(cosmo._get_a_from_z(cosmo._get_z_from_a(testval)), testval, **TOLERANCE)
     assert_allclose(cosmo._get_z_from_a(cosmo._get_a_from_z(testval)), testval, **TOLERANCE)
 
+
 def test_cosmo_basic(modeling_data, cosmo_init):
     """ Unit tests abstract class z and a methdods """
     cosmo = md.Cosmology(**cosmo_init)
@@ -120,6 +127,7 @@ def test_cosmo_basic(modeling_data, cosmo_init):
     # Test initializing cosmo
     test_cosmo = md.Cosmology(be_cosmo=cosmo.be_cosmo)
 
+
 def _rad2mpc_helper(dist, redshift, cosmo, do_inverse):
     """ Helper function to clean up test_convert_rad_to_mpc. Truth is computed using
     astropy so this test is very circular. Once we swap to CCL very soon this will be
@@ -129,6 +137,8 @@ def _rad2mpc_helper(dist, redshift, cosmo, do_inverse):
         assert_allclose(cosmo.mpc2rad(dist, redshift), dist/d_a, **TOLERANCE)
     else:
         assert_allclose(cosmo.rad2mpc(dist, redshift), dist*d_a, **TOLERANCE)
+
+
 def test_convert_rad_to_mpc():
     """ Test conversion between physical and angular units and vice-versa. """
     # Set some default values if I want them

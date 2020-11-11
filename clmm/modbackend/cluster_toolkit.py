@@ -54,6 +54,7 @@ def _assert_correct_type_ct(a):
     else:
         return np.array(a).astype(np.float64, order='C', copy=False)
 
+
 def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profile_model='nfw', massdef='mean'):
     r"""Retrieve the 3d density :math:`\rho(r)`.
 
@@ -231,6 +232,7 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
     else:
         raise ValueError(f"Profile model {halo_profile_model} not currently supported by {__package__}")
     return deltasigma
+
 
 def get_critical_surface_density(cosmo, z_cluster, z_source):
     r"""Computes the critical surface density
@@ -498,6 +500,8 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
 
 # The magnification is computed taking into account just the tangential shear. This is valid for
 # spherically averaged profiles, e.g., NFW and Einasto (by construction the cross shear is zero).
+
+
 def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
                         halo_profile_model='nfw', massdef = 'mean', z_src_model='single_plane'):
     r"""Computes the magnification
@@ -575,7 +579,9 @@ def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
 
 # CLMM Cosmology object - clustertoolkit+astropy implementation
 
+
 class AstroPyCosmology(CLMMCosmology):
+
     def __init__(self, **kwargs):
         super(AstroPyCosmology, self).__init__(**kwargs)
 
@@ -623,6 +629,7 @@ class AstroPyCosmology(CLMMCosmology):
 
     def eval_da_z1z2(self, z1, z2):
         return self.be_cosmo.angular_diameter_distance_z1z2(z1, z2).to_value(units.Mpc)
+
 
 def ctCLMModeling(*args, **kwargs):
     raise NotImplementedError("cluster_toolkit does not implement an OO interface.")

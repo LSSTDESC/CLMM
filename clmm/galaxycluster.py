@@ -7,6 +7,7 @@ from .gcdata import GCData
 from .dataops import compute_tangential_and_cross_components, make_transversal_profile
 from .modeling import get_critical_surface_density
 
+
 class GalaxyCluster():
     """Object that contains the galaxy cluster metadata and background galaxy data
 
@@ -23,6 +24,7 @@ class GalaxyCluster():
     galcat : GCData
         Table of background galaxy data containing at least galaxy_id, ra, dec, e1, e2, z
     """
+
     def __init__(self, *args, **kwargs):
         self.unique_id = None
         self.ra = None
@@ -32,6 +34,7 @@ class GalaxyCluster():
         if len(args)>0 or len(kwargs)>0:
             self._add_values(*args, **kwargs)
             self._check_types()
+
     def _add_values(self, unique_id: str, ra: float, dec: float, z: float,
                  galcat: GCData):
         """Add values for all attributes"""
@@ -41,6 +44,7 @@ class GalaxyCluster():
         self.z = z
         self.galcat = galcat
         return
+
     def _check_types(self):
         """Check types of all attributes"""
         if isinstance(self.unique_id, (int, str)): # should unique_id be a float?
@@ -68,17 +72,20 @@ class GalaxyCluster():
         if self.z < 0.:
             raise ValueError(f'z={self.z} must be greater than 0')
         return
+
     def save(self, filename, **kwargs):
         """Saves GalaxyCluster object to filename using Pickle"""
         with open(filename, 'wb') as fin:
             pickle.dump(self, fin, **kwargs)
         return
+
     def load(filename, **kwargs):
         """Loads GalaxyCluster object to filename using Pickle"""
         with open(filename, 'rb') as fin:
             self = pickle.load(fin, **kwargs)
         self._check_types()
         return self
+
     def __repr__(self):
         """Generates string for print(GalaxyCluster)"""
         output = f'GalaxyCluster {self.unique_id}: '+\
@@ -87,6 +94,7 @@ class GalaxyCluster():
         for colname in self.galcat.colnames:
             output+= f' {colname}'
         return output
+
     def add_critical_surface_density(self, cosmo):
         r"""Computes the critical surface density for each galaxy in `galcat`.
         It only runs if input cosmo != galcat cosmo or if `sigma_c` not in `galcat`.
@@ -112,6 +120,7 @@ class GalaxyCluster():
             self.galcat['sigma_c'] = get_critical_surface_density(cosmo=cosmo, z_cluster=self.z,
                                                                   z_source=self.galcat['z'])
         return
+
     def compute_tangential_and_cross_components(self,
                       shape_component1='e1', shape_component2='e2',
                       tan_component='et', cross_component='ex',
@@ -185,6 +194,7 @@ class GalaxyCluster():
             self.galcat[tan_component] = tangential_comp
             self.galcat[cross_component] = cross_comp
         return angsep, tangential_comp, cross_comp
+
     def make_transversal_profile(self,
                             bin_units, bins=10, cosmo=None,
                             tan_component_in='et', cross_component_in='ex',

@@ -67,7 +67,6 @@ def test_compute_radial_averages():
                      [inbin1.size, inbin2.size, inbin3.size]], **TOLERANCE)
 
 
-
 def test_make_bins():
     """ Test the make_bins function. Right now this function is pretty simplistic and the
     tests are pretty circular. As more functionality is added here the tests will
@@ -110,8 +109,6 @@ def test_make_bins():
                     np.zeros(22), atol=2)
     assert_raises(ValueError, make_bins, -10., -5., 10, 'equaloccupation', None)
     assert_raises(ValueError, make_bins, -10., -5., 10, 'undefinedmethod')
-
-
 
 
 def test_convert_units():
@@ -167,6 +164,7 @@ def test_convert_units():
     assert_allclose(utils.convert_units(r_kpc, 'kpc', 'arcmin', redshift, cosmo),
                     truth, **TOLERANCE)
 
+
 def test_build_ellipticities():
 
     # second moments are floats
@@ -186,6 +184,7 @@ def test_build_ellipticities():
                                                             [0.01538462, 0.04],
                                                             [-0.11697033, 0.10106221],
                                                             [0.00779802, 0.02021244]), **TOLERANCE)
+
 
 def test_shape_conversion():
     """ Test the helper function that convert user defined shapes into
@@ -223,6 +222,7 @@ def test_shape_conversion():
     assert_allclose(e2/0.8,e2_2, **TOLERANCE)
     # Test known shape_definition
     assert_raises(TypeError, convert_shapes_to_epsilon, e1, e2, shape_definition='undefinedSD')
+
 
 def test_compute_lensed_ellipticities():
 

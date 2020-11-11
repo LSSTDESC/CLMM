@@ -17,7 +17,9 @@ from .. clmm_modeling import CLMModeling
 
 __all__ = ['NumCosmoCLMModeling', 'Modeling', 'Cosmology']+func_layer.__all__
 
+
 class NumCosmoCLMModeling(CLMModeling):
+
     def __init__(self, massdef='mean', delta_mdef=200, halo_profile_model='nfw'):
         Ncm.cfg_init()
 
@@ -160,7 +162,9 @@ class NumCosmoCLMModeling(CLMModeling):
 
 # CLMM Cosmology object - NumCosmo implementation
 
+
 class NumCosmoCosmology(CLMMCosmology):
+
     def __init__(self, dist=None, dist_zmax=15.0, **kwargs):
 
         self.dist = None

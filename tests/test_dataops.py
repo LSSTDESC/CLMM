@@ -9,6 +9,7 @@ import clmm.modeling as md
 
 TOLERANCE = {'atol':1.e-7, 'rtol':1.e-7}
 
+
 def test_compute_cross_shear():
     shear1, shear2, phi = 0.15, 0.08, 0.52
     expected_cross_shear = 0.08886301350787848
@@ -120,6 +121,7 @@ def test_compute_lensing_angles_flatsky():
                             [[0.0012916551296819666, 0.003424250083245557], [-2.570568636904587, 0.31079754672944354]],
                             TOLERANCE['rtol'], err_msg="Failure when ra_l and ra_s are the same but one is defined negative")
 
+
 def test_compute_tangential_and_cross_components(modeling_data):
     # Input values
     ra_lens, dec_lens, z_lens = 120., 42., 0.5
@@ -214,6 +216,8 @@ def test_compute_tangential_and_cross_components(modeling_data):
                             err_msg="Tangential Shear not correct when using cluster method")
     testing.assert_allclose(xDS, expected_cross_DS, **TOLERANCE,
                             err_msg="Cross Shear not correct when using cluster method")
+
+
 def _test_profile_table_output(profile, expected_rmin, expected_radius, expected_rmax,
                                expected_p0, expected_p1, expected_nsrc,
                                expected_gal_id=None, p0='p_0', p1='p_1'):
@@ -233,6 +237,8 @@ def _test_profile_table_output(profile, expected_rmin, expected_radius, expected
     if expected_gal_id is not None:
         testing.assert_array_equal(profile['gal_id'], expected_gal_id)
     return
+
+
 def test_make_transversal_profiles():
     # Set up a cluster object and compute cross and tangential shears
     ra_lens, dec_lens, z_lens = 120., 42., 0.5
@@ -310,18 +316,18 @@ def test_make_transversal_profiles():
     # Test default behavior, remember that include_empty_bins=False excludes all bins with N>=1
     cluster.compute_tangential_and_cross_components()
     cluster.make_transversal_profile(bin_units, bins=bins_radians, include_empty_bins=False)
-    _test_profile_table_output(cluster.profile, bins_radians[1], expected_radius[1], bins_radians[2], 
+    _test_profile_table_output(cluster.profile, bins_radians[1], expected_radius[1], bins_radians[2],
                                expected_tan_shear[1], expected_cross_shear[1], [2],
                                p0='gt', p1='gx')
     # including empty bins
     cluster.make_transversal_profile(bin_units, bins=bins_radians, include_empty_bins=True, table_name='profile2')
-    _test_profile_table_output(cluster.profile2, bins_radians[:-1], expected_radius, bins_radians[1:], 
+    _test_profile_table_output(cluster.profile2, bins_radians[:-1], expected_radius, bins_radians[1:],
                                expected_tan_shear[:-1], expected_cross_shear[:-1], [1,2],
                                p0='gt', p1='gx')
     # Test with galaxy id's
     cluster.make_transversal_profile(bin_units, bins=bins_radians, include_empty_bins=True,
                                 gal_ids_in_bins=True, table_name='profile3')
-    _test_profile_table_output(cluster.profile3, bins_radians[:-1], expected_radius, bins_radians[1:], 
+    _test_profile_table_output(cluster.profile3, bins_radians[:-1], expected_radius, bins_radians[1:],
                                expected_tan_shear[:-1], expected_cross_shear[:-1], [1,2], [[1],[2,3]],
                                p0='gt', p1='gx')
     # Test it runs with galaxy id's and int bins
@@ -330,7 +336,7 @@ def test_make_transversal_profiles():
     # And overwriting table
     cluster.make_transversal_profile(bin_units, bins=bins_radians, include_empty_bins=True,
                                 gal_ids_in_bins=True, table_name='profile3')
-    _test_profile_table_output(cluster.profile3, bins_radians[:-1], expected_radius, bins_radians[1:], 
+    _test_profile_table_output(cluster.profile3, bins_radians[:-1], expected_radius, bins_radians[1:],
                                expected_tan_shear[:-1], expected_cross_shear[:-1], [1,2], [[1],[2,3]],
                                p0='gt', p1='gx')
     # Test it runs with galaxy id's and int bins and no empty bins

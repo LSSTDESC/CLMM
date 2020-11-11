@@ -6,6 +6,7 @@ import clmm
 from clmm import GCData
 import os
 
+
 def test_initialization():
     testdict1 = {'unique_id': '1', 'ra': 161.3, 'dec': 34., 'z': 0.3, 'galcat': GCData()}
     cl1 = clmm.GalaxyCluster(**testdict1)
@@ -15,6 +16,8 @@ def test_initialization():
     assert_equal(testdict1['dec'], cl1.dec)
     assert_equal(testdict1['z'], cl1.z)
     assert isinstance(cl1.galcat, GCData)
+
+
 def test_integrity(): # Converge on name
     # Ensure we have all necessary values to make a GalaxyCluster
     assert_raises(TypeError, clmm.GalaxyCluster, ra=161.3, dec=34., z=0.3, galcat=GCData())
@@ -46,6 +49,7 @@ def test_integrity(): # Converge on name
     assert clmm.GalaxyCluster('1', '161.', '55.', '.3', GCData())
     assert clmm.GalaxyCluster('1', 161, 55, 1, GCData())
 
+
 def test_save_load():
     cl1 = clmm.GalaxyCluster(unique_id='1', ra=161.3, dec=34., z=0.3, galcat=GCData())
     cl1.save('testcluster.pkl')
@@ -73,6 +77,7 @@ def test_save_load():
 #     tst.assert_equal([], gc.find_data(test_creator, test_dict_sub, exact=True))
 #     tst.assert_equal([], gc.find_data(test_creator, test_dict_diff, exact=True))
 
+
 def test_print_gc():
     # Cluster with empty galcat
     cl = clmm.GalaxyCluster(unique_id='1', ra=161.3, dec=34., z=0.3, galcat=GCData())
@@ -87,6 +92,8 @@ def test_print_gc():
     print(cl)
     assert isinstance(cl.__str__(), str)
     assert isinstance(cl.__repr__(), str)
+
+
 def test_integrity_of_lensfuncs():
     ra_source, dec_source = [120.1, 119.9, 119.9], [41.9, 42.2, 42.2]
     id_source, z_sources = [1, 2, 3], [1, 1, 1]

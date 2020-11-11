@@ -12,6 +12,8 @@ from clmm import GCData
 TOLERANCE = {'rtol': 1.0e-6, 'atol': 1.0e-6}
 
 # ----------- Some Helper Functions for the Validation Tests ---------------
+
+
 def compute_sigmac_physical_constant(lightspeed, gnewt, msun, pc_to_m):
     """ Computes physical constant used to in Sigma_crit
 
@@ -87,6 +89,7 @@ def load_validation_config():
             'CLMM_SIGMAC_PCST': CLMM_SIGMAC_PCST}
 # --------------------------------------------------------------------------
 
+
 def test_physical_constants(modeling_data):
     """ Test physical values of physical_constants
 
@@ -149,6 +152,7 @@ def test_astropyify_ccl_cosmo(modeling_data):
     #assert_raises(TypeError, md.astropyify_ccl_cosmo, 70.)
     #assert_raises(TypeError, md.astropyify_ccl_cosmo, [70., 0.3, 0.25, 0.05])
 
+
 def test_get_reduced_shear(modeling_data):
     """ Unit tests for get_reduced_shear """
     # Make some base objects
@@ -191,6 +195,7 @@ def helper_profiles(func):
     assert_raises(ValueError, func, r3d, mdelta, cdelta, z_cl, cclcosmo, 200, 'bleh')
 
     # Test defaults
+
     defaulttruth = func(r3d, mdelta, cdelta, z_cl, cclcosmo, delta_mdef=200,
                         halo_profile_model='nfw')
     assert_allclose(func(r3d, mdelta, cdelta, z_cl, cclcosmo, halo_profile_model='nfw'),
@@ -265,6 +270,7 @@ def helper_physics_functions(func):
     cosmo = md.Cosmology(Omega_dm0=0.25, Omega_b0=0.05, H0=70.0)
 
     # Test defaults
+
     defaulttruth = func(rproj, mdelta, cdelta, z_cl, z_src, cosmo, delta_mdef=200,
                         halo_profile_model='nfw', z_src_model='single_plane')
     assert_allclose(func(rproj, mdelta, cdelta, z_cl, z_src, cosmo, halo_profile_model='nfw',

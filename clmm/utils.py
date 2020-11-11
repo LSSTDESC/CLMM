@@ -61,6 +61,7 @@ def compute_radial_averages(xvals, yvals, xbins, error_model='std/sqrt_n'):
 
     return meanx, meany, yerr, num_objects, binnumber
 
+
 def make_bins(rmin, rmax, nbins=10, method='evenwidth', source_seps=None):
     """ Define bin edges
 
@@ -172,6 +173,7 @@ def convert_units(dist1, unit1, unit2, redshift=None, cosmo=None):
             dist1_mpc = (dist1*units_bank[unit1]).to(u.Mpc).value
             dist1_rad = cosmo.mpc2rad(dist1_mpc, redshift)
             return (dist1_rad*u.rad).to(units_bank[unit2]).value
+
 
 def convert_shapes_to_epsilon(shape_1,shape_2, shape_definition='epsilon',kappa=0):
     """ Given shapes and their definition, convert them to epsilon ellipticities or reduced shears, which can be used in GalaxyCluster.galcat

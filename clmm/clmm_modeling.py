@@ -1,7 +1,9 @@
 # CLMModeling abstract class
 import numpy as np
 
+
 class CLMModeling:
+
     def set_cosmo(self, cosmo):
         r""" Sets the cosmology to the internal cosmology object
 
@@ -9,6 +11,7 @@ class CLMModeling:
             CLMM Cosmology object
         """
         raise NotImplementedError
+
     def set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
         r""" Sets the definitios for the halo profile
 
@@ -22,6 +25,7 @@ class CLMModeling:
             Overdensity number
         """
         raise NotImplementedError
+
     def set_concentration(self, cdelta):
         r""" Sets the concentration
 
@@ -31,6 +35,7 @@ class CLMModeling:
             Concentration
         """
         raise NotImplementedError
+
     def set_mass(self, mdelta):
         r""" Sets the value of the :math:`M_\Delta`
 
@@ -40,6 +45,7 @@ class CLMModeling:
             Galaxy cluster mass :math:`M_\Delta` in units of :math:`M_\odot`
         """
         raise NotImplementedError
+
     def eval_sigma_crit(self, z_len, z_src):
         r"""Computes the critical surface density
 
@@ -56,6 +62,7 @@ class CLMModeling:
             Cosmology-dependent critical surface density in units of :math:`M_\odot\ Mpc^{-2}`
         """
         raise NotImplementedError
+
     def eval_density(self, r3d, z_cl):
         r"""Retrieve the 3d density :math:`\rho(r)`.
 
@@ -72,6 +79,7 @@ class CLMModeling:
             3-dimensional mass density in units of :math:`M_\odot\ Mpc^{-3}`
         """
         raise NotImplementedError
+
     def eval_sigma(self, r_proj, z_cl):
         r""" Computes the surface mass density
 
@@ -88,6 +96,7 @@ class CLMModeling:
             2D projected surface density in units of :math:`M_\odot\ Mpc^{-2}`
         """
         raise NotImplementedError
+
     def eval_sigma_mean(self, r_proj, z_cl):
         r""" Computes the mean value of surface density inside radius r_proj
 
@@ -104,6 +113,7 @@ class CLMModeling:
             Excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
         """
         raise NotImplementedError
+
     def eval_sigma_excess(self, r_proj, z_cl):
         r""" Computes the excess surface density
 
@@ -120,6 +130,7 @@ class CLMModeling:
             Excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
         """
         raise NotImplementedError
+
     def eval_shear(self, r_proj, z_cl, z_src):
         r"""Computes the tangential shear
 

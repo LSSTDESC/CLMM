@@ -9,6 +9,8 @@ import numpy as np
 from .gcdata import GCData
 from .utils import compute_radial_averages, make_bins, convert_units
 from .modeling import get_critical_surface_density
+
+
 def compute_tangential_and_cross_components(
                 ra_lens, dec_lens, ra_source, dec_source,
                 shear1, shear2, geometry='flat',
@@ -126,6 +128,8 @@ def compute_tangential_and_cross_components(
         tangential_comp *= sigma_c
         cross_comp *= sigma_c
     return angsep, tangential_comp, cross_comp
+
+
 def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_source_list):
     r"""Compute the angular separation between the lens and the source and the azimuthal
     angle from the lens to the source in radians.
@@ -161,6 +165,8 @@ def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_sourc
     if np.any(angsep > np.pi/180.):
         warnings.warn("Using the flat-sky approximation with separations >1 deg may be inaccurate")
     return angsep, phi
+
+
 def _compute_tangential_shear(shear1, shear2, phi):
     r"""Compute the tangential shear given the two shears and azimuthal positions for
     a single source or list of sources.
@@ -172,6 +178,8 @@ def _compute_tangential_shear(shear1, shear2, phi):
     For extended descriptions of parameters, see `compute_shear()` documentation.
     """
     return -(shear1*np.cos(2.*phi)+shear2*np.sin(2.*phi))
+
+
 def _compute_cross_shear(shear1, shear2, phi):
     r"""Compute the cross shear given the two shears and azimuthal position for a single
     source of list of sources.
@@ -184,6 +192,8 @@ def _compute_cross_shear(shear1, shear2, phi):
     For extended descriptions of parameters, see `compute_shear()` documentation.
     """
     return shear1*np.sin(2.*phi)-shear2*np.cos(2.*phi)
+
+
 def make_transversal_profile(components, angsep, angsep_units, bin_units,
                         bins=10, include_empty_bins=False,
                         return_binnumber=False,
