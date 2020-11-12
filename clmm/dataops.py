@@ -127,7 +127,7 @@ def compute_tangential_and_cross_components(
             sigma_c = get_critical_surface_density(cosmo, z_lens, z_source)
         tangential_comp *= sigma_c
         cross_comp *= sigma_c
-    return angsep, tangential_comp, cross_comp
+    return (np.array(v) for v in (angsep, tangential_comp, cross_comp))
 
 
 def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_source_list):
