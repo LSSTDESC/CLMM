@@ -21,7 +21,7 @@ def test_mock_data():
     
     def nfw_shear_profile(r, logm, z_src):
         m = 10.**logm
-        gt_model = clmm.predict_reduced_tangential_shear(r*cosmo.h,
+        gt_model = clmm.predict_reduced_tangential_shear(r,
                                                          m, 4, 0.3, z_src, cosmo,
                                                          delta_mdef=200,
                                                          halo_profile_model='nfw')
