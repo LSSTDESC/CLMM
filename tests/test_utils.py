@@ -107,8 +107,8 @@ def test_make_bins():
     test_bins = make_bins(0.51396, 6.78, nbins=23, method='equaloccupation', source_seps=test_array)
     assert_allclose(np.diff(np.histogram(test_array,bins=test_bins)[0]),
                     np.zeros(22), atol=2)
-    assert_raises(ValueError, make_bins, -10., -5., 10, 'equaloccupation', None)
-    assert_raises(ValueError, make_bins, -10., -5., 10, 'undefinedmethod')
+    assert_raises(ValueError, make_bins, 0, 10, 10, 'equaloccupation', None)
+    assert_raises(ValueError, make_bins, 0, 10, 10, 'undefinedmethod')
 
 
 def test_convert_units():
