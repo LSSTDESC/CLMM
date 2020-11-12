@@ -11,7 +11,7 @@ from sampler import fitters
 from clmm import Cosmology
 
 TOLERANCE = {'rtol': 5.0e-4, 'atol': 1.e-4}
-mock_cosmo = Cosmology(H0 = 70.0, Omega_dm0 = 0.27 - 0.045, Omega_b0 = 0.045, Omega_k0 = 0.0)
+cosmo = Cosmology(H0 = 70.0, Omega_dm0 = 0.27 - 0.045, Omega_b0 = 0.045, Omega_k0 = 0.0)
 
 
 def test_mock_data():
