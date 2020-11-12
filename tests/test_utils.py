@@ -5,7 +5,7 @@ from numpy.testing import assert_raises, assert_allclose
 
 import clmm.utils as utils
 import clmm.modeling as md
-from clmm.utils import compute_radial_averages, make_bins, convert_shapes_to_epsilon
+from clmm.utils import compute_radial_averages, make_bins, convert_shapes_to_epsilon, arguments_consistency
 
 
 TOLERANCE = {'rtol': 1.0e-6, 'atol': 0}
@@ -243,3 +243,22 @@ def test_compute_lensed_ellipticities():
 
     assert_allclose(utils.compute_lensed_ellipticity(es1, es2, gamma1, gamma2, kappa),
                     ([0.4, 0.38656171],[0.4, 0.52769188]), **TOLERANCE)
+
+
+def test_arguments_consistency():
+    assert_allclose(arguments_consistency([1, 2]), [1, 2], **TOLERANCE)
+    assert_allclose(arguments_consistency([1, 2], names=['a', 'b']), [1, 2], **TOLERANCE)
+    assert_allclose(arguments_consistency([1, 2], names='ab'), [1, 2], **TOLERANCE)
+    assert_allclose(arguments_consistency([1, 2], names=['a', 'b'], prefix='x'), [1, 2], **TOLERANCE)
+
+    f = open('temp', 'w')
+    print(arguments_consistency([[1], [2]]), file=f)
+    f.close()
+    assert_allclose(arguments_consistency([[1], [2]]), [[1], [2]], **TOLERANCE)
+    assert_allclose(arguments_consistency([[1], [2]], names=['a', 'b']), [[1], [2]], **TOLERANCE)
+    assert_allclose(arguments_consistency([[1], [2]], names='ab'), [[1], [2]], **TOLERANCE)
+    assert_allclose(arguments_consistency([[1], [2]], names=['a', 'b'], prefix='x'), [[1], [2]], **TOLERANCE)
+    # test error
+    assert_raises(TypeError, arguments_consistency, [1, [1, 2]])
+    assert_raises(TypeError, arguments_consistency, [[1], [1, 2]])
+    assert_raises(TypeError, arguments_consistency, [1, 2], names=['a'])

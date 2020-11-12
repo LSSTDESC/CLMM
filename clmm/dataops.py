@@ -7,7 +7,7 @@ import math
 import warnings
 import numpy as np
 from .gcdata import GCData
-from .utils import compute_radial_averages, make_bins, convert_units
+from .utils import compute_radial_averages, make_bins, convert_units, arguments_consistency
 from .modeling import get_critical_surface_density
 
 
@@ -103,31 +103,30 @@ def compute_tangential_and_cross_components(
     cross_component: array_like
         Cross shear (or assimilated quantity) for each source galaxy
     """
-    if (any(len(t_) != len(ra_source) for t_ in [dec_source, shear1, shear2]) # Check that the length of all of the inputs match
-        if hasattr(ra_source, '__len__') else
-        any(hasattr(t_, '__len__') for t_ in [dec_source, shear1, shear2]) # If there is only 1 source, make sure everything is a scalar
-        ):
-        raise TypeError('To compute the tangential- and cross- shape components you should supply the same number of source '
-                        'positions and shear or ellipticity.')
+    # Note: we make these quantities to be np.array so that a name is not passed from astropy columns
+    ra_source_, dec_source_, shear1_, shear2_ = arguments_consistency([ra_source, dec_source, shear1, shear2],
+                                                                names=('Ra', 'Dec', 'Shear1', 'Shear2'),
+                                                                prefix='Tangential- and Cross- shape components sources')
     # Compute the lensing angles
     if geometry == 'flat':
         angsep, phi = _compute_lensing_angles_flatsky(ra_lens, dec_lens,
-                                                      ra_source, dec_source)
+                                                      ra_source_, dec_source_)
     else:
         raise NotImplementedError(f"Sky geometry {geometry} is not currently supported")
     # Compute the tangential and cross shears
-    tangential_comp = _compute_tangential_shear(shear1, shear2, phi)
-    cross_comp = _compute_cross_shear(shear1, shear2, phi)
+    tangential_comp = _compute_tangential_shear(shear1_, shear2_, phi)
+    cross_comp = _compute_cross_shear(shear1_, shear2_, phi)
     # If the is_deltasigma flag is True, multiply the results by Sigma_crit.
-    # Need to verify that cosmology and redshifts are provided
     if is_deltasigma:
         if sigma_c is None:
+            # Need to verify that cosmology and redshifts are provided
             if any(t_ is None for t_ in (z_lens, z_source, cosmo)):
                 raise TypeError('To compute DeltaSigma, please provide a i) cosmology, ii) redshift of lens and sources')
             sigma_c = get_critical_surface_density(cosmo, z_lens, z_source)
         tangential_comp *= sigma_c
         cross_comp *= sigma_c
-    return (np.array(v) for v in (angsep, tangential_comp, cross_comp))
+    return angsep, tangential_comp, cross_comp
+
 
 
 def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_source_list):

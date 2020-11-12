@@ -277,3 +277,37 @@ def compute_lensed_ellipticity(ellipticity1_true, ellipticity2_true, shear1, she
     reduced_shear = shear/(1.0-convergence) # reduced shear
     e = (ellipticity_true+reduced_shear)/(1.0+reduced_shear.conjugate()*ellipticity_true) # lensed ellipticity
     return np.real(e), np.imag(e)
+
+
+def arguments_consistency(arguments, names=None, prefix=''):
+    r"""Make sure all arguments have the same length (or are scalars)
+
+    Parameters
+    ----------
+    arguments: list, arrays, tuple
+        Group of arguments to be checked
+    names: list, tuple
+        Names for each array, optional
+    prefix: str
+        Customized prefix for error message
+
+    Returns
+    -------
+    list, arrays, tuple
+        Group of arguments, converted to numpy arrays if they have length
+    """
+    sizes = [len(arg) if hasattr(arg, '__len__') else None for arg in arguments]
+    # check there is a name for each argument
+    if names:
+        if len(names)!=len(arguments):
+            raise TypeError(f'names (len={len(names)}) must have same length as arguments (len={len(arguments)})')
+        msg = ', '.join([f'{n}({s})' for n, s in zip(names, sizes)])
+    else:
+        msg = ', '.join([f'{s}' for s in sizes])
+    # check consistency
+    if any(sizes):
+        if not all(sizes) or any([s!=sizes[0] for s in sizes[1:]]): # Check that all of the inputs have length and they match
+            # make error message
+            raise TypeError(f'{prefix} inconsistent sizes: {msg}')
+        return tuple(np.array(arg) for arg in (arguments))
+    return arguments
