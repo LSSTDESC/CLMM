@@ -158,6 +158,16 @@ def test_compute_tangential_and_cross_components(modeling_data):
                             err_msg="Tangential Shear not correct when passing lists")
     testing.assert_allclose(xshear, expected_cross_shear, **TOLERANCE,
                             err_msg="Cross Shear not correct when passing lists")
+    # Pass LISTS into function
+    angsep, tshear, xshear = da.compute_tangential_and_cross_components(ra_lens=ra_lens, dec_lens=dec_lens,
+                                ra_source=list(ra_source), dec_source=list(dec_source),
+                                shear1=list(shear1), shear2=list(shear2))
+    testing.assert_allclose(angsep, expected_angsep, **TOLERANCE,
+                            err_msg="Angular Separation not correct when passing lists")
+    testing.assert_allclose(tshear, expected_tangential_shear, **TOLERANCE,
+                            err_msg="Tangential Shear not correct when passing lists")
+    testing.assert_allclose(xshear, expected_cross_shear, **TOLERANCE,
+                            err_msg="Cross Shear not correct when passing lists")
     # Use the cluster method
     cluster = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
                                  galcat=GCData([ra_source, dec_source, shear1, shear2],
