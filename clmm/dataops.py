@@ -193,7 +193,7 @@ def _compute_cross_shear(shear1, shear2, phi):
     return shear1*np.sin(2.*phi)-shear2*np.cos(2.*phi)
 
 
-def make_transversal_profile(components, angsep, angsep_units, bin_units,
+def make_radial_profile(components, angsep, angsep_units, bin_units,
                         bins=10, include_empty_bins=False,
                         return_binnumber=False,
                         cosmo=None, z_lens=None):
@@ -206,11 +206,11 @@ def make_transversal_profile(components, angsep, angsep_units, bin_units,
 
     1. Pass explict arguments::
 
-        make_transversal_profile([component1, component2], distances, 'radians')
+        make_radial_profile([component1, component2], distances, 'radians')
 
     2. Call it as a method of a GalaxyCluster instance::
 
-        cluster.make_transversal_profile('radians', 'radians')
+        cluster.make_radial_profile('radians', 'radians')
 
     Parameters
     ----------

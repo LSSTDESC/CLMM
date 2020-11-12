@@ -249,7 +249,7 @@ def _test_profile_table_output(profile, expected_rmin, expected_radius, expected
     return
 
 
-def test_make_transversal_profiles():
+def test_make_radial_profiles():
     # Set up a cluster object and compute cross and tangential shears
     ra_lens, dec_lens, z_lens = 120., 42., 0.5
     ra_source = np.array([120.1, 119.9, 119.9])
@@ -271,8 +271,8 @@ def test_make_transversal_profiles():
     # Tests passing int as bins arg makes the correct bins
     bins = 2
     vec_bins = clmm.utils.make_bins(np.min(angsep), np.max(angsep), bins)
-    testing.assert_array_equal(da.make_transversal_profile([tshear, xshear, z_sources], angsep, angsep_units, bin_units, bins=bins)[0],
-                               da.make_transversal_profile([tshear, xshear, z_sources], angsep, angsep_units, bin_units, bins=vec_bins)[0])
+    testing.assert_array_equal(da.make_radial_profile([tshear, xshear, z_sources], angsep, angsep_units, bin_units, bins=bins)[0],
+                               da.make_radial_profile([tshear, xshear, z_sources], angsep, angsep_units, bin_units, bins=vec_bins)[0])
     # Test the outputs of compute_tangential_and_cross_components just to be safe
     expected_angsep = np.array([0.0021745039090962414, 0.0037238407383072053, 0.0037238407383072053])
     expected_cross_shear = np.array([0.2780316984090899, 0.6398792901134982, 0.6398792901134982])
@@ -284,7 +284,7 @@ def test_make_transversal_profiles():
     testing.assert_allclose(xshear, expected_cross_shear, **TOLERANCE,
                             err_msg="Cross Shear not correct when testing shear profiles")
     # Test default behavior, remember that include_empty_bins=False excludes all bins with N>=1
-    profile = da.make_transversal_profile([tshear, xshear, z_sources], angsep, angsep_units, bin_units,
+    profile = da.make_radial_profile([tshear, xshear, z_sources], angsep, angsep_units, bin_units,
                                      bins=bins_radians, include_empty_bins=False)
     _test_profile_table_output(profile, bins_radians[1], expected_radius[1], bins_radians[2],
                                expected_tan_shear[1], expected_cross_shear[1], [2])
@@ -292,17 +292,17 @@ def test_make_transversal_profiles():
     testing.assert_array_equal(profile.meta['bin_units'], bin_units)
     testing.assert_array_equal(profile.meta['cosmo'], None)
     # Test simple unit convesion
-    profile = da.make_transversal_profile([tshear, xshear, z_sources], angsep*180./np.pi, 'degrees', bin_units,
+    profile = da.make_radial_profile([tshear, xshear, z_sources], angsep*180./np.pi, 'degrees', bin_units,
                                      bins=bins_radians, include_empty_bins=False)
     _test_profile_table_output(profile, bins_radians[1], expected_radius[1], bins_radians[2],
                                expected_tan_shear[1], expected_cross_shear[1], [2])
     # including empty bins
-    profile = da.make_transversal_profile([tshear, xshear, z_sources], angsep, angsep_units, bin_units,
+    profile = da.make_radial_profile([tshear, xshear, z_sources], angsep, angsep_units, bin_units,
                                      bins=bins_radians, include_empty_bins=True)
     _test_profile_table_output(profile, bins_radians[:-1], expected_radius, bins_radians[1:],
                                expected_tan_shear[:-1], expected_cross_shear[:-1], [1,2])
     # test with return_binnumber
-    profile, binnumber = da.make_transversal_profile([tshear, xshear, z_sources], angsep, angsep_units, bin_units,
+    profile, binnumber = da.make_radial_profile([tshear, xshear, z_sources], angsep, angsep_units, bin_units,
                                      bins=bins_radians, include_empty_bins=True, return_binnumber=True)
     _test_profile_table_output(profile, bins_radians[:-1], expected_radius, bins_radians[1:],
                                expected_tan_shear[:-1], expected_cross_shear[:-1], [1,2])
@@ -316,47 +316,47 @@ def test_make_transversal_profiles():
                                                    shear1, shear2],
                                                   names=('ra', 'dec', 'e1', 'e2')))
     cluster.compute_tangential_and_cross_components()
-    testing.assert_raises(TypeError, cluster.make_transversal_profile, bin_units)
+    testing.assert_raises(TypeError, cluster.make_radial_profile, bin_units)
     # Test error of missing shear
     cluster = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
                                  galcat=GCData([ra_source, dec_source,
                                                shear1, shear2, z_sources, id_source],
                                               names=('ra', 'dec', 'e1', 'e2', 'z', 'id')))
-    testing.assert_raises(TypeError, cluster.make_transversal_profile, bin_units)
+    testing.assert_raises(TypeError, cluster.make_radial_profile, bin_units)
     # Test default behavior, remember that include_empty_bins=False excludes all bins with N>=1
     cluster.compute_tangential_and_cross_components()
-    cluster.make_transversal_profile(bin_units, bins=bins_radians, include_empty_bins=False)
+    cluster.make_radial_profile(bin_units, bins=bins_radians, include_empty_bins=False)
     _test_profile_table_output(cluster.profile, bins_radians[1], expected_radius[1], bins_radians[2],
                                expected_tan_shear[1], expected_cross_shear[1], [2],
                                p0='gt', p1='gx')
     # including empty bins
-    cluster.make_transversal_profile(bin_units, bins=bins_radians, include_empty_bins=True, table_name='profile2')
+    cluster.make_radial_profile(bin_units, bins=bins_radians, include_empty_bins=True, table_name='profile2')
     _test_profile_table_output(cluster.profile2, bins_radians[:-1], expected_radius, bins_radians[1:],
                                expected_tan_shear[:-1], expected_cross_shear[:-1], [1,2],
                                p0='gt', p1='gx')
     # Test with galaxy id's
-    cluster.make_transversal_profile(bin_units, bins=bins_radians, include_empty_bins=True,
+    cluster.make_radial_profile(bin_units, bins=bins_radians, include_empty_bins=True,
                                 gal_ids_in_bins=True, table_name='profile3')
     _test_profile_table_output(cluster.profile3, bins_radians[:-1], expected_radius, bins_radians[1:],
                                expected_tan_shear[:-1], expected_cross_shear[:-1], [1,2], [[1],[2,3]],
                                p0='gt', p1='gx')
     # Test it runs with galaxy id's and int bins
-    cluster.make_transversal_profile(bin_units, bins=5, include_empty_bins=True,
+    cluster.make_radial_profile(bin_units, bins=5, include_empty_bins=True,
                                 gal_ids_in_bins=True, table_name='profile3')
     # And overwriting table
-    cluster.make_transversal_profile(bin_units, bins=bins_radians, include_empty_bins=True,
+    cluster.make_radial_profile(bin_units, bins=bins_radians, include_empty_bins=True,
                                 gal_ids_in_bins=True, table_name='profile3')
     _test_profile_table_output(cluster.profile3, bins_radians[:-1], expected_radius, bins_radians[1:],
                                expected_tan_shear[:-1], expected_cross_shear[:-1], [1,2], [[1],[2,3]],
                                p0='gt', p1='gx')
     # Test it runs with galaxy id's and int bins and no empty bins
-    cluster.make_transversal_profile(bin_units, bins=bins_radians, include_empty_bins=False,
+    cluster.make_radial_profile(bin_units, bins=bins_radians, include_empty_bins=False,
                                 gal_ids_in_bins=True, table_name='profile3')
     _test_profile_table_output(cluster.profile3, bins_radians[1], expected_radius[1], bins_radians[2],
                                expected_tan_shear[1], expected_cross_shear[1], [2],
                                p0='gt', p1='gx')
     # Test error with overwrite=False
-    testing.assert_raises(AttributeError, cluster.make_transversal_profile, bin_units, bins=bins_radians,
+    testing.assert_raises(AttributeError, cluster.make_radial_profile, bin_units, bins=bins_radians,
                             include_empty_bins=True, gal_ids_in_bins=True, table_name='profile3', overwrite=False)
     # Check error of missing id's
     cluster_noid = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
@@ -364,4 +364,4 @@ def test_make_transversal_profiles():
                                                shear1, shear2, z_sources],
                                               names=('ra', 'dec', 'e1', 'e2', 'z')))
     cluster_noid.compute_tangential_and_cross_components()
-    testing.assert_raises(TypeError, cluster_noid.make_transversal_profile, bin_units, gal_ids_in_bins=True)
+    testing.assert_raises(TypeError, cluster_noid.make_radial_profile, bin_units, gal_ids_in_bins=True)
