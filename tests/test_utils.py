@@ -251,9 +251,6 @@ def test_arguments_consistency():
     assert_allclose(arguments_consistency([1, 2], names='ab'), [1, 2], **TOLERANCE)
     assert_allclose(arguments_consistency([1, 2], names=['a', 'b'], prefix='x'), [1, 2], **TOLERANCE)
 
-    f = open('temp', 'w')
-    print(arguments_consistency([[1], [2]]), file=f)
-    f.close()
     assert_allclose(arguments_consistency([[1], [2]]), [[1], [2]], **TOLERANCE)
     assert_allclose(arguments_consistency([[1], [2]], names=['a', 'b']), [[1], [2]], **TOLERANCE)
     assert_allclose(arguments_consistency([[1], [2]], names='ab'), [[1], [2]], **TOLERANCE)
