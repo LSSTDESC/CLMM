@@ -22,8 +22,8 @@ def load_validation_config():
 def test_class(modeling_data):
     """ Unit tests abstract class and unimplemented methdods """
     # Test basic
-    assert_raises(TypeError, CLMMCosmology.__getitem__, None)
-    assert_raises(TypeError, CLMMCosmology.__setitem__, None, None)
+    assert_raises(TypeError, CLMMCosmology.__getitem__, None, None)
+    assert_raises(TypeError, CLMMCosmology.__setitem__, None, None, None)
     # Unimplemented methods
     assert_raises(NotImplementedError, CLMMCosmology._init_from_cosmo, None, None)
     assert_raises(NotImplementedError, CLMMCosmology._init_from_params, None)
