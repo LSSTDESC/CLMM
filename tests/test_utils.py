@@ -5,7 +5,7 @@ from numpy.testing import assert_raises, assert_allclose
 
 import clmm.utils as utils
 import clmm.modeling as md
-from clmm.utils import compute_radial_averages, make_bins, convert_shapes_to_epsilon
+from clmm.utils import compute_radial_averages, make_bins, convert_shapes_to_epsilon, arguments_consistency
 
 
 TOLERANCE = {'rtol': 1.0e-6, 'atol': 0}
@@ -67,7 +67,6 @@ def test_compute_radial_averages():
                      [inbin1.size, inbin2.size, inbin3.size]], **TOLERANCE)
 
 
-
 def test_make_bins():
     """ Test the make_bins function. Right now this function is pretty simplistic and the
     tests are pretty circular. As more functionality is added here the tests will
@@ -108,10 +107,8 @@ def test_make_bins():
     test_bins = make_bins(0.51396, 6.78, nbins=23, method='equaloccupation', source_seps=test_array)
     assert_allclose(np.diff(np.histogram(test_array,bins=test_bins)[0]),
                     np.zeros(22), atol=2)
-    assert_raises(ValueError, make_bins, -10., -5., 10, 'equaloccupation', None)
-    assert_raises(ValueError, make_bins, -10., -5., 10, 'undefinedmethod')
-
-
+    assert_raises(ValueError, make_bins, 0, 10, 10, 'equaloccupation', None)
+    assert_raises(ValueError, make_bins, 0, 10, 10, 'undefinedmethod')
 
 
 def test_convert_units():
@@ -167,6 +164,7 @@ def test_convert_units():
     assert_allclose(utils.convert_units(r_kpc, 'kpc', 'arcmin', redshift, cosmo),
                     truth, **TOLERANCE)
 
+
 def test_build_ellipticities():
 
     # second moments are floats
@@ -186,6 +184,7 @@ def test_build_ellipticities():
                                                             [0.01538462, 0.04],
                                                             [-0.11697033, 0.10106221],
                                                             [0.00779802, 0.02021244]), **TOLERANCE)
+
 
 def test_shape_conversion():
     """ Test the helper function that convert user defined shapes into
@@ -224,6 +223,7 @@ def test_shape_conversion():
     # Test known shape_definition
     assert_raises(TypeError, convert_shapes_to_epsilon, e1, e2, shape_definition='undefinedSD')
 
+
 def test_compute_lensed_ellipticities():
 
     # Validation test with floats
@@ -243,3 +243,19 @@ def test_compute_lensed_ellipticities():
 
     assert_allclose(utils.compute_lensed_ellipticity(es1, es2, gamma1, gamma2, kappa),
                     ([0.4, 0.38656171],[0.4, 0.52769188]), **TOLERANCE)
+
+
+def test_arguments_consistency():
+    assert_allclose(arguments_consistency([1, 2]), [1, 2], **TOLERANCE)
+    assert_allclose(arguments_consistency([1, 2], names=['a', 'b']), [1, 2], **TOLERANCE)
+    assert_allclose(arguments_consistency([1, 2], names='ab'), [1, 2], **TOLERANCE)
+    assert_allclose(arguments_consistency([1, 2], names=['a', 'b'], prefix='x'), [1, 2], **TOLERANCE)
+
+    assert_allclose(arguments_consistency([[1], [2]]), [[1], [2]], **TOLERANCE)
+    assert_allclose(arguments_consistency([[1], [2]], names=['a', 'b']), [[1], [2]], **TOLERANCE)
+    assert_allclose(arguments_consistency([[1], [2]], names='ab'), [[1], [2]], **TOLERANCE)
+    assert_allclose(arguments_consistency([[1], [2]], names=['a', 'b'], prefix='x'), [[1], [2]], **TOLERANCE)
+    # test error
+    assert_raises(TypeError, arguments_consistency, [1, [1, 2]])
+    assert_raises(TypeError, arguments_consistency, [[1], [1, 2]])
+    assert_raises(TypeError, arguments_consistency, [1, 2], names=['a'])

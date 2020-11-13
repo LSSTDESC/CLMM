@@ -13,6 +13,7 @@ __all__ = generic.__all__+['get_3d_density', 'predict_surface_density',
            'predict_tangential_shear', 'predict_convergence',
            'predict_reduced_tangential_shear', 'predict_magnification']
 
+
 def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profile_model='nfw', massdef='mean'):
     r"""Retrieve the 3d density :math:`\rho(r)`.
 
@@ -49,7 +50,7 @@ def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profil
     Returns
     -------
     rho : array_like, float
-        3-dimensional mass density in units of :math:`M_\odot\ Mpc^{-3}` 
+        3-dimensional mass density in units of :math:`M_\odot\ Mpc^{-3}`
 
     Notes
     -----
@@ -63,6 +64,7 @@ def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profil
     gcm.set_mass(mdelta)
 
     return gcm.eval_density(r3d, z_cl)
+
 
 def predict_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
                             halo_profile_model='nfw', massdef = 'mean'):
@@ -428,6 +430,8 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
 
 # The magnification is computed taking into account just the tangential shear. This is valid for
 # spherically averaged profiles, e.g., NFW and Einasto (by construction the cross shear is zero).
+
+
 def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
                         halo_profile_model='nfw', massdef='mean', z_src_model='single_plane'):
     r"""Computes the magnification

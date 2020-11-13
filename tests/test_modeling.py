@@ -5,11 +5,15 @@ from numpy.testing import assert_raises, assert_allclose, assert_equal
 from astropy.cosmology import FlatLambdaCDM, LambdaCDM
 import clmm.modeling as md
 from clmm.constants import Constants as clc
+from clmm.galaxycluster import GalaxyCluster
+from clmm import GCData
 
 
 TOLERANCE = {'rtol': 1.0e-6, 'atol': 1.0e-6}
 
 # ----------- Some Helper Functions for the Validation Tests ---------------
+
+
 def compute_sigmac_physical_constant(lightspeed, gnewt, msun, pc_to_m):
     """ Computes physical constant used to in Sigma_crit
 
@@ -85,6 +89,7 @@ def load_validation_config():
             'CLMM_SIGMAC_PCST': CLMM_SIGMAC_PCST}
 # --------------------------------------------------------------------------
 
+
 def test_physical_constants(modeling_data):
     """ Test physical values of physical_constants
 
@@ -147,6 +152,7 @@ def test_astropyify_ccl_cosmo(modeling_data):
     #assert_raises(TypeError, md.astropyify_ccl_cosmo, 70.)
     #assert_raises(TypeError, md.astropyify_ccl_cosmo, [70., 0.3, 0.25, 0.05])
 
+
 def test_get_reduced_shear(modeling_data):
     """ Unit tests for get_reduced_shear """
     # Make some base objects
@@ -189,6 +195,7 @@ def helper_profiles(func):
     assert_raises(ValueError, func, r3d, mdelta, cdelta, z_cl, cclcosmo, 200, 'bleh')
 
     # Test defaults
+
     defaulttruth = func(r3d, mdelta, cdelta, z_cl, cclcosmo, delta_mdef=200,
                         halo_profile_model='nfw')
     assert_allclose(func(r3d, mdelta, cdelta, z_cl, cclcosmo, halo_profile_model='nfw'),
@@ -225,16 +232,22 @@ def test_get_critical_surface_density(modeling_data):
                                                     z_cluster=cfg['TEST_CASE']['z_cluster'],
                                                     z_source=cfg['TEST_CASE']['z_source']),
                     cfg['TEST_CASE']['nc_Sigmac'], 1.2e-8)
-
     # Check behaviour when sources are in front of the lens
     z_cluster = 0.3
     z_source = 0.2
     assert_allclose(md.get_critical_surface_density(cfg['cosmo'],z_cluster=z_cluster, z_source=z_source),
                     np.inf, 1.0e-10)
-
     z_source = [0.2,0.12,0.25]
     assert_allclose(md.get_critical_surface_density(cfg['cosmo'],z_cluster=z_cluster, z_source=z_source),
                     [np.inf,np.inf, np.inf], 1.0e-10)
+    # Check usage with cluster object function
+    z_src = np.array([cfg['TEST_CASE']['z_source']])
+    cluster = GalaxyCluster(unique_id='blah', ra=0, dec=0, z=cfg['TEST_CASE']['z_cluster'],
+                                 galcat=GCData([0*z_src, 0*z_src, z_src],
+                                               names=('ra', 'dec', 'z')))
+    cluster.add_critical_surface_density(cfg['cosmo'])
+    assert_allclose(cluster.galcat['sigma_c'],
+                    cfg['TEST_CASE']['nc_Sigmac'], 1.2e-8)
 
 
 def helper_physics_functions(func):
@@ -257,6 +270,7 @@ def helper_physics_functions(func):
     cosmo = md.Cosmology(Omega_dm0=0.25, Omega_b0=0.05, H0=70.0)
 
     # Test defaults
+
     defaulttruth = func(rproj, mdelta, cdelta, z_cl, z_src, cosmo, delta_mdef=200,
                         halo_profile_model='nfw', z_src_model='single_plane')
     assert_allclose(func(rproj, mdelta, cdelta, z_cl, z_src, cosmo, halo_profile_model='nfw',

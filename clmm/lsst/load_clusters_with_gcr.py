@@ -8,17 +8,22 @@ from ..gcdata import GCData
 from ..galaxycluster import GalaxyCluster
 from ..modeling import get_reduced_shear_from_convergence
 
+
 def load_GCR_catalog(catalog_name):
     """Loads a catalog from GCRCatalogs"""
     import GCRCatalogs
     return GCRCatalogs.load_catalog(catalog_name)
 
+
 class _test_catalog():
     """Blank test catalog designed to mimic a GCRCatalogs catalog. For testing only."""
+
     def __init__(self, n=10):
         self.n = n
+
     def __len__(self):
         return self.n
+
     def get_quantities(self, quantities, *args, **kwargs):
         out_dict = {}
         for q in quantities:
@@ -27,6 +32,7 @@ class _test_catalog():
             else:
                 out_dict[q] = np.arange(0, 1, 1./self.n)
         return out_dict
+
 
 def _make_GCR_filter(filter_name, low_bound, high_bound):
     """Create a filter for a specified range of a certain quantity in the GCRCatalogs format.
@@ -47,6 +53,7 @@ def _make_GCR_filter(filter_name, low_bound, high_bound):
 
     return ['%s >= %d'%(filter_name, low_bound),
             '%s < %d'%(filter_name, high_bound)]
+
 
 def load_from_dc2(nclusters, catalog_name, save_dir, ra_range=(-0.3, 0.3), dec_range=(-0.3, 0.3),
                   z_range=(0.1, 1.5), verbose=False, _reader='GCR'):

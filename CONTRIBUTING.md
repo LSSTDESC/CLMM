@@ -91,7 +91,13 @@ If you are a DESC member you may also add to your CLMM environment the GCR and G
     pip install https://github.com/yymao/FoFCatalogMatching/archive/master.zip
 ```
 
-To open up a notebook from nersc in your browser, you will need to go to the [nersc jupyter portal](https://jupyter.nersc.gov) and sign in.  Clicking on the upper right corner of the notebook will provide options for your kernel.  Choose your `conda env:conda-clmmenv` that you just created.  You will need to do a temporary install of both cluster_toolkit and clmm in the first cell of your jupyter notebook:
+To open up a notebook from nersc in your browser, you will need to go to the [nersc jupyter portal](https://jupyter.nersc.gov) and sign in. You will need to make this conda environment available in the kernel list:
+
+```bash
+    python -m ipykernel install --user --name=conda-clmmenv
+```
+
+Clicking on the upper right corner of the notebook will provide options for your kernel.  Choose the kernel `conda-clmmenv` that you just created.  You will need to do a temporary install of both cluster_toolkit and clmm in the first cell of your jupyter notebook:
 
 ```python
 

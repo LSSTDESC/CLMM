@@ -10,6 +10,7 @@ __all__ = ['get_reduced_shear_from_convergence']
 
 # functions that are general to all backends
 
+
 def get_reduced_shear_from_convergence(shear, convergence):
     """ Calculates reduced shear from shear and convergence
 

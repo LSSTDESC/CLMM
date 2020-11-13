@@ -6,6 +6,8 @@ import warnings
 import pickle
 
 from collections import OrderedDict
+
+
 class GCMetaData(OrderedDict):
     r"""Object to store metadata, it always has a cosmo key with protective changes
 
@@ -15,10 +17,12 @@ class GCMetaData(OrderedDict):
         Protect cosmo key
     OrderedDict attributes
     """
+
     def __init__(self, *args, **kwargs):
         OrderedDict.__init__(self, *args, **kwargs)
         if 'cosmo' not in self:
             self.__setitem__('cosmo', None, True)
+
     def __setitem__(self, item, value, force=False):
         if item == 'cosmo' and not force and \
             (self['cosmo'] is not None if 'cosmo' in self else False):
@@ -26,6 +30,8 @@ class GCMetaData(OrderedDict):
         else:
             OrderedDict.__setitem__(self, item, value)
         return
+
+
 class GCData(APtable):
     """
     GCData: A data objetc for gcdata. Right now it behaves as an astropy table.
@@ -37,6 +43,7 @@ class GCData(APtable):
 
     Same as astropy tables
     """
+
     def __init__(self, *args, **kwargs):
         """
         Parameters
@@ -47,6 +54,7 @@ class GCData(APtable):
         metakwargs = kwargs['meta'] if 'meta' in kwargs else {}
         metawkargs = {} if metakwargs is None else metakwargs
         self.meta = GCMetaData(**metakwargs)
+
     def __repr__(self):
         """Generates string for repr(GCData)"""
         output = f'{self.__class__.__name__}('
@@ -55,6 +63,7 @@ class GCData(APtable):
                 +['columns: '+', '.join(self.colnames)])
         output+= ')'
         return output
+
     def __str__(self):
         """Generates string for print(GCData)"""
         output = f'self.__class__.__name__\n> defined by:'
@@ -63,6 +72,7 @@ class GCData(APtable):
         output+= f'\n> with columns: '
         output+= ', '.join(self.colnames)
         return output
+
     def __getitem__(self, item):
         """
         Makes sure GCData keeps its properties after [] operations are used
@@ -74,6 +84,7 @@ class GCData(APtable):
         """
         out = APtable.__getitem__(self, item)
         return out
+
     def update_cosmo_ext_valid(self, gcdata, cosmo, overwrite=False):
         r"""Updates cosmo metadata if the same as in gcdata
 
@@ -100,6 +111,7 @@ class GCData(APtable):
                     raise TypeError(f'input cosmo ({cosmo_desc}) differs from gcdata cosmo ({cosmo_gcdata})')
             self.meta.__setitem__('cosmo', cosmo_desc, force=True)
         return
+
     def update_cosmo(self, cosmo, overwrite=False):
         r"""Updates cosmo metadata if not present
 
