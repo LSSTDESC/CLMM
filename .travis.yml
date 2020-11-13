@@ -15,12 +15,21 @@ jobs:
 install:
   # Update apt-get and install GSL
   - sudo apt-get update
-  - sudo apt-get install libgsl0-dev -y
+  - sudo apt-get install libgsl0-dev swig3.0 libfftw3-dev gobject-introspection python-gobject gfortran libmpfr-dev libhdf5-dev liblapack-dev libnlopt-dev libcfitsio3-dev gir1.2-glib-2.0 libgirepository1.0-dev python3-gi python-gi -y
 
   # Install the dependencies
   - git clone https://github.com/tmcclintock/cluster_toolkit.git ; cd cluster_toolkit ; python setup.py install ; cd -
+  - git clone https://github.com/LSSTDESC/CCL ; cd CCL ; python setup.py install ; cd -
+  - wget https://github.com/NumCosmo/NumCosmo/releases/download/v0.15.2/numcosmo-0.15.2.tar.gz && tar xf numcosmo-0.15.2.tar.gz && cd numcosmo-0.15.2 && ./configure --prefix=/usr && make -j4 && sudo make install && cd -
+  - pip install pycairo==1.19.1
+  - pip install pygobject
+  - export MPLBACKEND="agg"
+  - pip install matplotlib
+  - python3 numcosmo-0.15.2/examples/example_simple.py
   - pip install -r requirements.txt
 
+  #- export GI_TYPELIB_PATH="${GI_TYPELIB_PATH}:/usr/share/gir-1.0"
+  
   # Install the package
   - python setup.py install
 

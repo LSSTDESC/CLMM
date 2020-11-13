@@ -17,7 +17,7 @@ The documentation of the code can be found [here](http://lsstdesc.org/CLMM/).
 
 CLMM requires Python version 3.6 or later.  To run the code, there are the following dependencies:
 
-- [numpy](http://www.numpy.org/) (1.16 or later)
+- [numpy](http://www.numpy.org/) (1.17 or later)
 
 - [scipy](http://www.numpy.org/) (1.3 or later)
 

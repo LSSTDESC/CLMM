@@ -37,18 +37,28 @@ def plot_profiles(cluster=None, rbins=None, tangential_component=None, tangentia
         matplotlib.pyplot.xscale parameter to set x-axis scale (e.g. to logarithmic axis)
     yscale:
         matplotlib.pyplot.yscale parameter to set y-axis scale (e.g. to logarithmic axis)
-    
+
     Returns
     -------
     fig:
         The matplotlib figure object that has been plotted to.
+    axes:
+        The matplotlib axes object that has been plotted to.
     """
-    
+
     # If a cluster object was passed, use these arrays
     if cluster is not None and hasattr(cluster, table_name):
         cluster_profile = getattr(cluster,table_name)
         rbins = cluster_profile['radius']
         r_units = cluster_profile.meta['bin_units']
+        if tangential_component != 'gt':
+            ValueError("The function requires a column called 'gt' to run.")
+        if cross_component != 'gx':
+            ValueError("The function requires a column called 'gx' to run.")
+        if 'gt' not in cluster_profile.colnames:
+            ValueError("The function requires a column called 'gt' to run.")
+        if 'gx' not in cluster_profile.colnames:
+            ValueError("The function requires a column called 'gx' to run.")
         if type(tangential_component)==str:
             tangential_component = cluster_profile[tangential_component]
         else:
@@ -88,13 +98,13 @@ def plot_profiles(cluster=None, rbins=None, tangential_component=None, tangentia
                  fmt='ro-', label="Cross component")
     except:
         pass
-    
+
     axes.set_xscale(xscale)
     axes.set_yscale(yscale)
     axes.legend()
     axes.set_xlabel(f'Radius [{r_units}]')
     axes.set_ylabel(r'$\gamma$')
-    
+
     return fig, axes
 
 GalaxyCluster.plot_profiles = plot_profiles

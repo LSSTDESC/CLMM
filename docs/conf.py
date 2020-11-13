@@ -5,6 +5,12 @@ import sys
 sys.path.insert(0, os.path.abspath('../clmm'))
 sys.path.insert(0, os.path.abspath('..'))
 
+from unittest.mock import MagicMock
+
+MOCK_MODULES = ['gi', 'gi.repository', 'gi.repository.NumCosmoMath', 'gi.repository.NumCosmo', 'pyccl']
+for mod_name in MOCK_MODULES:
+    sys.modules[mod_name] = MagicMock()
+
 import clmm
 
 
@@ -55,7 +61,8 @@ language = 'en'
 # Files to ignore when looking for source files
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store',
                     'api/clmm.rst', 'source/index_body.rst',
-                    'api/clmm.cluster_toolkit_patches.rst']
+                    'api/clmm.cluster_toolkit_patches.rst',
+                    'api/clmm.modbackend.*']
 
 # Some style options
 highlight_language = 'python3'
@@ -118,11 +125,11 @@ for entry in config:
         apion, demoon, exon = False, False, True
         continue
     if apion:
-        apilist += [entry]
+        apilist+= [entry]
     elif demoon:
-        demofiles += [entry]
+        demofiles+= [entry]
     elif exon:
-        examplefiles += [entry]
+        examplefiles+= [entry]
 
 
 # -- Compile the examples into rst----------------------------------------
@@ -133,7 +140,7 @@ nbconvert_opts = ['--to rst',
                   f'--output-dir {outdir}']
 
 for demo in [*demofiles, *examplefiles]:
-    com = ' '.join(['jupyter nbconvert'] + nbconvert_opts + [demo])
+    com = ' '.join(['jupyter nbconvert']+nbconvert_opts+[demo])
     subprocess.run(com, shell=True)
 
 
@@ -145,8 +152,8 @@ index_examples_toc = \
 
 """
 for example in examplefiles:
-    fname = ''.join(example.split('.')[:-1]).split('/')[-1] + '.rst'
-    index_examples_toc += f"   {outdir}{fname}\n"
+    fname = ''.join(example.split('.')[:-1]).split('/')[-1]+'.rst'
+    index_examples_toc+= f"   {outdir}{fname}\n"
 
 # This is automatic
 index_demo_toc = \
@@ -157,8 +164,8 @@ index_demo_toc = \
 
 """
 for demo in demofiles:
-    fname = ''.join(demo.split('.')[:-1]).split('/')[-1] + '.rst'
-    index_demo_toc += f"   {outdir}{fname}\n"
+    fname = ''.join(demo.split('.')[:-1]).split('/')[-1]+'.rst'
+    index_demo_toc+= f"   {outdir}{fname}\n"
 
 index_api_toc = \
 """
@@ -179,7 +186,7 @@ with open('index.rst', 'a') as indexfile:
 # -- Set up the API table of contents ------------------------------------
 apitoc = \
 """API Documentation
-=================
+-----------------
 
 Information on specific functions, classes, and methods.
 
@@ -188,6 +195,6 @@ Information on specific functions, classes, and methods.
 
 """
 for onemodule in apilist:
-    apitoc += f"   api/clmm.{onemodule}.rst\n"
+    apitoc+= f"   api/clmm.{onemodule}.rst\n"
 with open('api.rst', 'w') as apitocfile:
     apitocfile.write(apitoc)

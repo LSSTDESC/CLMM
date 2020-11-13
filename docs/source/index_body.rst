@@ -23,7 +23,7 @@ Functionality includes:
 
  * The GalaxyCluster object
  * Mock data generation
- * Weak lensing signal measurement with polaraveraging.py
+ * Weak lensing signal measurement with dataops.py
  * Profile and cosmology models with modeling.py
  * Galaxy cluster mass estimation
 

@@ -36,7 +36,25 @@ If you have access to NERSC, this will likely be the easiest to make sure you ha
 
 Note, for regular contributions and use, we recommend adding `module load python` to your `~/.bashrc` so you have anaconda installed every time you log in.  You will subseqeuntly also want to be in the correct environment whenever working with `clmm`, which means running `source activate clmmenv` at the start of each session.
 
-You can now go through the steps in the Requirements section of README.md.  Note, you'll need to separately install cluster-toolkit in the current version of CLMM.  Since cluster-toolkit has a gsl dependency, you'll also need gsl.
+You can now go through the steps in the Requirements section of README.md.  Note, you'll need to separately install ccl, numcosmo, and/or cluster_toolkit as cosmology backends to complete your installation in the current version of CLMM.  To install ccl for the cosmology backends, you'll need to run,
+
+```bash
+	conda install -c conda-forge swig
+	conda install -c conda-forge cmake
+	git clone git@github.com:LSSTDESC/CCL.git
+	#  If the above line does not work, you may need to instead use:
+	# git clone https://github.com/LSSTDESC/CCL.git
+	pip install -e .
+
+```
+
+To install numcosmo for a cosmology backend,
+
+```bash
+	conda install -c conda-forge numcosmo
+```
+
+Now, to install cluster-toolkit, cluster-toolkit has a gsl dependency, you'll also need gsl.
 
 ```bash
 	conda install gsl
@@ -46,7 +64,9 @@ You can now go through the steps in the Requirements section of README.md.  Note
 	cd ..
 ```
 
-Now, you should have cluster_toolkit installed, and are ready to install CLMM
+Note, you may choose to install some or all of the ccl, numcosmo, and/or cluster_toolkit packages.  You need at least one.  If you install cluster_toolkit and others, then you need to install cluster_toolkit *last*.   If you have already installed cluster_toolkit before the other packages, simply run, `pip uninstall cluster_toolkit` then re-install cluster_toolkit.
+
+Now, you can install CLMM.
 
 ```bash
 	pip install numpy scipy astropy matplotlib
@@ -71,7 +91,13 @@ If you are a DESC member you may also add to your CLMM environment the GCR and G
     pip install https://github.com/yymao/FoFCatalogMatching/archive/master.zip
 ```
 
-To open up a notebook from nersc in your browser, you will need to go to the [nersc jupyter portal](https://jupyter.nersc.gov) and sign in.  Clicking on the upper right corner of the notebook will provide options for your kernel.  Choose your `conda env:conda-clmmenv` that you just created.  You will need to do a temporary install of both cluster_toolkit and clmm in the first cell of your jupyter notebook:
+To open up a notebook from nersc in your browser, you will need to go to the [nersc jupyter portal](https://jupyter.nersc.gov) and sign in. You will need to make this conda environment available in the kernel list:
+
+```bash
+    python -m ipykernel install --user --name=conda-clmmenv
+```
+
+Clicking on the upper right corner of the notebook will provide options for your kernel.  Choose the kernel `conda-clmmenv` that you just created.  You will need to do a temporary install of both cluster_toolkit and clmm in the first cell of your jupyter notebook:
 
 ```python
 
