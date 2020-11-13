@@ -84,6 +84,48 @@ class GCData(APtable):
         """
         out = APtable.__getitem__(self, item)
         return out
+    def update_cosmo_ext_valid(self, gcdata, cosmo, overwrite=False):
+        r"""Updates cosmo metadata if the same as in gcdata
+
+        Parameters
+        ----------
+        gcdata: GCData
+            Table to check if same cosmology
+        cosmo: clmm.Cosmology
+            Cosmology
+        overwrite: bool
+            Overwrites the current cosmo metadata. If false raises Error when cosmologies are different.
+
+        Returns
+        -------
+        None
+        """
+        cosmo_desc = cosmo.get_desc() if cosmo else None
+        if cosmo_desc:
+            cosmo_gcdata = gcdata.meta['cosmo']
+            if cosmo_gcdata and cosmo_gcdata != cosmo_desc:
+                if overwrite:
+                    warnings.warn(f'input cosmo ({cosmo_desc}) overwriting gcdata cosmo ({cosmo_gcdata})')
+                else:
+                    raise TypeError(f'input cosmo ({cosmo_desc}) differs from gcdata cosmo ({cosmo_gcdata})')
+            self.meta.__setitem__('cosmo', cosmo_desc, force=True)
+        return
+    def update_cosmo(self, cosmo, overwrite=False):
+        r"""Updates cosmo metadata if not present
+
+        Parameters
+        ----------
+        cosmo: clmm.Cosmology
+            Cosmology
+        overwrite: bool
+            Overwrites the current cosmo metadata. If false raises Error when cosmologies are different.
+
+        Returns
+        -------
+        None
+        """
+        self.update_cosmo_ext_valid(self, cosmo, overwrite=overwrite)
+        return
 
     def update_cosmo_ext_valid(self, gcdata, cosmo, overwrite=False):
         r"""Updates cosmo metadata if the same as in gcdata
