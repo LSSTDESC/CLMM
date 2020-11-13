@@ -8,17 +8,22 @@ from ..gcdata import GCData
 from ..galaxycluster import GalaxyCluster
 from ..modeling import get_reduced_shear_from_convergence
 
+
 def load_GCR_catalog(catalog_name):
     """Loads a catalog from GCRCatalogs"""
     import GCRCatalogs
     return GCRCatalogs.load_catalog(catalog_name)
 
+
 class _test_catalog():
     """Blank test catalog designed to mimic a GCRCatalogs catalog. For testing only."""
+
     def __init__(self, n=10):
         self.n = n
+
     def __len__(self):
         return self.n
+
     def get_quantities(self, quantities, *args, **kwargs):
         out_dict = {}
         for q in quantities:
@@ -28,9 +33,10 @@ class _test_catalog():
                 out_dict[q] = np.arange(0, 1, 1./self.n)
         return out_dict
 
+
 def _make_GCR_filter(filter_name, low_bound, high_bound):
     """Create a filter for a specified range of a certain quantity in the GCRCatalogs format.
-    
+
     Parameters
     ----------
     filter_name: str
@@ -47,6 +53,7 @@ def _make_GCR_filter(filter_name, low_bound, high_bound):
 
     return ['%s >= %d'%(filter_name, low_bound),
             '%s < %d'%(filter_name, high_bound)]
+
 
 def load_from_dc2(nclusters, catalog_name, save_dir, ra_range=(-0.3, 0.3), dec_range=(-0.3, 0.3),
                   z_range=(0.1, 1.5), verbose=False, _reader='GCR'):
@@ -91,7 +98,7 @@ def load_from_dc2(nclusters, catalog_name, save_dir, ra_range=(-0.3, 0.3), dec_r
         catalog = _test_catalog(10)
     else:
         raise ValueError('Invalid reader name: %s'%_reader)
-        
+
     # check range of nclusters
     if (nclusters<=0) | (nclusters>len(catalog)):
         raise ValueError('nclusters value out of range: %i'%nclusters)
@@ -111,10 +118,10 @@ def load_from_dc2(nclusters, catalog_name, save_dir, ra_range=(-0.3, 0.3), dec_r
             print(f'Loading cluster {cl_id}')
 
         # get galaxies around cluster
-        
-        filters = (_make_GCR_filter('ra', cl_ra + ra_range[0], cl_ra + ra_range[1]) + 
-                   _make_GCR_filter('dec', cl_dec + dec_range[0], cl_dec + dec_range[1]) + 
-                   _make_GCR_filter('redshift', cl_z + z_range[0], cl_z + z_range[1]))
+
+        filters = (_make_GCR_filter('ra', cl_ra+ra_range[0], cl_ra+ra_range[1])+
+                   _make_GCR_filter('dec', cl_dec+dec_range[0], cl_dec+dec_range[1])+
+                   _make_GCR_filter('redshift', cl_z+z_range[0], cl_z+z_range[1]))
 
         gals = catalog.get_quantities(['galaxy_id', 'ra', 'dec',
                                        'shear_1', 'shear_2',
