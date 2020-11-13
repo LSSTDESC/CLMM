@@ -1,0 +1,7 @@
+clmm.clmm\_cosmo module
+=======================
+
+.. automodule:: clmm.clmm_cosmo
+   :members:
+   :undoc-members:
+   :show-inheritance:

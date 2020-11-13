@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.galaxycluster module &mdash; CLMM 0.3.0 documentation</title>
+  <title>clmm.galaxycluster module &mdash; CLMM 0.6.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -25,19 +30,15 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="clmm.gcdata module" href="clmm.gcdata.html" />
-    <link rel="prev" title="clmm.constants module" href="clmm.constants.html" /> 
+    <link rel="prev" title="clmm.dataops module" href="clmm.dataops.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -51,7 +52,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> CLMM
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> CLMM
           
 
           
@@ -61,7 +62,7 @@
             
             
               <div class="version">
-                0.3.0
+                0.6.0
               </div>
             
           
@@ -78,6 +79,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -92,13 +94,13 @@
 </ul>
 <p class="caption"><span class="caption-text">Examples</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit Halo Mass from a Shear Catalog</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit Halo Mass from a Shear Catalog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Usage Demos</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_polaraveraging_functionality.html">Measure a Profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_modeling_functionality.html">Model a Galaxy Cluster</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
 </ul>
@@ -106,6 +108,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="clmm.constants.html">clmm.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.dataops.html">clmm.dataops module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">clmm.galaxycluster module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.gcdata.html">clmm.gcdata module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.lsst.html">clmm.lsst package</a><ul>
@@ -114,8 +117,9 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.modeling.html">clmm.modeling module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.plotting.html">clmm.plotting module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="clmm.polaraveraging.html">clmm.polaraveraging module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.utils.html">clmm.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.clmm_modeling.html">clmm.clmm_modeling module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.clmm_cosmo.html">clmm.clmm_cosmo module</a></li>
 </ul>
 </li>
 </ul>
@@ -123,6 +127,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -161,7 +166,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../api.html">API Documentation</a> &raquo;</li>
         
@@ -188,9 +193,9 @@
 <span id="clmm-galaxycluster-module"></span><h1>clmm.galaxycluster module<a class="headerlink" href="#module-clmm.galaxycluster" title="Permalink to this headline">¶</a></h1>
 <p>&#64;file galaxycluster.py
 The GalaxyCluster class</p>
-<dl class="class">
+<dl class="py class">
 <dt id="clmm.galaxycluster.GalaxyCluster">
-<em class="property">class </em><code class="sig-prename descclassname">clmm.galaxycluster.</code><code class="sig-name descname">GalaxyCluster</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/galaxycluster.html#GalaxyCluster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.galaxycluster.GalaxyCluster" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">clmm.galaxycluster.</code><code class="sig-name descname">GalaxyCluster</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/galaxycluster.html#GalaxyCluster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.galaxycluster.GalaxyCluster" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Object that contains the galaxy cluster metadata and background galaxy data</p>
 <dl class="field-list simple">
@@ -204,52 +209,41 @@ The GalaxyCluster class</p>
 </ul>
 </dd>
 </dl>
-<dl class="method">
+<dl class="py method">
+<dt id="clmm.galaxycluster.GalaxyCluster.add_critical_surface_density">
+<code class="sig-name descname">add_critical_surface_density</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cosmo</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/galaxycluster.html#GalaxyCluster.add_critical_surface_density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.galaxycluster.GalaxyCluster.add_critical_surface_density" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the critical surface density for each galaxy in <cite>galcat</cite>.
+It only runs if input cosmo != galcat cosmo or if <cite>sigma_c</cite> not in <cite>galcat</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cosmo</strong> (<em>clmm.Cosmology object</em>) – CLMM Cosmology object</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="clmm.galaxycluster.GalaxyCluster.compute_tangential_and_cross_components">
-<code class="sig-name descname">compute_tangential_and_cross_components</code><span class="sig-paren">(</span><em class="sig-param">shape_component1='e1'</em>, <em class="sig-param">shape_component2='e2'</em>, <em class="sig-param">tan_component='et'</em>, <em class="sig-param">cross_component='ex'</em>, <em class="sig-param">ra_lens=None</em>, <em class="sig-param">dec_lens=None</em>, <em class="sig-param">ra_source_list=None</em>, <em class="sig-param">dec_source_list=None</em>, <em class="sig-param">shear1=None</em>, <em class="sig-param">shear2=None</em>, <em class="sig-param">geometry='flat'</em>, <em class="sig-param">add_to_cluster=True</em><span class="sig-paren">)</span><a class="headerlink" href="#clmm.galaxycluster.GalaxyCluster.compute_tangential_and_cross_components" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes tangential- and cross- components for shear or ellipticity</p>
-<p>To compute the shear, we need the right ascension and declination of the lens and of
-all of the sources. We also need the two shear components of all of the sources.</p>
-<p>These quantities can be handed to <cite>compute_shear</cite> in three ways</p>
-<ol class="arabic">
-<li><p>Pass in each as parameters:</p>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">compute_shear</span><span class="p">(</span><span class="n">ra_lens</span><span class="p">,</span> <span class="n">dec_lens</span><span class="p">,</span> <span class="n">ra_source_list</span><span class="p">,</span> <span class="n">dec_source_list</span><span class="p">,</span> <span class="n">shape_component1</span><span class="p">,</span> <span class="n">shape_component2</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p>Given a <cite>GalaxyCluster</cite> object:</p>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">compute_shear</span><span class="p">(</span><span class="n">cluster</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p>As a method of <cite>GalaxyCluster</cite>:</p>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">cluster</span><span class="o">.</span><span class="n">compute_shear</span><span class="p">()</span>
-</pre></div>
-</div>
-</li>
-</ol>
-<p>The angular separation between the source and the lens, <span class="math notranslate nohighlight">\(\theta\)</span>, and the azimuthal
-position of the source relative to the lens, <span class="math notranslate nohighlight">\(\phi\)</span>, are computed within the function
-and the angular separation is returned.</p>
-<p>In the flat sky approximation, these angles are calculated using (_lens: lens, _source: source,
-RA is from right to left)</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}\theta^2 = &amp; \left(\delta_s - \delta_l\right)^2 +
-\left(\alpha_l-\alpha_s\right)^2\cos^2(\delta_l)\\
-\tan\phi = &amp; \frac{\delta_s - \delta_l}{\left(\alpha_l - \alpha_s\right)\cos(\delta_l)}\end{split}\]</div>
-<p>The tangential, <span class="math notranslate nohighlight">\(g_t\)</span>, and cross, <span class="math notranslate nohighlight">\(g_x\)</span>, ellipticity/shear components are calculated using the two
-ellipticity/shear components <span class="math notranslate nohighlight">\(g_1\)</span> and <span class="math notranslate nohighlight">\(g_2\)</span> of the source galaxies, following Eq.7 and Eq.8
-in Schrabback et al. (2018), arXiv:1611:03866
-which is consistent with arXiv:0509252</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}g_t =&amp; -\left( g_1\cos\left(2\phi\right) - g_2\sin\left(2\phi\right)\right)\\
-g_x =&amp; g_1 \sin\left(2\phi\right) - g_2\cos\left(2\phi\right)\end{split}\]</div>
+<code class="sig-name descname">compute_tangential_and_cross_components</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">shape_component1</span><span class="o">=</span><span class="default_value">'e1'</span></em>, <em class="sig-param"><span class="n">shape_component2</span><span class="o">=</span><span class="default_value">'e2'</span></em>, <em class="sig-param"><span class="n">tan_component</span><span class="o">=</span><span class="default_value">'et'</span></em>, <em class="sig-param"><span class="n">cross_component</span><span class="o">=</span><span class="default_value">'ex'</span></em>, <em class="sig-param"><span class="n">geometry</span><span class="o">=</span><span class="default_value">'flat'</span></em>, <em class="sig-param"><span class="n">is_deltasigma</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">cosmo</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">add</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/galaxycluster.html#GalaxyCluster.compute_tangential_and_cross_components"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.galaxycluster.GalaxyCluster.compute_tangential_and_cross_components" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a tangential- and cross- components for shear or ellipticity to self</p>
+<p>Calls <cite>clmm.dataops.compute_tangential_and_cross_components</cite> with the following arguments:
+ra_lens: cluster Ra
+dec_lens: cluster Dec
+ra_source: <cite>galcat</cite> Ra
+dec_source: <cite>galcat</cite> Dec
+shear1: <cite>galcat</cite> shape_component1
+shear2: <cite>galcat</cite> shape_component2
+geometry: <cite>input</cite> geometry
+is_deltasigma: <cite>input</cite> is_deltasigma
+sigma_c: <cite>galcat</cite> sigma_c | None</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>cluster</strong> (<a class="reference internal" href="#clmm.galaxycluster.GalaxyCluster" title="clmm.galaxycluster.GalaxyCluster"><em>GalaxyCluster</em></a><em>, </em><em>optional</em>) – Instance of <cite>GalaxyCluster()</cite> and must contain right ascension and declinations of both
-the lens and sources and the two shear components all of the sources. If this
-object is specified, right ascension, declination, and shear or ellipticity inputs are ignored.</p></li>
 <li><p><strong>shape_component1</strong> (<em>string</em><em>, </em><em>optional</em>) – Name of the column in the <cite>galcat</cite> astropy table of the cluster object that contains
 the shape or shear measurement along the first axis. Default: <cite>e1</cite></p></li>
 <li><p><strong>shape_component1</strong> – Name of the column in the <cite>galcat</cite> astropy table of the cluster object that contains
@@ -260,58 +254,48 @@ Default: <cite>et</cite></p></li>
 <li><p><strong>cross_component</strong> (<em>string</em><em>, </em><em>optional</em>) – Name of the column to be added to the <cite>galcat</cite> astropy table that will contain the
 cross component computed from columns <cite>shape_component1</cite> and <cite>shape_component2</cite>.
 Default: <cite>ex</cite></p></li>
-<li><p><strong>ra_lens</strong> (<em>float</em><em>, </em><em>optional</em>) – Right ascension of the lensing cluster</p></li>
-<li><p><strong>dec_lens</strong> (<em>float</em><em>, </em><em>optional</em>) – Declination of the lensing cluster</p></li>
-<li><p><strong>ra_source_list</strong> (<em>array_like</em><em>, </em><em>optional</em>) – Right ascensions of each source galaxy</p></li>
-<li><p><strong>dec_source_list</strong> (<em>array_like</em><em>, </em><em>optional</em>) – Declinations of each source galaxy</p></li>
-<li><p><strong>shear1</strong> (<em>array_like</em><em>, </em><em>optional</em>) – The measured shear (or reduced shear or ellipticity) of the source galaxies</p></li>
-<li><p><strong>shear2</strong> (<em>array_like</em><em>, </em><em>optional</em>) – The measured shear (or reduced shear or ellipticity) of the source galaxies</p></li>
 <li><p><strong>geometry</strong> (<em>str</em><em>, </em><em>optional</em>) – Sky geometry to compute angular separation.
 Flat is currently the only supported option.</p></li>
-<li><p><strong>add_to_cluster</strong> (<em>bool</em>) – If <cite>True</cite> and a cluster was input, add the computed shears to the <cite>GalaxyCluster</cite> object</p></li>
+<li><p><strong>is_deltasigma</strong> (<em>bool</em>) – If <cite>True</cite>, the tangential and cross components returned are multiplied by Sigma_crit. Results in units of <span class="math notranslate nohighlight">\(M_\odot\ Mpc^{-2}\)</span></p></li>
+<li><p><strong>cosmo</strong> (<em>astropy cosmology object</em>) – Specifying a cosmology is required if <cite>is_deltasigma</cite> is True</p></li>
+<li><p><strong>add</strong> (<em>bool</em>) – If <cite>True</cite>, adds the computed shears to the <cite>galcat</cite></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>angsep</strong> (<em>array_like</em>) – Angular separation between lens and each source galaxy in radians</p></li>
-<li><p><strong>tangential_shear</strong> (<em>array_like</em>) – Tangential shear for each source galaxy</p></li>
-<li><p><strong>cross_shear</strong> (<em>array_like</em>) – Cross shear for each source galaxy</p></li>
+<li><p><strong>tangential_component</strong> (<em>array_like</em>) – Tangential shear (or assimilated quantity) for each source galaxy</p></li>
+<li><p><strong>cross_component</strong> (<em>array_like</em>) – Cross shear (or assimilated quantity) for each source galaxy</p></li>
 </ul>
 </p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="clmm.galaxycluster.GalaxyCluster.load">
-<code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/galaxycluster.html#GalaxyCluster.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.galaxycluster.GalaxyCluster.load" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/galaxycluster.html#GalaxyCluster.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.galaxycluster.GalaxyCluster.load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads GalaxyCluster object to filename using Pickle</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="clmm.galaxycluster.GalaxyCluster.make_binned_profile">
-<code class="sig-name descname">make_binned_profile</code><span class="sig-paren">(</span><em class="sig-param">angsep_units</em>, <em class="sig-param">bin_units</em>, <em class="sig-param">bins=10</em>, <em class="sig-param">cosmo=None</em>, <em class="sig-param">tan_component_in='et'</em>, <em class="sig-param">cross_component_in='ex'</em>, <em class="sig-param">tan_component_out='gt'</em>, <em class="sig-param">cross_component_out='gx'</em>, <em class="sig-param">table_name='profile'</em>, <em class="sig-param">add_to_cluster=True</em>, <em class="sig-param">include_empty_bins=False</em>, <em class="sig-param">gal_ids_in_bins=False</em><span class="sig-paren">)</span><a class="headerlink" href="#clmm.galaxycluster.GalaxyCluster.make_binned_profile" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="clmm.galaxycluster.GalaxyCluster.make_radial_profile">
+<code class="sig-name descname">make_radial_profile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bin_units</span></em>, <em class="sig-param"><span class="n">bins</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">cosmo</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tan_component_in</span><span class="o">=</span><span class="default_value">'et'</span></em>, <em class="sig-param"><span class="n">cross_component_in</span><span class="o">=</span><span class="default_value">'ex'</span></em>, <em class="sig-param"><span class="n">tan_component_out</span><span class="o">=</span><span class="default_value">'gt'</span></em>, <em class="sig-param"><span class="n">cross_component_out</span><span class="o">=</span><span class="default_value">'gx'</span></em>, <em class="sig-param"><span class="n">include_empty_bins</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">gal_ids_in_bins</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">add</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">table_name</span><span class="o">=</span><span class="default_value">'profile'</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/galaxycluster.html#GalaxyCluster.make_radial_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.galaxycluster.GalaxyCluster.make_radial_profile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the shear or ellipticity profile of the cluster</p>
 <p>We assume that the cluster object contains information on the cross and
 tangential shears or ellipticities and angular separation of the source galaxies</p>
-<p>This function can be called in two ways using an instance of GalaxyCluster</p>
-<ol class="arabic">
-<li><p>Pass an instance of GalaxyCluster into the function:</p>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">make_shear_profile</span><span class="p">(</span><span class="n">cluster</span><span class="p">,</span> <span class="s1">&#39;radians&#39;</span><span class="p">,</span> <span class="s1">&#39;radians&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-<li><p>Call it as a method of a GalaxyCluster instance:</p>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">cluster</span><span class="o">.</span><span class="n">make_shear_profile</span><span class="p">(</span><span class="s1">&#39;radians&#39;</span><span class="p">,</span> <span class="s1">&#39;radians&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</li>
-</ol>
+<p>Calls <cite>clmm.dataops.make_radial_profile</cite> with the following arguments:
+components: <cite>galcat</cite> components (tan_component_in, cross_component_in, z)
+angsep: <cite>galcat</cite> theta
+angsep_units: radians
+bin_units: <cite>input</cite> bin_units
+bins: <cite>input</cite> bins
+include_empty_bins: <cite>input</cite> include_empty_bins
+cosmo: <cite>input</cite> cosmo
+z_lens: cluster z</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>cluster</strong> (<a class="reference internal" href="#clmm.galaxycluster.GalaxyCluster" title="clmm.galaxycluster.GalaxyCluster"><em>GalaxyCluster</em></a>) – Instance of GalaxyCluster that contains the cross and tangential shears or ellipticities of
-each source galaxy in its <cite>galcat</cite></p></li>
 <li><p><strong>angsep_units</strong> (<em>str</em>) – Units of the calculated separation of the source galaxies
 Allowed Options = [“radians”]</p></li>
 <li><p><strong>bin_units</strong> (<em>str</em>) – Units to use for the radial bins of the shear profile
@@ -321,17 +305,21 @@ the bin edges. If a scalar is provided, create that many equally spaced bins bet
 the minimum and maximum angular separations in bin_units. If nothing is provided,
 default to 10 equally spaced bins.</p></li>
 <li><p><strong>cosmo</strong> (<em>dict</em><em>, </em><em>optional</em>) – Cosmology parameters to convert angular separations to physical distances</p></li>
-<li><p><strong>tan_component_in</strong> (<em>string</em><em>, </em><em>optional</em>) – Name of the column in the <cite>galcat</cite> astropy table of the <cite>cluster</cite> object that contains
-the tangential component to be binned. Default: ‘et’</p></li>
-<li><p><strong>tan_component_out</strong> (<em>string</em><em>, </em><em>optional</em>) – Name of the column in the <cite>profile</cite> table of the <cite>cluster</cite> object that will contain
-the binned profile of the tangential component. Default: ‘gx’</p></li>
-<li><p><strong>cross_component_in</strong> (<em>string</em><em>, </em><em>optional</em>) – Name of the column in the <cite>galcat</cite> astropy table of the <cite>cluster</cite> object that contains
-the cross component to be binned. Default: ‘ex’</p></li>
-<li><p><strong>cross_component_out</strong> (<em>string</em><em>, </em><em>optional</em>) – Name of the column in the <cite>profile</cite> table of the <cite>cluster</cite> object that will contain
-the  binned profile of the cross component. Default: ‘gx’</p></li>
-<li><p><strong>add_to_cluster</strong> (<em>bool</em><em>, </em><em>optional</em>) – Attach the profile to the cluster object as <cite>cluster.profile</cite></p></li>
+<li><p><strong>tan_component_in</strong> (<em>string</em><em>, </em><em>optional</em>) – Name of the tangential component column in <cite>galcat</cite> to be binned.
+Default: ‘et’</p></li>
+<li><p><strong>cross_component_in</strong> (<em>string</em><em>, </em><em>optional</em>) – Name of the cross component column in <cite>galcat</cite> to be binned.
+Default: ‘ex’</p></li>
+<li><p><strong>tan_component_out</strong> (<em>string</em><em>, </em><em>optional</em>) – Name of the tangetial component binned column to be added in profile table.
+Default: ‘gt’</p></li>
+<li><p><strong>cross_component_out</strong> (<em>string</em><em>, </em><em>optional</em>) – Name of the cross component binned profile column to be added in profile table.
+Default: ‘gx’</p></li>
 <li><p><strong>include_empty_bins</strong> (<em>bool</em><em>, </em><em>optional</em>) – Also include empty bins in the returned table</p></li>
 <li><p><strong>gal_ids_in_bins</strong> (<em>bool</em><em>, </em><em>optional</em>) – Also include the list of galaxies ID belonging to each bin in the returned table</p></li>
+<li><p><strong>add</strong> (<em>bool</em><em>, </em><em>optional</em>) – Attach the profile to the cluster object</p></li>
+<li><p><strong>table_name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of the profile table to be add as <cite>cluster.table_name</cite>.
+Default ‘profile’</p></li>
+<li><p><strong>overwrite</strong> (<em>bool</em><em>, </em><em>optional</em>) – Overwrite profile table.
+Default True</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -343,13 +331,11 @@ standard errors in each bin.</p>
 <dd class="field-odd"><p><a class="reference internal" href="clmm.gcdata.html#clmm.gcdata.GCData" title="clmm.gcdata.GCData">GCData</a></p>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
-<p>This is an example of a place where the cosmology-dependence can be sequestered to another module.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="clmm.galaxycluster.GalaxyCluster.save">
-<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/galaxycluster.html#GalaxyCluster.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.galaxycluster.GalaxyCluster.save" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/galaxycluster.html#GalaxyCluster.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.galaxycluster.GalaxyCluster.save" title="Permalink to this definition">¶</a></dt>
 <dd><p>Saves GalaxyCluster object to filename using Pickle</p>
 </dd></dl>
 
@@ -368,11 +354,19 @@ standard errors in each bin.</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2018-2019, LSST DESC CLMM Contributors
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -383,7 +377,6 @@ standard errors in each bin.</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

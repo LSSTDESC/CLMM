@@ -25,6 +25,7 @@ Imports specific to clmm
     sys.path.append('./support')
     import clmm
     import clmm.modeling as m
+    from clmm import Cosmology
 
 Make sure we know which version we’re using
 
@@ -37,7 +38,7 @@ Make sure we know which version we’re using
 
 .. parsed-literal::
 
-    '0.3.0'
+    '0.6.0'
 
 
 
@@ -45,9 +46,7 @@ Define a cosmology using astropy
 
 .. code:: ipython3
 
-    from astropy.cosmology import FlatLambdaCDM
-    astropy_cosmology_object = FlatLambdaCDM(H0=70, Om0=0.27, Ob0=0.045)
-    cosmo_ccl = m.cclify_astropy_cosmo(astropy_cosmology_object)
+    cosmo = Cosmology(H0 = 70.0, Omega_dm0 = 0.27 - 0.045, Omega_b0 = 0.045, Omega_k0 = 0.0)
 
 Define the galaxy cluster model. Here, we choose parameters that
 describe the galaxy cluster model, including the mass definition,
@@ -72,28 +71,28 @@ Quick test of all modeling functionality
 .. code:: ipython3
 
     rho = m.get_3d_density(r3d, mdelta=cluster_mass, cdelta=cluster_concentration, 
-                           z_cl=z_cl, cosmo=cosmo_ccl)
+                           z_cl=z_cl, cosmo=cosmo)
 
 .. code:: ipython3
 
-    Sigma = m.predict_surface_density(r3d, cluster_mass, cluster_concentration, z_cl, cosmo=cosmo_ccl, 
+    Sigma = m.predict_surface_density(r3d, cluster_mass, cluster_concentration, z_cl, cosmo=cosmo, 
                                       delta_mdef=mass_Delta, 
                                       halo_profile_model=density_profile_parametrization)
 
 .. code:: ipython3
 
-    DeltaSigma = m.predict_excess_surface_density(r3d, cluster_mass, cluster_concentration, z_cl, cosmo=cosmo_ccl, 
+    DeltaSigma = m.predict_excess_surface_density(r3d, cluster_mass, cluster_concentration, z_cl, cosmo=cosmo, 
                                                   delta_mdef=mass_Delta, 
                                                   halo_profile_model=density_profile_parametrization)
 
 .. code:: ipython3
 
-    Sigmac = m.get_critical_surface_density(cosmo_ccl, z_cluster=z_cl, z_source=z_source)
+    Sigmac = m.get_critical_surface_density(cosmo, z_cluster=z_cl, z_source=z_source)
 
 .. code:: ipython3
 
     gammat = m.predict_tangential_shear(r3d, mdelta=cluster_mass, cdelta=cluster_concentration, z_cluster=z_cl, 
-                                        z_source=z_source, cosmo=cosmo_ccl, delta_mdef=mass_Delta, 
+                                        z_source=z_source, cosmo=cosmo, delta_mdef=mass_Delta, 
                                         halo_profile_model=density_profile_parametrization, 
                                         z_src_model='single_plane')
 
@@ -101,14 +100,14 @@ Quick test of all modeling functionality
 
     kappa = m.predict_convergence(r3d, mdelta=cluster_mass, cdelta=cluster_concentration, 
                                    z_cluster=z_cl, z_source=z_source,
-                                   cosmo=cosmo_ccl, delta_mdef=mass_Delta, 
+                                   cosmo=cosmo, delta_mdef=mass_Delta, 
                                    halo_profile_model=density_profile_parametrization, 
                                    z_src_model='single_plane')
 
 .. code:: ipython3
 
     gt = m.predict_reduced_tangential_shear(r3d, mdelta=cluster_mass, cdelta=cluster_concentration, 
-                                            z_cluster=z_cl, z_source=z_source, cosmo=cosmo_ccl, 
+                                            z_cluster=z_cl, z_source=z_source, cosmo=cosmo, 
                                             delta_mdef=mass_Delta, 
                                             halo_profile_model=density_profile_parametrization, 
                                             z_src_model='single_plane')
@@ -117,7 +116,7 @@ Quick test of all modeling functionality
 .. code:: ipython3
 
     mu = m.predict_magnification(r3d, mdelta=cluster_mass, cdelta=cluster_concentration, 
-                                            z_cluster=z_cl, z_source=z_source, cosmo=cosmo_ccl, 
+                                            z_cluster=z_cl, z_source=z_source, cosmo=cosmo, 
                                             delta_mdef=mass_Delta, 
                                             halo_profile_model=density_profile_parametrization, 
                                             z_src_model='single_plane')

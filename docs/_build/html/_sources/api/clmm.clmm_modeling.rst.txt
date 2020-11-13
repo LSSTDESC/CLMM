@@ -1,0 +1,7 @@
+clmm.clmm\_modeling module
+==========================
+
+.. automodule:: clmm.clmm_modeling
+   :members:
+   :undoc-members:
+   :show-inheritance:

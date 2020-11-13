@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Fit Halo Mass from a Shear Catalog &mdash; CLMM 0.3.0 documentation</title>
+  <title>Fit halo mass to shear profile: 2. realistic data &mdash; CLMM 0.6.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -25,19 +30,15 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Generate Mock Data" href="demo_generate_mock_cluster.html" />
-    <link rel="prev" title="Fit Halo Mass from a Shear Catalog" href="Example1_Fit_Halo_Mass_to_Shear_Catalog.html" /> 
+    <link rel="prev" title="Fit halo mass to shear profile: 1. ideal data" href="Example1_Fit_Halo_Mass_to_Shear_Catalog.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -51,7 +52,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> CLMM
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> CLMM
           
 
           
@@ -61,7 +62,7 @@
             
             
               <div class="version">
-                0.3.0
+                0.6.0
               </div>
             
           
@@ -78,6 +79,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -92,13 +94,13 @@
 </ul>
 <p class="caption"><span class="caption-text">Examples</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit Halo Mass from a Shear Catalog</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Fit Halo Mass from a Shear Catalog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Fit halo mass to shear profile: 2. realistic data</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Usage Demos</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="demo_generate_mock_cluster.html">Generate Mock Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demo_polaraveraging_functionality.html">Measure a Profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_dataops_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demo_modeling_functionality.html">Model a Galaxy Cluster</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
 </ul>
@@ -106,6 +108,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">API Documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.constants.html">clmm.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.dataops.html">clmm.dataops module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.gcdata.html">clmm.gcdata module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.lsst.html">clmm.lsst package</a><ul>
@@ -114,8 +117,9 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.modeling.html">clmm.modeling module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.plotting.html">clmm.plotting module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/clmm.polaraveraging.html">clmm.polaraveraging module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.utils.html">clmm.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.clmm_modeling.html">clmm.clmm_modeling module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.clmm_cosmo.html">clmm.clmm_cosmo module</a></li>
 </ul>
 </li>
 </ul>
@@ -123,6 +127,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -161,9 +166,9 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Fit Halo Mass from a Shear Catalog</li>
+      <li>Fit halo mass to shear profile: 2. realistic data</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -182,8 +187,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="fit-halo-mass-from-a-shear-catalog">
-<h1>Fit Halo Mass from a Shear Catalog<a class="headerlink" href="#fit-halo-mass-from-a-shear-catalog" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="fit-halo-mass-to-shear-profile-2-realistic-data">
+<h1>Fit halo mass to shear profile: 2. realistic data<a class="headerlink" href="#fit-halo-mass-to-shear-profile-2-realistic-data" title="Permalink to this headline">¶</a></h1>
 <p><em>the LSST-DESC CLMM team</em></p>
 <p>This notebook demonstrates how to use <code class="docutils literal notranslate"><span class="pre">clmm</span></code> to estimate a WL halo
 mass from observations of a galaxy cluster. It uses several
@@ -191,7 +196,23 @@ functionalities of the support <code class="docutils literal notranslate"><span 
 of increasing complexity. This notebook also demonstrates the bias
 introduced on the reconstructed mass by a naive fit, when the redshift
 distribution of the background galaxies is not properly accounted for in
-the model.</p>
+the model. Organization of this notebook goes as follows:</p>
+<ul class="simple">
+<li><p>Setting things up, with the proper imports.</p></li>
+<li><p>Generating 3 datasets: an ideal dataset (dataset1) similar to that of
+Example1 (single source plane); an ideal dataset but with source
+galaxies following the Chang et al. (2013) redshift distribution
+(dataset2); a noisy dataset where photoz errors and shape noise are
+also included (dataset3).</p></li>
+<li><p>Computing the binned reduced tangential shear profile, for the 3
+datasets, using logarithmic binning.</p></li>
+<li><p>Setting up the “single source plane” model to be fitted to the 3
+datasets. Only dataset1 has a single source plane, so we expect to
+see a bias in the reconstructed mass when using this model on
+datasets 2 and 3.</p></li>
+<li><p>Perform a simple fit using <code class="docutils literal notranslate"><span class="pre">scipy.optimize.curve_fit</span></code> and visualize
+the results.</p></li>
+</ul>
 <div class="section" id="setup">
 <h2>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h2>
 <p>First, we import some standard packages.</p>
@@ -202,9 +223,7 @@ the model.</p>
     <span class="kn">import</span> <span class="nn">notebook_install</span>
     <span class="n">notebook_install</span><span class="o">.</span><span class="n">install_clmm_pipeline</span><span class="p">(</span><span class="n">upgrade</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="kn">import</span> <span class="nn">clmm</span>
-<span class="kn">from</span> <span class="nn">astropy.cosmology</span> <span class="kn">import</span> <span class="n">FlatLambdaCDM</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="c1"># %matplotlib inline</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">random</span>
 <span class="kn">from</span> <span class="nn">sampler</span> <span class="kn">import</span> <span class="n">fitters</span>
@@ -212,13 +231,14 @@ the model.</p>
 <span class="n">clmm</span><span class="o">.</span><span class="n">__version__</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;0.3.0&#39;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;0.6.0&#39;</span>
 </pre></div>
 </div>
 <p>Next, we import <code class="docutils literal notranslate"><span class="pre">clmm</span></code>’s core modules.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">clmm.polaraveraging</span> <span class="k">as</span> <span class="nn">pa</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">clmm.dataops</span> <span class="k">as</span> <span class="nn">da</span>
 <span class="kn">import</span> <span class="nn">clmm.galaxycluster</span> <span class="k">as</span> <span class="nn">gc</span>
 <span class="kn">import</span> <span class="nn">clmm.modeling</span> <span class="k">as</span> <span class="nn">modeling</span>
+<span class="kn">from</span> <span class="nn">clmm</span> <span class="kn">import</span> <span class="n">Cosmology</span>
 </pre></div>
 </div>
 <p>We then import a support modules for a specific data sets. <code class="docutils literal notranslate"><span class="pre">clmm</span></code>
@@ -234,15 +254,13 @@ format compatible with <code class="docutils literal notranslate"><span class="p
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>To create mock data, we need to define a true cosmology, which is
-currently done with <code class="docutils literal notranslate"><span class="pre">`astropy</span></code>’s cosmology
-library &lt;<a class="reference external" href="http://docs.astropy.org/en/stable/cosmology/index.html">http://docs.astropy.org/en/stable/cosmology/index.html</a>&gt;`__.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mock_cosmo</span> <span class="o">=</span> <span class="n">FlatLambdaCDM</span><span class="p">(</span><span class="n">H0</span><span class="o">=</span><span class="mi">70</span><span class="p">,</span> <span class="n">Om0</span><span class="o">=</span><span class="mf">0.27</span><span class="p">,</span> <span class="n">Ob0</span><span class="o">=</span><span class="mf">0.045</span><span class="p">)</span>
+<p>To create mock data, we need to define a true cosmology.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mock_cosmo</span> <span class="o">=</span> <span class="n">Cosmology</span><span class="p">(</span><span class="n">H0</span> <span class="o">=</span> <span class="mf">70.0</span><span class="p">,</span> <span class="n">Omega_dm0</span> <span class="o">=</span> <span class="mf">0.27</span> <span class="o">-</span> <span class="mf">0.045</span><span class="p">,</span> <span class="n">Omega_b0</span> <span class="o">=</span> <span class="mf">0.045</span><span class="p">,</span> <span class="n">Omega_k0</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>We now set some parameters for a mock galaxy cluster.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cosmo</span> <span class="o">=</span> <span class="n">mock_cosmo</span>
-<span class="n">cluster_m</span> <span class="o">=</span> <span class="mf">1.e15</span>
+<span class="n">cluster_m</span> <span class="o">=</span> <span class="mf">1.e15</span> <span class="c1"># M200,m [Msun]</span>
 <span class="n">cluster_z</span> <span class="o">=</span> <span class="mf">0.3</span>
 <span class="n">concentration</span> <span class="o">=</span> <span class="mi">4</span>
 <span class="n">ngals</span> <span class="o">=</span> <span class="mi">10000</span>
@@ -256,18 +274,18 @@ catalogs: - <code class="docutils literal notranslate"><span class="pre">ideal_d
 redshift. - <code class="docutils literal notranslate"><span class="pre">ideal_data_z</span></code>: galaxies distributed according to the
 Chang et al. (2013) redshift distribution. - <code class="docutils literal notranslate"><span class="pre">noisy_data_z</span></code>:
 <code class="docutils literal notranslate"><span class="pre">ideal_data_z</span></code> + photoz errors + shape noise</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ideal_data</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span><span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">ngals</span><span class="p">,</span> <span class="n">Delta</span><span class="p">,</span><span class="mf">0.8</span><span class="p">)</span>
-<span class="n">ideal_data_z</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span><span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">ngals</span><span class="p">,</span> <span class="n">Delta</span><span class="p">,</span><span class="s1">&#39;chang13&#39;</span><span class="p">)</span>
-<span class="n">noisy_data_z</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span><span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">ngals</span><span class="p">,</span> <span class="n">Delta</span><span class="p">,</span><span class="s1">&#39;chang13&#39;</span><span class="p">,</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ideal_data</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span><span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">)</span>
+<span class="n">ideal_data_z</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span><span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span><span class="s1">&#39;chang13&#39;</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">)</span>
+<span class="n">noisy_data_z</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span><span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="s1">&#39;chang13&#39;</span><span class="p">,</span>
                                             <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
-                                            <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+                                            <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">pbs</span><span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">c</span><span class="o">/</span><span class="n">ccombet</span><span class="o">/.</span><span class="n">conda</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">mydesc</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">0.3</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">py3</span><span class="o">.</span><span class="mf">7.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">modeling</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">366</span><span class="p">:</span> <span class="ne">RuntimeWarning</span><span class="p">:</span> <span class="n">divide</span> <span class="n">by</span> <span class="n">zero</span> <span class="n">encountered</span> <span class="ow">in</span> <span class="n">true_divide</span>
-<span class="o">/</span><span class="n">pbs</span><span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">c</span><span class="o">/</span><span class="n">ccombet</span><span class="o">/.</span><span class="n">conda</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">mydesc</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">0.3</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">py3</span><span class="o">.</span><span class="mf">7.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">modeling</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">369</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">Some</span> <span class="n">source</span> <span class="n">redshifts</span> <span class="n">are</span> <span class="n">lower</span> <span class="n">than</span> <span class="n">the</span> <span class="n">cluster</span> <span class="n">redshift</span><span class="o">.</span> <span class="n">Returning</span> <span class="n">Sigma_crit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span> <span class="k">for</span> <span class="n">those</span> <span class="n">galaxies</span><span class="o">.</span>
-<span class="o">/</span><span class="n">pbs</span><span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">c</span><span class="o">/</span><span class="n">ccombet</span><span class="o">/.</span><span class="n">conda</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">mydesc</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">0.3</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">py3</span><span class="o">.</span><span class="mf">7.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">modeling</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">509</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">Some</span> <span class="n">source</span> <span class="n">redshifts</span> <span class="n">are</span> <span class="n">lower</span> <span class="n">than</span> <span class="n">the</span> <span class="n">cluster</span> <span class="n">redshift</span><span class="o">.</span> <span class="n">kappa</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">those</span> <span class="n">galaxies</span><span class="o">.</span>
-<span class="o">/</span><span class="n">pbs</span><span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">c</span><span class="o">/</span><span class="n">ccombet</span><span class="o">/.</span><span class="n">conda</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">mydesc</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">0.3</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">py3</span><span class="o">.</span><span class="mf">7.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">modeling</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">440</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">Some</span> <span class="n">source</span> <span class="n">redshifts</span> <span class="n">are</span> <span class="n">lower</span> <span class="n">than</span> <span class="n">the</span> <span class="n">cluster</span> <span class="n">redshift</span><span class="o">.</span> <span class="n">shear</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">those</span> <span class="n">galaxies</span><span class="o">.</span>
-<span class="o">/</span><span class="n">pbs</span><span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">c</span><span class="o">/</span><span class="n">ccombet</span><span class="o">/.</span><span class="n">conda</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">mydesc</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">0.3</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">py3</span><span class="o">.</span><span class="mf">7.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">modeling</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">572</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">Some</span> <span class="n">source</span> <span class="n">redshifts</span> <span class="n">are</span> <span class="n">lower</span> <span class="n">than</span> <span class="n">the</span> <span class="n">cluster</span> <span class="n">redshift</span><span class="o">.</span> <span class="n">shear</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">those</span> <span class="n">galaxies</span><span class="o">.</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">combet</span><span class="o">/</span><span class="n">anaconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">clmmenv</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">numpy</span><span class="o">/</span><span class="n">ma</span><span class="o">/</span><span class="n">core</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">2831</span><span class="p">:</span> <span class="n">VisibleDeprecationWarning</span><span class="p">:</span> <span class="n">Creating</span> <span class="n">an</span> <span class="n">ndarray</span> <span class="kn">from</span> <span class="nn">ragged</span> <span class="n">nested</span> <span class="n">sequences</span> <span class="p">(</span><span class="n">which</span> <span class="ow">is</span> <span class="n">a</span> <span class="nb">list</span><span class="o">-</span><span class="ow">or</span><span class="o">-</span><span class="nb">tuple</span> <span class="n">of</span> <span class="n">lists</span><span class="o">-</span><span class="ow">or</span><span class="o">-</span><span class="n">tuples</span><span class="o">-</span><span class="ow">or</span> <span class="n">ndarrays</span> <span class="k">with</span> <span class="n">different</span> <span class="n">lengths</span> <span class="ow">or</span> <span class="n">shapes</span><span class="p">)</span> <span class="ow">is</span> <span class="n">deprecated</span><span class="o">.</span> <span class="n">If</span> <span class="n">you</span> <span class="n">meant</span> <span class="n">to</span> <span class="n">do</span> <span class="n">this</span><span class="p">,</span> <span class="n">you</span> <span class="n">must</span> <span class="n">specify</span> <span class="s1">&#39;dtype=object&#39;</span> <span class="n">when</span> <span class="n">creating</span> <span class="n">the</span> <span class="n">ndarray</span>
+  <span class="n">_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span>
+<span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">combet</span><span class="o">/</span><span class="n">anaconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">clmmenv</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">0.6</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">py3</span><span class="o">.</span><span class="mf">8.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">modbackend</span><span class="o">/</span><span class="n">cluster_toolkit</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">275</span><span class="p">:</span> <span class="ne">RuntimeWarning</span><span class="p">:</span> <span class="n">divide</span> <span class="n">by</span> <span class="n">zero</span> <span class="n">encountered</span> <span class="ow">in</span> <span class="n">true_divide</span>
+<span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">combet</span><span class="o">/</span><span class="n">anaconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">clmmenv</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">0.6</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">py3</span><span class="o">.</span><span class="mf">8.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">modbackend</span><span class="o">/</span><span class="n">cluster_toolkit</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">278</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">Some</span> <span class="n">source</span> <span class="n">redshifts</span> <span class="n">are</span> <span class="n">lower</span> <span class="n">than</span> <span class="n">the</span> <span class="n">cluster</span> <span class="n">redshift</span><span class="o">.</span> <span class="n">Returning</span> <span class="n">Sigma_crit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span> <span class="k">for</span> <span class="n">those</span> <span class="n">galaxies</span><span class="o">.</span>
+<span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">combet</span><span class="o">/</span><span class="n">anaconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">clmmenv</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">0.6</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">py3</span><span class="o">.</span><span class="mf">8.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">modbackend</span><span class="o">/</span><span class="n">cluster_toolkit</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">428</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">Some</span> <span class="n">source</span> <span class="n">redshifts</span> <span class="n">are</span> <span class="n">lower</span> <span class="n">than</span> <span class="n">the</span> <span class="n">cluster</span> <span class="n">redshift</span><span class="o">.</span> <span class="n">kappa</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">those</span> <span class="n">galaxies</span><span class="o">.</span>
 </pre></div>
 </div>
 <p>The galaxy catalogs are converted to a <code class="docutils literal notranslate"><span class="pre">clmm.GalaxyCluster</span></code> object and
@@ -310,9 +328,8 @@ may be saved for later use.</p>
 <h2>Deriving observables<a class="headerlink" href="#deriving-observables" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="computing-shear">
 <h3>Computing shear<a class="headerlink" href="#computing-shear" title="Permalink to this headline">¶</a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">clmm.polaraveraging.compute_tangential_and_cross_components</span></code>
-calculates the tangential and cross shears for each source galaxy in the
-cluster.</p>
+<p><code class="docutils literal notranslate"><span class="pre">clmm.dataops.compute_tangential_and_cross_components</span></code> calculates the
+tangential and cross shears for each source galaxy in the cluster.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">theta1</span><span class="p">,</span> <span class="n">g_t1</span><span class="p">,</span> <span class="n">g_x1</span> <span class="o">=</span> <span class="n">cl1</span><span class="o">.</span><span class="n">compute_tangential_and_cross_components</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;flat&quot;</span><span class="p">)</span>
 <span class="n">theta2</span><span class="p">,</span> <span class="n">g_t2</span><span class="p">,</span> <span class="n">g_x2</span> <span class="o">=</span> <span class="n">cl2</span><span class="o">.</span><span class="n">compute_tangential_and_cross_components</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;flat&quot;</span><span class="p">)</span>
 <span class="n">theta2</span><span class="p">,</span> <span class="n">g_t3</span><span class="p">,</span> <span class="n">g_x3</span> <span class="o">=</span> <span class="n">cl3</span><span class="o">.</span><span class="n">compute_tangential_and_cross_components</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;flat&quot;</span><span class="p">)</span>
@@ -321,17 +338,17 @@ cluster.</p>
 </div>
 <div class="section" id="radially-binning-the-data">
 <h3>Radially binning the data<a class="headerlink" href="#radially-binning-the-data" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bin_edges</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">make_bins</span><span class="p">(</span><span class="mf">0.7</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;evenlog10width&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bin_edges</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">make_bins</span><span class="p">(</span><span class="mf">0.7</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;evenlog10width&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">clmm.polaraveraging.make_binned_profile</span></code> evaluates the average shear
-of the galaxy catalog in bins of radius.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">profile1</span> <span class="o">=</span> <span class="n">cl1</span><span class="o">.</span><span class="n">make_binned_profile</span><span class="p">(</span><span class="s2">&quot;radians&quot;</span><span class="p">,</span> <span class="s2">&quot;Mpc&quot;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bin_edges</span><span class="p">,</span><span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
-<span class="n">profile2</span> <span class="o">=</span> <span class="n">cl2</span><span class="o">.</span><span class="n">make_binned_profile</span><span class="p">(</span><span class="s2">&quot;radians&quot;</span><span class="p">,</span> <span class="s2">&quot;Mpc&quot;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bin_edges</span><span class="p">,</span><span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
-<span class="n">profile3</span> <span class="o">=</span> <span class="n">cl3</span><span class="o">.</span><span class="n">make_binned_profile</span><span class="p">(</span><span class="s2">&quot;radians&quot;</span><span class="p">,</span> <span class="s2">&quot;Mpc&quot;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bin_edges</span><span class="p">,</span><span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
+<p><code class="docutils literal notranslate"><span class="pre">clmm.dataops.make_radial_profile</span></code> evaluates the average shear of the
+galaxy catalog in bins of radius.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">profile1</span> <span class="o">=</span> <span class="n">cl1</span><span class="o">.</span><span class="n">make_radial_profile</span><span class="p">(</span><span class="s2">&quot;Mpc&quot;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bin_edges</span><span class="p">,</span><span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
+<span class="n">profile2</span> <span class="o">=</span> <span class="n">cl2</span><span class="o">.</span><span class="n">make_radial_profile</span><span class="p">(</span><span class="s2">&quot;Mpc&quot;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bin_edges</span><span class="p">,</span><span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
+<span class="n">profile3</span> <span class="o">=</span> <span class="n">cl3</span><span class="o">.</span><span class="n">make_radial_profile</span><span class="p">(</span><span class="s2">&quot;Mpc&quot;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bin_edges</span><span class="p">,</span><span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>After running <code class="docutils literal notranslate"><span class="pre">clmm.polaraveraging.make_binned_profile</span></code> on a
+<p>After running <code class="docutils literal notranslate"><span class="pre">clmm.dataops.make_radial_profile</span></code> on a
 <code class="docutils literal notranslate"><span class="pre">clmm.GalaxyCluster</span></code> object, the object acquires the
 <code class="docutils literal notranslate"><span class="pre">clmm.GalaxyCluster.profile</span></code> attribute.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">cl1</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">colnames</span><span class="p">:</span> <span class="n">cl1</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">format</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%6.3e</span><span class="s2">&quot;</span>
@@ -340,21 +357,21 @@ of the galaxy catalog in bins of radius.</p>
 </div>
 <div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">radius_min</span>   <span class="n">radius</span>  <span class="n">radius_max</span>     <span class="n">gt</span>      <span class="n">gt_err</span>      <span class="n">gx</span>       <span class="n">gx_err</span>      <span class="n">z</span>       <span class="n">z_err</span>     <span class="n">n_src</span>
 <span class="o">----------</span> <span class="o">---------</span> <span class="o">----------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">----------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">---------</span>
- <span class="mf">7.000e-01</span> <span class="mf">7.534e-01</span>  <span class="mf">7.863e-01</span> <span class="mf">5.315e-02</span> <span class="mf">2.245e-04</span> <span class="o">-</span><span class="mf">1.785e-18</span> <span class="mf">1.931e-18</span> <span class="mf">8.000e-01</span> <span class="mf">2.177e-17</span> <span class="mf">2.600e+01</span>
- <span class="mf">7.863e-01</span> <span class="mf">8.328e-01</span>  <span class="mf">8.831e-01</span> <span class="mf">4.956e-02</span> <span class="mf">1.850e-04</span>  <span class="mf">6.770e-19</span> <span class="mf">1.703e-18</span> <span class="mf">8.000e-01</span> <span class="mf">1.734e-17</span> <span class="mf">4.100e+01</span>
- <span class="mf">8.831e-01</span> <span class="mf">9.295e-01</span>  <span class="mf">9.920e-01</span> <span class="mf">4.571e-02</span> <span class="mf">1.446e-04</span>  <span class="mf">1.535e-18</span> <span class="mf">7.660e-19</span> <span class="mf">8.000e-01</span> <span class="mf">3.140e-17</span> <span class="mf">5.000e+01</span>
- <span class="mf">9.920e-01</span> <span class="mf">1.055e+00</span>  <span class="mf">1.114e+00</span> <span class="mf">4.142e-02</span> <span class="mf">1.410e-04</span>  <span class="mf">5.256e-19</span> <span class="mf">9.090e-19</span> <span class="mf">8.000e-01</span> <span class="mf">1.484e-17</span> <span class="mf">5.600e+01</span>
- <span class="mf">1.114e+00</span> <span class="mf">1.188e+00</span>  <span class="mf">1.251e+00</span> <span class="mf">3.758e-02</span> <span class="mf">1.202e-04</span>  <span class="mf">8.037e-19</span> <span class="mf">7.173e-19</span> <span class="mf">8.000e-01</span> <span class="mf">1.241e-17</span> <span class="mf">8.000e+01</span>
- <span class="mf">1.251e+00</span> <span class="mf">1.327e+00</span>  <span class="mf">1.406e+00</span> <span class="mf">3.416e-02</span> <span class="mf">1.072e-04</span> <span class="o">-</span><span class="mf">5.891e-20</span> <span class="mf">5.742e-19</span> <span class="mf">8.000e-01</span> <span class="mf">1.121e-17</span> <span class="mf">9.800e+01</span>
- <span class="mf">1.406e+00</span> <span class="mf">1.492e+00</span>  <span class="mf">1.579e+00</span> <span class="mf">3.071e-02</span> <span class="mf">8.676e-05</span> <span class="o">-</span><span class="mf">1.044e-18</span> <span class="mf">5.314e-19</span> <span class="mf">8.000e-01</span> <span class="mf">1.933e-17</span> <span class="mf">1.320e+02</span>
- <span class="mf">1.579e+00</span> <span class="mf">1.682e+00</span>  <span class="mf">1.773e+00</span> <span class="mf">2.740e-02</span> <span class="mf">7.352e-05</span> <span class="o">-</span><span class="mf">2.017e-19</span> <span class="mf">4.209e-19</span> <span class="mf">8.000e-01</span> <span class="mf">1.831e-17</span> <span class="mf">1.470e+02</span>
- <span class="mf">1.773e+00</span> <span class="mf">1.885e+00</span>  <span class="mf">1.992e+00</span> <span class="mf">2.448e-02</span> <span class="mf">6.668e-05</span> <span class="o">-</span><span class="mf">2.564e-20</span> <span class="mf">2.849e-19</span> <span class="mf">8.000e-01</span> <span class="mf">8.617e-18</span> <span class="mf">1.660e+02</span>
- <span class="mf">1.992e+00</span> <span class="mf">2.118e+00</span>  <span class="mf">2.237e+00</span> <span class="mf">2.170e-02</span> <span class="mf">5.133e-05</span>  <span class="mf">9.877e-20</span> <span class="mf">2.324e-19</span> <span class="mf">8.000e-01</span> <span class="mf">7.337e-18</span> <span class="mf">2.290e+02</span>
- <span class="mf">2.237e+00</span> <span class="mf">2.377e+00</span>  <span class="mf">2.513e+00</span> <span class="mf">1.917e-02</span> <span class="mf">3.739e-05</span> <span class="o">-</span><span class="mf">5.004e-20</span> <span class="mf">1.717e-19</span> <span class="mf">8.000e-01</span> <span class="mf">1.213e-17</span> <span class="mf">3.350e+02</span>
- <span class="mf">2.513e+00</span> <span class="mf">2.671e+00</span>  <span class="mf">2.823e+00</span> <span class="mf">1.684e-02</span> <span class="mf">3.279e-05</span> <span class="o">-</span><span class="mf">5.633e-20</span> <span class="mf">1.483e-19</span> <span class="mf">8.000e-01</span> <span class="mf">0.000e+00</span> <span class="mf">3.920e+02</span>
- <span class="mf">2.823e+00</span> <span class="mf">3.000e+00</span>  <span class="mf">3.171e+00</span> <span class="mf">1.473e-02</span> <span class="mf">2.606e-05</span>  <span class="mf">2.377e-20</span> <span class="mf">1.324e-19</span> <span class="mf">8.000e-01</span> <span class="mf">0.000e+00</span> <span class="mf">4.940e+02</span>
- <span class="mf">3.171e+00</span> <span class="mf">3.370e+00</span>  <span class="mf">3.561e+00</span> <span class="mf">1.282e-02</span> <span class="mf">2.008e-05</span> <span class="o">-</span><span class="mf">1.417e-20</span> <span class="mf">7.574e-20</span> <span class="mf">8.000e-01</span> <span class="mf">4.325e-18</span> <span class="mf">6.590e+02</span>
- <span class="mf">3.561e+00</span> <span class="mf">3.790e+00</span>  <span class="mf">4.000e+00</span> <span class="mf">1.111e-02</span> <span class="mf">1.699e-05</span>  <span class="mf">2.964e-20</span> <span class="mf">6.768e-20</span> <span class="mf">8.000e-01</span> <span class="mf">3.996e-18</span> <span class="mf">7.720e+02</span>
+ <span class="mf">7.000e-01</span> <span class="mf">7.446e-01</span>  <span class="mf">7.863e-01</span> <span class="mf">4.353e-02</span> <span class="mf">1.310e-04</span>  <span class="mf">5.393e-19</span> <span class="mf">6.164e-19</span> <span class="mf">8.000e-01</span> <span class="mf">2.916e-17</span> <span class="mf">5.800e+01</span>
+ <span class="mf">7.863e-01</span> <span class="mf">8.403e-01</span>  <span class="mf">8.831e-01</span> <span class="mf">3.984e-02</span> <span class="mf">1.099e-04</span>  <span class="mf">2.597e-19</span> <span class="mf">6.459e-19</span> <span class="mf">8.000e-01</span> <span class="mf">2.394e-17</span> <span class="mf">8.600e+01</span>
+ <span class="mf">8.831e-01</span> <span class="mf">9.395e-01</span>  <span class="mf">9.920e-01</span> <span class="mf">3.654e-02</span> <span class="mf">1.001e-04</span> <span class="o">-</span><span class="mf">4.976e-19</span> <span class="mf">6.271e-19</span> <span class="mf">8.000e-01</span> <span class="mf">3.417e-17</span> <span class="mf">9.500e+01</span>
+ <span class="mf">9.920e-01</span> <span class="mf">1.052e+00</span>  <span class="mf">1.114e+00</span> <span class="mf">3.332e-02</span> <span class="mf">8.489e-05</span> <span class="o">-</span><span class="mf">1.815e-19</span> <span class="mf">4.464e-19</span> <span class="mf">8.000e-01</span> <span class="mf">1.933e-17</span> <span class="mf">1.320e+02</span>
+ <span class="mf">1.114e+00</span> <span class="mf">1.187e+00</span>  <span class="mf">1.251e+00</span> <span class="mf">3.003e-02</span> <span class="mf">7.147e-05</span> <span class="o">-</span><span class="mf">5.194e-19</span> <span class="mf">3.881e-19</span> <span class="mf">8.000e-01</span> <span class="mf">1.807e-17</span> <span class="mf">1.510e+02</span>
+ <span class="mf">1.251e+00</span> <span class="mf">1.331e+00</span>  <span class="mf">1.406e+00</span> <span class="mf">2.708e-02</span> <span class="mf">6.600e-05</span>  <span class="mf">4.217e-19</span> <span class="mf">3.936e-19</span> <span class="mf">8.000e-01</span> <span class="mf">1.718e-17</span> <span class="mf">1.670e+02</span>
+ <span class="mf">1.406e+00</span> <span class="mf">1.495e+00</span>  <span class="mf">1.579e+00</span> <span class="mf">2.426e-02</span> <span class="mf">5.243e-05</span>  <span class="mf">4.293e-19</span> <span class="mf">3.165e-19</span> <span class="mf">8.000e-01</span> <span class="mf">0.000e+00</span> <span class="mf">2.350e+02</span>
+ <span class="mf">1.579e+00</span> <span class="mf">1.677e+00</span>  <span class="mf">1.773e+00</span> <span class="mf">2.165e-02</span> <span class="mf">3.908e-05</span> <span class="o">-</span><span class="mf">1.203e-19</span> <span class="mf">2.217e-19</span> <span class="mf">8.000e-01</span> <span class="mf">5.995e-18</span> <span class="mf">3.430e+02</span>
+ <span class="mf">1.773e+00</span> <span class="mf">1.887e+00</span>  <span class="mf">1.992e+00</span> <span class="mf">1.917e-02</span> <span class="mf">3.431e-05</span>  <span class="mf">2.780e-21</span> <span class="mf">1.285e-19</span> <span class="mf">8.000e-01</span> <span class="mf">0.000e+00</span> <span class="mf">4.010e+02</span>
+ <span class="mf">1.992e+00</span> <span class="mf">2.119e+00</span>  <span class="mf">2.237e+00</span> <span class="mf">1.692e-02</span> <span class="mf">2.751e-05</span>  <span class="mf">8.490e-20</span> <span class="mf">1.212e-19</span> <span class="mf">8.000e-01</span> <span class="mf">0.000e+00</span> <span class="mf">4.990e+02</span>
+ <span class="mf">2.237e+00</span> <span class="mf">2.377e+00</span>  <span class="mf">2.513e+00</span> <span class="mf">1.489e-02</span> <span class="mf">2.158e-05</span>  <span class="mf">2.077e-20</span> <span class="mf">9.383e-20</span> <span class="mf">8.000e-01</span> <span class="mf">8.623e-18</span> <span class="mf">6.630e+02</span>
+ <span class="mf">2.513e+00</span> <span class="mf">2.672e+00</span>  <span class="mf">2.823e+00</span> <span class="mf">1.301e-02</span> <span class="mf">1.844e-05</span> <span class="o">-</span><span class="mf">9.408e-20</span> <span class="mf">8.278e-20</span> <span class="mf">8.000e-01</span> <span class="mf">0.000e+00</span> <span class="mf">7.800e+02</span>
+ <span class="mf">2.823e+00</span> <span class="mf">2.999e+00</span>  <span class="mf">3.171e+00</span> <span class="mf">1.135e-02</span> <span class="mf">1.421e-05</span>  <span class="mf">9.214e-20</span> <span class="mf">5.313e-20</span> <span class="mf">8.000e-01</span> <span class="mf">0.000e+00</span> <span class="mf">1.042e+03</span>
+ <span class="mf">3.171e+00</span> <span class="mf">3.369e+00</span>  <span class="mf">3.561e+00</span> <span class="mf">9.842e-03</span> <span class="mf">1.130e-05</span> <span class="o">-</span><span class="mf">4.033e-20</span> <span class="mf">4.817e-20</span> <span class="mf">8.000e-01</span> <span class="mf">3.078e-18</span> <span class="mf">1.301e+03</span>
+ <span class="mf">3.561e+00</span> <span class="mf">3.781e+00</span>  <span class="mf">4.000e+00</span> <span class="mf">8.509e-03</span> <span class="mf">8.960e-06</span> <span class="o">-</span><span class="mf">5.483e-20</span> <span class="mf">3.145e-20</span> <span class="mf">8.000e-01</span> <span class="mf">2.738e-18</span> <span class="mf">1.644e+03</span>
 </pre></div>
 </div>
 <p>We visualize the radially binned shear for the 3 configurations</p>
@@ -374,7 +391,7 @@ of the galaxy catalog in bins of radius.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x7faedf328d10</span><span class="o">&gt;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x7f8db5445550</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="../_images/Example2_Fit_Halo_Mass_to_Shear_Catalog_33_1.png" src="../_images/Example2_Fit_Halo_Mass_to_Shear_Catalog_33_1.png" />
@@ -389,7 +406,7 @@ data is cosmology-independent, with units of <span class="math notranslate nohig
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># model definition to be used with scipy.optimize.curve_fit</span>
 <span class="k">def</span> <span class="nf">shear_profile_model</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">logm</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
     <span class="n">m</span> <span class="o">=</span> <span class="mf">10.</span><span class="o">**</span><span class="n">logm</span>
-    <span class="n">gt_model</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">predict_reduced_tangential_shear</span><span class="p">(</span><span class="n">r</span><span class="o">*</span><span class="n">cosmo</span><span class="o">.</span><span class="n">h</span><span class="p">,</span>
+    <span class="n">gt_model</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">predict_reduced_tangential_shear</span><span class="p">(</span><span class="n">r</span><span class="p">,</span>
                                                      <span class="n">m</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span>
                                                      <span class="n">cluster_z</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span>
                                                      <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
@@ -405,7 +422,7 @@ shear in bin <span class="math notranslate nohighlight">\(i\)</span> equals the 
 bin; i.e. we assume that
 <span class="math notranslate nohighlight">\(\langle g_t\rangle_i = g_t(\langle z\rangle_i)\)</span>. This should not
 impact <code class="docutils literal notranslate"><span class="pre">cluster</span> <span class="pre">1</span></code> as all sources are located at the same redshift.
-However, this yields a bias in the econstructed mass for <code class="docutils literal notranslate"><span class="pre">cluster</span> <span class="pre">2</span></code>
+However, this yields a bias in the reconstructed mass for <code class="docutils literal notranslate"><span class="pre">cluster</span> <span class="pre">2</span></code>
 and <code class="docutils literal notranslate"><span class="pre">cluster</span> <span class="pre">3</span></code>, where the sources followed the Chang et al. (2013)
 distribution.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Cluster 1:  ideal data</span>
@@ -446,9 +463,9 @@ distribution.</p>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Best fit mass for cluster 3 = </span><span class="si">{</span><span class="n">m_est3</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1"> +/- </span><span class="si">{</span><span class="n">m_est_err3</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1"> Msun&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Best</span> <span class="n">fit</span> <span class="n">mass</span> <span class="k">for</span> <span class="n">cluster</span> <span class="mi">1</span> <span class="o">=</span> <span class="mf">1.00e+15</span> <span class="o">+/-</span> <span class="mf">8.58e+10</span> <span class="n">Msun</span>
-<span class="n">Best</span> <span class="n">fit</span> <span class="n">mass</span> <span class="k">for</span> <span class="n">cluster</span> <span class="mi">2</span> <span class="o">=</span> <span class="mf">8.65e+14</span> <span class="o">+/-</span> <span class="mf">2.31e+12</span> <span class="n">Msun</span>
-<span class="n">Best</span> <span class="n">fit</span> <span class="n">mass</span> <span class="k">for</span> <span class="n">cluster</span> <span class="mi">3</span> <span class="o">=</span> <span class="mf">8.82e+14</span> <span class="o">+/-</span> <span class="mf">3.76e+13</span> <span class="n">Msun</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Best</span> <span class="n">fit</span> <span class="n">mass</span> <span class="k">for</span> <span class="n">cluster</span> <span class="mi">1</span> <span class="o">=</span> <span class="mf">1.00e+15</span> <span class="o">+/-</span> <span class="mf">7.57e+10</span> <span class="n">Msun</span>
+<span class="n">Best</span> <span class="n">fit</span> <span class="n">mass</span> <span class="k">for</span> <span class="n">cluster</span> <span class="mi">2</span> <span class="o">=</span> <span class="mf">8.68e+14</span> <span class="o">+/-</span> <span class="mf">2.62e+12</span> <span class="n">Msun</span>
+<span class="n">Best</span> <span class="n">fit</span> <span class="n">mass</span> <span class="k">for</span> <span class="n">cluster</span> <span class="mi">3</span> <span class="o">=</span> <span class="mf">8.87e+14</span> <span class="o">+/-</span> <span class="mf">4.12e+13</span> <span class="n">Msun</span>
 </pre></div>
 </div>
 <p>As expected, the reconstructed mass is biased whenever the sources are
@@ -461,19 +478,19 @@ model.</p>
 <p>For visualization purpose, we calculate the reduced tangential shear
 predicted by the model when using the average redshift of the catalog.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span> <span class="mi">100</span><span class="p">)</span>
-<span class="n">gt_model1</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">predict_reduced_tangential_shear</span><span class="p">(</span><span class="n">rr</span><span class="o">*</span><span class="n">cosmo</span><span class="o">.</span><span class="n">h</span><span class="p">,</span>
+<span class="n">gt_model1</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">predict_reduced_tangential_shear</span><span class="p">(</span><span class="n">rr</span><span class="p">,</span>
                                                   <span class="n">m_est1</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span>
                                                   <span class="n">cluster_z</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">cl1</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]),</span> <span class="n">cosmo</span><span class="p">,</span>
                                                   <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
                                                   <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">)</span>
 
-<span class="n">gt_model2</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">predict_reduced_tangential_shear</span><span class="p">(</span><span class="n">rr</span><span class="o">*</span><span class="n">cosmo</span><span class="o">.</span><span class="n">h</span><span class="p">,</span>
+<span class="n">gt_model2</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">predict_reduced_tangential_shear</span><span class="p">(</span><span class="n">rr</span><span class="p">,</span>
                                                   <span class="n">m_est2</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span>
                                                   <span class="n">cluster_z</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">cl2</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]),</span> <span class="n">cosmo</span><span class="p">,</span>
                                                   <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
                                                   <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">)</span>
 
-<span class="n">gt_model3</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">predict_reduced_tangential_shear</span><span class="p">(</span><span class="n">rr</span><span class="o">*</span><span class="n">cosmo</span><span class="o">.</span><span class="n">h</span><span class="p">,</span>
+<span class="n">gt_model3</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">predict_reduced_tangential_shear</span><span class="p">(</span><span class="n">rr</span><span class="p">,</span>
                                                   <span class="n">m_est3</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span>
                                                   <span class="n">cluster_z</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">cl3</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]),</span> <span class="n">cosmo</span><span class="p">,</span>
                                                   <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
@@ -530,11 +547,19 @@ data</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2018-2019, LSST DESC CLMM Contributors
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -545,7 +570,6 @@ data</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

@@ -1,0 +1,407 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>clmm.clmm_cosmo module &mdash; CLMM 0.6.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="clmm.clmm_modeling module" href="clmm.clmm_modeling.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> CLMM
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.6.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../source/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../source/citing.html">Citing CLMM</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Usage Demos</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_modeling_functionality.html">Model a Galaxy Cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="clmm.constants.html">clmm.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.dataops.html">clmm.dataops module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.gcdata.html">clmm.gcdata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.lsst.html">clmm.lsst package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="clmm.lsst.load_clusters_with_gcr.html">clmm.lsst.load_clusters_with_gcr module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.modeling.html">clmm.modeling module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.plotting.html">clmm.plotting module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.utils.html">clmm.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.clmm_modeling.html">clmm.clmm_modeling module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">clmm.clmm_cosmo module</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CLMM</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../api.html">API Documentation</a> &raquo;</li>
+        
+      <li>clmm.clmm_cosmo module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/clmm.clmm_cosmo.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-clmm.clmm_cosmo">
+<span id="clmm-clmm-cosmo-module"></span><h1>clmm.clmm_cosmo module<a class="headerlink" href="#module-clmm.clmm_cosmo" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="clmm.clmm_cosmo.CLMMCosmology">
+<em class="property">class </em><code class="sig-prename descclassname">clmm.clmm_cosmo.</code><code class="sig-name descname">CLMMCosmology</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/clmm_cosmo.html#CLMMCosmology"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.clmm_cosmo.CLMMCosmology" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Cosmology object superclass for supporting multiple back-end cosmology objects
+:ivar ~CLMMCosmology.get_par: Dictionary with functions to get each specific parameter
+:vartype ~CLMMCosmology.get_par: dict
+:ivar ~CLMMCosmology.set_par: Dictionary with functions to update each specific parameter</p>
+<dl class="field-list simple">
+</dl>
+<dl class="py method">
+<dt id="clmm.clmm_cosmo.CLMMCosmology.eval_da">
+<code class="sig-name descname">eval_da</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">z</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/clmm_cosmo.html#CLMMCosmology.eval_da"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.clmm_cosmo.CLMMCosmology.eval_da" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the angular diameter distance between 0.0 and z.</p>
+<div class="math notranslate nohighlight">
+\[d_a(z) = \frac{c}{H_0}\frac{1}{1+z}\int_{0}^{z}\frac{dz'}{E(z')}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>z</strong> (<em>float</em>) – Redshift.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Angular diameter distance in units <span class="math notranslate nohighlight">\(M\!pc\)</span></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Describe the vectorization.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="clmm.clmm_cosmo.CLMMCosmology.eval_da_a1a2">
+<code class="sig-name descname">eval_da_a1a2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a1</span></em>, <em class="sig-param"><span class="n">a2</span><span class="o">=</span><span class="default_value">1.0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/clmm_cosmo.html#CLMMCosmology.eval_da_a1a2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.clmm_cosmo.CLMMCosmology.eval_da_a1a2" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a function to calculate the angular diameter distance
+between two scale factors.</p>
+<div class="math notranslate nohighlight">
+\[d_a(a1, a2) = \frac{c}{H_0}a2\int_{a2}^{a1}\frac{da'}{a'^2E(a')}\]</div>
+<p>If only a1 is specified, this function returns the angular diameter
+distance from a=1 to a1. If both a1 and a2 are specified, this function
+returns the angular diameter distance between a1 and a2.</p>
+<div class="math notranslate nohighlight">
+\[d_a(a) = \frac{c}{H_0}a\int_{a}^{1}\frac{da'}{a'^2E(a')}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a1</strong> (<em>float</em>) – Scale factor.</p></li>
+<li><p><strong>a2</strong> (<em>float</em><em>, </em><em>optional</em>) – Scale factor.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Angular diameter distance in units <span class="math notranslate nohighlight">\(M\!pc\)</span></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="clmm.clmm_cosmo.CLMMCosmology.eval_da_z1z2">
+<code class="sig-name descname">eval_da_z1z2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">z1</span></em>, <em class="sig-param"><span class="n">z2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/clmm_cosmo.html#CLMMCosmology.eval_da_z1z2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.clmm_cosmo.CLMMCosmology.eval_da_z1z2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the angular diameter distance between z1 and z2.</p>
+<div class="math notranslate nohighlight">
+\[d_a(z1, z2) = \frac{c}{H_0}\frac{1}{1+z2}\int_{z1}^{z2}\frac{dz'}{E(z')}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>z1</strong> (<em>float</em>) – Redshift.</p></li>
+<li><p><strong>z2</strong> (<em>float</em>) – Redshift.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Angular diameter distance in units <span class="math notranslate nohighlight">\(M\!pc\)</span></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Describe the vectorization.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="clmm.clmm_cosmo.CLMMCosmology.get_Omega_m">
+<code class="sig-name descname">get_Omega_m</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">z</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/clmm_cosmo.html#CLMMCosmology.get_Omega_m"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.clmm_cosmo.CLMMCosmology.get_Omega_m" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the value of the dimensionless matter density</p>
+<div class="math notranslate nohighlight">
+\[\Omega_m(z) = \frac{\rho_m(z)}{\rho_\mathrm{crit}(z)}.\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>z</strong> (<em>float</em>) – Redshift.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>Omega_m</strong> – dimensionless matter density, <span class="math notranslate nohighlight">\(\Omega_m(z)\)</span>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Need to decide if non-relativist neutrinos will contribute here.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="clmm.clmm_cosmo.CLMMCosmology.get_desc">
+<code class="sig-name descname">get_desc</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/clmm_cosmo.html#CLMMCosmology.get_desc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.clmm_cosmo.CLMMCosmology.get_desc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the Cosmology description.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="clmm.clmm_cosmo.CLMMCosmology.mpc2rad">
+<code class="sig-name descname">mpc2rad</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dist1</span></em>, <em class="sig-param"><span class="n">redshift</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/clmm_cosmo.html#CLMMCosmology.mpc2rad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.clmm_cosmo.CLMMCosmology.mpc2rad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert between radians and Mpc using the small angle approximation
+and <span class="math notranslate nohighlight">\(d = D_A \theta\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dist1</strong> (<em>array_like</em>) – Input distances in Mpc</p></li>
+<li><p><strong>redshift</strong> (<em>float</em>) – Redshift used to convert between angular and physical units</p></li>
+<li><p><strong>cosmo</strong> (<em>astropy.cosmology</em>) – Astropy cosmology object to compute angular diameter distance to
+convert between physical and angular units</p></li>
+<li><p><strong>do_inverse</strong> (<em>bool</em>) – If true, converts Mpc to radians</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>dist2</strong> – Distances in radians</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array_like</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="clmm.clmm_cosmo.CLMMCosmology.rad2mpc">
+<code class="sig-name descname">rad2mpc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dist1</span></em>, <em class="sig-param"><span class="n">redshift</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/clmm_cosmo.html#CLMMCosmology.rad2mpc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.clmm_cosmo.CLMMCosmology.rad2mpc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert between radians and Mpc using the small angle approximation
+and <span class="math notranslate nohighlight">\(d = D_A \theta\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dist1</strong> (<em>array_like</em>) – Input distances in radians</p></li>
+<li><p><strong>redshift</strong> (<em>float</em>) – Redshift used to convert between angular and physical units</p></li>
+<li><p><strong>cosmo</strong> (<em>astropy.cosmology</em>) – Astropy cosmology object to compute angular diameter distance to
+convert between physical and angular units</p></li>
+<li><p><strong>do_inverse</strong> (<em>bool</em>) – If true, converts Mpc to radians</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>dist2</strong> – Distances in Mpc</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array_like</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="clmm.clmm_cosmo.CLMMCosmology.set_be_cosmo">
+<code class="sig-name descname">set_be_cosmo</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">be_cosmo</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">H0</span><span class="o">=</span><span class="default_value">70.0</span></em>, <em class="sig-param"><span class="n">Omega_b0</span><span class="o">=</span><span class="default_value">0.05</span></em>, <em class="sig-param"><span class="n">Omega_dm0</span><span class="o">=</span><span class="default_value">0.25</span></em>, <em class="sig-param"><span class="n">Omega_k0</span><span class="o">=</span><span class="default_value">0.0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/clmm_cosmo.html#CLMMCosmology.set_be_cosmo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.clmm_cosmo.CLMMCosmology.set_be_cosmo" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2018-2019, LSST DESC CLMM Contributors
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

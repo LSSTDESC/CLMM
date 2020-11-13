@@ -1,5 +1,5 @@
-Fit Halo Mass from a Shear Catalog
-==================================
+Fit halo mass to shear profile: 2. realistic data
+=================================================
 
 *the LSST-DESC CLMM team*
 
@@ -9,7 +9,22 @@ functionalities of the support ``mock_data`` module to produce datasets
 of increasing complexity. This notebook also demonstrates the bias
 introduced on the reconstructed mass by a naive fit, when the redshift
 distribution of the background galaxies is not properly accounted for in
-the model.
+the model. Organization of this notebook goes as follows:
+
+-  Setting things up, with the proper imports.
+-  Generating 3 datasets: an ideal dataset (dataset1) similar to that of
+   Example1 (single source plane); an ideal dataset but with source
+   galaxies following the Chang et al. (2013) redshift distribution
+   (dataset2); a noisy dataset where photoz errors and shape noise are
+   also included (dataset3).
+-  Computing the binned reduced tangential shear profile, for the 3
+   datasets, using logarithmic binning.
+-  Setting up the “single source plane” model to be fitted to the 3
+   datasets. Only dataset1 has a single source plane, so we expect to
+   see a bias in the reconstructed mass when using this model on
+   datasets 2 and 3.
+-  Perform a simple fit using ``scipy.optimize.curve_fit`` and visualize
+   the results.
 
 Setup
 -----
@@ -25,9 +40,7 @@ First, we import some standard packages.
         import notebook_install
         notebook_install.install_clmm_pipeline(upgrade=False)
         import clmm
-    from astropy.cosmology import FlatLambdaCDM
     import matplotlib.pyplot as plt
-    # %matplotlib inline
     import numpy as np
     from numpy import random
     from sampler import fitters
@@ -39,7 +52,7 @@ First, we import some standard packages.
 
 .. parsed-literal::
 
-    '0.3.0'
+    '0.6.0'
 
 
 
@@ -47,9 +60,10 @@ Next, we import ``clmm``\ ’s core modules.
 
 .. code:: ipython3
 
-    import clmm.polaraveraging as pa
+    import clmm.dataops as da
     import clmm.galaxycluster as gc
     import clmm.modeling as modeling
+    from clmm import Cosmology
 
 We then import a support modules for a specific data sets. ``clmm``
 includes support modules that enable the user to generate mock data in a
@@ -68,20 +82,18 @@ For reproducibility:
 
     np.random.seed(11)
 
-To create mock data, we need to define a true cosmology, which is
-currently done with ```astropy``\ ’s cosmology
-library <http://docs.astropy.org/en/stable/cosmology/index.html>`__.
+To create mock data, we need to define a true cosmology.
 
 .. code:: ipython3
 
-    mock_cosmo = FlatLambdaCDM(H0=70, Om0=0.27, Ob0=0.045)
+    mock_cosmo = Cosmology(H0 = 70.0, Omega_dm0 = 0.27 - 0.045, Omega_b0 = 0.045, Omega_k0 = 0.0)
 
 We now set some parameters for a mock galaxy cluster.
 
 .. code:: ipython3
 
     cosmo = mock_cosmo
-    cluster_m = 1.e15
+    cluster_m = 1.e15 # M200,m [Msun]
     cluster_z = 0.3
     concentration = 4
     ngals = 10000
@@ -97,20 +109,20 @@ Chang et al. (2013) redshift distribution. - ``noisy_data_z``:
 
 .. code:: ipython3
 
-    ideal_data = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration, cosmo, ngals, Delta,0.8)
-    ideal_data_z = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration, cosmo, ngals, Delta,'chang13')
-    noisy_data_z = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration, cosmo, ngals, Delta,'chang13', 
+    ideal_data = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration, cosmo, 0.8, ngals=ngals)
+    ideal_data_z = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration, cosmo,'chang13', ngals=ngals)
+    noisy_data_z = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration, cosmo, 'chang13', 
                                                 shapenoise=0.05, 
-                                                photoz_sigma_unscaled=0.05)
+                                                photoz_sigma_unscaled=0.05, ngals=ngals)
 
 
 .. parsed-literal::
 
-    /pbs/home/c/ccombet/.conda/envs/mydesc/lib/python3.7/site-packages/clmm-0.3.0-py3.7.egg/clmm/modeling.py:366: RuntimeWarning: divide by zero encountered in true_divide
-    /pbs/home/c/ccombet/.conda/envs/mydesc/lib/python3.7/site-packages/clmm-0.3.0-py3.7.egg/clmm/modeling.py:369: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /pbs/home/c/ccombet/.conda/envs/mydesc/lib/python3.7/site-packages/clmm-0.3.0-py3.7.egg/clmm/modeling.py:509: UserWarning: Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.
-    /pbs/home/c/ccombet/.conda/envs/mydesc/lib/python3.7/site-packages/clmm-0.3.0-py3.7.egg/clmm/modeling.py:440: UserWarning: Some source redshifts are lower than the cluster redshift. shear = 0 for those galaxies.
-    /pbs/home/c/ccombet/.conda/envs/mydesc/lib/python3.7/site-packages/clmm-0.3.0-py3.7.egg/clmm/modeling.py:572: UserWarning: Some source redshifts are lower than the cluster redshift. shear = 0 for those galaxies.
+    /Users/combet/anaconda3/envs/clmmenv/lib/python3.8/site-packages/numpy/ma/core.py:2831: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
+      _data = np.array(data, dtype=dtype, copy=copy,
+    /Users/combet/anaconda3/envs/clmmenv/lib/python3.8/site-packages/clmm-0.6.0-py3.8.egg/clmm/modbackend/cluster_toolkit.py:275: RuntimeWarning: divide by zero encountered in true_divide
+    /Users/combet/anaconda3/envs/clmmenv/lib/python3.8/site-packages/clmm-0.6.0-py3.8.egg/clmm/modbackend/cluster_toolkit.py:278: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
+    /Users/combet/anaconda3/envs/clmmenv/lib/python3.8/site-packages/clmm-0.6.0-py3.8.egg/clmm/modbackend/cluster_toolkit.py:428: UserWarning: Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.
 
 
 The galaxy catalogs are converted to a ``clmm.GalaxyCluster`` object and
@@ -166,9 +178,8 @@ Deriving observables
 Computing shear
 ~~~~~~~~~~~~~~~
 
-``clmm.polaraveraging.compute_tangential_and_cross_components``
-calculates the tangential and cross shears for each source galaxy in the
-cluster.
+``clmm.dataops.compute_tangential_and_cross_components`` calculates the
+tangential and cross shears for each source galaxy in the cluster.
 
 .. code:: ipython3
 
@@ -181,18 +192,18 @@ Radially binning the data
 
 .. code:: ipython3
 
-    bin_edges = pa.make_bins(0.7, 4, 15, method='evenlog10width')
+    bin_edges = da.make_bins(0.7, 4, 15, method='evenlog10width')
 
-``clmm.polaraveraging.make_binned_profile`` evaluates the average shear
-of the galaxy catalog in bins of radius.
+``clmm.dataops.make_radial_profile`` evaluates the average shear of the
+galaxy catalog in bins of radius.
 
 .. code:: ipython3
 
-    profile1 = cl1.make_binned_profile("radians", "Mpc", bins=bin_edges,cosmo=cosmo)
-    profile2 = cl2.make_binned_profile("radians", "Mpc", bins=bin_edges,cosmo=cosmo)
-    profile3 = cl3.make_binned_profile("radians", "Mpc", bins=bin_edges,cosmo=cosmo)
+    profile1 = cl1.make_radial_profile("Mpc", bins=bin_edges,cosmo=cosmo)
+    profile2 = cl2.make_radial_profile("Mpc", bins=bin_edges,cosmo=cosmo)
+    profile3 = cl3.make_radial_profile("Mpc", bins=bin_edges,cosmo=cosmo)
 
-After running ``clmm.polaraveraging.make_binned_profile`` on a
+After running ``clmm.dataops.make_radial_profile`` on a
 ``clmm.GalaxyCluster`` object, the object acquires the
 ``clmm.GalaxyCluster.profile`` attribute.
 
@@ -206,21 +217,21 @@ After running ``clmm.polaraveraging.make_binned_profile`` on a
 
     radius_min   radius  radius_max     gt      gt_err      gx       gx_err      z       z_err     n_src  
     ---------- --------- ---------- --------- --------- ---------- --------- --------- --------- ---------
-     7.000e-01 7.534e-01  7.863e-01 5.315e-02 2.245e-04 -1.785e-18 1.931e-18 8.000e-01 2.177e-17 2.600e+01
-     7.863e-01 8.328e-01  8.831e-01 4.956e-02 1.850e-04  6.770e-19 1.703e-18 8.000e-01 1.734e-17 4.100e+01
-     8.831e-01 9.295e-01  9.920e-01 4.571e-02 1.446e-04  1.535e-18 7.660e-19 8.000e-01 3.140e-17 5.000e+01
-     9.920e-01 1.055e+00  1.114e+00 4.142e-02 1.410e-04  5.256e-19 9.090e-19 8.000e-01 1.484e-17 5.600e+01
-     1.114e+00 1.188e+00  1.251e+00 3.758e-02 1.202e-04  8.037e-19 7.173e-19 8.000e-01 1.241e-17 8.000e+01
-     1.251e+00 1.327e+00  1.406e+00 3.416e-02 1.072e-04 -5.891e-20 5.742e-19 8.000e-01 1.121e-17 9.800e+01
-     1.406e+00 1.492e+00  1.579e+00 3.071e-02 8.676e-05 -1.044e-18 5.314e-19 8.000e-01 1.933e-17 1.320e+02
-     1.579e+00 1.682e+00  1.773e+00 2.740e-02 7.352e-05 -2.017e-19 4.209e-19 8.000e-01 1.831e-17 1.470e+02
-     1.773e+00 1.885e+00  1.992e+00 2.448e-02 6.668e-05 -2.564e-20 2.849e-19 8.000e-01 8.617e-18 1.660e+02
-     1.992e+00 2.118e+00  2.237e+00 2.170e-02 5.133e-05  9.877e-20 2.324e-19 8.000e-01 7.337e-18 2.290e+02
-     2.237e+00 2.377e+00  2.513e+00 1.917e-02 3.739e-05 -5.004e-20 1.717e-19 8.000e-01 1.213e-17 3.350e+02
-     2.513e+00 2.671e+00  2.823e+00 1.684e-02 3.279e-05 -5.633e-20 1.483e-19 8.000e-01 0.000e+00 3.920e+02
-     2.823e+00 3.000e+00  3.171e+00 1.473e-02 2.606e-05  2.377e-20 1.324e-19 8.000e-01 0.000e+00 4.940e+02
-     3.171e+00 3.370e+00  3.561e+00 1.282e-02 2.008e-05 -1.417e-20 7.574e-20 8.000e-01 4.325e-18 6.590e+02
-     3.561e+00 3.790e+00  4.000e+00 1.111e-02 1.699e-05  2.964e-20 6.768e-20 8.000e-01 3.996e-18 7.720e+02
+     7.000e-01 7.446e-01  7.863e-01 4.353e-02 1.310e-04  5.393e-19 6.164e-19 8.000e-01 2.916e-17 5.800e+01
+     7.863e-01 8.403e-01  8.831e-01 3.984e-02 1.099e-04  2.597e-19 6.459e-19 8.000e-01 2.394e-17 8.600e+01
+     8.831e-01 9.395e-01  9.920e-01 3.654e-02 1.001e-04 -4.976e-19 6.271e-19 8.000e-01 3.417e-17 9.500e+01
+     9.920e-01 1.052e+00  1.114e+00 3.332e-02 8.489e-05 -1.815e-19 4.464e-19 8.000e-01 1.933e-17 1.320e+02
+     1.114e+00 1.187e+00  1.251e+00 3.003e-02 7.147e-05 -5.194e-19 3.881e-19 8.000e-01 1.807e-17 1.510e+02
+     1.251e+00 1.331e+00  1.406e+00 2.708e-02 6.600e-05  4.217e-19 3.936e-19 8.000e-01 1.718e-17 1.670e+02
+     1.406e+00 1.495e+00  1.579e+00 2.426e-02 5.243e-05  4.293e-19 3.165e-19 8.000e-01 0.000e+00 2.350e+02
+     1.579e+00 1.677e+00  1.773e+00 2.165e-02 3.908e-05 -1.203e-19 2.217e-19 8.000e-01 5.995e-18 3.430e+02
+     1.773e+00 1.887e+00  1.992e+00 1.917e-02 3.431e-05  2.780e-21 1.285e-19 8.000e-01 0.000e+00 4.010e+02
+     1.992e+00 2.119e+00  2.237e+00 1.692e-02 2.751e-05  8.490e-20 1.212e-19 8.000e-01 0.000e+00 4.990e+02
+     2.237e+00 2.377e+00  2.513e+00 1.489e-02 2.158e-05  2.077e-20 9.383e-20 8.000e-01 8.623e-18 6.630e+02
+     2.513e+00 2.672e+00  2.823e+00 1.301e-02 1.844e-05 -9.408e-20 8.278e-20 8.000e-01 0.000e+00 7.800e+02
+     2.823e+00 2.999e+00  3.171e+00 1.135e-02 1.421e-05  9.214e-20 5.313e-20 8.000e-01 0.000e+00 1.042e+03
+     3.171e+00 3.369e+00  3.561e+00 9.842e-03 1.130e-05 -4.033e-20 4.817e-20 8.000e-01 3.078e-18 1.301e+03
+     3.561e+00 3.781e+00  4.000e+00 8.509e-03 8.960e-06 -5.483e-20 3.145e-20 8.000e-01 2.738e-18 1.644e+03
 
 
 We visualize the radially binned shear for the 3 configurations
@@ -247,7 +258,7 @@ We visualize the radially binned shear for the 3 configurations
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7faedf328d10>
+    <matplotlib.legend.Legend at 0x7f8db5445550>
 
 
 
@@ -268,7 +279,7 @@ data is cosmology-independent, with units of :math:`Mpc`.
     # model definition to be used with scipy.optimize.curve_fit
     def shear_profile_model(r, logm, z_src):
         m = 10.**logm
-        gt_model = clmm.predict_reduced_tangential_shear(r*cosmo.h,
+        gt_model = clmm.predict_reduced_tangential_shear(r,
                                                          m, concentration,
                                                          cluster_z, z_src, cosmo,
                                                          delta_mdef=200,
@@ -285,7 +296,7 @@ shear in bin :math:`i` equals the shear at the average redshift in the
 bin; i.e. we assume that
 :math:`\langle g_t\rangle_i = g_t(\langle z\rangle_i)`. This should not
 impact ``cluster 1`` as all sources are located at the same redshift.
-However, this yields a bias in the econstructed mass for ``cluster 2``
+However, this yields a bias in the reconstructed mass for ``cluster 2``
 and ``cluster 3``, where the sources followed the Chang et al. (2013)
 distribution.
 
@@ -331,9 +342,9 @@ distribution.
 
 .. parsed-literal::
 
-    Best fit mass for cluster 1 = 1.00e+15 +/- 8.58e+10 Msun
-    Best fit mass for cluster 2 = 8.65e+14 +/- 2.31e+12 Msun
-    Best fit mass for cluster 3 = 8.82e+14 +/- 3.76e+13 Msun
+    Best fit mass for cluster 1 = 1.00e+15 +/- 7.57e+10 Msun
+    Best fit mass for cluster 2 = 8.68e+14 +/- 2.62e+12 Msun
+    Best fit mass for cluster 3 = 8.87e+14 +/- 4.12e+13 Msun
 
 
 As expected, the reconstructed mass is biased whenever the sources are
@@ -349,19 +360,19 @@ predicted by the model when using the average redshift of the catalog.
 .. code:: ipython3
 
     rr = np.logspace(-0.5, np.log10(5), 100)
-    gt_model1 = clmm.predict_reduced_tangential_shear(rr*cosmo.h,
+    gt_model1 = clmm.predict_reduced_tangential_shear(rr,
                                                       m_est1, concentration,
                                                       cluster_z, np.mean(cl1.galcat['z']), cosmo,
                                                       delta_mdef=200,
                                                       halo_profile_model='nfw')
     
-    gt_model2 = clmm.predict_reduced_tangential_shear(rr*cosmo.h,
+    gt_model2 = clmm.predict_reduced_tangential_shear(rr,
                                                       m_est2, concentration,
                                                       cluster_z, np.mean(cl2.galcat['z']), cosmo,
                                                       delta_mdef=200,
                                                       halo_profile_model='nfw')
     
-    gt_model3 = clmm.predict_reduced_tangential_shear(rr*cosmo.h,
+    gt_model3 = clmm.predict_reduced_tangential_shear(rr,
                                                       m_est3, concentration,
                                                       cluster_z, np.mean(cl3.galcat['z']), cosmo,
                                                       delta_mdef=200,

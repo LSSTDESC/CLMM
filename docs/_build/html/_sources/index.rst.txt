@@ -23,7 +23,7 @@ Functionality includes:
 
  * The GalaxyCluster object
  * Mock data generation
- * Weak lensing signal measurement with polaraveraging.py
+ * Weak lensing signal measurement with dataops.py
  * Profile and cosmology models with modeling.py
  * Galaxy cluster mass estimation
 
@@ -49,7 +49,7 @@ The source code is publically available at https://github.com/LSSTDESC/CLMM
    :caption: Usage Demos
 
    compiled-examples/demo_generate_mock_cluster.rst
-   compiled-examples/demo_polaraveraging_functionality.rst
+   compiled-examples/demo_dataops_functionality.rst
    compiled-examples/demo_modeling_functionality.rst
    compiled-examples/data_and_model_demo_DC2.rst
 

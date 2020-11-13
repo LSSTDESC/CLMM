@@ -1,10 +1,16 @@
-Fit Halo Mass from a Shear Catalog
-==================================
+Fit halo mass to shear profile: 1. ideal data
+=============================================
 
 *the LSST-DESC CLMM team*
 
 This notebook demonstrates how to use ``clmm`` to estimate a WL halo
-mass from observations of a galaxy cluster.
+mass of a galaxy cluster in the ideal case: i) all galaxies on a single
+source plane, ii) no redshift errors, iii) no shape noise. The steps
+below correspond to: - Setting things up, with the proper imports. -
+Generating a ideal mock dataset. - Computing the binned reduced
+tangential shear profile, for two different binning scheme. - Setting up
+the model to be fitted to the data. - Perform a simple fit using
+``scipy.optimize.minimize`` and visualize the results.
 
 Setup
 -----
@@ -22,9 +28,6 @@ First, we import some standard packages.
         import clmm
     import numpy as np
     import matplotlib.pyplot as plt
-    %matplotlib inline
-    
-    from astropy.cosmology import FlatLambdaCDM
     
     from numpy import random
 
@@ -33,9 +36,10 @@ Next, we import ``clmm``\ ’s core modules.
 .. code:: ipython3
 
     import clmm
-    import clmm.polaraveraging as pa
+    import clmm.dataops as da
     import clmm.galaxycluster as gc
     import clmm.modeling as modeling
+    from clmm import Cosmology
 
 Make sure we know which version we’re using
 
@@ -48,7 +52,7 @@ Make sure we know which version we’re using
 
 .. parsed-literal::
 
-    '0.3.0'
+    '0.6.0'
 
 
 
@@ -74,13 +78,11 @@ Making mock data
 
     np.random.seed(12)
 
-To create mock data, we need to define a true cosmology, which is
-currently done with ```astropy``\ ’s cosmology
-library <http://docs.astropy.org/en/stable/cosmology/index.html>`__.
+To create mock data, we need to define a true cosmology.
 
 .. code:: ipython3
 
-    mock_cosmo = FlatLambdaCDM(H0=70, Om0=0.27, Ob0=0.045)
+    mock_cosmo = Cosmology(H0 = 70.0, Omega_dm0 = 0.27 - 0.045, Omega_b0 = 0.045, Omega_k0 = 0.0)
 
 We now set some parameters for a mock galaxy cluster.
 
@@ -88,12 +90,11 @@ We now set some parameters for a mock galaxy cluster.
 
     cosmo = mock_cosmo
     cluster_id = "Awesome_cluster"
-    cluster_m = 1.e15
+    cluster_m = 1.e15 # M200,m [Msun]
     cluster_z = 0.3
     src_z = 0.8
     concentration = 4
     ngals = 10000
-    Delta = 200
     cluster_ra = 0.0
     cluster_dec = 0.0
 
@@ -103,7 +104,7 @@ catalog.
 .. code:: ipython3
 
     ideal_data = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration,
-                                              cosmo, ngals, Delta, src_z)
+                                              cosmo, src_z, ngals=ngals)
 
 This galaxy catalog is then converted to a ``clmm.GalaxyCluster``
 object.
@@ -135,6 +136,7 @@ Any saved ``clmm.GalaxyCluster`` object may be read in for analysis.
     e2 = cl.galcat['e2']
     ra_s = cl.galcat['ra']
     dec_s = cl.galcat['dec']
+    z_s = cl.galcat['z']
 
 
 .. parsed-literal::
@@ -178,13 +180,12 @@ without assuming a cosmology.
 Computing shear
 ~~~~~~~~~~~~~~~
 
-``clmm.polaraveraging.compute_tangential_and_cross_components``
-calculates the tangential and cross shears for each source galaxy in the
-cluster.
+``clmm.dataops.compute_tangential_and_cross_components`` calculates the
+tangential and cross shears for each source galaxy in the cluster.
 
 .. code:: ipython3
 
-    theta, g_t, g_x = pa.compute_tangential_and_cross_components(cl, geometry="flat")
+    theta, g_t, g_x = da.compute_tangential_and_cross_components(ra_l, dec_l, ra_s, dec_s, e1, e2, geometry="flat")
 
 We can visualize the shear field at each galaxy location.
 
@@ -215,20 +216,25 @@ Radially binning the data
 Here we compare the reconstructed mass under two different bin
 definitions.
 
-.. code:: ipython3
-
-    bin_edges1 = pa.make_bins(0.01, 3.7, 50)
-    bin_edges2 = pa.make_bins(0.01, 3.7, 10)
-
-``clmm.polaraveraging.make_binned_profile`` evaluates the average shear
-of the galaxy catalog in bins of radius.
+Note binning would cause fitted mass to be slightly larger than input
+mass. The reason is that g(r), the tangential reduced shear along
+cluster radius, is a convex function – the function value after binning
+would be larger, but the bias becomes smaller as bin number increases.
 
 .. code:: ipython3
 
-    res1 = pa.make_binned_profile(
-        cl, "radians", "Mpc", bins=bin_edges1, cosmo=cosmo, include_empty_bins=False)
-    res2 = pa.make_binned_profile(
-        cl, "radians", "Mpc", bins=bin_edges2, cosmo=cosmo, include_empty_bins=False)
+    bin_edges1 = da.make_bins(0.01, 3.7, 50)
+    bin_edges2 = da.make_bins(0.01, 3.7, 10)
+
+``clmm.dataops.make_radial_profile`` evaluates the average shear of the
+galaxy catalog in bins of radius.
+
+.. code:: ipython3
+
+    res1 = da.make_radial_profile(
+        [g_t, g_x, z_s], theta, "radians", "Mpc", bins=bin_edges1, cosmo=cosmo, z_lens=z, include_empty_bins=False)
+    res2 = da.make_radial_profile(
+        [g_t, g_x, z_s], theta, "radians", "Mpc", bins=bin_edges2, cosmo=cosmo, z_lens=z, include_empty_bins=False)
 
 Note that we set ``include_empty_bins=False`` explicitly here even
 though it is the default behavior. Setting the argument to ``True``
@@ -239,11 +245,11 @@ behavior, consider the following comparison:
 
 .. code:: ipython3
 
-    res_with_empty = pa.make_binned_profile(
-        cl, "radians", "Mpc", bins=1000, cosmo=cosmo, include_empty_bins=True)
+    res_with_empty = da.make_radial_profile(
+        [g_t, g_x, z_s], theta, "radians", "Mpc", bins=1000, cosmo=cosmo, z_lens=z, include_empty_bins=True)
     # this is the default behavior
-    res_without_empty = pa.make_binned_profile(
-        cl, "radians", "Mpc", bins=1000, cosmo=cosmo, include_empty_bins=False)
+    res_without_empty = da.make_radial_profile(
+        [g_t, g_x, z_s], theta, "radians", "Mpc", bins=1000, cosmo=cosmo, z_lens=z, include_empty_bins=False)
     res_with_empty['n_src'].size, res_without_empty['n_src'].size
 
 
@@ -263,13 +269,13 @@ tangential shear.
 
 .. code:: ipython3
 
-    gt_profile1 = res1['gt']
+    gt_profile1 = res1['p_0']
     r1 = res1['radius']
-    z1 = res1['z']
+    z1 = res1['p_2']
     
-    gt_profile2 = res2['gt']
+    gt_profile2 = res2['p_0']
     r2 = res2['radius']
-    z2 = res2['z']
+    z2 = res2['p_2']
 
 We visualize the radially binned shear for our mock galaxies.
 
@@ -298,9 +304,17 @@ We visualize the radially binned shear for our mock galaxies.
 .. image:: Example1_Fit_Halo_Mass_to_Shear_Catalog_files/Example1_Fit_Halo_Mass_to_Shear_Catalog_44_1.png
 
 
-After running ``clmm.polaraveraging.make_binned_profile`` on a
-``clmm.GalaxyCluster`` object, the object acquires the
-``clmm.GalaxyCluster.profile`` attribute.
+You can also run ``make_radial_profile`` direct on a
+``clmm.GalaxyCluster`` object.
+
+.. code:: ipython3
+
+    cl.compute_tangential_and_cross_components() # You need to add the shear components first
+    cl.make_radial_profile("Mpc", bins=1000, cosmo=cosmo, include_empty_bins=False)
+    pass
+
+After running ``clmm.GalaxyCluster.make_radial_profile`` object, the
+object acquires the ``clmm.GalaxyCluster.profile`` attribute.
 
 .. code:: ipython3
 
@@ -312,28 +326,28 @@ After running ``clmm.polaraveraging.make_binned_profile`` on a
 
     radius_min   radius  radius_max     gt      gt_err      gx       gx_err      z       z_err     n_src  
     ---------- --------- ---------- --------- --------- ---------- --------- --------- --------- ---------
-     2.046e-01 2.114e-01  2.126e-01 1.011e-01 9.646e-05  0.000e+00 0.000e+00 8.000e-01 0.000e+00 2.000e+00
-     2.447e-01 2.468e-01  2.527e-01 9.519e-02 8.915e-05  0.000e+00 0.000e+00 8.000e-01 0.000e+00 2.000e+00
-     2.767e-01 2.813e-01  2.848e-01 9.024e-02 1.771e-04  1.735e-18 3.975e-18 8.000e-01 0.000e+00 4.000e+00
-     3.409e-01 3.455e-01  3.489e-01 8.245e-02 1.596e-04  2.313e-18 1.889e-18 8.000e-01 6.410e-17 3.000e+00
-     3.809e-01 3.858e-01  3.890e-01 7.826e-02 1.223e-04  1.156e-18 9.443e-19 8.000e-01 6.410e-17 3.000e+00
-     3.890e-01 3.933e-01  3.970e-01 7.752e-02 1.128e-05  8.674e-19 6.133e-19 8.000e-01 0.000e+00 2.000e+00
-     4.050e-01 4.074e-01  4.130e-01 7.618e-02 1.223e-04  0.000e+00 0.000e+00 8.000e-01 0.000e+00 2.000e+00
-     4.290e-01 4.349e-01  4.371e-01 7.370e-02 8.070e-05  0.000e+00 0.000e+00 8.000e-01 6.410e-17 3.000e+00
-     4.371e-01 4.401e-01  4.451e-01 7.325e-02 1.574e-04  4.915e-18 3.665e-18 8.000e-01 6.410e-17 3.000e+00
-     4.451e-01 4.494e-01  4.531e-01 7.245e-02 1.327e-04 -4.337e-19 5.409e-19 8.000e-01 6.410e-17 3.000e+00
+     1.432e-01 1.480e-01  1.488e-01 9.457e-02 7.730e-05  6.939e-18 4.907e-18 8.000e-01 0.000e+00 2.000e+00
+     1.713e-01 1.727e-01  1.769e-01 8.986e-02 7.189e-05  3.469e-18 2.453e-18 8.000e-01 0.000e+00 2.000e+00
+     1.937e-01 1.969e-01  1.993e-01 8.585e-02 1.437e-04  0.000e+00 0.000e+00 8.000e-01 0.000e+00 4.000e+00
+     2.386e-01 2.419e-01  2.442e-01 7.949e-02 1.312e-04 -8.963e-18 7.675e-18 8.000e-01 6.410e-17 3.000e+00
+     2.667e-01 2.700e-01  2.723e-01 7.603e-02 1.015e-04  2.313e-18 1.889e-18 8.000e-01 6.410e-17 3.000e+00
+     2.723e-01 2.753e-01  2.779e-01 7.542e-02 9.376e-06  4.337e-19 3.067e-19 8.000e-01 0.000e+00 2.000e+00
+     2.835e-01 2.852e-01  2.891e-01 7.430e-02 1.019e-04 -3.469e-18 2.453e-18 8.000e-01 0.000e+00 2.000e+00
+     3.003e-01 3.044e-01  3.059e-01 7.223e-02 6.765e-05  0.000e+00 0.000e+00 8.000e-01 6.410e-17 3.000e+00
+     3.059e-01 3.081e-01  3.116e-01 7.185e-02 1.322e-04 -8.095e-18 4.116e-18 8.000e-01 6.410e-17 3.000e+00
+     3.116e-01 3.146e-01  3.172e-01 7.118e-02 1.116e-04  1.156e-18 9.443e-19 8.000e-01 6.410e-17 3.000e+00
            ...       ...        ...       ...       ...        ...       ...       ...       ...       ...
-     7.603e+00 7.609e+00  7.611e+00 4.367e-03 4.448e-09  0.000e+00 0.000e+00 8.000e-01 0.000e+00 2.000e+00
-     7.611e+00 7.616e+00  7.619e+00 4.362e-03 9.640e-07  2.711e-20 1.278e-20 8.000e-01 6.410e-17 3.000e+00
-     7.635e+00 7.639e+00  7.643e+00 4.343e-03 1.049e-06 -1.355e-20 1.174e-20 8.000e-01 0.000e+00 4.000e+00
-     7.643e+00 7.647e+00  7.651e+00 4.336e-03 1.549e-06  4.608e-19 3.642e-19 8.000e-01 0.000e+00 2.000e+00
-     7.651e+00 7.655e+00  7.659e+00 4.330e-03 1.062e-06  3.388e-21 4.226e-21 8.000e-01 6.410e-17 3.000e+00
-     7.659e+00 7.663e+00  7.667e+00 4.324e-03 8.382e-07 -4.659e-19 9.975e-19 8.000e-01 0.000e+00 4.000e+00
-     7.667e+00 7.672e+00  7.675e+00 4.316e-03 5.698e-07  2.575e-19 2.076e-19 8.000e-01 0.000e+00 4.000e+00
-     7.683e+00 7.688e+00  7.691e+00 4.304e-03 1.139e-06 -9.035e-21 2.660e-20 8.000e-01 6.410e-17 3.000e+00
-     7.691e+00 7.694e+00  7.699e+00 4.298e-03 1.289e-06  2.711e-20 1.917e-20 8.000e-01 0.000e+00 2.000e+00
-     7.747e+00 7.752e+00  7.755e+00 4.253e-03 3.222e-07 -4.811e-19 3.402e-19 8.000e-01 0.000e+00 2.000e+00
-     7.803e+00 7.805e+00  7.811e+00 4.212e-03 3.485e-07 -1.247e-18 1.013e-18 8.000e-01 6.410e-17 3.000e+00
+     5.322e+00 5.327e+00  5.328e+00 5.400e-03 5.286e-09  0.000e+00 0.000e+00 8.000e-01 0.000e+00 2.000e+00
+     5.328e+00 5.331e+00  5.333e+00 5.394e-03 1.146e-06  1.807e-20 1.475e-20 8.000e-01 6.410e-17 3.000e+00
+     5.345e+00 5.348e+00  5.350e+00 5.371e-03 1.247e-06 -3.253e-19 2.514e-19 8.000e-01 0.000e+00 4.000e+00
+     5.350e+00 5.353e+00  5.356e+00 5.364e-03 1.842e-06  0.000e+00 8.050e-19 8.000e-01 0.000e+00 2.000e+00
+     5.356e+00 5.358e+00  5.361e+00 5.357e-03 1.263e-06 -1.355e-20 1.690e-20 8.000e-01 6.410e-17 3.000e+00
+     5.361e+00 5.364e+00  5.367e+00 5.349e-03 9.967e-07 -1.186e-18 1.027e-18 8.000e-01 0.000e+00 4.000e+00
+     5.367e+00 5.370e+00  5.373e+00 5.340e-03 6.776e-07 -2.118e-22 4.124e-19 8.000e-01 0.000e+00 4.000e+00
+     5.378e+00 5.381e+00  5.384e+00 5.325e-03 1.355e-06 -3.795e-19 2.880e-19 8.000e-01 6.410e-17 3.000e+00
+     5.384e+00 5.386e+00  5.389e+00 5.319e-03 1.533e-06  2.365e-18 1.672e-18 8.000e-01 0.000e+00 2.000e+00
+     5.423e+00 5.426e+00  5.429e+00 5.265e-03 3.834e-07  5.828e-19 4.121e-19 8.000e-01 0.000e+00 2.000e+00
+     5.462e+00 5.463e+00  5.468e+00 5.216e-03 4.150e-07 -2.711e-20 1.107e-20 8.000e-01 6.410e-17 3.000e+00
     Length = 871 rows
 
 
@@ -356,7 +370,7 @@ cosmology-independent, with units of :math:`Mpc`.
     def nfw_to_shear_profile(logm, profile_info):
         [r, gt_profile, z_src_rbin] = profile_info
         m = 10.**logm
-        gt_model = clmm.predict_reduced_tangential_shear(r*cosmo.h,
+        gt_model = clmm.predict_reduced_tangential_shear(r,
                                                          m, concentration,
                                                          cluster_z, z_src_rbin, cosmo,
                                                          delta_mdef=200,
@@ -386,7 +400,7 @@ binning schemes.
 
 .. parsed-literal::
 
-    (array([1.00379218e+15]), array([1.04728433e+15]))
+    (array([1.02866544e+15]), array([1.03786081e+15]))
 
 
 Next, we calculate the reduced tangential shear predicted by the two
@@ -396,13 +410,13 @@ models.
 
     rr = np.logspace(-2, np.log10(5), 100)
     
-    gt_model1 = clmm.predict_reduced_tangential_shear(rr*cosmo.h,
+    gt_model1 = clmm.predict_reduced_tangential_shear(rr,
                                                       m_est1, concentration,
                                                       cluster_z, src_z, cosmo,
                                                       delta_mdef=200,
                                                       halo_profile_model='nfw')
     
-    gt_model2 = clmm.predict_reduced_tangential_shear(rr*cosmo.h,
+    gt_model2 = clmm.predict_reduced_tangential_shear(rr,
                                                       m_est2, concentration,
                                                       cluster_z, src_z, cosmo,
                                                       delta_mdef=200,
@@ -441,5 +455,6 @@ We visualize the two predictions of reduced tangential shear.
 
 
 
-.. image:: Example1_Fit_Halo_Mass_to_Shear_Catalog_files/Example1_Fit_Halo_Mass_to_Shear_Catalog_57_1.png
+.. image:: Example1_Fit_Halo_Mass_to_Shear_Catalog_files/Example1_Fit_Halo_Mass_to_Shear_Catalog_59_1.png
+
 

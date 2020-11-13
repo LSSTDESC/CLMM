@@ -1,16 +1,18 @@
 
 
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Index &mdash; CLMM 0.3.0 documentation</title>
+  <title>Index &mdash; CLMM 0.6.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
   
   
@@ -18,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -26,15 +30,11 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" /> 
 </head>
@@ -50,7 +50,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> CLMM
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> CLMM
           
 
           
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                0.3.0
+                0.6.0
               </div>
             
           
@@ -77,6 +77,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -91,13 +92,13 @@
 </ul>
 <p class="caption"><span class="caption-text">Examples</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit Halo Mass from a Shear Catalog</a></li>
-<li class="toctree-l1"><a class="reference internal" href="compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit Halo Mass from a Shear Catalog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Usage Demos</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="compiled-examples/demo_polaraveraging_functionality.html">Measure a Profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiled-examples/demo_modeling_functionality.html">Model a Galaxy Cluster</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
 </ul>
@@ -105,6 +106,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/clmm.constants.html">clmm.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.dataops.html">clmm.dataops module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/clmm.gcdata.html">clmm.gcdata module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/clmm.lsst.html">clmm.lsst package</a><ul>
@@ -113,8 +115,9 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="api/clmm.modeling.html">clmm.modeling module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/clmm.plotting.html">clmm.plotting module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/clmm.polaraveraging.html">clmm.polaraveraging module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/clmm.utils.html">clmm.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.clmm_modeling.html">clmm.clmm_modeling module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.clmm_cosmo.html">clmm.clmm_cosmo module</a></li>
 </ul>
 </li>
 </ul>
@@ -122,6 +125,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -160,7 +164,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Index</li>
     
@@ -186,25 +190,24 @@
  <a href="#A"><strong>A</strong></a>
  | <a href="#B"><strong>B</strong></a>
  | <a href="#C"><strong>C</strong></a>
+ | <a href="#E"><strong>E</strong></a>
  | <a href="#G"><strong>G</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#P"><strong>P</strong></a>
+ | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
+ | <a href="#U"><strong>U</strong></a>
  
 </div>
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/clmm.gcdata.html#clmm.gcdata.GCData.add_meta">add_meta() (clmm.gcdata.GCData method)</a>
-</li>
-      <li><a href="api/clmm.gcdata.html#clmm.gcdata.GCData.add_metas">add_metas() (clmm.gcdata.GCData method)</a>
+      <li><a href="api/clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster.add_critical_surface_density">add_critical_surface_density() (clmm.galaxycluster.GalaxyCluster method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/clmm.modeling.html#clmm.modeling.angular_diameter_dist_a1a2">angular_diameter_dist_a1a2() (in module clmm.modeling)</a>
-</li>
-      <li><a href="api/clmm.modeling.html#clmm.modeling.astropyify_ccl_cosmo">astropyify_ccl_cosmo() (in module clmm.modeling)</a>
+      <li><a href="api/clmm.utils.html#clmm.utils.arguments_consistency">arguments_consistency() (in module clmm.utils)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -220,29 +223,92 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/clmm.modeling.html#clmm.modeling.cclify_astropy_cosmo">cclify_astropy_cosmo() (in module clmm.modeling)</a>
+      <li><a href="api/clmm.constants.html#clmm.constants.Constants.CLIGHT">CLIGHT (clmm.constants.Constants attribute)</a>
 </li>
       <li><a href="api/clmm.constants.html#clmm.constants.Constants.CLIGHT_KMS">CLIGHT_KMS (clmm.constants.Constants attribute)</a>
 </li>
-      <li><a href="api/clmm.constants.html#module-clmm.constants">clmm.constants (module)</a>
+      <li>
+    clmm.clmm_cosmo
+
+      <ul>
+        <li><a href="api/clmm.clmm_cosmo.html#module-clmm.clmm_cosmo">module</a>
 </li>
-      <li><a href="api/clmm.galaxycluster.html#module-clmm.galaxycluster">clmm.galaxycluster (module)</a>
+      </ul></li>
+      <li>
+    clmm.clmm_modeling
+
+      <ul>
+        <li><a href="api/clmm.clmm_modeling.html#module-clmm.clmm_modeling">module</a>
 </li>
-      <li><a href="api/clmm.gcdata.html#module-clmm.gcdata">clmm.gcdata (module)</a>
+      </ul></li>
+      <li>
+    clmm.constants
+
+      <ul>
+        <li><a href="api/clmm.constants.html#module-clmm.constants">module</a>
 </li>
-      <li><a href="api/clmm.lsst.html#module-clmm.lsst">clmm.lsst (module)</a>
+      </ul></li>
+      <li>
+    clmm.dataops
+
+      <ul>
+        <li><a href="api/clmm.dataops.html#module-clmm.dataops">module</a>
 </li>
-      <li><a href="api/clmm.lsst.load_clusters_with_gcr.html#module-clmm.lsst.load_clusters_with_gcr">clmm.lsst.load_clusters_with_gcr (module)</a>
+      </ul></li>
+      <li>
+    clmm.galaxycluster
+
+      <ul>
+        <li><a href="api/clmm.galaxycluster.html#module-clmm.galaxycluster">module</a>
 </li>
-      <li><a href="api/clmm.modeling.html#module-clmm.modeling">clmm.modeling (module)</a>
+      </ul></li>
+      <li>
+    clmm.gcdata
+
+      <ul>
+        <li><a href="api/clmm.gcdata.html#module-clmm.gcdata">module</a>
 </li>
-      <li><a href="api/clmm.plotting.html#module-clmm.plotting">clmm.plotting (module)</a>
+      </ul></li>
+      <li>
+    clmm.lsst
+
+      <ul>
+        <li><a href="api/clmm.lsst.html#module-clmm.lsst">module</a>
 </li>
+      </ul></li>
+      <li>
+    clmm.lsst.load_clusters_with_gcr
+
+      <ul>
+        <li><a href="api/clmm.lsst.load_clusters_with_gcr.html#module-clmm.lsst.load_clusters_with_gcr">module</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/clmm.polaraveraging.html#module-clmm.polaraveraging">clmm.polaraveraging (module)</a>
+      <li>
+    clmm.modeling
+
+      <ul>
+        <li><a href="api/clmm.modeling.html#module-clmm.modeling">module</a>
 </li>
-      <li><a href="api/clmm.utils.html#module-clmm.utils">clmm.utils (module)</a>
+      </ul></li>
+      <li>
+    clmm.plotting
+
+      <ul>
+        <li><a href="api/clmm.plotting.html#module-clmm.plotting">module</a>
+</li>
+      </ul></li>
+      <li>
+    clmm.utils
+
+      <ul>
+        <li><a href="api/clmm.utils.html#module-clmm.utils">module</a>
+</li>
+      </ul></li>
+      <li><a href="api/clmm.clmm_cosmo.html#clmm.clmm_cosmo.CLMMCosmology">CLMMCosmology (class in clmm.clmm_cosmo)</a>
+</li>
+      <li><a href="api/clmm.clmm_modeling.html#clmm.clmm_modeling.CLMModeling">CLMModeling (class in clmm.clmm_modeling)</a>
 </li>
       <li><a href="api/clmm.utils.html#clmm.utils.compute_lensed_ellipticity">compute_lensed_ellipticity() (in module clmm.utils)</a>
 </li>
@@ -251,7 +317,7 @@
       <li><a href="api/clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster.compute_tangential_and_cross_components">compute_tangential_and_cross_components() (clmm.galaxycluster.GalaxyCluster method)</a>
 
       <ul>
-        <li><a href="api/clmm.polaraveraging.html#clmm.polaraveraging.compute_tangential_and_cross_components">(in module clmm.polaraveraging)</a>
+        <li><a href="api/clmm.dataops.html#clmm.dataops.compute_tangential_and_cross_components">(in module clmm.dataops)</a>
 </li>
       </ul></li>
       <li><a href="api/clmm.constants.html#clmm.constants.Constants">Constants (class in clmm.constants)</a>
@@ -259,6 +325,34 @@
       <li><a href="api/clmm.utils.html#clmm.utils.convert_shapes_to_epsilon">convert_shapes_to_epsilon() (in module clmm.utils)</a>
 </li>
       <li><a href="api/clmm.utils.html#clmm.utils.convert_units">convert_units() (in module clmm.utils)</a>
+</li>
+      <li><a href="api/clmm.modeling.html#clmm.modeling.Cosmology">Cosmology (in module clmm.modeling)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="E">E</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/clmm.clmm_cosmo.html#clmm.clmm_cosmo.CLMMCosmology.eval_da">eval_da() (clmm.clmm_cosmo.CLMMCosmology method)</a>
+</li>
+      <li><a href="api/clmm.clmm_cosmo.html#clmm.clmm_cosmo.CLMMCosmology.eval_da_a1a2">eval_da_a1a2() (clmm.clmm_cosmo.CLMMCosmology method)</a>
+</li>
+      <li><a href="api/clmm.clmm_cosmo.html#clmm.clmm_cosmo.CLMMCosmology.eval_da_z1z2">eval_da_z1z2() (clmm.clmm_cosmo.CLMMCosmology method)</a>
+</li>
+      <li><a href="api/clmm.clmm_modeling.html#clmm.clmm_modeling.CLMModeling.eval_density">eval_density() (clmm.clmm_modeling.CLMModeling method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/clmm.clmm_modeling.html#clmm.clmm_modeling.CLMModeling.eval_shear">eval_shear() (clmm.clmm_modeling.CLMModeling method)</a>
+</li>
+      <li><a href="api/clmm.clmm_modeling.html#clmm.clmm_modeling.CLMModeling.eval_sigma">eval_sigma() (clmm.clmm_modeling.CLMModeling method)</a>
+</li>
+      <li><a href="api/clmm.clmm_modeling.html#clmm.clmm_modeling.CLMModeling.eval_sigma_crit">eval_sigma_crit() (clmm.clmm_modeling.CLMModeling method)</a>
+</li>
+      <li><a href="api/clmm.clmm_modeling.html#clmm.clmm_modeling.CLMModeling.eval_sigma_excess">eval_sigma_excess() (clmm.clmm_modeling.CLMModeling method)</a>
+</li>
+      <li><a href="api/clmm.clmm_modeling.html#clmm.clmm_modeling.CLMModeling.eval_sigma_mean">eval_sigma_mean() (clmm.clmm_modeling.CLMModeling method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -270,15 +364,23 @@
 </li>
       <li><a href="api/clmm.gcdata.html#clmm.gcdata.GCData">GCData (class in clmm.gcdata)</a>
 </li>
+      <li><a href="api/clmm.gcdata.html#clmm.gcdata.GCMetaData">GCMetaData (class in clmm.gcdata)</a>
+</li>
       <li><a href="api/clmm.modeling.html#clmm.modeling.get_3d_density">get_3d_density() (in module clmm.modeling)</a>
+</li>
+      <li><a href="api/clmm.modeling.html#clmm.modeling.get_critical_surface_density">get_critical_surface_density() (in module clmm.modeling)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/clmm.modeling.html#clmm.modeling.get_critical_surface_density">get_critical_surface_density() (in module clmm.modeling)</a>
+      <li><a href="api/clmm.clmm_cosmo.html#clmm.clmm_cosmo.CLMMCosmology.get_desc">get_desc() (clmm.clmm_cosmo.CLMMCosmology method)</a>
+</li>
+      <li><a href="api/clmm.clmm_cosmo.html#clmm.clmm_cosmo.CLMMCosmology.get_Omega_m">get_Omega_m() (clmm.clmm_cosmo.CLMMCosmology method)</a>
 </li>
       <li><a href="api/clmm.modeling.html#clmm.modeling.get_reduced_shear_from_convergence">get_reduced_shear_from_convergence() (in module clmm.modeling)</a>
 </li>
       <li><a href="api/clmm.constants.html#clmm.constants.Constants.GNEWT">GNEWT (clmm.constants.Constants attribute)</a>
+</li>
+      <li><a href="api/clmm.constants.html#clmm.constants.Constants.GNEWT_SOLAR_MASS">GNEWT_SOLAR_MASS (clmm.constants.Constants attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -300,15 +402,46 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster.make_binned_profile">make_binned_profile() (clmm.galaxycluster.GalaxyCluster method)</a>
+      <li><a href="api/clmm.utils.html#clmm.utils.make_bins">make_bins() (in module clmm.utils)</a>
+</li>
+      <li><a href="api/clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster.make_radial_profile">make_radial_profile() (clmm.galaxycluster.GalaxyCluster method)</a>
 
       <ul>
-        <li><a href="api/clmm.polaraveraging.html#clmm.polaraveraging.make_binned_profile">(in module clmm.polaraveraging)</a>
+        <li><a href="api/clmm.dataops.html#clmm.dataops.make_radial_profile">(in module clmm.dataops)</a>
+</li>
+      </ul></li>
+      <li><a href="api/clmm.modeling.html#clmm.modeling.Modeling">Modeling() (in module clmm.modeling)</a>
+</li>
+      <li>
+    module
+
+      <ul>
+        <li><a href="api/clmm.clmm_cosmo.html#module-clmm.clmm_cosmo">clmm.clmm_cosmo</a>
+</li>
+        <li><a href="api/clmm.clmm_modeling.html#module-clmm.clmm_modeling">clmm.clmm_modeling</a>
+</li>
+        <li><a href="api/clmm.constants.html#module-clmm.constants">clmm.constants</a>
+</li>
+        <li><a href="api/clmm.dataops.html#module-clmm.dataops">clmm.dataops</a>
+</li>
+        <li><a href="api/clmm.galaxycluster.html#module-clmm.galaxycluster">clmm.galaxycluster</a>
+</li>
+        <li><a href="api/clmm.gcdata.html#module-clmm.gcdata">clmm.gcdata</a>
+</li>
+        <li><a href="api/clmm.lsst.html#module-clmm.lsst">clmm.lsst</a>
+</li>
+        <li><a href="api/clmm.lsst.load_clusters_with_gcr.html#module-clmm.lsst.load_clusters_with_gcr">clmm.lsst.load_clusters_with_gcr</a>
+</li>
+        <li><a href="api/clmm.modeling.html#module-clmm.modeling">clmm.modeling</a>
+</li>
+        <li><a href="api/clmm.plotting.html#module-clmm.plotting">clmm.plotting</a>
+</li>
+        <li><a href="api/clmm.utils.html#module-clmm.utils">clmm.utils</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/clmm.utils.html#clmm.utils.make_bins">make_bins() (in module clmm.utils)</a>
+      <li><a href="api/clmm.clmm_cosmo.html#clmm.clmm_cosmo.CLMMCosmology.mpc2rad">mpc2rad() (clmm.clmm_cosmo.CLMMCosmology method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -337,14 +470,44 @@
   </ul></td>
 </tr></table>
 
+<h2 id="R">R</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/clmm.clmm_cosmo.html#clmm.clmm_cosmo.CLMMCosmology.rad2mpc">rad2mpc() (clmm.clmm_cosmo.CLMMCosmology method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster.save">save() (clmm.galaxycluster.GalaxyCluster method)</a>
 </li>
+      <li><a href="api/clmm.clmm_cosmo.html#clmm.clmm_cosmo.CLMMCosmology.set_be_cosmo">set_be_cosmo() (clmm.clmm_cosmo.CLMMCosmology method)</a>
+</li>
+      <li><a href="api/clmm.clmm_modeling.html#clmm.clmm_modeling.CLMModeling.set_concentration">set_concentration() (clmm.clmm_modeling.CLMModeling method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/clmm.clmm_modeling.html#clmm.clmm_modeling.CLMModeling.set_cosmo">set_cosmo() (clmm.clmm_modeling.CLMModeling method)</a>
+</li>
+      <li><a href="api/clmm.clmm_modeling.html#clmm.clmm_modeling.CLMModeling.set_halo_density_profile">set_halo_density_profile() (clmm.clmm_modeling.CLMModeling method)</a>
+</li>
+      <li><a href="api/clmm.clmm_modeling.html#clmm.clmm_modeling.CLMModeling.set_mass">set_mass() (clmm.clmm_modeling.CLMModeling method)</a>
+</li>
       <li><a href="api/clmm.constants.html#clmm.constants.Constants.SOLAR_MASS">SOLAR_MASS (clmm.constants.Constants attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="U">U</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/clmm.gcdata.html#clmm.gcdata.GCData.update_cosmo">update_cosmo() (clmm.gcdata.GCData method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/clmm.gcdata.html#clmm.gcdata.GCData.update_cosmo_ext_valid">update_cosmo_ext_valid() (clmm.gcdata.GCData method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -361,11 +524,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2018-2019, LSST DESC CLMM Contributors
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -376,7 +547,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

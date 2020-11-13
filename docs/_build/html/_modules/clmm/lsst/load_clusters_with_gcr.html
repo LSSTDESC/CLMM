@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.lsst.load_clusters_with_gcr &mdash; CLMM 0.3.0 documentation</title>
+  <title>clmm.lsst.load_clusters_with_gcr &mdash; CLMM 0.6.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -25,15 +30,11 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
@@ -49,7 +50,7 @@
           
 
           
-            <a href="../../../index.html" class="icon icon-home"> CLMM
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> CLMM
           
 
           
@@ -59,7 +60,7 @@
             
             
               <div class="version">
-                0.3.0
+                0.6.0
               </div>
             
           
@@ -76,6 +77,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -90,13 +92,13 @@
 </ul>
 <p class="caption"><span class="caption-text">Examples</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit Halo Mass from a Shear Catalog</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit Halo Mass from a Shear Catalog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Usage Demos</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_polaraveraging_functionality.html">Measure a Profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_modeling_functionality.html">Model a Galaxy Cluster</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
 </ul>
@@ -104,6 +106,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.constants.html">clmm.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.dataops.html">clmm.dataops module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.gcdata.html">clmm.gcdata module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.lsst.html">clmm.lsst package</a><ul>
@@ -112,8 +115,9 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.modeling.html">clmm.modeling module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.plotting.html">clmm.plotting module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.polaraveraging.html">clmm.polaraveraging module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.utils.html">clmm.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.clmm_modeling.html">clmm.clmm_modeling module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.clmm_cosmo.html">clmm.clmm_cosmo module</a></li>
 </ul>
 </li>
 </ul>
@@ -121,6 +125,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -159,7 +164,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
@@ -189,17 +194,22 @@
 <span class="kn">from</span> <span class="nn">..galaxycluster</span> <span class="kn">import</span> <span class="n">GalaxyCluster</span>
 <span class="kn">from</span> <span class="nn">..modeling</span> <span class="kn">import</span> <span class="n">get_reduced_shear_from_convergence</span>
 
+
 <div class="viewcode-block" id="load_GCR_catalog"><a class="viewcode-back" href="../../../api/clmm.lsst.load_clusters_with_gcr.html#clmm.lsst.load_clusters_with_gcr.load_GCR_catalog">[docs]</a><span class="k">def</span> <span class="nf">load_GCR_catalog</span><span class="p">(</span><span class="n">catalog_name</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Loads a catalog from GCRCatalogs&quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">GCRCatalogs</span>
     <span class="k">return</span> <span class="n">GCRCatalogs</span><span class="o">.</span><span class="n">load_catalog</span><span class="p">(</span><span class="n">catalog_name</span><span class="p">)</span></div>
 
+
 <span class="k">class</span> <span class="nc">_test_catalog</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Blank test catalog designed to mimic a GCRCatalogs catalog. For testing only.&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>
+
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+
     <span class="k">def</span> <span class="nf">get_quantities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">quantities</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">out_dict</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">quantities</span><span class="p">:</span>
@@ -209,9 +219,10 @@
                 <span class="n">out_dict</span><span class="p">[</span><span class="n">q</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">1.</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">out_dict</span>
 
+
 <span class="k">def</span> <span class="nf">_make_GCR_filter</span><span class="p">(</span><span class="n">filter_name</span><span class="p">,</span> <span class="n">low_bound</span><span class="p">,</span> <span class="n">high_bound</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Create a filter for a specified range of a certain quantity in the GCRCatalogs format.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    filter_name: str</span>
@@ -228,6 +239,7 @@
 
     <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> &gt;= </span><span class="si">%d</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">filter_name</span><span class="p">,</span> <span class="n">low_bound</span><span class="p">),</span>
             <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> &lt; </span><span class="si">%d</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">filter_name</span><span class="p">,</span> <span class="n">high_bound</span><span class="p">)]</span>
+
 
 <div class="viewcode-block" id="load_from_dc2"><a class="viewcode-back" href="../../../api/clmm.lsst.load_clusters_with_gcr.html#clmm.lsst.load_clusters_with_gcr.load_from_dc2">[docs]</a><span class="k">def</span> <span class="nf">load_from_dc2</span><span class="p">(</span><span class="n">nclusters</span><span class="p">,</span> <span class="n">catalog_name</span><span class="p">,</span> <span class="n">save_dir</span><span class="p">,</span> <span class="n">ra_range</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">),</span> <span class="n">dec_range</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">),</span>
                   <span class="n">z_range</span><span class="o">=</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">),</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">_reader</span><span class="o">=</span><span class="s1">&#39;GCR&#39;</span><span class="p">):</span>
@@ -272,7 +284,7 @@
         <span class="n">catalog</span> <span class="o">=</span> <span class="n">_test_catalog</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid reader name: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">_reader</span><span class="p">)</span>
-        
+
     <span class="c1"># check range of nclusters</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">nclusters</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">nclusters</span><span class="o">&gt;</span><span class="nb">len</span><span class="p">(</span><span class="n">catalog</span><span class="p">)):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;nclusters value out of range: </span><span class="si">%i</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">nclusters</span><span class="p">)</span>
@@ -292,10 +304,10 @@
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Loading cluster </span><span class="si">{</span><span class="n">cl_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="c1"># get galaxies around cluster</span>
-        
-        <span class="n">filters</span> <span class="o">=</span> <span class="p">(</span><span class="n">_make_GCR_filter</span><span class="p">(</span><span class="s1">&#39;ra&#39;</span><span class="p">,</span> <span class="n">cl_ra</span> <span class="o">+</span> <span class="n">ra_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cl_ra</span> <span class="o">+</span> <span class="n">ra_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> 
-                   <span class="n">_make_GCR_filter</span><span class="p">(</span><span class="s1">&#39;dec&#39;</span><span class="p">,</span> <span class="n">cl_dec</span> <span class="o">+</span> <span class="n">dec_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cl_dec</span> <span class="o">+</span> <span class="n">dec_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> 
-                   <span class="n">_make_GCR_filter</span><span class="p">(</span><span class="s1">&#39;redshift&#39;</span><span class="p">,</span> <span class="n">cl_z</span> <span class="o">+</span> <span class="n">z_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cl_z</span> <span class="o">+</span> <span class="n">z_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+        <span class="n">filters</span> <span class="o">=</span> <span class="p">(</span><span class="n">_make_GCR_filter</span><span class="p">(</span><span class="s1">&#39;ra&#39;</span><span class="p">,</span> <span class="n">cl_ra</span><span class="o">+</span><span class="n">ra_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cl_ra</span><span class="o">+</span><span class="n">ra_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">+</span>
+                   <span class="n">_make_GCR_filter</span><span class="p">(</span><span class="s1">&#39;dec&#39;</span><span class="p">,</span> <span class="n">cl_dec</span><span class="o">+</span><span class="n">dec_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cl_dec</span><span class="o">+</span><span class="n">dec_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">+</span>
+                   <span class="n">_make_GCR_filter</span><span class="p">(</span><span class="s1">&#39;redshift&#39;</span><span class="p">,</span> <span class="n">cl_z</span><span class="o">+</span><span class="n">z_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cl_z</span><span class="o">+</span><span class="n">z_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
 
         <span class="n">gals</span> <span class="o">=</span> <span class="n">catalog</span><span class="o">.</span><span class="n">get_quantities</span><span class="p">([</span><span class="s1">&#39;galaxy_id&#39;</span><span class="p">,</span> <span class="s1">&#39;ra&#39;</span><span class="p">,</span> <span class="s1">&#39;dec&#39;</span><span class="p">,</span>
                                        <span class="s1">&#39;shear_1&#39;</span><span class="p">,</span> <span class="s1">&#39;shear_2&#39;</span><span class="p">,</span>
@@ -329,11 +341,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2018-2019, LSST DESC CLMM Contributors
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -344,7 +364,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

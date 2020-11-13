@@ -1,0 +1,758 @@
+Measure a Profile
+=================
+
+Note
+----
+
+All functions in this section can be used passing the explicit arguments
+but are also internal functions of the cluster object, and should be
+used as such. They are just explicitely used here for clarity.
+
+Ex:
+
+::
+
+   theta, g_t, g_x = compute_tangential_and_cross_components(ra_lens, dec_lens,
+                   ra_source, dec_source, shear1, shear2, geometry="flat")
+
+should be done by the user as:
+
+::
+
+   theta, g_t, g_x = cl.compute_tangential_and_cross_components(geometry="flat")
+
+.. code:: ipython3
+
+    import matplotlib.pyplot as plt
+    import clmm
+    import clmm.dataops
+    from clmm.dataops import compute_tangential_and_cross_components, make_radial_profile, make_bins
+    from clmm.plotting import plot_profiles
+    from clmm.galaxycluster import GalaxyCluster
+    import clmm.utils as u
+    from clmm import Cosmology
+    import sys
+    sys.path.append('./support')
+    import mock_data as mock
+
+Make sure we know which version we’re using
+
+.. code:: ipython3
+
+    clmm.__version__
+
+
+
+
+.. parsed-literal::
+
+    '0.6.0'
+
+
+
+Define cosmology object
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code:: ipython3
+
+    mock_cosmo = Cosmology(H0 = 70.0, Omega_dm0 = 0.27 - 0.045, Omega_b0 = 0.045, Omega_k0 = 0.0)
+
+1. Generate cluster object from mock data
+-----------------------------------------
+
+In this example, the mock data includes: shape noise, galaxies drawn
+from redshift distribution and photoz errors.
+
+Define toy cluster parameters for mock data generation
+
+.. code:: ipython3
+
+    cosmo = mock_cosmo
+    cluster_id = "Awesome_cluster"
+    cluster_m = 1.e15
+    cluster_z = 0.3
+    concentration = 4
+    ngals = 1000
+    
+    zsrc_min = cluster_z + 0.1 # we only want to draw background galaxies
+    
+    noisy_data_z = mock.generate_galaxy_catalog(cluster_m,
+                                                cluster_z,
+                                                concentration,
+                                                cosmo,
+                                                'chang13',
+                                                zsrc_min=zsrc_min,
+                                                shapenoise=0.005,
+                                                photoz_sigma_unscaled=0.05, ngals=ngals)
+
+
+.. parsed-literal::
+
+    /Users/combet/anaconda3/envs/clmmenv/lib/python3.8/site-packages/numpy/ma/core.py:2831: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
+      _data = np.array(data, dtype=dtype, copy=copy,
+    /Users/combet/anaconda3/envs/clmmenv/lib/python3.8/site-packages/clmm-0.6.0-py3.8.egg/clmm/modbackend/cluster_toolkit.py:275: RuntimeWarning: divide by zero encountered in true_divide
+    /Users/combet/anaconda3/envs/clmmenv/lib/python3.8/site-packages/clmm-0.6.0-py3.8.egg/clmm/modbackend/cluster_toolkit.py:278: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
+    /Users/combet/anaconda3/envs/clmmenv/lib/python3.8/site-packages/clmm-0.6.0-py3.8.egg/clmm/modbackend/cluster_toolkit.py:428: UserWarning: Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.
+
+
+Loading this into a CLMM cluster object centered on (0,0)
+
+.. code:: ipython3
+
+    cluster_ra = 0.0
+    cluster_dec = 0.0
+    cl = GalaxyCluster(cluster_id, cluster_ra, cluster_dec, 
+                                   cluster_z, noisy_data_z)
+
+2. Load cluster object containing:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Lens properties (ra_l, dec_l, z_l)
+
+..
+
+   Source properties (ra_s, dec_s, e1, e2) ### Note, if loading from
+   mock data, use: > cl = gc.GalaxyCluster.load(“GC_from_mock_data.pkl”)
+
+.. code:: ipython3
+
+    print("Cluster info = ID:", cl.unique_id, "; ra:", cl.ra,
+          "; dec:", cl.dec, "; z_l :", cl.z)
+    print("The number of source galaxies is :", len(cl.galcat))
+
+
+.. parsed-literal::
+
+    Cluster info = ID: Awesome_cluster ; ra: 0.0 ; dec: 0.0 ; z_l : 0.3
+    The number of source galaxies is : 1000
+
+
+2. Basic checks and plots
+-------------------------
+
+-  galaxy positions
+-  redshift distribution
+
+.. code:: ipython3
+
+    f, ax = plt.subplots(1, 2, figsize=(12, 4))
+    
+    ax[0].scatter(cl.galcat['ra'], cl.galcat['dec'], color='blue', s=1, alpha=0.3)
+    ax[0].plot(cl.ra, cl.dec, 'ro')
+    ax[0].set_ylabel('dec', fontsize="large")
+    ax[0].set_xlabel('ra', fontsize="large")
+    
+    hist = ax[1].hist(cl.galcat['z'], bins=40)[0]
+    ax[1].axvline(cl.z, c='r', ls='--')
+    ax[1].set_xlabel('$z_{source}$', fontsize="large")
+    xt = {t:f'{t}' for t in ax[1].get_xticks() if t!=0}
+    xt[cl.z] ='$z_{cl}$'
+    xto = sorted(list(xt.keys())+[cl.z])
+    ax[1].set_xticks(xto)
+    ax[1].set_xticklabels(xt[t] for t in xto)
+    ax[1].get_xticklabels()[xto.index(cl.z)].set_color('red')
+    plt.xlim(0, max(xto))
+    plt.show()
+
+
+
+.. image:: demo_dataops_functionality_files/demo_dataops_functionality_15_0.png
+
+
+-  Check ellipticities
+
+.. code:: ipython3
+
+    fig, ax1 = plt.subplots(1, 1)
+    
+    ax1.scatter(cl.galcat['e1'], cl.galcat['e2'], s=1, alpha=0.2)
+    ax1.set_xlabel('e1')
+    ax1.set_ylabel('e2')
+    ax1.set_aspect('equal', 'datalim')
+    ax1.axvline(0, linestyle='dotted', color='black')
+    ax1.axhline(0, linestyle='dotted', color='black')
+
+
+
+
+.. parsed-literal::
+
+    <matplotlib.lines.Line2D at 0x7f85e3156cd0>
+
+
+
+
+.. image:: demo_dataops_functionality_files/demo_dataops_functionality_17_1.png
+
+
+3. Compute and plot shear profiles
+----------------------------------
+
+3.1 Compute angular separation, cross and tangential shear for each source galaxy
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code:: ipython3
+
+    theta, e_t, e_x = compute_tangential_and_cross_components(
+                    ra_lens=cl.ra, dec_lens=cl.dec,
+                    ra_source=cl.galcat['ra'], dec_source=cl.galcat['dec'],
+                    shear1=cl.galcat['e1'], shear2=cl.galcat['e2'],
+                    geometry="flat")
+
+3.1.1 Using ``GalaxyCluster`` object
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+-  You can also call the function directly from the ``GalaxyCluster``
+   object
+-  By defaut, ``compute_tangential_and_cross_components`` uses columns
+   named ``e1`` and ``e2`` of the ``galcat`` table
+
+.. code:: ipython3
+
+    cl.compute_tangential_and_cross_components(geometry="flat", add=True)
+    # With the option add the cl object has theta, et and ex new columns 
+    # (default: takes in columns named 'e1' and 'e2' and save the results in 'et' and 'ex')
+    cl.galcat['et', 'ex']
+
+
+
+
+.. raw:: html
+
+    <i>GCData length=1000</i>
+    <table id="table140213079647904" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>et</th><th>ex</th></tr></thead>
+    <thead><tr><th>float64</th><th>float64</th></tr></thead>
+    <tr><td>0.00938829292875425</td><td>0.006660604424756099</td></tr>
+    <tr><td>0.01893739565444632</td><td>0.004983890650859953</td></tr>
+    <tr><td>0.02377785916114273</td><td>0.0026160641776610686</td></tr>
+    <tr><td>0.03401807865448141</td><td>-0.0002553502022767228</td></tr>
+    <tr><td>0.00048015029042881586</td><td>-0.0014633800970223444</td></tr>
+    <tr><td>0.005339622029684327</td><td>-0.004249487451561307</td></tr>
+    <tr><td>0.007537566793603926</td><td>0.002996284578736413</td></tr>
+    <tr><td>0.004503752854131549</td><td>6.698135573051876e-05</td></tr>
+    <tr><td>0.0018352399043739015</td><td>0.0015212638791668553</td></tr>
+    <tr><td>0.005428359436783684</td><td>0.0033320210523360445</td></tr>
+    <tr><td>...</td><td>...</td></tr>
+    <tr><td>0.018934983179875742</td><td>-0.00035207160583667285</td></tr>
+    <tr><td>0.05606535592018831</td><td>-0.0020640961330155912</td></tr>
+    <tr><td>0.010966250683025532</td><td>-0.008705460538138296</td></tr>
+    <tr><td>0.010308095523742523</td><td>1.8613599402611102e-06</td></tr>
+    <tr><td>0.01383719536441264</td><td>0.003814379324081572</td></tr>
+    <tr><td>0.005487768668630877</td><td>-0.0020555392319386145</td></tr>
+    <tr><td>0.00814519725431165</td><td>0.008503708486852047</td></tr>
+    <tr><td>0.01290805609333941</td><td>0.001751758289540507</td></tr>
+    <tr><td>0.02245553422090068</td><td>-0.0067055267757306705</td></tr>
+    <tr><td>0.013545840014090257</td><td>-0.004854102870555752</td></tr>
+    </table>
+
+
+
+-  But it’s also possible to choose which columns to use for input and
+   output, e.g. Below we’re storing the results in ``e_tan`` and
+   ``e_cross`` instead (explicitely taking ``e1`` and ``e2`` as input)
+
+.. code:: ipython3
+
+    cl.compute_tangential_and_cross_components(geometry="flat",
+                                                          shape_component1='e1', shape_component2='e2', 
+                                                          tan_component='e_tan', cross_component='e_cross',
+                                                          add=True)
+    cl.galcat['e_tan', 'e_cross']
+
+
+
+
+.. raw:: html
+
+    <i>GCData length=1000</i>
+    <table id="table140213092383232" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>e_tan</th><th>e_cross</th></tr></thead>
+    <thead><tr><th>float64</th><th>float64</th></tr></thead>
+    <tr><td>0.00938829292875425</td><td>0.006660604424756099</td></tr>
+    <tr><td>0.01893739565444632</td><td>0.004983890650859953</td></tr>
+    <tr><td>0.02377785916114273</td><td>0.0026160641776610686</td></tr>
+    <tr><td>0.03401807865448141</td><td>-0.0002553502022767228</td></tr>
+    <tr><td>0.00048015029042881586</td><td>-0.0014633800970223444</td></tr>
+    <tr><td>0.005339622029684327</td><td>-0.004249487451561307</td></tr>
+    <tr><td>0.007537566793603926</td><td>0.002996284578736413</td></tr>
+    <tr><td>0.004503752854131549</td><td>6.698135573051876e-05</td></tr>
+    <tr><td>0.0018352399043739015</td><td>0.0015212638791668553</td></tr>
+    <tr><td>0.005428359436783684</td><td>0.0033320210523360445</td></tr>
+    <tr><td>...</td><td>...</td></tr>
+    <tr><td>0.018934983179875742</td><td>-0.00035207160583667285</td></tr>
+    <tr><td>0.05606535592018831</td><td>-0.0020640961330155912</td></tr>
+    <tr><td>0.010966250683025532</td><td>-0.008705460538138296</td></tr>
+    <tr><td>0.010308095523742523</td><td>1.8613599402611102e-06</td></tr>
+    <tr><td>0.01383719536441264</td><td>0.003814379324081572</td></tr>
+    <tr><td>0.005487768668630877</td><td>-0.0020555392319386145</td></tr>
+    <tr><td>0.00814519725431165</td><td>0.008503708486852047</td></tr>
+    <tr><td>0.01290805609333941</td><td>0.001751758289540507</td></tr>
+    <tr><td>0.02245553422090068</td><td>-0.0067055267757306705</td></tr>
+    <tr><td>0.013545840014090257</td><td>-0.004854102870555752</td></tr>
+    </table>
+
+
+
+Plot tangential and cross ellipticity distributions for verification,
+which can be accessed in the galaxy cluster object, cl.
+
+.. code:: ipython3
+
+    f, ax = plt.subplots(1, 2, figsize=(12, 4))
+    
+    ax[0].hist(cl.galcat['et'],bins=50)
+    ax[0].set_xlabel('$\\epsilon_t$',fontsize='xx-large')
+    
+    ax[1].hist(cl.galcat['ex'],bins=50)
+    ax[1].set_xlabel('$\\epsilon_x$',fontsize='xx-large')
+    ax[1].set_yscale('log')
+
+
+
+.. image:: demo_dataops_functionality_files/demo_dataops_functionality_26_0.png
+
+
+Compute transversal and cross shear profiles in units defined by user,
+using defaults binning
+
+3.2 Compute shear profile in radial bins
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Given the separations in “radians” computed in the previous step, the
+user may ask for a binned profile in various projected distance units.
+#### 3.2.1 Default binning - default binning using kpc:
+
+.. code:: ipython3
+
+    profiles = make_radial_profile([cl.galcat['et'], cl.galcat['ex'], cl.galcat['z']],
+                                        angsep=cl.galcat['theta'], angsep_units="radians",
+                                        bin_units="kpc", cosmo=cosmo, z_lens=cl.z)
+    profiles
+
+
+
+
+.. raw:: html
+
+    <i>GCData length=10</i>
+    <table id="table140213093643360" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>radius_min</th><th>radius</th><th>radius_max</th><th>p_0</th><th>p_0_err</th><th>p_1</th><th>p_1_err</th><th>p_2</th><th>p_2_err</th><th>n_src</th></tr></thead>
+    <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>int64</th></tr></thead>
+    <tr><td>257.9547414716232</td><td>583.5811869918474</td><td>790.8471124470288</td><td>0.058985539632967036</td><td>0.0038921133703532463</td><td>-0.0008938473544520101</td><td>0.0007478175077270354</td><td>1.270796842013378</td><td>0.12989356194758148</td><td>33</td></tr>
+    <tr><td>790.8471124470288</td><td>1069.0685367359938</td><td>1323.7394834224344</td><td>0.033781920232240775</td><td>0.0017545063969495315</td><td>-0.0008551464203826475</td><td>0.0006874074489556409</td><td>1.1190998326396238</td><td>0.10315053235441493</td><td>49</td></tr>
+    <tr><td>1323.7394834224344</td><td>1613.584389485684</td><td>1856.63185439784</td><td>0.025793497894756438</td><td>0.0009023212866050807</td><td>-0.00024126803457633845</td><td>0.0004462754186828159</td><td>1.2872982187803523</td><td>0.0728521679195556</td><td>94</td></tr>
+    <tr><td>1856.63185439784</td><td>2132.7972444036845</td><td>2389.5242253732454</td><td>0.01912828830561241</td><td>0.0006151215082847171</td><td>3.7458718170990513e-06</td><td>0.0004461728316180058</td><td>1.2438175145684773</td><td>0.06370014564266602</td><td>117</td></tr>
+    <tr><td>2389.5242253732454</td><td>2666.4193385103918</td><td>2922.4165963486507</td><td>0.014883184753280033</td><td>0.0005412426002828777</td><td>0.00013548244058428065</td><td>0.0004001897192301438</td><td>1.2317967295153482</td><td>0.06325952684762087</td><td>139</td></tr>
+    <tr><td>2922.4165963486507</td><td>3185.888698689017</td><td>3455.3089673240565</td><td>0.011715377023879016</td><td>0.0004236946311364193</td><td>-0.0001373472720303976</td><td>0.00042474523565506103</td><td>1.340109734244893</td><td>0.05604267909576621</td><td>172</td></tr>
+    <tr><td>3455.3089673240565</td><td>3723.945490337098</td><td>3988.2013382994623</td><td>0.009890726074320066</td><td>0.0004120089025107503</td><td>-7.89946882855483e-06</td><td>0.0003678243269407906</td><td>1.2808582186948057</td><td>0.0550313307562902</td><td>180</td></tr>
+    <tr><td>3988.2013382994623</td><td>4219.373034713852</td><td>4521.093709274868</td><td>0.007906611561933976</td><td>0.0004670450840452992</td><td>0.0002473708758991819</td><td>0.0004114568673767183</td><td>1.2167845968570778</td><td>0.07170190830522678</td><td>124</td></tr>
+    <tr><td>4521.093709274868</td><td>4761.65038730124</td><td>5053.9860802502735</td><td>0.00661547467759196</td><td>0.0005579929809297917</td><td>-0.0014490743500372987</td><td>0.0006321397889224864</td><td>1.2806574542831821</td><td>0.08837675633437453</td><td>67</td></tr>
+    <tr><td>5053.9860802502735</td><td>5246.535194701684</td><td>5586.87845122568</td><td>0.006314305410874624</td><td>0.000805731525256683</td><td>0.0008676113912286118</td><td>0.0011540414543574373</td><td>1.5146859376041977</td><td>0.15265780855019656</td><td>25</td></tr>
+    </table>
+
+
+
+Note that, because this function bins a generic number of quantities in
+the radial profile, its output table names the quantities as ``p_i`` and
+errors as ``p_i_err``.
+
+3.1.2 Using ``GalaxyCluster`` object
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The output ``GCData`` corresponding to the binning profiled is attached
+as a new attribute of the galaxy cluster object.
+
+.. code:: ipython3
+
+    cl.make_radial_profile("kpc", cosmo=cosmo)
+    cl.profile
+
+
+
+
+.. raw:: html
+
+    <i>GCData length=10</i>
+    <table id="table140213096145104" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>radius_min</th><th>radius</th><th>radius_max</th><th>gt</th><th>gt_err</th><th>gx</th><th>gx_err</th><th>z</th><th>z_err</th><th>n_src</th></tr></thead>
+    <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>int64</th></tr></thead>
+    <tr><td>257.9547414716232</td><td>583.5811869918474</td><td>790.8471124470288</td><td>0.058985539632967036</td><td>0.0038921133703532463</td><td>-0.0008938473544520101</td><td>0.0007478175077270354</td><td>1.270796842013378</td><td>0.12989356194758148</td><td>33</td></tr>
+    <tr><td>790.8471124470288</td><td>1069.0685367359938</td><td>1323.7394834224344</td><td>0.033781920232240775</td><td>0.0017545063969495315</td><td>-0.0008551464203826475</td><td>0.0006874074489556409</td><td>1.1190998326396238</td><td>0.10315053235441493</td><td>49</td></tr>
+    <tr><td>1323.7394834224344</td><td>1613.584389485684</td><td>1856.63185439784</td><td>0.025793497894756438</td><td>0.0009023212866050807</td><td>-0.00024126803457633845</td><td>0.0004462754186828159</td><td>1.2872982187803523</td><td>0.0728521679195556</td><td>94</td></tr>
+    <tr><td>1856.63185439784</td><td>2132.7972444036845</td><td>2389.5242253732454</td><td>0.01912828830561241</td><td>0.0006151215082847171</td><td>3.7458718170990513e-06</td><td>0.0004461728316180058</td><td>1.2438175145684773</td><td>0.06370014564266602</td><td>117</td></tr>
+    <tr><td>2389.5242253732454</td><td>2666.4193385103918</td><td>2922.4165963486507</td><td>0.014883184753280033</td><td>0.0005412426002828777</td><td>0.00013548244058428065</td><td>0.0004001897192301438</td><td>1.2317967295153482</td><td>0.06325952684762087</td><td>139</td></tr>
+    <tr><td>2922.4165963486507</td><td>3185.888698689017</td><td>3455.3089673240565</td><td>0.011715377023879016</td><td>0.0004236946311364193</td><td>-0.0001373472720303976</td><td>0.00042474523565506103</td><td>1.340109734244893</td><td>0.05604267909576621</td><td>172</td></tr>
+    <tr><td>3455.3089673240565</td><td>3723.945490337098</td><td>3988.2013382994623</td><td>0.009890726074320066</td><td>0.0004120089025107503</td><td>-7.89946882855483e-06</td><td>0.0003678243269407906</td><td>1.2808582186948057</td><td>0.0550313307562902</td><td>180</td></tr>
+    <tr><td>3988.2013382994623</td><td>4219.373034713852</td><td>4521.093709274868</td><td>0.007906611561933976</td><td>0.0004670450840452992</td><td>0.0002473708758991819</td><td>0.0004114568673767183</td><td>1.2167845968570778</td><td>0.07170190830522678</td><td>124</td></tr>
+    <tr><td>4521.093709274868</td><td>4761.65038730124</td><td>5053.9860802502735</td><td>0.00661547467759196</td><td>0.0005579929809297917</td><td>-0.0014490743500372987</td><td>0.0006321397889224864</td><td>1.2806574542831821</td><td>0.08837675633437453</td><td>67</td></tr>
+    <tr><td>5053.9860802502735</td><td>5246.535194701684</td><td>5586.87845122568</td><td>0.006314305410874624</td><td>0.000805731525256683</td><td>0.0008676113912286118</td><td>0.0011540414543574373</td><td>1.5146859376041977</td><td>0.15265780855019656</td><td>25</td></tr>
+    </table>
+
+
+
+You can see that this ``profile`` table contains metadata regarding the
+comology and bin units
+
+.. code:: ipython3
+
+    print('Cosmology:', cl.profile.meta['cosmo'])
+    print('bin units:', cl.profile.meta['bin_units'])
+
+
+.. parsed-literal::
+
+    Cosmology: AstroPyCosmology(H0=70.0, Omega_dm0=0.22500000000000003, Omega_b0=0.045, Omega_k0=0.0)
+    bin units: kpc
+
+
+Use function to plot the profiles
+
+.. code:: ipython3
+
+    fig, ax = plot_profiles(cl,xscale='log')
+
+
+
+.. image:: demo_dataops_functionality_files/demo_dataops_functionality_36_0.png
+
+
+-  default binning using degrees:
+
+.. code:: ipython3
+
+    new_profiles = cl.make_radial_profile("degrees",cosmo=cosmo)
+    fig1, ax1 = plot_profiles(cl, "degrees")
+
+
+.. parsed-literal::
+
+    /Users/combet/anaconda3/envs/clmmenv/lib/python3.8/site-packages/clmm-0.6.0-py3.8.egg/clmm/galaxycluster.py:296: UserWarning: overwriting profile table.
+
+
+
+.. image:: demo_dataops_functionality_files/demo_dataops_functionality_38_1.png
+
+
+3.2.2 User-defined binning
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The users may also provide their own binning, in user-defined units, to
+compute the transversal and cross shear profiles. The ``make_bins``
+function is provided in ``utils.py`` and allow for various options.
+
+-  e.g., generate 20 bins between 1 and 6 Mpc, linearly spaced.
+
+.. code:: ipython3
+
+    new_bins = make_bins(1, 6, nbins=20, method='evenwidth')
+    
+    # Make the shear profile in this binning
+    new_profiles = cl.make_radial_profile("Mpc",
+                                      bins=new_bins, cosmo=cosmo)
+    
+    fig1, ax1 = plot_profiles(cl, "Mpc", r_units='Mpc')
+
+
+
+.. image:: demo_dataops_functionality_files/demo_dataops_functionality_40_0.png
+
+
+-  e.g., generate 20 bins between 1 and 6 Mpc, evenly spaced in log
+   space.
+
+.. code:: ipython3
+
+    new_bins = make_bins(1, 6, nbins=20, method='evenlog10width')
+    
+    new_profiles = cl.make_radial_profile("Mpc",
+                                      bins=new_bins, cosmo=cosmo)
+    fig1, ax1 = plot_profiles(cl, "Mpc", r_units='Mpc')
+    ax1.set_xscale('log')
+
+
+
+.. image:: demo_dataops_functionality_files/demo_dataops_functionality_42_0.png
+
+
+-  e.g., generate 20 bins between 1 and 6 Mpc, each contaning the same
+   number of galaxies
+
+.. code:: ipython3
+
+    # First, convert the source separation table to Mpc
+    seps = u.convert_units(cl.galcat["theta"], "radians", "Mpc", redshift=cl.z, cosmo=cosmo)
+    
+    new_bins = make_bins(1, 6, nbins=20, method='equaloccupation', source_seps=seps)
+    new_profiles = cl.make_radial_profile("Mpc",bins=new_bins, cosmo=cosmo)
+    
+    print(f"number of galaxies in each bin: {list(cl.profile['n_src'])}")
+    fig1, ax1 = plot_profiles(cl, "Mpc", r_units='Mpc')
+
+
+.. parsed-literal::
+
+    number of galaxies in each bin: [48, 47, 47, 48, 47, 47, 48, 47, 47, 47, 48, 47, 47, 48, 47, 47, 48, 47, 47, 48]
+
+
+
+.. image:: demo_dataops_functionality_files/demo_dataops_functionality_44_1.png
+
+
+3.2.3 Other individual profile quantities may also be accessed
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code:: ipython3
+
+    plt.title('Average redshift in radial bins')
+    plt.errorbar(new_profiles['radius'], new_profiles['z'],
+                 new_profiles['z_err'], marker = 'o')
+    plt.axhline(cl.z, linestyle='dotted', color='r')
+    plt.text(1, cl.z*1.1, '$z_{cl}$', color='r')
+    plt.xlabel("Radius [Mpc]")
+    plt.ylabel('$\langle z\\rangle$')
+    plt.show()
+
+
+
+.. image:: demo_dataops_functionality_files/demo_dataops_functionality_46_0.png
+
+
+4. Focus on some options
+------------------------
+
+4.1. ``gal_ids_in_bins`` option
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+adds a ``gal_id`` field to the profile GCData. For each bin of the
+profile, this is filled with the list of galaxy IDs for the galaxies
+that have fallen in that bin.
+
+.. code:: ipython3
+
+    cl.make_radial_profile("Mpc", cosmo=cosmo, gal_ids_in_bins=True)
+    cl.profile[:2]
+
+
+
+
+.. raw:: html
+
+    <i>GCData length=2</i>
+    <table id="table140213100507248" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>radius_min</th><th>radius</th><th>radius_max</th><th>gt</th><th>gt_err</th><th>gx</th><th>gx_err</th><th>z</th><th>z_err</th><th>n_src</th><th>gal_id</th></tr></thead>
+    <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>int64</th><th>object</th></tr></thead>
+    <tr><td>0.25795474147162323</td><td>0.5835811869918472</td><td>0.7908471124470289</td><td>0.058985539632967036</td><td>0.0038921133703532463</td><td>-0.0008938473544520101</td><td>0.0007478175077270354</td><td>1.270796842013378</td><td>0.12989356194758148</td><td>33</td><td>[76, 94, 115, 145, 195, 210, 312, 314, 325, 364, 396, 435, 478, 480, 551, 625, 649, 683, 708, 711, 718, 722, 730, 799, 805, 818, 830, 835, 864, 884, 894, 927, 945]</td></tr>
+    <tr><td>0.7908471124470289</td><td>1.069068536735994</td><td>1.3237394834224345</td><td>0.033781920232240775</td><td>0.0017545063969495315</td><td>-0.0008551464203826475</td><td>0.0006874074489556409</td><td>1.1190998326396238</td><td>0.10315053235441493</td><td>49</td><td>[21, 52, 56, 96, 114, 118, 121, 128, 133, 156, 158, 167, 182, 214, 216, 234, 256, 297, 377, 413, 422, 449, 453, 455, 460, 484, 497, 512, 519, 572, 600, 608, 619, 652, 658, 714, 745, 750, 757, 795, 801, 810, 812, 857, 895, 935, 962, 973, 991]</td></tr>
+    </table>
+
+
+
+.. code:: ipython3
+
+    # Here the list of galaxy IDs that are in the first bin of the tangential shear profile
+    import numpy as np
+    gal_list = cl.profile['gal_id'][0]
+    print(gal_list)
+
+
+.. parsed-literal::
+
+    [76, 94, 115, 145, 195, 210, 312, 314, 325, 364, 396, 435, 478, 480, 551, 625, 649, 683, 708, 711, 718, 722, 730, 799, 805, 818, 830, 835, 864, 884, 894, 927, 945]
+
+
+4.2. User-defined naming scheme
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The user may specify which columns to use from the ``galcat`` table to
+perform the binned average. If none is specified, the code looks for
+columns names ``et`` and ``ex``. Below, we average in bins the
+columns\ ``e_tan`` and ``e_cross`` of ``galcat`` and store the results
+in the columns ``g_tan`` and ``g_cross`` of the ``profile`` table of the
+cluster object.
+
+.. code:: ipython3
+
+    cl.make_radial_profile("kpc", cosmo=cosmo, 
+                           tan_component_in='e_tan', cross_component_in='e_cross',
+                           tan_component_out='g_tan', cross_component_out='g_cross');
+    cl.profile
+
+
+
+
+.. raw:: html
+
+    <i>GCData length=10</i>
+    <table id="table140213094353312" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>radius_min</th><th>radius</th><th>radius_max</th><th>g_tan</th><th>g_tan_err</th><th>g_cross</th><th>g_cross_err</th><th>z</th><th>z_err</th><th>n_src</th></tr></thead>
+    <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>int64</th></tr></thead>
+    <tr><td>257.9547414716232</td><td>583.5811869918474</td><td>790.8471124470288</td><td>0.058985539632967036</td><td>0.0038921133703532463</td><td>-0.0008938473544520101</td><td>0.0007478175077270354</td><td>1.270796842013378</td><td>0.12989356194758148</td><td>33</td></tr>
+    <tr><td>790.8471124470288</td><td>1069.0685367359938</td><td>1323.7394834224344</td><td>0.033781920232240775</td><td>0.0017545063969495315</td><td>-0.0008551464203826475</td><td>0.0006874074489556409</td><td>1.1190998326396238</td><td>0.10315053235441493</td><td>49</td></tr>
+    <tr><td>1323.7394834224344</td><td>1613.584389485684</td><td>1856.63185439784</td><td>0.025793497894756438</td><td>0.0009023212866050807</td><td>-0.00024126803457633845</td><td>0.0004462754186828159</td><td>1.2872982187803523</td><td>0.0728521679195556</td><td>94</td></tr>
+    <tr><td>1856.63185439784</td><td>2132.7972444036845</td><td>2389.5242253732454</td><td>0.01912828830561241</td><td>0.0006151215082847171</td><td>3.7458718170990513e-06</td><td>0.0004461728316180058</td><td>1.2438175145684773</td><td>0.06370014564266602</td><td>117</td></tr>
+    <tr><td>2389.5242253732454</td><td>2666.4193385103918</td><td>2922.4165963486507</td><td>0.014883184753280033</td><td>0.0005412426002828777</td><td>0.00013548244058428065</td><td>0.0004001897192301438</td><td>1.2317967295153482</td><td>0.06325952684762087</td><td>139</td></tr>
+    <tr><td>2922.4165963486507</td><td>3185.888698689017</td><td>3455.3089673240565</td><td>0.011715377023879016</td><td>0.0004236946311364193</td><td>-0.0001373472720303976</td><td>0.00042474523565506103</td><td>1.340109734244893</td><td>0.05604267909576621</td><td>172</td></tr>
+    <tr><td>3455.3089673240565</td><td>3723.945490337098</td><td>3988.2013382994623</td><td>0.009890726074320066</td><td>0.0004120089025107503</td><td>-7.89946882855483e-06</td><td>0.0003678243269407906</td><td>1.2808582186948057</td><td>0.0550313307562902</td><td>180</td></tr>
+    <tr><td>3988.2013382994623</td><td>4219.373034713852</td><td>4521.093709274868</td><td>0.007906611561933976</td><td>0.0004670450840452992</td><td>0.0002473708758991819</td><td>0.0004114568673767183</td><td>1.2167845968570778</td><td>0.07170190830522678</td><td>124</td></tr>
+    <tr><td>4521.093709274868</td><td>4761.65038730124</td><td>5053.9860802502735</td><td>0.00661547467759196</td><td>0.0005579929809297917</td><td>-0.0014490743500372987</td><td>0.0006321397889224864</td><td>1.2806574542831821</td><td>0.08837675633437453</td><td>67</td></tr>
+    <tr><td>5053.9860802502735</td><td>5246.535194701684</td><td>5586.87845122568</td><td>0.006314305410874624</td><td>0.000805731525256683</td><td>0.0008676113912286118</td><td>0.0011540414543574373</td><td>1.5146859376041977</td><td>0.15265780855019656</td><td>25</td></tr>
+    </table>
+
+
+
+The user may also define the name of the output table attribute. Below,
+we asked the binned profile to be saved into the
+``reduced_shear_profile`` attribute
+
+.. code:: ipython3
+
+    cl.make_radial_profile("kpc", cosmo=cosmo, 
+                           tan_component_in='e_tan', cross_component_in='e_cross',
+                           tan_component_out='g_tan', cross_component_out='g_cross',
+                           table_name='reduced_shear_profile');
+    cl.reduced_shear_profile
+
+
+
+
+.. raw:: html
+
+    <i>GCData length=10</i>
+    <table id="table140213007928480" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>radius_min</th><th>radius</th><th>radius_max</th><th>g_tan</th><th>g_tan_err</th><th>g_cross</th><th>g_cross_err</th><th>z</th><th>z_err</th><th>n_src</th></tr></thead>
+    <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>int64</th></tr></thead>
+    <tr><td>257.9547414716232</td><td>583.5811869918474</td><td>790.8471124470288</td><td>0.058985539632967036</td><td>0.0038921133703532463</td><td>-0.0008938473544520101</td><td>0.0007478175077270354</td><td>1.270796842013378</td><td>0.12989356194758148</td><td>33</td></tr>
+    <tr><td>790.8471124470288</td><td>1069.0685367359938</td><td>1323.7394834224344</td><td>0.033781920232240775</td><td>0.0017545063969495315</td><td>-0.0008551464203826475</td><td>0.0006874074489556409</td><td>1.1190998326396238</td><td>0.10315053235441493</td><td>49</td></tr>
+    <tr><td>1323.7394834224344</td><td>1613.584389485684</td><td>1856.63185439784</td><td>0.025793497894756438</td><td>0.0009023212866050807</td><td>-0.00024126803457633845</td><td>0.0004462754186828159</td><td>1.2872982187803523</td><td>0.0728521679195556</td><td>94</td></tr>
+    <tr><td>1856.63185439784</td><td>2132.7972444036845</td><td>2389.5242253732454</td><td>0.01912828830561241</td><td>0.0006151215082847171</td><td>3.7458718170990513e-06</td><td>0.0004461728316180058</td><td>1.2438175145684773</td><td>0.06370014564266602</td><td>117</td></tr>
+    <tr><td>2389.5242253732454</td><td>2666.4193385103918</td><td>2922.4165963486507</td><td>0.014883184753280033</td><td>0.0005412426002828777</td><td>0.00013548244058428065</td><td>0.0004001897192301438</td><td>1.2317967295153482</td><td>0.06325952684762087</td><td>139</td></tr>
+    <tr><td>2922.4165963486507</td><td>3185.888698689017</td><td>3455.3089673240565</td><td>0.011715377023879016</td><td>0.0004236946311364193</td><td>-0.0001373472720303976</td><td>0.00042474523565506103</td><td>1.340109734244893</td><td>0.05604267909576621</td><td>172</td></tr>
+    <tr><td>3455.3089673240565</td><td>3723.945490337098</td><td>3988.2013382994623</td><td>0.009890726074320066</td><td>0.0004120089025107503</td><td>-7.89946882855483e-06</td><td>0.0003678243269407906</td><td>1.2808582186948057</td><td>0.0550313307562902</td><td>180</td></tr>
+    <tr><td>3988.2013382994623</td><td>4219.373034713852</td><td>4521.093709274868</td><td>0.007906611561933976</td><td>0.0004670450840452992</td><td>0.0002473708758991819</td><td>0.0004114568673767183</td><td>1.2167845968570778</td><td>0.07170190830522678</td><td>124</td></tr>
+    <tr><td>4521.093709274868</td><td>4761.65038730124</td><td>5053.9860802502735</td><td>0.00661547467759196</td><td>0.0005579929809297917</td><td>-0.0014490743500372987</td><td>0.0006321397889224864</td><td>1.2806574542831821</td><td>0.08837675633437453</td><td>67</td></tr>
+    <tr><td>5053.9860802502735</td><td>5246.535194701684</td><td>5586.87845122568</td><td>0.006314305410874624</td><td>0.000805731525256683</td><td>0.0008676113912286118</td><td>0.0011540414543574373</td><td>1.5146859376041977</td><td>0.15265780855019656</td><td>25</td></tr>
+    </table>
+
+
+
+4.3 Compute a DeltaSigma profile instead of a shear profile
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The ``is_deltasigma`` option allows the user to return a cross and
+tangential :math:`\Delta\Sigma` (excess surface density) value for each
+galaxy in the catalog, provided ``galcat`` contains the redshifts of the
+galaxies and provided a cosmology is passed to the function. The columns
+``DeltaSigma_tan`` and ``DeltaSigma_cross`` are added to the ``galcat``
+table.
+
+.. code:: ipython3
+
+    cl.compute_tangential_and_cross_components(geometry="flat",
+                                                          shape_component1='e1', shape_component2='e2', 
+                                                          tan_component='DeltaSigma_tan', cross_component='DeltaSigma_cross',
+                                                          add=True, cosmo=cosmo, is_deltasigma=True)
+    cl
+
+
+
+
+.. parsed-literal::
+
+    GalaxyCluster Awesome_cluster: (ra=0.0, dec=0.0) at z=0.3
+    > 1000 source galaxies
+    > With columns: ra dec e1 e2 z ztrue pzbins pzpdf id theta et ex e_tan e_cross sigma_c DeltaSigma_tan DeltaSigma_cross
+
+
+
+Because this operation required a Cosmology, it was added to ``galcat``
+metadata:
+
+.. code:: ipython3
+
+    cl.galcat.meta['cosmo']
+
+
+
+
+.. parsed-literal::
+
+    'AstroPyCosmology(H0=70.0, Omega_dm0=0.22500000000000003, Omega_b0=0.045, Omega_k0=0.0)'
+
+
+
+The binned profile is obtained, as before. Below, we use the values
+obtained from the previous step to compute the binned profile. The
+latter is saved in a new ``DeltaSigma_profile`` table of the
+GalaxyCluster object.
+
+.. code:: ipython3
+
+    cl.make_radial_profile("Mpc", cosmo=cosmo, 
+                           tan_component_in='DeltaSigma_tan', cross_component_in='DeltaSigma_cross',
+                           tan_component_out='DeltaSigma_tan', cross_component_out='DeltaSigma_cross',
+                           table_name='DeltaSigma_profile')
+
+
+
+
+.. raw:: html
+
+    <i>GCData length=10</i>
+    <table id="table140213103421856" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>radius_min</th><th>radius</th><th>radius_max</th><th>DeltaSigma_tan</th><th>DeltaSigma_tan_err</th><th>DeltaSigma_cross</th><th>DeltaSigma_cross_err</th><th>z</th><th>z_err</th><th>n_src</th></tr></thead>
+    <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>int64</th></tr></thead>
+    <tr><td>0.25795474147162323</td><td>0.5835811869918472</td><td>0.7908471124470289</td><td>167149785219428.53</td><td>7038426360255.251</td><td>-1964428388762.9226</td><td>2303460080506.787</td><td>1.270796842013378</td><td>0.12989356194758148</td><td>33</td></tr>
+    <tr><td>0.7908471124470289</td><td>1.069068536735994</td><td>1.3237394834224345</td><td>109488091152508.45</td><td>5216199722206.029</td><td>-5936641411913.375</td><td>2898065407672.5654</td><td>1.1190998326396238</td><td>0.10315053235441493</td><td>49</td></tr>
+    <tr><td>1.3237394834224345</td><td>1.6135843894856838</td><td>1.8566318543978402</td><td>72722455258381.2</td><td>1786859518604.3264</td><td>-939973178086.0842</td><td>1421316260667.3389</td><td>1.2872982187803523</td><td>0.0728521679195556</td><td>94</td></tr>
+    <tr><td>1.8566318543978402</td><td>2.1327972444036853</td><td>2.389524225373246</td><td>57000045398854.6</td><td>2214810080706.855</td><td>804974512364.1351</td><td>1831075030051.7683</td><td>1.2438175145684773</td><td>0.06370014564266602</td><td>117</td></tr>
+    <tr><td>2.389524225373246</td><td>2.6664193385103925</td><td>2.9224165963486515</td><td>45184234352996.67</td><td>3032576689293.9346</td><td>2138946331698.649</td><td>1518095286641.7122</td><td>1.2317967295153482</td><td>0.06325952684762087</td><td>139</td></tr>
+    <tr><td>2.9224165963486515</td><td>3.185888698689017</td><td>3.455308967324057</td><td>26913475169676.797</td><td>7161122217143.83</td><td>8301869119938.182</td><td>8457569321120.133</td><td>1.340109734244893</td><td>0.05604267909576621</td><td>172</td></tr>
+    <tr><td>3.455308967324057</td><td>3.723945490337099</td><td>3.988201338299463</td><td>29168275142292.094</td><td>1399586750295.3481</td><td>234021042444.83636</td><td>1214568101867.3909</td><td>1.2808582186948057</td><td>0.0550313307562902</td><td>180</td></tr>
+    <tr><td>3.988201338299463</td><td>4.219373034713848</td><td>4.521093709274869</td><td>24058896899644.836</td><td>1654035188012.639</td><td>1462680814794.1304</td><td>1288527263889.0654</td><td>1.2167845968570778</td><td>0.07170190830522678</td><td>124</td></tr>
+    <tr><td>4.521093709274869</td><td>4.761650387301236</td><td>5.053986080250274</td><td>19071474647557.473</td><td>1723232225847.545</td><td>-4077565636661.0605</td><td>1985108772625.622</td><td>1.2806574542831821</td><td>0.08837675633437453</td><td>67</td></tr>
+    <tr><td>5.053986080250274</td><td>5.246535194701684</td><td>5.5868784512256795</td><td>17608236850131.79</td><td>2284971497873.1787</td><td>2660240358659.8623</td><td>3496774618966.496</td><td>1.5146859376041977</td><td>0.15265780855019656</td><td>25</td></tr>
+    </table>
+
+
+
+.. code:: ipython3
+
+    cl.DeltaSigma_profile
+
+
+
+
+.. raw:: html
+
+    <i>GCData length=10</i>
+    <table id="table140213103421856" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>radius_min</th><th>radius</th><th>radius_max</th><th>DeltaSigma_tan</th><th>DeltaSigma_tan_err</th><th>DeltaSigma_cross</th><th>DeltaSigma_cross_err</th><th>z</th><th>z_err</th><th>n_src</th></tr></thead>
+    <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>int64</th></tr></thead>
+    <tr><td>0.25795474147162323</td><td>0.5835811869918472</td><td>0.7908471124470289</td><td>167149785219428.53</td><td>7038426360255.251</td><td>-1964428388762.9226</td><td>2303460080506.787</td><td>1.270796842013378</td><td>0.12989356194758148</td><td>33</td></tr>
+    <tr><td>0.7908471124470289</td><td>1.069068536735994</td><td>1.3237394834224345</td><td>109488091152508.45</td><td>5216199722206.029</td><td>-5936641411913.375</td><td>2898065407672.5654</td><td>1.1190998326396238</td><td>0.10315053235441493</td><td>49</td></tr>
+    <tr><td>1.3237394834224345</td><td>1.6135843894856838</td><td>1.8566318543978402</td><td>72722455258381.2</td><td>1786859518604.3264</td><td>-939973178086.0842</td><td>1421316260667.3389</td><td>1.2872982187803523</td><td>0.0728521679195556</td><td>94</td></tr>
+    <tr><td>1.8566318543978402</td><td>2.1327972444036853</td><td>2.389524225373246</td><td>57000045398854.6</td><td>2214810080706.855</td><td>804974512364.1351</td><td>1831075030051.7683</td><td>1.2438175145684773</td><td>0.06370014564266602</td><td>117</td></tr>
+    <tr><td>2.389524225373246</td><td>2.6664193385103925</td><td>2.9224165963486515</td><td>45184234352996.67</td><td>3032576689293.9346</td><td>2138946331698.649</td><td>1518095286641.7122</td><td>1.2317967295153482</td><td>0.06325952684762087</td><td>139</td></tr>
+    <tr><td>2.9224165963486515</td><td>3.185888698689017</td><td>3.455308967324057</td><td>26913475169676.797</td><td>7161122217143.83</td><td>8301869119938.182</td><td>8457569321120.133</td><td>1.340109734244893</td><td>0.05604267909576621</td><td>172</td></tr>
+    <tr><td>3.455308967324057</td><td>3.723945490337099</td><td>3.988201338299463</td><td>29168275142292.094</td><td>1399586750295.3481</td><td>234021042444.83636</td><td>1214568101867.3909</td><td>1.2808582186948057</td><td>0.0550313307562902</td><td>180</td></tr>
+    <tr><td>3.988201338299463</td><td>4.219373034713848</td><td>4.521093709274869</td><td>24058896899644.836</td><td>1654035188012.639</td><td>1462680814794.1304</td><td>1288527263889.0654</td><td>1.2167845968570778</td><td>0.07170190830522678</td><td>124</td></tr>
+    <tr><td>4.521093709274869</td><td>4.761650387301236</td><td>5.053986080250274</td><td>19071474647557.473</td><td>1723232225847.545</td><td>-4077565636661.0605</td><td>1985108772625.622</td><td>1.2806574542831821</td><td>0.08837675633437453</td><td>67</td></tr>
+    <tr><td>5.053986080250274</td><td>5.246535194701684</td><td>5.5868784512256795</td><td>17608236850131.79</td><td>2284971497873.1787</td><td>2660240358659.8623</td><td>3496774618966.496</td><td>1.5146859376041977</td><td>0.15265780855019656</td><td>25</td></tr>
+    </table>
+
+
+
+.. code:: ipython3
+
+    plt.errorbar(cl.DeltaSigma_profile['radius'], cl.DeltaSigma_profile['DeltaSigma_tan'],
+                 cl.DeltaSigma_profile['DeltaSigma_tan_err'], marker = 'o')
+    plt.title('DeltaSigma profile')
+    plt.xlabel("Radius [Mpc]")
+    plt.ylabel('$\Delta\Sigma [M_\odot\; Mpc^{-2}]$')
+    plt.show()
+
+
+
+.. image:: demo_dataops_functionality_files/demo_dataops_functionality_61_0.png
+
