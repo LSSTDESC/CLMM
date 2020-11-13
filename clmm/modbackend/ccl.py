@@ -14,7 +14,9 @@ from .. clmm_modeling import CLMModeling
 
 __all__ = ['CCLCLMModeling', 'Modeling', 'Cosmology']+func_layer.__all__
 
+
 class CCLCLMModeling(CLMModeling):
+
     def __init__(self, massdef='mean', delta_mdef=200, halo_profile_model='nfw', z_max=5.0):
 
         self.backend = 'ccl'
@@ -151,7 +153,9 @@ class CCLCLMModeling(CLMModeling):
 
 # CLMM Cosmology object - CCL implementation
 
+
 class CCLCosmology(CLMMCosmology):
+
     def __init__(self, **kwargs):
         super(CCLCosmology, self).__init__(**kwargs)
 

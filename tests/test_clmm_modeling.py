@@ -7,6 +7,7 @@ from numpy.testing import assert_raises, assert_allclose, assert_equal
 import clmm.modeling as md
 from clmm.clmm_modeling import CLMModeling
 
+
 def test_unimplemented(modeling_data):
     """ Unit tests abstract class unimplemented methdods """
 

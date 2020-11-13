@@ -152,6 +152,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_
     galaxy_catalog['id'] = np.arange(ngals)
     return galaxy_catalog
 
+
 def _chang_z_distrib(z):
     """
     A private function that returns the Chang et al (2013) unnormalized galaxy redshift distribution function,
@@ -168,6 +169,7 @@ def _chang_z_distrib(z):
     """
     alpha, beta, z0 = 1.24, 1.01, 0.51
     return (z**alpha)*np.exp(-(z/z0)**beta)
+
 
 def _compute_ngals(ngal_density, field_size, cosmo, cluster_z, zsrc, zsrc_min=None, zsrc_max=None):
     """

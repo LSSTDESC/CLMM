@@ -3,6 +3,7 @@ Functions for sampling (output either peak or full distribution)
 
 """
 
+
 def sciopt(model_to_shear_profile, logm_0, args) :
     ''' Uses scipy optimize minimize to output the peak'''
     from scipy import optimize as spo

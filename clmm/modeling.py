@@ -7,6 +7,8 @@ import os
 #  Preload functions:
 #    Some backends depend on more complicated modules and thus on a preload
 #    function.
+
+
 def __numcosmo_preload():
     import gi
     gi.require_version("NumCosmoMath", "1.0")
@@ -90,6 +92,7 @@ try:
     func_layer.gcm = Modeling()
 except NotImplementedError:
     func_layer.gcm = None
+
 
 def backend_is_available(be1):
     if not be1 in __backends:
