@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.constants module &mdash; CLMM 0.3.0 documentation</title>
+  <title>clmm.constants module &mdash; CLMM 0.6.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -25,18 +30,14 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="clmm.galaxycluster module" href="clmm.galaxycluster.html" />
+    <link rel="next" title="clmm.dataops module" href="clmm.dataops.html" />
     <link rel="prev" title="API Documentation" href="../api.html" /> 
 </head>
 
@@ -51,7 +52,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> CLMM
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> CLMM
           
 
           
@@ -61,7 +62,7 @@
             
             
               <div class="version">
-                0.3.0
+                0.6.0
               </div>
             
           
@@ -78,6 +79,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -92,13 +94,13 @@
 </ul>
 <p class="caption"><span class="caption-text">Examples</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit Halo Mass from a Shear Catalog</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit Halo Mass from a Shear Catalog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Usage Demos</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_polaraveraging_functionality.html">Measure a Profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_modeling_functionality.html">Model a Galaxy Cluster</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
 </ul>
@@ -106,6 +108,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Documentation</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">clmm.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.dataops.html">clmm.dataops module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.gcdata.html">clmm.gcdata module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.lsst.html">clmm.lsst package</a><ul>
@@ -114,8 +117,9 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.modeling.html">clmm.modeling module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.plotting.html">clmm.plotting module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="clmm.polaraveraging.html">clmm.polaraveraging module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.utils.html">clmm.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.clmm_modeling.html">clmm.clmm_modeling module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.clmm_cosmo.html">clmm.clmm_cosmo module</a></li>
 </ul>
 </li>
 </ul>
@@ -123,6 +127,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -161,7 +166,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../api.html">API Documentation</a> &raquo;</li>
         
@@ -187,42 +192,52 @@
   <div class="section" id="module-clmm.constants">
 <span id="clmm-constants-module"></span><h1>clmm.constants module<a class="headerlink" href="#module-clmm.constants" title="Permalink to this headline">¶</a></h1>
 <p>Provide a consistent set of constants to use through CLMM</p>
-<dl class="class">
+<dl class="py class">
 <dt id="clmm.constants.Constants">
-<em class="property">class </em><code class="sig-prename descclassname">clmm.constants.</code><code class="sig-name descname">Constants</code><a class="reference internal" href="../_modules/clmm/constants.html#Constants"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.constants.Constants" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">clmm.constants.</code><code class="sig-name descname">Constants</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/constants.html#Constants"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.constants.Constants" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
 <p>A set of constants for consistency throughout the
 code and dependencies.</p>
-<dl class="attribute">
+<dl class="py attribute">
+<dt id="clmm.constants.Constants.CLIGHT">
+<code class="sig-name descname">CLIGHT</code><em class="property"> = 299792458.0</em><a class="headerlink" href="#clmm.constants.Constants.CLIGHT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Speed of light (m/s)</p>
+<p>Source: CODATA 2018</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt id="clmm.constants.Constants.CLIGHT_KMS">
 <code class="sig-name descname">CLIGHT_KMS</code><em class="property"> = 299792.458</em><a class="headerlink" href="#clmm.constants.Constants.CLIGHT_KMS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Speed of light (km/s)</p>
-<p>Source: Astropy - CODATA 2014</p>
-<p>Same source as CCL, revise to CCL when available</p>
+<p>Source: CODATA 2018</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="clmm.constants.Constants.GNEWT">
 <code class="sig-name descname">GNEWT</code><em class="property"> = 6.6743e-11</em><a class="headerlink" href="#clmm.constants.Constants.GNEWT" title="Permalink to this definition">¶</a></dt>
 <dd><p>Newton’s constant (m^3/kg/s^2)</p>
-<p>Source: Astropy - CODATA 2014</p>
-<p>CCL Does not provide source, revise to CCL when available</p>
+<p>Source: CODATA 2018</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
+<dt id="clmm.constants.Constants.GNEWT_SOLAR_MASS">
+<code class="sig-name descname">GNEWT_SOLAR_MASS</code><em class="property"> = 1.3271244e+20</em><a class="headerlink" href="#clmm.constants.Constants.GNEWT_SOLAR_MASS" title="Permalink to this definition">¶</a></dt>
+<dd><p>G x Solar mass (m^3/s^2)</p>
+<p>Source: IAU 2015</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt id="clmm.constants.Constants.PC_TO_METER">
-<code class="sig-name descname">PC_TO_METER</code><em class="property"> = 3.08567758149e+16</em><a class="headerlink" href="#clmm.constants.Constants.PC_TO_METER" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">PC_TO_METER</code><em class="property"> = 3.085677581491367e+16</em><a class="headerlink" href="#clmm.constants.Constants.PC_TO_METER" title="Permalink to this definition">¶</a></dt>
 <dd><p>parsec to meter (m)</p>
-<p>Source: PDG 2013</p>
-<p>Same source as CCL, revise to CCL when available</p>
+<p>Source: IAU 2015</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="clmm.constants.Constants.SOLAR_MASS">
-<code class="sig-name descname">SOLAR_MASS</code><em class="property"> = 1.98892e+30</em><a class="headerlink" href="#clmm.constants.Constants.SOLAR_MASS" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">SOLAR_MASS</code><em class="property"> = 1.988409870698051e+30</em><a class="headerlink" href="#clmm.constants.Constants.SOLAR_MASS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Solar mass (kg)</p>
-<p>Source: GSL</p>
-<p>Same source as CCL, revise to CCL when available</p>
+<p>Source: IAU 2015/CODATA 2018</p>
 </dd></dl>
 
 </dd></dl>
@@ -240,11 +255,19 @@ code and dependencies.</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2018-2019, LSST DESC CLMM Contributors
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -255,7 +278,6 @@ code and dependencies.</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

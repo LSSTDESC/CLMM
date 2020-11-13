@@ -1,5 +1,5 @@
 API Documentation
-=================
+-----------------
 
 Information on specific functions, classes, and methods.
 
@@ -7,10 +7,12 @@ Information on specific functions, classes, and methods.
    :glob:
 
    api/clmm.constants.rst
+   api/clmm.dataops.rst
    api/clmm.galaxycluster.rst
    api/clmm.gcdata.rst
    api/clmm.lsst.rst
    api/clmm.modeling.rst
    api/clmm.plotting.rst
-   api/clmm.polaraveraging.rst
    api/clmm.utils.rst
+   api/clmm.clmm_modeling.rst
+   api/clmm.clmm_cosmo.rst

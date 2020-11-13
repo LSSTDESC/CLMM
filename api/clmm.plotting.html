@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.plotting module &mdash; CLMM 0.3.0 documentation</title>
+  <title>clmm.plotting module &mdash; CLMM 0.6.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -25,18 +30,14 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="clmm.polaraveraging module" href="clmm.polaraveraging.html" />
+    <link rel="next" title="clmm.utils module" href="clmm.utils.html" />
     <link rel="prev" title="clmm.modeling module" href="clmm.modeling.html" /> 
 </head>
 
@@ -51,7 +52,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> CLMM
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> CLMM
           
 
           
@@ -61,7 +62,7 @@
             
             
               <div class="version">
-                0.3.0
+                0.6.0
               </div>
             
           
@@ -78,6 +79,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -92,13 +94,13 @@
 </ul>
 <p class="caption"><span class="caption-text">Examples</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit Halo Mass from a Shear Catalog</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit Halo Mass from a Shear Catalog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Usage Demos</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_polaraveraging_functionality.html">Measure a Profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_modeling_functionality.html">Model a Galaxy Cluster</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
 </ul>
@@ -106,6 +108,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="clmm.constants.html">clmm.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.dataops.html">clmm.dataops module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.gcdata.html">clmm.gcdata module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.lsst.html">clmm.lsst package</a><ul>
@@ -114,8 +117,9 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.modeling.html">clmm.modeling module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">clmm.plotting module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="clmm.polaraveraging.html">clmm.polaraveraging module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.utils.html">clmm.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.clmm_modeling.html">clmm.clmm_modeling module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.clmm_cosmo.html">clmm.clmm_cosmo module</a></li>
 </ul>
 </li>
 </ul>
@@ -123,6 +127,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -161,7 +166,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../api.html">API Documentation</a> &raquo;</li>
         
@@ -187,9 +192,9 @@
   <div class="section" id="module-clmm.plotting">
 <span id="clmm-plotting-module"></span><h1>clmm.plotting module<a class="headerlink" href="#module-clmm.plotting" title="Permalink to this headline">¶</a></h1>
 <p>A collection of scripts that can be used to plot the various quantities that CLMM models.</p>
-<dl class="function">
+<dl class="py function">
 <dt id="clmm.plotting.plot_profiles">
-<code class="sig-prename descclassname">clmm.plotting.</code><code class="sig-name descname">plot_profiles</code><span class="sig-paren">(</span><em class="sig-param">cluster=None</em>, <em class="sig-param">rbins=None</em>, <em class="sig-param">tangential_component=None</em>, <em class="sig-param">tangential_component_error=None</em>, <em class="sig-param">cross_component=None</em>, <em class="sig-param">cross_component_error=None</em>, <em class="sig-param">r_units=None</em>, <em class="sig-param">table_name='profile'</em>, <em class="sig-param">xscale='linear'</em>, <em class="sig-param">yscale='linear'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/plotting.html#plot_profiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.plotting.plot_profiles" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">clmm.plotting.</code><code class="sig-name descname">plot_profiles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cluster</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">rbins</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tangential_component</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tangential_component_error</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cross_component</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cross_component_error</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">r_units</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">table_name</span><span class="o">=</span><span class="default_value">'profile'</span></em>, <em class="sig-param"><span class="n">xscale</span><span class="o">=</span><span class="default_value">'linear'</span></em>, <em class="sig-param"><span class="n">yscale</span><span class="o">=</span><span class="default_value">'linear'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/plotting.html#plot_profiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.plotting.plot_profiles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot shear profiles</p>
 <p>This function can be called by either passing in an instance of <cite>GalaxyCluster</cite> or as an
 attribute of an instance of a <cite>GalaxyCluster</cite> object assuming that that instance has had
@@ -212,10 +217,11 @@ called by passing in <cite>rbins</cite> along with the respective shears.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The matplotlib figure object that has been plotted to.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>fig</p>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>fig</em> – The matplotlib figure object that has been plotted to.</p></li>
+<li><p><em>axes</em> – The matplotlib axes object that has been plotted to.</p></li>
+</ul>
+</p>
 </dd>
 </dl>
 </dd></dl>
@@ -233,11 +239,19 @@ called by passing in <cite>rbins</cite> along with the respective shears.</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2018-2019, LSST DESC CLMM Contributors
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -248,7 +262,6 @@ called by passing in <cite>rbins</cite> along with the respective shears.</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.utils module &mdash; CLMM 0.3.0 documentation</title>
+  <title>clmm.utils module &mdash; CLMM 0.6.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -25,18 +30,15 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="clmm.polaraveraging module" href="clmm.polaraveraging.html" /> 
+    <link rel="next" title="clmm.clmm_modeling module" href="clmm.clmm_modeling.html" />
+    <link rel="prev" title="clmm.plotting module" href="clmm.plotting.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -50,7 +52,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> CLMM
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> CLMM
           
 
           
@@ -60,7 +62,7 @@
             
             
               <div class="version">
-                0.3.0
+                0.6.0
               </div>
             
           
@@ -77,6 +79,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -91,13 +94,13 @@
 </ul>
 <p class="caption"><span class="caption-text">Examples</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit Halo Mass from a Shear Catalog</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit Halo Mass from a Shear Catalog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Usage Demos</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_polaraveraging_functionality.html">Measure a Profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_modeling_functionality.html">Model a Galaxy Cluster</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
 </ul>
@@ -105,6 +108,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="clmm.constants.html">clmm.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.dataops.html">clmm.dataops module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.gcdata.html">clmm.gcdata module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.lsst.html">clmm.lsst package</a><ul>
@@ -113,8 +117,9 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.modeling.html">clmm.modeling module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.plotting.html">clmm.plotting module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="clmm.polaraveraging.html">clmm.polaraveraging module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">clmm.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.clmm_modeling.html">clmm.clmm_modeling module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.clmm_cosmo.html">clmm.clmm_cosmo module</a></li>
 </ul>
 </li>
 </ul>
@@ -122,6 +127,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -160,7 +166,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../api.html">API Documentation</a> &raquo;</li>
         
@@ -186,9 +192,30 @@
   <div class="section" id="module-clmm.utils">
 <span id="clmm-utils-module"></span><h1>clmm.utils module<a class="headerlink" href="#module-clmm.utils" title="Permalink to this headline">¶</a></h1>
 <p>General utility functions that are used in multiple modules</p>
-<dl class="function">
+<dl class="py function">
+<dt id="clmm.utils.arguments_consistency">
+<code class="sig-prename descclassname">clmm.utils.</code><code class="sig-name descname">arguments_consistency</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">arguments</span></em>, <em class="sig-param"><span class="n">names</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#arguments_consistency"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.utils.arguments_consistency" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sure all arguments have the same length (or are scalars)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>arguments</strong> (<em>list</em><em>, </em><em>arrays</em><em>, </em><em>tuple</em>) – Group of arguments to be checked</p></li>
+<li><p><strong>names</strong> (<em>list</em><em>, </em><em>tuple</em>) – Names for each array, optional</p></li>
+<li><p><strong>prefix</strong> (<em>str</em>) – Customized prefix for error message</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Group of arguments, converted to numpy arrays if they have length</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list, arrays, tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="clmm.utils.build_ellipticities">
-<code class="sig-prename descclassname">clmm.utils.</code><code class="sig-name descname">build_ellipticities</code><span class="sig-paren">(</span><em class="sig-param">q11</em>, <em class="sig-param">q22</em>, <em class="sig-param">q12</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#build_ellipticities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.utils.build_ellipticities" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">clmm.utils.</code><code class="sig-name descname">build_ellipticities</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">q11</span></em>, <em class="sig-param"><span class="n">q22</span></em>, <em class="sig-param"><span class="n">q12</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#build_ellipticities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.utils.build_ellipticities" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build ellipticties from second moments. See, e.g., Schneider et al. (2006)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -208,9 +235,9 @@
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="clmm.utils.compute_lensed_ellipticity">
-<code class="sig-prename descclassname">clmm.utils.</code><code class="sig-name descname">compute_lensed_ellipticity</code><span class="sig-paren">(</span><em class="sig-param">ellipticity1_true</em>, <em class="sig-param">ellipticity2_true</em>, <em class="sig-param">shear1</em>, <em class="sig-param">shear2</em>, <em class="sig-param">convergence</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#compute_lensed_ellipticity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.utils.compute_lensed_ellipticity" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">clmm.utils.</code><code class="sig-name descname">compute_lensed_ellipticity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ellipticity1_true</span></em>, <em class="sig-param"><span class="n">ellipticity2_true</span></em>, <em class="sig-param"><span class="n">shear1</span></em>, <em class="sig-param"><span class="n">shear2</span></em>, <em class="sig-param"><span class="n">convergence</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#compute_lensed_ellipticity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.utils.compute_lensed_ellipticity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute lensed ellipticities from the intrinsic ellipticities, shear and convergence.
 Following Schneider et al. (2006)</p>
 <div class="math notranslate nohighlight">
@@ -223,8 +250,8 @@ is <span class="math notranslate nohighlight">\(\epsilon^{\rm true}=\epsilon^{\r
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ellipticity1_true</strong> (<em>float</em><em> or </em><em>array</em>) – Intrinsic ellipticity of the sources along the principal axis</p></li>
 <li><p><strong>ellipticity2_true</strong> (<em>float</em><em> or </em><em>array</em>) – Intrinsic ellipticity of the sources along the second axis</p></li>
-<li><p><strong>shear1</strong> (<em>float</em><em> or </em><em>array</em>) – Shear component along the principal axis at the source location</p></li>
-<li><p><strong>shear2</strong> (<em>float</em><em> or </em><em>array</em>) – Shear component along the second axis at the source location</p></li>
+<li><p><strong>shear1</strong> (<em>float</em><em> or </em><em>array</em>) – Shear component (not reduced shear) along the principal axis at the source location</p></li>
+<li><p><strong>shear2</strong> (<em>float</em><em> or </em><em>array</em>) – Shear component (not reduced shear) along the 45-degree axis at the source location</p></li>
 <li><p><strong>convergence</strong> (<em>float</em><em> or </em><em>array</em>) – Convergence at the source location</p></li>
 </ul>
 </dd>
@@ -237,10 +264,11 @@ is <span class="math notranslate nohighlight">\(\epsilon^{\rm true}=\epsilon^{\r
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="clmm.utils.compute_radial_averages">
-<code class="sig-prename descclassname">clmm.utils.</code><code class="sig-name descname">compute_radial_averages</code><span class="sig-paren">(</span><em class="sig-param">xvals</em>, <em class="sig-param">yvals</em>, <em class="sig-param">xbins</em>, <em class="sig-param">error_model='std/sqrt_n'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#compute_radial_averages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.utils.compute_radial_averages" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given a list of xvalss, yvals and bins, sort into bins</p>
+<code class="sig-prename descclassname">clmm.utils.</code><code class="sig-name descname">compute_radial_averages</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xvals</span></em>, <em class="sig-param"><span class="n">yvals</span></em>, <em class="sig-param"><span class="n">xbins</span></em>, <em class="sig-param"><span class="n">error_model</span><span class="o">=</span><span class="default_value">'std/sqrt_n'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#compute_radial_averages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.utils.compute_radial_averages" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a list of xvals, yvals and bins, sort into bins. If xvals or yvals
+contain non-finite values, these are filtered.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -257,24 +285,27 @@ std - Standard deviation</p></li>
 <li><p><strong>meanx</strong> (<em>array_like</em>) – Mean x value in each bin</p></li>
 <li><p><strong>meany</strong> (<em>array_like</em>) – Mean y value in each bin</p></li>
 <li><p><strong>yerr</strong> (<em>array_like</em>) – Error on the mean y value in each bin. Specified by error_model</p></li>
-<li><p><strong>n</strong> (<em>array_like</em>) – Number of objects in each bin</p></li>
+<li><p><strong>num_objects</strong> (<em>array_like</em>) – Number of objects in each bin</p></li>
+<li><p><strong>binnumber</strong> (<em>1-D ndarray of ints</em>) – Indices of the bins (corresponding to <cite>xbins</cite>) in which each value
+of <cite>xvals</cite> belongs.  Same length as <cite>yvals</cite>.  A binnumber of <cite>i</cite> means the
+corresponding value is between (xbins[i-1], xbins[i]).</p></li>
 </ul>
 </p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="clmm.utils.convert_shapes_to_epsilon">
-<code class="sig-prename descclassname">clmm.utils.</code><code class="sig-name descname">convert_shapes_to_epsilon</code><span class="sig-paren">(</span><em class="sig-param">shape_1</em>, <em class="sig-param">shape_2</em>, <em class="sig-param">shape_definition='epsilon'</em>, <em class="sig-param">kappa=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#convert_shapes_to_epsilon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.utils.convert_shapes_to_epsilon" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">clmm.utils.</code><code class="sig-name descname">convert_shapes_to_epsilon</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">shape_1</span></em>, <em class="sig-param"><span class="n">shape_2</span></em>, <em class="sig-param"><span class="n">shape_definition</span><span class="o">=</span><span class="default_value">'epsilon'</span></em>, <em class="sig-param"><span class="n">kappa</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#convert_shapes_to_epsilon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.utils.convert_shapes_to_epsilon" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given shapes and their definition, convert them to epsilon ellipticities or reduced shears, which can be used in GalaxyCluster.galcat
 Definitions used here based on Bartelmann &amp; Schneider 2001 (<a class="reference external" href="https://arxiv.org/pdf/astro-ph/9912508.pdf">https://arxiv.org/pdf/astro-ph/9912508.pdf</a>):
 axis ratio (q) and position angle (phi) (Not implemented)
 epsilon = (1-q/(1+q) exp(2i phi)
 chi = (1-q^2/(1+q^2) exp(2i phi)
-shear (gamma)
-reduced_shear (g) = gamma/(1-kappa)
-convergence (kappa)</p>
+shear(gamma)
+reduced_shear(g) = gamma/(1-kappa)
+convergence(kappa)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -294,9 +325,9 @@ convergence (kappa)</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="clmm.utils.convert_units">
-<code class="sig-prename descclassname">clmm.utils.</code><code class="sig-name descname">convert_units</code><span class="sig-paren">(</span><em class="sig-param">dist1</em>, <em class="sig-param">unit1</em>, <em class="sig-param">unit2</em>, <em class="sig-param">redshift=None</em>, <em class="sig-param">cosmo=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#convert_units"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.utils.convert_units" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">clmm.utils.</code><code class="sig-name descname">convert_units</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dist1</span></em>, <em class="sig-param"><span class="n">unit1</span></em>, <em class="sig-param"><span class="n">unit2</span></em>, <em class="sig-param"><span class="n">redshift</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cosmo</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#convert_units"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.utils.convert_units" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convenience wrapper to convert between a combination of angular and physical units.</p>
 <p>Supported units: radians, degrees, arcmin, arcsec, Mpc, kpc, pc</p>
 <p>To convert between angular and physical units you must provide both
@@ -321,9 +352,9 @@ convert between physical and angular units</p></li>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="clmm.utils.make_bins">
-<code class="sig-prename descclassname">clmm.utils.</code><code class="sig-name descname">make_bins</code><span class="sig-paren">(</span><em class="sig-param">rmin</em>, <em class="sig-param">rmax</em>, <em class="sig-param">nbins=10</em>, <em class="sig-param">method='evenwidth'</em>, <em class="sig-param">source_seps=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#make_bins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.utils.make_bins" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">clmm.utils.</code><code class="sig-name descname">make_bins</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rmin</span></em>, <em class="sig-param"><span class="n">rmax</span></em>, <em class="sig-param"><span class="n">nbins</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'evenwidth'</span></em>, <em class="sig-param"><span class="n">source_seps</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#make_bins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.utils.make_bins" title="Permalink to this definition">¶</a></dt>
 <dd><p>Define bin edges</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -360,11 +391,19 @@ convert between physical and angular units</p></li>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2018-2019, LSST DESC CLMM Contributors
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -375,7 +414,6 @@ convert between physical and angular units</p></li>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

@@ -1,0 +1,470 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>clmm.clmm_cosmo &mdash; CLMM 0.6.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> CLMM
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.6.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../source/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/citing.html">Citing CLMM</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Usage Demos</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_modeling_functionality.html">Model a Galaxy Cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.constants.html">clmm.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.dataops.html">clmm.dataops module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.gcdata.html">clmm.gcdata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.lsst.html">clmm.lsst package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/clmm.lsst.load_clusters_with_gcr.html">clmm.lsst.load_clusters_with_gcr module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.modeling.html">clmm.modeling module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.plotting.html">clmm.plotting module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.utils.html">clmm.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.clmm_modeling.html">clmm.clmm_modeling module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.clmm_cosmo.html">clmm.clmm_cosmo module</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">CLMM</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>clmm.clmm_cosmo</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for clmm.clmm_cosmo</h1><div class="highlight"><pre>
+<span></span><span class="c1"># CLMM Cosmology object abstract superclass</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<div class="viewcode-block" id="CLMMCosmology"><a class="viewcode-back" href="../../api/clmm.clmm_cosmo.html#clmm.clmm_cosmo.CLMMCosmology">[docs]</a><span class="k">class</span> <span class="nc">CLMMCosmology</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Cosmology object superclass for supporting multiple back-end cosmology objects</span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    get_par: dict</span>
+<span class="sd">        Dictionary with functions to get each specific parameter</span>
+<span class="sd">    set_par: dict</span>
+<span class="sd">        Dictionary with functions to update each specific parameter</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;not-set&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">be_cosmo</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_be_cosmo</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_param</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;input must be str, not </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_param</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;key input must be str, not </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_init_from_cosmo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        To be filled in child classes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">_init_from_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        To be filled in child classes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">_set_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        To be filled in child classes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">_get_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        To be filled in child classes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+<div class="viewcode-block" id="CLMMCosmology.get_desc"><a class="viewcode-back" href="../../api/clmm.clmm_cosmo.html#clmm.clmm_cosmo.CLMMCosmology.get_desc">[docs]</a>    <span class="k">def</span> <span class="nf">get_desc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the Cosmology description.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(H0=</span><span class="si">{</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;H0&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">, Omega_dm0=</span><span class="si">{</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;Omega_dm0&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">, Omega_b0=</span><span class="si">{</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;Omega_b0&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">, Omega_k0=</span><span class="si">{</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;Omega_k0&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span></div>
+
+<div class="viewcode-block" id="CLMMCosmology.set_be_cosmo"><a class="viewcode-back" href="../../api/clmm.clmm_cosmo.html#clmm.clmm_cosmo.CLMMCosmology.set_be_cosmo">[docs]</a>    <span class="k">def</span> <span class="nf">set_be_cosmo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">be_cosmo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">H0</span><span class="o">=</span><span class="mf">70.0</span><span class="p">,</span> <span class="n">Omega_b0</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">Omega_dm0</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">Omega_k0</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">be_cosmo</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_from_cosmo</span><span class="p">(</span><span class="n">be_cosmo</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_from_params</span><span class="p">(</span><span class="n">H0</span><span class="o">=</span><span class="n">H0</span><span class="p">,</span> <span class="n">Omega_b0</span><span class="o">=</span><span class="n">Omega_b0</span><span class="p">,</span> <span class="n">Omega_dm0</span><span class="o">=</span><span class="n">Omega_dm0</span><span class="p">,</span> <span class="n">Omega_k0</span><span class="o">=</span><span class="n">Omega_k0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CLMMCosmology.get_Omega_m"><a class="viewcode-back" href="../../api/clmm.clmm_cosmo.html#clmm.clmm_cosmo.CLMMCosmology.get_Omega_m">[docs]</a>    <span class="k">def</span> <span class="nf">get_Omega_m</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Gets the value of the dimensionless matter density</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            \Omega_m(z) = \frac{\rho_m(z)}{\rho_\mathrm{crit}(z)}.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        z : float</span>
+<span class="sd">            Redshift.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Omega_m : float</span>
+<span class="sd">            dimensionless matter density, :math:`\Omega_m(z)`.</span>
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Need to decide if non-relativist neutrinos will contribute here.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="CLMMCosmology.eval_da_z1z2"><a class="viewcode-back" href="../../api/clmm.clmm_cosmo.html#clmm.clmm_cosmo.CLMMCosmology.eval_da_z1z2">[docs]</a>    <span class="k">def</span> <span class="nf">eval_da_z1z2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z1</span><span class="p">,</span> <span class="n">z2</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes the angular diameter distance between z1 and z2.</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            d_a(z1, z2) = \frac{c}{H_0}\frac{1}{1+z2}\int_{z1}^{z2}\frac{dz&#39;}{E(z&#39;)}</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        z1 : float</span>
+<span class="sd">            Redshift.</span>
+<span class="sd">        z2 : float</span>
+<span class="sd">            Redshift.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Angular diameter distance in units :math:`M\!pc`</span>
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Describe the vectorization.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="CLMMCosmology.eval_da"><a class="viewcode-back" href="../../api/clmm.clmm_cosmo.html#clmm.clmm_cosmo.CLMMCosmology.eval_da">[docs]</a>    <span class="k">def</span> <span class="nf">eval_da</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes the angular diameter distance between 0.0 and z.</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            d_a(z) = \frac{c}{H_0}\frac{1}{1+z}\int_{0}^{z}\frac{dz&#39;}{E(z&#39;)}</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        z : float</span>
+<span class="sd">            Redshift.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Angular diameter distance in units :math:`M\!pc`</span>
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Describe the vectorization.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_da_z1z2</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CLMMCosmology.eval_da_a1a2"><a class="viewcode-back" href="../../api/clmm.clmm_cosmo.html#clmm.clmm_cosmo.CLMMCosmology.eval_da_a1a2">[docs]</a>    <span class="k">def</span> <span class="nf">eval_da_a1a2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="o">=</span><span class="mf">1.</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;This is a function to calculate the angular diameter distance</span>
+<span class="sd">        between two scale factors.</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            d_a(a1, a2) = \frac{c}{H_0}a2\int_{a2}^{a1}\frac{da&#39;}{a&#39;^2E(a&#39;)}</span>
+
+<span class="sd">        If only a1 is specified, this function returns the angular diameter</span>
+<span class="sd">        distance from a=1 to a1. If both a1 and a2 are specified, this function</span>
+<span class="sd">        returns the angular diameter distance between a1 and a2.</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            d_a(a) = \frac{c}{H_0}a\int_{a}^{1}\frac{da&#39;}{a&#39;^2E(a&#39;)}</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        a1 : float</span>
+<span class="sd">            Scale factor.</span>
+<span class="sd">        a2 : float, optional</span>
+<span class="sd">            Scale factor.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Angular diameter distance in units :math:`M\!pc`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">z1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_z_from_a</span><span class="p">(</span><span class="n">a2</span><span class="p">)</span>
+        <span class="n">z2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_z_from_a</span><span class="p">(</span><span class="n">a1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_da_z1z2</span><span class="p">(</span><span class="n">z1</span><span class="p">,</span> <span class="n">z2</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_a_from_z</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Convert redshift to scale factor</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        z : array_like</span>
+<span class="sd">            Redshift</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        scale_factor : array_like</span>
+<span class="sd">            Scale factor</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">z</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot convert negative redshift to scale factor&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">z</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_z_from_a</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Convert scale factor to redshift</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        a : array_like</span>
+<span class="sd">            Scale factor</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        z : array_like</span>
+<span class="sd">            Redshift</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">a</span> <span class="o">&gt;</span> <span class="mf">1.0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot convert invalid scale factor a &gt; 1 to redshift&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="n">a</span><span class="p">)</span><span class="o">-</span><span class="mf">1.0</span>
+
+<div class="viewcode-block" id="CLMMCosmology.rad2mpc"><a class="viewcode-back" href="../../api/clmm.clmm_cosmo.html#clmm.clmm_cosmo.CLMMCosmology.rad2mpc">[docs]</a>    <span class="k">def</span> <span class="nf">rad2mpc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dist1</span><span class="p">,</span> <span class="n">redshift</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Convert between radians and Mpc using the small angle approximation</span>
+<span class="sd">        and :math:`d = D_A \theta`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dist1 : array_like</span>
+<span class="sd">            Input distances in radians</span>
+<span class="sd">        redshift : float</span>
+<span class="sd">            Redshift used to convert between angular and physical units</span>
+<span class="sd">        cosmo : astropy.cosmology</span>
+<span class="sd">            Astropy cosmology object to compute angular diameter distance to</span>
+<span class="sd">            convert between physical and angular units</span>
+<span class="sd">        do_inverse : bool</span>
+<span class="sd">            If true, converts Mpc to radians</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dist2 : array_like</span>
+<span class="sd">            Distances in Mpc</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">dist1</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_da</span><span class="p">(</span><span class="n">redshift</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CLMMCosmology.mpc2rad"><a class="viewcode-back" href="../../api/clmm.clmm_cosmo.html#clmm.clmm_cosmo.CLMMCosmology.mpc2rad">[docs]</a>    <span class="k">def</span> <span class="nf">mpc2rad</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dist1</span><span class="p">,</span> <span class="n">redshift</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Convert between radians and Mpc using the small angle approximation</span>
+<span class="sd">        and :math:`d = D_A \theta`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dist1 : array_like</span>
+<span class="sd">            Input distances in Mpc</span>
+<span class="sd">        redshift : float</span>
+<span class="sd">            Redshift used to convert between angular and physical units</span>
+<span class="sd">        cosmo : astropy.cosmology</span>
+<span class="sd">            Astropy cosmology object to compute angular diameter distance to</span>
+<span class="sd">            convert between physical and angular units</span>
+<span class="sd">        do_inverse : bool</span>
+<span class="sd">            If true, converts Mpc to radians</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dist2 : array_like</span>
+<span class="sd">            Distances in radians</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">dist1</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_da</span><span class="p">(</span><span class="n">redshift</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2018-2019, LSST DESC CLMM Contributors
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

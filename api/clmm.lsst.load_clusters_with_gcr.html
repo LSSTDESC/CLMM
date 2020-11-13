@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.lsst.load_clusters_with_gcr module &mdash; CLMM 0.3.0 documentation</title>
+  <title>clmm.lsst.load_clusters_with_gcr module &mdash; CLMM 0.6.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -25,15 +30,11 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="clmm.modeling module" href="clmm.modeling.html" />
@@ -51,7 +52,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> CLMM
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> CLMM
           
 
           
@@ -61,7 +62,7 @@
             
             
               <div class="version">
-                0.3.0
+                0.6.0
               </div>
             
           
@@ -78,6 +79,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -92,13 +94,13 @@
 </ul>
 <p class="caption"><span class="caption-text">Examples</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit Halo Mass from a Shear Catalog</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit Halo Mass from a Shear Catalog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Usage Demos</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_polaraveraging_functionality.html">Measure a Profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_modeling_functionality.html">Model a Galaxy Cluster</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
 </ul>
@@ -106,6 +108,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="clmm.constants.html">clmm.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.dataops.html">clmm.dataops module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.gcdata.html">clmm.gcdata module</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="clmm.lsst.html">clmm.lsst package</a><ul class="current">
@@ -114,8 +117,9 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.modeling.html">clmm.modeling module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.plotting.html">clmm.plotting module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="clmm.polaraveraging.html">clmm.polaraveraging module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.utils.html">clmm.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.clmm_modeling.html">clmm.clmm_modeling module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.clmm_cosmo.html">clmm.clmm_cosmo module</a></li>
 </ul>
 </li>
 </ul>
@@ -123,6 +127,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -161,7 +166,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../api.html">API Documentation</a> &raquo;</li>
         
@@ -190,15 +195,15 @@
 <span id="clmm-lsst-load-clusters-with-gcr-module"></span><h1>clmm.lsst.load_clusters_with_gcr module<a class="headerlink" href="#module-clmm.lsst.load_clusters_with_gcr" title="Permalink to this headline">¶</a></h1>
 <p>&#64;file lsst.io.py
 Contains functions to interact with the General Catalog Reader</p>
-<dl class="function">
+<dl class="py function">
 <dt id="clmm.lsst.load_clusters_with_gcr.load_GCR_catalog">
-<code class="sig-prename descclassname">clmm.lsst.load_clusters_with_gcr.</code><code class="sig-name descname">load_GCR_catalog</code><span class="sig-paren">(</span><em class="sig-param">catalog_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/lsst/load_clusters_with_gcr.html#load_GCR_catalog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.lsst.load_clusters_with_gcr.load_GCR_catalog" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">clmm.lsst.load_clusters_with_gcr.</code><code class="sig-name descname">load_GCR_catalog</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">catalog_name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/lsst/load_clusters_with_gcr.html#load_GCR_catalog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.lsst.load_clusters_with_gcr.load_GCR_catalog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads a catalog from GCRCatalogs</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="clmm.lsst.load_clusters_with_gcr.load_from_dc2">
-<code class="sig-prename descclassname">clmm.lsst.load_clusters_with_gcr.</code><code class="sig-name descname">load_from_dc2</code><span class="sig-paren">(</span><em class="sig-param">nclusters</em>, <em class="sig-param">catalog_name</em>, <em class="sig-param">save_dir</em>, <em class="sig-param">ra_range=(-0.3</em>, <em class="sig-param">0.3)</em>, <em class="sig-param">dec_range=(-0.3</em>, <em class="sig-param">0.3)</em>, <em class="sig-param">z_range=(0.1</em>, <em class="sig-param">1.5)</em>, <em class="sig-param">verbose=False</em>, <em class="sig-param">_reader='GCR'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/lsst/load_clusters_with_gcr.html#load_from_dc2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.lsst.load_clusters_with_gcr.load_from_dc2" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">clmm.lsst.load_clusters_with_gcr.</code><code class="sig-name descname">load_from_dc2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nclusters</span></em>, <em class="sig-param"><span class="n">catalog_name</span></em>, <em class="sig-param"><span class="n">save_dir</span></em>, <em class="sig-param"><span class="n">ra_range</span><span class="o">=</span><span class="default_value">- 0.3, 0.3</span></em>, <em class="sig-param"><span class="n">dec_range</span><span class="o">=</span><span class="default_value">- 0.3, 0.3</span></em>, <em class="sig-param"><span class="n">z_range</span><span class="o">=</span><span class="default_value">0.1, 1.5</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">_reader</span><span class="o">=</span><span class="default_value">'GCR'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/lsst/load_clusters_with_gcr.html#load_from_dc2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.lsst.load_clusters_with_gcr.load_from_dc2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load random clusters from DC2 using GCRCatalogs</p>
 <p>This function saves a set of random clusters loaded from a DC2 catalog. The galaxies
 selected for each cluster are cut within a rectangular projected region around the true
@@ -233,11 +238,19 @@ and z_range arguments.</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2018-2019, LSST DESC CLMM Contributors
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -248,7 +261,6 @@ and z_range arguments.</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {
