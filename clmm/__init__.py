@@ -8,4 +8,4 @@ from .modeling import get_reduced_shear_from_convergence, get_3d_density, predic
 from . import lsst
 
 
-__version__ = '0.5.0'
+__version__ = '0.6.0'

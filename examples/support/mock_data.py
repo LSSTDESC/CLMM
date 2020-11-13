@@ -7,8 +7,7 @@ from astropy import units
 from clmm.modeling import predict_tangential_shear, predict_convergence
 from clmm.utils import convert_units, compute_lensed_ellipticity
 
-
-def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, Delta_SO, zsrc, halo_profile_model='nfw', zsrc_min=None,
+def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_SO=200, massdef='mean',halo_profile_model='nfw', zsrc_min=None,
                             zsrc_max=7., field_size=8., shapenoise=None, photoz_sigma_unscaled=None, nretry=5, ngals=None, ngal_density=None):
     """Generates a mock dataset of sheared background galaxies.
 
@@ -66,17 +65,23 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, Delta_SO, zs
     cosmo : dict
         Dictionary of cosmological parameters. Must contain at least, Omega_c, Omega_b,
         and H0
-    Delta_SO : float
-        Overdensity density contrast used to compute the cluster mass and concentration. The
-        spherical overdensity mass is computed as the mass enclosed within the radius
-        :math:`R_{\Delta{\rm SO}}` where the mean density is :math:`\Delta_{\rm SO}` times
-        the mean density of the Universe at the cluster redshift
-        :math:`M_{\Delta{\rm SO}}=4/3\pi\Delta_{\rm SO}\rho_{m}(z_{\rm lens})R_{\Delta{\rm SO}}^3`
     zsrc : float or str
         Choose the source galaxy distribution to be fixed or drawn from a predefined distribution.
         float : All sources galaxies at this fixed redshift
         str : Draws individual source gal redshifts from predefined distribution. Options
               are: chang13
+    Delta_SO : float, optional
+        Overdensity density contrast used to compute the cluster mass and concentration. The
+        spherical overdensity mass is computed as the mass enclosed within the radius
+        :math:`R_{\Delta{\rm SO}}` where the mean matter density is :math:`\Delta_{\rm SO}` times
+        the mean (or critical, depending on the massdef keyword) density of the Universe at the cluster redshift
+        :math:`M_{\Delta{\rm SO}}=4/3\pi\Delta_{\rm SO}\rho_{m}(z_{\rm lens})R_{\Delta{\rm SO}}^3`
+    massdef : string, optional
+        Definition the mass overdensity with respect to the 'mean' or 'critical' density of the universe. Default is 'mean' as it works
+        for all modeling backends. The NumCosmo and CCL backends also allow the use of 'critical'.
+    halo_profile_model : string, optional
+        Halo density profile. Default is 'nfw', which works for all modeling backends. The NumCosmo backend allow for more
+        options, e.g. 'einasto' or 'burkert' profiles.
     zsrc_min : float, optional
         The minimum true redshift of the sources. If photoz errors are included, the observed redshift
         may be smaller than zsrc_min.
@@ -113,7 +118,8 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, Delta_SO, zs
     if zsrc_min is None: zsrc_min = cluster_z+0.1
 
     params = {'cluster_m' : cluster_m, 'cluster_z' : cluster_z, 'cluster_c' : cluster_c,
-              'cosmo' : cosmo, 'Delta_SO' : Delta_SO, 'zsrc' : zsrc, 'halo_profile_model' : halo_profile_model,
+              'cosmo' : cosmo, 'Delta_SO' : Delta_SO, 'zsrc' : zsrc, 'massdef' : massdef, 
+              'halo_profile_model' : halo_profile_model,
               'zsrc_min' : zsrc_min,
               'zsrc_max' : zsrc_max,'shapenoise' : shapenoise, 'photoz_sigma_unscaled' : photoz_sigma_unscaled,
               'field_size' : field_size}
@@ -186,7 +192,7 @@ def _compute_ngals(ngal_density, field_size, cosmo, cluster_z, zsrc, zsrc_min=No
         return int(ngals*prob)
 
 
-def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delta_SO, zsrc, halo_profile_model=None,
+def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, zsrc, Delta_SO=None, massdef=None, halo_profile_model=None,
                              zsrc_min=None, zsrc_max=None, shapenoise=None, photoz_sigma_unscaled=None, field_size=None):
     """A private function that skips the sanity checks on derived properties. This
     function should only be used when called directly from `generate_galaxy_catalog`.
@@ -205,14 +211,16 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, Delt
     gamt = predict_tangential_shear(galaxy_catalog['r_mpc'], mdelta=cluster_m,
                                             cdelta=cluster_c, z_cluster=cluster_z,
                                             z_source=galaxy_catalog['ztrue'], cosmo=cosmo,
-                                            delta_mdef=Delta_SO, halo_profile_model='nfw',
+                                            delta_mdef=Delta_SO, halo_profile_model=halo_profile_model,
+                                            massdef=massdef,
                                             z_src_model='single_plane')
 
     gamx = np.zeros(ngals)
     kappa = predict_convergence(galaxy_catalog['r_mpc'], mdelta=cluster_m,
                                             cdelta=cluster_c, z_cluster=cluster_z,
                                             z_source=galaxy_catalog['z'], cosmo=cosmo,
-                                            delta_mdef=Delta_SO, halo_profile_model='nfw',
+                                            delta_mdef=Delta_SO, halo_profile_model=halo_profile_model,
+                                            massdef=massdef,
                                             z_src_model='single_plane')
 
     galaxy_catalog['gammat'] = gamt
@@ -398,10 +406,15 @@ def _find_aphysical_galaxies(galaxy_catalog, zsrc_min):
     badgals : array_like
         A list of the indicies in galaxy_catalog that need to be redrawn
     """
-    badgals = np.where((np.abs(galaxy_catalog['e1']) > 1.0) |
-                       (np.abs(galaxy_catalog['e2']) > 1.0) |
-                       (galaxy_catalog['ztrue'] < zsrc_min)
-                      )[0]
+    etot = np.sqrt(galaxy_catalog['e1'] * galaxy_catalog['e1'] 
+                   + galaxy_catalog['e2'] * galaxy_catalog['e2'])
+
+#     badgals = np.where((np.abs(galaxy_catalog['e1']) > 1.0) |
+#                        (np.abs(galaxy_catalog['e2']) > 1.0) |
+#                        (galaxy_catalog['ztrue'] < zsrc_min)
+#                       )[0]
+    
+    badgals = np.where((etot > 1.0) | (galaxy_catalog['ztrue'] < zsrc_min))[0]
     nbad = len(badgals)
     return nbad, badgals
 
