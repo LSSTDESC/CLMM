@@ -19,7 +19,7 @@ jobs:
       run: |
         git clone https://github.com/tmcclintock/cluster_toolkit.git
         cd cluster_toolkit
-        sudo python setup.py install
+        sudo python3 setup.py install
     - name: Install CCL from source
       run: |
         git clone https://github.com/LSSTDESC/CCL
