@@ -14,7 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Install prereq using apt
-      run: sudo apt-get install libgsl0-dev swig3.0 libfftw3-dev gobject-introspection python-gobject gfortran libmpfr-dev libhdf5-dev liblapack-dev libnlopt-dev libcfitsio-dev gir1.2-glib-2.0 libgirepository1.0-dev python3-gi python3-numpy python3-matplotlib python3-setuptools python3-pytest pandoc -y
+      run: sudo apt-get install libgsl0-dev swig3.0 libfftw3-dev gobject-introspection python-gobject gfortran libmpfr-dev libhdf5-dev liblapack-dev libnlopt-dev libcfitsio-dev gir1.2-glib-2.0 libgirepository1.0-dev python3-gi python3-numpy python3-matplotlib python3-setuptools pandoc -y
     - name: Install cluster_toolkit from source
       run: |
         git clone https://github.com/tmcclintock/cluster_toolkit.git
@@ -48,7 +48,7 @@ jobs:
     - name: Run the unit tests
       run: |
         pip3 install pytest
-        py.test tests/ --ignore=cluster_toolkit/tests --cov=clmm/
+        py.test-3 tests/ --ignore=cluster_toolkit/tests --cov=clmm/
     - name: Run the docs
       run: |
         sphinx-quickstart -a "travis" -p clmm -v 0.0.1 --ext-autodoc -q
