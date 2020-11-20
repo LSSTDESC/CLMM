@@ -1,14 +1,14 @@
 """Tests for examples/support/mock_data.py"""
 import numpy as np
 from numpy.testing import assert_allclose, assert_equal
-from astropy.cosmology import FlatLambdaCDM
 import clmm
-import clmm.polaraveraging as pa
+import clmm.dataops as da
 import sys
 sys.path.append('examples/support')
 import mock_data as mock
 from sampler import fitters
 from clmm import Cosmology
+
 
 TOLERANCE = {'rtol': 5.0e-4, 'atol': 1.e-4}
 cosmo = Cosmology(H0 = 70.0, Omega_dm0 = 0.27 - 0.045, Omega_b0 = 0.045, Omega_k0 = 0.0)
@@ -31,7 +31,7 @@ def test_mock_data():
         
         # Set up mock cluster
         ngals=50000
-        data = mock.generate_galaxy_catalog(10**mass, 0.3, 4, cosmo, 200, 0.8, ngals=ngals)
+        data = mock.generate_galaxy_catalog(10**mass, 0.3, 4, cosmo, 0.8, ngals=ngals)
         
         # Check whether the given ngals is the retrieved ngals
         assert_equal(len(data['ra']),ngals)
@@ -42,8 +42,8 @@ def test_mock_data():
         
         # Create shear profile
         cl = clmm.GalaxyCluster("test_cluster", 0.0, 0.0, 0.3, data)
-        theta, g_t, g_x = pa.compute_tangential_and_cross_components(cl, geometry="flat")
-        binned = pa.make_binned_profile(cl, "radians", "Mpc", bins=pa.make_bins(0.5, 5.0, 100), 
+        theta, g_t, g_x = cl.compute_tangential_and_cross_components(geometry="flat")
+        binned = cl.make_radial_profile("Mpc", bins=da.make_bins(0.5, 5.0, 100), 
                                   cosmo=cosmo, include_empty_bins=False)
 
         popt,pcov = fitters['curve_fit'](lambda r, logm: nfw_shear_profile(r, logm, 0.8), 
@@ -75,13 +75,13 @@ def test_z_distr():
     zmin=0.4; zmax=3.0
     bins = np.arange(zmin,zmax+0.1,0.1)
     
-    data = mock.generate_galaxy_catalog(10**mass, 0.3, 4, cosmo, 200, 0.8, ngals=ngals)
+    data = mock.generate_galaxy_catalog(10**mass, 0.3, 4, cosmo, 0.8, ngals=ngals)
     # Check that all galaxies are at z=0.8
     assert_equal(np.count_nonzero(data['z']!=0.8),0)
     
-    
-    data = mock.generate_galaxy_catalog(10**mass, 0.3, 4, cosmo, 200, 'uniform', ngals=260000,
+    data = mock.generate_galaxy_catalog(10**mass, 0.3, 4, cosmo, 'uniform', ngals=260000,
                                         zsrc_min=zmin, zsrc_max=zmax)
+    
     # Check that all galaxies are within the given limits
     assert_equal(np.count_nonzero((data['z']<zmin)|(data['z']>zmax)),0)
     # Check that the z distribution is uniform
@@ -89,7 +89,7 @@ def test_z_distr():
     assert_allclose(hist[0],10000*np.ones(len(hist[0])),atol=200,rtol=0.02)
     
     
-    data = mock.generate_galaxy_catalog(10**mass, 0.3, 4, cosmo, 200, 'chang13', ngals=ngals,
+    data = mock.generate_galaxy_catalog(10**mass, 0.3, 4, cosmo, 'chang13', ngals=ngals,
                                         zsrc_min=zmin, zsrc_max=zmax)
     # Check that there all galaxies are within the given limits
     assert_equal(np.count_nonzero((data['z']<zmin)|(data['z']>zmax)),0)
@@ -109,19 +109,23 @@ def test_shapenoise():
     np.random.seed(285713)
 
     
-    data = mock.generate_galaxy_catalog(10**15., 0.3, 4, cosmo, 200, 0.8, ngals=50000,shapenoise=0.5)
+    data = mock.generate_galaxy_catalog(10**15., 0.3, 4, cosmo, 0.8, ngals=50000,shapenoise=0.5)
     # Check that there are no galaxies with |e|>1
     assert_equal(np.count_nonzero((data['e1']>1) | (data['e1']<-1)),0)
     assert_equal(np.count_nonzero((data['e2']>1) | (data['e2']<-1)),0)
     
     
-    data = mock.generate_galaxy_catalog(10**12., 0.3, 4, cosmo, 200, 0.8, ngals=50000,shapenoise=0.5)
+    data = mock.generate_galaxy_catalog(10**12., 0.3, 4, cosmo, 0.8, ngals=50000,shapenoise=0.25)
     # Check that there are no galaxies with |e|>1
     assert_equal(np.count_nonzero((data['e1']>1) | (data['e1']<-1)),0)
     assert_equal(np.count_nonzero((data['e2']>1) | (data['e2']<-1)),0)
     # Check that shape noise is Guassian with correct std dev
     bins=np.arange(-1,1.1,0.1)
-    gauss = 5250*np.exp(-0.5*(bins[:-1]+0.05)**2/0.5**2)/(0.5*np.sqrt(2*np.pi))
+    gauss = 5000*np.exp(-0.5*(bins[:-1]+0.05)**2/0.25**2)/(0.25*np.sqrt(2*np.pi))
+    import matplotlib.pyplot as plt
+    plt.plot(bins[:-1]+0.05,gauss,'o')
+    plt.hist(data['e1'],bins=bins)
+    plt.show()
     assert_allclose(np.histogram(data['e1'],bins=bins)[0],gauss,atol=50,rtol=0.05)
     assert_allclose(np.histogram(data['e2'],bins=bins)[0],gauss,atol=50,rtol=0.05)
     
