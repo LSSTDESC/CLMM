@@ -36,18 +36,17 @@ jobs:
     - name: Install prereq using pip
       run: |        
         python3 numcosmo-0.15.2/examples/example_simple.py
-        pip3 install -r requirements.txt
+        sudo pip3 install -r requirements.txt
     - name: Install the package
       run: sudo python3 setup.py install
     - name: Install docs prereq
       run: |
-        pip3 install ipykernel
+        sudo pip3 install ipykernel
         python3 -m ipykernel install --user --name python3 --display-name python3
-        pip3 install sphinx==2.1.2 sphinx_rtd_theme nbconvert jupyter_client
-        pip3 install coveralls pytest-cov
+        sudo pip3 install sphinx==2.1.2 sphinx_rtd_theme nbconvert jupyter_client
+        sudo pip3 install coveralls pytest-cov
     - name: Run the unit tests
       run: |
-        pip3 install pytest
         pytest tests/ --ignore=cluster_toolkit/tests --cov=clmm/
     - name: Run the docs
       run: |
