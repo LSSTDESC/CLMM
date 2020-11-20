@@ -1,0 +1,43 @@
+name: Build and Check
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-gcc-ubuntu:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install prereq
+      run: |
+        sudo apt-get install libgsl0-dev swig3.0 libfftw3-dev gobject-introspection python-gobject gfortran libmpfr-dev libhdf5-dev liblapack-dev libnlopt-dev libcfitsio3-dev gir1.2-glib-2.0 libgirepository1.0-dev python3-gi python-gi -y
+        git clone https://github.com/tmcclintock/cluster_toolkit.git ; cd cluster_toolkit ; python setup.py install ; cd -
+        git clone https://github.com/LSSTDESC/CCL ; cd CCL ; python setup.py install ; cd -
+        wget https://github.com/NumCosmo/NumCosmo/releases/download/v0.15.2/numcosmo-0.15.2.tar.gz && tar xf numcosmo-0.15.2.tar.gz && cd numcosmo-0.15.2 && ./configure --prefix=/usr && make -j4 && sudo make install && cd -
+        pip install pycairo==1.19.1
+        pip install pygobject
+        export MPLBACKEND="agg"
+        pip install matplotlib
+        python3 numcosmo-0.15.2/examples/example_simple.py
+        pip install -r requirements.txt
+    - name: Install the package
+      run: python setup.py install
+    - name: Install docs prereq
+      run: |
+        sudo apt-get install pandoc -y
+        pip install ipykernel
+        python -m ipykernel install --user --name python3 --display-name python3
+        pip install sphinx==2.1.2 sphinx_rtd_theme nbconvert jupyter_client
+        pip install coveralls pytest-cov
+    - name: Run the unit tests
+      run: py.test tests/ --ignore=cluster_toolkit/tests --cov=clmm/
+    - name: Run the docs
+      run: |
+        sphinx-quickstart -a "travis" -p clmm -v 0.0.1 --ext-autodoc -q
+        make -C docs/ html
+
