@@ -46,6 +46,8 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.githubpages',
               'IPython.sphinxext.ipython_console_highlighting']
 
+apidoc_module_dir = '../clmm'
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 source_suffix = ['.rst', '.md']
