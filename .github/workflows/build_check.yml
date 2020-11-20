@@ -41,7 +41,7 @@ jobs:
       run: sudo python3 setup.py install
     - name: Run the unit tests
       run: |
-        pytest tests/ --ignore=cluster_toolkit/tests --cov=clmm/
+        pytest-3 tests/ --ignore=cluster_toolkit/tests --cov=clmm/
     - name: Run the docs
       run: |
         sphinx-quickstart -a "travis" -p clmm -v 0.0.1 --ext-autodoc -q
