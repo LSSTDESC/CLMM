@@ -46,7 +46,9 @@ jobs:
         pip3 install sphinx==2.1.2 sphinx_rtd_theme nbconvert jupyter_client
         pip3 install coveralls pytest-cov
     - name: Run the unit tests
-      run: py.test-3 tests/ --ignore=cluster_toolkit/tests --cov=clmm/
+      run: |
+        pip3 install pytest
+        py.test tests/ --ignore=cluster_toolkit/tests --cov=clmm/
     - name: Run the docs
       run: |
         sphinx-quickstart -a "travis" -p clmm -v 0.0.1 --ext-autodoc -q
