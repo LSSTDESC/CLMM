@@ -39,7 +39,7 @@ release = version
 
 # -- General configuration ------------------------------------------------
 extensions = ['sphinx.ext.autodoc',
-              'sphinx.ext.apidoc',
+              'sphinxcontrib.apidoc',
               'sphinx.ext.autosummary',
               'sphinx.ext.viewcode',
               'sphinx.ext.napoleon',
@@ -98,7 +98,7 @@ napoleon_use_ivar = True
 # Autodoc collects docstrings and builds API pages
 
 def run_apidoc(_):
-    from sphinx.ext.apidoc import main as apidoc_main
+    from sphinxcontrib.apidoc import main as apidoc_main
     cur_dir = os.path.normpath(os.path.dirname(__file__))
     output_path = os.path.join(cur_dir, 'api')
     modules = os.path.normpath(os.path.join(cur_dir, "../clmm"))
