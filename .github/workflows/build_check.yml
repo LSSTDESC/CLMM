@@ -2,7 +2,7 @@ name: Build and Check
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, add_gha_support ]
   pull_request:
     branches: [ master ]
 
