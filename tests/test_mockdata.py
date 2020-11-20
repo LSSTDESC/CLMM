@@ -122,10 +122,6 @@ def test_shapenoise():
     # Check that shape noise is Guassian with correct std dev
     bins=np.arange(-1,1.1,0.1)
     gauss = 5000*np.exp(-0.5*(bins[:-1]+0.05)**2/0.25**2)/(0.25*np.sqrt(2*np.pi))
-    import matplotlib.pyplot as plt
-    plt.plot(bins[:-1]+0.05,gauss,'o')
-    plt.hist(data['e1'],bins=bins)
-    plt.show()
     assert_allclose(np.histogram(data['e1'],bins=bins)[0],gauss,atol=50,rtol=0.05)
     assert_allclose(np.histogram(data['e2'],bins=bins)[0],gauss,atol=50,rtol=0.05)
     
