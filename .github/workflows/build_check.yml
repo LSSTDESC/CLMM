@@ -13,12 +13,34 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Install prereq
+    - name: Install prereq using apt
+      run: sudo apt-get install libgsl0-dev swig3.0 libfftw3-dev  \
+        gobject-introspection python-gobject gfortran libmpfr-dev \
+        libhdf5-dev liblapack-dev libnlopt-dev libcfitsio-dev     \
+        gir1.2-glib-2.0 libgirepository1.0-dev python3-gi         \
+        python-gi -y
+    - name: Install cluster_toolkit from source
       run: |
-        sudo apt-get install libgsl0-dev swig3.0 libfftw3-dev gobject-introspection python-gobject gfortran libmpfr-dev libhdf5-dev liblapack-dev libnlopt-dev libcfitsio-dev gir1.2-glib-2.0 libgirepository1.0-dev python3-gi python-gi -y
-        git clone https://github.com/tmcclintock/cluster_toolkit.git ; cd cluster_toolkit ; python setup.py install ; cd -
-        git clone https://github.com/LSSTDESC/CCL ; cd CCL ; python setup.py install ; cd -
-        wget https://github.com/NumCosmo/NumCosmo/releases/download/v0.15.2/numcosmo-0.15.2.tar.gz && tar xf numcosmo-0.15.2.tar.gz && cd numcosmo-0.15.2 && ./configure --prefix=/usr && make -j4 && sudo make install && cd -
+        git clone https://github.com/tmcclintock/cluster_toolkit.git
+        cd cluster_toolkit
+        python setup.py install
+    - name: Install CCL from source
+      run: |
+        git clone https://github.com/LSSTDESC/CCL
+        cd CCL
+        python setup.py install
+        cd -
+    - name: Install NumCosmo from source
+      run: |
+        wget https://github.com/NumCosmo/NumCosmo/releases/download/v0.15.2/numcosmo-0.15.2.tar.gz
+        tar xf numcosmo-0.15.2.tar.gz
+        cd numcosmo-0.15.2
+        ./configure --prefix=/usr
+        make -j4
+        sudo make install
+        cd -
+    - name: Install prereq using pip
+      run: |        
         pip install pycairo==1.19.1
         pip install pygobject
         export MPLBACKEND="agg"
