@@ -39,6 +39,7 @@ release = version
 
 # -- General configuration ------------------------------------------------
 extensions = ['sphinx.ext.autodoc',
+              'sphinx.ext.apidoc',
               'sphinx.ext.autosummary',
               'sphinx.ext.viewcode',
               'sphinx.ext.napoleon',
