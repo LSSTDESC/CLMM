@@ -39,7 +39,6 @@ release = version
 
 # -- General configuration ------------------------------------------------
 extensions = ['sphinx.ext.autodoc',
-              'sphinxcontrib.apidoc',
               'sphinx.ext.autosummary',
               'sphinx.ext.viewcode',
               'sphinx.ext.napoleon',
@@ -99,16 +98,16 @@ napoleon_use_ivar = True
 # -- Options for Autodoc--------------------------------------------------
 # Autodoc collects docstrings and builds API pages
 
-def run_apidoc(_):
-    from sphinxcontrib.apidoc import main as apidoc_main
-    cur_dir = os.path.normpath(os.path.dirname(__file__))
-    output_path = os.path.join(cur_dir, 'api')
-    modules = os.path.normpath(os.path.join(cur_dir, "../clmm"))
-    paramlist = ['--separate', '--no-toc', '-f', '-M', '-o', output_path, modules]
-    apidoc_main(paramlist)
+#def run_apidoc(_):
+#    from sphinxcontrib.apidoc import main as apidoc_main
+#    cur_dir = os.path.normpath(os.path.dirname(__file__))
+#    output_path = os.path.join(cur_dir, 'api')
+#    modules = os.path.normpath(os.path.join(cur_dir, "../clmm"))
+#    paramlist = ['--separate', '--no-toc', '-f', '-M', '-o', output_path, modules]
+#    apidoc_main(paramlist)
 
-def setup(app):
-    app.connect('builder-inited', run_apidoc)
+#def setup(app):
+#    app.connect('builder-inited', run_apidoc)
 
 
 # -- Load from the config file -------------------------------------------
