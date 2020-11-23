@@ -52,4 +52,5 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
+        sudo pip3 install coveralls
         coveralls
