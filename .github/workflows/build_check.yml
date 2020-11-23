@@ -44,7 +44,7 @@ jobs:
         pytest-3 tests/ --ignore=cluster_toolkit/tests --cov=clmm/
     - name: Install Sphinx prereq
       run: |
-        sudo pip3 install sphinx_rtd_theme
+        sudo pip3 install sphinx_rtd_theme -U
     - name: Run the docs
       run: |
         make -C docs/ html
