@@ -1,10 +1,6 @@
 name: Build and Check
 
-on:
-  push:
-    branches: [ master, add_gha_support ]
-  pull_request:
-    branches: [ master ]
+on: [push, pull_request]
 
 jobs:
   build-gcc-ubuntu:
