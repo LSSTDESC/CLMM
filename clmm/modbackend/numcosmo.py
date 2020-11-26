@@ -92,12 +92,6 @@ class NumCosmoCLMModeling(CLMModeling):
     def set_mass(self, mdelta):
         self.hdpm.props.log10MDelta = math.log10(mdelta)
 
-    def eval_da_z1z2(self, z1, z2):
-        fac = self.cosmo.be_cosmo.RH_Mpc()
-
-        f = lambda zi, zf: self.cosmo.dist.angular_diameter_z1_z2(self.cosmo.be_cosmo, zi, zf)*fac
-        return np.vectorize(f)(z1, z2)
-
     def eval_sigma_crit(self, z_len, z_src):
 
         self.smd.prepare_if_needed(self.cosmo.be_cosmo)

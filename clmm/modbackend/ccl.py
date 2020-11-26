@@ -36,14 +36,12 @@ class CCLCLMModeling(CLMModeling):
                           'einasto': {},
                           'hernquist': {}}
         self.MDelta = 0.0
-        # Set halo profile and cosmology
-        self.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
-        self.set_cosmo(None)
-
-
         rhocrit_mks = 3.0*100.0*100.0/(8.0*np.pi*const.GNEWT.value)
         rhocrit_cd2018 = rhocrit_mks*1000.0*1000.0*const.PC_TO_METER.value*1.0e6/const.SOLAR_MASS.value
         self.cor_factor = rhocrit_cd2018/ccl.physical_constants.RHO_CRITICAL
+        # Set halo profile and cosmology
+        self.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
+        self.set_cosmo(None)
 
     def set_cosmo(self, cosmo):
         if cosmo:
