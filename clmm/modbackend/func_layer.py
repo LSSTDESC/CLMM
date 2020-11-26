@@ -39,13 +39,13 @@ def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profil
     halo_profile_model : str, optional
         Profile model parameterization, with the following supported options:
             `nfw` (default)
-            `einasto`
-            `hernquist`
+            `einasto` (not in cluster_toolkit)
+            `hernquist` (not in cluster_toolkit)
     massdef : str, optional
         Profile mass definition, with the following supported options:
             `mean` (default)
-            `critical`
-            `virial`
+            `critical` (not in cluster_toolkit)
+            `virial` (not in cluster_toolkit)
 
     Returns
     -------
@@ -59,7 +59,7 @@ def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profil
     """
 
     gcm.set_cosmo(cosmo)
-    gcm.set_halo_density_profile(halo_profile_model = halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
+    gcm.set_halo_density_profile(halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
     gcm.set_concentration(cdelta)
     gcm.set_mass(mdelta)
 
@@ -67,7 +67,7 @@ def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profil
 
 
 def predict_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
-                            halo_profile_model='nfw', massdef = 'mean'):
+                            halo_profile_model='nfw', massdef='mean'):
     r""" Computes the surface mass density
 
     .. math::
@@ -92,13 +92,13 @@ def predict_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     halo_profile_model : str, optional
         Profile model parameterization, with the following supported options:
             `nfw` (default)
-            `einasto`
-            `hernquist`
+            `einasto` (not in cluster_toolkit)
+            `hernquist` (not in cluster_toolkit)
     massdef : str, optional
         Profile mass definition, with the following supported options:
             `mean` (default)
-            `critical`
-            `virial`
+            `critical` (not in cluster_toolkit)
+            `virial` (not in cluster_toolkit)
 
     Returns
     -------
@@ -148,13 +148,13 @@ def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
     halo_profile_model : str, optional
         Profile model parameterization, with the following supported options:
             `nfw` (default)
-            `einasto`
-            `hernquist`
+            `einasto` (not in cluster_toolkit)
+            `hernquist` (not in cluster_toolkit)
     massdef : str, optional
         Profile mass definition, with the following supported options:
             `mean` (default)
-            `critical`
-            `virial`
+            `critical` (not in cluster_toolkit)
+            `virial` (not in cluster_toolkit)
 
     Returns
     -------
@@ -231,13 +231,13 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     halo_profile_model : str, optional
         Profile model parameterization, with the following supported options:
             `nfw` (default)
-            `einasto`
-            `hernquist`
+            `einasto` (not in cluster_toolkit)
+            `hernquist` (not in cluster_toolkit)
     massdef : str, optional
         Profile mass definition, with the following supported options:
             `mean` (default)
-            `critical`
-            `virial`
+            `critical` (not in cluster_toolkit)
+            `virial` (not in cluster_toolkit)
     z_src_model : str, optional
         Source redshift model, with the following supported options:
         `single_plane` (default) - all sources at one redshift
@@ -305,13 +305,13 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     halo_profile_model : str, optional
         Profile model parameterization, with the following supported options:
             `nfw` (default)
-            `einasto`
-            `hernquist`
+            `einasto` (not in cluster_toolkit)
+            `hernquist` (not in cluster_toolkit)
     massdef : str, optional
         Profile mass definition, with the following supported options:
             `mean` (default)
-            `critical`
-            `virial`
+            `critical` (not in cluster_toolkit)
+            `virial` (not in cluster_toolkit)
     z_src_model : str, optional
         Source redshift model, with the following supported options:
         `single_plane` (default) - all sources at one redshift
@@ -380,13 +380,13 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
     halo_profile_model : str, optional
         Profile model parameterization, with the following supported options:
             `nfw` (default)
-            `einasto`
-            `hernquist`
+            `einasto` (not in cluster_toolkit)
+            `hernquist` (not in cluster_toolkit)
     massdef : str, optional
         Profile mass definition, with the following supported options:
             `mean` (default)
-            `critical`
-            `virial`
+            `critical` (not in cluster_toolkit)
+            `virial` (not in cluster_toolkit)
     z_src_model : str, optional
         Source redshift model, with the following supported options:
         `single_plane` (default) - all sources at one redshift
@@ -460,13 +460,13 @@ def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
     halo_profile_model : str, optional
         Profile model parameterization, with the following supported options:
             `nfw` (default)
-            `einasto`
-            `hernquist`
+            `einasto` (not in cluster_toolkit)
+            `hernquist` (not in cluster_toolkit)
     massdef : str, optional
         Profile mass definition, with the following supported options:
             `mean` (default)
-            `critical`
-            `virial`
+            `critical` (not in cluster_toolkit)
+            `virial` (not in cluster_toolkit)
     z_src_model : str, optional
         Source redshift model, with the following supported options:
         `single_plane` (default) - all sources at one redshift
