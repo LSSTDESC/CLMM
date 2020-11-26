@@ -21,25 +21,21 @@ __all__ = ['NumCosmoCLMModeling', 'Modeling', 'Cosmology']+func_layer.__all__
 class NumCosmoCLMModeling(CLMModeling):
 
     def __init__(self, massdef='mean', delta_mdef=200, halo_profile_model='nfw'):
+        CLMModeling.__init__(self)
+        # Update class attributes
         Ncm.cfg_init()
-
         self.backend = 'nc'
-
-        self.set_cosmo(None)
-
-        self.mdef_dict = {'mean':      Nc.HaloDensityProfileMassDef.MEAN,
-                          'critical':   Nc.HaloDensityProfileMassDef.CRITICAL,
-                          'virial':    Nc.HaloDensityProfileMassDef.VIRIAL}
-        self.hdpm_dict = {'nfw':       Nc.HaloDensityProfileNFW.new,
-                          'einasto':   Nc.HaloDensityProfileEinasto.new,
-                          'hernquist': Nc.HaloDensityProfileHernquist.new}
-
-        self.halo_profile_model = ''
-        self.massdef = ''
-        self.delta_mdef = 0
-        self.hdpm = None
-
+        self.mdef_dict = {
+            'mean': Nc.HaloDensityProfileMassDef.MEAN,
+            'critical': Nc.HaloDensityProfileMassDef.CRITICAL,
+            'virial':Nc.HaloDensityProfileMassDef.VIRIAL}
+        self.hdpm_dict = {
+            'nfw': Nc.HaloDensityProfileNFW.new,
+            'einasto': Nc.HaloDensityProfileEinasto.new,
+            'hernquist': Nc.HaloDensityProfileHernquist.new}
+        # Set halo profile and cosmology
         self.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
+        self.set_cosmo(None)
 
     def set_cosmo(self, cosmo):
         if cosmo:
@@ -54,13 +50,10 @@ class NumCosmoCLMModeling(CLMModeling):
 
     def set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
         # Check if choices are supported
-        if not halo_profile_model in self.hdpm_dict:
-            raise ValueError(f"Halo density profile model {halo_profile_model} not currently supported")
-        if not massdef in self.mdef_dict:
-            raise ValueError(f"Halo density profile mass definition {massdef} not currently supported")
+        self.validate_definitions(massdef, halo_profile_model)
 
         # Check if we have already an instance of the required object, if not create one
-        if not((halo_profile_model == self.halo_profile_model) and(massdef == self.massdef) and(delta_mdef == self.delta_mdef)):
+        if not((halo_profile_model == self.halo_profile_model) and (massdef == self.massdef) and (delta_mdef == self.delta_mdef)):
             self.halo_profile_model = halo_profile_model
             self.massdef = massdef
 

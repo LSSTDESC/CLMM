@@ -17,30 +17,29 @@ __all__ = ['CCLCLMModeling', 'Modeling', 'Cosmology']+func_layer.__all__
 
 class CCLCLMModeling(CLMModeling):
 
-    def __init__(self, massdef='mean', delta_mdef=200, halo_profile_model='nfw', z_max=5.0):
-
+    def __init__(self, massdef='mean', delta_mdef=200, halo_profile_model='nfw'):
+        CLMModeling.__init__(self)
+        # Update class attributes
         self.backend = 'ccl'
-
-        self.mdef_dict = {'mean':      'matter',
-                          'critical':   'critical',
-                          'virial':    'critical'}
-        self.hdpm_dict = {'nfw':       ccl.halos.HaloProfileNFW,
-                          'einasto':   ccl.halos.HaloProfileEinasto,
-                          'hernquist': ccl.halos.HaloProfileHernquist}
+        self.mdef_dict = {
+            'mean': 'matter',
+            'critical': 'critical',
+            'virial': 'critical'}
+        self.hdpm_dict = {
+            'nfw': ccl.halos.HaloProfileNFW,
+            'einasto': ccl.halos.HaloProfileEinasto,
+            'hernquist': ccl.halos.HaloProfileHernquist}
+        # Attributes exclusive to this class
         self.hdpm_opts = {'nfw': {'truncated': False,
                                   'projected_analytic': True,
                                   'cumul2d_analytic': True},
                           'einasto': {},
                           'hernquist': {}}
-
-        self.halo_profile_model = ''
-        self.massdef = ''
-        self.delta_mdef = 0
-        self.hdpm = None
         self.MDelta = 0.0
-
-        self.set_cosmo(None)
+        # Set halo profile and cosmology
         self.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
+        self.set_cosmo(None)
+
 
         rhocrit_mks = 3.0*100.0*100.0/(8.0*np.pi*const.GNEWT.value)
         rhocrit_cd2018 = rhocrit_mks*1000.0*1000.0*const.PC_TO_METER.value*1.0e6/const.SOLAR_MASS.value
@@ -56,13 +55,10 @@ class CCLCLMModeling(CLMModeling):
 
     def set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
         # Check if choices are supported
-        if not halo_profile_model in self.hdpm_dict:
-            raise ValueError(f"Halo density profile model {halo_profile_model} not currently supported")
-        if not massdef in self.mdef_dict:
-            raise ValueError(f"Halo density profile mass definition {massdef} not currently supported")
+        self.validate_definitions(massdef, halo_profile_model)
 
         # Check if we have already an instance of the required object, if not create one
-        if not((halo_profile_model == self.halo_profile_model) and(massdef == self.massdef) and(delta_mdef == self.delta_mdef)):
+        if not((halo_profile_model == self.halo_profile_model) and (massdef == self.massdef) and (delta_mdef == self.delta_mdef)):
             self.halo_profile_model = halo_profile_model
             self.massdef = massdef
 

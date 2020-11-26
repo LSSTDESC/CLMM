@@ -3,6 +3,46 @@ import numpy as np
 
 
 class CLMModeling:
+    r"""Object with functions for halo mass modeling
+
+    Attributes
+    ----------
+    backend: str
+        Name of the backend being used
+    massdef : str
+        Profile mass definition (`mean`, `critical`, `virial`)
+    delta_mdef : int
+        Mass overdensity definition.
+    halo_profile_model : str
+        Profile model parameterization (`nfw`, `einasto`, `hernquist`)
+    cosmo: Cosmology
+        Cosmology object
+    hdpm: Object
+        Backend object with halo profiles
+    mdef_dict: dict
+        Dictionary with the definitions for mass
+    hdpm_dict: dict
+        Dictionary with the definitions for profile
+    """
+
+    def __init__(self):
+        self.backend = None
+
+        self.massdef = ''
+        self.delta_mdef = 0
+        self.halo_profile_model = ''
+
+        self.cosmo = None
+
+        self.hdpm = None
+        self.mdef_dict = {}
+        self.hdpm_dict = {}
+
+    def validate_definitions(self, massdef, halo_profile_model):
+        if not massdef in self.mdef_dict:
+            raise ValueError(f"Halo density profile mass definition {massdef} not currently supported")
+        if not halo_profile_model in self.hdpm_dict:
+            raise ValueError(f"Halo density profile model {halo_profile_model} not currently supported")
 
     def set_cosmo(self, cosmo):
         r""" Sets the cosmology to the internal cosmology object
