@@ -15,6 +15,9 @@ from . func_layer import *
 from .. clmm_cosmo import CLMMCosmology
 from .. clmm_modeling import CLMModeling
 
+from .ccl import CCLCosmology
+from .numcosmo import NumCosmoCosmology
+
 __all__ = ['CTModeling', 'Modeling', 'Cosmology']+func_layer.__all__
 
 
@@ -67,12 +70,8 @@ class CTModeling(CLMModeling):
         self.set_cosmo(None)
 
     def set_cosmo(self, cosmo):
-        if cosmo:
-            if not isinstance(cosmo, (AstroPyCosmology, CLMMCosmology)):
-                raise ValueError(f"Incompatible cosmology object {cosmo}.")
-            self.cosmo = cosmo
-        else:
-            self.cosmo = AstroPyCosmology()
+        self._set_cosmo(cosmo, AstroPyCosmology, 
+            valid_cosmo=(AstroPyCosmology, NumCosmoCosmology)) # does not work with CCLCosmology - must fix sig_crit
 
     def set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
         # Check if choices are supported
@@ -95,12 +94,9 @@ class CTModeling(CLMModeling):
         clight_pc_s = const.CLIGHT_KMS.value*1000./const.PC_TO_METER.value
         gnewt_pc3_msun_s2 = const.GNEWT.value*const.SOLAR_MASS.value/const.PC_TO_METER.value**3
 
-        aexp_cluster = self.cosmo._get_a_from_z(z_len)
-        aexp_src = self.cosmo._get_a_from_z(z_src)
-
-        d_l = self.cosmo.eval_da_a1a2(aexp_cluster, 1.0)
-        d_s = self.cosmo.eval_da_a1a2(aexp_src, 1.0)
-        d_ls = self.cosmo.eval_da_a1a2(aexp_src, aexp_cluster)
+        d_l = self.cosmo.eval_da_z1z2(0, z_len)
+        d_s = self.cosmo.eval_da_z1z2(0, z_src)
+        d_ls = self.cosmo.eval_da_z1z2(z_len, z_src)
 
         beta_s = np.maximum(0., d_ls/d_s)
         return clight_pc_s**2/(4.0*np.pi*gnewt_pc3_msun_s2)*1/d_l*np.divide(1., beta_s)*1.0e6

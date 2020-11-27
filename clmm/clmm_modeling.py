@@ -1,5 +1,6 @@
 # CLMModeling abstract class
 import numpy as np
+import warnings
 
 
 class CLMModeling:
@@ -47,10 +48,59 @@ class CLMModeling:
     def set_cosmo(self, cosmo):
         r""" Sets the cosmology to the internal cosmology object
 
+        Parameters
+        ----------
         cosmo: clmm.Comology
             CLMM Cosmology object
         """
         raise NotImplementedError
+
+    def _set_cosmo(self, cosmo, CosmoOutput, valid_cosmo=None):
+        r""" Sets the cosmology to the internal cosmology object
+
+        Parameters
+        ----------
+        cosmo: clmm.Comology object, None
+            CLMM Cosmology object. If is None, creates a new instance of CosmoOutput().
+        CosmoOutput: clmm.modbackend Cosmology class
+            Cosmology Output for the output object.
+        valid_cosmo: clmm.Comology, tuple, None
+            Accepted type (or list of accepted types) of cosmology objects.
+            If is None, uses CosmoOutput.
+        """
+        if valid_cosmo is None:
+            valid_cosmo = CosmoOutput
+        if cosmo:
+            if not isinstance(cosmo, valid_cosmo):
+                warnings.warn(f'Translating {type(cosmo)} into {CosmoOutput}.')
+                self.cosmo = self._import_cosmo(cosmo, CosmoOutput)
+            else:
+                self.cosmo = cosmo
+        else:
+            self.cosmo = CosmoOutput()
+
+    def _import_cosmo(self, cosmo, CosmoOutput):
+        r""" Translates a cosmology to the internal cosmology object
+
+        Parameters
+        ----------
+        cosmo: clmm.Comology like
+            CLMM Cosmology object
+        CosmoOutput: clmm.modbackend Cosmology
+            Cosmology Output for the output object
+
+        Returns
+        -------
+        clmm.Cosmology like
+            Cosmology object
+        """
+        params = {}
+        for p in ('H0', 'Omega_dm0', 'Omega_b0', 'Omega_k0'):
+            try:
+                params[p] = cosmo[p]
+            except:
+                raise ValueError(f"Cosmology object {cosmo} missing parameter:{p}.")
+        return CosmoOutput(**params)
 
     def set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
         r""" Sets the definitios for the halo profile

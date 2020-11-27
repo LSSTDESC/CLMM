@@ -38,12 +38,7 @@ class NumCosmoCLMModeling(CLMModeling):
         self.set_cosmo(None)
 
     def set_cosmo(self, cosmo):
-        if cosmo:
-            if not isinstance(cosmo, NumCosmoCosmology):
-                raise ValueError(f"Incompatible cosmology object {cosmo}.")
-            self.cosmo = cosmo
-        else:
-            self.cosmo = NumCosmoCosmology()
+        self._set_cosmo(cosmo, NumCosmoCosmology)
 
         self.smd = Nc.WLSurfaceMassDensity.new(self.cosmo.dist)
         self.smd.prepare_if_needed(self.cosmo.be_cosmo)

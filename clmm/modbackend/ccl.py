@@ -44,12 +44,7 @@ class CCLCLMModeling(CLMModeling):
         self.set_cosmo(None)
 
     def set_cosmo(self, cosmo):
-        if cosmo:
-            if not isinstance(cosmo, CCLCosmology):
-                raise ValueError(f"Incompatible cosmology object {cosmo}.")
-            self.cosmo = cosmo
-        else:
-            self.cosmo = CCLCosmology()
+        self._set_cosmo(cosmo, CCLCosmology)
 
     def set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
         # Check if choices are supported
@@ -200,4 +195,3 @@ class CCLCosmology(CLMMCosmology):
 
 Modeling = CCLCLMModeling
 Cosmology = CCLCosmology
-
