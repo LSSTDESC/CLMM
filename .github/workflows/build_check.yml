@@ -1,0 +1,52 @@
+name: Build and Check
+
+on: [push, pull_request]
+
+jobs:
+  build-gcc-ubuntu:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install prereq using apt
+      run: sudo apt-get install libgsl0-dev swig3.0 libfftw3-dev gobject-introspection python-gobject gfortran libmpfr-dev libhdf5-dev liblapack-dev libnlopt-dev libcfitsio-dev gir1.2-glib-2.0 libgirepository1.0-dev python3-gi python3-numpy python3-matplotlib python3-setuptools python3-pytest-cov python3-sphinx python3-sphinx-rtd-theme python3-nbconvert python3-jupyter-client jupyter-client jupyter-nbconvert sphinx-common pandoc -y
+    - name: Install cluster_toolkit from source
+      run: |
+        git clone https://github.com/tmcclintock/cluster_toolkit.git
+        cd cluster_toolkit
+        sudo python3 setup.py install
+    - name: Install CCL from source
+      run: |
+        git clone https://github.com/LSSTDESC/CCL
+        cd CCL
+        sudo python3 setup.py install
+    - name: Install NumCosmo from source
+      run: |
+        wget https://github.com/NumCosmo/NumCosmo/releases/download/v0.15.2/numcosmo-0.15.2.tar.gz
+        tar xf numcosmo-0.15.2.tar.gz
+        cd numcosmo-0.15.2
+        ./configure --prefix=/usr
+        make -j4
+        sudo make install
+    - name: Install prereq using pip
+      run: |        
+        python3 numcosmo-0.15.2/examples/example_simple.py
+        sudo pip3 install -r requirements.txt
+    - name: Install the package
+      run: sudo python3 setup.py install
+    - name: Run the unit tests
+      run: |
+        pytest-3 tests/ --ignore=cluster_toolkit/tests --cov=clmm/
+    - name: Install Sphinx prereq
+      run: |
+        sudo pip3 install sphinx_rtd_theme -U
+    - name: Run the docs
+      run: |
+        make -C docs/ html
+    - name: Coveralls
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        sudo pip3 install coveralls
+        coveralls

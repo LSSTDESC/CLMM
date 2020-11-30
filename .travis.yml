@@ -47,7 +47,6 @@ script:
   - py.test tests/ --ignore=cluster_toolkit/tests --cov=clmm/
 
   # Run the docs:
-  - sphinx-quickstart -a "travis" -p clmm -v 0.0.1 --ext-autodoc -q
   - make -C docs/ html
 
 after_success:
