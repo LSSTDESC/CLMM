@@ -15,9 +15,6 @@ from . func_layer import *
 from .. clmm_cosmo import CLMMCosmology
 from .. clmm_modeling import CLMModeling
 
-from .ccl import CCLCosmology
-from .numcosmo import NumCosmoCosmology
-
 __all__ = ['CTModeling', 'Modeling', 'Cosmology']+func_layer.__all__
 
 
