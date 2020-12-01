@@ -44,7 +44,7 @@ class CCLCLMModeling(CLMModeling):
         self.set_cosmo(None)
 
     def set_cosmo(self, cosmo):
-        self._set_cosmo(cosmo, CCLCosmology)
+        self._set_cosmo(cosmo, CCLCosmology, 'ccl')
 
     def set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
         # Check if choices are supported
@@ -148,6 +148,7 @@ class CCLCosmology(CLMMCosmology):
     def __init__(self, **kwargs):
         super(CCLCosmology, self).__init__(**kwargs)
 
+        # this tag will be used to check if the cosmology object is accepted by the modeling
         self.backend = 'ccl'
 
         assert isinstance(self.be_cosmo, ccl.Cosmology)

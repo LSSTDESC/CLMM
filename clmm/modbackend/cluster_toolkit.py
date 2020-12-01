@@ -70,8 +70,7 @@ class CTModeling(CLMModeling):
         self.set_cosmo(None)
 
     def set_cosmo(self, cosmo):
-        self._set_cosmo(cosmo, AstroPyCosmology, 
-            valid_cosmo=(AstroPyCosmology, NumCosmoCosmology)) # does not work with CCLCosmology - must fix sig_crit
+        self._set_cosmo(cosmo, AstroPyCosmology, ('ct', 'nc')) # does not work with CCLCosmology - must fix sig_crit
 
     def set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
         # Check if choices are supported
@@ -168,6 +167,7 @@ class AstroPyCosmology(CLMMCosmology):
     def __init__(self, **kwargs):
         super(AstroPyCosmology, self).__init__(**kwargs)
 
+        # this tag will be used to check if the cosmology object is accepted by the modeling
         self.backend = 'ct'
 
         assert isinstance(self.be_cosmo, LambdaCDM)

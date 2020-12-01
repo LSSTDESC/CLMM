@@ -38,7 +38,7 @@ class NumCosmoCLMModeling(CLMModeling):
         self.set_cosmo(None)
 
     def set_cosmo(self, cosmo):
-        self._set_cosmo(cosmo, NumCosmoCosmology)
+        self._set_cosmo(cosmo, NumCosmoCosmology, 'nc')
 
         self.smd = Nc.WLSurfaceMassDensity.new(self.cosmo.dist)
         self.smd.prepare_if_needed(self.cosmo.be_cosmo)
@@ -153,6 +153,7 @@ class NumCosmoCosmology(CLMMCosmology):
 
         super(NumCosmoCosmology, self).__init__(**kwargs)
 
+        # this tag will be used to check if the cosmology object is accepted by the modeling
         self.backend = 'nc'
 
         if dist:

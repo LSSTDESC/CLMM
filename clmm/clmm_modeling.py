@@ -55,7 +55,7 @@ class CLMModeling:
         """
         raise NotImplementedError
 
-    def _set_cosmo(self, cosmo, CosmoOutput, valid_cosmo=None):
+    def _set_cosmo(self, cosmo, CosmoOutput, valid_cosmo):
         r""" Sets the cosmology to the internal cosmology object
 
         Parameters
@@ -64,14 +64,11 @@ class CLMModeling:
             CLMM Cosmology object. If is None, creates a new instance of CosmoOutput().
         CosmoOutput: clmm.modbackend Cosmology class
             Cosmology Output for the output object.
-        valid_cosmo: clmm.Comology, tuple, None
-            Accepted type (or list of accepted types) of cosmology objects.
-            If is None, uses CosmoOutput.
+        valid_cosmo: str, tuple
+            Accepted type (or list of accepted types) for cosmo.backend.
         """
-        if valid_cosmo is None:
-            valid_cosmo = CosmoOutput
         if cosmo:
-            if not isinstance(cosmo, valid_cosmo):
+            if (cosmo.backend not in valid_cosmo) if hasattr(cosmo, 'backend') else True:
                 warnings.warn(f'Translating {type(cosmo)} into {CosmoOutput}.')
                 self.cosmo = self._import_cosmo(cosmo, CosmoOutput)
             else:
