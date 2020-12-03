@@ -44,7 +44,7 @@ class CCLCLMModeling(CLMModeling):
         self.set_cosmo(None)
 
     def set_cosmo(self, cosmo):
-        self._set_cosmo(cosmo, CCLCosmology, 'ccl')
+        self._set_cosmo(cosmo, CCLCosmology)
 
     def set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
         # Check if choices are supported
