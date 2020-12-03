@@ -4,6 +4,7 @@ import pyccl as ccl
 
 import numpy as np
 import warnings
+from packaging import version
 
 from .. constants import Constants as const
 from . import func_layer
@@ -25,10 +26,13 @@ class CCLCLMModeling(CLMModeling):
             'mean': 'matter',
             'critical': 'critical',
             'virial': 'critical'}
-        self.hdpm_dict = {
-            'nfw': ccl.halos.HaloProfileNFW,
-            'einasto': ccl.halos.HaloProfileEinasto,
-            'hernquist': ccl.halos.HaloProfileHernquist}
+        self.hdpm_dict = {'nfw': ccl.halos.HaloProfileNFW}
+        # Only add the options of einasto and hernquist if CLL version >= 10(?)
+        # because results below this version are unstable.
+        if version.parse(ccl.__version__) >= version.parse('10'):
+            self.hdpm_dict.update({
+                'einasto': ccl.halos.HaloProfileEinasto,
+                'hernquist': ccl.halos.HaloProfileHernquist})
         # Attributes exclusive to this class
         self.hdpm_opts = {'nfw': {'truncated': False,
                                   'projected_analytic': True,
