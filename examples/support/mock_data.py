@@ -141,6 +141,9 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_
         nbad, badids = _find_aphysical_galaxies(galaxy_catalog, zsrc_min)
         if nbad < 1:
             break
+        # In case nbad=1, replacements does not produce a table with the right
+        # shape. To avoid the problem, always draw an extra galaxy and remove it
+        # when assigning the results to galaxy_catalog
         replacements = _generate_galaxy_catalog(ngals=nbad+1, **params)
         galaxy_catalog[badids] = replacements[:-1]
 
