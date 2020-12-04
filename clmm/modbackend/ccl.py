@@ -6,12 +6,13 @@ import numpy as np
 import warnings
 from packaging import version
 
-from .. constants import Constants as const
 from . import func_layer
 from . func_layer import *
 
 from .. clmm_cosmo import CLMMCosmology
 from .. clmm_modeling import CLMModeling
+
+from .. utils import _patch_rho_crit_to_cd2018
 
 __all__ = ['CCLCLMModeling', 'Modeling', 'Cosmology']+func_layer.__all__
 
@@ -40,9 +41,7 @@ class CCLCLMModeling(CLMModeling):
                           'einasto': {},
                           'hernquist': {}}
         self.MDelta = 0.0
-        rhocrit_mks = 3.0*100.0*100.0/(8.0*np.pi*const.GNEWT.value)
-        rhocrit_cd2018 = rhocrit_mks*1000.0*1000.0*const.PC_TO_METER.value*1.0e6/const.SOLAR_MASS.value
-        self.cor_factor = rhocrit_cd2018/ccl.physical_constants.RHO_CRITICAL
+        self.cor_factor = _patch_rho_crit_to_cd2018(ccl.physical_constants.RHO_CRITICAL)
         # Set halo profile and cosmology
         self.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
         self.set_cosmo(None)
@@ -136,9 +135,7 @@ class CCLCosmology(CLMMCosmology):
         assert isinstance(self.be_cosmo, ccl.Cosmology)
 
         # cor factor for sigma_critical
-        rhocrit_mks = 3.0*100.0*100.0/(8.0*np.pi*const.GNEWT.value)
-        rhocrit_cd2018 = rhocrit_mks*1000.0*1000.0*const.PC_TO_METER.value*1.0e6/const.SOLAR_MASS.value
-        self.cor_factor = rhocrit_cd2018/ccl.physical_constants.RHO_CRITICAL
+        self.cor_factor = _patch_rho_crit_to_cd2018(ccl.physical_constants.RHO_CRITICAL)
 
     def _init_from_cosmo(self, be_cosmo):
 

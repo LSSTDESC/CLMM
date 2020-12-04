@@ -15,20 +15,9 @@ from . func_layer import *
 from .. clmm_cosmo import CLMMCosmology
 from .. clmm_modeling import CLMModeling
 
+from .. utils import _patch_rho_crit_to_cd2018
+
 __all__ = ['CTModeling', 'Modeling', 'Cosmology']+func_layer.__all__
-
-
-def _patch_ct_to_cd2018():
-    r""" Convertion factor from cluster_toolkit hardcoded rho_crit to
-    CODATA 2018+IAU 2015
-
-    """
-
-    rhocrit_mks = 3.0*100.0*100.0/(8.0*np.pi*const.GNEWT.value)
-    rhocrit_cd2018 = rhocrit_mks*1000.0*1000.0*const.PC_TO_METER.value*1.0e6/const.SOLAR_MASS.value
-    rhocrit_cltk = 2.77533742639e+11
-
-    return rhocrit_cd2018/rhocrit_cltk
 
 
 def _assert_correct_type_ct(a):
@@ -61,7 +50,7 @@ class CTModeling(CLMModeling):
         self.mdef_dict = {'mean': 'mean'}
         self.hdpm_dict = {'nfw': 'nfw'}
         # Attributes exclusive to this class
-        self.cor_factor = _patch_ct_to_cd2018()
+        self.cor_factor = _patch_rho_crit_to_cd2018(2.77533742639e+11)
         # Set halo profile and cosmology
         self.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
         self.set_cosmo(None)

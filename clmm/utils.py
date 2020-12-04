@@ -2,6 +2,7 @@
 import numpy as np
 from scipy.stats import binned_statistic
 from astropy import units as u
+from .constants import Constants as const
 
 
 def compute_radial_averages(xvals, yvals, xbins, error_model='std/sqrt_n'):
@@ -311,3 +312,17 @@ def arguments_consistency(arguments, names=None, prefix=''):
             raise TypeError(f'{prefix} inconsistent sizes: {msg}')
         return tuple(np.array(arg) for arg in (arguments))
     return arguments
+
+
+def _patch_rho_crit_to_cd2018(rho_crit_external):
+    r""" Convertion factor for rho_crit of any external modult to
+    CODATA 2018+IAU 2015
+
+    rho_crit_external: float
+        Critical density of the Universe in units of :math:`M_\odot\ Mpc^{-3}`
+    """
+
+    rhocrit_mks = 3.0*100.0*100.0/(8.0*np.pi*const.GNEWT.value)
+    rhocrit_cd2018 = rhocrit_mks*1000.0*1000.0*const.PC_TO_METER.value*1.0e6/const.SOLAR_MASS.value
+
+    return rhocrit_cd2018/rho_crit_external
