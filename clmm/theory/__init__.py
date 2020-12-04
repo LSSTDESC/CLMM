@@ -70,14 +70,14 @@ if not __backends[be_nick]['available']:
     loaded = False
     for be1 in __backends:
         if __backends[be1]['available']:
-            backend = importlib.import_module("."+__backends[be1]['module'], package=base_package)
+            backend = importlib.import_module(".theory."+__backends[be1]['module'], package=base_package)
             loaded = True
             be_nick = be1
             break
     if not loaded:
         raise ImportError("No modeling backend available.")
 else:
-    backend = importlib.import_module("."+__backends[be_nick]['module'], package=base_package)
+    backend = importlib.import_module(".theory."+__backends[be_nick]['module'], package=base_package)
 
 #  Import all backend symbols:
 #    Updates __all__ with the exported symbols from the backend and
