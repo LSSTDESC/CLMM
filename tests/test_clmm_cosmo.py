@@ -3,7 +3,7 @@ import json
 import numpy as np
 from numpy.testing import assert_raises, assert_allclose, assert_equal
 import clmm.modeling as md
-from clmm.clmm_cosmo import CLMMCosmology
+from clmm.cosmology.clmm_cosmo import CLMMCosmology
 # ----------- Some Helper Functions for the Validation Tests ---------------
 
 

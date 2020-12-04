@@ -70,14 +70,14 @@ if not __backends[be_nick]['available']:
     loaded = False
     for be1 in __backends:
         if __backends[be1]['available']:
-            backend = importlib.import_module(".modbackend."+__backends[be1]['module'], package=base_package)
+            backend = importlib.import_module("."+__backends[be1]['module'], package=base_package)
             loaded = True
             be_nick = be1
             break
     if not loaded:
         raise ImportError("No modeling backend available.")
 else:
-    backend = importlib.import_module(".modbackend."+__backends[be_nick]['module'], package=base_package)
+    backend = importlib.import_module("."+__backends[be_nick]['module'], package=base_package)
 
 #  Import all backend symbols:
 #    Updates __all__ with the exported symbols from the backend and
@@ -86,7 +86,7 @@ else:
 __all__ = backend.__all__
 globals().update({k: getattr(backend, k) for k in backend.__all__})
 
-from .modbackend import func_layer
+from . import func_layer
 
 try:
     func_layer.gcm = Modeling()
