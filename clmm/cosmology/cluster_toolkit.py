@@ -10,7 +10,7 @@ from .. constants import Constants as const
 
 from .parent_class import CLMMCosmology
 
-__all__ = ['Cosmology']
+__all__ = []
 
 
 class AstroPyCosmology(CLMMCosmology):

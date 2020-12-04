@@ -9,7 +9,7 @@ from .parent_class import CLMMCosmology
 
 from .. utils import _patch_rho_crit_to_cd2018
 
-__all__ = ['Cosmology']
+__all__ = []
 
 
 class CCLCosmology(CLMMCosmology):

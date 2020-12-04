@@ -11,7 +11,7 @@ import numpy as np
 
 from .parent_class import CLMMCosmology
 
-__all__ = ['Cosmology']
+__all__ = []
 
 
 class NumCosmoCosmology(CLMMCosmology):
