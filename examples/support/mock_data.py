@@ -7,7 +7,6 @@ from astropy import units
 from clmm.modeling import predict_tangential_shear, predict_convergence
 from clmm.utils import convert_units, compute_lensed_ellipticity
 
-import pdb
 def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_SO=200, massdef='mean',halo_profile_model='nfw', zsrc_min=None,
                             zsrc_max=7., field_size=8., shapenoise=None, photoz_sigma_unscaled=None, nretry=5, ngals=None, ngal_density=None):
     """Generates a mock dataset of sheared background galaxies.
