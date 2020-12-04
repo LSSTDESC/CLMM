@@ -9,7 +9,7 @@ from gi.repository import NumCosmoMath as Ncm
 import math
 import numpy as np
 
-from .clmm_cosmo import CLMMCosmology
+from .parent_class import CLMMCosmology
 
 __all__ = ['Cosmology']
 

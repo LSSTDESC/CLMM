@@ -12,7 +12,7 @@ import warnings
 
 from . import func_layer
 from . func_layer import *
-from .clmm_modeling import CLMModeling
+from .parent_class import CLMModeling
 
 from .. cosmology.numcosmo import NumCosmoCosmology
 Cosmology = NumCosmoCosmology

@@ -5,7 +5,7 @@ import pyccl as ccl
 import numpy as np
 import warnings
 
-from .clmm_cosmo import CLMMCosmology
+from .parent_class import CLMMCosmology
 
 from .. utils import _patch_rho_crit_to_cd2018
 

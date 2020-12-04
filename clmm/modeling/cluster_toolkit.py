@@ -12,7 +12,7 @@ from .. constants import Constants as const
 from . import func_layer
 from . func_layer import *
 
-from .clmm_modeling import CLMModeling
+from .parent_class import CLMModeling
 
 from .. utils import _patch_rho_crit_to_cd2018
 

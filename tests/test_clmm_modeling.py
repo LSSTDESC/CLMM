@@ -5,7 +5,7 @@ import json
 import numpy as np
 from numpy.testing import assert_raises, assert_allclose, assert_equal
 import clmm.modeling as md
-from clmm.modeling.clmm_modeling import CLMModeling
+from clmm.modeling.parent_class import CLMModeling
 
 
 def test_unimplemented(modeling_data):

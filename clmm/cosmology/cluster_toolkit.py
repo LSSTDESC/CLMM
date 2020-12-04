@@ -8,7 +8,7 @@ from astropy.cosmology import LambdaCDM, FlatLambdaCDM
 
 from .. constants import Constants as const
 
-from .clmm_cosmo import CLMMCosmology
+from .parent_class import CLMMCosmology
 
 __all__ = ['Cosmology']
 
