@@ -1,6 +1,6 @@
 """A collection of scripts that can be used to plot the various quantities that CLMM models."""
 import matplotlib.pyplot as plt
-from .galaxycluster import GalaxyCluster
+from .. galaxycluster import GalaxyCluster
 
 
 def plot_profiles(cluster=None, rbins=None, tangential_component=None, tangential_component_error=None,
