@@ -17,7 +17,6 @@ def test_unimplemented(modeling_data):
     assert_raises(NotImplementedError, m.set_halo_density_profile)
     assert_raises(NotImplementedError, m.set_concentration, 4.0)
     assert_raises(NotImplementedError, m.set_mass, 1.0e15)
-    assert_raises(NotImplementedError, m.eval_sigma_crit, 0.4, 0.5)
     assert_raises(NotImplementedError, m.eval_density, [0.3], 0.3)
     assert_raises(NotImplementedError, m.eval_sigma, [0.3], 0.3)
     assert_raises(NotImplementedError, m.eval_sigma_mean, [0.3], 0.3)
