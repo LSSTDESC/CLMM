@@ -6,7 +6,7 @@ import os
 import numpy as np
 from ..gcdata import GCData
 from ..galaxycluster import GalaxyCluster
-from ..modeling import get_reduced_shear_from_convergence
+from ..theory import get_reduced_shear_from_convergence
 
 
 def load_GCR_catalog(catalog_name):

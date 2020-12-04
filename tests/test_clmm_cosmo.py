@@ -2,7 +2,7 @@
 import json
 import numpy as np
 from numpy.testing import assert_raises, assert_allclose, assert_equal
-import clmm.modeling as md
+import clmm.theory as theo
 from clmm.cosmology.parent_class import CLMMCosmology
 # ----------- Some Helper Functions for the Validation Tests ---------------
 
@@ -14,7 +14,7 @@ def load_validation_config():
         testcase = json.load(fin)
     numcosmo_profile = np.genfromtxt(numcosmo_path+'radial_profiles.txt', names=True)
     # Cosmology
-    cosmo = md.Cosmology(H0=testcase['cosmo_H0'], Omega_dm0=testcase['cosmo_Om0']-testcase['cosmo_Ob0'], Omega_b0=testcase['cosmo_Ob0'])
+    cosmo = theo.Cosmology(H0=testcase['cosmo_H0'], Omega_dm0=testcase['cosmo_Om0']-testcase['cosmo_Ob0'], Omega_b0=testcase['cosmo_Ob0'])
     return cosmo, testcase
 # --------------------------------------------------------------------------
 
@@ -40,7 +40,7 @@ TOLERANCE = {'rtol': 1.0e-15}
 def test_z_and_a(modeling_data, cosmo_init):
     """ Unit tests abstract class z and a methdods """
 
-    cosmo = md.Cosmology()
+    cosmo = theo.Cosmology()
 
     z = np.linspace(0.0, 10.0, 1000)
 
@@ -94,7 +94,7 @@ def test_z_and_a(modeling_data, cosmo_init):
 
 def test_cosmo_basic(modeling_data, cosmo_init):
     """ Unit tests abstract class z and a methdods """
-    cosmo = md.Cosmology(**cosmo_init)
+    cosmo = theo.Cosmology(**cosmo_init)
     # Test get_<PAR>(z)
     Omega_m0 = cosmo['Omega_m0']
     assert_allclose(cosmo.get_Omega_m(0.0), Omega_m0, **TOLERANCE)
@@ -126,7 +126,7 @@ def test_cosmo_basic(modeling_data, cosmo_init):
                     testcase['dsl'], 1.2e-8)
 
     # Test initializing cosmo
-    test_cosmo = md.Cosmology(be_cosmo=cosmo.be_cosmo)
+    test_cosmo = theo.Cosmology(be_cosmo=cosmo.be_cosmo)
 
 
 def _rad2mpc_helper(dist, redshift, cosmo, do_inverse):
@@ -144,7 +144,7 @@ def test_convert_rad_to_mpc():
     """ Test conversion between physical and angular units and vice-versa. """
     # Set some default values if I want them
     redshift = 0.25
-    cosmo = md.Cosmology(H0=70.0, Omega_dm0=0.3-0.045, Omega_b0=0.045)
+    cosmo = theo.Cosmology(H0=70.0, Omega_dm0=0.3-0.045, Omega_b0=0.045)
     # Test basic conversions each way
     _rad2mpc_helper(0.003, redshift, cosmo, do_inverse=False)
     _rad2mpc_helper(1.0, redshift, cosmo, do_inverse=True)
@@ -158,9 +158,9 @@ def test_convert_rad_to_mpc():
         _rad2mpc_helper(1.0, onez, cosmo, do_inverse=True)
     # Test some different H0
     for oneh0 in [30., 50., 67.3, 74.7, 100.]:
-        _rad2mpc_helper(0.33, 0.5, md.Cosmology(H0=oneh0, Omega_dm0=0.3-0.045, Omega_b0=0.045), do_inverse=False)
-        _rad2mpc_helper(1.0, 0.5, md.Cosmology(H0=oneh0, Omega_dm0=0.3-0.045, Omega_b0=0.045), do_inverse=True)
+        _rad2mpc_helper(0.33, 0.5, theo.Cosmology(H0=oneh0, Omega_dm0=0.3-0.045, Omega_b0=0.045), do_inverse=False)
+        _rad2mpc_helper(1.0, 0.5, theo.Cosmology(H0=oneh0, Omega_dm0=0.3-0.045, Omega_b0=0.045), do_inverse=True)
     # Test some different Omega_M
     for oneomm in [0.1, 0.3, 0.5, 1.0]:
-        _rad2mpc_helper(0.33, 0.5, md.Cosmology(H0=70.0, Omega_dm0=oneomm-0.045, Omega_b0=0.045), do_inverse=False)
-        _rad2mpc_helper(1.0, 0.5, md.Cosmology(H0=70.0, Omega_dm0=oneomm-0.045, Omega_b0=0.045), do_inverse=True)
+        _rad2mpc_helper(0.33, 0.5, theo.Cosmology(H0=70.0, Omega_dm0=oneomm-0.045, Omega_b0=0.045), do_inverse=False)
+        _rad2mpc_helper(1.0, 0.5, theo.Cosmology(H0=70.0, Omega_dm0=oneomm-0.045, Omega_b0=0.045), do_inverse=True)

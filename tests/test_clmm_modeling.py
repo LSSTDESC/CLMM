@@ -4,8 +4,8 @@ import sys
 import json
 import numpy as np
 from numpy.testing import assert_raises, assert_allclose, assert_equal
-import clmm.modeling as md
-from clmm.modeling.parent_class import CLMModeling
+import clmm.theory as theo
+from clmm.theory.parent_class import CLMModeling
 
 
 def test_unimplemented(modeling_data):
@@ -27,16 +27,16 @@ def test_unimplemented(modeling_data):
 def test_instantiate(modeling_data):
     """ Unit tests for modeling objects' instantiation """
 
-    m = md.Modeling()
+    m = theo.Modeling()
     m.set_concentration(4.0)
     m.set_mass(1.0e15)
-    assert m.backend == md.be_nick
+    assert m.backend == theo.be_nick
 
     assert_raises(ValueError, m.set_cosmo, 3.0)
     assert_raises(ValueError, m.set_halo_density_profile, halo_profile_model='bla')
     assert_raises(ValueError, m.set_halo_density_profile, massdef='blu')
 
-    if md.be_nick == 'nc':
+    if theo.be_nick == 'nc':
         import gi
         gi.require_version("NumCosmoMath", "1.0")
         gi.require_version("NumCosmo", "1.0")

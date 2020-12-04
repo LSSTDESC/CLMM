@@ -4,7 +4,7 @@ from clmm import GCData
 from scipy import integrate
 from scipy.interpolate import interp1d
 from astropy import units
-from clmm.modeling import predict_tangential_shear, predict_convergence
+from clmm.theory import predict_tangential_shear, predict_convergence
 from clmm.utils import convert_units, compute_lensed_ellipticity
 
 def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_SO=200, massdef='mean',halo_profile_model='nfw', zsrc_min=None,
@@ -78,9 +78,9 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_
         :math:`M_{\Delta{\rm SO}}=4/3\pi\Delta_{\rm SO}\rho_{m}(z_{\rm lens})R_{\Delta{\rm SO}}^3`
     massdef : string, optional
         Definition the mass overdensity with respect to the 'mean' or 'critical' density of the universe. Default is 'mean' as it works
-        for all modeling backends. The NumCosmo and CCL backends also allow the use of 'critical'.
+        for all theory backends. The NumCosmo and CCL backends also allow the use of 'critical'.
     halo_profile_model : string, optional
-        Halo density profile. Default is 'nfw', which works for all modeling backends. The NumCosmo backend allow for more
+        Halo density profile. Default is 'nfw', which works for all theory backends. The NumCosmo backend allow for more
         options, e.g. 'einasto' or 'burkert' profiles.
     zsrc_min : float, optional
         The minimum true redshift of the sources. If photoz errors are included, the observed redshift

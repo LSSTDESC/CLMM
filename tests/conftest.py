@@ -12,7 +12,7 @@ def modeling_data(request):
     nonexist = False
 
     try:
-        avail = clmm.modeling.backend_is_available(param)
+        avail = clmm.theory.backend_is_available(param)
     except ValueError:
         avail = False
         nonexist = True
@@ -21,7 +21,7 @@ def modeling_data(request):
         pytest.skip(f"Unsupported backend `{param}'.")
 
     os.environ['CLMM_MODELING_BACKEND'] = param
-    importlib.reload(clmm.modeling)
+    importlib.reload(clmm.theory)
     importlib.reload(clmm.dataops)
     importlib.reload(clmm)
 

@@ -5,7 +5,7 @@ from numpy import testing
 import clmm
 from clmm import GCData
 import clmm.dataops as da
-import clmm.modeling as md
+import clmm.theory as theo
 
 TOLERANCE = {'atol':1.e-7, 'rtol':1.e-7}
 

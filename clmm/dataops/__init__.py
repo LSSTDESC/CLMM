@@ -8,7 +8,7 @@ import warnings
 import numpy as np
 from .. gcdata import GCData
 from . .utils import compute_radial_averages, make_bins, convert_units, arguments_consistency
-from .. modeling import get_critical_surface_density
+from .. theory import get_critical_surface_density
 
 
 def compute_tangential_and_cross_components(
