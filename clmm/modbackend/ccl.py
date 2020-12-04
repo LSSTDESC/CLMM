@@ -4,6 +4,7 @@ import pyccl as ccl
 
 import numpy as np
 import warnings
+from packaging import version
 
 from .. constants import Constants as const
 from . import func_layer
@@ -17,52 +18,44 @@ __all__ = ['CCLCLMModeling', 'Modeling', 'Cosmology']+func_layer.__all__
 
 class CCLCLMModeling(CLMModeling):
 
-    def __init__(self, massdef='mean', delta_mdef=200, halo_profile_model='nfw', z_max=5.0):
-
+    def __init__(self, massdef='mean', delta_mdef=200, halo_profile_model='nfw'):
+        CLMModeling.__init__(self)
+        # Update class attributes
         self.backend = 'ccl'
-
-        self.mdef_dict = {'mean':      'matter',
-                          'critical':   'critical',
-                          'virial':    'critical'}
-        self.hdpm_dict = {'nfw':       ccl.halos.HaloProfileNFW,
-                          'einasto':   ccl.halos.HaloProfileEinasto,
-                          'hernquist': ccl.halos.HaloProfileHernquist}
+        self.mdef_dict = {
+            'mean': 'matter',
+            'critical': 'critical',
+            'virial': 'critical'}
+        self.hdpm_dict = {'nfw': ccl.halos.HaloProfileNFW}
+        # Only add the options of einasto and hernquist if CLL version >= 10(?)
+        # because results below this version are unstable.
+        if version.parse(ccl.__version__) >= version.parse('10'):
+            self.hdpm_dict.update({
+                'einasto': ccl.halos.HaloProfileEinasto,
+                'hernquist': ccl.halos.HaloProfileHernquist})
+        # Attributes exclusive to this class
         self.hdpm_opts = {'nfw': {'truncated': False,
                                   'projected_analytic': True,
                                   'cumul2d_analytic': True},
                           'einasto': {},
                           'hernquist': {}}
-
-        self.halo_profile_model = ''
-        self.massdef = ''
-        self.delta_mdef = 0
-        self.hdpm = None
         self.MDelta = 0.0
-
-        self.set_cosmo(None)
-        self.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
-
         rhocrit_mks = 3.0*100.0*100.0/(8.0*np.pi*const.GNEWT.value)
         rhocrit_cd2018 = rhocrit_mks*1000.0*1000.0*const.PC_TO_METER.value*1.0e6/const.SOLAR_MASS.value
         self.cor_factor = rhocrit_cd2018/ccl.physical_constants.RHO_CRITICAL
+        # Set halo profile and cosmology
+        self.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
+        self.set_cosmo(None)
 
     def set_cosmo(self, cosmo):
-        if cosmo:
-            if not isinstance(cosmo, CCLCosmology):
-                raise ValueError(f"Incompatible cosmology object {cosmo}.")
-            self.cosmo = cosmo
-        else:
-            self.cosmo = CCLCosmology()
+        self._set_cosmo(cosmo, CCLCosmology)
 
     def set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
         # Check if choices are supported
-        if not halo_profile_model in self.hdpm_dict:
-            raise ValueError(f"Halo density profile model {halo_profile_model} not currently supported")
-        if not massdef in self.mdef_dict:
-            raise ValueError(f"Halo density profile mass definition {massdef} not currently supported")
+        self.validate_definitions(massdef, halo_profile_model)
 
         # Check if we have already an instance of the required object, if not create one
-        if not((halo_profile_model == self.halo_profile_model) and(massdef == self.massdef) and(delta_mdef == self.delta_mdef)):
+        if not((halo_profile_model == self.halo_profile_model) and (massdef == self.massdef) and (delta_mdef == self.delta_mdef)):
             self.halo_profile_model = halo_profile_model
             self.massdef = massdef
 
@@ -159,6 +152,7 @@ class CCLCosmology(CLMMCosmology):
     def __init__(self, **kwargs):
         super(CCLCosmology, self).__init__(**kwargs)
 
+        # this tag will be used to check if the cosmology object is accepted by the modeling
         self.backend = 'ccl'
 
         assert isinstance(self.be_cosmo, ccl.Cosmology)
@@ -206,4 +200,3 @@ class CCLCosmology(CLMMCosmology):
 
 Modeling = CCLCLMModeling
 Cosmology = CCLCosmology
-

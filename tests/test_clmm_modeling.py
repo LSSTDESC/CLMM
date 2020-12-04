@@ -28,11 +28,6 @@ def test_unimplemented(modeling_data):
 def test_instantiate(modeling_data):
     """ Unit tests for modeling objects' instantiation """
 
-    if md.be_nick == 'ct':
-        assert_raises(NotImplementedError, md.Modeling)
-        # Nothing else to check. CT does not implement an object-oriented interface.
-        return
-
     m = md.Modeling()
     m.set_concentration(4.0)
     m.set_mass(1.0e15)

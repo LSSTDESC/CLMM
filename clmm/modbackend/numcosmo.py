@@ -21,46 +21,34 @@ __all__ = ['NumCosmoCLMModeling', 'Modeling', 'Cosmology']+func_layer.__all__
 class NumCosmoCLMModeling(CLMModeling):
 
     def __init__(self, massdef='mean', delta_mdef=200, halo_profile_model='nfw'):
+        CLMModeling.__init__(self)
+        # Update class attributes
         Ncm.cfg_init()
-
         self.backend = 'nc'
-
+        self.mdef_dict = {
+            'mean': Nc.HaloDensityProfileMassDef.MEAN,
+            'critical': Nc.HaloDensityProfileMassDef.CRITICAL,
+            'virial':Nc.HaloDensityProfileMassDef.VIRIAL}
+        self.hdpm_dict = {
+            'nfw': Nc.HaloDensityProfileNFW.new,
+            'einasto': Nc.HaloDensityProfileEinasto.new,
+            'hernquist': Nc.HaloDensityProfileHernquist.new}
+        # Set halo profile and cosmology
+        self.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
         self.set_cosmo(None)
 
-        self.mdef_dict = {'mean':      Nc.HaloDensityProfileMassDef.MEAN,
-                          'critical':   Nc.HaloDensityProfileMassDef.CRITICAL,
-                          'virial':    Nc.HaloDensityProfileMassDef.VIRIAL}
-        self.hdpm_dict = {'nfw':       Nc.HaloDensityProfileNFW.new,
-                          'einasto':   Nc.HaloDensityProfileEinasto.new,
-                          'hernquist': Nc.HaloDensityProfileHernquist.new}
-
-        self.halo_profile_model = ''
-        self.massdef = ''
-        self.delta_mdef = 0
-        self.hdpm = None
-
-        self.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
-
     def set_cosmo(self, cosmo):
-        if cosmo:
-            if not isinstance(cosmo, NumCosmoCosmology):
-                raise ValueError(f"Incompatible cosmology object {cosmo}.")
-            self.cosmo = cosmo
-        else:
-            self.cosmo = NumCosmoCosmology()
+        self._set_cosmo(cosmo, NumCosmoCosmology)
 
         self.smd = Nc.WLSurfaceMassDensity.new(self.cosmo.dist)
         self.smd.prepare_if_needed(self.cosmo.be_cosmo)
 
     def set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
         # Check if choices are supported
-        if not halo_profile_model in self.hdpm_dict:
-            raise ValueError(f"Halo density profile model {halo_profile_model} not currently supported")
-        if not massdef in self.mdef_dict:
-            raise ValueError(f"Halo density profile mass definition {massdef} not currently supported")
+        self.validate_definitions(massdef, halo_profile_model)
 
         # Check if we have already an instance of the required object, if not create one
-        if not((halo_profile_model == self.halo_profile_model) and(massdef == self.massdef) and(delta_mdef == self.delta_mdef)):
+        if not((halo_profile_model == self.halo_profile_model) and (massdef == self.massdef) and (delta_mdef == self.delta_mdef)):
             self.halo_profile_model = halo_profile_model
             self.massdef = massdef
 
@@ -98,12 +86,6 @@ class NumCosmoCLMModeling(CLMModeling):
 
     def set_mass(self, mdelta):
         self.hdpm.props.log10MDelta = math.log10(mdelta)
-
-    def eval_da_z1z2(self, z1, z2):
-        fac = self.cosmo.be_cosmo.RH_Mpc()
-
-        f = lambda zi, zf: self.cosmo.dist.angular_diameter_z1_z2(self.cosmo.be_cosmo, zi, zf)*fac
-        return np.vectorize(f)(z1, z2)
 
     def eval_sigma_crit(self, z_len, z_src):
 
@@ -171,6 +153,7 @@ class NumCosmoCosmology(CLMMCosmology):
 
         super(NumCosmoCosmology, self).__init__(**kwargs)
 
+        # this tag will be used to check if the cosmology object is accepted by the modeling
         self.backend = 'nc'
 
         if dist:

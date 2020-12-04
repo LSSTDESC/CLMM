@@ -8,7 +8,6 @@ from clmm.constants import Constants as clc
 from clmm.galaxycluster import GalaxyCluster
 from clmm import GCData
 
-
 TOLERANCE = {'rtol': 1.0e-6, 'atol': 1.0e-6}
 
 # ----------- Some Helper Functions for the Validation Tests ---------------
@@ -81,9 +80,9 @@ def load_validation_config():
         'halo_profile_model': testcase['density_profile_parametrization'],
         'z_src_model': 'single_plane',
         }
-
     return {'TEST_CASE': testcase, 'z_source': testcase['z_source'],
             'cosmo': cosmo,
+            'cosmo_pars': {k.replace('cosmo_', ''): v for k, v in testcase.items() if 'cosmo_' in k},
             'RHO_PARAMS': RHO_PARAMS, 'SIGMA_PARAMS': SIGMA_PARAMS, 'GAMMA_PARAMS': GAMMA_PARAMS,
             'numcosmo_profiles': numcosmo_profile, 'TEST_CASE_SIGMAC_PCST': testcase_SIGMAC_PCST,
             'CLMM_SIGMAC_PCST': CLMM_SIGMAC_PCST}
@@ -224,6 +223,19 @@ def test_profiles(modeling_data):
     assert_allclose(md.predict_excess_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS']),
                     cfg['numcosmo_profiles']['DeltaSigma'], 2.0e-9)
 
+    # Object Oriented tests
+    m = md.Modeling()
+    m.set_cosmo(cosmo)
+    m.set_halo_density_profile(halo_profile_model=cfg['SIGMA_PARAMS']['halo_profile_model'])
+    m.set_concentration(cfg['SIGMA_PARAMS']['cdelta'])
+    m.set_mass(cfg['SIGMA_PARAMS']['mdelta'])
+
+    assert_allclose(m.eval_density(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl']),
+                    cfg['numcosmo_profiles']['rho'], **TOLERANCE)
+    assert_allclose(m.eval_sigma(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl']),
+                    cfg['numcosmo_profiles']['Sigma'], **TOLERANCE)
+    assert_allclose(m.eval_sigma_excess(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl']),
+                    cfg['numcosmo_profiles']['DeltaSigma'], **TOLERANCE)
 
 def test_get_critical_surface_density(modeling_data):
     """ Validation test for critical surface density """
@@ -248,6 +260,21 @@ def test_get_critical_surface_density(modeling_data):
     cluster.add_critical_surface_density(cfg['cosmo'])
     assert_allclose(cluster.galcat['sigma_c'],
                     cfg['TEST_CASE']['nc_Sigmac'], 1.2e-8)
+
+    # Object Oriented tests
+    m = md.Modeling()
+    m.set_cosmo(cfg['cosmo'])
+    assert_allclose(m.eval_sigma_crit(cfg['TEST_CASE']['z_cluster'],
+                                      cfg['TEST_CASE']['z_source']),
+                cfg['TEST_CASE']['nc_Sigmac'], 1.2e-8)
+    # Check behaviour when sources are in front of the lens
+    z_cluster = 0.3
+    z_source = 0.2
+    assert_allclose(m.eval_sigma_crit(z_cluster, z_source),
+                np.inf, 1.0e-10)
+    z_source = [0.2,0.12,0.25]
+    assert_allclose(m.eval_sigma_crit(z_cluster, z_source),
+                [np.inf,np.inf, np.inf], 1.0e-10)
 
 
 def helper_physics_functions(func):
@@ -331,7 +358,6 @@ def test_shear_convergence_unittests(modeling_data):
                     1./((1-kappa)**2-abs(gammat)**2), 1.0e-10)
     assert_allclose(1./((1-kappa)**2-abs(gammat)**2), cfg['numcosmo_profiles']['mu'], 4.0e-7)
 
-
     # Check that shear, reduced shear and convergence return zero and magnification returns one if source is in front of the cluster
     # First, check for a array of radius and single source z
     r = np.logspace(-2,2,10)
@@ -363,5 +389,55 @@ def test_shear_convergence_unittests(modeling_data):
     assert_allclose(md.predict_magnification(r, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
                     np.ones(len(z_source)), 1.0e-10)
 
+    # Object Oriented tests
+    m = md.Modeling()
+    m.set_cosmo(cosmo)
+    m.set_halo_density_profile(halo_profile_model=cfg['GAMMA_PARAMS']['halo_profile_model'])
+    m.set_concentration(cfg['GAMMA_PARAMS']['cdelta'])
+    m.set_mass(cfg['GAMMA_PARAMS']['mdelta'])
+    # First compute SigmaCrit to correct cosmology changes
+    sigma_c = m.eval_sigma_crit(cfg['GAMMA_PARAMS']['z_cluster'], cfg['GAMMA_PARAMS']['z_source'])
 
+    # Compute sigma_c in the new cosmology and get a correction factor
+    sigma_c_undo = m.eval_sigma_crit(cfg['GAMMA_PARAMS']['z_cluster'], cfg['GAMMA_PARAMS']['z_source'])
+    sigmac_corr = (sigma_c_undo/sigma_c)
 
+    # Validate tangential shear
+    profile_pars = (cfg['GAMMA_PARAMS']['r_proj'], cfg['GAMMA_PARAMS']['z_cluster'],
+                    cfg['GAMMA_PARAMS']['z_source'])
+    gammat = m.eval_shear(*profile_pars)
+    assert_allclose(gammat*sigmac_corr, cfg['numcosmo_profiles']['gammat'], 1.0e-8)
+
+    # Validate convergence
+    kappa = m.eval_convergence(*profile_pars)
+    assert_allclose(kappa*sigmac_corr, cfg['numcosmo_profiles']['kappa'], 1.0e-8)
+
+    # Validate reduced tangential shear
+    assert_allclose(m.eval_reduced_shear(*profile_pars),
+                    gammat/(1.0-kappa), 1.0e-10)
+    assert_allclose(gammat*sigmac_corr/(1.-(kappa*sigmac_corr)), cfg['numcosmo_profiles']['gt'], 1.0e-6)
+
+    # Validate magnification
+    assert_allclose(m.eval_magnification(*profile_pars),
+                    1./((1-kappa)**2-abs(gammat)**2), 1.0e-10)
+    assert_allclose(1./((1-kappa)**2-abs(gammat)**2), cfg['numcosmo_profiles']['mu'], 4.0e-7)
+
+    # Check that shear, reduced shear and convergence return zero and magnification returns one if source is in front of the cluster
+    # First, check for a array of radius and single source z
+    r = np.logspace(-2,2,10)
+    z_cluster = 0.3
+    z_source = 0.2
+
+    assert_allclose(m.eval_convergence(r, z_cluster, z_source), np.zeros(len(r)), 1.0e-10)
+    assert_allclose(m.eval_shear(r, z_cluster, z_source), np.zeros(len(r)), 1.0e-10)
+    assert_allclose(m.eval_reduced_shear(r, z_cluster, z_source), np.zeros(len(r)), 1.0e-10)
+    assert_allclose(m.eval_magnification(r, z_cluster, z_source), np.ones(len(r)), 1.0e-10)
+
+    # Second, check a single radius and array of source z
+    r = 1.
+    z_source = [0.25, 0.1, 0.14, 0.02]
+
+    assert_allclose(m.eval_convergence(r, z_cluster, z_source), np.zeros(len(z_source)), 1.0e-10)
+    assert_allclose(m.eval_shear(r, z_cluster, z_source), np.zeros(len(z_source)), 1.0e-10)
+    assert_allclose(m.eval_reduced_shear(r, z_cluster, z_source), np.zeros(len(z_source)), 1.0e-10)
+    assert_allclose(m.eval_magnification(r, z_cluster, z_source), np.ones(len(z_source)), 1.0e-10)
