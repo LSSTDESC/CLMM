@@ -342,8 +342,15 @@ def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled):
         zbins = np.arange(zmin, zmax, 0.03)
         pzbins_grid.append(zbins)
         pzpdf_grid.append(np.exp(-0.5*((zbins-row['z'])/row['pzsigma'])**2)/np.sqrt(2*np.pi*row['pzsigma']**2))
-    galaxy_catalog['pzbins'] = pzbins_grid
-    galaxy_catalog['pzpdf'] = pzpdf_grid
+    # quick fix to make sure the shape of galaxy_catalog['pzpdf'][i] is (1,)
+    # it add n_extra extra zero values to the last galaxy and removes it from the out table
+    n_extra = len(pzbins_grid[-2])
+    pzbins_grid[-1] = np.append(pzbins_grid[-1], np.zeros(n_extra))
+    pzpdf_grid[-1] = np.append(pzpdf_grid[-1], np.zeros(n_extra))
+    galaxy_catalog['pzbins'] = np.array(pzbins_grid, dtype=object)
+    galaxy_catalog['pzpdf'] = np.array(pzpdf_grid, dtype=object)
+    galaxy_catalog['pzbins'][-1] = pzbins_grid[-1][:-n_extra]
+    galaxy_catalog['pzpdf'][-1] = pzpdf_grid[-1][:-n_extra]
 
     return galaxy_catalog
 
