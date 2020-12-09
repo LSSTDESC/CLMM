@@ -6,6 +6,7 @@ import warnings
 from .gcdata import GCData
 from .dataops import compute_tangential_and_cross_components, make_radial_profile
 from .modeling import get_critical_surface_density
+from .plotting import plot_profiles
 
 
 class GalaxyCluster():
@@ -299,3 +300,52 @@ class GalaxyCluster():
                     raise AttributeError(f'table {table_name} already exists, set overwrite=True or use another name.')
             setattr(self, table_name, profile_table)
         return profile_table
+    def plot_profiles(self, tangential_component='gt', tangential_component_error='gt_err',
+                      cross_component='gx', cross_component_error='gx_err', table_name='profile',
+                      xscale='linear',yscale='linear'):
+        """Plot shear profiles using `plotting.plot_profiles` function
+
+        Parameters
+        ----------
+        tangential_component: str, optional
+            Name of the column in the galcat Table corresponding to the tangential component of the shear or reduced shear (Delta Sigma not yet implemented). Default: 'gt'
+        tangential_component_error: str, optional
+            Name of the column in the galcat Table corresponding to the uncertainty in tangential component of the shear or reduced shear. Default: 'gt_err'
+        cross_component: str, optional
+            Name of the column in the galcat Table corresponding to the cross component of the shear or reduced shear. Default: 'gx'
+        cross_component_error: str, optional
+            Name of the column in the galcat Table corresponding to the uncertainty in the cross component of the shear or reduced shear. Default: 'gx_err'
+        table_name: str, optional
+            Name of the GalaxyCluster() `.profile` attribute. Default: 'profile'
+        xscale:
+            matplotlib.pyplot.xscale parameter to set x-axis scale (e.g. to logarithmic axis)
+        yscale:
+            matplotlib.pyplot.yscale parameter to set y-axis scale (e.g. to logarithmic axis)
+
+        Returns
+        -------
+        fig:
+            The matplotlib figure object that has been plotted to.
+        axes:
+            The matplotlib axes object that has been plotted to.
+        """
+        if not hasattr(self, table_name):
+            ValueError(f"GalaxyClusters does not have a {table_name} table.")
+        profile = getattr(self, table_name)
+        for col in (tangential_component, tangential_component_error,
+            cross_component, cross_component_error):
+            if col not in profile.colnames:
+                warnings.warn(f"Column for plotting {col} does not exist.")
+        return plot_profiles(
+            rbins=profile['radius'],
+            r_units=profile.meta['bin_units'],
+            tangential_component=(profile[tangential_component] if
+                tangential_component in profile.colnames else None),
+            tangential_component_error=(profile[tangential_component_error] if
+                tangential_component_error in profile.colnames else None),
+            cross_component=(profile[cross_component] if
+                cross_component in profile.colnames else None),
+            cross_component_error=(profile[cross_component_error] if
+                cross_component_error in profile.colnames else None),
+            xscale=xscale, yscale=yscale)
+
