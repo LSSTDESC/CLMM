@@ -141,7 +141,10 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_
         if nbad < 1:
             break
         replacements = _generate_galaxy_catalog(ngals=nbad, **params)
-        galaxy_catalog[badids] = replacements
+        #galaxy_catalog[badids] = replacements
+        for n in range(nbad):    
+            for col in galaxy_catalog.colnames:
+                galaxy_catalog[col][badids[n]]=replacements[col][n]
 
     # Final check to see if there are bad galaxies left
     nbad, _ = _find_aphysical_galaxies(galaxy_catalog, zsrc_min)
