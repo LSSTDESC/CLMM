@@ -118,7 +118,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_
     if zsrc_min is None: zsrc_min = cluster_z+0.1
 
     params = {'cluster_m' : cluster_m, 'cluster_z' : cluster_z, 'cluster_c' : cluster_c,
-              'cosmo' : cosmo, 'Delta_SO' : Delta_SO, 'zsrc' : zsrc, 'massdef' : massdef, 
+              'cosmo' : cosmo, 'Delta_SO' : Delta_SO, 'zsrc' : zsrc, 'massdef' : massdef,
               'halo_profile_model' : halo_profile_model,
               'zsrc_min' : zsrc_min,
               'zsrc_max' : zsrc_max,'shapenoise' : shapenoise, 'photoz_sigma_unscaled' : photoz_sigma_unscaled,
@@ -142,9 +142,9 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_
             break
         replacements = _generate_galaxy_catalog(ngals=nbad, **params)
         #galaxy_catalog[badids] = replacements
-        for n in range(nbad):    
+        for badid, replacement in zip(badids, replacements):
             for col in galaxy_catalog.colnames:
-                galaxy_catalog[col][badids[n]]=replacements[col][n]
+                galaxy_catalog[col][badid] = replacement[col]
 
     # Final check to see if there are bad galaxies left
     nbad, _ = _find_aphysical_galaxies(galaxy_catalog, zsrc_min)
@@ -409,14 +409,14 @@ def _find_aphysical_galaxies(galaxy_catalog, zsrc_min):
     badgals : array_like
         A list of the indicies in galaxy_catalog that need to be redrawn
     """
-    etot = np.sqrt(galaxy_catalog['e1'] * galaxy_catalog['e1'] 
+    etot = np.sqrt(galaxy_catalog['e1'] * galaxy_catalog['e1']
                    + galaxy_catalog['e2'] * galaxy_catalog['e2'])
 
 #     badgals = np.where((np.abs(galaxy_catalog['e1']) > 1.0) |
 #                        (np.abs(galaxy_catalog['e2']) > 1.0) |
 #                        (galaxy_catalog['ztrue'] < zsrc_min)
 #                       )[0]
-    
+
     badgals = np.where((etot > 1.0) | (galaxy_catalog['ztrue'] < zsrc_min))[0]
     nbad = len(badgals)
     return nbad, badgals
