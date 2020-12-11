@@ -5,7 +5,9 @@ import warnings
 
 def plot_profiles(rbins, tangential_component, tangential_component_error,
                   cross_component, cross_component_error, r_units=None,
-                  xscale='linear', yscale='linear'):
+                  xscale='linear', yscale='linear',
+                  tangential_component_label="Tangential component",
+                  cross_component_label="Cross component"):
     """Plot shear profiles
 
     Parameters
@@ -38,11 +40,13 @@ def plot_profiles(rbins, tangential_component, tangential_component_error,
     fig, axes = plt.subplots()
     axes.errorbar(rbins, tangential_component,
                   yerr=tangential_component_error,
-                  fmt='bo-', label="Tangential component")
+                  fmt='bo-', label=tangential_component_label,
+                  lw=.2, markersize=1.5, elinewidth=.5, capthick=3)
     # Plot the cross shears
     axes.errorbar(rbins, cross_component,
-                 yerr=cross_component_error,
-                 fmt='ro-', label="Cross component")
+                  yerr=cross_component_error,
+                  fmt='ro-', label=cross_component_label,
+                  lw=.2, markersize=1.5, elinewidth=.5, capthick=3)
     # format
     axes.set_xscale(xscale)
     axes.set_yscale(yscale)

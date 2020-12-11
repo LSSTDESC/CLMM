@@ -347,5 +347,6 @@ class GalaxyCluster():
             cross_component=profile[cross_component],
             cross_component_error=(profile[cross_component_error] if
                 cross_component_error in profile.colnames else None),
-            xscale=xscale, yscale=yscale)
-
+            xscale=xscale, yscale=yscale,
+            tangential_component_label=tangential_component,
+            cross_component_label=cross_component)
