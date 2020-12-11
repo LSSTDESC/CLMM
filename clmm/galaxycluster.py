@@ -330,21 +330,21 @@ class GalaxyCluster():
             The matplotlib axes object that has been plotted to.
         """
         if not hasattr(self, table_name):
-            ValueError(f"GalaxyClusters does not have a {table_name} table.")
+            raise ValueError(f"GalaxyClusters does not have a '{table_name}' table.")
         profile = getattr(self, table_name)
-        for col in (tangential_component, tangential_component_error,
-            cross_component, cross_component_error):
+        for col in (tangential_component, cross_component):
             if col not in profile.colnames:
-                warnings.warn(f"Column for plotting {col} does not exist.")
+                raise ValueError(f"Column for plotting '{col}' does not exist.")
+        for col in (tangential_component_error, cross_component_error):
+            if col not in profile.colnames:
+                warnings.warn(f"Column for plotting '{col}' does not exist.")
         return plot_profiles(
             rbins=profile['radius'],
             r_units=profile.meta['bin_units'],
-            tangential_component=(profile[tangential_component] if
-                tangential_component in profile.colnames else None),
+            tangential_component=profile[tangential_component],
             tangential_component_error=(profile[tangential_component_error] if
                 tangential_component_error in profile.colnames else None),
-            cross_component=(profile[cross_component] if
-                cross_component in profile.colnames else None),
+            cross_component=profile[cross_component],
             cross_component_error=(profile[cross_component_error] if
                 cross_component_error in profile.colnames else None),
             xscale=xscale, yscale=yscale)
