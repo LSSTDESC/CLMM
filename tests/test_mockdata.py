@@ -4,9 +4,8 @@ from numpy.testing import assert_allclose, assert_equal
 import clmm
 import clmm.dataops as da
 import sys
-sys.path.append('examples/support')
-import mock_data as mock
-from sampler import fitters
+from clmm.support import mock_data as mock
+from clmm.support.sampler import fitters
 from clmm import Cosmology
 
 
@@ -126,4 +125,3 @@ def test_shapenoise():
     gauss = 5000*np.exp(-0.5*(bins[:-1]+0.05)**2/sigma**2)/(sigma*np.sqrt(2*np.pi))
     assert_allclose(np.histogram(data['e1'],bins=bins)[0],gauss,atol=50,rtol=0.05)
     assert_allclose(np.histogram(data['e2'],bins=bins)[0],gauss,atol=50,rtol=0.05)
-    
