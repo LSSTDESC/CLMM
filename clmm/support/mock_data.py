@@ -24,7 +24,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_
     described by the parameter `photoz_sigma_unscaled`. If this parameter is set to a float,
     we add Gaussian uncertainty to the source redshift
 
-    ..math::
+    .. math::
         z \sim \mathcal{N}\left(z^{\rm true},
         \sigma_{\rm photo-z}^{\rm unscaled}(1+z^{\rm true}) \right)
 
