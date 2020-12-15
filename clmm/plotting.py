@@ -52,6 +52,6 @@ def plot_profiles(rbins, tangential_component, tangential_component_error,
     axes.set_yscale(yscale)
     axes.legend()
     axes.set_xlabel(f'Radius [{r_units}]')
-    axes.set_ylabel(r'$\gamma$')
+    axes.set_ylabel(rf'{tangential_component_label} | {cross_component_label}')
 
     return fig, axes
