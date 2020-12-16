@@ -177,7 +177,7 @@ def convert_units(dist1, unit1, unit2, redshift=None, cosmo=None):
 
 
 def convert_shapes_to_epsilon(shape_1,shape_2, shape_definition='epsilon',kappa=0):
-    """ Given shapes and their definition, convert them to epsilon ellipticities or reduced shears, which can be used in GalaxyCluster.galcat
+    """ Convert shape components 1 and 2 appropriately to make them estimators of the reduced shear once averaged. 
     Definitions used here based on Bartelmann & Schneider 2001 (https://arxiv.org/pdf/astro-ph/9912508.pdf):
     axis ratio (q) and position angle (phi) (Not implemented)
     epsilon = (1-q/(1+q) exp(2i phi)
@@ -185,8 +185,12 @@ def convert_shapes_to_epsilon(shape_1,shape_2, shape_definition='epsilon',kappa=
     shear(gamma)
     reduced_shear(g) = gamma/(1-kappa)
     convergence(kappa)
+    
+    If `shape_definition = 'chi'`, returns the corresponding `epsilon` ellipticities
+    If `shape_definition = 'shear'`, returns the corresponding reduced shear, given the convergence `kappa`
+    If `shape_definition = 'epsilon'` or `reduced_shear`, returns them as is as no conversion is needed.
 
-
+    
     Parameters
     ----------
     shape_1 : array_like
