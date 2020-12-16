@@ -1,6 +1,5 @@
 """A collection of scripts that can be used to plot the various quantities that CLMM models."""
 import matplotlib.pyplot as plt
-import warnings
 
 
 def plot_profiles(rbins, tangential_component, tangential_component_error,

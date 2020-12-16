@@ -122,7 +122,7 @@ class CLMModeling:
         float
             Cosmology-dependent critical surface density in units of :math:`M_\odot\ Mpc^{-2}`
         """
-        raise NotImplementedError
+        return self.cosmo.eval_sigma_crit(z_len, z_src)
 
     def eval_density(self, r3d, z_cl):
         r"""Retrieve the 3d density :math:`\rho(r)`.

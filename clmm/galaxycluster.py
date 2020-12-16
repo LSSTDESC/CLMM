@@ -5,7 +5,7 @@ import pickle
 import warnings
 from .gcdata import GCData
 from .dataops import compute_tangential_and_cross_components, make_radial_profile
-from .modeling import get_critical_surface_density
+from .theory import get_critical_surface_density
 from .plotting import plot_profiles
 
 

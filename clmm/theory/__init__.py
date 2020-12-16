@@ -63,21 +63,19 @@ if not be_nick in __backends:
 #  Loads the backend of choice if available or send a warning and try to load
 #  the backends in the order of the dictionary above.
 
-base_package = __package__ if __package__ else "clmm"
-
 if not __backends[be_nick]['available']:
     warnings.warn("CLMM Backend requested `%s' is not available, trying others..." %(__backends[be_nick]['name']))
     loaded = False
     for be1 in __backends:
         if __backends[be1]['available']:
-            backend = importlib.import_module(".modbackend."+__backends[be1]['module'], package=base_package)
+            backend = importlib.import_module("clmm.theory."+__backends[be1]['module'])
             loaded = True
             be_nick = be1
             break
     if not loaded:
         raise ImportError("No modeling backend available.")
 else:
-    backend = importlib.import_module(".modbackend."+__backends[be_nick]['module'], package=base_package)
+    backend = importlib.import_module("clmm.theory."+__backends[be_nick]['module'])
 
 #  Import all backend symbols:
 #    Updates __all__ with the exported symbols from the backend and
@@ -86,7 +84,7 @@ else:
 __all__ = backend.__all__
 globals().update({k: getattr(backend, k) for k in backend.__all__})
 
-from .modbackend import func_layer
+from . import func_layer
 
 try:
     func_layer.gcm = Modeling()

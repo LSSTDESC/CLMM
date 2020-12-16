@@ -4,12 +4,12 @@ from clmm import GCData
 from scipy import integrate
 from scipy.interpolate import interp1d
 from astropy import units
-from clmm.modeling import predict_tangential_shear, predict_convergence
+from clmm.theory import predict_tangential_shear, predict_convergence
 from clmm.utils import convert_units, compute_lensed_ellipticity
 
 def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_SO=200, massdef='mean',halo_profile_model='nfw', zsrc_min=None,
                             zsrc_max=7., field_size=8., shapenoise=None, photoz_sigma_unscaled=None, nretry=5, ngals=None, ngal_density=None):
-    """Generates a mock dataset of sheared background galaxies.
+    r"""Generates a mock dataset of sheared background galaxies.
 
     We build galaxy catalogs following a series of steps.
 
@@ -24,7 +24,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_
     described by the parameter `photoz_sigma_unscaled`. If this parameter is set to a float,
     we add Gaussian uncertainty to the source redshift
 
-    ..math::
+    .. math::
         z \sim \mathcal{N}\left(z^{\rm true},
         \sigma_{\rm photo-z}^{\rm unscaled}(1+z^{\rm true}) \right)
 
@@ -68,8 +68,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_
     zsrc : float or str
         Choose the source galaxy distribution to be fixed or drawn from a predefined distribution.
         float : All sources galaxies at this fixed redshift
-        str : Draws individual source gal redshifts from predefined distribution. Options
-              are: chang13
+        str : Draws individual source gal redshifts from predefined distribution. Options are: chang13
     Delta_SO : float, optional
         Overdensity density contrast used to compute the cluster mass and concentration. The
         spherical overdensity mass is computed as the mass enclosed within the radius
@@ -78,9 +77,9 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_
         :math:`M_{\Delta{\rm SO}}=4/3\pi\Delta_{\rm SO}\rho_{m}(z_{\rm lens})R_{\Delta{\rm SO}}^3`
     massdef : string, optional
         Definition the mass overdensity with respect to the 'mean' or 'critical' density of the universe. Default is 'mean' as it works
-        for all modeling backends. The NumCosmo and CCL backends also allow the use of 'critical'.
+        for all theory backends. The NumCosmo and CCL backends also allow the use of 'critical'.
     halo_profile_model : string, optional
-        Halo density profile. Default is 'nfw', which works for all modeling backends. The NumCosmo backend allow for more
+        Halo density profile. Default is 'nfw', which works for all theory backends. The NumCosmo backend allow for more
         options, e.g. 'einasto' or 'burkert' profiles.
     zsrc_min : float, optional
         The minimum true redshift of the sources. If photoz errors are included, the observed redshift
