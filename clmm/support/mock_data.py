@@ -88,7 +88,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_
         The maximum true redshift of the sources, apllied when galaxy redshifts are drawn from
         a redshift distribution. If photoz errors are included, the observed redshift may be larger than
         zsrc_max.
-    field_size : float
+    field_size : float, optional
         The size of the field (field_size x field_size) to be simulated.
         Proper distance in Mpc  at the cluster redshift.
     shapenoise : float, optional
