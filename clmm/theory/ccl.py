@@ -109,13 +109,13 @@ class CCLCLMModeling(CLMModeling):
         sigma = self.eval_sigma(r_proj, z_cl)
         sigma_crit = self.eval_sigma_crit(z_cl, z_src)
 
-        return np.nan_to_num(sigma/sigma_crit, nan=np.nan, posinf=np.inf, neginf=-np.inf)
+        return sigma/sigma_crit
 
     def eval_reduced_shear(self, r_proj, z_cl, z_src):
         kappa = self.eval_convergence(r_proj, z_cl, z_src)
         gamma_t = self.eval_shear(r_proj, z_cl, z_src)
 
-        return np.nan_to_num(np.divide(gamma_t, (1-kappa)), nan=np.nan, posinf=np.inf, neginf=-np.inf)
+        return np.divide(gamma_t, (1-kappa))
 
     def eval_magnification(self, r_proj, z_cl, z_src):
         kappa = self.eval_convergence(r_proj, z_cl, z_src)
