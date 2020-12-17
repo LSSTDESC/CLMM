@@ -152,23 +152,23 @@ def test_astropyify_ccl_cosmo(modeling_data):
     #assert_raises(TypeError, theo.astropyify_ccl_cosmo, [70., 0.3, 0.25, 0.05])
 
 
-def test_get_reduced_shear(modeling_data):
-    """ Unit tests for get_reduced_shear """
+def test_compute_reduced_shear(modeling_data):
+    """ Unit tests for compute_reduced_shear """
     # Make some base objects
     shear = [0.5, 0.75, 1.25, 0.0]
     convergence = [0.75, -0.2, 0.0, 2.3]
     truth = [2., 0.625, 1.25, 0.0]
 
     # Test for exception if shear and convergence are not the same length
-    assert_raises(ValueError, theo.get_reduced_shear_from_convergence, shear[:3], convergence[:2])
-    assert_raises(ValueError, theo.get_reduced_shear_from_convergence, shear[:2], convergence[:3])
+    assert_raises(ValueError, theo.compute_reduced_shear_from_convergence, shear[:3], convergence[:2])
+    assert_raises(ValueError, theo.compute_reduced_shear_from_convergence, shear[:2], convergence[:3])
 
     # Check output including: float, list, ndarray
-    assert_allclose(theo.get_reduced_shear_from_convergence(shear[0], convergence[0]),
+    assert_allclose(theo.compute_reduced_shear_from_convergence(shear[0], convergence[0]),
                     truth[0], **TOLERANCE)
-    assert_allclose(theo.get_reduced_shear_from_convergence(shear, convergence),
+    assert_allclose(theo.compute_reduced_shear_from_convergence(shear, convergence),
                     truth, **TOLERANCE)
-    assert_allclose(theo.get_reduced_shear_from_convergence(np.array(shear), np.array(convergence)),
+    assert_allclose(theo.compute_reduced_shear_from_convergence(np.array(shear), np.array(convergence)),
                     np.array(truth), **TOLERANCE)
 
 

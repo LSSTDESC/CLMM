@@ -6,7 +6,7 @@ import numpy as np
 import warnings
 
 from . import generic
-from . generic import get_reduced_shear_from_convergence
+from . generic import compute_reduced_shear_from_convergence
 
 __all__ = generic.__all__+['compute_3d_density', 'compute_surface_density',
            'compute_excess_surface_density', 'compute_critical_surface_density',
