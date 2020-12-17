@@ -91,7 +91,7 @@ class NumCosmoCLMModeling(CLMModeling):
 
     def eval_3d_density(self, r3d, z_cl):
 
-        f = lambda r3d, z_cl: self.hdpm.eval_3d_density(self.cosmo.be_cosmo, r3d, z_cl)
+        f = lambda r3d, z_cl: self.hdpm.eval_density(self.cosmo.be_cosmo, r3d, z_cl)
         return np.vectorize(f)(r3d, z_cl)
 
     def eval_surface_density(self, r_proj, z_cl):

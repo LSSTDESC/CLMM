@@ -8,10 +8,10 @@ import warnings
 from . import generic
 from . generic import get_reduced_shear_from_convergence
 
-__all__ = generic.__all__+['get_3d_density', 'predict_surface_density',
-           'predict_excess_surface_density', 'get_critical_surface_density',
-           'predict_tangential_shear', 'predict_convergence',
-           'predict_reduced_tangential_shear', 'predict_magnification']
+__all__ = generic.__all__+['compute_3d_density', 'compute_surface_density',
+           'compute_excess_surface_density', 'get_critical_surface_density',
+           'compute_tangential_shear', 'compute_convergence',
+           'compute_reduced_tangential_shear', 'compute_magnification']
 
 
 def compute_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profile_model='nfw', massdef='mean'):
@@ -63,7 +63,7 @@ def compute_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_pr
     gcm.set_concentration(cdelta)
     gcm.set_mass(mdelta)
 
-    return gcm.eval_density(r3d, z_cl)
+    return gcm.eval_3d_density(r3d, z_cl)
 
 
 def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
@@ -116,7 +116,7 @@ def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     gcm.set_concentration(cdelta)
     gcm.set_mass(mdelta)
 
-    return gcm.eval_sigma(r_proj, z_cl)
+    return gcm.eval_surface_density(r_proj, z_cl)
 
 
 def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
@@ -167,7 +167,7 @@ def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
     gcm.set_concentration(cdelta)
     gcm.set_mass(mdelta)
 
-    return gcm.eval_sigma_excess(r_proj, z_cl)
+    return gcm.eval_excess_surface_density(r_proj, z_cl)
 
 
 def get_critical_surface_density(cosmo, z_cluster, z_source):
@@ -267,7 +267,7 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
         if np.min(r_proj) < 1.e-11:
             raise ValueError(f"Rmin = {np.min(r_proj):.2e} Mpc/h! This value is too small and may cause computational issues.")
 
-        gammat = gcm.eval_shear(r_proj, z_cluster, z_source)
+        gammat = gcm.eval_tangential_shear(r_proj, z_cluster, z_source)
     else:
         raise ValueError("Unsupported z_src_model")
 
@@ -328,7 +328,7 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     -----
     Need to figure out if we want to raise exceptions rather than errors here?
     """
-    sigma = predict_surface_density(r_proj, mdelta, cdelta, z_cluster, cosmo,
+    sigma = compute_surface_density(r_proj, mdelta, cdelta, z_cluster, cosmo,
                                     delta_mdef=delta_mdef, halo_profile_model=halo_profile_model,
                                     massdef=massdef)
 
@@ -410,7 +410,7 @@ def compute_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
         gcm.set_concentration(cdelta)
         gcm.set_mass(mdelta)
 
-        red_tangential_shear = gcm.eval_reduced_tangential_hear(r_proj, z_cluster, z_source)
+        red_tangential_shear = gcm.eval_reduced_tangential_shear(r_proj, z_cluster, z_source)
 
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average'+

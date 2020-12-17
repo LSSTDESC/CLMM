@@ -95,7 +95,7 @@ class CTModeling(CLMModeling):
         ----
         This function just adds eval_surface_density+eval_excess_surface_density
         '''
-        return self.eval_sigma(r_proj, z_cl)+self.eval_sigma_excess(r_proj, z_cl)
+        return self.eval_surface_density(r_proj, z_cl)+self.eval_excess_surface_density(r_proj, z_cl)
 
     def eval_excess_surface_density(self, r_proj, z_cl):
         if np.min(r_proj)<1.e-11:
@@ -111,7 +111,7 @@ class CTModeling(CLMModeling):
                 self.cdelta, Omega_m, delta=self.delta_mdef)*h*1.0e12 # pc**-2 to Mpc**-2
 
     def eval_tangential_shear(self, r_proj, z_cl, z_src):
-        delta_sigma = self.eval_sigma_excess(r_proj, z_cl)
+        delta_sigma = self.eval_excess_surface_density(r_proj, z_cl)
         sigma_c = self.eval_sigma_crit(z_cl, z_src)
         return np.nan_to_num(delta_sigma/sigma_c, nan=np.nan, posinf=np.inf, neginf=-np.inf)
 
