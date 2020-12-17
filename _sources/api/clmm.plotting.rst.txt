@@ -1,5 +1,5 @@
-clmm.plotting module
-====================
+clmm.plotting package
+=====================
 
 .. automodule:: clmm.plotting
    :members:

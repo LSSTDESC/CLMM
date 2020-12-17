@@ -1,5 +1,5 @@
-clmm.dataops module
-===================
+clmm.dataops package
+====================
 
 .. automodule:: clmm.dataops
    :members:

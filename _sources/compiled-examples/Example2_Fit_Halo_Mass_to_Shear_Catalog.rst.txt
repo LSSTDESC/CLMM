@@ -33,8 +33,6 @@ First, we import some standard packages.
 
 .. code:: ipython3
 
-    import sys
-    sys.path.append('./support')
     try: import clmm
     except:
         import notebook_install
@@ -43,18 +41,9 @@ First, we import some standard packages.
     import matplotlib.pyplot as plt
     import numpy as np
     from numpy import random
-    from sampler import fitters
+    from clmm.support.sampler import fitters
     
     clmm.__version__
-
-
-
-
-.. parsed-literal::
-
-    '0.6.0'
-
-
 
 Next, we import ``clmm``\ ’s core modules.
 
@@ -62,7 +51,7 @@ Next, we import ``clmm``\ ’s core modules.
 
     import clmm.dataops as da
     import clmm.galaxycluster as gc
-    import clmm.modeling as modeling
+    import clmm.theory as theory
     from clmm import Cosmology
 
 We then import a support modules for a specific data sets. ``clmm``
@@ -71,7 +60,7 @@ format compatible with ``clmm``.
 
 .. code:: ipython3
 
-    import mock_data as mock
+    from clmm.support import mock_data as mock
 
 Making mock data
 ----------------
@@ -115,16 +104,6 @@ Chang et al. (2013) redshift distribution. - ``noisy_data_z``:
                                                 shapenoise=0.05, 
                                                 photoz_sigma_unscaled=0.05, ngals=ngals)
 
-
-.. parsed-literal::
-
-    /Users/combet/anaconda3/envs/clmmenv/lib/python3.8/site-packages/numpy/ma/core.py:2831: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      _data = np.array(data, dtype=dtype, copy=copy,
-    /Users/combet/anaconda3/envs/clmmenv/lib/python3.8/site-packages/clmm-0.6.0-py3.8.egg/clmm/modbackend/cluster_toolkit.py:275: RuntimeWarning: divide by zero encountered in true_divide
-    /Users/combet/anaconda3/envs/clmmenv/lib/python3.8/site-packages/clmm-0.6.0-py3.8.egg/clmm/modbackend/cluster_toolkit.py:278: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /Users/combet/anaconda3/envs/clmmenv/lib/python3.8/site-packages/clmm-0.6.0-py3.8.egg/clmm/modbackend/cluster_toolkit.py:428: UserWarning: Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.
-
-
 The galaxy catalogs are converted to a ``clmm.GalaxyCluster`` object and
 may be saved for later use.
 
@@ -156,21 +135,9 @@ Any saved ``clmm.GalaxyCluster`` object may be read in for analysis.
     print("Cluster info = ID:", cl2.unique_id, "; ra:", cl2.ra, "; dec:", cl2.dec, "; z_l :", cl2.z)
     print("The number of source galaxies is :", len(cl2.galcat))
 
-
-.. parsed-literal::
-
-    Cluster info = ID: CL_ideal_z ; ra: 0.0 ; dec: 0.0 ; z_l : 0.3
-    The number of source galaxies is : 10000
-
-
 .. code:: ipython3
 
     h = plt.hist(cl2.galcat['z'], bins=50)
-
-
-
-.. image:: Example2_Fit_Halo_Mass_to_Shear_Catalog_files/Example2_Fit_Halo_Mass_to_Shear_Catalog_21_0.png
-
 
 Deriving observables
 --------------------
@@ -212,28 +179,6 @@ After running ``clmm.dataops.make_radial_profile`` on a
     for n in cl1.profile.colnames: cl1.profile[n].format = "%6.3e"
     cl1.profile.pprint(max_width=-1)
 
-
-.. parsed-literal::
-
-    radius_min   radius  radius_max     gt      gt_err      gx       gx_err      z       z_err     n_src  
-    ---------- --------- ---------- --------- --------- ---------- --------- --------- --------- ---------
-     7.000e-01 7.446e-01  7.863e-01 4.353e-02 1.310e-04  5.393e-19 6.164e-19 8.000e-01 2.916e-17 5.800e+01
-     7.863e-01 8.403e-01  8.831e-01 3.984e-02 1.099e-04  2.597e-19 6.459e-19 8.000e-01 2.394e-17 8.600e+01
-     8.831e-01 9.395e-01  9.920e-01 3.654e-02 1.001e-04 -4.976e-19 6.271e-19 8.000e-01 3.417e-17 9.500e+01
-     9.920e-01 1.052e+00  1.114e+00 3.332e-02 8.489e-05 -1.815e-19 4.464e-19 8.000e-01 1.933e-17 1.320e+02
-     1.114e+00 1.187e+00  1.251e+00 3.003e-02 7.147e-05 -5.194e-19 3.881e-19 8.000e-01 1.807e-17 1.510e+02
-     1.251e+00 1.331e+00  1.406e+00 2.708e-02 6.600e-05  4.217e-19 3.936e-19 8.000e-01 1.718e-17 1.670e+02
-     1.406e+00 1.495e+00  1.579e+00 2.426e-02 5.243e-05  4.293e-19 3.165e-19 8.000e-01 0.000e+00 2.350e+02
-     1.579e+00 1.677e+00  1.773e+00 2.165e-02 3.908e-05 -1.203e-19 2.217e-19 8.000e-01 5.995e-18 3.430e+02
-     1.773e+00 1.887e+00  1.992e+00 1.917e-02 3.431e-05  2.780e-21 1.285e-19 8.000e-01 0.000e+00 4.010e+02
-     1.992e+00 2.119e+00  2.237e+00 1.692e-02 2.751e-05  8.490e-20 1.212e-19 8.000e-01 0.000e+00 4.990e+02
-     2.237e+00 2.377e+00  2.513e+00 1.489e-02 2.158e-05  2.077e-20 9.383e-20 8.000e-01 8.623e-18 6.630e+02
-     2.513e+00 2.672e+00  2.823e+00 1.301e-02 1.844e-05 -9.408e-20 8.278e-20 8.000e-01 0.000e+00 7.800e+02
-     2.823e+00 2.999e+00  3.171e+00 1.135e-02 1.421e-05  9.214e-20 5.313e-20 8.000e-01 0.000e+00 1.042e+03
-     3.171e+00 3.369e+00  3.561e+00 9.842e-03 1.130e-05 -4.033e-20 4.817e-20 8.000e-01 3.078e-18 1.301e+03
-     3.561e+00 3.781e+00  4.000e+00 8.509e-03 8.960e-06 -5.483e-20 3.145e-20 8.000e-01 2.738e-18 1.644e+03
-
-
 We visualize the radially binned shear for the 3 configurations
 
 .. code:: ipython3
@@ -253,26 +198,13 @@ We visualize the radially binned shear for the 3 configurations
     plt.gca().set_ylabel(r'$g_t$', fontsize=fsize)
     plt.legend()
 
-
-
-
-.. parsed-literal::
-
-    <matplotlib.legend.Legend at 0x7f8db5445550>
-
-
-
-
-.. image:: Example2_Fit_Halo_Mass_to_Shear_Catalog_files/Example2_Fit_Halo_Mass_to_Shear_Catalog_33_1.png
-
-
 Create the halo model
 ---------------------
 
-``clmm.modeling.predict_reduced_tangential_shear`` supports various
+``clmm.theory.predict_reduced_tangential_shear`` supports various
 parametric halo profile functions, including ``nfw``. Beware that the
-``clmm.modeling`` module works in units of :math:`Mpc/h`, whereas the
-data is cosmology-independent, with units of :math:`Mpc`.
+``clmm.theory`` module works in units of :math:`Mpc/h`, whereas the data
+is cosmology-independent, with units of :math:`Mpc`.
 
 .. code:: ipython3
 
@@ -338,14 +270,6 @@ distribution.
     print(f'Best fit mass for cluster 1 = {m_est1:.2e} +/- {m_est_err1:.2e} Msun')
     print(f'Best fit mass for cluster 2 = {m_est2:.2e} +/- {m_est_err2:.2e} Msun')
     print(f'Best fit mass for cluster 3 = {m_est3:.2e} +/- {m_est_err3:.2e} Msun')
-
-
-.. parsed-literal::
-
-    Best fit mass for cluster 1 = 1.00e+15 +/- 7.57e+10 Msun
-    Best fit mass for cluster 2 = 8.68e+14 +/- 2.62e+12 Msun
-    Best fit mass for cluster 3 = 8.87e+14 +/- 4.12e+13 Msun
-
 
 As expected, the reconstructed mass is biased whenever the sources are
 not located at a single redshift as this was not accounted for in the
@@ -414,8 +338,3 @@ data
     axes[1].set_ylabel('reduced tangential shear', fontsize=fsize)
     
     fig.tight_layout()
-
-
-
-.. image:: Example2_Fit_Halo_Mass_to_Shear_Catalog_files/Example2_Fit_Halo_Mass_to_Shear_Catalog_43_0.png
-

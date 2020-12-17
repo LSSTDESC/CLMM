@@ -1,0 +1,7 @@
+clmm.theory.parent\_class module
+================================
+
+.. automodule:: clmm.theory.parent_class
+   :members:
+   :undoc-members:
+   :show-inheritance:
