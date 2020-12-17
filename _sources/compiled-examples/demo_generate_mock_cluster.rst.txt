@@ -34,6 +34,15 @@ Make sure we know which version we’re using
 
     clmm.__version__
 
+
+
+
+.. parsed-literal::
+
+    '0.8.0'
+
+
+
 Import mock data module and setup the configuration
 ---------------------------------------------------
 
@@ -127,6 +136,17 @@ zsrc_min, before photoz errors are applied (when relevant)
     print('ideal_with_src_dist:',np.sum(ideal_with_src_dist['ztrue']<zsrc_min))
     print('allsystematics:',np.sum(allsystematics['ztrue']<zsrc_min))
 
+
+.. parsed-literal::
+
+    Number of galaxies below zsrc_min:
+    ideal_data: 0
+    noisy_data_src_z: 0
+    noisy_data_photoz: 0
+    ideal_with_src_dist: 0
+    allsystematics: 0
+
+
 Inspect the catalog data
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -140,6 +160,16 @@ Inspect the catalog data
             ideal_data[n].format = "%6.3e" 
     ideal_data[0:3].pprint(max_width=-1)
 
+
+.. parsed-literal::
+
+        ra        dec         e1         e2         z       ztrue    id
+    ---------- ---------- ---------- ---------- --------- --------- ---
+     2.070e-01 -1.241e-02 -9.833e-03 -1.183e-03 8.000e-01 8.000e-01   0
+    -3.229e-02  6.713e-02  1.851e-02 -2.318e-02 8.000e-01 8.000e-01   1
+    -1.035e-01  1.507e-01  4.153e-03 -1.078e-02 8.000e-01 8.000e-01   2
+
+
 -  With photo-z errors
 
 .. code:: ipython3
@@ -148,6 +178,16 @@ Inspect the catalog data
         if n!='id':
             noisy_data_photoz[n].format = "%6.3e"
     noisy_data_photoz[0:3].pprint(max_width=-1)
+
+
+.. parsed-literal::
+
+        ra        dec         e1         e2         z       ztrue         pzbins [61]             pzpdf [61]        id
+    ---------- ---------- ---------- ---------- --------- --------- ----------------------- ---------------------- ---
+     2.242e-01  1.358e-01  2.634e-03  3.996e-02 7.516e-01 8.000e-01 -1.484e-01 .. 1.652e+00 8.550e-22 .. 8.550e-22   0
+     2.126e-01  3.265e-02 -1.014e-01 -2.158e-02 8.639e-01 8.000e-01 -3.608e-02 .. 1.764e+00 8.550e-22 .. 8.550e-22   1
+    -2.130e-01 -1.619e-01 -8.417e-03 -5.663e-03 8.523e-01 8.000e-01 -4.766e-02 .. 1.752e+00 8.550e-22 .. 8.550e-22   2
+
 
 -  Histogram of the redshift distribution of background galaxies, for
    the true (originally drawn) redshift and the redshift once photoz
@@ -163,6 +203,19 @@ Inspect the catalog data
     plt.xlabel('Source Redshift')
     plt.legend()
 
+
+
+
+.. parsed-literal::
+
+    <matplotlib.legend.Legend at 0x7fde26cf45b0>
+
+
+
+
+.. image:: demo_generate_mock_cluster_files/demo_generate_mock_cluster_32_1.png
+
+
 .. code:: ipython3
 
     # pdz for one of the galaxy in the catalog, 
@@ -173,6 +226,19 @@ Inspect the catalog data
     plt.xlabel('Redshift')
     plt.ylabel('Photo-z Probability Distribution')
     plt.legend(loc=1)
+
+
+
+
+.. parsed-literal::
+
+    <matplotlib.legend.Legend at 0x7fde26c32550>
+
+
+
+
+.. image:: demo_generate_mock_cluster_files/demo_generate_mock_cluster_33_1.png
+
 
 Populate in a galaxy cluster object
 
@@ -195,6 +261,19 @@ Plot source galaxy ellipticities
     plt.xlabel('Ellipticity 1',fontsize='x-large')
     plt.ylabel('Ellipticity 2',fontsize='x-large')
 
+
+
+
+.. parsed-literal::
+
+    Text(0, 0.5, 'Ellipticity 2')
+
+
+
+
+.. image:: demo_generate_mock_cluster_files/demo_generate_mock_cluster_37_1.png
+
+
 Generate the mock data catalog with different field-of-view options
 -------------------------------------------------------------------
 
@@ -215,11 +294,32 @@ example.
                                                    shapenoise=0.05, photoz_sigma_unscaled=0.05,
                                                    field_size=4, ngals=ngals)
 
+
+.. parsed-literal::
+
+    /home/aguena/.local/lib/python3.9/site-packages/clmm-0.8.0-py3.9.egg/clmm/cosmology/cluster_toolkit.py:69: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
+    /home/aguena/.local/lib/python3.9/site-packages/clmm-0.8.0-py3.9.egg/clmm/cosmology/cluster_toolkit.py:79: RuntimeWarning: divide by zero encountered in true_divide
+    /home/aguena/.local/lib/python3.9/site-packages/clmm-0.8.0-py3.9.egg/clmm/theory/func_layer.py:354: UserWarning: Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.
+
+
 .. code:: ipython3
 
     plt.scatter(allsystematics['ra'],allsystematics['dec'], marker='.', label = 'default 8 x 8 Mpc/h FoV')
     plt.scatter(allsystematics2['ra'],allsystematics2['dec'],marker='.', label = 'user-defined FoV')
     plt.legend()
+
+
+
+
+.. parsed-literal::
+
+    <matplotlib.legend.Legend at 0x7fde26ae9a90>
+
+
+
+
+.. image:: demo_generate_mock_cluster_files/demo_generate_mock_cluster_42_1.png
+
 
 -  Alternatively, the user may provide a galaxy density (here 1
    gal/arcmin2 to roughly match 1000 galaxies, given the configuration)
@@ -234,11 +334,37 @@ example.
                                                   ngal_density=1)
     print(f'Number of drawn galaxies = {len(allsystematics3)}')
 
+
+.. parsed-literal::
+
+    Number of drawn galaxies = 760
+
+
+.. parsed-literal::
+
+    /home/aguena/.local/lib/python3.9/site-packages/clmm-0.8.0-py3.9.egg/clmm/cosmology/cluster_toolkit.py:69: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
+    /home/aguena/.local/lib/python3.9/site-packages/clmm-0.8.0-py3.9.egg/clmm/cosmology/cluster_toolkit.py:79: RuntimeWarning: divide by zero encountered in true_divide
+    /home/aguena/.local/lib/python3.9/site-packages/clmm-0.8.0-py3.9.egg/clmm/theory/func_layer.py:354: UserWarning: Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.
+
+
 .. code:: ipython3
 
     plt.scatter(allsystematics['ra'],allsystematics['dec'], marker='.', label = 'ngals = 1000')
     plt.scatter(allsystematics3['ra'],allsystematics3['dec'],marker='.', label = 'ngal_density = 1 gal / arcmin2')
     plt.legend()
+
+
+
+
+.. parsed-literal::
+
+    <matplotlib.legend.Legend at 0x7fde26a744c0>
+
+
+
+
+.. image:: demo_generate_mock_cluster_files/demo_generate_mock_cluster_45_1.png
+
 
 Generate mock data with different galaxy cluster options
 --------------------------------------------------------
@@ -261,6 +387,14 @@ Changing the overdensity parameter (all backend) - ``Delta_SO`` keyword (default
         zsrc_min=zsrc_min,
         zsrc_max=7.0, shapenoise=0.05, photoz_sigma_unscaled=0.05, ngals=ngals)
 
+
+.. parsed-literal::
+
+    /home/aguena/.local/lib/python3.9/site-packages/clmm-0.8.0-py3.9.egg/clmm/cosmology/cluster_toolkit.py:69: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
+    /home/aguena/.local/lib/python3.9/site-packages/clmm-0.8.0-py3.9.egg/clmm/cosmology/cluster_toolkit.py:79: RuntimeWarning: divide by zero encountered in true_divide
+    /home/aguena/.local/lib/python3.9/site-packages/clmm-0.8.0-py3.9.egg/clmm/theory/func_layer.py:354: UserWarning: Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.
+
+
 Using the critical mass definition (Numcosmo and CCL only) - ``massdef`` keyword (default = ‘mean’)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -271,6 +405,63 @@ WARNING: error will be raised if using the cluster-toolkit backend
     allsystematics_200critical = mock.generate_galaxy_catalog(
         cluster_m, cluster_z, concentration, cosmo,'chang13',  massdef='critical', zsrc_min=zsrc_min,
         zsrc_max=7.0, shapenoise=0.05, photoz_sigma_unscaled=0.05, ngals=ngals)
+
+
+::
+
+
+    ---------------------------------------------------------------------------
+
+    ValueError                                Traceback (most recent call last)
+
+    <ipython-input-25-0c945f55d872> in <module>
+    ----> 1 allsystematics_200critical = mock.generate_galaxy_catalog(
+          2     cluster_m, cluster_z, concentration, cosmo,'chang13',  massdef='critical', zsrc_min=zsrc_min,
+          3     zsrc_max=7.0, shapenoise=0.05, photoz_sigma_unscaled=0.05, ngals=ngals)
+
+
+    ~/.local/lib/python3.9/site-packages/clmm-0.8.0-py3.9.egg/clmm/support/mock_data.py in generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_SO, massdef, halo_profile_model, zsrc_min, zsrc_max, field_size, shapenoise, photoz_sigma_unscaled, nretry, ngals, ngal_density)
+        134         ngals = _compute_ngals(ngal_density, field_size, cosmo, cluster_z, zsrc, zsrc_min=zsrc_min, zsrc_max=zsrc_max)
+        135 
+    --> 136     galaxy_catalog = _generate_galaxy_catalog(ngals=ngals, **params)
+        137     # Check for bad galaxies and replace them
+        138     for i in range(nretry):
+
+
+    ~/.local/lib/python3.9/site-packages/clmm-0.8.0-py3.9.egg/clmm/support/mock_data.py in _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, zsrc, Delta_SO, massdef, halo_profile_model, zsrc_min, zsrc_max, shapenoise, photoz_sigma_unscaled, field_size)
+        211     galaxy_catalog = _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo, field_size)
+        212     # Compute the shear on each source galaxy
+    --> 213     gamt = predict_tangential_shear(galaxy_catalog['r_mpc'], mdelta=cluster_m,
+        214                                             cdelta=cluster_c, z_cluster=cluster_z,
+        215                                             z_source=galaxy_catalog['ztrue'], cosmo=cosmo,
+
+
+    ~/.local/lib/python3.9/site-packages/clmm-0.8.0-py3.9.egg/clmm/theory/func_layer.py in predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef, halo_profile_model, massdef, z_src_model)
+        261 
+        262         gcm.set_cosmo(cosmo)
+    --> 263         gcm.set_halo_density_profile(halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
+        264         gcm.set_concentration(cdelta)
+        265         gcm.set_mass(mdelta)
+
+
+    ~/.local/lib/python3.9/site-packages/clmm-0.8.0-py3.9.egg/clmm/theory/cluster_toolkit.py in set_halo_density_profile(self, halo_profile_model, massdef, delta_mdef)
+         63     def set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
+         64         # Check if choices are supported
+    ---> 65         self.validate_definitions(massdef, halo_profile_model)
+         66         # Update values
+         67         self.halo_profile_model = halo_profile_model
+
+
+    ~/.local/lib/python3.9/site-packages/clmm-0.8.0-py3.9.egg/clmm/theory/parent_class.py in validate_definitions(self, massdef, halo_profile_model)
+         42     def validate_definitions(self, massdef, halo_profile_model):
+         43         if not massdef in self.mdef_dict:
+    ---> 44             raise ValueError(f"Halo density profile mass definition {massdef} not currently supported")
+         45         if not halo_profile_model in self.hdpm_dict:
+         46             raise ValueError(f"Halo density profile model {halo_profile_model} not currently supported")
+
+
+    ValueError: Halo density profile mass definition critical not currently supported
+
 
 Changing the halo density profile (Numcosmo only) - ``halo_profile_model`` keyword (default = ‘nfw’)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

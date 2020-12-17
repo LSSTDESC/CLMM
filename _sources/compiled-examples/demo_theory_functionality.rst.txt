@@ -31,6 +31,15 @@ Make sure we know which version we’re using
 
     clmm.__version__
 
+
+
+
+.. parsed-literal::
+
+    '0.8.0'
+
+
+
 Define a cosmology using astropy
 
 .. code:: ipython3
@@ -124,26 +133,61 @@ Plot the predicted profiles
 
     plot_profile(r3d, rho, '$\\rho_{\\rm 3d}$')
 
+
+
+.. image:: demo_theory_functionality_files/demo_theory_functionality_23_0.png
+
+
 .. code:: ipython3
 
     plot_profile(r3d, Sigma, '$\\Sigma_{\\rm 2d}$')
+
+
+
+.. image:: demo_theory_functionality_files/demo_theory_functionality_24_0.png
+
 
 .. code:: ipython3
 
     plot_profile(r3d, DeltaSigma, '$\\Delta\\Sigma_{\\rm 2d}$')
 
+
+
+.. image:: demo_theory_functionality_files/demo_theory_functionality_25_0.png
+
+
 .. code:: ipython3
 
     plot_profile(r3d, kappa, '$\\kappa$')
+
+
+
+.. image:: demo_theory_functionality_files/demo_theory_functionality_26_0.png
+
 
 .. code:: ipython3
 
     plot_profile(r3d, gammat, '$\\gamma_t$')
 
+
+
+.. image:: demo_theory_functionality_files/demo_theory_functionality_27_0.png
+
+
 .. code:: ipython3
 
     plot_profile(r3d, gt, '$g_t$')
 
+
+
+.. image:: demo_theory_functionality_files/demo_theory_functionality_28_0.png
+
+
 .. code:: ipython3
 
     plot_profile(r3d, mu, '$\mu$')
+
+
+
+.. image:: demo_theory_functionality_files/demo_theory_functionality_29_0.png
+
