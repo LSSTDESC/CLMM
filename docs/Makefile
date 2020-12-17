@@ -7,7 +7,9 @@ SPHINXBUILD   = sphinx-build
 SPHINXPROJ    = CLMM
 SOURCEDIR     = .
 BUILDDIR      = _build
-RM			  = rm -rf
+RM	      = rm -rf
+SPHINXAPIDOC  = sphinx-apidoc
+MODULEDIR     = ../clmm
 
 # Put it first so that "make" without argument is like "make help".
 help:
@@ -16,7 +18,7 @@ help:
 .PHONY: help Makefile
 
 .PHONY: html
-html: 
+html: sphinx-apidoc
 	@$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(0) -W
 
 .PHONY: clean
@@ -27,3 +29,6 @@ clean:
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
 %: Makefile
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O) -W
+
+sphinx-apidoc:
+	@$(SPHINXAPIDOC) --separate --no-toc -f -M -o api $(MODULEDIR)

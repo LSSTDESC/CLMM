@@ -4,8 +4,8 @@ import sys
 import json
 import numpy as np
 from numpy.testing import assert_raises, assert_allclose, assert_equal
-import clmm.modeling as md
-from clmm.clmm_modeling import CLMModeling
+import clmm.theory as theo
+from clmm.theory.parent_class import CLMModeling
 
 
 def test_unimplemented(modeling_data):
@@ -17,7 +17,6 @@ def test_unimplemented(modeling_data):
     assert_raises(NotImplementedError, m.set_halo_density_profile)
     assert_raises(NotImplementedError, m.set_concentration, 4.0)
     assert_raises(NotImplementedError, m.set_mass, 1.0e15)
-    assert_raises(NotImplementedError, m.eval_sigma_crit, 0.4, 0.5)
     assert_raises(NotImplementedError, m.eval_density, [0.3], 0.3)
     assert_raises(NotImplementedError, m.eval_sigma, [0.3], 0.3)
     assert_raises(NotImplementedError, m.eval_sigma_mean, [0.3], 0.3)
@@ -28,21 +27,16 @@ def test_unimplemented(modeling_data):
 def test_instantiate(modeling_data):
     """ Unit tests for modeling objects' instantiation """
 
-    if md.be_nick == 'ct':
-        assert_raises(NotImplementedError, md.Modeling)
-        # Nothing else to check. CT does not implement an object-oriented interface.
-        return
-
-    m = md.Modeling()
+    m = theo.Modeling()
     m.set_concentration(4.0)
     m.set_mass(1.0e15)
-    assert m.backend == md.be_nick
+    assert m.backend == theo.be_nick
 
     assert_raises(ValueError, m.set_cosmo, 3.0)
     assert_raises(ValueError, m.set_halo_density_profile, halo_profile_model='bla')
     assert_raises(ValueError, m.set_halo_density_profile, massdef='blu')
 
-    if md.be_nick == 'nc':
+    if theo.be_nick == 'nc':
         import gi
         gi.require_version("NumCosmoMath", "1.0")
         gi.require_version("NumCosmo", "1.0")

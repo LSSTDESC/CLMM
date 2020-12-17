@@ -233,3 +233,20 @@ class CLMMCosmology:
             Distances in radians
         """
         return dist1/self.eval_da(redshift)
+
+    def eval_sigma_crit(self, z_len, z_src):
+        r"""Computes the critical surface density
+
+        Parameters
+        ----------
+        z_len : float
+            Lens redshift
+        z_src : array_like, float
+            Background source galaxy redshift(s)
+
+        Returns
+        -------
+        float
+            Cosmology-dependent critical surface density in units of :math:`M_\odot\ Mpc^{-2}`
+        """
+        raise NotImplementedError
