@@ -1,0 +1,376 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>clmm.theory.ccl &mdash; CLMM 0.8.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> CLMM
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.8.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/citing.html">Citing CLMM</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Usage Demos</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.constants.html">clmm.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.cosmology.html">clmm.cosmology package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.cosmology.ccl.html">clmm.cosmology.ccl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.cosmology.cluster_toolkit.html">clmm.cosmology.cluster_toolkit module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.cosmology.numcosmo.html">clmm.cosmology.numcosmo module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.cosmology.parent_class.html">clmm.cosmology.parent_class module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.dataops.html">clmm.dataops package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.gcdata.html">clmm.gcdata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.theory.html">clmm.theory package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.theory.ccl.html">clmm.theory.ccl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.theory.cluster_toolkit.html">clmm.theory.cluster_toolkit module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.theory.func_layer.html">clmm.theory.func_layer module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.theory.generic.html">clmm.theory.generic module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.theory.numcosmo.html">clmm.theory.numcosmo module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.theory.parent_class.html">clmm.theory.parent_class module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.plotting.html">clmm.plotting package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.utils.html">clmm.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.support.html">clmm.support package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.support.mock_data.html">clmm.support.mock_data module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.support.sampler.html">clmm.support.sampler module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">CLMM</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>clmm.theory.ccl</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for clmm.theory.ccl</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Functions to model halo profiles</span>
+
+<span class="kn">import</span> <span class="nn">pyccl</span> <span class="k">as</span> <span class="nn">ccl</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">packaging</span> <span class="kn">import</span> <span class="n">version</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">func_layer</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="n">func_layer</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="kn">from</span> <span class="nn">.parent_class</span> <span class="kn">import</span> <span class="n">CLMModeling</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="n">utils</span> <span class="kn">import</span> <span class="nn">_patch_rho_crit_to_cd2018</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="n">cosmology</span><span class="o">.</span><span class="n">ccl</span> <span class="kn">import</span> <span class="nn">CCLCosmology</span>
+<span class="n">Cosmology</span> <span class="o">=</span> <span class="n">CCLCosmology</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CCLCLMModeling&#39;</span><span class="p">,</span> <span class="s1">&#39;Modeling&#39;</span><span class="p">,</span> <span class="s1">&#39;Cosmology&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">func_layer</span><span class="o">.</span><span class="n">__all__</span>
+
+
+<div class="viewcode-block" id="CCLCLMModeling"><a class="viewcode-back" href="../../../api/clmm.theory.ccl.html#clmm.theory.ccl.CCLCLMModeling">[docs]</a><span class="k">class</span> <span class="nc">CCLCLMModeling</span><span class="p">(</span><span class="n">CLMModeling</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">):</span>
+        <span class="n">CLMModeling</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="c1"># Update class attributes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="s1">&#39;ccl&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mdef_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;mean&#39;</span><span class="p">:</span> <span class="s1">&#39;matter&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;critical&#39;</span><span class="p">:</span> <span class="s1">&#39;critical&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;virial&#39;</span><span class="p">:</span> <span class="s1">&#39;critical&#39;</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hdpm_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;nfw&#39;</span><span class="p">:</span> <span class="n">ccl</span><span class="o">.</span><span class="n">halos</span><span class="o">.</span><span class="n">HaloProfileNFW</span><span class="p">}</span>
+        <span class="c1"># Only add the options of einasto and hernquist if CLL version &gt;= 10(?)</span>
+        <span class="c1"># because results below this version are unstable.</span>
+        <span class="k">if</span> <span class="n">version</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">ccl</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">version</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s1">&#39;10&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hdpm_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+                <span class="s1">&#39;einasto&#39;</span><span class="p">:</span> <span class="n">ccl</span><span class="o">.</span><span class="n">halos</span><span class="o">.</span><span class="n">HaloProfileEinasto</span><span class="p">,</span>
+                <span class="s1">&#39;hernquist&#39;</span><span class="p">:</span> <span class="n">ccl</span><span class="o">.</span><span class="n">halos</span><span class="o">.</span><span class="n">HaloProfileHernquist</span><span class="p">})</span>
+        <span class="c1"># Attributes exclusive to this class</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hdpm_opts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;nfw&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;truncated&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                                  <span class="s1">&#39;projected_analytic&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                                  <span class="s1">&#39;cumul2d_analytic&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+                          <span class="s1">&#39;einasto&#39;</span><span class="p">:</span> <span class="p">{},</span>
+                          <span class="s1">&#39;hernquist&#39;</span><span class="p">:</span> <span class="p">{}}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">MDelta</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cor_factor</span> <span class="o">=</span> <span class="n">_patch_rho_crit_to_cd2018</span><span class="p">(</span><span class="n">ccl</span><span class="o">.</span><span class="n">physical_constants</span><span class="o">.</span><span class="n">RHO_CRITICAL</span><span class="p">)</span>
+        <span class="c1"># Set halo profile and cosmology</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_halo_density_profile</span><span class="p">(</span><span class="n">halo_profile_model</span><span class="p">,</span> <span class="n">massdef</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_cosmo</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CCLCLMModeling.set_cosmo"><a class="viewcode-back" href="../../../api/clmm.theory.ccl.html#clmm.theory.ccl.CCLCLMModeling.set_cosmo">[docs]</a>    <span class="k">def</span> <span class="nf">set_cosmo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_cosmo</span><span class="p">(</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">CCLCosmology</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CCLCLMModeling.set_halo_density_profile"><a class="viewcode-back" href="../../../api/clmm.theory.ccl.html#clmm.theory.ccl.CCLCLMModeling.set_halo_density_profile">[docs]</a>    <span class="k">def</span> <span class="nf">set_halo_density_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
+        <span class="c1"># Check if choices are supported</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_definitions</span><span class="p">(</span><span class="n">massdef</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="p">)</span>
+
+        <span class="c1"># Check if we have already an instance of the required object, if not create one</span>
+        <span class="k">if</span> <span class="ow">not</span><span class="p">((</span><span class="n">halo_profile_model</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">halo_profile_model</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">massdef</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">massdef</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">delta_mdef</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta_mdef</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">halo_profile_model</span> <span class="o">=</span> <span class="n">halo_profile_model</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">massdef</span> <span class="o">=</span> <span class="n">massdef</span>
+
+            <span class="n">cur_cdelta</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="n">cur_mdelta</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="n">cur_values</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="p">:</span>
+                <span class="n">cur_cdelta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conc</span><span class="o">.</span><span class="n">c</span>
+                <span class="n">cur_values</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">mdef</span> <span class="o">=</span> <span class="n">ccl</span><span class="o">.</span><span class="n">halos</span><span class="o">.</span><span class="n">MassDef</span><span class="p">(</span><span class="n">delta_mdef</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mdef_dict</span><span class="p">[</span><span class="n">massdef</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conc</span> <span class="o">=</span> <span class="n">ccl</span><span class="o">.</span><span class="n">halos</span><span class="o">.</span><span class="n">ConcentrationConstant</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span> <span class="n">mdef</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mdef</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mdef</span><span class="o">.</span><span class="n">concentration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conc</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdpm_dict</span><span class="p">[</span><span class="n">halo_profile_model</span><span class="p">](</span><span class="bp">self</span><span class="o">.</span><span class="n">conc</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">hdpm_opts</span><span class="p">[</span><span class="n">halo_profile_model</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">cur_values</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">conc</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">cur_cdelta</span></div>
+
+<div class="viewcode-block" id="CCLCLMModeling.set_concentration"><a class="viewcode-back" href="../../../api/clmm.theory.ccl.html#clmm.theory.ccl.CCLCLMModeling.set_concentration">[docs]</a>    <span class="k">def</span> <span class="nf">set_concentration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cdelta</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conc</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">cdelta</span></div>
+
+<div class="viewcode-block" id="CCLCLMModeling.set_mass"><a class="viewcode-back" href="../../../api/clmm.theory.ccl.html#clmm.theory.ccl.CCLCLMModeling.set_mass">[docs]</a>    <span class="k">def</span> <span class="nf">set_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mdelta</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">MDelta</span> <span class="o">=</span> <span class="n">mdelta</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">cor_factor</span></div>
+
+<div class="viewcode-block" id="CCLCLMModeling.eval_density"><a class="viewcode-back" href="../../../api/clmm.theory.ccl.html#clmm.theory.ccl.CCLCLMModeling.eval_density">[docs]</a>    <span class="k">def</span> <span class="nf">eval_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
+        <span class="n">a_cl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">_get_a_from_z</span><span class="p">(</span><span class="n">z_cl</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">,</span> <span class="n">r3d</span><span class="o">/</span><span class="n">a_cl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MDelta</span><span class="p">,</span> <span class="n">a_cl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mdef</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">cor_factor</span><span class="o">/</span><span class="n">a_cl</span><span class="o">**</span><span class="mi">3</span></div>
+
+<div class="viewcode-block" id="CCLCLMModeling.eval_sigma"><a class="viewcode-back" href="../../../api/clmm.theory.ccl.html#clmm.theory.ccl.CCLCLMModeling.eval_sigma">[docs]</a>    <span class="k">def</span> <span class="nf">eval_sigma</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
+        <span class="n">a_cl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">_get_a_from_z</span><span class="p">(</span><span class="n">z_cl</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">projected</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">,</span> <span class="n">r_proj</span><span class="o">/</span><span class="n">a_cl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MDelta</span><span class="p">,</span> <span class="n">a_cl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mdef</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">cor_factor</span><span class="o">/</span><span class="n">a_cl</span><span class="o">**</span><span class="mi">2</span></div>
+
+<div class="viewcode-block" id="CCLCLMModeling.eval_sigma_mean"><a class="viewcode-back" href="../../../api/clmm.theory.ccl.html#clmm.theory.ccl.CCLCLMModeling.eval_sigma_mean">[docs]</a>    <span class="k">def</span> <span class="nf">eval_sigma_mean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
+        <span class="n">a_cl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">_get_a_from_z</span><span class="p">(</span><span class="n">z_cl</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">cumul2d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">,</span> <span class="n">r_proj</span><span class="o">/</span><span class="n">a_cl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MDelta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">_get_a_from_z</span><span class="p">(</span><span class="n">z_cl</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">mdef</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">cor_factor</span><span class="o">/</span><span class="n">a_cl</span><span class="o">**</span><span class="mi">2</span></div>
+
+<div class="viewcode-block" id="CCLCLMModeling.eval_sigma_excess"><a class="viewcode-back" href="../../../api/clmm.theory.ccl.html#clmm.theory.ccl.CCLCLMModeling.eval_sigma_excess">[docs]</a>    <span class="k">def</span> <span class="nf">eval_sigma_excess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
+        <span class="n">a_cl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">_get_a_from_z</span><span class="p">(</span><span class="n">z_cl</span><span class="p">)</span>
+        <span class="n">r_cor</span> <span class="o">=</span> <span class="n">r_proj</span><span class="o">/</span><span class="n">a_cl</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">cumul2d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">,</span> <span class="n">r_cor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MDelta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">_get_a_from_z</span><span class="p">(</span><span class="n">z_cl</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">mdef</span><span class="p">)</span><span class="o">-</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">projected</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">,</span> <span class="n">r_cor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MDelta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">_get_a_from_z</span><span class="p">(</span><span class="n">z_cl</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">mdef</span><span class="p">))</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">cor_factor</span><span class="o">/</span><span class="n">a_cl</span><span class="o">**</span><span class="mi">2</span></div>
+
+<div class="viewcode-block" id="CCLCLMModeling.eval_shear"><a class="viewcode-back" href="../../../api/clmm.theory.ccl.html#clmm.theory.ccl.CCLCLMModeling.eval_shear">[docs]</a>    <span class="k">def</span> <span class="nf">eval_shear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
+        <span class="n">sigma_excess</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_sigma_excess</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
+        <span class="n">sigma_crit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_sigma_crit</span><span class="p">(</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">sigma_excess</span><span class="o">/</span><span class="n">sigma_crit</span></div>
+
+<div class="viewcode-block" id="CCLCLMModeling.eval_convergence"><a class="viewcode-back" href="../../../api/clmm.theory.ccl.html#clmm.theory.ccl.CCLCLMModeling.eval_convergence">[docs]</a>    <span class="k">def</span> <span class="nf">eval_convergence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_sigma</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
+        <span class="n">sigma_crit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_sigma_crit</span><span class="p">(</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">sigma</span><span class="o">/</span><span class="n">sigma_crit</span><span class="p">,</span> <span class="n">nan</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">posinf</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">neginf</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CCLCLMModeling.eval_reduced_shear"><a class="viewcode-back" href="../../../api/clmm.theory.ccl.html#clmm.theory.ccl.CCLCLMModeling.eval_reduced_shear">[docs]</a>    <span class="k">def</span> <span class="nf">eval_reduced_shear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
+        <span class="n">kappa</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_convergence</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
+        <span class="n">gamma_t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_shear</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">gamma_t</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">kappa</span><span class="p">)),</span> <span class="n">nan</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">posinf</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">neginf</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CCLCLMModeling.eval_magnification"><a class="viewcode-back" href="../../../api/clmm.theory.ccl.html#clmm.theory.ccl.CCLCLMModeling.eval_magnification">[docs]</a>    <span class="k">def</span> <span class="nf">eval_magnification</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
+        <span class="n">kappa</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_convergence</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
+        <span class="n">gamma_t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_shear</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="mf">1.0</span><span class="o">/</span><span class="p">((</span><span class="mf">1.0</span><span class="o">-</span><span class="n">kappa</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">gamma_t</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span></div></div>
+
+
+<span class="n">Modeling</span> <span class="o">=</span> <span class="n">CCLCLMModeling</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2018-2019, LSST DESC CLMM Contributors
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

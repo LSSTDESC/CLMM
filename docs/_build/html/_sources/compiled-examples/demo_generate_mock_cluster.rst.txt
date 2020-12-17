@@ -13,11 +13,9 @@ line below to select your backend.
 
 .. code:: ipython3
 
-    import sys, os
-    sys.path.append('./support')
+    import os
     ## Uncomment the following line if you want to use a specific modeling backend among 'ct' (cluster-toolkit), 'ccl' (CCL) or 'nc' (Numcosmo). Default is 'ct'
-    os.environ['CLMM_MODELING_BACKEND'] = 'nc'
-
+    #os.environ['CLMM_MODELING_BACKEND'] = 'nc'
 
 .. code:: ipython3
 
@@ -36,21 +34,12 @@ Make sure we know which version we’re using
 
     clmm.__version__
 
-
-
-
-.. parsed-literal::
-
-    '0.6.0'
-
-
-
 Import mock data module and setup the configuration
 ---------------------------------------------------
 
 .. code:: ipython3
 
-    import mock_data as mock
+    from clmm.support import mock_data as mock
     from clmm import Cosmology
 
 Mock data generation requires a defined cosmology
@@ -126,13 +115,6 @@ Generate the mock catalog with different source galaxy options
         cluster_m, cluster_z, concentration, cosmo, 'chang13', zsrc_min=zsrc_min,
         zsrc_max=7.0, shapenoise=0.05, photoz_sigma_unscaled=0.05, ngals=ngals)
 
-
-.. parsed-literal::
-
-    /Users/combet/anaconda3/envs/clmmenv/lib/python3.8/site-packages/numpy/ma/core.py:2831: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      _data = np.array(data, dtype=dtype, copy=copy,
-
-
 Sanity check: checking that no galaxies were originally drawn below
 zsrc_min, before photoz errors are applied (when relevant)
 
@@ -144,17 +126,6 @@ zsrc_min, before photoz errors are applied (when relevant)
     print('noisy_data_photoz:',np.sum(noisy_data_photoz['ztrue']<zsrc_min))
     print('ideal_with_src_dist:',np.sum(ideal_with_src_dist['ztrue']<zsrc_min))
     print('allsystematics:',np.sum(allsystematics['ztrue']<zsrc_min))
-
-
-.. parsed-literal::
-
-    Number of galaxies below zsrc_min:
-    ideal_data: 0
-    noisy_data_src_z: 0
-    noisy_data_photoz: 0
-    ideal_with_src_dist: 0
-    allsystematics: 0
-
 
 Inspect the catalog data
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -169,16 +140,6 @@ Inspect the catalog data
             ideal_data[n].format = "%6.3e" 
     ideal_data[0:3].pprint(max_width=-1)
 
-
-.. parsed-literal::
-
-        ra        dec         e1         e2         z       ztrue    id
-    ---------- ---------- ---------- ---------- --------- --------- ---
-     2.355e-01 -1.330e-01 -3.642e-03 -6.039e-03 8.000e-01 8.000e-01   0
-     9.114e-02 -6.809e-02 -5.585e-03 -1.889e-02 8.000e-01 8.000e-01   1
-    -1.561e-02 -1.174e-01  1.823e-02  4.937e-03 8.000e-01 8.000e-01   2
-
-
 -  With photo-z errors
 
 .. code:: ipython3
@@ -187,16 +148,6 @@ Inspect the catalog data
         if n!='id':
             noisy_data_photoz[n].format = "%6.3e"
     noisy_data_photoz[0:3].pprint(max_width=-1)
-
-
-.. parsed-literal::
-
-        ra        dec         e1         e2         z       ztrue         pzbins [61]             pzpdf [61]        id
-    ---------- ---------- ---------- ---------- --------- --------- ----------------------- ---------------------- ---
-     2.642e-02 -8.673e-02  1.833e-02  2.129e-02 7.634e-01 8.000e-01 -1.366e-01 .. 1.663e+00 8.550e-22 .. 8.550e-22   0
-    -2.321e-01 -8.287e-02 -4.257e-02 -3.694e-02 8.900e-01 8.000e-01 -9.995e-03 .. 1.790e+00 8.550e-22 .. 8.550e-22   1
-    -2.130e-01 -1.249e-01  5.430e-02  8.050e-02 7.400e-01 8.000e-01 -1.600e-01 .. 1.640e+00 8.550e-22 .. 8.550e-22   2
-
 
 -  Histogram of the redshift distribution of background galaxies, for
    the true (originally drawn) redshift and the redshift once photoz
@@ -212,19 +163,6 @@ Inspect the catalog data
     plt.xlabel('Source Redshift')
     plt.legend()
 
-
-
-
-.. parsed-literal::
-
-    <matplotlib.legend.Legend at 0x7fa344f7d130>
-
-
-
-
-.. image:: demo_generate_mock_cluster_files/demo_generate_mock_cluster_32_1.png
-
-
 .. code:: ipython3
 
     # pdz for one of the galaxy in the catalog, 
@@ -235,19 +173,6 @@ Inspect the catalog data
     plt.xlabel('Redshift')
     plt.ylabel('Photo-z Probability Distribution')
     plt.legend(loc=1)
-
-
-
-
-.. parsed-literal::
-
-    <matplotlib.legend.Legend at 0x7fa345137280>
-
-
-
-
-.. image:: demo_generate_mock_cluster_files/demo_generate_mock_cluster_33_1.png
-
 
 Populate in a galaxy cluster object
 
@@ -270,19 +195,6 @@ Plot source galaxy ellipticities
     plt.xlabel('Ellipticity 1',fontsize='x-large')
     plt.ylabel('Ellipticity 2',fontsize='x-large')
 
-
-
-
-.. parsed-literal::
-
-    Text(0, 0.5, 'Ellipticity 2')
-
-
-
-
-.. image:: demo_generate_mock_cluster_files/demo_generate_mock_cluster_37_1.png
-
-
 Generate the mock data catalog with different field-of-view options
 -------------------------------------------------------------------
 
@@ -303,32 +215,11 @@ example.
                                                    shapenoise=0.05, photoz_sigma_unscaled=0.05,
                                                    field_size=4, ngals=ngals)
 
-
-.. parsed-literal::
-
-    /Users/combet/anaconda3/envs/clmmenv/lib/python3.8/site-packages/numpy/ma/core.py:2831: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      _data = np.array(data, dtype=dtype, copy=copy,
-    /Users/combet/anaconda3/envs/clmmenv/lib/python3.8/site-packages/clmm-0.6.0-py3.8.egg/clmm/modbackend/func_layer.py:354: UserWarning: Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.
-
-
 .. code:: ipython3
 
     plt.scatter(allsystematics['ra'],allsystematics['dec'], marker='.', label = 'default 8 x 8 Mpc/h FoV')
     plt.scatter(allsystematics2['ra'],allsystematics2['dec'],marker='.', label = 'user-defined FoV')
     plt.legend()
-
-
-
-
-.. parsed-literal::
-
-    <matplotlib.legend.Legend at 0x7fa3453c1b50>
-
-
-
-
-.. image:: demo_generate_mock_cluster_files/demo_generate_mock_cluster_42_1.png
-
 
 -  Alternatively, the user may provide a galaxy density (here 1
    gal/arcmin2 to roughly match 1000 galaxies, given the configuration)
@@ -343,30 +234,11 @@ example.
                                                   ngal_density=1)
     print(f'Number of drawn galaxies = {len(allsystematics3)}')
 
-
-.. parsed-literal::
-
-    Number of drawn galaxies = 760
-
-
 .. code:: ipython3
 
     plt.scatter(allsystematics['ra'],allsystematics['dec'], marker='.', label = 'ngals = 1000')
     plt.scatter(allsystematics3['ra'],allsystematics3['dec'],marker='.', label = 'ngal_density = 1 gal / arcmin2')
     plt.legend()
-
-
-
-
-.. parsed-literal::
-
-    <matplotlib.legend.Legend at 0x7fa345104250>
-
-
-
-
-.. image:: demo_generate_mock_cluster_files/demo_generate_mock_cluster_45_1.png
-
 
 Generate mock data with different galaxy cluster options
 --------------------------------------------------------

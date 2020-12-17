@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Index &mdash; CLMM 0.6.0 documentation</title>
+  <title>Index &mdash; CLMM 0.8.0 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                0.6.0
+                0.8.0
               </div>
             
           
@@ -99,25 +99,39 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
-<li class="toctree-l1"><a class="reference internal" href="compiled-examples/demo_modeling_functionality.html">Model a Galaxy Cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compiled-examples/demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/clmm.constants.html">clmm.constants module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/clmm.dataops.html">clmm.dataops module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/clmm.gcdata.html">clmm.gcdata module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/clmm.lsst.html">clmm.lsst package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/clmm.lsst.load_clusters_with_gcr.html">clmm.lsst.load_clusters_with_gcr module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.cosmology.html">clmm.cosmology package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.cosmology.ccl.html">clmm.cosmology.ccl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.cosmology.cluster_toolkit.html">clmm.cosmology.cluster_toolkit module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.cosmology.numcosmo.html">clmm.cosmology.numcosmo module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.cosmology.parent_class.html">clmm.cosmology.parent_class module</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="api/clmm.modeling.html">clmm.modeling module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/clmm.plotting.html">clmm.plotting module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.dataops.html">clmm.dataops package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.gcdata.html">clmm.gcdata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.theory.html">clmm.theory package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.theory.ccl.html">clmm.theory.ccl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.theory.cluster_toolkit.html">clmm.theory.cluster_toolkit module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.theory.func_layer.html">clmm.theory.func_layer module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.theory.generic.html">clmm.theory.generic module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.theory.numcosmo.html">clmm.theory.numcosmo module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.theory.parent_class.html">clmm.theory.parent_class module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.plotting.html">clmm.plotting package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/clmm.utils.html">clmm.utils module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/clmm.clmm_modeling.html">clmm.clmm_modeling module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/clmm.clmm_cosmo.html">clmm.clmm_cosmo module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.support.html">clmm.support package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.support.mock_data.html">clmm.support.mock_data module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.support.sampler.html">clmm.support.sampler module</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -194,10 +208,12 @@
  | <a href="#G"><strong>G</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
+ | <a href="#N"><strong>N</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#U"><strong>U</strong></a>
+ | <a href="#V"><strong>V</strong></a>
  
 </div>
 <h2 id="A">A</h2>
@@ -209,11 +225,17 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/clmm.utils.html#clmm.utils.arguments_consistency">arguments_consistency() (in module clmm.utils)</a>
 </li>
+      <li><a href="api/clmm.cosmology.cluster_toolkit.html#clmm.cosmology.cluster_toolkit.AstroPyCosmology">AstroPyCosmology (class in clmm.cosmology.cluster_toolkit)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/clmm.support.sampler.html#clmm.support.sampler.basinhopping">basinhopping() (in module clmm.support.sampler)</a>
+</li>
+  </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/clmm.utils.html#clmm.utils.build_ellipticities">build_ellipticities() (in module clmm.utils)</a>
 </li>
@@ -223,29 +245,54 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/clmm.theory.ccl.html#clmm.theory.ccl.CCLCLMModeling">CCLCLMModeling (class in clmm.theory.ccl)</a>
+</li>
+      <li><a href="api/clmm.cosmology.ccl.html#clmm.cosmology.ccl.CCLCosmology">CCLCosmology (class in clmm.cosmology.ccl)</a>
+</li>
       <li><a href="api/clmm.constants.html#clmm.constants.Constants.CLIGHT">CLIGHT (clmm.constants.Constants attribute)</a>
 </li>
       <li><a href="api/clmm.constants.html#clmm.constants.Constants.CLIGHT_KMS">CLIGHT_KMS (clmm.constants.Constants attribute)</a>
 </li>
       <li>
-    clmm.clmm_cosmo
-
-      <ul>
-        <li><a href="api/clmm.clmm_cosmo.html#module-clmm.clmm_cosmo">module</a>
-</li>
-      </ul></li>
-      <li>
-    clmm.clmm_modeling
-
-      <ul>
-        <li><a href="api/clmm.clmm_modeling.html#module-clmm.clmm_modeling">module</a>
-</li>
-      </ul></li>
-      <li>
     clmm.constants
 
       <ul>
         <li><a href="api/clmm.constants.html#module-clmm.constants">module</a>
+</li>
+      </ul></li>
+      <li>
+    clmm.cosmology
+
+      <ul>
+        <li><a href="api/clmm.cosmology.html#module-clmm.cosmology">module</a>
+</li>
+      </ul></li>
+      <li>
+    clmm.cosmology.ccl
+
+      <ul>
+        <li><a href="api/clmm.cosmology.ccl.html#module-clmm.cosmology.ccl">module</a>
+</li>
+      </ul></li>
+      <li>
+    clmm.cosmology.cluster_toolkit
+
+      <ul>
+        <li><a href="api/clmm.cosmology.cluster_toolkit.html#module-clmm.cosmology.cluster_toolkit">module</a>
+</li>
+      </ul></li>
+      <li>
+    clmm.cosmology.numcosmo
+
+      <ul>
+        <li><a href="api/clmm.cosmology.numcosmo.html#module-clmm.cosmology.numcosmo">module</a>
+</li>
+      </ul></li>
+      <li>
+    clmm.cosmology.parent_class
+
+      <ul>
+        <li><a href="api/clmm.cosmology.parent_class.html#module-clmm.cosmology.parent_class">module</a>
 </li>
       </ul></li>
       <li>
@@ -270,33 +317,82 @@
 </li>
       </ul></li>
       <li>
-    clmm.lsst
+    clmm.plotting
 
       <ul>
-        <li><a href="api/clmm.lsst.html#module-clmm.lsst">module</a>
+        <li><a href="api/clmm.plotting.html#module-clmm.plotting">module</a>
 </li>
       </ul></li>
       <li>
-    clmm.lsst.load_clusters_with_gcr
+    clmm.support
 
       <ul>
-        <li><a href="api/clmm.lsst.load_clusters_with_gcr.html#module-clmm.lsst.load_clusters_with_gcr">module</a>
+        <li><a href="api/clmm.support.html#module-clmm.support">module</a>
+</li>
+      </ul></li>
+      <li>
+    clmm.support.mock_data
+
+      <ul>
+        <li><a href="api/clmm.support.mock_data.html#module-clmm.support.mock_data">module</a>
+</li>
+      </ul></li>
+      <li>
+    clmm.support.sampler
+
+      <ul>
+        <li><a href="api/clmm.support.sampler.html#module-clmm.support.sampler">module</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li>
-    clmm.modeling
+    clmm.theory
 
       <ul>
-        <li><a href="api/clmm.modeling.html#module-clmm.modeling">module</a>
+        <li><a href="api/clmm.theory.html#module-clmm.theory">module</a>
 </li>
       </ul></li>
       <li>
-    clmm.plotting
+    clmm.theory.ccl
 
       <ul>
-        <li><a href="api/clmm.plotting.html#module-clmm.plotting">module</a>
+        <li><a href="api/clmm.theory.ccl.html#module-clmm.theory.ccl">module</a>
+</li>
+      </ul></li>
+      <li>
+    clmm.theory.cluster_toolkit
+
+      <ul>
+        <li><a href="api/clmm.theory.cluster_toolkit.html#module-clmm.theory.cluster_toolkit">module</a>
+</li>
+      </ul></li>
+      <li>
+    clmm.theory.func_layer
+
+      <ul>
+        <li><a href="api/clmm.theory.func_layer.html#module-clmm.theory.func_layer">module</a>
+</li>
+      </ul></li>
+      <li>
+    clmm.theory.generic
+
+      <ul>
+        <li><a href="api/clmm.theory.generic.html#module-clmm.theory.generic">module</a>
+</li>
+      </ul></li>
+      <li>
+    clmm.theory.numcosmo
+
+      <ul>
+        <li><a href="api/clmm.theory.numcosmo.html#module-clmm.theory.numcosmo">module</a>
+</li>
+      </ul></li>
+      <li>
+    clmm.theory.parent_class
+
+      <ul>
+        <li><a href="api/clmm.theory.parent_class.html#module-clmm.theory.parent_class">module</a>
 </li>
       </ul></li>
       <li>
@@ -306,9 +402,9 @@
         <li><a href="api/clmm.utils.html#module-clmm.utils">module</a>
 </li>
       </ul></li>
-      <li><a href="api/clmm.clmm_cosmo.html#clmm.clmm_cosmo.CLMMCosmology">CLMMCosmology (class in clmm.clmm_cosmo)</a>
+      <li><a href="api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology">CLMMCosmology (class in clmm.cosmology.parent_class)</a>
 </li>
-      <li><a href="api/clmm.clmm_modeling.html#clmm.clmm_modeling.CLMModeling">CLMModeling (class in clmm.clmm_modeling)</a>
+      <li><a href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling">CLMModeling (class in clmm.theory.parent_class)</a>
 </li>
       <li><a href="api/clmm.utils.html#clmm.utils.compute_lensed_ellipticity">compute_lensed_ellipticity() (in module clmm.utils)</a>
 </li>
@@ -326,34 +422,146 @@
 </li>
       <li><a href="api/clmm.utils.html#clmm.utils.convert_units">convert_units() (in module clmm.utils)</a>
 </li>
-      <li><a href="api/clmm.modeling.html#clmm.modeling.Cosmology">Cosmology (in module clmm.modeling)</a>
+      <li><a href="api/clmm.theory.html#clmm.theory.Cosmology">Cosmology (in module clmm.theory)</a>
+
+      <ul>
+        <li><a href="api/clmm.theory.ccl.html#clmm.theory.ccl.Cosmology">(in module clmm.theory.ccl)</a>
 </li>
+        <li><a href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.Cosmology">(in module clmm.theory.cluster_toolkit)</a>
+</li>
+        <li><a href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.Cosmology">(in module clmm.theory.numcosmo)</a>
+</li>
+      </ul></li>
+      <li><a href="api/clmm.theory.html#clmm.theory.CTModeling">CTModeling (class in clmm.theory)</a>
+
+      <ul>
+        <li><a href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.CTModeling">(class in clmm.theory.cluster_toolkit)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/clmm.clmm_cosmo.html#clmm.clmm_cosmo.CLMMCosmology.eval_da">eval_da() (clmm.clmm_cosmo.CLMMCosmology method)</a>
+      <li><a href="api/clmm.theory.ccl.html#clmm.theory.ccl.CCLCLMModeling.eval_convergence">eval_convergence() (clmm.theory.ccl.CCLCLMModeling method)</a>
+
+      <ul>
+        <li><a href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.CTModeling.eval_convergence">(clmm.theory.cluster_toolkit.CTModeling method)</a>
 </li>
-      <li><a href="api/clmm.clmm_cosmo.html#clmm.clmm_cosmo.CLMMCosmology.eval_da_a1a2">eval_da_a1a2() (clmm.clmm_cosmo.CLMMCosmology method)</a>
+        <li><a href="api/clmm.theory.html#clmm.theory.CTModeling.eval_convergence">(clmm.theory.CTModeling method)</a>
 </li>
-      <li><a href="api/clmm.clmm_cosmo.html#clmm.clmm_cosmo.CLMMCosmology.eval_da_z1z2">eval_da_z1z2() (clmm.clmm_cosmo.CLMMCosmology method)</a>
+        <li><a href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.NumCosmoCLMModeling.eval_convergence">(clmm.theory.numcosmo.NumCosmoCLMModeling method)</a>
 </li>
-      <li><a href="api/clmm.clmm_modeling.html#clmm.clmm_modeling.CLMModeling.eval_density">eval_density() (clmm.clmm_modeling.CLMModeling method)</a>
+      </ul></li>
+      <li><a href="api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.eval_da">eval_da() (clmm.cosmology.parent_class.CLMMCosmology method)</a>
 </li>
+      <li><a href="api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.eval_da_a1a2">eval_da_a1a2() (clmm.cosmology.parent_class.CLMMCosmology method)</a>
+</li>
+      <li><a href="api/clmm.cosmology.ccl.html#clmm.cosmology.ccl.CCLCosmology.eval_da_z1z2">eval_da_z1z2() (clmm.cosmology.ccl.CCLCosmology method)</a>
+
+      <ul>
+        <li><a href="api/clmm.cosmology.cluster_toolkit.html#clmm.cosmology.cluster_toolkit.AstroPyCosmology.eval_da_z1z2">(clmm.cosmology.cluster_toolkit.AstroPyCosmology method)</a>
+</li>
+        <li><a href="api/clmm.cosmology.numcosmo.html#clmm.cosmology.numcosmo.NumCosmoCosmology.eval_da_z1z2">(clmm.cosmology.numcosmo.NumCosmoCosmology method)</a>
+</li>
+        <li><a href="api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.eval_da_z1z2">(clmm.cosmology.parent_class.CLMMCosmology method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/clmm.theory.ccl.html#clmm.theory.ccl.CCLCLMModeling.eval_density">eval_density() (clmm.theory.ccl.CCLCLMModeling method)</a>
+
+      <ul>
+        <li><a href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.CTModeling.eval_density">(clmm.theory.cluster_toolkit.CTModeling method)</a>
+</li>
+        <li><a href="api/clmm.theory.html#clmm.theory.CTModeling.eval_density">(clmm.theory.CTModeling method)</a>
+</li>
+        <li><a href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.NumCosmoCLMModeling.eval_density">(clmm.theory.numcosmo.NumCosmoCLMModeling method)</a>
+</li>
+        <li><a href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_density">(clmm.theory.parent_class.CLMModeling method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/clmm.theory.ccl.html#clmm.theory.ccl.CCLCLMModeling.eval_magnification">eval_magnification() (clmm.theory.ccl.CCLCLMModeling method)</a>
+
+      <ul>
+        <li><a href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.CTModeling.eval_magnification">(clmm.theory.cluster_toolkit.CTModeling method)</a>
+</li>
+        <li><a href="api/clmm.theory.html#clmm.theory.CTModeling.eval_magnification">(clmm.theory.CTModeling method)</a>
+</li>
+        <li><a href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.NumCosmoCLMModeling.eval_magnification">(clmm.theory.numcosmo.NumCosmoCLMModeling method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/clmm.theory.ccl.html#clmm.theory.ccl.CCLCLMModeling.eval_reduced_shear">eval_reduced_shear() (clmm.theory.ccl.CCLCLMModeling method)</a>
+
+      <ul>
+        <li><a href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.CTModeling.eval_reduced_shear">(clmm.theory.cluster_toolkit.CTModeling method)</a>
+</li>
+        <li><a href="api/clmm.theory.html#clmm.theory.CTModeling.eval_reduced_shear">(clmm.theory.CTModeling method)</a>
+</li>
+        <li><a href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.NumCosmoCLMModeling.eval_reduced_shear">(clmm.theory.numcosmo.NumCosmoCLMModeling method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/clmm.theory.ccl.html#clmm.theory.ccl.CCLCLMModeling.eval_shear">eval_shear() (clmm.theory.ccl.CCLCLMModeling method)</a>
+
+      <ul>
+        <li><a href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.CTModeling.eval_shear">(clmm.theory.cluster_toolkit.CTModeling method)</a>
+</li>
+        <li><a href="api/clmm.theory.html#clmm.theory.CTModeling.eval_shear">(clmm.theory.CTModeling method)</a>
+</li>
+        <li><a href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.NumCosmoCLMModeling.eval_shear">(clmm.theory.numcosmo.NumCosmoCLMModeling method)</a>
+</li>
+        <li><a href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_shear">(clmm.theory.parent_class.CLMModeling method)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/clmm.clmm_modeling.html#clmm.clmm_modeling.CLMModeling.eval_shear">eval_shear() (clmm.clmm_modeling.CLMModeling method)</a>
+      <li><a href="api/clmm.theory.ccl.html#clmm.theory.ccl.CCLCLMModeling.eval_sigma">eval_sigma() (clmm.theory.ccl.CCLCLMModeling method)</a>
+
+      <ul>
+        <li><a href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.CTModeling.eval_sigma">(clmm.theory.cluster_toolkit.CTModeling method)</a>
 </li>
-      <li><a href="api/clmm.clmm_modeling.html#clmm.clmm_modeling.CLMModeling.eval_sigma">eval_sigma() (clmm.clmm_modeling.CLMModeling method)</a>
+        <li><a href="api/clmm.theory.html#clmm.theory.CTModeling.eval_sigma">(clmm.theory.CTModeling method)</a>
 </li>
-      <li><a href="api/clmm.clmm_modeling.html#clmm.clmm_modeling.CLMModeling.eval_sigma_crit">eval_sigma_crit() (clmm.clmm_modeling.CLMModeling method)</a>
+        <li><a href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.NumCosmoCLMModeling.eval_sigma">(clmm.theory.numcosmo.NumCosmoCLMModeling method)</a>
 </li>
-      <li><a href="api/clmm.clmm_modeling.html#clmm.clmm_modeling.CLMModeling.eval_sigma_excess">eval_sigma_excess() (clmm.clmm_modeling.CLMModeling method)</a>
+        <li><a href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_sigma">(clmm.theory.parent_class.CLMModeling method)</a>
 </li>
-      <li><a href="api/clmm.clmm_modeling.html#clmm.clmm_modeling.CLMModeling.eval_sigma_mean">eval_sigma_mean() (clmm.clmm_modeling.CLMModeling method)</a>
+      </ul></li>
+      <li><a href="api/clmm.cosmology.ccl.html#clmm.cosmology.ccl.CCLCosmology.eval_sigma_crit">eval_sigma_crit() (clmm.cosmology.ccl.CCLCosmology method)</a>
+
+      <ul>
+        <li><a href="api/clmm.cosmology.cluster_toolkit.html#clmm.cosmology.cluster_toolkit.AstroPyCosmology.eval_sigma_crit">(clmm.cosmology.cluster_toolkit.AstroPyCosmology method)</a>
 </li>
+        <li><a href="api/clmm.cosmology.numcosmo.html#clmm.cosmology.numcosmo.NumCosmoCosmology.eval_sigma_crit">(clmm.cosmology.numcosmo.NumCosmoCosmology method)</a>
+</li>
+        <li><a href="api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.eval_sigma_crit">(clmm.cosmology.parent_class.CLMMCosmology method)</a>
+</li>
+        <li><a href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_sigma_crit">(clmm.theory.parent_class.CLMModeling method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/clmm.theory.ccl.html#clmm.theory.ccl.CCLCLMModeling.eval_sigma_excess">eval_sigma_excess() (clmm.theory.ccl.CCLCLMModeling method)</a>
+
+      <ul>
+        <li><a href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.CTModeling.eval_sigma_excess">(clmm.theory.cluster_toolkit.CTModeling method)</a>
+</li>
+        <li><a href="api/clmm.theory.html#clmm.theory.CTModeling.eval_sigma_excess">(clmm.theory.CTModeling method)</a>
+</li>
+        <li><a href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.NumCosmoCLMModeling.eval_sigma_excess">(clmm.theory.numcosmo.NumCosmoCLMModeling method)</a>
+</li>
+        <li><a href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_sigma_excess">(clmm.theory.parent_class.CLMModeling method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/clmm.theory.ccl.html#clmm.theory.ccl.CCLCLMModeling.eval_sigma_mean">eval_sigma_mean() (clmm.theory.ccl.CCLCLMModeling method)</a>
+
+      <ul>
+        <li><a href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.CTModeling.eval_sigma_mean">(clmm.theory.cluster_toolkit.CTModeling method)</a>
+</li>
+        <li><a href="api/clmm.theory.html#clmm.theory.CTModeling.eval_sigma_mean">(clmm.theory.CTModeling method)</a>
+</li>
+        <li><a href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.NumCosmoCLMModeling.eval_sigma_mean">(clmm.theory.numcosmo.NumCosmoCLMModeling method)</a>
+</li>
+        <li><a href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_sigma_mean">(clmm.theory.parent_class.CLMModeling method)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -366,18 +574,70 @@
 </li>
       <li><a href="api/clmm.gcdata.html#clmm.gcdata.GCMetaData">GCMetaData (class in clmm.gcdata)</a>
 </li>
-      <li><a href="api/clmm.modeling.html#clmm.modeling.get_3d_density">get_3d_density() (in module clmm.modeling)</a>
+      <li><a href="api/clmm.support.mock_data.html#clmm.support.mock_data.generate_galaxy_catalog">generate_galaxy_catalog() (in module clmm.support.mock_data)</a>
 </li>
-      <li><a href="api/clmm.modeling.html#clmm.modeling.get_critical_surface_density">get_critical_surface_density() (in module clmm.modeling)</a>
+      <li><a href="api/clmm.theory.html#clmm.theory.get_3d_density">get_3d_density() (in module clmm.theory)</a>
+
+      <ul>
+        <li><a href="api/clmm.theory.ccl.html#clmm.theory.ccl.get_3d_density">(in module clmm.theory.ccl)</a>
+</li>
+        <li><a href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.get_3d_density">(in module clmm.theory.cluster_toolkit)</a>
+</li>
+        <li><a href="api/clmm.theory.func_layer.html#clmm.theory.func_layer.get_3d_density">(in module clmm.theory.func_layer)</a>
+</li>
+        <li><a href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.get_3d_density">(in module clmm.theory.numcosmo)</a>
+</li>
+      </ul></li>
+      <li><a href="api/clmm.theory.html#clmm.theory.get_critical_surface_density">get_critical_surface_density() (in module clmm.theory)</a>
+
+      <ul>
+        <li><a href="api/clmm.theory.ccl.html#clmm.theory.ccl.get_critical_surface_density">(in module clmm.theory.ccl)</a>
+</li>
+        <li><a href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.get_critical_surface_density">(in module clmm.theory.cluster_toolkit)</a>
+</li>
+        <li><a href="api/clmm.theory.func_layer.html#clmm.theory.func_layer.get_critical_surface_density">(in module clmm.theory.func_layer)</a>
+</li>
+        <li><a href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.get_critical_surface_density">(in module clmm.theory.numcosmo)</a>
+</li>
+      </ul></li>
+      <li><a href="api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.get_desc">get_desc() (clmm.cosmology.parent_class.CLMMCosmology method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/clmm.clmm_cosmo.html#clmm.clmm_cosmo.CLMMCosmology.get_desc">get_desc() (clmm.clmm_cosmo.CLMMCosmology method)</a>
+      <li><a href="api/clmm.cosmology.ccl.html#clmm.cosmology.ccl.CCLCosmology.get_E2Omega_m">get_E2Omega_m() (clmm.cosmology.ccl.CCLCosmology method)</a>
+
+      <ul>
+        <li><a href="api/clmm.cosmology.cluster_toolkit.html#clmm.cosmology.cluster_toolkit.AstroPyCosmology.get_E2Omega_m">(clmm.cosmology.cluster_toolkit.AstroPyCosmology method)</a>
 </li>
-      <li><a href="api/clmm.clmm_cosmo.html#clmm.clmm_cosmo.CLMMCosmology.get_Omega_m">get_Omega_m() (clmm.clmm_cosmo.CLMMCosmology method)</a>
+        <li><a href="api/clmm.cosmology.numcosmo.html#clmm.cosmology.numcosmo.NumCosmoCosmology.get_E2Omega_m">(clmm.cosmology.numcosmo.NumCosmoCosmology method)</a>
 </li>
-      <li><a href="api/clmm.modeling.html#clmm.modeling.get_reduced_shear_from_convergence">get_reduced_shear_from_convergence() (in module clmm.modeling)</a>
+      </ul></li>
+      <li><a href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.NumCosmoCLMModeling.get_mset">get_mset() (clmm.theory.numcosmo.NumCosmoCLMModeling method)</a>
 </li>
+      <li><a href="api/clmm.cosmology.ccl.html#clmm.cosmology.ccl.CCLCosmology.get_Omega_m">get_Omega_m() (clmm.cosmology.ccl.CCLCosmology method)</a>
+
+      <ul>
+        <li><a href="api/clmm.cosmology.cluster_toolkit.html#clmm.cosmology.cluster_toolkit.AstroPyCosmology.get_Omega_m">(clmm.cosmology.cluster_toolkit.AstroPyCosmology method)</a>
+</li>
+        <li><a href="api/clmm.cosmology.numcosmo.html#clmm.cosmology.numcosmo.NumCosmoCosmology.get_Omega_m">(clmm.cosmology.numcosmo.NumCosmoCosmology method)</a>
+</li>
+        <li><a href="api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.get_Omega_m">(clmm.cosmology.parent_class.CLMMCosmology method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/clmm.theory.html#clmm.theory.get_reduced_shear_from_convergence">get_reduced_shear_from_convergence() (in module clmm.theory)</a>
+
+      <ul>
+        <li><a href="api/clmm.theory.ccl.html#clmm.theory.ccl.get_reduced_shear_from_convergence">(in module clmm.theory.ccl)</a>
+</li>
+        <li><a href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.get_reduced_shear_from_convergence">(in module clmm.theory.cluster_toolkit)</a>
+</li>
+        <li><a href="api/clmm.theory.func_layer.html#clmm.theory.func_layer.get_reduced_shear_from_convergence">(in module clmm.theory.func_layer)</a>
+</li>
+        <li><a href="api/clmm.theory.generic.html#clmm.theory.generic.get_reduced_shear_from_convergence">(in module clmm.theory.generic)</a>
+</li>
+        <li><a href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.get_reduced_shear_from_convergence">(in module clmm.theory.numcosmo)</a>
+</li>
+      </ul></li>
       <li><a href="api/clmm.constants.html#clmm.constants.Constants.GNEWT">GNEWT (clmm.constants.Constants attribute)</a>
 </li>
       <li><a href="api/clmm.constants.html#clmm.constants.Constants.GNEWT_SOLAR_MASS">GNEWT_SOLAR_MASS (clmm.constants.Constants attribute)</a>
@@ -389,12 +649,6 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster.load">load() (clmm.galaxycluster.GalaxyCluster method)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/clmm.lsst.load_clusters_with_gcr.html#clmm.lsst.load_clusters_with_gcr.load_from_dc2">load_from_dc2() (in module clmm.lsst.load_clusters_with_gcr)</a>
-</li>
-      <li><a href="api/clmm.lsst.load_clusters_with_gcr.html#clmm.lsst.load_clusters_with_gcr.load_GCR_catalog">load_GCR_catalog() (in module clmm.lsst.load_clusters_with_gcr)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -410,17 +664,31 @@
         <li><a href="api/clmm.dataops.html#clmm.dataops.make_radial_profile">(in module clmm.dataops)</a>
 </li>
       </ul></li>
-      <li><a href="api/clmm.modeling.html#clmm.modeling.Modeling">Modeling() (in module clmm.modeling)</a>
+      <li><a href="api/clmm.theory.html#clmm.theory.Modeling">Modeling (in module clmm.theory)</a>
+
+      <ul>
+        <li><a href="api/clmm.theory.ccl.html#clmm.theory.ccl.Modeling">(in module clmm.theory.ccl)</a>
 </li>
+        <li><a href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.Modeling">(in module clmm.theory.cluster_toolkit)</a>
+</li>
+        <li><a href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.Modeling">(in module clmm.theory.numcosmo)</a>
+</li>
+      </ul></li>
       <li>
     module
 
       <ul>
-        <li><a href="api/clmm.clmm_cosmo.html#module-clmm.clmm_cosmo">clmm.clmm_cosmo</a>
-</li>
-        <li><a href="api/clmm.clmm_modeling.html#module-clmm.clmm_modeling">clmm.clmm_modeling</a>
-</li>
         <li><a href="api/clmm.constants.html#module-clmm.constants">clmm.constants</a>
+</li>
+        <li><a href="api/clmm.cosmology.html#module-clmm.cosmology">clmm.cosmology</a>
+</li>
+        <li><a href="api/clmm.cosmology.ccl.html#module-clmm.cosmology.ccl">clmm.cosmology.ccl</a>
+</li>
+        <li><a href="api/clmm.cosmology.cluster_toolkit.html#module-clmm.cosmology.cluster_toolkit">clmm.cosmology.cluster_toolkit</a>
+</li>
+        <li><a href="api/clmm.cosmology.numcosmo.html#module-clmm.cosmology.numcosmo">clmm.cosmology.numcosmo</a>
+</li>
+        <li><a href="api/clmm.cosmology.parent_class.html#module-clmm.cosmology.parent_class">clmm.cosmology.parent_class</a>
 </li>
         <li><a href="api/clmm.dataops.html#module-clmm.dataops">clmm.dataops</a>
 </li>
@@ -428,20 +696,46 @@
 </li>
         <li><a href="api/clmm.gcdata.html#module-clmm.gcdata">clmm.gcdata</a>
 </li>
-        <li><a href="api/clmm.lsst.html#module-clmm.lsst">clmm.lsst</a>
-</li>
-        <li><a href="api/clmm.lsst.load_clusters_with_gcr.html#module-clmm.lsst.load_clusters_with_gcr">clmm.lsst.load_clusters_with_gcr</a>
-</li>
-        <li><a href="api/clmm.modeling.html#module-clmm.modeling">clmm.modeling</a>
-</li>
         <li><a href="api/clmm.plotting.html#module-clmm.plotting">clmm.plotting</a>
+</li>
+        <li><a href="api/clmm.support.html#module-clmm.support">clmm.support</a>
+</li>
+        <li><a href="api/clmm.support.mock_data.html#module-clmm.support.mock_data">clmm.support.mock_data</a>
+</li>
+        <li><a href="api/clmm.support.sampler.html#module-clmm.support.sampler">clmm.support.sampler</a>
+</li>
+        <li><a href="api/clmm.theory.html#module-clmm.theory">clmm.theory</a>
+</li>
+        <li><a href="api/clmm.theory.ccl.html#module-clmm.theory.ccl">clmm.theory.ccl</a>
+</li>
+        <li><a href="api/clmm.theory.cluster_toolkit.html#module-clmm.theory.cluster_toolkit">clmm.theory.cluster_toolkit</a>
+</li>
+        <li><a href="api/clmm.theory.func_layer.html#module-clmm.theory.func_layer">clmm.theory.func_layer</a>
+</li>
+        <li><a href="api/clmm.theory.generic.html#module-clmm.theory.generic">clmm.theory.generic</a>
+</li>
+        <li><a href="api/clmm.theory.numcosmo.html#module-clmm.theory.numcosmo">clmm.theory.numcosmo</a>
+</li>
+        <li><a href="api/clmm.theory.parent_class.html#module-clmm.theory.parent_class">clmm.theory.parent_class</a>
 </li>
         <li><a href="api/clmm.utils.html#module-clmm.utils">clmm.utils</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/clmm.clmm_cosmo.html#clmm.clmm_cosmo.CLMMCosmology.mpc2rad">mpc2rad() (clmm.clmm_cosmo.CLMMCosmology method)</a>
+      <li><a href="api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.mpc2rad">mpc2rad() (clmm.cosmology.parent_class.CLMMCosmology method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="N">N</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.NumCosmoCLMModeling">NumCosmoCLMModeling (class in clmm.theory.numcosmo)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/clmm.cosmology.numcosmo.html#clmm.cosmology.numcosmo.NumCosmoCosmology">NumCosmoCosmology (class in clmm.cosmology.numcosmo)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -451,29 +745,93 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/clmm.constants.html#clmm.constants.Constants.PC_TO_METER">PC_TO_METER (clmm.constants.Constants attribute)</a>
 </li>
-      <li><a href="api/clmm.plotting.html#clmm.plotting.plot_profiles">plot_profiles() (in module clmm.plotting)</a>
+      <li><a href="api/clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster.plot_profiles">plot_profiles() (clmm.galaxycluster.GalaxyCluster method)</a>
+
+      <ul>
+        <li><a href="api/clmm.plotting.html#clmm.plotting.plot_profiles">(in module clmm.plotting)</a>
 </li>
-      <li><a href="api/clmm.modeling.html#clmm.modeling.predict_convergence">predict_convergence() (in module clmm.modeling)</a>
+      </ul></li>
+      <li><a href="api/clmm.theory.html#clmm.theory.predict_convergence">predict_convergence() (in module clmm.theory)</a>
+
+      <ul>
+        <li><a href="api/clmm.theory.ccl.html#clmm.theory.ccl.predict_convergence">(in module clmm.theory.ccl)</a>
 </li>
-      <li><a href="api/clmm.modeling.html#clmm.modeling.predict_excess_surface_density">predict_excess_surface_density() (in module clmm.modeling)</a>
+        <li><a href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.predict_convergence">(in module clmm.theory.cluster_toolkit)</a>
 </li>
+        <li><a href="api/clmm.theory.func_layer.html#clmm.theory.func_layer.predict_convergence">(in module clmm.theory.func_layer)</a>
+</li>
+        <li><a href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.predict_convergence">(in module clmm.theory.numcosmo)</a>
+</li>
+      </ul></li>
+      <li><a href="api/clmm.theory.html#clmm.theory.predict_excess_surface_density">predict_excess_surface_density() (in module clmm.theory)</a>
+
+      <ul>
+        <li><a href="api/clmm.theory.ccl.html#clmm.theory.ccl.predict_excess_surface_density">(in module clmm.theory.ccl)</a>
+</li>
+        <li><a href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.predict_excess_surface_density">(in module clmm.theory.cluster_toolkit)</a>
+</li>
+        <li><a href="api/clmm.theory.func_layer.html#clmm.theory.func_layer.predict_excess_surface_density">(in module clmm.theory.func_layer)</a>
+</li>
+        <li><a href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.predict_excess_surface_density">(in module clmm.theory.numcosmo)</a>
+</li>
+      </ul></li>
+      <li><a href="api/clmm.theory.html#clmm.theory.predict_magnification">predict_magnification() (in module clmm.theory)</a>
+
+      <ul>
+        <li><a href="api/clmm.theory.ccl.html#clmm.theory.ccl.predict_magnification">(in module clmm.theory.ccl)</a>
+</li>
+        <li><a href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.predict_magnification">(in module clmm.theory.cluster_toolkit)</a>
+</li>
+        <li><a href="api/clmm.theory.func_layer.html#clmm.theory.func_layer.predict_magnification">(in module clmm.theory.func_layer)</a>
+</li>
+        <li><a href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.predict_magnification">(in module clmm.theory.numcosmo)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/clmm.modeling.html#clmm.modeling.predict_magnification">predict_magnification() (in module clmm.modeling)</a>
+      <li><a href="api/clmm.theory.html#clmm.theory.predict_reduced_tangential_shear">predict_reduced_tangential_shear() (in module clmm.theory)</a>
+
+      <ul>
+        <li><a href="api/clmm.theory.ccl.html#clmm.theory.ccl.predict_reduced_tangential_shear">(in module clmm.theory.ccl)</a>
 </li>
-      <li><a href="api/clmm.modeling.html#clmm.modeling.predict_reduced_tangential_shear">predict_reduced_tangential_shear() (in module clmm.modeling)</a>
+        <li><a href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.predict_reduced_tangential_shear">(in module clmm.theory.cluster_toolkit)</a>
 </li>
-      <li><a href="api/clmm.modeling.html#clmm.modeling.predict_surface_density">predict_surface_density() (in module clmm.modeling)</a>
+        <li><a href="api/clmm.theory.func_layer.html#clmm.theory.func_layer.predict_reduced_tangential_shear">(in module clmm.theory.func_layer)</a>
 </li>
-      <li><a href="api/clmm.modeling.html#clmm.modeling.predict_tangential_shear">predict_tangential_shear() (in module clmm.modeling)</a>
+        <li><a href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.predict_reduced_tangential_shear">(in module clmm.theory.numcosmo)</a>
 </li>
+      </ul></li>
+      <li><a href="api/clmm.theory.html#clmm.theory.predict_surface_density">predict_surface_density() (in module clmm.theory)</a>
+
+      <ul>
+        <li><a href="api/clmm.theory.ccl.html#clmm.theory.ccl.predict_surface_density">(in module clmm.theory.ccl)</a>
+</li>
+        <li><a href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.predict_surface_density">(in module clmm.theory.cluster_toolkit)</a>
+</li>
+        <li><a href="api/clmm.theory.func_layer.html#clmm.theory.func_layer.predict_surface_density">(in module clmm.theory.func_layer)</a>
+</li>
+        <li><a href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.predict_surface_density">(in module clmm.theory.numcosmo)</a>
+</li>
+      </ul></li>
+      <li><a href="api/clmm.theory.html#clmm.theory.predict_tangential_shear">predict_tangential_shear() (in module clmm.theory)</a>
+
+      <ul>
+        <li><a href="api/clmm.theory.ccl.html#clmm.theory.ccl.predict_tangential_shear">(in module clmm.theory.ccl)</a>
+</li>
+        <li><a href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.predict_tangential_shear">(in module clmm.theory.cluster_toolkit)</a>
+</li>
+        <li><a href="api/clmm.theory.func_layer.html#clmm.theory.func_layer.predict_tangential_shear">(in module clmm.theory.func_layer)</a>
+</li>
+        <li><a href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.predict_tangential_shear">(in module clmm.theory.numcosmo)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/clmm.clmm_cosmo.html#clmm.clmm_cosmo.CLMMCosmology.rad2mpc">rad2mpc() (clmm.clmm_cosmo.CLMMCosmology method)</a>
+      <li><a href="api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.rad2mpc">rad2mpc() (clmm.cosmology.parent_class.CLMMCosmology method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -483,17 +841,65 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster.save">save() (clmm.galaxycluster.GalaxyCluster method)</a>
 </li>
-      <li><a href="api/clmm.clmm_cosmo.html#clmm.clmm_cosmo.CLMMCosmology.set_be_cosmo">set_be_cosmo() (clmm.clmm_cosmo.CLMMCosmology method)</a>
+      <li><a href="api/clmm.support.sampler.html#clmm.support.sampler.scicurve_fit">scicurve_fit() (in module clmm.support.sampler)</a>
 </li>
-      <li><a href="api/clmm.clmm_modeling.html#clmm.clmm_modeling.CLMModeling.set_concentration">set_concentration() (clmm.clmm_modeling.CLMModeling method)</a>
+      <li><a href="api/clmm.support.sampler.html#clmm.support.sampler.sciopt">sciopt() (in module clmm.support.sampler)</a>
 </li>
+      <li><a href="api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.set_be_cosmo">set_be_cosmo() (clmm.cosmology.parent_class.CLMMCosmology method)</a>
+</li>
+      <li><a href="api/clmm.theory.ccl.html#clmm.theory.ccl.CCLCLMModeling.set_concentration">set_concentration() (clmm.theory.ccl.CCLCLMModeling method)</a>
+
+      <ul>
+        <li><a href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.CTModeling.set_concentration">(clmm.theory.cluster_toolkit.CTModeling method)</a>
+</li>
+        <li><a href="api/clmm.theory.html#clmm.theory.CTModeling.set_concentration">(clmm.theory.CTModeling method)</a>
+</li>
+        <li><a href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.NumCosmoCLMModeling.set_concentration">(clmm.theory.numcosmo.NumCosmoCLMModeling method)</a>
+</li>
+        <li><a href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.set_concentration">(clmm.theory.parent_class.CLMModeling method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/clmm.theory.ccl.html#clmm.theory.ccl.CCLCLMModeling.set_cosmo">set_cosmo() (clmm.theory.ccl.CCLCLMModeling method)</a>
+
+      <ul>
+        <li><a href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.CTModeling.set_cosmo">(clmm.theory.cluster_toolkit.CTModeling method)</a>
+</li>
+        <li><a href="api/clmm.theory.html#clmm.theory.CTModeling.set_cosmo">(clmm.theory.CTModeling method)</a>
+</li>
+        <li><a href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.NumCosmoCLMModeling.set_cosmo">(clmm.theory.numcosmo.NumCosmoCLMModeling method)</a>
+</li>
+        <li><a href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.set_cosmo">(clmm.theory.parent_class.CLMModeling method)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/clmm.clmm_modeling.html#clmm.clmm_modeling.CLMModeling.set_cosmo">set_cosmo() (clmm.clmm_modeling.CLMModeling method)</a>
+      <li><a href="api/clmm.cosmology.numcosmo.html#clmm.cosmology.numcosmo.NumCosmoCosmology.set_dist">set_dist() (clmm.cosmology.numcosmo.NumCosmoCosmology method)</a>
 </li>
-      <li><a href="api/clmm.clmm_modeling.html#clmm.clmm_modeling.CLMModeling.set_halo_density_profile">set_halo_density_profile() (clmm.clmm_modeling.CLMModeling method)</a>
+      <li><a href="api/clmm.theory.ccl.html#clmm.theory.ccl.CCLCLMModeling.set_halo_density_profile">set_halo_density_profile() (clmm.theory.ccl.CCLCLMModeling method)</a>
+
+      <ul>
+        <li><a href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.CTModeling.set_halo_density_profile">(clmm.theory.cluster_toolkit.CTModeling method)</a>
 </li>
-      <li><a href="api/clmm.clmm_modeling.html#clmm.clmm_modeling.CLMModeling.set_mass">set_mass() (clmm.clmm_modeling.CLMModeling method)</a>
+        <li><a href="api/clmm.theory.html#clmm.theory.CTModeling.set_halo_density_profile">(clmm.theory.CTModeling method)</a>
+</li>
+        <li><a href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.NumCosmoCLMModeling.set_halo_density_profile">(clmm.theory.numcosmo.NumCosmoCLMModeling method)</a>
+</li>
+        <li><a href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.set_halo_density_profile">(clmm.theory.parent_class.CLMModeling method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/clmm.theory.ccl.html#clmm.theory.ccl.CCLCLMModeling.set_mass">set_mass() (clmm.theory.ccl.CCLCLMModeling method)</a>
+
+      <ul>
+        <li><a href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.CTModeling.set_mass">(clmm.theory.cluster_toolkit.CTModeling method)</a>
+</li>
+        <li><a href="api/clmm.theory.html#clmm.theory.CTModeling.set_mass">(clmm.theory.CTModeling method)</a>
+</li>
+        <li><a href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.NumCosmoCLMModeling.set_mass">(clmm.theory.numcosmo.NumCosmoCLMModeling method)</a>
+</li>
+        <li><a href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.set_mass">(clmm.theory.parent_class.CLMModeling method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.NumCosmoCLMModeling.set_mset">set_mset() (clmm.theory.numcosmo.NumCosmoCLMModeling method)</a>
 </li>
       <li><a href="api/clmm.constants.html#clmm.constants.Constants.SOLAR_MASS">SOLAR_MASS (clmm.constants.Constants attribute)</a>
 </li>
@@ -508,6 +914,14 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/clmm.gcdata.html#clmm.gcdata.GCData.update_cosmo_ext_valid">update_cosmo_ext_valid() (clmm.gcdata.GCData method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="V">V</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.validate_definitions">validate_definitions() (clmm.theory.parent_class.CLMModeling method)</a>
 </li>
   </ul></td>
 </tr></table>

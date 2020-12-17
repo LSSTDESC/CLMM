@@ -1,0 +1,20 @@
+clmm.theory package
+===================
+
+.. automodule:: clmm.theory
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   clmm.theory.ccl
+   clmm.theory.cluster_toolkit
+   clmm.theory.func_layer
+   clmm.theory.generic
+   clmm.theory.numcosmo
+   clmm.theory.parent_class

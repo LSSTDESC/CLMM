@@ -1,0 +1,675 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>clmm.support.mock_data &mdash; CLMM 0.8.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> CLMM
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.8.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/citing.html">Citing CLMM</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Usage Demos</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.constants.html">clmm.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.cosmology.html">clmm.cosmology package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.cosmology.ccl.html">clmm.cosmology.ccl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.cosmology.cluster_toolkit.html">clmm.cosmology.cluster_toolkit module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.cosmology.numcosmo.html">clmm.cosmology.numcosmo module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.cosmology.parent_class.html">clmm.cosmology.parent_class module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.dataops.html">clmm.dataops package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.gcdata.html">clmm.gcdata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.theory.html">clmm.theory package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.theory.ccl.html">clmm.theory.ccl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.theory.cluster_toolkit.html">clmm.theory.cluster_toolkit module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.theory.func_layer.html">clmm.theory.func_layer module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.theory.generic.html">clmm.theory.generic module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.theory.numcosmo.html">clmm.theory.numcosmo module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.theory.parent_class.html">clmm.theory.parent_class module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.plotting.html">clmm.plotting package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.utils.html">clmm.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.support.html">clmm.support package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.support.mock_data.html">clmm.support.mock_data module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.support.sampler.html">clmm.support.sampler module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">CLMM</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>clmm.support.mock_data</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for clmm.support.mock_data</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Functions to generate mock source galaxy distributions to demo lensing code&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">clmm</span> <span class="kn">import</span> <span class="n">GCData</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">integrate</span>
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interp1d</span>
+<span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">units</span>
+<span class="kn">from</span> <span class="nn">clmm.theory</span> <span class="kn">import</span> <span class="n">predict_tangential_shear</span><span class="p">,</span> <span class="n">predict_convergence</span>
+<span class="kn">from</span> <span class="nn">clmm.utils</span> <span class="kn">import</span> <span class="n">convert_units</span><span class="p">,</span> <span class="n">compute_lensed_ellipticity</span>
+
+<div class="viewcode-block" id="generate_galaxy_catalog"><a class="viewcode-back" href="../../../api/clmm.support.mock_data.html#clmm.support.mock_data.generate_galaxy_catalog">[docs]</a><span class="k">def</span> <span class="nf">generate_galaxy_catalog</span><span class="p">(</span><span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">cluster_c</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">zsrc</span><span class="p">,</span> <span class="n">Delta_SO</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span><span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">,</span> <span class="n">zsrc_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                            <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.</span><span class="p">,</span> <span class="n">field_size</span><span class="o">=</span><span class="mf">8.</span><span class="p">,</span> <span class="n">shapenoise</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nretry</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ngal_density</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Generates a mock dataset of sheared background galaxies.</span>
+
+<span class="sd">    We build galaxy catalogs following a series of steps.</span>
+
+<span class="sd">    1. Draw true redshifts of the source galaxy population. This step is described by the</span>
+<span class="sd">    parameters `zsrc` and `zsrc_max`. `zsrc` can be a `float` in which case every source is</span>
+<span class="sd">    at the given redshift or a `str` describing a specific model to use for the source</span>
+<span class="sd">    distribution. Currently, the only supported model for source galaxy distribution is that</span>
+<span class="sd">    of Chang et al. 2013 arXiv:1305.0793. When a model is used to describe the distribution,</span>
+<span class="sd">    `zsrc_max` is the maximum allowed redshift of a source galaxy.</span>
+
+<span class="sd">    2. Apply photometric redshift errors to the source galaxy population. This step is</span>
+<span class="sd">    described by the parameter `photoz_sigma_unscaled`. If this parameter is set to a float,</span>
+<span class="sd">    we add Gaussian uncertainty to the source redshift</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        z \sim \mathcal{N}\left(z^{\rm true},</span>
+<span class="sd">        \sigma_{\rm photo-z}^{\rm unscaled}(1+z^{\rm true}) \right)</span>
+
+<span class="sd">    We additionally include two columns in the output catalog, `pzbins` and `pzpdf` which</span>
+<span class="sd">    desribe the photo-z distribution as a Gaussian centered at :math:`z^{\rm true} with a</span>
+<span class="sd">    width :math:`\sigma_{\rm photo-z} = \sigma_{\rm photo-z}^{\rm unscaled}(1+z^{\rm true})`</span>
+
+<span class="sd">    If `photoz_sigma_unscaled` is `None`, the `z` column in the output catalog is the true</span>
+<span class="sd">    redshift.</span>
+
+<span class="sd">    3. Draw galaxy positions. Positions are drawn in a square box around the lens position with</span>
+<span class="sd">    a side length of 8 Mpc/h. We then convert to right ascension and declination using the</span>
+<span class="sd">    cosmology defined in `cosmo`.</span>
+
+<span class="sd">    4. We predict the reduced tangential shear of each using the radial distances of each source</span>
+<span class="sd">    from the lens, the source redshifts, and the lens mass, concentration, and redshift. In the</span>
+<span class="sd">    given cosmology for an NFW halo.</span>
+
+<span class="sd">    5. We apply shape noise to the tangential shears. This is described by the parameter</span>
+<span class="sd">    `shapenoise`. If this is set to a float, we apply a Gaussian perturbation to the</span>
+<span class="sd">    tangential shear with a width of `shapenoise`.</span>
+
+<span class="sd">    6. Finally, we compute the two components of the ellipticity, e1 and e2.</span>
+
+<span class="sd">    If the shape noise parameter is high, we may draw nonsensical values for ellipticities. We</span>
+<span class="sd">    ensure that we does not return any nonsensical values for derived properties. We re-draw</span>
+<span class="sd">    all galaxies with e1 or e2 outside the bounds of [-1, 1]. After 5 (default) attempts to</span>
+<span class="sd">    re-draw these properties, we return the catalog as is and throw a warning.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cluster_m : float</span>
+<span class="sd">        Cluster mass in Msun</span>
+<span class="sd">    cluster_z : float</span>
+<span class="sd">        Cluster redshift</span>
+<span class="sd">    cluster_c : float</span>
+<span class="sd">        Cluster concentration in the same mass definition as Delta_SO</span>
+<span class="sd">    cosmo : dict</span>
+<span class="sd">        Dictionary of cosmological parameters. Must contain at least, Omega_c, Omega_b,</span>
+<span class="sd">        and H0</span>
+<span class="sd">    zsrc : float or str</span>
+<span class="sd">        Choose the source galaxy distribution to be fixed or drawn from a predefined distribution.</span>
+<span class="sd">        float : All sources galaxies at this fixed redshift</span>
+<span class="sd">        str : Draws individual source gal redshifts from predefined distribution. Options are: chang13</span>
+<span class="sd">    Delta_SO : float, optional</span>
+<span class="sd">        Overdensity density contrast used to compute the cluster mass and concentration. The</span>
+<span class="sd">        spherical overdensity mass is computed as the mass enclosed within the radius</span>
+<span class="sd">        :math:`R_{\Delta{\rm SO}}` where the mean matter density is :math:`\Delta_{\rm SO}` times</span>
+<span class="sd">        the mean (or critical, depending on the massdef keyword) density of the Universe at the cluster redshift</span>
+<span class="sd">        :math:`M_{\Delta{\rm SO}}=4/3\pi\Delta_{\rm SO}\rho_{m}(z_{\rm lens})R_{\Delta{\rm SO}}^3`</span>
+<span class="sd">    massdef : string, optional</span>
+<span class="sd">        Definition the mass overdensity with respect to the &#39;mean&#39; or &#39;critical&#39; density of the universe. Default is &#39;mean&#39; as it works</span>
+<span class="sd">        for all theory backends. The NumCosmo and CCL backends also allow the use of &#39;critical&#39;.</span>
+<span class="sd">    halo_profile_model : string, optional</span>
+<span class="sd">        Halo density profile. Default is &#39;nfw&#39;, which works for all theory backends. The NumCosmo backend allow for more</span>
+<span class="sd">        options, e.g. &#39;einasto&#39; or &#39;burkert&#39; profiles.</span>
+<span class="sd">    zsrc_min : float, optional</span>
+<span class="sd">        The minimum true redshift of the sources. If photoz errors are included, the observed redshift</span>
+<span class="sd">        may be smaller than zsrc_min.</span>
+<span class="sd">    zsrc_max : float, optional</span>
+<span class="sd">        The maximum true redshift of the sources, apllied when galaxy redshifts are drawn from</span>
+<span class="sd">        a redshift distribution. If photoz errors are included, the observed redshift may be larger than</span>
+<span class="sd">        zsrc_max.</span>
+<span class="sd">    field_size : float</span>
+<span class="sd">        The size of the field (field_size x field_size) to be simulated.</span>
+<span class="sd">        Proper distance in Mpc  at the cluster redshift.</span>
+<span class="sd">    shapenoise : float, optional</span>
+<span class="sd">        If set, applies Gaussian shape noise to the galaxy shapes with a width set by `shapenoise`</span>
+<span class="sd">    photoz_sigma_unscaled : float, optional</span>
+<span class="sd">        If set, applies photo-z errors to source redshifts</span>
+<span class="sd">    nretry : int, optional</span>
+<span class="sd">        The number of times that we re-draw each galaxy with non-sensical derived properties</span>
+<span class="sd">    ngals : float, optional</span>
+<span class="sd">        Number of galaxies to generate</span>
+<span class="sd">    ngal_density : float, optional</span>
+<span class="sd">        The number density of galaxies (in galaxies per square arcminute, from z=0 to z=infty).</span>
+<span class="sd">        The number of galaxies to be drawn will then depend on the redshift distribution and user-defined redshift range.</span>
+<span class="sd">        If specified, the ngals argument will be ignored.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    galaxy_catalog : clmm.GCData</span>
+<span class="sd">        Table of source galaxies with drawn and derived properties required for lensing studies</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Much of this code in this function was adapted from the Dallas group</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">zsrc_min</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">zsrc_min</span> <span class="o">=</span> <span class="n">cluster_z</span><span class="o">+</span><span class="mf">0.1</span>
+
+    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;cluster_m&#39;</span> <span class="p">:</span> <span class="n">cluster_m</span><span class="p">,</span> <span class="s1">&#39;cluster_z&#39;</span> <span class="p">:</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="s1">&#39;cluster_c&#39;</span> <span class="p">:</span> <span class="n">cluster_c</span><span class="p">,</span>
+              <span class="s1">&#39;cosmo&#39;</span> <span class="p">:</span> <span class="n">cosmo</span><span class="p">,</span> <span class="s1">&#39;Delta_SO&#39;</span> <span class="p">:</span> <span class="n">Delta_SO</span><span class="p">,</span> <span class="s1">&#39;zsrc&#39;</span> <span class="p">:</span> <span class="n">zsrc</span><span class="p">,</span> <span class="s1">&#39;massdef&#39;</span> <span class="p">:</span> <span class="n">massdef</span><span class="p">,</span>
+              <span class="s1">&#39;halo_profile_model&#39;</span> <span class="p">:</span> <span class="n">halo_profile_model</span><span class="p">,</span>
+              <span class="s1">&#39;zsrc_min&#39;</span> <span class="p">:</span> <span class="n">zsrc_min</span><span class="p">,</span>
+              <span class="s1">&#39;zsrc_max&#39;</span> <span class="p">:</span> <span class="n">zsrc_max</span><span class="p">,</span><span class="s1">&#39;shapenoise&#39;</span> <span class="p">:</span> <span class="n">shapenoise</span><span class="p">,</span> <span class="s1">&#39;photoz_sigma_unscaled&#39;</span> <span class="p">:</span> <span class="n">photoz_sigma_unscaled</span><span class="p">,</span>
+              <span class="s1">&#39;field_size&#39;</span> <span class="p">:</span> <span class="n">field_size</span><span class="p">}</span>
+
+    <span class="k">if</span> <span class="n">ngals</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ngal_density</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Either the number of galaxies &quot;ngals&quot; or the galaxy density &quot;ngal_density&quot; keyword must be specified&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">ngals</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ngal_density</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The &quot;ngals&quot; and &quot;ngal_density&quot; keywords cannot both be set. Please use one only&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">ngal_density</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Compute the number of galaxies to be drawn</span>
+        <span class="n">ngals</span> <span class="o">=</span> <span class="n">_compute_ngals</span><span class="p">(</span><span class="n">ngal_density</span><span class="p">,</span> <span class="n">field_size</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">zsrc</span><span class="p">,</span> <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span> <span class="n">zsrc_max</span><span class="o">=</span><span class="n">zsrc_max</span><span class="p">)</span>
+
+    <span class="n">galaxy_catalog</span> <span class="o">=</span> <span class="n">_generate_galaxy_catalog</span><span class="p">(</span><span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+    <span class="c1"># Check for bad galaxies and replace them</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nretry</span><span class="p">):</span>
+        <span class="n">nbad</span><span class="p">,</span> <span class="n">badids</span> <span class="o">=</span> <span class="n">_find_aphysical_galaxies</span><span class="p">(</span><span class="n">galaxy_catalog</span><span class="p">,</span> <span class="n">zsrc_min</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">nbad</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">replacements</span> <span class="o">=</span> <span class="n">_generate_galaxy_catalog</span><span class="p">(</span><span class="n">ngals</span><span class="o">=</span><span class="n">nbad</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+        <span class="c1">#galaxy_catalog[badids] = replacements</span>
+        <span class="k">for</span> <span class="n">badid</span><span class="p">,</span> <span class="n">replacement</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">badids</span><span class="p">,</span> <span class="n">replacements</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">galaxy_catalog</span><span class="o">.</span><span class="n">colnames</span><span class="p">:</span>
+                <span class="n">galaxy_catalog</span><span class="p">[</span><span class="n">col</span><span class="p">][</span><span class="n">badid</span><span class="p">]</span> <span class="o">=</span> <span class="n">replacement</span><span class="p">[</span><span class="n">col</span><span class="p">]</span>
+
+    <span class="c1"># Final check to see if there are bad galaxies left</span>
+    <span class="n">nbad</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_find_aphysical_galaxies</span><span class="p">(</span><span class="n">galaxy_catalog</span><span class="p">,</span> <span class="n">zsrc_min</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">nbad</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Not able to remove </span><span class="si">{}</span><span class="s2"> aphysical objects after </span><span class="si">{}</span><span class="s2"> iterations&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nbad</span><span class="p">,</span> <span class="n">nretry</span><span class="p">))</span>
+
+    <span class="c1"># Now that the catalog is final, add an id column</span>
+    <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">ngals</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">galaxy_catalog</span></div>
+
+
+<span class="k">def</span> <span class="nf">_chang_z_distrib</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A private function that returns the Chang et al (2013) unnormalized galaxy redshift distribution function,</span>
+<span class="sd">    with the fiducial set of parameters.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    z : float</span>
+<span class="sd">        Galaxy redshift</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    The value of the distribution at z</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">z0</span> <span class="o">=</span> <span class="mf">1.24</span><span class="p">,</span> <span class="mf">1.01</span><span class="p">,</span> <span class="mf">0.51</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">z</span><span class="o">**</span><span class="n">alpha</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">z</span><span class="o">/</span><span class="n">z0</span><span class="p">)</span><span class="o">**</span><span class="n">beta</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_compute_ngals</span><span class="p">(</span><span class="n">ngal_density</span><span class="p">,</span> <span class="n">field_size</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">zsrc</span><span class="p">,</span> <span class="n">zsrc_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zsrc_max</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A private function that computes the number of galaxies to draw given the user-defined</span>
+<span class="sd">    field size, galaxy density, cosmology, cluster redshift, galaxy redshift distribution</span>
+<span class="sd">    and requested redshift range.</span>
+<span class="sd">    For a more detailed description of each of the parameters, see the documentation of</span>
+<span class="sd">    `generate_galaxy_catalog`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">field_size_arcmin</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span><span class="n">field_size</span><span class="p">,</span> <span class="s1">&#39;Mpc&#39;</span><span class="p">,</span> <span class="s1">&#39;arcmin&#39;</span><span class="p">,</span> <span class="n">redshift</span><span class="o">=</span><span class="n">cluster_z</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
+    <span class="n">ngals</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ngal_density</span><span class="o">*</span><span class="n">field_size_arcmin</span><span class="o">*</span><span class="n">field_size_arcmin</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">zsrc</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">ngals</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">zsrc</span><span class="o">==</span><span class="s1">&#39;chang13&#39;</span><span class="p">:</span>
+        <span class="c1"># Compute the normalisation for the redshift distribution function (z=[0,\infty])</span>
+        <span class="n">norm</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span><span class="n">_chang_z_distrib</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+        <span class="c1"># Probability to find the galaxy in the requested redshift range</span>
+        <span class="n">prob</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span><span class="n">_chang_z_distrib</span><span class="p">,</span> <span class="n">zsrc_min</span><span class="p">,</span> <span class="n">zsrc_max</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">norm</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">ngals</span><span class="o">*</span><span class="n">prob</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_generate_galaxy_catalog</span><span class="p">(</span><span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">cluster_c</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">ngals</span><span class="p">,</span> <span class="n">zsrc</span><span class="p">,</span> <span class="n">Delta_SO</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">zsrc_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zsrc_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shapenoise</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field_size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A private function that skips the sanity checks on derived properties. This</span>
+<span class="sd">    function should only be used when called directly from `generate_galaxy_catalog`.</span>
+<span class="sd">    For a detailed description of each of the parameters, see the documentation of</span>
+<span class="sd">    `generate_galaxy_catalog`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Set the source galaxy redshifts</span>
+    <span class="n">galaxy_catalog</span> <span class="o">=</span> <span class="n">_draw_source_redshifts</span><span class="p">(</span><span class="n">zsrc</span><span class="p">,</span> <span class="n">zsrc_min</span><span class="p">,</span> <span class="n">zsrc_max</span><span class="p">,</span> <span class="n">ngals</span><span class="p">)</span>
+
+    <span class="c1"># Add photo-z errors and pdfs to source galaxy redshifts</span>
+    <span class="k">if</span> <span class="n">photoz_sigma_unscaled</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">galaxy_catalog</span> <span class="o">=</span> <span class="n">_compute_photoz_pdfs</span><span class="p">(</span><span class="n">galaxy_catalog</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="p">)</span>
+    <span class="c1"># Draw galaxy positions</span>
+    <span class="n">galaxy_catalog</span> <span class="o">=</span> <span class="n">_draw_galaxy_positions</span><span class="p">(</span><span class="n">galaxy_catalog</span><span class="p">,</span> <span class="n">ngals</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">field_size</span><span class="p">)</span>
+    <span class="c1"># Compute the shear on each source galaxy</span>
+    <span class="n">gamt</span> <span class="o">=</span> <span class="n">predict_tangential_shear</span><span class="p">(</span><span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;r_mpc&#39;</span><span class="p">],</span> <span class="n">mdelta</span><span class="o">=</span><span class="n">cluster_m</span><span class="p">,</span>
+                                            <span class="n">cdelta</span><span class="o">=</span><span class="n">cluster_c</span><span class="p">,</span> <span class="n">z_cluster</span><span class="o">=</span><span class="n">cluster_z</span><span class="p">,</span>
+                                            <span class="n">z_source</span><span class="o">=</span><span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;ztrue&#39;</span><span class="p">],</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
+                                            <span class="n">delta_mdef</span><span class="o">=</span><span class="n">Delta_SO</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="o">=</span><span class="n">halo_profile_model</span><span class="p">,</span>
+                                            <span class="n">massdef</span><span class="o">=</span><span class="n">massdef</span><span class="p">,</span>
+                                            <span class="n">z_src_model</span><span class="o">=</span><span class="s1">&#39;single_plane&#39;</span><span class="p">)</span>
+
+    <span class="n">gamx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">ngals</span><span class="p">)</span>
+    <span class="n">kappa</span> <span class="o">=</span> <span class="n">predict_convergence</span><span class="p">(</span><span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;r_mpc&#39;</span><span class="p">],</span> <span class="n">mdelta</span><span class="o">=</span><span class="n">cluster_m</span><span class="p">,</span>
+                                            <span class="n">cdelta</span><span class="o">=</span><span class="n">cluster_c</span><span class="p">,</span> <span class="n">z_cluster</span><span class="o">=</span><span class="n">cluster_z</span><span class="p">,</span>
+                                            <span class="n">z_source</span><span class="o">=</span><span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">],</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
+                                            <span class="n">delta_mdef</span><span class="o">=</span><span class="n">Delta_SO</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="o">=</span><span class="n">halo_profile_model</span><span class="p">,</span>
+                                            <span class="n">massdef</span><span class="o">=</span><span class="n">massdef</span><span class="p">,</span>
+                                            <span class="n">z_src_model</span><span class="o">=</span><span class="s1">&#39;single_plane&#39;</span><span class="p">)</span>
+
+    <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;gammat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gamt</span>
+    <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;gammax&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">ngals</span><span class="p">)</span>
+
+    <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;posangle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;y_mpc&#39;</span><span class="p">],</span>
+                                            <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;x_mpc&#39;</span><span class="p">])</span>
+
+    <span class="c1">#corresponding shear1,2 components</span>
+    <span class="n">gam1</span> <span class="o">=</span> <span class="o">-</span><span class="n">gamt</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;posangle&#39;</span><span class="p">])</span><span class="o">+</span><span class="n">gamx</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;posangle&#39;</span><span class="p">])</span>
+    <span class="n">gam2</span> <span class="o">=</span> <span class="o">-</span><span class="n">gamt</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;posangle&#39;</span><span class="p">])</span><span class="o">-</span><span class="n">gamx</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;posangle&#39;</span><span class="p">])</span>
+
+    <span class="c1">#instrinsic ellipticities</span>
+    <span class="n">e1_intrinsic</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">e2_intrinsic</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c1"># Add shape noise to source galaxy shears</span>
+    <span class="k">if</span> <span class="n">shapenoise</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">e1_intrinsic</span> <span class="o">=</span> <span class="n">shapenoise</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">(</span><span class="n">ngals</span><span class="p">)</span>
+        <span class="n">e2_intrinsic</span> <span class="o">=</span> <span class="n">shapenoise</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">(</span><span class="n">ngals</span><span class="p">)</span>
+
+    <span class="c1"># Compute ellipticities</span>
+    <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;e1&#39;</span><span class="p">],</span><span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;e2&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">compute_lensed_ellipticity</span><span class="p">(</span><span class="n">e1_intrinsic</span><span class="p">,</span> <span class="n">e2_intrinsic</span><span class="p">,</span> <span class="n">gam1</span><span class="p">,</span> <span class="n">gam2</span><span class="p">,</span> <span class="n">kappa</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">photoz_sigma_unscaled</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;ra&#39;</span><span class="p">,</span> <span class="s1">&#39;dec&#39;</span><span class="p">,</span> <span class="s1">&#39;e1&#39;</span><span class="p">,</span> <span class="s1">&#39;e2&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;ztrue&#39;</span><span class="p">,</span> <span class="s1">&#39;pzbins&#39;</span><span class="p">,</span> <span class="s1">&#39;pzpdf&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;ra&#39;</span><span class="p">,</span> <span class="s1">&#39;dec&#39;</span><span class="p">,</span> <span class="s1">&#39;e1&#39;</span><span class="p">,</span> <span class="s1">&#39;e2&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;ztrue&#39;</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">_draw_source_redshifts</span><span class="p">(</span><span class="n">zsrc</span><span class="p">,</span> <span class="n">zsrc_min</span><span class="p">,</span> <span class="n">zsrc_max</span><span class="p">,</span> <span class="n">ngals</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Set source galaxy redshifts either set to a fixed value or draw from a predefined</span>
+<span class="sd">    distribution. Return a table (GCData) of the source galaxies</span>
+
+<span class="sd">    Uses a sampling technique found in Numerical Recipes in C, Chap 7.2: Transformation Method.</span>
+<span class="sd">    Pulling out random values from a given probability distribution.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ngals : float</span>
+<span class="sd">        Number of galaxies to generate</span>
+<span class="sd">    zsrc : float or str</span>
+<span class="sd">        Choose the source galaxy distribution to be fixed or drawn from a predefined distribution.</span>
+<span class="sd">        float : All sources galaxies at this fixed redshift</span>
+<span class="sd">        str : Draws individual source gal redshifts from predefined distribution. Options</span>
+<span class="sd">              are: chang13</span>
+<span class="sd">    zsrc_min : float</span>
+<span class="sd">        The minimum source redshift allowed.</span>
+<span class="sd">    zsrc_max : float, optional</span>
+<span class="sd">        If source redshifts are drawn, the maximum source redshift</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    galaxy_catalog : clmm.GCData</span>
+<span class="sd">        Table of true and &#39;measured&#39; photometric redshifts, which here the same. Redshift photometric errors</span>
+<span class="sd">        are then added using _compute_photoz_pdfs.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Much of this code in this function was adapted from the Dallas group</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Set zsrc to constant value</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">zsrc</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="n">zsrc_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">ngals</span><span class="p">)</span><span class="o">*</span><span class="n">zsrc</span>
+
+    <span class="c1"># Draw zsrc from Chang et al. 2013</span>
+    <span class="k">elif</span> <span class="n">zsrc</span> <span class="o">==</span> <span class="s1">&#39;chang13&#39;</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">integrated_pzfxn</span><span class="p">(</span><span class="n">zmax</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Integrated redshift distribution function for transformation method&quot;&quot;&quot;</span>
+            <span class="n">val</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">zsrc_min</span><span class="p">,</span> <span class="n">zmax</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">val</span>
+        <span class="n">vectorization_integrated_pzfxn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">integrated_pzfxn</span><span class="p">)</span>
+
+        <span class="n">zsrc_domain</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">zsrc_min</span><span class="p">,</span> <span class="n">zsrc_max</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">)</span>
+
+        <span class="c1"># Cumulative probability function of the redshift distribution</span>
+        <span class="n">probdist</span> <span class="o">=</span> <span class="n">vectorization_integrated_pzfxn</span><span class="p">(</span><span class="n">zsrc_domain</span><span class="p">,</span> <span class="n">_chang_z_distrib</span><span class="p">)</span>
+
+        <span class="n">uniform_deviate</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">probdist</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">probdist</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">ngals</span><span class="p">)</span>
+        <span class="n">zsrc_list</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">probdist</span><span class="p">,</span> <span class="n">zsrc_domain</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">)(</span><span class="n">uniform_deviate</span><span class="p">)</span>
+
+    <span class="c1"># Draw zsrc from a uniform distribution between zmin and zmax</span>
+    <span class="k">elif</span> <span class="n">zsrc</span> <span class="o">==</span> <span class="s1">&#39;uniform&#39;</span><span class="p">:</span>
+        <span class="n">zsrc_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">zsrc_min</span><span class="p">,</span> <span class="n">zsrc_max</span><span class="p">,</span> <span class="n">ngals</span><span class="p">)</span>
+
+    <span class="c1"># Invalid entry</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;zsrc must be a float or chang13. You set: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">zsrc</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">GCData</span><span class="p">([</span><span class="n">zsrc_list</span><span class="p">,</span> <span class="n">zsrc_list</span><span class="p">],</span> <span class="n">names</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;ztrue&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">_compute_photoz_pdfs</span><span class="p">(</span><span class="n">galaxy_catalog</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Private function to add photo-z errors and PDFs to the mock catalog.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    galaxy_catalog : clmm.GCData</span>
+<span class="sd">        Input galaxy catalog to which photoz PDF will be added</span>
+<span class="sd">    photoz_sigma_unscaled : float</span>
+<span class="sd">        Width of the Gaussian PDF, without the (1+z) factor</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    galaxy_catalog : clmm.GCData</span>
+<span class="sd">        Output galaxy catalog with columns corresponding to the bins</span>
+<span class="sd">        and values of the redshift PDF for each galaxy.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;pzsigma&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">photoz_sigma_unscaled</span><span class="o">*</span><span class="p">(</span><span class="mf">1.</span><span class="o">+</span><span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;ztrue&#39;</span><span class="p">])</span>
+    <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;ztrue&#39;</span><span class="p">]</span><span class="o">+</span>\
+                          <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;pzsigma&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">galaxy_catalog</span><span class="p">))</span>
+
+    <span class="n">pzbins_grid</span><span class="p">,</span> <span class="n">pzpdf_grid</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">galaxy_catalog</span><span class="p">:</span>
+        <span class="n">pdf_range</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;pzsigma&#39;</span><span class="p">]</span><span class="o">*</span><span class="mf">10.</span>
+        <span class="n">zmin</span><span class="p">,</span> <span class="n">zmax</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span><span class="o">-</span><span class="n">pdf_range</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">pdf_range</span>
+        <span class="n">zbins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">zmin</span><span class="p">,</span> <span class="n">zmax</span><span class="p">,</span> <span class="mf">0.03</span><span class="p">)</span>
+        <span class="n">pzbins_grid</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">zbins</span><span class="p">)</span>
+        <span class="n">pzpdf_grid</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="p">((</span><span class="n">zbins</span><span class="o">-</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">])</span><span class="o">/</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;pzsigma&#39;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;pzsigma&#39;</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+    <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;pzbins&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pzbins_grid</span>
+    <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pzpdf_grid</span>
+
+    <span class="k">return</span> <span class="n">galaxy_catalog</span>
+
+
+<span class="k">def</span> <span class="nf">_draw_galaxy_positions</span><span class="p">(</span><span class="n">galaxy_catalog</span><span class="p">,</span> <span class="n">ngals</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">field_size</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Draw positions of source galaxies around lens</span>
+
+<span class="sd">    We draw physical x and y positions from uniform distribution with -4 and 4 Mpc of the</span>
+<span class="sd">    lensing cluster center. We then convert these to RA and DEC using the supplied cosmology</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    galaxy_catalog : clmm.GCData</span>
+<span class="sd">        Source galaxy catalog</span>
+<span class="sd">    ngals : float</span>
+<span class="sd">        The number of source galaxies to draw</span>
+<span class="sd">    cluster_z : float</span>
+<span class="sd">        The cluster redshift</span>
+<span class="sd">    cosmo : dict</span>
+<span class="sd">        Dictionary of cosmological parameters. Must contain at least, Omega_c, Omega_b,</span>
+<span class="sd">        and H0</span>
+<span class="sd">    field_size : float</span>
+<span class="sd">        The size of the field (field_size x field_size) to be simulated around the cluster center.</span>
+<span class="sd">        Proper distance in Mpc at the cluster redshift.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    galaxy_catalog : clmm.GCData</span>
+<span class="sd">        Source galaxy catalog with positions added</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">Dl</span> <span class="o">=</span> <span class="n">cosmo</span><span class="o">.</span><span class="n">eval_da</span><span class="p">(</span><span class="n">cluster_z</span><span class="p">)</span> <span class="c1"># Mpc</span>
+
+    <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;x_mpc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">field_size</span><span class="o">/</span><span class="mf">2.</span><span class="p">),</span> <span class="n">field_size</span><span class="o">/</span><span class="mf">2.</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">ngals</span><span class="p">)</span>
+    <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;y_mpc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">field_size</span><span class="o">/</span><span class="mf">2.</span><span class="p">),</span> <span class="n">field_size</span><span class="o">/</span><span class="mf">2.</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">ngals</span><span class="p">)</span>
+    <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;r_mpc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;x_mpc&#39;</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;y_mpc&#39;</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;ra&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;x_mpc&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">Dl</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mf">180.</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;dec&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;y_mpc&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">Dl</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mf">180.</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">galaxy_catalog</span>
+
+
+<span class="k">def</span> <span class="nf">_find_aphysical_galaxies</span><span class="p">(</span><span class="n">galaxy_catalog</span><span class="p">,</span> <span class="n">zsrc_min</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Finds the galaxies that have aphysical derived values due to large systematic choices.</span>
+
+<span class="sd">    Currently checks the following conditions</span>
+<span class="sd">    e1 \in [-1, 1]</span>
+<span class="sd">    e2 \in [-1, 1]</span>
+<span class="sd">    z  &lt; zsrc_min</span>
+<span class="sd">    This was converted to a seperate function to allow for ease of extension without needing</span>
+<span class="sd">    to change the same code in multiple locations.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    galaxy_catalog : clmm.GCData</span>
+<span class="sd">        Galaxy source catalog</span>
+<span class="sd">    zsrc_min : float</span>
+<span class="sd">        Minimum galaxy redshift allowed</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    nbad : int</span>
+<span class="sd">        The number of aphysical galaxies in galaxy_catalog</span>
+<span class="sd">    badgals : array_like</span>
+<span class="sd">        A list of the indicies in galaxy_catalog that need to be redrawn</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">etot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;e1&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;e1&#39;</span><span class="p">]</span>
+                   <span class="o">+</span> <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;e2&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;e2&#39;</span><span class="p">])</span>
+
+<span class="c1">#     badgals = np.where((np.abs(galaxy_catalog[&#39;e1&#39;]) &gt; 1.0) |</span>
+<span class="c1">#                        (np.abs(galaxy_catalog[&#39;e2&#39;]) &gt; 1.0) |</span>
+<span class="c1">#                        (galaxy_catalog[&#39;ztrue&#39;] &lt; zsrc_min)</span>
+<span class="c1">#                       )[0]</span>
+
+    <span class="n">badgals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">etot</span> <span class="o">&gt;</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;ztrue&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">zsrc_min</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">nbad</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">badgals</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">nbad</span><span class="p">,</span> <span class="n">badgals</span>
+
+
+
+
+
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2018-2019, LSST DESC CLMM Contributors
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

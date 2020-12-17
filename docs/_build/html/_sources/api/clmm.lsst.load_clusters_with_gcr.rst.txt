@@ -1,7 +1,0 @@
-clmm.lsst.load\_clusters\_with\_gcr module
-==========================================
-
-.. automodule:: clmm.lsst.load_clusters_with_gcr
-   :members:
-   :undoc-members:
-   :show-inheritance:
