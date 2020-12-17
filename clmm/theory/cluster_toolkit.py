@@ -112,12 +112,12 @@ class CTModeling(CLMModeling):
 
     def eval_tangential_shear(self, r_proj, z_cl, z_src):
         delta_sigma = self.eval_excess_surface_density(r_proj, z_cl)
-        sigma_c = self.eval_sigma_crit(z_cl, z_src)
+        sigma_c = self.eval_critical_surface_density(z_cl, z_src)
         return np.nan_to_num(delta_sigma/sigma_c, nan=np.nan, posinf=np.inf, neginf=-np.inf)
 
     def eval_convergence(self, r_proj, z_cl, z_src):
         sigma = self.eval_surface_density(r_proj, z_cl)
-        sigma_c = self.eval_sigma_crit(z_cl, z_src)
+        sigma_c = self.eval_critical_surface_density(z_cl, z_src)
         return np.nan_to_num(sigma/sigma_c, nan=np.nan, posinf=np.inf, neginf=-np.inf)
 
     def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src):

@@ -9,7 +9,7 @@ from . import generic
 from . generic import get_reduced_shear_from_convergence
 
 __all__ = generic.__all__+['compute_3d_density', 'compute_surface_density',
-           'compute_excess_surface_density', 'get_critical_surface_density',
+           'compute_excess_surface_density', 'compute_critical_surface_density',
            'compute_tangential_shear', 'compute_convergence',
            'compute_reduced_tangential_shear', 'compute_magnification']
 
@@ -170,7 +170,7 @@ def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
     return gcm.eval_excess_surface_density(r_proj, z_cl)
 
 
-def get_critical_surface_density(cosmo, z_cluster, z_source):
+def compute_critical_surface_density(cosmo, z_cluster, z_source):
     r"""Computes the critical surface density
 
     .. math::
@@ -197,7 +197,7 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     """
 
     gcm.set_cosmo(cosmo)
-    return gcm.eval_sigma_crit(z_cluster, z_source)
+    return gcm.eval_critical_surface_density(z_cluster, z_source)
 
 
 def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,

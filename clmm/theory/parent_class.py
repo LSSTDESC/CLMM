@@ -107,7 +107,7 @@ class CLMModeling:
         """
         raise NotImplementedError
 
-    def eval_sigma_crit(self, z_len, z_src):
+    def eval_critical_surface_density(self, z_len, z_src):
         r"""Computes the critical surface density
 
         Parameters

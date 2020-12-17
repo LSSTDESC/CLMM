@@ -101,13 +101,13 @@ class CCLCLMModeling(CLMModeling):
 
     def eval_tangential_shear(self, r_proj, z_cl, z_src):
         sigma_excess = self.eval_excess_surface_density(r_proj, z_cl)
-        sigma_crit = self.eval_sigma_crit(z_cl, z_src)
+        sigma_crit = self.eval_critical_surface_density(z_cl, z_src)
 
         return sigma_excess/sigma_crit
 
     def eval_convergence(self, r_proj, z_cl, z_src):
         sigma = self.eval_surface_density(r_proj, z_cl)
-        sigma_crit = self.eval_sigma_crit(z_cl, z_src)
+        sigma_crit = self.eval_critical_surface_density(z_cl, z_src)
 
         return np.nan_to_num(sigma/sigma_crit, nan=np.nan, posinf=np.inf, neginf=-np.inf)
 

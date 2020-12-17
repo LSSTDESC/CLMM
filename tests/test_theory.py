@@ -237,20 +237,20 @@ def test_profiles(modeling_data):
     assert_allclose(m.eval_excess_surface_density(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl']),
                     cfg['numcosmo_profiles']['DeltaSigma'], **TOLERANCE)
 
-def test_get_critical_surface_density(modeling_data):
+def test_compute_critical_surface_density(modeling_data):
     """ Validation test for critical surface density """
     cfg = load_validation_config()
-    assert_allclose(theo.get_critical_surface_density(cfg['cosmo'],
+    assert_allclose(theo.compute_critical_surface_density(cfg['cosmo'],
                                                     z_cluster=cfg['TEST_CASE']['z_cluster'],
                                                     z_source=cfg['TEST_CASE']['z_source']),
                     cfg['TEST_CASE']['nc_Sigmac'], 1.2e-8)
     # Check behaviour when sources are in front of the lens
     z_cluster = 0.3
     z_source = 0.2
-    assert_allclose(theo.get_critical_surface_density(cfg['cosmo'],z_cluster=z_cluster, z_source=z_source),
+    assert_allclose(theo.compute_critical_surface_density(cfg['cosmo'],z_cluster=z_cluster, z_source=z_source),
                     np.inf, 1.0e-10)
     z_source = [0.2,0.12,0.25]
-    assert_allclose(theo.get_critical_surface_density(cfg['cosmo'],z_cluster=z_cluster, z_source=z_source),
+    assert_allclose(theo.compute_critical_surface_density(cfg['cosmo'],z_cluster=z_cluster, z_source=z_source),
                     [np.inf,np.inf, np.inf], 1.0e-10)
     # Check usage with cluster object function
     z_src = np.array([cfg['TEST_CASE']['z_source']])
@@ -264,16 +264,16 @@ def test_get_critical_surface_density(modeling_data):
     # Object Oriented tests
     m = theo.Modeling()
     m.set_cosmo(cfg['cosmo'])
-    assert_allclose(m.eval_sigma_crit(cfg['TEST_CASE']['z_cluster'],
+    assert_allclose(m.eval_critical_surface_density(cfg['TEST_CASE']['z_cluster'],
                                       cfg['TEST_CASE']['z_source']),
                 cfg['TEST_CASE']['nc_Sigmac'], 1.2e-8)
     # Check behaviour when sources are in front of the lens
     z_cluster = 0.3
     z_source = 0.2
-    assert_allclose(m.eval_sigma_crit(z_cluster, z_source),
+    assert_allclose(m.eval_critical_surface_density(z_cluster, z_source),
                 np.inf, 1.0e-10)
     z_source = [0.2,0.12,0.25]
-    assert_allclose(m.eval_sigma_crit(z_cluster, z_source),
+    assert_allclose(m.eval_critical_surface_density(z_cluster, z_source),
                 [np.inf,np.inf, np.inf], 1.0e-10)
 
 
@@ -329,11 +329,11 @@ def test_shear_convergence_unittests(modeling_data):
 
     # First compute SigmaCrit to correct cosmology changes
     cosmo = cfg['cosmo']
-    sigma_c = theo.get_critical_surface_density(cosmo, cfg['GAMMA_PARAMS']['z_cluster'],
+    sigma_c = theo.compute_critical_surface_density(cosmo, cfg['GAMMA_PARAMS']['z_cluster'],
                                               cfg['z_source'])
 
     # Compute sigma_c in the new cosmology and get a correction factor
-    sigma_c_undo = theo.get_critical_surface_density(cosmo, cfg['GAMMA_PARAMS']['z_cluster'],
+    sigma_c_undo = theo.compute_critical_surface_density(cosmo, cfg['GAMMA_PARAMS']['z_cluster'],
                                                    cfg['z_source'])
     sigmac_corr = (sigma_c_undo/sigma_c)
 
@@ -396,10 +396,10 @@ def test_shear_convergence_unittests(modeling_data):
     m.set_concentration(cfg['GAMMA_PARAMS']['cdelta'])
     m.set_mass(cfg['GAMMA_PARAMS']['mdelta'])
     # First compute SigmaCrit to correct cosmology changes
-    sigma_c = m.eval_sigma_crit(cfg['GAMMA_PARAMS']['z_cluster'], cfg['GAMMA_PARAMS']['z_source'])
+    sigma_c = m.eval_critical_surface_density(cfg['GAMMA_PARAMS']['z_cluster'], cfg['GAMMA_PARAMS']['z_source'])
 
     # Compute sigma_c in the new cosmology and get a correction factor
-    sigma_c_undo = m.eval_sigma_crit(cfg['GAMMA_PARAMS']['z_cluster'], cfg['GAMMA_PARAMS']['z_source'])
+    sigma_c_undo = m.eval_critical_surface_density(cfg['GAMMA_PARAMS']['z_cluster'], cfg['GAMMA_PARAMS']['z_source'])
     sigmac_corr = (sigma_c_undo/sigma_c)
 
     # Validate tangential shear
