@@ -14,7 +14,7 @@ __all__ = generic.__all__+['get_3d_density', 'predict_surface_density',
            'predict_reduced_tangential_shear', 'predict_magnification']
 
 
-def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profile_model='nfw', massdef='mean'):
+def compute_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profile_model='nfw', massdef='mean'):
     r"""Retrieve the 3d density :math:`\rho(r)`.
 
     Profiles implemented so far are:
@@ -66,7 +66,7 @@ def get_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profil
     return gcm.eval_density(r3d, z_cl)
 
 
-def predict_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
+def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
                             halo_profile_model='nfw', massdef='mean'):
     r""" Computes the surface mass density
 
@@ -119,7 +119,7 @@ def predict_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     return gcm.eval_sigma(r_proj, z_cl)
 
 
-def predict_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
+def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
                                    halo_profile_model='nfw', massdef='mean'):
     r""" Computes the excess surface density
 
@@ -200,7 +200,7 @@ def get_critical_surface_density(cosmo, z_cluster, z_source):
     return gcm.eval_sigma_crit(z_cluster, z_source)
 
 
-def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
+def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
                               halo_profile_model='nfw', massdef='mean', z_src_model='single_plane'):
     r"""Computes the tangential shear
 
@@ -274,7 +274,7 @@ def predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     return gammat
 
 
-def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
+def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
                         halo_profile_model='nfw', massdef='mean', z_src_model='single_plane'):
     r"""Computes the mass convergence
 
@@ -356,7 +356,7 @@ def predict_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     return kappa
 
 
-def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
+def compute_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
                                      delta_mdef=200, halo_profile_model='nfw', massdef='mean',
                                      z_src_model='single_plane'):
     r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
@@ -410,7 +410,7 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
         gcm.set_concentration(cdelta)
         gcm.set_mass(mdelta)
 
-        red_tangential_shear = gcm.eval_reduced_shear(r_proj, z_cluster, z_source)
+        red_tangential_shear = gcm.eval_reduced_tangential_hear(r_proj, z_cluster, z_source)
 
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average'+
@@ -432,7 +432,7 @@ def predict_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
 # spherically averaged profiles, e.g., NFW and Einasto (by construction the cross shear is zero).
 
 
-def predict_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
+def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
                         halo_profile_model='nfw', massdef='mean', z_src_model='single_plane'):
     r"""Computes the magnification
 
