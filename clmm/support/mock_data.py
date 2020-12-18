@@ -4,7 +4,7 @@ from clmm import GCData
 from scipy import integrate
 from scipy.interpolate import interp1d
 from astropy import units
-from clmm.theory import predict_tangential_shear, predict_convergence
+from clmm.theory import compute_tangential_shear, compute_convergence
 from clmm.utils import convert_units, compute_lensed_ellipticity
 
 def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_SO=200, massdef='mean',halo_profile_model='nfw', zsrc_min=None,
@@ -210,7 +210,7 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, zsrc
     # Draw galaxy positions
     galaxy_catalog = _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo, field_size)
     # Compute the shear on each source galaxy
-    gamt = predict_tangential_shear(galaxy_catalog['r_mpc'], mdelta=cluster_m,
+    gamt = compute_tangential_shear(galaxy_catalog['r_mpc'], mdelta=cluster_m,
                                             cdelta=cluster_c, z_cluster=cluster_z,
                                             z_source=galaxy_catalog['ztrue'], cosmo=cosmo,
                                             delta_mdef=Delta_SO, halo_profile_model=halo_profile_model,
@@ -218,7 +218,7 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, zsrc
                                             z_src_model='single_plane')
 
     gamx = np.zeros(ngals)
-    kappa = predict_convergence(galaxy_catalog['r_mpc'], mdelta=cluster_m,
+    kappa = compute_convergence(galaxy_catalog['r_mpc'], mdelta=cluster_m,
                                             cdelta=cluster_c, z_cluster=cluster_z,
                                             z_source=galaxy_catalog['z'], cosmo=cosmo,
                                             delta_mdef=Delta_SO, halo_profile_model=halo_profile_model,
