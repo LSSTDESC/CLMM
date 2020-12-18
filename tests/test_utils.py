@@ -4,7 +4,7 @@ import numpy as np
 from numpy.testing import assert_raises, assert_allclose
 
 import clmm.utils as utils
-import clmm.modeling as md
+import clmm.theory as md
 from clmm.utils import compute_radial_averages, make_bins, convert_shapes_to_epsilon, arguments_consistency
 
 

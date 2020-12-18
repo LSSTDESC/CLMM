@@ -3,11 +3,10 @@ import json
 import numpy as np
 from numpy.testing import assert_raises, assert_allclose, assert_equal
 from astropy.cosmology import FlatLambdaCDM, LambdaCDM
-import clmm.modeling as md
+import clmm.theory as theo
 from clmm.constants import Constants as clc
 from clmm.galaxycluster import GalaxyCluster
 from clmm import GCData
-
 
 TOLERANCE = {'rtol': 1.0e-6, 'atol': 1.0e-6}
 
@@ -54,7 +53,7 @@ def load_validation_config():
                                                             testcase['pc_to_m'])
 
     # Cosmology
-    cosmo = md.Cosmology(H0=testcase['cosmo_H0'], Omega_dm0=testcase['cosmo_Om0']-testcase['cosmo_Ob0'], Omega_b0=testcase['cosmo_Ob0'])
+    cosmo = theo.Cosmology(H0=testcase['cosmo_H0'], Omega_dm0=testcase['cosmo_Om0']-testcase['cosmo_Ob0'], Omega_b0=testcase['cosmo_Ob0'])
 
     # Sets of parameters to be used by multiple functions
     RHO_PARAMS = {
@@ -81,9 +80,9 @@ def load_validation_config():
         'halo_profile_model': testcase['density_profile_parametrization'],
         'z_src_model': 'single_plane',
         }
-
     return {'TEST_CASE': testcase, 'z_source': testcase['z_source'],
             'cosmo': cosmo,
+            'cosmo_pars': {k.replace('cosmo_', ''): v for k, v in testcase.items() if 'cosmo_' in k},
             'RHO_PARAMS': RHO_PARAMS, 'SIGMA_PARAMS': SIGMA_PARAMS, 'GAMMA_PARAMS': GAMMA_PARAMS,
             'numcosmo_profiles': numcosmo_profile, 'TEST_CASE_SIGMAC_PCST': testcase_SIGMAC_PCST,
             'CLMM_SIGMAC_PCST': CLMM_SIGMAC_PCST}
@@ -107,7 +106,7 @@ def test_physical_constants(modeling_data):
 
 
 def test_cclify_astropy_cosmo(modeling_data):
-    """ Unit tests for md.cllify_astropy_cosmo """
+    """ Unit tests for theo.cllify_astropy_cosmo """
     # Make some base objects
     truth = {'H0': 70., 'Om0': 0.3, 'Ob0': 0.05}
     apycosmo_flcdm = FlatLambdaCDM(**truth)
@@ -117,18 +116,18 @@ def test_cclify_astropy_cosmo(modeling_data):
 
     # Test for exception if missing baryon density (everything else required)
     #missbaryons = FlatLambdaCDM(H0=truth['H0'], Om0=truth['Om0'])
-    #assert_raises(KeyError, md.cclify_astropy_cosmo, missbaryons)
+    #assert_raises(KeyError, theo.cclify_astropy_cosmo, missbaryons)
 
     # Test output if we pass FlatLambdaCDM and LambdaCDM objects
-    #assert_equal(md.cclify_astropy_cosmo(apycosmo_flcdm), cclcosmo)
-    #assert_equal(md.cclify_astropy_cosmo(apycosmo_lcdm), cclcosmo)
+    #assert_equal(theo.cclify_astropy_cosmo(apycosmo_flcdm), cclcosmo)
+    #assert_equal(theo.cclify_astropy_cosmo(apycosmo_lcdm), cclcosmo)
 
     # Test output if we pass a CCL object (a dict right now)
-    #assert_equal(md.cclify_astropy_cosmo(cclcosmo), cclcosmo)
+    #assert_equal(theo.cclify_astropy_cosmo(cclcosmo), cclcosmo)
 
     # Test for exception if anything else is passed in
-    #assert_raises(TypeError, md.cclify_astropy_cosmo, 70.)
-    #assert_raises(TypeError, md.cclify_astropy_cosmo, [70., 0.3, 0.25, 0.05])
+    #assert_raises(TypeError, theo.cclify_astropy_cosmo, 70.)
+    #assert_raises(TypeError, theo.cclify_astropy_cosmo, [70., 0.3, 0.25, 0.05])
 
 
 def test_astropyify_ccl_cosmo(modeling_data):
@@ -141,16 +140,16 @@ def test_astropyify_ccl_cosmo(modeling_data):
                 'h': truth['H0']/100., 'H0': truth['H0']}
 
     # Test output if we pass FlatLambdaCDM and LambdaCDM objects
-    #assert_equal(md.astropyify_ccl_cosmo(apycosmo_flcdm), apycosmo_flcdm)
-    #assert_equal(md.astropyify_ccl_cosmo(apycosmo_lcdm), apycosmo_lcdm)
+    #assert_equal(theo.astropyify_ccl_cosmo(apycosmo_flcdm), apycosmo_flcdm)
+    #assert_equal(theo.astropyify_ccl_cosmo(apycosmo_lcdm), apycosmo_lcdm)
 
     # Test output if we pass a CCL object, compare the dicts
-    #assert_equal(md.cclify_astropy_cosmo(md.astropyify_ccl_cosmo(cclcosmo)),
-    #             md.cclify_astropy_cosmo(apycosmo_lcdm))
+    #assert_equal(theo.cclify_astropy_cosmo(theo.astropyify_ccl_cosmo(cclcosmo)),
+    #             theo.cclify_astropy_cosmo(apycosmo_lcdm))
 
     # Test for exception if anything else is passed in
-    #assert_raises(TypeError, md.astropyify_ccl_cosmo, 70.)
-    #assert_raises(TypeError, md.astropyify_ccl_cosmo, [70., 0.3, 0.25, 0.05])
+    #assert_raises(TypeError, theo.astropyify_ccl_cosmo, 70.)
+    #assert_raises(TypeError, theo.astropyify_ccl_cosmo, [70., 0.3, 0.25, 0.05])
 
 
 def test_get_reduced_shear(modeling_data):
@@ -161,15 +160,15 @@ def test_get_reduced_shear(modeling_data):
     truth = [2., 0.625, 1.25, 0.0]
 
     # Test for exception if shear and convergence are not the same length
-    assert_raises(ValueError, md.get_reduced_shear_from_convergence, shear[:3], convergence[:2])
-    assert_raises(ValueError, md.get_reduced_shear_from_convergence, shear[:2], convergence[:3])
+    assert_raises(ValueError, theo.get_reduced_shear_from_convergence, shear[:3], convergence[:2])
+    assert_raises(ValueError, theo.get_reduced_shear_from_convergence, shear[:2], convergence[:3])
 
     # Check output including: float, list, ndarray
-    assert_allclose(md.get_reduced_shear_from_convergence(shear[0], convergence[0]),
+    assert_allclose(theo.get_reduced_shear_from_convergence(shear[0], convergence[0]),
                     truth[0], **TOLERANCE)
-    assert_allclose(md.get_reduced_shear_from_convergence(shear, convergence),
+    assert_allclose(theo.get_reduced_shear_from_convergence(shear, convergence),
                     truth, **TOLERANCE)
-    assert_allclose(md.get_reduced_shear_from_convergence(np.array(shear), np.array(convergence)),
+    assert_allclose(theo.get_reduced_shear_from_convergence(np.array(shear), np.array(convergence)),
                     np.array(truth), **TOLERANCE)
 
 
@@ -189,7 +188,7 @@ def helper_profiles(func):
     mdelta = 1.0e15
     cdelta = 4.0
     z_cl = 0.2
-    cclcosmo = md.Cosmology(Omega_dm0=0.25, Omega_b0=0.05)
+    cclcosmo = theo.Cosmology(Omega_dm0=0.25, Omega_b0=0.05)
 
     # Test for exception if other profiles models are passed
     assert_raises(ValueError, func, r3d, mdelta, cdelta, z_cl, cclcosmo, 200, 'bleh')
@@ -207,9 +206,9 @@ def helper_profiles(func):
 def test_profiles(modeling_data):
     """ Tests for profile functions, get_3d_density, predict_surface_density,
     and predict_excess_surface_density """
-    helper_profiles(md.get_3d_density)
-    helper_profiles(md.predict_surface_density)
-    helper_profiles(md.predict_excess_surface_density)
+    helper_profiles(theo.get_3d_density)
+    helper_profiles(theo.predict_surface_density)
+    helper_profiles(theo.predict_excess_surface_density)
 
     # Validation tests
     # NumCosmo makes different choices for constants (Msun). We make this conversion
@@ -217,28 +216,41 @@ def test_profiles(modeling_data):
     cfg = load_validation_config()
     cosmo = cfg['cosmo']
 
-    assert_allclose(md.get_3d_density(cosmo=cosmo, **cfg['RHO_PARAMS']),
+    assert_allclose(theo.get_3d_density(cosmo=cosmo, **cfg['RHO_PARAMS']),
                     cfg['numcosmo_profiles']['rho'], 2.0e-9)
-    assert_allclose(md.predict_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS']),
+    assert_allclose(theo.predict_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS']),
                     cfg['numcosmo_profiles']['Sigma'], 2.0e-9)
-    assert_allclose(md.predict_excess_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS']),
+    assert_allclose(theo.predict_excess_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS']),
                     cfg['numcosmo_profiles']['DeltaSigma'], 2.0e-9)
 
+    # Object Oriented tests
+    m = theo.Modeling()
+    m.set_cosmo(cosmo)
+    m.set_halo_density_profile(halo_profile_model=cfg['SIGMA_PARAMS']['halo_profile_model'])
+    m.set_concentration(cfg['SIGMA_PARAMS']['cdelta'])
+    m.set_mass(cfg['SIGMA_PARAMS']['mdelta'])
+
+    assert_allclose(m.eval_density(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl']),
+                    cfg['numcosmo_profiles']['rho'], **TOLERANCE)
+    assert_allclose(m.eval_sigma(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl']),
+                    cfg['numcosmo_profiles']['Sigma'], **TOLERANCE)
+    assert_allclose(m.eval_sigma_excess(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl']),
+                    cfg['numcosmo_profiles']['DeltaSigma'], **TOLERANCE)
 
 def test_get_critical_surface_density(modeling_data):
     """ Validation test for critical surface density """
     cfg = load_validation_config()
-    assert_allclose(md.get_critical_surface_density(cfg['cosmo'],
+    assert_allclose(theo.get_critical_surface_density(cfg['cosmo'],
                                                     z_cluster=cfg['TEST_CASE']['z_cluster'],
                                                     z_source=cfg['TEST_CASE']['z_source']),
                     cfg['TEST_CASE']['nc_Sigmac'], 1.2e-8)
     # Check behaviour when sources are in front of the lens
     z_cluster = 0.3
     z_source = 0.2
-    assert_allclose(md.get_critical_surface_density(cfg['cosmo'],z_cluster=z_cluster, z_source=z_source),
+    assert_allclose(theo.get_critical_surface_density(cfg['cosmo'],z_cluster=z_cluster, z_source=z_source),
                     np.inf, 1.0e-10)
     z_source = [0.2,0.12,0.25]
-    assert_allclose(md.get_critical_surface_density(cfg['cosmo'],z_cluster=z_cluster, z_source=z_source),
+    assert_allclose(theo.get_critical_surface_density(cfg['cosmo'],z_cluster=z_cluster, z_source=z_source),
                     [np.inf,np.inf, np.inf], 1.0e-10)
     # Check usage with cluster object function
     z_src = np.array([cfg['TEST_CASE']['z_source']])
@@ -248,6 +260,21 @@ def test_get_critical_surface_density(modeling_data):
     cluster.add_critical_surface_density(cfg['cosmo'])
     assert_allclose(cluster.galcat['sigma_c'],
                     cfg['TEST_CASE']['nc_Sigmac'], 1.2e-8)
+
+    # Object Oriented tests
+    m = theo.Modeling()
+    m.set_cosmo(cfg['cosmo'])
+    assert_allclose(m.eval_sigma_crit(cfg['TEST_CASE']['z_cluster'],
+                                      cfg['TEST_CASE']['z_source']),
+                cfg['TEST_CASE']['nc_Sigmac'], 1.2e-8)
+    # Check behaviour when sources are in front of the lens
+    z_cluster = 0.3
+    z_source = 0.2
+    assert_allclose(m.eval_sigma_crit(z_cluster, z_source),
+                np.inf, 1.0e-10)
+    z_source = [0.2,0.12,0.25]
+    assert_allclose(m.eval_sigma_crit(z_cluster, z_source),
+                [np.inf,np.inf, np.inf], 1.0e-10)
 
 
 def helper_physics_functions(func):
@@ -267,7 +294,7 @@ def helper_physics_functions(func):
     cdelta = 4.0
     z_cl = 0.2
     z_src = 0.45
-    cosmo = md.Cosmology(Omega_dm0=0.25, Omega_b0=0.05, H0=70.0)
+    cosmo = theo.Cosmology(Omega_dm0=0.25, Omega_b0=0.05, H0=70.0)
 
     # Test defaults
 
@@ -289,10 +316,10 @@ def helper_physics_functions(func):
 
 def test_shear_convergence_unittests(modeling_data):
     """ Unit and validation tests for the shear and convergence calculations """
-    helper_physics_functions(md.predict_tangential_shear)
-    helper_physics_functions(md.predict_convergence)
-    helper_physics_functions(md.predict_reduced_tangential_shear)
-    helper_physics_functions(md.predict_magnification)
+    helper_physics_functions(theo.predict_tangential_shear)
+    helper_physics_functions(theo.predict_convergence)
+    helper_physics_functions(theo.predict_reduced_tangential_shear)
+    helper_physics_functions(theo.predict_magnification)
 
     # Validation Tests -------------------------
     # NumCosmo makes different choices for constants (Msun). We make this conversion
@@ -302,35 +329,34 @@ def test_shear_convergence_unittests(modeling_data):
 
     # First compute SigmaCrit to correct cosmology changes
     cosmo = cfg['cosmo']
-    sigma_c = md.get_critical_surface_density(cosmo, cfg['GAMMA_PARAMS']['z_cluster'],
+    sigma_c = theo.get_critical_surface_density(cosmo, cfg['GAMMA_PARAMS']['z_cluster'],
                                               cfg['z_source'])
 
     # Compute sigma_c in the new cosmology and get a correction factor
-    sigma_c_undo = md.get_critical_surface_density(cosmo, cfg['GAMMA_PARAMS']['z_cluster'],
+    sigma_c_undo = theo.get_critical_surface_density(cosmo, cfg['GAMMA_PARAMS']['z_cluster'],
                                                    cfg['z_source'])
     sigmac_corr = (sigma_c_undo/sigma_c)
 
     # Chech error is raised if too small radius
-    assert_raises(ValueError, md.predict_tangential_shear, 1.e-12, 1.e15, 4, 0.2, 0.45, cosmo)
+    assert_raises(ValueError, theo.predict_tangential_shear, 1.e-12, 1.e15, 4, 0.2, 0.45, cosmo)
 
     # Validate tangential shear
-    gammat = md.predict_tangential_shear(cosmo=cosmo, **cfg['GAMMA_PARAMS'])
+    gammat = theo.predict_tangential_shear(cosmo=cosmo, **cfg['GAMMA_PARAMS'])
     assert_allclose(gammat*sigmac_corr, cfg['numcosmo_profiles']['gammat'], 1.0e-8)
 
     # Validate convergence
-    kappa = md.predict_convergence(cosmo=cosmo, **cfg['GAMMA_PARAMS'])
+    kappa = theo.predict_convergence(cosmo=cosmo, **cfg['GAMMA_PARAMS'])
     assert_allclose(kappa*sigmac_corr, cfg['numcosmo_profiles']['kappa'], 1.0e-8)
 
     # Validate reduced tangential shear
-    assert_allclose(md.predict_reduced_tangential_shear(cosmo=cosmo, **cfg['GAMMA_PARAMS']),
+    assert_allclose(theo.predict_reduced_tangential_shear(cosmo=cosmo, **cfg['GAMMA_PARAMS']),
                     gammat/(1.0-kappa), 1.0e-10)
     assert_allclose(gammat*sigmac_corr/(1.-(kappa*sigmac_corr)), cfg['numcosmo_profiles']['gt'], 1.0e-6)
 
     # Validate magnification
-    assert_allclose(md.predict_magnification(cosmo=cosmo, **cfg['GAMMA_PARAMS']),
+    assert_allclose(theo.predict_magnification(cosmo=cosmo, **cfg['GAMMA_PARAMS']),
                     1./((1-kappa)**2-abs(gammat)**2), 1.0e-10)
     assert_allclose(1./((1-kappa)**2-abs(gammat)**2), cfg['numcosmo_profiles']['mu'], 4.0e-7)
-
 
     # Check that shear, reduced shear and convergence return zero and magnification returns one if source is in front of the cluster
     # First, check for a array of radius and single source z
@@ -338,30 +364,80 @@ def test_shear_convergence_unittests(modeling_data):
     z_cluster = 0.3
     z_source = 0.2
 
-    assert_allclose(md.predict_convergence(r, mdelta=1.e15, cdelta=4., z_cluster=z_cluster,
+    assert_allclose(theo.predict_convergence(r, mdelta=1.e15, cdelta=4., z_cluster=z_cluster,
                     z_source=z_source, cosmo=cosmo),
                     np.zeros(len(r)), 1.0e-10)
-    assert_allclose(md.predict_tangential_shear(r, mdelta=1.e15, cdelta=4., z_cluster=z_cluster,
+    assert_allclose(theo.predict_tangential_shear(r, mdelta=1.e15, cdelta=4., z_cluster=z_cluster,
                     z_source=z_source, cosmo=cosmo),
                     np.zeros(len(r)), 1.0e-10)
-    assert_allclose(md.predict_reduced_tangential_shear(r, mdelta=1.e15, cdelta=4., z_cluster=z_cluster,
+    assert_allclose(theo.predict_reduced_tangential_shear(r, mdelta=1.e15, cdelta=4., z_cluster=z_cluster,
                     z_source=z_source, cosmo=cosmo),
                     np.zeros(len(r)), 1.0e-10)
-    assert_allclose(md.predict_magnification(r, mdelta=1.e15, cdelta=4., z_cluster=z_cluster,
+    assert_allclose(theo.predict_magnification(r, mdelta=1.e15, cdelta=4., z_cluster=z_cluster,
                     z_source=z_source, cosmo=cosmo),
                     np.ones(len(r)), 1.0e-10)
 
     # Second, check a single radius and array of source z
     r = 1.
     z_source = [0.25, 0.1, 0.14, 0.02]
-    assert_allclose(md.predict_convergence(r, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
+    assert_allclose(theo.predict_convergence(r, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
                     np.zeros(len(z_source)), 1.0e-10)
-    assert_allclose(md.predict_tangential_shear(r, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
+    assert_allclose(theo.predict_tangential_shear(r, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
                     np.zeros(len(z_source)), 1.0e-10)
-    assert_allclose(md.predict_reduced_tangential_shear(r, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
+    assert_allclose(theo.predict_reduced_tangential_shear(r, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
                     np.zeros(len(z_source)), 1.0e-10)
-    assert_allclose(md.predict_magnification(r, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
+    assert_allclose(theo.predict_magnification(r, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
                     np.ones(len(z_source)), 1.0e-10)
 
+    # Object Oriented tests
+    m = theo.Modeling()
+    m.set_cosmo(cosmo)
+    m.set_halo_density_profile(halo_profile_model=cfg['GAMMA_PARAMS']['halo_profile_model'])
+    m.set_concentration(cfg['GAMMA_PARAMS']['cdelta'])
+    m.set_mass(cfg['GAMMA_PARAMS']['mdelta'])
+    # First compute SigmaCrit to correct cosmology changes
+    sigma_c = m.eval_sigma_crit(cfg['GAMMA_PARAMS']['z_cluster'], cfg['GAMMA_PARAMS']['z_source'])
 
+    # Compute sigma_c in the new cosmology and get a correction factor
+    sigma_c_undo = m.eval_sigma_crit(cfg['GAMMA_PARAMS']['z_cluster'], cfg['GAMMA_PARAMS']['z_source'])
+    sigmac_corr = (sigma_c_undo/sigma_c)
 
+    # Validate tangential shear
+    profile_pars = (cfg['GAMMA_PARAMS']['r_proj'], cfg['GAMMA_PARAMS']['z_cluster'],
+                    cfg['GAMMA_PARAMS']['z_source'])
+    gammat = m.eval_shear(*profile_pars)
+    assert_allclose(gammat*sigmac_corr, cfg['numcosmo_profiles']['gammat'], 1.0e-8)
+
+    # Validate convergence
+    kappa = m.eval_convergence(*profile_pars)
+    assert_allclose(kappa*sigmac_corr, cfg['numcosmo_profiles']['kappa'], 1.0e-8)
+
+    # Validate reduced tangential shear
+    assert_allclose(m.eval_reduced_shear(*profile_pars),
+                    gammat/(1.0-kappa), 1.0e-10)
+    assert_allclose(gammat*sigmac_corr/(1.-(kappa*sigmac_corr)), cfg['numcosmo_profiles']['gt'], 1.0e-6)
+
+    # Validate magnification
+    assert_allclose(m.eval_magnification(*profile_pars),
+                    1./((1-kappa)**2-abs(gammat)**2), 1.0e-10)
+    assert_allclose(1./((1-kappa)**2-abs(gammat)**2), cfg['numcosmo_profiles']['mu'], 4.0e-7)
+
+    # Check that shear, reduced shear and convergence return zero and magnification returns one if source is in front of the cluster
+    # First, check for a array of radius and single source z
+    r = np.logspace(-2,2,10)
+    z_cluster = 0.3
+    z_source = 0.2
+
+    assert_allclose(m.eval_convergence(r, z_cluster, z_source), np.zeros(len(r)), 1.0e-10)
+    assert_allclose(m.eval_shear(r, z_cluster, z_source), np.zeros(len(r)), 1.0e-10)
+    assert_allclose(m.eval_reduced_shear(r, z_cluster, z_source), np.zeros(len(r)), 1.0e-10)
+    assert_allclose(m.eval_magnification(r, z_cluster, z_source), np.ones(len(r)), 1.0e-10)
+
+    # Second, check a single radius and array of source z
+    r = 1.
+    z_source = [0.25, 0.1, 0.14, 0.02]
+
+    assert_allclose(m.eval_convergence(r, z_cluster, z_source), np.zeros(len(z_source)), 1.0e-10)
+    assert_allclose(m.eval_shear(r, z_cluster, z_source), np.zeros(len(z_source)), 1.0e-10)
+    assert_allclose(m.eval_reduced_shear(r, z_cluster, z_source), np.zeros(len(z_source)), 1.0e-10)
+    assert_allclose(m.eval_magnification(r, z_cluster, z_source), np.ones(len(z_source)), 1.0e-10)
