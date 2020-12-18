@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.dataops &mdash; CLMM 0.8.0 documentation</title>
+  <title>clmm.dataops &mdash; CLMM 0.9.0 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                0.8.0
+                0.9.0
               </div>
             
           
@@ -208,7 +208,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">..</span> <span class="n">gcdata</span> <span class="kn">import</span> <span class="nn">GCData</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="o">.</span><span class="n">utils</span> <span class="kn">import</span> <span class="nn">compute_radial_averages</span><span class="o">,</span> <span class="nn">make_bins</span><span class="o">,</span> <span class="nn">convert_units</span><span class="o">,</span> <span class="nn">arguments_consistency</span>
-<span class="kn">from</span> <span class="nn">..</span> <span class="n">theory</span> <span class="kn">import</span> <span class="nn">get_critical_surface_density</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="n">theory</span> <span class="kn">import</span> <span class="nn">compute_critical_surface_density</span>
 
 
 <div class="viewcode-block" id="compute_tangential_and_cross_components"><a class="viewcode-back" href="../../api/clmm.dataops.html#clmm.dataops.compute_tangential_and_cross_components">[docs]</a><span class="k">def</span> <span class="nf">compute_tangential_and_cross_components</span><span class="p">(</span>
@@ -322,7 +322,7 @@
             <span class="c1"># Need to verify that cosmology and redshifts are provided</span>
             <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">t_</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">t_</span> <span class="ow">in</span> <span class="p">(</span><span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">)):</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;To compute DeltaSigma, please provide a i) cosmology, ii) redshift of lens and sources&#39;</span><span class="p">)</span>
-            <span class="n">sigma_c</span> <span class="o">=</span> <span class="n">get_critical_surface_density</span><span class="p">(</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="p">)</span>
+            <span class="n">sigma_c</span> <span class="o">=</span> <span class="n">compute_critical_surface_density</span><span class="p">(</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="p">)</span>
         <span class="n">tangential_comp</span> <span class="o">*=</span> <span class="n">sigma_c</span>
         <span class="n">cross_comp</span> <span class="o">*=</span> <span class="n">sigma_c</span>
     <span class="k">return</span> <span class="n">angsep</span><span class="p">,</span> <span class="n">tangential_comp</span><span class="p">,</span> <span class="n">cross_comp</span></div>
