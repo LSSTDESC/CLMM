@@ -177,27 +177,27 @@ def convert_units(dist1, unit1, unit2, redshift=None, cosmo=None):
 
 
 def convert_shapes_to_epsilon(shape_1,shape_2, shape_definition='epsilon',kappa=0):
-    r""" Convert shape components 1 and 2 appropriately to make them estimators of the reduced shear once averaged. 
-    The shape 1 and 2 components may correspond to ellipticities according the :math:`\epsilon`- or :math:`\chi`-definition, 
+    r""" Convert shape components 1 and 2 appropriately to make them estimators of the reduced shear once averaged.
+    The shape 1 and 2 components may correspond to ellipticities according the :math:`\epsilon`- or :math:`\chi`-definition,
     but also to the 1 and 2 components of the shear. See Bartelmann & Schneider 2001 for details (https://arxiv.org/pdf/astro-ph/9912508.pdf).
 
     The :math:`\epsilon`-ellipticity is a direct estimator of
-    the reduced shear. The shear :math:`\gamma` may be converted to reduced shear :math:`g` if the convergence :math:`\kappa` is known. 
+    the reduced shear. The shear :math:`\gamma` may be converted to reduced shear :math:`g` if the convergence :math:`\kappa` is known.
     The conversions are given below.
 
     .. math::
      \epsilon = \frac{\chi}{1+(1-|\chi|^2)^{1/2}}
 
-    .. math::   
+    .. math::
      g=\frac{\gamma}{1-\kappa}
 
     - If `shape_definition = 'chi'`, this function returns the corresponding `epsilon` ellipticities
-    
+
     - If `shape_definition = 'shear'`, it returns the corresponding reduced shear, given the convergence `kappa`
-    
+
     - If `shape_definition = 'epsilon'` or `'reduced_shear'`, it returns them as is as no conversion is needed.
 
-    
+
 
     Parameters
     ----------
