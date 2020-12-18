@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Model a Galaxy Cluster &mdash; CLMM 0.8.0 documentation</title>
+  <title>Model a Galaxy Cluster &mdash; CLMM 0.9.0 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.8.0
+                0.9.0
               </div>
             
           
@@ -226,7 +226,7 @@ mass requires fitting the observed (or mock) data to a model.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clmm</span><span class="o">.</span><span class="n">__version__</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;0.8.0&#39;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;0.9.0&#39;</span>
 </pre></div>
 </div>
 <p>Define a cosmology using astropy</p>
@@ -249,44 +249,44 @@ choose a distribution that follows an NFW profile.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">r3d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rho</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_3d_density</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">mdelta</span><span class="o">=</span><span class="n">cluster_mass</span><span class="p">,</span> <span class="n">cdelta</span><span class="o">=</span><span class="n">cluster_concentration</span><span class="p">,</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rho</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">compute_3d_density</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">mdelta</span><span class="o">=</span><span class="n">cluster_mass</span><span class="p">,</span> <span class="n">cdelta</span><span class="o">=</span><span class="n">cluster_concentration</span><span class="p">,</span>
                        <span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Sigma</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">predict_surface_density</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">cluster_mass</span><span class="p">,</span> <span class="n">cluster_concentration</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Sigma</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">compute_surface_density</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">cluster_mass</span><span class="p">,</span> <span class="n">cluster_concentration</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
                                   <span class="n">delta_mdef</span><span class="o">=</span><span class="n">mass_Delta</span><span class="p">,</span>
                                   <span class="n">halo_profile_model</span><span class="o">=</span><span class="n">density_profile_parametrization</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DeltaSigma</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">predict_excess_surface_density</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">cluster_mass</span><span class="p">,</span> <span class="n">cluster_concentration</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DeltaSigma</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">compute_excess_surface_density</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">cluster_mass</span><span class="p">,</span> <span class="n">cluster_concentration</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
                                               <span class="n">delta_mdef</span><span class="o">=</span><span class="n">mass_Delta</span><span class="p">,</span>
                                               <span class="n">halo_profile_model</span><span class="o">=</span><span class="n">density_profile_parametrization</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Sigmac</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get_critical_surface_density</span><span class="p">(</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">z_cluster</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="n">z_source</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Sigmac</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">compute_critical_surface_density</span><span class="p">(</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">z_cluster</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="n">z_source</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gammat</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">predict_tangential_shear</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">mdelta</span><span class="o">=</span><span class="n">cluster_mass</span><span class="p">,</span> <span class="n">cdelta</span><span class="o">=</span><span class="n">cluster_concentration</span><span class="p">,</span> <span class="n">z_cluster</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gammat</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">compute_tangential_shear</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">mdelta</span><span class="o">=</span><span class="n">cluster_mass</span><span class="p">,</span> <span class="n">cdelta</span><span class="o">=</span><span class="n">cluster_concentration</span><span class="p">,</span> <span class="n">z_cluster</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span>
                                     <span class="n">z_source</span><span class="o">=</span><span class="n">z_source</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">mass_Delta</span><span class="p">,</span>
                                     <span class="n">halo_profile_model</span><span class="o">=</span><span class="n">density_profile_parametrization</span><span class="p">,</span>
                                     <span class="n">z_src_model</span><span class="o">=</span><span class="s1">&#39;single_plane&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">kappa</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">predict_convergence</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">mdelta</span><span class="o">=</span><span class="n">cluster_mass</span><span class="p">,</span> <span class="n">cdelta</span><span class="o">=</span><span class="n">cluster_concentration</span><span class="p">,</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">kappa</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">compute_convergence</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">mdelta</span><span class="o">=</span><span class="n">cluster_mass</span><span class="p">,</span> <span class="n">cdelta</span><span class="o">=</span><span class="n">cluster_concentration</span><span class="p">,</span>
                                <span class="n">z_cluster</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="n">z_source</span><span class="p">,</span>
                                <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">mass_Delta</span><span class="p">,</span>
                                <span class="n">halo_profile_model</span><span class="o">=</span><span class="n">density_profile_parametrization</span><span class="p">,</span>
                                <span class="n">z_src_model</span><span class="o">=</span><span class="s1">&#39;single_plane&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gt</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">predict_reduced_tangential_shear</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">mdelta</span><span class="o">=</span><span class="n">cluster_mass</span><span class="p">,</span> <span class="n">cdelta</span><span class="o">=</span><span class="n">cluster_concentration</span><span class="p">,</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gt</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">compute_reduced_tangential_shear</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">mdelta</span><span class="o">=</span><span class="n">cluster_mass</span><span class="p">,</span> <span class="n">cdelta</span><span class="o">=</span><span class="n">cluster_concentration</span><span class="p">,</span>
                                         <span class="n">z_cluster</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="n">z_source</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
                                         <span class="n">delta_mdef</span><span class="o">=</span><span class="n">mass_Delta</span><span class="p">,</span>
                                         <span class="n">halo_profile_model</span><span class="o">=</span><span class="n">density_profile_parametrization</span><span class="p">,</span>
                                         <span class="n">z_src_model</span><span class="o">=</span><span class="s1">&#39;single_plane&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mu</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">predict_magnification</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">mdelta</span><span class="o">=</span><span class="n">cluster_mass</span><span class="p">,</span> <span class="n">cdelta</span><span class="o">=</span><span class="n">cluster_concentration</span><span class="p">,</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mu</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">compute_magnification</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">mdelta</span><span class="o">=</span><span class="n">cluster_mass</span><span class="p">,</span> <span class="n">cdelta</span><span class="o">=</span><span class="n">cluster_concentration</span><span class="p">,</span>
                                         <span class="n">z_cluster</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="n">z_source</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
                                         <span class="n">delta_mdef</span><span class="o">=</span><span class="n">mass_Delta</span><span class="p">,</span>
                                         <span class="n">halo_profile_model</span><span class="o">=</span><span class="n">density_profile_parametrization</span><span class="p">,</span>

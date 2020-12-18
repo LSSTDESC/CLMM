@@ -36,7 +36,7 @@ Make sure we know which version we’re using
 
 .. parsed-literal::
 
-    '0.8.0'
+    '0.9.0'
 
 
 
@@ -68,35 +68,35 @@ Quick test of all theory functionality
 
 .. code:: ipython3
 
-    rho = m.get_3d_density(r3d, mdelta=cluster_mass, cdelta=cluster_concentration, 
+    rho = m.compute_3d_density(r3d, mdelta=cluster_mass, cdelta=cluster_concentration, 
                            z_cl=z_cl, cosmo=cosmo)
 
 .. code:: ipython3
 
-    Sigma = m.predict_surface_density(r3d, cluster_mass, cluster_concentration, z_cl, cosmo=cosmo, 
+    Sigma = m.compute_surface_density(r3d, cluster_mass, cluster_concentration, z_cl, cosmo=cosmo, 
                                       delta_mdef=mass_Delta, 
                                       halo_profile_model=density_profile_parametrization)
 
 .. code:: ipython3
 
-    DeltaSigma = m.predict_excess_surface_density(r3d, cluster_mass, cluster_concentration, z_cl, cosmo=cosmo, 
+    DeltaSigma = m.compute_excess_surface_density(r3d, cluster_mass, cluster_concentration, z_cl, cosmo=cosmo, 
                                                   delta_mdef=mass_Delta, 
                                                   halo_profile_model=density_profile_parametrization)
 
 .. code:: ipython3
 
-    Sigmac = m.get_critical_surface_density(cosmo, z_cluster=z_cl, z_source=z_source)
+    Sigmac = m.compute_critical_surface_density(cosmo, z_cluster=z_cl, z_source=z_source)
 
 .. code:: ipython3
 
-    gammat = m.predict_tangential_shear(r3d, mdelta=cluster_mass, cdelta=cluster_concentration, z_cluster=z_cl, 
+    gammat = m.compute_tangential_shear(r3d, mdelta=cluster_mass, cdelta=cluster_concentration, z_cluster=z_cl, 
                                         z_source=z_source, cosmo=cosmo, delta_mdef=mass_Delta, 
                                         halo_profile_model=density_profile_parametrization, 
                                         z_src_model='single_plane')
 
 .. code:: ipython3
 
-    kappa = m.predict_convergence(r3d, mdelta=cluster_mass, cdelta=cluster_concentration, 
+    kappa = m.compute_convergence(r3d, mdelta=cluster_mass, cdelta=cluster_concentration, 
                                    z_cluster=z_cl, z_source=z_source,
                                    cosmo=cosmo, delta_mdef=mass_Delta, 
                                    halo_profile_model=density_profile_parametrization, 
@@ -104,7 +104,7 @@ Quick test of all theory functionality
 
 .. code:: ipython3
 
-    gt = m.predict_reduced_tangential_shear(r3d, mdelta=cluster_mass, cdelta=cluster_concentration, 
+    gt = m.compute_reduced_tangential_shear(r3d, mdelta=cluster_mass, cdelta=cluster_concentration, 
                                             z_cluster=z_cl, z_source=z_source, cosmo=cosmo, 
                                             delta_mdef=mass_Delta, 
                                             halo_profile_model=density_profile_parametrization, 
@@ -113,7 +113,7 @@ Quick test of all theory functionality
 
 .. code:: ipython3
 
-    mu = m.predict_magnification(r3d, mdelta=cluster_mass, cdelta=cluster_concentration, 
+    mu = m.compute_magnification(r3d, mdelta=cluster_mass, cdelta=cluster_concentration, 
                                             z_cluster=z_cl, z_source=z_source, cosmo=cosmo, 
                                             delta_mdef=mass_Delta, 
                                             halo_profile_model=density_profile_parametrization, 

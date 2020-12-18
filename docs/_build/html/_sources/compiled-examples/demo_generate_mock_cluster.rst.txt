@@ -39,7 +39,7 @@ Make sure we know which version we’re using
 
 .. parsed-literal::
 
-    '0.8.0'
+    '0.9.0'
 
 
 
@@ -124,6 +124,17 @@ Generate the mock catalog with different source galaxy options
         cluster_m, cluster_z, concentration, cosmo, 'chang13', zsrc_min=zsrc_min,
         zsrc_max=7.0, shapenoise=0.05, photoz_sigma_unscaled=0.05, ngals=ngals)
 
+
+.. parsed-literal::
+
+    /home/aguena/miniconda3/envs/clmmenv/lib/python3.9/site-packages/clmm/cosmology/cluster_toolkit.py:69: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
+      warnings.warn(f'Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.')
+    /home/aguena/miniconda3/envs/clmmenv/lib/python3.9/site-packages/clmm/cosmology/cluster_toolkit.py:79: RuntimeWarning: divide by zero encountered in true_divide
+      return clight_pc_s**2/(4.0*np.pi*gnewt_pc3_msun_s2)*1/d_l*np.divide(1., beta_s)*1.0e6
+    /home/aguena/miniconda3/envs/clmmenv/lib/python3.9/site-packages/clmm/theory/func_layer.py:354: UserWarning: Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.
+      warnings.warn(f'Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.')
+
+
 Sanity check: checking that no galaxies were originally drawn below
 zsrc_min, before photoz errors are applied (when relevant)
 
@@ -163,11 +174,11 @@ Inspect the catalog data
 
 .. parsed-literal::
 
-        ra        dec         e1         e2         z       ztrue    id
-    ---------- ---------- ---------- ---------- --------- --------- ---
-     2.070e-01 -1.241e-02 -9.833e-03 -1.183e-03 8.000e-01 8.000e-01   0
-    -3.229e-02  6.713e-02  1.851e-02 -2.318e-02 8.000e-01 8.000e-01   1
-    -1.035e-01  1.507e-01  4.153e-03 -1.078e-02 8.000e-01 8.000e-01   2
+        ra        dec         e1        e2         z       ztrue    id
+    ---------- ---------- --------- ---------- --------- --------- ---
+    -8.176e-02  1.694e-01 6.945e-03 -8.744e-03 8.000e-01 8.000e-01   0
+    -1.725e-03  1.156e-01 1.937e-02 -5.782e-04 8.000e-01 8.000e-01   1
+     1.567e-01 -1.893e-01 1.495e-03 -7.851e-03 8.000e-01 8.000e-01   2
 
 
 -  With photo-z errors
@@ -182,11 +193,11 @@ Inspect the catalog data
 
 .. parsed-literal::
 
-        ra        dec         e1         e2         z       ztrue         pzbins [61]             pzpdf [61]        id
-    ---------- ---------- ---------- ---------- --------- --------- ----------------------- ---------------------- ---
-     2.242e-01  1.358e-01  2.634e-03  3.996e-02 7.516e-01 8.000e-01 -1.484e-01 .. 1.652e+00 8.550e-22 .. 8.550e-22   0
-     2.126e-01  3.265e-02 -1.014e-01 -2.158e-02 8.639e-01 8.000e-01 -3.608e-02 .. 1.764e+00 8.550e-22 .. 8.550e-22   1
-    -2.130e-01 -1.619e-01 -8.417e-03 -5.663e-03 8.523e-01 8.000e-01 -4.766e-02 .. 1.752e+00 8.550e-22 .. 8.550e-22   2
+        ra       dec         e1         e2         z       ztrue         pzbins [61]             pzpdf [61]        id
+    --------- ---------- ---------- ---------- --------- --------- ----------------------- ---------------------- ---
+    6.480e-03  1.405e-01  8.597e-02 -2.495e-02 6.710e-01 8.000e-01 -2.290e-01 .. 1.571e+00 8.550e-22 .. 8.550e-22   0
+    2.362e-02 -1.357e-01  5.272e-03  1.402e-02 8.252e-01 8.000e-01 -7.477e-02 .. 1.725e+00 8.550e-22 .. 8.550e-22   1
+    1.943e-01 -1.951e-01 -5.289e-02 -6.012e-02 6.429e-01 8.000e-01 -2.571e-01 .. 1.543e+00 8.550e-22 .. 8.550e-22   2
 
 
 -  Histogram of the redshift distribution of background galaxies, for
@@ -208,7 +219,7 @@ Inspect the catalog data
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fde26cf45b0>
+    <matplotlib.legend.Legend at 0x7f88f5b1dd60>
 
 
 
@@ -232,7 +243,7 @@ Inspect the catalog data
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fde26c32550>
+    <matplotlib.legend.Legend at 0x7f88f5a5e280>
 
 
 
@@ -297,9 +308,12 @@ example.
 
 .. parsed-literal::
 
-    /home/aguena/.local/lib/python3.9/site-packages/clmm-0.8.0-py3.9.egg/clmm/cosmology/cluster_toolkit.py:69: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /home/aguena/.local/lib/python3.9/site-packages/clmm-0.8.0-py3.9.egg/clmm/cosmology/cluster_toolkit.py:79: RuntimeWarning: divide by zero encountered in true_divide
-    /home/aguena/.local/lib/python3.9/site-packages/clmm-0.8.0-py3.9.egg/clmm/theory/func_layer.py:354: UserWarning: Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.
+    /home/aguena/miniconda3/envs/clmmenv/lib/python3.9/site-packages/clmm/cosmology/cluster_toolkit.py:69: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
+      warnings.warn(f'Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.')
+    /home/aguena/miniconda3/envs/clmmenv/lib/python3.9/site-packages/clmm/cosmology/cluster_toolkit.py:79: RuntimeWarning: divide by zero encountered in true_divide
+      return clight_pc_s**2/(4.0*np.pi*gnewt_pc3_msun_s2)*1/d_l*np.divide(1., beta_s)*1.0e6
+    /home/aguena/miniconda3/envs/clmmenv/lib/python3.9/site-packages/clmm/theory/func_layer.py:354: UserWarning: Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.
+      warnings.warn(f'Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.')
 
 
 .. code:: ipython3
@@ -313,7 +327,7 @@ example.
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fde26ae9a90>
+    <matplotlib.legend.Legend at 0x7f88f59229d0>
 
 
 
@@ -342,9 +356,12 @@ example.
 
 .. parsed-literal::
 
-    /home/aguena/.local/lib/python3.9/site-packages/clmm-0.8.0-py3.9.egg/clmm/cosmology/cluster_toolkit.py:69: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /home/aguena/.local/lib/python3.9/site-packages/clmm-0.8.0-py3.9.egg/clmm/cosmology/cluster_toolkit.py:79: RuntimeWarning: divide by zero encountered in true_divide
-    /home/aguena/.local/lib/python3.9/site-packages/clmm-0.8.0-py3.9.egg/clmm/theory/func_layer.py:354: UserWarning: Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.
+    /home/aguena/miniconda3/envs/clmmenv/lib/python3.9/site-packages/clmm/cosmology/cluster_toolkit.py:69: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
+      warnings.warn(f'Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.')
+    /home/aguena/miniconda3/envs/clmmenv/lib/python3.9/site-packages/clmm/cosmology/cluster_toolkit.py:79: RuntimeWarning: divide by zero encountered in true_divide
+      return clight_pc_s**2/(4.0*np.pi*gnewt_pc3_msun_s2)*1/d_l*np.divide(1., beta_s)*1.0e6
+    /home/aguena/miniconda3/envs/clmmenv/lib/python3.9/site-packages/clmm/theory/func_layer.py:354: UserWarning: Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.
+      warnings.warn(f'Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.')
 
 
 .. code:: ipython3
@@ -358,7 +375,7 @@ example.
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fde26a744c0>
+    <matplotlib.legend.Legend at 0x7f88f58ac3d0>
 
 
 
@@ -390,9 +407,12 @@ Changing the overdensity parameter (all backend) - ``Delta_SO`` keyword (default
 
 .. parsed-literal::
 
-    /home/aguena/.local/lib/python3.9/site-packages/clmm-0.8.0-py3.9.egg/clmm/cosmology/cluster_toolkit.py:69: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /home/aguena/.local/lib/python3.9/site-packages/clmm-0.8.0-py3.9.egg/clmm/cosmology/cluster_toolkit.py:79: RuntimeWarning: divide by zero encountered in true_divide
-    /home/aguena/.local/lib/python3.9/site-packages/clmm-0.8.0-py3.9.egg/clmm/theory/func_layer.py:354: UserWarning: Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.
+    /home/aguena/miniconda3/envs/clmmenv/lib/python3.9/site-packages/clmm/cosmology/cluster_toolkit.py:69: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
+      warnings.warn(f'Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.')
+    /home/aguena/miniconda3/envs/clmmenv/lib/python3.9/site-packages/clmm/cosmology/cluster_toolkit.py:79: RuntimeWarning: divide by zero encountered in true_divide
+      return clight_pc_s**2/(4.0*np.pi*gnewt_pc3_msun_s2)*1/d_l*np.divide(1., beta_s)*1.0e6
+    /home/aguena/miniconda3/envs/clmmenv/lib/python3.9/site-packages/clmm/theory/func_layer.py:354: UserWarning: Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.
+      warnings.warn(f'Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.')
 
 
 Using the critical mass definition (Numcosmo and CCL only) - ``massdef`` keyword (default = ‘mean’)
@@ -420,7 +440,7 @@ WARNING: error will be raised if using the cluster-toolkit backend
           3     zsrc_max=7.0, shapenoise=0.05, photoz_sigma_unscaled=0.05, ngals=ngals)
 
 
-    ~/.local/lib/python3.9/site-packages/clmm-0.8.0-py3.9.egg/clmm/support/mock_data.py in generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_SO, massdef, halo_profile_model, zsrc_min, zsrc_max, field_size, shapenoise, photoz_sigma_unscaled, nretry, ngals, ngal_density)
+    ~/miniconda3/envs/clmmenv/lib/python3.9/site-packages/clmm/support/mock_data.py in generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_SO, massdef, halo_profile_model, zsrc_min, zsrc_max, field_size, shapenoise, photoz_sigma_unscaled, nretry, ngals, ngal_density)
         134         ngals = _compute_ngals(ngal_density, field_size, cosmo, cluster_z, zsrc, zsrc_min=zsrc_min, zsrc_max=zsrc_max)
         135 
     --> 136     galaxy_catalog = _generate_galaxy_catalog(ngals=ngals, **params)
@@ -428,15 +448,15 @@ WARNING: error will be raised if using the cluster-toolkit backend
         138     for i in range(nretry):
 
 
-    ~/.local/lib/python3.9/site-packages/clmm-0.8.0-py3.9.egg/clmm/support/mock_data.py in _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, zsrc, Delta_SO, massdef, halo_profile_model, zsrc_min, zsrc_max, shapenoise, photoz_sigma_unscaled, field_size)
+    ~/miniconda3/envs/clmmenv/lib/python3.9/site-packages/clmm/support/mock_data.py in _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, zsrc, Delta_SO, massdef, halo_profile_model, zsrc_min, zsrc_max, shapenoise, photoz_sigma_unscaled, field_size)
         211     galaxy_catalog = _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo, field_size)
         212     # Compute the shear on each source galaxy
-    --> 213     gamt = predict_tangential_shear(galaxy_catalog['r_mpc'], mdelta=cluster_m,
+    --> 213     gamt = compute_tangential_shear(galaxy_catalog['r_mpc'], mdelta=cluster_m,
         214                                             cdelta=cluster_c, z_cluster=cluster_z,
         215                                             z_source=galaxy_catalog['ztrue'], cosmo=cosmo,
 
 
-    ~/.local/lib/python3.9/site-packages/clmm-0.8.0-py3.9.egg/clmm/theory/func_layer.py in predict_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef, halo_profile_model, massdef, z_src_model)
+    ~/miniconda3/envs/clmmenv/lib/python3.9/site-packages/clmm/theory/func_layer.py in compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef, halo_profile_model, massdef, z_src_model)
         261 
         262         gcm.set_cosmo(cosmo)
     --> 263         gcm.set_halo_density_profile(halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
@@ -444,7 +464,7 @@ WARNING: error will be raised if using the cluster-toolkit backend
         265         gcm.set_mass(mdelta)
 
 
-    ~/.local/lib/python3.9/site-packages/clmm-0.8.0-py3.9.egg/clmm/theory/cluster_toolkit.py in set_halo_density_profile(self, halo_profile_model, massdef, delta_mdef)
+    ~/miniconda3/envs/clmmenv/lib/python3.9/site-packages/clmm/theory/cluster_toolkit.py in set_halo_density_profile(self, halo_profile_model, massdef, delta_mdef)
          63     def set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
          64         # Check if choices are supported
     ---> 65         self.validate_definitions(massdef, halo_profile_model)
@@ -452,7 +472,7 @@ WARNING: error will be raised if using the cluster-toolkit backend
          67         self.halo_profile_model = halo_profile_model
 
 
-    ~/.local/lib/python3.9/site-packages/clmm-0.8.0-py3.9.egg/clmm/theory/parent_class.py in validate_definitions(self, massdef, halo_profile_model)
+    ~/miniconda3/envs/clmmenv/lib/python3.9/site-packages/clmm/theory/parent_class.py in validate_definitions(self, massdef, halo_profile_model)
          42     def validate_definitions(self, massdef, halo_profile_model):
          43         if not massdef in self.mdef_dict:
     ---> 44             raise ValueError(f"Halo density profile mass definition {massdef} not currently supported")

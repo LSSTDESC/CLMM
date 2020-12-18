@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.theory.parent_class &mdash; CLMM 0.8.0 documentation</title>
+  <title>clmm.theory.parent_class &mdash; CLMM 0.9.0 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                0.8.0
+                0.9.0
               </div>
             
           
@@ -307,7 +307,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-<div class="viewcode-block" id="CLMModeling.eval_sigma_crit"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_sigma_crit">[docs]</a>    <span class="k">def</span> <span class="nf">eval_sigma_crit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_len</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
+<div class="viewcode-block" id="CLMModeling.eval_critical_surface_density"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_critical_surface_density">[docs]</a>    <span class="k">def</span> <span class="nf">eval_critical_surface_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_len</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes the critical surface density</span>
 
 <span class="sd">        Parameters</span>
@@ -324,7 +324,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">eval_sigma_crit</span><span class="p">(</span><span class="n">z_len</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CLMModeling.eval_density"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_density">[docs]</a>    <span class="k">def</span> <span class="nf">eval_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
+<div class="viewcode-block" id="CLMModeling.eval_3d_density"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_3d_density">[docs]</a>    <span class="k">def</span> <span class="nf">eval_3d_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Retrieve the 3d density :math:`\rho(r)`.</span>
 
 <span class="sd">        Parameters</span>
@@ -341,7 +341,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-<div class="viewcode-block" id="CLMModeling.eval_sigma"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_sigma">[docs]</a>    <span class="k">def</span> <span class="nf">eval_sigma</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
+<div class="viewcode-block" id="CLMModeling.eval_surface_density"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_surface_density">[docs]</a>    <span class="k">def</span> <span class="nf">eval_surface_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Computes the surface mass density</span>
 
 <span class="sd">        Parameters</span>
@@ -358,7 +358,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-<div class="viewcode-block" id="CLMModeling.eval_sigma_mean"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_sigma_mean">[docs]</a>    <span class="k">def</span> <span class="nf">eval_sigma_mean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
+<div class="viewcode-block" id="CLMModeling.eval_mean_surface_density"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_mean_surface_density">[docs]</a>    <span class="k">def</span> <span class="nf">eval_mean_surface_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Computes the mean value of surface density inside radius r_proj</span>
 
 <span class="sd">        Parameters</span>
@@ -375,7 +375,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-<div class="viewcode-block" id="CLMModeling.eval_sigma_excess"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_sigma_excess">[docs]</a>    <span class="k">def</span> <span class="nf">eval_sigma_excess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
+<div class="viewcode-block" id="CLMModeling.eval_excess_surface_density"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_excess_surface_density">[docs]</a>    <span class="k">def</span> <span class="nf">eval_excess_surface_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Computes the excess surface density</span>
 
 <span class="sd">        Parameters</span>
@@ -392,7 +392,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-<div class="viewcode-block" id="CLMModeling.eval_shear"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_shear">[docs]</a>    <span class="k">def</span> <span class="nf">eval_shear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
+<div class="viewcode-block" id="CLMModeling.eval_tangential_shear"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_tangential_shear">[docs]</a>    <span class="k">def</span> <span class="nf">eval_tangential_shear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes the tangential shear</span>
 
 <span class="sd">        Parameters</span>
