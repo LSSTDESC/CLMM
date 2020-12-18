@@ -87,6 +87,16 @@ class CLMModeling:
         """
         raise NotImplementedError
 
+    def set_mass(self, mdelta):
+        r""" Sets the value of the :math:`M_\Delta`
+
+        Parameters
+        ----------
+        mdelta : float
+            Galaxy cluster mass :math:`M_\Delta` in units of :math:`M_\odot`
+        """
+        raise NotImplementedError
+
     def set_concentration(self, cdelta):
         r""" Sets the concentration
 
@@ -97,13 +107,20 @@ class CLMModeling:
         """
         raise NotImplementedError
 
-    def set_mass(self, mdelta):
-        r""" Sets the value of the :math:`M_\Delta`
+    def eval_3d_density(self, r3d, z_cl):
+        r"""Retrieve the 3d density :math:`\rho(r)`.
 
         Parameters
         ----------
-        mdelta : float
-            Galaxy cluster mass :math:`M_\Delta` in units of :math:`M_\odot`
+        r3d : array_like, float
+            Radial position from the cluster center in :math:`M\!pc`.
+        z_cl: float
+            Redshift of the cluster
+
+        Returns
+        -------
+        array_like, float
+            3-dimensional mass density in units of :math:`M_\odot\ Mpc^{-3}`
         """
         raise NotImplementedError
 
@@ -123,23 +140,6 @@ class CLMModeling:
             Cosmology-dependent critical surface density in units of :math:`M_\odot\ Mpc^{-2}`
         """
         return self.cosmo.eval_sigma_crit(z_len, z_src)
-
-    def eval_3d_density(self, r3d, z_cl):
-        r"""Retrieve the 3d density :math:`\rho(r)`.
-
-        Parameters
-        ----------
-        r3d : array_like, float
-            Radial position from the cluster center in :math:`M\!pc`.
-        z_cl: float
-            Redshift of the cluster
-
-        Returns
-        -------
-        array_like, float
-            3-dimensional mass density in units of :math:`M_\odot\ Mpc^{-3}`
-        """
-        raise NotImplementedError
 
     def eval_surface_density(self, r_proj, z_cl):
         r""" Computes the surface mass density
@@ -208,5 +208,85 @@ class CLMModeling:
         -------
         array_like, float
             tangential shear
+        """
+        raise NotImplementedError
+    def eval_convergence(self, r_proj, z_cl, z_src):
+        r"""Computes the mass convergence
+
+        .. math::
+            \kappa = \frac{\Sigma}{\Sigma_{crit}}
+
+        or
+
+        .. math::
+            \kappa = \kappa_\infty \times \beta_s
+
+        Parameters
+        ----------
+        r_proj : array_like
+            The projected radial positions in :math:`M\!pc`.
+        z_cl : float
+            Galaxy cluster redshift
+        z_src : array_like, float
+            Background source galaxy redshift(s)
+
+        Returns
+        -------
+        kappa : array_like, float
+            Mass convergence, kappa.
+
+        Notes
+        -----
+        Need to figure out if we want to raise exceptions rather than errors here?
+        """
+        raise NotImplementedError
+
+    def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src):
+        r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
+
+        Parameters
+        ----------
+        r_proj : array_like
+            The projected radial positions in :math:`M\!pc`.
+        z_cl : float
+            Galaxy cluster redshift
+        z_src : array_like, float
+            Background source galaxy redshift(s)
+
+        Returns
+        -------
+        gt : array_like, float
+            Reduced tangential shear
+
+        Notes
+        -----
+        Need to figure out if we want to raise exceptions rather than errors here?
+        """
+        raise NotImplementedError
+
+    def eval_magnification(self, r_proj, z_cl, z_src):
+        r"""Computes the magnification
+
+        .. math::
+            \mu = \frac{1}{(1-\kappa)^2-|\gamma_t|^2}
+
+
+        Parameters
+        ----------
+        r_proj : array_like
+            The projected radial positions in :math:`M\!pc`.
+        z_cl : float
+            Galaxy cluster redshift
+        z_src : array_like, float
+            Background source galaxy redshift(s)
+
+        Returns
+        -------
+        mu : array_like, float
+            magnification, mu.
+
+        Notes
+        -----
+        Need to figure out if we want to raise exceptions rather than errors here?
         """
         raise NotImplementedError

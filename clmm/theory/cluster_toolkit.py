@@ -89,7 +89,19 @@ class CTModeling(CLMModeling):
                 self.cdelta, Omega_m, delta=self.delta_mdef)*h*1.0e12 # pc**-2 to Mpc**-2
 
     def eval_mean_surface_density(self, r_proj, z_cl):
-        '''
+        r''' Computes the mean value of surface density inside radius r_proj
+
+        Parameters
+        ----------
+        r_proj : array_like
+            Projected radial position from the cluster center in :math:`M\!pc`.
+        z_cl: float
+            Redshift of the cluster
+
+        Returns
+        -------
+        array_like, float
+            Excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
 
         Note
         ----
