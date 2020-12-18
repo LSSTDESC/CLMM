@@ -8,7 +8,7 @@ import warnings
 import numpy as np
 from .. gcdata import GCData
 from . .utils import compute_radial_averages, make_bins, convert_units, arguments_consistency
-from .. theory import get_critical_surface_density
+from .. theory import compute_critical_surface_density
 
 
 def compute_tangential_and_cross_components(
@@ -122,7 +122,7 @@ def compute_tangential_and_cross_components(
             # Need to verify that cosmology and redshifts are provided
             if any(t_ is None for t_ in (z_lens, z_source, cosmo)):
                 raise TypeError('To compute DeltaSigma, please provide a i) cosmology, ii) redshift of lens and sources')
-            sigma_c = get_critical_surface_density(cosmo, z_lens, z_source)
+            sigma_c = compute_critical_surface_density(cosmo, z_lens, z_source)
         tangential_comp *= sigma_c
         cross_comp *= sigma_c
     return angsep, tangential_comp, cross_comp
