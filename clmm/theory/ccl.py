@@ -80,46 +80,46 @@ class CCLCLMModeling(CLMModeling):
     def set_mass(self, mdelta):
         self.MDelta = mdelta/self.cor_factor
 
-    def eval_density(self, r3d, z_cl):
+    def eval_3d_density(self, r3d, z_cl):
         a_cl = self.cosmo._get_a_from_z(z_cl)
         return self.hdpm.real(self.cosmo.be_cosmo, r3d/a_cl, self.MDelta, a_cl, self.mdef)*self.cor_factor/a_cl**3
 
-    def eval_sigma(self, r_proj, z_cl):
+    def eval_surface_density(self, r_proj, z_cl):
         a_cl = self.cosmo._get_a_from_z(z_cl)
         return self.hdpm.projected(self.cosmo.be_cosmo, r_proj/a_cl, self.MDelta, a_cl, self.mdef)*self.cor_factor/a_cl**2
 
-    def eval_sigma_mean(self, r_proj, z_cl):
+    def eval_mean_surface_density(self, r_proj, z_cl):
         a_cl = self.cosmo._get_a_from_z(z_cl)
         return self.hdpm.cumul2d(self.cosmo.be_cosmo, r_proj/a_cl, self.MDelta, self.cosmo._get_a_from_z(z_cl), self.mdef)*self.cor_factor/a_cl**2
 
-    def eval_sigma_excess(self, r_proj, z_cl):
+    def eval_excess_surface_density(self, r_proj, z_cl):
         a_cl = self.cosmo._get_a_from_z(z_cl)
         r_cor = r_proj/a_cl
 
         return (self.hdpm.cumul2d(self.cosmo.be_cosmo, r_cor, self.MDelta, self.cosmo._get_a_from_z(z_cl), self.mdef)-
                 self.hdpm.projected(self.cosmo.be_cosmo, r_cor, self.MDelta, self.cosmo._get_a_from_z(z_cl), self.mdef))*self.cor_factor/a_cl**2
 
-    def eval_shear(self, r_proj, z_cl, z_src):
-        sigma_excess = self.eval_sigma_excess(r_proj, z_cl)
-        sigma_crit = self.eval_sigma_crit(z_cl, z_src)
+    def eval_tangential_shear(self, r_proj, z_cl, z_src):
+        sigma_excess = self.eval_excess_surface_density(r_proj, z_cl)
+        sigma_crit = self.eval_critical_surface_density(z_cl, z_src)
 
         return sigma_excess/sigma_crit
 
     def eval_convergence(self, r_proj, z_cl, z_src):
-        sigma = self.eval_sigma(r_proj, z_cl)
-        sigma_crit = self.eval_sigma_crit(z_cl, z_src)
+        sigma = self.eval_surface_density(r_proj, z_cl)
+        sigma_crit = self.eval_critical_surface_density(z_cl, z_src)
 
         return np.nan_to_num(sigma/sigma_crit, nan=np.nan, posinf=np.inf, neginf=-np.inf)
 
-    def eval_reduced_shear(self, r_proj, z_cl, z_src):
+    def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src):
         kappa = self.eval_convergence(r_proj, z_cl, z_src)
-        gamma_t = self.eval_shear(r_proj, z_cl, z_src)
+        gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
 
         return np.nan_to_num(np.divide(gamma_t, (1-kappa)), nan=np.nan, posinf=np.inf, neginf=-np.inf)
 
     def eval_magnification(self, r_proj, z_cl, z_src):
         kappa = self.eval_convergence(r_proj, z_cl, z_src)
-        gamma_t = self.eval_shear(r_proj, z_cl, z_src)
+        gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
 
         return 1.0/((1.0-kappa)**2-np.abs(gamma_t)**2)
 

@@ -5,7 +5,7 @@ import pickle
 import warnings
 from .gcdata import GCData
 from .dataops import compute_tangential_and_cross_components, make_radial_profile
-from .theory import get_critical_surface_density
+from .theory import compute_critical_surface_density
 from .plotting import plot_profiles
 
 
@@ -118,7 +118,7 @@ class GalaxyCluster():
                 raise TypeError('Galaxy catalog missing the redshift column. '
                                 'Cannot compute Sigma_crit')
             self.galcat.update_cosmo(cosmo, overwrite=True)
-            self.galcat['sigma_c'] = get_critical_surface_density(cosmo=cosmo, z_cluster=self.z,
+            self.galcat['sigma_c'] = compute_critical_surface_density(cosmo=cosmo, z_cluster=self.z,
                                                                   z_source=self.galcat['z'])
         return
 
