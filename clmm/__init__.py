@@ -7,4 +7,4 @@ from .theory import compute_reduced_shear_from_convergence, compute_3d_density, 
 from . import support
 
 
-__version__ = '0.8.0'
+__version__ = '0.9.0'
