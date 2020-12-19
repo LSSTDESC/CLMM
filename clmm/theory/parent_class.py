@@ -106,7 +106,7 @@ class CLMModeling:
         """
         raise NotImplementedError
 
-    def eval_sigma_crit(self, z_len, z_src):
+    def eval_critical_surface_density(self, z_len, z_src):
         r"""Computes the critical surface density
 
         Parameters
@@ -127,7 +127,7 @@ class CLMModeling:
             raise ValueError(f'Some source redshifts are <=0. Please check your inputs.')
         return self.cosmo.eval_sigma_crit(z_len, z_src)
 
-    def eval_density(self, r3d, z_cl):
+    def eval_3d_density(self, r3d, z_cl):
         r"""Retrieve the 3d density :math:`\rho(r)`.
 
         Parameters
@@ -144,7 +144,7 @@ class CLMModeling:
         """
         raise NotImplementedError
 
-    def eval_sigma(self, r_proj, z_cl):
+    def eval_surface_density(self, r_proj, z_cl):
         r""" Computes the surface mass density
 
         Parameters
@@ -161,7 +161,7 @@ class CLMModeling:
         """
         raise NotImplementedError
 
-    def eval_sigma_mean(self, r_proj, z_cl):
+    def eval_mean_surface_density(self, r_proj, z_cl):
         r""" Computes the mean value of surface density inside radius r_proj
 
         Parameters
@@ -178,7 +178,7 @@ class CLMModeling:
         """
         raise NotImplementedError
 
-    def eval_sigma_excess(self, r_proj, z_cl):
+    def eval_excess_surface_density(self, r_proj, z_cl):
         r""" Computes the excess surface density
 
         Parameters
@@ -195,7 +195,7 @@ class CLMModeling:
         """
         raise NotImplementedError
 
-    def eval_shear(self, r_proj, z_cl, z_src):
+    def eval_tangential_shear(self, r_proj, z_cl, z_src):
         r"""Computes the tangential shear
 
         Parameters
