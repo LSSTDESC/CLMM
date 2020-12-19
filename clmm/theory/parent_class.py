@@ -1,6 +1,5 @@
 # CLMModeling abstract class
 import numpy as np
-import warnings
 
 
 class CLMModeling:
@@ -122,6 +121,10 @@ class CLMModeling:
         float
             Cosmology-dependent critical surface density in units of :math:`M_\odot\ Mpc^{-2}`
         """
+        if z_len<=0:
+            raise ValueError(f'Redshift for lens <= 0.')
+        if np.any(np.array(z_src)<=0):
+            raise ValueError(f'Some source redshifts are <=0. Please check your inputs.')
         return self.cosmo.eval_sigma_crit(z_len, z_src)
 
     def eval_3d_density(self, r3d, z_cl):
