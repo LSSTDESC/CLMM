@@ -6,9 +6,6 @@ from numpy.testing import assert_raises, assert_equal
 import clmm
 from clmm import GCData
 import os
-# Set mpl backend run plots on github actions
-import matplotlib as mpl
-mpl.use('Agg')
 
 
 def test_initialization():

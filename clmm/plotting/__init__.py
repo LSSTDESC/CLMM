@@ -1,4 +1,7 @@
 """A collection of scripts that can be used to plot the various quantities that CLMM models."""
+# Set mpl backend run plots on github actions
+import matplotlib as mpl
+mpl.use('Agg')
 import matplotlib.pyplot as plt
 
 
