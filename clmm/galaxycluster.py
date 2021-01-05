@@ -302,7 +302,7 @@ class GalaxyCluster():
         return profile_table
     def plot_profiles(self, tangential_component='gt', tangential_component_error='gt_err',
                       cross_component='gx', cross_component_error='gx_err', table_name='profile',
-                      xscale='linear', yscale='linear', mpl_be=None):
+                      xscale='linear', yscale='linear'):
         """Plot shear profiles using `plotting.plot_profiles` function
 
         Parameters
@@ -349,5 +349,4 @@ class GalaxyCluster():
                 cross_component_error in profile.colnames else None),
             xscale=xscale, yscale=yscale,
             tangential_component_label=tangential_component,
-            cross_component_label=cross_component,
-            mpl_be=mpl_be)
+            cross_component_label=cross_component)

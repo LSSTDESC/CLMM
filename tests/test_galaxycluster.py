@@ -130,7 +130,7 @@ def test_plot_profiles():
     # missing shear component
     assert_raises(ValueError, cluster.plot_profiles, cross_component='made_up_component')
     # check basic plot is working
-    cluster.plot_profiles(mpl_be='agg')
+    cluster.plot_profiles()
 
 if __name__ == "__main__":
     test_initialization()
