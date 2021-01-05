@@ -7,7 +7,6 @@ import clmm
 from clmm import GCData
 import os
 
-
 def test_initialization():
     testdict1 = {'unique_id': '1', 'ra': 161.3, 'dec': 34., 'z': 0.3, 'galcat': GCData()}
     cl1 = clmm.GalaxyCluster(**testdict1)
@@ -112,13 +111,13 @@ def test_integrity_of_lensfuncs():
 def test_plot_profiles():
     # Input values
     ra_lens, dec_lens, z_lens = 120., 42., 0.5
-    ra_source = np.array([120.1, 119.9])
-    dec_source = np.array([41.9, 42.2])
-    z_source = np.array([1.,2.])
-    shear1 = np.array([0.2, 0.4])
-    shear2 = np.array([0.3, 0.5])
+    ra_source = [120.1, 119.9]
+    dec_source = [41.9, 42.2]
+    z_source = [1.,2.]
+    shear1 = [0.2, 0.4]
+    shear2 = [0.3, 0.5]
     # Set up radial values
-    bins_radians = np.array([0.002, 0.003, 0.004])
+    bins_radians = [0.002, 0.003, 0.004]
     bin_units = 'radians'
     # create cluster
     cluster = clmm.GalaxyCluster(unique_id='test', ra=ra_lens, dec=dec_lens, z=z_lens,
@@ -131,7 +130,7 @@ def test_plot_profiles():
     # missing shear component
     assert_raises(ValueError, cluster.plot_profiles, cross_component='made_up_component')
     # check basic plot is working
-    cluster.plot_profiles()
+    cluster.plot_profiles(mpl_be='agg')
 
 if __name__ == "__main__":
     test_initialization()

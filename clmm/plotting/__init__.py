@@ -1,7 +1,6 @@
 """A collection of scripts that can be used to plot the various quantities that CLMM models."""
 # Set mpl backend run plots on github actions
 import matplotlib as mpl
-mpl.use('Agg')
 import matplotlib.pyplot as plt
 
 
@@ -9,7 +8,8 @@ def plot_profiles(rbins, tangential_component, tangential_component_error,
                   cross_component, cross_component_error, r_units=None,
                   xscale='linear', yscale='linear',
                   tangential_component_label="Tangential component",
-                  cross_component_label="Cross component"):
+                  cross_component_label="Cross component",
+                  mpl_be=None):
     """Plot shear profiles
 
     Parameters
@@ -38,6 +38,8 @@ def plot_profiles(rbins, tangential_component, tangential_component_error,
     axes:
         The matplotlib axes object that has been plotted to.
     """
+    if mpl_be is not None:
+        mpl.use(mpl_be)
     # Plot the tangential shears
     fig, axes = plt.subplots()
     axes.errorbar(rbins, tangential_component,
