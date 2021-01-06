@@ -99,7 +99,11 @@ def test_cosmo_basic(modeling_data, cosmo_init):
     Omega_m0 = cosmo['Omega_m0']
     assert_allclose(cosmo.get_Omega_m(0.0), Omega_m0, **TOLERANCE)
     assert_allclose(cosmo.get_E2Omega_m(0.0), Omega_m0, **TOLERANCE)
-    # Test params
+    # Test getting all parameters
+    for param in ("Omega_m0", "Omega_b0", "Omega_dm0", "Omega_k0",
+        'h', 'H0',):
+        cosmo[param]
+    # Test params values
     for param in cosmo_init.keys():
         assert_allclose(cosmo_init[param], cosmo[param], **TOLERANCE)
     # Test for NumCosmo
