@@ -312,9 +312,11 @@ def helper_physics_functions(func):
 
     # Test for exception on unsupported z_src_model and halo profiles
     assert_raises(ValueError, func, rproj, mdelta, cdelta, z_cl, z_src, cosmo,
-                  200, 'bleh', 'single_plane')
+        delta_mdef=200, halo_profile_model='blah', massdef='mean', z_src_model='single_plane')
     assert_raises(ValueError, func, rproj, mdelta, cdelta, z_cl, z_src, cosmo,
-                  200, 'nfw', 'bleh')
+        delta_mdef=200, halo_profile_model='nfw', massdef='blah', z_src_model='single_plane')
+    assert_raises(ValueError, func, rproj, mdelta, cdelta, z_cl, z_src, cosmo,
+        delta_mdef=200, halo_profile_model='nfw', massdef='mean', z_src_model='blah')
 
 
 def test_shear_convergence_unittests(modeling_data):
