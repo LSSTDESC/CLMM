@@ -94,27 +94,24 @@ def test_z_and_a(modeling_data, cosmo_init):
 
 def test_cosmo_basic(modeling_data, cosmo_init):
     """ Unit tests abstract class z and a methdods """
-    all_params = ("Omega_m0", "Omega_b0", "Omega_dm0", "Omega_k0", 'h', 'H0')
     cosmo = theo.Cosmology(**cosmo_init)
     # Test get_<PAR>(z)
     Omega_m0 = cosmo['Omega_m0']
     assert_allclose(cosmo.get_Omega_m(0.0), Omega_m0, **TOLERANCE)
     assert_allclose(cosmo.get_E2Omega_m(0.0), Omega_m0, **TOLERANCE)
     # Test getting all parameters
-    for param in all_params:
+    for param in ("Omega_m0", "Omega_b0", "Omega_dm0", "Omega_k0", 'h', 'H0'):
         cosmo[param]
     # Test params values
     for param in cosmo_init.keys():
         assert_allclose(cosmo_init[param], cosmo[param], **TOLERANCE)
     # Test for NumCosmo
     if cosmo.backend == 'nc':
-        for param in all_params:
+        for param in ("Omega_b0", "Omega_dm0", "Omega_k0", 'H0'):
             cosmo[param] *= 1.01
         assert_raises(ValueError, cosmo._set_param, "nonexistent", 0.0)
         # Initializing a cosmology from a dist argument
         theo.Cosmology(dist=cosmo.dist)
-        # Re-initializing a cosmology from parameters
-        cosmo._init_from_params(**cosmo_init)
     else:
         assert_raises(NotImplementedError, cosmo._set_param, "nonexistent", 0.0)
     # Test missing parameter
