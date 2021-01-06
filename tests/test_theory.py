@@ -236,6 +236,8 @@ def test_profiles(modeling_data):
                     cfg['numcosmo_profiles']['Sigma'], **TOLERANCE)
     assert_allclose(m.eval_excess_surface_density(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl']),
                     cfg['numcosmo_profiles']['DeltaSigma'], **TOLERANCE)
+    if m.backend == 'ct':
+        assert_raises(ValueError, m.eval_excess_surface_density, 1e-12, cfg['SIGMA_PARAMS']['z_cl'])
 
 def test_compute_critical_surface_density(modeling_data):
     """ Validation test for critical surface density """
