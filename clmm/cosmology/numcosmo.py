@@ -34,7 +34,7 @@ class NumCosmoCosmology(CLMMCosmology):
 
         assert isinstance(be_cosmo, Nc.HICosmo)
         assert isinstance(be_cosmo, Nc.HICosmoDEXcdm)
-        assert isinstance(be_cosmo.peek_reparam, Nc.HICosmoDEReparamOk)
+        assert isinstance(be_cosmo.peek_reparam (), Nc.HICosmoDEReparamOk)
         self.be_cosmo = be_cosmo
 
     def _init_from_params(self, H0, Omega_b0, Omega_dm0, Omega_k0):
