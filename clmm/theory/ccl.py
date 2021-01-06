@@ -30,12 +30,11 @@ class CCLCLMModeling(CLMModeling):
             'critical': 'critical',
             'virial': 'critical'}
         self.hdpm_dict = {'nfw': ccl.halos.HaloProfileNFW}
-        # Only add the options of einasto and hernquist if CLL version >= 10(?)
-        # because results below this version are unstable.
-        if version.parse(ccl.__version__) >= version.parse('10'):
-            self.hdpm_dict.update({
-                'einasto': ccl.halos.HaloProfileEinasto,
-                'hernquist': ccl.halos.HaloProfileHernquist})
+        # Uncomment lines below when CCL einasto and hernquist profiles are stable (also add version number)
+        #if version.parse(ccl.__version__) >= version.parse('???'):
+        #    self.hdpm_dict.update({
+        #        'einasto': ccl.halos.HaloProfileEinasto,
+        #        'hernquist': ccl.halos.HaloProfileHernquist})
         # Attributes exclusive to this class
         self.hdpm_opts = {'nfw': {'truncated': False,
                                   'projected_analytic': True,
