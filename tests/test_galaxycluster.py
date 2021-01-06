@@ -131,6 +131,8 @@ def test_plot_profiles():
     assert_raises(ValueError, cluster.plot_profiles, cross_component='made_up_component')
     # check basic plot is working
     cluster.plot_profiles()
+    # check it passes missing a component error
+    cluster.plot_profiles(cross_component_error='made_up_component')
 
 if __name__ == "__main__":
     test_initialization()
