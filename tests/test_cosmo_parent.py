@@ -107,7 +107,7 @@ def test_cosmo_basic(modeling_data, cosmo_init):
         assert_allclose(cosmo_init[param], cosmo[param], **TOLERANCE)
     # Test for NumCosmo
     if cosmo.backend == 'nc':
-        for param in ("Omega_b0", "Omega_dm0", "Omega_k0", 'H0'):
+        for param in ("Omega_b0", "Omega_dm0", "Omega_k0", 'h', 'H0'):
             cosmo[param] *= 1.01
         assert_raises(ValueError, cosmo._set_param, "nonexistent", 0.0)
         # Initializing a cosmology from a dist argument
