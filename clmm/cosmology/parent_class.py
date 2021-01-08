@@ -100,7 +100,7 @@ class CLMMCosmology:
         r"""Gets the value of the dimensionless matter density times hubble parameter (normalized at 0)
 
         .. math::
-            \Omega_m(z) = \frac{\rho_m(z)}{\rho_\mathrm{crit}(z)\frac{H(z)^{2}}{H_{0}^{2}}`.
+            \Omega_m(z) = \frac{\rho_m(z)}{\rho_\mathrm{crit}(z)}\frac{H(z)^{2}}{H_{0}^{2}}.
 
         Parameters
         ----------
