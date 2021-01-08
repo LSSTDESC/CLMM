@@ -29,7 +29,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_
         \sigma_{\rm photo-z}^{\rm unscaled}(1+z^{\rm true}) \right)
 
     We additionally include two columns in the output catalog, `pzbins` and `pzpdf` which
-    desribe the photo-z distribution as a Gaussian centered at :math:`z^{\rm true} with a
+    desribe the photo-z distribution as a Gaussian centered at :math:`z^{\rm true}` with a
     width :math:`\sigma_{\rm photo-z} = \sigma_{\rm photo-z}^{\rm unscaled}(1+z^{\rm true})`
 
     If `photoz_sigma_unscaled` is `None`, the `z` column in the output catalog is the true
