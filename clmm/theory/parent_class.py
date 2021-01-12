@@ -1,6 +1,5 @@
 # CLMModeling abstract class
 import numpy as np
-import warnings
 
 
 class CLMModeling:
@@ -87,16 +86,6 @@ class CLMModeling:
         """
         raise NotImplementedError
 
-    def set_concentration(self, cdelta):
-        r""" Sets the concentration
-
-        Parameters
-        ----------
-        cdelta: float
-            Concentration
-        """
-        raise NotImplementedError
-
     def set_mass(self, mdelta):
         r""" Sets the value of the :math:`M_\Delta`
 
@@ -107,24 +96,17 @@ class CLMModeling:
         """
         raise NotImplementedError
 
-    def eval_sigma_crit(self, z_len, z_src):
-        r"""Computes the critical surface density
+    def set_concentration(self, cdelta):
+        r""" Sets the concentration
 
         Parameters
         ----------
-        z_len : float
-            Lens redshift
-        z_src : array_like, float
-            Background source galaxy redshift(s)
-
-        Returns
-        -------
-        float
-            Cosmology-dependent critical surface density in units of :math:`M_\odot\ Mpc^{-2}`
+        cdelta: float
+            Concentration
         """
-        return self.cosmo.eval_sigma_crit(z_len, z_src)
+        raise NotImplementedError
 
-    def eval_density(self, r3d, z_cl):
+    def eval_3d_density(self, r3d, z_cl):
         r"""Retrieve the 3d density :math:`\rho(r)`.
 
         Parameters
@@ -141,7 +123,28 @@ class CLMModeling:
         """
         raise NotImplementedError
 
-    def eval_sigma(self, r_proj, z_cl):
+    def eval_critical_surface_density(self, z_len, z_src):
+        r"""Computes the critical surface density
+
+        Parameters
+        ----------
+        z_len : float
+            Lens redshift
+        z_src : array_like, float
+            Background source galaxy redshift(s)
+
+        Returns
+        -------
+        float
+            Cosmology-dependent critical surface density in units of :math:`M_\odot\ Mpc^{-2}`
+        """
+        if z_len<=0:
+            raise ValueError(f'Redshift for lens <= 0.')
+        if np.any(np.array(z_src)<=0):
+            raise ValueError(f'Some source redshifts are <=0. Please check your inputs.')
+        return self.cosmo.eval_sigma_crit(z_len, z_src)
+
+    def eval_surface_density(self, r_proj, z_cl):
         r""" Computes the surface mass density
 
         Parameters
@@ -158,7 +161,7 @@ class CLMModeling:
         """
         raise NotImplementedError
 
-    def eval_sigma_mean(self, r_proj, z_cl):
+    def eval_mean_surface_density(self, r_proj, z_cl):
         r""" Computes the mean value of surface density inside radius r_proj
 
         Parameters
@@ -175,7 +178,7 @@ class CLMModeling:
         """
         raise NotImplementedError
 
-    def eval_sigma_excess(self, r_proj, z_cl):
+    def eval_excess_surface_density(self, r_proj, z_cl):
         r""" Computes the excess surface density
 
         Parameters
@@ -192,7 +195,7 @@ class CLMModeling:
         """
         raise NotImplementedError
 
-    def eval_shear(self, r_proj, z_cl, z_src):
+    def eval_tangential_shear(self, r_proj, z_cl, z_src):
         r"""Computes the tangential shear
 
         Parameters
@@ -208,5 +211,85 @@ class CLMModeling:
         -------
         array_like, float
             tangential shear
+        """
+        raise NotImplementedError
+    def eval_convergence(self, r_proj, z_cl, z_src):
+        r"""Computes the mass convergence
+
+        .. math::
+            \kappa = \frac{\Sigma}{\Sigma_{crit}}
+
+        or
+
+        .. math::
+            \kappa = \kappa_\infty \times \beta_s
+
+        Parameters
+        ----------
+        r_proj : array_like
+            The projected radial positions in :math:`M\!pc`.
+        z_cl : float
+            Galaxy cluster redshift
+        z_src : array_like, float
+            Background source galaxy redshift(s)
+
+        Returns
+        -------
+        kappa : array_like, float
+            Mass convergence, kappa.
+
+        Notes
+        -----
+        Need to figure out if we want to raise exceptions rather than errors here?
+        """
+        raise NotImplementedError
+
+    def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src):
+        r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
+
+        Parameters
+        ----------
+        r_proj : array_like
+            The projected radial positions in :math:`M\!pc`.
+        z_cl : float
+            Galaxy cluster redshift
+        z_src : array_like, float
+            Background source galaxy redshift(s)
+
+        Returns
+        -------
+        gt : array_like, float
+            Reduced tangential shear
+
+        Notes
+        -----
+        Need to figure out if we want to raise exceptions rather than errors here?
+        """
+        raise NotImplementedError
+
+    def eval_magnification(self, r_proj, z_cl, z_src):
+        r"""Computes the magnification
+
+        .. math::
+            \mu = \frac{1}{(1-\kappa)^2-|\gamma_t|^2}
+
+
+        Parameters
+        ----------
+        r_proj : array_like
+            The projected radial positions in :math:`M\!pc`.
+        z_cl : float
+            Galaxy cluster redshift
+        z_src : array_like, float
+            Background source galaxy redshift(s)
+
+        Returns
+        -------
+        mu : array_like, float
+            magnification, mu.
+
+        Notes
+        -----
+        Need to figure out if we want to raise exceptions rather than errors here?
         """
         raise NotImplementedError

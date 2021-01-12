@@ -83,7 +83,8 @@ class NumCosmoCosmology(CLMMCosmology):
             raise ValueError(f"Unsupported parameter {key}")
 
     def set_dist(self, dist):
-
+        r"""Sets distance functions (NumCosmo internal use)
+        """
         assert isinstance(dist, Nc.Distance)
         self.dist = dist
         self.dist.prepare_if_needed(self.be_cosmo)

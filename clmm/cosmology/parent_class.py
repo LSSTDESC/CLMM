@@ -5,16 +5,16 @@ import numpy as np
 class CLMMCosmology:
     """
     Cosmology object superclass for supporting multiple back-end cosmology objects
+
     Attributes
     ----------
-    get_par: dict
-        Dictionary with functions to get each specific parameter
-    set_par: dict
-        Dictionary with functions to update each specific parameter
+    backend: str
+        Name of back-end used
+    be_cosmo: cosmology library
+        Cosmology library used in the back-end
     """
 
     def __init__(self, **kwargs):
-        self.name = 'not-set'
         self.backend = None
         self.be_cosmo = None
         self.set_be_cosmo(**kwargs)
@@ -62,6 +62,15 @@ class CLMMCosmology:
         return f"{type(self).__name__}(H0={self['H0']}, Omega_dm0={self['Omega_dm0']}, Omega_b0={self['Omega_b0']}, Omega_k0={self['Omega_k0']})"
 
     def set_be_cosmo(self, be_cosmo=None, H0=70.0, Omega_b0=0.05, Omega_dm0=0.25, Omega_k0=0.0):
+        """Set the cosmology
+
+        Parameters
+        ----------
+        be_cosmo: clmm.cosmology.Cosmology object, None
+            Input cosmology, used if not None
+        **kwargs
+            Individual cosmological parameters
+        """
         if be_cosmo:
             self._init_from_cosmo(be_cosmo)
         else:
@@ -81,6 +90,26 @@ class CLMMCosmology:
         -------
         Omega_m : float
             dimensionless matter density, :math:`\Omega_m(z)`.
+        Notes
+        -----
+        Need to decide if non-relativist neutrinos will contribute here.
+        """
+        raise NotImplementedError
+
+    def get_E2Omega_m(self, z):
+        r"""Gets the value of the dimensionless matter density times hubble parameter (normalized at 0)
+
+        .. math::
+            \Omega_m(z) = \frac{\rho_m(z)}{\rho_\mathrm{crit}(z)}\frac{H(z)^{2}}{H_{0}^{2}}.
+
+        Parameters
+        ----------
+        z : float
+            Redshift.
+        Returns
+        -------
+        Omega_m : float
+            dimensionless matter density, :math:`\Omega_m(z)\;H(z)^{2}/H_{0}^{2}`.
         Notes
         -----
         Need to decide if non-relativist neutrinos will contribute here.

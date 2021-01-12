@@ -68,6 +68,9 @@ class NumCosmoCLMModeling(CLMModeling):
                 self.hdpm.props.log10MDelta = cur_log10_mdelta
 
     def get_mset(self):
+        r"""
+        Gets a mass set (NumCosmo internal use)
+        """
         mset = Ncm.MSet.empty_new()
         mset.set(self.cosmo.be_cosmo)
         mset.set(self.hdpm)
@@ -75,7 +78,9 @@ class NumCosmoCLMModeling(CLMModeling):
         return mset
 
     def set_mset(self, mset):
-
+        r"""
+        Sets a mass set (NumCosmo internal use)
+        """
         self.cosmo.set_be_cosmo(mset.get(Nc.HICosmo.id()))
 
         self.hdpm = mset.get(Nc.HaloDensityProfile.id())
@@ -89,30 +94,30 @@ class NumCosmoCLMModeling(CLMModeling):
     def set_mass(self, mdelta):
         self.hdpm.props.log10MDelta = math.log10(mdelta)
 
-    def eval_density(self, r3d, z_cl):
+    def eval_3d_density(self, r3d, z_cl):
 
         f = lambda r3d, z_cl: self.hdpm.eval_density(self.cosmo.be_cosmo, r3d, z_cl)
         return np.vectorize(f)(r3d, z_cl)
 
-    def eval_sigma(self, r_proj, z_cl):
+    def eval_surface_density(self, r_proj, z_cl):
 
         self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
         f = lambda r_proj, z_cl: self.cosmo.smd.sigma(self.hdpm, self.cosmo.be_cosmo, r_proj, z_cl)
         return np.vectorize(f)(r_proj, z_cl)
 
-    def eval_sigma_mean(self, r_proj, z_cl):
+    def eval_mean_surface_density(self, r_proj, z_cl):
 
         self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
         f = lambda r_proj, z_cl: self.cosmo.smd.sigma_mean(self.hdpm, self.cosmo.be_cosmo, r_proj, z_cl)
         return np.vectorize(f)(r_proj, z_cl)
 
-    def eval_sigma_excess(self, r_proj, z_cl):
+    def eval_excess_surface_density(self, r_proj, z_cl):
 
         self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
         f = lambda r_proj, z_cl: self.cosmo.smd.sigma_excess(self.hdpm, self.cosmo.be_cosmo, r_proj, z_cl)
         return np.vectorize(f)(r_proj, z_cl)
 
-    def eval_shear(self, r_proj, z_cl, z_src):
+    def eval_tangential_shear(self, r_proj, z_cl, z_src):
 
         self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
         f = lambda r_proj, z_src, z_cl: self.cosmo.smd.shear(self.hdpm, self.cosmo.be_cosmo, r_proj, z_src, z_cl, z_cl)
@@ -124,7 +129,7 @@ class NumCosmoCLMModeling(CLMModeling):
         f = lambda r_proj, z_src, z_cl: self.cosmo.smd.convergence(self.hdpm, self.cosmo.be_cosmo, r_proj, z_src, z_cl, z_cl)
         return np.vectorize(f)(r_proj, z_src, z_cl)
 
-    def eval_reduced_shear(self, r_proj, z_cl, z_src):
+    def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src):
 
         self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
         if isinstance(r_proj,(list,np.ndarray)) and isinstance(z_src,(list,np.ndarray)) and len(r_proj) == len(z_src):
