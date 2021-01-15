@@ -29,8 +29,12 @@ def test_mock_data():
         mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.30001, ngals=1000, nretry=0)
         # Verify some things
         assert len(w) == 1
-    # Test if option with ngal_density is working
+    # Simple test to check if option with ngal_density is working
+    # A proper test should be implemented
     mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.8, ngals=None, ngal_density=1)
+    # Simple test to check if option with pdz
+    # A proper test should be implemented
+    mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.8, ngals=100, photoz_sigma_unscaled=.1)
     
     def nfw_shear_profile(r, logm, z_src):
         m = 10.**logm
