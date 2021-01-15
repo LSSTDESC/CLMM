@@ -1,6 +1,7 @@
 """Tests for examples/support/mock_data.py"""
 import numpy as np
 from numpy.testing import assert_raises, assert_allclose, assert_equal
+import warnings
 import clmm
 import clmm.dataops as da
 import sys
@@ -19,6 +20,15 @@ def test_mock_data():
     # Basic raise tests
     assert_raises(ValueError, mock.generate_galaxy_catalog, 1e15, 0.3, 4, cosmo, 0.8, ngals=None)
     assert_raises(ValueError, mock.generate_galaxy_catalog, 1e15, 0.3, 4, cosmo, 0.8, ngals=1, ngal_density=1)
+    # Test warning if bad gals
+    with warnings.catch_warnings(record=True) as w:
+        # Cause all warnings to always be triggered.
+        warnings.simplefilter("always")
+        # Trigger a warning.
+        np.random.seed(314)
+        mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.30001, ngals=1000, nretry=0)
+        # Verify some things
+        assert len(w) == 1
     # Test if option with ngal_density is working
     mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.8, ngals=None, ngal_density=1)
     
