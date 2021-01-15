@@ -20,6 +20,7 @@ def test_mock_data():
     # Basic raise tests
     assert_raises(ValueError, mock.generate_galaxy_catalog, 1e15, 0.3, 4, cosmo, 0.8, ngals=None)
     assert_raises(ValueError, mock.generate_galaxy_catalog, 1e15, 0.3, 4, cosmo, 0.8, ngals=1, ngal_density=1)
+    assert_raises(ValueError, mock.generate_galaxy_catalog, 1e15, 0.3, 4, cosmo, 'unknown_src', ngals=10)
     # Test warning if bad gals
     with warnings.catch_warnings(record=True) as w:
         # Cause all warnings to always be triggered.
@@ -35,6 +36,7 @@ def test_mock_data():
     # Simple test to check if option with zsrc=chrang13 is working
     # A proper test should be implemented
     mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 'chang13', ngals=100)
+    mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 'chang13', ngal_density=1)
     # Simple test to check if option with pdz is working
     # A proper test should be implemented
     mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.8, ngals=100, photoz_sigma_unscaled=.1)
