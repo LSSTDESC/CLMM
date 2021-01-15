@@ -43,7 +43,7 @@ def test_mock_data():
     def mass_mock_cluster(mass=15.,guess=15.):
         
         # Set up mock cluster
-        ngals=50000
+        ngals=5000
         data = mock.generate_galaxy_catalog(10**mass, 0.3, 4, cosmo, 0.8, ngals=ngals)
         
         # Check whether the given ngals is the retrieved ngals
