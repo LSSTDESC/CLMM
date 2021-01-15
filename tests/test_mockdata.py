@@ -1,6 +1,6 @@
 """Tests for examples/support/mock_data.py"""
 import numpy as np
-from numpy.testing import assert_allclose, assert_equal
+from numpy.testing import assert_raises, assert_allclose, assert_equal
 import clmm
 import clmm.dataops as da
 import sys
@@ -12,11 +12,15 @@ from clmm import Cosmology
 TOLERANCE = {'rtol': 5.0e-4, 'atol': 1.e-4}
 cosmo = Cosmology(H0 = 70.0, Omega_dm0 = 0.27 - 0.045, Omega_b0 = 0.045, Omega_k0 = 0.0)
 
-
 def test_mock_data():
     """ Run generate_galaxy_catalog 1000 times and assert that retrieved mass is always consistent with input
     """
     
+    # Basic raise tests
+    assert_raises(ValueError, mock.generate_galaxy_catalog, 1e15, 0.3, 4, cosmo, 0.8, ngals=None)
+    assert_raises(ValueError, mock.generate_galaxy_catalog, 1e15, 0.3, 4, cosmo, 0.8, ngals=1, ngal_density=1)
+    # Test if option with ngal_density is working
+    mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.8, ngals=None, ngal_density=1)
     
     def nfw_shear_profile(r, logm, z_src):
         m = 10.**logm
