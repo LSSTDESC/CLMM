@@ -29,25 +29,24 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_
         \sigma_{\rm photo-z}^{\rm unscaled}(1+z^{\rm true}) \right)
 
     We additionally include two columns in the output catalog, `pzbins` and `pzpdf` which
-    desribe the photo-z distribution as a Gaussian centered at :math:`z^{\rm true} with a
+    desribe the photo-z distribution as a Gaussian centered at :math:`z^{\rm true}` with a
     width :math:`\sigma_{\rm photo-z} = \sigma_{\rm photo-z}^{\rm unscaled}(1+z^{\rm true})`
 
     If `photoz_sigma_unscaled` is `None`, the `z` column in the output catalog is the true
     redshift.
 
-    3. Draw galaxy positions. Positions are drawn in a square box around the lens position with
-    a side length of 8 Mpc/h. We then convert to right ascension and declination using the
+    3. Draw galaxy positions. Positions are drawn in a square box around the lens position (with
+    a default side length of 8 Mpc) at the lens redhsift. We then convert to right ascension and declination using the
     cosmology defined in `cosmo`.
 
     4. We predict the reduced tangential shear of each using the radial distances of each source
     from the lens, the source redshifts, and the lens mass, concentration, and redshift. In the
-    given cosmology for an NFW halo.
+    given cosmology for an NFW halo. The reduced tangential shear is then transformed into `g1` and `g2`` 
+    components.
 
-    5. We apply shape noise to the tangential shears. This is described by the parameter
-    `shapenoise`. If this is set to a float, we apply a Gaussian perturbation to the
-    tangential shear with a width of `shapenoise`.
-
-    6. Finally, we compute the two components of the ellipticity, e1 and e2.
+    5. If the `shapenoise=True`, intrinsic ellipticities (1,2) components are drawn from a Gaussian distribution of width of `shapenoise`. 
+    These ellipticities components are then combined with `g1` and `g2` to provide lensed ellipticies `e1` and `e2`. If `shapenoise=False`, 
+    `g1` and `g2` are directly used as ellipticity components.
 
     If the shape noise parameter is high, we may draw nonsensical values for ellipticities. We
     ensure that we does not return any nonsensical values for derived properties. We re-draw
@@ -88,7 +87,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_
         The maximum true redshift of the sources, apllied when galaxy redshifts are drawn from
         a redshift distribution. If photoz errors are included, the observed redshift may be larger than
         zsrc_max.
-    field_size : float
+    field_size : float, optional
         The size of the field (field_size x field_size) to be simulated.
         Proper distance in Mpc  at the cluster redshift.
     shapenoise : float, optional

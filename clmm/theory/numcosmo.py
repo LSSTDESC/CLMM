@@ -68,6 +68,9 @@ class NumCosmoCLMModeling(CLMModeling):
                 self.hdpm.props.log10MDelta = cur_log10_mdelta
 
     def get_mset(self):
+        r"""
+        Gets a mass set (NumCosmo internal use)
+        """
         mset = Ncm.MSet.empty_new()
         mset.set(self.cosmo.be_cosmo)
         mset.set(self.hdpm)
@@ -75,7 +78,9 @@ class NumCosmoCLMModeling(CLMModeling):
         return mset
 
     def set_mset(self, mset):
-
+        r"""
+        Sets a mass set (NumCosmo internal use)
+        """
         self.cosmo.set_be_cosmo(mset.get(Nc.HICosmo.id()))
 
         self.hdpm = mset.get(Nc.HaloDensityProfile.id())
