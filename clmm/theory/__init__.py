@@ -5,18 +5,6 @@ import warnings
 import os
 from clmm.theory import be_setup
 
-#  Preload functions:
-#    Some backends depend on more complicated modules and thus on a preload
-#    function.
-
-
-def __numcosmo_preload():
-    import gi
-    gi.require_version("NumCosmoMath", "1.0")
-    gi.require_version("NumCosmo", "1.0")
-
-
-
 #  Backend check:
 #    Checks all backends and set available to True for those that can be
 #    corretly loaded.

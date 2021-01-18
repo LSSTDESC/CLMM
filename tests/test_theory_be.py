@@ -21,7 +21,9 @@ def test_base(monkeypatch):
     assert_raises(ImportError, importlib.reload, clmm.theory)
     # broken backend
     clmm.theory.be_setup.__backends['notabackend']['available'] = True
-    del clmm.theory.Modeling
+    def nie():
+        raise NotImplementedError
+    clmm.theory.Modeling = nie
     try:
         importlib.reload(clmm.theory)
         module_problem = False
