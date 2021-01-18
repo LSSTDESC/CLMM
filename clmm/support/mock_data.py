@@ -149,7 +149,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_
 
     # Final check to see if there are bad galaxies left
     if nbad > 1:
-        warnings.warn("X Not able to remove {} aphysical objects after {} iterations".format(nbad, nretry))
+        warnings.warn("Not able to remove {} aphysical objects after {} iterations".format(nbad, nretry))
 
     # Now that the catalog is final, add an id column
     galaxy_catalog['id'] = np.arange(ngals)
