@@ -1,7 +1,6 @@
 """
 Tests for datatype and galaxycluster
 """
-import numpy as np
 from numpy.testing import assert_raises, assert_equal
 import clmm
 from clmm import GCData
