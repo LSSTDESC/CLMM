@@ -16,7 +16,7 @@ def test_base(monkeypatch):
     monkeypatch.setenv("CLMM_MODELING_BACKEND", "notabackend")
     clmm.theory.be_setup.__backends = {
               'notabackend': {'name': 'notaname', 'available': False,
-                              'module': 'notamodule',
+                              'module': 'be_setup',
                               'prereqs': ['notaprerq']}}
     assert_raises(ImportError, importlib.reload, clmm.theory)
     # broken backend
@@ -24,12 +24,8 @@ def test_base(monkeypatch):
     def nie():
         raise NotImplementedError
     clmm.theory.Modeling = nie
-    try:
-        importlib.reload(clmm.theory)
-        module_problem = False
-    except:
-        module_problem = True
-    assert(module_problem)
+    importlib.reload(clmm.theory)
+    assert(clmm.theory.func_layer.gcm is None)
     # restore original code that will be monkeypatched here
     clmm.theory.Modeling = Modeling_safe
     clmm.theory.be_setup.__backends = backends_safe

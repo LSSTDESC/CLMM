@@ -2,6 +2,11 @@
 # Modeling backend setups
 __all__ = []
 
+#  Preload functions:
+#    Some backends depend on more complicated modules and thus on a preload
+#    function.
+
+
 def __numcosmo_preload():
     import gi
     gi.require_version("NumCosmoMath", "1.0")
