@@ -1,4 +1,10 @@
 """A collection of scripts that can be used to plot the various quantities that CLMM models."""
+# Set mpl backend run plots on github actions
+import os
+import matplotlib as mpl
+if os.environ.get('DISPLAY','') == '':
+    print('no display found. Using non-interactive Agg backend')
+    mpl.use('Agg')
 import matplotlib.pyplot as plt
 
 
