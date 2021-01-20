@@ -56,7 +56,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'CLMM'
-copyright = '2018-2019, LSST DESC CLMM Contributors'
+copyright = '2018-2021, LSST DESC CLMM Contributors'
 author = 'LSST DESC CLMM Contributors'
 language = 'en'
 
@@ -150,7 +150,7 @@ for demo in [*demofiles, *examplefiles]:
 index_examples_toc = \
 """.. toctree::
    :maxdepth: 1
-   :caption: Examples
+   :caption: Mass Fitting Examples
 
 """
 for example in examplefiles:
@@ -180,8 +180,8 @@ index_api_toc = \
 
 subprocess.run('cp source/index_body.rst index.rst', shell=True)
 with open('index.rst', 'a') as indexfile:
-    indexfile.write(index_examples_toc)
     indexfile.write(index_demo_toc)
+    indexfile.write(index_examples_toc)
     indexfile.write(index_api_toc)
 
 
