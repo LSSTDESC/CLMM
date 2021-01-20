@@ -18,7 +18,7 @@ def compute_sigmac_physical_constant(lightspeed, gnewt, msun, pc_to_m):
 
     Parameters
     ----------
-    lightspeed,: float
+    lightspeed: float
         Lightspeed in km/s
     gnewt: float
         Gravitational constant in m^3/(km s^2)
@@ -236,6 +236,8 @@ def test_profiles(modeling_data):
                     cfg['numcosmo_profiles']['Sigma'], **TOLERANCE)
     assert_allclose(m.eval_excess_surface_density(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl']),
                     cfg['numcosmo_profiles']['DeltaSigma'], **TOLERANCE)
+    if m.backend == 'ct':
+        assert_raises(ValueError, m.eval_excess_surface_density, 1e-12, cfg['SIGMA_PARAMS']['z_cl'])
 
 def test_compute_critical_surface_density(modeling_data):
     """ Validation test for critical surface density """
@@ -244,14 +246,17 @@ def test_compute_critical_surface_density(modeling_data):
                                                     z_cluster=cfg['TEST_CASE']['z_cluster'],
                                                     z_source=cfg['TEST_CASE']['z_source']),
                     cfg['TEST_CASE']['nc_Sigmac'], 1.2e-8)
+    # Check errors for z<0
+    assert_raises(ValueError, theo.compute_critical_surface_density, cfg['cosmo'], z_cluster=-0.2, z_source=0.3)
+    assert_raises(ValueError, theo.compute_critical_surface_density, cfg['cosmo'], z_cluster=0.2, z_source=-0.3)
     # Check behaviour when sources are in front of the lens
     z_cluster = 0.3
     z_source = 0.2
-    assert_allclose(theo.compute_critical_surface_density(cfg['cosmo'],z_cluster=z_cluster, z_source=z_source),
+    assert_allclose(theo.compute_critical_surface_density(cfg['cosmo'], z_cluster=z_cluster, z_source=z_source),
                     np.inf, 1.0e-10)
-    z_source = [0.2,0.12,0.25]
-    assert_allclose(theo.compute_critical_surface_density(cfg['cosmo'],z_cluster=z_cluster, z_source=z_source),
-                    [np.inf,np.inf, np.inf], 1.0e-10)
+    z_source = [0.2, 0.12, 0.25]
+    assert_allclose(theo.compute_critical_surface_density(cfg['cosmo'], z_cluster=z_cluster, z_source=z_source),
+                    [np.inf, np.inf, np.inf], 1.0e-10)
     # Check usage with cluster object function
     z_src = np.array([cfg['TEST_CASE']['z_source']])
     cluster = GalaxyCluster(unique_id='blah', ra=0, dec=0, z=cfg['TEST_CASE']['z_cluster'],
@@ -272,9 +277,9 @@ def test_compute_critical_surface_density(modeling_data):
     z_source = 0.2
     assert_allclose(m.eval_critical_surface_density(z_cluster, z_source),
                 np.inf, 1.0e-10)
-    z_source = [0.2,0.12,0.25]
+    z_source = [0.2, 0.12, 0.25]
     assert_allclose(m.eval_critical_surface_density(z_cluster, z_source),
-                [np.inf,np.inf, np.inf], 1.0e-10)
+                [np.inf, np.inf, np.inf], 1.0e-10)
 
 
 def helper_physics_functions(func):
@@ -309,9 +314,11 @@ def helper_physics_functions(func):
 
     # Test for exception on unsupported z_src_model and halo profiles
     assert_raises(ValueError, func, rproj, mdelta, cdelta, z_cl, z_src, cosmo,
-                  200, 'bleh', 'single_plane')
+        delta_mdef=200, halo_profile_model='blah', massdef='mean', z_src_model='single_plane')
     assert_raises(ValueError, func, rproj, mdelta, cdelta, z_cl, z_src, cosmo,
-                  200, 'nfw', 'bleh')
+        delta_mdef=200, halo_profile_model='nfw', massdef='blah', z_src_model='single_plane')
+    assert_raises(ValueError, func, rproj, mdelta, cdelta, z_cl, z_src, cosmo,
+        delta_mdef=200, halo_profile_model='nfw', massdef='mean', z_src_model='blah')
 
 
 def test_shear_convergence_unittests(modeling_data):
@@ -360,7 +367,7 @@ def test_shear_convergence_unittests(modeling_data):
 
     # Check that shear, reduced shear and convergence return zero and magnification returns one if source is in front of the cluster
     # First, check for a array of radius and single source z
-    r = np.logspace(-2,2,10)
+    r = np.logspace(-2, 2, 10)
     z_cluster = 0.3
     z_source = 0.2
 
@@ -424,7 +431,7 @@ def test_shear_convergence_unittests(modeling_data):
 
     # Check that shear, reduced shear and convergence return zero and magnification returns one if source is in front of the cluster
     # First, check for a array of radius and single source z
-    r = np.logspace(-2,2,10)
+    r = np.logspace(-2, 2, 10)
     z_cluster = 0.3
     z_source = 0.2
 
