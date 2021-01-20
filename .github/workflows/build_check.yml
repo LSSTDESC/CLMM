@@ -38,6 +38,8 @@ jobs:
     - name: Run the unit tests
       run: |
         pytest-3 tests/ --ignore=cluster_toolkit/tests --cov=clmm/
+      env:
+        DISPLAY: test
     - name: Install Sphinx prereq
       run: |
         sudo pip3 install sphinx_rtd_theme -U
