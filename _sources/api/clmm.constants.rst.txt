@@ -1,7 +1,0 @@
-clmm.constants module
-=====================
-
-.. automodule:: clmm.constants
-   :members:
-   :undoc-members:
-   :show-inheritance:

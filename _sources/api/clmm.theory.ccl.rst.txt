@@ -1,7 +1,0 @@
-clmm.theory.ccl module
-======================
-
-.. automodule:: clmm.theory.ccl
-   :members:
-   :undoc-members:
-   :show-inheritance:

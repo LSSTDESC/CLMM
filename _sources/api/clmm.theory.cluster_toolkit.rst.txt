@@ -1,7 +1,0 @@
-clmm.theory.cluster\_toolkit module
-===================================
-
-.. automodule:: clmm.theory.cluster_toolkit
-   :members:
-   :undoc-members:
-   :show-inheritance:

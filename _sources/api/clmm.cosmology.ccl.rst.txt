@@ -1,7 +1,0 @@
-clmm.cosmology.ccl module
-=========================
-
-.. automodule:: clmm.cosmology.ccl
-   :members:
-   :undoc-members:
-   :show-inheritance:

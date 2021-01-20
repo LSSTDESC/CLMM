@@ -1,7 +1,0 @@
-clmm.theory.generic module
-==========================
-
-.. automodule:: clmm.theory.generic
-   :members:
-   :undoc-members:
-   :show-inheritance:

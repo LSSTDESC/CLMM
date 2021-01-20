@@ -1,7 +1,0 @@
-clmm.cosmology.parent\_class module
-===================================
-
-.. automodule:: clmm.cosmology.parent_class
-   :members:
-   :undoc-members:
-   :show-inheritance:

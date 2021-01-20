@@ -1,7 +1,0 @@
-clmm.theory.func\_layer module
-==============================
-
-.. automodule:: clmm.theory.func_layer
-   :members:
-   :undoc-members:
-   :show-inheritance:
