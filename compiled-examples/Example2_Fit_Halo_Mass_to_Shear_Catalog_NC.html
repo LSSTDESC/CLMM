@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Fit halo mass to shear profile using Numcosmo statistical framework &mdash; CLMM 0.9.0 documentation</title>
   
@@ -16,7 +16,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -52,7 +55,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> CLMM
+            <a href="../index.html" class="icon icon-home"> CLMM
           
 
           
@@ -179,6 +182,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -190,7 +195,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="../_sources/compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog_NC.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -288,6 +293,9 @@ need the <code class="docutils literal notranslate"><span class="pre">corner</sp
 <span class="n">clmm</span><span class="o">.</span><span class="n">__version__</span>
 </pre></div>
 </div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;0.9.0&#39;</span>
+</pre></div>
+</div>
 <p>Next, we import <code class="docutils literal notranslate"><span class="pre">clmm</span></code>’s core modules.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">clmm.dataops</span> <span class="k">as</span> <span class="nn">da</span>
 <span class="kn">import</span> <span class="nn">clmm.galaxycluster</span> <span class="k">as</span> <span class="nn">gc</span>
@@ -335,6 +343,9 @@ Chang et al. (2013) redshift distribution. - <code class="docutils literal notr
                                             <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">)</span>
 </pre></div>
 </div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">pbs</span><span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">c</span><span class="o">/</span><span class="n">ccombet</span><span class="o">/.</span><span class="n">conda</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">mydesc</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">0.9</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">py3</span><span class="o">.</span><span class="mf">7.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">theory</span><span class="o">/</span><span class="n">func_layer</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">354</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">Some</span> <span class="n">source</span> <span class="n">redshifts</span> <span class="n">are</span> <span class="n">lower</span> <span class="n">than</span> <span class="n">the</span> <span class="n">cluster</span> <span class="n">redshift</span><span class="o">.</span> <span class="n">kappa</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">those</span> <span class="n">galaxies</span><span class="o">.</span>
+</pre></div>
+</div>
 <p>The galaxy catalogs are converted to a <code class="docutils literal notranslate"><span class="pre">clmm.GalaxyCluster</span></code> object and
 may be saved for later use.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cluster_id</span> <span class="o">=</span> <span class="s2">&quot;CL_ideal&quot;</span>
@@ -362,9 +373,14 @@ may be saved for later use.</p>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The number of source galaxies is :&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cl2</span><span class="o">.</span><span class="n">galcat</span><span class="p">))</span>
 </pre></div>
 </div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Cluster</span> <span class="n">info</span> <span class="o">=</span> <span class="n">ID</span><span class="p">:</span> <span class="n">CL_ideal_z</span> <span class="p">;</span> <span class="n">ra</span><span class="p">:</span> <span class="mf">0.0</span> <span class="p">;</span> <span class="n">dec</span><span class="p">:</span> <span class="mf">0.0</span> <span class="p">;</span> <span class="n">z_l</span> <span class="p">:</span> <span class="mf">0.3</span>
+<span class="n">The</span> <span class="n">number</span> <span class="n">of</span> <span class="n">source</span> <span class="n">galaxies</span> <span class="ow">is</span> <span class="p">:</span> <span class="mi">10000</span>
+</pre></div>
+</div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">h</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">cl2</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
 </pre></div>
 </div>
+<img alt="../_images/Example2_Fit_Halo_Mass_to_Shear_Catalog_NC_22_0.png" src="../_images/Example2_Fit_Halo_Mass_to_Shear_Catalog_NC_22_0.png" />
 </div>
 <div class="section" id="deriving-observables">
 <h2>Deriving observables<a class="headerlink" href="#deriving-observables" title="Permalink to this headline">¶</a></h2>
@@ -397,6 +413,25 @@ galaxy catalog in bins of radius.</p>
 <span class="n">cl1</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">max_width</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">radius_min</span>   <span class="n">radius</span>  <span class="n">radius_max</span>     <span class="n">gt</span>      <span class="n">gt_err</span>      <span class="n">gx</span>       <span class="n">gx_err</span>      <span class="n">z</span>       <span class="n">z_err</span>     <span class="n">n_src</span>
+<span class="o">----------</span> <span class="o">---------</span> <span class="o">----------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">----------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">---------</span>
+ <span class="mf">7.000e-01</span> <span class="mf">7.446e-01</span>  <span class="mf">7.863e-01</span> <span class="mf">4.353e-02</span> <span class="mf">1.310e-04</span>  <span class="mf">1.391e-18</span> <span class="mf">1.143e-18</span> <span class="mf">8.000e-01</span> <span class="mf">2.916e-17</span> <span class="mf">5.800e+01</span>
+ <span class="mf">7.863e-01</span> <span class="mf">8.403e-01</span>  <span class="mf">8.831e-01</span> <span class="mf">3.984e-02</span> <span class="mf">1.099e-04</span> <span class="o">-</span><span class="mf">2.269e-20</span> <span class="mf">7.375e-19</span> <span class="mf">8.000e-01</span> <span class="mf">2.394e-17</span> <span class="mf">8.600e+01</span>
+ <span class="mf">8.831e-01</span> <span class="mf">9.395e-01</span>  <span class="mf">9.920e-01</span> <span class="mf">3.654e-02</span> <span class="mf">1.001e-04</span>  <span class="mf">2.197e-19</span> <span class="mf">9.167e-19</span> <span class="mf">8.000e-01</span> <span class="mf">3.417e-17</span> <span class="mf">9.500e+01</span>
+ <span class="mf">9.920e-01</span> <span class="mf">1.052e+00</span>  <span class="mf">1.114e+00</span> <span class="mf">3.332e-02</span> <span class="mf">8.489e-05</span>  <span class="mf">1.113e-19</span> <span class="mf">4.032e-19</span> <span class="mf">8.000e-01</span> <span class="mf">1.933e-17</span> <span class="mf">1.320e+02</span>
+ <span class="mf">1.114e+00</span> <span class="mf">1.187e+00</span>  <span class="mf">1.251e+00</span> <span class="mf">3.003e-02</span> <span class="mf">7.147e-05</span> <span class="o">-</span><span class="mf">3.455e-20</span> <span class="mf">4.585e-19</span> <span class="mf">8.000e-01</span> <span class="mf">1.807e-17</span> <span class="mf">1.510e+02</span>
+ <span class="mf">1.251e+00</span> <span class="mf">1.331e+00</span>  <span class="mf">1.406e+00</span> <span class="mf">2.708e-02</span> <span class="mf">6.600e-05</span> <span class="o">-</span><span class="mf">1.931e-20</span> <span class="mf">3.446e-19</span> <span class="mf">8.000e-01</span> <span class="mf">1.718e-17</span> <span class="mf">1.670e+02</span>
+ <span class="mf">1.406e+00</span> <span class="mf">1.495e+00</span>  <span class="mf">1.579e+00</span> <span class="mf">2.426e-02</span> <span class="mf">5.243e-05</span>  <span class="mf">4.002e-19</span> <span class="mf">2.969e-19</span> <span class="mf">8.000e-01</span> <span class="mf">0.000e+00</span> <span class="mf">2.350e+02</span>
+ <span class="mf">1.579e+00</span> <span class="mf">1.677e+00</span>  <span class="mf">1.773e+00</span> <span class="mf">2.165e-02</span> <span class="mf">3.908e-05</span> <span class="o">-</span><span class="mf">2.049e-19</span> <span class="mf">2.295e-19</span> <span class="mf">8.000e-01</span> <span class="mf">5.995e-18</span> <span class="mf">3.430e+02</span>
+ <span class="mf">1.773e+00</span> <span class="mf">1.887e+00</span>  <span class="mf">1.992e+00</span> <span class="mf">1.917e-02</span> <span class="mf">3.431e-05</span>  <span class="mf">5.119e-20</span> <span class="mf">1.376e-19</span> <span class="mf">8.000e-01</span> <span class="mf">0.000e+00</span> <span class="mf">4.010e+02</span>
+ <span class="mf">1.992e+00</span> <span class="mf">2.119e+00</span>  <span class="mf">2.237e+00</span> <span class="mf">1.692e-02</span> <span class="mf">2.751e-05</span>  <span class="mf">2.635e-19</span> <span class="mf">1.451e-19</span> <span class="mf">8.000e-01</span> <span class="mf">0.000e+00</span> <span class="mf">4.990e+02</span>
+ <span class="mf">2.237e+00</span> <span class="mf">2.377e+00</span>  <span class="mf">2.513e+00</span> <span class="mf">1.489e-02</span> <span class="mf">2.158e-05</span>  <span class="mf">5.151e-20</span> <span class="mf">8.294e-20</span> <span class="mf">8.000e-01</span> <span class="mf">8.623e-18</span> <span class="mf">6.630e+02</span>
+ <span class="mf">2.513e+00</span> <span class="mf">2.672e+00</span>  <span class="mf">2.823e+00</span> <span class="mf">1.301e-02</span> <span class="mf">1.844e-05</span>  <span class="mf">1.509e-19</span> <span class="mf">8.135e-20</span> <span class="mf">8.000e-01</span> <span class="mf">0.000e+00</span> <span class="mf">7.800e+02</span>
+ <span class="mf">2.823e+00</span> <span class="mf">2.999e+00</span>  <span class="mf">3.171e+00</span> <span class="mf">1.135e-02</span> <span class="mf">1.421e-05</span>  <span class="mf">1.192e-19</span> <span class="mf">6.120e-20</span> <span class="mf">8.000e-01</span> <span class="mf">0.000e+00</span> <span class="mf">1.042e+03</span>
+ <span class="mf">3.171e+00</span> <span class="mf">3.369e+00</span>  <span class="mf">3.561e+00</span> <span class="mf">9.842e-03</span> <span class="mf">1.130e-05</span> <span class="o">-</span><span class="mf">2.608e-20</span> <span class="mf">4.726e-20</span> <span class="mf">8.000e-01</span> <span class="mf">3.078e-18</span> <span class="mf">1.301e+03</span>
+ <span class="mf">3.561e+00</span> <span class="mf">3.781e+00</span>  <span class="mf">4.000e+00</span> <span class="mf">8.509e-03</span> <span class="mf">8.960e-06</span> <span class="o">-</span><span class="mf">2.067e-21</span> <span class="mf">3.173e-20</span> <span class="mf">8.000e-01</span> <span class="mf">2.738e-18</span> <span class="mf">1.644e+03</span>
+</pre></div>
+</div>
 <p>We visualize the radially binned shear for the 3 configurations</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 
@@ -414,6 +449,10 @@ galaxy catalog in bins of radius.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 </pre></div>
 </div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x7f6e97ec4490</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<img alt="../_images/Example2_Fit_Halo_Mass_to_Shear_Catalog_NC_34_1.png" src="../_images/Example2_Fit_Halo_Mass_to_Shear_Catalog_NC_34_1.png" />
 </div>
 <div class="section" id="fitting-a-halo-mass-highlighting-bias-when-not-accounting-for-the-source-redshift-distribution-in-the-model">
 <h3>Fitting a halo mass - highlighting bias when not accounting for the source redshift distribution in the model<a class="headerlink" href="#fitting-a-halo-mass-highlighting-bias-when-not-accounting-for-the-source-redshift-distribution-in-the-model" title="Permalink to this headline">¶</a></h3>
@@ -496,6 +535,9 @@ include/exclude the parameter from the analysis.</p>
         <span class="k">return</span>
 
 <span class="n">GObject</span><span class="o">.</span><span class="n">type_register</span> <span class="p">(</span><span class="n">GaussGammaTErr</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">NcContext</span><span class="o">.</span><span class="n">GaussGammaTErr</span>
 </pre></div>
 </div>
 <p>Defining the model set (NcmMset), data set (NcmDataset) and
@@ -870,28 +912,25 @@ correct model best-fit) and much larger variance.</p>
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
+        &#169; Copyright 2018-2021, LSST DESC CLMM Contributors.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

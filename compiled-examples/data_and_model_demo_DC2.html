@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Basic usage of the cosmoDC2 extragalactic catalog with CLMM &mdash; CLMM 0.9.0 documentation</title>
   
@@ -16,7 +16,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -52,7 +55,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> CLMM
+            <a href="../index.html" class="icon icon-home"> CLMM
           
 
           
@@ -179,6 +182,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -190,7 +195,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="../_sources/compiled-examples/data_and_model_demo_DC2.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -224,6 +229,9 @@ those.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clmm</span><span class="o">.</span><span class="n">__version__</span>
 </pre></div>
 </div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;0.9.0&#39;</span>
+</pre></div>
+</div>
 <div class="section" id="prepare-a-clmm-galaxycluster-object-from-cosmodc2">
 <h2>1. Prepare a CLMM GalaxyCluster object from cosmoDC2<a class="headerlink" href="#prepare-a-clmm-galaxycluster-object-from-cosmodc2" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="read-in-the-extragalactic-catalog-cosmodc2">
@@ -235,6 +243,9 @@ those.</p>
 <span class="n">dc2_cosmo</span> <span class="o">=</span> <span class="n">extragalactic_cat</span><span class="o">.</span><span class="n">cosmology</span>
 <span class="n">cosmo</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">Cosmology</span><span class="p">(</span><span class="n">H0</span> <span class="o">=</span> <span class="n">dc2_cosmo</span><span class="o">.</span><span class="n">H0</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">Omega_dm0</span> <span class="o">=</span> <span class="n">dc2_cosmo</span><span class="o">.</span><span class="n">Om0</span><span class="o">-</span><span class="n">dc2_cosmo</span><span class="o">.</span><span class="n">Ob0</span><span class="p">,</span> <span class="n">Omega_b0</span> <span class="o">=</span> <span class="n">dc2_cosmo</span><span class="o">.</span><span class="n">Ob0</span><span class="p">)</span>
 <span class="n">cosmo</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">clmm</span><span class="o">.</span><span class="n">cosmology</span><span class="o">.</span><span class="n">cluster_toolkit</span><span class="o">.</span><span class="n">AstroPyCosmology</span> <span class="n">at</span> <span class="mh">0x7f302a93f890</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 </div>
@@ -250,6 +261,9 @@ those.</p>
                                                           <span class="sa">f</span><span class="s1">&#39;redshift&gt;</span><span class="si">{</span><span class="n">zmin</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;redshift&lt;</span><span class="si">{</span><span class="n">zmax</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">])</span>
 <span class="n">N_cl</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">massive_halos</span><span class="p">[</span><span class="s1">&#39;halo_mass&#39;</span><span class="p">])</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;There are </span><span class="si">{</span><span class="n">N_cl</span><span class="si">}</span><span class="s1"> clusters in this mass and redshift range&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">There</span> <span class="n">are</span> <span class="mi">4</span> <span class="n">clusters</span> <span class="ow">in</span> <span class="n">this</span> <span class="n">mass</span> <span class="ow">and</span> <span class="n">redshift</span> <span class="nb">range</span>
 </pre></div>
 </div>
 </div>
@@ -270,6 +284,11 @@ M<span class="math notranslate nohighlight">\(_{\odot}\; h^{-1}\)</span>.</p>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;halo_mass:      </span><span class="si">{</span><span class="n">massive_halos</span><span class="p">[</span><span class="s1">&#39;halo_mass&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">hostHaloMass</span><span class="p">:</span>   <span class="p">[</span><span class="mf">4.11498904e+14</span> <span class="mf">4.51343114e+14</span> <span class="mf">4.28283670e+14</span> <span class="mf">3.59993019e+14</span><span class="p">]</span>
+<span class="n">hostHaloMass</span><span class="o">/</span><span class="n">h</span><span class="p">:</span> <span class="p">[</span><span class="mf">5.79575921e+14</span> <span class="mf">6.35694527e+14</span> <span class="mf">6.03216436e+14</span> <span class="mf">5.07032421e+14</span><span class="p">]</span>
+<span class="n">halo_mass</span><span class="p">:</span>      <span class="p">[</span><span class="mf">5.79575921e+14</span> <span class="mf">6.35694527e+14</span> <span class="mf">6.03216436e+14</span> <span class="mf">5.07032421e+14</span><span class="p">]</span>
+</pre></div>
+</div>
 <p>Below, we use <code class="docutils literal notranslate"><span class="pre">halo_mass</span></code>.</p>
 </div>
 <div class="section" id="select-the-most-massive-one">
@@ -285,6 +304,9 @@ M<span class="math notranslate nohighlight">\(_{\odot}\; h^{-1}\)</span>.</p>
 <span class="n">id_cl</span> <span class="o">=</span> <span class="n">massive_halos</span><span class="p">[</span><span class="s1">&#39;halo_id&#39;</span><span class="p">][</span><span class="n">select</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 
 <span class="nb">print</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The most massive cluster is halo </span><span class="si">{</span><span class="n">id_cl</span><span class="si">}</span><span class="s1"> in ra = </span><span class="si">{</span><span class="n">ra_cl</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> deg, dec = </span><span class="si">{</span><span class="n">dec_cl</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> deg, z = </span><span class="si">{</span><span class="n">z_cl</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">, with mass = </span><span class="si">{</span><span class="n">mass_cl</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1"> Msun&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">The</span> <span class="n">most</span> <span class="n">massive</span> <span class="n">cluster</span> <span class="ow">is</span> <span class="n">halo</span> <span class="mi">95600097373</span> <span class="ow">in</span> <span class="n">ra</span> <span class="o">=</span> <span class="mf">64.26</span> <span class="n">deg</span><span class="p">,</span> <span class="n">dec</span> <span class="o">=</span> <span class="o">-</span><span class="mf">34.47</span> <span class="n">deg</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="mf">0.32</span><span class="p">,</span> <span class="k">with</span> <span class="n">mass</span> <span class="o">=</span> <span class="mf">6.36e+14</span> <span class="n">Msun</span>
 </pre></div>
 </div>
 </div>
@@ -344,6 +366,13 @@ used to instantiate a CLMM GalaxyCluster object.</p></li>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Count&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Number</span> <span class="n">of</span> <span class="n">galaxies</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">catalog</span><span class="p">:</span> <span class="n">Ngal</span> <span class="o">=</span> <span class="mi">36403</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Text</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;Count&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../_images/data_and_model_demo_DC2_19_2.png" src="../_images/data_and_model_demo_DC2_19_2.png" />
 </div>
 </div>
 <div class="section" id="use-clmm-to-compute-the-reduced-tangential-shear-profile">
@@ -354,7 +383,26 @@ used to instantiate a CLMM GalaxyCluster object.</p></li>
 available options of the functions below.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bin_edges</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">dataops</span><span class="o">.</span><span class="n">make_bins</span><span class="p">(</span><span class="mf">0.15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;evenlog10width&#39;</span><span class="p">)</span> <span class="c1"># in Mpc</span>
 <span class="n">cl</span><span class="o">.</span><span class="n">compute_tangential_and_cross_components</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;flat&quot;</span><span class="p">)</span>
-<span class="n">cl</span><span class="o">.</span><span class="n">make_radial_profile</span><span class="p">(</span><span class="s2">&quot;Mpc&quot;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bin_edges</span><span class="p">,</span><span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">include_empty_bins</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gal_ids_in_bins</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">profile</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">make_radial_profile</span><span class="p">(</span><span class="s2">&quot;Mpc&quot;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bin_edges</span><span class="p">,</span><span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">include_empty_bins</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gal_ids_in_bins</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">profile</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">max_width</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>     <span class="n">radius_min</span>            <span class="n">radius</span>            <span class="n">radius_max</span>               <span class="n">gt</span>                  <span class="n">gt_err</span>                    <span class="n">gx</span>                   <span class="n">gx_err</span>                 <span class="n">z</span>                  <span class="n">z_err</span>         <span class="n">n_src</span>
+<span class="o">-------------------</span> <span class="o">-------------------</span> <span class="o">-------------------</span> <span class="o">---------------------</span> <span class="o">----------------------</span> <span class="o">-----------------------</span> <span class="o">----------------------</span> <span class="o">------------------</span> <span class="o">---------------------</span> <span class="o">-----</span>
+               <span class="mf">0.15</span> <span class="mf">0.17636942351321439</span> <span class="mf">0.19846556968648293</span>   <span class="mf">0.02037417866393367</span>  <span class="mf">0.0035284277510696086</span>    <span class="mf">0.006753624804594845</span>   <span class="mf">0.003687532406500275</span>  <span class="mf">0.971778890840735</span>   <span class="mf">0.05041615834029067</span>    <span class="mi">34</span>
+<span class="mf">0.19846556968648293</span> <span class="mf">0.23218089353404303</span> <span class="mf">0.26259054900653483</span>   <span class="mf">0.02679741876302726</span>  <span class="mf">0.0027189139082722186</span>   <span class="mf">0.0007119377886252487</span>  <span class="mf">0.0023036485227813878</span>  <span class="mf">1.020568689467205</span>  <span class="mf">0.058193913495320986</span>    <span class="mi">53</span>
+<span class="mf">0.26259054900653483</span>  <span class="mf">0.3059704420440446</span>  <span class="mf">0.3474345526857884</span>  <span class="mf">0.041066700638701485</span>  <span class="mf">0.0019084106346784952</span>   <span class="mf">0.0016804474260400152</span>  <span class="mf">0.0014455222242051205</span> <span class="mf">1.0265077465792039</span>   <span class="mf">0.04849007345410995</span>    <span class="mi">82</span>
+ <span class="mf">0.3474345526857884</span>  <span class="mf">0.4072589534929289</span> <span class="mf">0.45969197618368907</span>   <span class="mf">0.04650956621608166</span>  <span class="mf">0.0011971729597659692</span>   <span class="mf">0.0009971665591332357</span>  <span class="mf">0.0007991042517062868</span> <span class="mf">1.0393406936116252</span>   <span class="mf">0.03719695065774041</span>   <span class="mi">130</span>
+<span class="mf">0.45969197618368907</span>  <span class="mf">0.5396605648750517</span>    <span class="mf">0.60822019955734</span>  <span class="mf">0.049171216690907904</span>  <span class="mf">0.0006989442328396026</span>  <span class="mf">0.00015119088451375306</span>  <span class="mf">0.0003589668969936726</span> <span class="mf">0.9758493108139988</span>  <span class="mf">0.023369400483367962</span>   <span class="mi">261</span>
+   <span class="mf">0.60822019955734</span>  <span class="mf">0.7076302276523957</span>  <span class="mf">0.8047384559998256</span>   <span class="mf">0.03782777299821912</span>  <span class="mf">0.0004936163860593951</span>  <span class="mf">0.00022641596737203016</span> <span class="mf">0.00037354499832125955</span> <span class="mf">0.9192423022575893</span>   <span class="mf">0.01632509783150775</span>   <span class="mi">464</span>
+ <span class="mf">0.8047384559998256</span>  <span class="mf">0.9424747432620386</span>  <span class="mf">1.0647525074575073</span>   <span class="mf">0.02515375248528569</span>  <span class="mf">0.0003594902655390658</span> <span class="o">-</span><span class="mf">0.00017164485861469967</span>  <span class="mf">0.0003212987611452593</span> <span class="mf">0.9769176552238986</span>  <span class="mf">0.014443458340591367</span>   <span class="mi">730</span>
+ <span class="mf">1.0647525074575073</span>  <span class="mf">1.2470483876853413</span>  <span class="mf">1.4087780864511024</span>   <span class="mf">0.02463116395646268</span>  <span class="mf">0.0002893234018049065</span>   <span class="mf">0.0006363728882482774</span> <span class="mf">0.00028139378807150476</span> <span class="mf">0.9826323955808695</span>  <span class="mf">0.010498800725560982</span>  <span class="mi">1194</span>
+ <span class="mf">1.4087780864511024</span>  <span class="mf">1.6514264711112452</span>  <span class="mf">1.8639596365956759</span>  <span class="mf">0.014253470998703497</span> <span class="mf">0.00028271094659568864</span>   <span class="mf">0.0008274010881759553</span>  <span class="mf">0.0003006187514405246</span> <span class="mf">0.9901527835609454</span>  <span class="mf">0.008637894700042961</span>  <span class="mi">2076</span>
+ <span class="mf">1.8639596365956759</span>  <span class="mf">2.1822210761522407</span>    <span class="mf">2.46621207433047</span>  <span class="mf">0.008628420140502508</span> <span class="mf">0.00023756635906010436</span>  <span class="mf">0.00019895276766396553</span> <span class="mf">0.00020004388211464276</span>  <span class="mf">1.007896876117697</span>     <span class="mf">0.006940609004742</span>  <span class="mi">3479</span>
+   <span class="mf">2.46621207433047</span>   <span class="mf">2.882309069446668</span>   <span class="mf">3.263054561997864</span>  <span class="mf">0.012365497276165687</span>  <span class="mf">0.0001645113422592457</span>  <span class="mf">0.00029444375202460055</span> <span class="mf">0.00014773664641759505</span> <span class="mf">0.9946389967286835</span>   <span class="mf">0.00494113559622797</span>  <span class="mi">6188</span>
+  <span class="mf">3.263054561997864</span>  <span class="mf">3.8082066394891894</span>   <span class="mf">4.317359883766556</span>  <span class="mf">0.009314295931979242</span>  <span class="mf">9.767093549814181e-05</span>  <span class="o">-</span><span class="mf">0.0005616934167879528</span> <span class="mf">0.00011970052009903858</span> <span class="mf">0.9922200832905932</span> <span class="mf">0.0036853682845281502</span> <span class="mi">10849</span>
+  <span class="mf">4.317359883766556</span>   <span class="mf">4.870379641763282</span>  <span class="mf">5.7123152591553135</span>  <span class="mf">0.004856151087230271</span> <span class="mf">0.00010748824629726481</span>   <span class="o">-</span><span class="mf">0.001094113267983147</span>  <span class="mf">0.0001152492377082557</span> <span class="mf">0.9845351614502101</span> <span class="mf">0.0038856989848474258</span>  <span class="mi">9755</span>
+ <span class="mf">5.7123152591553135</span>   <span class="mf">5.960000520868773</span>   <span class="mf">7.557986014246993</span> <span class="mf">0.0015568135977910237</span> <span class="mf">0.00032133518711172164</span>   <span class="o">-</span><span class="mf">0.003681832431586525</span>  <span class="mf">0.0002807912665247582</span> <span class="mf">1.0026333220591057</span>  <span class="mf">0.012217109891328161</span>  <span class="mi">1052</span>
 </pre></div>
 </div>
 </div>
@@ -393,6 +441,8 @@ corresponds to the standard error of the mean in the bin
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Reduced shear $\langle g_t\rangle$&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+<pre class="literal-block">Text(0, 0.5, 'Reduced shear $\langle g_t\rangle$')</pre>
+<img alt="../_images/data_and_model_demo_DC2_25_1.png" src="../_images/data_and_model_demo_DC2_25_1.png" />
 <p>Data and model are in rough agreement at large radii. In the inner
 region, the lack of resolution of the DC2 simulations yield an
 unphysical attenuation of the signal. This was remarked upon in the
@@ -406,28 +456,25 @@ galaxy-galaxy lensing.</p>
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
+        &#169; Copyright 2018-2021, LSST DESC CLMM Contributors.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
