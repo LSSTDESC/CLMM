@@ -1,0 +1,7 @@
+clmm.support.sampler module
+===========================
+
+.. automodule:: clmm.support.sampler
+   :members:
+   :undoc-members:
+   :show-inheritance:

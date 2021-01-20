@@ -1,0 +1,7 @@
+clmm.theory.numcosmo module
+===========================
+
+.. automodule:: clmm.theory.numcosmo
+   :members:
+   :undoc-members:
+   :show-inheritance:

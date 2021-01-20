@@ -1,0 +1,7 @@
+clmm.galaxycluster module
+=========================
+
+.. automodule:: clmm.galaxycluster
+   :members:
+   :undoc-members:
+   :show-inheritance:

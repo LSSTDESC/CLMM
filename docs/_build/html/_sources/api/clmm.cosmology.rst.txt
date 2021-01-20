@@ -1,0 +1,18 @@
+clmm.cosmology package
+======================
+
+.. automodule:: clmm.cosmology
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   clmm.cosmology.ccl
+   clmm.cosmology.cluster_toolkit
+   clmm.cosmology.numcosmo
+   clmm.cosmology.parent_class

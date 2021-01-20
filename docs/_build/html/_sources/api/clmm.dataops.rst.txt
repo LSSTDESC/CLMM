@@ -1,0 +1,7 @@
+clmm.dataops package
+====================
+
+.. automodule:: clmm.dataops
+   :members:
+   :undoc-members:
+   :show-inheritance:

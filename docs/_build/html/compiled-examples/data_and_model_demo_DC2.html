@@ -1,0 +1,451 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Basic usage of the cosmoDC2 extragalactic catalog with CLMM &mdash; CLMM 0.9.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Fit halo mass to shear profile: 1. ideal data" href="Example1_Fit_Halo_Mass_to_Shear_Catalog.html" />
+    <link rel="prev" title="Model a Galaxy Cluster" href="demo_theory_functionality.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> CLMM
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.9.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../source/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../source/citing.html">Citing CLMM</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Usage Demos</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="demo_generate_mock_cluster.html">Generate Mock Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_dataops_functionality.html">Measure a Profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Mass Fitting Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example2_Fit_Halo_Mass_to_Shear_Catalog_NC.html">Fit halo mass to shear profile using Numcosmo statistical framework</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.constants.html">clmm.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.cosmology.html">clmm.cosmology package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.cosmology.ccl.html">clmm.cosmology.ccl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.cosmology.cluster_toolkit.html">clmm.cosmology.cluster_toolkit module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.cosmology.numcosmo.html">clmm.cosmology.numcosmo module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.cosmology.parent_class.html">clmm.cosmology.parent_class module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.dataops.html">clmm.dataops package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.gcdata.html">clmm.gcdata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.theory.html">clmm.theory package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.be_setup.html">clmm.theory.be_setup module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.ccl.html">clmm.theory.ccl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.cluster_toolkit.html">clmm.theory.cluster_toolkit module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.func_layer.html">clmm.theory.func_layer module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.generic.html">clmm.theory.generic module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.numcosmo.html">clmm.theory.numcosmo module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.parent_class.html">clmm.theory.parent_class module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.plotting.html">clmm.plotting package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.utils.html">clmm.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.support.html">clmm.support package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.support.mock_data.html">clmm.support.mock_data module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.support.sampler.html">clmm.support.sampler module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CLMM</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Basic usage of the cosmoDC2 extragalactic catalog with CLMM</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/compiled-examples/data_and_model_demo_DC2.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="basic-usage-of-the-cosmodc2-extragalactic-catalog-with-clmm">
+<h1>Basic usage of the cosmoDC2 extragalactic catalog with CLMM<a class="headerlink" href="#basic-usage-of-the-cosmodc2-extragalactic-catalog-with-clmm" title="Permalink to this headline">¶</a></h1>
+<p>This notebook can be run at NERSC or CC-IN2P3 where the DESC DC2
+products are stored. You need to be a DESC member to be able to access
+those.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">astropy.table</span> <span class="kn">import</span> <span class="n">Table</span>
+<span class="kn">import</span> <span class="nn">GCRCatalogs</span>
+<span class="k">try</span><span class="p">:</span> <span class="kn">import</span> <span class="nn">clmm</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">notebook_install</span>
+    <span class="n">notebook_install</span><span class="o">.</span><span class="n">install_clmm_pipeline</span><span class="p">(</span><span class="n">upgrade</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="kn">import</span> <span class="nn">clmm</span>
+</pre></div>
+</div>
+<p>Check what version we’re using</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clmm</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+</div>
+<div class="section" id="prepare-a-clmm-galaxycluster-object-from-cosmodc2">
+<h2>1. Prepare a CLMM GalaxyCluster object from cosmoDC2<a class="headerlink" href="#prepare-a-clmm-galaxycluster-object-from-cosmodc2" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="read-in-the-extragalactic-catalog-cosmodc2">
+<h3>Read in the extragalactic catalog cosmoDC2<a class="headerlink" href="#read-in-the-extragalactic-catalog-cosmodc2" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">extragalactic_cat</span> <span class="o">=</span> <span class="n">GCRCatalogs</span><span class="o">.</span><span class="n">load_catalog</span><span class="p">(</span><span class="s1">&#39;cosmoDC2_v1.1.4_small&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Make a CLMM cosmology object from the DC2 cosmology</span>
+<span class="n">dc2_cosmo</span> <span class="o">=</span> <span class="n">extragalactic_cat</span><span class="o">.</span><span class="n">cosmology</span>
+<span class="n">cosmo</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">Cosmology</span><span class="p">(</span><span class="n">H0</span> <span class="o">=</span> <span class="n">dc2_cosmo</span><span class="o">.</span><span class="n">H0</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">Omega_dm0</span> <span class="o">=</span> <span class="n">dc2_cosmo</span><span class="o">.</span><span class="n">Om0</span><span class="o">-</span><span class="n">dc2_cosmo</span><span class="o">.</span><span class="n">Ob0</span><span class="p">,</span> <span class="n">Omega_b0</span> <span class="o">=</span> <span class="n">dc2_cosmo</span><span class="o">.</span><span class="n">Ob0</span><span class="p">)</span>
+<span class="n">cosmo</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="get-the-list-of-halos-with-m-mmin-in-the-redshift-range-zmin-zmax">
+<h3>Get the list of halos with <code class="docutils literal notranslate"><span class="pre">M</span> <span class="pre">&gt;</span> <span class="pre">mmin</span></code> in the redshift range <code class="docutils literal notranslate"><span class="pre">[zmin,</span> <span class="pre">zmax]</span></code><a class="headerlink" href="#get-the-list-of-halos-with-m-mmin-in-the-redshift-range-zmin-zmax" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># get list of massive halos in a given redshift and mass range</span>
+<span class="n">mmin</span> <span class="o">=</span> <span class="mf">5.e14</span> <span class="c1"># Msun</span>
+<span class="n">zmin</span> <span class="o">=</span> <span class="mf">0.3</span>
+<span class="n">zmax</span> <span class="o">=</span> <span class="mf">0.4</span>
+
+<span class="n">massive_halos</span> <span class="o">=</span> <span class="n">extragalactic_cat</span><span class="o">.</span><span class="n">get_quantities</span><span class="p">([</span><span class="s1">&#39;halo_mass&#39;</span><span class="p">,</span><span class="s1">&#39;hostHaloMass&#39;</span><span class="p">,</span><span class="s1">&#39;redshift&#39;</span><span class="p">,</span><span class="s1">&#39;ra&#39;</span><span class="p">,</span> <span class="s1">&#39;dec&#39;</span><span class="p">,</span> <span class="s1">&#39;halo_id&#39;</span><span class="p">],</span>
+                                                 <span class="n">filters</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;halo_mass &gt; </span><span class="si">{</span><span class="n">mmin</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;is_central==True&#39;</span><span class="p">,</span>
+                                                          <span class="sa">f</span><span class="s1">&#39;redshift&gt;</span><span class="si">{</span><span class="n">zmin</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;redshift&lt;</span><span class="si">{</span><span class="n">zmax</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">])</span>
+<span class="n">N_cl</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">massive_halos</span><span class="p">[</span><span class="s1">&#39;halo_mass&#39;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;There are </span><span class="si">{</span><span class="n">N_cl</span><span class="si">}</span><span class="s1"> clusters in this mass and redshift range&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="check-the-units-of-halo-masses-in-the-catalog">
+<h3>Check the units of halo masses in the catalog<a class="headerlink" href="#check-the-units-of-halo-masses-in-the-catalog" title="Permalink to this headline">¶</a></h3>
+<p>We have filtered the catalog using the <code class="docutils literal notranslate"><span class="pre">halo_mass</span></code> field. There are
+two related fields in the catalog: <code class="docutils literal notranslate"><span class="pre">halo_mass</span></code> and <code class="docutils literal notranslate"><span class="pre">hostHaloMass</span></code>.
+In the <a class="reference external" href="https://arxiv.org/abs/1907.06530">cosmoDC2 preprint</a>, Table 2
+in appendix B mentions the halo mass to be in units of
+M<span class="math notranslate nohighlight">\(_{\odot}\; h^{-1}\)</span>. However, the <a class="reference external" href="https://github.com/LSSTDESC/gcr-catalogs/blob/master/GCRCatalogs/SCHEMA.md">SCHEMA
+cosmoDC2</a>
+mentions M<span class="math notranslate nohighlight">\(_{\odot}\)</span> for <code class="docutils literal notranslate"><span class="pre">halo_mass</span></code>. Below, we see that
+<code class="docutils literal notranslate"><span class="pre">halo_mass</span></code> equals <code class="docutils literal notranslate"><span class="pre">hostHaloMass</span></code>/h. So<code class="docutils literal notranslate"><span class="pre">halo_mass</span></code> is indeed in
+units of M<span class="math notranslate nohighlight">\(_{\odot}\)</span>, while <code class="docutils literal notranslate"><span class="pre">hostHaloMass</span></code> is in
+M<span class="math notranslate nohighlight">\(_{\odot}\; h^{-1}\)</span>.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;hostHaloMass:   </span><span class="si">{</span><span class="n">massive_halos</span><span class="p">[</span><span class="s1">&#39;hostHaloMass&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;hostHaloMass/h: </span><span class="si">{</span><span class="n">massive_halos</span><span class="p">[</span><span class="s1">&#39;hostHaloMass&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">cosmo</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;halo_mass:      </span><span class="si">{</span><span class="n">massive_halos</span><span class="p">[</span><span class="s1">&#39;halo_mass&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Below, we use <code class="docutils literal notranslate"><span class="pre">halo_mass</span></code>.</p>
+</div>
+<div class="section" id="select-the-most-massive-one">
+<h3>Select the most massive one<a class="headerlink" href="#select-the-most-massive-one" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Selecting the most massive one</span>
+
+<span class="n">select</span> <span class="o">=</span> <span class="n">massive_halos</span><span class="p">[</span><span class="s1">&#39;halo_mass&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">massive_halos</span><span class="p">[</span><span class="s1">&#39;halo_mass&#39;</span><span class="p">])</span>
+
+<span class="n">ra_cl</span> <span class="o">=</span> <span class="n">massive_halos</span><span class="p">[</span><span class="s1">&#39;ra&#39;</span><span class="p">][</span><span class="n">select</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">dec_cl</span> <span class="o">=</span> <span class="n">massive_halos</span><span class="p">[</span><span class="s1">&#39;dec&#39;</span><span class="p">][</span><span class="n">select</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">z_cl</span> <span class="o">=</span> <span class="n">massive_halos</span><span class="p">[</span><span class="s1">&#39;redshift&#39;</span><span class="p">][</span><span class="n">select</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">mass_cl</span> <span class="o">=</span><span class="n">massive_halos</span><span class="p">[</span><span class="s1">&#39;halo_mass&#39;</span><span class="p">][</span><span class="n">select</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">id_cl</span> <span class="o">=</span> <span class="n">massive_halos</span><span class="p">[</span><span class="s1">&#39;halo_id&#39;</span><span class="p">][</span><span class="n">select</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="nb">print</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The most massive cluster is halo </span><span class="si">{</span><span class="n">id_cl</span><span class="si">}</span><span class="s1"> in ra = </span><span class="si">{</span><span class="n">ra_cl</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> deg, dec = </span><span class="si">{</span><span class="n">dec_cl</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> deg, z = </span><span class="si">{</span><span class="n">z_cl</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">, with mass = </span><span class="si">{</span><span class="n">mass_cl</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1"> Msun&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="apply-coordinates-redshift-and-magnitude-cuts-to-select-backgroud-galaxies-around-the-cluster">
+<h3>Apply coordinates, redshift and magnitude cuts to select backgroud galaxies around the cluster<a class="headerlink" href="#apply-coordinates-redshift-and-magnitude-cuts-to-select-backgroud-galaxies-around-the-cluster" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Box of 0.6 deg around the cluster center</p></li>
+<li><p>Galaxies with z &gt; z_cluster + 0.1</p></li>
+<li><p>Galaxies with mag_i &lt; 25</p></li>
+</ul>
+<p>Here, we’re directly gathering the shear components <span class="math notranslate nohighlight">\(\gamma_{1,2}\)</span>
+and the convergence <span class="math notranslate nohighlight">\(\kappa\)</span> from the cosmoDC2 catalog. See the
+<code class="docutils literal notranslate"><span class="pre">DC2_gt_profiles</span></code> notebook to see how to also use the intrinsic
+ellipticities of the galaxies to compute observed ellipticities
+including intrinsic and shear components.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ra_min</span><span class="p">,</span> <span class="n">ra_max</span> <span class="o">=</span> <span class="n">ra_cl</span> <span class="o">-</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">ra_cl</span> <span class="o">+</span> <span class="mf">0.3</span>
+<span class="n">dec_min</span><span class="p">,</span> <span class="n">dec_max</span> <span class="o">=</span> <span class="n">dec_cl</span> <span class="o">-</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">dec_cl</span> <span class="o">+</span> <span class="mf">0.3</span>
+<span class="n">z_min</span> <span class="o">=</span> <span class="n">z_cl</span> <span class="o">+</span> <span class="mf">0.1</span>
+<span class="n">mag_i_max</span> <span class="o">=</span> <span class="mi">25</span>
+
+<span class="n">coord_filters</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ra &gt;= </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ra_min</span><span class="p">),</span><span class="s1">&#39;ra &lt; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ra_max</span><span class="p">),</span><span class="s1">&#39;dec &gt;= </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dec_min</span><span class="p">),</span><span class="s1">&#39;dec &lt; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dec_max</span><span class="p">)]</span>
+<span class="n">z_filters</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;redshift &gt;= </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">z_min</span><span class="p">)]</span>
+<span class="n">mag_filters</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mag_i &lt; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mag_i_max</span><span class="p">)]</span>
+<span class="n">gal_cat</span> <span class="o">=</span> <span class="n">extragalactic_cat</span><span class="o">.</span><span class="n">get_quantities</span><span class="p">([</span><span class="s1">&#39;galaxy_id&#39;</span><span class="p">,</span> <span class="s1">&#39;ra&#39;</span><span class="p">,</span> <span class="s1">&#39;dec&#39;</span><span class="p">,</span>
+                                            <span class="s1">&#39;shear_1&#39;</span><span class="p">,</span> <span class="s1">&#39;shear_2&#39;</span><span class="p">,</span>
+                                            <span class="s1">&#39;redshift&#39;</span><span class="p">,</span> <span class="s1">&#39;convergence&#39;</span><span class="p">],</span>
+                                           <span class="n">filters</span><span class="o">=</span><span class="p">(</span><span class="n">coord_filters</span> <span class="o">+</span> <span class="n">z_filters</span> <span class="o">+</span> <span class="n">mag_filters</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="to-compute-a-reduced-tangential-shear-profile-using-clmm-we-first-need-to-transform-the-shear-into-ellipticities">
+<h3>To compute a reduced tangential shear profile using CLMM, we first need to transform the shear into ellipticities.<a class="headerlink" href="#to-compute-a-reduced-tangential-shear-profile-using-clmm-we-first-need-to-transform-the-shear-into-ellipticities" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>The CLMM function <code class="docutils literal notranslate"><span class="pre">convert_shapes_to_epsilon</span></code> convert any shape
+measurements into the corresponding ellipticities (<span class="math notranslate nohighlight">\(\epsilon\)</span>
+definition).</p></li>
+<li><p>Then, we build the astropy table of the galaxy catalog that will be
+used to instantiate a CLMM GalaxyCluster object.</p></li>
+</ul>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">convert_shapes_to_epsilon</span><span class="p">(</span><span class="n">gal_cat</span><span class="p">[</span><span class="s1">&#39;shear_1&#39;</span><span class="p">],</span><span class="n">gal_cat</span><span class="p">[</span><span class="s1">&#39;shear_2&#39;</span><span class="p">],</span>\
+                                              <span class="n">shape_definition</span><span class="o">=</span><span class="s1">&#39;shear&#39;</span><span class="p">,</span><span class="n">kappa</span><span class="o">=</span><span class="n">gal_cat</span><span class="p">[</span><span class="s1">&#39;convergence&#39;</span><span class="p">])</span>
+
+<span class="c1">#store the results into an CLMM GCData (currently it&#39;s simply an astropy table)</span>
+<span class="n">dat</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">GCData</span><span class="p">([</span><span class="n">gal_cat</span><span class="p">[</span><span class="s1">&#39;ra&#39;</span><span class="p">],</span><span class="n">gal_cat</span><span class="p">[</span><span class="s1">&#39;dec&#39;</span><span class="p">],</span>
+             <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span>
+             <span class="n">gal_cat</span><span class="p">[</span><span class="s1">&#39;redshift&#39;</span><span class="p">],</span><span class="n">gal_cat</span><span class="p">[</span><span class="s1">&#39;galaxy_id&#39;</span><span class="p">]],</span>
+            <span class="n">names</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;ra&#39;</span><span class="p">,</span><span class="s1">&#39;dec&#39;</span><span class="p">,</span> <span class="s1">&#39;e1&#39;</span><span class="p">,</span> <span class="s1">&#39;e2&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span><span class="s1">&#39;id&#39;</span><span class="p">))</span>
+
+<span class="n">cl</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">GalaxyCluster</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">id_cl</span><span class="p">),</span> <span class="n">ra_cl</span><span class="p">,</span> <span class="n">dec_cl</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">dat</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Quick check of the redshift distribution of the galaxies in the catalog</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Number of galaxies in the catalog: Ngal = </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">30</span><span class="p">);</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Count&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="use-clmm-to-compute-the-reduced-tangential-shear-profile">
+<h2>2. Use CLMM to compute the reduced tangential shear profile<a class="headerlink" href="#use-clmm-to-compute-the-reduced-tangential-shear-profile" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="compute-the-tangential-and-cross-shear-profiles">
+<h3>Compute the tangential and cross shear profiles<a class="headerlink" href="#compute-the-tangential-and-cross-shear-profiles" title="Permalink to this headline">¶</a></h3>
+<p>NB: Check out the <code class="docutils literal notranslate"><span class="pre">demo_dataops</span></code> notebook to see examples of all
+available options of the functions below.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bin_edges</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">dataops</span><span class="o">.</span><span class="n">make_bins</span><span class="p">(</span><span class="mf">0.15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;evenlog10width&#39;</span><span class="p">)</span> <span class="c1"># in Mpc</span>
+<span class="n">cl</span><span class="o">.</span><span class="n">compute_tangential_and_cross_components</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;flat&quot;</span><span class="p">)</span>
+<span class="n">cl</span><span class="o">.</span><span class="n">make_radial_profile</span><span class="p">(</span><span class="s2">&quot;Mpc&quot;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bin_edges</span><span class="p">,</span><span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">include_empty_bins</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gal_ids_in_bins</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="sanity-check-use-clmm-to-compute-the-corresponding-nfw-model-given-the-halo-mass">
+<h2>3. Sanity check: use CLMM to compute the corresponding NFW model, given the halo mass<a class="headerlink" href="#sanity-check-use-clmm-to-compute-the-corresponding-nfw-model-given-the-halo-mass" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>The mass definition used in cosmoDC2 is the friend-of-friend mass
+with linking length b=0.168. In CLMM, the default mass definition is
+<span class="math notranslate nohighlight">\(M_{200,m}\)</span>: it uses an overdensity parameter
+<span class="math notranslate nohighlight">\(\Delta=200\)</span> with respect to the matter density. Here, we are
+directly using <span class="math notranslate nohighlight">\(M_{\rm fof}\)</span> in the modeling functions of CLMM,
+which is inconsistent. However, the goal here is to check that model
+and data are roughly in agreement.</p></li>
+<li><p>The model should take into account the redshift distribution of the
+background galaxies. Here, we simply use the average redshift of the
+galaxy catalog as this is a quick sanity check that things behave as
+expected.</p></li>
+<li><p>For the model, we use a concentration <span class="math notranslate nohighlight">\(c = 4\)</span>.</p></li>
+<li><p>The error bars on the data computed by <code class="docutils literal notranslate"><span class="pre">make_radial_profile</span></code> simply
+corresponds to the standard error of the mean in the bin
+(<span class="math notranslate nohighlight">\(\sigma_{\rm bin}/\sqrt{N_{\rm gal\_in\_bin}}\)</span>).</p></li>
+</ul>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">concentration</span> <span class="o">=</span> <span class="mf">4.</span>
+<span class="n">reduced_shear</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">compute_reduced_tangential_shear</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="n">mass_cl</span><span class="p">,</span>
+                                                      <span class="n">concentration</span> <span class="p">,</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">cl</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">],</span> <span class="n">cosmo</span><span class="p">,</span>
+                                                      <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span><span class="n">cl</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;gt&#39;</span><span class="p">],</span><span class="n">yerr</span><span class="o">=</span><span class="n">cl</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;gt_err&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;measured profile&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span><span class="n">reduced_shear</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;model shear&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;R (Mpc)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Reduced shear $\langle g_t\rangle$&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Data and model are in rough agreement at large radii. In the inner
+region, the lack of resolution of the DC2 simulations yield an
+unphysical attenuation of the signal. This was remarked upon in the
+<a class="reference external" href="https://arxiv.org/abs/1907.06530">cosmoDC2 paper</a> in the context of
+galaxy-galaxy lensing.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

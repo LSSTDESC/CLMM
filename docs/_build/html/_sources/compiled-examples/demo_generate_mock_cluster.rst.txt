@@ -1,0 +1,412 @@
+Generate Mock Data
+==================
+
+In this example we generate mock data with a variety of systematic
+effects including photometric redshifts, source galaxy distributions,
+and shape noise. We then populate a galaxy cluster object. This
+notebooks is organised as follows: - Imports and configuration setup -
+Generate mock data with different source galaxy options - Generate mock
+data with different field-of-view options - Generate mock data with
+different galaxy cluster options (only available with the Numcosmo
+and/or CCL backends). Use the ``os.environ['CLMM_MODELING_BACKEND']``
+line below to select your backend.
+
+.. code:: ipython3
+
+    import os
+    ## Uncomment the following line if you want to use a specific modeling backend among 'ct' (cluster-toolkit), 'ccl' (CCL) or 'nc' (Numcosmo). Default is 'ct'
+    os.environ['CLMM_MODELING_BACKEND'] = 'nc'
+
+.. code:: ipython3
+
+    try: import clmm
+    except:
+        import notebook_install
+        notebook_install.install_clmm_pipeline(upgrade=False)
+        import clmm
+    import numpy as np
+    import matplotlib.pyplot as plt
+    %matplotlib inline
+
+Make sure we know which version we’re using
+
+.. code:: ipython3
+
+    clmm.__version__
+
+
+
+
+.. parsed-literal::
+
+    '0.9.0'
+
+
+
+Import mock data module and setup the configuration
+---------------------------------------------------
+
+.. code:: ipython3
+
+    from clmm.support import mock_data as mock
+    from clmm import Cosmology
+
+Mock data generation requires a defined cosmology
+
+.. code:: ipython3
+
+    mock_cosmo = Cosmology(H0 = 70.0, Omega_dm0 = 0.27 - 0.045, Omega_b0 = 0.045, Omega_k0 = 0.0)
+
+Mock data generation requires some cluster information. The default is
+to work with the NFW profile, using the “200,mean” mass definition. The
+Numcosmo and CCL backends allow for more flexibility (see last section
+of this notebook)
+
+.. code:: ipython3
+
+    cosmo = mock_cosmo
+    cluster_id = "Awesome_cluster"
+    cluster_m = 1.e15 # M200,m
+    cluster_z = 0.3
+    src_z = 0.8
+    concentration = 4 
+    ngals = 1000 # number of source galaxies
+    cluster_ra = 0.0
+    cluster_dec = 0.0
+
+Generate the mock catalog with different source galaxy options
+--------------------------------------------------------------
+
+-  Clean data: no noise, all galaxies at the same redshift
+
+.. code:: ipython3
+
+    zsrc_min = cluster_z + 0.1 
+
+.. code:: ipython3
+
+    ideal_data = mock.generate_galaxy_catalog(
+        cluster_m, cluster_z, concentration, cosmo, src_z, ngals=ngals)
+
+-  Noisy data: shape noise, all galaxies at the same redshift
+
+.. code:: ipython3
+
+    noisy_data_src_z = mock.generate_galaxy_catalog(
+        cluster_m, cluster_z, concentration, cosmo, src_z,
+        shapenoise=0.05, ngals=ngals)
+
+-  Noisy data: photo-z errors (and pdfs!), all galaxies at the same
+   redshift
+
+.. code:: ipython3
+
+    noisy_data_photoz = mock.generate_galaxy_catalog(
+        cluster_m, cluster_z, concentration, cosmo, src_z,
+        shapenoise=0.05, photoz_sigma_unscaled=0.05, ngals=ngals)
+
+-  Clean data: source galaxy redshifts drawn from Chang et al. 2013, no
+   noise
+
+.. code:: ipython3
+
+    ideal_with_src_dist = mock.generate_galaxy_catalog(
+        cluster_m, cluster_z, concentration, cosmo, 'chang13', zsrc_min=zsrc_min,
+        zsrc_max=7.0, ngals=ngals)
+
+
+-  Noisy data: galaxies following redshift distribution, redshift error,
+   shape noise
+
+.. code:: ipython3
+
+    allsystematics = mock.generate_galaxy_catalog(
+        cluster_m, cluster_z, concentration, cosmo, 'chang13', zsrc_min=zsrc_min,
+        zsrc_max=7.0, shapenoise=0.05, photoz_sigma_unscaled=0.05, ngals=ngals)
+
+
+.. parsed-literal::
+
+    /Users/combet/anaconda3/envs/clmmenv/lib/python3.8/site-packages/numpy/ma/core.py:2831: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
+      _data = np.array(data, dtype=dtype, copy=copy,
+    /Users/combet/anaconda3/envs/clmmenv/lib/python3.8/site-packages/clmm-0.9.0-py3.8.egg/clmm/theory/func_layer.py:354: UserWarning: Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.
+
+
+Sanity check: checking that no galaxies were originally drawn below
+zsrc_min, before photoz errors are applied (when relevant)
+
+.. code:: ipython3
+
+    print('Number of galaxies below zsrc_min:')
+    print('ideal_data:',np.sum(ideal_data['ztrue']<zsrc_min))
+    print('noisy_data_src_z:',np.sum(noisy_data_src_z['ztrue']<zsrc_min))
+    print('noisy_data_photoz:',np.sum(noisy_data_photoz['ztrue']<zsrc_min))
+    print('ideal_with_src_dist:',np.sum(ideal_with_src_dist['ztrue']<zsrc_min))
+    print('allsystematics:',np.sum(allsystematics['ztrue']<zsrc_min))
+
+
+.. parsed-literal::
+
+    Number of galaxies below zsrc_min:
+    ideal_data: 0
+    noisy_data_src_z: 0
+    noisy_data_photoz: 0
+    ideal_with_src_dist: 0
+    allsystematics: 0
+
+
+Inspect the catalog data
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  Ideal catalog first entries: no noise on the shape measurement, all
+   galaxies at z=0.8, no redshift errors (z = ztrue)
+
+.. code:: ipython3
+
+    for n in ideal_data.colnames: 
+        if n!='id':
+            ideal_data[n].format = "%6.3e" 
+    ideal_data[0:3].pprint(max_width=-1)
+
+
+.. parsed-literal::
+
+        ra        dec         e1         e2         z       ztrue    id
+    ---------- ---------- ---------- ---------- --------- --------- ---
+     1.075e-01 -2.151e-01  4.934e-03 -6.573e-03 8.000e-01 8.000e-01   0
+    -7.028e-03  5.753e-03 -1.874e-02 -9.299e-02 8.000e-01 8.000e-01   1
+    -1.149e-02  1.231e-01  1.772e-02 -3.337e-03 8.000e-01 8.000e-01   2
+
+
+-  With photo-z errors
+
+.. code:: ipython3
+
+    for n in noisy_data_photoz.colnames: 
+        if n!='id':
+            noisy_data_photoz[n].format = "%6.3e"
+    noisy_data_photoz[0:3].pprint(max_width=-1)
+
+
+.. parsed-literal::
+
+        ra        dec        e1         e2         z       ztrue         pzbins [61]             pzpdf [61]        id
+    ---------- --------- ---------- ---------- --------- --------- ----------------------- ---------------------- ---
+     9.300e-02 2.208e-02 -3.371e-02  1.013e-03 8.660e-01 8.000e-01 -3.400e-02 .. 1.766e+00 8.550e-22 .. 8.550e-22   0
+    -2.139e-02 5.447e-02  3.331e-02  2.577e-02 8.576e-01 8.000e-01 -4.241e-02 .. 1.758e+00 8.550e-22 .. 8.550e-22   1
+    -1.089e-01 7.635e-02 -6.047e-02 -8.975e-03 8.942e-01 8.000e-01 -5.761e-03 .. 1.794e+00 8.550e-22 .. 8.550e-22   2
+
+
+-  Histogram of the redshift distribution of background galaxies, for
+   the true (originally drawn) redshift and the redshift once photoz
+   errors have been added. By construction no true redshift occurs below
+   zsrc_min, but some ‘observed’ redshifts (i.e. including photoz
+   errors) might be.
+
+.. code:: ipython3
+
+    plt.hist(allsystematics['z'], bins=50, alpha=0.3, label='measured z (i.e. including photoz error)');
+    plt.hist(allsystematics['ztrue'], bins=50, alpha=0.3, label='true z');
+    plt.axvline(zsrc_min, color='red', label='requested zmin')
+    plt.xlabel('Source Redshift')
+    plt.legend()
+
+
+
+
+.. parsed-literal::
+
+    <matplotlib.legend.Legend at 0x7ff08393e070>
+
+
+
+
+.. image:: demo_generate_mock_cluster_files/demo_generate_mock_cluster_32_1.png
+
+
+.. code:: ipython3
+
+    # pdz for one of the galaxy in the catalog, 
+    galid = 0
+    plt.plot(allsystematics['pzbins'][galid], allsystematics['pzpdf'][galid])
+    plt.axvline(allsystematics['z'][galid], label='Observed z', color='red')
+    plt.axvline(allsystematics['ztrue'][galid], label='True z', color='g')
+    plt.xlabel('Redshift')
+    plt.ylabel('Photo-z Probability Distribution')
+    plt.legend(loc=1)
+
+
+
+
+.. parsed-literal::
+
+    <matplotlib.legend.Legend at 0x7ff088047f40>
+
+
+
+
+.. image:: demo_generate_mock_cluster_files/demo_generate_mock_cluster_33_1.png
+
+
+Populate in a galaxy cluster object
+
+.. code:: ipython3
+
+    # At the moment mock data only allow for a cluster centred on (0,0)
+    cluster_ra = 0.0
+    cluster_dec = 0.0
+    gc_object = clmm.GalaxyCluster(cluster_id, cluster_ra, cluster_dec, 
+                                   cluster_z, allsystematics)
+
+Plot source galaxy ellipticities
+
+.. code:: ipython3
+
+    plt.scatter(gc_object.galcat['e1'],gc_object.galcat['e2'])
+    
+    plt.xlim(-0.2, 0.2)
+    plt.ylim(-0.2, 0.2)
+    plt.xlabel('Ellipticity 1',fontsize='x-large')
+    plt.ylabel('Ellipticity 2',fontsize='x-large')
+
+
+
+
+.. parsed-literal::
+
+    Text(0, 0.5, 'Ellipticity 2')
+
+
+
+
+.. image:: demo_generate_mock_cluster_files/demo_generate_mock_cluster_37_1.png
+
+
+Generate the mock data catalog with different field-of-view options
+-------------------------------------------------------------------
+
+In the examples above, ``ngals=1000`` galaxies were simulated in a field
+corresponding to a 8 Mpc/h x 8 Mpc/h (proper distance) square box at the
+cluster redshift (this is the default). The user may however vary the
+field size and/or provide a galaxy density (instead of a number of
+galaxies). This is examplified below, using the ``allsystematics``
+example.
+
+-  ``ngals = 1000`` in a 4 x 4 Mpc/h box. Asking for the same number of
+   galaxies in a smaller field of view yields high galaxy density
+
+.. code:: ipython3
+
+    allsystematics2 = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration, cosmo, 
+                                                   'chang13', zsrc_min=zsrc_min, zsrc_max=7.0, 
+                                                   shapenoise=0.05, photoz_sigma_unscaled=0.05,
+                                                   field_size=4, ngals=ngals)
+
+
+.. parsed-literal::
+
+    /Users/combet/anaconda3/envs/clmmenv/lib/python3.8/site-packages/numpy/ma/core.py:2831: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
+      _data = np.array(data, dtype=dtype, copy=copy,
+    /Users/combet/anaconda3/envs/clmmenv/lib/python3.8/site-packages/clmm-0.9.0-py3.8.egg/clmm/theory/func_layer.py:354: UserWarning: Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.
+
+
+.. code:: ipython3
+
+    plt.scatter(allsystematics['ra'],allsystematics['dec'], marker='.', label = 'default 8 x 8 Mpc/h FoV')
+    plt.scatter(allsystematics2['ra'],allsystematics2['dec'],marker='.', label = 'user-defined FoV')
+    plt.legend()
+
+
+
+
+.. parsed-literal::
+
+    <matplotlib.legend.Legend at 0x7ff088269fd0>
+
+
+
+
+.. image:: demo_generate_mock_cluster_files/demo_generate_mock_cluster_42_1.png
+
+
+-  Alternatively, the user may provide a galaxy density (here 1
+   gal/arcmin2 to roughly match 1000 galaxies, given the configuration)
+   and the number of galaxies to draw will automatically be adjusted to
+   the box size.
+
+.. code:: ipython3
+
+    allsystematics3 = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration, cosmo, 
+                                                   'chang13', zsrc_min=zsrc_min, zsrc_max=7.0, 
+                                                  shapenoise=0.05, photoz_sigma_unscaled=0.05, 
+                                                  ngal_density=1)
+    print(f'Number of drawn galaxies = {len(allsystematics3)}')
+
+
+.. parsed-literal::
+
+    Number of drawn galaxies = 760
+
+
+.. code:: ipython3
+
+    plt.scatter(allsystematics['ra'],allsystematics['dec'], marker='.', label = 'ngals = 1000')
+    plt.scatter(allsystematics3['ra'],allsystematics3['dec'],marker='.', label = 'ngal_density = 1 gal / arcmin2')
+    plt.legend()
+
+
+
+
+.. parsed-literal::
+
+    <matplotlib.legend.Legend at 0x7ff088290130>
+
+
+
+
+.. image:: demo_generate_mock_cluster_files/demo_generate_mock_cluster_45_1.png
+
+
+Generate mock data with different galaxy cluster options
+--------------------------------------------------------
+
+WARNING: Available options depend on the modeling backend: -
+Cluster-toolkit allows for other values of the overdensity parameter,
+but is retricted to working with the mean mass definition - Both CCL and
+Numcosmo allow for different values of the overdensity parameter, but
+work with both the mean and critical mass definition - Numcosmo further
+allows for the Einasto or Burkert density profiles to be used instead of
+the NFW profile
+
+Changing the overdensity parameter (all backend) - ``Delta_SO`` keyword (default = 200)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code:: ipython3
+
+    allsystematics_500mean = mock.generate_galaxy_catalog(
+        cluster_m, cluster_z, concentration, cosmo, 'chang13', Delta_SO=500,
+        zsrc_min=zsrc_min,
+        zsrc_max=7.0, shapenoise=0.05, photoz_sigma_unscaled=0.05, ngals=ngals)
+
+Using the critical mass definition (Numcosmo and CCL only) - ``massdef`` keyword (default = ‘mean’)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+WARNING: error will be raised if using the cluster-toolkit backend
+
+.. code:: ipython3
+
+    allsystematics_200critical = mock.generate_galaxy_catalog(
+        cluster_m, cluster_z, concentration, cosmo,'chang13',  massdef='critical', zsrc_min=zsrc_min,
+        zsrc_max=7.0, shapenoise=0.05, photoz_sigma_unscaled=0.05, ngals=ngals)
+
+Changing the halo density profile (Numcosmo only) - ``halo_profile_model`` keyword (default = ‘nfw’)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+WARNING: error will be raised if using the cluster-toolkit or CCL
+backends
+
+.. code:: ipython3
+
+    allsystematics_200m_einasto = mock.generate_galaxy_catalog(
+        cluster_m, cluster_z, concentration, cosmo,'chang13', halo_profile_model='einasto', zsrc_min=zsrc_min,
+        zsrc_max=7.0, shapenoise=0.05, photoz_sigma_unscaled=0.05, ngals=ngals)

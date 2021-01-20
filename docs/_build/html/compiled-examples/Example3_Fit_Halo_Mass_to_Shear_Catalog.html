@@ -1,0 +1,651 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies &mdash; CLMM 0.9.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Fit halo mass to shear profile using Numcosmo statistical framework" href="Example2_Fit_Halo_Mass_to_Shear_Catalog_NC.html" />
+    <link rel="prev" title="Fit halo mass to shear profile: 2. realistic data and wrong model" href="Example2_Fit_Halo_Mass_to_Shear_Catalog.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> CLMM
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.9.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../source/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../source/citing.html">Citing CLMM</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Usage Demos</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="demo_generate_mock_cluster.html">Generate Mock Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_dataops_functionality.html">Measure a Profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Mass Fitting Examples</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example2_Fit_Halo_Mass_to_Shear_Catalog_NC.html">Fit halo mass to shear profile using Numcosmo statistical framework</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.constants.html">clmm.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.cosmology.html">clmm.cosmology package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.cosmology.ccl.html">clmm.cosmology.ccl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.cosmology.cluster_toolkit.html">clmm.cosmology.cluster_toolkit module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.cosmology.numcosmo.html">clmm.cosmology.numcosmo module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.cosmology.parent_class.html">clmm.cosmology.parent_class module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.dataops.html">clmm.dataops package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.gcdata.html">clmm.gcdata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.theory.html">clmm.theory package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.be_setup.html">clmm.theory.be_setup module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.ccl.html">clmm.theory.ccl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.cluster_toolkit.html">clmm.theory.cluster_toolkit module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.func_layer.html">clmm.theory.func_layer module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.generic.html">clmm.theory.generic module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.numcosmo.html">clmm.theory.numcosmo module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.parent_class.html">clmm.theory.parent_class module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.plotting.html">clmm.plotting package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.utils.html">clmm.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.support.html">clmm.support package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.support.mock_data.html">clmm.support.mock_data module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.support.sampler.html">clmm.support.sampler module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CLMM</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/compiled-examples/Example3_Fit_Halo_Mass_to_Shear_Catalog.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="fit-halo-mass-to-shear-profile-3-accounting-for-the-redshift-distribution-of-source-galaxies">
+<h1>Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies<a class="headerlink" href="#fit-halo-mass-to-shear-profile-3-accounting-for-the-redshift-distribution-of-source-galaxies" title="Permalink to this headline">¶</a></h1>
+<p><em>the LSST-DESC CLMM team</em></p>
+<p>This notebook demonstrates how to use <code class="docutils literal notranslate"><span class="pre">clmm</span></code> to estimate a WL halo
+mass from observations of a galaxy cluster when source galaxies follow a
+given distribution (the Chang. (2013) implemented in <code class="docutils literal notranslate"><span class="pre">clmm</span></code>). It uses
+several functionalities of the support <code class="docutils literal notranslate"><span class="pre">mock_data</span></code> module to produce
+mock datasets.</p>
+<ul class="simple">
+<li><p>Setting things up, with the proper imports.</p></li>
+<li><p>Generating 2 datasets: an ideal datasetwith source galaxies following
+the Chang et al. (2013) redshift distribution; a noisy dataset where
+photoz errors and shape noise are also included.</p></li>
+<li><p>Computing the binned reduced tangential shear profile, for the 2
+datasets, using logarithmic binning.</p></li>
+<li><p>Setting up the “single source plane” model (model1) and a model
+accounting for the redshift distribution (model2). As already seen in
+Example2, model1 will yield a bias mass reconstruction. Accounting
+for the redshift distribution in the model (model2) solves that
+issue.</p></li>
+<li><p>Perform a simple fit using <code class="docutils literal notranslate"><span class="pre">scipy.optimize.curve_fit</span></code> and visualize
+the results.</p></li>
+</ul>
+<div class="section" id="setup">
+<h2>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h2>
+<p>First, we import some standard packages.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span> <span class="kn">import</span> <span class="nn">clmm</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">notebook_install</span>
+    <span class="n">notebook_install</span><span class="o">.</span><span class="n">install_clmm_pipeline</span><span class="p">(</span><span class="n">upgrade</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="kn">import</span> <span class="nn">clmm</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">units</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;font.family&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;gothambook&#39;</span><span class="p">,</span><span class="s1">&#39;gotham&#39;</span><span class="p">,</span><span class="s1">&#39;gotham-book&#39;</span><span class="p">,</span><span class="s1">&#39;serif&#39;</span><span class="p">]</span>
+
+<span class="n">clmm</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;0.9.0&#39;</span>
+</pre></div>
+</div>
+<p>Next, we import <code class="docutils literal notranslate"><span class="pre">clmm</span></code>’s core modules.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">clmm.dataops</span> <span class="k">as</span> <span class="nn">da</span>
+<span class="kn">import</span> <span class="nn">clmm.galaxycluster</span> <span class="k">as</span> <span class="nn">gc</span>
+<span class="kn">import</span> <span class="nn">clmm.theory</span> <span class="k">as</span> <span class="nn">theory</span>
+<span class="kn">from</span> <span class="nn">clmm</span> <span class="kn">import</span> <span class="n">Cosmology</span>
+</pre></div>
+</div>
+<p>We then import a support modules for a specific data sets. <code class="docutils literal notranslate"><span class="pre">clmm</span></code>
+includes support modules that enable the user to generate mock data in a
+format compatible with <code class="docutils literal notranslate"><span class="pre">clmm</span></code>.</p>
+</div>
+<div class="section" id="making-mock-data">
+<h2>Making mock data<a class="headerlink" href="#making-mock-data" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">clmm.support</span> <span class="kn">import</span> <span class="n">mock_data</span> <span class="k">as</span> <span class="n">mock</span>
+</pre></div>
+</div>
+<p>For reproducibility:</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To create mock data, we need to define a true cosmology, which is
+currently done with <code class="docutils literal notranslate"><span class="pre">`astropy</span></code>’s cosmology
+library &lt;<a class="reference external" href="http://docs.astropy.org/en/stable/cosmology/index.html">http://docs.astropy.org/en/stable/cosmology/index.html</a>&gt;`__.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cosmo</span> <span class="o">=</span> <span class="n">Cosmology</span><span class="p">(</span><span class="n">H0</span> <span class="o">=</span> <span class="mf">70.0</span><span class="p">,</span> <span class="n">Omega_dm0</span> <span class="o">=</span> <span class="mf">0.27</span> <span class="o">-</span> <span class="mf">0.045</span><span class="p">,</span> <span class="n">Omega_b0</span> <span class="o">=</span> <span class="mf">0.045</span><span class="p">,</span> <span class="n">Omega_k0</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We now set some parameters for a mock galaxy cluster:</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cluster_m</span> <span class="o">=</span> <span class="mf">1.e15</span> <span class="c1"># M200,m [Msun]</span>
+<span class="n">logm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">cluster_m</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">concentration</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">cluster_ra</span> <span class="o">=</span> <span class="mf">0.</span>
+<span class="n">cluster_dec</span> <span class="o">=</span> <span class="mf">0.</span>
+<span class="n">cluster_z</span> <span class="o">=</span> <span class="mf">0.4</span>
+<span class="n">ngals</span> <span class="o">=</span> <span class="mi">10000</span>
+</pre></div>
+</div>
+<p>Then we use the <code class="docutils literal notranslate"><span class="pre">mock_data</span></code> support module to generate 2 galaxy
+catalogs: - <code class="docutils literal notranslate"><span class="pre">ideal_data</span></code>: galaxies distributed according to the Chang
+et al. (2013) redshift distribution. - <code class="docutils literal notranslate"><span class="pre">noisy_data</span></code>: <code class="docutils literal notranslate"><span class="pre">ideal_data</span></code> +
+photoz errors + shape noise</p>
+<p>(Galaxies have a minimum redshift defined as <span class="math notranslate nohighlight">\(z_{cluster} + 0.1\)</span>)</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ideal_data</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span><span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="s1">&#39;chang13&#39;</span><span class="p">,</span> <span class="n">zsrc_min</span> <span class="o">=</span> <span class="n">cluster_z</span> <span class="o">+</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">)</span>
+<span class="n">noisy_data</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span><span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="s1">&#39;chang13&#39;</span><span class="p">,</span> <span class="n">zsrc_min</span> <span class="o">=</span> <span class="n">cluster_z</span> <span class="o">+</span> <span class="mf">0.1</span><span class="p">,</span>
+                                          <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">combet</span><span class="o">/</span><span class="n">anaconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">clmmenv</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">numpy</span><span class="o">/</span><span class="n">ma</span><span class="o">/</span><span class="n">core</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">2831</span><span class="p">:</span> <span class="n">VisibleDeprecationWarning</span><span class="p">:</span> <span class="n">Creating</span> <span class="n">an</span> <span class="n">ndarray</span> <span class="kn">from</span> <span class="nn">ragged</span> <span class="n">nested</span> <span class="n">sequences</span> <span class="p">(</span><span class="n">which</span> <span class="ow">is</span> <span class="n">a</span> <span class="nb">list</span><span class="o">-</span><span class="ow">or</span><span class="o">-</span><span class="nb">tuple</span> <span class="n">of</span> <span class="n">lists</span><span class="o">-</span><span class="ow">or</span><span class="o">-</span><span class="n">tuples</span><span class="o">-</span><span class="ow">or</span> <span class="n">ndarrays</span> <span class="k">with</span> <span class="n">different</span> <span class="n">lengths</span> <span class="ow">or</span> <span class="n">shapes</span><span class="p">)</span> <span class="ow">is</span> <span class="n">deprecated</span><span class="o">.</span> <span class="n">If</span> <span class="n">you</span> <span class="n">meant</span> <span class="n">to</span> <span class="n">do</span> <span class="n">this</span><span class="p">,</span> <span class="n">you</span> <span class="n">must</span> <span class="n">specify</span> <span class="s1">&#39;dtype=object&#39;</span> <span class="n">when</span> <span class="n">creating</span> <span class="n">the</span> <span class="n">ndarray</span>
+  <span class="n">_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span>
+<span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">combet</span><span class="o">/</span><span class="n">anaconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">clmmenv</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">0.9</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">py3</span><span class="o">.</span><span class="mf">8.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">cosmology</span><span class="o">/</span><span class="n">cluster_toolkit</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">69</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">Some</span> <span class="n">source</span> <span class="n">redshifts</span> <span class="n">are</span> <span class="n">lower</span> <span class="n">than</span> <span class="n">the</span> <span class="n">cluster</span> <span class="n">redshift</span><span class="o">.</span> <span class="n">Returning</span> <span class="n">Sigma_crit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span> <span class="k">for</span> <span class="n">those</span> <span class="n">galaxies</span><span class="o">.</span>
+<span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">combet</span><span class="o">/</span><span class="n">anaconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">clmmenv</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">0.9</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">py3</span><span class="o">.</span><span class="mf">8.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">cosmology</span><span class="o">/</span><span class="n">cluster_toolkit</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">79</span><span class="p">:</span> <span class="ne">RuntimeWarning</span><span class="p">:</span> <span class="n">divide</span> <span class="n">by</span> <span class="n">zero</span> <span class="n">encountered</span> <span class="ow">in</span> <span class="n">true_divide</span>
+<span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">combet</span><span class="o">/</span><span class="n">anaconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">clmmenv</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">0.9</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">py3</span><span class="o">.</span><span class="mf">8.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">theory</span><span class="o">/</span><span class="n">func_layer</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">354</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">Some</span> <span class="n">source</span> <span class="n">redshifts</span> <span class="n">are</span> <span class="n">lower</span> <span class="n">than</span> <span class="n">the</span> <span class="n">cluster</span> <span class="n">redshift</span><span class="o">.</span> <span class="n">kappa</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">those</span> <span class="n">galaxies</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>The galaxy catalogs are converted to a <code class="docutils literal notranslate"><span class="pre">clmm.GalaxyCluster</span></code> object and
+may be saved for later use.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cluster_id</span> <span class="o">=</span> <span class="s2">&quot;CL_ideal&quot;</span>
+<span class="n">gc_object</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">GalaxyCluster</span><span class="p">(</span><span class="n">cluster_id</span><span class="p">,</span> <span class="n">cluster_ra</span><span class="p">,</span> <span class="n">cluster_dec</span><span class="p">,</span>
+                                  <span class="n">cluster_z</span><span class="p">,</span> <span class="n">ideal_data</span><span class="p">)</span>
+<span class="n">gc_object</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;ideal_GC.pkl&#39;</span><span class="p">)</span>
+
+<span class="n">cluster_id</span> <span class="o">=</span> <span class="s2">&quot;CL_noisy&quot;</span>
+<span class="n">gc_object</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">GalaxyCluster</span><span class="p">(</span><span class="n">cluster_id</span><span class="p">,</span> <span class="n">cluster_ra</span><span class="p">,</span> <span class="n">cluster_dec</span><span class="p">,</span>
+                                   <span class="n">cluster_z</span><span class="p">,</span> <span class="n">noisy_data</span><span class="p">)</span>
+<span class="n">gc_object</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;noisy_GC.pkl&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Any saved clmm.GalaxyCluster object may be read in for analysis.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cl_ideal</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">GalaxyCluster</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;ideal_GC.pkl&#39;</span><span class="p">)</span> <span class="c1"># background galaxies distributed according to Chang et al. (2013)</span>
+<span class="n">cl_noisy</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">GalaxyCluster</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;noisy_GC.pkl&#39;</span><span class="p">)</span> <span class="c1"># Chang et al. (2013) + shapenoise + photozerror</span>
+</pre></div>
+</div>
+<div class="section" id="redshift-of-galaxies-generated-by-mock-data-are-distributed-following-the-chang-2013-redshift-distribution">
+<h3>Redshift of galaxies generated by mock data are distributed following the Chang. (2013) redshift distribution.<a class="headerlink" href="#redshift-of-galaxies-generated-by-mock-data-are-distributed-following-the-chang-2013-redshift-distribution" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">cl_ideal</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">],</span> <span class="n">density</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="mi">50</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;cluster redshift&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$z_</span><span class="si">{src}</span><span class="s1">$&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$N(z$)&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../_images/Example3_Fit_Halo_Mass_to_Shear_Catalog_22_1.png" src="../_images/Example3_Fit_Halo_Mass_to_Shear_Catalog_22_1.png" />
+</div>
+</div>
+<div class="section" id="deriving-observables">
+<h2>Deriving observables<a class="headerlink" href="#deriving-observables" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="computing-shear">
+<h3>Computing shear<a class="headerlink" href="#computing-shear" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">clmm.GalaxyCluster.compute_tangential_and_cross_components</span></code>
+calculates the tangential and cross shears for each source galaxy in the
+cluster.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cl_ideal</span><span class="o">.</span><span class="n">compute_tangential_and_cross_components</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;flat&quot;</span><span class="p">)</span>
+<span class="n">cl_noisy</span><span class="o">.</span><span class="n">compute_tangential_and_cross_components</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;flat&quot;</span><span class="p">)</span>
+<span class="k">pass</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="radially-binning-the-data">
+<h3>Radially binning the data<a class="headerlink" href="#radially-binning-the-data" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bin_edges</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">make_bins</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;evenlog10width&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">clmm.GalaxyCluster.make_radial_profile</span></code> evaluates the average shear
+of the galaxy catalog in bins of radius.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cl_ideal</span><span class="o">.</span><span class="n">make_radial_profile</span><span class="p">(</span><span class="s2">&quot;Mpc&quot;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bin_edges</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">gal_ids_in_bins</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">cl_noisy</span><span class="o">.</span><span class="n">make_radial_profile</span><span class="p">(</span><span class="s2">&quot;Mpc&quot;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bin_edges</span><span class="p">,</span><span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">gal_ids_in_bins</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">pass</span>
+</pre></div>
+</div>
+<p>After this, the object acquires the <code class="docutils literal notranslate"><span class="pre">clmm.GalaxyCluster.profile</span></code>
+attribute.</p>
+</div>
+</div>
+<div class="section" id="create-the-reduced-tangential-shear-models">
+<h2>Create the reduced tangential shear models<a class="headerlink" href="#create-the-reduced-tangential-shear-models" title="Permalink to this headline">¶</a></h2>
+<p>We consider two options: - First, the naive and <em>wrong</em> approach: the
+reduced tangential shear in a given radial bin <span class="math notranslate nohighlight">\(j\)</span> is given by
+<span class="math notranslate nohighlight">\(g_t(\theta_j, \langle z_s \rangle)\)</span>, where
+<span class="math notranslate nohighlight">\(\langle z_s \rangle\)</span> is the average redshift in the bin. In that
+case, the corresponding model is simply given by the fucntion below:</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">model_reduced_tangential_shear_singlez</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">logm</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="mf">10.</span><span class="o">**</span><span class="n">logm</span>
+    <span class="n">gt_model</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">compute_reduced_tangential_shear</span><span class="p">(</span><span class="n">r</span><span class="p">,</span>
+                                                     <span class="n">m</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span>
+                                                     <span class="n">cluster_z</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span>
+                                                     <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+                                                     <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">gt_model</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Second, the reduced tangential shear in a given radial bin accounts
+properly for the redshift distribution in the bin as
+<span class="math notranslate nohighlight">\(\langle g_t(\theta_j, z_s)\rangle \neq g_t(\theta_j, \langle z_s \rangle\)</span>).
+Formally, the reduced tangential shear that corresponds to a
+continuous distribution of source galaxy redshift <span class="math notranslate nohighlight">\(N(z)\)</span> can be
+expressed as:</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[g_t(\theta) = \langle g_t(\theta, z_s)\rangle_{z_{cluster}} = \int_{z_{cluster}}^{+\infty}dz_sN(z_s)g_t(\theta, z_s)\]</div>
+<p>If the inidividual redshifts of the background galaxies are known, we
+can directly build a model based on data, such that in the bin
+<span class="math notranslate nohighlight">\(j\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[g_t(\theta_j) = \frac{1}{N(\theta_j)}\sum\limits_{i = 1}^{N(\theta)}g_t(\theta_j, z_i)\]</div>
+<p>where <span class="math notranslate nohighlight">\(N(\theta_j)\)</span> is the number of galaxies in bin <span class="math notranslate nohighlight">\(j\)</span>.
+The corresponding model is given below.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">model_reduced_tangential_shear_zdistrib</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="n">logm</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">catalog</span><span class="p">,</span> <span class="n">profile</span><span class="p">):</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="n">logm</span>
+    <span class="n">gt_model</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">radius</span><span class="p">)):</span>
+
+        <span class="n">r</span> <span class="o">=</span> <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">galist</span> <span class="o">=</span> <span class="n">profile</span><span class="p">[</span><span class="s1">&#39;gal_id&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">z_list</span> <span class="o">=</span> <span class="n">catalog</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">][</span><span class="n">galist</span><span class="p">]</span>
+        <span class="n">shear</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">compute_reduced_tangential_shear</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span>
+                                                      <span class="n">cluster_z</span><span class="p">,</span> <span class="n">z_list</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+                                                      <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">)</span>
+        <span class="n">gt_model</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">shear</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">gt_model</span>
+</pre></div>
+</div>
+<div class="section" id="before-fitting-lets-first-vizualise-these-models-using-the-known-true-mass">
+<h3>Before fitting, let’s first vizualise these models using the known true mass<a class="headerlink" href="#before-fitting-lets-first-vizualise-these-models-using-the-known-true-mass" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">logm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">cluster_m</span><span class="p">)</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">cl_ideal</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">]</span>
+<span class="n">gt_model_ideal_singlez</span> <span class="o">=</span> <span class="n">model_reduced_tangential_shear_singlez</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">logm</span><span class="p">,</span> <span class="n">cl_ideal</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">])</span>
+<span class="n">gt_model_ideal_zdistrib</span> <span class="o">=</span> <span class="n">model_reduced_tangential_shear_zdistrib</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">logm</span><span class="p">,</span> <span class="n">ideal_data</span><span class="p">,</span> <span class="n">cl_ideal</span><span class="p">,</span> <span class="n">cl_ideal</span><span class="o">.</span><span class="n">profile</span><span class="p">)</span>
+<span class="n">gt_model_noisy_singlez</span> <span class="o">=</span> <span class="n">model_reduced_tangential_shear_singlez</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">logm</span><span class="p">,</span> <span class="n">cl_noisy</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">])</span>
+<span class="n">gt_model_noisy_zdistrib</span> <span class="o">=</span> <span class="n">model_reduced_tangential_shear_zdistrib</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">logm</span><span class="p">,</span> <span class="n">noisy_data</span><span class="p">,</span> <span class="n">cl_noisy</span><span class="p">,</span> <span class="n">cl_noisy</span><span class="o">.</span><span class="n">profile</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">combet</span><span class="o">/</span><span class="n">anaconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">clmmenv</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">0.9</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">py3</span><span class="o">.</span><span class="mf">8.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">theory</span><span class="o">/</span><span class="n">func_layer</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">425</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">Some</span> <span class="n">source</span> <span class="n">redshifts</span> <span class="n">are</span> <span class="n">lower</span> <span class="n">than</span> <span class="n">the</span> <span class="n">cluster</span> <span class="n">redshift</span><span class="o">.</span> <span class="n">shear</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">those</span> <span class="n">galaxies</span><span class="o">.</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">8</span><span class="p">))</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;ideal data&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">cl_ideal</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;gt&#39;</span><span class="p">],</span><span class="n">cl_ideal</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;gt_err&#39;</span><span class="p">],</span><span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+             <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;ideal data, $M_</span><span class="si">{input}</span><span class="s1">$ = </span><span class="si">%.2e</span><span class="s1"> Msun&#39;</span> <span class="o">%</span> <span class="n">cluster_m</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">gt_model_ideal_zdistrib</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">,</span>  <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;model w/ zdistrib, $M_</span><span class="si">{input}</span><span class="s1">$ = </span><span class="si">%.2e</span><span class="s1"> Msun&#39;</span> <span class="o">%</span> <span class="n">cluster_m</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">gt_model_ideal_singlez</span><span class="p">,</span><span class="s1">&#39;-y&#39;</span><span class="p">,</span>  <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;model w/o zdistrib, $M_</span><span class="si">{input}</span><span class="s1">$ = </span><span class="si">%.2e</span><span class="s1"> Msun&#39;</span> <span class="o">%</span> <span class="n">cluster_m</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;r [Mpc]&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$g_t$&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">cl_ideal</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">]),</span> <span class="nb">max</span><span class="p">(</span><span class="n">cl_ideal</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">]))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span> <span class="o">=</span> <span class="mi">15</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;noisy data&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">cl_noisy</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;gt&#39;</span><span class="p">],</span><span class="n">cl_noisy</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;gt_err&#39;</span><span class="p">],</span><span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+             <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;noisy data, $M_</span><span class="si">{input}</span><span class="s1">$ = </span><span class="si">%.2e</span><span class="s1"> Msun&#39;</span> <span class="o">%</span> <span class="n">cluster_m</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">gt_model_noisy_zdistrib</span><span class="p">,</span><span class="s1">&#39;-b&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;model w/ zdistrib, $M_</span><span class="si">{input}</span><span class="s1">$ = </span><span class="si">%.2e</span><span class="s1"> Msun&#39;</span> <span class="o">%</span> <span class="n">cluster_m</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">gt_model_noisy_singlez</span><span class="p">,</span><span class="s1">&#39;-y&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;model w/o zdistrib, $M_</span><span class="si">{input}</span><span class="s1">$ = </span><span class="si">%.2e</span><span class="s1"> Msun&#39;</span> <span class="o">%</span> <span class="n">cluster_m</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;r [Mpc]&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$g_t$&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">cl_noisy</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">]),</span> <span class="nb">max</span><span class="p">(</span><span class="n">cl_noisy</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">]))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span> <span class="o">=</span> <span class="mi">15</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x7fa821658910</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<img alt="../_images/Example3_Fit_Halo_Mass_to_Shear_Catalog_43_1.png" src="../_images/Example3_Fit_Halo_Mass_to_Shear_Catalog_43_1.png" />
+<p>The naive model that uses the average redshift in the bin clearly does
+not give the right description of the ideal data (left panel), and will
+yield biased mass results if used for fitting (see below). For ideal
+data, the model that accounts for the redshift distribution is, by
+construction, an excellent description of the data (solid blue line).
+The same is true for noisy data (right panel), although the noise make
+the naive model appear “less biased”.</p>
+</div>
+</div>
+<div class="section" id="mass-fitting">
+<h2>Mass fitting<a class="headerlink" href="#mass-fitting" title="Permalink to this headline">¶</a></h2>
+<p>We estimate the best-fit mass using <code class="docutils literal notranslate"><span class="pre">scipy.optimize.curve_fit</span></code>. We
+compare estimated mass for noisy and ideal data, using both models
+described above (naive with average redshift or the model taking into
+account the redshift distribution). The choice of fitting
+<span class="math notranslate nohighlight">\(\log_{10} M\)</span> instead of <span class="math notranslate nohighlight">\(M\)</span> lowers the range of pre-defined
+fitting bounds from several order of magnitude for the mass to unity.
+From the associated error <span class="math notranslate nohighlight">\(\Delta (\log_{10}M)\)</span> we calculate the
+error to mass as <span class="math notranslate nohighlight">\(\Delta M = M_{fit}\log(10)\Delta (\log_{10}M)\)</span>.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">clmm.support.sampler</span> <span class="kn">import</span> <span class="n">fitters</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">popt</span><span class="p">,</span><span class="n">pcov</span> <span class="o">=</span> <span class="n">fitters</span><span class="p">[</span><span class="s1">&#39;curve_fit&#39;</span><span class="p">](</span><span class="k">lambda</span> <span class="n">r</span><span class="p">,</span> <span class="n">logm</span><span class="p">:</span><span class="n">model_reduced_tangential_shear_zdistrib</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">logm</span><span class="p">,</span> <span class="n">ideal_data</span><span class="p">,</span> <span class="n">cl_ideal</span><span class="p">,</span> <span class="n">cl_ideal</span><span class="o">.</span><span class="n">profile</span><span class="p">),</span>
+                        <span class="n">cl_ideal</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span>
+                        <span class="n">cl_ideal</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;gt&#39;</span><span class="p">],</span>
+                        <span class="n">cl_ideal</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;gt_err&#39;</span><span class="p">],</span> <span class="n">bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">10.</span><span class="p">,</span><span class="mf">16.</span><span class="p">])</span>
+
+<span class="n">m_est_ideal_zdistrib</span> <span class="o">=</span> <span class="mf">10.</span><span class="o">**</span><span class="n">popt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">m_est_err_ideal_zdistrib</span> <span class="o">=</span>  <span class="n">m_est_ideal_zdistrib</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">pcov</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="n">popt</span><span class="p">,</span><span class="n">pcov</span> <span class="o">=</span> <span class="n">fitters</span><span class="p">[</span><span class="s1">&#39;curve_fit&#39;</span><span class="p">](</span><span class="k">lambda</span> <span class="n">r</span><span class="p">,</span> <span class="n">logm</span><span class="p">:</span><span class="n">model_reduced_tangential_shear_singlez</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">logm</span><span class="p">,</span> <span class="n">cl_ideal</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]),</span>
+                        <span class="n">cl_ideal</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span>
+                        <span class="n">cl_ideal</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;gt&#39;</span><span class="p">],</span>
+                        <span class="n">cl_ideal</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;gt_err&#39;</span><span class="p">],</span> <span class="n">bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">10.</span><span class="p">,</span><span class="mf">17.</span><span class="p">])</span>
+
+<span class="n">m_est_ideal_singlez</span> <span class="o">=</span> <span class="mf">10.</span><span class="o">**</span><span class="n">popt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">m_est_err_ideal_singlez</span> <span class="o">=</span>  <span class="n">m_est_ideal_singlez</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">pcov</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+
+
+<span class="n">popt</span><span class="p">,</span><span class="n">pcov</span> <span class="o">=</span> <span class="n">fitters</span><span class="p">[</span><span class="s1">&#39;curve_fit&#39;</span><span class="p">](</span><span class="k">lambda</span> <span class="n">r</span><span class="p">,</span> <span class="n">logm</span><span class="p">:</span><span class="n">model_reduced_tangential_shear_zdistrib</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">logm</span><span class="p">,</span> <span class="n">noisy_data</span><span class="p">,</span> <span class="n">cl_noisy</span><span class="p">,</span> <span class="n">cl_noisy</span><span class="o">.</span><span class="n">profile</span><span class="p">),</span>
+                        <span class="n">cl_noisy</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span>
+                        <span class="n">cl_noisy</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;gt&#39;</span><span class="p">],</span>
+                        <span class="n">cl_noisy</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;gt_err&#39;</span><span class="p">],</span> <span class="n">bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">10.</span><span class="p">,</span><span class="mf">16.</span><span class="p">])</span>
+
+<span class="n">m_est_noisy_zdistrib</span> <span class="o">=</span> <span class="mf">10.</span><span class="o">**</span><span class="n">popt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">m_est_err_noisy_zdistrib</span> <span class="o">=</span>  <span class="n">m_est_noisy_zdistrib</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">pcov</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="n">popt</span><span class="p">,</span><span class="n">pcov</span> <span class="o">=</span> <span class="n">fitters</span><span class="p">[</span><span class="s1">&#39;curve_fit&#39;</span><span class="p">](</span><span class="k">lambda</span> <span class="n">r</span><span class="p">,</span> <span class="n">logm</span><span class="p">:</span><span class="n">model_reduced_tangential_shear_singlez</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">logm</span><span class="p">,</span> <span class="n">cl_noisy</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]),</span>
+                        <span class="n">cl_noisy</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span>
+                        <span class="n">cl_noisy</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;gt&#39;</span><span class="p">],</span>
+                        <span class="n">cl_noisy</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;gt_err&#39;</span><span class="p">],</span> <span class="n">bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">10.</span><span class="p">,</span><span class="mf">16.</span><span class="p">])</span>
+
+<span class="n">m_est_noisy_singlez</span> <span class="o">=</span> <span class="mf">10.</span><span class="o">**</span><span class="n">popt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">m_est_err_noisy_singlez</span> <span class="o">=</span>  <span class="n">m_est_noisy_singlez</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">pcov</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">combet</span><span class="o">/</span><span class="n">anaconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">clmmenv</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">0.9</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">py3</span><span class="o">.</span><span class="mf">8.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">cosmology</span><span class="o">/</span><span class="n">cluster_toolkit</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">69</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">Some</span> <span class="n">source</span> <span class="n">redshifts</span> <span class="n">are</span> <span class="n">lower</span> <span class="n">than</span> <span class="n">the</span> <span class="n">cluster</span> <span class="n">redshift</span><span class="o">.</span> <span class="n">Returning</span> <span class="n">Sigma_crit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span> <span class="k">for</span> <span class="n">those</span> <span class="n">galaxies</span><span class="o">.</span>
+<span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">combet</span><span class="o">/</span><span class="n">anaconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">clmmenv</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">0.9</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">py3</span><span class="o">.</span><span class="mf">8.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">cosmology</span><span class="o">/</span><span class="n">cluster_toolkit</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">79</span><span class="p">:</span> <span class="ne">RuntimeWarning</span><span class="p">:</span> <span class="n">divide</span> <span class="n">by</span> <span class="n">zero</span> <span class="n">encountered</span> <span class="ow">in</span> <span class="n">true_divide</span>
+<span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">combet</span><span class="o">/</span><span class="n">anaconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">clmmenv</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">0.9</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">py3</span><span class="o">.</span><span class="mf">8.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">theory</span><span class="o">/</span><span class="n">func_layer</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">425</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">Some</span> <span class="n">source</span> <span class="n">redshifts</span> <span class="n">are</span> <span class="n">lower</span> <span class="n">than</span> <span class="n">the</span> <span class="n">cluster</span> <span class="n">redshift</span><span class="o">.</span> <span class="n">shear</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">those</span> <span class="n">galaxies</span><span class="o">.</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The input mass = </span><span class="si">{</span><span class="n">cluster_m</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1"> Msun</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Without accounting for the redshift distribution in the model</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Best fit mass for ideal data = </span><span class="si">{</span><span class="n">m_est_ideal_singlez</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1"> +/- </span><span class="si">{</span><span class="n">m_est_err_ideal_singlez</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1"> Msun&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Best fit mass for noisy data = </span><span class="si">{</span><span class="n">m_est_noisy_singlez</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1"> +/- </span><span class="si">{</span><span class="n">m_est_err_noisy_singlez</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1"> Msun</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Accounting for the redshift distribution in the model</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Best fit mass for ideal data = </span><span class="si">{</span><span class="n">m_est_ideal_zdistrib</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1"> +/- </span><span class="si">{</span><span class="n">m_est_err_ideal_zdistrib</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1"> Msun&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Best fit mass for noisy data = </span><span class="si">{</span><span class="n">m_est_noisy_zdistrib</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1"> +/- </span><span class="si">{</span><span class="n">m_est_err_noisy_zdistrib</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1"> Msun&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">The</span> <span class="nb">input</span> <span class="n">mass</span> <span class="o">=</span> <span class="mf">1.00e+15</span> <span class="n">Msun</span>
+
+<span class="n">Without</span> <span class="n">accounting</span> <span class="k">for</span> <span class="n">the</span> <span class="n">redshift</span> <span class="n">distribution</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">model</span>
+
+<span class="n">Best</span> <span class="n">fit</span> <span class="n">mass</span> <span class="k">for</span> <span class="n">ideal</span> <span class="n">data</span> <span class="o">=</span> <span class="mf">8.56e+14</span> <span class="o">+/-</span> <span class="mf">3.21e+12</span> <span class="n">Msun</span>
+<span class="n">Best</span> <span class="n">fit</span> <span class="n">mass</span> <span class="k">for</span> <span class="n">noisy</span> <span class="n">data</span> <span class="o">=</span> <span class="mf">8.32e+14</span> <span class="o">+/-</span> <span class="mf">2.31e+13</span> <span class="n">Msun</span>
+
+<span class="n">Accounting</span> <span class="k">for</span> <span class="n">the</span> <span class="n">redshift</span> <span class="n">distribution</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">model</span>
+
+<span class="n">Best</span> <span class="n">fit</span> <span class="n">mass</span> <span class="k">for</span> <span class="n">ideal</span> <span class="n">data</span> <span class="o">=</span> <span class="mf">1.01e+15</span> <span class="o">+/-</span> <span class="mf">2.16e+11</span> <span class="n">Msun</span>
+<span class="n">Best</span> <span class="n">fit</span> <span class="n">mass</span> <span class="k">for</span> <span class="n">noisy</span> <span class="n">data</span> <span class="o">=</span> <span class="mf">1.00e+15</span> <span class="o">+/-</span> <span class="mf">2.66e+13</span> <span class="n">Msun</span>
+</pre></div>
+</div>
+<p>As expected, the reconstructed mass is biased when the redshift
+distribution is not accounted for in the model</p>
+</div>
+<div class="section" id="visualization-of-the-results">
+<h2>Visualization of the results<a class="headerlink" href="#visualization-of-the-results" title="Permalink to this headline">¶</a></h2>
+<p>For visualization purpose, we calculate the reduced tangential shear
+predicted by the model with estimated masses for noisy and ideal data.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gt_est_ideal_zdistrib</span> <span class="o">=</span> <span class="n">model_reduced_tangential_shear_zdistrib</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">m_est_ideal_zdistrib</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="n">ideal_data</span><span class="p">,</span> <span class="n">cl_ideal</span><span class="p">,</span> <span class="n">cl_ideal</span><span class="o">.</span><span class="n">profile</span><span class="p">)</span>
+<span class="n">gt_est_noisy_zdistrib</span> <span class="o">=</span> <span class="n">model_reduced_tangential_shear_zdistrib</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">m_est_noisy_zdistrib</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="n">noisy_data</span><span class="p">,</span> <span class="n">cl_noisy</span><span class="p">,</span> <span class="n">cl_noisy</span><span class="o">.</span><span class="n">profile</span><span class="p">)</span>
+<span class="n">gt_est_ideal_singlez</span> <span class="o">=</span> <span class="n">model_reduced_tangential_shear_singlez</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">m_est_ideal_singlez</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>  <span class="n">cl_ideal</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">])</span>
+<span class="n">gt_est_noisy_singlez</span> <span class="o">=</span> <span class="n">model_reduced_tangential_shear_singlez</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">m_est_noisy_singlez</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>  <span class="n">cl_noisy</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>We compare to tangential shear obtained with theoretical mass. We plot
+the reduced tangential shear models first when redshift distribution is
+accounted for in the model then for the naive approach, with respective
+best-fit masses.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span> <span class="mi">20</span> <span class="p">,</span> <span class="mi">6</span> <span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span> <span class="mi">1</span> <span class="p">,</span> <span class="mi">2</span> <span class="p">,</span> <span class="mi">1</span> <span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;tangential shear $g_t$ (ideal data)&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">cl_ideal</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;gt&#39;</span><span class="p">],</span><span class="n">cl_ideal</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;gt_err&#39;</span><span class="p">],</span><span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+             <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;ideal data, $M_</span><span class="si">{input}</span><span class="s1">$ = </span><span class="si">%.1e</span><span class="s1"> Msun&#39;</span> <span class="o">%</span> <span class="n">cluster_m</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">gt_est_ideal_zdistrib</span><span class="p">,</span><span class="s1">&#39;-b&#39;</span><span class="p">,</span>
+           <span class="n">label</span><span class="o">=</span><span class="sa">fr</span><span class="s1">&#39;model w/ zdistrib, M_fit = </span><span class="si">{</span><span class="n">m_est_ideal_zdistrib</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1"> $\pm$ </span><span class="si">{</span><span class="n">m_est_err_ideal_zdistrib</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1"> Msun&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">gt_est_ideal_singlez</span><span class="p">,</span><span class="s1">&#39;-y&#39;</span><span class="p">,</span>\
+           <span class="n">label</span><span class="o">=</span><span class="sa">fr</span><span class="s1">&#39;model w/o zdistrib, M_fit = </span><span class="si">{</span><span class="n">m_est_ideal_singlez</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1"> $\pm$ </span><span class="si">{</span><span class="n">m_est_err_ideal_singlez</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1"> Msun&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;r [Mpc]&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$g_t$&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">cl_ideal</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">]),</span> <span class="nb">max</span><span class="p">(</span><span class="n">cl_ideal</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">]))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span> <span class="o">=</span> <span class="mi">15</span><span class="p">)</span>
+
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span> <span class="mi">1</span> <span class="p">,</span> <span class="mi">2</span> <span class="p">,</span> <span class="mi">2</span> <span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;tangential shear $g_t$ (noisy data)&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">cl_noisy</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;gt&#39;</span><span class="p">],</span><span class="n">cl_noisy</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;gt_err&#39;</span><span class="p">],</span><span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;noisy data, $M_</span><span class="si">{input}</span><span class="s1">$ = </span><span class="si">%.1e</span><span class="s1"> Msun&#39;</span> <span class="o">%</span> <span class="n">cluster_m</span><span class="p">)</span>
+<span class="c1">#plt.loglog(r,gt_model_noisy,&#39;-r&#39;,  label=&#39;model, $M_{input}$ = %.3e Msun&#39; % cluster_m)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">gt_est_noisy_zdistrib</span><span class="p">,</span><span class="s1">&#39;-b&#39;</span><span class="p">,</span>
+           <span class="n">label</span><span class="o">=</span><span class="sa">fr</span><span class="s1">&#39;model w/ zdistrib, M_fit = </span><span class="si">{</span><span class="n">m_est_noisy_zdistrib</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1"> $\pm$ </span><span class="si">{</span><span class="n">m_est_err_noisy_zdistrib</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1"> Msun&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">gt_est_noisy_singlez</span><span class="p">,</span><span class="s1">&#39;-y&#39;</span><span class="p">,</span>
+           <span class="n">label</span><span class="o">=</span><span class="sa">fr</span><span class="s1">&#39;model w/o zdistrib, M_fit = </span><span class="si">{</span><span class="n">m_est_noisy_singlez</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1"> $\pm$ </span><span class="si">{</span><span class="n">m_est_err_noisy_singlez</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1"> Msun&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;r [Mpc]&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$g_t$&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">cl_noisy</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">]),</span> <span class="nb">max</span><span class="p">(</span><span class="n">cl_noisy</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">]))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span> <span class="o">=</span> <span class="mi">15</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x7fa822318c10</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<img alt="../_images/Example3_Fit_Halo_Mass_to_Shear_Catalog_55_1.png" src="../_images/Example3_Fit_Halo_Mass_to_Shear_Catalog_55_1.png" />
+<p>We note that the reconstruction of mass is biaised when redshift
+distribution is not accounted for the model, and is smaller compared to
+input mass. It is associated to the increase of the reduced tangential
+shear with the source redshift <span class="math notranslate nohighlight">\(z_s\)</span> for a given radius <span class="math notranslate nohighlight">\(r\)</span>.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
