@@ -81,15 +81,25 @@ class CTModeling(CLMModeling):
                 self.cdelta, Omega_m, delta=self.delta_mdef)*h**2
 
     def eval_surface_density(self, r_proj, z_cl):
-        if self.cosmo is None:
-            raise ValueError(f"Missing cosmology.")
         h = self.cosmo['h']
         Omega_m = self.cosmo.get_E2Omega_m(z_cl)*self.cor_factor
         return ct.deltasigma.Sigma_nfw_at_R(_assert_correct_type_ct(r_proj)*h, self.mdelta*h,
                 self.cdelta, Omega_m, delta=self.delta_mdef)*h*1.0e12 # pc**-2 to Mpc**-2
 
     def eval_mean_surface_density(self, r_proj, z_cl):
-        '''
+        r''' Computes the mean value of surface density inside radius r_proj
+
+        Parameters
+        ----------
+        r_proj : array_like
+            Projected radial position from the cluster center in :math:`M\!pc`.
+        z_cl: float
+            Redshift of the cluster
+
+        Returns
+        -------
+        array_like, float
+            Excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
 
         Note
         ----
@@ -113,17 +123,17 @@ class CTModeling(CLMModeling):
     def eval_tangential_shear(self, r_proj, z_cl, z_src):
         delta_sigma = self.eval_excess_surface_density(r_proj, z_cl)
         sigma_c = self.eval_critical_surface_density(z_cl, z_src)
-        return np.nan_to_num(delta_sigma/sigma_c, nan=np.nan, posinf=np.inf, neginf=-np.inf)
+        return delta_sigma/sigma_c
 
     def eval_convergence(self, r_proj, z_cl, z_src):
         sigma = self.eval_surface_density(r_proj, z_cl)
         sigma_c = self.eval_critical_surface_density(z_cl, z_src)
-        return np.nan_to_num(sigma/sigma_c, nan=np.nan, posinf=np.inf, neginf=-np.inf)
+        return sigma/sigma_c
 
     def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src):
         kappa = self.eval_convergence(r_proj, z_cl, z_src)
         gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
-        return np.nan_to_num(np.divide(gamma_t, (1-kappa)), nan=np.nan, posinf=np.inf, neginf=-np.inf)
+        return np.divide(gamma_t, (1-kappa))
 
     def eval_magnification(self, r_proj, z_cl, z_src):
         # The magnification is computed taking into account just the tangential shear. This is valid for

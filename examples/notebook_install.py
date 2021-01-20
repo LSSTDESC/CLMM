@@ -1,6 +1,3 @@
-
-
-
 def install_clmm_pipeline(upgrade=False):
     """
     Tries to import clmm module. If this fails, it installs it and cluster_toolkit

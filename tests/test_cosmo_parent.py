@@ -34,6 +34,7 @@ def test_class(modeling_data):
     assert_raises(NotImplementedError, CLMMCosmology.eval_da_z1z2, None, None, None)
     assert_raises(AttributeError, CLMMCosmology.eval_da, None, None)
     assert_raises(NotImplementedError, CLMMCosmology.eval_sigma_crit, None, None, None)
+    assert_raises(NotImplementedError, CLMMCosmology.get_E2Omega_m, None, None)
 TOLERANCE = {'rtol': 1.0e-15}
 
 
@@ -99,14 +100,19 @@ def test_cosmo_basic(modeling_data, cosmo_init):
     Omega_m0 = cosmo['Omega_m0']
     assert_allclose(cosmo.get_Omega_m(0.0), Omega_m0, **TOLERANCE)
     assert_allclose(cosmo.get_E2Omega_m(0.0), Omega_m0, **TOLERANCE)
-    # Test params
+    # Test getting all parameters
+    for param in ("Omega_m0", "Omega_b0", "Omega_dm0", "Omega_k0", 'h', 'H0'):
+        cosmo[param]
+    # Test params values
     for param in cosmo_init.keys():
         assert_allclose(cosmo_init[param], cosmo[param], **TOLERANCE)
     # Test for NumCosmo
     if cosmo.backend == 'nc':
-        for param in cosmo_init.keys():
-            cosmo[param] = cosmo_init[param]*1.01
+        for param in ("Omega_b0", "Omega_dm0", "Omega_k0", 'h', 'H0'):
+            cosmo[param] *= 1.01
         assert_raises(ValueError, cosmo._set_param, "nonexistent", 0.0)
+        # Initializing a cosmology from a dist argument
+        theo.Cosmology(dist=cosmo.dist)
     else:
         assert_raises(NotImplementedError, cosmo._set_param, "nonexistent", 0.0)
     # Test missing parameter

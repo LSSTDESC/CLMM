@@ -30,12 +30,11 @@ class CCLCLMModeling(CLMModeling):
             'critical': 'critical',
             'virial': 'critical'}
         self.hdpm_dict = {'nfw': ccl.halos.HaloProfileNFW}
-        # Only add the options of einasto and hernquist if CLL version >= 10(?)
-        # because results below this version are unstable.
-        if version.parse(ccl.__version__) >= version.parse('10'):
-            self.hdpm_dict.update({
-                'einasto': ccl.halos.HaloProfileEinasto,
-                'hernquist': ccl.halos.HaloProfileHernquist})
+        # Uncomment lines below when CCL einasto and hernquist profiles are stable (also add version number)
+        #if version.parse(ccl.__version__) >= version.parse('???'):
+        #    self.hdpm_dict.update({
+        #        'einasto': ccl.halos.HaloProfileEinasto,
+        #        'hernquist': ccl.halos.HaloProfileHernquist})
         # Attributes exclusive to this class
         self.hdpm_opts = {'nfw': {'truncated': False,
                                   'projected_analytic': True,
@@ -109,13 +108,13 @@ class CCLCLMModeling(CLMModeling):
         sigma = self.eval_surface_density(r_proj, z_cl)
         sigma_crit = self.eval_critical_surface_density(z_cl, z_src)
 
-        return np.nan_to_num(sigma/sigma_crit, nan=np.nan, posinf=np.inf, neginf=-np.inf)
+        return sigma/sigma_crit
 
     def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src):
         kappa = self.eval_convergence(r_proj, z_cl, z_src)
         gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
 
-        return np.nan_to_num(np.divide(gamma_t, (1-kappa)), nan=np.nan, posinf=np.inf, neginf=-np.inf)
+        return np.divide(gamma_t, (1-kappa))
 
     def eval_magnification(self, r_proj, z_cl, z_src):
         kappa = self.eval_convergence(r_proj, z_cl, z_src)

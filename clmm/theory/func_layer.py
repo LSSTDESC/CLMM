@@ -32,8 +32,8 @@ def compute_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_pr
         Galaxy cluster concentration
     z_cl: float
         Redshift of the cluster
-    cosmo : pyccl.core.Cosmology object
-        CCL Cosmology object
+    cosmo : clmm.cosmology.Cosmology object
+        CLMM Cosmology object
     delta_mdef : int, optional
         Mass overdensity definition; defaults to 200.
     halo_profile_model : str, optional
@@ -85,8 +85,8 @@ def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
         Galaxy cluster concentration
     z_cl: float
         Redshift of the cluster
-    cosmo : pyccl.core.Cosmology object
-        CCL Cosmology object
+    cosmo : clmm.cosmology.Cosmology object
+        CLMM Cosmology object
     delta_mdef : int, optional
         Mass overdensity definition; defaults to 200.
     halo_profile_model : str, optional
@@ -141,8 +141,8 @@ def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
         Galaxy cluster concentration
     z_cl: float
         Redshift of the cluster
-    cosmo : pyccl.core.Cosmology object
-        CCL Cosmology object
+    cosmo : clmm.cosmology.Cosmology object
+        CLMM Cosmology object
     delta_mdef : int, optional
         Mass overdensity definition; defaults to 200.
     halo_profile_model : str, optional
@@ -178,8 +178,8 @@ def compute_critical_surface_density(cosmo, z_cluster, z_source):
 
     Parameters
     ----------
-    cosmo : pyccl.core.Cosmology object
-        CCL Cosmology object
+    cosmo : clmm.cosmology.Cosmology object
+        CLMM Cosmology object
     z_cluster : float
         Galaxy cluster redshift
     z_source : array_like, float
@@ -224,8 +224,8 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
         Galaxy cluster redshift
     z_source : array_like, float
         Background source galaxy redshift(s)
-    cosmo : pyccl.core.Cosmology object
-        CCL Cosmology object
+    cosmo : clmm.cosmology.Cosmology object
+        CLMM Cosmology object
     delta_mdef : int, optional
         Mass overdensity definition.  Defaults to 200.
     halo_profile_model : str, optional
@@ -298,8 +298,8 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
         Galaxy cluster redshift
     z_source : array_like, float
         Background source galaxy redshift(s)
-    cosmo : pyccl.core.Cosmology object
-        CCL Cosmology object
+    cosmo : clmm.cosmology.Cosmology object
+        CLMM Cosmology object
     delta_mdef : int, optional
         Mass overdensity definition.  Defaults to 200.
     halo_profile_model : str, optional
@@ -373,8 +373,8 @@ def compute_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
         Galaxy cluster redshift
     z_source : array_like, float
         Background source galaxy redshift(s)
-    cosmo : pyccl.core.Cosmology object
-        CCL Cosmology object
+    cosmo : clmm.cosmology.Cosmology object
+        CLMM Cosmology object
     delta_mdef : int, optional
         Mass overdensity definition.  Defaults to 200.
     halo_profile_model : str, optional
@@ -453,8 +453,8 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
         Galaxy cluster redshift
     z_source : array_like, float
         Background source galaxy redshift(s)
-    cosmo : pyccl.core.Cosmology object
-        CCL Cosmology object
+    cosmo : clmm.cosmology.Cosmology object
+        CLMM Cosmology object
     delta_mdef : int, optional
         Mass overdensity definition.  Defaults to 200.
     halo_profile_model : str, optional
