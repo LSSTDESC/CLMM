@@ -108,11 +108,6 @@ def test_integrity_of_lensfuncs():
     assert_raises(TypeError, cl.add_critical_surface_density, cosmo)
 
 def test_plot_profiles():
-    import os
-    import matplotlib as mpl
-    if os.environ.get('DISPLAY','') == '':
-        print('no display found. Using non-interactive Agg backend')
-        mpl.use('Agg')
     # Input values
     ra_lens, dec_lens, z_lens = 120., 42., 0.5
     ra_source = [120.1, 119.9]
