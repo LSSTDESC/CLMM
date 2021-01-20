@@ -1,7 +1,0 @@
-clmm.support.mock\_data module
-==============================
-
-.. automodule:: clmm.support.mock_data
-   :members:
-   :undoc-members:
-   :show-inheritance:
