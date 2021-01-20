@@ -1,0 +1,813 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Measure a Profile &mdash; CLMM 0.9.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Model a Galaxy Cluster" href="demo_theory_functionality.html" />
+    <link rel="prev" title="Generate Mock Data" href="demo_generate_mock_cluster.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> CLMM
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.9.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../source/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../source/citing.html">Citing CLMM</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Usage Demos</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="demo_generate_mock_cluster.html">Generate Mock Data</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Measure a Profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Mass Fitting Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example2_Fit_Halo_Mass_to_Shear_Catalog_NC.html">Fit halo mass to shear profile using Numcosmo statistical framework</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.constants.html">clmm.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.cosmology.html">clmm.cosmology package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.cosmology.ccl.html">clmm.cosmology.ccl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.cosmology.cluster_toolkit.html">clmm.cosmology.cluster_toolkit module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.cosmology.numcosmo.html">clmm.cosmology.numcosmo module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.cosmology.parent_class.html">clmm.cosmology.parent_class module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.dataops.html">clmm.dataops package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.gcdata.html">clmm.gcdata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.theory.html">clmm.theory package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.be_setup.html">clmm.theory.be_setup module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.ccl.html">clmm.theory.ccl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.cluster_toolkit.html">clmm.theory.cluster_toolkit module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.func_layer.html">clmm.theory.func_layer module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.generic.html">clmm.theory.generic module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.numcosmo.html">clmm.theory.numcosmo module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.parent_class.html">clmm.theory.parent_class module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.plotting.html">clmm.plotting package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.utils.html">clmm.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.support.html">clmm.support package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.support.mock_data.html">clmm.support.mock_data module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.support.sampler.html">clmm.support.sampler module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CLMM</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Measure a Profile</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/compiled-examples/demo_dataops_functionality.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="measure-a-profile">
+<h1>Measure a Profile<a class="headerlink" href="#measure-a-profile" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="note">
+<h2>Note<a class="headerlink" href="#note" title="Permalink to this headline">¶</a></h2>
+<p>All functions in this section can be used passing the explicit arguments
+but are also internal functions of the cluster object, and should be
+used as such. They are just explicitely used here for clarity.</p>
+<p>Ex:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">theta</span><span class="p">,</span> <span class="n">g_t</span><span class="p">,</span> <span class="n">g_x</span> <span class="o">=</span> <span class="n">compute_tangential_and_cross_components</span><span class="p">(</span><span class="n">ra_lens</span><span class="p">,</span> <span class="n">dec_lens</span><span class="p">,</span>
+                <span class="n">ra_source</span><span class="p">,</span> <span class="n">dec_source</span><span class="p">,</span> <span class="n">shear1</span><span class="p">,</span> <span class="n">shear2</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;flat&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>should be done by the user as:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">theta</span><span class="p">,</span> <span class="n">g_t</span><span class="p">,</span> <span class="n">g_x</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">compute_tangential_and_cross_components</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;flat&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">clmm</span>
+<span class="kn">import</span> <span class="nn">clmm.dataops</span>
+<span class="kn">from</span> <span class="nn">clmm.dataops</span> <span class="kn">import</span> <span class="n">compute_tangential_and_cross_components</span><span class="p">,</span> <span class="n">make_radial_profile</span><span class="p">,</span> <span class="n">make_bins</span>
+<span class="kn">from</span> <span class="nn">clmm.galaxycluster</span> <span class="kn">import</span> <span class="n">GalaxyCluster</span>
+<span class="kn">import</span> <span class="nn">clmm.utils</span> <span class="k">as</span> <span class="nn">u</span>
+<span class="kn">from</span> <span class="nn">clmm</span> <span class="kn">import</span> <span class="n">Cosmology</span>
+<span class="kn">from</span> <span class="nn">clmm.support</span> <span class="kn">import</span> <span class="n">mock_data</span> <span class="k">as</span> <span class="n">mock</span>
+</pre></div>
+</div>
+<p>Make sure we know which version we’re using</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clmm</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;0.9.0&#39;</span>
+</pre></div>
+</div>
+<div class="section" id="define-cosmology-object">
+<h3>Define cosmology object<a class="headerlink" href="#define-cosmology-object" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mock_cosmo</span> <span class="o">=</span> <span class="n">Cosmology</span><span class="p">(</span><span class="n">H0</span> <span class="o">=</span> <span class="mf">70.0</span><span class="p">,</span> <span class="n">Omega_dm0</span> <span class="o">=</span> <span class="mf">0.27</span> <span class="o">-</span> <span class="mf">0.045</span><span class="p">,</span> <span class="n">Omega_b0</span> <span class="o">=</span> <span class="mf">0.045</span><span class="p">,</span> <span class="n">Omega_k0</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="generate-cluster-object-from-mock-data">
+<h2>1. Generate cluster object from mock data<a class="headerlink" href="#generate-cluster-object-from-mock-data" title="Permalink to this headline">¶</a></h2>
+<p>In this example, the mock data includes: shape noise, galaxies drawn
+from redshift distribution and photoz errors.</p>
+<p>Define toy cluster parameters for mock data generation</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cosmo</span> <span class="o">=</span> <span class="n">mock_cosmo</span>
+<span class="n">cluster_id</span> <span class="o">=</span> <span class="s2">&quot;Awesome_cluster&quot;</span>
+<span class="n">cluster_m</span> <span class="o">=</span> <span class="mf">1.e15</span>
+<span class="n">cluster_z</span> <span class="o">=</span> <span class="mf">0.3</span>
+<span class="n">concentration</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">ngals</span> <span class="o">=</span> <span class="mi">1000</span>
+
+<span class="n">zsrc_min</span> <span class="o">=</span> <span class="n">cluster_z</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="c1"># we only want to draw background galaxies</span>
+
+<span class="n">noisy_data_z</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span><span class="n">cluster_m</span><span class="p">,</span>
+                                            <span class="n">cluster_z</span><span class="p">,</span>
+                                            <span class="n">concentration</span><span class="p">,</span>
+                                            <span class="n">cosmo</span><span class="p">,</span>
+                                            <span class="s1">&#39;chang13&#39;</span><span class="p">,</span>
+                                            <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span>
+                                            <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span>
+                                            <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Loading this into a CLMM cluster object centered on (0,0)</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cluster_ra</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">cluster_dec</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">cl</span> <span class="o">=</span> <span class="n">GalaxyCluster</span><span class="p">(</span><span class="n">cluster_id</span><span class="p">,</span> <span class="n">cluster_ra</span><span class="p">,</span> <span class="n">cluster_dec</span><span class="p">,</span>
+                               <span class="n">cluster_z</span><span class="p">,</span> <span class="n">noisy_data_z</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="load-cluster-object-containing">
+<h3>2. Load cluster object containing:<a class="headerlink" href="#load-cluster-object-containing" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Lens properties (ra_l, dec_l, z_l)</p>
+</div></blockquote>
+<blockquote>
+<div><p>Source properties (ra_s, dec_s, e1, e2) ### Note, if loading from
+mock data, use: cl = gc.GalaxyCluster.load(“GC_from_mock_data.pkl”)</p>
+</div></blockquote>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cluster info = ID:&quot;</span><span class="p">,</span> <span class="n">cl</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="s2">&quot;; ra:&quot;</span><span class="p">,</span> <span class="n">cl</span><span class="o">.</span><span class="n">ra</span><span class="p">,</span>
+      <span class="s2">&quot;; dec:&quot;</span><span class="p">,</span> <span class="n">cl</span><span class="o">.</span><span class="n">dec</span><span class="p">,</span> <span class="s2">&quot;; z_l :&quot;</span><span class="p">,</span> <span class="n">cl</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The number of source galaxies is :&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Cluster</span> <span class="n">info</span> <span class="o">=</span> <span class="n">ID</span><span class="p">:</span> <span class="n">Awesome_cluster</span> <span class="p">;</span> <span class="n">ra</span><span class="p">:</span> <span class="mf">0.0</span> <span class="p">;</span> <span class="n">dec</span><span class="p">:</span> <span class="mf">0.0</span> <span class="p">;</span> <span class="n">z_l</span> <span class="p">:</span> <span class="mf">0.3</span>
+<span class="n">The</span> <span class="n">number</span> <span class="n">of</span> <span class="n">source</span> <span class="n">galaxies</span> <span class="ow">is</span> <span class="p">:</span> <span class="mi">1000</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="basic-checks-and-plots">
+<h2>2. Basic checks and plots<a class="headerlink" href="#basic-checks-and-plots" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>galaxy positions</p></li>
+<li><p>redshift distribution</p></li>
+</ul>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;ra&#39;</span><span class="p">],</span> <span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;dec&#39;</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">ra</span><span class="p">,</span> <span class="n">cl</span><span class="o">.</span><span class="n">dec</span><span class="p">,</span> <span class="s1">&#39;ro&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;dec&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="s2">&quot;large&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;ra&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="s2">&quot;large&quot;</span><span class="p">)</span>
+
+<span class="n">hist</span> <span class="o">=</span> <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">40</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;$z_</span><span class="si">{source}</span><span class="s1">$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="s2">&quot;large&quot;</span><span class="p">)</span>
+<span class="n">xt</span> <span class="o">=</span> <span class="p">{</span><span class="n">t</span><span class="p">:</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get_xticks</span><span class="p">()</span> <span class="k">if</span> <span class="n">t</span><span class="o">!=</span><span class="mi">0</span><span class="p">}</span>
+<span class="n">xt</span><span class="p">[</span><span class="n">cl</span><span class="o">.</span><span class="n">z</span><span class="p">]</span> <span class="o">=</span><span class="s1">&#39;$z_</span><span class="si">{cl}</span><span class="s1">$&#39;</span>
+<span class="n">xto</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">xt</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">+</span><span class="p">[</span><span class="n">cl</span><span class="o">.</span><span class="n">z</span><span class="p">])</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">xto</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">xt</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">xto</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get_xticklabels</span><span class="p">()[</span><span class="n">xto</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">z</span><span class="p">)]</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">xto</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../_images/demo_dataops_functionality_15_0.png" src="../_images/demo_dataops_functionality_15_0.png" />
+<ul class="simple">
+<li><p>Check ellipticities</p></li>
+</ul>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">ax1</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;e1&#39;</span><span class="p">],</span> <span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;e2&#39;</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;e1&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;e2&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">,</span> <span class="s1">&#39;datalim&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;dotted&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;dotted&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">lines</span><span class="o">.</span><span class="n">Line2D</span> <span class="n">at</span> <span class="mh">0x7fb784d3d5e0</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<img alt="../_images/demo_dataops_functionality_17_1.png" src="../_images/demo_dataops_functionality_17_1.png" />
+</div>
+<div class="section" id="compute-and-plot-shear-profiles">
+<h2>3. Compute and plot shear profiles<a class="headerlink" href="#compute-and-plot-shear-profiles" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="compute-angular-separation-cross-and-tangential-shear-for-each-source-galaxy">
+<h3>3.1 Compute angular separation, cross and tangential shear for each source galaxy<a class="headerlink" href="#compute-angular-separation-cross-and-tangential-shear-for-each-source-galaxy" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">theta</span><span class="p">,</span> <span class="n">e_t</span><span class="p">,</span> <span class="n">e_x</span> <span class="o">=</span> <span class="n">compute_tangential_and_cross_components</span><span class="p">(</span>
+                <span class="n">ra_lens</span><span class="o">=</span><span class="n">cl</span><span class="o">.</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec_lens</span><span class="o">=</span><span class="n">cl</span><span class="o">.</span><span class="n">dec</span><span class="p">,</span>
+                <span class="n">ra_source</span><span class="o">=</span><span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;ra&#39;</span><span class="p">],</span> <span class="n">dec_source</span><span class="o">=</span><span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;dec&#39;</span><span class="p">],</span>
+                <span class="n">shear1</span><span class="o">=</span><span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;e1&#39;</span><span class="p">],</span> <span class="n">shear2</span><span class="o">=</span><span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;e2&#39;</span><span class="p">],</span>
+                <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;flat&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="using-galaxycluster-object">
+<h4>3.1.1 Using <code class="docutils literal notranslate"><span class="pre">GalaxyCluster</span></code> object<a class="headerlink" href="#using-galaxycluster-object" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>You can also call the function directly from the <code class="docutils literal notranslate"><span class="pre">GalaxyCluster</span></code>
+object</p></li>
+<li><p>By defaut, <code class="docutils literal notranslate"><span class="pre">compute_tangential_and_cross_components</span></code> uses columns
+named <code class="docutils literal notranslate"><span class="pre">e1</span></code> and <code class="docutils literal notranslate"><span class="pre">e2</span></code> of the <code class="docutils literal notranslate"><span class="pre">galcat</span></code> table</p></li>
+</ul>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cl</span><span class="o">.</span><span class="n">compute_tangential_and_cross_components</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;flat&quot;</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1"># With the option add the cl object has theta, et and ex new columns</span>
+<span class="c1"># (default: takes in columns named &#39;e1&#39; and &#39;e2&#39; and save the results in &#39;et&#39; and &#39;ex&#39;)</span>
+<span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;et&#39;</span><span class="p">,</span> <span class="s1">&#39;ex&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">max_width</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>          <span class="n">et</span>                      <span class="n">ex</span>
+<span class="o">----------------------</span> <span class="o">-----------------------</span>
+  <span class="mf">0.012214288329487826</span> <span class="o">-</span><span class="mf">0.00039578120091545235</span>
+ <span class="mf">0.0073690788130523505</span>   <span class="mf">0.0024089073714982545</span>
+   <span class="mf">0.01780016286122268</span>  <span class="o">-</span><span class="mf">0.0035699544972048014</span>
+   <span class="mf">0.00728932417901366</span>   <span class="mf">0.0005710986406238055</span>
+   <span class="mf">0.07897442332507311</span>  <span class="o">-</span><span class="mf">0.0032455423964193337</span>
+   <span class="mf">0.02276890929679264</span>    <span class="mf">0.008255290529589827</span>
+  <span class="mf">0.014785867035391868</span>    <span class="mf">0.003106710649164227</span>
+   <span class="mf">0.01600717402844889</span>    <span class="mf">0.006010217216927803</span>
+   <span class="mf">0.02156307274588469</span>    <span class="mf">0.002182605602438867</span>
+   <span class="mf">0.00448987773672151</span>   <span class="o">-</span><span class="mf">0.003663983920974256</span>
+                   <span class="o">...</span>                     <span class="o">...</span>
+   <span class="mf">0.01189783476039314</span>   <span class="o">-</span><span class="mf">0.003993436029881061</span>
+    <span class="mf">0.0244499226689738</span>    <span class="mf">0.010420430173276546</span>
+ <span class="mf">0.0022616913231804786</span>   <span class="o">-</span><span class="mf">0.005770664414407029</span>
+    <span class="mf">0.0337576934948953</span>     <span class="mf">0.00380973283784029</span>
+  <span class="mf">0.008948995782587378</span>   <span class="o">-</span><span class="mf">0.008836871901788074</span>
+<span class="mf">0.00038813142722915863</span>    <span class="mf">0.007027295230186073</span>
+  <span class="mf">0.057447077361994996</span>   <span class="mf">0.0023190677497743634</span>
+  <span class="mf">0.011928142036426096</span>   <span class="o">-</span><span class="mf">0.007302737867911088</span>
+<span class="o">-</span><span class="mf">0.0032006020125134853</span>  <span class="o">-</span><span class="mf">0.0011276906491111743</span>
+  <span class="mf">0.015878799300797483</span>  <span class="o">-</span><span class="mf">0.0013050544047556248</span>
+  <span class="mf">0.015147191001526556</span>  <span class="o">-</span><span class="mf">0.0002177452889650242</span>
+<span class="n">Length</span> <span class="o">=</span> <span class="mi">1000</span> <span class="n">rows</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>But it’s also possible to choose which columns to use for input and
+output, e.g. Below we’re storing the results in <code class="docutils literal notranslate"><span class="pre">e_tan</span></code> and
+<code class="docutils literal notranslate"><span class="pre">e_cross</span></code> instead (explicitely taking <code class="docutils literal notranslate"><span class="pre">e1</span></code> and <code class="docutils literal notranslate"><span class="pre">e2</span></code> as input)</p></li>
+</ul>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cl</span><span class="o">.</span><span class="n">compute_tangential_and_cross_components</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;flat&quot;</span><span class="p">,</span>
+                                                      <span class="n">shape_component1</span><span class="o">=</span><span class="s1">&#39;e1&#39;</span><span class="p">,</span> <span class="n">shape_component2</span><span class="o">=</span><span class="s1">&#39;e2&#39;</span><span class="p">,</span>
+                                                      <span class="n">tan_component</span><span class="o">=</span><span class="s1">&#39;e_tan&#39;</span><span class="p">,</span> <span class="n">cross_component</span><span class="o">=</span><span class="s1">&#39;e_cross&#39;</span><span class="p">,</span>
+                                                      <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;e_tan&#39;</span><span class="p">,</span> <span class="s1">&#39;e_cross&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">max_width</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>        <span class="n">e_tan</span>                  <span class="n">e_cross</span>
+<span class="o">----------------------</span> <span class="o">-----------------------</span>
+  <span class="mf">0.012214288329487826</span> <span class="o">-</span><span class="mf">0.00039578120091545235</span>
+ <span class="mf">0.0073690788130523505</span>   <span class="mf">0.0024089073714982545</span>
+   <span class="mf">0.01780016286122268</span>  <span class="o">-</span><span class="mf">0.0035699544972048014</span>
+   <span class="mf">0.00728932417901366</span>   <span class="mf">0.0005710986406238055</span>
+   <span class="mf">0.07897442332507311</span>  <span class="o">-</span><span class="mf">0.0032455423964193337</span>
+   <span class="mf">0.02276890929679264</span>    <span class="mf">0.008255290529589827</span>
+  <span class="mf">0.014785867035391868</span>    <span class="mf">0.003106710649164227</span>
+   <span class="mf">0.01600717402844889</span>    <span class="mf">0.006010217216927803</span>
+   <span class="mf">0.02156307274588469</span>    <span class="mf">0.002182605602438867</span>
+   <span class="mf">0.00448987773672151</span>   <span class="o">-</span><span class="mf">0.003663983920974256</span>
+                   <span class="o">...</span>                     <span class="o">...</span>
+   <span class="mf">0.01189783476039314</span>   <span class="o">-</span><span class="mf">0.003993436029881061</span>
+    <span class="mf">0.0244499226689738</span>    <span class="mf">0.010420430173276546</span>
+ <span class="mf">0.0022616913231804786</span>   <span class="o">-</span><span class="mf">0.005770664414407029</span>
+    <span class="mf">0.0337576934948953</span>     <span class="mf">0.00380973283784029</span>
+  <span class="mf">0.008948995782587378</span>   <span class="o">-</span><span class="mf">0.008836871901788074</span>
+<span class="mf">0.00038813142722915863</span>    <span class="mf">0.007027295230186073</span>
+  <span class="mf">0.057447077361994996</span>   <span class="mf">0.0023190677497743634</span>
+  <span class="mf">0.011928142036426096</span>   <span class="o">-</span><span class="mf">0.007302737867911088</span>
+<span class="o">-</span><span class="mf">0.0032006020125134853</span>  <span class="o">-</span><span class="mf">0.0011276906491111743</span>
+  <span class="mf">0.015878799300797483</span>  <span class="o">-</span><span class="mf">0.0013050544047556248</span>
+  <span class="mf">0.015147191001526556</span>  <span class="o">-</span><span class="mf">0.0002177452889650242</span>
+<span class="n">Length</span> <span class="o">=</span> <span class="mi">1000</span> <span class="n">rows</span>
+</pre></div>
+</div>
+<p>Plot tangential and cross ellipticity distributions for verification,
+which can be accessed in the galaxy cluster object, cl.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;et&#39;</span><span class="p">],</span><span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">epsilon_t$&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="s1">&#39;xx-large&#39;</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;ex&#39;</span><span class="p">],</span><span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">epsilon_x$&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="s1">&#39;xx-large&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../_images/demo_dataops_functionality_26_0.png" src="../_images/demo_dataops_functionality_26_0.png" />
+<p>Compute transversal and cross shear profiles in units defined by user,
+using defaults binning</p>
+</div>
+</div>
+<div class="section" id="compute-shear-profile-in-radial-bins">
+<h3>3.2 Compute shear profile in radial bins<a class="headerlink" href="#compute-shear-profile-in-radial-bins" title="Permalink to this headline">¶</a></h3>
+<p>Given the separations in “radians” computed in the previous step, the
+user may ask for a binned profile in various projected distance units.
+#### 3.2.1 Default binning - default binning using kpc:</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">profiles</span> <span class="o">=</span> <span class="n">make_radial_profile</span><span class="p">([</span><span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;et&#39;</span><span class="p">],</span> <span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;ex&#39;</span><span class="p">],</span> <span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]],</span>
+                                    <span class="n">angsep</span><span class="o">=</span><span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;theta&#39;</span><span class="p">],</span> <span class="n">angsep_units</span><span class="o">=</span><span class="s2">&quot;radians&quot;</span><span class="p">,</span>
+                                    <span class="n">bin_units</span><span class="o">=</span><span class="s2">&quot;kpc&quot;</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">z_lens</span><span class="o">=</span><span class="n">cl</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+<span class="n">profiles</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">max_width</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1">#profiles.show_in_notebook()</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>    <span class="n">radius_min</span>           <span class="n">radius</span>           <span class="n">radius_max</span>             <span class="n">p_0</span>                 <span class="n">p_0_err</span>                   <span class="n">p_1</span>                  <span class="n">p_1_err</span>                <span class="n">p_2</span>               <span class="n">p_2_err</span>        <span class="n">n_src</span>
+<span class="o">------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">--------------------</span> <span class="o">----------------------</span> <span class="o">-----------------------</span> <span class="o">----------------------</span> <span class="o">------------------</span> <span class="o">--------------------</span> <span class="o">-----</span>
+ <span class="mf">131.3648378768848</span> <span class="mf">451.01133345952394</span>  <span class="mf">677.5461492193622</span>  <span class="mf">0.07208518688117287</span>   <span class="mf">0.004694541375201062</span> <span class="o">-</span><span class="mf">0.00016925869333434204</span>  <span class="mf">0.0011000793565216149</span>  <span class="mf">1.222896445006983</span>  <span class="mf">0.12844444485565748</span>    <span class="mi">21</span>
+ <span class="mf">677.5461492193622</span>  <span class="mf">972.2181077508907</span> <span class="mf">1223.7274605618397</span>  <span class="mf">0.04207244961030847</span>  <span class="mf">0.0017945580348523624</span>  <span class="o">-</span><span class="mf">0.0007876463485997606</span>  <span class="mf">0.0005998816473962802</span> <span class="mf">1.4023019102286884</span>  <span class="mf">0.10813989271744935</span>    <span class="mi">58</span>
+<span class="mf">1223.7274605618397</span> <span class="mf">1506.0612685580734</span> <span class="mf">1769.9087719043173</span>  <span class="mf">0.02575086033739259</span>  <span class="mf">0.0012470522887013467</span>  <span class="mf">0.00047819227899725955</span>  <span class="mf">0.0005662987828426931</span> <span class="mf">1.3389171705998106</span>  <span class="mf">0.09924231620450047</span>    <span class="mi">56</span>
+<span class="mf">1769.9087719043173</span> <span class="mf">2071.4648763809446</span> <span class="mf">2316.0900832467946</span> <span class="mf">0.018320437587285836</span>  <span class="mf">0.0006181715705694405</span>     <span class="mf">0.00088494693205468</span>  <span class="mf">0.0004628471139274575</span> <span class="mf">1.2367077204545602</span>  <span class="mf">0.06902759510501168</span>   <span class="mi">119</span>
+<span class="mf">2316.0900832467946</span>  <span class="mf">2612.334474343091</span>  <span class="mf">2862.271394589272</span> <span class="mf">0.014130734079921001</span>  <span class="mf">0.0005070660791473952</span>   <span class="mf">0.0005388531713315584</span> <span class="mf">0.00037686127085368365</span> <span class="mf">1.2393657543576873</span> <span class="mf">0.059428467191669894</span>   <span class="mi">152</span>
+ <span class="mf">2862.271394589272</span> <span class="mf">3114.3626139408866</span> <span class="mf">3408.4527059317497</span> <span class="mf">0.012447873205656086</span> <span class="mf">0.00043453245611355167</span>  <span class="mf">0.00029311190046662366</span> <span class="mf">0.00035024126450940824</span> <span class="mf">1.1727023425793115</span> <span class="mf">0.048209532138478076</span>   <span class="mi">160</span>
+<span class="mf">3408.4527059317497</span> <span class="mf">3688.4513688308575</span>  <span class="mf">3954.634017274227</span> <span class="mf">0.008647853212842624</span> <span class="mf">0.00037328525587525013</span>   <span class="mf">0.0006949553048192968</span>  <span class="mf">0.0003524768757978509</span>  <span class="mf">1.250810515648566</span>  <span class="mf">0.05317505434774777</span>   <span class="mi">200</span>
+ <span class="mf">3954.634017274227</span>  <span class="mf">4186.382224810304</span>  <span class="mf">4500.815328616704</span> <span class="mf">0.008150645211317553</span>  <span class="mf">0.0004411291693142806</span>   <span class="mf">9.217530928784282e-05</span> <span class="mf">0.00044302551433150734</span> <span class="mf">1.2080516435098572</span>  <span class="mf">0.06165461377049568</span>   <span class="mi">142</span>
+ <span class="mf">4500.815328616704</span>  <span class="mf">4721.821376535352</span>  <span class="mf">5046.996639959182</span> <span class="mf">0.007015535796053761</span>   <span class="mf">0.000643539410263352</span>  <span class="o">-</span><span class="mf">0.0005519593496975705</span>  <span class="mf">0.0005217166594912132</span> <span class="mf">1.1238353949676112</span>  <span class="mf">0.07955484625900448</span>    <span class="mi">68</span>
+ <span class="mf">5046.996639959182</span>  <span class="mf">5242.154439139299</span>  <span class="mf">5593.177951301659</span> <span class="mf">0.007522393791050124</span>  <span class="mf">0.0009558034507759165</span>  <span class="o">-</span><span class="mf">0.0010686396362951866</span>  <span class="mf">0.0008272182663913986</span> <span class="mf">1.0969988511344206</span>   <span class="mf">0.0787043963470885</span>    <span class="mi">24</span>
+</pre></div>
+</div>
+<p>Note that, because this function bins a generic number of quantities in
+the radial profile, its output table names the quantities as <code class="docutils literal notranslate"><span class="pre">p_i</span></code> and
+errors as <code class="docutils literal notranslate"><span class="pre">p_i_err</span></code>.</p>
+<div class="section" id="id1">
+<h4>3.1.2 Using <code class="docutils literal notranslate"><span class="pre">GalaxyCluster</span></code> object<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
+<p>The output <code class="docutils literal notranslate"><span class="pre">GCData</span></code> corresponding to the binning profiled is attached
+as a new attribute of the galaxy cluster object.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cl</span><span class="o">.</span><span class="n">make_radial_profile</span><span class="p">(</span><span class="s2">&quot;kpc&quot;</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
+<span class="n">cl</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">max_width</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1">#cl.profile.show_in_notebook()</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>    <span class="n">radius_min</span>           <span class="n">radius</span>           <span class="n">radius_max</span>              <span class="n">gt</span>                  <span class="n">gt_err</span>                    <span class="n">gx</span>                   <span class="n">gx_err</span>                 <span class="n">z</span>                 <span class="n">z_err</span>         <span class="n">n_src</span>
+<span class="o">------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">--------------------</span> <span class="o">----------------------</span> <span class="o">-----------------------</span> <span class="o">----------------------</span> <span class="o">------------------</span> <span class="o">--------------------</span> <span class="o">-----</span>
+ <span class="mf">131.3648378768848</span> <span class="mf">451.01133345952394</span>  <span class="mf">677.5461492193622</span>  <span class="mf">0.07208518688117287</span>   <span class="mf">0.004694541375201062</span> <span class="o">-</span><span class="mf">0.00016925869333434204</span>  <span class="mf">0.0011000793565216149</span>  <span class="mf">1.222896445006983</span>  <span class="mf">0.12844444485565748</span>    <span class="mi">21</span>
+ <span class="mf">677.5461492193622</span>  <span class="mf">972.2181077508907</span> <span class="mf">1223.7274605618397</span>  <span class="mf">0.04207244961030847</span>  <span class="mf">0.0017945580348523624</span>  <span class="o">-</span><span class="mf">0.0007876463485997606</span>  <span class="mf">0.0005998816473962802</span> <span class="mf">1.4023019102286884</span>  <span class="mf">0.10813989271744935</span>    <span class="mi">58</span>
+<span class="mf">1223.7274605618397</span> <span class="mf">1506.0612685580734</span> <span class="mf">1769.9087719043173</span>  <span class="mf">0.02575086033739259</span>  <span class="mf">0.0012470522887013467</span>  <span class="mf">0.00047819227899725955</span>  <span class="mf">0.0005662987828426931</span> <span class="mf">1.3389171705998106</span>  <span class="mf">0.09924231620450047</span>    <span class="mi">56</span>
+<span class="mf">1769.9087719043173</span> <span class="mf">2071.4648763809446</span> <span class="mf">2316.0900832467946</span> <span class="mf">0.018320437587285836</span>  <span class="mf">0.0006181715705694405</span>     <span class="mf">0.00088494693205468</span>  <span class="mf">0.0004628471139274575</span> <span class="mf">1.2367077204545602</span>  <span class="mf">0.06902759510501168</span>   <span class="mi">119</span>
+<span class="mf">2316.0900832467946</span>  <span class="mf">2612.334474343091</span>  <span class="mf">2862.271394589272</span> <span class="mf">0.014130734079921001</span>  <span class="mf">0.0005070660791473952</span>   <span class="mf">0.0005388531713315584</span> <span class="mf">0.00037686127085368365</span> <span class="mf">1.2393657543576873</span> <span class="mf">0.059428467191669894</span>   <span class="mi">152</span>
+ <span class="mf">2862.271394589272</span> <span class="mf">3114.3626139408866</span> <span class="mf">3408.4527059317497</span> <span class="mf">0.012447873205656086</span> <span class="mf">0.00043453245611355167</span>  <span class="mf">0.00029311190046662366</span> <span class="mf">0.00035024126450940824</span> <span class="mf">1.1727023425793115</span> <span class="mf">0.048209532138478076</span>   <span class="mi">160</span>
+<span class="mf">3408.4527059317497</span> <span class="mf">3688.4513688308575</span>  <span class="mf">3954.634017274227</span> <span class="mf">0.008647853212842624</span> <span class="mf">0.00037328525587525013</span>   <span class="mf">0.0006949553048192968</span>  <span class="mf">0.0003524768757978509</span>  <span class="mf">1.250810515648566</span>  <span class="mf">0.05317505434774777</span>   <span class="mi">200</span>
+ <span class="mf">3954.634017274227</span>  <span class="mf">4186.382224810304</span>  <span class="mf">4500.815328616704</span> <span class="mf">0.008150645211317553</span>  <span class="mf">0.0004411291693142806</span>   <span class="mf">9.217530928784282e-05</span> <span class="mf">0.00044302551433150734</span> <span class="mf">1.2080516435098572</span>  <span class="mf">0.06165461377049568</span>   <span class="mi">142</span>
+ <span class="mf">4500.815328616704</span>  <span class="mf">4721.821376535352</span>  <span class="mf">5046.996639959182</span> <span class="mf">0.007015535796053761</span>   <span class="mf">0.000643539410263352</span>  <span class="o">-</span><span class="mf">0.0005519593496975705</span>  <span class="mf">0.0005217166594912132</span> <span class="mf">1.1238353949676112</span>  <span class="mf">0.07955484625900448</span>    <span class="mi">68</span>
+ <span class="mf">5046.996639959182</span>  <span class="mf">5242.154439139299</span>  <span class="mf">5593.177951301659</span> <span class="mf">0.007522393791050124</span>  <span class="mf">0.0009558034507759165</span>  <span class="o">-</span><span class="mf">0.0010686396362951866</span>  <span class="mf">0.0008272182663913986</span> <span class="mf">1.0969988511344206</span>   <span class="mf">0.0787043963470885</span>    <span class="mi">24</span>
+</pre></div>
+</div>
+<p>You can see that this <code class="docutils literal notranslate"><span class="pre">profile</span></code> table contains metadata regarding the
+comology and bin units</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Cosmology:&#39;</span><span class="p">,</span> <span class="n">cl</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;cosmo&#39;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;bin units:&#39;</span><span class="p">,</span> <span class="n">cl</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;bin_units&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Cosmology</span><span class="p">:</span> <span class="n">AstroPyCosmology</span><span class="p">(</span><span class="n">H0</span><span class="o">=</span><span class="mf">70.0</span><span class="p">,</span> <span class="n">Omega_dm0</span><span class="o">=</span><span class="mf">0.22500000000000003</span><span class="p">,</span> <span class="n">Omega_b0</span><span class="o">=</span><span class="mf">0.045</span><span class="p">,</span> <span class="n">Omega_k0</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+<span class="nb">bin</span> <span class="n">units</span><span class="p">:</span> <span class="n">kpc</span>
+</pre></div>
+</div>
+<p>Use function to plot the profiles</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">plot_profiles</span><span class="p">(</span><span class="n">xscale</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../_images/demo_dataops_functionality_36_0.png" src="../_images/demo_dataops_functionality_36_0.png" />
+<ul class="simple">
+<li><p>default binning using degrees:</p></li>
+</ul>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">new_profiles</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">make_radial_profile</span><span class="p">(</span><span class="s2">&quot;degrees&quot;</span><span class="p">,</span><span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
+<span class="n">fig1</span><span class="p">,</span> <span class="n">ax1</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">plot_profiles</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../_images/demo_dataops_functionality_38_0.png" src="../_images/demo_dataops_functionality_38_0.png" />
+</div>
+<div class="section" id="user-defined-binning">
+<h4>3.2.2 User-defined binning<a class="headerlink" href="#user-defined-binning" title="Permalink to this headline">¶</a></h4>
+<p>The users may also provide their own binning, in user-defined units, to
+compute the transversal and cross shear profiles. The <code class="docutils literal notranslate"><span class="pre">make_bins</span></code>
+function is provided in <code class="docutils literal notranslate"><span class="pre">utils.py</span></code> and allow for various options.</p>
+<ul class="simple">
+<li><p>e.g., generate 20 bins between 1 and 6 Mpc, linearly spaced.</p></li>
+</ul>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">new_bins</span> <span class="o">=</span> <span class="n">make_bins</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="n">nbins</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;evenwidth&#39;</span><span class="p">)</span>
+
+<span class="c1"># Make the shear profile in this binning</span>
+<span class="n">new_profiles</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">make_radial_profile</span><span class="p">(</span><span class="s2">&quot;Mpc&quot;</span><span class="p">,</span>
+                                  <span class="n">bins</span><span class="o">=</span><span class="n">new_bins</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
+
+<span class="n">fig1</span><span class="p">,</span> <span class="n">ax1</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">plot_profiles</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../_images/demo_dataops_functionality_40_0.png" src="../_images/demo_dataops_functionality_40_0.png" />
+<ul class="simple">
+<li><p>e.g., generate 20 bins between 1 and 6 Mpc, evenly spaced in log
+space.</p></li>
+</ul>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">new_bins</span> <span class="o">=</span> <span class="n">make_bins</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="n">nbins</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;evenlog10width&#39;</span><span class="p">)</span>
+
+<span class="n">new_profiles</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">make_radial_profile</span><span class="p">(</span><span class="s2">&quot;Mpc&quot;</span><span class="p">,</span>
+                                  <span class="n">bins</span><span class="o">=</span><span class="n">new_bins</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
+<span class="n">fig1</span><span class="p">,</span> <span class="n">ax1</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">plot_profiles</span><span class="p">()</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../_images/demo_dataops_functionality_42_0.png" src="../_images/demo_dataops_functionality_42_0.png" />
+<ul class="simple">
+<li><p>e.g., generate 20 bins between 1 and 6 Mpc, each contaning the same
+number of galaxies</p></li>
+</ul>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># First, convert the source separation table to Mpc</span>
+<span class="n">seps</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">convert_units</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s2">&quot;theta&quot;</span><span class="p">],</span> <span class="s2">&quot;radians&quot;</span><span class="p">,</span> <span class="s2">&quot;Mpc&quot;</span><span class="p">,</span> <span class="n">redshift</span><span class="o">=</span><span class="n">cl</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
+
+<span class="n">new_bins</span> <span class="o">=</span> <span class="n">make_bins</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="n">nbins</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;equaloccupation&#39;</span><span class="p">,</span> <span class="n">source_seps</span><span class="o">=</span><span class="n">seps</span><span class="p">)</span>
+<span class="n">new_profiles</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">make_radial_profile</span><span class="p">(</span><span class="s2">&quot;Mpc&quot;</span><span class="p">,</span><span class="n">bins</span><span class="o">=</span><span class="n">new_bins</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;number of galaxies in each bin: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;n_src&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">fig1</span><span class="p">,</span> <span class="n">ax1</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">plot_profiles</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">number</span> <span class="n">of</span> <span class="n">galaxies</span> <span class="ow">in</span> <span class="n">each</span> <span class="nb">bin</span><span class="p">:</span> <span class="p">[</span><span class="mi">48</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">48</span><span class="p">]</span>
+</pre></div>
+</div>
+<img alt="../_images/demo_dataops_functionality_44_1.png" src="../_images/demo_dataops_functionality_44_1.png" />
+</div>
+<div class="section" id="other-individual-profile-quantities-may-also-be-accessed">
+<h4>3.2.3 Other individual profile quantities may also be accessed<a class="headerlink" href="#other-individual-profile-quantities-may-also-be-accessed" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Average redshift in radial bins&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">new_profiles</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="n">new_profiles</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">],</span>
+             <span class="n">new_profiles</span><span class="p">[</span><span class="s1">&#39;z_err&#39;</span><span class="p">],</span> <span class="n">marker</span> <span class="o">=</span> <span class="s1">&#39;o&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;dotted&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">cl</span><span class="o">.</span><span class="n">z</span><span class="o">*</span><span class="mf">1.1</span><span class="p">,</span> <span class="s1">&#39;$z_</span><span class="si">{cl}</span><span class="s1">$&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Radius [Mpc]&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;$\langle z</span><span class="se">\\</span><span class="s1">rangle$&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../_images/demo_dataops_functionality_46_0.png" src="../_images/demo_dataops_functionality_46_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="focus-on-some-options">
+<h2>4. Focus on some options<a class="headerlink" href="#focus-on-some-options" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="gal-ids-in-bins-option">
+<h3>4.1. <code class="docutils literal notranslate"><span class="pre">gal_ids_in_bins</span></code> option<a class="headerlink" href="#gal-ids-in-bins-option" title="Permalink to this headline">¶</a></h3>
+<p>adds a <code class="docutils literal notranslate"><span class="pre">gal_id</span></code> field to the profile GCData. For each bin of the
+profile, this is filled with the list of galaxy IDs for the galaxies
+that have fallen in that bin.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cl</span><span class="o">.</span><span class="n">make_radial_profile</span><span class="p">(</span><span class="s2">&quot;Mpc&quot;</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">gal_ids_in_bins</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">cl</span><span class="o">.</span><span class="n">profile</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">max_width</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1">#cl.profile[:2].show_in_notebook()</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>    <span class="n">radius_min</span>           <span class="n">radius</span>           <span class="n">radius_max</span>              <span class="n">gt</span>                 <span class="n">gt_err</span>                   <span class="n">gx</span>                   <span class="n">gx_err</span>                <span class="n">z</span>                 <span class="n">z_err</span>        <span class="n">n_src</span>                                                                                                                                             <span class="n">gal_id</span>
+<span class="o">------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">-------------------</span> <span class="o">---------------------</span> <span class="o">-----------------------</span> <span class="o">---------------------</span> <span class="o">------------------</span> <span class="o">-------------------</span> <span class="o">-----</span> <span class="o">---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span class="mf">0.1313648378768848</span>  <span class="mf">0.451011333459524</span> <span class="mf">0.6775461492193622</span> <span class="mf">0.07208518688117287</span>  <span class="mf">0.004694541375201062</span> <span class="o">-</span><span class="mf">0.00016925869333434204</span> <span class="mf">0.0011000793565216149</span>  <span class="mf">1.222896445006983</span> <span class="mf">0.12844444485565748</span>    <span class="mi">21</span>                                                                                                                                                                                         <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">107</span><span class="p">,</span> <span class="mi">181</span><span class="p">,</span> <span class="mi">410</span><span class="p">,</span> <span class="mi">418</span><span class="p">,</span> <span class="mi">437</span><span class="p">,</span> <span class="mi">506</span><span class="p">,</span> <span class="mi">614</span><span class="p">,</span> <span class="mi">652</span><span class="p">,</span> <span class="mi">721</span><span class="p">,</span> <span class="mi">772</span><span class="p">,</span> <span class="mi">787</span><span class="p">,</span> <span class="mi">790</span><span class="p">,</span> <span class="mi">820</span><span class="p">,</span> <span class="mi">831</span><span class="p">,</span> <span class="mi">862</span><span class="p">,</span> <span class="mi">905</span><span class="p">,</span> <span class="mi">952</span><span class="p">,</span> <span class="mi">964</span><span class="p">]</span>
+<span class="mf">0.6775461492193622</span> <span class="mf">0.9722181077508906</span> <span class="mf">1.2237274605618396</span> <span class="mf">0.04207244961030847</span> <span class="mf">0.0017945580348523624</span>  <span class="o">-</span><span class="mf">0.0007876463485997606</span> <span class="mf">0.0005998816473962802</span> <span class="mf">1.4023019102286884</span> <span class="mf">0.10813989271744935</span>    <span class="mi">58</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">37</span><span class="p">,</span> <span class="mi">41</span><span class="p">,</span> <span class="mi">56</span><span class="p">,</span> <span class="mi">59</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">166</span><span class="p">,</span> <span class="mi">174</span><span class="p">,</span> <span class="mi">237</span><span class="p">,</span> <span class="mi">238</span><span class="p">,</span> <span class="mi">263</span><span class="p">,</span> <span class="mi">282</span><span class="p">,</span> <span class="mi">318</span><span class="p">,</span> <span class="mi">363</span><span class="p">,</span> <span class="mi">409</span><span class="p">,</span> <span class="mi">420</span><span class="p">,</span> <span class="mi">421</span><span class="p">,</span> <span class="mi">445</span><span class="p">,</span> <span class="mi">449</span><span class="p">,</span> <span class="mi">453</span><span class="p">,</span> <span class="mi">455</span><span class="p">,</span> <span class="mi">472</span><span class="p">,</span> <span class="mi">476</span><span class="p">,</span> <span class="mi">515</span><span class="p">,</span> <span class="mi">552</span><span class="p">,</span> <span class="mi">577</span><span class="p">,</span> <span class="mi">582</span><span class="p">,</span> <span class="mi">586</span><span class="p">,</span> <span class="mi">587</span><span class="p">,</span> <span class="mi">637</span><span class="p">,</span> <span class="mi">706</span><span class="p">,</span> <span class="mi">757</span><span class="p">,</span> <span class="mi">765</span><span class="p">,</span> <span class="mi">768</span><span class="p">,</span> <span class="mi">777</span><span class="p">,</span> <span class="mi">788</span><span class="p">,</span> <span class="mi">789</span><span class="p">,</span> <span class="mi">791</span><span class="p">,</span> <span class="mi">798</span><span class="p">,</span> <span class="mi">805</span><span class="p">,</span> <span class="mi">808</span><span class="p">,</span> <span class="mi">818</span><span class="p">,</span> <span class="mi">827</span><span class="p">,</span> <span class="mi">836</span><span class="p">,</span> <span class="mi">839</span><span class="p">,</span> <span class="mi">855</span><span class="p">,</span> <span class="mi">874</span><span class="p">,</span> <span class="mi">915</span><span class="p">,</span> <span class="mi">923</span><span class="p">,</span> <span class="mi">930</span><span class="p">,</span> <span class="mi">957</span><span class="p">,</span> <span class="mi">979</span><span class="p">,</span> <span class="mi">984</span><span class="p">,</span> <span class="mi">990</span><span class="p">,</span> <span class="mi">995</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Here the list of galaxy IDs that are in the first bin of the tangential shear profile</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="n">gal_list</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;gal_id&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">gal_list</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">107</span><span class="p">,</span> <span class="mi">181</span><span class="p">,</span> <span class="mi">410</span><span class="p">,</span> <span class="mi">418</span><span class="p">,</span> <span class="mi">437</span><span class="p">,</span> <span class="mi">506</span><span class="p">,</span> <span class="mi">614</span><span class="p">,</span> <span class="mi">652</span><span class="p">,</span> <span class="mi">721</span><span class="p">,</span> <span class="mi">772</span><span class="p">,</span> <span class="mi">787</span><span class="p">,</span> <span class="mi">790</span><span class="p">,</span> <span class="mi">820</span><span class="p">,</span> <span class="mi">831</span><span class="p">,</span> <span class="mi">862</span><span class="p">,</span> <span class="mi">905</span><span class="p">,</span> <span class="mi">952</span><span class="p">,</span> <span class="mi">964</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="user-defined-naming-scheme">
+<h3>4.2. User-defined naming scheme<a class="headerlink" href="#user-defined-naming-scheme" title="Permalink to this headline">¶</a></h3>
+<p>The user may specify which columns to use from the <code class="docutils literal notranslate"><span class="pre">galcat</span></code> table to
+perform the binned average. If none is specified, the code looks for
+columns names <code class="docutils literal notranslate"><span class="pre">et</span></code> and <code class="docutils literal notranslate"><span class="pre">ex</span></code>. Below, we average in bins the
+columns<code class="docutils literal notranslate"><span class="pre">e_tan</span></code> and <code class="docutils literal notranslate"><span class="pre">e_cross</span></code> of <code class="docutils literal notranslate"><span class="pre">galcat</span></code> and store the results
+in the columns <code class="docutils literal notranslate"><span class="pre">g_tan</span></code> and <code class="docutils literal notranslate"><span class="pre">g_cross</span></code> of the <code class="docutils literal notranslate"><span class="pre">profile</span></code> table of the
+cluster object.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cl</span><span class="o">.</span><span class="n">make_radial_profile</span><span class="p">(</span><span class="s2">&quot;kpc&quot;</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
+                       <span class="n">tan_component_in</span><span class="o">=</span><span class="s1">&#39;e_tan&#39;</span><span class="p">,</span> <span class="n">cross_component_in</span><span class="o">=</span><span class="s1">&#39;e_cross&#39;</span><span class="p">,</span>
+                       <span class="n">tan_component_out</span><span class="o">=</span><span class="s1">&#39;g_tan&#39;</span><span class="p">,</span> <span class="n">cross_component_out</span><span class="o">=</span><span class="s1">&#39;g_cross&#39;</span><span class="p">);</span>
+<span class="n">cl</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">max_width</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1">#cl.profile.show_in_notebook()</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>    <span class="n">radius_min</span>           <span class="n">radius</span>           <span class="n">radius_max</span>            <span class="n">g_tan</span>               <span class="n">g_tan_err</span>                <span class="n">g_cross</span>              <span class="n">g_cross_err</span>               <span class="n">z</span>                 <span class="n">z_err</span>         <span class="n">n_src</span>
+<span class="o">------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">--------------------</span> <span class="o">----------------------</span> <span class="o">-----------------------</span> <span class="o">----------------------</span> <span class="o">------------------</span> <span class="o">--------------------</span> <span class="o">-----</span>
+ <span class="mf">131.3648378768848</span> <span class="mf">451.01133345952394</span>  <span class="mf">677.5461492193622</span>  <span class="mf">0.07208518688117287</span>   <span class="mf">0.004694541375201062</span> <span class="o">-</span><span class="mf">0.00016925869333434204</span>  <span class="mf">0.0011000793565216149</span>  <span class="mf">1.222896445006983</span>  <span class="mf">0.12844444485565748</span>    <span class="mi">21</span>
+ <span class="mf">677.5461492193622</span>  <span class="mf">972.2181077508907</span> <span class="mf">1223.7274605618397</span>  <span class="mf">0.04207244961030847</span>  <span class="mf">0.0017945580348523624</span>  <span class="o">-</span><span class="mf">0.0007876463485997606</span>  <span class="mf">0.0005998816473962802</span> <span class="mf">1.4023019102286884</span>  <span class="mf">0.10813989271744935</span>    <span class="mi">58</span>
+<span class="mf">1223.7274605618397</span> <span class="mf">1506.0612685580734</span> <span class="mf">1769.9087719043173</span>  <span class="mf">0.02575086033739259</span>  <span class="mf">0.0012470522887013467</span>  <span class="mf">0.00047819227899725955</span>  <span class="mf">0.0005662987828426931</span> <span class="mf">1.3389171705998106</span>  <span class="mf">0.09924231620450047</span>    <span class="mi">56</span>
+<span class="mf">1769.9087719043173</span> <span class="mf">2071.4648763809446</span> <span class="mf">2316.0900832467946</span> <span class="mf">0.018320437587285836</span>  <span class="mf">0.0006181715705694405</span>     <span class="mf">0.00088494693205468</span>  <span class="mf">0.0004628471139274575</span> <span class="mf">1.2367077204545602</span>  <span class="mf">0.06902759510501168</span>   <span class="mi">119</span>
+<span class="mf">2316.0900832467946</span>  <span class="mf">2612.334474343091</span>  <span class="mf">2862.271394589272</span> <span class="mf">0.014130734079921001</span>  <span class="mf">0.0005070660791473952</span>   <span class="mf">0.0005388531713315584</span> <span class="mf">0.00037686127085368365</span> <span class="mf">1.2393657543576873</span> <span class="mf">0.059428467191669894</span>   <span class="mi">152</span>
+ <span class="mf">2862.271394589272</span> <span class="mf">3114.3626139408866</span> <span class="mf">3408.4527059317497</span> <span class="mf">0.012447873205656086</span> <span class="mf">0.00043453245611355167</span>  <span class="mf">0.00029311190046662366</span> <span class="mf">0.00035024126450940824</span> <span class="mf">1.1727023425793115</span> <span class="mf">0.048209532138478076</span>   <span class="mi">160</span>
+<span class="mf">3408.4527059317497</span> <span class="mf">3688.4513688308575</span>  <span class="mf">3954.634017274227</span> <span class="mf">0.008647853212842624</span> <span class="mf">0.00037328525587525013</span>   <span class="mf">0.0006949553048192968</span>  <span class="mf">0.0003524768757978509</span>  <span class="mf">1.250810515648566</span>  <span class="mf">0.05317505434774777</span>   <span class="mi">200</span>
+ <span class="mf">3954.634017274227</span>  <span class="mf">4186.382224810304</span>  <span class="mf">4500.815328616704</span> <span class="mf">0.008150645211317553</span>  <span class="mf">0.0004411291693142806</span>   <span class="mf">9.217530928784282e-05</span> <span class="mf">0.00044302551433150734</span> <span class="mf">1.2080516435098572</span>  <span class="mf">0.06165461377049568</span>   <span class="mi">142</span>
+ <span class="mf">4500.815328616704</span>  <span class="mf">4721.821376535352</span>  <span class="mf">5046.996639959182</span> <span class="mf">0.007015535796053761</span>   <span class="mf">0.000643539410263352</span>  <span class="o">-</span><span class="mf">0.0005519593496975705</span>  <span class="mf">0.0005217166594912132</span> <span class="mf">1.1238353949676112</span>  <span class="mf">0.07955484625900448</span>    <span class="mi">68</span>
+ <span class="mf">5046.996639959182</span>  <span class="mf">5242.154439139299</span>  <span class="mf">5593.177951301659</span> <span class="mf">0.007522393791050124</span>  <span class="mf">0.0009558034507759165</span>  <span class="o">-</span><span class="mf">0.0010686396362951866</span>  <span class="mf">0.0008272182663913986</span> <span class="mf">1.0969988511344206</span>   <span class="mf">0.0787043963470885</span>    <span class="mi">24</span>
+</pre></div>
+</div>
+<p>The user may also define the name of the output table attribute. Below,
+we asked the binned profile to be saved into the
+<code class="docutils literal notranslate"><span class="pre">reduced_shear_profile</span></code> attribute</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cl</span><span class="o">.</span><span class="n">make_radial_profile</span><span class="p">(</span><span class="s2">&quot;kpc&quot;</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
+                       <span class="n">tan_component_in</span><span class="o">=</span><span class="s1">&#39;e_tan&#39;</span><span class="p">,</span> <span class="n">cross_component_in</span><span class="o">=</span><span class="s1">&#39;e_cross&#39;</span><span class="p">,</span>
+                       <span class="n">tan_component_out</span><span class="o">=</span><span class="s1">&#39;g_tan&#39;</span><span class="p">,</span> <span class="n">cross_component_out</span><span class="o">=</span><span class="s1">&#39;g_cross&#39;</span><span class="p">,</span>
+                       <span class="n">table_name</span><span class="o">=</span><span class="s1">&#39;reduced_shear_profile&#39;</span><span class="p">);</span>
+<span class="n">cl</span><span class="o">.</span><span class="n">reduced_shear_profile</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">max_width</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1">#cl.reduced_shear_profile.show_in_notebook()</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>    <span class="n">radius_min</span>           <span class="n">radius</span>           <span class="n">radius_max</span>            <span class="n">g_tan</span>               <span class="n">g_tan_err</span>                <span class="n">g_cross</span>              <span class="n">g_cross_err</span>               <span class="n">z</span>                 <span class="n">z_err</span>         <span class="n">n_src</span>
+<span class="o">------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">--------------------</span> <span class="o">----------------------</span> <span class="o">-----------------------</span> <span class="o">----------------------</span> <span class="o">------------------</span> <span class="o">--------------------</span> <span class="o">-----</span>
+ <span class="mf">131.3648378768848</span> <span class="mf">451.01133345952394</span>  <span class="mf">677.5461492193622</span>  <span class="mf">0.07208518688117287</span>   <span class="mf">0.004694541375201062</span> <span class="o">-</span><span class="mf">0.00016925869333434204</span>  <span class="mf">0.0011000793565216149</span>  <span class="mf">1.222896445006983</span>  <span class="mf">0.12844444485565748</span>    <span class="mi">21</span>
+ <span class="mf">677.5461492193622</span>  <span class="mf">972.2181077508907</span> <span class="mf">1223.7274605618397</span>  <span class="mf">0.04207244961030847</span>  <span class="mf">0.0017945580348523624</span>  <span class="o">-</span><span class="mf">0.0007876463485997606</span>  <span class="mf">0.0005998816473962802</span> <span class="mf">1.4023019102286884</span>  <span class="mf">0.10813989271744935</span>    <span class="mi">58</span>
+<span class="mf">1223.7274605618397</span> <span class="mf">1506.0612685580734</span> <span class="mf">1769.9087719043173</span>  <span class="mf">0.02575086033739259</span>  <span class="mf">0.0012470522887013467</span>  <span class="mf">0.00047819227899725955</span>  <span class="mf">0.0005662987828426931</span> <span class="mf">1.3389171705998106</span>  <span class="mf">0.09924231620450047</span>    <span class="mi">56</span>
+<span class="mf">1769.9087719043173</span> <span class="mf">2071.4648763809446</span> <span class="mf">2316.0900832467946</span> <span class="mf">0.018320437587285836</span>  <span class="mf">0.0006181715705694405</span>     <span class="mf">0.00088494693205468</span>  <span class="mf">0.0004628471139274575</span> <span class="mf">1.2367077204545602</span>  <span class="mf">0.06902759510501168</span>   <span class="mi">119</span>
+<span class="mf">2316.0900832467946</span>  <span class="mf">2612.334474343091</span>  <span class="mf">2862.271394589272</span> <span class="mf">0.014130734079921001</span>  <span class="mf">0.0005070660791473952</span>   <span class="mf">0.0005388531713315584</span> <span class="mf">0.00037686127085368365</span> <span class="mf">1.2393657543576873</span> <span class="mf">0.059428467191669894</span>   <span class="mi">152</span>
+ <span class="mf">2862.271394589272</span> <span class="mf">3114.3626139408866</span> <span class="mf">3408.4527059317497</span> <span class="mf">0.012447873205656086</span> <span class="mf">0.00043453245611355167</span>  <span class="mf">0.00029311190046662366</span> <span class="mf">0.00035024126450940824</span> <span class="mf">1.1727023425793115</span> <span class="mf">0.048209532138478076</span>   <span class="mi">160</span>
+<span class="mf">3408.4527059317497</span> <span class="mf">3688.4513688308575</span>  <span class="mf">3954.634017274227</span> <span class="mf">0.008647853212842624</span> <span class="mf">0.00037328525587525013</span>   <span class="mf">0.0006949553048192968</span>  <span class="mf">0.0003524768757978509</span>  <span class="mf">1.250810515648566</span>  <span class="mf">0.05317505434774777</span>   <span class="mi">200</span>
+ <span class="mf">3954.634017274227</span>  <span class="mf">4186.382224810304</span>  <span class="mf">4500.815328616704</span> <span class="mf">0.008150645211317553</span>  <span class="mf">0.0004411291693142806</span>   <span class="mf">9.217530928784282e-05</span> <span class="mf">0.00044302551433150734</span> <span class="mf">1.2080516435098572</span>  <span class="mf">0.06165461377049568</span>   <span class="mi">142</span>
+ <span class="mf">4500.815328616704</span>  <span class="mf">4721.821376535352</span>  <span class="mf">5046.996639959182</span> <span class="mf">0.007015535796053761</span>   <span class="mf">0.000643539410263352</span>  <span class="o">-</span><span class="mf">0.0005519593496975705</span>  <span class="mf">0.0005217166594912132</span> <span class="mf">1.1238353949676112</span>  <span class="mf">0.07955484625900448</span>    <span class="mi">68</span>
+ <span class="mf">5046.996639959182</span>  <span class="mf">5242.154439139299</span>  <span class="mf">5593.177951301659</span> <span class="mf">0.007522393791050124</span>  <span class="mf">0.0009558034507759165</span>  <span class="o">-</span><span class="mf">0.0010686396362951866</span>  <span class="mf">0.0008272182663913986</span> <span class="mf">1.0969988511344206</span>   <span class="mf">0.0787043963470885</span>    <span class="mi">24</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="compute-a-deltasigma-profile-instead-of-a-shear-profile">
+<h3>4.3 Compute a DeltaSigma profile instead of a shear profile<a class="headerlink" href="#compute-a-deltasigma-profile-instead-of-a-shear-profile" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">is_deltasigma</span></code> option allows the user to return a cross and
+tangential <span class="math notranslate nohighlight">\(\Delta\Sigma\)</span> (excess surface density) value for each
+galaxy in the catalog, provided <code class="docutils literal notranslate"><span class="pre">galcat</span></code> contains the redshifts of the
+galaxies and provided a cosmology is passed to the function. The columns
+<code class="docutils literal notranslate"><span class="pre">DeltaSigma_tan</span></code> and <code class="docutils literal notranslate"><span class="pre">DeltaSigma_cross</span></code> are added to the <code class="docutils literal notranslate"><span class="pre">galcat</span></code>
+table.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cl</span><span class="o">.</span><span class="n">compute_tangential_and_cross_components</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;flat&quot;</span><span class="p">,</span>
+                                                      <span class="n">shape_component1</span><span class="o">=</span><span class="s1">&#39;e1&#39;</span><span class="p">,</span> <span class="n">shape_component2</span><span class="o">=</span><span class="s1">&#39;e2&#39;</span><span class="p">,</span>
+                                                      <span class="n">tan_component</span><span class="o">=</span><span class="s1">&#39;DeltaSigma_tan&#39;</span><span class="p">,</span> <span class="n">cross_component</span><span class="o">=</span><span class="s1">&#39;DeltaSigma_cross&#39;</span><span class="p">,</span>
+                                                      <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">is_deltasigma</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">cl</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">GalaxyCluster</span> <span class="n">Awesome_cluster</span><span class="p">:</span> <span class="p">(</span><span class="n">ra</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">dec</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span> <span class="n">at</span> <span class="n">z</span><span class="o">=</span><span class="mf">0.3</span>
+<span class="o">&gt;</span> <span class="mi">1000</span> <span class="n">source</span> <span class="n">galaxies</span>
+<span class="o">&gt;</span> <span class="n">With</span> <span class="n">columns</span><span class="p">:</span> <span class="n">ra</span> <span class="n">dec</span> <span class="n">e1</span> <span class="n">e2</span> <span class="n">z</span> <span class="n">ztrue</span> <span class="n">pzbins</span> <span class="n">pzpdf</span> <span class="nb">id</span> <span class="n">theta</span> <span class="n">et</span> <span class="n">ex</span> <span class="n">e_tan</span> <span class="n">e_cross</span> <span class="n">sigma_c</span> <span class="n">DeltaSigma_tan</span> <span class="n">DeltaSigma_cross</span>
+</pre></div>
+</div>
+<p>Because this operation required a Cosmology, it was added to <code class="docutils literal notranslate"><span class="pre">galcat</span></code>
+metadata:</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;cosmo&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;AstroPyCosmology(H0=70.0, Omega_dm0=0.22500000000000003, Omega_b0=0.045, Omega_k0=0.0)&#39;</span>
+</pre></div>
+</div>
+<p>The binned profile is obtained, as before. Below, we use the values
+obtained from the previous step to compute the binned profile. The
+latter is saved in a new <code class="docutils literal notranslate"><span class="pre">DeltaSigma_profile</span></code> table of the
+GalaxyCluster object.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cl</span><span class="o">.</span><span class="n">make_radial_profile</span><span class="p">(</span><span class="s2">&quot;Mpc&quot;</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
+                       <span class="n">tan_component_in</span><span class="o">=</span><span class="s1">&#39;DeltaSigma_tan&#39;</span><span class="p">,</span> <span class="n">cross_component_in</span><span class="o">=</span><span class="s1">&#39;DeltaSigma_cross&#39;</span><span class="p">,</span>
+                       <span class="n">tan_component_out</span><span class="o">=</span><span class="s1">&#39;DeltaSigma_tan&#39;</span><span class="p">,</span> <span class="n">cross_component_out</span><span class="o">=</span><span class="s1">&#39;DeltaSigma_cross&#39;</span><span class="p">,</span>
+                       <span class="n">table_name</span><span class="o">=</span><span class="s1">&#39;DeltaSigma_profile&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">max_width</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># cl.make_radial_profile(&quot;Mpc&quot;, cosmo=cosmo,</span>
+<span class="c1">#                        tan_component_in=&#39;DeltaSigma_tan&#39;, cross_component_in=&#39;DeltaSigma_cross&#39;,</span>
+<span class="c1">#                        tan_component_out=&#39;DeltaSigma_tan&#39;, cross_component_out=&#39;DeltaSigma_cross&#39;,</span>
+<span class="c1">#                        table_name=&#39;DeltaSigma_profile&#39;).show_in_notebook()</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>    <span class="n">radius_min</span>           <span class="n">radius</span>           <span class="n">radius_max</span>       <span class="n">DeltaSigma_tan</span>   <span class="n">DeltaSigma_tan_err</span>   <span class="n">DeltaSigma_cross</span>  <span class="n">DeltaSigma_cross_err</span>         <span class="n">z</span>                 <span class="n">z_err</span>         <span class="n">n_src</span>
+<span class="o">------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">-------------------</span> <span class="o">--------------------</span> <span class="o">------------------</span> <span class="o">--------------------</span> <span class="o">-----</span>
+<span class="mf">0.1313648378768848</span>  <span class="mf">0.451011333459524</span> <span class="mf">0.6775461492193622</span> <span class="mf">207180675859833.56</span> <span class="mf">11616330452432.521</span>   <span class="mf">166079903736.6583</span>   <span class="mf">3172206834620.0522</span>  <span class="mf">1.222896445006983</span>  <span class="mf">0.12844444485565748</span>    <span class="mi">21</span>
+<span class="mf">0.6775461492193622</span> <span class="mf">0.9722181077508906</span> <span class="mf">1.2237274605618396</span> <span class="mf">117074269315367.62</span>  <span class="mf">3116424613418.446</span> <span class="o">-</span><span class="mf">2867232486059.8433</span>   <span class="mf">2001573218669.1782</span> <span class="mf">1.4023019102286884</span>  <span class="mf">0.10813989271744935</span>    <span class="mi">58</span>
+<span class="mf">1.2237274605618396</span>  <span class="mf">1.506061268558074</span>  <span class="mf">1.769908771904317</span>  <span class="mf">72576487172525.44</span>  <span class="mf">2811294528910.756</span>   <span class="mf">1283008536768.433</span>   <span class="mf">1720372958606.6567</span> <span class="mf">1.3389171705998106</span>  <span class="mf">0.09924231620450047</span>    <span class="mi">56</span>
+ <span class="mf">1.769908771904317</span>  <span class="mf">2.071464876380945</span> <span class="mf">2.3160900832467943</span> <span class="mf">59259642448889.016</span>    <span class="mf">4194488149736.2</span>   <span class="mf">4201681153040.916</span>   <span class="mf">2099167601332.7573</span> <span class="mf">1.2367077204545602</span>  <span class="mf">0.06902759510501168</span>   <span class="mi">119</span>
+<span class="mf">2.3160900832467943</span>  <span class="mf">2.612334474343092</span> <span class="mf">2.8622713945892717</span>   <span class="mf">42214140585703.2</span> <span class="mf">1569668392368.8062</span>  <span class="mf">2855122992920.7373</span>   <span class="mf">1479663042889.9722</span> <span class="mf">1.2393657543576873</span> <span class="mf">0.059428467191669894</span>   <span class="mi">152</span>
+<span class="mf">2.8622713945892717</span>  <span class="mf">3.114362613940888</span>  <span class="mf">3.408452705931749</span> <span class="mf">38969291051688.414</span> <span class="mf">1650214906352.7832</span>   <span class="mf">864282027073.1624</span>   <span class="mf">1526442098103.2402</span> <span class="mf">1.1727023425793115</span> <span class="mf">0.048209532138478076</span>   <span class="mi">160</span>
+ <span class="mf">3.408452705931749</span>  <span class="mf">3.688451368830858</span> <span class="mf">3.9546340172742265</span>   <span class="mf">18452315173486.3</span>  <span class="mf">6627333857122.406</span>  <span class="o">-</span><span class="mf">43058360429683.47</span>    <span class="mf">44733706742861.93</span>  <span class="mf">1.250810515648566</span>  <span class="mf">0.05317505434774777</span>   <span class="mi">200</span>
+<span class="mf">3.9546340172742265</span>  <span class="mf">4.186382224810306</span>  <span class="mf">4.500815328616704</span> <span class="mf">25734470851209.934</span>  <span class="mf">1780366340234.945</span>   <span class="mf">908754428759.7489</span>   <span class="mf">1491839018607.8145</span> <span class="mf">1.2080516435098572</span>  <span class="mf">0.06165461377049568</span>   <span class="mi">142</span>
+ <span class="mf">4.500815328616704</span>  <span class="mf">4.721821376535355</span>  <span class="mf">5.046996639959182</span> <span class="mf">21136121506943.125</span> <span class="mf">2165983143884.0198</span>  <span class="o">-</span><span class="mf">731514737636.8917</span>   <span class="mf">2074952323615.1523</span> <span class="mf">1.1238353949676112</span>  <span class="mf">0.07955484625900448</span>    <span class="mi">68</span>
+ <span class="mf">5.046996639959182</span>  <span class="mf">5.242154439139299</span>  <span class="mf">5.593177951301659</span> <span class="mf">21230045824876.965</span> <span class="mf">2717808240761.2324</span>  <span class="o">-</span><span class="mf">3434324596219.054</span>   <span class="mf">2280494132816.2554</span> <span class="mf">1.0969988511344206</span>   <span class="mf">0.0787043963470885</span>    <span class="mi">24</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">combet</span><span class="o">/</span><span class="n">anaconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">clmmenv</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">0.9</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">py3</span><span class="o">.</span><span class="mf">8.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">galaxycluster</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">297</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">overwriting</span> <span class="n">DeltaSigma_profile</span> <span class="n">table</span><span class="o">.</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">max_width</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1">#cl.DeltaSigma_profile.show_in_notebook()</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>    <span class="n">radius_min</span>           <span class="n">radius</span>           <span class="n">radius_max</span>       <span class="n">DeltaSigma_tan</span>   <span class="n">DeltaSigma_tan_err</span>   <span class="n">DeltaSigma_cross</span>  <span class="n">DeltaSigma_cross_err</span>         <span class="n">z</span>                 <span class="n">z_err</span>         <span class="n">n_src</span>
+<span class="o">------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">-------------------</span> <span class="o">--------------------</span> <span class="o">------------------</span> <span class="o">--------------------</span> <span class="o">-----</span>
+<span class="mf">0.1313648378768848</span>  <span class="mf">0.451011333459524</span> <span class="mf">0.6775461492193622</span> <span class="mf">207180675859833.56</span> <span class="mf">11616330452432.521</span>   <span class="mf">166079903736.6583</span>   <span class="mf">3172206834620.0522</span>  <span class="mf">1.222896445006983</span>  <span class="mf">0.12844444485565748</span>    <span class="mi">21</span>
+<span class="mf">0.6775461492193622</span> <span class="mf">0.9722181077508906</span> <span class="mf">1.2237274605618396</span> <span class="mf">117074269315367.62</span>  <span class="mf">3116424613418.446</span> <span class="o">-</span><span class="mf">2867232486059.8433</span>   <span class="mf">2001573218669.1782</span> <span class="mf">1.4023019102286884</span>  <span class="mf">0.10813989271744935</span>    <span class="mi">58</span>
+<span class="mf">1.2237274605618396</span>  <span class="mf">1.506061268558074</span>  <span class="mf">1.769908771904317</span>  <span class="mf">72576487172525.44</span>  <span class="mf">2811294528910.756</span>   <span class="mf">1283008536768.433</span>   <span class="mf">1720372958606.6567</span> <span class="mf">1.3389171705998106</span>  <span class="mf">0.09924231620450047</span>    <span class="mi">56</span>
+ <span class="mf">1.769908771904317</span>  <span class="mf">2.071464876380945</span> <span class="mf">2.3160900832467943</span> <span class="mf">59259642448889.016</span>    <span class="mf">4194488149736.2</span>   <span class="mf">4201681153040.916</span>   <span class="mf">2099167601332.7573</span> <span class="mf">1.2367077204545602</span>  <span class="mf">0.06902759510501168</span>   <span class="mi">119</span>
+<span class="mf">2.3160900832467943</span>  <span class="mf">2.612334474343092</span> <span class="mf">2.8622713945892717</span>   <span class="mf">42214140585703.2</span> <span class="mf">1569668392368.8062</span>  <span class="mf">2855122992920.7373</span>   <span class="mf">1479663042889.9722</span> <span class="mf">1.2393657543576873</span> <span class="mf">0.059428467191669894</span>   <span class="mi">152</span>
+<span class="mf">2.8622713945892717</span>  <span class="mf">3.114362613940888</span>  <span class="mf">3.408452705931749</span> <span class="mf">38969291051688.414</span> <span class="mf">1650214906352.7832</span>   <span class="mf">864282027073.1624</span>   <span class="mf">1526442098103.2402</span> <span class="mf">1.1727023425793115</span> <span class="mf">0.048209532138478076</span>   <span class="mi">160</span>
+ <span class="mf">3.408452705931749</span>  <span class="mf">3.688451368830858</span> <span class="mf">3.9546340172742265</span>   <span class="mf">18452315173486.3</span>  <span class="mf">6627333857122.406</span>  <span class="o">-</span><span class="mf">43058360429683.47</span>    <span class="mf">44733706742861.93</span>  <span class="mf">1.250810515648566</span>  <span class="mf">0.05317505434774777</span>   <span class="mi">200</span>
+<span class="mf">3.9546340172742265</span>  <span class="mf">4.186382224810306</span>  <span class="mf">4.500815328616704</span> <span class="mf">25734470851209.934</span>  <span class="mf">1780366340234.945</span>   <span class="mf">908754428759.7489</span>   <span class="mf">1491839018607.8145</span> <span class="mf">1.2080516435098572</span>  <span class="mf">0.06165461377049568</span>   <span class="mi">142</span>
+ <span class="mf">4.500815328616704</span>  <span class="mf">4.721821376535355</span>  <span class="mf">5.046996639959182</span> <span class="mf">21136121506943.125</span> <span class="mf">2165983143884.0198</span>  <span class="o">-</span><span class="mf">731514737636.8917</span>   <span class="mf">2074952323615.1523</span> <span class="mf">1.1238353949676112</span>  <span class="mf">0.07955484625900448</span>    <span class="mi">68</span>
+ <span class="mf">5.046996639959182</span>  <span class="mf">5.242154439139299</span>  <span class="mf">5.593177951301659</span> <span class="mf">21230045824876.965</span> <span class="mf">2717808240761.2324</span>  <span class="o">-</span><span class="mf">3434324596219.054</span>   <span class="mf">2280494132816.2554</span> <span class="mf">1.0969988511344206</span>   <span class="mf">0.0787043963470885</span>    <span class="mi">24</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s1">&#39;DeltaSigma_tan&#39;</span><span class="p">],</span>
+             <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s1">&#39;DeltaSigma_tan_err&#39;</span><span class="p">],</span> <span class="n">marker</span> <span class="o">=</span> <span class="s1">&#39;o&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;DeltaSigma profile&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Radius [Mpc]&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;$\Delta\Sigma [M_\odot\; Mpc^{-2}]$&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../_images/demo_dataops_functionality_61_0.png" src="../_images/demo_dataops_functionality_61_0.png" />
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
