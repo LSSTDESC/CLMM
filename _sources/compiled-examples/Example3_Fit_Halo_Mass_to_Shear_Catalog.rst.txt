@@ -113,9 +113,11 @@ photoz errors + shape noise
 
 .. parsed-literal::
 
-    /pbs/home/c/ccombet/.conda/envs/mydesc/lib/python3.7/site-packages/clmm-0.9.0-py3.7.egg/clmm/cosmology/cluster_toolkit.py:69: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /pbs/home/c/ccombet/.conda/envs/mydesc/lib/python3.7/site-packages/clmm-0.9.0-py3.7.egg/clmm/cosmology/cluster_toolkit.py:79: RuntimeWarning: divide by zero encountered in true_divide
-    /pbs/home/c/ccombet/.conda/envs/mydesc/lib/python3.7/site-packages/clmm-0.9.0-py3.7.egg/clmm/theory/func_layer.py:354: UserWarning: Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.
+    /Users/combet/anaconda3/envs/clmmenv/lib/python3.8/site-packages/numpy/ma/core.py:2831: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
+      _data = np.array(data, dtype=dtype, copy=copy,
+    /Users/combet/anaconda3/envs/clmmenv/lib/python3.8/site-packages/clmm-0.9.0-py3.8.egg/clmm/cosmology/cluster_toolkit.py:69: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
+    /Users/combet/anaconda3/envs/clmmenv/lib/python3.8/site-packages/clmm-0.9.0-py3.8.egg/clmm/cosmology/cluster_toolkit.py:79: RuntimeWarning: divide by zero encountered in true_divide
+    /Users/combet/anaconda3/envs/clmmenv/lib/python3.8/site-packages/clmm-0.9.0-py3.8.egg/clmm/theory/func_layer.py:354: UserWarning: Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.
 
 
 The galaxy catalogs are converted to a ``clmm.GalaxyCluster`` object and
@@ -277,7 +279,7 @@ Before fitting, let’s first vizualise these models using the known true mass
 
 .. parsed-literal::
 
-    /pbs/home/c/ccombet/.conda/envs/mydesc/lib/python3.7/site-packages/clmm-0.9.0-py3.7.egg/clmm/theory/func_layer.py:425: UserWarning: Some source redshifts are lower than the cluster redshift. shear = 0 for those galaxies.
+    /Users/combet/anaconda3/envs/clmmenv/lib/python3.8/site-packages/clmm-0.9.0-py3.8.egg/clmm/theory/func_layer.py:425: UserWarning: Some source redshifts are lower than the cluster redshift. shear = 0 for those galaxies.
 
 
 .. code:: ipython3
@@ -313,7 +315,7 @@ Before fitting, let’s first vizualise these models using the known true mass
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7f23cd04add0>
+    <matplotlib.legend.Legend at 0x7fa821658910>
 
 
 
@@ -384,9 +386,9 @@ error to mass as :math:`\Delta M = M_{fit}\log(10)\Delta (\log_{10}M)`.
 
 .. parsed-literal::
 
-    /pbs/home/c/ccombet/.conda/envs/mydesc/lib/python3.7/site-packages/clmm-0.9.0-py3.7.egg/clmm/cosmology/cluster_toolkit.py:69: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /pbs/home/c/ccombet/.conda/envs/mydesc/lib/python3.7/site-packages/clmm-0.9.0-py3.7.egg/clmm/cosmology/cluster_toolkit.py:79: RuntimeWarning: divide by zero encountered in true_divide
-    /pbs/home/c/ccombet/.conda/envs/mydesc/lib/python3.7/site-packages/clmm-0.9.0-py3.7.egg/clmm/theory/func_layer.py:425: UserWarning: Some source redshifts are lower than the cluster redshift. shear = 0 for those galaxies.
+    /Users/combet/anaconda3/envs/clmmenv/lib/python3.8/site-packages/clmm-0.9.0-py3.8.egg/clmm/cosmology/cluster_toolkit.py:69: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
+    /Users/combet/anaconda3/envs/clmmenv/lib/python3.8/site-packages/clmm-0.9.0-py3.8.egg/clmm/cosmology/cluster_toolkit.py:79: RuntimeWarning: divide by zero encountered in true_divide
+    /Users/combet/anaconda3/envs/clmmenv/lib/python3.8/site-packages/clmm-0.9.0-py3.8.egg/clmm/theory/func_layer.py:425: UserWarning: Some source redshifts are lower than the cluster redshift. shear = 0 for those galaxies.
 
 
 .. code:: ipython3
@@ -475,7 +477,7 @@ best-fit masses.
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7f23ce240290>
+    <matplotlib.legend.Legend at 0x7fa822318c10>
 
 
 
