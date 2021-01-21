@@ -63,6 +63,7 @@ Now, to install cluster-toolkit, cluster-toolkit has a gsl dependency, you'll al
 	python setup.py install
 	cd ..
 ```
+**Note**: While cluster-toolkit mentions the potential need to install CAMB/CLASS for all cluster-toolkit functionality, you do not need to install these to run CLMM.
 
 Note, you may choose to install some or all of the ccl, numcosmo, and/or cluster_toolkit packages.  You need at least one.  If you install cluster_toolkit and others, then you need to install cluster_toolkit *last*.   If you have already installed cluster_toolkit before the other packages, simply run, `pip uninstall cluster_toolkit` then re-install cluster_toolkit.
 
