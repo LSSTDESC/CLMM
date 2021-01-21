@@ -14,14 +14,14 @@ This is a brief guide to contributing to CLMM, including information about ident
 7. [Additional resources](#additional_resources)
 8. [Contact](#contact)
 
-### Identifying Issues <a name="identifying_issues"></a>
+## Identifying Issues <a name="identifying_issues"></a>
 
 Action items for CLMM code improvements are listed as [GitHub Issues](https://github.com/LSSTDESC/CLMM/issues).
 Issues marked with the label `good first issue` are well-suited for new contributors.
 
 
 ## Making and submitting changes <a name="making_and_submitting_changes"></a>
-Once you've created a local copy of CLMM on your machine, you can begin making changes to the code and submitting them for review.
+Once you've [created a local copy of CLMM](INSTALL.md) on your machine, you can begin making changes to the code and submitting them for review.
 To do this, follow the following steps from within your local copy of CLMM (forked or base).
 
 1. Checkout a new branch to contain your code changes independently from the master repository.
