@@ -34,7 +34,7 @@ For the theoretical predictions of the signal, CLMM relies on existing libraries
 - [CCL](https://ccl.readthedocs.io/en/v2.0.0/)
 - [NumCosmo](https://numcosmo.github.io/) 
 
-(See the CONTRIBUTING documentation for detailed installation instructions.)
+(See the [INSTALL documentation](INSTALL.md) for more detailed installation instructions.)
 
 For developers, you will also need to install:
 
