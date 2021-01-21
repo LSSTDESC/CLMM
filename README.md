@@ -56,6 +56,7 @@ To install CLMM you currently need to build it from source:
   cd CLMM
   python setup.py install --user   # Add --user flag to install it locally
 ```
+See the [INSTALL documentation](INSTALL.md) for more detailed installation instructions.
 
 To run the tests you can do:
 
