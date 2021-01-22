@@ -77,7 +77,7 @@ If you are a DESC member you may also add to your CLMM environment the GCR and G
     pip install h5py
     pip install GCR
     pip install https://github.com/LSSTDESC/gcr-catalogs/archive/master.zip
-    pip install https://github.com/yymao/FoFCatalogMatching/archive/master.zip
+    pip install FoFCatalogMatching
 ```
 
 To open up a notebook from NERSC in your browser, you will need to go to the [nersc jupyter portal](https://jupyter.nersc.gov) and sign in. You will need to make this conda environment available in the kernel list:
@@ -116,6 +116,7 @@ To create a fork, navigate to the [CLMM home page](https://github.com/LSSTDESC/C
 
 ```bash
     git clone git@github.com:YOUR-USERNAME/CLMM.git
+    cd CLMM
     git remote add base git@github.com:LSSTDESC/CLMM.git
 ```
 If you do have edit privileges to CLMM, it may be easier to simply clone the base CLMM repository.
