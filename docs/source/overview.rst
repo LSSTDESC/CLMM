@@ -15,6 +15,7 @@ this documentation (see below).
 
 The `GalaxyCluster` object
 ==========================
+
 The Galaxy cluster object is the core data structure in CLMM. It contains at least
  * The galaxy cluster metadata (unique_id, ra, dec, z)
  * A table of background galaxies: astropy Table containing at least for each galaxy galaxy_id, ra, dec, e1, e2, z
@@ -22,13 +23,16 @@ The Galaxy cluster object is the core data structure in CLMM. It contains at lea
 
 Weak lensing signal measurement with the `dataops` package
 ============================================================
+
 All the functions of the `dataops` package are also methods of the `GalaxyCluster` object. In a nutshell, the main functions are:
  * `compute_tangential_and_cross_components` calculates tangential shear, cross shear, and angular separation of each source galaxy relative to the (ra, dec) coordinates of the center of the cluster.
  * `make_radial_profile` averages the tangential and cross shear of galaxies in user-defined bins and support bins in rad, deg, arcmin, arcsec, kpc, or Mpc. The latter are easily generated thanks to the make_bins function.
- * See `demo_dataops_functionality.ipynb` to see all functionalities and possible options.
+
+See `demo_dataops_functionality.ipynb` to see all functionalities and possible options.
 
 Profile models and cosmology with `theory` and `cosmology` packages
 =========================================================================
+
 The `theory` package holds modules for evaluating theoretical models, whatever backend (cluster-toolkit, CCL or NumCosmo) the user has chosen to use. All is transparent to the user, but some backend will support more functionality than others. The default, that all backends support, is to use an NFW density profile for the cluster, with a M200,m mass definition.
 
 Each theory backend relies on a cosmology object, of a different type, depending on the backend. The CLMM cosmology superclass wraps these various types of object to make it transparent for the user.
@@ -40,10 +44,12 @@ See `examples/demo_theory_functionality.ipynb` and `examples/demo_theory_functio
 
 Mock data generation
 ========================
+
 In order to test/develop the code but also help new users or scientists new to the field to explore some of the effects affecting cluster WL mass reconstruction, a CLMM module allows us to generate mock datasets from a variety of ingredients (w/wo shape noise, w/wo photoz errors, etc.).
 
 See `examples/demo_generate_mock_cluster.ipynb` for all possible use cases.
 
 Galaxy cluster mass estimation
 ==================================
+
 CLMM was not designed to provide an end-to-end mass estimation pipeline, but to provide the building blocks to do so. How to use these blocks to make a mass estimation is exemplified in a series of notebooks using either simple scipy tools for the minimization or Numcosmo's more sophisticated statistical framework. Look for the notebooks called `ExampleXX_Fit_Halo_Mass_to_Shear_Catalog*` in the examples folder, e.g, `examples/Example3_Fit_Halo_Mass_to_Shear_Catalog.ipynb`.
