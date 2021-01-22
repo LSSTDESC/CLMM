@@ -3,7 +3,8 @@
 
 1. [Basic installation](#basic_install)
 2. [Access to the proper environment on cori.nersc.gov](#access_to_the_proper_environment_on_cori)
-3. [Making a local copy of CLMM](#making_a_local_copy_of_clmm)
+3. [An alternative installation at NERSC or at CC-IN2P3 for DESC members](#from_desc_conda_env)
+4. [Making a local copy of CLMM](#making_a_local_copy_of_clmm)
 
 
 ## Basic procedure <a name="basic_install"></a>
@@ -106,6 +107,10 @@ def install_clmm_pipeline(upgrade=False):
 install_clmm_pipeline(upgrade=True)  # Comment this if you do not need to adjust your environment, but this is useful in cori
 
 ```
+
+## An alternative installation at NERSC or at CC-IN2P3 for DESC members <a name="from_desc_conda_env"></a>
+
+The LSST-DESC collabration has setup a specific conda python environment at both NERSC and CC-IN2P3. See instructions [there](https://github.com/LSSTDESC/desc-python). This conda environment comes with ready access to DESC specific ressources and software such as DC2 catalogs, GCRCatalogs or CCL. Cloning that conda environment and proceeding from there makes the installation procedure lighter as some packages won't need to be installed.
 
 ## Making a local copy of CLMM <a name="making_a_local_copy_of_clmm"></a>
 
