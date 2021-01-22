@@ -19,10 +19,10 @@ The documentation of the code can be found [here](http://lsstdesc.org/CLMM/).
 
 CLMM requires Python version 3.6 or later.  CLMM has the following dependencies:
 
-- [numpy](http://www.numpy.org/) (1.17 or later)
-- [scipy](http://www.numpy.org/) (1.3 or later)
-- [astropy](https://www.astropy.org/) (3.x or later for units and cosmology dependence)
-- [matplotlib](https://matplotlib.org/) (for plotting and going through tutorials)
+- [NumPy](http://www.numpy.org/) (1.17 or later)
+- [SciPy](http://www.numpy.org/) (1.3 or later)
+- [Astropy](https://www.astropy.org/) (3.x or later for units and cosmology dependence)
+- [Matplotlib](https://matplotlib.org/) (for plotting and going through tutorials)
 
 ```
   pip install numpy scipy astropy matplotlib
@@ -39,7 +39,7 @@ For the theoretical predictions of the signal, CLMM relies on existing libraries
 For developers, you will also need to install:
 
 - [pytest](https://docs.pytest.org/en/latest/) (3.x or later for testing)
-- [sphinx](https://www.sphinx-doc.org/en/master/usage/installation.html) (for documentation)
+- [Sphinx](https://www.sphinx-doc.org/en/master/usage/installation.html) (for documentation)
 
 These are also pip installable:
 ```
