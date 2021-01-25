@@ -1,6 +1,9 @@
 
 # Installation instructions
 
+* [Main readme](README.md)
+
+## Table of contents
 1. [Basic installation](#basic_install)
 2. [Access to the proper environment on cori.nersc.gov](#access_to_the_proper_environment_on_cori)
 3. [An alternative installation at NERSC or at CC-IN2P3 for DESC members](#from_desc_conda_env)
