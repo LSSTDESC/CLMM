@@ -1,6 +1,7 @@
 """Tests for examples/support/mock_data.py"""
 import numpy as np
-from numpy.testing import assert_allclose, assert_equal
+from numpy.testing import assert_raises, assert_allclose, assert_equal
+import warnings
 import clmm
 import clmm.dataops as da
 import sys
@@ -12,11 +13,33 @@ from clmm import Cosmology
 TOLERANCE = {'rtol': 5.0e-4, 'atol': 1.e-4}
 cosmo = Cosmology(H0 = 70.0, Omega_dm0 = 0.27 - 0.045, Omega_b0 = 0.045, Omega_k0 = 0.0)
 
-
 def test_mock_data():
     """ Run generate_galaxy_catalog 1000 times and assert that retrieved mass is always consistent with input
     """
     
+    # Basic raise tests
+    assert_raises(ValueError, mock.generate_galaxy_catalog, 1e15, 0.3, 4, cosmo, 0.8, ngals=None)
+    assert_raises(ValueError, mock.generate_galaxy_catalog, 1e15, 0.3, 4, cosmo, 0.8, ngals=1, ngal_density=1)
+    assert_raises(ValueError, mock.generate_galaxy_catalog, 1e15, 0.3, 4, cosmo, 'unknown_src', ngals=10)
+    # Test warning if bad gals
+    with warnings.catch_warnings(record=True) as w:
+        # Cause all warnings to always be triggered.
+        warnings.simplefilter("always")
+        # Trigger a warning.
+        np.random.seed(314)
+        mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.30001, ngals=1000, nretry=0)
+        # Verify some things
+        assert len(w) == 1
+    # Simple test to check if option with ngal_density is working
+    # A proper test should be implemented
+    mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.8, ngals=None, ngal_density=1)
+    # Simple test to check if option with zsrc=chrang13 is working
+    # A proper test should be implemented
+    mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 'chang13', ngals=100)
+    mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 'chang13', ngal_density=1)
+    # Simple test to check if option with pdz is working
+    # A proper test should be implemented
+    mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.8, ngals=100, photoz_sigma_unscaled=.1)
     
     def nfw_shear_profile(r, logm, z_src):
         m = 10.**logm
@@ -29,7 +52,7 @@ def test_mock_data():
     def mass_mock_cluster(mass=15.,guess=15.):
         
         # Set up mock cluster
-        ngals=50000
+        ngals=5000
         data = mock.generate_galaxy_catalog(10**mass, 0.3, 4, cosmo, 0.8, ngals=ngals)
         
         # Check whether the given ngals is the retrieved ngals

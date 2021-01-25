@@ -33,19 +33,17 @@ class NumCosmoCosmology(CLMMCosmology):
     def _init_from_cosmo(self, be_cosmo):
 
         assert isinstance(be_cosmo, Nc.HICosmo)
+        assert isinstance(be_cosmo, Nc.HICosmoDEXcdm)
+        assert isinstance(be_cosmo.peek_reparam (), Nc.HICosmoDEReparamOk)
         self.be_cosmo = be_cosmo
 
     def _init_from_params(self, H0, Omega_b0, Omega_dm0, Omega_k0):
 
-        if not self.be_cosmo:
-            self.be_cosmo = Nc.HICosmo.new_from_name(Nc.HICosmo, "NcHICosmoDEXcdm")
-            self.be_cosmo.param_set_lower_bound(Nc.HICosmoDESParams.T_GAMMA0, 0.0)
-            self.be_cosmo.omega_x2omega_k()
-            self.be_cosmo.param_set_by_name("w", -1.0)
-            self.be_cosmo.param_set_by_name("Tgamma0", 0.0)
-        else:
-            assert isinstance(cosmo, Nc.HICosmoDEXcdm)
-            assert isinstance(cosmo.peek_reparam, Nc.HICosmoDEReparamOk)
+        self.be_cosmo = Nc.HICosmo.new_from_name(Nc.HICosmo, "NcHICosmoDEXcdm")
+        self.be_cosmo.param_set_lower_bound(Nc.HICosmoDESParams.T_GAMMA0, 0.0)
+        self.be_cosmo.omega_x2omega_k()
+        self.be_cosmo.param_set_by_name("w", -1.0)
+        self.be_cosmo.param_set_by_name("Tgamma0", 0.0)
 
         self.be_cosmo.param_set_by_name("H0", H0)
         self.be_cosmo.param_set_by_name("Omegab", Omega_b0)
@@ -83,7 +81,8 @@ class NumCosmoCosmology(CLMMCosmology):
             raise ValueError(f"Unsupported parameter {key}")
 
     def set_dist(self, dist):
-
+        r"""Sets distance functions (NumCosmo internal use)
+        """
         assert isinstance(dist, Nc.Distance)
         self.dist = dist
         self.dist.prepare_if_needed(self.be_cosmo)
