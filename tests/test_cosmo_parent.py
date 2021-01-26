@@ -1,4 +1,4 @@
-"""Tests for clmm_cosmo.py"""
+"""Tests for clmm_cosmo.py""" 
 import json
 import numpy as np
 from numpy.testing import assert_raises, assert_allclose, assert_equal
@@ -14,7 +14,7 @@ def load_validation_config():
         testcase = json.load(fin)
     numcosmo_profile = np.genfromtxt(numcosmo_path+'radial_profiles.txt', names=True)
     # Cosmology
-    cosmo = theo.Cosmology(H0=testcase['cosmo_H0'], Omega_dm0=testcase['cosmo_Om0']-testcase['cosmo_Ob0'], Omega_b0=testcase['cosmo_Ob0'])
+    cosmo = theo.Cosmology(H0=testcase['cosmo_H0'], Omega_dm0=testcase['cosmo_Odm0'], Omega_b0=testcase['cosmo_Ob0'])
     return cosmo, testcase
 # --------------------------------------------------------------------------
 
@@ -40,6 +40,8 @@ TOLERANCE = {'rtol': 1.0e-15}
 
 def test_z_and_a(modeling_data, cosmo_init):
     """ Unit tests abstract class z and a methdods """
+    
+    reltol = modeling_data['cosmo_reltol']
 
     cosmo = theo.Cosmology()
 
@@ -95,6 +97,7 @@ def test_z_and_a(modeling_data, cosmo_init):
 
 def test_cosmo_basic(modeling_data, cosmo_init):
     """ Unit tests abstract class z and a methdods """
+    reltol = modeling_data['cosmo_reltol']
     cosmo = theo.Cosmology(**cosmo_init)
     # Test get_<PAR>(z)
     Omega_m0 = cosmo['Omega_m0']
@@ -124,12 +127,12 @@ def test_cosmo_basic(modeling_data, cosmo_init):
     # Test da(a1, a1)
     cosmo, testcase = load_validation_config()
     assert_allclose(cosmo.eval_da_a1a2(testcase['aexp_cluster']),
-                    testcase['dl'], 1.2e-8)
+                    testcase['dl'], reltol)
     assert_allclose(cosmo.eval_da_a1a2(testcase['aexp_source']),
-                    testcase['ds'], 1.2e-8)
+                    testcase['ds'], reltol)
     assert_allclose(cosmo.eval_da_a1a2(testcase['aexp_source'],
                                        testcase['aexp_cluster']),
-                    testcase['dsl'], 1.2e-8)
+                    testcase['dsl'], reltol)
 
     # Test initializing cosmo
     test_cosmo = theo.Cosmology(be_cosmo=cosmo.be_cosmo)

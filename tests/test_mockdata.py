@@ -9,6 +9,7 @@ from clmm.support import mock_data as mock
 from clmm.support.sampler import fitters
 from clmm import Cosmology
 
+import os
 
 TOLERANCE = {'rtol': 5.0e-4, 'atol': 1.e-4}
 cosmo = Cosmology(H0 = 70.0, Omega_dm0 = 0.27 - 0.045, Omega_b0 = 0.045, Omega_k0 = 0.0)

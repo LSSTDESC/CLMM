@@ -21,7 +21,7 @@ for _, be in be_setup.__backends.items():
 #  Backend nick:
 #    If the environment variable CLMM_MODELING_BACKEND is set it gets its value,
 #    falls back to 'ct' => cluster_toolkit if CLMM_MODELING_BACKEND is not set.
-be_nick = os.environ.get('CLMM_MODELING_BACKEND', 'ct')
+be_nick = os.environ.get('CLMM_MODELING_BACKEND', 'ccl')
 if not be_nick in be_setup.__backends:
     raise ValueError("CLMM Backend `%s' is not supported" %(be_nick))
 
