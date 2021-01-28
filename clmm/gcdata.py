@@ -30,6 +30,14 @@ class GCMetaData(OrderedDict):
         else:
             OrderedDict.__setitem__(self, item, value)
         return
+    def __getitem__(self, item):
+        """
+        Make class accept all lettercasings
+        """
+        if isinstance(item, str):
+            item = {n.lower():n for n in self.keys()}[item.lower()]
+        out = OrderedDict.__getitem__(self, item)
+        return out
 
 
 class GCData(APtable):
@@ -75,13 +83,18 @@ class GCData(APtable):
 
     def __getitem__(self, item):
         """
-        Makes sure GCData keeps its properties after [] operations are used
+        Makes sure GCData keeps its properties after [] operations are used.
+        It also makes all lettercasings accepted
 
         Returns
         -------
         GCData
             Data with [] operations applied
         """
+        if isinstance(item, str):
+            name_dict = {n.lower():n for n in self.colnames}
+            item = item.lower()
+            item = ','.join([name_dict[i] for i in item.split(',')])
         out = APtable.__getitem__(self, item)
         return out
 
