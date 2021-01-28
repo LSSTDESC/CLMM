@@ -1,8 +1,4 @@
 """Functions to compute polar/azimuthal averages in radial bins"""
-# try: # 7481794
-#     import pyccl as ccl
-# except ImportError:
-#     pass
 import math
 import warnings
 import numpy as np
