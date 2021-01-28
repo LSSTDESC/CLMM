@@ -46,8 +46,8 @@ class NumCosmoCLMModeling(CLMModeling):
         self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
 
     def set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
-        # Check if choices are supported
-        self.validate_definitions(massdef, halo_profile_model)
+        # Check if choices are supported and put in lower case
+        massdef, halo_profile_model = self.validate_definitions(massdef, halo_profile_model)
 
         # Check if we have already an instance of the required object, if not create one
         if not((halo_profile_model == self.halo_profile_model) and (massdef == self.massdef) and (delta_mdef == self.delta_mdef)):

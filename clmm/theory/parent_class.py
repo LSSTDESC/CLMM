@@ -39,10 +39,29 @@ class CLMModeling:
         self.hdpm_dict = {}
 
     def validate_definitions(self, massdef, halo_profile_model):
+        r""" Makes sure values of `massdef` and `halo_profile_model` are in the supported options
+        and fixes casing (code only works with lowercase).
+
+        Parameters
+        ----------
+        massdef: str, optional
+            Profile mass definition.
+        halo_profile_model: str, optional
+            Profile model parameterization.
+
+        Returns
+        -------
+        massdef: str
+            Lowercase profile mass definition.
+        halo_profile_model: str
+            Lowercase profile model parameterization.
+        """
+        massdef, halo_profile_model = massdef.lower(), halo_profile_model.lower()
         if not massdef in self.mdef_dict:
             raise ValueError(f"Halo density profile mass definition {massdef} not currently supported")
         if not halo_profile_model in self.hdpm_dict:
             raise ValueError(f"Halo density profile model {halo_profile_model} not currently supported")
+        return massdef, halo_profile_model
 
     def set_cosmo(self, cosmo):
         r""" Sets the cosmology to the internal cosmology object

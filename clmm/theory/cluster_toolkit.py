@@ -61,8 +61,8 @@ class CTModeling(CLMModeling):
         self._set_cosmo(cosmo, AstroPyCosmology)
 
     def set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
-        # Check if choices are supported
-        self.validate_definitions(massdef, halo_profile_model)
+        # Check if choices are supported and put in lower case
+        massdef, halo_profile_model = self.validate_definitions(massdef, halo_profile_model)
         # Update values
         self.halo_profile_model = halo_profile_model
         self.massdef = massdef
