@@ -1,8 +1,9 @@
+import os
+os.environ['MPLBACKEND'] = 'template'
 import sys
 import pytest
 import importlib
 import clmm
-import os
 
 #@pytest.fixture(scope="module", params=["ccl", "nc", "ct", "notabackend", "testnotabackend"])
 @pytest.fixture(scope="module", params=[{'nick': 'ccl', 'cosmo_reltol': 8.0e-8, 'dataops_reltol': 3.0e-8, 'theory_reltol': 2.0e-6}, 
