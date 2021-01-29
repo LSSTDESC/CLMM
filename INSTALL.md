@@ -12,6 +12,10 @@
 
 ## Basic procedure <a name="basic_install"></a>
 
+Here we provide a quick guide for a basic instalation, this will install all the packages in your current environment.
+To create a specific conda environment for CLMM, we recommend you to check the begining of section 
+[Access to the proper environment on cori.nersc.gov](#access_to_the_proper_environment_on_cori).
+
 ### Theory backend installation
 First, choose and install a theory backend for CLMM. This can be CCL or NumCosmo, or cluster_toolkit and they are installable as follows.
 
