@@ -17,6 +17,10 @@ def test_base(monkeypatch):
     clmm.theory.be_setup.__backends = {
               'notabackend': {'name': 'notaname', 'available': False,
                               'module': 'be_setup',
+                              'prereqs': ['notaprerq']},
+              # This calls the warning "BACKEND also not available"
+              'notabackend2': {'name': 'notaname', 'available': False,
+                              'module': 'be_setup',
                               'prereqs': ['notaprerq']}}
     assert_raises(ImportError, importlib.reload, clmm.theory)
     # broken backend
