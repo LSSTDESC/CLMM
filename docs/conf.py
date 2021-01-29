@@ -30,7 +30,7 @@ if on_rtd:
             return MagicMock()
 
     # For these modules, do a mock import
-    MOCK_MODULES = ['cluster_toolkit']
+    MOCK_MODULES = ['cluster_toolkit', 'ccl', 'numcosmo']
     sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 # -- Load the version number ----------------------------------------------
