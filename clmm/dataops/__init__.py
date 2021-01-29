@@ -222,8 +222,9 @@ def make_radial_profile(components, angsep, angsep_units, bin_units,
         Units of the calculated separation of the source galaxies
         Allowed Options = ["radians"]
     bin_units : str
-        Units to use for the radial bins of the shear profile
+        Units to use for the radial bins of the radial profile
         Allowed Options = ["radians", deg", "arcmin", "arcsec", kpc", "Mpc"]
+        (letter case independent)
     bins : array_like, optional
         User defined bins to use for the shear profile. If a list is provided, use that as
         the bin edges. If a scalar is provided, create that many equally spaced bins between
