@@ -8,8 +8,6 @@ from . import support
 
 import os
 
-__version__ = '0.9.0'
+__version__ = '0.9.1'
 
-
-print ("Loading: ", os.environ.get('CLMM_MODELING_BACKEND', 'UNDEFINED'))
-
+print("Loading: ", os.environ.get('CLMM_MODELING_BACKEND', 'UNDEFINED'))
