@@ -81,7 +81,7 @@ def make_bins(rmin, rmax, nbins=10, method='evenwidth', source_seps=None):
             `evenwidth` - Default, evenly spaced bins between rmin and rmax
             `evenlog10width` - Logspaced bins with even width in log10 between rmin and rmax
             `equaloccupation` - Bins with equal occupation numbers
-    source_seps : array-like
+    source_seps : array_like
         Radial distance of source separations
 
     Returns
