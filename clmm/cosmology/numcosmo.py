@@ -58,7 +58,6 @@ class NumCosmoCosmology(CLMMCosmology):
 
         self.be_cosmo.param_set_by_name ("ENnu", ENnu)
 
-
     def _set_param(self, key, value):
         if key == "Omega_b0":
             self.be_cosmo.param_set_by_name("Omegab", value)
