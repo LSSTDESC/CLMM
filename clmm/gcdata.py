@@ -43,9 +43,9 @@ class GCMetaData(OrderedDict):
 class GCData(APtable):
     """
     GCData: A data objetc for gcdata. Right now it behaves as an astropy table,
-    with the following modifications:
-        `__getitem__` is case independent.
-        The attribute .meta['cosmo'] is protected and can only be changed via update_cosmo or update_cosmo_ext_valid methods.
+    with the following modifications: `__getitem__` is case independent;
+    The attribute .meta['cosmo'] is protected and can only be changed via
+    update_cosmo or update_cosmo_ext_valid methods;
 
     Parameters
     ----------
