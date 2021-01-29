@@ -19,8 +19,8 @@ def compute_radial_averages(xvals, yvals, xbins, error_model='std/sqrt_n'):
         Bin edges to sort into
     error_model : str, optional
         Error model to use for y uncertainties. (letter case independent)
-        'std/sqrt_n' - Standard Deviation/sqrt(Counts) (Default)
-        'std' - Standard deviation
+            `std/sqrt_n` - Standard Deviation/sqrt(Counts) (Default)
+            `std` - Standard deviation
 
     Returns
     -------
@@ -78,9 +78,9 @@ def make_bins(rmin, rmax, nbins=10, method='evenwidth', source_seps=None):
         Number of bins you want to create, default to 10.
     method : str, optional
         Binning method to use (letter case independent)
-        'evenwidth' - Default, evenly spaced bins between rmin and rmax
-        'evenlog10width' - Logspaced bins with even width in log10 between rmin and rmax
-        'equaloccupation' - Bins with equal occupation numbers
+            `evenwidth` - Default, evenly spaced bins between rmin and rmax
+            `evenlog10width` - Logspaced bins with even width in log10 between rmin and rmax
+            `equaloccupation` - Bins with equal occupation numbers
     source_seps : array-like
         Radial distance of source separations
 

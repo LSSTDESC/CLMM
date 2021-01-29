@@ -32,7 +32,7 @@ class GCMetaData(OrderedDict):
         return
     def __getitem__(self, item):
         """
-        Make class accept all lettercasings
+        Make class accept all letter casings
         """
         if isinstance(item, str):
             item = {n.lower():n for n in self.keys()}[item.lower()]
@@ -84,7 +84,7 @@ class GCData(APtable):
     def __getitem__(self, item):
         """
         Makes sure GCData keeps its properties after [] operations are used.
-        It also makes all lettercasings accepted
+        It also makes all letter casings accepted
 
         Returns
         -------
