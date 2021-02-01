@@ -6,138 +6,22 @@ This is a brief guide to contributing to CLMM, including information about ident
 
 ## Table of contents
 1. [Identifying Issues](#identifying_issues)
-2. [Access to the proper environment on cori.nersc.gov](#access_to_the_proper_environment_on_cori)
-3. [Making a local copy of CLMM](#making_a_local_copy_of_clmm)
-4. [Making and submitting changes](#making_and_submitting_changes)
-5. [Adding documentation](#adding_documentation)
-6. [Reviewing an open pull request](#reviewing_an_open_pull_request)
-7. [Steps to merging a pull request](#steps_to_merging_a_pull_request)
-8. [Updating Public Documentation on lsstdesc.org](#updating_public_docs)
-9. [Additional resources](#additional_resources)
-10. [Contact](#contact)
+2. [Making and submitting changes](#making_and_submitting_changes)
+3. [Adding documentation](#adding_documentation)
+4. [Reviewing an open pull request](#reviewing_an_open_pull_request)
+5. [Steps to merging a pull request](#steps_to_merging_a_pull_request)
+6. [Updating Public Documentation on lsstdesc.org](#updating_public_docs)
+7. [Additional resources](#additional_resources)
+8. [Contact](#contact)
 
 ## Identifying Issues <a name="identifying_issues"></a>
 
 Action items for CLMM code improvements are listed as [GitHub Issues](https://github.com/LSSTDESC/CLMM/issues).
 Issues marked with the label `good first issue` are well-suited for new contributors.
 
-## Access to the proper environment on cori.nersc.gov <a name="access_to_the_proper_environment_on_cori"></a>
-
-If you have access to NERSC, this will likely be the easiest to make sure you have the appropriate environment.  After logging into cori.nersc.gov, you will need to execute the following.  We recommend executing line-by-line to avoid errors:
-
-```bash
-	module load python  # Also loads anaconda
-	conda create --name clmmenv  # Create an anaconda environment for clmm
-	source activate clmmenv  # switch to your newly created environment
-	conda install pip  # need pip to install everything else necessary for clmm	
-	conda install ipython # need to have the ipython tied to this environment
-	conda install -c conda-forge firefox  # Need a browser to view jupyter notebooks  
-```
-
-Note, for regular contributions and use, we recommend adding `module load python` to your `~/.bashrc` so you have anaconda installed every time you log in.  You will subseqeuntly also want to be in the correct environment whenever working with `clmm`, which means running `source activate clmmenv` at the start of each session.
-
-You can now go through the steps in the Requirements section of README.md.  Note, you'll need to separately install ccl, numcosmo, and/or cluster_toolkit as cosmology backends to complete your installation in the current version of CLMM.  To install ccl for the cosmology backends, you'll need to run,
-
-```bash
-	conda install -c conda-forge swig
-	conda install -c conda-forge cmake
-	git clone git@github.com:LSSTDESC/CCL.git
-	#  If the above line does not work, you may need to instead use:
-	# git clone https://github.com/LSSTDESC/CCL.git
-	pip install -e .
-
-```
-
-To install numcosmo for a cosmology backend,
-
-```bash
-	conda install -c conda-forge numcosmo
-```
-
-Now, to install cluster-toolkit, cluster-toolkit has a gsl dependency, you'll also need gsl.
-
-```bash
-	conda install gsl
-	git clone https://github.com/tmcclintock/cluster_toolkit.git
-	cd cluster_toolkit
-	python setup.py install
-	cd ..
-```
-
-Note, you may choose to install some or all of the ccl, numcosmo, and/or cluster_toolkit packages.  You need at least one.  If you install cluster_toolkit and others, then you need to install cluster_toolkit *last*.   If you have already installed cluster_toolkit before the other packages, simply run, `pip uninstall cluster_toolkit` then re-install cluster_toolkit.
-
-Now, you can install CLMM.
-
-```bash
-	pip install numpy scipy astropy matplotlib
-	pip install pytest sphinx sphinx_rtd_theme
-	pip install jupyter  # need to have jupyter notebook tied to this environment, you can then see the environment in jupyter.nersc.gov
-	git clone https://github.com/LSSTDESC/CLMM.git  # For those with edit access to CLMM, see below for otherwise
-  	cd CLMM   
-  	python setup.py install     # build from source
-```
-
-The above allows you to develop in NERSC and run pytest.  Your workflow as a developer would be to make your changes, do a `python setup.py install --user` then `pytest` to make sure your changes did not break any tests.
-
-If you are a DESC member you may also add to your CLMM environment the GCR and GCRCatalog packages to access the DC2 datasets at NERSC. To run the DC2 example notebooks provided in CLMM, the following need to be installed in your CLMM environment at NERSC. Once in your CLMM environment (`source activate clmmenv`), run
-
-```bash
-    pip install pandas
-    pip install pyarrow
-    pip install healpy
-    pip install h5py
-    pip install GCR
-    pip install https://github.com/LSSTDESC/gcr-catalogs/archive/master.zip
-    pip install https://github.com/yymao/FoFCatalogMatching/archive/master.zip
-```
-
-To open up a notebook from nersc in your browser, you will need to go to the [nersc jupyter portal](https://jupyter.nersc.gov) and sign in. You will need to make this conda environment available in the kernel list:
-
-```bash
-    python -m ipykernel install --user --name=conda-clmmenv
-```
-
-Clicking on the upper right corner of the notebook will provide options for your kernel.  Choose the kernel `conda-clmmenv` that you just created.  You will need to do a temporary install of both cluster_toolkit and clmm in the first cell of your jupyter notebook:
-
-```python
-
-def install_clmm_pipeline(upgrade=False):
-    import sys
-    try:
-        import clmm
-        import cluster_toolkit
-        installed = True
-    except ImportError:
-        installed = False
-    if not upgrade:
-        print('clmm is already installed and upgrade is False')
-    else:
-        !{sys.executable} -m pip install --user --upgrade git+https://github.com/tmcclintock/cluster_toolkit.git
-        !{sys.executable} -m pip install --user --upgrade git+https://github.com/LSSTDESC/CLMM
-install_clmm_pipeline(upgrade=True)  # Comment this if you do not need to adjust your environment, but this is useful in cori
-
-```
-
-## Making a local copy of CLMM <a name="making_a_local_copy_of_clmm"></a>
-
-As a newcomer, you likely will not have edit access to the main CLMM repository.
-Without edit privileges, you won't be able to create or push changes to branches in the base repository.
-You can get around this by creating a [fork](https://help.github.com/articles/fork-a-repo/), a linked copy of the CLMM repository under your Github username.
-You can then push code changes to your fork which can later be merged with the base repository.
-To create a fork, navigate to the [CLMM home page](https://github.com/LSSTDESC/CLMM) and click 'Fork' in the upper right hand corner.
-The fork has been created under your username on Github's remote server and can now be cloned to your local repository with
-
-```bash
-    git clone git@github.com:YOUR-USERNAME/CLMM.git
-    git remote add base git@github.com:LSSTDESC/CLMM.git
-```
-If you do have edit privileges to CLMM, it may be easier to simply clone the base CLMM repository.
-``` bash
-    git clone git@github.com:LSSTDESC/CLMM.git
-```
 
 ## Making and submitting changes <a name="making_and_submitting_changes"></a>
-Once you've created a local copy of CLMM on your machine, you can begin making changes to the code and submitting them for review.
+Once you've [created a local copy of CLMM](INSTALL.md) on your machine, you can begin making changes to the code and submitting them for review.
 To do this, follow the following steps from within your local copy of CLMM (forked or base).
 
 1. Checkout a new branch to contain your code changes independently from the master repository.
@@ -228,7 +112,7 @@ Here's a list of additional resources which you may find helpful in navigating g
 * [The Github Help Pages](https://help.github.com/)
 
 ## Contact (alphabetical order) <a name="contact"></a>
-* [Michel Aguena](https://github.com/m-aguena) (LIneA)
+* [Michel Aguena](https://github.com/m-aguena) (LAPP / LIneA)
 * [Doug Applegate](https://github.com/deapplegate) (Novartis)
 * [Camille Avestruz](https://github.com/cavestruz) (University of Michigan)
 * [Lucie Baumont](https://github.com/lbaumo) (SBU)
