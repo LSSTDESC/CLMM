@@ -35,7 +35,7 @@ def test_class(modeling_data):
     assert_raises(AttributeError, CLMMCosmology.eval_da, None, None)
     assert_raises(NotImplementedError, CLMMCosmology.eval_sigma_crit, None, None, None)
     assert_raises(NotImplementedError, CLMMCosmology.get_E2Omega_m, None, None)
-TOLERANCE = {'rtol': 1.0e-15}
+TOLERANCE = {'rtol': 1.0e-12}
 
 
 def test_z_and_a(modeling_data, cosmo_init):
