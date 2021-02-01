@@ -3,11 +3,11 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>CLMM Documentation &mdash; CLMM 0.9.0 documentation</title>
+  <title>CLMM Documentation &mdash; CLMM 0.9.1 documentation</title>
   
 
   
@@ -16,7 +16,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -29,7 +32,6 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
@@ -37,7 +39,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Installation" href="source/installation.html" /> 
+    <link rel="next" title="Rapid overview" href="source/overview.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -51,7 +53,7 @@
           
 
           
-            <a href="#" class="icon icon-home" alt="Documentation Home"> CLMM
+            <a href="#" class="icon icon-home"> CLMM
           
 
           
@@ -61,7 +63,7 @@
             
             
               <div class="version">
-                0.9.0
+                0.9.1
               </div>
             
           
@@ -88,6 +90,7 @@
             
               <p class="caption"><span class="caption-text">Getting Started</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="source/overview.html">Rapid overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="source/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="source/citing.html">Citing CLMM</a></li>
 </ul>
@@ -178,6 +181,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -189,7 +194,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -209,31 +214,12 @@
 library for performing galaxy cluster weak lensing analyses. clmm is
 associated with Key Tasks DC1 SW+RQ and DC2 SW of the LSST-DESC
 <a class="reference external" href="https://lsstdesc.org/sites/default/files/DESC_SRM_V1_4.pdf">Science Roadmap</a>
-pertaining to absolute and relative mass calibration. CLMM is
-descended from <a class="reference external" href="https://github.com/deapplegate/clmassmod">clmassmod</a>
-but distinguished by its modular structure and scope, which
-encompasses both simulated data sets with a known truth and observed
-data from which we aim to discover the truth.</p>
-<p>The core functionality of CLMM provides tools to estimate cluster
-masses based on weak lensing data. It also includes a routine to make
-mock catalogs based on cluster_toolkit. CLMM consists of the building
-blocks for an end-to-end weak lensing cosmology pipeline that can be
-validated on mock data and run on real data from LSST or other
-telescopes. We provide examples of usage in this repository.
-Functionality includes:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>The GalaxyCluster object</p></li>
-<li><p>Mock data generation</p></li>
-<li><p>Weak lensing signal measurement with dataops.py</p></li>
-<li><p>Profile and cosmology models with modeling.py</p></li>
-<li><p>Galaxy cluster mass estimation</p></li>
-</ul>
-</div></blockquote>
+pertaining to absolute and relative mass calibration.</p>
 <p>The source code is publically available at <a class="reference external" href="https://github.com/LSSTDESC/CLMM">https://github.com/LSSTDESC/CLMM</a></p>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Getting Started</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="source/overview.html">Rapid overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="source/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="source/citing.html">Citing CLMM</a></li>
 </ul>
@@ -269,28 +255,25 @@ Functionality includes:</p>
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
+        &#169; Copyright 2018-2021, LSST DESC CLMM Contributors.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
