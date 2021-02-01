@@ -3,11 +3,11 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>clmm.dataops &mdash; CLMM 0.9.0 documentation</title>
+  <title>clmm.dataops &mdash; CLMM 0.9.1 documentation</title>
   
 
   
@@ -16,7 +16,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -29,7 +32,6 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
@@ -50,7 +52,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> CLMM
+            <a href="../../index.html" class="icon icon-home"> CLMM
           
 
           
@@ -60,7 +62,7 @@
             
             
               <div class="version">
-                0.9.0
+                0.9.1
               </div>
             
           
@@ -87,6 +89,7 @@
             
               <p class="caption"><span class="caption-text">Getting Started</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../source/overview.html">Rapid overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../source/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../source/citing.html">Citing CLMM</a></li>
 </ul>
@@ -177,6 +180,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -202,10 +207,6 @@
             
   <h1>Source code for clmm.dataops</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Functions to compute polar/azimuthal averages in radial bins&quot;&quot;&quot;</span>
-<span class="c1"># try: # 7481794</span>
-<span class="c1">#     import pyccl as ccl</span>
-<span class="c1"># except ImportError:</span>
-<span class="c1">#     pass</span>
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -254,7 +255,7 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">        g_t =&amp; -\left( g_1\cos\left(2\phi\right)-g_2\sin\left(2\phi\right)\right)\\</span>
+<span class="sd">        g_t =&amp; -\left( g_1\cos\left(2\phi\right)+g_2\sin\left(2\phi\right)\right)\\</span>
 <span class="sd">        g_x =&amp; g_1 \sin\left(2\phi\right)-g_2\cos\left(2\phi\right)</span>
 
 <span class="sd">    Finally, and if requested by the user throught the `is_deltasigma` flag, an estimate of the excess surface density :math:`\widehat{\Delta\Sigma}` is obtained from</span>
@@ -375,7 +376,7 @@
 
 <span class="sd">    We compute the tangential shear following Eq. 7 of Schrabback et al. 2018, arXiv:1611:03866</span>
 <span class="sd">    .. math::</span>
-<span class="sd">        g_t = -\left( g_1\cos\left(2\phi\right)-g_2\sin\left(2\phi\right)\right)</span>
+<span class="sd">        g_t = -\left( g_1\cos\left(2\phi\right)+g_2\sin\left(2\phi\right)\right)</span>
 
 <span class="sd">    For extended descriptions of parameters, see `compute_shear()` documentation.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -491,28 +492,25 @@
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
+        &#169; Copyright 2018-2021, LSST DESC CLMM Contributors.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

@@ -3,11 +3,11 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>clmm.galaxycluster module &mdash; CLMM 0.9.0 documentation</title>
+  <title>clmm.galaxycluster module &mdash; CLMM 0.9.1 documentation</title>
   
 
   
@@ -16,7 +16,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -29,7 +32,6 @@
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
@@ -52,7 +54,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> CLMM
+            <a href="../index.html" class="icon icon-home"> CLMM
           
 
           
@@ -62,7 +64,7 @@
             
             
               <div class="version">
-                0.9.0
+                0.9.1
               </div>
             
           
@@ -89,6 +91,7 @@
             
               <p class="caption"><span class="caption-text">Getting Started</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../source/overview.html">Rapid overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../source/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../source/citing.html">Citing CLMM</a></li>
 </ul>
@@ -179,6 +182,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -192,7 +197,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="../_sources/api/clmm.galaxycluster.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -316,7 +321,7 @@ z_lens: cluster z</p>
 <li><p><strong>angsep_units</strong> (<em>str</em>) – Units of the calculated separation of the source galaxies
 Allowed Options = [“radians”]</p></li>
 <li><p><strong>bin_units</strong> (<em>str</em>) – Units to use for the radial bins of the shear profile
-Allowed Options = [“radians”, deg”, “arcmin”, “arcsec”, kpc”, “Mpc”]</p></li>
+Allowed Options = [“radians”, “deg”, “arcmin”, “arcsec”, “kpc”, “Mpc”]</p></li>
 <li><p><strong>bins</strong> (<em>array_like</em><em>, </em><em>optional</em>) – User defined bins to use for the shear profile. If a list is provided, use that as
 the bin edges. If a scalar is provided, create that many equally spaced bins between
 the minimum and maximum angular separations in bin_units. If nothing is provided,
@@ -391,28 +396,25 @@ standard errors in each bin.</p>
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
+        &#169; Copyright 2018-2021, LSST DESC CLMM Contributors.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

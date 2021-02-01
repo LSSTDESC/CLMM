@@ -23,6 +23,15 @@ Check what version we’re using
 
     clmm.__version__
 
+
+
+
+.. parsed-literal::
+
+    '0.9.1'
+
+
+
 1. Prepare a CLMM GalaxyCluster object from cosmoDC2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -40,6 +49,15 @@ Read in the extragalactic catalog cosmoDC2
     cosmo = clmm.Cosmology(H0 = dc2_cosmo.H0.value, Omega_dm0 = dc2_cosmo.Om0-dc2_cosmo.Ob0, Omega_b0 = dc2_cosmo.Ob0)
     cosmo
 
+
+
+
+.. parsed-literal::
+
+    <clmm.cosmology.cluster_toolkit.AstroPyCosmology at 0x7f3d8e17ed50>
+
+
+
 Get the list of halos with ``M > mmin`` in the redshift range ``[zmin, zmax]``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -55,6 +73,12 @@ Get the list of halos with ``M > mmin`` in the redshift range ``[zmin, zmax]``
                                                               f'redshift>{zmin}', f'redshift<{zmax}'])
     N_cl = len(massive_halos['halo_mass'])
     print(f'There are {N_cl} clusters in this mass and redshift range')
+
+
+.. parsed-literal::
+
+    There are 4 clusters in this mass and redshift range
+
 
 Check the units of halo masses in the catalog
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -76,6 +100,14 @@ M\ :math:`_{\odot}\; h^{-1}`.
     print(f"hostHaloMass/h: {massive_halos['hostHaloMass']/cosmo['h']}")
     print(f"halo_mass:      {massive_halos['halo_mass']}")
 
+
+.. parsed-literal::
+
+    hostHaloMass:   [4.11498904e+14 4.51343114e+14 4.28283670e+14 3.59993019e+14]
+    hostHaloMass/h: [5.79575921e+14 6.35694527e+14 6.03216436e+14 5.07032421e+14]
+    halo_mass:      [5.79575921e+14 6.35694527e+14 6.03216436e+14 5.07032421e+14]
+
+
 Below, we use ``halo_mass``.
 
 Select the most massive one
@@ -94,6 +126,12 @@ Select the most massive one
     id_cl = massive_halos['halo_id'][select][0]
     
     print (f'The most massive cluster is halo {id_cl} in ra = {ra_cl:.2f} deg, dec = {dec_cl:.2f} deg, z = {z_cl:.2f}, with mass = {mass_cl:.2e} Msun')
+
+
+.. parsed-literal::
+
+    The most massive cluster is halo 95600097373 in ra = 64.26 deg, dec = -34.47 deg, z = 0.32, with mass = 6.36e+14 Msun
+
 
 Apply coordinates, redshift and magnitude cuts to select backgroud galaxies around the cluster
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -154,6 +192,24 @@ To compute a reduced tangential shear profile using CLMM, we first need to trans
     plt.xlabel('z')
     plt.ylabel('Count')
 
+
+.. parsed-literal::
+
+    Number of galaxies in the catalog: Ngal = 36403
+
+
+
+
+.. parsed-literal::
+
+    Text(0, 0.5, 'Count')
+
+
+
+
+.. image:: data_and_model_demo_DC2_files/data_and_model_demo_DC2_19_2.png
+
+
 2. Use CLMM to compute the reduced tangential shear profile
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -168,6 +224,33 @@ available options of the functions below.
     bin_edges = clmm.dataops.make_bins(0.15, 10, 15, method='evenlog10width') # in Mpc
     cl.compute_tangential_and_cross_components(geometry="flat")
     cl.make_radial_profile("Mpc", bins=bin_edges,cosmo=cosmo, add=True, include_empty_bins=False, gal_ids_in_bins=False)
+
+
+
+
+.. raw:: html
+
+    <i>GCData length=14</i>
+    <table id="table139902319373904" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>radius_min</th><th>radius</th><th>radius_max</th><th>gt</th><th>gt_err</th><th>gx</th><th>gx_err</th><th>z</th><th>z_err</th><th>n_src</th></tr></thead>
+    <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>int64</th></tr></thead>
+    <tr><td>0.15</td><td>0.17636942351321439</td><td>0.19846556968648293</td><td>0.02037417866393367</td><td>0.0035284277510696086</td><td>0.006753624804594845</td><td>0.003687532406500275</td><td>0.971778890840735</td><td>0.05041615834029067</td><td>34</td></tr>
+    <tr><td>0.19846556968648293</td><td>0.23218089353404303</td><td>0.26259054900653483</td><td>0.02679741876302726</td><td>0.0027189139082722186</td><td>0.0007119377886252487</td><td>0.0023036485227813878</td><td>1.020568689467205</td><td>0.058193913495320986</td><td>53</td></tr>
+    <tr><td>0.26259054900653483</td><td>0.3059704420440446</td><td>0.3474345526857884</td><td>0.041066700638701485</td><td>0.0019084106346784952</td><td>0.0016804474260400152</td><td>0.0014455222242051205</td><td>1.0265077465792039</td><td>0.04849007345410995</td><td>82</td></tr>
+    <tr><td>0.3474345526857884</td><td>0.4072589534929289</td><td>0.45969197618368907</td><td>0.04650956621608166</td><td>0.0011971729597659692</td><td>0.0009971665591332357</td><td>0.0007991042517062868</td><td>1.0393406936116252</td><td>0.03719695065774041</td><td>130</td></tr>
+    <tr><td>0.45969197618368907</td><td>0.5396605648750517</td><td>0.60822019955734</td><td>0.049171216690907904</td><td>0.0006989442328396026</td><td>0.00015119088451375306</td><td>0.0003589668969936726</td><td>0.9758493108139988</td><td>0.023369400483367962</td><td>261</td></tr>
+    <tr><td>0.60822019955734</td><td>0.7076302276523957</td><td>0.8047384559998256</td><td>0.03782777299821912</td><td>0.0004936163860593951</td><td>0.00022641596737203016</td><td>0.00037354499832125955</td><td>0.9192423022575893</td><td>0.01632509783150775</td><td>464</td></tr>
+    <tr><td>0.8047384559998256</td><td>0.9424747432620386</td><td>1.0647525074575073</td><td>0.02515375248528569</td><td>0.0003594902655390658</td><td>-0.00017164485861469967</td><td>0.0003212987611452593</td><td>0.9769176552238986</td><td>0.014443458340591367</td><td>730</td></tr>
+    <tr><td>1.0647525074575073</td><td>1.2470483876853413</td><td>1.4087780864511024</td><td>0.02463116395646268</td><td>0.0002893234018049065</td><td>0.0006363728882482774</td><td>0.00028139378807150476</td><td>0.9826323955808695</td><td>0.010498800725560982</td><td>1194</td></tr>
+    <tr><td>1.4087780864511024</td><td>1.6514264711112452</td><td>1.8639596365956759</td><td>0.014253470998703497</td><td>0.00028271094659568864</td><td>0.0008274010881759553</td><td>0.0003006187514405246</td><td>0.9901527835609454</td><td>0.008637894700042961</td><td>2076</td></tr>
+    <tr><td>1.8639596365956759</td><td>2.1822210761522407</td><td>2.46621207433047</td><td>0.008628420140502508</td><td>0.00023756635906010436</td><td>0.00019895276766396553</td><td>0.00020004388211464276</td><td>1.007896876117697</td><td>0.006940609004742</td><td>3479</td></tr>
+    <tr><td>2.46621207433047</td><td>2.882309069446668</td><td>3.263054561997864</td><td>0.012365497276165687</td><td>0.0001645113422592457</td><td>0.00029444375202460055</td><td>0.00014773664641759505</td><td>0.9946389967286835</td><td>0.00494113559622797</td><td>6188</td></tr>
+    <tr><td>3.263054561997864</td><td>3.8082066394891894</td><td>4.317359883766556</td><td>0.009314295931979242</td><td>9.767093549814181e-05</td><td>-0.0005616934167879528</td><td>0.00011970052009903858</td><td>0.9922200832905932</td><td>0.0036853682845281502</td><td>10849</td></tr>
+    <tr><td>4.317359883766556</td><td>4.870379641763282</td><td>5.7123152591553135</td><td>0.004856151087230271</td><td>0.00010748824629726481</td><td>-0.001094113267983147</td><td>0.0001152492377082557</td><td>0.9845351614502101</td><td>0.0038856989848474258</td><td>9755</td></tr>
+    <tr><td>5.7123152591553135</td><td>5.960000520868773</td><td>7.557986014246993</td><td>0.0015568135977910237</td><td>0.00032133518711172164</td><td>-0.003681832431586525</td><td>0.0002807912665247582</td><td>1.0026333220591057</td><td>0.012217109891328161</td><td>1052</td></tr>
+    </table>
+
+
 
 3. Sanity check: use CLMM to compute the corresponding NFW model, given the halo mass
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -204,6 +287,19 @@ available options of the functions below.
     plt.yscale('log')
     plt.xlabel('R (Mpc)')
     plt.ylabel(r'Reduced shear $\langle g_t\rangle$')
+
+
+
+
+.. parsed-literal::
+
+    Text(0, 0.5, 'Reduced shear $\\langle g_t\\rangle$')
+
+
+
+
+.. image:: data_and_model_demo_DC2_files/data_and_model_demo_DC2_25_1.png
+
 
 Data and model are in rough agreement at large radii. In the inner
 region, the lack of resolution of the DC2 simulations yield an

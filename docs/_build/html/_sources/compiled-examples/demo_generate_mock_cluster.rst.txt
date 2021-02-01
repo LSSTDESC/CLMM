@@ -39,7 +39,7 @@ Make sure we know which version we’re using
 
 .. parsed-literal::
 
-    '0.9.0'
+    '0.9.1'
 
 
 
@@ -127,9 +127,9 @@ Generate the mock catalog with different source galaxy options
 
 .. parsed-literal::
 
-    /Users/combet/anaconda3/envs/clmmenv/lib/python3.8/site-packages/numpy/ma/core.py:2831: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      _data = np.array(data, dtype=dtype, copy=copy,
-    /Users/combet/anaconda3/envs/clmmenv/lib/python3.8/site-packages/clmm-0.9.0-py3.8.egg/clmm/theory/func_layer.py:354: UserWarning: Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.
+    /pbs/home/c/ccombet/.conda/envs/mydesc2/lib/python3.7/site-packages/numpy/ma/core.py:2832: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
+      order=order, subok=True, ndmin=ndmin)
+    /pbs/home/c/ccombet/.conda/envs/mydesc2/lib/python3.7/site-packages/clmm-0.9.1-py3.7.egg/clmm/theory/func_layer.py:354: UserWarning: Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.
 
 
 Sanity check: checking that no galaxies were originally drawn below
@@ -173,9 +173,9 @@ Inspect the catalog data
 
         ra        dec         e1         e2         z       ztrue    id
     ---------- ---------- ---------- ---------- --------- --------- ---
-     1.075e-01 -2.151e-01  4.934e-03 -6.573e-03 8.000e-01 8.000e-01   0
-    -7.028e-03  5.753e-03 -1.874e-02 -9.299e-02 8.000e-01 8.000e-01   1
-    -1.149e-02  1.231e-01  1.772e-02 -3.337e-03 8.000e-01 8.000e-01   2
+    -1.980e-01 -1.606e-01 -1.571e-03  7.455e-03 8.000e-01 8.000e-01   0
+    -1.462e-01  3.210e-02 -1.325e-02 -6.113e-03 8.000e-01 8.000e-01   1
+    -4.659e-02  2.456e-01  7.274e-03 -2.863e-03 8.000e-01 8.000e-01   2
 
 
 -  With photo-z errors
@@ -190,11 +190,11 @@ Inspect the catalog data
 
 .. parsed-literal::
 
-        ra        dec        e1         e2         z       ztrue         pzbins [61]             pzpdf [61]        id
-    ---------- --------- ---------- ---------- --------- --------- ----------------------- ---------------------- ---
-     9.300e-02 2.208e-02 -3.371e-02  1.013e-03 8.660e-01 8.000e-01 -3.400e-02 .. 1.766e+00 8.550e-22 .. 8.550e-22   0
-    -2.139e-02 5.447e-02  3.331e-02  2.577e-02 8.576e-01 8.000e-01 -4.241e-02 .. 1.758e+00 8.550e-22 .. 8.550e-22   1
-    -1.089e-01 7.635e-02 -6.047e-02 -8.975e-03 8.942e-01 8.000e-01 -5.761e-03 .. 1.794e+00 8.550e-22 .. 8.550e-22   2
+        ra        dec         e1        e2         z       ztrue         pzbins [61]             pzpdf [61]        id
+    ---------- ---------- --------- ---------- --------- --------- ----------------------- ---------------------- ---
+    -2.022e-01  2.237e-01 4.880e-02  2.578e-02 8.395e-01 8.000e-01 -6.054e-02 .. 1.739e+00 8.550e-22 .. 8.550e-22   0
+    -1.133e-01 -1.049e-01 9.874e-02 -3.118e-02 8.285e-01 8.000e-01 -7.151e-02 .. 1.728e+00 8.550e-22 .. 8.550e-22   1
+     4.696e-02 -9.192e-02 2.946e-02 -5.808e-03 8.280e-01 8.000e-01 -7.198e-02 .. 1.728e+00 8.550e-22 .. 8.550e-22   2
 
 
 -  Histogram of the redshift distribution of background galaxies, for
@@ -216,7 +216,7 @@ Inspect the catalog data
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7ff08393e070>
+    <matplotlib.legend.Legend at 0x7fb9a4654190>
 
 
 
@@ -240,7 +240,7 @@ Inspect the catalog data
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7ff088047f40>
+    <matplotlib.legend.Legend at 0x7fb9a459c610>
 
 
 
@@ -305,9 +305,9 @@ example.
 
 .. parsed-literal::
 
-    /Users/combet/anaconda3/envs/clmmenv/lib/python3.8/site-packages/numpy/ma/core.py:2831: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      _data = np.array(data, dtype=dtype, copy=copy,
-    /Users/combet/anaconda3/envs/clmmenv/lib/python3.8/site-packages/clmm-0.9.0-py3.8.egg/clmm/theory/func_layer.py:354: UserWarning: Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.
+    /pbs/home/c/ccombet/.conda/envs/mydesc2/lib/python3.7/site-packages/numpy/ma/core.py:2832: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
+      order=order, subok=True, ndmin=ndmin)
+    /pbs/home/c/ccombet/.conda/envs/mydesc2/lib/python3.7/site-packages/clmm-0.9.1-py3.7.egg/clmm/theory/func_layer.py:354: UserWarning: Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.
 
 
 .. code:: ipython3
@@ -321,7 +321,7 @@ example.
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7ff088269fd0>
+    <matplotlib.legend.Legend at 0x7fb9a445c990>
 
 
 
@@ -359,7 +359,7 @@ example.
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7ff088290130>
+    <matplotlib.legend.Legend at 0x7fb9a4367f10>
 
 
 
