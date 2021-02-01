@@ -102,6 +102,18 @@ def test_update_cosmo():
     assert_raises(TypeError, gcdata.update_cosmo, cosmo2, overwrite=False)
     assert_raises(TypeError, gcdata.update_cosmo, cosmo2)
 
+    # Test casing for colnames and meta
+    gcdata = GCData()
+    gcdata.update_cosmo(cosmo1)
+    assert_equal(desc1, gcdata.meta['cosmo'])
+    assert_equal(desc1, gcdata.meta['COSMO'])
+    assert_equal(desc1, gcdata.meta['Cosmo'])
+
+    gcdata['Ra'] = [1]
+    assert_equal(1, gcdata['Ra'][0])
+    assert_equal(1, gcdata['ra'][0])
+    assert_equal(1, gcdata['RA'][0])
+
 # test_creator = 'Mitch'
 # test_creator_diff = 'Witch'
 

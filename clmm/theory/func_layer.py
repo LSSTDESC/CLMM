@@ -37,12 +37,12 @@ def compute_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_pr
     delta_mdef : int, optional
         Mass overdensity definition; defaults to 200.
     halo_profile_model : str, optional
-        Profile model parameterization, with the following supported options:
+        Profile model parameterization, with the following supported options (letter case independent):
             `nfw` (default)
             `einasto` - valid in numcosmo and ccl (version>=TBA)
             `hernquist` - valid in numcosmo and ccl (version>=TBA)
     massdef : str, optional
-        Profile mass definition, with the following supported options:
+        Profile mass definition, with the following supported options (letter case independent):
             `mean` (default)
             `critical` - not in cluster_toolkit
             `virial` - not in cluster_toolkit
@@ -90,12 +90,12 @@ def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     delta_mdef : int, optional
         Mass overdensity definition; defaults to 200.
     halo_profile_model : str, optional
-        Profile model parameterization, with the following supported options:
+        Profile model parameterization, with the following supported options (letter case independent):
             `nfw` (default)
             `einasto` - valid in numcosmo and ccl (version>=TBA)
             `hernquist` - valid in numcosmo and ccl (version>=TBA)
     massdef : str, optional
-        Profile mass definition, with the following supported options:
+        Profile mass definition, with the following supported options (letter case independent):
             `mean` (default)
             `critical` - not in cluster_toolkit
             `virial` - not in cluster_toolkit
@@ -146,12 +146,12 @@ def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
     delta_mdef : int, optional
         Mass overdensity definition; defaults to 200.
     halo_profile_model : str, optional
-        Profile model parameterization, with the following supported options:
+        Profile model parameterization, with the following supported options (letter case independent):
             `nfw` (default)
             `einasto` - valid in numcosmo and ccl (version>=TBA)
             `hernquist` - valid in numcosmo and ccl (version>=TBA)
     massdef : str, optional
-        Profile mass definition, with the following supported options:
+        Profile mass definition, with the following supported options (letter case independent):
             `mean` (default)
             `critical` - not in cluster_toolkit
             `virial` - not in cluster_toolkit
@@ -229,12 +229,12 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     delta_mdef : int, optional
         Mass overdensity definition.  Defaults to 200.
     halo_profile_model : str, optional
-        Profile model parameterization, with the following supported options:
+        Profile model parameterization, with the following supported options (letter case independent):
             `nfw` (default)
             `einasto` - valid in numcosmo and ccl (version>=TBA)
             `hernquist` - valid in numcosmo and ccl (version>=TBA)
     massdef : str, optional
-        Profile mass definition, with the following supported options:
+        Profile mass definition, with the following supported options (letter case independent):
             `mean` (default)
             `critical` - not in cluster_toolkit
             `virial` - not in cluster_toolkit
@@ -303,12 +303,12 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     delta_mdef : int, optional
         Mass overdensity definition.  Defaults to 200.
     halo_profile_model : str, optional
-        Profile model parameterization, with the following supported options:
+        Profile model parameterization, with the following supported options (letter case independent):
             `nfw` (default)
             `einasto` - valid in numcosmo and ccl (version>=TBA)
             `hernquist` - valid in numcosmo and ccl (version>=TBA)
     massdef : str, optional
-        Profile mass definition, with the following supported options:
+        Profile mass definition, with the following supported options (letter case independent):
             `mean` (default)
             `critical` - not in cluster_toolkit
             `virial` - not in cluster_toolkit
@@ -378,12 +378,12 @@ def compute_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
     delta_mdef : int, optional
         Mass overdensity definition.  Defaults to 200.
     halo_profile_model : str, optional
-        Profile model parameterization, with the following supported options:
+        Profile model parameterization, with the following supported options (letter case independent):
             `nfw` (default)
             `einasto` - valid in numcosmo and ccl (version>=TBA)
             `hernquist` - valid in numcosmo and ccl (version>=TBA)
     massdef : str, optional
-        Profile mass definition, with the following supported options:
+        Profile mass definition, with the following supported options (letter case independent):
             `mean` (default)
             `critical` - not in cluster_toolkit
             `virial` - not in cluster_toolkit
@@ -458,12 +458,12 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
     delta_mdef : int, optional
         Mass overdensity definition.  Defaults to 200.
     halo_profile_model : str, optional
-        Profile model parameterization, with the following supported options:
+        Profile model parameterization, with the following supported options (letter case independent):
             `nfw` (default)
             `einasto` - valid in numcosmo and ccl (version>=TBA)
             `hernquist` - valid in numcosmo and ccl (version>=TBA)
     massdef : str, optional
-        Profile mass definition, with the following supported options:
+        Profile mass definition, with the following supported options (letter case independent):
             `mean` (default)
             `critical` - not in cluster_toolkit
             `virial` - not in cluster_toolkit
