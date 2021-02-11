@@ -1,5 +1,4 @@
 """Tests for backend of theory.py"""
-import os
 import importlib
 from numpy.testing import assert_raises
 

@@ -40,14 +40,11 @@ class NumCosmoCosmology(CLMMCosmology):
     def _init_from_params(self, H0, Omega_b0, Omega_dm0, Omega_k0):
 
         self.be_cosmo = Nc.HICosmo.new_from_name(Nc.HICosmo, "NcHICosmoDECpl{'massnu-length':<1>}")
-        #self.be_cosmo.param_set_lower_bound(Nc.HICosmoDESParams.T_GAMMA0, 0.0)
         self.be_cosmo.omega_x2omega_k()
         self.be_cosmo.param_set_by_name("w0", -1.0)
         self.be_cosmo.param_set_by_name("w1", 0.0)
         self.be_cosmo.param_set_by_name("Tgamma0", 2.7255)
-        self.be_cosmo.param_set_by_name ("massnu_0", 0.06)
-        #self.be_cosmo.param_set_by_name ("Tnu_0", (4.0/11.0)**(1.0/3.0))
-        #self.be_cosmo.param_set_by_name ("gnu_0", 1.0153080198436308)
+        self.be_cosmo.param_set_by_name("massnu_0", 0.06)
         self.be_cosmo.param_set_by_name("H0", H0)
         self.be_cosmo.param_set_by_name("Omegab", Omega_b0)
         self.be_cosmo.param_set_by_name("Omegac", Omega_dm0)
