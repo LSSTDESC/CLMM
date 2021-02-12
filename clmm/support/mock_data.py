@@ -79,9 +79,10 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_
     massdef : string, optional
         Definition the mass overdensity with respect to the 'mean' or 'critical' density of the universe. Default is 'mean' as it works
         for all theory backends. The NumCosmo and CCL backends also allow the use of 'critical'.
+        (letter case independent)
     halo_profile_model : string, optional
         Halo density profile. Default is 'nfw', which works for all theory backends. The NumCosmo backend allow for more
-        options, e.g. 'einasto' or 'burkert' profiles.
+        options, e.g. 'einasto' or 'burkert' profiles (letter case independent).
     zsrc_min : float, optional
         The minimum true redshift of the sources. If photoz errors are included, the observed redshift
         may be smaller than zsrc_min.

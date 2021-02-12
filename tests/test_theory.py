@@ -195,11 +195,17 @@ def helper_profiles(func):
 
     # Test defaults
 
-    defaulttruth = func(r3d, mdelta, cdelta, z_cl, cclcosmo, delta_mdef=200,
-                        halo_profile_model='nfw')
+    defaulttruth = func(r3d, mdelta, cdelta, z_cl, cclcosmo)
+    assert_allclose(func(r3d, mdelta, cdelta, z_cl, cclcosmo, delta_mdef=200),
+                    defaulttruth, **TOLERANCE)
     assert_allclose(func(r3d, mdelta, cdelta, z_cl, cclcosmo, halo_profile_model='nfw'),
                     defaulttruth, **TOLERANCE)
-    assert_allclose(func(r3d, mdelta, cdelta, z_cl, cclcosmo, delta_mdef=200),
+    assert_allclose(func(r3d, mdelta, cdelta, z_cl, cclcosmo, massdef='mean'),
+                    defaulttruth, **TOLERANCE)
+    # Test case fix
+    assert_allclose(func(r3d, mdelta, cdelta, z_cl, cclcosmo, halo_profile_model='NFW'),
+                    defaulttruth, **TOLERANCE)
+    assert_allclose(func(r3d, mdelta, cdelta, z_cl, cclcosmo, massdef='MEAN'),
                     defaulttruth, **TOLERANCE)
 
 
