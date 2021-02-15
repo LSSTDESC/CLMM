@@ -30,11 +30,22 @@ class GCMetaData(OrderedDict):
         else:
             OrderedDict.__setitem__(self, item, value)
         return
+    def __getitem__(self, item):
+        """
+        Make class accept all letter casings
+        """
+        if isinstance(item, str):
+            item = {n.lower():n for n in self.keys()}[item.lower()]
+        out = OrderedDict.__getitem__(self, item)
+        return out
 
 
 class GCData(APtable):
     """
-    GCData: A data objetc for gcdata. Right now it behaves as an astropy table.
+    GCData: A data objetc for gcdata. Right now it behaves as an astropy table,
+    with the following modifications: `__getitem__` is case independent;
+    The attribute .meta['cosmo'] is protected and can only be changed via
+    update_cosmo or update_cosmo_ext_valid methods;
 
     Parameters
     ----------
@@ -75,13 +86,18 @@ class GCData(APtable):
 
     def __getitem__(self, item):
         """
-        Makes sure GCData keeps its properties after [] operations are used
+        Makes sure GCData keeps its properties after [] operations are used.
+        It also makes all letter casings accepted
 
         Returns
         -------
         GCData
             Data with [] operations applied
         """
+        if isinstance(item, str):
+            name_dict = {n.lower():n for n in self.colnames}
+            item = item.lower()
+            item = ','.join([name_dict[i] for i in item.split(',')])
         out = APtable.__getitem__(self, item)
         return out
 

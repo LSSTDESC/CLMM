@@ -1,8 +1,4 @@
 """Functions to compute polar/azimuthal averages in radial bins"""
-# try: # 7481794
-#     import pyccl as ccl
-# except ImportError:
-#     pass
 import math
 import warnings
 import numpy as np
@@ -51,7 +47,7 @@ def compute_tangential_and_cross_components(
 
     .. math::
 
-        g_t =& -\left( g_1\cos\left(2\phi\right)-g_2\sin\left(2\phi\right)\right)\\
+        g_t =& -\left( g_1\cos\left(2\phi\right)+g_2\sin\left(2\phi\right)\right)\\
         g_x =& g_1 \sin\left(2\phi\right)-g_2\cos\left(2\phi\right)
 
     Finally, and if requested by the user throught the `is_deltasigma` flag, an estimate of the excess surface density :math:`\widehat{\Delta\Sigma}` is obtained from
@@ -172,7 +168,7 @@ def _compute_tangential_shear(shear1, shear2, phi):
 
     We compute the tangential shear following Eq. 7 of Schrabback et al. 2018, arXiv:1611:03866
     .. math::
-        g_t = -\left( g_1\cos\left(2\phi\right)-g_2\sin\left(2\phi\right)\right)
+        g_t = -\left( g_1\cos\left(2\phi\right)+g_2\sin\left(2\phi\right)\right)
 
     For extended descriptions of parameters, see `compute_shear()` documentation.
     """
@@ -222,8 +218,9 @@ def make_radial_profile(components, angsep, angsep_units, bin_units,
         Units of the calculated separation of the source galaxies
         Allowed Options = ["radians"]
     bin_units : str
-        Units to use for the radial bins of the shear profile
+        Units to use for the radial bins of the radial profile
         Allowed Options = ["radians", deg", "arcmin", "arcsec", kpc", "Mpc"]
+        (letter case independent)
     bins : array_like, optional
         User defined bins to use for the shear profile. If a list is provided, use that as
         the bin edges. If a scalar is provided, create that many equally spaced bins between

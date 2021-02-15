@@ -18,9 +18,9 @@ def compute_radial_averages(xvals, yvals, xbins, error_model='std/sqrt_n'):
     xbins: array_like
         Bin edges to sort into
     error_model : str, optional
-        Error model to use for y uncertainties.
-        std/sqrt_n - Standard Deviation/sqrt(Counts) (Default)
-        std - Standard deviation
+        Error model to use for y uncertainties. (letter case independent)
+            `std/sqrt_n` - Standard Deviation/sqrt(Counts) (Default)
+            `std` - Standard deviation
 
     Returns
     -------
@@ -37,6 +37,8 @@ def compute_radial_averages(xvals, yvals, xbins, error_model='std/sqrt_n'):
         of `xvals` belongs.  Same length as `yvals`.  A binnumber of `i` means the
         corresponding value is between (xbins[i-1], xbins[i]).
     """
+    # make case independent
+    error_model = error_model.lower()
     # binned_statics throus an error in case of non-finite values, so filtering those out
     filt = np.isfinite(xvals)*np.isfinite(yvals)
 
@@ -75,11 +77,11 @@ def make_bins(rmin, rmax, nbins=10, method='evenwidth', source_seps=None):
     nbins : float
         Number of bins you want to create, default to 10.
     method : str, optional
-        Binning method to use
-        'evenwidth' - Default, evenly spaced bins between rmin and rmax
-        'evenlog10width' - Logspaced bins with even width in log10 between rmin and rmax
-        'equaloccupation' - Bins with equal occupation numbers
-    source_seps : array-like
+        Binning method to use (letter case independent)
+            `evenwidth` - Default, evenly spaced bins between rmin and rmax
+            `evenlog10width` - Logspaced bins with even width in log10 between rmin and rmax
+            `equaloccupation` - Bins with equal occupation numbers
+    source_seps : array_like
         Radial distance of source separations
 
     Returns
@@ -87,6 +89,9 @@ def make_bins(rmin, rmax, nbins=10, method='evenwidth', source_seps=None):
     binedges: array_like, float
         n_bins+1 dimensional array that defines bin edges
     """
+    # make case independent
+    method = method.lower()
+    # Check consistency
     if (rmin > rmax) or (rmin < 0.0) or (rmax < 0.0):
         raise ValueError(f"Invalid bin endpoints in make_bins, {rmin} {rmax}")
     if (nbins <= 0) or not isinstance(nbins, int):
@@ -117,6 +122,7 @@ def convert_units(dist1, unit1, unit2, redshift=None, cosmo=None):
     """ Convenience wrapper to convert between a combination of angular and physical units.
 
     Supported units: radians, degrees, arcmin, arcsec, Mpc, kpc, pc
+    (letter case independent)
 
     To convert between angular and physical units you must provide both
     a redshift and a cosmology object.
@@ -140,37 +146,35 @@ def convert_units(dist1, unit1, unit2, redshift=None, cosmo=None):
     dist2: array_like
         Input distances converted to unit2
     """
+    # make case independent
+    unit1, unit2 = unit1.lower(), unit2.lower()
+    # Available units
     angular_bank = {"radians": u.rad, "degrees": u.deg, "arcmin": u.arcmin, "arcsec": u.arcsec}
-    physical_bank = {"pc": u.pc, "kpc": u.kpc, "Mpc": u.Mpc}
+    physical_bank = {"pc": u.pc, "kpc": u.kpc, "mpc": u.Mpc}
     units_bank = {**angular_bank, **physical_bank}
-
     # Some error checking
     if unit1 not in units_bank:
         raise ValueError(f"Input units ({unit1}) not supported")
     if unit2 not in units_bank:
         raise ValueError(f"Output units ({unit2}) not supported")
-
     # Try automated astropy unit conversion
     try:
         return (dist1*units_bank[unit1]).to(units_bank[unit2]).value
-
     # Otherwise do manual conversion
     except u.UnitConversionError:
         # Make sure that we were passed a redshift and cosmology
         if redshift is None or cosmo is None:
             raise TypeError("Redshift and cosmology must be specified to convert units")
-
         # Redshift must be greater than zero for this approx
         if not redshift > 0.0:
             raise ValueError("Redshift must be greater than 0.")
-
+        # Convert angular to physical
         if (unit1 in angular_bank) and (unit2 in physical_bank):
-            # Convert angular to physical
             dist1_rad = (dist1*units_bank[unit1]).to(u.rad).value
             dist1_mpc = cosmo.rad2mpc(dist1_rad, redshift)
             return (dist1_mpc*u.Mpc).to(units_bank[unit2]).value
+        # Otherwise physical to angular
         else:
-            # Otherwise physical to angular
             dist1_mpc = (dist1*units_bank[unit1]).to(u.Mpc).value
             dist1_rad = cosmo.mpc2rad(dist1_mpc, redshift)
             return (dist1_rad*u.rad).to(units_bank[unit2]).value

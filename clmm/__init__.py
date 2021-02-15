@@ -6,5 +6,4 @@ from .utils import compute_radial_averages, make_bins, convert_units
 from .theory import compute_reduced_shear_from_convergence, compute_3d_density, compute_surface_density, compute_excess_surface_density, compute_critical_surface_density, compute_tangential_shear, compute_convergence, compute_reduced_tangential_shear, Modeling, Cosmology
 from . import support
 
-
-__version__ = '0.9.0'
+__version__ = '0.9.2'

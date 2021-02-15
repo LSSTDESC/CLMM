@@ -10,11 +10,11 @@ class CLMModeling:
     backend: str
         Name of the backend being used
     massdef : str
-        Profile mass definition (`mean`, `critical`, `virial`)
+        Profile mass definition (`mean`, `critical`, `virial` - letter case independent)
     delta_mdef : int
         Mass overdensity definition.
     halo_profile_model : str
-        Profile model parameterization (`nfw`, `einasto`, `hernquist`)
+        Profile model parameterization (`nfw`, `einasto`, `hernquist` - letter case independent)
     cosmo: Cosmology
         Cosmology object
     hdpm: Object
@@ -39,10 +39,30 @@ class CLMModeling:
         self.hdpm_dict = {}
 
     def validate_definitions(self, massdef, halo_profile_model):
+        r""" Makes sure values of `massdef` and `halo_profile_model` are in the supported options
+        and fixes casing (code works with lowercase).
+
+        Parameters
+        ----------
+        massdef: str, optional
+            Profile mass definition.
+        halo_profile_model: str, optional
+            Profile model parameterization.
+
+        Returns
+        -------
+        massdef: str
+            Lowercase profile mass definition.
+        halo_profile_model: str
+            Lowercase profile model parameterization.
+        """
+        # make case independent
+        massdef, halo_profile_model = massdef.lower(), halo_profile_model.lower()
         if not massdef in self.mdef_dict:
             raise ValueError(f"Halo density profile mass definition {massdef} not currently supported")
         if not halo_profile_model in self.hdpm_dict:
             raise ValueError(f"Halo density profile model {halo_profile_model} not currently supported")
+        return massdef, halo_profile_model
 
     def set_cosmo(self, cosmo):
         r""" Sets the cosmology to the internal cosmology object
@@ -78,9 +98,9 @@ class CLMModeling:
         Parameters
         ----------
         halo_profile_model: str
-            Halo mass profile, current options are 'nfw'
+            Halo mass profile, current options are 'nfw' (letter case independent)
         massdef: str
-            Mass definition, current options are 'mean'
+            Mass definition, current options are 'mean' (letter case independent)
         delta_mdef: int
             Overdensity number
         """

@@ -36,6 +36,14 @@ def test_compute_radial_averages():
                     [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)],
                     [6]], **TOLERANCE)
 
+    # Repeat test with different error_model case
+    assert_allclose(compute_radial_averages(binvals, binvals, xbins1, error_model='STD/SQRT_N')[:4],
+                    [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)/np.sqrt(len(binvals))], [6]],
+                    **TOLERANCE)
+    assert_allclose(compute_radial_averages(binvals, binvals, xbins1, error_model='STD')[:4],
+                    [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)],
+                    [6]], **TOLERANCE)
+
     # A slightly more complicated case with two bins
     inbin1 = binvals[(binvals > xbins2[0]) & (binvals < xbins2[1])]
     inbin2 = binvals[(binvals > xbins2[1]) & (binvals < xbins2[2])]
@@ -94,6 +102,12 @@ def test_make_bins():
     assert_allclose(make_bins(0.0, 10., nbins=10, method='evenwidth'),
                     np.linspace(0.0, 10., 11), **TOLERANCE)
     assert_allclose(make_bins(1.0, 10., nbins=10, method='evenlog10width'),
+                    np.logspace(np.log10(1.0), np.log10(10.), 11), **TOLERANCE)
+
+    # Repeat test with different error_model case
+    assert_allclose(make_bins(0.0, 10., nbins=10, method='EVENWIDTH'),
+                    np.linspace(0.0, 10., 11), **TOLERANCE)
+    assert_allclose(make_bins(1.0, 10., nbins=10, method='EVENLOG10WIDTH'),
                     np.logspace(np.log10(1.0), np.log10(10.), 11), **TOLERANCE)
 
     # Test equaloccupation method. It needs a source_seps array, so create one

@@ -32,9 +32,11 @@ class AstroPyCosmology(CLMMCosmology):
 
         Om0 = Omega_b0+Omega_dm0
         Ob0 = Omega_b0
-        Ode0 = 1.0-Om0-Omega_k0
 
-        self.be_cosmo = LambdaCDM(H0=H0, Om0=Om0, Ob0=Ob0, Ode0=Ode0)
+        self.be_cosmo = FlatLambdaCDM(H0=H0, Om0=Om0, Ob0=Ob0, Tcmb0=2.7255, Neff=3.046, m_nu=([0.06, 0.0, 0.0] * units.eV))
+        if Omega_k0 != 0.0:
+            Ode0 = self.be_cosmo.Ode0 - Omega_k0
+            self.be_cosmo = LambdaCDM(H0=H0, Om0=Om0, Ob0=Ob0, Ode0=Ode0, Tcmb0=2.7255, Neff=3.046, m_nu=([0.06, 0.0, 0.0] * units.eV))
 
     def _set_param(self, key, value):
         raise NotImplementedError("Astropy do not support changing parameters")
