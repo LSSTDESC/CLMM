@@ -214,7 +214,7 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
 
     Parameters
     ----------
-    r_proj : array_like
+    r_proj : array_like, float
         The projected radial positions in :math:`M\!pc`.
     mdelta : float
         Galaxy cluster mass in :math:`M_\odot`.
@@ -240,23 +240,18 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
             `virial` - not in cluster_toolkit
     z_src_model : str, optional
         Source redshift model, with the following supported options:
-        `single_plane` (default) - all sources at one redshift
-        `known_z_src` - known individual source galaxy redshifts e.g. discrete case
-        `z_src_distribution` - known source redshift distribution e.g. continuous
-        case requiring integration.
+        `single_plane` (default) - all sources at one redshift (if `z_source`  is float) or known individual source galaxy redshifts (if `z_source` is an array). At the moment the latter case only works if `r_proj` is a float.
 
     Returns
     -------
     gammat : array_like, float
-        tangential shear
+        Tangential shear
 
     Notes
     -----
-    TODO: Implement `known_z_src` and `z_src_distribution` options
-    We will need :math:`\gamma_\infty` and :math:`\kappa_\infty` for alternative
-    z_src_models using :math:`\beta_s`.
-    Need to figure out if we want to raise exceptions rather than errors here?
+    TODO: Implement `known_z_src` (known individual source galaxy redshifts e.g. discrete case) and `z_src_distribution` (known source redshift distribution e.g. continuous case requiring integration) options for `z_src_model`. We will need :math:`\gamma_\infty` and :math:`\kappa_\infty` for alternative z_src_models using :math:`\beta_s`.
     """
+
     if z_src_model == 'single_plane':
 
         gcm.set_cosmo(cosmo)
@@ -288,7 +283,7 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
 
     Parameters
     ----------
-    r_proj : array_like
+    r_proj : array_like, float
         The projected radial positions in :math:`M\!pc`.
     mdelta : float
         Galaxy cluster mass in :math:`M_\odot`.
@@ -314,10 +309,7 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
             `virial` - not in cluster_toolkit
     z_src_model : str, optional
         Source redshift model, with the following supported options:
-        `single_plane` (default) - all sources at one redshift
-        `known_z_src` - known individual source galaxy redshifts e.g. discrete case
-        `z_src_distribution` - known source redshift distribution e.g. continuous
-        case requiring integration.
+        `single_plane` (default) - all sources at one redshift (if `z_source`  is float) or known individual source galaxy redshifts (if `z_source` is an array). At the moment the latter case only works if `r_proj` is a float.
 
     Returns
     -------
@@ -326,8 +318,9 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
 
     Notes
     -----
-    Need to figure out if we want to raise exceptions rather than errors here?
+    TODO: Implement `known_z_src` (known individual source galaxy redshifts e.g. discrete case) and `z_src_distribution` (known source redshift distribution e.g. continuous case requiring integration) options for `z_src_model`. We will need :math:`\gamma_\infty` and :math:`\kappa_\infty` for alternative z_src_models using :math:`\beta_s`.
     """
+
     sigma = compute_surface_density(r_proj, mdelta, cdelta, z_cluster, cosmo,
                                     delta_mdef=delta_mdef, halo_profile_model=halo_profile_model,
                                     massdef=massdef)
@@ -363,7 +356,7 @@ def compute_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
 
     Parameters
     ----------
-    r_proj : array_like
+    r_proj : array_like, float
         The projected radial positions in :math:`M\!pc`.
     mdelta : float
         Galaxy cluster mass in :math:`M_\odot`.
@@ -389,10 +382,7 @@ def compute_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
             `virial` - not in cluster_toolkit
     z_src_model : str, optional
         Source redshift model, with the following supported options:
-        `single_plane` (default) - all sources at one redshift
-        `known_z_src` - known individual source galaxy redshifts e.g. discrete case
-        `z_src_distribution` - known source redshift distribution, e.g. continuous
-        case requiring integration.
+        `single_plane` (default) - all sources at one redshift (if `z_source`  is float) or known individual source galaxy redshifts (if `z_source` is an array). At the moment the latter case only works if `r_proj` is a float.
 
     Returns
     -------
@@ -401,8 +391,9 @@ def compute_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
 
     Notes
     -----
-    Need to figure out if we want to raise exceptions rather than errors here?
+    TODO: Implement `known_z_src` (known individual source galaxy redshifts e.g. discrete case) and `z_src_distribution` (known source redshift distribution e.g. continuous case requiring integration) options for `z_src_model`. We will need :math:`\gamma_\infty` and :math:`\kappa_\infty` for alternative z_src_models using :math:`\beta_s`.
     """
+
     if z_src_model == 'single_plane':
 
         gcm.set_cosmo(cosmo)
@@ -443,7 +434,7 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
 
     Parameters
     ----------
-    r_proj : array_like
+    r_proj : array_like, float
         The projected radial positions in :math:`M\!pc`.
     mdelta : float
         Galaxy cluster mass in :math:`M_\odot`.
@@ -469,10 +460,8 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
             `virial` - not in cluster_toolkit
     z_src_model : str, optional
         Source redshift model, with the following supported options:
-        `single_plane` (default) - all sources at one redshift
-        `known_z_src` - known individual source galaxy redshifts e.g. discrete case
-        `z_src_distribution` - known source redshift distribution e.g. continuous
-        case requiring integration.
+        `single_plane` (default) - all sources at one redshift (if `z_source`  is float) or known individual source galaxy redshifts (if `z_source` is an array). At the moment the latter case only works if `r_proj` is a float.
+
 
     Returns
     -------
@@ -481,7 +470,7 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
 
     Notes
     -----
-    Need to figure out if we want to raise exceptions rather than errors here?
+    TODO: Implement `known_z_src` (known individual source galaxy redshifts e.g. discrete case) and `z_src_distribution` (known source redshift distribution e.g. continuous case requiring integration) options for `z_src_model`. We will need :math:`\gamma_\infty` and :math:`\kappa_\infty` for alternative z_src_models using :math:`\beta_s`.
     """
 
     if z_src_model == 'single_plane':
