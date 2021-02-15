@@ -11,8 +11,15 @@ MOCK_MODULES = ['gi', 'gi.repository', 'gi.repository.NumCosmoMath', 'gi.reposit
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = MagicMock()
 
-import clmm
+# Fix for ccl
+sys.modules['pyccl'].Cosmology = MagicMock
 
+# Fix for numcosmo
+sys.modules['gi.repository'].NumCosmo.Distance = MagicMock
+sys.modules['gi.repository'].NumCosmo.Distance.new = MagicMock
+sys.modules['gi.repository'].NumCosmo.Distance.new.prepare_if_needed = MagicMock
+
+import clmm
 
 # -- RTD Fix for cluster_toolkit -----------------------------------------
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'

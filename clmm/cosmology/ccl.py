@@ -32,8 +32,8 @@ class CCLCosmology(CLMMCosmology):
 
     def _init_from_params(self, H0, Omega_b0, Omega_dm0, Omega_k0):
 
-        self.be_cosmo = ccl.Cosmology(Omega_c=Omega_dm0, Omega_b=Omega_b0, Omega_k=Omega_k0, h=H0/100.0, sigma8=0.8, n_s=0.96, T_CMB=0.0, Neff=0.0,
-                                       transfer_function='bbks', matter_power_spectrum='linear')
+        self.be_cosmo = ccl.Cosmology(Omega_c=Omega_dm0, Omega_b=Omega_b0, Omega_k=Omega_k0, h=H0/100.0, sigma8=0.8, n_s=0.96, T_CMB=2.7255, Neff=3.046,
+                                       m_nu=[0.06, 0.0, 0.0], transfer_function='bbks', matter_power_spectrum='linear')
 
     def _set_param(self, key, value):
         raise NotImplementedError("CCL do not support changing parameters")

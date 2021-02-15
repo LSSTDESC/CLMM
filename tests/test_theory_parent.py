@@ -67,8 +67,8 @@ def test_instantiate(modeling_data):
     reduced_shear = m.eval_reduced_tangential_shear(r_proj, z_cl, z_src)
     magnification = m.eval_magnification(r_proj, z_cl, z_src)
 
-    assert_allclose(reduced_shear, shear/(1.0-convergence), rtol=8.0e-15)
-    assert_allclose(magnification, 1.0/((1.0-convergence)**2-np.abs(shear)**2), rtol=5.0e-15)
+    assert_allclose(reduced_shear, shear/(1.0-convergence), rtol=1.0e-12)
+    assert_allclose(magnification, 1.0/((1.0-convergence)**2-np.abs(shear)**2), rtol=1.0e-12)
 
     reduced_shear = m.eval_reduced_tangential_shear(r_proj, z_cl, np.repeat(z_src, len(r_proj)))
-    assert_allclose(reduced_shear, shear/(1.0-convergence), rtol=8.0e-15)
+    assert_allclose(reduced_shear, shear/(1.0-convergence), rtol=1.0e-12)

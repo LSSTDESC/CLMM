@@ -8,7 +8,7 @@ from clmm.constants import Constants as clc
 from clmm.galaxycluster import GalaxyCluster
 from clmm import GCData
 
-TOLERANCE = {'rtol': 1.0e-6, 'atol': 1.0e-6}
+TOLERANCE = {'rtol': 1.0e-8}
 
 # ----------- Some Helper Functions for the Validation Tests ---------------
 
@@ -53,7 +53,7 @@ def load_validation_config():
                                                             testcase['pc_to_m'])
 
     # Cosmology
-    cosmo = theo.Cosmology(H0=testcase['cosmo_H0'], Omega_dm0=testcase['cosmo_Om0']-testcase['cosmo_Ob0'], Omega_b0=testcase['cosmo_Ob0'])
+    cosmo = theo.Cosmology(H0=testcase['cosmo_H0'], Omega_dm0=testcase['cosmo_Odm0'], Omega_b0=testcase['cosmo_Ob0'])
 
     # Sets of parameters to be used by multiple functions
     RHO_PARAMS = {
@@ -216,6 +216,8 @@ def test_profiles(modeling_data):
     helper_profiles(theo.compute_surface_density)
     helper_profiles(theo.compute_excess_surface_density)
 
+    reltol = modeling_data['theory_reltol']
+
     # Validation tests
     # NumCosmo makes different choices for constants (Msun). We make this conversion
     # by passing the ratio of SOLAR_MASS in kg from numcosmo and CLMM
@@ -223,11 +225,11 @@ def test_profiles(modeling_data):
     cosmo = cfg['cosmo']
 
     assert_allclose(theo.compute_3d_density(cosmo=cosmo, **cfg['RHO_PARAMS']),
-                    cfg['numcosmo_profiles']['rho'], 2.0e-9)
+                    cfg['numcosmo_profiles']['rho'], reltol)
     assert_allclose(theo.compute_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS']),
-                    cfg['numcosmo_profiles']['Sigma'], 2.0e-9)
+                    cfg['numcosmo_profiles']['Sigma'], reltol)
     assert_allclose(theo.compute_excess_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS']),
-                    cfg['numcosmo_profiles']['DeltaSigma'], 2.0e-9)
+                    cfg['numcosmo_profiles']['DeltaSigma'], reltol)
 
     # Object Oriented tests
     m = theo.Modeling()
@@ -237,21 +239,24 @@ def test_profiles(modeling_data):
     m.set_mass(cfg['SIGMA_PARAMS']['mdelta'])
 
     assert_allclose(m.eval_3d_density(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl']),
-                    cfg['numcosmo_profiles']['rho'], **TOLERANCE)
+                    cfg['numcosmo_profiles']['rho'], reltol)
     assert_allclose(m.eval_surface_density(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl']),
-                    cfg['numcosmo_profiles']['Sigma'], **TOLERANCE)
+                    cfg['numcosmo_profiles']['Sigma'], reltol)
     assert_allclose(m.eval_excess_surface_density(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl']),
-                    cfg['numcosmo_profiles']['DeltaSigma'], **TOLERANCE)
+                    cfg['numcosmo_profiles']['DeltaSigma'], reltol)
     if m.backend == 'ct':
         assert_raises(ValueError, m.eval_excess_surface_density, 1e-12, cfg['SIGMA_PARAMS']['z_cl'])
 
 def test_compute_critical_surface_density(modeling_data):
     """ Validation test for critical surface density """
+    
+    reltol = modeling_data['theory_reltol']
+    
     cfg = load_validation_config()
     assert_allclose(theo.compute_critical_surface_density(cfg['cosmo'],
                                                     z_cluster=cfg['TEST_CASE']['z_cluster'],
                                                     z_source=cfg['TEST_CASE']['z_source']),
-                    cfg['TEST_CASE']['nc_Sigmac'], 1.2e-8)
+                    cfg['TEST_CASE']['nc_Sigmac'], reltol)
     # Check errors for z<0
     assert_raises(ValueError, theo.compute_critical_surface_density, cfg['cosmo'], z_cluster=-0.2, z_source=0.3)
     assert_raises(ValueError, theo.compute_critical_surface_density, cfg['cosmo'], z_cluster=0.2, z_source=-0.3)
@@ -270,14 +275,14 @@ def test_compute_critical_surface_density(modeling_data):
                                                names=('ra', 'dec', 'z')))
     cluster.add_critical_surface_density(cfg['cosmo'])
     assert_allclose(cluster.galcat['sigma_c'],
-                    cfg['TEST_CASE']['nc_Sigmac'], 1.2e-8)
+                    cfg['TEST_CASE']['nc_Sigmac'], reltol)
 
     # Object Oriented tests
     m = theo.Modeling()
     m.set_cosmo(cfg['cosmo'])
     assert_allclose(m.eval_critical_surface_density(cfg['TEST_CASE']['z_cluster'],
                                       cfg['TEST_CASE']['z_source']),
-                cfg['TEST_CASE']['nc_Sigmac'], 1.2e-8)
+                cfg['TEST_CASE']['nc_Sigmac'], reltol)
     # Check behaviour when sources are in front of the lens
     z_cluster = 0.3
     z_source = 0.2
@@ -334,6 +339,8 @@ def test_shear_convergence_unittests(modeling_data):
     helper_physics_functions(theo.compute_reduced_tangential_shear)
     helper_physics_functions(theo.compute_magnification)
 
+    reltol = modeling_data['theory_reltol']
+
     # Validation Tests -------------------------
     # NumCosmo makes different choices for constants (Msun). We make this conversion
     # by passing the ratio of SOLAR_MASS in kg from numcosmo and CLMM
@@ -355,21 +362,21 @@ def test_shear_convergence_unittests(modeling_data):
 
     # Validate tangential shear
     gammat = theo.compute_tangential_shear(cosmo=cosmo, **cfg['GAMMA_PARAMS'])
-    assert_allclose(gammat*sigmac_corr, cfg['numcosmo_profiles']['gammat'], 1.0e-8)
+    assert_allclose(gammat*sigmac_corr, cfg['numcosmo_profiles']['gammat'], reltol)
 
     # Validate convergence
     kappa = theo.compute_convergence(cosmo=cosmo, **cfg['GAMMA_PARAMS'])
-    assert_allclose(kappa*sigmac_corr, cfg['numcosmo_profiles']['kappa'], 1.0e-8)
+    assert_allclose(kappa*sigmac_corr, cfg['numcosmo_profiles']['kappa'], reltol)
 
     # Validate reduced tangential shear
     assert_allclose(theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg['GAMMA_PARAMS']),
                     gammat/(1.0-kappa), 1.0e-10)
-    assert_allclose(gammat*sigmac_corr/(1.-(kappa*sigmac_corr)), cfg['numcosmo_profiles']['gt'], 1.0e-6)
+    assert_allclose(gammat*sigmac_corr/(1.-(kappa*sigmac_corr)), cfg['numcosmo_profiles']['gt'], 1.e2*reltol)
 
     # Validate magnification
     assert_allclose(theo.compute_magnification(cosmo=cosmo, **cfg['GAMMA_PARAMS']),
                     1./((1-kappa)**2-abs(gammat)**2), 1.0e-10)
-    assert_allclose(1./((1-kappa)**2-abs(gammat)**2), cfg['numcosmo_profiles']['mu'], 4.0e-7)
+    assert_allclose(1./((1-kappa)**2-abs(gammat)**2), cfg['numcosmo_profiles']['mu'], 1.e2*reltol)
 
     # Check that shear, reduced shear and convergence return zero and magnification returns one if source is in front of the cluster
     # First, check for a array of radius and single source z
@@ -419,21 +426,21 @@ def test_shear_convergence_unittests(modeling_data):
     profile_pars = (cfg['GAMMA_PARAMS']['r_proj'], cfg['GAMMA_PARAMS']['z_cluster'],
                     cfg['GAMMA_PARAMS']['z_source'])
     gammat = m.eval_tangential_shear(*profile_pars)
-    assert_allclose(gammat*sigmac_corr, cfg['numcosmo_profiles']['gammat'], 1.0e-8)
+    assert_allclose(gammat*sigmac_corr, cfg['numcosmo_profiles']['gammat'], reltol)
 
     # Validate convergence
     kappa = m.eval_convergence(*profile_pars)
-    assert_allclose(kappa*sigmac_corr, cfg['numcosmo_profiles']['kappa'], 1.0e-8)
+    assert_allclose(kappa*sigmac_corr, cfg['numcosmo_profiles']['kappa'], reltol)
 
     # Validate reduced tangential shear
     assert_allclose(m.eval_reduced_tangential_shear(*profile_pars),
                     gammat/(1.0-kappa), 1.0e-10)
-    assert_allclose(gammat*sigmac_corr/(1.-(kappa*sigmac_corr)), cfg['numcosmo_profiles']['gt'], 1.0e-6)
+    assert_allclose(gammat*sigmac_corr/(1.-(kappa*sigmac_corr)), cfg['numcosmo_profiles']['gt'], 1.e2*reltol)
 
     # Validate magnification
     assert_allclose(m.eval_magnification(*profile_pars),
                     1./((1-kappa)**2-abs(gammat)**2), 1.0e-10)
-    assert_allclose(1./((1-kappa)**2-abs(gammat)**2), cfg['numcosmo_profiles']['mu'], 4.0e-7)
+    assert_allclose(1./((1-kappa)**2-abs(gammat)**2), cfg['numcosmo_profiles']['mu'], 1.e2*reltol)
 
     # Check that shear, reduced shear and convergence return zero and magnification returns one if source is in front of the cluster
     # First, check for a array of radius and single source z
