@@ -7,7 +7,7 @@ from clmm import GCData
 import clmm.dataops as da
 import clmm.theory as theo
 
-TOLERANCE = {'atol':1.e-7, 'rtol':1.e-7}
+TOLERANCE = {'rtol':1.e-7, 'atol':1.e-7}
 
 
 def test_compute_cross_shear():
@@ -124,6 +124,7 @@ def test_compute_lensing_angles_flatsky():
 
 def test_compute_tangential_and_cross_components(modeling_data):
     # Input values
+    reltol = modeling_data['dataops_reltol']
     ra_lens, dec_lens, z_lens = 120., 42., 0.5
     ra_source = np.array([120.1, 119.9])
     dec_source = np.array([41.9, 42.2])
@@ -134,9 +135,9 @@ def test_compute_tangential_and_cross_components(modeling_data):
     expected_angsep = np.array([0.0021745039090962414, 0.0037238407383072053])
     expected_cross_shear = np.array([0.2780316984090899, 0.6398792901134982])
     expected_tangential_shear = np.array([-0.22956126563459447, -0.02354769805831558])
-    # DeltaSigma expected values for clmm.Cosmology(H0=70.0, Omega_dm0=0.275, Omega_b0=0.025)
-    expected_cross_DS = np.array([1224.3326297393244, 1899.6061989365176])*0.7*1.0e12*1.0002565513832675
-    expected_tangential_DS = np.array([-1010.889584349285, -69.9059242788237])*0.7*1.0e12*1.0002565513832675
+    # DeltaSigma expected values for clmm.Cosmology(H0=67.66, Omega_dm0=0.262, Omega_b0=0.049)
+    expected_cross_DS = np.array([8.58093068e+14, 1.33131522e+15]) #[1224.3326297393244, 1899.6061989365176])*0.7*1.0e12*1.0002565513832675
+    expected_tangential_DS = np.array([-7.08498103e+14, -4.89926917e+13]) #[-1010.889584349285, -69.9059242788237])*0.7*1.0e12*1.0002565513832675
     # test incosnsitent data
     testing.assert_raises(TypeError, da.compute_tangential_and_cross_components,
         ra_lens=ra_lens, dec_lens=dec_lens, ra_source=ra_source[0], dec_source=dec_source,
@@ -201,11 +202,11 @@ def test_compute_tangential_and_cross_components(modeling_data):
         ra_source=ra_source, dec_source=dec_source,
         shear1=shear1, shear2=shear2, is_deltasigma=True,
         cosmo=cosmo, z_lens=z_lens, z_source=z_source)
-    testing.assert_allclose(angsep_DS, expected_angsep, **TOLERANCE,
+    testing.assert_allclose(angsep_DS, expected_angsep, reltol,
                             err_msg="Angular Separation not correct")
-    testing.assert_allclose(tDS, expected_tangential_DS, **TOLERANCE,
+    testing.assert_allclose(tDS, expected_tangential_DS, reltol,
                             err_msg="Tangential Shear not correct")
-    testing.assert_allclose(xDS, expected_cross_DS, **TOLERANCE,
+    testing.assert_allclose(xDS, expected_cross_DS, reltol,
                             err_msg="Cross Shear not correct")
     # Tests with the cluster object
     # cluster object missing source redshift, and function call missing cosmology
@@ -220,11 +221,11 @@ def test_compute_tangential_and_cross_components(modeling_data):
     testing.assert_raises(TypeError, cluster.compute_tangential_and_cross_components, is_deltasigma=True)
     # check values for DeltaSigma
     angsep_DS, tDS, xDS = cluster.compute_tangential_and_cross_components(cosmo=cosmo, is_deltasigma=True)
-    testing.assert_allclose(angsep_DS, expected_angsep, **TOLERANCE,
+    testing.assert_allclose(angsep_DS, expected_angsep, reltol,
                             err_msg="Angular Separation not correct when using cluster method")
-    testing.assert_allclose(tDS, expected_tangential_DS, **TOLERANCE,
+    testing.assert_allclose(tDS, expected_tangential_DS, reltol,
                             err_msg="Tangential Shear not correct when using cluster method")
-    testing.assert_allclose(xDS, expected_cross_DS, **TOLERANCE,
+    testing.assert_allclose(xDS, expected_cross_DS, reltol,
                             err_msg="Cross Shear not correct when using cluster method")
 
 

@@ -61,7 +61,7 @@ class CLMMCosmology:
         """
         return f"{type(self).__name__}(H0={self['H0']}, Omega_dm0={self['Omega_dm0']}, Omega_b0={self['Omega_b0']}, Omega_k0={self['Omega_k0']})"
 
-    def set_be_cosmo(self, be_cosmo=None, H0=70.0, Omega_b0=0.05, Omega_dm0=0.25, Omega_k0=0.0):
+    def set_be_cosmo(self, be_cosmo=None, H0=67.66, Omega_b0=0.049, Omega_dm0=0.262, Omega_k0=0.0):
         """Set the cosmology
 
         Parameters

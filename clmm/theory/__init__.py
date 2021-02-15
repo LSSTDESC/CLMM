@@ -21,27 +21,30 @@ for _, be in be_setup.__backends.items():
 #  Backend nick:
 #    If the environment variable CLMM_MODELING_BACKEND is set it gets its value,
 #    falls back to 'ct' => cluster_toolkit if CLMM_MODELING_BACKEND is not set.
-be_nick = os.environ.get('CLMM_MODELING_BACKEND', 'ct')
+be_nick = os.environ.get('CLMM_MODELING_BACKEND', 'ccl')
 if not be_nick in be_setup.__backends:
     raise ValueError("CLMM Backend `%s' is not supported" %(be_nick))
+be_conf = be_setup.__backends[be_nick]
 
 #  Backend load:
 #  Loads the backend of choice if available or send a warning and try to load
 #  the backends in the order of the dictionary above.
-
-if not be_setup.__backends[be_nick]['available']:
-    warnings.warn("CLMM Backend requested `%s' is not available, trying others..." %(be_setup.__backends[be_nick]['name']))
+if be_conf['available']:
+    backend = importlib.import_module("clmm.theory."+be_conf['module'])
+else:
+    warnings.warn(f"CLMM Backend requested `{be_conf['name']}' is not available, trying others...")
     loaded = False
-    for be1 in be_setup.__backends:
-        if be_setup.__backends[be1]['available']:
-            backend = importlib.import_module("clmm.theory."+be_setup.__backends[be1]['module'])
+    be_nick0 = be_nick
+    for be_nick, be_conf in be_setup.__backends.items():
+        if be_conf['available']:
+            backend = importlib.import_module("clmm.theory."+be_conf['module'])
             loaded = True
-            be_nick = be1
+            warnings.warn(f"* USING {be_conf['name']} BACKEND")
             break
+        if be_nick!=be_nick0:
+            warnings.warn(f"* {be_conf['name']} BACKEND also not available")
     if not loaded:
         raise ImportError("No modeling backend available.")
-else:
-    backend = importlib.import_module("clmm.theory."+be_setup.__backends[be_nick]['module'])
 
 #  Import all backend symbols:
 #    Updates __all__ with the exported symbols from the backend and
