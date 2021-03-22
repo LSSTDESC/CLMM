@@ -69,7 +69,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_
     zsrc : float or str
         Choose the source galaxy distribution to be fixed or drawn from a predefined distribution.
         float : All sources galaxies at this fixed redshift
-        str : Draws individual source gal redshifts from predefined distribution. Options are: chang13
+        str : Draws individual source gal redshifts from predefined distribution. Options are: chang13, desc_srd
     Delta_SO : float, optional
         Overdensity density contrast used to compute the cluster mass and concentration. The
         spherical overdensity mass is computed as the mass enclosed within the radius
@@ -174,6 +174,23 @@ def _chang_z_distrib(z):
     alpha, beta, z0 = 1.24, 1.01, 0.51
     return (z**alpha)*np.exp(-(z/z0)**beta)
 
+def _srd_z_distrib(z):
+    """
+    A private function that returns the unnormalized galaxy redshift distribution function used in 
+    the LSST/DESC Science Requirement Document (arxiv:1809.01669).
+
+    Parameters
+    ----------
+    z : float
+        Galaxy redshift
+
+    Returns
+    -------
+    The value of the distribution at z
+    """
+    alpha, beta, z0 = 2., 0.9, 0.28
+    return (z**alpha)*np.exp(-(z/z0)**beta)
+
 
 def _compute_ngals(ngal_density, field_size, cosmo, cluster_z, zsrc, zsrc_min=None, zsrc_max=None):
     """
@@ -194,6 +211,12 @@ def _compute_ngals(ngal_density, field_size, cosmo, cluster_z, zsrc, zsrc_min=No
         # Probability to find the galaxy in the requested redshift range
         prob = integrate.quad(_chang_z_distrib, zsrc_min, zsrc_max)[0]/norm
         return int(ngals*prob)
+    elif zsrc=='desc_srd':
+	    # Compute the normalisation for the redshift distribution function (z=[0,\infty])
+	    norm, _ = integrate.quad(_srd_z_distrib, 0., 100)
+	    # Probability to find the galaxy in the requested redshift range
+	    prob = integrate.quad(_srd_z_distrib, zsrc_min, zsrc_max)[0]/norm
+	    return int(ngals*prob)
 
 
 def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, zsrc, Delta_SO=None, massdef=None, halo_profile_model=None,
@@ -269,7 +292,7 @@ def _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals):
         Choose the source galaxy distribution to be fixed or drawn from a predefined distribution.
         float : All sources galaxies at this fixed redshift
         str : Draws individual source gal redshifts from predefined distribution. Options
-              are: chang13
+              are: chang13 or desc_srd
     zsrc_min : float
         The minimum source redshift allowed.
     zsrc_max : float, optional
@@ -305,13 +328,29 @@ def _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals):
         uniform_deviate = np.random.uniform(probdist.min(), probdist.max(), ngals)
         zsrc_list = interp1d(probdist, zsrc_domain, kind='linear')(uniform_deviate)
 
+    # Draw zsrc from the distribution used in the DESC SRD (arxiv:1809.01669)
+    elif zsrc == 'desc_srd':
+        def integrated_pzfxn(zmax, func):
+            """Integrated redshift distribution function for transformation method"""
+            val, _ = integrate.quad(func, zsrc_min, zmax)
+            return val
+        vectorization_integrated_pzfxn = np.vectorize(integrated_pzfxn)
+
+        zsrc_domain = np.arange(zsrc_min, zsrc_max, 0.001)
+
+        # Cumulative probability function of the redshift distribution
+        probdist = vectorization_integrated_pzfxn(zsrc_domain, _srd_z_distrib)
+
+        uniform_deviate = np.random.uniform(probdist.min(), probdist.max(), ngals)
+        zsrc_list = interp1d(probdist, zsrc_domain, kind='linear')(uniform_deviate)
+
     # Draw zsrc from a uniform distribution between zmin and zmax
     elif zsrc == 'uniform':
         zsrc_list = np.random.uniform(zsrc_min, zsrc_max, ngals)
 
     # Invalid entry
     else:
-        raise ValueError("zsrc must be a float or chang13. You set: {}".format(zsrc))
+        raise ValueError("zsrc must be a float, chang13 or desc_srd. You set: {}".format(zsrc))
 
     return GCData([zsrc_list, zsrc_list], names=('ztrue', 'z'))
 
