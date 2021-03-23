@@ -33,10 +33,14 @@ def test_mock_data():
     # Simple test to check if option with ngal_density is working
     # A proper test should be implemented
     mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.8, ngals=None, ngal_density=1)
-    # Simple test to check if option with zsrc=chrang13 is working
+    # Simple test to check if option with zsrc=chang13 is working
     # A proper test should be implemented
     mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 'chang13', ngals=100)
     mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 'chang13', ngal_density=1)
+    # Simple test to check if option with zsrc=desc_src is working
+    # A proper test should be implemented
+    mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 'desc_srd', ngals=100)
+    mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 'desc_srd', ngal_density=1)
     # Simple test to check if option with pdz is working
     # A proper test should be implemented
     mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.8, ngals=100, photoz_sigma_unscaled=.1)
