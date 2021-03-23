@@ -1,6 +1,7 @@
 """Tests for examples/support/mock_data.py"""
 import numpy as np
 from numpy.testing import assert_raises, assert_allclose, assert_equal
+from scipy.integrate import quad
 import warnings
 import clmm
 import clmm.dataops as da
@@ -86,7 +87,7 @@ def test_mock_data():
     
 def test_z_distr():
     """
-    Test the redshift distribution options: single plan, uniform, Chang13.
+    Test the redshift distribution options: single plan, uniform, Chang13, DESC SRD
     """    
     
     np.random.seed(256429)
@@ -109,15 +110,29 @@ def test_z_distr():
     hist = np.histogram(data['z'],bins=bins)
     assert_allclose(hist[0],10000*np.ones(len(hist[0])),atol=200,rtol=0.02)
     
-    
+    # Check the Chang et al. (2013) redshift distribution
     data = mock.generate_galaxy_catalog(10**mass, 0.3, 4, cosmo, 'chang13', ngals=ngals,
                                         zsrc_min=zmin, zsrc_max=zmax)
     # Check that there all galaxies are within the given limits
     assert_equal(np.count_nonzero((data['z']<zmin)|(data['z']>zmax)),0)
     # Check that the z distribution follows Chang13 distribution
     hist = np.histogram(data['z'],bins=bins)
-    chang = np.array([mock._chang_z_distrib(z) for z in bins[:-1]+0.05])
-    assert_allclose(hist[0],chang*ngals/2,atol=100,rtol=0.1)
+    norm,_ = quad(mock._chang_z_distrib, zmin, zmax)
+    # Expected number of galaxies in bin i = Ntot*distrib(z_{bin center})*binsize/norm
+    chang = np.array([mock._chang_z_distrib(z)*ngals*0.1/norm for z in bins[:-1]+0.05])
+    assert_allclose(hist[0],chang,atol=100,rtol=0.1)
+
+    # Check the DESC SRD (2018) redshift distribution
+    data = mock.generate_galaxy_catalog(10**mass, 0.3, 4, cosmo, 'desc_srd', ngals=ngals,
+                                        zsrc_min=zmin, zsrc_max=zmax)
+    # Check that there all galaxies are within the given limits
+    assert_equal(np.count_nonzero((data['z']<zmin)|(data['z']>zmax)),0)
+    # Check that the z distribution follows Chang13 distribution
+    hist = np.histogram(data['z'],bins=bins)
+    norm,_ = quad(mock._srd_z_distrib, zmin, zmax)
+    # Expected number of galaxies in bin i = Ntot*distrib(z_{bin center})*binsize/norm
+    srd = np.array([mock._srd_z_distrib(z)*ngals*0.1/norm for z in bins[:-1]+0.05])
+    assert_allclose(hist[0],srd,atol=100,rtol=0.1)
     
     
     
