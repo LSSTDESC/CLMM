@@ -205,18 +205,13 @@ def _compute_ngals(ngal_density, field_size, cosmo, cluster_z, zsrc, zsrc_min=No
 
     if isinstance(zsrc, float):
         return int(ngals)
-    elif zsrc=='chang13':
+    elif zsrc in ('chang13', 'desc_srd'):
+        z_distrib_func = _chang_z_distrib if zsrc=='chang13' else _srd_z_distrib
         # Compute the normalisation for the redshift distribution function (z=[0,\infty])
-        norm, _ = integrate.quad(_chang_z_distrib, 0., 100)
+        norm, _ = integrate.quad(z_distrib_func, 0., 100)
         # Probability to find the galaxy in the requested redshift range
         prob = integrate.quad(_chang_z_distrib, zsrc_min, zsrc_max)[0]/norm
         return int(ngals*prob)
-    elif zsrc=='desc_srd':
-	    # Compute the normalisation for the redshift distribution function (z=[0,\infty])
-	    norm, _ = integrate.quad(_srd_z_distrib, 0., 100)
-	    # Probability to find the galaxy in the requested redshift range
-	    prob = integrate.quad(_srd_z_distrib, zsrc_min, zsrc_max)[0]/norm
-	    return int(ngals*prob)
 
 
 def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, zsrc, Delta_SO=None, massdef=None, halo_profile_model=None,
@@ -276,6 +271,36 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, zsrc
         return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z', 'ztrue', 'pzbins', 'pzpdf']
     return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z', 'ztrue']
 
+def _draw_random_points_from_distribution(xmin, xmax, nobj, dist_func, dx=0.001):
+    """Draw random points with a given distribution.
+
+    Uses a sampling technique found in Numerical Recipes in C, Chap 7.2: Transformation Method.
+
+    Parameters
+    ----------
+    xmin : float
+        The minimum source redshift allowed.
+    xmax : float, optional
+        If source redshifts are drawn, the maximum source redshift
+    nobj : float
+        Number of galaxies to generate
+    dist_func : function
+        Function of the required distribution
+    dx : float
+        Size of the step to interpolate the culmulative distribution.
+
+    Returns
+    -------
+    ndarray
+        Random points with dist_func distribution
+    """
+    xdomain = np.arange(xmin, xmax, dx)
+    # Cumulative probability function of the redshift distribution
+    probdist = np.vectorize(lambda zmax: integrate.quad(dist_func, xmin, zmax)[0])(xdomain)
+    # Get random values for probdist
+    uniform_deviate = np.random.uniform(probdist.min(), probdist.max(), nobj)
+    return interp1d(probdist, xdomain, kind='linear')(uniform_deviate)
+
 
 def _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals):
     """Set source galaxy redshifts either set to a fixed value or draw from a predefined
@@ -314,35 +339,11 @@ def _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals):
 
     # Draw zsrc from Chang et al. 2013
     elif zsrc == 'chang13':
-        def integrated_pzfxn(zmax, func):
-            """Integrated redshift distribution function for transformation method"""
-            val, _ = integrate.quad(func, zsrc_min, zmax)
-            return val
-        vectorization_integrated_pzfxn = np.vectorize(integrated_pzfxn)
-
-        zsrc_domain = np.arange(zsrc_min, zsrc_max, 0.001)
-
-        # Cumulative probability function of the redshift distribution
-        probdist = vectorization_integrated_pzfxn(zsrc_domain, _chang_z_distrib)
-
-        uniform_deviate = np.random.uniform(probdist.min(), probdist.max(), ngals)
-        zsrc_list = interp1d(probdist, zsrc_domain, kind='linear')(uniform_deviate)
+        zsrc_list = _draw_random_points_from_distribution(zsrc_min, zsrc_max, ngals, _chang_z_distrib)
 
     # Draw zsrc from the distribution used in the DESC SRD (arxiv:1809.01669)
     elif zsrc == 'desc_srd':
-        def integrated_pzfxn(zmax, func):
-            """Integrated redshift distribution function for transformation method"""
-            val, _ = integrate.quad(func, zsrc_min, zmax)
-            return val
-        vectorization_integrated_pzfxn = np.vectorize(integrated_pzfxn)
-
-        zsrc_domain = np.arange(zsrc_min, zsrc_max, 0.001)
-
-        # Cumulative probability function of the redshift distribution
-        probdist = vectorization_integrated_pzfxn(zsrc_domain, _srd_z_distrib)
-
-        uniform_deviate = np.random.uniform(probdist.min(), probdist.max(), ngals)
-        zsrc_list = interp1d(probdist, zsrc_domain, kind='linear')(uniform_deviate)
+        zsrc_list = _draw_random_points_from_distribution(zsrc_min, zsrc_max, ngals, _srd_z_distrib)
 
     # Draw zsrc from a uniform distribution between zmin and zmax
     elif zsrc == 'uniform':
