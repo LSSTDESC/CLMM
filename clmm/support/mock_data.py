@@ -240,7 +240,7 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, zsrc
     gamx = np.zeros(ngals)
     kappa = compute_convergence(galaxy_catalog['r_mpc'], mdelta=cluster_m,
                                             cdelta=cluster_c, z_cluster=cluster_z,
-                                            z_source=galaxy_catalog['z'], cosmo=cosmo,
+                                            z_source=galaxy_catalog['ztrue'], cosmo=cosmo,
                                             delta_mdef=Delta_SO, halo_profile_model=halo_profile_model,
                                             massdef=massdef,
                                             z_src_model='single_plane')
