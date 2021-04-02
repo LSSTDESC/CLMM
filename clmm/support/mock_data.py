@@ -210,7 +210,7 @@ def _compute_ngals(ngal_density, field_size, cosmo, cluster_z, zsrc, zsrc_min=No
         # Compute the normalisation for the redshift distribution function (z=[0,\infty])
         norm, _ = integrate.quad(z_distrib_func, 0., 100)
         # Probability to find the galaxy in the requested redshift range
-        prob = integrate.quad(_chang_z_distrib, zsrc_min, zsrc_max)[0]/norm
+        prob = integrate.quad(z_distrib_func, zsrc_min, zsrc_max)[0]/norm
         return int(ngals*prob)
 
 
