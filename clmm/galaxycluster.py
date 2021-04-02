@@ -125,7 +125,7 @@ class GalaxyCluster():
     def compute_tangential_and_cross_components(self,
                       shape_component1='e1', shape_component2='e2',
                       tan_component='et', cross_component='ex',
-                      geometry='flat', is_deltasigma=False, cosmo=None,
+                      geometry='curve', is_deltasigma=False, cosmo=None,
                       add=True):
         r"""Adds a tangential- and cross- components for shear or ellipticity to self
 
@@ -158,7 +158,7 @@ class GalaxyCluster():
             Default: `ex`
         geometry: str, optional
             Sky geometry to compute angular separation.
-            Flat is currently the only supported option.
+            Options are curve (uses astropy) or flat.
         is_deltasigma: bool
             If `True`, the tangential and cross components returned are multiplied by Sigma_crit. Results in units of :math:`M_\odot\ Mpc^{-2}`
         cosmo: astropy cosmology object
