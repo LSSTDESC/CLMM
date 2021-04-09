@@ -110,7 +110,7 @@ def compute_tangential_and_cross_components(
         angsep, phi = _compute_lensing_angles_flatsky(ra_lens, dec_lens,
                                                       ra_source_, dec_source_)
     elif geometry=='curve':
-        angsep, phi = _compute_lensing_angles_ap(ra_lens, dec_lens,
+        angsep, phi = _compute_lensing_angles_astropy(ra_lens, dec_lens,
                                                       ra_source_, dec_source_)
     else:
         raise NotImplementedError(f"Sky geometry {geometry} is not currently supported")
@@ -184,7 +184,7 @@ def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_sourc
     return angsep, phi
 
 
-def _compute_lensing_angles_ap(ra_lens, dec_lens, ra_source_list, dec_source_list):
+def _compute_lensing_angles_astropy(ra_lens, dec_lens, ra_source_list, dec_source_list):
     r"""Compute the angular separation between the lens and the source and the azimuthal
     angle from the lens to the source in radians.
 
