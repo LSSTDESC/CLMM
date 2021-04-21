@@ -24,6 +24,10 @@ To install CCL as the theory/cosmology backend, run
 ```bash
     conda install -c conda-forge pyccl
 ```
+or
+```bash
+    pip install pyccl
+```
 
 To install NumCosmo, run
 
