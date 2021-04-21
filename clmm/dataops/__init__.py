@@ -2,6 +2,8 @@
 import math
 import warnings
 import numpy as np
+from astropy.coordinates import SkyCoord
+from astropy import units as u
 from .. gcdata import GCData
 from . .utils import compute_radial_averages, make_bins, convert_units, arguments_consistency
 from .. theory import compute_critical_surface_density
@@ -9,7 +11,7 @@ from .. theory import compute_critical_surface_density
 
 def compute_tangential_and_cross_components(
                 ra_lens, dec_lens, ra_source, dec_source,
-                shear1, shear2, geometry='flat',
+                shear1, shear2, geometry='curve',
                 is_deltasigma=False, cosmo=None,
                 z_lens=None, z_source=None, sigma_c=None):
     r"""Computes tangential- and cross- components for shear or ellipticity
@@ -61,20 +63,20 @@ def compute_tangential_and_cross_components(
     Parameters
     ----------
     ra_lens: float
-        Right ascension of the lensing cluster
+        Right ascension of the lensing cluster in degrees
     dec_lens: float
-        Declination of the lensing cluster
+        Declination of the lensing cluster in degrees
     ra_source: array
-        Right ascensions of each source galaxy
+        Right ascensions of each source galaxy in degrees
     dec_source: array
-        Declinations of each source galaxy
+        Declinations of each source galaxy in degrees
     shear1: array
         The measured shear (or reduced shear or ellipticity) of the source galaxies
     shear2: array
         The measured shear (or reduced shear or ellipticity) of the source galaxies
     geometry: str, optional
         Sky geometry to compute angular separation.
-        Flat is currently the only supported option.
+        Options are curve (uses astropy) or flat.
     is_deltasigma: bool
         If `True`, the tangential and cross components returned are multiplied by Sigma_crit. Results in units of :math:`M_\odot\ Mpc^{-2}`
     cosmo: clmm.Cosmology, optional
@@ -107,6 +109,9 @@ def compute_tangential_and_cross_components(
     if geometry == 'flat':
         angsep, phi = _compute_lensing_angles_flatsky(ra_lens, dec_lens,
                                                       ra_source_, dec_source_)
+    elif geometry=='curve':
+        angsep, phi = _compute_lensing_angles_astropy(ra_lens, dec_lens,
+                                                      ra_source_, dec_source_)
     else:
         raise NotImplementedError(f"Sky geometry {geometry} is not currently supported")
     # Compute the tangential and cross shears
@@ -124,7 +129,6 @@ def compute_tangential_and_cross_components(
     return angsep, tangential_comp, cross_comp
 
 
-
 def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_source_list):
     r"""Compute the angular separation between the lens and the source and the azimuthal
     angle from the lens to the source in radians.
@@ -137,6 +141,24 @@ def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_sourc
         \tan\phi = \frac{\delta_s-\delta_l}{\left(\alpha_l-\alpha_s\right)\cos(\delta_l)}
 
     For extended descriptions of parameters, see `compute_shear()` documentation.
+
+    Parameters
+    ----------
+    ra_lens: float
+        Right ascension of the lensing cluster in degrees
+    dec_lens: float
+        Declination of the lensing cluster in degrees
+    ra_source_list: array
+        Right ascensions of each source galaxy in degrees
+    dec_source_list: array
+        Declinations of each source galaxy in degrees
+
+    Returns
+    -------
+    angsep: array
+        Angular separation between the lens and the source in radians
+    phi: array
+        Azimuthal angle from the lens to the source in radians
     """
     if not -360. <= ra_lens <= 360.:
         raise ValueError(f"ra = {ra_lens} of lens if out of domain")
@@ -159,6 +181,46 @@ def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_sourc
     phi[angsep==0.0] = 0.0
     if np.any(angsep > np.pi/180.):
         warnings.warn("Using the flat-sky approximation with separations >1 deg may be inaccurate")
+    return angsep, phi
+
+
+def _compute_lensing_angles_astropy(ra_lens, dec_lens, ra_source_list, dec_source_list):
+    r"""Compute the angular separation between the lens and the source and the azimuthal
+    angle from the lens to the source in radians.
+
+    Parameters
+    ----------
+    ra_lens: float
+        Right ascension of the lensing cluster in degrees
+    dec_lens: float
+        Declination of the lensing cluster in degrees
+    ra_source_list: array
+        Right ascensions of each source galaxy in degrees
+    dec_source_list: array
+        Declinations of each source galaxy in degrees
+
+    Returns
+    -------
+    angsep: array
+        Angular separation between the lens and the source in radians
+    phi: array
+        Azimuthal angle from the lens to the source in radians
+    """
+    if not -360. <= ra_lens <= 360.:
+        raise ValueError(f"ra = {ra_lens} of lens if out of domain")
+    if not -90. <= dec_lens <= 90.:
+        raise ValueError(f"dec = {dec_lens} of lens if out of domain")
+    if not all(-360. <= x_ <= 360. for x_ in ra_source_list):
+        raise ValueError("Cluster has an invalid ra in source catalog")
+    if not all(-90. <= x_ <= 90 for x_ in dec_source_list):
+        raise ValueError("Cluster has an invalid dec in the source catalog")
+    sk_lens = SkyCoord(ra_lens*u.deg, dec_lens*u.deg, frame='icrs')
+    sk_src = SkyCoord(ra_source_list*u.deg, dec_source_list*u.deg, frame='icrs')
+    angsep, phi = sk_lens.separation(sk_src).rad, sk_lens.position_angle(sk_src).rad
+    # Transformations for phi to have same orientation as _compute_lensing_angles_flatsky
+    phi += 0.5*np.pi
+    phi[phi>np.pi] -= 2*np.pi
+    phi[angsep==0] = 0
     return angsep, phi
 
 
