@@ -109,7 +109,7 @@ class CTModeling(CLMModeling):
 
     def eval_excess_surface_density(self, r_proj, z_cl):
         if np.min(r_proj)<1.e-11:
-            raise ValueError(f"Rmin = {np.min(r_proj):.2e} Mpc! This value is too small and may cause computational issues.")
+            raise ValueError(f"Rmin = {np.min(r_proj):.2e}! This value is too small and may cause computational issues.")
         Omega_m = self.cosmo.get_E2Omega_m(z_cl)*self.cor_factor
         h = self.cosmo['h']
         r_proj = _assert_correct_type_ct(r_proj)*h

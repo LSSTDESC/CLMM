@@ -1,4 +1,4 @@
-"""Tests for modeling.py"""
+"""Tests for theory/"""
 import json
 import numpy as np
 from numpy.testing import assert_raises, assert_allclose, assert_equal
@@ -190,6 +190,10 @@ def helper_profiles(func):
     z_cl = 0.2
     cclcosmo = theo.Cosmology(Omega_dm0=0.25, Omega_b0=0.05)
 
+    # Test for r<0
+    assert_raises(ValueError, func, -1, mdelta, cdelta, z_cl, cclcosmo, 200)
+    # Test for r=0
+    assert_raises(ValueError, func, 0, mdelta, cdelta, z_cl, cclcosmo, 200)
     # Test for exception if other profiles models are passed
     assert_raises(ValueError, func, r3d, mdelta, cdelta, z_cl, cclcosmo, 200, 'bleh')
 
