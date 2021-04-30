@@ -73,10 +73,10 @@ class CCLCLMModeling(CLMModeling):
             if cur_values:
                 self.conc.c = cur_cdelta
 
-    def set_concentration(self, cdelta):
+    def _set_concentration(self, cdelta):
         self.conc.c = cdelta
 
-    def set_mass(self, mdelta):
+    def _set_mass(self, mdelta):
         self.MDelta = mdelta/self.cor_factor
 
     def eval_3d_density(self, r3d, z_cl):
