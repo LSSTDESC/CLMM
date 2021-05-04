@@ -210,7 +210,7 @@ def _compute_ngals(ngal_density, field_size, cosmo, cluster_z, zsrc, zsrc_min=No
         # Compute the normalisation for the redshift distribution function (z=[0,\infty])
         norm, _ = integrate.quad(z_distrib_func, 0., 100)
         # Probability to find the galaxy in the requested redshift range
-        prob = integrate.quad(_chang_z_distrib, zsrc_min, zsrc_max)[0]/norm
+        prob = integrate.quad(z_distrib_func, zsrc_min, zsrc_max)[0]/norm
         return int(ngals*prob)
 
 
@@ -240,7 +240,7 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, zsrc
     gamx = np.zeros(ngals)
     kappa = compute_convergence(galaxy_catalog['r_mpc'], mdelta=cluster_m,
                                             cdelta=cluster_c, z_cluster=cluster_z,
-                                            z_source=galaxy_catalog['z'], cosmo=cosmo,
+                                            z_source=galaxy_catalog['ztrue'], cosmo=cosmo,
                                             delta_mdef=Delta_SO, halo_profile_model=halo_profile_model,
                                             massdef=massdef,
                                             z_src_model='single_plane')
