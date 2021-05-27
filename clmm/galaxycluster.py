@@ -197,7 +197,7 @@ class GalaxyCluster():
         return angsep, tangential_comp, cross_comp
 
     def make_radial_profile(self,
-                            bin_units, bins=10, cosmo=None,
+                            bin_units, bins=10, error_model='std/sqrt_n', cosmo=None,
                             tan_component_in='et', cross_component_in='ex',
                             tan_component_out='gt', cross_component_out='gx',
                             include_empty_bins=False, gal_ids_in_bins=False,
@@ -231,6 +231,10 @@ class GalaxyCluster():
             the bin edges. If a scalar is provided, create that many equally spaced bins between
             the minimum and maximum angular separations in bin_units. If nothing is provided,
             default to 10 equally spaced bins.
+        error_model : str, optional
+            Error model to use for y uncertainties. (letter case independent)
+                `std/sqrt_n` - Standard Deviation/sqrt(Counts) (Default)
+                `std` - Standard deviation
         cosmo: dict, optional
             Cosmology parameters to convert angular separations to physical distances
         tan_component_in: string, optional
@@ -274,8 +278,8 @@ class GalaxyCluster():
         profile_table, binnumber = make_radial_profile(
             [self.galcat[n].data for n in (tan_component_in, cross_component_in, 'z')],
             angsep=self.galcat['theta'], angsep_units='radians',
-            bin_units=bin_units, bins=bins, include_empty_bins=include_empty_bins,
-            return_binnumber=True,
+            bin_units=bin_units, bins=bins, error_model=error_model,
+            include_empty_bins=include_empty_bins, return_binnumber=True,
             cosmo=cosmo, z_lens=self.z)
         # Reaname table columns
         for i, n in enumerate([tan_component_out, cross_component_out, 'z']):
