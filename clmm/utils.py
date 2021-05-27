@@ -5,7 +5,7 @@ from astropy import units as u
 from .constants import Constants as const
 
 
-def compute_radial_averages(xvals, yvals, xbins, error_model='std/sqrt_n', weights=None):
+def compute_radial_averages(xvals, yvals, xbins, error_model='ste', weights=None):
     """ Given a list of xvals, yvals and bins, sort into bins. If xvals or yvals
     contain non-finite values, these are filtered.
 
@@ -19,8 +19,8 @@ def compute_radial_averages(xvals, yvals, xbins, error_model='std/sqrt_n', weigh
         Bin edges to sort into
     error_model : str, optional
         Error model to use for y uncertainties. (letter case independent)
-            `std/sqrt_n` - Standard Deviation/sqrt(Counts) (Default)
-            `std` - Standard deviation
+            `ste` - Standard error [=std/sqrt(n) in unweighted computation] (Default).
+            `std` - Standard deviation.
     weights: array_like, None
         Weights for averages.
 
@@ -52,24 +52,18 @@ def compute_radial_averages(xvals, yvals, xbins, error_model='std/sqrt_n', weigh
     # means
     meanx = binned_statistic(x, x*wts, statistic='sum', bins=xbins)[0]
     meany = binned_statistic(x, y*wts, statistic='sum', bins=xbins)[0]
-    # number of objects
-    num_objects = np.histogram(x, xbins)[0]
-    n_zero = num_objects==0
     # errors
     meany2 = binned_statistic(x, y**2*wts, statistic='sum', bins=xbins)[0]
     yerr = np.sqrt(meany2-meany**2)
     if error_model == 'std':
         pass
-    elif error_model == 'std/sqrt_n':
+    elif error_model == 'ste':
         mean_wts2 = binned_statistic(x, wts**2, statistic='sum', bins=xbins)[0]
         yerr *= np.sqrt(mean_wts2)
     else:
         raise ValueError(f"{error_model} not supported err model for binned stats")
-
-    meanx[n_zero] = 0
-    meany[n_zero] = 0
-    yerr[n_zero] = 0
-
+    # number of objects
+    num_objects = np.histogram(x, xbins)[0]
     return meanx, meany, yerr, num_objects, binnumber
 
 

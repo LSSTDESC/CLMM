@@ -197,7 +197,7 @@ class GalaxyCluster():
         return angsep, tangential_comp, cross_comp
 
     def make_radial_profile(self,
-                            bin_units, bins=10, error_model='std/sqrt_n', cosmo=None,
+                            bin_units, bins=10, error_model='ste', cosmo=None,
                             tan_component_in='et', cross_component_in='ex',
                             tan_component_out='gt', cross_component_out='gx',
                             include_empty_bins=False, gal_ids_in_bins=False,
@@ -233,8 +233,8 @@ class GalaxyCluster():
             default to 10 equally spaced bins.
         error_model : str, optional
             Error model to use for y uncertainties. (letter case independent)
-                `std/sqrt_n` - Standard Deviation/sqrt(Counts) (Default)
-                `std` - Standard deviation
+                `ste` - Standard error [=std/sqrt(n) in unweighted computation] (Default).
+                `std` - Standard deviation.
         cosmo: dict, optional
             Cosmology parameters to convert angular separations to physical distances
         tan_component_in: string, optional

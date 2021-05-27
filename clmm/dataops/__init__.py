@@ -252,7 +252,7 @@ def _compute_cross_shear(shear1, shear2, phi):
 
 
 def make_radial_profile(components, angsep, angsep_units, bin_units,
-                        bins=10, error_model='std/sqrt_n',
+                        bins=10, error_model='ste',
                         include_empty_bins=False, return_binnumber=False,
                         cosmo=None, z_lens=None):
     r"""Compute the angular profile of given components
@@ -290,8 +290,8 @@ def make_radial_profile(components, angsep, angsep_units, bin_units,
         default to 10 equally spaced bins.
     error_model : str, optional
         Error model to use for y uncertainties. (letter case independent)
-            `std/sqrt_n` - Standard Deviation/sqrt(Counts) (Default)
-            `std` - Standard deviation
+            `ste` - Standard error [=std/sqrt(n) in unweighted computation] (Default).
+            `std` - Standard deviation.
     include_empty_bins: bool, optional
         Also include empty bins in the returned table
     gal_ids_in_bins: bool, optional
