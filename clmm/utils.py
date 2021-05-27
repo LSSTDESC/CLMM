@@ -5,7 +5,7 @@ from astropy import units as u
 from .constants import Constants as const
 
 
-def compute_radial_averages(xvals, yvals, xbins, error_model='std/sqrt_n'):
+def compute_radial_averages(xvals, yvals, xbins, error_model='std/sqrt_n', weights=None):
     """ Given a list of xvals, yvals and bins, sort into bins. If xvals or yvals
     contain non-finite values, these are filtered.
 
@@ -21,6 +21,8 @@ def compute_radial_averages(xvals, yvals, xbins, error_model='std/sqrt_n'):
         Error model to use for y uncertainties. (letter case independent)
             `std/sqrt_n` - Standard Deviation/sqrt(Counts) (Default)
             `std` - Standard deviation
+    weights: array_like, None
+        Weights for averages.
 
     Returns
     -------
@@ -41,20 +43,26 @@ def compute_radial_averages(xvals, yvals, xbins, error_model='std/sqrt_n'):
     error_model = error_model.lower()
     # binned_statics throus an error in case of non-finite values, so filtering those out
     filt = np.isfinite(xvals)*np.isfinite(yvals)
-
-    meanx, xbins, binnumber = binned_statistic(xvals[filt], xvals[filt], statistic='mean', bins=xbins)[:3]
-    meany = binned_statistic(xvals[filt], yvals[filt], statistic='mean', bins=xbins)[0]
+    x, y = np.array(xvals)[filt], np.array(yvals)[filt]
+    # normalize weights (and computers binnumber)
+    wts = np.ones(x.size) if weights is None else np.array(weights, dtype=float)[filt]
+    wts_sum, binnumber = binned_statistic(x, wts, statistic='sum', bins=xbins)[:3:2]
+    objs_in_bins = (binnumber>0)*(binnumber<=wts_sum.size) # mask for binnumber in range
+    wts[objs_in_bins] *= 1./wts_sum[binnumber[objs_in_bins]-1]
+    # means
+    meanx = binned_statistic(x, x*wts, statistic='sum', bins=xbins)[0]
+    meany = binned_statistic(x, y*wts, statistic='sum', bins=xbins)[0]
     # number of objects
-    num_objects = np.histogram(xvals[filt], xbins)[0]
+    num_objects = np.histogram(x, xbins)[0]
     n_zero = num_objects==0
-
+    # errors
+    meany2 = binned_statistic(x, y**2*wts, statistic='sum', bins=xbins)[0]
+    yerr = np.sqrt(meany2-meany**2)
     if error_model == 'std':
-        yerr = binned_statistic(xvals[filt], yvals[filt], statistic='std', bins=xbins)[0]
+        pass
     elif error_model == 'std/sqrt_n':
-        yerr = binned_statistic(xvals[filt], yvals[filt], statistic='std', bins=xbins)[0]
-        sqrt_n = np.sqrt(binned_statistic(xvals[filt], yvals[filt], statistic='count', bins=xbins)[0])
-        sqrt_n[n_zero] = 1.0
-        yerr = yerr/sqrt_n
+        mean_wts2 = binned_statistic(x, wts**2, statistic='sum', bins=xbins)[0]
+        yerr *= np.sqrt(mean_wts2)
     else:
         raise ValueError(f"{error_model} not supported err model for binned stats")
 

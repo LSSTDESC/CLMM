@@ -26,7 +26,23 @@ def test_compute_radial_averages():
                     [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)/np.sqrt(len(binvals))],
                     [6]],
                     **TOLERANCE)
-
+    # Test weights
+        # Normalized
+    assert_allclose(compute_radial_averages([1, 1], [2, 3], [1, 2], weights=[.5, .5])[:3],
+                    ([1], [2.5], [0.5/np.sqrt(2)]),
+                    **TOLERANCE)
+        # Not normalized
+    assert_allclose(compute_radial_averages([1, 1], [2, 3], [1, 2], weights=[5, 5])[:3],
+                    ([1], [2.5], [0.5/np.sqrt(2)]),
+                    **TOLERANCE)
+        # Values outside bins
+    assert_allclose(compute_radial_averages([1, 1, 3], [2, 3, 1000], [1, 2], weights=[.5, .5, 100])[:3],
+                    ([1], [2.5], [0.5/np.sqrt(2)]),
+                    **TOLERANCE)
+        # Weighted values == Repeated values (std only)
+    assert_allclose(compute_radial_averages([1, 1], [2, 3], [1, 2], weights=[1, 2], error_model='std')[:3],
+                   compute_radial_averages([1, 1, 1], [2, 3, 3], [1, 2], error_model='std')[:3],
+                    **TOLERANCE)
 
     # Test 3 objects in one bin with various error models
     assert_allclose(compute_radial_averages(binvals, binvals, xbins1, error_model='std/sqrt_n')[:4],
