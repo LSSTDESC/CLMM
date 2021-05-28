@@ -19,7 +19,7 @@ def test_compute_radial_averages():
     xbins2 = [0., 5., 10.]
 
     # Test requesting an unsupported error model
-    assert_raises(ValueError, compute_radial_averages, binvals, binvals, [0., 10.], 'glue')
+    assert_raises(ValueError, compute_radial_averages, binvals, binvals, [0., 10.], error_model='glue')
 
     # Check the default error model
     assert_allclose(compute_radial_averages(binvals, binvals, xbins1)[:4],
@@ -29,19 +29,27 @@ def test_compute_radial_averages():
     # Test weights
         # Normalized
     assert_allclose(compute_radial_averages([1, 1], [2, 3], [1, 2], weights=[.5, .5])[:3],
-                    ([1], [2.5], [0.5/np.sqrt(2)]),
+                    ([1], [2.5], [1/np.sqrt(8)]),
                     **TOLERANCE)
         # Not normalized
     assert_allclose(compute_radial_averages([1, 1], [2, 3], [1, 2], weights=[5, 5])[:3],
-                    ([1], [2.5], [0.5/np.sqrt(2)]),
+                    ([1], [2.5], [1/np.sqrt(8)]),
                     **TOLERANCE)
         # Values outside bins
     assert_allclose(compute_radial_averages([1, 1, 3], [2, 3, 1000], [1, 2], weights=[.5, .5, 100])[:3],
-                    ([1], [2.5], [0.5/np.sqrt(2)]),
+                    ([1], [2.5], [1/np.sqrt(8)]),
                     **TOLERANCE)
         # Weighted values == Repeated values (std only)
     assert_allclose(compute_radial_averages([1, 1], [2, 3], [1, 2], weights=[1, 2], error_model='std')[:3],
                    compute_radial_averages([1, 1, 1], [2, 3, 3], [1, 2], error_model='std')[:3],
+                    **TOLERANCE)
+        # Zero yerr
+    assert_allclose(compute_radial_averages([1, 1], [2, 3], [1, 2], weights=[.5, .5], yerr=[0, 0])[:3],
+                    ([1], [2.5], [1/np.sqrt(8)]),
+                    **TOLERANCE)
+        # With yerr
+    assert_allclose(compute_radial_averages([1, 1], [2, 3], [1, 2], weights=[.5, .5], yerr=[1, 1])[:3],
+                    ([1], [2.5], [np.sqrt(5/8)]),
                     **TOLERANCE)
 
     # Test 3 objects in one bin with various error models

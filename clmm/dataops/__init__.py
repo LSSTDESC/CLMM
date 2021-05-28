@@ -252,7 +252,7 @@ def _compute_cross_shear(shear1, shear2, phi):
 
 
 def make_radial_profile(components, angsep, angsep_units, bin_units,
-                        bins=10, error_model='ste',
+                        bins=10, components_error=None, error_model='ste',
                         include_empty_bins=False, return_binnumber=False,
                         cosmo=None, z_lens=None):
     r"""Compute the angular profile of given components
@@ -288,8 +288,10 @@ def make_radial_profile(components, angsep, angsep_units, bin_units,
         the bin edges. If a scalar is provided, create that many equally spaced bins between
         the minimum and maximum angular separations in bin_units. If nothing is provided,
         default to 10 equally spaced bins.
+    components_error: list of arrays, None
+        List of errors for input arrays
     error_model : str, optional
-        Error model to use for y uncertainties. (letter case independent)
+        Statistical error model to use for y uncertainties. (letter case independent)
             `ste` - Standard error [=std/sqrt(n) in unweighted computation] (Default).
             `std` - Standard deviation.
     include_empty_bins: bool, optional
@@ -334,7 +336,8 @@ def make_radial_profile(components, angsep, angsep_units, bin_units,
     # Compute the binned averages and associated errors
     for i, component in enumerate(components):
         r_avg, comp_avg, comp_err, nsrc, binnumber = compute_radial_averages(
-            source_seps, component, xbins=bins, error_model=error_model)
+            source_seps, component, xbins=bins,
+            yerr=None if components_error is None else components_error[i])
         profile_table[f'p_{i}'] = comp_avg
         profile_table[f'p_{i}_err'] = comp_err
     profile_table['radius'] = r_avg

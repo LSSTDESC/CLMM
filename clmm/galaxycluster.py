@@ -200,6 +200,7 @@ class GalaxyCluster():
                             bin_units, bins=10, error_model='ste', cosmo=None,
                             tan_component_in='et', cross_component_in='ex',
                             tan_component_out='gt', cross_component_out='gx',
+                            tan_component_in_err=None, cross_component_in_err=None,
                             include_empty_bins=False, gal_ids_in_bins=False,
                             add=True, table_name='profile', overwrite=True):
         r"""Compute the shear or ellipticity profile of the cluster
@@ -232,7 +233,7 @@ class GalaxyCluster():
             the minimum and maximum angular separations in bin_units. If nothing is provided,
             default to 10 equally spaced bins.
         error_model : str, optional
-            Error model to use for y uncertainties. (letter case independent)
+            Statistical error model to use for y uncertainties. (letter case independent)
                 `ste` - Standard error [=std/sqrt(n) in unweighted computation] (Default).
                 `std` - Standard deviation.
         cosmo: dict, optional
@@ -249,6 +250,12 @@ class GalaxyCluster():
         cross_component_out: string, optional
             Name of the cross component binned profile column to be added in profile table.
             Default: 'gx'
+        tan_component_in_err: string, None, optional
+            Name of the tangential component error column in `galcat` to be binned.
+            Default: None
+        cross_component_in_err: string, None, optional
+            Name of the cross component error column in `galcat` to be binned.
+            Default: None
         include_empty_bins: bool, optional
             Also include empty bins in the returned table
         gal_ids_in_bins: bool, optional
@@ -280,7 +287,10 @@ class GalaxyCluster():
             angsep=self.galcat['theta'], angsep_units='radians',
             bin_units=bin_units, bins=bins, error_model=error_model,
             include_empty_bins=include_empty_bins, return_binnumber=True,
-            cosmo=cosmo, z_lens=self.z)
+            cosmo=cosmo, z_lens=self.z,
+            components_error=[None if n is None else self.galcat[n].data
+                              for n in (tan_component_in_err, cross_component_in_err, None)],
+            )
         # Reaname table columns
         for i, n in enumerate([tan_component_out, cross_component_out, 'z']):
             profile_table.rename_column(f'p_{i}', n)
