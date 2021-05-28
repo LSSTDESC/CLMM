@@ -113,10 +113,6 @@ def test_update_cosmo():
     assert_equal(1, gcdata['Ra'][0])
     assert_equal(1, gcdata['ra'][0])
     assert_equal(1, gcdata['RA'][0])
-    assert_equal(1, gcdata.get('RA')[0])
-
-    assert_equal(None, gcdata.get('Unknown'))
-    assert_equal(3, gcdata.get('Unknown', 3))
 
 # test_creator = 'Mitch'
 # test_creator_diff = 'Witch'
