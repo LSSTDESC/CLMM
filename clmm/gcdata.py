@@ -101,6 +101,13 @@ class GCData(APtable):
         out = APtable.__getitem__(self, item)
         return out
 
+    def get(self, key, default=None):
+        """
+        Return the column for key if key is in table, else default
+        """
+        key_casefix = {n.lower():n for n in self.colnames}.get(key.lower(), None)
+        return default if key_casefix is None else self[key_casefix]
+
     def update_cosmo_ext_valid(self, gcdata, cosmo, overwrite=False):
         r"""Updates cosmo metadata if the same as in gcdata
 
