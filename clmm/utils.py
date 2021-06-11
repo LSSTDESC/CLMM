@@ -25,7 +25,18 @@ def compute_nfw_boost(rvals, sigma_vals, rs=1000, b0=0.1) :
     boost_factors : array_like
 
     """
-    pass
+
+    x = rvals/rs
+
+    def _calc_finternal(x) :
+        radicand = abs(x**2-1)
+        
+        finternal = np.arctan( np.sqrt(radicand) ) / np.sqrt(radicand)
+
+        return np.nan_to_num(finternal, copy=False, nan=1.0)
+
+    return 1. + b0 * (1 - _calc_finternal(x)) / (x**2 - 1)
+        
 
 
 def compute_powerlaw_boost(rvals, sigma_vals, rs=1000, b0=0.1, alpha=-1.0) :
