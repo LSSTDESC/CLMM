@@ -57,7 +57,7 @@ def compute_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_pr
     Need to refactor later so we only require arguments that are necessary for all profiles
     and use another structure to take the arguments necessary for specific models
     """
-
+    gcm._check_input_radius(r3d)
     gcm.set_cosmo(cosmo)
     gcm.set_halo_density_profile(halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
     gcm.set_concentration(cdelta)
@@ -110,7 +110,7 @@ def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     Need to refactory so we only require arguments that are necessary for all models and use
     another structure to take the arguments necessary for specific models.
     """
-
+    gcm._check_input_radius(r_proj)
     gcm.set_cosmo(cosmo)
     gcm.set_halo_density_profile(halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
     gcm.set_concentration(cdelta)
@@ -161,7 +161,7 @@ def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
     deltasigma : array_like, float
         Excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
     """
-
+    gcm._check_input_radius(r_proj)
     gcm.set_cosmo(cosmo)
     gcm.set_halo_density_profile(halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
     gcm.set_concentration(cdelta)
@@ -251,6 +251,7 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     -----
     TODO: Implement `known_z_src` (known individual source galaxy redshifts e.g. discrete case) and `z_src_distribution` (known source redshift distribution e.g. continuous case requiring integration) options for `z_src_model`. We will need :math:`\gamma_\infty` and :math:`\kappa_\infty` for alternative z_src_models using :math:`\beta_s`.
     """
+    gcm._check_input_radius(r_proj)
 
     if z_src_model == 'single_plane':
 
@@ -393,6 +394,7 @@ def compute_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
     -----
     TODO: Implement `known_z_src` (known individual source galaxy redshifts e.g. discrete case) and `z_src_distribution` (known source redshift distribution e.g. continuous case requiring integration) options for `z_src_model`. We will need :math:`\gamma_\infty` and :math:`\kappa_\infty` for alternative z_src_models using :math:`\beta_s`.
     """
+    gcm._check_input_radius(r_proj)
 
     if z_src_model == 'single_plane':
 
@@ -472,6 +474,7 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
     -----
     TODO: Implement `known_z_src` (known individual source galaxy redshifts e.g. discrete case) and `z_src_distribution` (known source redshift distribution e.g. continuous case requiring integration) options for `z_src_model`. We will need :math:`\gamma_\infty` and :math:`\kappa_\infty` for alternative z_src_models using :math:`\beta_s`.
     """
+    gcm._check_input_radius(r_proj)
 
     if z_src_model == 'single_plane':
 

@@ -88,10 +88,10 @@ class NumCosmoCLMModeling(CLMModeling):
 
         self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
 
-    def set_concentration(self, cdelta):
+    def _set_concentration(self, cdelta):
         self.hdpm.props.cDelta = cdelta
 
-    def set_mass(self, mdelta):
+    def _set_mass(self, mdelta):
         self.hdpm.props.log10MDelta = math.log10(mdelta)
 
     def eval_3d_density(self, r3d, z_cl):

@@ -68,10 +68,10 @@ class CTModeling(CLMModeling):
         self.massdef = massdef
         self.delta_mdef = delta_mdef
 
-    def set_concentration(self, cdelta):
+    def _set_concentration(self, cdelta):
         self.cdelta = cdelta
 
-    def set_mass(self, mdelta):
+    def _set_mass(self, mdelta):
         self.mdelta = mdelta
 
     def eval_3d_density(self, r3d, z_cl):
