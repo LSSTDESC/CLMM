@@ -515,8 +515,8 @@ def _test_input_params(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_SO,
                   field_size)
     float_names = ('cluster_m', 'cluster_z', 'cluster_c', 'Delta_S0',
                    'zsrc_max', 'field_size')
-    int_vars = (nretry,)
-    int_names = ('nretry',)
+    int_vars = []
+    int_names = []
     # will iterate over floats and then ints
     var_types = ((float,int,np.floating,np.integer), (int,np.integer))
     var_type_names = ('float', 'int')
@@ -539,8 +539,11 @@ def _test_input_params(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_SO,
                 raise ValueError(err)
     # all variables either None or semi-positive float (no ints in this
     # category for now)
-    vars = (zsrc_min, shapenoise, mean_e_err, photoz_sigma_unscaled)
-    names = ('zsrc_min', 'shapenoise', 'mean_e_err', 'photoz_sigma_unscaled')
+    float_vars = (zsrc_min, shapenoise, mean_e_err, photoz_sigma_unscaled)
+    float_names = ('zsrc_min', 'shapenoise', 'mean_e_err',
+                   'photoz_sigma_unscaled')
+    int_vars = (nretry,)
+    int_names = ('nretry',)
     for var, name in zip(vars, names):
         if var is None:
             continue
