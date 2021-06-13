@@ -3,14 +3,20 @@ import numpy as np
 import warnings
 from scipy import integrate
 from scipy.interpolate import interp1d
+from scipy.stats import chi2
 from astropy import units
 
 from clmm import GCData
 from clmm.theory import compute_tangential_shear, compute_convergence
 from clmm.utils import convert_units, compute_lensed_ellipticity
 
-def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_SO=200, massdef='mean',halo_profile_model='nfw', zsrc_min=None,
-                            zsrc_max=7., field_size=8., shapenoise=None, photoz_sigma_unscaled=None, nretry=5, ngals=None, ngal_density=None):
+
+def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc,
+                            Delta_SO=200, massdef='mean',
+                            halo_profile_model='nfw', zsrc_min=None,
+                            zsrc_max=7., field_size=8., shapenoise=None,
+                            mean_e_err=None, photoz_sigma_unscaled=None,
+                            nretry=5, ngals=None, ngal_density=None):
     r"""Generates a mock dataset of sheared background galaxies.
 
     We build galaxy catalogs following a series of steps.
@@ -43,11 +49,11 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_
 
     4. We predict the reduced tangential shear of each using the radial distances of each source
     from the lens, the source redshifts, and the lens mass, concentration, and redshift. In the
-    given cosmology for an NFW halo. The reduced tangential shear is then transformed into `g1` and `g2`` 
+    given cosmology for an NFW halo. The reduced tangential shear is then transformed into `g1` and `g2``
     components.
 
-    5. If the `shapenoise=True`, intrinsic ellipticities (1,2) components are drawn from a Gaussian distribution of width of `shapenoise`. 
-    These ellipticities components are then combined with `g1` and `g2` to provide lensed ellipticies `e1` and `e2`. If `shapenoise=False`, 
+    5. If the `shapenoise=True`, intrinsic ellipticities (1,2) components are drawn from a Gaussian distribution of width of `shapenoise`.
+    These ellipticities components are then combined with `g1` and `g2` to provide lensed ellipticies `e1` and `e2`. If `shapenoise=False`,
     `g1` and `g2` are directly used as ellipticity components.
 
     If the shape noise parameter is high, we may draw nonsensical values for ellipticities. We
@@ -95,6 +101,11 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_
         Proper distance in Mpc  at the cluster redshift.
     shapenoise : float, optional
         If set, applies Gaussian shape noise to the galaxy shapes with a width set by `shapenoise`
+    mean_e_err : float, optional
+        Mean per-component ellipticity uncertainty. Currently,
+        individual uncertainties are drawn from a uniform distribution
+        in the range [0.9,1.1]*mean_e_err. If not provided, the output
+        table will not include this column.
     photoz_sigma_unscaled : float, optional
         If set, applies photo-z errors to source redshifts
     nretry : int, optional
@@ -116,13 +127,19 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_
     Much of this code in this function was adapted from the Dallas group
     """
 
+    _test_input_params(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_SO,
+                       massdef, halo_profile_model, zsrc_min, zsrc_max,
+                       field_size, shapenoise, mean_e_err,
+                       photoz_sigma_unscaled, nretry, ngals, ngal_density)
+
     if zsrc_min is None: zsrc_min = cluster_z+0.1
 
     params = {'cluster_m' : cluster_m, 'cluster_z' : cluster_z, 'cluster_c' : cluster_c,
               'cosmo' : cosmo, 'Delta_SO' : Delta_SO, 'zsrc' : zsrc, 'massdef' : massdef,
               'halo_profile_model' : halo_profile_model,
-              'zsrc_min' : zsrc_min,
-              'zsrc_max' : zsrc_max,'shapenoise' : shapenoise, 'photoz_sigma_unscaled' : photoz_sigma_unscaled,
+              'zsrc_min' : zsrc_min, 'zsrc_max' : zsrc_max,
+              'shapenoise' : shapenoise, 'mean_e_err': mean_e_err,
+              'photoz_sigma_unscaled' : photoz_sigma_unscaled,
               'field_size' : field_size}
 
     if ngals is None and ngal_density is None:
@@ -176,7 +193,7 @@ def _chang_z_distrib(z):
 
 def _srd_z_distrib(z):
     """
-    A private function that returns the unnormalized galaxy redshift distribution function used in 
+    A private function that returns the unnormalized galaxy redshift distribution function used in
     the LSST/DESC Science Requirement Document (arxiv:1809.01669).
 
     Parameters
@@ -214,8 +231,12 @@ def _compute_ngals(ngal_density, field_size, cosmo, cluster_z, zsrc, zsrc_min=No
         return int(ngals*prob)
 
 
-def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, zsrc, Delta_SO=None, massdef=None, halo_profile_model=None,
-                             zsrc_min=None, zsrc_max=None, shapenoise=None, photoz_sigma_unscaled=None, field_size=None):
+def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals,
+                             zsrc, Delta_SO=None, massdef=None,
+                             halo_profile_model=None, zsrc_min=None,
+                             zsrc_max=None, shapenoise=None,
+                             mean_e_err=None,
+                             photoz_sigma_unscaled=None, field_size=None):
     """A private function that skips the sanity checks on derived properties. This
     function should only be used when called directly from `generate_galaxy_catalog`.
     For a detailed description of each of the parameters, see the documentation of
@@ -231,25 +252,27 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, zsrc
     galaxy_catalog = _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo, field_size)
     # Compute the shear on each source galaxy
     gamt = compute_tangential_shear(galaxy_catalog['r_mpc'], mdelta=cluster_m,
-                                            cdelta=cluster_c, z_cluster=cluster_z,
-                                            z_source=galaxy_catalog['ztrue'], cosmo=cosmo,
-                                            delta_mdef=Delta_SO, halo_profile_model=halo_profile_model,
-                                            massdef=massdef,
-                                            z_src_model='single_plane')
+                                    cdelta=cluster_c, z_cluster=cluster_z,
+                                    z_source=galaxy_catalog['ztrue'],
+                                    cosmo=cosmo, delta_mdef=Delta_SO,
+                                    halo_profile_model=halo_profile_model,
+                                    massdef=massdef,
+                                    z_src_model='single_plane')
 
     gamx = np.zeros(ngals)
+
     kappa = compute_convergence(galaxy_catalog['r_mpc'], mdelta=cluster_m,
                                             cdelta=cluster_c, z_cluster=cluster_z,
                                             z_source=galaxy_catalog['z'], cosmo=cosmo,
                                             delta_mdef=Delta_SO, halo_profile_model=halo_profile_model,
                                             massdef=massdef,
                                             z_src_model='single_plane')
-
+    # why do we need to create these columns?
     galaxy_catalog['gammat'] = gamt
-    galaxy_catalog['gammax'] = np.zeros(ngals)
+    galaxy_catalog['gammax'] = gamx
 
-    galaxy_catalog['posangle'] = np.arctan2(galaxy_catalog['y_mpc'],
-                                            galaxy_catalog['x_mpc'])
+    galaxy_catalog['posangle'] = np.arctan2(
+        galaxy_catalog['y_mpc'], galaxy_catalog['x_mpc'])
 
     #corresponding shear1,2 components
     gam1 = -gamt*np.cos(2*galaxy_catalog['posangle'])+gamx*np.sin(2*galaxy_catalog['posangle'])
@@ -265,11 +288,25 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals, zsrc
         e2_intrinsic = shapenoise*np.random.standard_normal(ngals)
 
     # Compute ellipticities
-    galaxy_catalog['e1'],galaxy_catalog['e2']=compute_lensed_ellipticity(e1_intrinsic, e2_intrinsic, gam1, gam2, kappa)
+    galaxy_catalog['e1'], galaxy_catalog['e2'] = compute_lensed_ellipticity(
+        e1_intrinsic, e2_intrinsic, gam1, gam2, kappa)
 
+    cols = ['ra', 'dec', 'e1', 'e2']
+    # if adding uncertainties
+    if mean_e_err is not None:
+        galaxy_catalog['e_err'] \
+            = mean_e_err * np.random.uniform(0.9, 1.1, ngals)
+        galaxy_catalog['e1'] = np.random.normal(
+            galaxy_catalog['e1'], galaxy_catalog['e_err'])
+        galaxy_catalog['e2'] = np.random.normal(
+            galaxy_catalog['e2'], galaxy_catalog['e_err'])
+        cols = cols + ['e_err']
+    cols = cols + ['z', 'ztrue']
     if photoz_sigma_unscaled is not None:
-        return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z', 'ztrue', 'pzbins', 'pzpdf']
-    return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z', 'ztrue']
+        cols = cols + ['pzbins', 'pzpdf']
+
+    return galaxy_catalog[cols]
+
 
 def _draw_random_points_from_distribution(xmin, xmax, nobj, dist_func, dx=0.001):
     """Draw random points with a given distribution.
@@ -462,7 +499,66 @@ def _find_aphysical_galaxies(galaxy_catalog, zsrc_min):
     nbad = len(badgals)
     return nbad, badgals
 
+#def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc,
+                            #Delta_SO=200, massdef='mean',
+                            #halo_profile_model='nfw', zsrc_min=None,
+                            #zsrc_max=7., field_size=8., shapenoise=None,
+                            #mean_e_err=None, photoz_sigma_unscaled=None,
+                            #nretry=5, ngals=None, ngal_density=None):
 
-
-
+def _test_input_params(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_SO,
+                       massdef, halo_profile_model, zsrc_min, zsrc_max,
+                       field_size, shapenoise, mean_e_err,
+                       photoz_sigma_unscaled, nretry, ngals, ngal_density):
+    # all positive ints or floats
+    float_vars = (cluster_m, cluster_z, cluster_c, Delta_SO, zsrc_max,
+                  field_size)
+    float_names = ('cluster_m', 'cluster_z', 'cluster_c', 'Delta_S0',
+                   'zsrc_max', 'field_size')
+    int_vars = (nretry,)
+    int_names = ('nretry',)
+    # will iterate over floats and then ints
+    var_types = ((float,int,np.floating,np.integer), (int,np.integer))
+    var_type_names = ('float', 'int')
+    for vars, names, types, typename in zip((float_vars,int_vars),
+                                            (float_names,int_names),
+                                            var_types, var_type_names):
+        for var, name in zip(vars, names):
+            if not isinstance(var, types):
+                err = f'{name} must be {typename},' \
+                      f' received {type(var).__name__}'
+                raise TypeError(err)
+            if np.iterable(var):
+                # in case it's a list or tuple
+                var = np.array(var)
+                if var.size > 1:
+                    err = f'{name} must be {typename}, received {type(var)}'
+                    raise TypeError(err)
+            if var <= 0:
+                err = f'{name} must be greater than zero, received {var}'
+                raise ValueError(err)
+    # all variables either None or semi-positive float (no ints in this
+    # category for now)
+    vars = (zsrc_min, shapenoise, mean_e_err, photoz_sigma_unscaled)
+    names = ('zsrc_min', 'shapenoise', 'mean_e_err', 'photoz_sigma_unscaled')
+    for var, name in zip(vars, names):
+        if var is None:
+            continue
+        try:
+            var / 1
+        except TypeError:
+            err = f'if specified, a{name} must be float,' \
+                  f' received {type(var).__name__}'
+            raise TypeError(err)
+        if np.iterable(var):
+            # in case it's a list or tuple
+            var = np.array(var)
+            if var.size > 1:
+                err = f'{name} must be None or float, received {type(var)}'
+                raise TypeError(err)
+        if var < 0:
+            err = f'{name} must be greater than or equal to zero,' \
+                  f' received {var}'
+            raise ValueError(err)
+    return
 
