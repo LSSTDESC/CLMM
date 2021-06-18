@@ -10,6 +10,21 @@ from clmm.utils import compute_radial_averages, make_bins, convert_shapes_to_eps
 
 TOLERANCE = {'rtol': 1.0e-6, 'atol': 0}
 
+def test_compute_nfw_boost() :
+    """ """
+    pass
+
+def test_compute_powerlaw_boost() :
+    """ """
+    pass
+
+def test_correct_sigma_with_boost_values() :
+    """ """
+    pass
+
+def test_correct_sigma_with_boost_model() :
+    """ """
+    pass
 
 def test_compute_radial_averages():
     """ Tests compute_radial_averages, a function that computes several binned statistics """
