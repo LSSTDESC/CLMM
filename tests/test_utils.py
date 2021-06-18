@@ -11,21 +11,42 @@ from clmm.utils import compute_radial_averages, make_bins, convert_shapes_to_eps
 TOLERANCE = {'rtol': 1.0e-6, 'atol': 0}
 
 def test_compute_nfw_boost() :
-    """ """
-    pass
+    """Test the nfw model for boost factor"""
+    # Test data
+    rvals = np.arange(10)
+
+    # Test model
+    assert_allclose()
 
 def test_compute_powerlaw_boost() :
-    """ """
-    pass
+    """Test the powerlaw model for boost factor"""
+    # Test data
+    rvals = np.arange(10)
+
+    # Test model
+    assert_allclose()
+
 
 def test_correct_sigma_with_boost_values() :
     """ """
-    pass
+    # Make test data
+    rvals = np.arange(10)
+    sigma_vals = 2**np.arange(10)
+
 
 def test_correct_sigma_with_boost_model() :
     """ """
-    pass
+    # Make test data
+    rvals = np.arange(10)
+    sigma_vals = 2**np.arange(10)
 
+    # Test requesting unsupported boost model
+    assert_raises(ValueError,
+                  correct_sigma_with_boost_model(rvals, sigma_vals, boost_model='glue')
+
+
+    assert_allclose()
+                  
 def test_compute_radial_averages():
     """ Tests compute_radial_averages, a function that computes several binned statistics """
     # Make some test data
