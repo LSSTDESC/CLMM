@@ -143,10 +143,14 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc,
               'field_size' : field_size}
 
     if ngals is None and ngal_density is None:
-         raise ValueError('Either the number of galaxies "ngals" or the galaxy density "ngal_density" keyword must be specified')
+        err = 'Either the number of galaxies "ngals" or the galaxy density' \
+              ' "ngal_density" keyword must be specified'
+        raise ValueError(err)
 
     if ngals is not None and ngal_density is not None:
-         raise ValueError('The "ngals" and "ngal_density" keywords cannot both be set. Please use one only')
+        err = 'The "ngals" and "ngal_density" keywords cannot both be set.' \
+              ' Please use one only'
+        raise ValueError(err)
 
     if ngal_density is not None:
         # Compute the number of galaxies to be drawn
@@ -267,16 +271,11 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals,
                                             delta_mdef=Delta_SO, halo_profile_model=halo_profile_model,
                                             massdef=massdef,
                                             z_src_model='single_plane')
-    # why do we need to create these columns?
-    galaxy_catalog['gammat'] = gamt
-    galaxy_catalog['gammax'] = gamx
 
-    galaxy_catalog['posangle'] = np.arctan2(
-        galaxy_catalog['y_mpc'], galaxy_catalog['x_mpc'])
-
+    posangle = np.arctan2(galaxy_catalog['y_mpc'], galaxy_catalog['x_mpc'])
     #corresponding shear1,2 components
-    gam1 = -gamt*np.cos(2*galaxy_catalog['posangle'])+gamx*np.sin(2*galaxy_catalog['posangle'])
-    gam2 = -gamt*np.sin(2*galaxy_catalog['posangle'])-gamx*np.cos(2*galaxy_catalog['posangle'])
+    gam1 = -gamt*np.cos(2*posangle) + gamx*np.sin(2*posangle)
+    gam2 = -gamt*np.sin(2*posangle) - gamx*np.cos(2*posangle)
 
     #instrinsic ellipticities
     e1_intrinsic = 0
@@ -537,31 +536,33 @@ def _test_input_params(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_SO,
             if var <= 0:
                 err = f'{name} must be greater than zero, received {var}'
                 raise ValueError(err)
-    # all variables either None or semi-positive float (no ints in this
-    # category for now)
+    # all variables either None or semi-positive float
     float_vars = (zsrc_min, shapenoise, mean_e_err, photoz_sigma_unscaled)
     float_names = ('zsrc_min', 'shapenoise', 'mean_e_err',
                    'photoz_sigma_unscaled')
     int_vars = (nretry,)
     int_names = ('nretry',)
-    for var, name in zip(vars, names):
-        if var is None:
-            continue
-        try:
-            var / 1
-        except TypeError:
-            err = f'if specified, a{name} must be float,' \
-                  f' received {type(var).__name__}'
-            raise TypeError(err)
-        if np.iterable(var):
-            # in case it's a list or tuple
-            var = np.array(var)
-            if var.size > 1:
-                err = f'{name} must be None or float, received {type(var)}'
+    for vars, names, types, typename in zip((float_vars,int_vars),
+                                            (float_names,int_names),
+                                            var_types, var_type_names):
+        for var, name,  in zip(vars, names):
+            if var is None:
+                continue
+            try:
+                var / 1
+            except TypeError:
+                err = f'if specified, a{name} must be float,' \
+                      f' received {type(var).__name__}'
                 raise TypeError(err)
-        if var < 0:
-            err = f'{name} must be greater than or equal to zero,' \
-                  f' received {var}'
-            raise ValueError(err)
+            if np.iterable(var):
+                # in case it's a list or tuple
+                var = np.array(var)
+                if var.size > 1:
+                    err = f'{name} must be None or float, received {type(var)}'
+                    raise TypeError(err)
+            if var < 0:
+                err = f'{name} must be greater than or equal to zero,' \
+                      f' received {var}'
+                raise ValueError(err)
     return
 
