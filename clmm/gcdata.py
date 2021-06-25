@@ -96,8 +96,6 @@ class GCData(APtable):
         output += f'<br>and {len(self)} objects'
         table = APtable._repr_html_(self)
         return output+'<br>'+'</i>'.join(table.split('</i>')[1:])
-        print(APtable._repr_html_(self))
-        return output
 
     def __getitem__(self, item):
         """

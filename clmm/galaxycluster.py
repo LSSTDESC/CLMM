@@ -107,8 +107,7 @@ class GalaxyCluster():
                  f'(ra={self.ra}, dec={self.dec}) at z={self.z}<br>'+\
                  f'> {len(self.galcat)} source galaxies<br>'+\
                  '> <b>With columns:</b> '
-        for colname in self.galcat.colnames:
-            output+= f' {colname}'
+        output+= ' '.join(self.galcat.colnames)
         table = 'objects'.join(self.galcat._repr_html_().split('objects')[1:])
         return output+'<br>'+table
 
