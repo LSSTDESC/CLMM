@@ -16,7 +16,8 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc,
                             halo_profile_model='nfw', zsrc_min=None,
                             zsrc_max=7., field_size=8., shapenoise=None,
                             mean_e_err=None, photoz_sigma_unscaled=None,
-                            nretry=5, ngals=None, ngal_density=None):
+                            pz_bin_width=0.02, nretry=5, ngals=None,
+                            ngal_density=None):
     r"""Generates a mock dataset of sheared background galaxies.
 
     We build galaxy catalogs following a series of steps.
@@ -130,7 +131,8 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc,
     _test_input_params(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_SO,
                        massdef, halo_profile_model, zsrc_min, zsrc_max,
                        field_size, shapenoise, mean_e_err,
-                       photoz_sigma_unscaled, nretry, ngals, ngal_density)
+                       photoz_sigma_unscaled, pz_bin_width,
+                       nretry, ngals, ngal_density)
 
     if zsrc_min is None: zsrc_min = cluster_z+0.1
 
@@ -239,8 +241,8 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals,
                              zsrc, Delta_SO=None, massdef=None,
                              halo_profile_model=None, zsrc_min=None,
                              zsrc_max=None, shapenoise=None,
-                             mean_e_err=None,
-                             photoz_sigma_unscaled=None, field_size=None):
+                             mean_e_err=None, photoz_sigma_unscaled=None,
+                             pz_bin_width=0.02, field_size=None):
     """A private function that skips the sanity checks on derived properties. This
     function should only be used when called directly from `generate_galaxy_catalog`.
     For a detailed description of each of the parameters, see the documentation of
@@ -251,7 +253,9 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals,
 
     # Add photo-z errors and pdfs to source galaxy redshifts
     if photoz_sigma_unscaled is not None:
-        galaxy_catalog = _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled)
+        galaxy_catalog = _compute_photoz_pdfs(
+            galaxy_catalog, photoz_sigma_unscaled, zsrc_max,
+            pz_bin_width=pz_bin_width)
     # Draw galaxy positions
     galaxy_catalog = _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo, field_size)
     # Compute the shear on each source galaxy
@@ -302,9 +306,12 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals,
         cols = cols + ['e_err']
     cols = cols + ['z', 'ztrue']
     if photoz_sigma_unscaled is not None:
-        cols = cols + ['pzbins', 'pzpdf']
+        cols = cols + ['pzpdf']
+    # so that we preserve special attributes
+    galaxy_catalog.remove_columns(
+        [col for col in galaxy_catalog.colnames if col not in cols])
 
-    return galaxy_catalog[cols]
+    return galaxy_catalog
 
 
 def _draw_random_points_from_distribution(xmin, xmax, nobj, dist_func, dx=0.001):
@@ -392,7 +399,8 @@ def _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals):
     return GCData([zsrc_list, zsrc_list], names=('ztrue', 'z'))
 
 
-def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled):
+def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled,
+                         zsrc_max, pz_bin_width=0.02):
     """Private function to add photo-z errors and PDFs to the mock catalog.
 
     Parameters
@@ -412,16 +420,14 @@ def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled):
     galaxy_catalog['z'] = galaxy_catalog['ztrue']+\
                           galaxy_catalog['pzsigma']*np.random.standard_normal(len(galaxy_catalog))
 
-    pzbins_grid, pzpdf_grid = [], []
-    for row in galaxy_catalog:
-        pdf_range = row['pzsigma']*10.
-        zmin, zmax = row['z']-pdf_range, row['z']+pdf_range
-        zbins = np.arange(zmin, zmax, 0.03)
-        pzbins_grid.append(zbins)
-        pzpdf_grid.append(np.exp(-0.5*((zbins-row['z'])/row['pzsigma'])**2)/np.sqrt(2*np.pi*row['pzsigma']**2))
-    galaxy_catalog['pzbins'] = pzbins_grid
+    # start at zero to incorporate photoz errors
+    pzbins = np.arange(0, zsrc_max+pz_bin_width, pz_bin_width)
+    pzsigma = galaxy_catalog['pzsigma'][:,None]
+    pzpdf_grid = np.exp(
+            -(pzbins-galaxy_catalog['z'][:,None])**2/(2*pzsigma**2)) \
+        / ((2*np.pi)**0.5*pzsigma)
     galaxy_catalog['pzpdf'] = pzpdf_grid
-
+    galaxy_catalog.pzbins = pzbins
     return galaxy_catalog
 
 
@@ -498,22 +504,17 @@ def _find_aphysical_galaxies(galaxy_catalog, zsrc_min):
     nbad = len(badgals)
     return nbad, badgals
 
-#def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc,
-                            #Delta_SO=200, massdef='mean',
-                            #halo_profile_model='nfw', zsrc_min=None,
-                            #zsrc_max=7., field_size=8., shapenoise=None,
-                            #mean_e_err=None, photoz_sigma_unscaled=None,
-                            #nretry=5, ngals=None, ngal_density=None):
 
 def _test_input_params(cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_SO,
                        massdef, halo_profile_model, zsrc_min, zsrc_max,
                        field_size, shapenoise, mean_e_err,
-                       photoz_sigma_unscaled, nretry, ngals, ngal_density):
+                       photoz_sigma_unscaled, pz_bin_width, nretry, ngals,
+                       ngal_density):
     # all positive ints or floats
     float_vars = (cluster_m, cluster_z, cluster_c, Delta_SO, zsrc_max,
-                  field_size)
+                  pz_bin_width, field_size)
     float_names = ('cluster_m', 'cluster_z', 'cluster_c', 'Delta_S0',
-                   'zsrc_max', 'field_size')
+                   'zsrc_max', 'pz_bin_width', 'field_size')
     int_vars = []
     int_names = []
     # will iterate over floats and then ints
