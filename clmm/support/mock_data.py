@@ -136,13 +136,14 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc,
 
     if zsrc_min is None: zsrc_min = cluster_z+0.1
 
-    params = {'cluster_m' : cluster_m, 'cluster_z' : cluster_z, 'cluster_c' : cluster_c,
-              'cosmo' : cosmo, 'Delta_SO' : Delta_SO, 'zsrc' : zsrc, 'massdef' : massdef,
+    params = {'cluster_m' : cluster_m, 'cluster_z' : cluster_z,
+              'cluster_c' : cluster_c, 'cosmo' : cosmo, 'Delta_SO' : Delta_SO,
+              'zsrc' : zsrc, 'massdef' : massdef,
               'halo_profile_model' : halo_profile_model,
               'zsrc_min' : zsrc_min, 'zsrc_max' : zsrc_max,
               'shapenoise' : shapenoise, 'mean_e_err': mean_e_err,
               'photoz_sigma_unscaled' : photoz_sigma_unscaled,
-              'field_size' : field_size}
+              'pz_bin_width': pz_bin_width, 'field_size' : field_size}
 
     if ngals is None and ngal_density is None:
         err = 'Either the number of galaxies "ngals" or the galaxy density' \
