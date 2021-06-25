@@ -87,7 +87,7 @@ class GalaxyCluster():
         self._check_types()
         return self
 
-    def _str_colnames_(self):
+    def _str_colnames(self):
         """Colnames in comma separated str"""
         return ', '.join(self.galcat.colnames)
 
@@ -96,7 +96,7 @@ class GalaxyCluster():
         return (
             f'GalaxyCluster {self.unique_id}: '
             f'(ra={self.ra}, dec={self.dec}) at z={self.z}'
-            f'\n> with columns: {self._str_colnames_()}'
+            f'\n> with columns: {self._str_colnames()}'
             f'\n> {len(self.galcat)} source galaxies'
             )
 
@@ -110,9 +110,9 @@ class GalaxyCluster():
         return (
             f'<b>GalaxyCluster:</b> {self.unique_id} '
             f'(ra={self.ra}, dec={self.dec}) at z={self.z}'
-            f'<br>> <b>with columns:</b> {self._str_colnames_()}'
+            f'<br>> <b>with columns:</b> {self._str_colnames()}'
             f'<br>> {len(self.galcat)} source galaxies'
-            f'<br>{self.galcat._html_table_()}'
+            f'<br>{self.galcat._html_table()}'
             )
 
     def add_critical_surface_density(self, cosmo):

@@ -66,7 +66,7 @@ class GCData(APtable):
         metawkargs = {} if metakwargs is None else metakwargs
         self.meta = GCMetaData(**metakwargs)
 
-    def _str_colnames_(self):
+    def _str_colnames(self):
         """Colnames in comma separated str"""
         return ', '.join(self.colnames)
 
@@ -77,7 +77,7 @@ class GCData(APtable):
 
     def __repr__(self):
         """Generates string for repr(GCData)"""
-        description = [self._str_meta_(), 'columns: '+self._str_colnames_()]
+        description = [self._str_meta_(), 'columns: '+self._str_colnames()]
         return f'{self.__class__.__name__}({", ".join(description)})'
 
     def __str__(self):
@@ -85,13 +85,12 @@ class GCData(APtable):
         return (
             f'{self.__class__.__name__}'
             f'\n> defined by: {self._str_meta_()}'
-            f'\n> with columns: {self._str_colnames_()}'
+            f'\n> with columns: {self._str_colnames()}'
             f'\n> {len(self)} objects'
             f'\n{APtable.__str__(self)}'
             )
-        return output
 
-    def _html_table_(self):
+    def _html_table(self):
         """Get html table for display"""
         return '</i>'.join(APtable._repr_html_(self).split('</i>')[1:])
 
@@ -100,9 +99,9 @@ class GCData(APtable):
         return (
             f'<b>{self.__class__.__name__}</b>'
             f'<br> <b>defined by:</b> {self._str_meta_()}'
-            f'<br> <b>with columns:</b> {self._str_colnames_()}'
+            f'<br> <b>with columns:</b> {self._str_colnames()}'
             f'<br> {len(self)} objects'
-            f'<br> {self._html_table_()}'
+            f'<br> {self._html_table()}'
             )
 
     def __getitem__(self, item):
