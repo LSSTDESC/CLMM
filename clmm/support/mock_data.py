@@ -16,8 +16,8 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc,
                             halo_profile_model='nfw', zsrc_min=None,
                             zsrc_max=7., field_size=8., shapenoise=None,
                             mean_e_err=None, photoz_sigma_unscaled=None,
-                            pz_bin_width=0.02, nretry=5, ngals=None,
-                            ngal_density=None):
+                            pz_bin_width=0.02, pzpdf_type='shared_bins',
+                            nretry=5, ngals=None, ngal_density=None):
     r"""Generates a mock dataset of sheared background galaxies.
 
     We build galaxy catalogs following a series of steps.
@@ -109,6 +109,14 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc,
         table will not include this column.
     photoz_sigma_unscaled : float, optional
         If set, applies photo-z errors to source redshifts
+    pz_bin_width: float
+        Width of photo-z bins
+    pzpdf_type: str, None
+        Type of photo-z pdf to be stored, options are:
+            `None` - does not store PDFs;
+            `'shared_bins'` - single binning for all galaxies
+            `'individual_bins'` - individual binning for each galaxy
+            `'quantiles'` - quantiles of PDF (not implemented yet)
     nretry : int, optional
         The number of times that we re-draw each galaxy with non-sensical derived properties
     ngals : float, optional
@@ -143,7 +151,8 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc,
               'zsrc_min' : zsrc_min, 'zsrc_max' : zsrc_max,
               'shapenoise' : shapenoise, 'mean_e_err': mean_e_err,
               'photoz_sigma_unscaled' : photoz_sigma_unscaled,
-              'pz_bin_width': pz_bin_width, 'field_size' : field_size}
+              'pz_bin_width': pz_bin_width, 'field_size' : field_size,
+              'pzpdf_type': pzpdf_type}
 
     if ngals is None and ngal_density is None:
         err = 'Either the number of galaxies "ngals" or the galaxy density' \
@@ -243,7 +252,8 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals,
                              halo_profile_model=None, zsrc_min=None,
                              zsrc_max=None, shapenoise=None,
                              mean_e_err=None, photoz_sigma_unscaled=None,
-                             pz_bin_width=0.02, field_size=None):
+                             pz_bin_width=0.02, field_size=None,
+                             pzpdf_type='shared_bins'):
     """A private function that skips the sanity checks on derived properties. This
     function should only be used when called directly from `generate_galaxy_catalog`.
     For a detailed description of each of the parameters, see the documentation of
@@ -254,6 +264,7 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals,
 
     # Add photo-z errors and pdfs to source galaxy redshifts
     if photoz_sigma_unscaled is not None:
+        galaxy_catalog.pzpdf_info['type'] = pzpdf_type
         galaxy_catalog = _compute_photoz_pdfs(
             galaxy_catalog, photoz_sigma_unscaled, zsrc_max,
             pz_bin_width=pz_bin_width)
@@ -421,14 +432,33 @@ def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled,
     galaxy_catalog['z'] = galaxy_catalog['ztrue']+\
                           galaxy_catalog['pzsigma']*np.random.standard_normal(len(galaxy_catalog))
 
-    # start at zero to incorporate photoz errors
-    pzbins = np.arange(0, zsrc_max+pz_bin_width, pz_bin_width)
-    pzsigma = galaxy_catalog['pzsigma'][:,None]
-    pzpdf_grid = np.exp(
-            -(pzbins-galaxy_catalog['z'][:,None])**2/(2*pzsigma**2)) \
-        / ((2*np.pi)**0.5*pzsigma)
-    galaxy_catalog['pzpdf'] = pzpdf_grid
-    galaxy_catalog.pzbins = pzbins
+    if galaxy_catalog.pzpdf_info['type'] is None:
+        pass
+    elif galaxy_catalog.pzpdf_info['type']=='shared_bins':
+        # start at zero to incorporate photoz errors
+        pzbins = np.arange(0, zsrc_max+pz_bin_width, pz_bin_width)
+        pzsigma = galaxy_catalog['pzsigma'][:,None]
+        pzpdf_grid = np.exp(
+                -(pzbins-galaxy_catalog['z'][:,None])**2/(2*pzsigma**2)) \
+            / ((2*np.pi)**0.5*pzsigma)
+        galaxy_catalog['pzpdf'] = pzpdf_grid
+        galaxy_catalog.pzpdf_info['zbins'] = pzbins
+    elif galaxy_catalog.pzpdf_info['type']=='individual_bins':
+        pzpdf_grid = []
+        for row in galaxy_catalog:
+            pdf_range = row['pzsigma']*10.
+            zbins = np.arange(row['z']-pdf_range, row['z']+pdf_range, pz_bin_width)
+            pdf = np.exp(-0.5*((zbins-row['z'])/row['pzsigma'])**2) \
+                / np.sqrt(2*np.pi*row['pzsigma']**2)
+            pzpdf_grid.append([zbins, pdf])
+        galaxy_catalog['pzpdf'] = pzpdf_grid
+    elif galaxy_catalog.pzpdf_info['type']=='quantiles':
+        raise NotImplementedError("PDF storing in quantiles not implemented.")
+    else:
+        raise ValueError(
+            "Value of pzpdf_info['type'] "
+            f"(={galaxy_catalog.pzpdf_info['type']}) "
+            "not valid.")
     return galaxy_catalog
 
 

@@ -66,7 +66,7 @@ class GCData(APtable):
         metawkargs = {} if metakwargs is None else metakwargs
         self.meta = GCMetaData(**metakwargs)
         # this attribute is set when source galaxies have p(z)
-        self.pzbins = None
+        self.pzpdf_info = {'type': None}
 
     def __repr__(self):
         """Generates string for repr(GCData)"""
