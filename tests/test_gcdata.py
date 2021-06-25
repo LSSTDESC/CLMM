@@ -17,9 +17,10 @@ def test_update_cosmo():
     cosmo1 = Cosmology(H0=70.0, Omega_dm0=0.3-0.045, Omega_b0=0.045)
     desc1 = cosmo1.get_desc()
     gcdata = GCData()
-    # check it has __str__ adn __repr__
-    gcdata.__str__()
-    gcdata.__repr__()
+    # check it has __str__ and __repr__
+    assert isinstance(gcdata.__str__(), str)
+    assert isinstance(gcdata.__repr__(), str)
+    assert isinstance(gcdata._repr_html_(), str)
     # manual update
     gcdata.update_cosmo_ext_valid(gcdata, cosmo1, overwrite=False)
     assert_equal(desc1, gcdata.meta['cosmo'])
