@@ -3,7 +3,6 @@
 import pyccl as ccl
 
 import numpy as np
-from scipy.interpolate import interp1d
 import warnings
 from packaging import version
 
@@ -30,20 +29,18 @@ class CCLCLMModeling(CLMModeling):
             'mean': 'matter',
             'critical': 'critical',
             'virial': 'critical'}
-        self.hdpm_dict = {'nfw': ccl.halos.HaloProfileNFW,
-                          'einasto': ccl.halos.HaloProfileEinasto,
-                          'hernquist': ccl.halos.HaloProfileHernquist}
+        self.hdpm_dict = {'nfw': ccl.halos.HaloProfileNFW}
         # Uncomment lines below when CCL einasto and hernquist profiles are stable (also add version number)
         #if version.parse(ccl.__version__) >= version.parse('???'):
-        # self.hdpm_dict.update({
+        #    self.hdpm_dict.update({
         #        'einasto': ccl.halos.HaloProfileEinasto,
         #        'hernquist': ccl.halos.HaloProfileHernquist})
         # Attributes exclusive to this class
         self.hdpm_opts = {'nfw': {'truncated': False,
                                   'projected_analytic': True,
                                   'cumul2d_analytic': True},
-                          'einasto': {'truncated': False},
-                          'hernquist': {'truncated': False}}
+                          'einasto': {},
+                          'hernquist': {}}
         self.MDelta = 0.0
         self.cor_factor = _patch_rho_crit_to_cd2018(ccl.physical_constants.RHO_CRITICAL)
         # Set halo profile and cosmology
@@ -88,34 +85,18 @@ class CCLCLMModeling(CLMModeling):
 
     def eval_surface_density(self, r_proj, z_cl):
         a_cl = self.cosmo._get_a_from_z(z_cl)
-        if self.halo_profile_model == 'nfw':
-            return self.hdpm.projected(self.cosmo.be_cosmo, r_proj/a_cl, self.MDelta, a_cl, self.mdef)*self.cor_factor/a_cl**2
-        else:
-            rtmp = np.geomspace(np.min(r_proj)/10., np.max(r_proj)*10., 1000)
-            tmp = self.hdpm.projected (self.cosmo.be_cosmo, rtmp/a_cl, self.MDelta, a_cl, self.mdef)*self.cor_factor/a_cl**2
-            ptf = interp1d(np.log(rtmp), np.log(tmp), bounds_error=False, fill_value=-100)
-            return np.exp(ptf(np.log(r_proj)))
-
+        return self.hdpm.projected(self.cosmo.be_cosmo, r_proj/a_cl, self.MDelta, a_cl, self.mdef)*self.cor_factor/a_cl**2
 
     def eval_mean_surface_density(self, r_proj, z_cl):
         a_cl = self.cosmo._get_a_from_z(z_cl)
-        if self.halo_profile_model =='nfw':
-            return self.hdpm.cumul2d(self.cosmo.be_cosmo, r_proj/a_cl, self.MDelta, self.cosmo._get_a_from_z(z_cl), self.mdef)*self.cor_factor/a_cl**2
-        else:
-            rtmp = np.geomspace(np.min(r_proj)/10., np.max(r_proj)*10., 1000)
-            tmp = self.hdpm.cumul2d (self.cosmo.be_cosmo, rtmp/a_cl, self.MDelta, a_cl, self.mdef)*self.cor_factor/a_cl**2
-            ptf = interp1d(np.log(rtmp), np.log(tmp), bounds_error=False, fill_value=-100)
-            return np.exp(ptf(np.log(r_proj)))
+        return self.hdpm.cumul2d(self.cosmo.be_cosmo, r_proj/a_cl, self.MDelta, self.cosmo._get_a_from_z(z_cl), self.mdef)*self.cor_factor/a_cl**2
 
     def eval_excess_surface_density(self, r_proj, z_cl):
         a_cl = self.cosmo._get_a_from_z(z_cl)
         r_cor = r_proj/a_cl
 
-        if self.halo_profile_model =='nfw':
-            return (self.hdpm.cumul2d(self.cosmo.be_cosmo, r_cor, self.MDelta, self.cosmo._get_a_from_z(z_cl), self.mdef)-
-                    self.hdpm.projected(self.cosmo.be_cosmo, r_cor, self.MDelta, self.cosmo._get_a_from_z(z_cl), self.mdef))*self.cor_factor/a_cl**2
-        else:
-            return self.eval_mean_surface_density(r_proj, z_cl) - self.eval_surface_density(r_proj, z_cl)
+        return (self.hdpm.cumul2d(self.cosmo.be_cosmo, r_cor, self.MDelta, self.cosmo._get_a_from_z(z_cl), self.mdef)-
+                self.hdpm.projected(self.cosmo.be_cosmo, r_cor, self.MDelta, self.cosmo._get_a_from_z(z_cl), self.mdef))*self.cor_factor/a_cl**2
 
     def eval_tangential_shear(self, r_proj, z_cl, z_src):
         sigma_excess = self.eval_excess_surface_density(r_proj, z_cl)
