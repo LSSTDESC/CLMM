@@ -5,7 +5,29 @@ Functions for sampling (output either peak or full distribution)
 
 
 def sciopt(model_to_shear_profile, logm_0, **kwargs) :
-    ''' Uses scipy optimize minimize to output the peak'''
+    r''' Uses scipy optimize minimize to output the peak
+    
+    Parameters
+    ----------
+    model_to_shear_profile : callable
+        The objective function to be minimized.
+            ``model_to_shear_profile(x, *args) -> float``
+        where ``x`` is an 1-D array with shape (n,) and ``args``
+        is a tuple of the fixed parameters needed to completely
+        specify the function.
+    logm_0 : ndarray, shape (n,)
+        Initial guess. Array of real elements of size (n,),
+        where 'n' is the number of independent variables.
+    kwargs :
+        Other optional keyword arguments passed to `minimize`.
+        Please check the `scipy` documentaion for information on default values and methods.
+        
+    Returns
+    -------
+    `x`` : array
+    The solution of the optimization
+'''
+        
     from scipy import optimize as spo
 
     return spo.minimize(model_to_shear_profile, logm_0,
@@ -58,8 +80,9 @@ def scicurve_fit(profile_model,radius,profile,err_profile, absolute_sigma = True
         
     kwargs :
         Other optional keyword arguments passed to `curve_fit` 
+        Please check the `scipy` documentaion for information on default values and methods.
         
-        Returns
+    Returns
     -------
     p : list
         contains : 
