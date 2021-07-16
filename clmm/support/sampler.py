@@ -4,14 +4,14 @@ Functions for sampling (output either peak or full distribution)
 """
 
 
-def sciopt(model_to_shear_profile, logm_0, **kwargs) :
+def sciopt(model_to_shear_profile, logm_0, **kwargs):
     r''' Uses scipy optimize minimize to output the peak
     
     Parameters
     ----------
     model_to_shear_profile : callable
         The objective function to be minimized.
-            ``model_to_shear_profile(x, *args) -> float``
+        ``model_to_shear_profile(x, *args) -> float``
         where ``x`` is an 1-D array with shape (n,) and ``args``
         is a tuple of the fixed parameters needed to completely
         specify the function.
@@ -34,14 +34,14 @@ def sciopt(model_to_shear_profile, logm_0, **kwargs) :
     return spo.minimize(model_to_shear_profile, logm_0,
                  **kwargs).x
 
-def basinhopping(model_to_shear_profile, logm_0, **kwargs) :
+def basinhopping(model_to_shear_profile, logm_0, **kwargs):
     r'''Uses basinhopping, a scipy global optimization function, to find the minimum.
     
     Parameters
     ----------
     model_to_shear_profile : callable
         The objective function to be minimized.
-            ``model_to_shear_profile(x, *args) -> float``
+        ``model_to_shear_profile(x, *args) -> float``
         where ``x`` is an 1-D array with shape (n,) and ``args``
         is a tuple of the fixed parameters needed to completely
         specify the function.
@@ -68,8 +68,8 @@ def scicurve_fit(profile_model,radius,profile,err_profile, absolute_sigma = True
     r"""
     Uses scipy.optimize.curve_fit to find best fit parameters
     
-     Parameters
-    ----------   
+    Parameters
+    ----------
     profile_model : callable
         The model function, f(x, ...). It must take the independent
         variable as the first argument and the parameters to fit as
@@ -84,12 +84,12 @@ def scicurve_fit(profile_model,radius,profile,err_profile, absolute_sigma = True
         Determines the uncertainty in `ydata`. If we define residuals as
         ``r = ydata - f(xdata, *popt)``, then the interpretation of `sigma`
         depends on its number of dimensions:
-            - A 1-D `sigma` should contain values of standard deviations of
-              errors in `ydata`. In this case, the optimized function is
-              ``chisq = sum((r / sigma) ** 2)``.
-            - A 2-D `sigma` should contain the covariance matrix of
-              errors in `ydata`. In this case, the optimized function is
-              ``chisq = r.T @ inv(sigma) @ r``.
+        - A 1-D `sigma` should contain values of standard deviations of
+        errors in `ydata`. In this case, the optimized function is
+        ``chisq = sum((r / sigma) ** 2)``.
+        - A 2-D `sigma` should contain the covariance matrix of
+        errors in `ydata`. In this case, the optimized function is
+        ``chisq = r.T @ inv(sigma) @ r``.
     absolute_sigma : bool, optional
         If True (default), `sigma` is used in an absolute sense and the estimated parameter
         covariance `pcov` reflects these absolute values.
@@ -110,17 +110,16 @@ def scicurve_fit(profile_model,radius,profile,err_profile, absolute_sigma = True
     -------
     p : list
         contains : 
-        p[0] : array
-            Optimal values for the parameters so that the sum of the squared
-            residuals of ``f(xdata, *popt) - ydata`` is minimized.
-        p[1] : 2-D array
-            The estimated covariance of popt. The diagonals provide the variance
-            of the parameter estimate. To compute one standard deviation errors
-            on the parameters use ``perr = np.sqrt(np.diag(pcov))``.
-            How the `sigma` parameter affects the estimated covariance
-            depends on `absolute_sigma` argument, as described above.
+            p[0] : array
+                Optimal values for the parameters so that the sum of the squared
+                residuals of ``f(xdata, *popt) - ydata`` is minimized.
+            p[1] : 2-D array
+                The estimated covariance of popt. The diagonals provide the variance
+                of the parameter estimate. To compute one standard deviation errors
+                on the parameters use ``perr = np.sqrt(np.diag(pcov))``.
+                How the `sigma` parameter affects the estimated covariance
+                depends on `absolute_sigma` argument, as described above.
     
-
     """
     
     from scipy import optimize as spo
