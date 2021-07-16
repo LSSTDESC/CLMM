@@ -34,10 +34,33 @@ def sciopt(model_to_shear_profile, logm_0, **kwargs) :
                  args=args).x
 
 def basinhopping(model_to_shear_profile, logm_0, **kwargs) :
-    '''Uses basinhopping, a scipy global optimization function, to find the minimum '''
+    '''Uses basinhopping, a scipy global optimization function, to find the minimum.
+    
+    Parameters
+    ----------
+    model_to_shear_profile : callable
+        The objective function to be minimized.
+            ``model_to_shear_profile(x, *args) -> float``
+        where ``x`` is an 1-D array with shape (n,) and ``args``
+        is a tuple of the fixed parameters needed to completely
+        specify the function.
+    logm_0 : array_like
+        Initial guess. Array of real elements of size (n,),
+        where 'n' is the number of independent variables.
+    kwargs :
+        Other optional keyword arguments passed to `basinhopping`.
+        Please check the `scipy` documentaion for information on default values and methods.
+        
+    Returns
+    -------
+    `x`` : array
+    The solution of the optimization    
+    
+    
+    '''
     from scipy import optimize as spo
 
-    return spo.basinhopping(model_to_shear_profile, logm_0, minimizer_kwargs={'args':args}).x[0]
+    return spo.basinhopping(model_to_shear_profile, logm_0, minimizer_kwargs={'args':args}).x
 
 
 def scicurve_fit(profile_model,radius,profile,err_profile, absolute_sigma = True, **kwargs):
