@@ -35,7 +35,7 @@ def sciopt(model_to_shear_profile, logm_0, **kwargs) :
                  **kwargs).x
 
 def basinhopping(model_to_shear_profile, logm_0, **kwargs) :
-    '''Uses basinhopping, a scipy global optimization function, to find the minimum.
+    r'''Uses basinhopping, a scipy global optimization function, to find the minimum.
     
     Parameters
     ----------
