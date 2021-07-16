@@ -26,7 +26,8 @@ def sciopt(model_to_shear_profile, logm_0, **kwargs) :
     -------
     `x`` : array
     The solution of the optimization
-'''
+    
+    '''
         
     from scipy import optimize as spo
 
@@ -56,8 +57,8 @@ def basinhopping(model_to_shear_profile, logm_0, **kwargs) :
     `x`` : array
     The solution of the optimization    
     
-    
     '''
+    
     from scipy import optimize as spo
 
     return spo.basinhopping(model_to_shear_profile, logm_0, **kwargs).x
