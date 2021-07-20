@@ -1,12 +1,13 @@
 """@file.py sampler.py
 Functions for sampling (output either peak or full distribution)
-
 """
+
+from scipy import optimize as spo
 
 
 def sciopt(model_to_shear_profile, logm_0, **kwargs):
     r''' Uses scipy optimize minimize to output the peak
-    
+
     Parameters
     ----------
     model_to_shear_profile : callable
@@ -21,22 +22,20 @@ def sciopt(model_to_shear_profile, logm_0, **kwargs):
     kwargs :
         Other optional keyword arguments passed to `minimize`.
         Please check the `scipy` documentaion for information on default values and methods.
-        
+
     Returns
     -------
     x : array
     The solution of the optimization
-    
-    '''
-        
-    from scipy import optimize as spo
 
+    '''
     return spo.minimize(model_to_shear_profile, logm_0,
-                 **kwargs).x
+                        **kwargs).x
+
 
 def basinhopping(model_to_shear_profile, logm_0, **kwargs):
     r'''Uses basinhopping, a scipy global optimization function, to find the minimum.
-    
+
     Parameters
     ----------
     model_to_shear_profile : callable
@@ -51,23 +50,20 @@ def basinhopping(model_to_shear_profile, logm_0, **kwargs):
     kwargs :
         Other optional keyword arguments passed to `basinhopping`.
         Please check the `scipy` documentaion for information on default values and methods.
-        
+
     Returns
     -------
     x : array
-    The solution of the optimization    
-    
-    '''
-    
-    from scipy import optimize as spo
+    The solution of the optimization
 
+    '''
     return spo.basinhopping(model_to_shear_profile, logm_0, **kwargs).x
 
 
-def scicurve_fit(profile_model,radius,profile,err_profile, absolute_sigma = True, **kwargs):
+def scicurve_fit(profile_model, radius, profile, err_profile, absolute_sigma=True, **kwargs):
     r"""
     Uses scipy.optimize.curve_fit to find best fit parameters
-    
+
     Parameters
     ----------
     profile_model : callable
@@ -101,15 +97,15 @@ def scicurve_fit(profile_model,radius,profile,err_profile, absolute_sigma = True
         match the sample variance of the residuals after the fit. Default is True.
         Mathematically,
         ``pcov(absolute_sigma=False) = pcov(absolute_sigma=True) * chisq(popt)/(M-N)``
-        
+
     kwargs :
-        Other optional keyword arguments passed to `curve_fit` 
+        Other optional keyword arguments passed to `curve_fit`
         Please check the `scipy` documentaion for information on default values and methods.
-        
+
     Returns
     -------
     p : list
-        contains : 
+        contains :
             p[0] : array
                 Optimal values for the parameters so that the sum of the squared
                 residuals of ``f(xdata, *popt) - ydata`` is minimized.
@@ -119,23 +115,18 @@ def scicurve_fit(profile_model,radius,profile,err_profile, absolute_sigma = True
                 on the parameters use ``perr = np.sqrt(np.diag(pcov))``.
                 How the `sigma` parameter affects the estimated covariance
                 depends on `absolute_sigma` argument, as described above.
-    
+
     """
-    
-    from scipy import optimize as spo
-
-    return spo.curve_fit(profile_model,
-                    radius, profile,
-                    sigma=err_profile, **kwargs)
-
+    return spo.curve_fit(
+        profile_model, radius, profile, sigma=err_profile,
+        absolute_sigma=absolute_sigma, **kwargs)
 
 
 samplers = {
-    'minimize':sciopt,
-    'basinhopping':basinhopping
-    }
+    'minimize': sciopt,
+    'basinhopping': basinhopping
+}
 
 fitters = {
-    'curve_fit':scicurve_fit,
-
-    }
+    'curve_fit': scicurve_fit,
+}
