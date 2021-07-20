@@ -187,11 +187,11 @@ class CLMMCosmology:
         float
             Angular diameter distance in units :math:`M\!pc`
         """
-        z1 = self._get_z_from_a(a2)
-        z2 = self._get_z_from_a(a1)
+        z1 = self.get_z_from_a(a2)
+        z2 = self.get_z_from_a(a1)
         return self.eval_da_z1z2(z1, z2)
 
-    def _get_a_from_z(self, z):
+    def get_a_from_z(self, z):
         """ Convert redshift to scale factor
         Parameters
         ----------
@@ -208,7 +208,7 @@ class CLMMCosmology:
                 "Cannot convert negative redshift to scale factor")
         return 1.0/(1.0+z)
 
-    def _get_z_from_a(self, a):
+    def get_z_from_a(self, a):
         """ Convert scale factor to redshift
         Parameters
         ----------

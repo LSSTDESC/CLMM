@@ -82,8 +82,8 @@ class CCLCosmology(CLMMCosmology):
         return np.vectorize(ccl.angular_diameter_distance)(self.be_cosmo, a1, a2)
 
     def eval_sigma_crit(self, z_len, z_src):
-        a_len = self._get_a_from_z(z_len)
-        a_src = np.atleast_1d(self._get_a_from_z(z_src))
+        a_len = self.get_a_from_z(z_len)
+        a_src = np.atleast_1d(self.get_a_from_z(z_src))
         cte = ccl.physical_constants.CLIGHT**2 / \
             (4.0*np.pi*ccl.physical_constants.GNEWT *
              ccl.physical_constants.SOLAR_MASS)*ccl.physical_constants.MPC_TO_METER

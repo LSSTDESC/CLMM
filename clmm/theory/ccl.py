@@ -115,29 +115,29 @@ class CCLCLMModeling(CLMModeling):
 
     def eval_3d_density(self, r3d, z_cl):
         """"eval 3d density"""
-        a_cl = self.cosmo._get_a_from_z(z_cl)
+        a_cl = self.cosmo.get_a_from_z(z_cl)
         dens = self.hdpm.real(
             self.cosmo.be_cosmo, r3d/a_cl, self.mdelta, a_cl, self.mdef)
         return dens*self.cor_factor/a_cl**3
 
     def eval_surface_density(self, r_proj, z_cl):
         """"eval surface density"""
-        a_cl = self.cosmo._get_a_from_z(z_cl)
+        a_cl = self.cosmo.get_a_from_z(z_cl)
         dens = self.hdpm.projected(
             self.cosmo.be_cosmo, r_proj/a_cl, self.mdelta, a_cl, self.mdef)
         return dens*self.cor_factor/a_cl**2
 
     def eval_mean_surface_density(self, r_proj, z_cl):
         """"eval mean surface density"""
-        a_cl = self.cosmo._get_a_from_z(z_cl)
+        a_cl = self.cosmo.get_a_from_z(z_cl)
         dens = self.hdpm.cumul2d(
             self.cosmo.be_cosmo, r_proj/a_cl, self.mdelta,
-            self.cosmo._get_a_from_z(z_cl), self.mdef)
+            self.cosmo.get_a_from_z(z_cl), self.mdef)
         return dens*self.cor_factor/a_cl**2
 
     def eval_excess_surface_density(self, r_proj, z_cl):
         """"eval excess surface density"""
-        a_cl = self.cosmo._get_a_from_z(z_cl)
+        a_cl = self.cosmo.get_a_from_z(z_cl)
         args = (self.cosmo.be_cosmo, r_proj/a_cl, self.mdelta, a_cl, self.mdef)
         mean_dens = self.hdpm.cumul2d(*args)
         dens = self.hdpm.projected(*args)
