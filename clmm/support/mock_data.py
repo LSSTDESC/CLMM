@@ -10,7 +10,7 @@ from ..utils import convert_units, compute_lensed_ellipticity
 
 
 def generate_galaxy_catalog(
-    cluster_m, cluster_z, cluster_c, cosmo, zsrc, Delta_SO=200, massdef='mean',
+    cluster_m, cluster_z, cluster_c, cosmo, zsrc, delta_so=200, massdef='mean',
     halo_profile_model='nfw', zsrc_min=None, zsrc_max=7., field_size=8., shapenoise=None,
     photoz_sigma_unscaled=None, nretry=5, ngals=None, ngal_density=None):
     r"""Generates a mock dataset of sheared background galaxies.
@@ -65,7 +65,7 @@ def generate_galaxy_catalog(
     cluster_z : float
         Cluster redshift
     cluster_c : float
-        Cluster concentration in the same mass definition as Delta_SO
+        Cluster concentration in the same mass definition as delta_so
     cosmo : dict
         Dictionary of cosmological parameters. Must contain at least, Omega_c, Omega_b,
         and H0
@@ -74,7 +74,7 @@ def generate_galaxy_catalog(
         `float` : All sources galaxies at this fixed redshift;
         `str` : Draws individual source gal redshifts from predefined distribution. Options are:
         chang13, desc_srd;
-    Delta_SO : float, optional
+    delta_so : float, optional
         Overdensity density contrast used to compute the cluster mass and concentration. The
         spherical overdensity mass is computed as the mass enclosed within the radius
         :math:`R_{\Delta{\rm SO}}` where the mean matter density is :math:`\Delta_{\rm SO}` times
@@ -129,7 +129,7 @@ def generate_galaxy_catalog(
         zsrc_min = cluster_z+0.1
 
     params = {'cluster_m': cluster_m, 'cluster_z': cluster_z, 'cluster_c': cluster_c,
-              'cosmo': cosmo, 'Delta_SO': Delta_SO, 'zsrc': zsrc, 'massdef': massdef,
+              'cosmo': cosmo, 'delta_so': delta_so, 'zsrc': zsrc, 'massdef': massdef,
               'halo_profile_model': halo_profile_model,
               'zsrc_min': zsrc_min, 'zsrc_max': zsrc_max,
               'shapenoise': shapenoise, 'photoz_sigma_unscaled': photoz_sigma_unscaled,
@@ -235,7 +235,7 @@ def _compute_ngals(ngal_density, field_size, cosmo, cluster_z, zsrc, zsrc_min=No
 
 
 def _generate_galaxy_catalog(
-    cluster_m, cluster_z, cluster_c, cosmo, ngals, zsrc, Delta_SO=None, massdef=None,
+    cluster_m, cluster_z, cluster_c, cosmo, ngals, zsrc, delta_so=None, massdef=None,
     halo_profile_model=None, zsrc_min=None, zsrc_max=None, shapenoise=None,
     photoz_sigma_unscaled=None, field_size=None):
     """A private function that skips the sanity checks on derived properties. This
@@ -260,7 +260,7 @@ def _generate_galaxy_catalog(
     gamt = compute_tangential_shear(galaxy_catalog['r_mpc'], mdelta=cluster_m,
                                     cdelta=cluster_c, z_cluster=cluster_z,
                                     z_source=galaxy_catalog['ztrue'], cosmo=cosmo,
-                                    delta_mdef=Delta_SO, halo_profile_model=halo_profile_model,
+                                    delta_mdef=delta_so, halo_profile_model=halo_profile_model,
                                     massdef=massdef,
                                     z_src_model='single_plane')
 
@@ -268,7 +268,7 @@ def _generate_galaxy_catalog(
     kappa = compute_convergence(galaxy_catalog['r_mpc'], mdelta=cluster_m,
                                 cdelta=cluster_c, z_cluster=cluster_z,
                                 z_source=galaxy_catalog['ztrue'], cosmo=cosmo,
-                                delta_mdef=Delta_SO, halo_profile_model=halo_profile_model,
+                                delta_mdef=delta_so, halo_profile_model=halo_profile_model,
                                 massdef=massdef,
                                 z_src_model='single_plane')
 
