@@ -10,9 +10,9 @@ from ..utils import convert_units, compute_lensed_ellipticity
 
 
 def generate_galaxy_catalog(
-    cluster_m, cluster_z, cluster_c, cosmo, zsrc, delta_so=200, massdef='mean',
-    halo_profile_model='nfw', zsrc_min=None, zsrc_max=7., field_size=8., shapenoise=None,
-    photoz_sigma_unscaled=None, nretry=5, ngals=None, ngal_density=None):
+        cluster_m, cluster_z, cluster_c, cosmo, zsrc, delta_so=200, massdef='mean',
+        halo_profile_model='nfw', zsrc_min=None, zsrc_max=7., field_size=8., shapenoise=None,
+        photoz_sigma_unscaled=None, nretry=5, ngals=None, ngal_density=None):
     r"""Generates a mock dataset of sheared background galaxies.
 
     We build galaxy catalogs following a series of steps.
@@ -235,9 +235,9 @@ def _compute_ngals(ngal_density, field_size, cosmo, cluster_z, zsrc, zsrc_min=No
 
 
 def _generate_galaxy_catalog(
-    cluster_m, cluster_z, cluster_c, cosmo, ngals, zsrc, delta_so=None, massdef=None,
-    halo_profile_model=None, zsrc_min=None, zsrc_max=None, shapenoise=None,
-    photoz_sigma_unscaled=None, field_size=None):
+        cluster_m, cluster_z, cluster_c, cosmo, ngals, zsrc, delta_so=None, massdef=None,
+        halo_profile_model=None, zsrc_min=None, zsrc_max=None, shapenoise=None,
+        photoz_sigma_unscaled=None, field_size=None):
     """A private function that skips the sanity checks on derived properties. This
     function should only be used when called directly from `generate_galaxy_catalog`.
     For a detailed description of each of the parameters, see the documentation of
