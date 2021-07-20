@@ -79,23 +79,23 @@ class CLMModeling:
         """
         raise NotImplementedError
 
-    def _set_cosmo(self, cosmo, CosmoOutput):
+    def _set_cosmo(self, cosmo, cosmo_out_class):
         r""" Sets the cosmology to the internal cosmology object
 
         Parameters
         ----------
         cosmo: clmm.Comology object, None
-            CLMM Cosmology object. If is None, creates a new instance of CosmoOutput().
-        CosmoOutput: clmm.modbackend Cosmology class
+            CLMM Cosmology object. If is None, creates a new instance of cosmo_out_class().
+        cosmo_out_class: clmm.modbackend Cosmology class
             Cosmology Output for the output object.
         """
         if cosmo is not None:
-            if not isinstance(cosmo, CosmoOutput):
+            if not isinstance(cosmo, cosmo_out_class):
                 raise ValueError(
-                    f'Cosmo input ({type(cosmo)}) must be a {CosmoOutput} object.')
+                    f'Cosmo input ({type(cosmo)}) must be a {cosmo_out_class} object.')
             self.cosmo = cosmo
         else:
-            self.cosmo = CosmoOutput()
+            self.cosmo = cosmo_out_class()
 
     def set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
         r""" Sets the definitios for the halo profile
