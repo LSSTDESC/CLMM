@@ -4,9 +4,9 @@ import numpy as np
 from scipy import integrate
 from scipy.interpolate import interp1d
 
-from clmm import GCData
-from clmm.theory import compute_tangential_shear, compute_convergence
-from clmm.utils import convert_units, compute_lensed_ellipticity
+from ..gcdata import GCData
+from ..theory import compute_tangential_shear, compute_convergence
+from ..utils import convert_units, compute_lensed_ellipticity
 
 
 def generate_galaxy_catalog(
