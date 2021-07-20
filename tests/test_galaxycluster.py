@@ -79,6 +79,7 @@ def test_print_gc():
     print(cl)
     assert isinstance(cl.__str__(), str)
     assert isinstance(cl.__repr__(), str)
+    assert isinstance(cl._repr_html_(), str)
     # Cluster with galcat
     galcat = GCData([[120.1, 119.9, 119.9], [41.9, 42.2, 42.2],
                      [1, 1, 1], [1, 2, 3]],

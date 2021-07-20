@@ -66,23 +66,43 @@ class GCData(APtable):
         metawkargs = {} if metakwargs is None else metakwargs
         self.meta = GCMetaData(**metakwargs)
 
+    def _str_colnames(self):
+        """Colnames in comma separated str"""
+        return ', '.join(self.colnames)
+
+    def _str_meta_(self):
+        """Metadata in comma separated str"""
+        return ', '.join([f'{key}={value!r}'
+            for key, value in self.meta.items()])
+
     def __repr__(self):
         """Generates string for repr(GCData)"""
-        output = f'{self.__class__.__name__}('
-        output+= ', '.join([f'{key}={value!r}'
-            for key, value in self.meta.items()]
-                +['columns: '+', '.join(self.colnames)])
-        output+= ')'
-        return output
+        description = [self._str_meta_(), 'columns: '+self._str_colnames()]
+        return f'{self.__class__.__name__}({", ".join(description)})'
 
     def __str__(self):
         """Generates string for print(GCData)"""
-        output = f'self.__class__.__name__\n> defined by:'
-        output+= ', '.join([f'{key}={str(value)}'
-            for key, value in self.meta.items()])
-        output+= f'\n> with columns: '
-        output+= ', '.join(self.colnames)
-        return output
+        return (
+            f'{self.__class__.__name__}'
+            f'\n> defined by: {self._str_meta_()}'
+            f'\n> with columns: {self._str_colnames()}'
+            f'\n> {len(self)} objects'
+            f'\n{APtable.__str__(self)}'
+            )
+
+    def _html_table(self):
+        """Get html table for display"""
+        return '</i>'.join(APtable._repr_html_(self).split('</i>')[1:])
+
+    def _repr_html_(self):
+        """Generates string for display(GCData)"""
+        return (
+            f'<b>{self.__class__.__name__}</b>'
+            f'<br> <b>defined by:</b> {self._str_meta_()}'
+            f'<br> <b>with columns:</b> {self._str_colnames()}'
+            f'<br> {len(self)} objects'
+            f'<br> {self._html_table()}'
+            )
 
     def __getitem__(self, item):
         """

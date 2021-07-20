@@ -87,14 +87,33 @@ class GalaxyCluster():
         self._check_types()
         return self
 
+    def _str_colnames(self):
+        """Colnames in comma separated str"""
+        return ', '.join(self.galcat.colnames)
+
     def __repr__(self):
+        """Generates basic description of GalaxyCluster"""
+        return (
+            f'GalaxyCluster {self.unique_id}: '
+            f'(ra={self.ra}, dec={self.dec}) at z={self.z}'
+            f'\n> with columns: {self._str_colnames()}'
+            f'\n> {len(self.galcat)} source galaxies'
+            )
+
+    def __str__(self):
         """Generates string for print(GalaxyCluster)"""
-        output = f'GalaxyCluster {self.unique_id}: '+\
-                 f'(ra={self.ra}, dec={self.dec}) at z={self.z}\n'+\
-                 f'> {len(self.galcat)} source galaxies\n> With columns:'
-        for colname in self.galcat.colnames:
-            output+= f' {colname}'
-        return output
+        table = 'objects'.join(self.galcat.__str__().split('objects')[1:])
+        return self.__repr__()+'\n'+table
+
+    def _repr_html_(self):
+        """Generates string for display(GalaxyCluster)"""
+        return (
+            f'<b>GalaxyCluster:</b> {self.unique_id} '
+            f'(ra={self.ra}, dec={self.dec}) at z={self.z}'
+            f'<br>> <b>with columns:</b> {self._str_colnames()}'
+            f'<br>> {len(self.galcat)} source galaxies'
+            f'<br>{self.galcat._html_table()}'
+            )
 
     def add_critical_surface_density(self, cosmo):
         r"""Computes the critical surface density for each galaxy in `galcat`.
