@@ -8,11 +8,13 @@ from clmm import Cosmology
 
 
 def test_init():
+    """test init"""
     gcdata = GCData()
     assert_equal(None, gcdata.meta['cosmo'])
 
 
 def test_update_cosmo():
+    """test update cosmo"""
     # Define inputs
     cosmo1 = Cosmology(H0=70.0, Omega_dm0=0.3-0.045, Omega_b0=0.045)
     desc1 = cosmo1.get_desc()
@@ -50,34 +52,22 @@ def test_update_cosmo():
     gcdata.update_cosmo_ext_valid(gcdata, cosmo1, overwrite=True)
     assert_equal(desc1, gcdata.meta['cosmo'])
 
-    gcdata = GCData()
-    gcdata.update_cosmo(cosmo1, overwrite=False)
-    assert_equal(desc1, gcdata.meta['cosmo'])
-
-    gcdata = GCData()
-    gcdata.update_cosmo(cosmo1, overwrite=True)
-    assert_equal(desc1, gcdata.meta['cosmo'])
+    for overwrite in (True, False):
+        gcdata = GCData()
+        gcdata.update_cosmo(cosmo1, overwrite=overwrite)
+        assert_equal(desc1, gcdata.meta['cosmo'])
 
     # input_cosmo=data_cosmo!=None
-    gcdata = GCData()
-    gcdata.update_cosmo(cosmo1)
-    gcdata.update_cosmo_ext_valid(gcdata, cosmo1, overwrite=False)
-    assert_equal(desc1, gcdata.meta['cosmo'])
+    for overwrite in (True, False):
+        gcdata = GCData()
+        gcdata.update_cosmo(cosmo1)
+        gcdata.update_cosmo_ext_valid(gcdata, cosmo1, overwrite=overwrite)
+        assert_equal(desc1, gcdata.meta['cosmo'])
 
-    gcdata = GCData()
-    gcdata.update_cosmo(cosmo1)
-    gcdata.update_cosmo_ext_valid(gcdata, cosmo1, overwrite=True)
-    assert_equal(desc1, gcdata.meta['cosmo'])
-
-    gcdata = GCData()
-    gcdata.update_cosmo(cosmo1)
-    gcdata.update_cosmo(cosmo1, overwrite=False)
-    assert_equal(desc1, gcdata.meta['cosmo'])
-
-    gcdata = GCData()
-    gcdata.update_cosmo(cosmo1)
-    gcdata.update_cosmo(cosmo1, overwrite=True)
-    assert_equal(desc1, gcdata.meta['cosmo'])
+        gcdata = GCData()
+        gcdata.update_cosmo(cosmo1)
+        gcdata.update_cosmo(cosmo1, overwrite=overwrite)
+        assert_equal(desc1, gcdata.meta['cosmo'])
 
     # input_cosmo(!=None) != data_cosmo(!=None)
     cosmo2 = Cosmology(H0=60.0, Omega_dm0=0.3-0.045, Omega_b0=0.045)
@@ -85,7 +75,8 @@ def test_update_cosmo():
 
     gcdata = GCData()
     gcdata.update_cosmo(cosmo1)
-    assert_raises(TypeError, gcdata.update_cosmo_ext_valid, gcdata, cosmo2, overwrite=False)
+    assert_raises(TypeError, gcdata.update_cosmo_ext_valid,
+                  gcdata, cosmo2, overwrite=False)
     assert_raises(TypeError, gcdata.update_cosmo_ext_valid, gcdata, cosmo2)
 
     gcdata = GCData()
@@ -106,14 +97,12 @@ def test_update_cosmo():
     # Test casing for colnames and meta
     gcdata = GCData()
     gcdata.update_cosmo(cosmo1)
-    assert_equal(desc1, gcdata.meta['cosmo'])
-    assert_equal(desc1, gcdata.meta['COSMO'])
-    assert_equal(desc1, gcdata.meta['Cosmo'])
+    for key in ('cosmo', 'COSMO', 'Cosmo'):
+        assert_equal(desc1, gcdata.meta[key])
 
     gcdata['Ra'] = [1]
-    assert_equal(1, gcdata['Ra'][0])
-    assert_equal(1, gcdata['ra'][0])
-    assert_equal(1, gcdata['RA'][0])
+    for key in ('Ra', 'ra', 'RA',):
+        assert_equal(1, gcdata[key][0])
 
 # test_creator = 'Mitch'
 # test_creator_diff = 'Witch'

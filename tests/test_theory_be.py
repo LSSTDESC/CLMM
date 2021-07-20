@@ -28,7 +28,7 @@ def test_base(monkeypatch):
         raise NotImplementedError
     clmm.theory.Modeling = nie
     importlib.reload(clmm.theory)
-    assert(clmm.theory.func_layer.gcm is None)
+    assert clmm.theory.func_layer.gcm is None
     # restore original code that will be monkeypatched here
     clmm.theory.Modeling = Modeling_safe
     clmm.theory.be_setup.__backends = backends_safe
