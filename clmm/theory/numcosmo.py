@@ -193,5 +193,4 @@ class NumCosmoCLMModeling(CLMModeling):
             self.hdpm, self.cosmo.be_cosmo, r_proj, z_src, z_cl, z_cl)
         return np.vectorize(func)(r_proj, z_src, z_cl)
 
-
 Modeling = NumCosmoCLMModeling

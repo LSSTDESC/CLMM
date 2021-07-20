@@ -184,5 +184,4 @@ class CTModeling(CLMModeling):
         gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
         return 1./((1-kappa)**2-abs(gamma_t)**2)
 
-
 Modeling = CTModeling

@@ -121,7 +121,6 @@ def scicurve_fit(profile_model, radius, profile, err_profile, absolute_sigma=Tru
         profile_model, radius, profile, sigma=err_profile,
         absolute_sigma=absolute_sigma, **kwargs)
 
-
 samplers = {
     'minimize': sciopt,
     'basinhopping': basinhopping

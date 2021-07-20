@@ -27,6 +27,7 @@ class GCMetaData(OrderedDict):
             raise ValueError(
                 'cosmo must be changed via update_cosmo or update_cosmo_ext_valid method')
         OrderedDict.__setitem__(self, item, value)
+
     def __getitem__(self, item):
         """
         Make class accept all letter casings

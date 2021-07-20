@@ -455,7 +455,6 @@ def compute_reduced_tangential_shear(
 
     return red_tangential_shear
 
-
 # The magnification is computed taking into account just the tangential shear. This is valid for
 # spherically averaged profiles, e.g., NFW and Einasto (by construction the cross shear is zero).
 
@@ -466,8 +465,6 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
 
     .. math::
         \mu = \frac{1}{(1-\kappa)^2-|\gamma_t|^2}
-
-
 
     Parameters
     ----------
@@ -500,7 +497,6 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
         sources at one redshift (if `z_source` is float) or known individual source galaxy redshifts
         (if `z_source` is an array). At the moment the latter case only works if `r_proj` is a
         float.
-
 
     Returns
     -------

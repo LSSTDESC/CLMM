@@ -323,6 +323,7 @@ class GalaxyCluster():
                         'set overwrite=True or use another name.')
             setattr(self, table_name, profile_table)
         return profile_table
+
     def plot_profiles(self, tangential_component='gt', tangential_component_error='gt_err',
                       cross_component='gx', cross_component_error='gx_err', table_name='profile',
                       xscale='linear', yscale='linear'):

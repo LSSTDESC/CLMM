@@ -171,5 +171,4 @@ class CCLCLMModeling(CLMModeling):
 
         return 1.0/((1.0-kappa)**2-np.abs(gamma_t)**2)
 
-
 Modeling = CCLCLMModeling

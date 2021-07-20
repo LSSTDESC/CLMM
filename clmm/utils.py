@@ -220,8 +220,6 @@ def convert_shapes_to_epsilon(shape_1, shape_2, shape_definition='epsilon', kapp
     - If `shape_definition = 'epsilon'` or `'reduced_shear'`, it returns them as is as no conversion
       is needed.
 
-
-
     Parameters
     ----------
     shape_1 : array_like
@@ -291,7 +289,6 @@ def compute_lensed_ellipticity(ellipticity1_true, ellipticity2_true, shear1, she
     :math:`\gamma=\gamma_1+i\gamma_2` and convergence :math:`\kappa` as :math:`g =
     \gamma/(1-\kappa)`, and the complex intrinsic ellipticity is :math:`\epsilon^{\rm
     true}=\epsilon^{\rm true}_1+i\epsilon^{\rm true}_2`
-
 
     Parameters
     ----------

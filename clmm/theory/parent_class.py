@@ -335,7 +335,6 @@ class CLMModeling:
         .. math::
             \mu = \frac{1}{(1-\kappa)^2-|\gamma_t|^2}
 
-
         Parameters
         ----------
         r_proj : array_like

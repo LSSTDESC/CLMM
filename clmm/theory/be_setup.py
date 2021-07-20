@@ -15,7 +15,6 @@ def __numcosmo_preload():
     gi.require_version("NumCosmoMath", "1.0")
     gi.require_version("NumCosmo", "1.0")
 
-
 #  Backend dictionary __backends:
 #    Dictonary controling the backends, it must test if the backend is available
 #    and loadable.
