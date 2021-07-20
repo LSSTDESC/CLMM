@@ -1,4 +1,6 @@
-# CLMModeling abstract class
+"""@file parent_class.py
+CLMModeling abstract class
+"""
 import numpy as np
 
 
@@ -24,6 +26,7 @@ class CLMModeling:
     hdpm_dict: dict
         Dictionary with the definitions for profile
     """
+    # pylint: disable=too-many-instance-attributes
 
     def __init__(self):
         self.backend = None
@@ -59,9 +62,11 @@ class CLMModeling:
         # make case independent
         massdef, halo_profile_model = massdef.lower(), halo_profile_model.lower()
         if not massdef in self.mdef_dict:
-            raise ValueError(f"Halo density profile mass definition {massdef} not currently supported")
+            raise ValueError(
+                f"Halo density profile mass definition {massdef} not currently supported")
         if not halo_profile_model in self.hdpm_dict:
-            raise ValueError(f"Halo density profile model {halo_profile_model} not currently supported")
+            raise ValueError(
+                f"Halo density profile model {halo_profile_model} not currently supported")
         return massdef, halo_profile_model
 
     def set_cosmo(self, cosmo):
@@ -86,9 +91,9 @@ class CLMModeling:
         """
         if cosmo is not None:
             if not isinstance(cosmo, CosmoOutput):
-                raise ValueError(f'Cosmo input ({type(cosmo)}) must be a {CosmoOutput} object.')
-            else:
-                self.cosmo = cosmo
+                raise ValueError(
+                    f'Cosmo input ({type(cosmo)}) must be a {CosmoOutput} object.')
+            self.cosmo = cosmo
         else:
             self.cosmo = CosmoOutput()
 
@@ -114,7 +119,8 @@ class CLMModeling:
         mdelta : float
             Galaxy cluster mass :math:`M_\Delta` in units of :math:`M_\odot`
         """
-        self._validate_input(mdelta, 0, "min(mdelta) = %s! This value is not accepted.")
+        self._validate_input(
+            mdelta, 0, "min(mdelta) = %s! This value is not accepted.")
         self._set_mass(mdelta)
 
     def _set_mass(self, mdelta):
@@ -129,7 +135,8 @@ class CLMModeling:
         cdelta: float
             Concentration
         """
-        self._validate_input(cdelta, 0, "min(cdelta) = %s! This value is not accepted.")
+        self._validate_input(
+            cdelta, 0, "min(cdelta) = %s! This value is not accepted.")
         self._set_concentration(cdelta)
 
     def _set_concentration(self, cdelta):
@@ -145,8 +152,8 @@ class CLMModeling:
             Input radius
         '''
         in_min = np.min(in_val)
-        if in_min<=vmin:
-            raise ValueError(err_msg%str(in_min))
+        if in_min <= vmin:
+            raise ValueError(err_msg % str(in_min))
 
     def _check_input_radius(self, radius):
         r'''Raises error if input radius is not positive
@@ -156,7 +163,8 @@ class CLMModeling:
         radius: array, float
             Input radius
         '''
-        self._validate_input(radius, 0, "min(R) = %s Mpc! This value is not accepted.")
+        self._validate_input(
+            radius, 0, "min(R) = %s Mpc! This value is not accepted.")
 
     def eval_3d_density(self, r3d, z_cl):
         r"""Retrieve the 3d density :math:`\rho(r)`.
@@ -190,10 +198,11 @@ class CLMModeling:
         float
             Cosmology-dependent critical surface density in units of :math:`M_\odot\ Mpc^{-2}`
         """
-        if z_len<=0:
-            raise ValueError(f'Redshift for lens <= 0.')
-        if np.min(z_src)<=0:
-            raise ValueError(f'Some source redshifts are <=0. Please check your inputs.')
+        if z_len <= 0:
+            raise ValueError('Redshift for lens <= 0.')
+        if np.min(z_src) <= 0:
+            raise ValueError(
+                'Some source redshifts are <=0. Please check your inputs.')
         return self.cosmo.eval_sigma_crit(z_len, z_src)
 
     def eval_surface_density(self, r_proj, z_cl):
@@ -265,6 +274,7 @@ class CLMModeling:
             tangential shear
         """
         raise NotImplementedError
+
     def eval_convergence(self, r_proj, z_cl, z_src):
         r"""Computes the mass convergence
 
