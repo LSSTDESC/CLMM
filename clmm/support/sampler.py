@@ -24,7 +24,7 @@ def sciopt(model_to_shear_profile, logm_0, **kwargs):
         
     Returns
     -------
-    `x`` : array
+    x : array
     The solution of the optimization
     
     '''
@@ -54,7 +54,7 @@ def basinhopping(model_to_shear_profile, logm_0, **kwargs):
         
     Returns
     -------
-    `x`` : array
+    x : array
     The solution of the optimization    
     
     '''
