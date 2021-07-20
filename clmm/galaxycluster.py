@@ -138,11 +138,9 @@ class GalaxyCluster():
             self.galcat['sigma_c'] = compute_critical_surface_density(cosmo=cosmo, z_cluster=self.z,
                                                                   z_source=self.galcat['z'])
 
-    def compute_tangential_and_cross_components(self,
-                      shape_component1='e1', shape_component2='e2',
-                      tan_component='et', cross_component='ex',
-                      geometry='curve', is_deltasigma=False, cosmo=None,
-                      add=True):
+    def compute_tangential_and_cross_components(
+            self, shape_component1='e1', shape_component2='e2', tan_component='et',
+            cross_component='ex', geometry='curve', is_deltasigma=False, cosmo=None, add=True):
         r"""Adds a tangential- and cross- components for shear or ellipticity to self
 
         Calls `clmm.dataops.compute_tangential_and_cross_components` with the following arguments:
@@ -214,12 +212,10 @@ class GalaxyCluster():
             self.galcat[cross_component] = cross_comp
         return angsep, tangential_comp, cross_comp
 
-    def make_radial_profile(self,
-                            bin_units, bins=10, cosmo=None,
-                            tan_component_in='et', cross_component_in='ex',
-                            tan_component_out='gt', cross_component_out='gx',
-                            include_empty_bins=False, gal_ids_in_bins=False,
-                            add=True, table_name='profile', overwrite=True):
+    def make_radial_profile(
+            self, bin_units, bins=10, cosmo=None, tan_component_in='et', cross_component_in='ex',
+            tan_component_out='gt', cross_component_out='gx', include_empty_bins=False,
+            gal_ids_in_bins=False, add=True, table_name='profile', overwrite=True):
         r"""Compute the shear or ellipticity profile of the cluster
 
         We assume that the cluster object contains information on the cross and
@@ -283,6 +279,9 @@ class GalaxyCluster():
             on that grid, and the errors in the two shear profiles. The errors are defined as the
             standard errors in each bin.
         """
+        #Too many local variables (19/15)
+        #pylint: disable=R0914
+
         if not all([t_ in self.galcat.columns for t_ in
                 (tan_component_in, cross_component_in, 'theta')]):
             raise TypeError(
@@ -299,9 +298,9 @@ class GalaxyCluster():
             return_binnumber=True,
             cosmo=cosmo, z_lens=self.z)
         # Reaname table columns
-        for i, n in enumerate([tan_component_out, cross_component_out, 'z']):
-            profile_table.rename_column(f'p_{i}', n)
-            profile_table.rename_column(f'p_{i}_err', f'{n}_err')
+        for i, name in enumerate([tan_component_out, cross_component_out, 'z']):
+            profile_table.rename_column(f'p_{i}', name)
+            profile_table.rename_column(f'p_{i}_err', f'{name}_err')
         # add galaxy IDs
         if gal_ids_in_bins:
             if 'id' not in self.galcat.columns:
