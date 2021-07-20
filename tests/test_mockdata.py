@@ -26,6 +26,8 @@ def test_mock_data():
                   0.3, 4, cosmo, 0.8, ngals=1, ngal_density=1)
     assert_raises(ValueError, mock.generate_galaxy_catalog,
                   1e15, 0.3, 4, cosmo, 'unknown_src', ngals=10)
+    assert_raises(ValueError, mock.generate_galaxy_catalog,
+                  1e15, 0.3, 4, cosmo, 'unknown_src', ngal_density=1)
     # Test warning if bad gals
     with warnings.catch_warnings(record=True) as warn:
         # Cause all warnings to always be triggered.
