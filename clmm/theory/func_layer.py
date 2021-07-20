@@ -347,10 +347,6 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     for alternative z_src_models using :math:`\beta_s`.
     """
 
-    sigma = compute_surface_density(r_proj, mdelta, cdelta, z_cluster, cosmo,
-                                    delta_mdef=delta_mdef, halo_profile_model=halo_profile_model,
-                                    massdef=massdef)
-
     if z_src_model == 'single_plane':
 
         gcm.set_cosmo(cosmo)
@@ -372,7 +368,7 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
 
     if np.any(np.array(z_source) <= z_cluster):
         warnings.warn(
-            f'Some source redshifts are lower than the cluster redshift.'
+            'Some source redshifts are lower than the cluster redshift.'
             ' kappa = 0 for those galaxies.')
 
     return kappa
@@ -454,7 +450,7 @@ def compute_reduced_tangential_shear(
 
     if np.any(np.array(z_source) <= z_cluster):
         warnings.warn(
-            f'Some source redshifts are lower than the cluster redshift.'
+            'Some source redshifts are lower than the cluster redshift.'
             ' shear = 0 for those galaxies.')
 
     return red_tangential_shear
@@ -508,8 +504,8 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
 
     Returns
     -------
-    mu : array_like, float
-        magnification, mu.
+    magnigication : array_like, float
+        Magnification (mu).
 
     Notes
     -----
@@ -528,7 +524,7 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
         gcm.set_concentration(cdelta)
         gcm.set_mass(mdelta)
 
-        mu = gcm.eval_magnification(r_proj, z_cluster, z_source)
+        magnification = gcm.eval_magnification(r_proj, z_cluster, z_source)
 
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average'+\
@@ -542,6 +538,6 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
     if np.any(np.array(z_source) <= z_cluster):
         warnings.warn(
             'Some source redshifts are lower than the cluster redshift.'
-            ' mu = 1 for those galaxies.')
+            ' magnification = 1 for those galaxies.')
 
-    return mu
+    return magnification
