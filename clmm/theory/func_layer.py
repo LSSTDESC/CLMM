@@ -247,10 +247,10 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
             `critical` - not in cluster_toolkit;
             `virial` - not in cluster_toolkit;
     z_src_model : str, optional
-        Source redshift model, with the following supported options: `single_plane` (default) - all
-        sources at one redshift (if `z_source` is float) or known individual source galaxy redshifts
-        (if `z_source` is an array). At the moment the latter case only works if `r_proj` is a
-        float.
+        Source redshift model, with the following supported options:
+            `single_plane` (default) - all sources at one redshift (if
+            `z_source` is a float) or known individual source galaxy redshifts
+            (if `z_source` is an array and `r_proj` is a float).
 
     Returns
     -------
@@ -327,10 +327,9 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
             `virial` - not in cluster_toolkit;
     z_src_model : str, optional
         Source redshift model, with the following supported options:
-        `single_plane` (default) - all sources at one redshift (if `z_source`
-        is float) or known individual source galaxy redshifts (if `z_source` is
-        an array). At the moment the latter case only works if `r_proj` is a
-        float.
+            `single_plane` (default) - all sources at one redshift (if
+            `z_source` is a float) or known individual source galaxy redshifts
+            (if `z_source` is an array and `r_proj` is a float).
 
     Returns
     -------
@@ -407,10 +406,9 @@ def compute_reduced_tangential_shear(
             `virial` - not in cluster_toolkit;
     z_src_model : str, optional
         Source redshift model, with the following supported options:
-        `single_plane` (default) - all sources at one redshift (if `z_source`
-        is float) or known individual source galaxy redshifts (if `z_source` is
-        an array). At the moment the latter case only works if `r_proj` is a
-        float.
+            `single_plane` (default) - all sources at one redshift (if
+            `z_source` is a float) or known individual source galaxy redshifts
+            (if `z_source` is an array and `r_proj` is a float).
 
     Returns
     -------
@@ -492,10 +490,10 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
             `critical` - not in cluster_toolkit;
             `virial` - not in cluster_toolkit;
     z_src_model : str, optional
-        Source redshift model, with the following supported options: `single_plane` (default) - all
-        sources at one redshift (if `z_source` is float) or known individual source galaxy redshifts
-        (if `z_source` is an array). At the moment the latter case only works if `r_proj` is a
-        float.
+        Source redshift model, with the following supported options:
+            `single_plane` (default) - all sources at one redshift (if
+            `z_source` is a float) or known individual source galaxy redshifts
+            (if `z_source` is an array and `r_proj` is a float).
 
     Returns
     -------
