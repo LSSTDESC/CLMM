@@ -77,9 +77,9 @@ def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     r""" Computes the surface mass density
 
     .. math::
-        \Sigma(R) = \int^\infty_{-\infty} dx \rho (\sqrt{R^2+x^2}),
+        \Sigma(R) = \int^\infty_{-\infty} dx\; \rho \left(\sqrt{R^2+x^2}\right),
 
-    where :math:`\rho` is the 3d density profile.
+    where :math:`\rho(r)` is the 3d density profile.
 
     Parameters
     ----------
@@ -250,7 +250,7 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
         Source redshift model, with the following supported options:
             `single_plane` (default) - all sources at one redshift (if
             `z_source` is a float) or known individual source galaxy redshifts
-            (if `z_source` is an array and `r_proj` is a float).
+            (if `z_source` is an array and `r_proj` is a float);
 
     Returns
     -------
@@ -329,7 +329,7 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
         Source redshift model, with the following supported options:
             `single_plane` (default) - all sources at one redshift (if
             `z_source` is a float) or known individual source galaxy redshifts
-            (if `z_source` is an array and `r_proj` is a float).
+            (if `z_source` is an array and `r_proj` is a float);
 
     Returns
     -------
@@ -408,7 +408,7 @@ def compute_reduced_tangential_shear(
         Source redshift model, with the following supported options:
             `single_plane` (default) - all sources at one redshift (if
             `z_source` is a float) or known individual source galaxy redshifts
-            (if `z_source` is an array and `r_proj` is a float).
+            (if `z_source` is an array and `r_proj` is a float);
 
     Returns
     -------
@@ -493,7 +493,7 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
         Source redshift model, with the following supported options:
             `single_plane` (default) - all sources at one redshift (if
             `z_source` is a float) or known individual source galaxy redshifts
-            (if `z_source` is an array and `r_proj` is a float).
+            (if `z_source` is an array and `r_proj` is a float);
 
     Returns
     -------
