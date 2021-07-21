@@ -77,9 +77,9 @@ def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     r""" Computes the surface mass density
 
     .. math::
-        \Sigma(R) = \Omega_m \rho_{crit} \int^\infty_{-\infty} dz \Xi_{hm} (\sqrt{R^2+z^2}),
+        \Sigma(R) = \int^\infty_{-\infty} dx \rho (\sqrt{R^2+x^2}),
 
-    where :math:`\Xi_{hm}` is the halo-matter correlation function.
+    where :math:`\rho` is the 3d density profile.
 
     Parameters
     ----------
@@ -247,10 +247,9 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
             `critical` - not in cluster_toolkit;
             `virial` - not in cluster_toolkit;
     z_src_model : str, optional
-        Source redshift model, with the following supported options:
-        `single_plane` (default) - all sources at one redshift (if `z_source`
-        is float) or known individual source galaxy redshifts (if `z_source` is
-        an array). At the moment the latter case only works if `r_proj` is a
+        Source redshift model, with the following supported options: `single_plane` (default) - all
+        sources at one redshift (if `z_source` is float) or known individual source galaxy redshifts
+        (if `z_source` is an array). At the moment the latter case only works if `r_proj` is a
         float.
 
     Returns
