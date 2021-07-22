@@ -83,6 +83,9 @@ First, we import some standard packages.
     import matplotlib.pyplot as plt
     import numpy as np
     from numpy import random
+    import warnings
+    warnings.filterwarnings('ignore')
+    
     from clmm.support.sampler import fitters
     
     clmm.__version__
@@ -92,7 +95,7 @@ First, we import some standard packages.
 
 .. parsed-literal::
 
-    '0.9.1'
+    '1.0.0'
 
 
 
@@ -154,14 +157,6 @@ Chang et al. (2013) redshift distribution. - ``noisy_data_z``:
     noisy_data_z = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration, cosmo, 'chang13', 
                                                 shapenoise=0.05, 
                                                 photoz_sigma_unscaled=0.05, ngals=ngals)
-
-
-.. parsed-literal::
-
-    /pbs/home/c/ccombet/.conda/envs/mydesc2/lib/python3.7/site-packages/numpy/ma/core.py:2832: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      order=order, subok=True, ndmin=ndmin)
-    /pbs/home/c/ccombet/.conda/envs/mydesc2/lib/python3.7/site-packages/clmm-0.9.1-py3.7.egg/clmm/theory/func_layer.py:354: UserWarning: Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.
-
 
 The galaxy catalogs are converted to a ``clmm.GalaxyCluster`` object and
 may be saved for later use.
@@ -255,21 +250,21 @@ After running ``clmm.dataops.make_radial_profile`` on a
 
     radius_min   radius  radius_max     gt      gt_err      gx       gx_err      z       z_err     n_src  
     ---------- --------- ---------- --------- --------- ---------- --------- --------- --------- ---------
-     7.000e-01 7.446e-01  7.863e-01 4.353e-02 1.310e-04  1.391e-18 1.143e-18 8.000e-01 2.916e-17 5.800e+01
-     7.863e-01 8.403e-01  8.831e-01 3.984e-02 1.099e-04 -2.269e-20 7.375e-19 8.000e-01 2.394e-17 8.600e+01
-     8.831e-01 9.395e-01  9.920e-01 3.654e-02 1.001e-04  2.197e-19 9.167e-19 8.000e-01 3.417e-17 9.500e+01
-     9.920e-01 1.052e+00  1.114e+00 3.332e-02 8.489e-05  1.113e-19 4.032e-19 8.000e-01 1.933e-17 1.320e+02
-     1.114e+00 1.187e+00  1.251e+00 3.003e-02 7.147e-05 -3.455e-20 4.585e-19 8.000e-01 1.807e-17 1.510e+02
-     1.251e+00 1.331e+00  1.406e+00 2.708e-02 6.600e-05 -1.931e-20 3.446e-19 8.000e-01 1.718e-17 1.670e+02
-     1.406e+00 1.495e+00  1.579e+00 2.426e-02 5.243e-05  4.002e-19 2.969e-19 8.000e-01 0.000e+00 2.350e+02
-     1.579e+00 1.677e+00  1.773e+00 2.165e-02 3.908e-05 -2.049e-19 2.295e-19 8.000e-01 5.995e-18 3.430e+02
-     1.773e+00 1.887e+00  1.992e+00 1.917e-02 3.431e-05  5.119e-20 1.376e-19 8.000e-01 0.000e+00 4.010e+02
-     1.992e+00 2.119e+00  2.237e+00 1.692e-02 2.751e-05  2.635e-19 1.451e-19 8.000e-01 0.000e+00 4.990e+02
-     2.237e+00 2.377e+00  2.513e+00 1.489e-02 2.158e-05  5.151e-20 8.294e-20 8.000e-01 8.623e-18 6.630e+02
-     2.513e+00 2.672e+00  2.823e+00 1.301e-02 1.844e-05  1.509e-19 8.135e-20 8.000e-01 0.000e+00 7.800e+02
-     2.823e+00 2.999e+00  3.171e+00 1.135e-02 1.421e-05  1.192e-19 6.120e-20 8.000e-01 0.000e+00 1.042e+03
-     3.171e+00 3.369e+00  3.561e+00 9.842e-03 1.130e-05 -2.608e-20 4.726e-20 8.000e-01 3.078e-18 1.301e+03
-     3.561e+00 3.781e+00  4.000e+00 8.509e-03 8.960e-06 -2.067e-21 3.173e-20 8.000e-01 2.738e-18 1.644e+03
+     7.000e-01 7.446e-01  7.863e-01 4.359e-02 1.313e-04  5.085e-19 8.238e-19 8.000e-01 2.916e-17 5.800e+01
+     7.863e-01 8.403e-01  8.831e-01 3.990e-02 1.101e-04  7.842e-19 7.638e-19 8.000e-01 2.394e-17 8.600e+01
+     8.831e-01 9.395e-01  9.920e-01 3.659e-02 1.003e-04 -6.323e-19 6.982e-19 8.000e-01 3.417e-17 9.500e+01
+     9.920e-01 1.052e+00  1.114e+00 3.337e-02 8.507e-05 -5.097e-19 4.444e-19 8.000e-01 1.933e-17 1.320e+02
+     1.114e+00 1.187e+00  1.251e+00 3.007e-02 7.161e-05 -3.130e-19 5.534e-19 8.000e-01 1.807e-17 1.510e+02
+     1.251e+00 1.331e+00  1.406e+00 2.711e-02 6.612e-05 -1.026e-19 3.343e-19 8.000e-01 1.718e-17 1.670e+02
+     1.406e+00 1.495e+00  1.579e+00 2.428e-02 5.252e-05 -2.999e-19 3.009e-19 8.000e-01 0.000e+00 2.350e+02
+     1.579e+00 1.677e+00  1.773e+00 2.167e-02 3.915e-05 -1.054e-19 1.851e-19 8.000e-01 5.995e-18 3.430e+02
+     1.773e+00 1.887e+00  1.992e+00 1.918e-02 3.437e-05 -6.290e-20 1.720e-19 8.000e-01 0.000e+00 4.010e+02
+     1.992e+00 2.119e+00  2.237e+00 1.694e-02 2.755e-05  1.372e-19 1.219e-19 8.000e-01 0.000e+00 4.990e+02
+     2.237e+00 2.377e+00  2.513e+00 1.490e-02 2.161e-05  8.497e-20 9.570e-20 8.000e-01 8.623e-18 6.630e+02
+     2.513e+00 2.672e+00  2.823e+00 1.302e-02 1.846e-05  3.099e-20 7.786e-20 8.000e-01 0.000e+00 7.800e+02
+     2.823e+00 2.999e+00  3.171e+00 1.136e-02 1.422e-05  5.878e-20 6.175e-20 8.000e-01 0.000e+00 1.042e+03
+     3.171e+00 3.369e+00  3.561e+00 9.847e-03 1.131e-05 -7.348e-20 5.179e-20 8.000e-01 3.078e-18 1.301e+03
+     3.561e+00 3.781e+00  4.000e+00 8.514e-03 8.968e-06  1.664e-20 3.384e-20 8.000e-01 2.738e-18 1.644e+03
 
 
 We visualize the radially binned shear for the 3 configurations
@@ -296,7 +291,7 @@ We visualize the radially binned shear for the 3 configurations
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7f6476b3d9d0>
+    <matplotlib.legend.Legend at 0x7facf7dc2d30>
 
 
 
@@ -526,7 +521,7 @@ predicted by the model when using the average redshift of the catalog.
 
 .. parsed-literal::
 
-     1.001805095144565e+15 +/- 7e+11  8.710139243072430e+14 +/- 3e+12  8.316548297494131e+14 +/- 5e+13
+     1.001805095144565e+15 +/- 7e+11  8.710160358560778e+14 +/- 3e+12  8.319065725386354e+14 +/- 5e+13
 
 
 We visualize that prediction of reduced tangential shears along with the
@@ -743,7 +738,7 @@ smaller than in the binned case.
 
 .. parsed-literal::
 
-     1.000016046300544e+15 +/- 1e+11  9.999924790155086e+14 +/- 1e+11  1.051893215536178e+15 +/- 5e+13
+     1.000016046300544e+15 +/- 1e+11  9.999629223975090e+14 +/- 1e+11  1.053575244316466e+15 +/- 5e+13
 
 
 To investigate further the results we make a MCMC analysis below.
@@ -794,7 +789,7 @@ correct model best-fit) and much larger variance.
     rows = np.array ([mcat.peek_row (i).dup_array () for i in range (nwalkers * 10, mcat.len ())])
     params = ["$" + mcat.col_symb (i) + "$" for i in range (mcat.ncols ())]
     figure = corner.corner (rows[:,1:], labels = params[1:], reverse = False,
-    #                        quantiles=qts, levels = (s2d1, s2d2, s2d3), 
+                            #quantiles=qts, levels = (s2d1, s2d2, s2d3), 
                             truths=[4,15], truth_color='green',
                             bins = 40, smooth = 0.8, smooth1d = 0.8, color = (0.5, 0.2, 0.5, 1.0))
     

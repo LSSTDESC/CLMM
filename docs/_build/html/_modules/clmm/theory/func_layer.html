@@ -3,11 +3,11 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8">
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.theory.func_layer &mdash; CLMM 0.9.1 documentation</title>
+  <title>clmm.theory.func_layer &mdash; CLMM 1.0.0 documentation</title>
   
 
   
@@ -16,10 +16,7 @@
 
   
   
-
   
-  
-
   
 
   
@@ -32,6 +29,7 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
@@ -52,7 +50,7 @@
           
 
           
-            <a href="../../../index.html" class="icon icon-home"> CLMM
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> CLMM
           
 
           
@@ -62,7 +60,7 @@
             
             
               <div class="version">
-                0.9.1
+                1.0.0
               </div>
             
           
@@ -87,27 +85,27 @@
               
             
             
-              <p class="caption"><span class="caption-text">Getting Started</span></p>
+              <p><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/overview.html">Rapid overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/citing.html">Citing CLMM</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Usage Demos</span></p>
+<p><span class="caption-text">Usage Demos</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Mass Fitting Examples</span></p>
+<p><span class="caption-text">Mass Fitting Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog_NC.html">Fit halo mass to shear profile using Numcosmo statistical framework</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Reference</span></p>
+<p><span class="caption-text">Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.constants.html">clmm.constants module</a></li>
@@ -180,8 +178,6 @@
 
 
 
-
-
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -206,23 +202,28 @@
            <div itemprop="articleBody">
             
   <h1>Source code for clmm.theory.func_layer</h1><div class="highlight"><pre>
-<span></span><span class="c1"># Thin functonal layer on top of the class implementation of CLMModeling .</span>
+<span></span><span class="sd">&quot;&quot;&quot;@file func_layer.py</span>
+<span class="sd">Main functions to encapsule oo calls</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># Thin functonal layer on top of the class implementation of CLMModeling .</span>
 <span class="c1"># The functions expect a global instance of the actual CLMModeling named</span>
 <span class="c1"># `gcm&#39;.</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">generic</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="n">generic</span> <span class="kn">import</span> <span class="nn">compute_reduced_shear_from_convergence</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="n">generic</span><span class="o">.</span><span class="n">__all__</span><span class="o">+</span><span class="p">[</span><span class="s1">&#39;compute_3d_density&#39;</span><span class="p">,</span> <span class="s1">&#39;compute_surface_density&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;compute_excess_surface_density&#39;</span><span class="p">,</span> <span class="s1">&#39;compute_critical_surface_density&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;compute_tangential_shear&#39;</span><span class="p">,</span> <span class="s1">&#39;compute_convergence&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;compute_reduced_tangential_shear&#39;</span><span class="p">,</span> <span class="s1">&#39;compute_magnification&#39;</span><span class="p">]</span>
+                           <span class="s1">&#39;compute_excess_surface_density&#39;</span><span class="p">,</span> <span class="s1">&#39;compute_critical_surface_density&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;compute_tangential_shear&#39;</span><span class="p">,</span> <span class="s1">&#39;compute_convergence&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;compute_reduced_tangential_shear&#39;</span><span class="p">,</span> <span class="s1">&#39;compute_magnification&#39;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="compute_3d_density"><a class="viewcode-back" href="../../../api/clmm.theory.numcosmo.html#clmm.theory.compute_3d_density">[docs]</a><span class="k">def</span> <span class="nf">compute_3d_density</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">mdelta</span><span class="p">,</span> <span class="n">cdelta</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="compute_3d_density"><a class="viewcode-back" href="../../../api/clmm.theory.numcosmo.html#clmm.theory.compute_3d_density">[docs]</a><span class="k">def</span> <span class="nf">compute_3d_density</span><span class="p">(</span>
+        <span class="n">r3d</span><span class="p">,</span> <span class="n">mdelta</span><span class="p">,</span> <span class="n">cdelta</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+        <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Retrieve the 3d density :math:`\rho(r)`.</span>
 
 <span class="sd">    Profiles implemented so far are:</span>
@@ -245,15 +246,15 @@
 <span class="sd">    delta_mdef : int, optional</span>
 <span class="sd">        Mass overdensity definition; defaults to 200.</span>
 <span class="sd">    halo_profile_model : str, optional</span>
-<span class="sd">        Profile model parameterization, with the following supported options:</span>
-<span class="sd">            `nfw` (default)</span>
-<span class="sd">            `einasto` - valid in numcosmo and ccl (version&gt;=TBA)</span>
-<span class="sd">            `hernquist` - valid in numcosmo and ccl (version&gt;=TBA)</span>
+<span class="sd">        Profile model parameterization (letter case independent):</span>
+<span class="sd">            `nfw` (default);</span>
+<span class="sd">            `einasto` - valid in numcosmo and ccl;</span>
+<span class="sd">            `hernquist` - valid in numcosmo and ccl;</span>
 <span class="sd">    massdef : str, optional</span>
-<span class="sd">        Profile mass definition, with the following supported options:</span>
-<span class="sd">            `mean` (default)</span>
-<span class="sd">            `critical` - not in cluster_toolkit</span>
-<span class="sd">            `virial` - not in cluster_toolkit</span>
+<span class="sd">        Profile mass definition, with the following supported options (letter case independent):</span>
+<span class="sd">            `mean` (default);</span>
+<span class="sd">            `critical` - not in cluster_toolkit;</span>
+<span class="sd">            `virial` - not in cluster_toolkit;</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -265,9 +266,10 @@
 <span class="sd">    Need to refactor later so we only require arguments that are necessary for all profiles</span>
 <span class="sd">    and use another structure to take the arguments necessary for specific models</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
+    <span class="n">gcm</span><span class="o">.</span><span class="n">_check_input_radius</span><span class="p">(</span><span class="n">r3d</span><span class="p">)</span>
     <span class="n">gcm</span><span class="o">.</span><span class="n">set_cosmo</span><span class="p">(</span><span class="n">cosmo</span><span class="p">)</span>
-    <span class="n">gcm</span><span class="o">.</span><span class="n">set_halo_density_profile</span><span class="p">(</span><span class="n">halo_profile_model</span><span class="o">=</span><span class="n">halo_profile_model</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="n">massdef</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef</span><span class="p">)</span>
+    <span class="n">gcm</span><span class="o">.</span><span class="n">set_halo_density_profile</span><span class="p">(</span>
+        <span class="n">halo_profile_model</span><span class="o">=</span><span class="n">halo_profile_model</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="n">massdef</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef</span><span class="p">)</span>
     <span class="n">gcm</span><span class="o">.</span><span class="n">set_concentration</span><span class="p">(</span><span class="n">cdelta</span><span class="p">)</span>
     <span class="n">gcm</span><span class="o">.</span><span class="n">set_mass</span><span class="p">(</span><span class="n">mdelta</span><span class="p">)</span>
 
@@ -279,9 +281,9 @@
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Computes the surface mass density</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">        \Sigma(R) = \Omega_m \rho_{crit} \int^\infty_{-\infty} dz \Xi_{hm} (\sqrt{R^2+z^2}),</span>
+<span class="sd">        \Sigma(R) = \int^\infty_{-\infty} dx\; \rho \left(\sqrt{R^2+x^2}\right),</span>
 
-<span class="sd">    where :math:`\Xi_{hm}` is the halo-matter correlation function.</span>
+<span class="sd">    where :math:`\rho(r)` is the 3d density profile.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -298,15 +300,15 @@
 <span class="sd">    delta_mdef : int, optional</span>
 <span class="sd">        Mass overdensity definition; defaults to 200.</span>
 <span class="sd">    halo_profile_model : str, optional</span>
-<span class="sd">        Profile model parameterization, with the following supported options:</span>
-<span class="sd">            `nfw` (default)</span>
-<span class="sd">            `einasto` - valid in numcosmo and ccl (version&gt;=TBA)</span>
-<span class="sd">            `hernquist` - valid in numcosmo and ccl (version&gt;=TBA)</span>
+<span class="sd">        Profile model parameterization (letter case independent):</span>
+<span class="sd">            `nfw` (default);</span>
+<span class="sd">            `einasto` - valid in numcosmo and ccl;</span>
+<span class="sd">            `hernquist` - valid in numcosmo and ccl;</span>
 <span class="sd">    massdef : str, optional</span>
-<span class="sd">        Profile mass definition, with the following supported options:</span>
-<span class="sd">            `mean` (default)</span>
-<span class="sd">            `critical` - not in cluster_toolkit</span>
-<span class="sd">            `virial` - not in cluster_toolkit</span>
+<span class="sd">        Profile mass definition, with the following supported options (letter case independent):</span>
+<span class="sd">            `mean` (default);</span>
+<span class="sd">            `critical` - not in cluster_toolkit;</span>
+<span class="sd">            `virial` - not in cluster_toolkit;</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -318,9 +320,10 @@
 <span class="sd">    Need to refactory so we only require arguments that are necessary for all models and use</span>
 <span class="sd">    another structure to take the arguments necessary for specific models.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
+    <span class="n">gcm</span><span class="o">.</span><span class="n">_check_input_radius</span><span class="p">(</span><span class="n">r_proj</span><span class="p">)</span>
     <span class="n">gcm</span><span class="o">.</span><span class="n">set_cosmo</span><span class="p">(</span><span class="n">cosmo</span><span class="p">)</span>
-    <span class="n">gcm</span><span class="o">.</span><span class="n">set_halo_density_profile</span><span class="p">(</span><span class="n">halo_profile_model</span><span class="o">=</span><span class="n">halo_profile_model</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="n">massdef</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef</span><span class="p">)</span>
+    <span class="n">gcm</span><span class="o">.</span><span class="n">set_halo_density_profile</span><span class="p">(</span>
+        <span class="n">halo_profile_model</span><span class="o">=</span><span class="n">halo_profile_model</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="n">massdef</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef</span><span class="p">)</span>
     <span class="n">gcm</span><span class="o">.</span><span class="n">set_concentration</span><span class="p">(</span><span class="n">cdelta</span><span class="p">)</span>
     <span class="n">gcm</span><span class="o">.</span><span class="n">set_mass</span><span class="p">(</span><span class="n">mdelta</span><span class="p">)</span>
 
@@ -354,24 +357,25 @@
 <span class="sd">    delta_mdef : int, optional</span>
 <span class="sd">        Mass overdensity definition; defaults to 200.</span>
 <span class="sd">    halo_profile_model : str, optional</span>
-<span class="sd">        Profile model parameterization, with the following supported options:</span>
-<span class="sd">            `nfw` (default)</span>
-<span class="sd">            `einasto` - valid in numcosmo and ccl (version&gt;=TBA)</span>
-<span class="sd">            `hernquist` - valid in numcosmo and ccl (version&gt;=TBA)</span>
+<span class="sd">        Profile model parameterization (letter case independent):</span>
+<span class="sd">            `nfw` (default);</span>
+<span class="sd">            `einasto` - valid in numcosmo and ccl;</span>
+<span class="sd">            `hernquist` - valid in numcosmo and ccl;</span>
 <span class="sd">    massdef : str, optional</span>
-<span class="sd">        Profile mass definition, with the following supported options:</span>
-<span class="sd">            `mean` (default)</span>
-<span class="sd">            `critical` - not in cluster_toolkit</span>
-<span class="sd">            `virial` - not in cluster_toolkit</span>
+<span class="sd">        Profile mass definition, with the following supported options (letter case independent):</span>
+<span class="sd">            `mean` (default);</span>
+<span class="sd">            `critical` - not in cluster_toolkit;</span>
+<span class="sd">            `virial` - not in cluster_toolkit;</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    deltasigma : array_like, float</span>
 <span class="sd">        Excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
+    <span class="n">gcm</span><span class="o">.</span><span class="n">_check_input_radius</span><span class="p">(</span><span class="n">r_proj</span><span class="p">)</span>
     <span class="n">gcm</span><span class="o">.</span><span class="n">set_cosmo</span><span class="p">(</span><span class="n">cosmo</span><span class="p">)</span>
-    <span class="n">gcm</span><span class="o">.</span><span class="n">set_halo_density_profile</span><span class="p">(</span><span class="n">halo_profile_model</span><span class="o">=</span><span class="n">halo_profile_model</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="n">massdef</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef</span><span class="p">)</span>
+    <span class="n">gcm</span><span class="o">.</span><span class="n">set_halo_density_profile</span><span class="p">(</span>
+        <span class="n">halo_profile_model</span><span class="o">=</span><span class="n">halo_profile_model</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="n">massdef</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef</span><span class="p">)</span>
     <span class="n">gcm</span><span class="o">.</span><span class="n">set_concentration</span><span class="p">(</span><span class="n">cdelta</span><span class="p">)</span>
     <span class="n">gcm</span><span class="o">.</span><span class="n">set_mass</span><span class="p">(</span><span class="n">mdelta</span><span class="p">)</span>
 
@@ -409,7 +413,7 @@
 
 
 <div class="viewcode-block" id="compute_tangential_shear"><a class="viewcode-back" href="../../../api/clmm.theory.numcosmo.html#clmm.theory.compute_tangential_shear">[docs]</a><span class="k">def</span> <span class="nf">compute_tangential_shear</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">mdelta</span><span class="p">,</span> <span class="n">cdelta</span><span class="p">,</span> <span class="n">z_cluster</span><span class="p">,</span> <span class="n">z_source</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
-                              <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">z_src_model</span><span class="o">=</span><span class="s1">&#39;single_plane&#39;</span><span class="p">):</span>
+                             <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">z_src_model</span><span class="o">=</span><span class="s1">&#39;single_plane&#39;</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes the tangential shear</span>
 
 <span class="sd">    .. math::</span>
@@ -422,7 +426,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    r_proj : array_like</span>
+<span class="sd">    r_proj : array_like, float</span>
 <span class="sd">        The projected radial positions in :math:`M\!pc`.</span>
 <span class="sd">    mdelta : float</span>
 <span class="sd">        Galaxy cluster mass in :math:`M_\odot`.</span>
@@ -437,43 +441,48 @@
 <span class="sd">    delta_mdef : int, optional</span>
 <span class="sd">        Mass overdensity definition.  Defaults to 200.</span>
 <span class="sd">    halo_profile_model : str, optional</span>
-<span class="sd">        Profile model parameterization, with the following supported options:</span>
-<span class="sd">            `nfw` (default)</span>
-<span class="sd">            `einasto` - valid in numcosmo and ccl (version&gt;=TBA)</span>
-<span class="sd">            `hernquist` - valid in numcosmo and ccl (version&gt;=TBA)</span>
+<span class="sd">        Profile model parameterization (letter case independent):</span>
+<span class="sd">            `nfw` (default);</span>
+<span class="sd">            `einasto` - valid in numcosmo and ccl;</span>
+<span class="sd">            `hernquist` - valid in numcosmo and ccl;</span>
 <span class="sd">    massdef : str, optional</span>
-<span class="sd">        Profile mass definition, with the following supported options:</span>
-<span class="sd">            `mean` (default)</span>
-<span class="sd">            `critical` - not in cluster_toolkit</span>
-<span class="sd">            `virial` - not in cluster_toolkit</span>
+<span class="sd">        Profile mass definition, with the following supported options (letter case independent):</span>
+<span class="sd">            `mean` (default);</span>
+<span class="sd">            `critical` - not in cluster_toolkit;</span>
+<span class="sd">            `virial` - not in cluster_toolkit;</span>
 <span class="sd">    z_src_model : str, optional</span>
 <span class="sd">        Source redshift model, with the following supported options:</span>
-<span class="sd">        `single_plane` (default) - all sources at one redshift</span>
-<span class="sd">        `known_z_src` - known individual source galaxy redshifts e.g. discrete case</span>
-<span class="sd">        `z_src_distribution` - known source redshift distribution e.g. continuous</span>
-<span class="sd">        case requiring integration.</span>
+<span class="sd">            `single_plane` (default) - all sources at one redshift (if</span>
+<span class="sd">            `z_source` is a float) or known individual source galaxy redshifts</span>
+<span class="sd">            (if `z_source` is an array and `r_proj` is a float);</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    gammat : array_like, float</span>
-<span class="sd">        tangential shear</span>
+<span class="sd">        Tangential shear</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
-<span class="sd">    TODO: Implement `known_z_src` and `z_src_distribution` options</span>
-<span class="sd">    We will need :math:`\gamma_\infty` and :math:`\kappa_\infty` for alternative</span>
-<span class="sd">    z_src_models using :math:`\beta_s`.</span>
-<span class="sd">    Need to figure out if we want to raise exceptions rather than errors here?</span>
+<span class="sd">    TODO: Implement `known_z_src` (known individual source galaxy redshifts</span>
+<span class="sd">    e.g. discrete case) and `z_src_distribution` (known source redshift</span>
+<span class="sd">    distribution e.g. continuous case requiring integration) options for</span>
+<span class="sd">    `z_src_model`. We will need :math:`\gamma_\infty` and :math:`\kappa_\infty`</span>
+<span class="sd">    for alternative z_src_models using :math:`\beta_s`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">gcm</span><span class="o">.</span><span class="n">_check_input_radius</span><span class="p">(</span><span class="n">r_proj</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="n">z_src_model</span> <span class="o">==</span> <span class="s1">&#39;single_plane&#39;</span><span class="p">:</span>
 
         <span class="n">gcm</span><span class="o">.</span><span class="n">set_cosmo</span><span class="p">(</span><span class="n">cosmo</span><span class="p">)</span>
-        <span class="n">gcm</span><span class="o">.</span><span class="n">set_halo_density_profile</span><span class="p">(</span><span class="n">halo_profile_model</span><span class="o">=</span><span class="n">halo_profile_model</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="n">massdef</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef</span><span class="p">)</span>
+        <span class="n">gcm</span><span class="o">.</span><span class="n">set_halo_density_profile</span><span class="p">(</span>
+            <span class="n">halo_profile_model</span><span class="o">=</span><span class="n">halo_profile_model</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="n">massdef</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef</span><span class="p">)</span>
         <span class="n">gcm</span><span class="o">.</span><span class="n">set_concentration</span><span class="p">(</span><span class="n">cdelta</span><span class="p">)</span>
         <span class="n">gcm</span><span class="o">.</span><span class="n">set_mass</span><span class="p">(</span><span class="n">mdelta</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">r_proj</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1.e-11</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rmin = </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">r_proj</span><span class="p">)</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2"> Mpc/h! This value is too small and may cause computational issues.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Rmin = </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">r_proj</span><span class="p">)</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2"> Mpc/h! This value is too small &quot;</span>
+                <span class="s2">&quot;and may cause computational issues.&quot;</span><span class="p">)</span>
 
         <span class="n">gammat</span> <span class="o">=</span> <span class="n">gcm</span><span class="o">.</span><span class="n">eval_tangential_shear</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cluster</span><span class="p">,</span> <span class="n">z_source</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
@@ -496,7 +505,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    r_proj : array_like</span>
+<span class="sd">    r_proj : array_like, float</span>
 <span class="sd">        The projected radial positions in :math:`M\!pc`.</span>
 <span class="sd">    mdelta : float</span>
 <span class="sd">        Galaxy cluster mass in :math:`M_\odot`.</span>
@@ -511,21 +520,20 @@
 <span class="sd">    delta_mdef : int, optional</span>
 <span class="sd">        Mass overdensity definition.  Defaults to 200.</span>
 <span class="sd">    halo_profile_model : str, optional</span>
-<span class="sd">        Profile model parameterization, with the following supported options:</span>
-<span class="sd">            `nfw` (default)</span>
-<span class="sd">            `einasto` - valid in numcosmo and ccl (version&gt;=TBA)</span>
-<span class="sd">            `hernquist` - valid in numcosmo and ccl (version&gt;=TBA)</span>
+<span class="sd">        Profile model parameterization (letter case independent):</span>
+<span class="sd">            `nfw` (default);</span>
+<span class="sd">            `einasto` - valid in numcosmo and ccl;</span>
+<span class="sd">            `hernquist` - valid in numcosmo and ccl;</span>
 <span class="sd">    massdef : str, optional</span>
-<span class="sd">        Profile mass definition, with the following supported options:</span>
-<span class="sd">            `mean` (default)</span>
-<span class="sd">            `critical` - not in cluster_toolkit</span>
-<span class="sd">            `virial` - not in cluster_toolkit</span>
+<span class="sd">        Profile mass definition, with the following supported options (letter case independent):</span>
+<span class="sd">            `mean` (default);</span>
+<span class="sd">            `critical` - not in cluster_toolkit;</span>
+<span class="sd">            `virial` - not in cluster_toolkit;</span>
 <span class="sd">    z_src_model : str, optional</span>
 <span class="sd">        Source redshift model, with the following supported options:</span>
-<span class="sd">        `single_plane` (default) - all sources at one redshift</span>
-<span class="sd">        `known_z_src` - known individual source galaxy redshifts e.g. discrete case</span>
-<span class="sd">        `z_src_distribution` - known source redshift distribution e.g. continuous</span>
-<span class="sd">        case requiring integration.</span>
+<span class="sd">            `single_plane` (default) - all sources at one redshift (if</span>
+<span class="sd">            `z_source` is a float) or known individual source galaxy redshifts</span>
+<span class="sd">            (if `z_source` is an array and `r_proj` is a float);</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -534,16 +542,18 @@
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
-<span class="sd">    Need to figure out if we want to raise exceptions rather than errors here?</span>
+<span class="sd">    TODO: Implement `known_z_src` (known individual source galaxy redshifts</span>
+<span class="sd">    e.g. discrete case) and `z_src_distribution` (known source redshift</span>
+<span class="sd">    distribution e.g. continuous case requiring integration) options for</span>
+<span class="sd">    `z_src_model`. We will need :math:`\gamma_\infty` and :math:`\kappa_\infty`</span>
+<span class="sd">    for alternative z_src_models using :math:`\beta_s`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">sigma</span> <span class="o">=</span> <span class="n">compute_surface_density</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">mdelta</span><span class="p">,</span> <span class="n">cdelta</span><span class="p">,</span> <span class="n">z_cluster</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span>
-                                    <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="o">=</span><span class="n">halo_profile_model</span><span class="p">,</span>
-                                    <span class="n">massdef</span><span class="o">=</span><span class="n">massdef</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">z_src_model</span> <span class="o">==</span> <span class="s1">&#39;single_plane&#39;</span><span class="p">:</span>
 
         <span class="n">gcm</span><span class="o">.</span><span class="n">set_cosmo</span><span class="p">(</span><span class="n">cosmo</span><span class="p">)</span>
-        <span class="n">gcm</span><span class="o">.</span><span class="n">set_halo_density_profile</span><span class="p">(</span><span class="n">halo_profile_model</span><span class="o">=</span><span class="n">halo_profile_model</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="n">massdef</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef</span><span class="p">)</span>
+        <span class="n">gcm</span><span class="o">.</span><span class="n">set_halo_density_profile</span><span class="p">(</span>
+            <span class="n">halo_profile_model</span><span class="o">=</span><span class="n">halo_profile_model</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="n">massdef</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef</span><span class="p">)</span>
         <span class="n">gcm</span><span class="o">.</span><span class="n">set_concentration</span><span class="p">(</span><span class="n">cdelta</span><span class="p">)</span>
         <span class="n">gcm</span><span class="o">.</span><span class="n">set_mass</span><span class="p">(</span><span class="n">mdelta</span><span class="p">)</span>
 
@@ -558,20 +568,23 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsupported z_src_model&quot;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">z_source</span><span class="p">)</span><span class="o">&lt;=</span><span class="n">z_cluster</span><span class="p">):</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">z_source</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">z_cluster</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s1">&#39;Some source redshifts are lower than the cluster redshift.&#39;</span>
+            <span class="s1">&#39; kappa = 0 for those galaxies.&#39;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">kappa</span></div>
 
 
-<div class="viewcode-block" id="compute_reduced_tangential_shear"><a class="viewcode-back" href="../../../api/clmm.theory.numcosmo.html#clmm.theory.compute_reduced_tangential_shear">[docs]</a><span class="k">def</span> <span class="nf">compute_reduced_tangential_shear</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">mdelta</span><span class="p">,</span> <span class="n">cdelta</span><span class="p">,</span> <span class="n">z_cluster</span><span class="p">,</span> <span class="n">z_source</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span>
-                                     <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span>
-                                     <span class="n">z_src_model</span><span class="o">=</span><span class="s1">&#39;single_plane&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="compute_reduced_tangential_shear"><a class="viewcode-back" href="../../../api/clmm.theory.numcosmo.html#clmm.theory.compute_reduced_tangential_shear">[docs]</a><span class="k">def</span> <span class="nf">compute_reduced_tangential_shear</span><span class="p">(</span>
+        <span class="n">r_proj</span><span class="p">,</span> <span class="n">mdelta</span><span class="p">,</span> <span class="n">cdelta</span><span class="p">,</span> <span class="n">z_cluster</span><span class="p">,</span> <span class="n">z_source</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span>
+        <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span>
+        <span class="n">z_src_model</span><span class="o">=</span><span class="s1">&#39;single_plane&#39;</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    r_proj : array_like</span>
+<span class="sd">    r_proj : array_like, float</span>
 <span class="sd">        The projected radial positions in :math:`M\!pc`.</span>
 <span class="sd">    mdelta : float</span>
 <span class="sd">        Galaxy cluster mass in :math:`M_\odot`.</span>
@@ -586,21 +599,20 @@
 <span class="sd">    delta_mdef : int, optional</span>
 <span class="sd">        Mass overdensity definition.  Defaults to 200.</span>
 <span class="sd">    halo_profile_model : str, optional</span>
-<span class="sd">        Profile model parameterization, with the following supported options:</span>
-<span class="sd">            `nfw` (default)</span>
-<span class="sd">            `einasto` - valid in numcosmo and ccl (version&gt;=TBA)</span>
-<span class="sd">            `hernquist` - valid in numcosmo and ccl (version&gt;=TBA)</span>
+<span class="sd">        Profile model parameterization (letter case independent):</span>
+<span class="sd">            `nfw` (default);</span>
+<span class="sd">            `einasto` - valid in numcosmo and ccl;</span>
+<span class="sd">            `hernquist` - valid in numcosmo and ccl;</span>
 <span class="sd">    massdef : str, optional</span>
-<span class="sd">        Profile mass definition, with the following supported options:</span>
-<span class="sd">            `mean` (default)</span>
-<span class="sd">            `critical` - not in cluster_toolkit</span>
-<span class="sd">            `virial` - not in cluster_toolkit</span>
+<span class="sd">        Profile mass definition, with the following supported options (letter case independent):</span>
+<span class="sd">            `mean` (default);</span>
+<span class="sd">            `critical` - not in cluster_toolkit;</span>
+<span class="sd">            `virial` - not in cluster_toolkit;</span>
 <span class="sd">    z_src_model : str, optional</span>
 <span class="sd">        Source redshift model, with the following supported options:</span>
-<span class="sd">        `single_plane` (default) - all sources at one redshift</span>
-<span class="sd">        `known_z_src` - known individual source galaxy redshifts e.g. discrete case</span>
-<span class="sd">        `z_src_distribution` - known source redshift distribution, e.g. continuous</span>
-<span class="sd">        case requiring integration.</span>
+<span class="sd">            `single_plane` (default) - all sources at one redshift (if</span>
+<span class="sd">            `z_source` is a float) or known individual source galaxy redshifts</span>
+<span class="sd">            (if `z_source` is an array and `r_proj` is a float);</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -609,16 +621,24 @@
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
-<span class="sd">    Need to figure out if we want to raise exceptions rather than errors here?</span>
+<span class="sd">    TODO: Implement `known_z_src` (known individual source galaxy redshifts</span>
+<span class="sd">    e.g. discrete case) and `z_src_distribution` (known source redshift</span>
+<span class="sd">    distribution e.g. continuous case requiring integration) options for</span>
+<span class="sd">    `z_src_model`. We will need :math:`\gamma_\infty` and :math:`\kappa_\infty`</span>
+<span class="sd">    for alternative z_src_models using :math:`\beta_s`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">gcm</span><span class="o">.</span><span class="n">_check_input_radius</span><span class="p">(</span><span class="n">r_proj</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="n">z_src_model</span> <span class="o">==</span> <span class="s1">&#39;single_plane&#39;</span><span class="p">:</span>
 
         <span class="n">gcm</span><span class="o">.</span><span class="n">set_cosmo</span><span class="p">(</span><span class="n">cosmo</span><span class="p">)</span>
-        <span class="n">gcm</span><span class="o">.</span><span class="n">set_halo_density_profile</span><span class="p">(</span><span class="n">halo_profile_model</span><span class="o">=</span><span class="n">halo_profile_model</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="n">massdef</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef</span><span class="p">)</span>
+        <span class="n">gcm</span><span class="o">.</span><span class="n">set_halo_density_profile</span><span class="p">(</span>
+            <span class="n">halo_profile_model</span><span class="o">=</span><span class="n">halo_profile_model</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="n">massdef</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef</span><span class="p">)</span>
         <span class="n">gcm</span><span class="o">.</span><span class="n">set_concentration</span><span class="p">(</span><span class="n">cdelta</span><span class="p">)</span>
         <span class="n">gcm</span><span class="o">.</span><span class="n">set_mass</span><span class="p">(</span><span class="n">mdelta</span><span class="p">)</span>
 
-        <span class="n">red_tangential_shear</span> <span class="o">=</span> <span class="n">gcm</span><span class="o">.</span><span class="n">eval_reduced_tangential_shear</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cluster</span><span class="p">,</span> <span class="n">z_source</span><span class="p">)</span>
+        <span class="n">red_tangential_shear</span> <span class="o">=</span> <span class="n">gcm</span><span class="o">.</span><span class="n">eval_reduced_tangential_shear</span><span class="p">(</span>
+            <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cluster</span><span class="p">,</span> <span class="n">z_source</span><span class="p">)</span>
 
     <span class="c1"># elif z_src_model == &#39;known_z_src&#39;: # Discrete case</span>
     <span class="c1">#     raise NotImplementedError(&#39;Need to implemnt Beta_s functionality, or average&#39;+</span>
@@ -629,29 +649,27 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsupported z_src_model&quot;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">z_source</span><span class="p">)</span><span class="o">&lt;=</span><span class="n">z_cluster</span><span class="p">):</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Some source redshifts are lower than the cluster redshift. shear = 0 for those galaxies.&#39;</span><span class="p">)</span>
-
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">z_source</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">z_cluster</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s1">&#39;Some source redshifts are lower than the cluster redshift.&#39;</span>
+            <span class="s1">&#39; shear = 0 for those galaxies.&#39;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">red_tangential_shear</span></div>
-
 
 <span class="c1"># The magnification is computed taking into account just the tangential shear. This is valid for</span>
 <span class="c1"># spherically averaged profiles, e.g., NFW and Einasto (by construction the cross shear is zero).</span>
 
 
 <div class="viewcode-block" id="compute_magnification"><a class="viewcode-back" href="../../../api/clmm.theory.numcosmo.html#clmm.theory.compute_magnification">[docs]</a><span class="k">def</span> <span class="nf">compute_magnification</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">mdelta</span><span class="p">,</span> <span class="n">cdelta</span><span class="p">,</span> <span class="n">z_cluster</span><span class="p">,</span> <span class="n">z_source</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
-                        <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">z_src_model</span><span class="o">=</span><span class="s1">&#39;single_plane&#39;</span><span class="p">):</span>
+                          <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">z_src_model</span><span class="o">=</span><span class="s1">&#39;single_plane&#39;</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes the magnification</span>
 
 <span class="sd">    .. math::</span>
 <span class="sd">        \mu = \frac{1}{(1-\kappa)^2-|\gamma_t|^2}</span>
 
-
-
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    r_proj : array_like</span>
+<span class="sd">    r_proj : array_like, float</span>
 <span class="sd">        The projected radial positions in :math:`M\!pc`.</span>
 <span class="sd">    mdelta : float</span>
 <span class="sd">        Galaxy cluster mass in :math:`M_\odot`.</span>
@@ -666,40 +684,44 @@
 <span class="sd">    delta_mdef : int, optional</span>
 <span class="sd">        Mass overdensity definition.  Defaults to 200.</span>
 <span class="sd">    halo_profile_model : str, optional</span>
-<span class="sd">        Profile model parameterization, with the following supported options:</span>
-<span class="sd">            `nfw` (default)</span>
-<span class="sd">            `einasto` - valid in numcosmo and ccl (version&gt;=TBA)</span>
-<span class="sd">            `hernquist` - valid in numcosmo and ccl (version&gt;=TBA)</span>
+<span class="sd">        Profile model parameterization (letter case independent):</span>
+<span class="sd">            `nfw` (default);</span>
+<span class="sd">            `einasto` - valid in numcosmo and ccl;</span>
+<span class="sd">            `hernquist` - valid in numcosmo and ccl;</span>
 <span class="sd">    massdef : str, optional</span>
-<span class="sd">        Profile mass definition, with the following supported options:</span>
-<span class="sd">            `mean` (default)</span>
-<span class="sd">            `critical` - not in cluster_toolkit</span>
-<span class="sd">            `virial` - not in cluster_toolkit</span>
+<span class="sd">        Profile mass definition, with the following supported options (letter case independent):</span>
+<span class="sd">            `mean` (default);</span>
+<span class="sd">            `critical` - not in cluster_toolkit;</span>
+<span class="sd">            `virial` - not in cluster_toolkit;</span>
 <span class="sd">    z_src_model : str, optional</span>
 <span class="sd">        Source redshift model, with the following supported options:</span>
-<span class="sd">        `single_plane` (default) - all sources at one redshift</span>
-<span class="sd">        `known_z_src` - known individual source galaxy redshifts e.g. discrete case</span>
-<span class="sd">        `z_src_distribution` - known source redshift distribution e.g. continuous</span>
-<span class="sd">        case requiring integration.</span>
+<span class="sd">            `single_plane` (default) - all sources at one redshift (if</span>
+<span class="sd">            `z_source` is a float) or known individual source galaxy redshifts</span>
+<span class="sd">            (if `z_source` is an array and `r_proj` is a float);</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    mu : array_like, float</span>
-<span class="sd">        magnification, mu.</span>
+<span class="sd">    magnigication : array_like, float</span>
+<span class="sd">        Magnification (mu).</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
-<span class="sd">    Need to figure out if we want to raise exceptions rather than errors here?</span>
+<span class="sd">    TODO: Implement `known_z_src` (known individual source galaxy redshifts e.g. discrete case) and</span>
+<span class="sd">    `z_src_distribution` (known source redshift distribution e.g. continuous case requiring</span>
+<span class="sd">    integration) options for `z_src_model`. We will need :math:`\gamma_\infty` and</span>
+<span class="sd">    :math:`\kappa_\infty` for alternative z_src_models using :math:`\beta_s`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">gcm</span><span class="o">.</span><span class="n">_check_input_radius</span><span class="p">(</span><span class="n">r_proj</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">z_src_model</span> <span class="o">==</span> <span class="s1">&#39;single_plane&#39;</span><span class="p">:</span>
 
         <span class="n">gcm</span><span class="o">.</span><span class="n">set_cosmo</span><span class="p">(</span><span class="n">cosmo</span><span class="p">)</span>
-        <span class="n">gcm</span><span class="o">.</span><span class="n">set_halo_density_profile</span><span class="p">(</span><span class="n">halo_profile_model</span><span class="o">=</span><span class="n">halo_profile_model</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="n">massdef</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef</span><span class="p">)</span>
+        <span class="n">gcm</span><span class="o">.</span><span class="n">set_halo_density_profile</span><span class="p">(</span>
+            <span class="n">halo_profile_model</span><span class="o">=</span><span class="n">halo_profile_model</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="n">massdef</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef</span><span class="p">)</span>
         <span class="n">gcm</span><span class="o">.</span><span class="n">set_concentration</span><span class="p">(</span><span class="n">cdelta</span><span class="p">)</span>
         <span class="n">gcm</span><span class="o">.</span><span class="n">set_mass</span><span class="p">(</span><span class="n">mdelta</span><span class="p">)</span>
 
-        <span class="n">mu</span> <span class="o">=</span> <span class="n">gcm</span><span class="o">.</span><span class="n">eval_magnification</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cluster</span><span class="p">,</span> <span class="n">z_source</span><span class="p">)</span>
+        <span class="n">magnification</span> <span class="o">=</span> <span class="n">gcm</span><span class="o">.</span><span class="n">eval_magnification</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cluster</span><span class="p">,</span> <span class="n">z_source</span><span class="p">)</span>
 
     <span class="c1"># elif z_src_model == &#39;known_z_src&#39;: # Discrete case</span>
     <span class="c1">#     raise NotImplementedError(&#39;Need to implemnt Beta_s functionality, or average&#39;+\</span>
@@ -710,35 +732,40 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsupported z_src_model&quot;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">z_source</span><span class="p">)</span><span class="o">&lt;=</span><span class="n">z_cluster</span><span class="p">):</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Some source redshifts are lower than the cluster redshift. mu = 1 for those galaxies.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">z_source</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">z_cluster</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s1">&#39;Some source redshifts are lower than the cluster redshift.&#39;</span>
+            <span class="s1">&#39; magnification = 1 for those galaxies.&#39;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">mu</span></div>
+    <span class="k">return</span> <span class="n">magnification</span></div>
 </pre></div>
 
            </div>
            
           </div>
           <footer>
+  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2018-2021, LSST DESC CLMM Contributors.
+        
+        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
 
     </p>
   </div>
     
     
     
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
+
         </div>
       </div>
 

@@ -40,6 +40,9 @@ First, we import some standard packages.
     from astropy import units
     plt.rcParams['font.family']=['gothambook','gotham','gotham-book','serif']
     
+    import warnings
+    warnings.filterwarnings('ignore')
+    
     clmm.__version__
 
 
@@ -47,7 +50,7 @@ First, we import some standard packages.
 
 .. parsed-literal::
 
-    '0.9.1'
+    '1.0.0'
 
 
 
@@ -109,16 +112,6 @@ photoz errors + shape noise
     ideal_data = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration, cosmo, 'chang13', zsrc_min = cluster_z + 0.1, ngals=ngals)
     noisy_data = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration, cosmo, 'chang13', zsrc_min = cluster_z + 0.1,
                                               shapenoise=0.05, photoz_sigma_unscaled=0.05, ngals=ngals)
-
-
-.. parsed-literal::
-
-    /pbs/home/c/ccombet/.conda/envs/mydesc2/lib/python3.7/site-packages/numpy/ma/core.py:2832: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray
-      order=order, subok=True, ndmin=ndmin)
-    /pbs/home/c/ccombet/.conda/envs/mydesc2/lib/python3.7/site-packages/clmm-0.9.1-py3.7.egg/clmm/cosmology/cluster_toolkit.py:69: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /pbs/home/c/ccombet/.conda/envs/mydesc2/lib/python3.7/site-packages/clmm-0.9.1-py3.7.egg/clmm/cosmology/cluster_toolkit.py:79: RuntimeWarning: divide by zero encountered in true_divide
-    /pbs/home/c/ccombet/.conda/envs/mydesc2/lib/python3.7/site-packages/clmm-0.9.1-py3.7.egg/clmm/theory/func_layer.py:354: UserWarning: Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.
-
 
 The galaxy catalogs are converted to a ``clmm.GalaxyCluster`` object and
 may be saved for later use.
@@ -276,12 +269,6 @@ Before fitting, let’s first vizualise these models using the known true mass
     gt_model_noisy_singlez = model_reduced_tangential_shear_singlez(r,logm, cl_noisy.profile['z'])
     gt_model_noisy_zdistrib = model_reduced_tangential_shear_zdistrib(r,logm, noisy_data, cl_noisy, cl_noisy.profile)
 
-
-.. parsed-literal::
-
-    /pbs/home/c/ccombet/.conda/envs/mydesc2/lib/python3.7/site-packages/clmm-0.9.1-py3.7.egg/clmm/theory/func_layer.py:425: UserWarning: Some source redshifts are lower than the cluster redshift. shear = 0 for those galaxies.
-
-
 .. code:: ipython3
 
     plt.figure(figsize=(20,8))
@@ -315,7 +302,7 @@ Before fitting, let’s first vizualise these models using the known true mass
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fc0f42b6090>
+    <matplotlib.legend.Legend at 0x7fa5f92c38b0>
 
 
 
@@ -383,14 +370,6 @@ error to mass as :math:`\Delta M = M_{fit}\log(10)\Delta (\log_{10}M)`.
     m_est_err_noisy_singlez =  m_est_noisy_singlez * np.sqrt(pcov[0][0]) * np.log(10) 
 
 
-
-.. parsed-literal::
-
-    /pbs/home/c/ccombet/.conda/envs/mydesc2/lib/python3.7/site-packages/clmm-0.9.1-py3.7.egg/clmm/cosmology/cluster_toolkit.py:69: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /pbs/home/c/ccombet/.conda/envs/mydesc2/lib/python3.7/site-packages/clmm-0.9.1-py3.7.egg/clmm/cosmology/cluster_toolkit.py:79: RuntimeWarning: divide by zero encountered in true_divide
-    /pbs/home/c/ccombet/.conda/envs/mydesc2/lib/python3.7/site-packages/clmm-0.9.1-py3.7.egg/clmm/theory/func_layer.py:425: UserWarning: Some source redshifts are lower than the cluster redshift. shear = 0 for those galaxies.
-
-
 .. code:: ipython3
 
     print(f'The input mass = {cluster_m:.2e} Msun\n')
@@ -410,13 +389,13 @@ error to mass as :math:`\Delta M = M_{fit}\log(10)\Delta (\log_{10}M)`.
     
     Without accounting for the redshift distribution in the model
     
-    Best fit mass for ideal data = 8.56e+14 +/- 3.21e+12 Msun
-    Best fit mass for noisy data = 8.32e+14 +/- 2.31e+13 Msun
+    Best fit mass for ideal data = 8.56e+14 +/- 3.73e+12 Msun
+    Best fit mass for noisy data = 8.32e+14 +/- 3.00e+13 Msun
     
     Accounting for the redshift distribution in the model
     
-    Best fit mass for ideal data = 1.01e+15 +/- 2.16e+11 Msun
-    Best fit mass for noisy data = 1.00e+15 +/- 2.66e+13 Msun
+    Best fit mass for ideal data = 1.01e+15 +/- 4.41e+12 Msun
+    Best fit mass for noisy data = 1.00e+15 +/- 3.62e+13 Msun
 
 
 As expected, the reconstructed mass is biased when the redshift
@@ -477,7 +456,7 @@ best-fit masses.
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fc0f3ead110>
+    <matplotlib.legend.Legend at 0x7fa5faa26e50>
 
 
 

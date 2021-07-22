@@ -3,11 +3,12 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>clmm.utils module &mdash; CLMM 0.9.1 documentation</title>
+  <title>clmm.utils module &mdash; CLMM 1.0.0 documentation</title>
   
 
   
@@ -16,10 +17,7 @@
 
   
   
-
   
-  
-
   
 
   
@@ -32,6 +30,7 @@
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
@@ -54,7 +53,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> CLMM
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> CLMM
           
 
           
@@ -64,7 +63,7 @@
             
             
               <div class="version">
-                0.9.1
+                1.0.0
               </div>
             
           
@@ -89,27 +88,27 @@
               
             
             
-              <p class="caption"><span class="caption-text">Getting Started</span></p>
+              <p><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../source/overview.html">Rapid overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../source/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../source/citing.html">Citing CLMM</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Usage Demos</span></p>
+<p><span class="caption-text">Usage Demos</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Mass Fitting Examples</span></p>
+<p><span class="caption-text">Mass Fitting Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog_NC.html">Fit halo mass to shear profile using Numcosmo statistical framework</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Reference</span></p>
+<p><span class="caption-text">Reference</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="clmm.constants.html">clmm.constants module</a></li>
@@ -182,8 +181,6 @@
 
 
 
-
-
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -197,7 +194,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-          
+            
             <a href="../_sources/api/clmm.utils.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -211,7 +208,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-clmm.utils">
+  <section id="module-clmm.utils">
 <span id="clmm-utils-module"></span><h1>clmm.utils module<a class="headerlink" href="#module-clmm.utils" title="Permalink to this headline">¶</a></h1>
 <p>General utility functions that are used in multiple modules</p>
 <dl class="py function">
@@ -249,8 +246,8 @@
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>x1, x2</strong> (<em>float or array</em>) – Ellipticities using the “chi definition”</p></li>
-<li><p><strong>e1, e2</strong> (<em>float or array</em>) – Ellipticities using the “epsilon definition”</p></li>
+<li><p><strong>chi1, chi2</strong> (<em>float or array</em>) – Ellipticities using the “chi definition”</p></li>
+<li><p><strong>epsilon1, epsilon2</strong> (<em>float or array</em>) – Ellipticities using the “epsilon definition”</p></li>
 </ul>
 </p>
 </dd>
@@ -263,10 +260,12 @@
 <dd><p>Compute lensed ellipticities from the intrinsic ellipticities, shear and convergence.
 Following Schneider et al. (2006)</p>
 <div class="math notranslate nohighlight">
-\[\epsilon^{\rm lensed}=\epsilon^{\rm lensed}_1+i\epsilon^{\rm lensed}_2=\frac{\epsilon^{\rm true}+g}{1+g^\ast\epsilon^{\rm true}},\]</div>
-<p>where, the complex reduced shear <span class="math notranslate nohighlight">\(g\)</span> is obtained from the shear <span class="math notranslate nohighlight">\(\gamma=\gamma_1+i\gamma_2\)</span>
-and convergence <span class="math notranslate nohighlight">\(\kappa\)</span> as <span class="math notranslate nohighlight">\(g = \gamma/(1-\kappa)\)</span>, and the complex intrinsic ellipticity
-is <span class="math notranslate nohighlight">\(\epsilon^{\rm true}=\epsilon^{\rm true}_1+i\epsilon^{\rm true}_2\)</span></p>
+\[\epsilon^{\rm lensed}=\epsilon^{\rm lensed}_1+i\epsilon^{\rm lensed}_2=
+\frac{\epsilon^{\rm true}+g}{1+g^\ast\epsilon^{\rm true}},\]</div>
+<p>where, the complex reduced shear <span class="math notranslate nohighlight">\(g\)</span> is obtained from the shear
+<span class="math notranslate nohighlight">\(\gamma=\gamma_1+i\gamma_2\)</span> and convergence <span class="math notranslate nohighlight">\(\kappa\)</span> as <span class="math notranslate nohighlight">\(g =
+\gamma/(1-\kappa)\)</span>, and the complex intrinsic ellipticity is <span class="math notranslate nohighlight">\(\epsilon^{\rm
+true}=\epsilon^{\rm true}_1+i\epsilon^{\rm true}_2\)</span></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -297,9 +296,12 @@ contain non-finite values, these are filtered.</p>
 <li><p><strong>xvals</strong> (<em>array_like</em>) – Values to be binned</p></li>
 <li><p><strong>yvals</strong> (<em>array_like</em>) – Values to compute statistics on</p></li>
 <li><p><strong>xbins</strong> (<em>array_like</em>) – Bin edges to sort into</p></li>
-<li><p><strong>error_model</strong> (<em>str</em><em>, </em><em>optional</em>) – Error model to use for y uncertainties.
-std/sqrt_n - Standard Deviation/sqrt(Counts) (Default)
-std - Standard deviation</p></li>
+<li><p><strong>error_model</strong> (<em>str</em><em>, </em><em>optional</em>) – <dl class="simple">
+<dt>Error model to use for y uncertainties. (letter case independent)</dt><dd><p><cite>std/sqrt_n</cite> - Standard Deviation/sqrt(Counts) (Default)
+<cite>std</cite> - Standard deviation</p>
+</dd>
+</dl>
+</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -320,27 +322,31 @@ corresponding value is between (xbins[i-1], xbins[i]).</p></li>
 <dl class="py function">
 <dt id="clmm.utils.convert_shapes_to_epsilon">
 <code class="sig-prename descclassname">clmm.utils.</code><code class="sig-name descname">convert_shapes_to_epsilon</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">shape_1</span></em>, <em class="sig-param"><span class="n">shape_2</span></em>, <em class="sig-param"><span class="n">shape_definition</span><span class="o">=</span><span class="default_value">'epsilon'</span></em>, <em class="sig-param"><span class="n">kappa</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#convert_shapes_to_epsilon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.utils.convert_shapes_to_epsilon" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert shape components 1 and 2 appropriately to make them estimators of the reduced shear once averaged.
-The shape 1 and 2 components may correspond to ellipticities according the <span class="math notranslate nohighlight">\(\epsilon\)</span>- or <span class="math notranslate nohighlight">\(\chi\)</span>-definition,
-but also to the 1 and 2 components of the shear. See Bartelmann &amp; Schneider 2001 for details (<a class="reference external" href="https://arxiv.org/pdf/astro-ph/9912508.pdf">https://arxiv.org/pdf/astro-ph/9912508.pdf</a>).</p>
+<dd><p>Convert shape components 1 and 2 appropriately to make them estimators of the reduced shear
+once averaged.  The shape 1 and 2 components may correspond to ellipticities according the
+<span class="math notranslate nohighlight">\(\epsilon\)</span>- or <span class="math notranslate nohighlight">\(\chi\)</span>-definition, but also to the 1 and 2 components of the shear.
+See Bartelmann &amp; Schneider 2001 for details (<a class="reference external" href="https://arxiv.org/pdf/astro-ph/9912508.pdf">https://arxiv.org/pdf/astro-ph/9912508.pdf</a>).</p>
 <p>The <span class="math notranslate nohighlight">\(\epsilon\)</span>-ellipticity is a direct estimator of
-the reduced shear. The shear <span class="math notranslate nohighlight">\(\gamma\)</span> may be converted to reduced shear <span class="math notranslate nohighlight">\(g\)</span> if the convergence <span class="math notranslate nohighlight">\(\kappa\)</span> is known.
-The conversions are given below.</p>
+the reduced shear. The shear <span class="math notranslate nohighlight">\(\gamma\)</span> may be converted to reduced shear <span class="math notranslate nohighlight">\(g\)</span> if the
+convergence <span class="math notranslate nohighlight">\(\kappa\)</span> is known. The conversions are given below.</p>
 <div class="math notranslate nohighlight">
 \[\epsilon = \frac{\chi}{1+(1-|\chi|^2)^{1/2}}\]</div>
 <div class="math notranslate nohighlight">
 \[g=\frac{\gamma}{1-\kappa}\]</div>
 <ul class="simple">
 <li><p>If <cite>shape_definition = ‘chi’</cite>, this function returns the corresponding <cite>epsilon</cite> ellipticities</p></li>
-<li><p>If <cite>shape_definition = ‘shear’</cite>, it returns the corresponding reduced shear, given the convergence <cite>kappa</cite></p></li>
-<li><p>If <cite>shape_definition = ‘epsilon’</cite> or <cite>‘reduced_shear’</cite>, it returns them as is as no conversion is needed.</p></li>
+<li><p>If <cite>shape_definition = ‘shear’</cite>, it returns the corresponding reduced shear, given the
+convergence <cite>kappa</cite></p></li>
+<li><p>If <cite>shape_definition = ‘epsilon’</cite> or <cite>‘reduced_shear’</cite>, it returns them as is as no conversion
+is needed.</p></li>
 </ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>shape_1</strong> (<em>array_like</em>) – Input shapes or shears along principal axis (g1 or e1)</p></li>
 <li><p><strong>shape_2</strong> (<em>array_like</em>) – Input shapes or shears along secondary axis (g2 or e2)</p></li>
-<li><p><strong>shape_definition</strong> (<em>str</em>) – Definition of the input shapes, can be ellipticities ‘epsilon’ or ‘chi’ or shears ‘shear’ or ‘reduced_shear’</p></li>
+<li><p><strong>shape_definition</strong> (<em>str</em>) – Definition of the input shapes, can be ellipticities ‘epsilon’ or ‘chi’ or shears ‘shear’ or
+‘reduced_shear’</p></li>
 <li><p><strong>kappa</strong> (<em>array_like</em>) – Convergence for transforming to a reduced shear. Default is 0</p></li>
 </ul>
 </dd>
@@ -358,7 +364,8 @@ The conversions are given below.</p>
 <dt id="clmm.utils.convert_units">
 <code class="sig-prename descclassname">clmm.utils.</code><code class="sig-name descname">convert_units</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dist1</span></em>, <em class="sig-param"><span class="n">unit1</span></em>, <em class="sig-param"><span class="n">unit2</span></em>, <em class="sig-param"><span class="n">redshift</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cosmo</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#convert_units"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.utils.convert_units" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convenience wrapper to convert between a combination of angular and physical units.</p>
-<p>Supported units: radians, degrees, arcmin, arcsec, Mpc, kpc, pc</p>
+<p>Supported units: radians, degrees, arcmin, arcsec, Mpc, kpc, pc
+(letter case independent)</p>
 <p>To convert between angular and physical units you must provide both
 a redshift and a cosmology object.</p>
 <dl class="field-list simple">
@@ -391,10 +398,13 @@ convert between physical and angular units</p></li>
 <li><p><strong>rmin</strong> (<em>float</em>) – Minimum bin edges wanted</p></li>
 <li><p><strong>rmax</strong> (<em>float</em>) – Maximum bin edges wanted</p></li>
 <li><p><strong>nbins</strong> (<em>float</em>) – Number of bins you want to create, default to 10.</p></li>
-<li><p><strong>method</strong> (<em>str</em><em>, </em><em>optional</em>) – Binning method to use
-‘evenwidth’ - Default, evenly spaced bins between rmin and rmax
-‘evenlog10width’ - Logspaced bins with even width in log10 between rmin and rmax
-‘equaloccupation’ - Bins with equal occupation numbers</p></li>
+<li><p><strong>method</strong> (<em>str</em><em>, </em><em>optional</em>) – <dl class="simple">
+<dt>Binning method to use (letter case independent)</dt><dd><p><cite>evenwidth</cite> - Default, evenly spaced bins between rmin and rmax
+<cite>evenlog10width</cite> - Logspaced bins with even width in log10 between rmin and rmax
+<cite>equaloccupation</cite> - Bins with equal occupation numbers</p>
+</dd>
+</dl>
+</p></li>
 <li><p><strong>source_seps</strong> (<em>array_like</em>) – Radial distance of source separations</p></li>
 </ul>
 </dd>
@@ -407,32 +417,35 @@ convert between physical and angular units</p></li>
 </dl>
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>
            
           </div>
           <footer>
+  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2018-2021, LSST DESC CLMM Contributors.
+        
+        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
 
     </p>
   </div>
     
     
     
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
+
         </div>
       </div>
 

@@ -3,11 +3,11 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8">
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.theory.numcosmo &mdash; CLMM 0.9.1 documentation</title>
+  <title>clmm.theory.numcosmo &mdash; CLMM 1.0.0 documentation</title>
   
 
   
@@ -16,10 +16,7 @@
 
   
   
-
   
-  
-
   
 
   
@@ -32,6 +29,7 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
@@ -52,7 +50,7 @@
           
 
           
-            <a href="../../../index.html" class="icon icon-home"> CLMM
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> CLMM
           
 
           
@@ -62,7 +60,7 @@
             
             
               <div class="version">
-                0.9.1
+                1.0.0
               </div>
             
           
@@ -87,27 +85,27 @@
               
             
             
-              <p class="caption"><span class="caption-text">Getting Started</span></p>
+              <p><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/overview.html">Rapid overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/citing.html">Citing CLMM</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Usage Demos</span></p>
+<p><span class="caption-text">Usage Demos</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Mass Fitting Examples</span></p>
+<p><span class="caption-text">Mass Fitting Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog_NC.html">Fit halo mass to shear profile using Numcosmo statistical framework</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Reference</span></p>
+<p><span class="caption-text">Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.constants.html">clmm.constants module</a></li>
@@ -180,8 +178,6 @@
 
 
 
-
-
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -206,20 +202,21 @@
            <div itemprop="articleBody">
             
   <h1>Source code for clmm.theory.numcosmo</h1><div class="highlight"><pre>
-<span></span><span class="c1"># NumCosmo implementation of CLMModeling</span>
-
-<span class="kn">import</span> <span class="nn">gi</span>
-<span class="n">gi</span><span class="o">.</span><span class="n">require_version</span><span class="p">(</span><span class="s1">&#39;NumCosmo&#39;</span><span class="p">,</span> <span class="s1">&#39;1.0&#39;</span><span class="p">)</span>
-<span class="n">gi</span><span class="o">.</span><span class="n">require_version</span><span class="p">(</span><span class="s1">&#39;NumCosmoMath&#39;</span><span class="p">,</span> <span class="s1">&#39;1.0&#39;</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">gi.repository</span> <span class="kn">import</span> <span class="n">NumCosmo</span> <span class="k">as</span> <span class="n">Nc</span>
-<span class="kn">from</span> <span class="nn">gi.repository</span> <span class="kn">import</span> <span class="n">NumCosmoMath</span> <span class="k">as</span> <span class="n">Ncm</span>
-
+<span></span><span class="sd">&quot;&quot;&quot;@file numcosmo.py</span>
+<span class="sd">NumCosmo implementation of CLMModeling</span>
+<span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">func_layer</span>
+<span class="kn">import</span> <span class="nn">gi</span>
+<span class="kn">from</span> <span class="nn">gi.repository</span> <span class="kn">import</span> <span class="n">NumCosmoMath</span> <span class="k">as</span> <span class="n">Ncm</span>
+<span class="kn">from</span> <span class="nn">gi.repository</span> <span class="kn">import</span> <span class="n">NumCosmo</span> <span class="k">as</span> <span class="n">Nc</span>
+<span class="n">gi</span><span class="o">.</span><span class="n">require_version</span><span class="p">(</span><span class="s1">&#39;NumCosmo&#39;</span><span class="p">,</span> <span class="s1">&#39;1.0&#39;</span><span class="p">)</span>
+<span class="n">gi</span><span class="o">.</span><span class="n">require_version</span><span class="p">(</span><span class="s1">&#39;NumCosmoMath&#39;</span><span class="p">,</span> <span class="s1">&#39;1.0&#39;</span><span class="p">)</span>
+
 <span class="kn">from</span> <span class="nn">.</span> <span class="n">func_layer</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">func_layer</span>
+
 <span class="kn">from</span> <span class="nn">.parent_class</span> <span class="kn">import</span> <span class="n">CLMModeling</span>
 
 <span class="kn">from</span> <span class="nn">..</span> <span class="n">cosmology</span><span class="o">.</span><span class="n">numcosmo</span> <span class="kn">import</span> <span class="nn">NumCosmoCosmology</span>
@@ -229,6 +226,28 @@
 
 
 <div class="viewcode-block" id="NumCosmoCLMModeling"><a class="viewcode-back" href="../../../api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.NumCosmoCLMModeling">[docs]</a><span class="k">class</span> <span class="nc">NumCosmoCLMModeling</span><span class="p">(</span><span class="n">CLMModeling</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Object with functions for halo mass modeling</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    backend: str</span>
+<span class="sd">        Name of the backend being used</span>
+<span class="sd">    massdef : str</span>
+<span class="sd">        Profile mass definition (`mean`, `critical`, `virial` - letter case independent)</span>
+<span class="sd">    delta_mdef : int</span>
+<span class="sd">        Mass overdensity definition.</span>
+<span class="sd">    halo_profile_model : str</span>
+<span class="sd">        Profile model parameterization (`nfw`, `einasto`, `hernquist` - letter case independent)</span>
+<span class="sd">    cosmo: Cosmology</span>
+<span class="sd">        Cosmology object</span>
+<span class="sd">    hdpm: Object</span>
+<span class="sd">        Backend object with halo profiles</span>
+<span class="sd">    mdef_dict: dict</span>
+<span class="sd">        Dictionary with the definitions for mass</span>
+<span class="sd">    hdpm_dict: dict</span>
+<span class="sd">        Dictionary with the definitions for profile</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># pylint: disable=too-many-instance-attributes</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">):</span>
         <span class="n">CLMModeling</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -238,7 +257,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">mdef_dict</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;mean&#39;</span><span class="p">:</span> <span class="n">Nc</span><span class="o">.</span><span class="n">HaloDensityProfileMassDef</span><span class="o">.</span><span class="n">MEAN</span><span class="p">,</span>
             <span class="s1">&#39;critical&#39;</span><span class="p">:</span> <span class="n">Nc</span><span class="o">.</span><span class="n">HaloDensityProfileMassDef</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">,</span>
-            <span class="s1">&#39;virial&#39;</span><span class="p">:</span><span class="n">Nc</span><span class="o">.</span><span class="n">HaloDensityProfileMassDef</span><span class="o">.</span><span class="n">VIRIAL</span><span class="p">}</span>
+            <span class="s1">&#39;virial&#39;</span><span class="p">:</span> <span class="n">Nc</span><span class="o">.</span><span class="n">HaloDensityProfileMassDef</span><span class="o">.</span><span class="n">VIRIAL</span><span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hdpm_dict</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;nfw&#39;</span><span class="p">:</span> <span class="n">Nc</span><span class="o">.</span><span class="n">HaloDensityProfileNFW</span><span class="o">.</span><span class="n">new</span><span class="p">,</span>
             <span class="s1">&#39;einasto&#39;</span><span class="p">:</span> <span class="n">Nc</span><span class="o">.</span><span class="n">HaloDensityProfileEinasto</span><span class="o">.</span><span class="n">new</span><span class="p">,</span>
@@ -248,29 +267,34 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">set_cosmo</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 
 <div class="viewcode-block" id="NumCosmoCLMModeling.set_cosmo"><a class="viewcode-back" href="../../../api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.NumCosmoCLMModeling.set_cosmo">[docs]</a>    <span class="k">def</span> <span class="nf">set_cosmo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;&quot;set cosmo&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_cosmo</span><span class="p">(</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">NumCosmoCosmology</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span> <span class="o">=</span> <span class="n">Nc</span><span class="o">.</span><span class="n">WLSurfaceMassDensity</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">dist</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">prepare_if_needed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="NumCosmoCLMModeling.set_halo_density_profile"><a class="viewcode-back" href="../../../api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.NumCosmoCLMModeling.set_halo_density_profile">[docs]</a>    <span class="k">def</span> <span class="nf">set_halo_density_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
-        <span class="c1"># Check if choices are supported</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">validate_definitions</span><span class="p">(</span><span class="n">massdef</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;&quot;set halo density profile&quot;&quot;&quot;</span>
+        <span class="c1"># Check if choices are supported and put in lower case</span>
+        <span class="n">massdef</span><span class="p">,</span> <span class="n">halo_profile_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_definitions</span><span class="p">(</span>
+            <span class="n">massdef</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="p">)</span>
 
         <span class="c1"># Check if we have already an instance of the required object, if not create one</span>
-        <span class="k">if</span> <span class="ow">not</span><span class="p">((</span><span class="n">halo_profile_model</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">halo_profile_model</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">massdef</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">massdef</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">delta_mdef</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta_mdef</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="ow">not</span><span class="p">((</span><span class="n">halo_profile_model</span><span class="o">==</span><span class="bp">self</span><span class="o">.</span><span class="n">halo_profile_model</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="p">(</span><span class="n">massdef</span><span class="o">==</span><span class="bp">self</span><span class="o">.</span><span class="n">massdef</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="p">(</span><span class="n">delta_mdef</span><span class="o">==</span><span class="bp">self</span><span class="o">.</span><span class="n">delta_mdef</span><span class="p">)):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">halo_profile_model</span> <span class="o">=</span> <span class="n">halo_profile_model</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">massdef</span> <span class="o">=</span> <span class="n">massdef</span>
 
             <span class="n">cur_cdelta</span> <span class="o">=</span> <span class="mf">0.0</span>
-            <span class="n">cur_mdelta</span> <span class="o">=</span> <span class="mf">0.0</span>
             <span class="n">cur_values</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="p">:</span>
                 <span class="n">cur_cdelta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">cDelta</span>
                 <span class="n">cur_log10_mdelta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">log10MDelta</span>
                 <span class="n">cur_values</span> <span class="o">=</span> <span class="kc">True</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdpm_dict</span><span class="p">[</span><span class="n">halo_profile_model</span><span class="p">](</span><span class="bp">self</span><span class="o">.</span><span class="n">mdef_dict</span><span class="p">[</span><span class="n">massdef</span><span class="p">],</span> <span class="n">delta_mdef</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdpm_dict</span><span class="p">[</span><span class="n">halo_profile_model</span><span class="p">](</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mdef_dict</span><span class="p">[</span><span class="n">massdef</span><span class="p">],</span> <span class="n">delta_mdef</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">cur_values</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">cDelta</span> <span class="o">=</span> <span class="n">cur_cdelta</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">log10MDelta</span> <span class="o">=</span> <span class="n">cur_log10_mdelta</span></div>
@@ -296,61 +320,82 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">prepare_if_needed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="NumCosmoCLMModeling.set_concentration"><a class="viewcode-back" href="../../../api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.NumCosmoCLMModeling.set_concentration">[docs]</a>    <span class="k">def</span> <span class="nf">set_concentration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cdelta</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">cDelta</span> <span class="o">=</span> <span class="n">cdelta</span></div>
+    <span class="k">def</span> <span class="nf">_set_concentration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cdelta</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;&quot; set concentration&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">cDelta</span> <span class="o">=</span> <span class="n">cdelta</span>
 
-<div class="viewcode-block" id="NumCosmoCLMModeling.set_mass"><a class="viewcode-back" href="../../../api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.NumCosmoCLMModeling.set_mass">[docs]</a>    <span class="k">def</span> <span class="nf">set_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mdelta</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">log10MDelta</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">mdelta</span><span class="p">)</span></div>
+    <span class="k">def</span> <span class="nf">_set_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mdelta</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;&quot; set mass&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">log10MDelta</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">mdelta</span><span class="p">)</span>
 
 <div class="viewcode-block" id="NumCosmoCLMModeling.eval_3d_density"><a class="viewcode-back" href="../../../api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.NumCosmoCLMModeling.eval_3d_density">[docs]</a>    <span class="k">def</span> <span class="nf">eval_3d_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;&quot;eval 3d density&quot;&quot;&quot;</span>
 
-        <span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">eval_density</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">,</span> <span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">f</span><span class="p">)(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span></div>
+        <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">eval_density</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">,</span> <span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">func</span><span class="p">)(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="NumCosmoCLMModeling.eval_surface_density"><a class="viewcode-back" href="../../../api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.NumCosmoCLMModeling.eval_surface_density">[docs]</a>    <span class="k">def</span> <span class="nf">eval_surface_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;&quot;eval surface density&quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">prepare_if_needed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">)</span>
-        <span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">sigma</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">f</span><span class="p">)(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span></div>
+        <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">sigma</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">func</span><span class="p">)(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="NumCosmoCLMModeling.eval_mean_surface_density"><a class="viewcode-back" href="../../../api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.NumCosmoCLMModeling.eval_mean_surface_density">[docs]</a>    <span class="k">def</span> <span class="nf">eval_mean_surface_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;&quot;eval mean surface density&quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">prepare_if_needed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">)</span>
-        <span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">sigma_mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">f</span><span class="p">)(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span></div>
+        <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">sigma_mean</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">func</span><span class="p">)(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="NumCosmoCLMModeling.eval_excess_surface_density"><a class="viewcode-back" href="../../../api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.NumCosmoCLMModeling.eval_excess_surface_density">[docs]</a>    <span class="k">def</span> <span class="nf">eval_excess_surface_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;&quot;eval excess surface density&quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">prepare_if_needed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">)</span>
-        <span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">sigma_excess</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">f</span><span class="p">)(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span></div>
+        <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">sigma_excess</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">func</span><span class="p">)(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="NumCosmoCLMModeling.eval_tangential_shear"><a class="viewcode-back" href="../../../api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.NumCosmoCLMModeling.eval_tangential_shear">[docs]</a>    <span class="k">def</span> <span class="nf">eval_tangential_shear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;&quot;eval tangential shear&quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">prepare_if_needed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">)</span>
-        <span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">shear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">f</span><span class="p">)(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span></div>
+        <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">shear</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">func</span><span class="p">)(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="NumCosmoCLMModeling.eval_convergence"><a class="viewcode-back" href="../../../api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.NumCosmoCLMModeling.eval_convergence">[docs]</a>    <span class="k">def</span> <span class="nf">eval_convergence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;&quot;eval convergence&quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">prepare_if_needed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">)</span>
-        <span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">convergence</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">f</span><span class="p">)(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span></div>
+        <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">convergence</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">func</span><span class="p">)(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="NumCosmoCLMModeling.eval_reduced_tangential_shear"><a class="viewcode-back" href="../../../api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.NumCosmoCLMModeling.eval_reduced_tangential_shear">[docs]</a>    <span class="k">def</span> <span class="nf">eval_reduced_tangential_shear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;&quot;eval reduced tangential shear&quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">prepare_if_needed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,(</span><span class="nb">list</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">z_src</span><span class="p">,(</span><span class="nb">list</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">r_proj</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">z_src</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">reduced_shear_array_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">r_proj</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">z_src</span><span class="p">),</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span>
+                <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">z_src</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span>
+                <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">r_proj</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">z_src</span><span class="p">)):</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">reduced_shear_array_equal</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">reduced_shear_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">r_proj</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">z_src</span><span class="p">),</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span></div>
+            <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">reduced_shear_array</span>
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">r_proj</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">,</span>
+                    <span class="mf">1.0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">z_src</span><span class="p">),</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="NumCosmoCLMModeling.eval_magnification"><a class="viewcode-back" href="../../../api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.NumCosmoCLMModeling.eval_magnification">[docs]</a>    <span class="k">def</span> <span class="nf">eval_magnification</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;&quot;eval magnification&quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">prepare_if_needed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">)</span>
-        <span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">magnification</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">f</span><span class="p">)(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span></div></div>
 
+        <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">magnification</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">func</span><span class="p">)(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span></div></div>
 
 <span class="n">Modeling</span> <span class="o">=</span> <span class="n">NumCosmoCLMModeling</span>
 </pre></div>
@@ -359,25 +404,28 @@
            
           </div>
           <footer>
+  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2018-2021, LSST DESC CLMM Contributors.
+        
+        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
 
     </p>
   </div>
     
     
     
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
+
         </div>
       </div>
 
