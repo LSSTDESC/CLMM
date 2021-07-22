@@ -1,5 +1,5 @@
 git fetch origin
-git merge origin/master
+git merge origin/main
 python setup.py install --user > /dev/null
 
 cd docs/
@@ -7,10 +7,10 @@ make clean
 make html
 cd ..
 
-MASTERCOMMIT="$(git log --pretty=format:'%h' -n 1 master)"
+MASTERCOMMIT="$(git log --pretty=format:'%h' -n 1 main)"
 
 git add docs/_build/
 git status
-git commit -m "Added master commit $MASTERCOMMIT to docs"
+git commit -m "Added main commit $MASTERCOMMIT to docs"
 git push
 git subtree push --prefix docs/_build/html/ origin gh-pages
