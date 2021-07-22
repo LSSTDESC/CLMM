@@ -24,7 +24,7 @@ Issues marked with the label `good first issue` are well-suited for new contribu
 Once you've [created a local copy of CLMM](INSTALL.md) on your machine, you can begin making changes to the code and submitting them for review.
 To do this, follow the following steps from within your local copy of CLMM (forked or base).
 
-1. Checkout a new branch to contain your code changes independently from the master repository.
+1. Checkout a new branch to contain your code changes independently from the `main` repository.
     [Branches](https://help.github.com/articles/about-branches/) allow you to isolate temporary development work without permanently affecting code in the repository.
     ```bash
     git checkout -b branchname
@@ -36,14 +36,14 @@ To do this, follow the following steps from within your local copy of CLMM (fork
     ```bash
     git add NAMES-OF-CHANGED-FILES
     git commit -m "Insert a descriptive commit message here"
-    git pull origin master
+    git pull origin main
     git push origin branchname
     ```
 4. You can continue to edit your code and push changes to the `branchname` remote branch.
-    Once you are satisfied with your changes, you can submit a [pull request](https://help.github.com/articles/about-pull-requests/) to merge your changes from `branchname` into the master branch.
+    Once you are satisfied with your changes, you can submit a [pull request](https://help.github.com/articles/about-pull-requests/) to merge your changes from `branchname` into the `main` branch.
     Navigate to the [CLMM Pull Requests](https://github.com/LSSTDESC/CLMM/pulls) and click 'New pull request.'
     Select `branchname`, fill out a title and description for the pull request, and, optionally, request review by a CLMM team member.
-    Once the pull request is approved, it will be merged into the CLMM master branch.
+    Once the pull request is approved, it will be merged into the CLMM `main` branch.
 
 NOTE: Code is not complete without unit tests and documentation. Please ensure that unit tests (both new and old) all pass and that docs compile successfully.
 
@@ -74,19 +74,19 @@ NOTE: We have had several branches that have exploded in commit number. If you a
 
 ## Steps to merging a pull request <a name="steps_to_merging_a_pull_request"></a>
 
-To ensure consistency between our code and documentation, we need to take care of a couple of more things after accepting a review on a PR into master.
+To ensure consistency between our code and documentation, we need to take care of a couple of more things after accepting a review on a PR into `main`.
 
 1. In the branch of the pull request, change the version number of the code located in `clmm/__init__.py`, commit and push. If you are unsure of how you should change the version number, don't hesitate to ask!
 
 We use [semantic versioning](https://semver.org/), X.Y.Z. If the PR makes a small change, such as a bug fix, documentation updates, style changes, etc., increment Z. If the PR adds a new feature, such as adding support for a new profile, increment Y (and reset Z to 0). If a PR adds a feature or makes a change that breaks the old API, increment X (and reset Y and Z to 0). After the first tagged release of CLMM, anything that is a candidate to increment X should be extensively discussed beforehand. 
 
-2. "Squash and Merge" the pull request into master. It asks for a squashed commit message. This should be descriptive of the feature or bug resolved in the PR and should be pre-prended by a [conventional commit scope](https://www.conventionalcommits.org/).
+2. "Squash and Merge" the pull request into `main`. It asks for a squashed commit message. This should be descriptive of the feature or bug resolved in the PR and should be pre-prended by a [conventional commit scope](https://www.conventionalcommits.org/).
 
 Please choose from `fix:`, `feat:`, `build:`, `chore:`, `ci:`, `docs:`, `style:`, `refactor:`, `perf:`, `test:`. If this commit breaks the previous API, add an explanation mark (for example, `fix!:`). Definitions of each scope can be found at the above link.
 
 Note: `fix:` should correspond to version changes to Y. The rest of the scopes above should be version changes to Z.
 
-3. Tag and push this new version of the code. In the `master` branch use the following commands:
+3. Tag and push this new version of the code. In the `main` branch use the following commands:
 
     ```bash
     git tag X.Y.Z
@@ -97,11 +97,11 @@ of course replacing `X.Y.Z` by the new version.
 
 ## Updating Public Documentation on lsstdesc.org <a name="updating_public_docs"></a>
 
-This is easy! Once you have merged all approved changes into master, you will want to update the public documentation.
+This is easy! Once you have merged all approved changes into `main`, you will want to update the public documentation.
 All these steps should be done on the `publish-docs` branch (just `git checkout publish-docs` on your local computer):
-1. Merge all of the latest changes from master `git merge master`.
+1. Merge all of the latest changes from main `git merge main`.
 2. If you have figures in notebooks that you would like rendered on the website, you will want to execute all cells of demo notebooks.
-3. From the main CLMM directory (the one that contains `setup.py`) run `./publish_docs` (note, this is different from `./update_docs` that you did in your development branch) and it does all of the work for you (including automatically pushing changes to Github)!
+3. From the `main` CLMM directory (the one that contains `setup.py`) run `./publish_docs` (note, this is different from `./update_docs` that you did in your development branch) and it does all of the work for you (including automatically pushing changes to Github)!
 
 ## Additional resources <a name="additional_resources"></a>
 

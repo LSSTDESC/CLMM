@@ -1,20 +1,25 @@
+"""@file func_layer.py
+Main functions to encapsule oo calls
+"""
 # Thin functonal layer on top of the class implementation of CLMModeling .
 # The functions expect a global instance of the actual CLMModeling named
 # `gcm'.
 
-import numpy as np
 import warnings
+import numpy as np
 
 from . import generic
 from . generic import compute_reduced_shear_from_convergence
 
 __all__ = generic.__all__+['compute_3d_density', 'compute_surface_density',
-           'compute_excess_surface_density', 'compute_critical_surface_density',
-           'compute_tangential_shear', 'compute_convergence',
-           'compute_reduced_tangential_shear', 'compute_magnification']
+                           'compute_excess_surface_density', 'compute_critical_surface_density',
+                           'compute_tangential_shear', 'compute_convergence',
+                           'compute_reduced_tangential_shear', 'compute_magnification']
 
 
-def compute_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_profile_model='nfw', massdef='mean'):
+def compute_3d_density(
+        r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
+        halo_profile_model='nfw', massdef='mean'):
     r"""Retrieve the 3d density :math:`\rho(r)`.
 
     Profiles implemented so far are:
@@ -37,15 +42,15 @@ def compute_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_pr
     delta_mdef : int, optional
         Mass overdensity definition; defaults to 200.
     halo_profile_model : str, optional
-        Profile model parameterization, with the following supported options:
-            `nfw` (default)
-            `einasto` - valid in numcosmo and ccl (version>=TBA)
-            `hernquist` - valid in numcosmo and ccl (version>=TBA)
+        Profile model parameterization (letter case independent):
+            `nfw` (default);
+            `einasto` - valid in numcosmo and ccl;
+            `hernquist` - valid in numcosmo and ccl;
     massdef : str, optional
-        Profile mass definition, with the following supported options:
-            `mean` (default)
-            `critical` - not in cluster_toolkit
-            `virial` - not in cluster_toolkit
+        Profile mass definition, with the following supported options (letter case independent):
+            `mean` (default);
+            `critical` - not in cluster_toolkit;
+            `virial` - not in cluster_toolkit;
 
     Returns
     -------
@@ -57,9 +62,10 @@ def compute_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, halo_pr
     Need to refactor later so we only require arguments that are necessary for all profiles
     and use another structure to take the arguments necessary for specific models
     """
-
+    gcm._check_input_radius(r3d)
     gcm.set_cosmo(cosmo)
-    gcm.set_halo_density_profile(halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
+    gcm.set_halo_density_profile(
+        halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
     gcm.set_concentration(cdelta)
     gcm.set_mass(mdelta)
 
@@ -71,9 +77,9 @@ def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     r""" Computes the surface mass density
 
     .. math::
-        \Sigma(R) = \Omega_m \rho_{crit} \int^\infty_{-\infty} dz \Xi_{hm} (\sqrt{R^2+z^2}),
+        \Sigma(R) = \int^\infty_{-\infty} dx\; \rho \left(\sqrt{R^2+x^2}\right),
 
-    where :math:`\Xi_{hm}` is the halo-matter correlation function.
+    where :math:`\rho(r)` is the 3d density profile.
 
     Parameters
     ----------
@@ -90,15 +96,15 @@ def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     delta_mdef : int, optional
         Mass overdensity definition; defaults to 200.
     halo_profile_model : str, optional
-        Profile model parameterization, with the following supported options:
-            `nfw` (default)
-            `einasto` - valid in numcosmo and ccl (version>=TBA)
-            `hernquist` - valid in numcosmo and ccl (version>=TBA)
+        Profile model parameterization (letter case independent):
+            `nfw` (default);
+            `einasto` - valid in numcosmo and ccl;
+            `hernquist` - valid in numcosmo and ccl;
     massdef : str, optional
-        Profile mass definition, with the following supported options:
-            `mean` (default)
-            `critical` - not in cluster_toolkit
-            `virial` - not in cluster_toolkit
+        Profile mass definition, with the following supported options (letter case independent):
+            `mean` (default);
+            `critical` - not in cluster_toolkit;
+            `virial` - not in cluster_toolkit;
 
     Returns
     -------
@@ -110,9 +116,10 @@ def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     Need to refactory so we only require arguments that are necessary for all models and use
     another structure to take the arguments necessary for specific models.
     """
-
+    gcm._check_input_radius(r_proj)
     gcm.set_cosmo(cosmo)
-    gcm.set_halo_density_profile(halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
+    gcm.set_halo_density_profile(
+        halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
     gcm.set_concentration(cdelta)
     gcm.set_mass(mdelta)
 
@@ -146,24 +153,25 @@ def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
     delta_mdef : int, optional
         Mass overdensity definition; defaults to 200.
     halo_profile_model : str, optional
-        Profile model parameterization, with the following supported options:
-            `nfw` (default)
-            `einasto` - valid in numcosmo and ccl (version>=TBA)
-            `hernquist` - valid in numcosmo and ccl (version>=TBA)
+        Profile model parameterization (letter case independent):
+            `nfw` (default);
+            `einasto` - valid in numcosmo and ccl;
+            `hernquist` - valid in numcosmo and ccl;
     massdef : str, optional
-        Profile mass definition, with the following supported options:
-            `mean` (default)
-            `critical` - not in cluster_toolkit
-            `virial` - not in cluster_toolkit
+        Profile mass definition, with the following supported options (letter case independent):
+            `mean` (default);
+            `critical` - not in cluster_toolkit;
+            `virial` - not in cluster_toolkit;
 
     Returns
     -------
     deltasigma : array_like, float
         Excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
     """
-
+    gcm._check_input_radius(r_proj)
     gcm.set_cosmo(cosmo)
-    gcm.set_halo_density_profile(halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
+    gcm.set_halo_density_profile(
+        halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
     gcm.set_concentration(cdelta)
     gcm.set_mass(mdelta)
 
@@ -201,7 +209,7 @@ def compute_critical_surface_density(cosmo, z_cluster, z_source):
 
 
 def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
-                              halo_profile_model='nfw', massdef='mean', z_src_model='single_plane'):
+                             halo_profile_model='nfw', massdef='mean', z_src_model='single_plane'):
     r"""Computes the tangential shear
 
     .. math::
@@ -214,7 +222,7 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
 
     Parameters
     ----------
-    r_proj : array_like
+    r_proj : array_like, float
         The projected radial positions in :math:`M\!pc`.
     mdelta : float
         Galaxy cluster mass in :math:`M_\odot`.
@@ -229,43 +237,48 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     delta_mdef : int, optional
         Mass overdensity definition.  Defaults to 200.
     halo_profile_model : str, optional
-        Profile model parameterization, with the following supported options:
-            `nfw` (default)
-            `einasto` - valid in numcosmo and ccl (version>=TBA)
-            `hernquist` - valid in numcosmo and ccl (version>=TBA)
+        Profile model parameterization (letter case independent):
+            `nfw` (default);
+            `einasto` - valid in numcosmo and ccl;
+            `hernquist` - valid in numcosmo and ccl;
     massdef : str, optional
-        Profile mass definition, with the following supported options:
-            `mean` (default)
-            `critical` - not in cluster_toolkit
-            `virial` - not in cluster_toolkit
+        Profile mass definition, with the following supported options (letter case independent):
+            `mean` (default);
+            `critical` - not in cluster_toolkit;
+            `virial` - not in cluster_toolkit;
     z_src_model : str, optional
         Source redshift model, with the following supported options:
-        `single_plane` (default) - all sources at one redshift
-        `known_z_src` - known individual source galaxy redshifts e.g. discrete case
-        `z_src_distribution` - known source redshift distribution e.g. continuous
-        case requiring integration.
+            `single_plane` (default) - all sources at one redshift (if
+            `z_source` is a float) or known individual source galaxy redshifts
+            (if `z_source` is an array and `r_proj` is a float);
 
     Returns
     -------
     gammat : array_like, float
-        tangential shear
+        Tangential shear
 
     Notes
     -----
-    TODO: Implement `known_z_src` and `z_src_distribution` options
-    We will need :math:`\gamma_\infty` and :math:`\kappa_\infty` for alternative
-    z_src_models using :math:`\beta_s`.
-    Need to figure out if we want to raise exceptions rather than errors here?
+    TODO: Implement `known_z_src` (known individual source galaxy redshifts
+    e.g. discrete case) and `z_src_distribution` (known source redshift
+    distribution e.g. continuous case requiring integration) options for
+    `z_src_model`. We will need :math:`\gamma_\infty` and :math:`\kappa_\infty`
+    for alternative z_src_models using :math:`\beta_s`.
     """
+    gcm._check_input_radius(r_proj)
+
     if z_src_model == 'single_plane':
 
         gcm.set_cosmo(cosmo)
-        gcm.set_halo_density_profile(halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
+        gcm.set_halo_density_profile(
+            halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
         gcm.set_concentration(cdelta)
         gcm.set_mass(mdelta)
 
         if np.min(r_proj) < 1.e-11:
-            raise ValueError(f"Rmin = {np.min(r_proj):.2e} Mpc/h! This value is too small and may cause computational issues.")
+            raise ValueError(
+                f"Rmin = {np.min(r_proj):.2e} Mpc/h! This value is too small "
+                "and may cause computational issues.")
 
         gammat = gcm.eval_tangential_shear(r_proj, z_cluster, z_source)
     else:
@@ -288,7 +301,7 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
 
     Parameters
     ----------
-    r_proj : array_like
+    r_proj : array_like, float
         The projected radial positions in :math:`M\!pc`.
     mdelta : float
         Galaxy cluster mass in :math:`M_\odot`.
@@ -303,21 +316,20 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     delta_mdef : int, optional
         Mass overdensity definition.  Defaults to 200.
     halo_profile_model : str, optional
-        Profile model parameterization, with the following supported options:
-            `nfw` (default)
-            `einasto` - valid in numcosmo and ccl (version>=TBA)
-            `hernquist` - valid in numcosmo and ccl (version>=TBA)
+        Profile model parameterization (letter case independent):
+            `nfw` (default);
+            `einasto` - valid in numcosmo and ccl;
+            `hernquist` - valid in numcosmo and ccl;
     massdef : str, optional
-        Profile mass definition, with the following supported options:
-            `mean` (default)
-            `critical` - not in cluster_toolkit
-            `virial` - not in cluster_toolkit
+        Profile mass definition, with the following supported options (letter case independent):
+            `mean` (default);
+            `critical` - not in cluster_toolkit;
+            `virial` - not in cluster_toolkit;
     z_src_model : str, optional
         Source redshift model, with the following supported options:
-        `single_plane` (default) - all sources at one redshift
-        `known_z_src` - known individual source galaxy redshifts e.g. discrete case
-        `z_src_distribution` - known source redshift distribution e.g. continuous
-        case requiring integration.
+            `single_plane` (default) - all sources at one redshift (if
+            `z_source` is a float) or known individual source galaxy redshifts
+            (if `z_source` is an array and `r_proj` is a float);
 
     Returns
     -------
@@ -326,16 +338,18 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
 
     Notes
     -----
-    Need to figure out if we want to raise exceptions rather than errors here?
+    TODO: Implement `known_z_src` (known individual source galaxy redshifts
+    e.g. discrete case) and `z_src_distribution` (known source redshift
+    distribution e.g. continuous case requiring integration) options for
+    `z_src_model`. We will need :math:`\gamma_\infty` and :math:`\kappa_\infty`
+    for alternative z_src_models using :math:`\beta_s`.
     """
-    sigma = compute_surface_density(r_proj, mdelta, cdelta, z_cluster, cosmo,
-                                    delta_mdef=delta_mdef, halo_profile_model=halo_profile_model,
-                                    massdef=massdef)
 
     if z_src_model == 'single_plane':
 
         gcm.set_cosmo(cosmo)
-        gcm.set_halo_density_profile(halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
+        gcm.set_halo_density_profile(
+            halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
         gcm.set_concentration(cdelta)
         gcm.set_mass(mdelta)
 
@@ -350,20 +364,23 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     else:
         raise ValueError("Unsupported z_src_model")
 
-    if np.any(np.array(z_source)<=z_cluster):
-        warnings.warn(f'Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.')
+    if np.any(np.array(z_source) <= z_cluster):
+        warnings.warn(
+            'Some source redshifts are lower than the cluster redshift.'
+            ' kappa = 0 for those galaxies.')
 
     return kappa
 
 
-def compute_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
-                                     delta_mdef=200, halo_profile_model='nfw', massdef='mean',
-                                     z_src_model='single_plane'):
+def compute_reduced_tangential_shear(
+        r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
+        delta_mdef=200, halo_profile_model='nfw', massdef='mean',
+        z_src_model='single_plane'):
     r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
 
     Parameters
     ----------
-    r_proj : array_like
+    r_proj : array_like, float
         The projected radial positions in :math:`M\!pc`.
     mdelta : float
         Galaxy cluster mass in :math:`M_\odot`.
@@ -378,21 +395,20 @@ def compute_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
     delta_mdef : int, optional
         Mass overdensity definition.  Defaults to 200.
     halo_profile_model : str, optional
-        Profile model parameterization, with the following supported options:
-            `nfw` (default)
-            `einasto` - valid in numcosmo and ccl (version>=TBA)
-            `hernquist` - valid in numcosmo and ccl (version>=TBA)
+        Profile model parameterization (letter case independent):
+            `nfw` (default);
+            `einasto` - valid in numcosmo and ccl;
+            `hernquist` - valid in numcosmo and ccl;
     massdef : str, optional
-        Profile mass definition, with the following supported options:
-            `mean` (default)
-            `critical` - not in cluster_toolkit
-            `virial` - not in cluster_toolkit
+        Profile mass definition, with the following supported options (letter case independent):
+            `mean` (default);
+            `critical` - not in cluster_toolkit;
+            `virial` - not in cluster_toolkit;
     z_src_model : str, optional
         Source redshift model, with the following supported options:
-        `single_plane` (default) - all sources at one redshift
-        `known_z_src` - known individual source galaxy redshifts e.g. discrete case
-        `z_src_distribution` - known source redshift distribution, e.g. continuous
-        case requiring integration.
+            `single_plane` (default) - all sources at one redshift (if
+            `z_source` is a float) or known individual source galaxy redshifts
+            (if `z_source` is an array and `r_proj` is a float);
 
     Returns
     -------
@@ -401,16 +417,24 @@ def compute_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
 
     Notes
     -----
-    Need to figure out if we want to raise exceptions rather than errors here?
+    TODO: Implement `known_z_src` (known individual source galaxy redshifts
+    e.g. discrete case) and `z_src_distribution` (known source redshift
+    distribution e.g. continuous case requiring integration) options for
+    `z_src_model`. We will need :math:`\gamma_\infty` and :math:`\kappa_\infty`
+    for alternative z_src_models using :math:`\beta_s`.
     """
+    gcm._check_input_radius(r_proj)
+
     if z_src_model == 'single_plane':
 
         gcm.set_cosmo(cosmo)
-        gcm.set_halo_density_profile(halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
+        gcm.set_halo_density_profile(
+            halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
         gcm.set_concentration(cdelta)
         gcm.set_mass(mdelta)
 
-        red_tangential_shear = gcm.eval_reduced_tangential_shear(r_proj, z_cluster, z_source)
+        red_tangential_shear = gcm.eval_reduced_tangential_shear(
+            r_proj, z_cluster, z_source)
 
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average'+
@@ -421,29 +445,27 @@ def compute_reduced_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source
     else:
         raise ValueError("Unsupported z_src_model")
 
-    if np.any(np.array(z_source)<=z_cluster):
-        warnings.warn(f'Some source redshifts are lower than the cluster redshift. shear = 0 for those galaxies.')
-
+    if np.any(np.array(z_source) <= z_cluster):
+        warnings.warn(
+            'Some source redshifts are lower than the cluster redshift.'
+            ' shear = 0 for those galaxies.')
 
     return red_tangential_shear
-
 
 # The magnification is computed taking into account just the tangential shear. This is valid for
 # spherically averaged profiles, e.g., NFW and Einasto (by construction the cross shear is zero).
 
 
 def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
-                        halo_profile_model='nfw', massdef='mean', z_src_model='single_plane'):
+                          halo_profile_model='nfw', massdef='mean', z_src_model='single_plane'):
     r"""Computes the magnification
 
     .. math::
         \mu = \frac{1}{(1-\kappa)^2-|\gamma_t|^2}
 
-
-
     Parameters
     ----------
-    r_proj : array_like
+    r_proj : array_like, float
         The projected radial positions in :math:`M\!pc`.
     mdelta : float
         Galaxy cluster mass in :math:`M_\odot`.
@@ -458,40 +480,44 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
     delta_mdef : int, optional
         Mass overdensity definition.  Defaults to 200.
     halo_profile_model : str, optional
-        Profile model parameterization, with the following supported options:
-            `nfw` (default)
-            `einasto` - valid in numcosmo and ccl (version>=TBA)
-            `hernquist` - valid in numcosmo and ccl (version>=TBA)
+        Profile model parameterization (letter case independent):
+            `nfw` (default);
+            `einasto` - valid in numcosmo and ccl;
+            `hernquist` - valid in numcosmo and ccl;
     massdef : str, optional
-        Profile mass definition, with the following supported options:
-            `mean` (default)
-            `critical` - not in cluster_toolkit
-            `virial` - not in cluster_toolkit
+        Profile mass definition, with the following supported options (letter case independent):
+            `mean` (default);
+            `critical` - not in cluster_toolkit;
+            `virial` - not in cluster_toolkit;
     z_src_model : str, optional
         Source redshift model, with the following supported options:
-        `single_plane` (default) - all sources at one redshift
-        `known_z_src` - known individual source galaxy redshifts e.g. discrete case
-        `z_src_distribution` - known source redshift distribution e.g. continuous
-        case requiring integration.
+            `single_plane` (default) - all sources at one redshift (if
+            `z_source` is a float) or known individual source galaxy redshifts
+            (if `z_source` is an array and `r_proj` is a float);
 
     Returns
     -------
-    mu : array_like, float
-        magnification, mu.
+    magnigication : array_like, float
+        Magnification (mu).
 
     Notes
     -----
-    Need to figure out if we want to raise exceptions rather than errors here?
+    TODO: Implement `known_z_src` (known individual source galaxy redshifts e.g. discrete case) and
+    `z_src_distribution` (known source redshift distribution e.g. continuous case requiring
+    integration) options for `z_src_model`. We will need :math:`\gamma_\infty` and
+    :math:`\kappa_\infty` for alternative z_src_models using :math:`\beta_s`.
     """
+    gcm._check_input_radius(r_proj)
 
     if z_src_model == 'single_plane':
 
         gcm.set_cosmo(cosmo)
-        gcm.set_halo_density_profile(halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
+        gcm.set_halo_density_profile(
+            halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
         gcm.set_concentration(cdelta)
         gcm.set_mass(mdelta)
 
-        mu = gcm.eval_magnification(r_proj, z_cluster, z_source)
+        magnification = gcm.eval_magnification(r_proj, z_cluster, z_source)
 
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average'+\
@@ -502,7 +528,9 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
     else:
         raise ValueError("Unsupported z_src_model")
 
-    if np.any(np.array(z_source)<=z_cluster):
-        warnings.warn(f'Some source redshifts are lower than the cluster redshift. mu = 1 for those galaxies.')
+    if np.any(np.array(z_source) <= z_cluster):
+        warnings.warn(
+            'Some source redshifts are lower than the cluster redshift.'
+            ' magnification = 1 for those galaxies.')
 
-    return mu
+    return magnification
