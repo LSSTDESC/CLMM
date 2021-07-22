@@ -5,7 +5,8 @@ from numpy.testing import assert_raises, assert_allclose
 
 import clmm.utils as utils
 import clmm.theory as md
-from clmm.utils import compute_radial_averages, make_bins, convert_shapes_to_epsilon, arguments_consistency
+from clmm.utils import (
+    compute_radial_averages, make_bins, convert_shapes_to_epsilon, arguments_consistency)
 
 
 TOLERANCE = {'rtol': 1.0e-6, 'atol': 0}
@@ -19,42 +20,44 @@ def test_compute_radial_averages():
     xbins2 = [0., 5., 10.]
 
     # Test requesting an unsupported error model
-    assert_raises(ValueError, compute_radial_averages, binvals, binvals, [0., 10.], 'glue')
+    assert_raises(ValueError, compute_radial_averages,
+                  binvals, binvals, [0., 10.], 'glue')
 
     # Check the default error model
-    assert_allclose(compute_radial_averages(binvals, binvals, xbins1)[:4],
-                    [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)/np.sqrt(len(binvals))],
-                    [6]],
-                    **TOLERANCE)
-
+    assert_allclose(
+        compute_radial_averages(binvals, binvals, xbins1)[:4], [[np.mean(binvals)],
+        [np.mean(binvals)], [np.std(binvals)/np.sqrt(len(binvals))], [6]], **TOLERANCE)
 
     # Test 3 objects in one bin with various error models
-    assert_allclose(compute_radial_averages(binvals, binvals, xbins1, error_model='std/sqrt_n')[:4],
-                    [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)/np.sqrt(len(binvals))], [6]],
-                    **TOLERANCE)
-    assert_allclose(compute_radial_averages(binvals, binvals, xbins1, error_model='std')[:4],
-                    [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)],
-                    [6]], **TOLERANCE)
+    assert_allclose(
+        compute_radial_averages(binvals, binvals, xbins1, error_model='std/sqrt_n')[:4],
+        [[np.mean(binvals)], [np.mean(binvals)], [ np.std(binvals)/np.sqrt(len(binvals))], [6]],
+        **TOLERANCE)
+    assert_allclose(
+        compute_radial_averages( binvals, binvals, xbins1, error_model='std')[:4],
+        [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)], [6]], **TOLERANCE)
 
     # Repeat test with different error_model case
-    assert_allclose(compute_radial_averages(binvals, binvals, xbins1, error_model='STD/SQRT_N')[:4],
-                    [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)/np.sqrt(len(binvals))], [6]],
-                    **TOLERANCE)
-    assert_allclose(compute_radial_averages(binvals, binvals, xbins1, error_model='STD')[:4],
-                    [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)],
-                    [6]], **TOLERANCE)
+    assert_allclose(
+        compute_radial_averages(binvals, binvals, xbins1, error_model='STD/SQRT_N')[:4],
+        [[np.mean(binvals)], [np.mean(binvals)], [ np.std(binvals)/np.sqrt(len(binvals))], [6]],
+        **TOLERANCE)
+    assert_allclose(
+        compute_radial_averages( binvals, binvals, xbins1, error_model='STD')[:4],
+        [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)], [6]], **TOLERANCE)
 
     # A slightly more complicated case with two bins
     inbin1 = binvals[(binvals > xbins2[0]) & (binvals < xbins2[1])]
     inbin2 = binvals[(binvals > xbins2[1]) & (binvals < xbins2[2])]
-    assert_allclose(compute_radial_averages(binvals, binvals, xbins2, error_model='std/sqrt_n')[:4],
-                    [[np.mean(inbin1), np.mean(inbin2)], [np.mean(inbin1), np.mean(inbin2)],
-                     [np.std(inbin1)/np.sqrt(len(inbin1)), np.std(inbin2)/np.sqrt(len(inbin2))],
-                     [3,3]], **TOLERANCE)
-    assert_allclose(compute_radial_averages(binvals, binvals, xbins2, error_model='std')[:4],
-                    [[np.mean(inbin1), np.mean(inbin2)], [np.mean(inbin1), np.mean(inbin2)],
-                     [np.std(inbin1), np.std(inbin2)],
-                     [3,3]], **TOLERANCE)
+    assert_allclose(
+        compute_radial_averages(binvals, binvals, xbins2, error_model='std/sqrt_n')[:4],
+        [[np.mean(inbin1), np.mean(inbin2)], [np.mean(inbin1), np.mean(inbin2)],
+         [np.std(inbin1)/np.sqrt(len(inbin1)), np.std(inbin2)/np.sqrt(len(inbin2))], [3, 3]],
+         **TOLERANCE)
+    assert_allclose(
+        compute_radial_averages( binvals, binvals, xbins2, error_model='std')[:4],
+        [[np.mean(inbin1), np.mean(inbin2)], [np.mean(inbin1), np.mean(inbin2)], [np.std(inbin1),
+        np.std(inbin2)], [3, 3]], **TOLERANCE)
 
     # Test a much larger, random sample with unevenly spaced bins
     binvals = np.loadtxt('tests/data/radial_average_test_array.txt')
@@ -62,17 +65,19 @@ def test_compute_radial_averages():
     inbin1 = binvals[(binvals > xbins2[0]) & (binvals < xbins2[1])]
     inbin2 = binvals[(binvals > xbins2[1]) & (binvals < xbins2[2])]
     inbin3 = binvals[(binvals > xbins2[2]) & (binvals < xbins2[3])]
-    assert_allclose(compute_radial_averages(binvals, binvals, xbins2, error_model='std/sqrt_n')[:4],
-                    [[np.mean(inbin1), np.mean(inbin2), np.mean(inbin3)],
-                     [np.mean(inbin1), np.mean(inbin2), np.mean(inbin3)],
-                     [np.std(inbin1)/np.sqrt(len(inbin1)), np.std(inbin2)/np.sqrt(len(inbin2)),
-                      np.std(inbin3)/np.sqrt(len(inbin3))],
-                     [inbin1.size, inbin2.size, inbin3.size]], **TOLERANCE)
-    assert_allclose(compute_radial_averages(binvals, binvals, xbins2, error_model='std')[:4],
-                    [[np.mean(inbin1), np.mean(inbin2), np.mean(inbin3)],
-                     [np.mean(inbin1), np.mean(inbin2), np.mean(inbin3)],
-                     [np.std(inbin1), np.std(inbin2), np.std(inbin3)],
-                     [inbin1.size, inbin2.size, inbin3.size]], **TOLERANCE)
+    assert_allclose(
+        compute_radial_averages(binvals, binvals, xbins2, error_model='std/sqrt_n')[:4],
+        [[np.mean(inbin1), np.mean(inbin2), np.mean(inbin3)],
+         [np.mean(inbin1), np.mean(inbin2), np.mean(inbin3)],
+         [np.std(inbin1)/np.sqrt(len(inbin1)), np.std(inbin2)/np.sqrt(len(inbin2)),
+          np.std(inbin3)/np.sqrt(len(inbin3))],
+         [inbin1.size, inbin2.size, inbin3.size]], **TOLERANCE)
+    assert_allclose(
+        compute_radial_averages( binvals, binvals, xbins2, error_model='std')[:4],
+        [[np.mean(inbin1), np.mean(inbin2), np.mean(inbin3)],
+         [np.mean(inbin1), np.mean(inbin2), np.mean(inbin3)],
+         [np.std(inbin1), np.std(inbin2), np.std(inbin3)],
+         [inbin1.size, inbin2.size, inbin3.size]], **TOLERANCE)
 
 
 def test_make_bins():
@@ -81,15 +86,18 @@ def test_make_bins():
     become more substantial.
     """
     # Test various combinations of rmin and rmax with default values
-    assert_allclose(make_bins(0.0, 10.), np.linspace(0.0, 10., 11), **TOLERANCE)
+    assert_allclose(make_bins(0.0, 10.), np.linspace(
+        0.0, 10., 11), **TOLERANCE)
     assert_raises(ValueError, make_bins, 0.0, -10.)
     assert_raises(ValueError, make_bins, -10., 10.)
     assert_raises(ValueError, make_bins, -10., -5.)
     assert_raises(ValueError, make_bins, 10., 0.0)
 
     # Test various nbins
-    assert_allclose(make_bins(0.0, 10., nbins=3), np.linspace(0.0, 10., 4), **TOLERANCE)
-    assert_allclose(make_bins(0.0, 10., nbins=13), np.linspace(0.0, 10., 14), **TOLERANCE)
+    assert_allclose(make_bins(0.0, 10., nbins=3),
+                    np.linspace(0.0, 10., 4), **TOLERANCE)
+    assert_allclose(make_bins(0.0, 10., nbins=13),
+                    np.linspace(0.0, 10., 14), **TOLERANCE)
     assert_raises(ValueError, make_bins, 0.0, 10., -10)
     assert_raises(ValueError, make_bins, 0.0, 10., 0)
 
@@ -111,15 +119,18 @@ def test_make_bins():
                     np.logspace(np.log10(1.0), np.log10(10.), 11), **TOLERANCE)
 
     # Test equaloccupation method. It needs a source_seps array, so create one
-    test_array = np.sqrt(np.random.uniform(-10,10,1361)**2+np.random.uniform(-10,10,1361)**2)
-    test_bins = make_bins(1.0, 10., nbins=10, method='equaloccupation', source_seps=test_array)
+    test_array = np.sqrt(np.random.uniform(-10, 10, 1361)
+                         ** 2+np.random.uniform(-10, 10, 1361)**2)
+    test_bins = make_bins(1.0, 10., nbins=10,
+                          method='equaloccupation', source_seps=test_array)
     # Check that all bins have roughly equal occupation.
     # Assert needs atol=2, because len(source_seps)/nbins may not be an integer,
     # and for some random arrays atol=1 is not enough.
-    assert_allclose(np.diff(np.histogram(test_array,bins=test_bins)[0]),
+    assert_allclose(np.diff(np.histogram(test_array, bins=test_bins)[0]),
                     np.zeros(9), atol=2)
-    test_bins = make_bins(0.51396, 6.78, nbins=23, method='equaloccupation', source_seps=test_array)
-    assert_allclose(np.diff(np.histogram(test_array,bins=test_bins)[0]),
+    test_bins = make_bins(0.51396, 6.78, nbins=23,
+                          method='equaloccupation', source_seps=test_array)
+    assert_allclose(np.diff(np.histogram(test_array, bins=test_bins)[0]),
                     np.zeros(22), atol=2)
     assert_raises(ValueError, make_bins, 0, 10, 10, 'equaloccupation', None)
     assert_raises(ValueError, make_bins, 0, 10, 10, 'undefinedmethod')
@@ -144,15 +155,22 @@ def test_convert_units():
     assert_raises(ValueError, utils.convert_units, 1.0, 'radians', 'CRAZY')
     assert_raises(ValueError, utils.convert_units, 1.0, 'CRAZY', 'radians')
     assert_raises(TypeError, utils.convert_units, 1.0, 'arcsec', 'Mpc')
-    assert_raises(TypeError, utils.convert_units, 1.0, 'arcsec', 'Mpc', None, cosmo)
-    assert_raises(TypeError, utils.convert_units, 1.0, 'arcsec', 'Mpc', 0.5, None)
-    assert_raises(ValueError, utils.convert_units, 1.0, 'arcsec', 'Mpc', -0.5, cosmo)
+    assert_raises(TypeError, utils.convert_units,
+                  1.0, 'arcsec', 'Mpc', None, cosmo)
+    assert_raises(TypeError, utils.convert_units,
+                  1.0, 'arcsec', 'Mpc', 0.5, None)
+    assert_raises(ValueError, utils.convert_units,
+                  1.0, 'arcsec', 'Mpc', -0.5, cosmo)
 
     # Test cases to make sure angular -> angular is fitting together
-    assert_allclose(utils.convert_units(np.pi, 'radians', 'degrees'), 180., **TOLERANCE)
-    assert_allclose(utils.convert_units(180.0, 'degrees', 'radians'), np.pi, **TOLERANCE)
-    assert_allclose(utils.convert_units(1.0, 'degrees', 'arcmin'), 60., **TOLERANCE)
-    assert_allclose(utils.convert_units(1.0, 'degrees', 'arcsec'), 3600., **TOLERANCE)
+    assert_allclose(utils.convert_units(
+        np.pi, 'radians', 'degrees'), 180., **TOLERANCE)
+    assert_allclose(utils.convert_units(
+        180.0, 'degrees', 'radians'), np.pi, **TOLERANCE)
+    assert_allclose(utils.convert_units(
+        1.0, 'degrees', 'arcmin'), 60., **TOLERANCE)
+    assert_allclose(utils.convert_units(
+        1.0, 'degrees', 'arcsec'), 3600., **TOLERANCE)
 
     # Test cases to make sure physical -> physical is fitting together
     assert_allclose(utils.convert_units(1.0, 'Mpc', 'kpc'), 1.0e3, **TOLERANCE)
@@ -163,7 +181,7 @@ def test_convert_units():
     # Using astropy, circular now but this will be fine since we are going to be
     # swapping to CCL soon and then its kosher
     r_arcmin, redshift = 20.0, 0.5
-    d_a = cosmo.eval_da(redshift)*1.e3 #kpc
+    d_a = cosmo.eval_da(redshift)*1.e3  # kpc
     truth = r_arcmin*(1.0/60.0)*(np.pi/180.0)*d_a
     assert_allclose(utils.convert_units(r_arcmin, 'arcmin', 'kpc', redshift, cosmo),
                     truth, **TOLERANCE)
@@ -173,31 +191,34 @@ def test_convert_units():
     # swapping to CCL soon and then its kosher
     r_kpc, redshift = 20.0, 0.5
 #    d_a = cosmo.angular_diameter_distance(redshift).to('kpc').value
-    d_a = cosmo.eval_da(redshift)*1.e3 #kpc
+    d_a = cosmo.eval_da(redshift)*1.e3  # kpc
     truth = r_kpc*(1.0/d_a)*(180./np.pi)*60.
     assert_allclose(utils.convert_units(r_kpc, 'kpc', 'arcmin', redshift, cosmo),
                     truth, **TOLERANCE)
 
 
 def test_build_ellipticities():
+    """test build ellipticities"""
 
     # second moments are floats
     q11 = 0.5
     q22 = 0.3
     q12 = 0.02
 
-    assert_allclose(utils.build_ellipticities(q11,q22,q12),(0.25, 0.05, 0.12710007580505459,
-                                                            0.025420015161010917), **TOLERANCE)
+    assert_allclose(
+        utils.build_ellipticities(q11, q22, q12),
+        (0.25, 0.05, 0.12710007580505459, 0.025420015161010917), **TOLERANCE)
 
     # second moments are numpy array
-    q11 = np.array([0.5,0.3])
-    q22 = np.array([0.8,0.2])
-    q12 = np.array([0.01,0.01])
+    q11 = np.array([0.5, 0.3])
+    q22 = np.array([0.8, 0.2])
+    q12 = np.array([0.01, 0.01])
 
-    assert_allclose(utils.build_ellipticities(q11,q22,q12),([-0.23076923, 0.2],
-                                                            [0.01538462, 0.04],
-                                                            [-0.11697033, 0.10106221],
-                                                            [0.00779802, 0.02021244]), **TOLERANCE)
+    assert_allclose(
+        utils.build_ellipticities(q11, q22, q12),
+        ([-0.23076923, 0.2], [0.01538462, 0.04], [-0.11697033, 0.10106221],
+            [0.00779802, 0.02021244]),
+        **TOLERANCE)
 
 
 def test_shape_conversion():
@@ -205,40 +226,43 @@ def test_shape_conversion():
     epsilon ellipticities or reduced shear. Both can be used for the galcat in
     the GalaxyCluster object"""
 
-
     # Number of random ellipticities to check
-    niter=25
+    niter = 25
 
     # Create random second moments and from that random ellipticities
-    q11,q22 = np.random.randint(0,20,(2,niter))
+    q11, q22 = np.random.randint(0, 20, (2, niter))
     # Q11 seperate to avoid a whole bunch of nans
-    q12 = np.random.uniform(-1,1,niter)*np.sqrt(q11*q22)
-    x1,x2,e1,e2 = utils.build_ellipticities(q11,q22,q12)
+    q12 = np.random.uniform(-1, 1, niter)*np.sqrt(q11*q22)
+    chi1, chi2, ellips1, ellips2 = utils.build_ellipticities(q11, q22, q12)
 
     # Test conversion from 'chi' to epsilon
-    e1_2,e2_2 = convert_shapes_to_epsilon(x1,x2,shape_definition='chi')
-    assert_allclose(e1,e1_2, **TOLERANCE)
-    assert_allclose(e2,e2_2, **TOLERANCE)
+    ellips1_2, ellips2_2 = convert_shapes_to_epsilon(chi1, chi2, shape_definition='chi')
+    assert_allclose(ellips1, ellips1_2, **TOLERANCE)
+    assert_allclose(ellips2, ellips2_2, **TOLERANCE)
 
     # Test that 'epsilon' just returns the same values
-    e1_2,e2_2 = convert_shapes_to_epsilon(e1,e2,shape_definition='epsilon')
-    assert_allclose(e1,e1_2, **TOLERANCE)
-    assert_allclose(e2,e2_2, **TOLERANCE)
+    ellips1_2, ellips2_2 = convert_shapes_to_epsilon(ellips1, ellips2, shape_definition='epsilon')
+    assert_allclose(ellips1, ellips1_2, **TOLERANCE)
+    assert_allclose(ellips2, ellips2_2, **TOLERANCE)
 
     # Test that 'reduced_shear' just returns the same values
-    e1_2,e2_2 = convert_shapes_to_epsilon(e1,e2,shape_definition='reduced_shear')
-    assert_allclose(e1,e1_2, **TOLERANCE)
-    assert_allclose(e2,e2_2, **TOLERANCE)
+    ellips1_2, ellips2_2 = convert_shapes_to_epsilon(
+        ellips1, ellips2, shape_definition='reduced_shear')
+    assert_allclose(ellips1, ellips1_2, **TOLERANCE)
+    assert_allclose(ellips2, ellips2_2, **TOLERANCE)
 
     # Test that 'shear' just returns the right values for reduced shear
-    e1_2,e2_2 = convert_shapes_to_epsilon(e1,e2,shape_definition='shear',kappa=0.2)
-    assert_allclose(e1/0.8,e1_2, **TOLERANCE)
-    assert_allclose(e2/0.8,e2_2, **TOLERANCE)
+    ellips1_2, ellips2_2 = convert_shapes_to_epsilon(
+        ellips1, ellips2, shape_definition='shear', kappa=0.2)
+    assert_allclose(ellips1/0.8, ellips1_2, **TOLERANCE)
+    assert_allclose(ellips2/0.8, ellips2_2, **TOLERANCE)
     # Test known shape_definition
-    assert_raises(TypeError, convert_shapes_to_epsilon, e1, e2, shape_definition='undefinedSD')
+    assert_raises(TypeError, convert_shapes_to_epsilon,
+                  ellips1, ellips2, shape_definition='undefinedSD')
 
 
 def test_compute_lensed_ellipticities():
+    """test compute lensed ellipticities"""
 
     # Validation test with floats
     es1 = 0
@@ -246,29 +270,33 @@ def test_compute_lensed_ellipticities():
     gamma1 = 0.2
     gamma2 = 0.2
     kappa = 0.5
-    assert_allclose(utils.compute_lensed_ellipticity(es1, es2, gamma1, gamma2, kappa),(0.4,0.4), **TOLERANCE)
+    assert_allclose(utils.compute_lensed_ellipticity(
+        es1, es2, gamma1, gamma2, kappa), (0.4, 0.4), **TOLERANCE)
 
     # Validation test with array
-    es1 = np.array([0,0.5])
-    es2 = np.array([0,0.1])
-    gamma1 = np.array([0.2,0.])
-    gamma2 = np.array([0.2,0.3])
-    kappa = np.array([0.5,0.2])
+    es1 = np.array([0, 0.5])
+    es2 = np.array([0, 0.1])
+    gamma1 = np.array([0.2, 0.])
+    gamma2 = np.array([0.2, 0.3])
+    kappa = np.array([0.5, 0.2])
 
     assert_allclose(utils.compute_lensed_ellipticity(es1, es2, gamma1, gamma2, kappa),
-                    ([0.4, 0.38656171],[0.4, 0.52769188]), **TOLERANCE)
+                    ([0.4, 0.38656171], [0.4, 0.52769188]), **TOLERANCE)
 
 
 def test_arguments_consistency():
+    """test arguments consistency"""
     assert_allclose(arguments_consistency([1, 2]), [1, 2], **TOLERANCE)
-    assert_allclose(arguments_consistency([1, 2], names=['a', 'b']), [1, 2], **TOLERANCE)
-    assert_allclose(arguments_consistency([1, 2], names='ab'), [1, 2], **TOLERANCE)
-    assert_allclose(arguments_consistency([1, 2], names=['a', 'b'], prefix='x'), [1, 2], **TOLERANCE)
+    assert_allclose(arguments_consistency( [1, 2], names=['a', 'b']), [1, 2], **TOLERANCE)
+    assert_allclose(arguments_consistency( [1, 2], names='ab'), [1, 2], **TOLERANCE)
+    assert_allclose(arguments_consistency( [1, 2], names=['a', 'b'], prefix='x'), [1, 2],
+                    **TOLERANCE)
 
     assert_allclose(arguments_consistency([[1], [2]]), [[1], [2]], **TOLERANCE)
-    assert_allclose(arguments_consistency([[1], [2]], names=['a', 'b']), [[1], [2]], **TOLERANCE)
-    assert_allclose(arguments_consistency([[1], [2]], names='ab'), [[1], [2]], **TOLERANCE)
-    assert_allclose(arguments_consistency([[1], [2]], names=['a', 'b'], prefix='x'), [[1], [2]], **TOLERANCE)
+    assert_allclose(arguments_consistency( [[1], [2]], names=['a', 'b']), [[1], [2]], **TOLERANCE)
+    assert_allclose(arguments_consistency( [[1], [2]], names='ab'), [[1], [2]], **TOLERANCE)
+    assert_allclose(arguments_consistency([[1], [2]], names=[ 'a', 'b'], prefix='x'), [[1], [2]],
+                    **TOLERANCE)
     # test error
     assert_raises(TypeError, arguments_consistency, [1, [1, 2]])
     assert_raises(TypeError, arguments_consistency, [[1], [1, 2]])

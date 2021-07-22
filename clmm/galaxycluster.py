@@ -44,7 +44,6 @@ class GalaxyCluster():
         self.dec = dec
         self.z = z
         self.galcat = galcat
-        return
 
     def _check_types(self):
         """Check types of all attributes"""
@@ -54,16 +53,16 @@ class GalaxyCluster():
             raise TypeError(f'unique_id incorrect type: {type(self.unique_id)}')
         try:
             self.ra = float(self.ra)
-        except:
-            raise TypeError(f'ra incorrect type: {type(self.ra)}')
+        except TypeError:
+            print(f'ra incorrect type: {type(self.ra)}')
         try:
             self.dec = float(self.dec)
-        except:
-            raise TypeError(f'dec incorrect type: {type(self.dec)}')
+        except TypeError:
+            print(f'dec incorrect type: {type(self.dec)}')
         try:
             self.z = float(self.z)
-        except:
-            raise TypeError(f'z incorrect type: {type(self.z)}')
+        except TypeError:
+            print(f'z incorrect type: {type(self.z)}')
         if not isinstance(self.galcat, GCData):
             raise TypeError(f'galcat incorrect type: {type(self.galcat)}')
         if not -360. <= self.ra <= 360.:
@@ -72,15 +71,14 @@ class GalaxyCluster():
             raise ValueError(f'dec={self.dec} not in valid bounds: [-90, 90]')
         if self.z < 0.:
             raise ValueError(f'z={self.z} must be greater than 0')
-        return
 
     def save(self, filename, **kwargs):
         """Saves GalaxyCluster object to filename using Pickle"""
         with open(filename, 'wb') as fin:
             pickle.dump(self, fin, **kwargs)
-        return
 
-    def load(filename, **kwargs):
+    @classmethod
+    def load(cls, filename, **kwargs):
         """Loads GalaxyCluster object to filename using Pickle"""
         with open(filename, 'rb') as fin:
             self = pickle.load(fin, **kwargs)
@@ -139,13 +137,10 @@ class GalaxyCluster():
             self.galcat.update_cosmo(cosmo, overwrite=True)
             self.galcat['sigma_c'] = compute_critical_surface_density(cosmo=cosmo, z_cluster=self.z,
                                                                   z_source=self.galcat['z'])
-        return
 
-    def compute_tangential_and_cross_components(self,
-                      shape_component1='e1', shape_component2='e2',
-                      tan_component='et', cross_component='ex',
-                      geometry='curve', is_deltasigma=False, cosmo=None,
-                      add=True):
+    def compute_tangential_and_cross_components(
+            self, shape_component1='e1', shape_component2='e2', tan_component='et',
+            cross_component='ex', geometry='curve', is_deltasigma=False, cosmo=None, add=True):
         r"""Adds a tangential- and cross- components for shear or ellipticity to self
 
         Calls `clmm.dataops.compute_tangential_and_cross_components` with the following arguments:
@@ -179,7 +174,8 @@ class GalaxyCluster():
             Sky geometry to compute angular separation.
             Options are curve (uses astropy) or flat.
         is_deltasigma: bool
-            If `True`, the tangential and cross components returned are multiplied by Sigma_crit. Results in units of :math:`M_\odot\ Mpc^{-2}`
+            If `True`, the tangential and cross components returned are multiplied by Sigma_crit.
+            Results in units of :math:`M_\odot\ Mpc^{-2}`
         cosmo: astropy cosmology object
             Specifying a cosmology is required if `is_deltasigma` is True
         add: bool
@@ -195,8 +191,9 @@ class GalaxyCluster():
             Cross shear (or assimilated quantity) for each source galaxy
         """
         # Check is all the required data is available
-        missing_cols = ', '.join([f"'{t_}'" for t_ in ('ra', 'dec', shape_component1, shape_component2)
-                                    if t_ not in self.galcat.columns])
+        missing_cols = ', '.join(
+            [f"'{t_}'" for t_ in ('ra', 'dec', shape_component1, shape_component2)
+                if t_ not in self.galcat.columns])
         if len(missing_cols)>0:
             raise TypeError('Galaxy catalog missing required columns: '+missing_cols+\
                             '. Do you mean to first convert column names?')
@@ -215,12 +212,10 @@ class GalaxyCluster():
             self.galcat[cross_component] = cross_comp
         return angsep, tangential_comp, cross_comp
 
-    def make_radial_profile(self,
-                            bin_units, bins=10, cosmo=None,
-                            tan_component_in='et', cross_component_in='ex',
-                            tan_component_out='gt', cross_component_out='gx',
-                            include_empty_bins=False, gal_ids_in_bins=False,
-                            add=True, table_name='profile', overwrite=True):
+    def make_radial_profile(
+            self, bin_units, bins=10, cosmo=None, tan_component_in='et', cross_component_in='ex',
+            tan_component_out='gt', cross_component_out='gx', include_empty_bins=False,
+            gal_ids_in_bins=False, add=True, table_name='profile', overwrite=True):
         r"""Compute the shear or ellipticity profile of the cluster
 
         We assume that the cluster object contains information on the cross and
@@ -246,10 +241,10 @@ class GalaxyCluster():
             Allowed Options = ["radians", "deg", "arcmin", "arcsec", "kpc", "Mpc"]
             (letter case independent)
         bins : array_like, optional
-            User defined bins to use for the shear profile. If a list is provided, use that as
-            the bin edges. If a scalar is provided, create that many equally spaced bins between
-            the minimum and maximum angular separations in bin_units. If nothing is provided,
-            default to 10 equally spaced bins.
+            User defined bins to use for the shear profile. If a list is provided, use that as the
+            bin edges. If a scalar is provided, create that many equally spaced bins between the
+            minimum and maximum angular separations in bin_units. If nothing is provided, default to
+            10 equally spaced bins.
         cosmo: dict, optional
             Cosmology parameters to convert angular separations to physical distances
         tan_component_in: string, optional
@@ -284,9 +279,15 @@ class GalaxyCluster():
             on that grid, and the errors in the two shear profiles. The errors are defined as the
             standard errors in each bin.
         """
-        if not all([t_ in self.galcat.columns for t_ in (tan_component_in, cross_component_in, 'theta')]):
-            raise TypeError('Shear or ellipticity information is missing!  Galaxy catalog must have tangential '
-                            'and cross shears (gt, gx) or ellipticities (et, ex). Run compute_tangential_and_cross_components first.')
+        #Too many local variables (19/15)
+        #pylint: disable=R0914
+
+        if not all([t_ in self.galcat.columns for t_ in
+                (tan_component_in, cross_component_in, 'theta')]):
+            raise TypeError(
+                'Shear or ellipticity information is missing!  Galaxy catalog must have tangential '
+                'and cross shears (gt, gx) or ellipticities (et, ex). '
+                'Run compute_tangential_and_cross_components first.')
         if 'z' not in self.galcat.columns:
             raise TypeError('Missing galaxy redshifts!')
         # Compute the binned averages and associated errors
@@ -297,9 +298,9 @@ class GalaxyCluster():
             return_binnumber=True,
             cosmo=cosmo, z_lens=self.z)
         # Reaname table columns
-        for i, n in enumerate([tan_component_out, cross_component_out, 'z']):
-            profile_table.rename_column(f'p_{i}', n)
-            profile_table.rename_column(f'p_{i}_err', f'{n}_err')
+        for i, name in enumerate([tan_component_out, cross_component_out, 'z']):
+            profile_table.rename_column(f'p_{i}', name)
+            profile_table.rename_column(f'p_{i}_err', f'{name}_err')
         # add galaxy IDs
         if gal_ids_in_bins:
             if 'id' not in self.galcat.columns:
@@ -317,9 +318,12 @@ class GalaxyCluster():
                     warnings.warn(f'overwriting {table_name} table.')
                     delattr(self, table_name)
                 else:
-                    raise AttributeError(f'table {table_name} already exists, set overwrite=True or use another name.')
+                    raise AttributeError(
+                        f'table {table_name} already exists, '
+                        'set overwrite=True or use another name.')
             setattr(self, table_name, profile_table)
         return profile_table
+
     def plot_profiles(self, tangential_component='gt', tangential_component_error='gt_err',
                       cross_component='gx', cross_component_error='gx_err', table_name='profile',
                       xscale='linear', yscale='linear'):
@@ -328,13 +332,17 @@ class GalaxyCluster():
         Parameters
         ----------
         tangential_component: str, optional
-            Name of the column in the galcat Table corresponding to the tangential component of the shear or reduced shear (Delta Sigma not yet implemented). Default: 'gt'
+            Name of the column in the galcat Table corresponding to the tangential component of the
+            shear or reduced shear (Delta Sigma not yet implemented). Default: 'gt'
         tangential_component_error: str, optional
-            Name of the column in the galcat Table corresponding to the uncertainty in tangential component of the shear or reduced shear. Default: 'gt_err'
+            Name of the column in the galcat Table corresponding to the uncertainty in tangential
+            component of the shear or reduced shear. Default: 'gt_err'
         cross_component: str, optional
-            Name of the column in the galcat Table corresponding to the cross component of the shear or reduced shear. Default: 'gx'
+            Name of the column in the galcat Table corresponding to the cross component of the shear
+            or reduced shear. Default: 'gx'
         cross_component_error: str, optional
-            Name of the column in the galcat Table corresponding to the uncertainty in the cross component of the shear or reduced shear. Default: 'gx_err'
+            Name of the column in the galcat Table corresponding to the uncertainty in the cross
+            component of the shear or reduced shear. Default: 'gx_err'
         table_name: str, optional
             Name of the GalaxyCluster() `.profile` attribute. Default: 'profile'
         xscale:

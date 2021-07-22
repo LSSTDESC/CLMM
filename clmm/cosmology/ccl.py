@@ -1,9 +1,10 @@
-# Functions to model halo profiles
+"""@file ccl.py
+Cosmology using CCL
+"""
+import warnings
+import numpy as np
 
 import pyccl as ccl
-
-import numpy as np
-import warnings
 
 from .parent_class import CLMMCosmology
 
@@ -13,9 +14,19 @@ __all__ = []
 
 
 class CCLCosmology(CLMMCosmology):
+    """
+    Cosmology object
+
+    Attributes
+    ----------
+    backend: str
+        Name of back-end used
+    be_cosmo: cosmology library
+        Cosmology library used in the back-end
+    """
 
     def __init__(self, **kwargs):
-        super(CCLCosmology, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
         # this tag will be used to check if the cosmology object is accepted by the modeling
         self.backend = 'ccl'
@@ -23,7 +34,8 @@ class CCLCosmology(CLMMCosmology):
         assert isinstance(self.be_cosmo, ccl.Cosmology)
 
         # cor factor for sigma_critical
-        self.cor_factor = _patch_rho_crit_to_cd2018(ccl.physical_constants.RHO_CRITICAL)
+        self.cor_factor = _patch_rho_crit_to_cd2018(
+            ccl.physical_constants.RHO_CRITICAL)
 
     def _init_from_cosmo(self, be_cosmo):
 
@@ -32,27 +44,30 @@ class CCLCosmology(CLMMCosmology):
 
     def _init_from_params(self, H0, Omega_b0, Omega_dm0, Omega_k0):
 
-        self.be_cosmo = ccl.Cosmology(Omega_c=Omega_dm0, Omega_b=Omega_b0, Omega_k=Omega_k0, h=H0/100.0, sigma8=0.8, n_s=0.96, T_CMB=2.7255, Neff=3.046,
-                                       m_nu=[0.06, 0.0, 0.0], transfer_function='bbks', matter_power_spectrum='linear')
+        self.be_cosmo = ccl.Cosmology(
+            Omega_c=Omega_dm0, Omega_b=Omega_b0, Omega_k=Omega_k0, h=H0/100.0, sigma8=0.8, n_s=0.96,
+            T_CMB=2.7255, Neff=3.046, m_nu=[0.06, 0.0, 0.0], transfer_function='bbks',
+            matter_power_spectrum='linear')
 
     def _set_param(self, key, value):
         raise NotImplementedError("CCL do not support changing parameters")
 
     def _get_param(self, key):
         if key == "Omega_m0":
-            return ccl.omega_x(self.be_cosmo, 1.0, "matter")
+            value = ccl.omega_x(self.be_cosmo, 1.0, "matter")
         elif key == "Omega_b0":
-            return self.be_cosmo['Omega_b']
+            value = self.be_cosmo['Omega_b']
         elif key == "Omega_dm0":
-            return self.be_cosmo['Omega_c']
+            value = self.be_cosmo['Omega_c']
         elif key == "Omega_k0":
-            return self.be_cosmo['Omega_k']
+            value = self.be_cosmo['Omega_k']
         elif key == 'h':
-            return self.be_cosmo['h']
+            value = self.be_cosmo['h']
         elif key == 'H0':
-            return self.be_cosmo['h']*100.0
+            value = self.be_cosmo['h']*100.0
         else:
             raise ValueError(f"Unsupported parameter {key}")
+        return value
 
     def get_Omega_m(self, z):
         return ccl.omega_x(self.be_cosmo, 1.0/(1.0+z), "matter")
@@ -67,9 +82,11 @@ class CCLCosmology(CLMMCosmology):
         return np.vectorize(ccl.angular_diameter_distance)(self.be_cosmo, a1, a2)
 
     def eval_sigma_crit(self, z_len, z_src):
-        a_len = self._get_a_from_z(z_len)
-        a_src = np.atleast_1d(self._get_a_from_z(z_src))
-        cte = ccl.physical_constants.CLIGHT**2/(4.0*np.pi*ccl.physical_constants.GNEWT*ccl.physical_constants.SOLAR_MASS)*ccl.physical_constants.MPC_TO_METER
+        a_len = self.get_a_from_z(z_len)
+        a_src = np.atleast_1d(self.get_a_from_z(z_src))
+        cte = ccl.physical_constants.CLIGHT**2 / \
+            (4.0*np.pi*ccl.physical_constants.GNEWT *
+             ccl.physical_constants.SOLAR_MASS)*ccl.physical_constants.MPC_TO_METER
 
         z_cut = (a_src < a_len)
         if np.isscalar(a_len):
@@ -80,7 +97,8 @@ class CCLCosmology(CLMMCosmology):
         if np.any(z_cut):
             Ds = ccl.angular_diameter_distance(self.be_cosmo, a_src[z_cut])
             Dl = ccl.angular_diameter_distance(self.be_cosmo, a_len[z_cut])
-            Dls = ccl.angular_diameter_distance(self.be_cosmo, a_len[z_cut], a_src[z_cut])
+            Dls = ccl.angular_diameter_distance(
+                self.be_cosmo, a_len[z_cut], a_src[z_cut])
 
             res[z_cut] = (cte*Ds/(Dl*Dls))*self.cor_factor
 
