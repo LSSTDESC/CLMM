@@ -3,11 +3,12 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>clmm.support.sampler module &mdash; CLMM 0.9.1 documentation</title>
+  <title>clmm.support.sampler module &mdash; CLMM 1.0.0 documentation</title>
   
 
   
@@ -16,10 +17,7 @@
 
   
   
-
   
-  
-
   
 
   
@@ -32,6 +30,7 @@
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
@@ -53,7 +52,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> CLMM
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> CLMM
           
 
           
@@ -63,7 +62,7 @@
             
             
               <div class="version">
-                0.9.1
+                1.0.0
               </div>
             
           
@@ -88,27 +87,27 @@
               
             
             
-              <p class="caption"><span class="caption-text">Getting Started</span></p>
+              <p><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../source/overview.html">Rapid overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../source/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../source/citing.html">Citing CLMM</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Usage Demos</span></p>
+<p><span class="caption-text">Usage Demos</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Mass Fitting Examples</span></p>
+<p><span class="caption-text">Mass Fitting Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog_NC.html">Fit halo mass to shear profile using Numcosmo statistical framework</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Reference</span></p>
+<p><span class="caption-text">Reference</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="clmm.constants.html">clmm.constants module</a></li>
@@ -181,8 +180,6 @@
 
 
 
-
-
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -198,7 +195,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-          
+            
             <a href="../_sources/api/clmm.support.sampler.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -212,54 +209,156 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-clmm.support.sampler">
+  <section id="module-clmm.support.sampler">
 <span id="clmm-support-sampler-module"></span><h1>clmm.support.sampler module<a class="headerlink" href="#module-clmm.support.sampler" title="Permalink to this headline">¶</a></h1>
 <p>&#64;file.py sampler.py
 Functions for sampling (output either peak or full distribution)</p>
 <dl class="py function">
 <dt id="clmm.support.sampler.basinhopping">
-<code class="sig-prename descclassname">clmm.support.sampler.</code><code class="sig-name descname">basinhopping</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model_to_shear_profile</span></em>, <em class="sig-param"><span class="n">logm_0</span></em>, <em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/support/sampler.html#basinhopping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.support.sampler.basinhopping" title="Permalink to this definition">¶</a></dt>
-<dd><p>Uses basinhopping, a scipy global optimization function, to find the minimum</p>
+<code class="sig-prename descclassname">clmm.support.sampler.</code><code class="sig-name descname">basinhopping</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model_to_shear_profile</span></em>, <em class="sig-param"><span class="n">logm_0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/support/sampler.html#basinhopping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.support.sampler.basinhopping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses basinhopping, a scipy global optimization function, to find the minimum.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model_to_shear_profile</strong> (<em>callable</em>) – The objective function to be minimized.
+<code class="docutils literal notranslate"><span class="pre">model_to_shear_profile(x,</span> <span class="pre">*args)</span> <span class="pre">-&gt;</span> <span class="pre">float</span></code>
+where <code class="docutils literal notranslate"><span class="pre">x</span></code> is an 1-D array with shape (n,) and <code class="docutils literal notranslate"><span class="pre">args</span></code>
+is a tuple of the fixed parameters needed to completely
+specify the function.</p></li>
+<li><p><strong>logm_0</strong> (<em>array_like</em>) – Initial guess. Array of real elements of size (n,),
+where ‘n’ is the number of independent variables.</p></li>
+<li><p><strong>kwargs</strong> – Other optional keyword arguments passed to <cite>basinhopping</cite>.
+Please check the <cite>scipy</cite> documentaion for information on default values and methods.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>)</p></li>
+<li><p><em>The solution of the optimization</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt id="clmm.support.sampler.scicurve_fit">
-<code class="sig-prename descclassname">clmm.support.sampler.</code><code class="sig-name descname">scicurve_fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">profile_model</span></em>, <em class="sig-param"><span class="n">radius</span></em>, <em class="sig-param"><span class="n">profile</span></em>, <em class="sig-param"><span class="n">err_profile</span></em>, <em class="sig-param"><span class="n">bounds</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">p0</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/support/sampler.html#scicurve_fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.support.sampler.scicurve_fit" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">clmm.support.sampler.</code><code class="sig-name descname">scicurve_fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">profile_model</span></em>, <em class="sig-param"><span class="n">radius</span></em>, <em class="sig-param"><span class="n">profile</span></em>, <em class="sig-param"><span class="n">err_profile</span></em>, <em class="sig-param"><span class="n">absolute_sigma</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/support/sampler.html#scicurve_fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.support.sampler.scicurve_fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Uses scipy.optimize.curve_fit to find best fit parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>profile_model</strong> (<em>callable</em>) – The model function, f(x, …). It must take the independent
+variable as the first argument and the parameters to fit as
+separate remaining arguments.</p></li>
+<li><p><strong>radius</strong> (<em>array_like</em><em> or </em><em>object</em>) – The independent variable where the data is measured.
+Should usually be an M-length sequence or an (k,M)-shaped array for
+functions with k predictors, but can actually be any object.</p></li>
+<li><p><strong>profile</strong> (<em>array_like</em>) – The dependent data, a length M array - nominally <code class="docutils literal notranslate"><span class="pre">f(xdata,</span> <span class="pre">...)</span></code>.</p></li>
+<li><p><strong>err_profile</strong> (<em>M-length sequence</em><em> or </em><em>MxM array</em>) – Determines the uncertainty in <cite>ydata</cite>. If we define residuals as
+<code class="docutils literal notranslate"><span class="pre">r</span> <span class="pre">=</span> <span class="pre">ydata</span> <span class="pre">-</span> <span class="pre">f(xdata,</span> <span class="pre">*popt)</span></code>, then the interpretation of <cite>sigma</cite>
+depends on its number of dimensions:
+- A 1-D <cite>sigma</cite> should contain values of standard deviations of
+errors in <cite>ydata</cite>. In this case, the optimized function is
+<code class="docutils literal notranslate"><span class="pre">chisq</span> <span class="pre">=</span> <span class="pre">sum((r</span> <span class="pre">/</span> <span class="pre">sigma)</span> <span class="pre">**</span> <span class="pre">2)</span></code>.
+- A 2-D <cite>sigma</cite> should contain the covariance matrix of
+errors in <cite>ydata</cite>. In this case, the optimized function is
+<code class="docutils literal notranslate"><span class="pre">chisq</span> <span class="pre">=</span> <span class="pre">r.T</span> <span class="pre">&#64;</span> <span class="pre">inv(sigma)</span> <span class="pre">&#64;</span> <span class="pre">r</span></code>.</p></li>
+<li><p><strong>absolute_sigma</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True (default), <cite>sigma</cite> is used in an absolute sense and the estimated parameter
+covariance <cite>pcov</cite> reflects these absolute values.
+If False, only the relative magnitudes of the <cite>sigma</cite> values matter.
+The returned parameter covariance matrix <cite>pcov</cite> is based on scaling
+<cite>sigma</cite> by a constant factor. This constant is set by demanding that the
+reduced <cite>chisq</cite> for the optimal parameters <cite>popt</cite> when using the
+<em>scaled</em> <cite>sigma</cite> equals unity. In other words, <cite>sigma</cite> is scaled to
+match the sample variance of the residuals after the fit. Default is True.
+Mathematically,
+<code class="docutils literal notranslate"><span class="pre">pcov(absolute_sigma=False)</span> <span class="pre">=</span> <span class="pre">pcov(absolute_sigma=True)</span> <span class="pre">*</span> <span class="pre">chisq(popt)/(M-N)</span></code></p></li>
+<li><p><strong>kwargs</strong> – Other optional keyword arguments passed to <cite>curve_fit</cite>
+Please check the <cite>scipy</cite> documentaion for information on default values and methods.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p><strong>p</strong> –</p>
+<dl class="simple">
+<dt>contains :</dt><dd><dl class="simple">
+<dt>p[0]<span class="classifier">array</span></dt><dd><p>Optimal values for the parameters so that the sum of the squared
+residuals of <code class="docutils literal notranslate"><span class="pre">f(xdata,</span> <span class="pre">*popt)</span> <span class="pre">-</span> <span class="pre">ydata</span></code> is minimized.</p>
+</dd>
+<dt>p[1]<span class="classifier">2-D array</span></dt><dd><p>The estimated covariance of popt. The diagonals provide the variance
+of the parameter estimate. To compute one standard deviation errors
+on the parameters use <code class="docutils literal notranslate"><span class="pre">perr</span> <span class="pre">=</span> <span class="pre">np.sqrt(np.diag(pcov))</span></code>.
+How the <cite>sigma</cite> parameter affects the estimated covariance
+depends on <cite>absolute_sigma</cite> argument, as described above.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt id="clmm.support.sampler.sciopt">
-<code class="sig-prename descclassname">clmm.support.sampler.</code><code class="sig-name descname">sciopt</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model_to_shear_profile</span></em>, <em class="sig-param"><span class="n">logm_0</span></em>, <em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/support/sampler.html#sciopt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.support.sampler.sciopt" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">clmm.support.sampler.</code><code class="sig-name descname">sciopt</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model_to_shear_profile</span></em>, <em class="sig-param"><span class="n">logm_0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/support/sampler.html#sciopt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.support.sampler.sciopt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Uses scipy optimize minimize to output the peak</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model_to_shear_profile</strong> (<em>callable</em>) – The objective function to be minimized.
+<code class="docutils literal notranslate"><span class="pre">model_to_shear_profile(x,</span> <span class="pre">*args)</span> <span class="pre">-&gt;</span> <span class="pre">float</span></code>
+where <code class="docutils literal notranslate"><span class="pre">x</span></code> is an 1-D array with shape (n,) and <code class="docutils literal notranslate"><span class="pre">args</span></code>
+is a tuple of the fixed parameters needed to completely
+specify the function.</p></li>
+<li><p><strong>logm_0</strong> (<em>ndarray</em><em>, </em><em>shape</em><em> (</em><em>n</em><em>,</em><em>)</em>) – Initial guess. Array of real elements of size (n,),
+where ‘n’ is the number of independent variables.</p></li>
+<li><p><strong>kwargs</strong> – Other optional keyword arguments passed to <cite>minimize</cite>.
+Please check the <cite>scipy</cite> documentaion for information on default values and methods.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>)</p></li>
+<li><p><em>The solution of the optimization</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>
            
           </div>
           <footer>
+  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2018-2021, LSST DESC CLMM Contributors.
+        
+        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
 
     </p>
   </div>
     
     
     
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
+
         </div>
       </div>
 

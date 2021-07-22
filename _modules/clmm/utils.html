@@ -3,11 +3,11 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8">
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.utils &mdash; CLMM 0.9.1 documentation</title>
+  <title>clmm.utils &mdash; CLMM 1.0.0 documentation</title>
   
 
   
@@ -16,10 +16,7 @@
 
   
   
-
   
-  
-
   
 
   
@@ -32,6 +29,7 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
@@ -52,7 +50,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home"> CLMM
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> CLMM
           
 
           
@@ -62,7 +60,7 @@
             
             
               <div class="version">
-                0.9.1
+                1.0.0
               </div>
             
           
@@ -87,27 +85,27 @@
               
             
             
-              <p class="caption"><span class="caption-text">Getting Started</span></p>
+              <p><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../source/overview.html">Rapid overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../source/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../source/citing.html">Citing CLMM</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Usage Demos</span></p>
+<p><span class="caption-text">Usage Demos</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Mass Fitting Examples</span></p>
+<p><span class="caption-text">Mass Fitting Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog_NC.html">Fit halo mass to shear profile using Numcosmo statistical framework</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Reference</span></p>
+<p><span class="caption-text">Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api.html">API Documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../api/clmm.constants.html">clmm.constants module</a></li>
@@ -180,8 +178,6 @@
 
 
 
-
-
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -226,9 +222,9 @@
 <span class="sd">    xbins: array_like</span>
 <span class="sd">        Bin edges to sort into</span>
 <span class="sd">    error_model : str, optional</span>
-<span class="sd">        Error model to use for y uncertainties.</span>
-<span class="sd">        std/sqrt_n - Standard Deviation/sqrt(Counts) (Default)</span>
-<span class="sd">        std - Standard deviation</span>
+<span class="sd">        Error model to use for y uncertainties. (letter case independent)</span>
+<span class="sd">            `std/sqrt_n` - Standard Deviation/sqrt(Counts) (Default)</span>
+<span class="sd">            `std` - Standard deviation</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -245,24 +241,32 @@
 <span class="sd">        of `xvals` belongs.  Same length as `yvals`.  A binnumber of `i` means the</span>
 <span class="sd">        corresponding value is between (xbins[i-1], xbins[i]).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># make case independent</span>
+    <span class="n">error_model</span> <span class="o">=</span> <span class="n">error_model</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
     <span class="c1"># binned_statics throus an error in case of non-finite values, so filtering those out</span>
     <span class="n">filt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">xvals</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">yvals</span><span class="p">)</span>
 
-    <span class="n">meanx</span><span class="p">,</span> <span class="n">xbins</span><span class="p">,</span> <span class="n">binnumber</span> <span class="o">=</span> <span class="n">binned_statistic</span><span class="p">(</span><span class="n">xvals</span><span class="p">[</span><span class="n">filt</span><span class="p">],</span> <span class="n">xvals</span><span class="p">[</span><span class="n">filt</span><span class="p">],</span> <span class="n">statistic</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">xbins</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]</span>
-    <span class="n">meany</span> <span class="o">=</span> <span class="n">binned_statistic</span><span class="p">(</span><span class="n">xvals</span><span class="p">[</span><span class="n">filt</span><span class="p">],</span> <span class="n">yvals</span><span class="p">[</span><span class="n">filt</span><span class="p">],</span> <span class="n">statistic</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">xbins</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">meanx</span><span class="p">,</span> <span class="n">xbins</span><span class="p">,</span> <span class="n">binnumber</span> <span class="o">=</span> <span class="n">binned_statistic</span><span class="p">(</span>
+        <span class="n">xvals</span><span class="p">[</span><span class="n">filt</span><span class="p">],</span> <span class="n">xvals</span><span class="p">[</span><span class="n">filt</span><span class="p">],</span> <span class="n">statistic</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">xbins</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]</span>
+    <span class="n">meany</span> <span class="o">=</span> <span class="n">binned_statistic</span><span class="p">(</span>
+        <span class="n">xvals</span><span class="p">[</span><span class="n">filt</span><span class="p">],</span> <span class="n">yvals</span><span class="p">[</span><span class="n">filt</span><span class="p">],</span> <span class="n">statistic</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">xbins</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="c1"># number of objects</span>
     <span class="n">num_objects</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">xvals</span><span class="p">[</span><span class="n">filt</span><span class="p">],</span> <span class="n">xbins</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">n_zero</span> <span class="o">=</span> <span class="n">num_objects</span><span class="o">==</span><span class="mi">0</span>
+    <span class="n">n_zero</span> <span class="o">=</span> <span class="n">num_objects</span> <span class="o">==</span> <span class="mi">0</span>
 
     <span class="k">if</span> <span class="n">error_model</span> <span class="o">==</span> <span class="s1">&#39;std&#39;</span><span class="p">:</span>
-        <span class="n">yerr</span> <span class="o">=</span> <span class="n">binned_statistic</span><span class="p">(</span><span class="n">xvals</span><span class="p">[</span><span class="n">filt</span><span class="p">],</span> <span class="n">yvals</span><span class="p">[</span><span class="n">filt</span><span class="p">],</span> <span class="n">statistic</span><span class="o">=</span><span class="s1">&#39;std&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">xbins</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">yerr</span> <span class="o">=</span> <span class="n">binned_statistic</span><span class="p">(</span>
+            <span class="n">xvals</span><span class="p">[</span><span class="n">filt</span><span class="p">],</span> <span class="n">yvals</span><span class="p">[</span><span class="n">filt</span><span class="p">],</span> <span class="n">statistic</span><span class="o">=</span><span class="s1">&#39;std&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">xbins</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">elif</span> <span class="n">error_model</span> <span class="o">==</span> <span class="s1">&#39;std/sqrt_n&#39;</span><span class="p">:</span>
-        <span class="n">yerr</span> <span class="o">=</span> <span class="n">binned_statistic</span><span class="p">(</span><span class="n">xvals</span><span class="p">[</span><span class="n">filt</span><span class="p">],</span> <span class="n">yvals</span><span class="p">[</span><span class="n">filt</span><span class="p">],</span> <span class="n">statistic</span><span class="o">=</span><span class="s1">&#39;std&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">xbins</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">sqrt_n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">binned_statistic</span><span class="p">(</span><span class="n">xvals</span><span class="p">[</span><span class="n">filt</span><span class="p">],</span> <span class="n">yvals</span><span class="p">[</span><span class="n">filt</span><span class="p">],</span> <span class="n">statistic</span><span class="o">=</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">xbins</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">yerr</span> <span class="o">=</span> <span class="n">binned_statistic</span><span class="p">(</span>
+            <span class="n">xvals</span><span class="p">[</span><span class="n">filt</span><span class="p">],</span> <span class="n">yvals</span><span class="p">[</span><span class="n">filt</span><span class="p">],</span> <span class="n">statistic</span><span class="o">=</span><span class="s1">&#39;std&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">xbins</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">sqrt_n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">binned_statistic</span><span class="p">(</span>
+            <span class="n">xvals</span><span class="p">[</span><span class="n">filt</span><span class="p">],</span> <span class="n">yvals</span><span class="p">[</span><span class="n">filt</span><span class="p">],</span> <span class="n">statistic</span><span class="o">=</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">xbins</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
         <span class="n">sqrt_n</span><span class="p">[</span><span class="n">n_zero</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
         <span class="n">yerr</span> <span class="o">=</span> <span class="n">yerr</span><span class="o">/</span><span class="n">sqrt_n</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">error_model</span><span class="si">}</span><span class="s2"> not supported err model for binned stats&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">error_model</span><span class="si">}</span><span class="s2"> not supported err model for binned stats&quot;</span><span class="p">)</span>
 
     <span class="n">meanx</span><span class="p">[</span><span class="n">n_zero</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">meany</span><span class="p">[</span><span class="n">n_zero</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
@@ -283,10 +287,10 @@
 <span class="sd">    nbins : float</span>
 <span class="sd">        Number of bins you want to create, default to 10.</span>
 <span class="sd">    method : str, optional</span>
-<span class="sd">        Binning method to use</span>
-<span class="sd">        &#39;evenwidth&#39; - Default, evenly spaced bins between rmin and rmax</span>
-<span class="sd">        &#39;evenlog10width&#39; - Logspaced bins with even width in log10 between rmin and rmax</span>
-<span class="sd">        &#39;equaloccupation&#39; - Bins with equal occupation numbers</span>
+<span class="sd">        Binning method to use (letter case independent)</span>
+<span class="sd">            `evenwidth` - Default, evenly spaced bins between rmin and rmax</span>
+<span class="sd">            `evenlog10width` - Logspaced bins with even width in log10 between rmin and rmax</span>
+<span class="sd">            `equaloccupation` - Bins with equal occupation numbers</span>
 <span class="sd">    source_seps : array_like</span>
 <span class="sd">        Radial distance of source separations</span>
 
@@ -295,28 +299,37 @@
 <span class="sd">    binedges: array_like, float</span>
 <span class="sd">        n_bins+1 dimensional array that defines bin edges</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># make case independent</span>
+    <span class="n">method</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="c1"># Check consistency</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">rmin</span> <span class="o">&gt;</span> <span class="n">rmax</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">rmin</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">rmax</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid bin endpoints in make_bins, </span><span class="si">{</span><span class="n">rmin</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">rmax</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">nbins</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nbins</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid nbins=</span><span class="si">{</span><span class="n">nbins</span><span class="si">}</span><span class="s2">. Must be integer greater than 0.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Invalid nbins=</span><span class="si">{</span><span class="n">nbins</span><span class="si">}</span><span class="s2">. Must be integer greater than 0.&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;evenwidth&#39;</span><span class="p">:</span>
         <span class="n">binedges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">rmin</span><span class="p">,</span> <span class="n">rmax</span><span class="p">,</span> <span class="n">nbins</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;evenlog10width&#39;</span><span class="p">:</span>
-        <span class="n">binedges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">rmin</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">rmax</span><span class="p">),</span> <span class="n">nbins</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">binedges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">rmin</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span>
+            <span class="n">rmax</span><span class="p">),</span> <span class="n">nbins</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;equaloccupation&#39;</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">source_seps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Binning method &#39;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&#39; requires source separations array&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Binning method &#39;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&#39; requires source separations array&quot;</span><span class="p">)</span>
         <span class="c1"># by default, keep all galaxies</span>
-        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">source_seps</span><span class="p">),</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">seps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">source_seps</span><span class="p">)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">seps</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">rmin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">rmax</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># Need to filter source_seps to only keep galaxies in the [rmin, rmax]</span>
-            <span class="k">if</span> <span class="n">rmin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">rmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">source_seps</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">rmax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">rmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">source_seps</span><span class="p">)</span>
-            <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">source_seps</span><span class="p">)</span><span class="o">&gt;=</span><span class="n">rmin</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">source_seps</span><span class="p">)</span><span class="o">&lt;=</span><span class="n">rmax</span><span class="p">)</span>
-        <span class="n">binedges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">source_seps</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="n">nbins</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">)))</span>
+            <span class="c1"># Need to filter source_seps to only keep galaxies in the [rmin, rmax]</span>
+            <span class="n">rmin</span> <span class="o">=</span> <span class="n">seps</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="k">if</span> <span class="n">rmin</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">rmin</span>
+            <span class="n">rmax</span> <span class="o">=</span> <span class="n">seps</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="k">if</span> <span class="n">rmax</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">rmax</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">seps</span> <span class="o">&gt;=</span> <span class="n">rmin</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">seps</span> <span class="o">&lt;=</span> <span class="n">rmax</span><span class="p">)</span>
+        <span class="n">binedges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">seps</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">nbins</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">)))</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Binning method &#39;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&#39; is not currently supported&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Binning method &#39;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&#39; is not currently supported&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">binedges</span></div>
 
@@ -325,6 +338,7 @@
     <span class="sd">&quot;&quot;&quot; Convenience wrapper to convert between a combination of angular and physical units.</span>
 
 <span class="sd">    Supported units: radians, degrees, arcmin, arcsec, Mpc, kpc, pc</span>
+<span class="sd">    (letter case independent)</span>
 
 <span class="sd">    To convert between angular and physical units you must provide both</span>
 <span class="sd">    a redshift and a cosmology object.</span>
@@ -348,50 +362,53 @@
 <span class="sd">    dist2: array_like</span>
 <span class="sd">        Input distances converted to unit2</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">angular_bank</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;radians&quot;</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">rad</span><span class="p">,</span> <span class="s2">&quot;degrees&quot;</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="s2">&quot;arcmin&quot;</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">arcmin</span><span class="p">,</span> <span class="s2">&quot;arcsec&quot;</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span><span class="p">}</span>
-    <span class="n">physical_bank</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;pc&quot;</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">pc</span><span class="p">,</span> <span class="s2">&quot;kpc&quot;</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">kpc</span><span class="p">,</span> <span class="s2">&quot;Mpc&quot;</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Mpc</span><span class="p">}</span>
+    <span class="c1"># make case independent</span>
+    <span class="n">unit1</span><span class="p">,</span> <span class="n">unit2</span> <span class="o">=</span> <span class="n">unit1</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">unit2</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="c1"># Available units</span>
+    <span class="n">angular_bank</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;radians&quot;</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">rad</span><span class="p">,</span> <span class="s2">&quot;degrees&quot;</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span>
+                    <span class="s2">&quot;arcmin&quot;</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">arcmin</span><span class="p">,</span> <span class="s2">&quot;arcsec&quot;</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span><span class="p">}</span>
+    <span class="n">physical_bank</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;pc&quot;</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">pc</span><span class="p">,</span> <span class="s2">&quot;kpc&quot;</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">kpc</span><span class="p">,</span> <span class="s2">&quot;mpc&quot;</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Mpc</span><span class="p">}</span>
     <span class="n">units_bank</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">angular_bank</span><span class="p">,</span> <span class="o">**</span><span class="n">physical_bank</span><span class="p">}</span>
-
     <span class="c1"># Some error checking</span>
     <span class="k">if</span> <span class="n">unit1</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">units_bank</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Input units (</span><span class="si">{</span><span class="n">unit1</span><span class="si">}</span><span class="s2">) not supported&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">unit2</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">units_bank</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Output units (</span><span class="si">{</span><span class="n">unit2</span><span class="si">}</span><span class="s2">) not supported&quot;</span><span class="p">)</span>
-
     <span class="c1"># Try automated astropy unit conversion</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">dist1</span><span class="o">*</span><span class="n">units_bank</span><span class="p">[</span><span class="n">unit1</span><span class="p">])</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">units_bank</span><span class="p">[</span><span class="n">unit2</span><span class="p">])</span><span class="o">.</span><span class="n">value</span>
-
+        <span class="n">dist2</span> <span class="o">=</span> <span class="p">(</span><span class="n">dist1</span><span class="o">*</span><span class="n">units_bank</span><span class="p">[</span><span class="n">unit1</span><span class="p">])</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">units_bank</span><span class="p">[</span><span class="n">unit2</span><span class="p">])</span><span class="o">.</span><span class="n">value</span>
     <span class="c1"># Otherwise do manual conversion</span>
     <span class="k">except</span> <span class="n">u</span><span class="o">.</span><span class="n">UnitConversionError</span><span class="p">:</span>
         <span class="c1"># Make sure that we were passed a redshift and cosmology</span>
         <span class="k">if</span> <span class="n">redshift</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">cosmo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Redshift and cosmology must be specified to convert units&quot;</span><span class="p">)</span>
-
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;Redshift and cosmology must be specified to convert units&quot;</span><span class="p">)</span> \
+                <span class="kn">from</span> <span class="nn">u.UnitConversionError</span>
         <span class="c1"># Redshift must be greater than zero for this approx</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">redshift</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Redshift must be greater than 0.&quot;</span><span class="p">)</span>
-
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Redshift must be greater than 0.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">u.UnitConversionError</span>
+        <span class="c1"># Convert angular to physical</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">unit1</span> <span class="ow">in</span> <span class="n">angular_bank</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">unit2</span> <span class="ow">in</span> <span class="n">physical_bank</span><span class="p">):</span>
-            <span class="c1"># Convert angular to physical</span>
             <span class="n">dist1_rad</span> <span class="o">=</span> <span class="p">(</span><span class="n">dist1</span><span class="o">*</span><span class="n">units_bank</span><span class="p">[</span><span class="n">unit1</span><span class="p">])</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">rad</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
             <span class="n">dist1_mpc</span> <span class="o">=</span> <span class="n">cosmo</span><span class="o">.</span><span class="n">rad2mpc</span><span class="p">(</span><span class="n">dist1_rad</span><span class="p">,</span> <span class="n">redshift</span><span class="p">)</span>
-            <span class="k">return</span> <span class="p">(</span><span class="n">dist1_mpc</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">Mpc</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">units_bank</span><span class="p">[</span><span class="n">unit2</span><span class="p">])</span><span class="o">.</span><span class="n">value</span>
+            <span class="n">dist2</span> <span class="o">=</span> <span class="p">(</span><span class="n">dist1_mpc</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">Mpc</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">units_bank</span><span class="p">[</span><span class="n">unit2</span><span class="p">])</span><span class="o">.</span><span class="n">value</span>
+        <span class="c1"># Otherwise physical to angular</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># Otherwise physical to angular</span>
             <span class="n">dist1_mpc</span> <span class="o">=</span> <span class="p">(</span><span class="n">dist1</span><span class="o">*</span><span class="n">units_bank</span><span class="p">[</span><span class="n">unit1</span><span class="p">])</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">Mpc</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
             <span class="n">dist1_rad</span> <span class="o">=</span> <span class="n">cosmo</span><span class="o">.</span><span class="n">mpc2rad</span><span class="p">(</span><span class="n">dist1_mpc</span><span class="p">,</span> <span class="n">redshift</span><span class="p">)</span>
-            <span class="k">return</span> <span class="p">(</span><span class="n">dist1_rad</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">rad</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">units_bank</span><span class="p">[</span><span class="n">unit2</span><span class="p">])</span><span class="o">.</span><span class="n">value</span></div>
+            <span class="n">dist2</span> <span class="o">=</span> <span class="p">(</span><span class="n">dist1_rad</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">rad</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">units_bank</span><span class="p">[</span><span class="n">unit2</span><span class="p">])</span><span class="o">.</span><span class="n">value</span>
+    <span class="k">return</span> <span class="n">dist2</span></div>
 
 
-<div class="viewcode-block" id="convert_shapes_to_epsilon"><a class="viewcode-back" href="../../api/clmm.utils.html#clmm.utils.convert_shapes_to_epsilon">[docs]</a><span class="k">def</span> <span class="nf">convert_shapes_to_epsilon</span><span class="p">(</span><span class="n">shape_1</span><span class="p">,</span><span class="n">shape_2</span><span class="p">,</span> <span class="n">shape_definition</span><span class="o">=</span><span class="s1">&#39;epsilon&#39;</span><span class="p">,</span><span class="n">kappa</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Convert shape components 1 and 2 appropriately to make them estimators of the reduced shear once averaged.</span>
-<span class="sd">    The shape 1 and 2 components may correspond to ellipticities according the :math:`\epsilon`- or :math:`\chi`-definition,</span>
-<span class="sd">    but also to the 1 and 2 components of the shear. See Bartelmann &amp; Schneider 2001 for details (https://arxiv.org/pdf/astro-ph/9912508.pdf).</span>
+<div class="viewcode-block" id="convert_shapes_to_epsilon"><a class="viewcode-back" href="../../api/clmm.utils.html#clmm.utils.convert_shapes_to_epsilon">[docs]</a><span class="k">def</span> <span class="nf">convert_shapes_to_epsilon</span><span class="p">(</span><span class="n">shape_1</span><span class="p">,</span> <span class="n">shape_2</span><span class="p">,</span> <span class="n">shape_definition</span><span class="o">=</span><span class="s1">&#39;epsilon&#39;</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Convert shape components 1 and 2 appropriately to make them estimators of the reduced shear</span>
+<span class="sd">    once averaged.  The shape 1 and 2 components may correspond to ellipticities according the</span>
+<span class="sd">    :math:`\epsilon`- or :math:`\chi`-definition, but also to the 1 and 2 components of the shear.</span>
+<span class="sd">    See Bartelmann &amp; Schneider 2001 for details (https://arxiv.org/pdf/astro-ph/9912508.pdf).</span>
 
 <span class="sd">    The :math:`\epsilon`-ellipticity is a direct estimator of</span>
-<span class="sd">    the reduced shear. The shear :math:`\gamma` may be converted to reduced shear :math:`g` if the convergence :math:`\kappa` is known.</span>
-<span class="sd">    The conversions are given below.</span>
+<span class="sd">    the reduced shear. The shear :math:`\gamma` may be converted to reduced shear :math:`g` if the</span>
+<span class="sd">    convergence :math:`\kappa` is known. The conversions are given below.</span>
 
 <span class="sd">    .. math::</span>
 <span class="sd">     \epsilon = \frac{\chi}{1+(1-|\chi|^2)^{1/2}}</span>
@@ -401,11 +418,11 @@
 
 <span class="sd">    - If `shape_definition = &#39;chi&#39;`, this function returns the corresponding `epsilon` ellipticities</span>
 
-<span class="sd">    - If `shape_definition = &#39;shear&#39;`, it returns the corresponding reduced shear, given the convergence `kappa`</span>
+<span class="sd">    - If `shape_definition = &#39;shear&#39;`, it returns the corresponding reduced shear, given the</span>
+<span class="sd">      convergence `kappa`</span>
 
-<span class="sd">    - If `shape_definition = &#39;epsilon&#39;` or `&#39;reduced_shear&#39;`, it returns them as is as no conversion is needed.</span>
-
-
+<span class="sd">    - If `shape_definition = &#39;epsilon&#39;` or `&#39;reduced_shear&#39;`, it returns them as is as no conversion</span>
+<span class="sd">      is needed.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -414,7 +431,8 @@
 <span class="sd">    shape_2 : array_like</span>
 <span class="sd">        Input shapes or shears along secondary axis (g2 or e2)</span>
 <span class="sd">    shape_definition : str</span>
-<span class="sd">        Definition of the input shapes, can be ellipticities &#39;epsilon&#39; or &#39;chi&#39; or shears &#39;shear&#39; or &#39;reduced_shear&#39;</span>
+<span class="sd">        Definition of the input shapes, can be ellipticities &#39;epsilon&#39; or &#39;chi&#39; or shears &#39;shear&#39; or</span>
+<span class="sd">        &#39;reduced_shear&#39;</span>
 <span class="sd">    kappa : array_like</span>
 <span class="sd">        Convergence for transforming to a reduced shear. Default is 0</span>
 
@@ -426,19 +444,19 @@
 <span class="sd">        Epsilon ellipticity (or reduced shear) along secondary axis (epsilon2)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">if</span> <span class="n">shape_definition</span><span class="o">==</span><span class="s1">&#39;epsilon&#39;</span> <span class="ow">or</span> <span class="n">shape_definition</span><span class="o">==</span><span class="s1">&#39;reduced_shear&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">shape_1</span><span class="p">,</span><span class="n">shape_2</span>
-    <span class="k">elif</span> <span class="n">shape_definition</span><span class="o">==</span><span class="s1">&#39;chi&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">shape_definition</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;epsilon&#39;</span><span class="p">,</span> <span class="s1">&#39;reduced_shear&#39;</span><span class="p">):</span>
+        <span class="n">epsilon_1</span><span class="p">,</span> <span class="n">epsilon_2</span> <span class="o">=</span> <span class="n">shape_1</span><span class="p">,</span> <span class="n">shape_2</span>
+    <span class="k">elif</span> <span class="n">shape_definition</span> <span class="o">==</span> <span class="s1">&#39;chi&#39;</span><span class="p">:</span>
         <span class="n">chi_to_eps_conversion</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mf">1.</span><span class="o">+</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="p">(</span><span class="n">shape_1</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">shape_2</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">shape_1</span><span class="o">*</span><span class="n">chi_to_eps_conversion</span><span class="p">,</span><span class="n">shape_2</span><span class="o">*</span><span class="n">chi_to_eps_conversion</span>
-    <span class="k">elif</span> <span class="n">shape_definition</span><span class="o">==</span><span class="s1">&#39;shear&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">shape_1</span><span class="o">/</span><span class="p">(</span><span class="mf">1.</span><span class="o">-</span><span class="n">kappa</span><span class="p">),</span> <span class="n">shape_2</span><span class="o">/</span><span class="p">(</span><span class="mf">1.</span><span class="o">-</span><span class="n">kappa</span><span class="p">)</span>
-
+        <span class="n">epsilon_1</span><span class="p">,</span> <span class="n">epsilon_2</span> <span class="o">=</span> <span class="n">shape_1</span><span class="o">*</span><span class="n">chi_to_eps_conversion</span><span class="p">,</span> <span class="n">shape_2</span><span class="o">*</span><span class="n">chi_to_eps_conversion</span>
+    <span class="k">elif</span> <span class="n">shape_definition</span> <span class="o">==</span> <span class="s1">&#39;shear&#39;</span><span class="p">:</span>
+        <span class="n">epsilon_1</span><span class="p">,</span> <span class="n">epsilon_2</span> <span class="o">=</span> <span class="n">shape_1</span><span class="o">/</span><span class="p">(</span><span class="mf">1.</span><span class="o">-</span><span class="n">kappa</span><span class="p">),</span> <span class="n">shape_2</span><span class="o">/</span><span class="p">(</span><span class="mf">1.</span><span class="o">-</span><span class="n">kappa</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Please choose epsilon, chi, shear, reduced_shear&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Please choose epsilon, chi, shear, reduced_shear&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">epsilon_1</span><span class="p">,</span> <span class="n">epsilon_2</span></div>
 
 
-<div class="viewcode-block" id="build_ellipticities"><a class="viewcode-back" href="../../api/clmm.utils.html#clmm.utils.build_ellipticities">[docs]</a><span class="k">def</span> <span class="nf">build_ellipticities</span><span class="p">(</span><span class="n">q11</span><span class="p">,</span><span class="n">q22</span><span class="p">,</span><span class="n">q12</span><span class="p">):</span>
+<div class="viewcode-block" id="build_ellipticities"><a class="viewcode-back" href="../../api/clmm.utils.html#clmm.utils.build_ellipticities">[docs]</a><span class="k">def</span> <span class="nf">build_ellipticities</span><span class="p">(</span><span class="n">q11</span><span class="p">,</span> <span class="n">q22</span><span class="p">,</span> <span class="n">q12</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Build ellipticties from second moments. See, e.g., Schneider et al. (2006)</span>
 
 <span class="sd">    Parameters</span>
@@ -452,15 +470,15 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    x1, x2 : float or array</span>
+<span class="sd">    chi1, chi2 : float or array</span>
 <span class="sd">        Ellipticities using the &quot;chi definition&quot;</span>
-<span class="sd">    e1, e2 : float or array</span>
+<span class="sd">    epsilon1, epsilon2 : float or array</span>
 <span class="sd">        Ellipticities using the &quot;epsilon definition&quot;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">x1</span><span class="p">,</span><span class="n">x2</span> <span class="o">=</span> <span class="p">(</span><span class="n">q11</span><span class="o">-</span><span class="n">q22</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">q11</span><span class="o">+</span><span class="n">q22</span><span class="p">),(</span><span class="mi">2</span><span class="o">*</span><span class="n">q12</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">q11</span><span class="o">+</span><span class="n">q22</span><span class="p">)</span>
-    <span class="n">e1</span><span class="p">,</span><span class="n">e2</span> <span class="o">=</span> <span class="p">(</span><span class="n">q11</span><span class="o">-</span><span class="n">q22</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">q11</span><span class="o">+</span><span class="n">q22</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">q11</span><span class="o">*</span><span class="n">q22</span><span class="o">-</span><span class="n">q12</span><span class="o">*</span><span class="n">q12</span><span class="p">)),(</span><span class="mi">2</span><span class="o">*</span><span class="n">q12</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">q11</span><span class="o">+</span><span class="n">q22</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">q11</span><span class="o">*</span><span class="n">q22</span><span class="o">-</span><span class="n">q12</span><span class="o">*</span><span class="n">q12</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span><span class="n">e2</span></div>
+    <span class="n">norm_x</span><span class="p">,</span> <span class="n">norm_e</span> <span class="o">=</span> <span class="n">q11</span><span class="o">+</span><span class="n">q22</span><span class="p">,</span> <span class="n">q11</span><span class="o">+</span><span class="n">q22</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">q11</span><span class="o">*</span><span class="n">q22</span><span class="o">-</span><span class="n">q12</span><span class="o">*</span><span class="n">q12</span><span class="p">)</span>
+    <span class="n">chi1</span><span class="p">,</span> <span class="n">chi2</span> <span class="o">=</span> <span class="p">(</span><span class="n">q11</span><span class="o">-</span><span class="n">q22</span><span class="p">)</span><span class="o">/</span><span class="n">norm_x</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">q12</span><span class="o">/</span><span class="n">norm_x</span>
+    <span class="n">epsilon1</span><span class="p">,</span> <span class="n">epsilon2</span> <span class="o">=</span> <span class="p">(</span><span class="n">q11</span><span class="o">-</span><span class="n">q22</span><span class="p">)</span><span class="o">/</span><span class="n">norm_e</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">q12</span><span class="o">/</span><span class="n">norm_e</span>
+    <span class="k">return</span> <span class="n">chi1</span><span class="p">,</span> <span class="n">chi2</span><span class="p">,</span> <span class="n">epsilon1</span><span class="p">,</span> <span class="n">epsilon2</span></div>
 
 
 <div class="viewcode-block" id="compute_lensed_ellipticity"><a class="viewcode-back" href="../../api/clmm.utils.html#clmm.utils.compute_lensed_ellipticity">[docs]</a><span class="k">def</span> <span class="nf">compute_lensed_ellipticity</span><span class="p">(</span><span class="n">ellipticity1_true</span><span class="p">,</span> <span class="n">ellipticity2_true</span><span class="p">,</span> <span class="n">shear1</span><span class="p">,</span> <span class="n">shear2</span><span class="p">,</span> <span class="n">convergence</span><span class="p">):</span>
@@ -468,12 +486,13 @@
 <span class="sd">    Following Schneider et al. (2006)</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">        \epsilon^{\rm lensed}=\epsilon^{\rm lensed}_1+i\epsilon^{\rm lensed}_2=\frac{\epsilon^{\rm true}+g}{1+g^\ast\epsilon^{\rm true}},</span>
+<span class="sd">        \epsilon^{\rm lensed}=\epsilon^{\rm lensed}_1+i\epsilon^{\rm lensed}_2=</span>
+<span class="sd">        \frac{\epsilon^{\rm true}+g}{1+g^\ast\epsilon^{\rm true}},</span>
 
-<span class="sd">    where, the complex reduced shear :math:`g` is obtained from the shear :math:`\gamma=\gamma_1+i\gamma_2`</span>
-<span class="sd">    and convergence :math:`\kappa` as :math:`g = \gamma/(1-\kappa)`, and the complex intrinsic ellipticity</span>
-<span class="sd">    is :math:`\epsilon^{\rm true}=\epsilon^{\rm true}_1+i\epsilon^{\rm true}_2`</span>
-
+<span class="sd">    where, the complex reduced shear :math:`g` is obtained from the shear</span>
+<span class="sd">    :math:`\gamma=\gamma_1+i\gamma_2` and convergence :math:`\kappa` as :math:`g =</span>
+<span class="sd">    \gamma/(1-\kappa)`, and the complex intrinsic ellipticity is :math:`\epsilon^{\rm</span>
+<span class="sd">    true}=\epsilon^{\rm true}_1+i\epsilon^{\rm true}_2`</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -492,12 +511,16 @@
 <span class="sd">    e1, e2 : float or array</span>
 <span class="sd">        Lensed ellipicity along both reference axes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">shear</span> <span class="o">=</span> <span class="n">shear1</span><span class="o">+</span><span class="n">shear2</span><span class="o">*</span><span class="mi">1</span><span class="n">j</span> <span class="c1"># shear (as a complex number)</span>
-    <span class="n">ellipticity_true</span> <span class="o">=</span> <span class="n">ellipticity1_true</span><span class="o">+</span><span class="n">ellipticity2_true</span><span class="o">*</span><span class="mi">1</span><span class="n">j</span> <span class="c1"># intrinsic ellipticity (as a complex number)</span>
-    <span class="n">reduced_shear</span> <span class="o">=</span> <span class="n">shear</span><span class="o">/</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">convergence</span><span class="p">)</span> <span class="c1"># reduced shear</span>
-    <span class="n">e</span> <span class="o">=</span> <span class="p">(</span><span class="n">ellipticity_true</span><span class="o">+</span><span class="n">reduced_shear</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">reduced_shear</span><span class="o">.</span><span class="n">conjugate</span><span class="p">()</span><span class="o">*</span><span class="n">ellipticity_true</span><span class="p">)</span> <span class="c1"># lensed ellipticity</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+    <span class="c1"># shear (as a complex number)</span>
+    <span class="n">shear</span> <span class="o">=</span> <span class="n">shear1</span><span class="o">+</span><span class="n">shear2</span><span class="o">*</span><span class="mi">1</span><span class="n">j</span>
+    <span class="c1"># intrinsic ellipticity (as a complex number)</span>
+    <span class="n">ellipticity_true</span> <span class="o">=</span> <span class="n">ellipticity1_true</span><span class="o">+</span><span class="n">ellipticity2_true</span><span class="o">*</span><span class="mi">1</span><span class="n">j</span>
+    <span class="c1"># reduced shear</span>
+    <span class="n">reduced_shear</span> <span class="o">=</span> <span class="n">shear</span><span class="o">/</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">convergence</span><span class="p">)</span>
+    <span class="c1"># lensed ellipticity</span>
+    <span class="n">lensed_ellipticity</span> <span class="o">=</span> <span class="p">(</span><span class="n">ellipticity_true</span><span class="o">+</span><span class="n">reduced_shear</span><span class="p">)</span> <span class="o">/</span> \
+        <span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">reduced_shear</span><span class="o">.</span><span class="n">conjugate</span><span class="p">()</span><span class="o">*</span><span class="n">ellipticity_true</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">lensed_ellipticity</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">lensed_ellipticity</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="arguments_consistency"><a class="viewcode-back" href="../../api/clmm.utils.html#clmm.utils.arguments_consistency">[docs]</a><span class="k">def</span> <span class="nf">arguments_consistency</span><span class="p">(</span><span class="n">arguments</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
@@ -517,20 +540,24 @@
 <span class="sd">    list, arrays, tuple</span>
 <span class="sd">        Group of arguments, converted to numpy arrays if they have length</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">sizes</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="s1">&#39;__len__&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">arguments</span><span class="p">]</span>
+    <span class="n">sizes</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="s1">&#39;__len__&#39;</span><span class="p">)</span>
+             <span class="k">else</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">arguments</span><span class="p">]</span>
     <span class="c1"># check there is a name for each argument</span>
     <span class="k">if</span> <span class="n">names</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span><span class="o">!=</span><span class="nb">len</span><span class="p">(</span><span class="n">arguments</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;names (len=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span><span class="si">}</span><span class="s1">) must have same length as arguments (len=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">arguments</span><span class="p">)</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">arguments</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;names (len=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span><span class="si">}</span><span class="s1">) must have same length &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;as arguments (len=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">arguments</span><span class="p">)</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s1">)&#39;</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">sizes</span><span class="p">)])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sizes</span><span class="p">])</span>
     <span class="c1"># check consistency</span>
     <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">sizes</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">sizes</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">([</span><span class="n">s</span><span class="o">!=</span><span class="n">sizes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sizes</span><span class="p">[</span><span class="mi">1</span><span class="p">:]]):</span> <span class="c1"># Check that all of the inputs have length and they match</span>
+        <span class="c1"># Check that all of the inputs have length and they match</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">sizes</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">([</span><span class="n">s</span> <span class="o">!=</span> <span class="n">sizes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sizes</span><span class="p">[</span><span class="mi">1</span><span class="p">:]]):</span>
             <span class="c1"># make error message</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s1"> inconsistent sizes: </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="p">(</span><span class="n">arguments</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">arguments</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">arguments</span></div>
 
 
@@ -543,7 +570,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">rhocrit_mks</span> <span class="o">=</span> <span class="mf">3.0</span><span class="o">*</span><span class="mf">100.0</span><span class="o">*</span><span class="mf">100.0</span><span class="o">/</span><span class="p">(</span><span class="mf">8.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">const</span><span class="o">.</span><span class="n">GNEWT</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
-    <span class="n">rhocrit_cd2018</span> <span class="o">=</span> <span class="n">rhocrit_mks</span><span class="o">*</span><span class="mf">1000.0</span><span class="o">*</span><span class="mf">1000.0</span><span class="o">*</span><span class="n">const</span><span class="o">.</span><span class="n">PC_TO_METER</span><span class="o">.</span><span class="n">value</span><span class="o">*</span><span class="mf">1.0e6</span><span class="o">/</span><span class="n">const</span><span class="o">.</span><span class="n">SOLAR_MASS</span><span class="o">.</span><span class="n">value</span>
+    <span class="n">rhocrit_cd2018</span> <span class="o">=</span> <span class="p">(</span><span class="n">rhocrit_mks</span><span class="o">*</span><span class="mf">1000.0</span><span class="o">*</span><span class="mf">1000.0</span><span class="o">*</span>
+        <span class="n">const</span><span class="o">.</span><span class="n">PC_TO_METER</span><span class="o">.</span><span class="n">value</span><span class="o">*</span><span class="mf">1.0e6</span><span class="o">/</span><span class="n">const</span><span class="o">.</span><span class="n">SOLAR_MASS</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">rhocrit_cd2018</span><span class="o">/</span><span class="n">rho_crit_external</span>
 </pre></div>
@@ -552,25 +580,28 @@
            
           </div>
           <footer>
+  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2018-2021, LSST DESC CLMM Contributors.
+        
+        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
 
     </p>
   </div>
     
     
     
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
+
         </div>
       </div>
 

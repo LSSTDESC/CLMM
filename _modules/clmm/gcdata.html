@@ -3,11 +3,11 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8">
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.gcdata &mdash; CLMM 0.9.1 documentation</title>
+  <title>clmm.gcdata &mdash; CLMM 1.0.0 documentation</title>
   
 
   
@@ -16,10 +16,7 @@
 
   
   
-
   
-  
-
   
 
   
@@ -32,6 +29,7 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
@@ -52,7 +50,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home"> CLMM
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> CLMM
           
 
           
@@ -62,7 +60,7 @@
             
             
               <div class="version">
-                0.9.1
+                1.0.0
               </div>
             
           
@@ -87,27 +85,27 @@
               
             
             
-              <p class="caption"><span class="caption-text">Getting Started</span></p>
+              <p><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../source/overview.html">Rapid overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../source/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../source/citing.html">Citing CLMM</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Usage Demos</span></p>
+<p><span class="caption-text">Usage Demos</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Mass Fitting Examples</span></p>
+<p><span class="caption-text">Mass Fitting Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog_NC.html">Fit halo mass to shear profile using Numcosmo statistical framework</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Reference</span></p>
+<p><span class="caption-text">Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api.html">API Documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../api/clmm.constants.html">clmm.constants module</a></li>
@@ -180,8 +178,6 @@
 
 
 
-
-
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -209,11 +205,9 @@
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Define the custom data type</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">astropy.table</span> <span class="kn">import</span> <span class="n">Table</span> <span class="k">as</span> <span class="n">APtable</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">import</span> <span class="nn">pickle</span>
-
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">astropy.table</span> <span class="kn">import</span> <span class="n">Table</span> <span class="k">as</span> <span class="n">APtable</span>
 
 
 <div class="viewcode-block" id="GCMetaData"><a class="viewcode-back" href="../../api/clmm.gcdata.html#clmm.gcdata.GCMetaData">[docs]</a><span class="k">class</span> <span class="nc">GCMetaData</span><span class="p">(</span><span class="n">OrderedDict</span><span class="p">):</span>
@@ -234,15 +228,26 @@
     <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">item</span> <span class="o">==</span> <span class="s1">&#39;cosmo&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> \
             <span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;cosmo&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">if</span> <span class="s1">&#39;cosmo&#39;</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">else</span> <span class="kc">False</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;cosmo must be changed via update_cosmo or update_cosmo_ext_valid method&#39;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">OrderedDict</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-        <span class="k">return</span></div>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;cosmo must be changed via update_cosmo or update_cosmo_ext_valid method&#39;</span><span class="p">)</span>
+        <span class="n">OrderedDict</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Make class accept all letter casings</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="p">{</span><span class="n">n</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">()}[</span><span class="n">item</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">out</span></div>
 
 
 <div class="viewcode-block" id="GCData"><a class="viewcode-back" href="../../api/clmm.gcdata.html#clmm.gcdata.GCData">[docs]</a><span class="k">class</span> <span class="nc">GCData</span><span class="p">(</span><span class="n">APtable</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    GCData: A data objetc for gcdata. Right now it behaves as an astropy table.</span>
+<span class="sd">    GCData: A data objetc for gcdata. Right now it behaves as an astropy table, with the following</span>
+<span class="sd">    modifications: `__getitem__` is case independent;</span>
+<span class="sd">    The attribute .meta[&#39;cosmo&#39;] is protected and</span>
+<span class="sd">    can only be changed via update_cosmo or update_cosmo_ext_valid methods;</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -260,36 +265,61 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">APtable</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">metakwargs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;meta&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;meta&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="k">else</span> <span class="p">{}</span>
-        <span class="n">metawkargs</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">metakwargs</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">metakwargs</span>
+        <span class="n">metakwargs</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">metakwargs</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">metakwargs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">meta</span> <span class="o">=</span> <span class="n">GCMetaData</span><span class="p">(</span><span class="o">**</span><span class="n">metakwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_str_colnames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Colnames in comma separated str&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">colnames</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_str_meta_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Metadata in comma separated str&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s1">&#39;</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Generates string for repr(GCData)&quot;&quot;&quot;</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">(&#39;</span>
-        <span class="n">output</span><span class="o">+=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s1">&#39;</span>
-            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
-                <span class="o">+</span><span class="p">[</span><span class="s1">&#39;columns: &#39;</span><span class="o">+</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">colnames</span><span class="p">)])</span>
-        <span class="n">output</span><span class="o">+=</span> <span class="s1">&#39;)&#39;</span>
-        <span class="k">return</span> <span class="n">output</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_str_meta_</span><span class="p">(),</span> <span class="s1">&#39;columns: &#39;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_str_colnames</span><span class="p">()]</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">description</span><span class="p">)</span><span class="si">}</span><span class="s1">)&#39;</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Generates string for print(GCData)&quot;&quot;&quot;</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;self.__class__.__name__</span><span class="se">\n</span><span class="s1">&gt; defined by:&#39;</span>
-        <span class="n">output</span><span class="o">+=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
-        <span class="n">output</span><span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&gt; with columns: &#39;</span>
-        <span class="n">output</span><span class="o">+=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">colnames</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">output</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&gt; defined by: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_str_meta_</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&gt; with columns: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_str_colnames</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&gt; </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s1"> objects&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="si">{</span><span class="n">APtable</span><span class="o">.</span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_html_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get html table for display&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;&lt;/i&gt;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">APtable</span><span class="o">.</span><span class="n">_repr_html_</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;&lt;/i&gt;&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:])</span>
+
+    <span class="k">def</span> <span class="nf">_repr_html_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generates string for display(GCData)&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;&lt;b&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&lt;/b&gt;&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;&lt;br&gt; &lt;b&gt;defined by:&lt;/b&gt; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_str_meta_</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;&lt;br&gt; &lt;b&gt;with columns:&lt;/b&gt; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_str_colnames</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;&lt;br&gt; </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s1"> objects&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;&lt;br&gt; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_html_table</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Makes sure GCData keeps its properties after [] operations are used</span>
+<span class="sd">        Makes sure GCData keeps its properties after [] operations are used.</span>
+<span class="sd">        It also makes all letter casings accepted</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        GCData</span>
 <span class="sd">            Data with [] operations applied</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">name_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">n</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">colnames</span><span class="p">}</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">name_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)])</span>
         <span class="n">out</span> <span class="o">=</span> <span class="n">APtable</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">out</span>
 
@@ -303,7 +333,8 @@
 <span class="sd">        cosmo: clmm.Cosmology</span>
 <span class="sd">            Cosmology</span>
 <span class="sd">        overwrite: bool</span>
-<span class="sd">            Overwrites the current cosmo metadata. If false raises Error when cosmologies are different.</span>
+<span class="sd">            Overwrites the current cosmo metadata. If false raises Error when cosmologies are</span>
+<span class="sd">            different.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -314,11 +345,12 @@
             <span class="n">cosmo_gcdata</span> <span class="o">=</span> <span class="n">gcdata</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;cosmo&#39;</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">cosmo_gcdata</span> <span class="ow">and</span> <span class="n">cosmo_gcdata</span> <span class="o">!=</span> <span class="n">cosmo_desc</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
-                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;input cosmo (</span><span class="si">{</span><span class="n">cosmo_desc</span><span class="si">}</span><span class="s1">) overwriting gcdata cosmo (</span><span class="si">{</span><span class="n">cosmo_gcdata</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;input cosmo (</span><span class="si">{</span><span class="n">cosmo_desc</span><span class="si">}</span><span class="s1">) overwriting gcdata cosmo (</span><span class="si">{</span><span class="n">cosmo_gcdata</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;input cosmo (</span><span class="si">{</span><span class="n">cosmo_desc</span><span class="si">}</span><span class="s1">) differs from gcdata cosmo (</span><span class="si">{</span><span class="n">cosmo_gcdata</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="s1">&#39;cosmo&#39;</span><span class="p">,</span> <span class="n">cosmo_desc</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">return</span></div>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;input cosmo (</span><span class="si">{</span><span class="n">cosmo_desc</span><span class="si">}</span><span class="s1">) differs from gcdata cosmo (</span><span class="si">{</span><span class="n">cosmo_gcdata</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="s1">&#39;cosmo&#39;</span><span class="p">,</span> <span class="n">cosmo_desc</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="GCData.update_cosmo"><a class="viewcode-back" href="../../api/clmm.gcdata.html#clmm.gcdata.GCData.update_cosmo">[docs]</a>    <span class="k">def</span> <span class="nf">update_cosmo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Updates cosmo metadata if not present</span>
@@ -328,115 +360,42 @@
 <span class="sd">        cosmo: clmm.Cosmology</span>
 <span class="sd">            Cosmology</span>
 <span class="sd">        overwrite: bool</span>
-<span class="sd">            Overwrites the current cosmo metadata. If false raises Error when cosmologies are different.</span>
+<span class="sd">            Overwrites the current cosmo metadata. If false raises Error when cosmologies are</span>
+<span class="sd">            different.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update_cosmo_ext_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
-        <span class="k">return</span></div></div>
-
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Additional functions specific to clmm.GCData</span>
-<span class="sd">Note: Not being used anymore</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="c1">#</span>
-<span class="c1">#def confirm_GCData(data):</span>
-<span class="c1">#    &quot;&quot;&quot;</span>
-<span class="c1">#    Typechecks GCData elements</span>
-<span class="c1">#    &quot;&quot;&quot;</span>
-<span class="c1">#    # if not (type(data.creator) == str and type(data.specs) == dict and type(data.values) == astropy.Table):</span>
-<span class="c1">#    #     raise TypeError(&#39;GCData creator should be string, specs should be dict, values should be astropy table&#39;)</span>
-<span class="c1">#    pass</span>
-<span class="c1">#</span>
-<span class="c1">#</span>
-<span class="c1">#def read_GCData(filename):</span>
-<span class="c1">#    &quot;&quot;&quot;</span>
-<span class="c1">#    Reads GCData from file</span>
-<span class="c1">#    &quot;&quot;&quot;</span>
-<span class="c1">#    pass</span>
-<span class="c1">#</span>
-<span class="c1">#</span>
-<span class="c1">#def write_GCData(data, filename):</span>
-<span class="c1">#    &quot;&quot;&quot;</span>
-<span class="c1">#    Writes GCData to file</span>
-<span class="c1">#    &quot;&quot;&quot;</span>
-<span class="c1">#    pass</span>
-<span class="c1">#</span>
-<span class="c1">#</span>
-<span class="c1">#def check_subdict(lookup_dict, reference_dict):</span>
-<span class="c1">#    &#39;&#39;&#39;</span>
-<span class="c1">#    Checks if a dictionary is a subset of another dictionary, with the same keys and values</span>
-<span class="c1">#</span>
-<span class="c1">#    Parameters</span>
-<span class="c1">#    ----------</span>
-<span class="c1">#    lookup_dict: dict</span>
-<span class="c1">#        Subset dictionary</span>
-<span class="c1">#    reference_dict: dict</span>
-<span class="c1">#        Main dictionary</span>
-<span class="c1">#</span>
-<span class="c1">#    Returns</span>
-<span class="c1">#    -------</span>
-<span class="c1">#    bool</span>
-<span class="c1">#        If a lookup_dict is a subset of reference_dict</span>
-<span class="c1">#    &#39;&#39;&#39;</span>
-<span class="c1">#    return lookup_dict.items() &lt;= reference_dict.items()</span>
-<span class="c1">#</span>
-<span class="c1">#</span>
-<span class="c1">#def find_in_datalist(lookup_specs, datalist, exact=False):</span>
-<span class="c1">#    &#39;&#39;&#39;</span>
-<span class="c1">#    Finds data with given specs in a datalist, allows for partial match</span>
-<span class="c1">#</span>
-<span class="c1">#    Parameters</span>
-<span class="c1">#    ----------</span>
-<span class="c1">#    datalist: list</span>
-<span class="c1">#        List of clmm.GCData objects to search for lookup_specs</span>
-<span class="c1">#    lookup_specs: dict</span>
-<span class="c1">#        Specs required</span>
-<span class="c1">#    exact: boolean, optional</span>
-<span class="c1">#        Does the match have to be symmetric?</span>
-<span class="c1">#</span>
-<span class="c1">#    Returns</span>
-<span class="c1">#    -------</span>
-<span class="c1">#    found: list</span>
-<span class="c1">#        List of clmm.GCData object data with required creator and set of specs</span>
-<span class="c1">#    &#39;&#39;&#39;</span>
-<span class="c1">#    found = []</span>
-<span class="c1">#    for data in datalist:</span>
-<span class="c1">#        if check_subdict(lookup_specs, data.specs) :</span>
-<span class="c1">#            found.append(data)</span>
-<span class="c1">#    if exact:</span>
-<span class="c1">#        for match in found:</span>
-<span class="c1">#            if check_subdict(match.specs, lookup_specs):</span>
-<span class="c1">#                return [match]</span>
-<span class="c1">#        found = []</span>
-<span class="c1">#    return found</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_cosmo_ext_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
            
           </div>
           <footer>
+  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2018-2021, LSST DESC CLMM Contributors.
+        
+        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
 
     </p>
   </div>
     
     
     
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
+
         </div>
       </div>
 

@@ -3,11 +3,12 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>clmm.dataops package &mdash; CLMM 0.9.1 documentation</title>
+  <title>clmm.dataops package &mdash; CLMM 1.0.0 documentation</title>
   
 
   
@@ -16,10 +17,7 @@
 
   
   
-
   
-  
-
   
 
   
@@ -32,6 +30,7 @@
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
@@ -54,7 +53,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> CLMM
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> CLMM
           
 
           
@@ -64,7 +63,7 @@
             
             
               <div class="version">
-                0.9.1
+                1.0.0
               </div>
             
           
@@ -89,27 +88,27 @@
               
             
             
-              <p class="caption"><span class="caption-text">Getting Started</span></p>
+              <p><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../source/overview.html">Rapid overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../source/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../source/citing.html">Citing CLMM</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Usage Demos</span></p>
+<p><span class="caption-text">Usage Demos</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Mass Fitting Examples</span></p>
+<p><span class="caption-text">Mass Fitting Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog_NC.html">Fit halo mass to shear profile using Numcosmo statistical framework</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Reference</span></p>
+<p><span class="caption-text">Reference</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="clmm.constants.html">clmm.constants module</a></li>
@@ -182,8 +181,6 @@
 
 
 
-
-
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -197,7 +194,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-          
+            
             <a href="../_sources/api/clmm.dataops.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -211,19 +208,20 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-clmm.dataops">
+  <section id="module-clmm.dataops">
 <span id="clmm-dataops-package"></span><h1>clmm.dataops package<a class="headerlink" href="#module-clmm.dataops" title="Permalink to this headline">¶</a></h1>
 <p>Functions to compute polar/azimuthal averages in radial bins</p>
 <dl class="py function">
 <dt id="clmm.dataops.compute_tangential_and_cross_components">
-<code class="sig-prename descclassname">clmm.dataops.</code><code class="sig-name descname">compute_tangential_and_cross_components</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ra_lens</span></em>, <em class="sig-param"><span class="n">dec_lens</span></em>, <em class="sig-param"><span class="n">ra_source</span></em>, <em class="sig-param"><span class="n">dec_source</span></em>, <em class="sig-param"><span class="n">shear1</span></em>, <em class="sig-param"><span class="n">shear2</span></em>, <em class="sig-param"><span class="n">geometry</span><span class="o">=</span><span class="default_value">'flat'</span></em>, <em class="sig-param"><span class="n">is_deltasigma</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">cosmo</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">z_lens</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">z_source</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">sigma_c</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/dataops.html#compute_tangential_and_cross_components"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.dataops.compute_tangential_and_cross_components" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">clmm.dataops.</code><code class="sig-name descname">compute_tangential_and_cross_components</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ra_lens</span></em>, <em class="sig-param"><span class="n">dec_lens</span></em>, <em class="sig-param"><span class="n">ra_source</span></em>, <em class="sig-param"><span class="n">dec_source</span></em>, <em class="sig-param"><span class="n">shear1</span></em>, <em class="sig-param"><span class="n">shear2</span></em>, <em class="sig-param"><span class="n">geometry</span><span class="o">=</span><span class="default_value">'curve'</span></em>, <em class="sig-param"><span class="n">is_deltasigma</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">cosmo</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">z_lens</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">z_source</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">sigma_c</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/dataops.html#compute_tangential_and_cross_components"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.dataops.compute_tangential_and_cross_components" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes tangential- and cross- components for shear or ellipticity</p>
-<p>To do so, we need the right ascension and declination of the lens and of
-all of the sources. We also need the two shape components of all of the sources.</p>
+<p>To do so, we need the right ascension and declination of the lens and of all of the sources. We
+also need the two shape components of all of the sources.</p>
 <p>These quantities can be handed to <cite>tangential_and_cross_components</cite> in two ways</p>
 <ol class="arabic">
 <li><p>Pass in each as parameters:</p>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">compute_tangential_and_cross_components</span><span class="p">(</span><span class="n">ra_lens</span><span class="p">,</span> <span class="n">dec_lens</span><span class="p">,</span> <span class="n">ra_source</span><span class="p">,</span> <span class="n">dec_source</span><span class="p">,</span> <span class="n">shape_component1</span><span class="p">,</span> <span class="n">shape_component2</span><span class="p">)</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">compute_tangential_and_cross_components</span><span class="p">(</span><span class="n">ra_lens</span><span class="p">,</span> <span class="n">dec_lens</span><span class="p">,</span> <span class="n">ra_source</span><span class="p">,</span> <span class="n">dec_source</span><span class="p">,</span>
+<span class="n">shape_component1</span><span class="p">,</span> <span class="n">shape_component2</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
@@ -234,37 +232,43 @@ all of the sources. We also need the two shape components of all of the sources.
 </li>
 </ol>
 <p>The angular separation between the source and the lens, <span class="math notranslate nohighlight">\(\theta\)</span>, and the azimuthal
-position of the source relative to the lens, <span class="math notranslate nohighlight">\(\phi\)</span>, are computed within the function
-and the angular separation is returned.</p>
+position of the source relative to the lens, <span class="math notranslate nohighlight">\(\phi\)</span>, are computed within the function and
+the angular separation is returned.</p>
 <p>In the flat sky approximation, these angles are calculated using (_lens: lens, _source: source,
 RA is from right to left)</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\theta^2 = &amp; \left(\delta_s-\delta_l\right)^2+
 \left(\alpha_l-\alpha_s\right)^2\cos^2(\delta_l)\\
 \tan\phi = &amp; \frac{\delta_s-\delta_l}{\left(\alpha_l-\alpha_s\right)\cos(\delta_l)}\end{split}\]</div>
-<p>The tangential, <span class="math notranslate nohighlight">\(g_t\)</span>, and cross, <span class="math notranslate nohighlight">\(g_x\)</span>, ellipticity/shear components are calculated using the two
-ellipticity/shear components <span class="math notranslate nohighlight">\(g_1\)</span> and <span class="math notranslate nohighlight">\(g_2\)</span> of the source galaxies, following Eq.7 and Eq.8
-in Schrabback et al. (2018), arXiv:1611:03866
-which is consistent with arXiv:0509252</p>
+<p>The tangential, <span class="math notranslate nohighlight">\(g_t\)</span>, and cross, <span class="math notranslate nohighlight">\(g_x\)</span>, ellipticity/shear components are calculated
+using the two ellipticity/shear components <span class="math notranslate nohighlight">\(g_1\)</span> and <span class="math notranslate nohighlight">\(g_2\)</span> of the source galaxies,
+following Eq.7 and Eq.8 in Schrabback et al. (2018), arXiv:1611:03866 which is consistent with
+arXiv:0509252</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}g_t =&amp; -\left( g_1\cos\left(2\phi\right)+g_2\sin\left(2\phi\right)\right)\\
 g_x =&amp; g_1 \sin\left(2\phi\right)-g_2\cos\left(2\phi\right)\end{split}\]</div>
-<p>Finally, and if requested by the user throught the <cite>is_deltasigma</cite> flag, an estimate of the excess surface density <span class="math notranslate nohighlight">\(\widehat{\Delta\Sigma}\)</span> is obtained from</p>
+<p>Finally, and if requested by the user throught the <cite>is_deltasigma</cite> flag, an estimate of the
+excess surface density <span class="math notranslate nohighlight">\(\widehat{\Delta\Sigma}\)</span> is obtained from</p>
 <div class="math notranslate nohighlight">
 \[\widehat{\Delta\Sigma_{t,x}} = g_{t,x} \times \Sigma_c(cosmo, z_L, z_{\rm src})\]</div>
-<p>where <span class="math notranslate nohighlight">\(\Sigma_c\)</span> is the critical surface density that depends on the cosmology and on the lens and source redshifts. If <span class="math notranslate nohighlight">\(g_{t,x}\)</span> correspond to the shear, the above expression is an accurate. However, if <span class="math notranslate nohighlight">\(g_{t,x}\)</span> correspond to ellipticities or reduced shear, this expression only gives an estimate <span class="math notranslate nohighlight">\(\widehat{\Delta\Sigma_{t,x}}\)</span>, valid only in the weak lensing regime.</p>
+<p>where <span class="math notranslate nohighlight">\(\Sigma_c\)</span> is the critical surface density that depends on the cosmology and on the
+lens and source redshifts. If <span class="math notranslate nohighlight">\(g_{t,x}\)</span> correspond to the shear, the above expression is
+an accurate. However, if <span class="math notranslate nohighlight">\(g_{t,x}\)</span> correspond to ellipticities or reduced shear, this
+expression only gives an estimate <span class="math notranslate nohighlight">\(\widehat{\Delta\Sigma_{t,x}}\)</span>, valid only in the weak
+lensing regime.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ra_lens</strong> (<em>float</em>) – Right ascension of the lensing cluster</p></li>
-<li><p><strong>dec_lens</strong> (<em>float</em>) – Declination of the lensing cluster</p></li>
-<li><p><strong>ra_source</strong> (<em>array</em>) – Right ascensions of each source galaxy</p></li>
-<li><p><strong>dec_source</strong> (<em>array</em>) – Declinations of each source galaxy</p></li>
+<li><p><strong>ra_lens</strong> (<em>float</em>) – Right ascension of the lensing cluster in degrees</p></li>
+<li><p><strong>dec_lens</strong> (<em>float</em>) – Declination of the lensing cluster in degrees</p></li>
+<li><p><strong>ra_source</strong> (<em>array</em>) – Right ascensions of each source galaxy in degrees</p></li>
+<li><p><strong>dec_source</strong> (<em>array</em>) – Declinations of each source galaxy in degrees</p></li>
 <li><p><strong>shear1</strong> (<em>array</em>) – The measured shear (or reduced shear or ellipticity) of the source galaxies</p></li>
 <li><p><strong>shear2</strong> (<em>array</em>) – The measured shear (or reduced shear or ellipticity) of the source galaxies</p></li>
 <li><p><strong>geometry</strong> (<em>str</em><em>, </em><em>optional</em>) – Sky geometry to compute angular separation.
-Flat is currently the only supported option.</p></li>
-<li><p><strong>is_deltasigma</strong> (<em>bool</em>) – If <cite>True</cite>, the tangential and cross components returned are multiplied by Sigma_crit. Results in units of <span class="math notranslate nohighlight">\(M_\odot\ Mpc^{-2}\)</span></p></li>
+Options are curve (uses astropy) or flat.</p></li>
+<li><p><strong>is_deltasigma</strong> (<em>bool</em>) – If <cite>True</cite>, the tangential and cross components returned are multiplied by Sigma_crit.
+Results in units of <span class="math notranslate nohighlight">\(M_\odot\ Mpc^{-2}\)</span></p></li>
 <li><p><strong>cosmo</strong> (<em>clmm.Cosmology</em><em>, </em><em>optional</em>) – Required if <cite>is_deltasigma</cite> is True and <cite>sigma_c</cite> not provided.
 Not used if <cite>sigma_c</cite> is provided.</p></li>
 <li><p><strong>z_lens</strong> (<em>float</em><em>, </em><em>optional</em>) – Redshift of the lens, required if <cite>is_deltasigma</cite> is True and <cite>sigma_c</cite> not provided.
@@ -312,8 +316,9 @@ tangential shears or ellipticities and angular separation of the source galaxies
 <li><p><strong>angsep</strong> (<em>array</em>) – Transvesal distances between the sources and the lens</p></li>
 <li><p><strong>angsep_units</strong> (<em>str</em>) – Units of the calculated separation of the source galaxies
 Allowed Options = [“radians”]</p></li>
-<li><p><strong>bin_units</strong> (<em>str</em>) – Units to use for the radial bins of the shear profile
-Allowed Options = [“radians”, deg”, “arcmin”, “arcsec”, kpc”, “Mpc”]</p></li>
+<li><p><strong>bin_units</strong> (<em>str</em>) – Units to use for the radial bins of the radial profile
+Allowed Options = [“radians”, deg”, “arcmin”, “arcsec”, kpc”, “Mpc”]
+(letter case independent)</p></li>
 <li><p><strong>bins</strong> (<em>array_like</em><em>, </em><em>optional</em>) – User defined bins to use for the shear profile. If a list is provided, use that as
 the bin edges. If a scalar is provided, create that many equally spaced bins between
 the minimum and maximum angular separations in bin_units. If nothing is provided,
@@ -327,8 +332,8 @@ default to 10 equally spaced bins.</p></li>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>profile</strong> (<em>GCData</em>) – Output table containing the radius grid points, the profile of the components <cite>p_i</cite>, errors <cite>p_i_err</cite> and number of sources.
-The errors are defined as the standard errors in each bin.</p></li>
+<li><p><strong>profile</strong> (<em>GCData</em>) – Output table containing the radius grid points, the profile of the components <cite>p_i</cite>, errors
+<cite>p_i_err</cite> and number of sources.  The errors are defined as the standard errors in each bin.</p></li>
 <li><p><strong>binnumber</strong> (<em>1-D ndarray of ints, optional</em>) – Indices of the bins (corresponding to <cite>xbins</cite>) in which each value
 of <cite>xvals</cite> belongs.  Same length as <cite>yvals</cite>.  A binnumber of <cite>i</cite> means the
 corresponding value is between (xbins[i-1], xbins[i]).</p></li>
@@ -337,35 +342,39 @@ corresponding value is between (xbins[i-1], xbins[i]).</p></li>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>This is an example of a place where the cosmology-dependence can be sequestered to another module.</p>
+<p>This is an example of a place where the cosmology-dependence can be sequestered to another
+module.</p>
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>
            
           </div>
           <footer>
+  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2018-2021, LSST DESC CLMM Contributors.
+        
+        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
 
     </p>
   </div>
     
     
     
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
+
         </div>
       </div>
 

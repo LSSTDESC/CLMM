@@ -3,11 +3,12 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>clmm.theory.parent_class module &mdash; CLMM 0.9.1 documentation</title>
+  <title>clmm.theory.parent_class module &mdash; CLMM 1.0.0 documentation</title>
   
 
   
@@ -16,10 +17,7 @@
 
   
   
-
   
-  
-
   
 
   
@@ -32,6 +30,7 @@
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
@@ -54,7 +53,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> CLMM
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> CLMM
           
 
           
@@ -64,7 +63,7 @@
             
             
               <div class="version">
-                0.9.1
+                1.0.0
               </div>
             
           
@@ -89,27 +88,27 @@
               
             
             
-              <p class="caption"><span class="caption-text">Getting Started</span></p>
+              <p><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../source/overview.html">Rapid overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../source/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../source/citing.html">Citing CLMM</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Usage Demos</span></p>
+<p><span class="caption-text">Usage Demos</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Mass Fitting Examples</span></p>
+<p><span class="caption-text">Mass Fitting Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog_NC.html">Fit halo mass to shear profile using Numcosmo statistical framework</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Reference</span></p>
+<p><span class="caption-text">Reference</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="clmm.constants.html">clmm.constants module</a></li>
@@ -182,8 +181,6 @@
 
 
 
-
-
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -199,7 +196,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-          
+            
             <a href="../_sources/api/clmm.theory.parent_class.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -213,8 +210,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-clmm.theory.parent_class">
+  <section id="module-clmm.theory.parent_class">
 <span id="clmm-theory-parent-class-module"></span><h1>clmm.theory.parent_class module<a class="headerlink" href="#module-clmm.theory.parent_class" title="Permalink to this headline">¶</a></h1>
+<p>&#64;file parent_class.py
+CLMModeling abstract class</p>
 <dl class="py class">
 <dt id="clmm.theory.parent_class.CLMModeling">
 <em class="property">class </em><code class="sig-prename descclassname">clmm.theory.parent_class.</code><code class="sig-name descname">CLMModeling</code><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling" title="Permalink to this definition">¶</a></dt>
@@ -224,9 +223,9 @@
 <dt class="field-odd">Variables</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>backend</strong> (<em>str</em>) – Name of the backend being used</p></li>
-<li><p><strong>massdef</strong> (<em>str</em>) – Profile mass definition (<cite>mean</cite>, <cite>critical</cite>, <cite>virial</cite>)</p></li>
+<li><p><strong>massdef</strong> (<em>str</em>) – Profile mass definition (<cite>mean</cite>, <cite>critical</cite>, <cite>virial</cite> - letter case independent)</p></li>
 <li><p><strong>delta_mdef</strong> (<em>int</em>) – Mass overdensity definition.</p></li>
-<li><p><strong>halo_profile_model</strong> (<em>str</em>) – Profile model parameterization (<cite>nfw</cite>, <cite>einasto</cite>, <cite>hernquist</cite>)</p></li>
+<li><p><strong>halo_profile_model</strong> (<em>str</em>) – Profile model parameterization (<cite>nfw</cite>, <cite>einasto</cite>, <cite>hernquist</cite> - letter case independent)</p></li>
 <li><p><strong>cosmo</strong> (<em>Cosmology</em>) – Cosmology object</p></li>
 <li><p><strong>hdpm</strong> (<em>Object</em>) – Backend object with halo profiles</p></li>
 <li><p><strong>mdef_dict</strong> (<em>dict</em>) – Dictionary with the definitions for mass</p></li>
@@ -460,8 +459,8 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>halo_profile_model</strong> (<em>str</em>) – Halo mass profile, current options are ‘nfw’</p></li>
-<li><p><strong>massdef</strong> (<em>str</em>) – Mass definition, current options are ‘mean’</p></li>
+<li><p><strong>halo_profile_model</strong> (<em>str</em>) – Halo mass profile, current options are ‘nfw’ (letter case independent)</p></li>
+<li><p><strong>massdef</strong> (<em>str</em>) – Mass definition, current options are ‘mean’ (letter case independent)</p></li>
 <li><p><strong>delta_mdef</strong> (<em>int</em>) – Overdensity number</p></li>
 </ul>
 </dd>
@@ -482,36 +481,56 @@
 <dl class="py method">
 <dt id="clmm.theory.parent_class.CLMModeling.validate_definitions">
 <code class="sig-name descname">validate_definitions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">massdef</span></em>, <em class="sig-param"><span class="n">halo_profile_model</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.validate_definitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.validate_definitions" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Makes sure values of <cite>massdef</cite> and <cite>halo_profile_model</cite> are in the supported options
+and fixes casing (code works with lowercase).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>massdef</strong> (<em>str</em><em>, </em><em>optional</em>) – Profile mass definition.</p></li>
+<li><p><strong>halo_profile_model</strong> (<em>str</em><em>, </em><em>optional</em>) – Profile model parameterization.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>massdef</strong> (<em>str</em>) – Lowercase profile mass definition.</p></li>
+<li><p><strong>halo_profile_model</strong> (<em>str</em>) – Lowercase profile model parameterization.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>
            
           </div>
           <footer>
+  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2018-2021, LSST DESC CLMM Contributors.
+        
+        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
 
     </p>
   </div>
     
     
     
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
+
         </div>
       </div>
 

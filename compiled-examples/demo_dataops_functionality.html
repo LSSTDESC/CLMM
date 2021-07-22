@@ -3,11 +3,12 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>Measure a Profile &mdash; CLMM 0.9.1 documentation</title>
+  <title>Measure a Profile &mdash; CLMM 1.0.0 documentation</title>
   
 
   
@@ -16,10 +17,7 @@
 
   
   
-
   
-  
-
   
 
   
@@ -32,6 +30,7 @@
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
@@ -54,7 +53,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> CLMM
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> CLMM
           
 
           
@@ -64,7 +63,7 @@
             
             
               <div class="version">
-                0.9.1
+                1.0.0
               </div>
             
           
@@ -89,27 +88,27 @@
               
             
             
-              <p class="caption"><span class="caption-text">Getting Started</span></p>
+              <p><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../source/overview.html">Rapid overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../source/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../source/citing.html">Citing CLMM</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Usage Demos</span></p>
+<p><span class="caption-text">Usage Demos</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="demo_generate_mock_cluster.html">Generate Mock Data</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Mass Fitting Examples</span></p>
+<p><span class="caption-text">Mass Fitting Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Example2_Fit_Halo_Mass_to_Shear_Catalog_NC.html">Fit halo mass to shear profile using Numcosmo statistical framework</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Reference</span></p>
+<p><span class="caption-text">Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">API Documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.constants.html">clmm.constants module</a></li>
@@ -182,8 +181,6 @@
 
 
 
-
-
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -195,7 +192,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-          
+            
             <a href="../_sources/compiled-examples/demo_dataops_functionality.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -209,9 +206,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="measure-a-profile">
+  <section id="measure-a-profile">
 <h1>Measure a Profile<a class="headerlink" href="#measure-a-profile" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="note">
+<section id="note">
 <h2>Note<a class="headerlink" href="#note" title="Permalink to this headline">¶</a></h2>
 <p>All functions in this section can be used passing the explicit arguments
 but are also internal functions of the cluster object, and should be
@@ -233,23 +230,26 @@ used as such. They are just explicitely used here for clarity.</p>
 <span class="kn">import</span> <span class="nn">clmm.utils</span> <span class="k">as</span> <span class="nn">u</span>
 <span class="kn">from</span> <span class="nn">clmm</span> <span class="kn">import</span> <span class="n">Cosmology</span>
 <span class="kn">from</span> <span class="nn">clmm.support</span> <span class="kn">import</span> <span class="n">mock_data</span> <span class="k">as</span> <span class="n">mock</span>
+
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Make sure we know which version we’re using</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clmm</span><span class="o">.</span><span class="n">__version__</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;0.9.1&#39;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.0.0&#39;</span>
 </pre></div>
 </div>
-<div class="section" id="define-cosmology-object">
+<section id="define-cosmology-object">
 <h3>Define cosmology object<a class="headerlink" href="#define-cosmology-object" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mock_cosmo</span> <span class="o">=</span> <span class="n">Cosmology</span><span class="p">(</span><span class="n">H0</span> <span class="o">=</span> <span class="mf">70.0</span><span class="p">,</span> <span class="n">Omega_dm0</span> <span class="o">=</span> <span class="mf">0.27</span> <span class="o">-</span> <span class="mf">0.045</span><span class="p">,</span> <span class="n">Omega_b0</span> <span class="o">=</span> <span class="mf">0.045</span><span class="p">,</span> <span class="n">Omega_k0</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-</div>
-<div class="section" id="generate-cluster-object-from-mock-data">
+</section>
+</section>
+<section id="generate-cluster-object-from-mock-data">
 <h2>1. Generate cluster object from mock data<a class="headerlink" href="#generate-cluster-object-from-mock-data" title="Permalink to this headline">¶</a></h2>
 <p>In this example, the mock data includes: shape noise, galaxies drawn
 from redshift distribution and photoz errors.</p>
@@ -273,13 +273,6 @@ from redshift distribution and photoz errors.</p>
                                             <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">pbs</span><span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">c</span><span class="o">/</span><span class="n">ccombet</span><span class="o">/.</span><span class="n">conda</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">mydesc2</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">numpy</span><span class="o">/</span><span class="n">ma</span><span class="o">/</span><span class="n">core</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">2832</span><span class="p">:</span> <span class="n">VisibleDeprecationWarning</span><span class="p">:</span> <span class="n">Creating</span> <span class="n">an</span> <span class="n">ndarray</span> <span class="kn">from</span> <span class="nn">ragged</span> <span class="n">nested</span> <span class="n">sequences</span> <span class="p">(</span><span class="n">which</span> <span class="ow">is</span> <span class="n">a</span> <span class="nb">list</span><span class="o">-</span><span class="ow">or</span><span class="o">-</span><span class="nb">tuple</span> <span class="n">of</span> <span class="n">lists</span><span class="o">-</span><span class="ow">or</span><span class="o">-</span><span class="n">tuples</span><span class="o">-</span><span class="ow">or</span> <span class="n">ndarrays</span> <span class="k">with</span> <span class="n">different</span> <span class="n">lengths</span> <span class="ow">or</span> <span class="n">shapes</span><span class="p">)</span> <span class="ow">is</span> <span class="n">deprecated</span><span class="o">.</span> <span class="n">If</span> <span class="n">you</span> <span class="n">meant</span> <span class="n">to</span> <span class="n">do</span> <span class="n">this</span><span class="p">,</span> <span class="n">you</span> <span class="n">must</span> <span class="n">specify</span> <span class="s1">&#39;dtype=object&#39;</span> <span class="n">when</span> <span class="n">creating</span> <span class="n">the</span> <span class="n">ndarray</span>
-  <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span> <span class="n">subok</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ndmin</span><span class="o">=</span><span class="n">ndmin</span><span class="p">)</span>
-<span class="o">/</span><span class="n">pbs</span><span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">c</span><span class="o">/</span><span class="n">ccombet</span><span class="o">/.</span><span class="n">conda</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">mydesc2</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">0.9</span><span class="o">.</span><span class="mi">1</span><span class="o">-</span><span class="n">py3</span><span class="o">.</span><span class="mf">7.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">cosmology</span><span class="o">/</span><span class="n">cluster_toolkit</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">69</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">Some</span> <span class="n">source</span> <span class="n">redshifts</span> <span class="n">are</span> <span class="n">lower</span> <span class="n">than</span> <span class="n">the</span> <span class="n">cluster</span> <span class="n">redshift</span><span class="o">.</span> <span class="n">Returning</span> <span class="n">Sigma_crit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span> <span class="k">for</span> <span class="n">those</span> <span class="n">galaxies</span><span class="o">.</span>
-<span class="o">/</span><span class="n">pbs</span><span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">c</span><span class="o">/</span><span class="n">ccombet</span><span class="o">/.</span><span class="n">conda</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">mydesc2</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">0.9</span><span class="o">.</span><span class="mi">1</span><span class="o">-</span><span class="n">py3</span><span class="o">.</span><span class="mf">7.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">cosmology</span><span class="o">/</span><span class="n">cluster_toolkit</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">79</span><span class="p">:</span> <span class="ne">RuntimeWarning</span><span class="p">:</span> <span class="n">divide</span> <span class="n">by</span> <span class="n">zero</span> <span class="n">encountered</span> <span class="ow">in</span> <span class="n">true_divide</span>
-<span class="o">/</span><span class="n">pbs</span><span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">c</span><span class="o">/</span><span class="n">ccombet</span><span class="o">/.</span><span class="n">conda</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">mydesc2</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">0.9</span><span class="o">.</span><span class="mi">1</span><span class="o">-</span><span class="n">py3</span><span class="o">.</span><span class="mf">7.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">theory</span><span class="o">/</span><span class="n">func_layer</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">354</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">Some</span> <span class="n">source</span> <span class="n">redshifts</span> <span class="n">are</span> <span class="n">lower</span> <span class="n">than</span> <span class="n">the</span> <span class="n">cluster</span> <span class="n">redshift</span><span class="o">.</span> <span class="n">kappa</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">those</span> <span class="n">galaxies</span><span class="o">.</span>
-</pre></div>
-</div>
 <p>Loading this into a CLMM cluster object centered on (0,0)</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cluster_ra</span> <span class="o">=</span> <span class="mf">0.0</span>
 <span class="n">cluster_dec</span> <span class="o">=</span> <span class="mf">0.0</span>
@@ -287,7 +280,7 @@ from redshift distribution and photoz errors.</p>
                                <span class="n">cluster_z</span><span class="p">,</span> <span class="n">noisy_data_z</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="section" id="load-cluster-object-containing">
+<section id="load-cluster-object-containing">
 <h3>2. Load cluster object containing:<a class="headerlink" href="#load-cluster-object-containing" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>Lens properties (ra_l, dec_l, z_l)</p>
@@ -305,9 +298,9 @@ mock data, use: cl = gc.GalaxyCluster.load(“GC_from_mock_data.pkl”)</p>
 <span class="n">The</span> <span class="n">number</span> <span class="n">of</span> <span class="n">source</span> <span class="n">galaxies</span> <span class="ow">is</span> <span class="p">:</span> <span class="mi">1000</span>
 </pre></div>
 </div>
-</div>
-</div>
-<div class="section" id="basic-checks-and-plots">
+</section>
+</section>
+<section id="basic-checks-and-plots">
 <h2>2. Basic checks and plots<a class="headerlink" href="#basic-checks-and-plots" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>galaxy positions</p></li>
@@ -347,14 +340,14 @@ mock data, use: cl = gc.GalaxyCluster.load(“GC_from_mock_data.pkl”)</p>
 <span class="n">ax1</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;dotted&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">lines</span><span class="o">.</span><span class="n">Line2D</span> <span class="n">at</span> <span class="mh">0x7f08485c7850</span><span class="o">&gt;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">lines</span><span class="o">.</span><span class="n">Line2D</span> <span class="n">at</span> <span class="mh">0x7fde4bb6faf0</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="../_images/demo_dataops_functionality_17_1.png" src="../_images/demo_dataops_functionality_17_1.png" />
-</div>
-<div class="section" id="compute-and-plot-shear-profiles">
+</section>
+<section id="compute-and-plot-shear-profiles">
 <h2>3. Compute and plot shear profiles<a class="headerlink" href="#compute-and-plot-shear-profiles" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="compute-angular-separation-cross-and-tangential-shear-for-each-source-galaxy">
+<section id="compute-angular-separation-cross-and-tangential-shear-for-each-source-galaxy">
 <h3>3.1 Compute angular separation, cross and tangential shear for each source galaxy<a class="headerlink" href="#compute-angular-separation-cross-and-tangential-shear-for-each-source-galaxy" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">theta</span><span class="p">,</span> <span class="n">e_t</span><span class="p">,</span> <span class="n">e_x</span> <span class="o">=</span> <span class="n">compute_tangential_and_cross_components</span><span class="p">(</span>
                 <span class="n">ra_lens</span><span class="o">=</span><span class="n">cl</span><span class="o">.</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec_lens</span><span class="o">=</span><span class="n">cl</span><span class="o">.</span><span class="n">dec</span><span class="p">,</span>
@@ -363,7 +356,7 @@ mock data, use: cl = gc.GalaxyCluster.load(“GC_from_mock_data.pkl”)</p>
                 <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;flat&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="section" id="using-galaxycluster-object">
+<section id="using-galaxycluster-object">
 <h4>3.1.1 Using <code class="docutils literal notranslate"><span class="pre">GalaxyCluster</span></code> object<a class="headerlink" href="#using-galaxycluster-object" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
 <li><p>You can also call the function directly from the <code class="docutils literal notranslate"><span class="pre">GalaxyCluster</span></code>
@@ -377,30 +370,30 @@ named <code class="docutils literal notranslate"><span class="pre">e1</span></co
 <span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;et&#39;</span><span class="p">,</span> <span class="s1">&#39;ex&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">max_width</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>         <span class="n">et</span>                     <span class="n">ex</span>
-<span class="o">--------------------</span> <span class="o">-----------------------</span>
-<span class="mf">0.017520502676382724</span>  <span class="o">-</span><span class="mf">0.0033551122967470197</span>
-<span class="mf">0.019169138440233505</span>   <span class="mf">4.036265754764172e-05</span>
-<span class="mf">0.013017171447678125</span>   <span class="o">-</span><span class="mf">0.005096223062586384</span>
- <span class="mf">0.01780062705321295</span>   <span class="o">-</span><span class="mf">0.005253817195734286</span>
-<span class="mf">0.019787574918986812</span>   <span class="mf">0.0039042857752456693</span>
-<span class="mf">0.012423463451508042</span>   <span class="o">-</span><span class="mf">0.003444552805905385</span>
- <span class="mf">0.00502523135422272</span>   <span class="o">-</span><span class="mf">0.008301620120137312</span>
-<span class="mf">0.005750907413623782</span>    <span class="mf">0.004628406912947449</span>
-<span class="mf">0.010579368399214452</span>     <span class="mf">0.00267313444596542</span>
-<span class="mf">0.014284655574536866</span>   <span class="o">-</span><span class="mf">0.002852726663573094</span>
-                 <span class="o">...</span>                     <span class="o">...</span>
- <span class="mf">0.01552203453680695</span>   <span class="mf">0.0033064860597274907</span>
- <span class="mf">0.01527416422828204</span>   <span class="mf">0.0001256681106109568</span>
- <span class="mf">0.10673005069877148</span>   <span class="o">-</span><span class="mf">0.005636373357630875</span>
-<span class="mf">0.019003871935046008</span>    <span class="mf">0.006670073289871731</span>
-<span class="mf">0.041632627967215265</span>   <span class="mf">0.0022301293300245814</span>
-<span class="mf">0.007164677979109753</span> <span class="o">-</span><span class="mf">0.00022724204436712445</span>
-<span class="mf">0.009187918012398148</span>   <span class="mf">0.0009913449888174298</span>
-<span class="mf">0.008973553754686482</span>    <span class="mf">0.001955214744111507</span>
- <span class="mf">0.01608708327905672</span>   <span class="mf">0.0003185534485464214</span>
-<span class="mf">0.014096144876881309</span>  <span class="mf">0.00011368056371638055</span>
-<span class="mf">0.011778033926285084</span>   <span class="o">-</span><span class="mf">0.006184859687680821</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>          <span class="n">et</span>                    <span class="n">ex</span>
+<span class="o">---------------------</span> <span class="o">----------------------</span>
+ <span class="mf">0.014268440150663518</span>  <span class="o">-</span><span class="mf">0.004954341787933816</span>
+  <span class="mf">0.03286517847161026</span> <span class="o">-</span><span class="mf">0.0030799490630489326</span>
+ <span class="mf">0.012731288557196619</span>  <span class="mf">0.0020016892607194396</span>
+ <span class="mf">0.004108584553347905</span>  <span class="mf">0.0054255279827542455</span>
+ <span class="mf">0.011508929207783397</span>  <span class="mf">0.0008943661413648588</span>
+ <span class="mf">0.042294806668346493</span> <span class="o">-</span><span class="mf">0.0030088524406152416</span>
+<span class="mf">0.0013818305567597725</span>  <span class="mf">0.0022256606408801276</span>
+ <span class="mf">0.007958325024529422</span>  <span class="mf">0.0032015595420701523</span>
+<span class="mf">5.009122229024908e-05</span>  <span class="o">-</span><span class="mf">0.008431557560564152</span>
+ <span class="mf">0.015469806062697291</span>  <span class="o">-</span><span class="mf">0.006067878075804936</span>
+                  <span class="o">...</span>                    <span class="o">...</span>
+<span class="o">-</span><span class="mf">0.004137287915695721</span>   <span class="mf">0.004019277497586831</span>
+ <span class="mf">0.011793675616981612</span> <span class="o">-</span><span class="mf">0.0022429331585242696</span>
+ <span class="mf">0.009288121306593676</span> <span class="o">-</span><span class="mf">0.0015919254772567295</span>
+  <span class="mf">0.01277991390700912</span> <span class="o">-</span><span class="mf">0.0007027683316552765</span>
+ <span class="mf">0.015139212734867328</span>  <span class="o">-</span><span class="mf">0.004941472552824152</span>
+  <span class="mf">0.01482290812242831</span>   <span class="mf">0.005853951523309806</span>
+  <span class="mf">0.01607247667948097</span>   <span class="mf">0.003375271619801592</span>
+ <span class="mf">0.000583998652177691</span>  <span class="mf">0.0013481061090122011</span>
+ <span class="mf">0.008137358979514718</span>  <span class="o">-</span><span class="mf">0.004030537881188273</span>
+ <span class="mf">0.009313921200994718</span>  <span class="o">-</span><span class="mf">0.002268275089853675</span>
+ <span class="mf">0.009945150409600338</span>    <span class="o">-</span><span class="mf">0.0024639446627924</span>
 <span class="n">Length</span> <span class="o">=</span> <span class="mi">1000</span> <span class="n">rows</span>
 </pre></div>
 </div>
@@ -416,30 +409,30 @@ output, e.g. Below we’re storing the results in <code class="docutils literal
 <span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;e_tan&#39;</span><span class="p">,</span> <span class="s1">&#39;e_cross&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">max_width</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>       <span class="n">e_tan</span>                 <span class="n">e_cross</span>
-<span class="o">--------------------</span> <span class="o">-----------------------</span>
-<span class="mf">0.017520502676382724</span>  <span class="o">-</span><span class="mf">0.0033551122967470197</span>
-<span class="mf">0.019169138440233505</span>   <span class="mf">4.036265754764172e-05</span>
-<span class="mf">0.013017171447678125</span>   <span class="o">-</span><span class="mf">0.005096223062586384</span>
- <span class="mf">0.01780062705321295</span>   <span class="o">-</span><span class="mf">0.005253817195734286</span>
-<span class="mf">0.019787574918986812</span>   <span class="mf">0.0039042857752456693</span>
-<span class="mf">0.012423463451508042</span>   <span class="o">-</span><span class="mf">0.003444552805905385</span>
- <span class="mf">0.00502523135422272</span>   <span class="o">-</span><span class="mf">0.008301620120137312</span>
-<span class="mf">0.005750907413623782</span>    <span class="mf">0.004628406912947449</span>
-<span class="mf">0.010579368399214452</span>     <span class="mf">0.00267313444596542</span>
-<span class="mf">0.014284655574536866</span>   <span class="o">-</span><span class="mf">0.002852726663573094</span>
-                 <span class="o">...</span>                     <span class="o">...</span>
- <span class="mf">0.01552203453680695</span>   <span class="mf">0.0033064860597274907</span>
- <span class="mf">0.01527416422828204</span>   <span class="mf">0.0001256681106109568</span>
- <span class="mf">0.10673005069877148</span>   <span class="o">-</span><span class="mf">0.005636373357630875</span>
-<span class="mf">0.019003871935046008</span>    <span class="mf">0.006670073289871731</span>
-<span class="mf">0.041632627967215265</span>   <span class="mf">0.0022301293300245814</span>
-<span class="mf">0.007164677979109753</span> <span class="o">-</span><span class="mf">0.00022724204436712445</span>
-<span class="mf">0.009187918012398148</span>   <span class="mf">0.0009913449888174298</span>
-<span class="mf">0.008973553754686482</span>    <span class="mf">0.001955214744111507</span>
- <span class="mf">0.01608708327905672</span>   <span class="mf">0.0003185534485464214</span>
-<span class="mf">0.014096144876881309</span>  <span class="mf">0.00011368056371638055</span>
-<span class="mf">0.011778033926285084</span>   <span class="o">-</span><span class="mf">0.006184859687680821</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>        <span class="n">e_tan</span>                <span class="n">e_cross</span>
+<span class="o">---------------------</span> <span class="o">----------------------</span>
+ <span class="mf">0.014268440150663518</span>  <span class="o">-</span><span class="mf">0.004954341787933816</span>
+  <span class="mf">0.03286517847161026</span> <span class="o">-</span><span class="mf">0.0030799490630489326</span>
+ <span class="mf">0.012731288557196619</span>  <span class="mf">0.0020016892607194396</span>
+ <span class="mf">0.004108584553347905</span>  <span class="mf">0.0054255279827542455</span>
+ <span class="mf">0.011508929207783397</span>  <span class="mf">0.0008943661413648588</span>
+ <span class="mf">0.042294806668346493</span> <span class="o">-</span><span class="mf">0.0030088524406152416</span>
+<span class="mf">0.0013818305567597725</span>  <span class="mf">0.0022256606408801276</span>
+ <span class="mf">0.007958325024529422</span>  <span class="mf">0.0032015595420701523</span>
+<span class="mf">5.009122229024908e-05</span>  <span class="o">-</span><span class="mf">0.008431557560564152</span>
+ <span class="mf">0.015469806062697291</span>  <span class="o">-</span><span class="mf">0.006067878075804936</span>
+                  <span class="o">...</span>                    <span class="o">...</span>
+<span class="o">-</span><span class="mf">0.004137287915695721</span>   <span class="mf">0.004019277497586831</span>
+ <span class="mf">0.011793675616981612</span> <span class="o">-</span><span class="mf">0.0022429331585242696</span>
+ <span class="mf">0.009288121306593676</span> <span class="o">-</span><span class="mf">0.0015919254772567295</span>
+  <span class="mf">0.01277991390700912</span> <span class="o">-</span><span class="mf">0.0007027683316552765</span>
+ <span class="mf">0.015139212734867328</span>  <span class="o">-</span><span class="mf">0.004941472552824152</span>
+  <span class="mf">0.01482290812242831</span>   <span class="mf">0.005853951523309806</span>
+  <span class="mf">0.01607247667948097</span>   <span class="mf">0.003375271619801592</span>
+ <span class="mf">0.000583998652177691</span>  <span class="mf">0.0013481061090122011</span>
+ <span class="mf">0.008137358979514718</span>  <span class="o">-</span><span class="mf">0.004030537881188273</span>
+ <span class="mf">0.009313921200994718</span>  <span class="o">-</span><span class="mf">0.002268275089853675</span>
+ <span class="mf">0.009945150409600338</span>    <span class="o">-</span><span class="mf">0.0024639446627924</span>
 <span class="n">Length</span> <span class="o">=</span> <span class="mi">1000</span> <span class="n">rows</span>
 </pre></div>
 </div>
@@ -458,9 +451,9 @@ which can be accessed in the galaxy cluster object, cl.</p>
 <img alt="../_images/demo_dataops_functionality_26_0.png" src="../_images/demo_dataops_functionality_26_0.png" />
 <p>Compute transversal and cross shear profiles in units defined by user,
 using defaults binning</p>
-</div>
-</div>
-<div class="section" id="compute-shear-profile-in-radial-bins">
+</section>
+</section>
+<section id="compute-shear-profile-in-radial-bins">
 <h3>3.2 Compute shear profile in radial bins<a class="headerlink" href="#compute-shear-profile-in-radial-bins" title="Permalink to this headline">¶</a></h3>
 <p>Given the separations in “radians” computed in the previous step, the
 user may ask for a binned profile in various projected distance units.
@@ -472,24 +465,24 @@ user may ask for a binned profile in various projected distance units.
 <span class="c1">#profiles.show_in_notebook()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>    <span class="n">radius_min</span>           <span class="n">radius</span>           <span class="n">radius_max</span>             <span class="n">p_0</span>                 <span class="n">p_0_err</span>                  <span class="n">p_1</span>                  <span class="n">p_1_err</span>                <span class="n">p_2</span>               <span class="n">p_2_err</span>        <span class="n">n_src</span>
-<span class="o">------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">--------------------</span> <span class="o">----------------------</span> <span class="o">----------------------</span> <span class="o">----------------------</span> <span class="o">------------------</span> <span class="o">--------------------</span> <span class="o">-----</span>
-<span class="mf">164.86511746644936</span> <span class="mf">502.98451398607256</span>  <span class="mf">698.9992255461411</span>  <span class="mf">0.06587492286949441</span>   <span class="mf">0.005095330960918345</span> <span class="o">-</span><span class="mf">0.0008826706883113559</span>   <span class="mf">0.000871967896029873</span> <span class="mf">1.2586075543596096</span>    <span class="mf">0.125022242323757</span>    <span class="mi">28</span>
- <span class="mf">698.9992255461411</span>  <span class="mf">996.8655086028912</span> <span class="mf">1233.1333336258328</span>  <span class="mf">0.03810700618478708</span>  <span class="mf">0.0017031023880636153</span> <span class="o">-</span><span class="mf">0.0002447910099390454</span>   <span class="mf">0.000646217547362871</span> <span class="mf">1.2493596874179491</span>   <span class="mf">0.1009787871822944</span>    <span class="mi">49</span>
-<span class="mf">1233.1333336258328</span> <span class="mf">1509.9782491202707</span> <span class="mf">1767.2674417055246</span> <span class="mf">0.026797983778712967</span>  <span class="mf">0.0008515850617392815</span>  <span class="mf">0.0008437162613406152</span>  <span class="mf">0.0004793184978507647</span> <span class="mf">1.2220408775108553</span> <span class="mf">0.061665688793604595</span>    <span class="mi">78</span>
-<span class="mf">1767.2674417055246</span> <span class="mf">2032.7433993916718</span>  <span class="mf">2301.401549785216</span> <span class="mf">0.019684849022485577</span>  <span class="mf">0.0006547642019108699</span> <span class="mf">0.00024460959616729556</span>  <span class="mf">0.0004528360799440937</span> <span class="mf">1.3643444600061883</span>  <span class="mf">0.07697957090761438</span>   <span class="mi">110</span>
- <span class="mf">2301.401549785216</span>  <span class="mf">2585.675381811875</span>  <span class="mf">2835.535657864908</span> <span class="mf">0.014289114053664783</span>  <span class="mf">0.0004747729515147948</span>  <span class="mf">0.0008449553353257092</span>  <span class="mf">0.0004158781479688051</span> <span class="mf">1.2861112331115678</span>  <span class="mf">0.06445013026874809</span>   <span class="mi">138</span>
- <span class="mf">2835.535657864908</span> <span class="mf">3125.7083290187143</span> <span class="mf">3369.6697659445995</span>  <span class="mf">0.01246247121865025</span>  <span class="mf">0.0004266553260499197</span> <span class="o">-</span><span class="mf">2.471866346449288e-05</span> <span class="mf">0.00041085246345880146</span> <span class="mf">1.3716216564364705</span>  <span class="mf">0.06299490508040485</span>   <span class="mi">161</span>
-<span class="mf">3369.6697659445995</span>  <span class="mf">3635.278705370753</span>  <span class="mf">3903.803874024291</span>  <span class="mf">0.01027036882956684</span> <span class="mf">0.00037767828405042484</span>  <span class="mf">3.338456468230189e-06</span>  <span class="mf">0.0003527837356061122</span> <span class="mf">1.3632158664839213</span>  <span class="mf">0.05318061463309119</span>   <span class="mi">189</span>
- <span class="mf">3903.803874024291</span>  <span class="mf">4133.069823560059</span>  <span class="mf">4437.937982103983</span> <span class="mf">0.007555464142703836</span>  <span class="mf">0.0004541448149835145</span>     <span class="mf">4.606385953573e-05</span>  <span class="mf">0.0004014023015279264</span> <span class="mf">1.1836641795404208</span>  <span class="mf">0.04854109490977853</span>   <span class="mi">149</span>
- <span class="mf">4437.937982103983</span>  <span class="mf">4668.446675763841</span>  <span class="mf">4972.072090183675</span> <span class="mf">0.008084619013693761</span>  <span class="mf">0.0006257890759537462</span> <span class="o">-</span><span class="mf">0.0010953925897173112</span>  <span class="mf">0.0005832935652345889</span> <span class="mf">1.2999397067447829</span>  <span class="mf">0.07797980709008819</span>    <span class="mi">67</span>
- <span class="mf">4972.072090183675</span>  <span class="mf">5206.549189093128</span>  <span class="mf">5506.206198263366</span> <span class="mf">0.005752970865413421</span>  <span class="mf">0.0008867147570375862</span> <span class="o">-</span><span class="mf">0.0009769042763377016</span>  <span class="mf">0.0007355036426332983</span> <span class="mf">1.3850070075638687</span>  <span class="mf">0.15197979752815002</span>    <span class="mi">31</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>    <span class="n">radius_min</span>           <span class="n">radius</span>           <span class="n">radius_max</span>              <span class="n">p_0</span>                 <span class="n">p_0_err</span>                   <span class="n">p_1</span>                  <span class="n">p_1_err</span>                <span class="n">p_2</span>               <span class="n">p_2_err</span>        <span class="n">n_src</span>
+<span class="o">------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">---------------------</span> <span class="o">----------------------</span> <span class="o">-----------------------</span> <span class="o">----------------------</span> <span class="o">------------------</span> <span class="o">--------------------</span> <span class="o">-----</span>
+ <span class="mf">94.60205694146863</span> <span class="mf">412.41685982248487</span>  <span class="mf">645.6757545692755</span>   <span class="mf">0.07734304176489455</span>   <span class="mf">0.007462843759771058</span>  <span class="o">-</span><span class="mf">0.0013143819336840718</span>   <span class="mf">0.001083800252721594</span> <span class="mf">1.5147352500491638</span>   <span class="mf">0.2569786499938531</span>    <span class="mi">18</span>
+ <span class="mf">645.6757545692755</span>  <span class="mf">939.7320876366845</span> <span class="mf">1196.7494521970823</span>   <span class="mf">0.04105607921426797</span>  <span class="mf">0.0015577531247907782</span>  <span class="o">-</span><span class="mf">0.0004777384828311897</span>  <span class="mf">0.0005931849773769037</span> <span class="mf">1.1210531393890673</span>   <span class="mf">0.0664755735154625</span>    <span class="mi">57</span>
+<span class="mf">1196.7494521970823</span> <span class="mf">1476.0520014948906</span> <span class="mf">1747.8231498248892</span>  <span class="mf">0.026586209236259838</span>  <span class="mf">0.0010524350151957533</span>   <span class="mf">0.0001162439094273901</span>  <span class="mf">0.0005536642723937506</span> <span class="mf">1.2309201323098462</span>  <span class="mf">0.07503593541492085</span>    <span class="mi">78</span>
+<span class="mf">1747.8231498248892</span> <span class="mf">2030.2048774762445</span>  <span class="mf">2298.896847452696</span>   <span class="mf">0.02017614313149412</span>  <span class="mf">0.0007151842527178256</span>  <span class="o">-</span><span class="mf">4.083024593107208e-05</span>  <span class="mf">0.0004764930386622361</span> <span class="mf">1.3274130779522657</span>  <span class="mf">0.07190219076508479</span>   <span class="mi">113</span>
+ <span class="mf">2298.896847452696</span> <span class="mf">2585.7197508624768</span> <span class="mf">2849.9705450805027</span>  <span class="mf">0.014437805098241557</span> <span class="mf">0.00048066175329085164</span>   <span class="mf">0.0002793373508702089</span> <span class="mf">0.00040609265303661826</span> <span class="mf">1.2076618912265056</span> <span class="mf">0.058455720424884984</span>   <span class="mi">137</span>
+<span class="mf">2849.9705450805027</span> <span class="mf">3120.2901340886915</span>   <span class="mf">3401.04424270831</span>  <span class="mf">0.011850915743565962</span> <span class="mf">0.00045353038567579713</span> <span class="o">-</span><span class="mf">0.00021495922044398937</span>  <span class="mf">0.0004074382090563492</span> <span class="mf">1.2402606020180058</span>  <span class="mf">0.05248683586329536</span>   <span class="mi">167</span>
+  <span class="mf">3401.04424270831</span>  <span class="mf">3694.270269924894</span> <span class="mf">3952.1179403361166</span>  <span class="mf">0.009240219182779001</span>  <span class="mf">0.0004079560782077434</span>  <span class="o">-</span><span class="mf">6.903136498532938e-05</span>  <span class="mf">0.0003532790558050087</span> <span class="mf">1.2008126125617469</span>  <span class="mf">0.04832123860420222</span>   <span class="mi">203</span>
+<span class="mf">3952.1179403361166</span>  <span class="mf">4210.082593198608</span>  <span class="mf">4503.191637963923</span>   <span class="mf">0.00765321932119777</span>  <span class="mf">0.0005135310015464004</span>  <span class="o">-</span><span class="mf">0.0008097900282817214</span>  <span class="mf">0.0005216277305574789</span>  <span class="mf">1.190328358157656</span>  <span class="mf">0.05188054306718607</span>   <span class="mi">126</span>
+ <span class="mf">4503.191637963923</span>  <span class="mf">4738.610988872943</span>   <span class="mf">5054.26533559173</span>  <span class="mf">0.006342531320949105</span>  <span class="mf">0.0004993433116218744</span>  <span class="mf">2.8226480278511433e-05</span>  <span class="mf">0.0006402722751663874</span> <span class="mf">1.3078238172266183</span>  <span class="mf">0.07773806908196376</span>    <span class="mi">75</span>
+  <span class="mf">5054.26533559173</span>  <span class="mf">5196.677066902001</span>  <span class="mf">5605.339033219537</span> <span class="mf">0.0069128157003747115</span>  <span class="mf">0.0008797110895189555</span>   <span class="mf">7.176336612278023e-05</span>  <span class="mf">0.0008931919023002707</span> <span class="mf">1.5626632292207097</span>  <span class="mf">0.15948776131324896</span>    <span class="mi">26</span>
 </pre></div>
 </div>
 <p>Note that, because this function bins a generic number of quantities in
 the radial profile, its output table names the quantities as <code class="docutils literal notranslate"><span class="pre">p_i</span></code> and
 errors as <code class="docutils literal notranslate"><span class="pre">p_i_err</span></code>.</p>
-<div class="section" id="id1">
+<section id="id1">
 <h4>3.1.2 Using <code class="docutils literal notranslate"><span class="pre">GalaxyCluster</span></code> object<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
 <p>The output <code class="docutils literal notranslate"><span class="pre">GCData</span></code> corresponding to the binning profiled is attached
 as a new attribute of the galaxy cluster object.</p>
@@ -498,18 +491,18 @@ as a new attribute of the galaxy cluster object.</p>
 <span class="c1">#cl.profile.show_in_notebook()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>    <span class="n">radius_min</span>           <span class="n">radius</span>           <span class="n">radius_max</span>              <span class="n">gt</span>                  <span class="n">gt_err</span>                   <span class="n">gx</span>                   <span class="n">gx_err</span>                 <span class="n">z</span>                 <span class="n">z_err</span>         <span class="n">n_src</span>
-<span class="o">------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">--------------------</span> <span class="o">----------------------</span> <span class="o">----------------------</span> <span class="o">----------------------</span> <span class="o">------------------</span> <span class="o">--------------------</span> <span class="o">-----</span>
-<span class="mf">164.86511746644936</span> <span class="mf">502.98451398607256</span>  <span class="mf">698.9992255461411</span>  <span class="mf">0.06587492286949441</span>   <span class="mf">0.005095330960918345</span> <span class="o">-</span><span class="mf">0.0008826706883113559</span>   <span class="mf">0.000871967896029873</span> <span class="mf">1.2586075543596096</span>    <span class="mf">0.125022242323757</span>    <span class="mi">28</span>
- <span class="mf">698.9992255461411</span>  <span class="mf">996.8655086028912</span> <span class="mf">1233.1333336258328</span>  <span class="mf">0.03810700618478708</span>  <span class="mf">0.0017031023880636153</span> <span class="o">-</span><span class="mf">0.0002447910099390454</span>   <span class="mf">0.000646217547362871</span> <span class="mf">1.2493596874179491</span>   <span class="mf">0.1009787871822944</span>    <span class="mi">49</span>
-<span class="mf">1233.1333336258328</span> <span class="mf">1509.9782491202707</span> <span class="mf">1767.2674417055246</span> <span class="mf">0.026797983778712967</span>  <span class="mf">0.0008515850617392815</span>  <span class="mf">0.0008437162613406152</span>  <span class="mf">0.0004793184978507647</span> <span class="mf">1.2220408775108553</span> <span class="mf">0.061665688793604595</span>    <span class="mi">78</span>
-<span class="mf">1767.2674417055246</span> <span class="mf">2032.7433993916718</span>  <span class="mf">2301.401549785216</span> <span class="mf">0.019684849022485577</span>  <span class="mf">0.0006547642019108699</span> <span class="mf">0.00024460959616729556</span>  <span class="mf">0.0004528360799440937</span> <span class="mf">1.3643444600061883</span>  <span class="mf">0.07697957090761438</span>   <span class="mi">110</span>
- <span class="mf">2301.401549785216</span>  <span class="mf">2585.675381811875</span>  <span class="mf">2835.535657864908</span> <span class="mf">0.014289114053664783</span>  <span class="mf">0.0004747729515147948</span>  <span class="mf">0.0008449553353257092</span>  <span class="mf">0.0004158781479688051</span> <span class="mf">1.2861112331115678</span>  <span class="mf">0.06445013026874809</span>   <span class="mi">138</span>
- <span class="mf">2835.535657864908</span> <span class="mf">3125.7083290187143</span> <span class="mf">3369.6697659445995</span>  <span class="mf">0.01246247121865025</span>  <span class="mf">0.0004266553260499197</span> <span class="o">-</span><span class="mf">2.471866346449288e-05</span> <span class="mf">0.00041085246345880146</span> <span class="mf">1.3716216564364705</span>  <span class="mf">0.06299490508040485</span>   <span class="mi">161</span>
-<span class="mf">3369.6697659445995</span>  <span class="mf">3635.278705370753</span>  <span class="mf">3903.803874024291</span>  <span class="mf">0.01027036882956684</span> <span class="mf">0.00037767828405042484</span>  <span class="mf">3.338456468230189e-06</span>  <span class="mf">0.0003527837356061122</span> <span class="mf">1.3632158664839213</span>  <span class="mf">0.05318061463309119</span>   <span class="mi">189</span>
- <span class="mf">3903.803874024291</span>  <span class="mf">4133.069823560059</span>  <span class="mf">4437.937982103983</span> <span class="mf">0.007555464142703836</span>  <span class="mf">0.0004541448149835145</span>     <span class="mf">4.606385953573e-05</span>  <span class="mf">0.0004014023015279264</span> <span class="mf">1.1836641795404208</span>  <span class="mf">0.04854109490977853</span>   <span class="mi">149</span>
- <span class="mf">4437.937982103983</span>  <span class="mf">4668.446675763841</span>  <span class="mf">4972.072090183675</span> <span class="mf">0.008084619013693761</span>  <span class="mf">0.0006257890759537462</span> <span class="o">-</span><span class="mf">0.0010953925897173112</span>  <span class="mf">0.0005832935652345889</span> <span class="mf">1.2999397067447829</span>  <span class="mf">0.07797980709008819</span>    <span class="mi">67</span>
- <span class="mf">4972.072090183675</span>  <span class="mf">5206.549189093128</span>  <span class="mf">5506.206198263366</span> <span class="mf">0.005752970865413421</span>  <span class="mf">0.0008867147570375862</span> <span class="o">-</span><span class="mf">0.0009769042763377016</span>  <span class="mf">0.0007355036426332983</span> <span class="mf">1.3850070075638687</span>  <span class="mf">0.15197979752815002</span>    <span class="mi">31</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>    <span class="n">radius_min</span>           <span class="n">radius</span>           <span class="n">radius_max</span>               <span class="n">gt</span>                  <span class="n">gt_err</span>                    <span class="n">gx</span>                   <span class="n">gx_err</span>                 <span class="n">z</span>                 <span class="n">z_err</span>         <span class="n">n_src</span>
+<span class="o">------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">---------------------</span> <span class="o">----------------------</span> <span class="o">-----------------------</span> <span class="o">----------------------</span> <span class="o">------------------</span> <span class="o">--------------------</span> <span class="o">-----</span>
+ <span class="mf">94.60205694146863</span> <span class="mf">412.41685982248487</span>  <span class="mf">645.6757545692755</span>   <span class="mf">0.07734304176489455</span>   <span class="mf">0.007462843759771058</span>  <span class="o">-</span><span class="mf">0.0013143819336840718</span>   <span class="mf">0.001083800252721594</span> <span class="mf">1.5147352500491638</span>   <span class="mf">0.2569786499938531</span>    <span class="mi">18</span>
+ <span class="mf">645.6757545692755</span>  <span class="mf">939.7320876366845</span> <span class="mf">1196.7494521970823</span>   <span class="mf">0.04105607921426797</span>  <span class="mf">0.0015577531247907782</span>  <span class="o">-</span><span class="mf">0.0004777384828311897</span>  <span class="mf">0.0005931849773769037</span> <span class="mf">1.1210531393890673</span>   <span class="mf">0.0664755735154625</span>    <span class="mi">57</span>
+<span class="mf">1196.7494521970823</span> <span class="mf">1476.0520014948906</span> <span class="mf">1747.8231498248892</span>  <span class="mf">0.026586209236259838</span>  <span class="mf">0.0010524350151957533</span>   <span class="mf">0.0001162439094273901</span>  <span class="mf">0.0005536642723937506</span> <span class="mf">1.2309201323098462</span>  <span class="mf">0.07503593541492085</span>    <span class="mi">78</span>
+<span class="mf">1747.8231498248892</span> <span class="mf">2030.2048774762445</span>  <span class="mf">2298.896847452696</span>   <span class="mf">0.02017614313149412</span>  <span class="mf">0.0007151842527178256</span>  <span class="o">-</span><span class="mf">4.083024593107208e-05</span>  <span class="mf">0.0004764930386622361</span> <span class="mf">1.3274130779522657</span>  <span class="mf">0.07190219076508479</span>   <span class="mi">113</span>
+ <span class="mf">2298.896847452696</span> <span class="mf">2585.7197508624768</span> <span class="mf">2849.9705450805027</span>  <span class="mf">0.014437805098241557</span> <span class="mf">0.00048066175329085164</span>   <span class="mf">0.0002793373508702089</span> <span class="mf">0.00040609265303661826</span> <span class="mf">1.2076618912265056</span> <span class="mf">0.058455720424884984</span>   <span class="mi">137</span>
+<span class="mf">2849.9705450805027</span> <span class="mf">3120.2901340886915</span>   <span class="mf">3401.04424270831</span>  <span class="mf">0.011850915743565962</span> <span class="mf">0.00045353038567579713</span> <span class="o">-</span><span class="mf">0.00021495922044398937</span>  <span class="mf">0.0004074382090563492</span> <span class="mf">1.2402606020180058</span>  <span class="mf">0.05248683586329536</span>   <span class="mi">167</span>
+  <span class="mf">3401.04424270831</span>  <span class="mf">3694.270269924894</span> <span class="mf">3952.1179403361166</span>  <span class="mf">0.009240219182779001</span>  <span class="mf">0.0004079560782077434</span>  <span class="o">-</span><span class="mf">6.903136498532938e-05</span>  <span class="mf">0.0003532790558050087</span> <span class="mf">1.2008126125617469</span>  <span class="mf">0.04832123860420222</span>   <span class="mi">203</span>
+<span class="mf">3952.1179403361166</span>  <span class="mf">4210.082593198608</span>  <span class="mf">4503.191637963923</span>   <span class="mf">0.00765321932119777</span>  <span class="mf">0.0005135310015464004</span>  <span class="o">-</span><span class="mf">0.0008097900282817214</span>  <span class="mf">0.0005216277305574789</span>  <span class="mf">1.190328358157656</span>  <span class="mf">0.05188054306718607</span>   <span class="mi">126</span>
+ <span class="mf">4503.191637963923</span>  <span class="mf">4738.610988872943</span>   <span class="mf">5054.26533559173</span>  <span class="mf">0.006342531320949105</span>  <span class="mf">0.0004993433116218744</span>  <span class="mf">2.8226480278511433e-05</span>  <span class="mf">0.0006402722751663874</span> <span class="mf">1.3078238172266183</span>  <span class="mf">0.07773806908196376</span>    <span class="mi">75</span>
+  <span class="mf">5054.26533559173</span>  <span class="mf">5196.677066902001</span>  <span class="mf">5605.339033219537</span> <span class="mf">0.0069128157003747115</span>  <span class="mf">0.0008797110895189555</span>   <span class="mf">7.176336612278023e-05</span>  <span class="mf">0.0008931919023002707</span> <span class="mf">1.5626632292207097</span>  <span class="mf">0.15948776131324896</span>    <span class="mi">26</span>
 </pre></div>
 </div>
 <p>You can see that this <code class="docutils literal notranslate"><span class="pre">profile</span></code> table contains metadata regarding the
@@ -518,7 +511,7 @@ comology and bin units</p>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;bin units:&#39;</span><span class="p">,</span> <span class="n">cl</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;bin_units&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Cosmology</span><span class="p">:</span> <span class="n">AstroPyCosmology</span><span class="p">(</span><span class="n">H0</span><span class="o">=</span><span class="mf">70.0</span><span class="p">,</span> <span class="n">Omega_dm0</span><span class="o">=</span><span class="mf">0.22500000000000003</span><span class="p">,</span> <span class="n">Omega_b0</span><span class="o">=</span><span class="mf">0.045</span><span class="p">,</span> <span class="n">Omega_k0</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Cosmology</span><span class="p">:</span> <span class="n">CCLCosmology</span><span class="p">(</span><span class="n">H0</span><span class="o">=</span><span class="mf">70.0</span><span class="p">,</span> <span class="n">Omega_dm0</span><span class="o">=</span><span class="mf">0.22500000000000003</span><span class="p">,</span> <span class="n">Omega_b0</span><span class="o">=</span><span class="mf">0.045</span><span class="p">,</span> <span class="n">Omega_k0</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
 <span class="nb">bin</span> <span class="n">units</span><span class="p">:</span> <span class="n">kpc</span>
 </pre></div>
 </div>
@@ -534,12 +527,9 @@ comology and bin units</p>
 <span class="n">fig1</span><span class="p">,</span> <span class="n">ax1</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">plot_profiles</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">pbs</span><span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">c</span><span class="o">/</span><span class="n">ccombet</span><span class="o">/.</span><span class="n">conda</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">mydesc2</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">0.9</span><span class="o">.</span><span class="mi">1</span><span class="o">-</span><span class="n">py3</span><span class="o">.</span><span class="mf">7.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">galaxycluster</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">297</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">overwriting</span> <span class="n">profile</span> <span class="n">table</span><span class="o">.</span>
-</pre></div>
-</div>
-<img alt="../_images/demo_dataops_functionality_38_1.png" src="../_images/demo_dataops_functionality_38_1.png" />
-</div>
-<div class="section" id="user-defined-binning">
+<img alt="../_images/demo_dataops_functionality_38_0.png" src="../_images/demo_dataops_functionality_38_0.png" />
+</section>
+<section id="user-defined-binning">
 <h4>3.2.2 User-defined binning<a class="headerlink" href="#user-defined-binning" title="Permalink to this headline">¶</a></h4>
 <p>The users may also provide their own binning, in user-defined units, to
 compute the transversal and cross shear profiles. The <code class="docutils literal notranslate"><span class="pre">make_bins</span></code>
@@ -584,12 +574,12 @@ number of galaxies</p></li>
 <span class="n">fig1</span><span class="p">,</span> <span class="n">ax1</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">plot_profiles</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">number</span> <span class="n">of</span> <span class="n">galaxies</span> <span class="ow">in</span> <span class="n">each</span> <span class="nb">bin</span><span class="p">:</span> <span class="p">[</span><span class="mi">48</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">48</span><span class="p">]</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">number</span> <span class="n">of</span> <span class="n">galaxies</span> <span class="ow">in</span> <span class="n">each</span> <span class="nb">bin</span><span class="p">:</span> <span class="p">[</span><span class="mi">48</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">48</span><span class="p">]</span>
 </pre></div>
 </div>
 <img alt="../_images/demo_dataops_functionality_44_1.png" src="../_images/demo_dataops_functionality_44_1.png" />
-</div>
-<div class="section" id="other-individual-profile-quantities-may-also-be-accessed">
+</section>
+<section id="other-individual-profile-quantities-may-also-be-accessed">
 <h4>3.2.3 Other individual profile quantities may also be accessed<a class="headerlink" href="#other-individual-profile-quantities-may-also-be-accessed" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Average redshift in radial bins&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">new_profiles</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="n">new_profiles</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">],</span>
@@ -602,12 +592,12 @@ number of galaxies</p></li>
 </pre></div>
 </div>
 <img alt="../_images/demo_dataops_functionality_46_0.png" src="../_images/demo_dataops_functionality_46_0.png" />
-</div>
-</div>
-</div>
-<div class="section" id="focus-on-some-options">
+</section>
+</section>
+</section>
+<section id="focus-on-some-options">
 <h2>4. Focus on some options<a class="headerlink" href="#focus-on-some-options" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="gal-ids-in-bins-option">
+<section id="gal-ids-in-bins-option">
 <h3>4.1. <code class="docutils literal notranslate"><span class="pre">gal_ids_in_bins</span></code> option<a class="headerlink" href="#gal-ids-in-bins-option" title="Permalink to this headline">¶</a></h3>
 <p>adds a <code class="docutils literal notranslate"><span class="pre">gal_id</span></code> field to the profile GCData. For each bin of the
 profile, this is filled with the list of galaxy IDs for the galaxies
@@ -617,10 +607,10 @@ that have fallen in that bin.</p>
 <span class="c1">#cl.profile[:2].show_in_notebook()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>     <span class="n">radius_min</span>           <span class="n">radius</span>           <span class="n">radius_max</span>              <span class="n">gt</span>                 <span class="n">gt_err</span>                  <span class="n">gx</span>                  <span class="n">gx_err</span>                <span class="n">z</span>                <span class="n">z_err</span>        <span class="n">n_src</span>                                                                                                                       <span class="n">gal_id</span>
-<span class="o">-------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">-------------------</span> <span class="o">---------------------</span> <span class="o">----------------------</span> <span class="o">--------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">-----</span> <span class="o">--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
-<span class="mf">0.16486511746644936</span> <span class="mf">0.5029845139860725</span> <span class="mf">0.6989992255461409</span> <span class="mf">0.06587492286949441</span>  <span class="mf">0.005095330960918345</span> <span class="o">-</span><span class="mf">0.0008826706883113559</span> <span class="mf">0.000871967896029873</span> <span class="mf">1.2586075543596096</span>  <span class="mf">0.125022242323757</span>    <span class="mi">28</span>                                                                                                          <span class="p">[</span><span class="mi">28</span><span class="p">,</span> <span class="mi">36</span><span class="p">,</span> <span class="mi">98</span><span class="p">,</span> <span class="mi">127</span><span class="p">,</span> <span class="mi">147</span><span class="p">,</span> <span class="mi">196</span><span class="p">,</span> <span class="mi">225</span><span class="p">,</span> <span class="mi">266</span><span class="p">,</span> <span class="mi">277</span><span class="p">,</span> <span class="mi">327</span><span class="p">,</span> <span class="mi">337</span><span class="p">,</span> <span class="mi">501</span><span class="p">,</span> <span class="mi">537</span><span class="p">,</span> <span class="mi">589</span><span class="p">,</span> <span class="mi">635</span><span class="p">,</span> <span class="mi">672</span><span class="p">,</span> <span class="mi">709</span><span class="p">,</span> <span class="mi">731</span><span class="p">,</span> <span class="mi">756</span><span class="p">,</span> <span class="mi">759</span><span class="p">,</span> <span class="mi">829</span><span class="p">,</span> <span class="mi">843</span><span class="p">,</span> <span class="mi">876</span><span class="p">,</span> <span class="mi">894</span><span class="p">,</span> <span class="mi">952</span><span class="p">,</span> <span class="mi">980</span><span class="p">,</span> <span class="mi">981</span><span class="p">,</span> <span class="mi">991</span><span class="p">]</span>
- <span class="mf">0.6989992255461409</span> <span class="mf">0.9968655086028916</span> <span class="mf">1.2331333336258323</span> <span class="mf">0.03810700618478708</span> <span class="mf">0.0017031023880636153</span> <span class="o">-</span><span class="mf">0.0002447910099390454</span> <span class="mf">0.000646217547362871</span> <span class="mf">1.2493596874179491</span> <span class="mf">0.1009787871822944</span>    <span class="mi">49</span> <span class="p">[</span><span class="mi">33</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">85</span><span class="p">,</span> <span class="mi">126</span><span class="p">,</span> <span class="mi">186</span><span class="p">,</span> <span class="mi">212</span><span class="p">,</span> <span class="mi">215</span><span class="p">,</span> <span class="mi">217</span><span class="p">,</span> <span class="mi">295</span><span class="p">,</span> <span class="mi">303</span><span class="p">,</span> <span class="mi">315</span><span class="p">,</span> <span class="mi">319</span><span class="p">,</span> <span class="mi">348</span><span class="p">,</span> <span class="mi">375</span><span class="p">,</span> <span class="mi">380</span><span class="p">,</span> <span class="mi">395</span><span class="p">,</span> <span class="mi">396</span><span class="p">,</span> <span class="mi">397</span><span class="p">,</span> <span class="mi">422</span><span class="p">,</span> <span class="mi">435</span><span class="p">,</span> <span class="mi">445</span><span class="p">,</span> <span class="mi">448</span><span class="p">,</span> <span class="mi">450</span><span class="p">,</span> <span class="mi">457</span><span class="p">,</span> <span class="mi">472</span><span class="p">,</span> <span class="mi">481</span><span class="p">,</span> <span class="mi">562</span><span class="p">,</span> <span class="mi">585</span><span class="p">,</span> <span class="mi">588</span><span class="p">,</span> <span class="mi">617</span><span class="p">,</span> <span class="mi">626</span><span class="p">,</span> <span class="mi">634</span><span class="p">,</span> <span class="mi">637</span><span class="p">,</span> <span class="mi">661</span><span class="p">,</span> <span class="mi">674</span><span class="p">,</span> <span class="mi">703</span><span class="p">,</span> <span class="mi">704</span><span class="p">,</span> <span class="mi">725</span><span class="p">,</span> <span class="mi">741</span><span class="p">,</span> <span class="mi">753</span><span class="p">,</span> <span class="mi">768</span><span class="p">,</span> <span class="mi">811</span><span class="p">,</span> <span class="mi">817</span><span class="p">,</span> <span class="mi">884</span><span class="p">,</span> <span class="mi">930</span><span class="p">,</span> <span class="mi">969</span><span class="p">,</span> <span class="mi">970</span><span class="p">,</span> <span class="mi">972</span><span class="p">,</span> <span class="mi">987</span><span class="p">]</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>     <span class="n">radius_min</span>           <span class="n">radius</span>           <span class="n">radius_max</span>              <span class="n">gt</span>                 <span class="n">gt_err</span>                  <span class="n">gx</span>                   <span class="n">gx_err</span>                <span class="n">z</span>                <span class="n">z_err</span>        <span class="n">n_src</span>                                                                                                                                        <span class="n">gal_id</span>
+<span class="o">-------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">-------------------</span> <span class="o">---------------------</span> <span class="o">----------------------</span> <span class="o">---------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">-----</span> <span class="o">-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span class="mf">0.09460205694146863</span> <span class="mf">0.4124168598224849</span> <span class="mf">0.6456757545692755</span> <span class="mf">0.07734304176489455</span>  <span class="mf">0.007462843759771058</span> <span class="o">-</span><span class="mf">0.0013143819336840718</span>  <span class="mf">0.001083800252721594</span> <span class="mf">1.5147352500491638</span> <span class="mf">0.2569786499938531</span>    <span class="mi">18</span>                                                                                                                                                                                           <span class="p">[</span><span class="mi">82</span><span class="p">,</span> <span class="mi">118</span><span class="p">,</span> <span class="mi">119</span><span class="p">,</span> <span class="mi">155</span><span class="p">,</span> <span class="mi">189</span><span class="p">,</span> <span class="mi">325</span><span class="p">,</span> <span class="mi">430</span><span class="p">,</span> <span class="mi">437</span><span class="p">,</span> <span class="mi">451</span><span class="p">,</span> <span class="mi">651</span><span class="p">,</span> <span class="mi">763</span><span class="p">,</span> <span class="mi">810</span><span class="p">,</span> <span class="mi">824</span><span class="p">,</span> <span class="mi">866</span><span class="p">,</span> <span class="mi">930</span><span class="p">,</span> <span class="mi">954</span><span class="p">,</span> <span class="mi">959</span><span class="p">,</span> <span class="mi">982</span><span class="p">]</span>
+ <span class="mf">0.6456757545692755</span> <span class="mf">0.9397320876366841</span> <span class="mf">1.1967494521970825</span> <span class="mf">0.04105607921426797</span> <span class="mf">0.0015577531247907782</span> <span class="o">-</span><span class="mf">0.0004777384828311897</span> <span class="mf">0.0005931849773769037</span> <span class="mf">1.1210531393890673</span> <span class="mf">0.0664755735154625</span>    <span class="mi">57</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">36</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">93</span><span class="p">,</span> <span class="mi">107</span><span class="p">,</span> <span class="mi">112</span><span class="p">,</span> <span class="mi">137</span><span class="p">,</span> <span class="mi">142</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span> <span class="mi">158</span><span class="p">,</span> <span class="mi">188</span><span class="p">,</span> <span class="mi">195</span><span class="p">,</span> <span class="mi">232</span><span class="p">,</span> <span class="mi">235</span><span class="p">,</span> <span class="mi">247</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">291</span><span class="p">,</span> <span class="mi">292</span><span class="p">,</span> <span class="mi">318</span><span class="p">,</span> <span class="mi">327</span><span class="p">,</span> <span class="mi">335</span><span class="p">,</span> <span class="mi">350</span><span class="p">,</span> <span class="mi">351</span><span class="p">,</span> <span class="mi">391</span><span class="p">,</span> <span class="mi">398</span><span class="p">,</span> <span class="mi">425</span><span class="p">,</span> <span class="mi">461</span><span class="p">,</span> <span class="mi">490</span><span class="p">,</span> <span class="mi">495</span><span class="p">,</span> <span class="mi">504</span><span class="p">,</span> <span class="mi">516</span><span class="p">,</span> <span class="mi">525</span><span class="p">,</span> <span class="mi">539</span><span class="p">,</span> <span class="mi">563</span><span class="p">,</span> <span class="mi">564</span><span class="p">,</span> <span class="mi">568</span><span class="p">,</span> <span class="mi">696</span><span class="p">,</span> <span class="mi">701</span><span class="p">,</span> <span class="mi">735</span><span class="p">,</span> <span class="mi">775</span><span class="p">,</span> <span class="mi">782</span><span class="p">,</span> <span class="mi">789</span><span class="p">,</span> <span class="mi">839</span><span class="p">,</span> <span class="mi">841</span><span class="p">,</span> <span class="mi">843</span><span class="p">,</span> <span class="mi">864</span><span class="p">,</span> <span class="mi">870</span><span class="p">,</span> <span class="mi">899</span><span class="p">,</span> <span class="mi">910</span><span class="p">,</span> <span class="mi">919</span><span class="p">,</span> <span class="mi">925</span><span class="p">,</span> <span class="mi">949</span><span class="p">,</span> <span class="mi">951</span><span class="p">]</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Here the list of galaxy IDs that are in the first bin of the tangential shear profile</span>
@@ -629,11 +619,11 @@ that have fallen in that bin.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">gal_list</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mi">28</span><span class="p">,</span> <span class="mi">36</span><span class="p">,</span> <span class="mi">98</span><span class="p">,</span> <span class="mi">127</span><span class="p">,</span> <span class="mi">147</span><span class="p">,</span> <span class="mi">196</span><span class="p">,</span> <span class="mi">225</span><span class="p">,</span> <span class="mi">266</span><span class="p">,</span> <span class="mi">277</span><span class="p">,</span> <span class="mi">327</span><span class="p">,</span> <span class="mi">337</span><span class="p">,</span> <span class="mi">501</span><span class="p">,</span> <span class="mi">537</span><span class="p">,</span> <span class="mi">589</span><span class="p">,</span> <span class="mi">635</span><span class="p">,</span> <span class="mi">672</span><span class="p">,</span> <span class="mi">709</span><span class="p">,</span> <span class="mi">731</span><span class="p">,</span> <span class="mi">756</span><span class="p">,</span> <span class="mi">759</span><span class="p">,</span> <span class="mi">829</span><span class="p">,</span> <span class="mi">843</span><span class="p">,</span> <span class="mi">876</span><span class="p">,</span> <span class="mi">894</span><span class="p">,</span> <span class="mi">952</span><span class="p">,</span> <span class="mi">980</span><span class="p">,</span> <span class="mi">981</span><span class="p">,</span> <span class="mi">991</span><span class="p">]</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mi">82</span><span class="p">,</span> <span class="mi">118</span><span class="p">,</span> <span class="mi">119</span><span class="p">,</span> <span class="mi">155</span><span class="p">,</span> <span class="mi">189</span><span class="p">,</span> <span class="mi">325</span><span class="p">,</span> <span class="mi">430</span><span class="p">,</span> <span class="mi">437</span><span class="p">,</span> <span class="mi">451</span><span class="p">,</span> <span class="mi">651</span><span class="p">,</span> <span class="mi">763</span><span class="p">,</span> <span class="mi">810</span><span class="p">,</span> <span class="mi">824</span><span class="p">,</span> <span class="mi">866</span><span class="p">,</span> <span class="mi">930</span><span class="p">,</span> <span class="mi">954</span><span class="p">,</span> <span class="mi">959</span><span class="p">,</span> <span class="mi">982</span><span class="p">]</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="user-defined-naming-scheme">
+</section>
+<section id="user-defined-naming-scheme">
 <h3>4.2. User-defined naming scheme<a class="headerlink" href="#user-defined-naming-scheme" title="Permalink to this headline">¶</a></h3>
 <p>The user may specify which columns to use from the <code class="docutils literal notranslate"><span class="pre">galcat</span></code> table to
 perform the binned average. If none is specified, the code looks for
@@ -648,18 +638,18 @@ cluster object.</p>
 <span class="c1">#cl.profile.show_in_notebook()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>    <span class="n">radius_min</span>           <span class="n">radius</span>           <span class="n">radius_max</span>            <span class="n">g_tan</span>               <span class="n">g_tan_err</span>               <span class="n">g_cross</span>              <span class="n">g_cross_err</span>               <span class="n">z</span>                 <span class="n">z_err</span>         <span class="n">n_src</span>
-<span class="o">------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">--------------------</span> <span class="o">----------------------</span> <span class="o">----------------------</span> <span class="o">----------------------</span> <span class="o">------------------</span> <span class="o">--------------------</span> <span class="o">-----</span>
-<span class="mf">164.86511746644936</span> <span class="mf">502.98451398607256</span>  <span class="mf">698.9992255461411</span>  <span class="mf">0.06587492286949441</span>   <span class="mf">0.005095330960918345</span> <span class="o">-</span><span class="mf">0.0008826706883113559</span>   <span class="mf">0.000871967896029873</span> <span class="mf">1.2586075543596096</span>    <span class="mf">0.125022242323757</span>    <span class="mi">28</span>
- <span class="mf">698.9992255461411</span>  <span class="mf">996.8655086028912</span> <span class="mf">1233.1333336258328</span>  <span class="mf">0.03810700618478708</span>  <span class="mf">0.0017031023880636153</span> <span class="o">-</span><span class="mf">0.0002447910099390454</span>   <span class="mf">0.000646217547362871</span> <span class="mf">1.2493596874179491</span>   <span class="mf">0.1009787871822944</span>    <span class="mi">49</span>
-<span class="mf">1233.1333336258328</span> <span class="mf">1509.9782491202707</span> <span class="mf">1767.2674417055246</span> <span class="mf">0.026797983778712967</span>  <span class="mf">0.0008515850617392815</span>  <span class="mf">0.0008437162613406152</span>  <span class="mf">0.0004793184978507647</span> <span class="mf">1.2220408775108553</span> <span class="mf">0.061665688793604595</span>    <span class="mi">78</span>
-<span class="mf">1767.2674417055246</span> <span class="mf">2032.7433993916718</span>  <span class="mf">2301.401549785216</span> <span class="mf">0.019684849022485577</span>  <span class="mf">0.0006547642019108699</span> <span class="mf">0.00024460959616729556</span>  <span class="mf">0.0004528360799440937</span> <span class="mf">1.3643444600061883</span>  <span class="mf">0.07697957090761438</span>   <span class="mi">110</span>
- <span class="mf">2301.401549785216</span>  <span class="mf">2585.675381811875</span>  <span class="mf">2835.535657864908</span> <span class="mf">0.014289114053664783</span>  <span class="mf">0.0004747729515147948</span>  <span class="mf">0.0008449553353257092</span>  <span class="mf">0.0004158781479688051</span> <span class="mf">1.2861112331115678</span>  <span class="mf">0.06445013026874809</span>   <span class="mi">138</span>
- <span class="mf">2835.535657864908</span> <span class="mf">3125.7083290187143</span> <span class="mf">3369.6697659445995</span>  <span class="mf">0.01246247121865025</span>  <span class="mf">0.0004266553260499197</span> <span class="o">-</span><span class="mf">2.471866346449288e-05</span> <span class="mf">0.00041085246345880146</span> <span class="mf">1.3716216564364705</span>  <span class="mf">0.06299490508040485</span>   <span class="mi">161</span>
-<span class="mf">3369.6697659445995</span>  <span class="mf">3635.278705370753</span>  <span class="mf">3903.803874024291</span>  <span class="mf">0.01027036882956684</span> <span class="mf">0.00037767828405042484</span>  <span class="mf">3.338456468230189e-06</span>  <span class="mf">0.0003527837356061122</span> <span class="mf">1.3632158664839213</span>  <span class="mf">0.05318061463309119</span>   <span class="mi">189</span>
- <span class="mf">3903.803874024291</span>  <span class="mf">4133.069823560059</span>  <span class="mf">4437.937982103983</span> <span class="mf">0.007555464142703836</span>  <span class="mf">0.0004541448149835145</span>     <span class="mf">4.606385953573e-05</span>  <span class="mf">0.0004014023015279264</span> <span class="mf">1.1836641795404208</span>  <span class="mf">0.04854109490977853</span>   <span class="mi">149</span>
- <span class="mf">4437.937982103983</span>  <span class="mf">4668.446675763841</span>  <span class="mf">4972.072090183675</span> <span class="mf">0.008084619013693761</span>  <span class="mf">0.0006257890759537462</span> <span class="o">-</span><span class="mf">0.0010953925897173112</span>  <span class="mf">0.0005832935652345889</span> <span class="mf">1.2999397067447829</span>  <span class="mf">0.07797980709008819</span>    <span class="mi">67</span>
- <span class="mf">4972.072090183675</span>  <span class="mf">5206.549189093128</span>  <span class="mf">5506.206198263366</span> <span class="mf">0.005752970865413421</span>  <span class="mf">0.0008867147570375862</span> <span class="o">-</span><span class="mf">0.0009769042763377016</span>  <span class="mf">0.0007355036426332983</span> <span class="mf">1.3850070075638687</span>  <span class="mf">0.15197979752815002</span>    <span class="mi">31</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>    <span class="n">radius_min</span>           <span class="n">radius</span>           <span class="n">radius_max</span>             <span class="n">g_tan</span>               <span class="n">g_tan_err</span>                <span class="n">g_cross</span>              <span class="n">g_cross_err</span>               <span class="n">z</span>                 <span class="n">z_err</span>         <span class="n">n_src</span>
+<span class="o">------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">---------------------</span> <span class="o">----------------------</span> <span class="o">-----------------------</span> <span class="o">----------------------</span> <span class="o">------------------</span> <span class="o">--------------------</span> <span class="o">-----</span>
+ <span class="mf">94.60205694146863</span> <span class="mf">412.41685982248487</span>  <span class="mf">645.6757545692755</span>   <span class="mf">0.07734304176489455</span>   <span class="mf">0.007462843759771058</span>  <span class="o">-</span><span class="mf">0.0013143819336840718</span>   <span class="mf">0.001083800252721594</span> <span class="mf">1.5147352500491638</span>   <span class="mf">0.2569786499938531</span>    <span class="mi">18</span>
+ <span class="mf">645.6757545692755</span>  <span class="mf">939.7320876366845</span> <span class="mf">1196.7494521970823</span>   <span class="mf">0.04105607921426797</span>  <span class="mf">0.0015577531247907782</span>  <span class="o">-</span><span class="mf">0.0004777384828311897</span>  <span class="mf">0.0005931849773769037</span> <span class="mf">1.1210531393890673</span>   <span class="mf">0.0664755735154625</span>    <span class="mi">57</span>
+<span class="mf">1196.7494521970823</span> <span class="mf">1476.0520014948906</span> <span class="mf">1747.8231498248892</span>  <span class="mf">0.026586209236259838</span>  <span class="mf">0.0010524350151957533</span>   <span class="mf">0.0001162439094273901</span>  <span class="mf">0.0005536642723937506</span> <span class="mf">1.2309201323098462</span>  <span class="mf">0.07503593541492085</span>    <span class="mi">78</span>
+<span class="mf">1747.8231498248892</span> <span class="mf">2030.2048774762445</span>  <span class="mf">2298.896847452696</span>   <span class="mf">0.02017614313149412</span>  <span class="mf">0.0007151842527178256</span>  <span class="o">-</span><span class="mf">4.083024593107208e-05</span>  <span class="mf">0.0004764930386622361</span> <span class="mf">1.3274130779522657</span>  <span class="mf">0.07190219076508479</span>   <span class="mi">113</span>
+ <span class="mf">2298.896847452696</span> <span class="mf">2585.7197508624768</span> <span class="mf">2849.9705450805027</span>  <span class="mf">0.014437805098241557</span> <span class="mf">0.00048066175329085164</span>   <span class="mf">0.0002793373508702089</span> <span class="mf">0.00040609265303661826</span> <span class="mf">1.2076618912265056</span> <span class="mf">0.058455720424884984</span>   <span class="mi">137</span>
+<span class="mf">2849.9705450805027</span> <span class="mf">3120.2901340886915</span>   <span class="mf">3401.04424270831</span>  <span class="mf">0.011850915743565962</span> <span class="mf">0.00045353038567579713</span> <span class="o">-</span><span class="mf">0.00021495922044398937</span>  <span class="mf">0.0004074382090563492</span> <span class="mf">1.2402606020180058</span>  <span class="mf">0.05248683586329536</span>   <span class="mi">167</span>
+  <span class="mf">3401.04424270831</span>  <span class="mf">3694.270269924894</span> <span class="mf">3952.1179403361166</span>  <span class="mf">0.009240219182779001</span>  <span class="mf">0.0004079560782077434</span>  <span class="o">-</span><span class="mf">6.903136498532938e-05</span>  <span class="mf">0.0003532790558050087</span> <span class="mf">1.2008126125617469</span>  <span class="mf">0.04832123860420222</span>   <span class="mi">203</span>
+<span class="mf">3952.1179403361166</span>  <span class="mf">4210.082593198608</span>  <span class="mf">4503.191637963923</span>   <span class="mf">0.00765321932119777</span>  <span class="mf">0.0005135310015464004</span>  <span class="o">-</span><span class="mf">0.0008097900282817214</span>  <span class="mf">0.0005216277305574789</span>  <span class="mf">1.190328358157656</span>  <span class="mf">0.05188054306718607</span>   <span class="mi">126</span>
+ <span class="mf">4503.191637963923</span>  <span class="mf">4738.610988872943</span>   <span class="mf">5054.26533559173</span>  <span class="mf">0.006342531320949105</span>  <span class="mf">0.0004993433116218744</span>  <span class="mf">2.8226480278511433e-05</span>  <span class="mf">0.0006402722751663874</span> <span class="mf">1.3078238172266183</span>  <span class="mf">0.07773806908196376</span>    <span class="mi">75</span>
+  <span class="mf">5054.26533559173</span>  <span class="mf">5196.677066902001</span>  <span class="mf">5605.339033219537</span> <span class="mf">0.0069128157003747115</span>  <span class="mf">0.0008797110895189555</span>   <span class="mf">7.176336612278023e-05</span>  <span class="mf">0.0008931919023002707</span> <span class="mf">1.5626632292207097</span>  <span class="mf">0.15948776131324896</span>    <span class="mi">26</span>
 </pre></div>
 </div>
 <p>The user may also define the name of the output table attribute. Below,
@@ -673,22 +663,22 @@ we asked the binned profile to be saved into the
 <span class="c1">#cl.reduced_shear_profile.show_in_notebook()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>    <span class="n">radius_min</span>           <span class="n">radius</span>           <span class="n">radius_max</span>            <span class="n">g_tan</span>               <span class="n">g_tan_err</span>               <span class="n">g_cross</span>              <span class="n">g_cross_err</span>               <span class="n">z</span>                 <span class="n">z_err</span>         <span class="n">n_src</span>
-<span class="o">------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">--------------------</span> <span class="o">----------------------</span> <span class="o">----------------------</span> <span class="o">----------------------</span> <span class="o">------------------</span> <span class="o">--------------------</span> <span class="o">-----</span>
-<span class="mf">164.86511746644936</span> <span class="mf">502.98451398607256</span>  <span class="mf">698.9992255461411</span>  <span class="mf">0.06587492286949441</span>   <span class="mf">0.005095330960918345</span> <span class="o">-</span><span class="mf">0.0008826706883113559</span>   <span class="mf">0.000871967896029873</span> <span class="mf">1.2586075543596096</span>    <span class="mf">0.125022242323757</span>    <span class="mi">28</span>
- <span class="mf">698.9992255461411</span>  <span class="mf">996.8655086028912</span> <span class="mf">1233.1333336258328</span>  <span class="mf">0.03810700618478708</span>  <span class="mf">0.0017031023880636153</span> <span class="o">-</span><span class="mf">0.0002447910099390454</span>   <span class="mf">0.000646217547362871</span> <span class="mf">1.2493596874179491</span>   <span class="mf">0.1009787871822944</span>    <span class="mi">49</span>
-<span class="mf">1233.1333336258328</span> <span class="mf">1509.9782491202707</span> <span class="mf">1767.2674417055246</span> <span class="mf">0.026797983778712967</span>  <span class="mf">0.0008515850617392815</span>  <span class="mf">0.0008437162613406152</span>  <span class="mf">0.0004793184978507647</span> <span class="mf">1.2220408775108553</span> <span class="mf">0.061665688793604595</span>    <span class="mi">78</span>
-<span class="mf">1767.2674417055246</span> <span class="mf">2032.7433993916718</span>  <span class="mf">2301.401549785216</span> <span class="mf">0.019684849022485577</span>  <span class="mf">0.0006547642019108699</span> <span class="mf">0.00024460959616729556</span>  <span class="mf">0.0004528360799440937</span> <span class="mf">1.3643444600061883</span>  <span class="mf">0.07697957090761438</span>   <span class="mi">110</span>
- <span class="mf">2301.401549785216</span>  <span class="mf">2585.675381811875</span>  <span class="mf">2835.535657864908</span> <span class="mf">0.014289114053664783</span>  <span class="mf">0.0004747729515147948</span>  <span class="mf">0.0008449553353257092</span>  <span class="mf">0.0004158781479688051</span> <span class="mf">1.2861112331115678</span>  <span class="mf">0.06445013026874809</span>   <span class="mi">138</span>
- <span class="mf">2835.535657864908</span> <span class="mf">3125.7083290187143</span> <span class="mf">3369.6697659445995</span>  <span class="mf">0.01246247121865025</span>  <span class="mf">0.0004266553260499197</span> <span class="o">-</span><span class="mf">2.471866346449288e-05</span> <span class="mf">0.00041085246345880146</span> <span class="mf">1.3716216564364705</span>  <span class="mf">0.06299490508040485</span>   <span class="mi">161</span>
-<span class="mf">3369.6697659445995</span>  <span class="mf">3635.278705370753</span>  <span class="mf">3903.803874024291</span>  <span class="mf">0.01027036882956684</span> <span class="mf">0.00037767828405042484</span>  <span class="mf">3.338456468230189e-06</span>  <span class="mf">0.0003527837356061122</span> <span class="mf">1.3632158664839213</span>  <span class="mf">0.05318061463309119</span>   <span class="mi">189</span>
- <span class="mf">3903.803874024291</span>  <span class="mf">4133.069823560059</span>  <span class="mf">4437.937982103983</span> <span class="mf">0.007555464142703836</span>  <span class="mf">0.0004541448149835145</span>     <span class="mf">4.606385953573e-05</span>  <span class="mf">0.0004014023015279264</span> <span class="mf">1.1836641795404208</span>  <span class="mf">0.04854109490977853</span>   <span class="mi">149</span>
- <span class="mf">4437.937982103983</span>  <span class="mf">4668.446675763841</span>  <span class="mf">4972.072090183675</span> <span class="mf">0.008084619013693761</span>  <span class="mf">0.0006257890759537462</span> <span class="o">-</span><span class="mf">0.0010953925897173112</span>  <span class="mf">0.0005832935652345889</span> <span class="mf">1.2999397067447829</span>  <span class="mf">0.07797980709008819</span>    <span class="mi">67</span>
- <span class="mf">4972.072090183675</span>  <span class="mf">5206.549189093128</span>  <span class="mf">5506.206198263366</span> <span class="mf">0.005752970865413421</span>  <span class="mf">0.0008867147570375862</span> <span class="o">-</span><span class="mf">0.0009769042763377016</span>  <span class="mf">0.0007355036426332983</span> <span class="mf">1.3850070075638687</span>  <span class="mf">0.15197979752815002</span>    <span class="mi">31</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>    <span class="n">radius_min</span>           <span class="n">radius</span>           <span class="n">radius_max</span>             <span class="n">g_tan</span>               <span class="n">g_tan_err</span>                <span class="n">g_cross</span>              <span class="n">g_cross_err</span>               <span class="n">z</span>                 <span class="n">z_err</span>         <span class="n">n_src</span>
+<span class="o">------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">---------------------</span> <span class="o">----------------------</span> <span class="o">-----------------------</span> <span class="o">----------------------</span> <span class="o">------------------</span> <span class="o">--------------------</span> <span class="o">-----</span>
+ <span class="mf">94.60205694146863</span> <span class="mf">412.41685982248487</span>  <span class="mf">645.6757545692755</span>   <span class="mf">0.07734304176489455</span>   <span class="mf">0.007462843759771058</span>  <span class="o">-</span><span class="mf">0.0013143819336840718</span>   <span class="mf">0.001083800252721594</span> <span class="mf">1.5147352500491638</span>   <span class="mf">0.2569786499938531</span>    <span class="mi">18</span>
+ <span class="mf">645.6757545692755</span>  <span class="mf">939.7320876366845</span> <span class="mf">1196.7494521970823</span>   <span class="mf">0.04105607921426797</span>  <span class="mf">0.0015577531247907782</span>  <span class="o">-</span><span class="mf">0.0004777384828311897</span>  <span class="mf">0.0005931849773769037</span> <span class="mf">1.1210531393890673</span>   <span class="mf">0.0664755735154625</span>    <span class="mi">57</span>
+<span class="mf">1196.7494521970823</span> <span class="mf">1476.0520014948906</span> <span class="mf">1747.8231498248892</span>  <span class="mf">0.026586209236259838</span>  <span class="mf">0.0010524350151957533</span>   <span class="mf">0.0001162439094273901</span>  <span class="mf">0.0005536642723937506</span> <span class="mf">1.2309201323098462</span>  <span class="mf">0.07503593541492085</span>    <span class="mi">78</span>
+<span class="mf">1747.8231498248892</span> <span class="mf">2030.2048774762445</span>  <span class="mf">2298.896847452696</span>   <span class="mf">0.02017614313149412</span>  <span class="mf">0.0007151842527178256</span>  <span class="o">-</span><span class="mf">4.083024593107208e-05</span>  <span class="mf">0.0004764930386622361</span> <span class="mf">1.3274130779522657</span>  <span class="mf">0.07190219076508479</span>   <span class="mi">113</span>
+ <span class="mf">2298.896847452696</span> <span class="mf">2585.7197508624768</span> <span class="mf">2849.9705450805027</span>  <span class="mf">0.014437805098241557</span> <span class="mf">0.00048066175329085164</span>   <span class="mf">0.0002793373508702089</span> <span class="mf">0.00040609265303661826</span> <span class="mf">1.2076618912265056</span> <span class="mf">0.058455720424884984</span>   <span class="mi">137</span>
+<span class="mf">2849.9705450805027</span> <span class="mf">3120.2901340886915</span>   <span class="mf">3401.04424270831</span>  <span class="mf">0.011850915743565962</span> <span class="mf">0.00045353038567579713</span> <span class="o">-</span><span class="mf">0.00021495922044398937</span>  <span class="mf">0.0004074382090563492</span> <span class="mf">1.2402606020180058</span>  <span class="mf">0.05248683586329536</span>   <span class="mi">167</span>
+  <span class="mf">3401.04424270831</span>  <span class="mf">3694.270269924894</span> <span class="mf">3952.1179403361166</span>  <span class="mf">0.009240219182779001</span>  <span class="mf">0.0004079560782077434</span>  <span class="o">-</span><span class="mf">6.903136498532938e-05</span>  <span class="mf">0.0003532790558050087</span> <span class="mf">1.2008126125617469</span>  <span class="mf">0.04832123860420222</span>   <span class="mi">203</span>
+<span class="mf">3952.1179403361166</span>  <span class="mf">4210.082593198608</span>  <span class="mf">4503.191637963923</span>   <span class="mf">0.00765321932119777</span>  <span class="mf">0.0005135310015464004</span>  <span class="o">-</span><span class="mf">0.0008097900282817214</span>  <span class="mf">0.0005216277305574789</span>  <span class="mf">1.190328358157656</span>  <span class="mf">0.05188054306718607</span>   <span class="mi">126</span>
+ <span class="mf">4503.191637963923</span>  <span class="mf">4738.610988872943</span>   <span class="mf">5054.26533559173</span>  <span class="mf">0.006342531320949105</span>  <span class="mf">0.0004993433116218744</span>  <span class="mf">2.8226480278511433e-05</span>  <span class="mf">0.0006402722751663874</span> <span class="mf">1.3078238172266183</span>  <span class="mf">0.07773806908196376</span>    <span class="mi">75</span>
+  <span class="mf">5054.26533559173</span>  <span class="mf">5196.677066902001</span>  <span class="mf">5605.339033219537</span> <span class="mf">0.0069128157003747115</span>  <span class="mf">0.0008797110895189555</span>   <span class="mf">7.176336612278023e-05</span>  <span class="mf">0.0008931919023002707</span> <span class="mf">1.5626632292207097</span>  <span class="mf">0.15948776131324896</span>    <span class="mi">26</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="compute-a-deltasigma-profile-instead-of-a-shear-profile">
+</section>
+<section id="compute-a-deltasigma-profile-instead-of-a-shear-profile">
 <h3>4.3 Compute a DeltaSigma profile instead of a shear profile<a class="headerlink" href="#compute-a-deltasigma-profile-instead-of-a-shear-profile" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">is_deltasigma</span></code> option allows the user to return a cross and
 tangential <span class="math notranslate nohighlight">\(\Delta\Sigma\)</span> (excess surface density) value for each
@@ -703,17 +693,12 @@ table.</p>
 <span class="n">cl</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">GalaxyCluster</span> <span class="n">Awesome_cluster</span><span class="p">:</span> <span class="p">(</span><span class="n">ra</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">dec</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span> <span class="n">at</span> <span class="n">z</span><span class="o">=</span><span class="mf">0.3</span>
-<span class="o">&gt;</span> <span class="mi">1000</span> <span class="n">source</span> <span class="n">galaxies</span>
-<span class="o">&gt;</span> <span class="n">With</span> <span class="n">columns</span><span class="p">:</span> <span class="n">ra</span> <span class="n">dec</span> <span class="n">e1</span> <span class="n">e2</span> <span class="n">z</span> <span class="n">ztrue</span> <span class="n">pzbins</span> <span class="n">pzpdf</span> <span class="nb">id</span> <span class="n">theta</span> <span class="n">et</span> <span class="n">ex</span> <span class="n">e_tan</span> <span class="n">e_cross</span> <span class="n">sigma_c</span> <span class="n">DeltaSigma_tan</span> <span class="n">DeltaSigma_cross</span>
-</pre></div>
-</div>
 <p>Because this operation required a Cosmology, it was added to <code class="docutils literal notranslate"><span class="pre">galcat</span></code>
 metadata:</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;cosmo&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;AstroPyCosmology(H0=70.0, Omega_dm0=0.22500000000000003, Omega_b0=0.045, Omega_k0=0.0)&#39;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;CCLCosmology(H0=70.0, Omega_dm0=0.22500000000000003, Omega_b0=0.045, Omega_k0=0.0)&#39;</span>
 </pre></div>
 </div>
 <p>The binned profile is obtained, as before. Below, we use the values
@@ -724,42 +709,45 @@ GalaxyCluster object.</p>
                        <span class="n">tan_component_in</span><span class="o">=</span><span class="s1">&#39;DeltaSigma_tan&#39;</span><span class="p">,</span> <span class="n">cross_component_in</span><span class="o">=</span><span class="s1">&#39;DeltaSigma_cross&#39;</span><span class="p">,</span>
                        <span class="n">tan_component_out</span><span class="o">=</span><span class="s1">&#39;DeltaSigma_tan&#39;</span><span class="p">,</span> <span class="n">cross_component_out</span><span class="o">=</span><span class="s1">&#39;DeltaSigma_cross&#39;</span><span class="p">,</span>
                        <span class="n">table_name</span><span class="o">=</span><span class="s1">&#39;DeltaSigma_profile&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">max_width</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-<span class="c1"># cl.make_radial_profile(&quot;Mpc&quot;, cosmo=cosmo,</span>
-<span class="c1">#                        tan_component_in=&#39;DeltaSigma_tan&#39;, cross_component_in=&#39;DeltaSigma_cross&#39;,</span>
-<span class="c1">#                        tan_component_out=&#39;DeltaSigma_tan&#39;, cross_component_out=&#39;DeltaSigma_cross&#39;,</span>
-<span class="c1">#                        table_name=&#39;DeltaSigma_profile&#39;).show_in_notebook()</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">cl.make_radial_profile(&quot;Mpc&quot;, cosmo=cosmo,</span>
+<span class="sd">                       tan_component_in=&#39;DeltaSigma_tan&#39;, cross_component_in=&#39;DeltaSigma_cross&#39;,</span>
+<span class="sd">                       tan_component_out=&#39;DeltaSigma_tan&#39;, cross_component_out=&#39;DeltaSigma_cross&#39;,</span>
+<span class="sd">                       table_name=&#39;DeltaSigma_profile&#39;).show_in_notebook()</span>
+<span class="sd">&#39;&#39;&#39;</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>     <span class="n">radius_min</span>           <span class="n">radius</span>           <span class="n">radius_max</span>       <span class="n">DeltaSigma_tan</span>   <span class="n">DeltaSigma_tan_err</span>  <span class="n">DeltaSigma_cross</span>  <span class="n">DeltaSigma_cross_err</span>         <span class="n">z</span>                 <span class="n">z_err</span>         <span class="n">n_src</span>
-<span class="o">-------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">--------------------</span> <span class="o">------------------</span> <span class="o">--------------------</span> <span class="o">-----</span>
-<span class="mf">0.16486511746644936</span> <span class="mf">0.5029845139860725</span> <span class="mf">0.6989992255461409</span> <span class="mf">188456972746059.16</span>  <span class="mf">8597445387738.333</span> <span class="o">-</span><span class="mf">5049784195482.792</span>   <span class="mf">3560546941334.6763</span> <span class="mf">1.2586075543596096</span>    <span class="mf">0.125022242323757</span>    <span class="mi">28</span>
- <span class="mf">0.6989992255461409</span> <span class="mf">0.9968655086028916</span> <span class="mf">1.2331333336258323</span> <span class="mf">108119102885475.02</span> <span class="mf">3298326854850.7183</span> <span class="o">-</span><span class="mf">1130547035640.265</span>   <span class="mf">1863632879936.2463</span> <span class="mf">1.2493596874179491</span>   <span class="mf">0.1009787871822944</span>    <span class="mi">49</span>
- <span class="mf">1.2331333336258323</span> <span class="mf">1.5099782491202698</span> <span class="mf">1.7672674417055239</span>   <span class="mf">76749654737589.5</span> <span class="mf">2105376949386.4658</span> <span class="mf">2036557802413.2903</span>   <span class="mf">1454322831114.1711</span> <span class="mf">1.2220408775108553</span> <span class="mf">0.061665688793604595</span>    <span class="mi">78</span>
- <span class="mf">1.7672674417055239</span>  <span class="mf">2.032743399391671</span> <span class="mf">2.3014015497852154</span>  <span class="mf">56830887718957.93</span> <span class="mf">1937173358403.1577</span> <span class="mf">455651906866.25433</span>    <span class="mf">1491504680565.435</span> <span class="mf">1.3643444600061883</span>  <span class="mf">0.07697957090761438</span>   <span class="mi">110</span>
- <span class="mf">2.3014015497852154</span> <span class="mf">2.5856753818118734</span>  <span class="mf">2.835535657864907</span>  <span class="mf">42634597053178.03</span>  <span class="mf">1668196078020.507</span> <span class="mf">1740745842922.3987</span>   <span class="mf">1715777314175.8755</span> <span class="mf">1.2861112331115678</span>  <span class="mf">0.06445013026874809</span>   <span class="mi">138</span>
-  <span class="mf">2.835535657864907</span>  <span class="mf">3.125708329018715</span> <span class="mf">3.3696697659445984</span>  <span class="mf">35208132952519.52</span> <span class="mf">1268526544700.5095</span> <span class="o">-</span><span class="mf">246481263702.0541</span>    <span class="mf">1213238054079.362</span> <span class="mf">1.3716216564364705</span>  <span class="mf">0.06299490508040485</span>   <span class="mi">161</span>
- <span class="mf">3.3696697659445984</span> <span class="mf">3.6352787053707534</span> <span class="mf">3.9038038740242897</span>   <span class="mf">29360714689137.5</span> <span class="mf">1418591922141.7556</span> <span class="mf">256312794794.46326</span>   <span class="mf">1121210627058.3325</span> <span class="mf">1.3632158664839213</span>  <span class="mf">0.05318061463309119</span>   <span class="mi">189</span>
- <span class="mf">3.9038038740242897</span>  <span class="mf">4.133069823560064</span>  <span class="mf">4.437937982103982</span> <span class="mf">21708757331594.254</span>  <span class="mf">1332395767107.508</span>  <span class="mf">255954383456.0041</span>    <span class="mf">1337882276908.815</span> <span class="mf">1.1836641795404208</span>  <span class="mf">0.04854109490977853</span>   <span class="mi">149</span>
-  <span class="mf">4.437937982103982</span>  <span class="mf">4.668446675763842</span>  <span class="mf">4.972072090183674</span> <span class="mf">23310583497451.242</span> <span class="mf">1983750184666.3843</span> <span class="o">-</span><span class="mf">2620639657852.583</span>   <span class="mf">1904832206810.7146</span> <span class="mf">1.2999397067447829</span>  <span class="mf">0.07797980709008819</span>    <span class="mi">67</span>
-  <span class="mf">4.972072090183674</span>  <span class="mf">5.206549189093129</span>  <span class="mf">5.506206198263365</span> <span class="mf">16253320444837.412</span> <span class="mf">2698807198880.3047</span> <span class="o">-</span><span class="mf">1937861172442.658</span>    <span class="mf">2178687054817.082</span> <span class="mf">1.3850070075638687</span>  <span class="mf">0.15197979752815002</span>    <span class="mi">31</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>     <span class="n">radius_min</span>           <span class="n">radius</span>           <span class="n">radius_max</span>       <span class="n">DeltaSigma_tan</span>   <span class="n">DeltaSigma_tan_err</span>   <span class="n">DeltaSigma_cross</span>  <span class="n">DeltaSigma_cross_err</span>         <span class="n">z</span>                 <span class="n">z_err</span>         <span class="n">n_src</span>
+<span class="o">-------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">-------------------</span> <span class="o">--------------------</span> <span class="o">------------------</span> <span class="o">--------------------</span> <span class="o">-----</span>
+<span class="mf">0.09460205694146863</span> <span class="mf">0.4124168598224849</span> <span class="mf">0.6456757545692755</span> <span class="mf">222021225782206.88</span>  <span class="mf">23525810334589.15</span>  <span class="o">-</span><span class="mf">6238978602215.721</span>   <span class="mf">4129355296427.8037</span> <span class="mf">1.5147352500491638</span>   <span class="mf">0.2569786499938531</span>    <span class="mi">18</span>
+ <span class="mf">0.6456757545692755</span> <span class="mf">0.9397320876366841</span> <span class="mf">1.1967494521970825</span> <span class="mf">118254981441278.28</span>  <span class="mf">2555062307356.587</span>   <span class="o">-</span><span class="mf">837455039216.208</span>    <span class="mf">1769947019714.909</span> <span class="mf">1.1210531393890673</span>   <span class="mf">0.0664755735154625</span>    <span class="mi">57</span>
+ <span class="mf">1.1967494521970825</span> <span class="mf">1.4760520014948906</span> <span class="mf">1.7478231498248895</span>  <span class="mf">77394417659448.81</span>  <span class="mf">2354700113032.541</span>  <span class="mf">11054368708.245207</span>    <span class="mf">2615989716898.861</span> <span class="mf">1.2309201323098462</span>  <span class="mf">0.07503593541492085</span>    <span class="mi">78</span>
+ <span class="mf">1.7478231498248895</span> <span class="mf">2.0302048774762436</span>  <span class="mf">2.298896847452696</span>  <span class="mf">56232765769281.67</span>  <span class="mf">1730698292469.383</span>   <span class="mf">241016597206.6533</span>   <span class="mf">1508718322354.9602</span> <span class="mf">1.3274130779522657</span>  <span class="mf">0.07190219076508479</span>   <span class="mi">113</span>
+  <span class="mf">2.298896847452696</span> <span class="mf">2.5857197508624776</span>  <span class="mf">2.849970545080503</span>  <span class="mf">43709378419878.71</span> <span class="mf">1482979176977.0046</span>   <span class="mf">666669406609.9679</span>    <span class="mf">1461506712420.719</span> <span class="mf">1.2076618912265056</span> <span class="mf">0.058455720424884984</span>   <span class="mi">137</span>
+  <span class="mf">2.849970545080503</span> <span class="mf">3.1202901340886897</span>   <span class="mf">3.40104424270831</span> <span class="mf">39526762839354.734</span>  <span class="mf">5788239228277.552</span>  <span class="o">-</span><span class="mf">2505795345362.845</span>    <span class="mf">1931463410265.461</span> <span class="mf">1.2402606020180058</span>  <span class="mf">0.05248683586329536</span>   <span class="mi">167</span>
+   <span class="mf">3.40104424270831</span> <span class="mf">3.6942702699248953</span>  <span class="mf">3.952117940336117</span>  <span class="mf">27115659675231.64</span> <span class="mf">1193769652951.5247</span>    <span class="mf">93016300881.6216</span>   <span class="mf">1155914028696.4688</span> <span class="mf">1.2008126125617469</span>  <span class="mf">0.04832123860420222</span>   <span class="mi">203</span>
+  <span class="mf">3.952117940336117</span>  <span class="mf">4.210082593198607</span>  <span class="mf">4.503191637963924</span>  <span class="mf">21927827892818.37</span> <span class="mf">1690844830851.7378</span> <span class="o">-</span><span class="mf">3145492342654.6294</span>    <span class="mf">1695613594771.115</span>  <span class="mf">1.190328358157656</span>  <span class="mf">0.05188054306718607</span>   <span class="mi">126</span>
+  <span class="mf">4.503191637963924</span>  <span class="mf">4.738610988872943</span>   <span class="mf">5.05426533559173</span> <span class="mf">18639327490504.645</span> <span class="mf">1805504442063.0938</span>   <span class="mf">646730095227.8846</span>   <span class="mf">1979472180096.5864</span> <span class="mf">1.3078238172266183</span>  <span class="mf">0.07773806908196376</span>    <span class="mi">75</span>
+   <span class="mf">5.05426533559173</span>     <span class="mf">5.196677066902</span>  <span class="mf">5.605339033219537</span>  <span class="mf">18499768492616.78</span> <span class="mf">2975484657127.5215</span>   <span class="o">-</span><span class="mf">929829089362.214</span>   <span class="mf">2587092155294.4307</span> <span class="mf">1.5626632292207097</span>  <span class="mf">0.15948776131324896</span>    <span class="mi">26</span>
 </pre></div>
 </div>
+<pre class="literal-block">'ncl.make_radial_profile(&quot;Mpc&quot;, cosmo=cosmo, n                       tan_component_in='DeltaSigma_tan', cross_component_in='DeltaSigma_cross',n                       tan_component_out='DeltaSigma_tan', cross_component_out='DeltaSigma_cross',n                       table_name='DeltaSigma_profile').show_in_notebook()n'</pre>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">max_width</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 <span class="c1">#cl.DeltaSigma_profile.show_in_notebook()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>     <span class="n">radius_min</span>           <span class="n">radius</span>           <span class="n">radius_max</span>       <span class="n">DeltaSigma_tan</span>   <span class="n">DeltaSigma_tan_err</span>  <span class="n">DeltaSigma_cross</span>  <span class="n">DeltaSigma_cross_err</span>         <span class="n">z</span>                 <span class="n">z_err</span>         <span class="n">n_src</span>
-<span class="o">-------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">--------------------</span> <span class="o">------------------</span> <span class="o">--------------------</span> <span class="o">-----</span>
-<span class="mf">0.16486511746644936</span> <span class="mf">0.5029845139860725</span> <span class="mf">0.6989992255461409</span> <span class="mf">188456972746059.16</span>  <span class="mf">8597445387738.333</span> <span class="o">-</span><span class="mf">5049784195482.792</span>   <span class="mf">3560546941334.6763</span> <span class="mf">1.2586075543596096</span>    <span class="mf">0.125022242323757</span>    <span class="mi">28</span>
- <span class="mf">0.6989992255461409</span> <span class="mf">0.9968655086028916</span> <span class="mf">1.2331333336258323</span> <span class="mf">108119102885475.02</span> <span class="mf">3298326854850.7183</span> <span class="o">-</span><span class="mf">1130547035640.265</span>   <span class="mf">1863632879936.2463</span> <span class="mf">1.2493596874179491</span>   <span class="mf">0.1009787871822944</span>    <span class="mi">49</span>
- <span class="mf">1.2331333336258323</span> <span class="mf">1.5099782491202698</span> <span class="mf">1.7672674417055239</span>   <span class="mf">76749654737589.5</span> <span class="mf">2105376949386.4658</span> <span class="mf">2036557802413.2903</span>   <span class="mf">1454322831114.1711</span> <span class="mf">1.2220408775108553</span> <span class="mf">0.061665688793604595</span>    <span class="mi">78</span>
- <span class="mf">1.7672674417055239</span>  <span class="mf">2.032743399391671</span> <span class="mf">2.3014015497852154</span>  <span class="mf">56830887718957.93</span> <span class="mf">1937173358403.1577</span> <span class="mf">455651906866.25433</span>    <span class="mf">1491504680565.435</span> <span class="mf">1.3643444600061883</span>  <span class="mf">0.07697957090761438</span>   <span class="mi">110</span>
- <span class="mf">2.3014015497852154</span> <span class="mf">2.5856753818118734</span>  <span class="mf">2.835535657864907</span>  <span class="mf">42634597053178.03</span>  <span class="mf">1668196078020.507</span> <span class="mf">1740745842922.3987</span>   <span class="mf">1715777314175.8755</span> <span class="mf">1.2861112331115678</span>  <span class="mf">0.06445013026874809</span>   <span class="mi">138</span>
-  <span class="mf">2.835535657864907</span>  <span class="mf">3.125708329018715</span> <span class="mf">3.3696697659445984</span>  <span class="mf">35208132952519.52</span> <span class="mf">1268526544700.5095</span> <span class="o">-</span><span class="mf">246481263702.0541</span>    <span class="mf">1213238054079.362</span> <span class="mf">1.3716216564364705</span>  <span class="mf">0.06299490508040485</span>   <span class="mi">161</span>
- <span class="mf">3.3696697659445984</span> <span class="mf">3.6352787053707534</span> <span class="mf">3.9038038740242897</span>   <span class="mf">29360714689137.5</span> <span class="mf">1418591922141.7556</span> <span class="mf">256312794794.46326</span>   <span class="mf">1121210627058.3325</span> <span class="mf">1.3632158664839213</span>  <span class="mf">0.05318061463309119</span>   <span class="mi">189</span>
- <span class="mf">3.9038038740242897</span>  <span class="mf">4.133069823560064</span>  <span class="mf">4.437937982103982</span> <span class="mf">21708757331594.254</span>  <span class="mf">1332395767107.508</span>  <span class="mf">255954383456.0041</span>    <span class="mf">1337882276908.815</span> <span class="mf">1.1836641795404208</span>  <span class="mf">0.04854109490977853</span>   <span class="mi">149</span>
-  <span class="mf">4.437937982103982</span>  <span class="mf">4.668446675763842</span>  <span class="mf">4.972072090183674</span> <span class="mf">23310583497451.242</span> <span class="mf">1983750184666.3843</span> <span class="o">-</span><span class="mf">2620639657852.583</span>   <span class="mf">1904832206810.7146</span> <span class="mf">1.2999397067447829</span>  <span class="mf">0.07797980709008819</span>    <span class="mi">67</span>
-  <span class="mf">4.972072090183674</span>  <span class="mf">5.206549189093129</span>  <span class="mf">5.506206198263365</span> <span class="mf">16253320444837.412</span> <span class="mf">2698807198880.3047</span> <span class="o">-</span><span class="mf">1937861172442.658</span>    <span class="mf">2178687054817.082</span> <span class="mf">1.3850070075638687</span>  <span class="mf">0.15197979752815002</span>    <span class="mi">31</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>     <span class="n">radius_min</span>           <span class="n">radius</span>           <span class="n">radius_max</span>       <span class="n">DeltaSigma_tan</span>   <span class="n">DeltaSigma_tan_err</span>   <span class="n">DeltaSigma_cross</span>  <span class="n">DeltaSigma_cross_err</span>         <span class="n">z</span>                 <span class="n">z_err</span>         <span class="n">n_src</span>
+<span class="o">-------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">-------------------</span> <span class="o">--------------------</span> <span class="o">------------------</span> <span class="o">--------------------</span> <span class="o">-----</span>
+<span class="mf">0.09460205694146863</span> <span class="mf">0.4124168598224849</span> <span class="mf">0.6456757545692755</span> <span class="mf">222021225782206.88</span>  <span class="mf">23525810334589.15</span>  <span class="o">-</span><span class="mf">6238978602215.721</span>   <span class="mf">4129355296427.8037</span> <span class="mf">1.5147352500491638</span>   <span class="mf">0.2569786499938531</span>    <span class="mi">18</span>
+ <span class="mf">0.6456757545692755</span> <span class="mf">0.9397320876366841</span> <span class="mf">1.1967494521970825</span> <span class="mf">118254981441278.28</span>  <span class="mf">2555062307356.587</span>   <span class="o">-</span><span class="mf">837455039216.208</span>    <span class="mf">1769947019714.909</span> <span class="mf">1.1210531393890673</span>   <span class="mf">0.0664755735154625</span>    <span class="mi">57</span>
+ <span class="mf">1.1967494521970825</span> <span class="mf">1.4760520014948906</span> <span class="mf">1.7478231498248895</span>  <span class="mf">77394417659448.81</span>  <span class="mf">2354700113032.541</span>  <span class="mf">11054368708.245207</span>    <span class="mf">2615989716898.861</span> <span class="mf">1.2309201323098462</span>  <span class="mf">0.07503593541492085</span>    <span class="mi">78</span>
+ <span class="mf">1.7478231498248895</span> <span class="mf">2.0302048774762436</span>  <span class="mf">2.298896847452696</span>  <span class="mf">56232765769281.67</span>  <span class="mf">1730698292469.383</span>   <span class="mf">241016597206.6533</span>   <span class="mf">1508718322354.9602</span> <span class="mf">1.3274130779522657</span>  <span class="mf">0.07190219076508479</span>   <span class="mi">113</span>
+  <span class="mf">2.298896847452696</span> <span class="mf">2.5857197508624776</span>  <span class="mf">2.849970545080503</span>  <span class="mf">43709378419878.71</span> <span class="mf">1482979176977.0046</span>   <span class="mf">666669406609.9679</span>    <span class="mf">1461506712420.719</span> <span class="mf">1.2076618912265056</span> <span class="mf">0.058455720424884984</span>   <span class="mi">137</span>
+  <span class="mf">2.849970545080503</span> <span class="mf">3.1202901340886897</span>   <span class="mf">3.40104424270831</span> <span class="mf">39526762839354.734</span>  <span class="mf">5788239228277.552</span>  <span class="o">-</span><span class="mf">2505795345362.845</span>    <span class="mf">1931463410265.461</span> <span class="mf">1.2402606020180058</span>  <span class="mf">0.05248683586329536</span>   <span class="mi">167</span>
+   <span class="mf">3.40104424270831</span> <span class="mf">3.6942702699248953</span>  <span class="mf">3.952117940336117</span>  <span class="mf">27115659675231.64</span> <span class="mf">1193769652951.5247</span>    <span class="mf">93016300881.6216</span>   <span class="mf">1155914028696.4688</span> <span class="mf">1.2008126125617469</span>  <span class="mf">0.04832123860420222</span>   <span class="mi">203</span>
+  <span class="mf">3.952117940336117</span>  <span class="mf">4.210082593198607</span>  <span class="mf">4.503191637963924</span>  <span class="mf">21927827892818.37</span> <span class="mf">1690844830851.7378</span> <span class="o">-</span><span class="mf">3145492342654.6294</span>    <span class="mf">1695613594771.115</span>  <span class="mf">1.190328358157656</span>  <span class="mf">0.05188054306718607</span>   <span class="mi">126</span>
+  <span class="mf">4.503191637963924</span>  <span class="mf">4.738610988872943</span>   <span class="mf">5.05426533559173</span> <span class="mf">18639327490504.645</span> <span class="mf">1805504442063.0938</span>   <span class="mf">646730095227.8846</span>   <span class="mf">1979472180096.5864</span> <span class="mf">1.3078238172266183</span>  <span class="mf">0.07773806908196376</span>    <span class="mi">75</span>
+   <span class="mf">5.05426533559173</span>     <span class="mf">5.196677066902</span>  <span class="mf">5.605339033219537</span>  <span class="mf">18499768492616.78</span> <span class="mf">2975484657127.5215</span>   <span class="o">-</span><span class="mf">929829089362.214</span>   <span class="mf">2587092155294.4307</span> <span class="mf">1.5626632292207097</span>  <span class="mf">0.15948776131324896</span>    <span class="mi">26</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s1">&#39;DeltaSigma_tan&#39;</span><span class="p">],</span>
@@ -771,34 +759,37 @@ GalaxyCluster object.</p>
 </pre></div>
 </div>
 <img alt="../_images/demo_dataops_functionality_61_0.png" src="../_images/demo_dataops_functionality_61_0.png" />
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
            </div>
            
           </div>
           <footer>
+  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2018-2021, LSST DESC CLMM Contributors.
+        
+        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
 
     </p>
   </div>
     
     
     
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
+
         </div>
       </div>
 

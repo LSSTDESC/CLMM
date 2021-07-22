@@ -3,11 +3,11 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8">
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.support.sampler &mdash; CLMM 0.9.1 documentation</title>
+  <title>clmm.support.sampler &mdash; CLMM 1.0.0 documentation</title>
   
 
   
@@ -16,10 +16,7 @@
 
   
   
-
   
-  
-
   
 
   
@@ -32,6 +29,7 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
@@ -52,7 +50,7 @@
           
 
           
-            <a href="../../../index.html" class="icon icon-home"> CLMM
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> CLMM
           
 
           
@@ -62,7 +60,7 @@
             
             
               <div class="version">
-                0.9.1
+                1.0.0
               </div>
             
           
@@ -87,27 +85,27 @@
               
             
             
-              <p class="caption"><span class="caption-text">Getting Started</span></p>
+              <p><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/overview.html">Rapid overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/citing.html">Citing CLMM</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Usage Demos</span></p>
+<p><span class="caption-text">Usage Demos</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Mass Fitting Examples</span></p>
+<p><span class="caption-text">Mass Fitting Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog_NC.html">Fit halo mass to shear profile using Numcosmo statistical framework</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Reference</span></p>
+<p><span class="caption-text">Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.constants.html">clmm.constants module</a></li>
@@ -180,8 +178,6 @@
 
 
 
-
-
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -208,73 +204,163 @@
   <h1>Source code for clmm.support.sampler</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;@file.py sampler.py</span>
 <span class="sd">Functions for sampling (output either peak or full distribution)</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">optimize</span> <span class="k">as</span> <span class="n">spo</span>
 
-<div class="viewcode-block" id="sciopt"><a class="viewcode-back" href="../../../api/clmm.support.sampler.html#clmm.support.sampler.sciopt">[docs]</a><span class="k">def</span> <span class="nf">sciopt</span><span class="p">(</span><span class="n">model_to_shear_profile</span><span class="p">,</span> <span class="n">logm_0</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span> <span class="p">:</span>
-    <span class="sd">&#39;&#39;&#39; Uses scipy optimize minimize to output the peak&#39;&#39;&#39;</span>
-    <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">optimize</span> <span class="k">as</span> <span class="n">spo</span>
 
+<div class="viewcode-block" id="sciopt"><a class="viewcode-back" href="../../../api/clmm.support.sampler.html#clmm.support.sampler.sciopt">[docs]</a><span class="k">def</span> <span class="nf">sciopt</span><span class="p">(</span><span class="n">model_to_shear_profile</span><span class="p">,</span> <span class="n">logm_0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&#39;&#39;&#39; Uses scipy optimize minimize to output the peak</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model_to_shear_profile : callable</span>
+<span class="sd">        The objective function to be minimized.</span>
+<span class="sd">        ``model_to_shear_profile(x, *args) -&gt; float``</span>
+<span class="sd">        where ``x`` is an 1-D array with shape (n,) and ``args``</span>
+<span class="sd">        is a tuple of the fixed parameters needed to completely</span>
+<span class="sd">        specify the function.</span>
+<span class="sd">    logm_0 : ndarray, shape (n,)</span>
+<span class="sd">        Initial guess. Array of real elements of size (n,),</span>
+<span class="sd">        where &#39;n&#39; is the number of independent variables.</span>
+<span class="sd">    kwargs :</span>
+<span class="sd">        Other optional keyword arguments passed to `minimize`.</span>
+<span class="sd">        Please check the `scipy` documentaion for information on default values and methods.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    x : array</span>
+<span class="sd">    The solution of the optimization</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">spo</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">model_to_shear_profile</span><span class="p">,</span> <span class="n">logm_0</span><span class="p">,</span>
-                 <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span><span class="o">.</span><span class="n">x</span></div>
-
-<div class="viewcode-block" id="basinhopping"><a class="viewcode-back" href="../../../api/clmm.support.sampler.html#clmm.support.sampler.basinhopping">[docs]</a><span class="k">def</span> <span class="nf">basinhopping</span><span class="p">(</span><span class="n">model_to_shear_profile</span><span class="p">,</span> <span class="n">logm_0</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span> <span class="p">:</span>
-    <span class="sd">&#39;&#39;&#39;Uses basinhopping, a scipy global optimization function, to find the minimum &#39;&#39;&#39;</span>
-    <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">optimize</span> <span class="k">as</span> <span class="n">spo</span>
-
-    <span class="k">return</span> <span class="n">spo</span><span class="o">.</span><span class="n">basinhopping</span><span class="p">(</span><span class="n">model_to_shear_profile</span><span class="p">,</span> <span class="n">logm_0</span><span class="p">,</span> <span class="n">minimizer_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;args&#39;</span><span class="p">:</span><span class="n">args</span><span class="p">})</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
-
-<div class="viewcode-block" id="scicurve_fit"><a class="viewcode-back" href="../../../api/clmm.support.sampler.html#clmm.support.sampler.scicurve_fit">[docs]</a><span class="k">def</span> <span class="nf">scicurve_fit</span><span class="p">(</span><span class="n">profile_model</span><span class="p">,</span><span class="n">radius</span><span class="p">,</span><span class="n">profile</span><span class="p">,</span><span class="n">err_profile</span><span class="p">,</span><span class="n">bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">p0</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Uses scipy.optimize.curve_fit to find best fit parameters&#39;&#39;&#39;</span>
-    <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">optimize</span> <span class="k">as</span> <span class="n">spo</span>
-
-    <span class="k">if</span> <span class="n">bounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">spo</span><span class="o">.</span><span class="n">curve_fit</span><span class="p">(</span><span class="n">profile_model</span><span class="p">,</span>
-                    <span class="n">radius</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span>
-                    <span class="n">sigma</span><span class="o">=</span><span class="n">err_profile</span><span class="p">,</span> <span class="n">p0</span><span class="o">=</span><span class="n">p0</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">spo</span><span class="o">.</span><span class="n">curve_fit</span><span class="p">(</span><span class="n">profile_model</span><span class="p">,</span>
-                    <span class="n">radius</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span>
-                    <span class="n">sigma</span><span class="o">=</span><span class="n">err_profile</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span> <span class="n">p0</span><span class="o">=</span><span class="n">p0</span><span class="p">)</span></div>
+                        <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">x</span></div>
 
 
+<div class="viewcode-block" id="basinhopping"><a class="viewcode-back" href="../../../api/clmm.support.sampler.html#clmm.support.sampler.basinhopping">[docs]</a><span class="k">def</span> <span class="nf">basinhopping</span><span class="p">(</span><span class="n">model_to_shear_profile</span><span class="p">,</span> <span class="n">logm_0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&#39;&#39;&#39;Uses basinhopping, a scipy global optimization function, to find the minimum.</span>
 
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model_to_shear_profile : callable</span>
+<span class="sd">        The objective function to be minimized.</span>
+<span class="sd">        ``model_to_shear_profile(x, *args) -&gt; float``</span>
+<span class="sd">        where ``x`` is an 1-D array with shape (n,) and ``args``</span>
+<span class="sd">        is a tuple of the fixed parameters needed to completely</span>
+<span class="sd">        specify the function.</span>
+<span class="sd">    logm_0 : array_like</span>
+<span class="sd">        Initial guess. Array of real elements of size (n,),</span>
+<span class="sd">        where &#39;n&#39; is the number of independent variables.</span>
+<span class="sd">    kwargs :</span>
+<span class="sd">        Other optional keyword arguments passed to `basinhopping`.</span>
+<span class="sd">        Please check the `scipy` documentaion for information on default values and methods.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    x : array</span>
+<span class="sd">    The solution of the optimization</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">spo</span><span class="o">.</span><span class="n">basinhopping</span><span class="p">(</span><span class="n">model_to_shear_profile</span><span class="p">,</span> <span class="n">logm_0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">x</span></div>
+
+
+<div class="viewcode-block" id="scicurve_fit"><a class="viewcode-back" href="../../../api/clmm.support.sampler.html#clmm.support.sampler.scicurve_fit">[docs]</a><span class="k">def</span> <span class="nf">scicurve_fit</span><span class="p">(</span><span class="n">profile_model</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">err_profile</span><span class="p">,</span> <span class="n">absolute_sigma</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Uses scipy.optimize.curve_fit to find best fit parameters</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    profile_model : callable</span>
+<span class="sd">        The model function, f(x, ...). It must take the independent</span>
+<span class="sd">        variable as the first argument and the parameters to fit as</span>
+<span class="sd">        separate remaining arguments.</span>
+<span class="sd">    radius : array_like or object</span>
+<span class="sd">        The independent variable where the data is measured.</span>
+<span class="sd">        Should usually be an M-length sequence or an (k,M)-shaped array for</span>
+<span class="sd">        functions with k predictors, but can actually be any object.</span>
+<span class="sd">    profile : array_like</span>
+<span class="sd">        The dependent data, a length M array - nominally ``f(xdata, ...)``.</span>
+<span class="sd">    err_profile : M-length sequence or MxM array</span>
+<span class="sd">        Determines the uncertainty in `ydata`. If we define residuals as</span>
+<span class="sd">        ``r = ydata - f(xdata, *popt)``, then the interpretation of `sigma`</span>
+<span class="sd">        depends on its number of dimensions:</span>
+<span class="sd">        - A 1-D `sigma` should contain values of standard deviations of</span>
+<span class="sd">        errors in `ydata`. In this case, the optimized function is</span>
+<span class="sd">        ``chisq = sum((r / sigma) ** 2)``.</span>
+<span class="sd">        - A 2-D `sigma` should contain the covariance matrix of</span>
+<span class="sd">        errors in `ydata`. In this case, the optimized function is</span>
+<span class="sd">        ``chisq = r.T @ inv(sigma) @ r``.</span>
+<span class="sd">    absolute_sigma : bool, optional</span>
+<span class="sd">        If True (default), `sigma` is used in an absolute sense and the estimated parameter</span>
+<span class="sd">        covariance `pcov` reflects these absolute values.</span>
+<span class="sd">        If False, only the relative magnitudes of the `sigma` values matter.</span>
+<span class="sd">        The returned parameter covariance matrix `pcov` is based on scaling</span>
+<span class="sd">        `sigma` by a constant factor. This constant is set by demanding that the</span>
+<span class="sd">        reduced `chisq` for the optimal parameters `popt` when using the</span>
+<span class="sd">        *scaled* `sigma` equals unity. In other words, `sigma` is scaled to</span>
+<span class="sd">        match the sample variance of the residuals after the fit. Default is True.</span>
+<span class="sd">        Mathematically,</span>
+<span class="sd">        ``pcov(absolute_sigma=False) = pcov(absolute_sigma=True) * chisq(popt)/(M-N)``</span>
+
+<span class="sd">    kwargs :</span>
+<span class="sd">        Other optional keyword arguments passed to `curve_fit`</span>
+<span class="sd">        Please check the `scipy` documentaion for information on default values and methods.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    p : list</span>
+<span class="sd">        contains :</span>
+<span class="sd">            p[0] : array</span>
+<span class="sd">                Optimal values for the parameters so that the sum of the squared</span>
+<span class="sd">                residuals of ``f(xdata, *popt) - ydata`` is minimized.</span>
+<span class="sd">            p[1] : 2-D array</span>
+<span class="sd">                The estimated covariance of popt. The diagonals provide the variance</span>
+<span class="sd">                of the parameter estimate. To compute one standard deviation errors</span>
+<span class="sd">                on the parameters use ``perr = np.sqrt(np.diag(pcov))``.</span>
+<span class="sd">                How the `sigma` parameter affects the estimated covariance</span>
+<span class="sd">                depends on `absolute_sigma` argument, as described above.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">spo</span><span class="o">.</span><span class="n">curve_fit</span><span class="p">(</span>
+        <span class="n">profile_model</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">err_profile</span><span class="p">,</span>
+        <span class="n">absolute_sigma</span><span class="o">=</span><span class="n">absolute_sigma</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <span class="n">samplers</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;minimize&#39;</span><span class="p">:</span><span class="n">sciopt</span><span class="p">,</span>
-    <span class="s1">&#39;basinhopping&#39;</span><span class="p">:</span><span class="n">basinhopping</span>
-    <span class="p">}</span>
+    <span class="s1">&#39;minimize&#39;</span><span class="p">:</span> <span class="n">sciopt</span><span class="p">,</span>
+    <span class="s1">&#39;basinhopping&#39;</span><span class="p">:</span> <span class="n">basinhopping</span>
+<span class="p">}</span>
 
 <span class="n">fitters</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;curve_fit&#39;</span><span class="p">:</span><span class="n">scicurve_fit</span><span class="p">,</span>
-
-    <span class="p">}</span>
+    <span class="s1">&#39;curve_fit&#39;</span><span class="p">:</span> <span class="n">scicurve_fit</span><span class="p">,</span>
+<span class="p">}</span>
 </pre></div>
 
            </div>
            
           </div>
           <footer>
+  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2018-2021, LSST DESC CLMM Contributors.
+        
+        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
 
     </p>
   </div>
     
     
     
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
+
         </div>
       </div>
 
