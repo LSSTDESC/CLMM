@@ -375,7 +375,8 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
 def compute_reduced_tangential_shear(
         r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
         delta_mdef=200, halo_profile_model='nfw', massdef='mean',
-        z_src_model='single_plane'):
+        z_src_model='single_plane', 
+        beta_s_mean=None, beta_s_square_mean=None):
     r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
 
     Parameters
@@ -442,6 +443,16 @@ def compute_reduced_tangential_shear(
     # elif z_src_model == 'z_src_distribution': # Continuous ( from a distribution) case
     #     raise NotImplementedError('Need to implement Beta_s and Beta_s2 calculation from'+
     #                               'integrating distribution of redshifts in each radial bin')
+
+    elif z_src_model == 'weighing_the_giants_b':
+        if beta_s_mean==None or beta_s_square_mean==None: 
+            raise ValueError("beta_s_mean or beta_s_square_mean is not given.")
+        else:
+            z_source = np.inf # or a very large number
+            gammat = gcm.eval_tangential_shear(r_proj, z_cluster, z_source)
+            kappa = gcm.eval_convergence(r_proj, z_cluster, z_source)
+            red_tangential_shear = beta_s_mean * gammat / (1. - beta_s_square_mean / beta_s_mean * kappa)
+
     else:
         raise ValueError("Unsupported z_src_model")
 
