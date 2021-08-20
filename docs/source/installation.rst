@@ -2,16 +2,6 @@
 Installation
 **************
 
-To install CLMM you currently need to build it from source::
-  
-  git clone https://github.com/DESC/CLMM.git
-  cd CLMM
-  python setup.py install
-
-To run the tests you can do::
-
-  pytest
-  
 Requirements
 ============
 CLMM requires Python version 3.6 or later.  CLMM has the following dependencies:
@@ -42,3 +32,15 @@ For developers, you will also need to install:
 These are also pip installable::
 
   pip install pytest sphinx sphinx_rtd_theme
+
+Installation
+============
+To install CLMM you currently need to build it from source::
+
+  git clone https://github.com/LSSTDESC/CLMM.git
+  cd CLMM
+  python setup.py install
+
+To run the tests you can do::
+
+  pytest
