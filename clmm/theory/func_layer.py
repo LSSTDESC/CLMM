@@ -443,7 +443,8 @@ def compute_reduced_tangential_shear(
     gcm.set_concentration(cdelta)
     gcm.set_mass(mdelta)
 
-    return gcm.eval_reduced_tangential_shear(r_proj, z_cluster, z_source)
+    return gcm.eval_reduced_tangential_shear(
+        r_proj, z_cluster, z_source, z_src_model, beta_s_mean, beta_s_square_mean)
 
 
 # The magnification is computed taking into account just the tangential shear. This is valid for
