@@ -407,9 +407,14 @@ def compute_reduced_tangential_shear(
             `virial` - not in cluster_toolkit;
     z_src_model : str, optional
         Source redshift model, with the following supported options:
-            `single_plane` (default) - all sources at one redshift (if
-            `z_source` is a float) or known individual source galaxy redshifts
+
+            * `single_plane` (default) - all sources at one redshift (if \
+            `z_source` is a float) or known individual source galaxy redshifts \
             (if `z_source` is an array and `r_proj` is a float);
+            * `weighing_the_giants_b` - ...
+
+    beta_s_mean: ...
+    beta_s_square_mean: ...
 
     Returns
     -------
@@ -424,44 +429,22 @@ def compute_reduced_tangential_shear(
     `z_src_model`. We will need :math:`\gamma_\infty` and :math:`\kappa_\infty`
     for alternative z_src_models using :math:`\beta_s`.
     """
-    gcm._check_input_radius(r_proj)
-
-    if z_src_model == 'single_plane':
-
-        gcm.set_cosmo(cosmo)
-        gcm.set_halo_density_profile(
-            halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
-        gcm.set_concentration(cdelta)
-        gcm.set_mass(mdelta)
-
-        red_tangential_shear = gcm.eval_reduced_tangential_shear(
-            r_proj, z_cluster, z_source)
-
-    # elif z_src_model == 'known_z_src': # Discrete case
-    #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average'+
-    #                               'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
-    # elif z_src_model == 'z_src_distribution': # Continuous ( from a distribution) case
-    #     raise NotImplementedError('Need to implement Beta_s and Beta_s2 calculation from'+
-    #                               'integrating distribution of redshifts in each radial bin')
-
-    elif z_src_model == 'weighing_the_giants_b':
-        if beta_s_mean==None or beta_s_square_mean==None: 
-            raise ValueError("beta_s_mean or beta_s_square_mean is not given.")
-        else:
-            z_source = np.inf # or a very large number
-            gammat = gcm.eval_tangential_shear(r_proj, z_cluster, z_source)
-            kappa = gcm.eval_convergence(r_proj, z_cluster, z_source)
-            red_tangential_shear = beta_s_mean * gammat / (1. - beta_s_square_mean / beta_s_mean * kappa)
-
-    else:
-        raise ValueError("Unsupported z_src_model")
 
     if np.any(np.array(z_source) <= z_cluster):
         warnings.warn(
             'Some source redshifts are lower than the cluster redshift.'
             ' shear = 0 for those galaxies.')
 
-    return red_tangential_shear
+    gcm._check_input_radius(r_proj)
+
+    gcm.set_cosmo(cosmo)
+    gcm.set_halo_density_profile(
+        halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
+    gcm.set_concentration(cdelta)
+    gcm.set_mass(mdelta)
+
+    return gcm.eval_reduced_tangential_shear(r_proj, z_cluster, z_source)
+
 
 # The magnification is computed taking into account just the tangential shear. This is valid for
 # spherically averaged profiles, e.g., NFW and Einasto (by construction the cross shear is zero).

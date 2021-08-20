@@ -169,8 +169,8 @@ class CTModeling(CLMModeling):
         sigma_c = self.eval_critical_surface_density(z_cl, z_src)
         return sigma/sigma_c
 
-    def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src):
-        """"eval reduced tangential shear"""
+    def _eval_reduced_tangential_shear_sp(self, r_proj, z_cl, z_src):
+        """"eval reduced tangential shear single plane"""
         kappa = self.eval_convergence(r_proj, z_cl, z_src)
         gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
         return np.divide(gamma_t, (1-kappa))

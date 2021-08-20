@@ -157,8 +157,8 @@ class CCLCLMModeling(CLMModeling):
 
         return sigma/sigma_crit
 
-    def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src):
-        """"eval reduced tangential shear"""
+    def _eval_reduced_tangential_shear_sp(self, r_proj, z_cl, z_src):
+        """"eval reduced tangential shear single plane"""
         kappa = self.eval_convergence(r_proj, z_cl, z_src)
         gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
 

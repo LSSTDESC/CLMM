@@ -306,8 +306,62 @@ class CLMModeling:
         """
         raise NotImplementedError
 
-    def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src):
+    def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src, z_src_model='single_plane',
+                                      beta_s_mean=None, beta_s_square_mean=None):
         r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
+
+        Parameters
+        ----------
+        r_proj : array_like
+            The projected radial positions in :math:`M\!pc`.
+        z_cl : float
+            Galaxy cluster redshift
+        z_src : array_like, float
+            Background source galaxy redshift(s)
+        z_src_model : str, optional
+            Source redshift model, with the following supported options:
+
+                * `single_plane` (default) - all sources at one redshift (if \
+                `z_source` is a float) or known individual source galaxy redshifts \
+                (if `z_source` is an array and `r_proj` is a float);
+                * `weighing_the_giants_b` - ...
+
+        beta_s_mean: ...
+        beta_s_square_mean: ...
+
+        Returns
+        -------
+        gt : array_like, float
+            Reduced tangential shear
+
+        Notes
+        -----
+        Need to figure out if we want to raise exceptions rather than errors here?
+        """
+
+        if z_src_model == 'single_plane':
+            gt = self._eval_reduced_tangential_shear_sp(r_proj, z_cl, z_src)
+        # elif z_src_model == 'known_z_src': # Discrete case
+        #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average'+
+        #                               'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
+        # elif z_src_model == 'z_src_distribution': # Continuous ( from a distribution) case
+        #     raise NotImplementedError('Need to implement Beta_s and Beta_s2 calculation from'+
+        #                               'integrating distribution of redshifts in each radial bin')
+        elif z_src_model == 'weighing_the_giants_b':
+            if beta_s_mean is None or beta_s_square_mean is None:
+                raise ValueError("beta_s_mean or beta_s_square_mean is not given.")
+            else:
+                z_source = np.inf # or a very large number
+                gammat = self.eval_tangential_shear(r_proj, z_cl, z_src)
+                kappa = self.eval_convergence(r_proj, z_cl, z_src)
+                gt = beta_s_mean * gammat / (1. - beta_s_square_mean / beta_s_mean * kappa)
+        else:
+            raise ValueError("Unsupported z_src_model")
+        return gt
+
+    def _eval_reduced_tangential_shear_sp(self, r_proj, z_cl, z_src):
+        r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`
+        Assuming single plane.
 
         Parameters
         ----------
