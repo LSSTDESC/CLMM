@@ -407,11 +407,12 @@ def compute_reduced_tangential_shear(
             `virial` - not in cluster_toolkit;
     z_src_model : str, optional
         Source redshift model, with the following supported options:
-
-            * `single_plane` (default) - all sources at one redshift (if \
-            `z_source` is a float) or known individual source galaxy redshifts \
-            (if `z_source` is an array and `r_proj` is a float);
-            * `weighing_the_giants_b` - ...
+""""""
+            * `single_plane` (default): all sources at one redshift (if `z_source` is a float) \
+            or known individual source galaxy redshifts (if `z_source` is an array and \
+            `r_proj` is a float);
+            * `weighing_the_giants_b`: ...
+"""r"""
 
     beta_s_mean: ...
     beta_s_square_mean: ...
