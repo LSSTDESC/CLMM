@@ -27,9 +27,6 @@ line below to select your backend.
     import numpy as np
     import matplotlib.pyplot as plt
     %matplotlib inline
-    
-    import warnings
-    warnings.filterwarnings('ignore')
 
 Make sure we know which version we’re using
 
@@ -175,11 +172,11 @@ Inspect the catalog data
 
 .. parsed-literal::
 
-        ra        dec         e1        e2        z       ztrue    id
-    ---------- ---------- --------- --------- --------- --------- ---
-    -7.378e-02 -7.396e-02 5.203e-05 2.153e-02 8.000e-01 8.000e-01   0
-    -4.571e-02 -1.008e-01 1.337e-02 1.527e-02 8.000e-01 8.000e-01   1
-    -6.637e-02 -1.896e-01 8.062e-03 6.433e-03 8.000e-01 8.000e-01   2
+        ra        dec        e1        e2         z       ztrue    id
+    ---------- --------- --------- ---------- --------- --------- ---
+    -6.633e-02 1.310e-01 8.843e-03 -1.205e-02 8.000e-01 8.000e-01   0
+    -7.608e-02 1.871e-01 7.337e-03 -7.148e-03 8.000e-01 8.000e-01   1
+    -1.050e-01 2.125e-01 5.088e-03 -6.653e-03 8.000e-01 8.000e-01   2
 
 
 -  With photo-z errors
@@ -196,9 +193,9 @@ Inspect the catalog data
 
         ra        dec         e1         e2         z       ztrue         pzbins [61]             pzpdf [61]        id
     ---------- ---------- ---------- ---------- --------- --------- ----------------------- ---------------------- ---
-     1.304e-01 -1.762e-01  1.110e-01 -1.074e-01 5.654e-01 8.000e-01 -3.346e-01 .. 1.465e+00 8.550e-22 .. 8.550e-22   0
-    -1.122e-01  1.502e-01 -1.552e-02  4.294e-02 7.271e-01 8.000e-01 -1.729e-01 .. 1.627e+00 8.550e-22 .. 8.550e-22   1
-    -1.215e-01  1.814e-01 -6.218e-02 -5.419e-02 7.585e-01 8.000e-01 -1.415e-01 .. 1.658e+00 8.550e-22 .. 8.550e-22   2
+     1.682e-02 -9.438e-02 -7.095e-03 -6.420e-02 9.086e-01 8.000e-01  8.607e-03 .. 1.809e+00 8.550e-22 .. 8.550e-22   0
+    -7.761e-02  2.330e-01  4.327e-02 -4.130e-02 7.253e-01 8.000e-01 -1.747e-01 .. 1.625e+00 8.550e-22 .. 8.550e-22   1
+    -6.661e-02 -2.045e-01  2.444e-02 -4.726e-02 6.918e-01 8.000e-01 -2.082e-01 .. 1.592e+00 8.550e-22 .. 8.550e-22   2
 
 
 -  Histogram of the redshift distribution of background galaxies, for
@@ -220,7 +217,7 @@ Inspect the catalog data
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fc8e725ac10>
+    <matplotlib.legend.Legend at 0x7fb80b1af820>
 
 
 
@@ -255,7 +252,7 @@ Inspect the catalog data
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fc8ea410430>
+    <matplotlib.legend.Legend at 0x7fb80e860760>
 
 
 
@@ -328,7 +325,7 @@ example.
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fc8ea3b0f70>
+    <matplotlib.legend.Legend at 0x7fb80e7ece20>
 
 
 
@@ -380,7 +377,7 @@ example.
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fc8ec91f5b0>
+    <matplotlib.legend.Legend at 0x7fb811b4ba00>
 
 
 

@@ -230,9 +230,6 @@ line below to select your backend.</p>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="o">%</span><span class="k">matplotlib</span> inline
-
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Make sure we know which version we’re using</p>
@@ -353,11 +350,11 @@ galaxies at z=0.8, no redshift errors (z = ztrue)</p></li>
 <span class="n">ideal_data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">max_width</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>    <span class="n">ra</span>        <span class="n">dec</span>         <span class="n">e1</span>        <span class="n">e2</span>        <span class="n">z</span>       <span class="n">ztrue</span>    <span class="nb">id</span>
-<span class="o">----------</span> <span class="o">----------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">---</span>
-<span class="o">-</span><span class="mf">7.378e-02</span> <span class="o">-</span><span class="mf">7.396e-02</span> <span class="mf">5.203e-05</span> <span class="mf">2.153e-02</span> <span class="mf">8.000e-01</span> <span class="mf">8.000e-01</span>   <span class="mi">0</span>
-<span class="o">-</span><span class="mf">4.571e-02</span> <span class="o">-</span><span class="mf">1.008e-01</span> <span class="mf">1.337e-02</span> <span class="mf">1.527e-02</span> <span class="mf">8.000e-01</span> <span class="mf">8.000e-01</span>   <span class="mi">1</span>
-<span class="o">-</span><span class="mf">6.637e-02</span> <span class="o">-</span><span class="mf">1.896e-01</span> <span class="mf">8.062e-03</span> <span class="mf">6.433e-03</span> <span class="mf">8.000e-01</span> <span class="mf">8.000e-01</span>   <span class="mi">2</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>    <span class="n">ra</span>        <span class="n">dec</span>        <span class="n">e1</span>        <span class="n">e2</span>         <span class="n">z</span>       <span class="n">ztrue</span>    <span class="nb">id</span>
+<span class="o">----------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">----------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">---</span>
+<span class="o">-</span><span class="mf">6.633e-02</span> <span class="mf">1.310e-01</span> <span class="mf">8.843e-03</span> <span class="o">-</span><span class="mf">1.205e-02</span> <span class="mf">8.000e-01</span> <span class="mf">8.000e-01</span>   <span class="mi">0</span>
+<span class="o">-</span><span class="mf">7.608e-02</span> <span class="mf">1.871e-01</span> <span class="mf">7.337e-03</span> <span class="o">-</span><span class="mf">7.148e-03</span> <span class="mf">8.000e-01</span> <span class="mf">8.000e-01</span>   <span class="mi">1</span>
+<span class="o">-</span><span class="mf">1.050e-01</span> <span class="mf">2.125e-01</span> <span class="mf">5.088e-03</span> <span class="o">-</span><span class="mf">6.653e-03</span> <span class="mf">8.000e-01</span> <span class="mf">8.000e-01</span>   <span class="mi">2</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -371,9 +368,9 @@ galaxies at z=0.8, no redshift errors (z = ztrue)</p></li>
 </div>
 <div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>    <span class="n">ra</span>        <span class="n">dec</span>         <span class="n">e1</span>         <span class="n">e2</span>         <span class="n">z</span>       <span class="n">ztrue</span>         <span class="n">pzbins</span> <span class="p">[</span><span class="mi">61</span><span class="p">]</span>             <span class="n">pzpdf</span> <span class="p">[</span><span class="mi">61</span><span class="p">]</span>        <span class="nb">id</span>
 <span class="o">----------</span> <span class="o">----------</span> <span class="o">----------</span> <span class="o">----------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">-----------------------</span> <span class="o">----------------------</span> <span class="o">---</span>
- <span class="mf">1.304e-01</span> <span class="o">-</span><span class="mf">1.762e-01</span>  <span class="mf">1.110e-01</span> <span class="o">-</span><span class="mf">1.074e-01</span> <span class="mf">5.654e-01</span> <span class="mf">8.000e-01</span> <span class="o">-</span><span class="mf">3.346e-01</span> <span class="o">..</span> <span class="mf">1.465e+00</span> <span class="mf">8.550e-22</span> <span class="o">..</span> <span class="mf">8.550e-22</span>   <span class="mi">0</span>
-<span class="o">-</span><span class="mf">1.122e-01</span>  <span class="mf">1.502e-01</span> <span class="o">-</span><span class="mf">1.552e-02</span>  <span class="mf">4.294e-02</span> <span class="mf">7.271e-01</span> <span class="mf">8.000e-01</span> <span class="o">-</span><span class="mf">1.729e-01</span> <span class="o">..</span> <span class="mf">1.627e+00</span> <span class="mf">8.550e-22</span> <span class="o">..</span> <span class="mf">8.550e-22</span>   <span class="mi">1</span>
-<span class="o">-</span><span class="mf">1.215e-01</span>  <span class="mf">1.814e-01</span> <span class="o">-</span><span class="mf">6.218e-02</span> <span class="o">-</span><span class="mf">5.419e-02</span> <span class="mf">7.585e-01</span> <span class="mf">8.000e-01</span> <span class="o">-</span><span class="mf">1.415e-01</span> <span class="o">..</span> <span class="mf">1.658e+00</span> <span class="mf">8.550e-22</span> <span class="o">..</span> <span class="mf">8.550e-22</span>   <span class="mi">2</span>
+ <span class="mf">1.682e-02</span> <span class="o">-</span><span class="mf">9.438e-02</span> <span class="o">-</span><span class="mf">7.095e-03</span> <span class="o">-</span><span class="mf">6.420e-02</span> <span class="mf">9.086e-01</span> <span class="mf">8.000e-01</span>  <span class="mf">8.607e-03</span> <span class="o">..</span> <span class="mf">1.809e+00</span> <span class="mf">8.550e-22</span> <span class="o">..</span> <span class="mf">8.550e-22</span>   <span class="mi">0</span>
+<span class="o">-</span><span class="mf">7.761e-02</span>  <span class="mf">2.330e-01</span>  <span class="mf">4.327e-02</span> <span class="o">-</span><span class="mf">4.130e-02</span> <span class="mf">7.253e-01</span> <span class="mf">8.000e-01</span> <span class="o">-</span><span class="mf">1.747e-01</span> <span class="o">..</span> <span class="mf">1.625e+00</span> <span class="mf">8.550e-22</span> <span class="o">..</span> <span class="mf">8.550e-22</span>   <span class="mi">1</span>
+<span class="o">-</span><span class="mf">6.661e-02</span> <span class="o">-</span><span class="mf">2.045e-01</span>  <span class="mf">2.444e-02</span> <span class="o">-</span><span class="mf">4.726e-02</span> <span class="mf">6.918e-01</span> <span class="mf">8.000e-01</span> <span class="o">-</span><span class="mf">2.082e-01</span> <span class="o">..</span> <span class="mf">1.592e+00</span> <span class="mf">8.550e-22</span> <span class="o">..</span> <span class="mf">8.550e-22</span>   <span class="mi">2</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -390,7 +387,7 @@ errors) might be.</p></li>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x7fc8e725ac10</span><span class="o">&gt;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x7fb80b1af820</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="../_images/demo_generate_mock_cluster_33_1.png" src="../_images/demo_generate_mock_cluster_33_1.png" />
@@ -409,7 +406,7 @@ errors) might be.</p></li>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x7fc8ea410430</span><span class="o">&gt;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x7fb80e860760</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="../_images/demo_generate_mock_cluster_35_1.png" src="../_images/demo_generate_mock_cluster_35_1.png" />
@@ -459,7 +456,7 @@ galaxies in a smaller field of view yields high galaxy density</p></li>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x7fc8ea3b0f70</span><span class="o">&gt;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x7fb80e7ece20</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="../_images/demo_generate_mock_cluster_44_1.png" src="../_images/demo_generate_mock_cluster_44_1.png" />
@@ -494,7 +491,7 @@ the box size.</p></li>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x7fc8ec91f5b0</span><span class="o">&gt;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x7fb811b4ba00</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="../_images/demo_generate_mock_cluster_48_1.png" src="../_images/demo_generate_mock_cluster_48_1.png" />
