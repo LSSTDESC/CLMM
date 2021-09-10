@@ -72,3 +72,82 @@ Contributing documentation can be found [here](CONTRIBUTING.md)
 
 ## Contact <a name="contact"></a>
 If you have comments, questions, or feedback, please [write us an issue](https://github.com/LSSTDESC/CLMM/issues).
+
+
+# License, Credits, Feedback etc
+
+This code has been released by DESC, although it is still under active
+development.  It is accompanied by a journal paper that describes the
+development and validation of `CLMM`, which you can find on the
+arxiv:[2107.10857](https://arxiv.org/abs/2107.10857).  If you make use
+of the ideas or software here, please cite that paper and provide a
+link to this repository: https://github.com/LSSTDESC/CLMM. You are
+welcome to re-use the code, which is open source and available under
+terms consistent with our
+[LICENSE](https://github.com/LSSTDESC/CLMM/blob/main/LICENSE) ([BSD
+3-Clause](https://opensource.org/licenses/BSD-3-Clause)).
+
+External contributors and DESC members wishing to use CLMM for
+non-DESC projects should consult with the CL working group conveners,
+ideally before the work has started, but definitely before any
+publication or posting of the work to the arXiv.
+
+For free use of the `NumCosmo` library, the `NumCosmo` developers
+require that the `NumCosmo` publication be cited: NumCosmo: Numerical
+Cosmology, S. Dias Pinto Vitenti and M. Penna-Lima, Astrophysics
+Source Code Library, record ascl:1408.013.  See citation info
+[here](https://ui.adsabs.harvard.edu/abs/2014ascl.soft08013D/exportcitation).
+The `NumCosmo` repository can be found [here](https://github.com/NumCosmo/NumCosmo).
+
+For free use of the `CCL` library, the `CCL` developers require that
+the `CCL` publication be cited.  See details
+[here](https://github.com/LSSTDESC/CCL)
+
+The `Cluster Toolkit` documentation can be found
+[here](https://cluster-toolkit.readthedocs.io/en/latest/#)
+
+# Contact
+
+If you have comments, questions, or feedback, please [write us an
+issue](https://github.com/LSSTDESC/CLMM/issues).
+
+The current leads of the LSST DESC CLMM Topical Team are Celine Combet
+(combet, celine.combet@lpsc.in2p3.fr) and Alex Malz (aimalz,
+aimalz@astro.ruhr-uni-bochum.de)
+
+
+# Acknowledgements
+
+The DESC acknowledges ongoing support from the Institut
+National de Physique Nucl ́eaire et de Physique des Particules
+in France; the Science & Technology Facilities Council in the
+United Kingdom; and the Department of Energy, the Na-
+tional Science Foundation, and the LSST Corporation in the
+United States. DESC uses resources of the IN2P3 Comput-
+ing Center (CC-IN2P3–Lyon/Villeurbanne - France) funded
+by the Centre National de la Recherche Scientifique; the Na-
+tional Energy Research Scientific Computing Center, a DOE
+Office of Science User Facility supported by the Office of Sci-
+ence of the U.S. Department of Energy under Contract No.
+DE-AC02-05CH11231; STFC DiRAC HPC Facilities, funded
+by UK BIS National E-infrastructure capital grants; and the
+UK particle physics grid, supported by the GridPP Collabo-
+ration. This work was performed in part under DOE Contract
+DE-AC02-76SF00515.
+
+CLMM developers express gratitude to the LSSTC for the 2018 and 2019
+Enabling Science grants, hosted by CMU and RUB respectively, that
+supported the development of CLMM and its developer community.  CA
+acknowledges support from the LSA Collegiate Fellowship at the
+University of Michigan, the Leinweber Foundation, and DoE Award
+DE-FOA-0001781.  AIM acknowledges support from the Max Planck Soci-
+ety and the Alexander von Humboldt Foundation in the framework of the
+Max Planck-Humboldt Research Award en- dowed by the Federal Ministry
+of Education and Research.  During the completion of this work, AIM
+was advised by David W. Hogg and supported by National Science Foun-
+dation grant AST-1517237. CS acknowledges support from the Agencia
+Nacional de Investigaci ́on y Desarrollo (ANID) through FONDECYT grant
+no. 11191125.  AvdL, RH, LB, and HF acknowledge support by the US
+Department of Energy under award DE-SC0018053. SF acknowledges support
+from DOE grant DE-SC0010010.
+
