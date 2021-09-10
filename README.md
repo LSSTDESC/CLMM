@@ -126,8 +126,8 @@ LSST Corporation in the United States.  DESC uses resources of the
 IN2P3 Computing Center (CC-IN2P3--Lyon/Villeurbanne - France) funded
 by the Centre National de la Recherche Scientifique; the National
 Energy Research Scientific Computing Center, a DOE Office of Science
-User Facility supported by the Office of Science of the U.S.\
-Department of Energy under Contract No.\ DE-AC02-05CH11231; STFC DiRAC
+User Facility supported by the Office of Science of the U.S.
+Department of Energy under Contract No. DE-AC02-05CH11231; STFC DiRAC
 HPC Facilities, funded by UK BIS National E-infrastructure capital
 grants; and the UK particle physics grid, supported by the GridPP
 Collaboration.  This work was performed in part under DOE Contract
@@ -144,7 +144,7 @@ Planck-Humboldt Research Award endowed by the Federal Ministry of
 Education and Research. During the completion of this work, AIM was
 advised by David W. Hogg and supported by National Science Foundation
 grant AST-1517237.  CS acknowledges support from the Agencia Nacional
-de Investigaci\'on y Desarrollo (ANID) through FONDECYT grant no.\
+de Investigaci\'on y Desarrollo (ANID) through FONDECYT grant no.
 11191125.  AvdL, RH, LB, and HF acknowledge support by the US
 Department of Energy under award DE-SC0018053.  SF acknowledges
 support from DOE grant DE-SC0010010.  HM is supported by the Jet
