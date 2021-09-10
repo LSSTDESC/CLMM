@@ -45,8 +45,8 @@ def compute_3d_density(
         Profile model parameterization (letter case independent):
 
             * `nfw` (default);
-            * `einasto` - valid in numcosmo and ccl;
-            * `hernquist` - valid in numcosmo and ccl;
+            * `einasto` - valid in numcosmo only;
+            * `hernquist` - valid in numcosmo only;
 
     massdef : str, optional
         Profile mass definition, with the following supported options (letter case independent):
@@ -102,8 +102,8 @@ def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
         Profile model parameterization (letter case independent):
 
             * `nfw` (default);
-            * `einasto` - valid in numcosmo and ccl;
-            * `hernquist` - valid in numcosmo and ccl;
+            * `einasto` - valid in numcosmo only;
+            * `hernquist` - valid in numcosmo only;
 
     massdef : str, optional
         Profile mass definition, with the following supported options (letter case independent):
@@ -162,8 +162,8 @@ def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
         Profile model parameterization (letter case independent):
 
             * `nfw` (default);
-            * `einasto` - valid in numcosmo and ccl;
-            * `hernquist` - valid in numcosmo and ccl;
+            * `einasto` - valid in numcosmo only;
+            * `hernquist` - valid in numcosmo only;
 
     massdef : str, optional
         Profile mass definition, with the following supported options (letter case independent):
@@ -249,8 +249,8 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
         Profile model parameterization (letter case independent):
 
             * `nfw` (default);
-            * `einasto` - valid in numcosmo and ccl;
-            * `hernquist` - valid in numcosmo and ccl;
+            * `einasto` - valid in numcosmo only;
+            * `hernquist` - valid in numcosmo only;
 
     massdef : str, optional
         Profile mass definition, with the following supported options (letter case independent):
@@ -332,8 +332,8 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
         Profile model parameterization (letter case independent):
 
             * `nfw` (default);
-            * `einasto` - valid in numcosmo and ccl;
-            * `hernquist` - valid in numcosmo and ccl;
+            * `einasto` - valid in numcosmo only;
+            * `hernquist` - valid in numcosmo only;
 
     massdef : str, optional
         Profile mass definition, with the following supported options (letter case independent):
@@ -415,8 +415,8 @@ def compute_reduced_tangential_shear(
         Profile model parameterization (letter case independent):
 
             * `nfw` (default);
-            * `einasto` - valid in numcosmo and ccl;
-            * `hernquist` - valid in numcosmo and ccl;
+            * `einasto` - valid in numcosmo only;
+            * `hernquist` - valid in numcosmo only;
 
     massdef : str, optional
         Profile mass definition, with the following supported options (letter case independent):
@@ -504,8 +504,8 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
         Profile model parameterization (letter case independent):
 
             * `nfw` (default);
-            * `einasto` - valid in numcosmo and ccl;
-            * `hernquist` - valid in numcosmo and ccl;
+            * `einasto` - valid in numcosmo only;
+            * `hernquist` - valid in numcosmo only;
 
     massdef : str, optional
         Profile mass definition, with the following supported options (letter case independent):
