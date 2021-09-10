@@ -118,36 +118,36 @@ aimalz@astro.ruhr-uni-bochum.de)
 
 # Acknowledgements
 
-The DESC acknowledges ongoing support from the Institut
-National de Physique Nucl ́eaire et de Physique des Particules
-in France; the Science & Technology Facilities Council in the
-United Kingdom; and the Department of Energy, the Na-
-tional Science Foundation, and the LSST Corporation in the
-United States. DESC uses resources of the IN2P3 Comput-
-ing Center (CC-IN2P3–Lyon/Villeurbanne - France) funded
-by the Centre National de la Recherche Scientifique; the Na-
-tional Energy Research Scientific Computing Center, a DOE
-Office of Science User Facility supported by the Office of Sci-
-ence of the U.S. Department of Energy under Contract No.
-DE-AC02-05CH11231; STFC DiRAC HPC Facilities, funded
-by UK BIS National E-infrastructure capital grants; and the
-UK particle physics grid, supported by the GridPP Collabo-
-ration. This work was performed in part under DOE Contract
+The DESC acknowledges ongoing support from the Institut National de
+Physique Nucl\'eaire et de Physique des Particules in France; the
+Science \& Technology Facilities Council in the United Kingdom; and
+the Department of Energy, the National Science Foundation, and the
+LSST Corporation in the United States.  DESC uses resources of the
+IN2P3 Computing Center (CC-IN2P3--Lyon/Villeurbanne - France) funded
+by the Centre National de la Recherche Scientifique; the National
+Energy Research Scientific Computing Center, a DOE Office of Science
+User Facility supported by the Office of Science of the U.S.\
+Department of Energy under Contract No.\ DE-AC02-05CH11231; STFC DiRAC
+HPC Facilities, funded by UK BIS National E-infrastructure capital
+grants; and the UK particle physics grid, supported by the GridPP
+Collaboration.  This work was performed in part under DOE Contract
 DE-AC02-76SF00515.
 
-CLMM developers express gratitude to the LSSTC for the 2018 and 2019
+The authors express gratitude to the LSSTC for the 2018 and 2019
 Enabling Science grants, hosted by CMU and RUB respectively, that
-supported the development of CLMM and its developer community.  CA
+supported the development of `CLMM` and its developer community.  CA
 acknowledges support from the LSA Collegiate Fellowship at the
 University of Michigan, the Leinweber Foundation, and DoE Award
-DE-FOA-0001781.  AIM acknowledges support from the Max Planck Soci-
-ety and the Alexander von Humboldt Foundation in the framework of the
-Max Planck-Humboldt Research Award en- dowed by the Federal Ministry
-of Education and Research.  During the completion of this work, AIM
-was advised by David W. Hogg and supported by National Science Foun-
-dation grant AST-1517237. CS acknowledges support from the Agencia
-Nacional de Investigaci ́on y Desarrollo (ANID) through FONDECYT grant
-no. 11191125.  AvdL, RH, LB, and HF acknowledge support by the US
-Department of Energy under award DE-SC0018053. SF acknowledges support
-from DOE grant DE-SC0010010.
+DE-FOA-0001781.  AIM acknowledges support from the Max Planck Society
+and the Alexander von Humboldt Foundation in the framework of the Max
+Planck-Humboldt Research Award endowed by the Federal Ministry of
+Education and Research. During the completion of this work, AIM was
+advised by David W. Hogg and supported by National Science Foundation
+grant AST-1517237.  CS acknowledges support from the Agencia Nacional
+de Investigaci\'on y Desarrollo (ANID) through FONDECYT grant no.\
+11191125.  AvdL, RH, LB, and HF acknowledge support by the US
+Department of Energy under award DE-SC0018053.  SF acknowledges
+support from DOE grant DE-SC0010010.  HM is supported by the Jet
+Propulsion Laboratory, California Institute of Technology, under a
+contract with the National Aeronautics and Space Administration.
 
