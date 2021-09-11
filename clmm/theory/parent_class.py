@@ -324,12 +324,12 @@ class CLMModeling:
                 * `single_plane` (default): all sources at one redshift (if `z_source` is a float) \
                 or known individual source galaxy redshifts (if `z_source` is an array and \
                 `r_proj` is a float);
-                * `weighing_the_giants_b`: ...
+                * `weighing_the_giants_b`: use the equation (6) in Weighing the Giants - III to evaluate tangential reduced shear 
 """r"""
 
 
-        beta_s_mean: ...
-        beta_s_square_mean: ...
+        beta_s_mean: <D_LS/D_S*D_inf/D_L,inf>
+        beta_s_square_mean: <(D_LS/D_S*D_inf/D_L,inf)**2>
 
         Returns
         -------
@@ -354,8 +354,8 @@ class CLMModeling:
                 raise ValueError("beta_s_mean or beta_s_square_mean is not given.")
             else:
                 z_source = np.inf # or a very large number
-                gammat = self.eval_tangential_shear(r_proj, z_cl, z_src)
-                kappa = self.eval_convergence(r_proj, z_cl, z_src)
+                gammat = self.eval_tangential_shear(r_proj, z_cl, z_source)
+                kappa = self.eval_convergence(r_proj, z_cl, z_source)
                 gt = beta_s_mean * gammat / (1. - beta_s_square_mean / beta_s_mean * kappa)
         else:
             raise ValueError("Unsupported z_src_model")
