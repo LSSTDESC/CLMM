@@ -1,3 +1,6 @@
+"""@file generic.py
+Model independent theory functions
+"""
 # Functions to model halo profiles
 
 import numpy as np
@@ -24,5 +27,3 @@ def compute_reduced_shear_from_convergence(shear, convergence):
     """
     reduced_shear = np.array(shear)/(1.-np.array(convergence))
     return reduced_shear
-
-

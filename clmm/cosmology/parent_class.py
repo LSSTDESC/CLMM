@@ -1,3 +1,5 @@
+"""@file parent_class.py
+"""
 # CLMM Cosmology object abstract superclass
 import numpy as np
 
@@ -22,8 +24,7 @@ class CLMMCosmology:
     def __getitem__(self, key):
         if isinstance(key, str):
             return self._get_param(key)
-        else:
-            raise TypeError(f'input must be str, not {type(key)}')
+        raise TypeError(f'input must be str, not {type(key)}')
 
     def __setitem__(self, key, val):
         if isinstance(key, str):
@@ -31,7 +32,7 @@ class CLMMCosmology:
         else:
             raise TypeError(f'key input must be str, not {type(key)}')
 
-    def _init_from_cosmo(self, cosmo):
+    def _init_from_cosmo(self, be_cosmo):
         """
         To be filled in child classes
         """
@@ -43,7 +44,7 @@ class CLMMCosmology:
         """
         raise NotImplementedError
 
-    def _set_param(self, key, val):
+    def _set_param(self, key, value):
         """
         To be filled in child classes
         """
@@ -59,7 +60,8 @@ class CLMMCosmology:
         """
         Returns the Cosmology description.
         """
-        return f"{type(self).__name__}(H0={self['H0']}, Omega_dm0={self['Omega_dm0']}, Omega_b0={self['Omega_b0']}, Omega_k0={self['Omega_k0']})"
+        return (f"{type(self).__name__}(H0={self['H0']}, Omega_dm0={self['Omega_dm0']}, "
+            f"Omega_b0={self['Omega_b0']}, Omega_k0={self['Omega_k0']})")
 
     def set_be_cosmo(self, be_cosmo=None, H0=67.66, Omega_b0=0.049, Omega_dm0=0.262, Omega_k0=0.0):
         """Set the cosmology
@@ -74,7 +76,8 @@ class CLMMCosmology:
         if be_cosmo:
             self._init_from_cosmo(be_cosmo)
         else:
-            self._init_from_params(H0=H0, Omega_b0=Omega_b0, Omega_dm0=Omega_dm0, Omega_k0=Omega_k0)
+            self._init_from_params(
+                H0=H0, Omega_b0=Omega_b0, Omega_dm0=Omega_dm0, Omega_k0=Omega_k0)
 
     def get_Omega_m(self, z):
         r"""Gets the value of the dimensionless matter density
@@ -97,7 +100,8 @@ class CLMMCosmology:
         raise NotImplementedError
 
     def get_E2Omega_m(self, z):
-        r"""Gets the value of the dimensionless matter density times hubble parameter (normalized at 0)
+        r"""Gets the value of the dimensionless matter density times hubble parameter
+        (normalized at 0)
 
         .. math::
             \Omega_m(z) = \frac{\rho_m(z)}{\rho_\mathrm{crit}(z)}\frac{H(z)^{2}}{H_{0}^{2}}.
@@ -183,11 +187,11 @@ class CLMMCosmology:
         float
             Angular diameter distance in units :math:`M\!pc`
         """
-        z1 = self._get_z_from_a(a2)
-        z2 = self._get_z_from_a(a1)
+        z1 = self.get_z_from_a(a2)
+        z2 = self.get_z_from_a(a1)
         return self.eval_da_z1z2(z1, z2)
 
-    def _get_a_from_z(self, z):
+    def get_a_from_z(self, z):
         """ Convert redshift to scale factor
         Parameters
         ----------
@@ -200,10 +204,11 @@ class CLMMCosmology:
         """
         z = np.array(z)
         if np.any(z < 0.0):
-            raise ValueError(f"Cannot convert negative redshift to scale factor")
+            raise ValueError(
+                "Cannot convert negative redshift to scale factor")
         return 1.0/(1.0+z)
 
-    def _get_z_from_a(self, a):
+    def get_z_from_a(self, a):
         """ Convert scale factor to redshift
         Parameters
         ----------
@@ -216,7 +221,8 @@ class CLMMCosmology:
         """
         a = np.array(a)
         if np.any(a > 1.0):
-            raise ValueError(f"Cannot convert invalid scale factor a > 1 to redshift")
+            raise ValueError(
+                "Cannot convert invalid scale factor a > 1 to redshift")
         return (1.0/a)-1.0
 
     def rad2mpc(self, dist1, redshift):
