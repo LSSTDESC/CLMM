@@ -88,7 +88,7 @@ terms consistent with our
 3-Clause](https://opensource.org/licenses/BSD-3-Clause)).
 
 External contributors and DESC members wishing to use CLMM for
-non-DESC projects should consult with the CL working group conveners,
+DESC projects should consult with the CL working group conveners,
 ideally before the work has started, but definitely before any
 publication or posting of the work to the arXiv.
 
