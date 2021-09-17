@@ -43,14 +43,17 @@ def compute_3d_density(
         Mass overdensity definition; defaults to 200.
     halo_profile_model : str, optional
         Profile model parameterization (letter case independent):
-            `nfw` (default);
-            `einasto` - valid in numcosmo and ccl;
-            `hernquist` - valid in numcosmo and ccl;
+
+            * `nfw` (default);
+            * `einasto` - valid in numcosmo only;
+            * `hernquist` - valid in numcosmo only;
+
     massdef : str, optional
         Profile mass definition, with the following supported options (letter case independent):
-            `mean` (default);
-            `critical` - not in cluster_toolkit;
-            `virial` - not in cluster_toolkit;
+
+            * `mean` (default);
+            * `critical` - not in cluster_toolkit;
+            * `virial` - not in cluster_toolkit;
 
     Returns
     -------
@@ -97,14 +100,17 @@ def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
         Mass overdensity definition; defaults to 200.
     halo_profile_model : str, optional
         Profile model parameterization (letter case independent):
-            `nfw` (default);
-            `einasto` - valid in numcosmo and ccl;
-            `hernquist` - valid in numcosmo and ccl;
+
+            * `nfw` (default);
+            * `einasto` - valid in numcosmo only;
+            * `hernquist` - valid in numcosmo only;
+
     massdef : str, optional
         Profile mass definition, with the following supported options (letter case independent):
-            `mean` (default);
-            `critical` - not in cluster_toolkit;
-            `virial` - not in cluster_toolkit;
+
+            * `mean` (default);
+            * `critical` - not in cluster_toolkit;
+            * `virial` - not in cluster_toolkit;
 
     Returns
     -------
@@ -154,14 +160,17 @@ def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
         Mass overdensity definition; defaults to 200.
     halo_profile_model : str, optional
         Profile model parameterization (letter case independent):
-            `nfw` (default);
-            `einasto` - valid in numcosmo and ccl;
-            `hernquist` - valid in numcosmo and ccl;
+
+            * `nfw` (default);
+            * `einasto` - valid in numcosmo only;
+            * `hernquist` - valid in numcosmo only;
+
     massdef : str, optional
         Profile mass definition, with the following supported options (letter case independent):
-            `mean` (default);
-            `critical` - not in cluster_toolkit;
-            `virial` - not in cluster_toolkit;
+
+            * `mean` (default);
+            * `critical` - not in cluster_toolkit;
+            * `virial` - not in cluster_toolkit;
 
     Returns
     -------
@@ -238,14 +247,18 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
         Mass overdensity definition.  Defaults to 200.
     halo_profile_model : str, optional
         Profile model parameterization (letter case independent):
-            `nfw` (default);
-            `einasto` - valid in numcosmo and ccl;
-            `hernquist` - valid in numcosmo and ccl;
+
+            * `nfw` (default);
+            * `einasto` - valid in numcosmo only;
+            * `hernquist` - valid in numcosmo only;
+
     massdef : str, optional
         Profile mass definition, with the following supported options (letter case independent):
-            `mean` (default);
-            `critical` - not in cluster_toolkit;
-            `virial` - not in cluster_toolkit;
+
+            * `mean` (default);
+            * `critical` - not in cluster_toolkit;
+            * `virial` - not in cluster_toolkit;
+
     z_src_model : str, optional
         Source redshift model, with the following supported options:
             `single_plane` (default) - all sources at one redshift (if
@@ -317,14 +330,18 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
         Mass overdensity definition.  Defaults to 200.
     halo_profile_model : str, optional
         Profile model parameterization (letter case independent):
-            `nfw` (default);
-            `einasto` - valid in numcosmo and ccl;
-            `hernquist` - valid in numcosmo and ccl;
+
+            * `nfw` (default);
+            * `einasto` - valid in numcosmo only;
+            * `hernquist` - valid in numcosmo only;
+
     massdef : str, optional
         Profile mass definition, with the following supported options (letter case independent):
-            `mean` (default);
-            `critical` - not in cluster_toolkit;
-            `virial` - not in cluster_toolkit;
+
+            * `mean` (default);
+            * `critical` - not in cluster_toolkit;
+            * `virial` - not in cluster_toolkit;
+
     z_src_model : str, optional
         Source redshift model, with the following supported options:
             `single_plane` (default) - all sources at one redshift (if
@@ -396,14 +413,18 @@ def compute_reduced_tangential_shear(
         Mass overdensity definition.  Defaults to 200.
     halo_profile_model : str, optional
         Profile model parameterization (letter case independent):
-            `nfw` (default);
-            `einasto` - valid in numcosmo and ccl;
-            `hernquist` - valid in numcosmo and ccl;
+
+            * `nfw` (default);
+            * `einasto` - valid in numcosmo only;
+            * `hernquist` - valid in numcosmo only;
+
     massdef : str, optional
         Profile mass definition, with the following supported options (letter case independent):
-            `mean` (default);
-            `critical` - not in cluster_toolkit;
-            `virial` - not in cluster_toolkit;
+
+            * `mean` (default);
+            * `critical` - not in cluster_toolkit;
+            * `virial` - not in cluster_toolkit;
+
     z_src_model : str, optional
         Source redshift model, with the following supported options:
             `single_plane` (default) - all sources at one redshift (if
@@ -481,14 +502,18 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
         Mass overdensity definition.  Defaults to 200.
     halo_profile_model : str, optional
         Profile model parameterization (letter case independent):
-            `nfw` (default);
-            `einasto` - valid in numcosmo and ccl;
-            `hernquist` - valid in numcosmo and ccl;
+
+            * `nfw` (default);
+            * `einasto` - valid in numcosmo only;
+            * `hernquist` - valid in numcosmo only;
+
     massdef : str, optional
         Profile mass definition, with the following supported options (letter case independent):
-            `mean` (default);
-            `critical` - not in cluster_toolkit;
-            `virial` - not in cluster_toolkit;
+
+            * `mean` (default);
+            * `critical` - not in cluster_toolkit;
+            * `virial` - not in cluster_toolkit;
+
     z_src_model : str, optional
         Source redshift model, with the following supported options:
             `single_plane` (default) - all sources at one redshift (if
