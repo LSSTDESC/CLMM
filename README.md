@@ -88,17 +88,22 @@ terms consistent with our
 3-Clause](https://opensource.org/licenses/BSD-3-Clause)).
 
 **DESC Projects**: External contributors and DESC members wishing to
-use CLMM for DESC projects should consult with the CL working group
-conveners, ideally before the work has started, but definitely before
-any publication or posting of the work to the arXiv.
+use CLMM for DESC projects should consult with the DESC Clusters analysis
+working group (CL WG) conveners, ideally before the work has started, but
+definitely before any publication or posting of the work to the arXiv.
 
 **Non-DESC Projects by DESC members**: If you are in the DESC
 community, but planning to use CLMM in a non-DESC project, it would be
-good practice to contact the CL co-conveners as well.  A desired
-outcome would be for your non-DESC project concept and progress to be
-presented in the working group so working group members can help
-co-identify tools and/or ongoing development that might mutually
-benefit your non-DESC project and ongoing DESC projects.
+good practice to contact the CL WG co-conveners and/or the CLMM Topical
+Team leads as well (see Contact section).  A desired outcome would be for your
+non-DESC project concept and progress to be presented in the working group 
+so working group members can help co-identify tools and/or ongoing development
+that might mutually benefit your non-DESC project and ongoing DESC projects.
+
+**External Projects by Non-DESC members**: If you are not from the DESC 
+community, you are also welcome to contact CLMM Topical Team leads to introduce 
+your project and share feedback.
+
 
 For free use of the `NumCosmo` library, the `NumCosmo` developers
 require that the `NumCosmo` publication be cited: NumCosmo: Numerical
