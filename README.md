@@ -87,10 +87,18 @@ terms consistent with our
 [LICENSE](https://github.com/LSSTDESC/CLMM/blob/main/LICENSE) ([BSD
 3-Clause](https://opensource.org/licenses/BSD-3-Clause)).
 
-External contributors and DESC members wishing to use CLMM for
-DESC projects should consult with the CL working group conveners,
-ideally before the work has started, but definitely before any
-publication or posting of the work to the arXiv.
+**DESC Projects**: External contributors and DESC members wishing to
+use CLMM for DESC projects should consult with the CL working group
+conveners, ideally before the work has started, but definitely before
+any publication or posting of the work to the arXiv.
+
+**Non-DESC Projects by DESC members**: If you are in the DESC
+community, but planning to use CLMM in a non-DESC project, it would be
+good practice to contact the CL co-conveners as well.  A desired
+outcome would be for your non-DESC project concept and progress to be
+presented in the working group so working group members can help
+co-identify tools and/or ongoing development that might mutually
+benefit your non-DESC project and ongoing DESC projects.
 
 For free use of the `NumCosmo` library, the `NumCosmo` developers
 require that the `NumCosmo` publication be cited: NumCosmo: Numerical
