@@ -1,8 +1,7 @@
 
 # CLMM
-[![Build Status](https://travis-ci.org/LSSTDESC/CLMM.svg?branch=master)](https://travis-ci.org/LSSTDESC/CLMM) 
 [![Build and Check](https://github.com/LSSTDESC/CLMM/workflows/Build%20and%20Check/badge.svg)](https://github.com/LSSTDESC/CLMM/actions?query=workflow%3A%22Build+and+Check%22)
-[![Coverage Status](https://coveralls.io/repos/github/LSSTDESC/CLMM/badge.svg?branch=master)](https://coveralls.io/github/LSSTDESC/CLMM?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/LSSTDESC/CLMM/badge.svg?branch=main)](https://coveralls.io/github/LSSTDESC/CLMM?branch=main)
 
 The LSST-DESC Cluster Lensing Mass Modeling (CLMM) code is a Python library for performing galaxy cluster mass reconstruction from weak lensing observables. CLMM is associated with Key Tasks _DC1 SW+RQ_ and _DC2 SW_ of the LSST-DESC [Science Roadmap](https://lsstdesc.org/sites/default/files/DESC_SRM_V1_4.pdf) pertaining to absolute and relative mass calibration.
 <!---CLMM is descended from [clmassmod](https://github.com/deapplegate/clmassmod) but distinguished by its modular structure and scope, which encompasses both simulated data sets with a known truth and observed data from which we aim to discover the truth.--->
@@ -32,7 +31,7 @@ For the theoretical predictions of the signal, CLMM relies on existing libraries
 
 - [cluster-toolkit](https://cluster-toolkit.readthedocs.io/en/latest/)
 - [CCL](https://ccl.readthedocs.io/en/v2.0.0/)
-- [NumCosmo](https://numcosmo.github.io/) 
+- [NumCosmo](https://numcosmo.github.io/)
 
 (See the [INSTALL documentation](INSTALL.md) for more detailed installation instructions.)
 
