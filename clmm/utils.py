@@ -18,9 +18,10 @@ def compute_radial_averages(xvals, yvals, xbins, error_model='std/sqrt_n'):
     xbins: array_like
         Bin edges to sort into
     error_model : str, optional
-        Error model to use for y uncertainties. (letter case independent)
-            `std/sqrt_n` - Standard Deviation/sqrt(Counts) (Default)
-            `std` - Standard deviation
+        Error model to use for y uncertainties (letter case independent):
+
+            * `std/sqrt_n` - Standard Deviation/sqrt(Counts) (Default)
+            * `std` - Standard deviation
 
     Returns
     -------
@@ -42,21 +43,27 @@ def compute_radial_averages(xvals, yvals, xbins, error_model='std/sqrt_n'):
     # binned_statics throus an error in case of non-finite values, so filtering those out
     filt = np.isfinite(xvals)*np.isfinite(yvals)
 
-    meanx, xbins, binnumber = binned_statistic(xvals[filt], xvals[filt], statistic='mean', bins=xbins)[:3]
-    meany = binned_statistic(xvals[filt], yvals[filt], statistic='mean', bins=xbins)[0]
+    meanx, xbins, binnumber = binned_statistic(
+        xvals[filt], xvals[filt], statistic='mean', bins=xbins)[:3]
+    meany = binned_statistic(
+        xvals[filt], yvals[filt], statistic='mean', bins=xbins)[0]
     # number of objects
     num_objects = np.histogram(xvals[filt], xbins)[0]
-    n_zero = num_objects==0
+    n_zero = num_objects == 0
 
     if error_model == 'std':
-        yerr = binned_statistic(xvals[filt], yvals[filt], statistic='std', bins=xbins)[0]
+        yerr = binned_statistic(
+            xvals[filt], yvals[filt], statistic='std', bins=xbins)[0]
     elif error_model == 'std/sqrt_n':
-        yerr = binned_statistic(xvals[filt], yvals[filt], statistic='std', bins=xbins)[0]
-        sqrt_n = np.sqrt(binned_statistic(xvals[filt], yvals[filt], statistic='count', bins=xbins)[0])
+        yerr = binned_statistic(
+            xvals[filt], yvals[filt], statistic='std', bins=xbins)[0]
+        sqrt_n = np.sqrt(binned_statistic(
+            xvals[filt], yvals[filt], statistic='count', bins=xbins)[0])
         sqrt_n[n_zero] = 1.0
         yerr = yerr/sqrt_n
     else:
-        raise ValueError(f"{error_model} not supported err model for binned stats")
+        raise ValueError(
+            f"{error_model} not supported err model for binned stats")
 
     meanx[n_zero] = 0
     meany[n_zero] = 0
@@ -77,10 +84,12 @@ def make_bins(rmin, rmax, nbins=10, method='evenwidth', source_seps=None):
     nbins : float
         Number of bins you want to create, default to 10.
     method : str, optional
-        Binning method to use (letter case independent)
-            `evenwidth` - Default, evenly spaced bins between rmin and rmax
-            `evenlog10width` - Logspaced bins with even width in log10 between rmin and rmax
-            `equaloccupation` - Bins with equal occupation numbers
+        Binning method to use (letter case independent):
+
+            * `evenwidth` - Default, evenly spaced bins between rmin and rmax
+            * `evenlog10width` - Logspaced bins with even width in log10 between rmin and rmax
+            * `equaloccupation` - Bins with equal occupation numbers
+
     source_seps : array_like
         Radial distance of source separations
 
@@ -95,25 +104,31 @@ def make_bins(rmin, rmax, nbins=10, method='evenwidth', source_seps=None):
     if (rmin > rmax) or (rmin < 0.0) or (rmax < 0.0):
         raise ValueError(f"Invalid bin endpoints in make_bins, {rmin} {rmax}")
     if (nbins <= 0) or not isinstance(nbins, int):
-        raise ValueError(f"Invalid nbins={nbins}. Must be integer greater than 0.")
+        raise ValueError(
+            f"Invalid nbins={nbins}. Must be integer greater than 0.")
 
     if method == 'evenwidth':
         binedges = np.linspace(rmin, rmax, nbins+1, endpoint=True)
     elif method == 'evenlog10width':
-        binedges = np.logspace(np.log10(rmin), np.log10(rmax), nbins+1, endpoint=True)
+        binedges = np.logspace(np.log10(rmin), np.log10(
+            rmax), nbins+1, endpoint=True)
     elif method == 'equaloccupation':
         if source_seps is None:
-            raise ValueError(f"Binning method '{method}' requires source separations array")
+            raise ValueError(
+                f"Binning method '{method}' requires source separations array")
         # by default, keep all galaxies
-        mask = np.full(len(source_seps), True)
+        seps = np.array(source_seps)
+        mask = np.full(seps.size, True)
         if rmin is not None or rmax is not None:
-        # Need to filter source_seps to only keep galaxies in the [rmin, rmax]
-            if rmin is None: rmin = np.min(source_seps)
-            if rmax is None: rmax = np.max(source_seps)
-            mask = (np.array(source_seps)>=rmin)*(np.array(source_seps)<=rmax)
-        binedges = np.percentile(source_seps[mask], tuple(np.linspace(0,100,nbins+1, endpoint=True)))
+            # Need to filter source_seps to only keep galaxies in the [rmin, rmax]
+            rmin = seps.min() if rmin is None else rmin
+            rmax = seps.max() if rmax is None else rmax
+            mask = (seps >= rmin)*(seps <= rmax)
+        binedges = np.percentile(seps[mask], tuple(
+            np.linspace(0, 100, nbins+1, endpoint=True)))
     else:
-        raise ValueError(f"Binning method '{method}' is not currently supported")
+        raise ValueError(
+            f"Binning method '{method}' is not currently supported")
 
     return binedges
 
@@ -149,7 +164,8 @@ def convert_units(dist1, unit1, unit2, redshift=None, cosmo=None):
     # make case independent
     unit1, unit2 = unit1.lower(), unit2.lower()
     # Available units
-    angular_bank = {"radians": u.rad, "degrees": u.deg, "arcmin": u.arcmin, "arcsec": u.arcsec}
+    angular_bank = {"radians": u.rad, "degrees": u.deg,
+                    "arcmin": u.arcmin, "arcsec": u.arcsec}
     physical_bank = {"pc": u.pc, "kpc": u.kpc, "mpc": u.Mpc}
     units_bank = {**angular_bank, **physical_bank}
     # Some error checking
@@ -159,35 +175,39 @@ def convert_units(dist1, unit1, unit2, redshift=None, cosmo=None):
         raise ValueError(f"Output units ({unit2}) not supported")
     # Try automated astropy unit conversion
     try:
-        return (dist1*units_bank[unit1]).to(units_bank[unit2]).value
+        dist2 = (dist1*units_bank[unit1]).to(units_bank[unit2]).value
     # Otherwise do manual conversion
     except u.UnitConversionError:
         # Make sure that we were passed a redshift and cosmology
         if redshift is None or cosmo is None:
-            raise TypeError("Redshift and cosmology must be specified to convert units")
+            raise TypeError(
+                "Redshift and cosmology must be specified to convert units") \
+                from u.UnitConversionError
         # Redshift must be greater than zero for this approx
         if not redshift > 0.0:
-            raise ValueError("Redshift must be greater than 0.")
+            raise ValueError("Redshift must be greater than 0.") from u.UnitConversionError
         # Convert angular to physical
         if (unit1 in angular_bank) and (unit2 in physical_bank):
             dist1_rad = (dist1*units_bank[unit1]).to(u.rad).value
             dist1_mpc = cosmo.rad2mpc(dist1_rad, redshift)
-            return (dist1_mpc*u.Mpc).to(units_bank[unit2]).value
+            dist2 = (dist1_mpc*u.Mpc).to(units_bank[unit2]).value
         # Otherwise physical to angular
         else:
             dist1_mpc = (dist1*units_bank[unit1]).to(u.Mpc).value
             dist1_rad = cosmo.mpc2rad(dist1_mpc, redshift)
-            return (dist1_rad*u.rad).to(units_bank[unit2]).value
+            dist2 = (dist1_rad*u.rad).to(units_bank[unit2]).value
+    return dist2
 
 
-def convert_shapes_to_epsilon(shape_1,shape_2, shape_definition='epsilon',kappa=0):
-    r""" Convert shape components 1 and 2 appropriately to make them estimators of the reduced shear once averaged.
-    The shape 1 and 2 components may correspond to ellipticities according the :math:`\epsilon`- or :math:`\chi`-definition,
-    but also to the 1 and 2 components of the shear. See Bartelmann & Schneider 2001 for details (https://arxiv.org/pdf/astro-ph/9912508.pdf).
+def convert_shapes_to_epsilon(shape_1, shape_2, shape_definition='epsilon', kappa=0):
+    r""" Convert shape components 1 and 2 appropriately to make them estimators of the reduced shear
+    once averaged.  The shape 1 and 2 components may correspond to ellipticities according the
+    :math:`\epsilon`- or :math:`\chi`-definition, but also to the 1 and 2 components of the shear.
+    See Bartelmann & Schneider 2001 for details (https://arxiv.org/pdf/astro-ph/9912508.pdf).
 
     The :math:`\epsilon`-ellipticity is a direct estimator of
-    the reduced shear. The shear :math:`\gamma` may be converted to reduced shear :math:`g` if the convergence :math:`\kappa` is known.
-    The conversions are given below.
+    the reduced shear. The shear :math:`\gamma` may be converted to reduced shear :math:`g` if the
+    convergence :math:`\kappa` is known. The conversions are given below.
 
     .. math::
      \epsilon = \frac{\chi}{1+(1-|\chi|^2)^{1/2}}
@@ -197,11 +217,11 @@ def convert_shapes_to_epsilon(shape_1,shape_2, shape_definition='epsilon',kappa=
 
     - If `shape_definition = 'chi'`, this function returns the corresponding `epsilon` ellipticities
 
-    - If `shape_definition = 'shear'`, it returns the corresponding reduced shear, given the convergence `kappa`
+    - If `shape_definition = 'shear'`, it returns the corresponding reduced shear, given the
+      convergence `kappa`
 
-    - If `shape_definition = 'epsilon'` or `'reduced_shear'`, it returns them as is as no conversion is needed.
-
-
+    - If `shape_definition = 'epsilon'` or `'reduced_shear'`, it returns them as is as no conversion
+      is needed.
 
     Parameters
     ----------
@@ -210,7 +230,8 @@ def convert_shapes_to_epsilon(shape_1,shape_2, shape_definition='epsilon',kappa=
     shape_2 : array_like
         Input shapes or shears along secondary axis (g2 or e2)
     shape_definition : str
-        Definition of the input shapes, can be ellipticities 'epsilon' or 'chi' or shears 'shear' or 'reduced_shear'
+        Definition of the input shapes, can be ellipticities 'epsilon' or 'chi' or shears 'shear' or
+        'reduced_shear'
     kappa : array_like
         Convergence for transforming to a reduced shear. Default is 0
 
@@ -222,19 +243,19 @@ def convert_shapes_to_epsilon(shape_1,shape_2, shape_definition='epsilon',kappa=
         Epsilon ellipticity (or reduced shear) along secondary axis (epsilon2)
     """
 
-    if shape_definition=='epsilon' or shape_definition=='reduced_shear':
-        return shape_1,shape_2
-    elif shape_definition=='chi':
+    if shape_definition in ('epsilon', 'reduced_shear'):
+        epsilon_1, epsilon_2 = shape_1, shape_2
+    elif shape_definition == 'chi':
         chi_to_eps_conversion = 1./(1.+(1-(shape_1**2+shape_2**2))**0.5)
-        return shape_1*chi_to_eps_conversion,shape_2*chi_to_eps_conversion
-    elif shape_definition=='shear':
-        return shape_1/(1.-kappa), shape_2/(1.-kappa)
-
+        epsilon_1, epsilon_2 = shape_1*chi_to_eps_conversion, shape_2*chi_to_eps_conversion
+    elif shape_definition == 'shear':
+        epsilon_1, epsilon_2 = shape_1/(1.-kappa), shape_2/(1.-kappa)
     else:
         raise TypeError("Please choose epsilon, chi, shear, reduced_shear")
+    return epsilon_1, epsilon_2
 
 
-def build_ellipticities(q11,q22,q12):
+def build_ellipticities(q11, q22, q12):
     """ Build ellipticties from second moments. See, e.g., Schneider et al. (2006)
 
     Parameters
@@ -248,15 +269,15 @@ def build_ellipticities(q11,q22,q12):
 
     Returns
     -------
-    x1, x2 : float or array
+    chi1, chi2 : float or array
         Ellipticities using the "chi definition"
-    e1, e2 : float or array
+    epsilon1, epsilon2 : float or array
         Ellipticities using the "epsilon definition"
     """
-
-    x1,x2 = (q11-q22)/(q11+q22),(2*q12)/(q11+q22)
-    e1,e2 = (q11-q22)/(q11+q22+2*np.sqrt(q11*q22-q12*q12)),(2*q12)/(q11+q22+2*np.sqrt(q11*q22-q12*q12))
-    return x1,x2, e1,e2
+    norm_x, norm_e = q11+q22, q11+q22+2*np.sqrt(q11*q22-q12*q12)
+    chi1, chi2 = (q11-q22)/norm_x, 2*q12/norm_x
+    epsilon1, epsilon2 = (q11-q22)/norm_e, 2*q12/norm_e
+    return chi1, chi2, epsilon1, epsilon2
 
 
 def compute_lensed_ellipticity(ellipticity1_true, ellipticity2_true, shear1, shear2, convergence):
@@ -264,12 +285,13 @@ def compute_lensed_ellipticity(ellipticity1_true, ellipticity2_true, shear1, she
     Following Schneider et al. (2006)
 
     .. math::
-        \epsilon^{\rm lensed}=\epsilon^{\rm lensed}_1+i\epsilon^{\rm lensed}_2=\frac{\epsilon^{\rm true}+g}{1+g^\ast\epsilon^{\rm true}},
+        \epsilon^{\rm lensed}=\epsilon^{\rm lensed}_1+i\epsilon^{\rm lensed}_2=
+        \frac{\epsilon^{\rm true}+g}{1+g^\ast\epsilon^{\rm true}},
 
-    where, the complex reduced shear :math:`g` is obtained from the shear :math:`\gamma=\gamma_1+i\gamma_2`
-    and convergence :math:`\kappa` as :math:`g = \gamma/(1-\kappa)`, and the complex intrinsic ellipticity
-    is :math:`\epsilon^{\rm true}=\epsilon^{\rm true}_1+i\epsilon^{\rm true}_2`
-
+    where, the complex reduced shear :math:`g` is obtained from the shear
+    :math:`\gamma=\gamma_1+i\gamma_2` and convergence :math:`\kappa` as :math:`g =
+    \gamma/(1-\kappa)`, and the complex intrinsic ellipticity is :math:`\epsilon^{\rm
+    true}=\epsilon^{\rm true}_1+i\epsilon^{\rm true}_2`
 
     Parameters
     ----------
@@ -288,12 +310,16 @@ def compute_lensed_ellipticity(ellipticity1_true, ellipticity2_true, shear1, she
     e1, e2 : float or array
         Lensed ellipicity along both reference axes.
     """
-
-    shear = shear1+shear2*1j # shear (as a complex number)
-    ellipticity_true = ellipticity1_true+ellipticity2_true*1j # intrinsic ellipticity (as a complex number)
-    reduced_shear = shear/(1.0-convergence) # reduced shear
-    e = (ellipticity_true+reduced_shear)/(1.0+reduced_shear.conjugate()*ellipticity_true) # lensed ellipticity
-    return np.real(e), np.imag(e)
+    # shear (as a complex number)
+    shear = shear1+shear2*1j
+    # intrinsic ellipticity (as a complex number)
+    ellipticity_true = ellipticity1_true+ellipticity2_true*1j
+    # reduced shear
+    reduced_shear = shear/(1.0-convergence)
+    # lensed ellipticity
+    lensed_ellipticity = (ellipticity_true+reduced_shear) / \
+        (1.0+reduced_shear.conjugate()*ellipticity_true)
+    return np.real(lensed_ellipticity), np.imag(lensed_ellipticity)
 
 
 def arguments_consistency(arguments, names=None, prefix=''):
@@ -313,20 +339,24 @@ def arguments_consistency(arguments, names=None, prefix=''):
     list, arrays, tuple
         Group of arguments, converted to numpy arrays if they have length
     """
-    sizes = [len(arg) if hasattr(arg, '__len__') else None for arg in arguments]
+    sizes = [len(arg) if hasattr(arg, '__len__')
+             else None for arg in arguments]
     # check there is a name for each argument
     if names:
-        if len(names)!=len(arguments):
-            raise TypeError(f'names (len={len(names)}) must have same length as arguments (len={len(arguments)})')
+        if len(names) != len(arguments):
+            raise TypeError(
+                f'names (len={len(names)}) must have same length '
+                f'as arguments (len={len(arguments)})')
         msg = ', '.join([f'{n}({s})' for n, s in zip(names, sizes)])
     else:
         msg = ', '.join([f'{s}' for s in sizes])
     # check consistency
     if any(sizes):
-        if not all(sizes) or any([s!=sizes[0] for s in sizes[1:]]): # Check that all of the inputs have length and they match
+        # Check that all of the inputs have length and they match
+        if not all(sizes) or any([s != sizes[0] for s in sizes[1:]]):
             # make error message
             raise TypeError(f'{prefix} inconsistent sizes: {msg}')
-        return tuple(np.array(arg) for arg in (arguments))
+        return tuple(np.array(arg) for arg in arguments)
     return arguments
 
 
@@ -339,6 +369,7 @@ def _patch_rho_crit_to_cd2018(rho_crit_external):
     """
 
     rhocrit_mks = 3.0*100.0*100.0/(8.0*np.pi*const.GNEWT.value)
-    rhocrit_cd2018 = rhocrit_mks*1000.0*1000.0*const.PC_TO_METER.value*1.0e6/const.SOLAR_MASS.value
+    rhocrit_cd2018 = (rhocrit_mks*1000.0*1000.0*
+        const.PC_TO_METER.value*1.0e6/const.SOLAR_MASS.value)
 
     return rhocrit_cd2018/rho_crit_external

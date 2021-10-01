@@ -1,3 +1,6 @@
+"""@file be_setup.py
+Setup config for the different backends
+"""
 #------------------------------------------------------------------------------
 # Modeling backend setups
 __all__ = []
@@ -11,7 +14,6 @@ def __numcosmo_preload():
     import gi
     gi.require_version("NumCosmoMath", "1.0")
     gi.require_version("NumCosmo", "1.0")
-
 
 #  Backend dictionary __backends:
 #    Dictonary controling the backends, it must test if the backend is available
@@ -29,7 +31,7 @@ __backends = {'ccl': {'name': 'ccl', 'available': False,
               'nc':  {'name': 'NumCosmo', 'available': False,
                       'module': 'numcosmo',
                       'prereqs': ['gi.repository.NumCosmoMath', 'gi.repository.NumCosmo'],
-                      'preload': __numcosmo_preload},        
+                      'preload': __numcosmo_preload},
               'ct':  {'name': 'cluster_toolkit+astropy', 'available': False,
                       'module': 'cluster_toolkit',
                       'prereqs': ['cluster_toolkit', 'astropy']},
