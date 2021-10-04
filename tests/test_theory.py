@@ -403,6 +403,16 @@ def test_shear_convergence_unittests(modeling_data):
     # Validate reduced tangential shear
     assert_allclose(theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg['GAMMA_PARAMS']),
                     gammat/(1.0-kappa), 1.0e-10)
+
+    beta_s_mean, beta_s_square_mean = 0.9, 0.6
+    cfg_inf = load_validation_config()
+    cfg_inf['GAMMA_PARAMS']['z_source'] = 20.
+    gammat_inf = theo.compute_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'])
+    kappa_inf = theo.compute_convergence(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'])
+    cfg_inf['GAMMA_PARAMS']['z_src_model'] = 'weighing_the_giants_b'
+    assert_allclose(theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'], beta_s_mean=beta_s_mean, beta_s_square_mean=beta_s_square_mean),
+                    beta_s_mean * gammat_inf/(1.0 - beta_s_square_mean / beta_s_mean * kappa_inf), 1.0e-10)
+
     assert_allclose(gammat*sigmac_corr/(1.-(kappa*sigmac_corr)),
                     cfg['numcosmo_profiles']['gt'], 1.e2*reltol)
 
