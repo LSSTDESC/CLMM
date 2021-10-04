@@ -353,7 +353,7 @@ class CLMModeling:
             if beta_s_mean is None or beta_s_square_mean is None:
                 raise ValueError("beta_s_mean or beta_s_square_mean is not given.")
             else:
-                z_source = np.inf # or a very large number
+                z_source = 20. #np.inf # INF or a very large number
                 gammat = self.eval_tangential_shear(r_proj, z_cl, z_source)
                 kappa = self.eval_convergence(r_proj, z_cl, z_source)
                 gt = beta_s_mean * gammat / (1. - beta_s_square_mean / beta_s_mean * kappa)

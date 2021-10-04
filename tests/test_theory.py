@@ -487,6 +487,15 @@ def test_shear_convergence_unittests(modeling_data):
     # Validate reduced tangential shear
     assert_allclose(mod.eval_reduced_tangential_shear(*profile_pars),
                     gammat/(1.0-kappa), 1.0e-10)
+
+
+    beta_s_mean = 0.6
+    beta_s_square_mean = 0.4 
+    source_redshift_inf = 20. 
+    gammat_inf = mod.eval_tangential_shear(profile_pars[0], profile_pars[1], source_redshift_inf) #np.inf)
+    kappa_inf = mod.eval_convergence(profile_pars[0], profile_pars[1], source_redshift_inf) #np.inf)
+    assert_allclose(mod.eval_reduced_tangential_shear(*profile_pars, 'weighing_the_giants_b', beta_s_mean, beta_s_square_mean), beta_s_mean * gammat_inf/(1.0 - beta_s_square_mean / beta_s_mean * kappa_inf), 1.0e-10)
+
     assert_allclose(gammat*sigmac_corr/(1.-(kappa*sigmac_corr)),
                     cfg['numcosmo_profiles']['gt'], 1.e2*reltol)
 
