@@ -143,32 +143,5 @@ class CCLCLMModeling(CLMModeling):
         dens = self.hdpm.projected(*args)
         return (mean_dens-dens)*self.cor_factor/a_cl**2
 
-    def eval_tangential_shear(self, r_proj, z_cl, z_src):
-        """"eval tangential shear"""
-        sigma_excess = self.eval_excess_surface_density(r_proj, z_cl)
-        sigma_crit = self.eval_critical_surface_density(z_cl, z_src)
-
-        return sigma_excess/sigma_crit
-
-    def eval_convergence(self, r_proj, z_cl, z_src):
-        """"eval convergence"""
-        sigma = self.eval_surface_density(r_proj, z_cl)
-        sigma_crit = self.eval_critical_surface_density(z_cl, z_src)
-
-        return sigma/sigma_crit
-
-    def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src):
-        """"eval reduced tangential shear"""
-        kappa = self.eval_convergence(r_proj, z_cl, z_src)
-        gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
-
-        return np.divide(gamma_t, (1-kappa))
-
-    def eval_magnification(self, r_proj, z_cl, z_src):
-        """"eval magnification"""
-        kappa = self.eval_convergence(r_proj, z_cl, z_src)
-        gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
-
-        return 1.0/((1.0-kappa)**2-np.abs(gamma_t)**2)
 
 Modeling = CCLCLMModeling
