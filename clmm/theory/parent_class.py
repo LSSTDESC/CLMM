@@ -300,12 +300,8 @@ class CLMModeling:
 
         Returns
         -------
-        kappa : array_like, float
+        array_like, float
             Mass convergence, kappa.
-
-        Notes
-        -----
-        Need to figure out if we want to raise exceptions rather than errors here?
         """
         sigma = self.eval_surface_density(r_proj, z_cl)
         sigma_c = self.eval_critical_surface_density(z_cl, z_src)
@@ -325,12 +321,8 @@ class CLMModeling:
 
         Returns
         -------
-        gt : array_like, float
+        array_like, float
             Reduced tangential shear
-
-        Notes
-        -----
-        Need to figure out if we want to raise exceptions rather than errors here?
         """
         kappa = self.eval_convergence(r_proj, z_cl, z_src)
         gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
