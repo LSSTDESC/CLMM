@@ -16,16 +16,29 @@ def test_compute_nfw_boost() :
     # Test data
     rvals = np.arange(10)
 
-    # Test model
-    assert_allclose()
+    boost_factors = utils.compute_nfw_boost(rvals)
+
+    test_boost_factors = np.array([0.97853982, 0.97853981, 0.97853979,
+                              0.97853975, 0.9785397 , 0.97853964,
+                              0.97853956, 0.97853946, 0.97853936,
+                              0.97853923])
+    
+   #  Test model
+    assert_allclose(boost_factors, test_boost_factors)
 
 def test_compute_powerlaw_boost() :
     """Test the powerlaw model for boost factor"""
     # Test data
-    rvals = np.arange(10)
+    rvals = np.arange(1,11)
 
+    boost_factors = utils.compute_powerlaw_boost(rvals)
+
+    test_boost_factors = np.array([101., 51., 34.33333333,
+                                   26., 21., 17.66666667, 15.28571429,
+                                   13.5, 12.11111111, 11. ])
+    
     # Test model
-    assert_allclose()
+    assert_allclose(boost_factors, test_boost_factors)
 
 
 def test_correct_sigma_with_boost_values() :

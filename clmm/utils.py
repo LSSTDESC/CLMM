@@ -7,8 +7,7 @@ from .constants import Constants as const
 
 
 def compute_nfw_boost(rvals, rs=1000, b0=0.1) :
-    """ Given a list of xvals, yvals and bins, sort into bins. If xvals or yvals
-    contain non-finite values, these are filtered.
+    """ Given a list of rvals, and optional rs and b0, return the corresponding boost factor at each rval
 
     Parameters
     ----------
@@ -58,6 +57,7 @@ def compute_powerlaw_boost(rvals, rs=1000, b0=0.1, alpha=-1.0) :
     """
 
     x = rvals/rs
+
     return 1. + b0 * (x)**alpha
 
     
