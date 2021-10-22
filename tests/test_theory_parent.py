@@ -74,7 +74,7 @@ def test_instantiate(modeling_data):
 
     beta_s_mean = 0.9
     beta_s_square_mean = 0.6
-    source_redshift_inf = 20. 
+    source_redshift_inf = 1000. 
     shear_inf = mod.eval_tangential_shear(r_proj, z_cl, source_redshift_inf)
     convergence_inf = mod.eval_convergence(r_proj, z_cl, source_redshift_inf)
     reduced_shear = mod.eval_reduced_tangential_shear(r_proj, z_cl, z_src, 'weighing_the_giants_b', beta_s_mean, beta_s_square_mean)
