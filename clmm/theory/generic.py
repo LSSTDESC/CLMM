@@ -5,7 +5,7 @@ Model independent theory functions
 
 import numpy as np
 
-__all__ = ['compute_reduced_shear_from_convergence', 'compute_magnification_bias']
+__all__ = ['compute_reduced_shear_from_convergence', 'compute_magnification_bias_from_magnification']
 
 # functions that are general to all backends
 
