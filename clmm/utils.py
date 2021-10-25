@@ -373,3 +373,67 @@ def _patch_rho_crit_to_cd2018(rho_crit_external):
         const.PC_TO_METER.value*1.0e6/const.SOLAR_MASS.value)
 
     return rhocrit_cd2018/rho_crit_external
+
+_valid_types = {
+    'bool': bool, 'tuple': tuple, 'str': str, 'list':list,
+    'float': (float, int, np.floating, np.integer),
+    'int': (int, np.integer)
+    }
+
+def validate_arument(loc, argname, valid_type, none_ok=True, argmin=None, argmax=None):
+    r"""Validate argument type and raise errors.
+
+    Paramters
+    ---------
+    loc: dict
+        Dictionaty with all input arguments. Should be locals().
+    argname: str
+        Name of argument to be tested.
+    valid_type: str
+        Valid types for argument, options are:
+
+            * `int` - interger
+            * `float` - float
+            * `str` - str
+            * `bool` - boolean
+            * `tuple` - tuple
+            * `list` - list
+            * `int_array` - interger, interger array
+            * `float_array` - float, float array
+
+    none_ok: True
+        Accepts None as a valid type.
+    argmin (optional) : int, float, None
+        Minimum value allowed.
+    argmax (optional) : int, float, None
+        Maximum value allowed.
+    """
+    var = loc[argname]
+    # Check for None
+    if none_ok and (var is None):
+        return
+    # Check for type
+    types = _valid_types.get(valid_type, None)
+    if types is not None:
+        if not isinstance(var, types):
+            err = f'{argname} must be {valid_type}, received {type(var).__name__}'
+            raise TypeError(err)
+    # Check for type in array
+    if 'array' in valid_type and np.iterable(var):
+        types = _valid_types[valid_type.replace("_array", "")]
+        if not isinstance(var[0], types):
+            err = f'{argname} must be {valid_type}, received {type(var[0]).__name__}'
+            raise TypeError(err)
+    # Check min/max
+    if any(t in valid_type for t in ('int', 'float')):
+        var_array = np.array(var)
+        if argmin is not None:
+            if var_array.min() <= argmin:
+                err = f'{name} must be greater than {argmin},' \
+                      f' received {"vec_min:"*(var_array.size-1)}{var}'
+                raise ValueError(err)
+        if argmax is not None:
+            if var_array.max() >= argmax:
+                err = f'{name} must be lesser than {argmax},' \
+                      f' received {"vec_max:"*(var_array.size-1)}{var}'
+                raise ValueError(err)
