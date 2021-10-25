@@ -2,11 +2,12 @@
 CLMModeling abstract class
 """
 import numpy as np
+from .generic import *
+
 
 
 class CLMModeling:
     r"""Object with functions for halo mass modeling
-
     Attributes
     ----------
     backend: str
@@ -44,14 +45,12 @@ class CLMModeling:
     def validate_definitions(self, massdef, halo_profile_model):
         r""" Makes sure values of `massdef` and `halo_profile_model` are in the supported options
         and fixes casing (code works with lowercase).
-
         Parameters
         ----------
         massdef: str, optional
             Profile mass definition.
         halo_profile_model: str, optional
             Profile model parameterization.
-
         Returns
         -------
         massdef: str
@@ -71,7 +70,6 @@ class CLMModeling:
 
     def set_cosmo(self, cosmo):
         r""" Sets the cosmology to the internal cosmology object
-
         Parameters
         ----------
         cosmo: clmm.Comology
@@ -81,7 +79,6 @@ class CLMModeling:
 
     def _set_cosmo(self, cosmo, cosmo_out_class):
         r""" Sets the cosmology to the internal cosmology object
-
         Parameters
         ----------
         cosmo: clmm.Comology object, None
@@ -99,7 +96,6 @@ class CLMModeling:
 
     def set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
         r""" Sets the definitios for the halo profile
-
         Parameters
         ----------
         halo_profile_model: str
@@ -113,7 +109,6 @@ class CLMModeling:
 
     def set_mass(self, mdelta):
         r""" Sets the value of the :math:`M_\Delta`
-
         Parameters
         ----------
         mdelta : float
@@ -129,7 +124,6 @@ class CLMModeling:
 
     def set_concentration(self, cdelta):
         r""" Sets the concentration
-
         Parameters
         ----------
         cdelta: float
@@ -145,7 +139,6 @@ class CLMModeling:
 
     def _validate_input(self, in_val, vmin, err_msg='value %s <= vmin'):
         r'''Raises error if input value<=vmin
-
         Parameters
         ----------
         radius: array, float
@@ -157,7 +150,6 @@ class CLMModeling:
 
     def _check_input_radius(self, radius):
         r'''Raises error if input radius is not positive
-
         Parameters
         ----------
         radius: array, float
@@ -168,14 +160,12 @@ class CLMModeling:
 
     def eval_3d_density(self, r3d, z_cl):
         r"""Retrieve the 3d density :math:`\rho(r)`.
-
         Parameters
         ----------
         r3d : array_like, float
             Radial position from the cluster center in :math:`M\!pc`.
         z_cl: float
             Redshift of the cluster
-
         Returns
         -------
         array_like, float
@@ -185,14 +175,12 @@ class CLMModeling:
 
     def eval_critical_surface_density(self, z_len, z_src):
         r"""Computes the critical surface density
-
         Parameters
         ----------
         z_len : float
             Lens redshift
         z_src : array_like, float
             Background source galaxy redshift(s)
-
         Returns
         -------
         float
@@ -207,14 +195,12 @@ class CLMModeling:
 
     def eval_surface_density(self, r_proj, z_cl):
         r""" Computes the surface mass density
-
         Parameters
         ----------
         r_proj : array_like
             Projected radial position from the cluster center in :math:`M\!pc`.
         z_cl: float
             Redshift of the cluster
-
         Returns
         -------
         array_like, float
@@ -224,14 +210,12 @@ class CLMModeling:
 
     def eval_mean_surface_density(self, r_proj, z_cl):
         r""" Computes the mean value of surface density inside radius r_proj
-
         Parameters
         ----------
         r_proj : array_like
             Projected radial position from the cluster center in :math:`M\!pc`.
         z_cl: float
             Redshift of the cluster
-
         Returns
         -------
         array_like, float
@@ -241,14 +225,12 @@ class CLMModeling:
 
     def eval_excess_surface_density(self, r_proj, z_cl):
         r""" Computes the excess surface density
-
         Parameters
         ----------
         r_proj : array_like
             Projected radial position from the cluster center in :math:`M\!pc`.
         z_cl: float
             Redshift of the cluster
-
         Returns
         -------
         array_like, float
@@ -258,7 +240,6 @@ class CLMModeling:
 
     def eval_tangential_shear(self, r_proj, z_cl, z_src):
         r"""Computes the tangential shear
-
         Parameters
         ----------
         r_proj : array_like
@@ -267,25 +248,22 @@ class CLMModeling:
             Galaxy cluster redshift
         z_src : array_like, float
             Background source galaxy redshift(s)
-
         Returns
         -------
         array_like, float
             tangential shear
         """
-        raise NotImplementedError
+        delta_sigma = self.eval_excess_surface_density(r_proj, z_cl)
+        sigma_c = self.eval_critical_surface_density(z_cl, z_src)
+        return delta_sigma/sigma_c
 
     def eval_convergence(self, r_proj, z_cl, z_src):
         r"""Computes the mass convergence
-
         .. math::
             \kappa = \frac{\Sigma}{\Sigma_{crit}}
-
         or
-
         .. math::
             \kappa = \kappa_\infty \times \beta_s
-
         Parameters
         ----------
         r_proj : array_like
@@ -294,21 +272,20 @@ class CLMModeling:
             Galaxy cluster redshift
         z_src : array_like, float
             Background source galaxy redshift(s)
-
         Returns
         -------
         kappa : array_like, float
             Mass convergence, kappa.
-
         Notes
         -----
         Need to figure out if we want to raise exceptions rather than errors here?
         """
-        raise NotImplementedError
+        sigma = self.eval_surface_density(r_proj, z_cl)
+        sigma_c = self.eval_critical_surface_density(z_cl, z_src)
+        return sigma/sigma_c
 
     def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src):
         r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
-
         Parameters
         ----------
         r_proj : array_like
@@ -317,24 +294,22 @@ class CLMModeling:
             Galaxy cluster redshift
         z_src : array_like, float
             Background source galaxy redshift(s)
-
         Returns
         -------
         gt : array_like, float
             Reduced tangential shear
-
         Notes
         -----
         Need to figure out if we want to raise exceptions rather than errors here?
         """
-        raise NotImplementedError
+        kappa = self.eval_convergence(r_proj, z_cl, z_src)
+        gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
+        return compute_reduced_shear_from_convergence(gamma_t, kappa)
 
     def eval_magnification(self, r_proj, z_cl, z_src):
         r"""Computes the magnification
-
         .. math::
             \mu = \frac{1}{(1-\kappa)^2-|\gamma_t|^2}
-
         Parameters
         ----------
         r_proj : array_like
@@ -343,19 +318,21 @@ class CLMModeling:
             Galaxy cluster redshift
         z_src : array_like, float
             Background source galaxy redshift(s)
-
         Returns
         -------
         mu : array_like, float
             magnification, mu.
-
         Notes
         -----
-        Need to figure out if we want to raise exceptions rather than errors here?
+        The magnification is computed taking into account just the tangential
+        shear. This is valid for spherically averaged profiles, e.g., NFW and
+        Einasto (by construction the cross shear is zero).
         """
-        raise NotImplementedError
-
-def eval_magnification_bias(self, r_proj, z_cl, z_src, alpha):
+        kappa = self.eval_convergence(r_proj, z_cl, z_src)
+        gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
+        return 1./((1-kappa)**2-abs(gamma_t)**2)
+    
+    def eval_magnification_bias(self, r_proj, z_cl, z_src, alpha):
         r"""Computes the magnification bias
 
         .. math::
@@ -381,4 +358,5 @@ def eval_magnification_bias(self, r_proj, z_cl, z_src, alpha):
         -----
         Need to figure out if we want to raise exceptions rather than errors here?
         """
-        raise NotImplementedError
+        magnification = self.eval_magnification(r_proj, z_cl, z_src)
+        return compute_magnification_bias_from_magnification(magnification, alpha)
