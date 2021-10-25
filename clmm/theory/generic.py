@@ -56,5 +56,5 @@ def compute_magnification_bias_from_magnification(magnification, alpha):
     compute_magnification_bias : array_like
         magnification bias
     """
-    magnification_bias = magnification**(alpha_slope - 1)
-    return magnification_bias
+    magnification_bias_from_magnification = magnification**(alpha_slope - 1)
+    return magnification_bias_from_magnification
