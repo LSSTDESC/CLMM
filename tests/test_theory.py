@@ -185,12 +185,11 @@ def test_compute_magnification_bias(modeling_data):
     # Make some base objects
     magnification = [1.0, 1.0, 1.001, 0.76]
     alpha = [1., -2.7, 5.]
-    truth = [[1., 1., 1., 1.],[1., 1., 0.99630868, 2.76051244],[1., 1., 1.004006  , 0.33362176]
+    truth = [[1., 1., 1., 1.],[1., 1., 0.99630868, 2.76051244],[1., 1., 1.004006  , 0.33362176]]
 
     # Check output including: float, list, ndarray
     assert_allclose(
-        theo.compute_reduced_shear_from_convergence(shear[0], convergence[0]), truth[0],
-        **TOLERANCE)
+        theo.compute_reduced_shear_from_convergence(shear[0], convergence[0]), truth[0],**TOLERANCE)
     assert_allclose(
         theo.compute_reduced_shear_from_convergence(shear, convergence), truth, **TOLERANCE)
     assert_allclose(
