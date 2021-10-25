@@ -189,7 +189,7 @@ def test_compute_magnification_bias(modeling_data):
 
     # Check output including: float, list, ndarray
     assert_allclose(
-        theo.compute_magnification_bias_from_magnification(magnification[0], alpha[0]), truth[0],**TOLERANCE)
+        theo.compute_magnification_bias_from_magnification(magnification[0], alpha[0]), truth[0][0],**TOLERANCE)
     assert_allclose(
         theo.compute_magnification_bias_from_magnification(magnification, alpha), truth, **TOLERANCE)
     assert_allclose(
