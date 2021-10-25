@@ -99,7 +99,7 @@ class CTModeling(CLMModeling):
         """" set mass"""
         self.mdelta = mdelta
 
-    def eval_3d_density(self, r3d, z_cl):
+    def eval_3d_density(self, r3d, z_cl, verbose=False):
         """"eval 3d density"""
         h = self.cosmo['h']
         Omega_m = self.cosmo.get_E2Omega_m(z_cl)*self.cor_factor
@@ -107,7 +107,7 @@ class CTModeling(CLMModeling):
             _assert_correct_type_ct(r3d)*h, self.mdelta*h,
             self.cdelta, Omega_m, delta=self.delta_mdef)*h**2
 
-    def eval_surface_density(self, r_proj, z_cl):
+    def eval_surface_density(self, r_proj, z_cl, verbose=False):
         """"eval surface density"""
         h = self.cosmo['h']
         Omega_m = self.cosmo.get_E2Omega_m(z_cl)*self.cor_factor
