@@ -34,7 +34,7 @@ class CLMModeling:
     """
     # pylint: disable=too-many-instance-attributes
 
-    def __init__(self):
+    def __init__(self, validate_input=True):
         self.backend = None
 
         self.massdef = ''
@@ -47,7 +47,7 @@ class CLMModeling:
         self.mdef_dict = {}
         self.hdpm_dict = {}
 
-        self.validate_input = True
+        self.validate_input = validate_input
         self.cosmo_class = None
 
     def set_cosmo(self, cosmo):

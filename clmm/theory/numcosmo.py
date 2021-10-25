@@ -45,8 +45,9 @@ class NumCosmoCLMModeling(CLMModeling):
     """
     # pylint: disable=too-many-instance-attributes
 
-    def __init__(self, massdef='mean', delta_mdef=200, halo_profile_model='nfw'):
-        CLMModeling.__init__(self)
+    def __init__(self, massdef='mean', delta_mdef=200, halo_profile_model='nfw',
+                 validate_input=True):
+        CLMModeling.__init__(self, validate_input)
         # Update class attributes
         Ncm.cfg_init()
         self.backend = 'nc'
