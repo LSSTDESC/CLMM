@@ -180,6 +180,22 @@ def test_compute_reduced_shear(modeling_data):
         theo.compute_reduced_shear_from_convergence(np.array(shear), np.array(convergence)),
         np.array(truth), **TOLERANCE)
 
+def test_compute_magnification_bias(modeling_data):
+    """ Unit tests for compute_reduced_shear """
+    # Make some base objects
+    magnification = [1.0, 1.0, 1.001, 0.76]
+    alpha = [1., -2.7, 5.]
+    truth = [[1., 1., 1., 1.],[1., 1., 0.99630868, 2.76051244],[1., 1., 1.004006  , 0.33362176]
+
+    # Check output including: float, list, ndarray
+    assert_allclose(
+        theo.compute_reduced_shear_from_convergence(shear[0], convergence[0]), truth[0],
+        **TOLERANCE)
+    assert_allclose(
+        theo.compute_reduced_shear_from_convergence(shear, convergence), truth, **TOLERANCE)
+    assert_allclose(
+        theo.compute_reduced_shear_from_convergence(np.array(shear), np.array(convergence)),
+        np.array(truth), **TOLERANCE)
 
 def helper_profiles(func):
     """ A helper function to repeat a set of unit tests on several functions
@@ -412,6 +428,13 @@ def test_shear_convergence_unittests(modeling_data):
     assert_allclose(1./((1-kappa)**2-abs(gammat)**2),
                     cfg['numcosmo_profiles']['mu'], 1.e2*reltol)
 
+    # Validate magnification bias
+    alpha = 3.78
+    assert_allclose(theo.compute_magnification_bias(cosmo=cosmo, **cfg['GAMMA_PARAMS'], alpha=alpha),
+                    (1./((1-kappa)**2-abs(gammat)**2))**(alpha - 1), 1.0e-10)
+    assert_allclose((1./((1-kappa)**2-abs(gammat)**2))**(alpha - 1),
+                    cfg['numcosmo_profiles']['mu']**(alpha - 1), 1.e2*reltol)
+    
     # Check that shear, reduced shear and convergence return zero and magnification and magnification bias returns one if
     # source is in front of the cluster
     # First, check for a array of radius and single source z
@@ -504,12 +527,20 @@ def test_shear_convergence_unittests(modeling_data):
     assert_allclose(1./((1-kappa)**2-abs(gammat)**2),
                     cfg['numcosmo_profiles']['mu'], 1.e2*reltol)
 
+    # Validate magnification bias
+    alpha = -1.78
+    assert_allclose(mod.eval_magnification_bias(*profile_pars, alpha=alpha),
+                    1./((1-kappa)**2-abs(gammat)**2)**(alpha-1), 1.0e-10)
+    assert_allclose(1./((1-kappa)**2-abs(gammat)**2)**(alpha-1),
+                    cfg['numcosmo_profiles']['mu']**(alpha-1), 1.e2*reltol)
+    
     # Check that shear, reduced shear and convergence return zero and magnification returns one if
     # source is in front of the cluster
     # First, check for a array of radius and single source z
     radius = np.logspace(-2, 2, 10)
     z_cluster = 0.3
     z_source = 0.2
+    
 
     assert_allclose(mod.eval_convergence(radius, z_cluster, z_source),
                     np.zeros(len(radius)), 1.0e-10)
@@ -519,7 +550,9 @@ def test_shear_convergence_unittests(modeling_data):
         radius, z_cluster, z_source), np.zeros(len(radius)), 1.0e-10)
     assert_allclose(mod.eval_magnification(
         radius, z_cluster, z_source), np.ones(len(radius)), 1.0e-10)
-
+    assert_allclose(mod.eval_magnification_bias(
+        radius, z_cluster, z_source, alpha), np.ones(len(radius)), 1.0e-10)
+    
     # Second, check a single radius and array of source z
     radius = 1.
     z_source = [0.25, 0.1, 0.14, 0.02]
@@ -531,4 +564,6 @@ def test_shear_convergence_unittests(modeling_data):
     assert_allclose(mod.eval_reduced_tangential_shear(
         radius, z_cluster, z_source), np.zeros(len(z_source)), 1.0e-10)
     assert_allclose(mod.eval_magnification(radius, z_cluster, z_source),
+                    np.ones(len(z_source)), 1.0e-10)
+    assert_allclose(mod.eval_magnification_bias(radius, z_cluster, z_source, alpha),
                     np.ones(len(z_source)), 1.0e-10)

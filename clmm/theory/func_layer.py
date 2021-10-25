@@ -582,7 +582,7 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
     ----------    
     r_proj : array_like, float
         The projected radial positions in :math:`M\!pc`.
-    alpha : float
+    alpha : array like
         The slope of the cummulative source number counts.
     mdelta : float
         Galaxy cluster mass in :math:`M_\odot`.
@@ -625,6 +625,6 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
     
     magnification = compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef, halo_profile_model, massdef, z_src_model)
     
-    magnification_bias = magnification**(alpha - 1)
+    magnification_bias = compute_magnification_bias_from_magnification(magnification, alpha)
     
     return magnification_bias
