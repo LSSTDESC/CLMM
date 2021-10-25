@@ -106,6 +106,7 @@ class CCLCLMModeling(CLMModeling):
                 self.conc, **self.hdpm_opts[halo_profile_model])
             if cur_values:
                 self.conc.c = cur_cdelta
+        
 
     def _set_concentration(self, cdelta):
         """" set concentration"""
@@ -120,6 +121,11 @@ class CCLCLMModeling(CLMModeling):
         a_cl = self.cosmo.get_a_from_z(z_cl)
         dens = self.hdpm.real(
             self.cosmo.be_cosmo, r3d/a_cl, self.mdelta, a_cl, self.mdef)
+        
+        if self.halo_profile_model == 'einasto':
+            alpha = self.hdpm._get_alpha (self.cosmo.be_cosmo, self.mdelta, a_cl, self.mdef)
+            print(f"Einasto alpha = {alpha}")
+
         return dens*self.cor_factor/a_cl**3
 
     def eval_surface_density(self, r_proj, z_cl):
