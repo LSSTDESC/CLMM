@@ -71,9 +71,13 @@ def generate_galaxy_catalog(
         and H0
     zsrc : float or str
         Choose the source galaxy distribution to be fixed or drawn from a predefined distribution.
-        `float` : All sources galaxies at this fixed redshift;
-        `str` : Draws individual source gal redshifts from predefined distribution. Options are:
-        chang13, desc_srd;
+
+        * `float` : All sources galaxies at this fixed redshift;
+        * `str` : Draws individual source gal redshifts from predefined distribution. Options are:
+
+            * `chang13` - Chang et al. 2013 (arXiv:1305.0793);
+            * `desc_srd` - LSST/DESC Science Requirement Document (arxiv:1809.01669);
+
     delta_so : float, optional
         Overdensity density contrast used to compute the cluster mass and concentration. The
         spherical overdensity mass is computed as the mass enclosed within the radius
@@ -348,8 +352,11 @@ def _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals):
     zsrc : float or str
         Choose the source galaxy distribution to be fixed or drawn from a predefined distribution.
         float : All sources galaxies at this fixed redshift
-        str : Draws individual source gal redshifts from predefined distribution. Options
-              are: chang13 or desc_srd
+        str : Draws individual source gal redshifts from predefined distribution. Options are:
+
+            * `chang13` - Chang et al. 2013 (arXiv:1305.0793);
+            * `desc_srd` - LSST/DESC Science Requirement Document (arxiv:1809.01669);
+
     zsrc_min : float
         The minimum source redshift allowed.
     zsrc_max : float, optional
