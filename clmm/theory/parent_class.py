@@ -354,3 +354,31 @@ class CLMModeling:
         Need to figure out if we want to raise exceptions rather than errors here?
         """
         raise NotImplementedError
+
+def eval_magnification_bias(self, r_proj, z_cl, z_src, alpha):
+        r"""Computes the magnification bias
+
+        .. math::
+            \mu^{\alpha - 1}
+
+        Parameters
+        ----------
+        r_proj : array_like
+            The projected radial positions in :math:`M\!pc`.
+        z_cl : float
+            Galaxy cluster redshift
+        z_src : array_like, float
+            Background source galaxy redshift(s)
+        alpha : float
+            Slope of the cummulative number count of background sources at a given magnitude
+
+        Returns
+        -------
+        mu_bias : array_like, float
+            magnification bias.
+
+        Notes
+        -----
+        Need to figure out if we want to raise exceptions rather than errors here?
+        """
+        raise NotImplementedError
