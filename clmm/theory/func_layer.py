@@ -19,7 +19,7 @@ __all__ = generic.__all__+['compute_3d_density', 'compute_surface_density',
 
 def compute_3d_density(
         r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
-        halo_profile_model='nfw', massdef='mean'):
+        halo_profile_model='nfw', massdef='mean', verbose=False):
     r"""Retrieve the 3d density :math:`\rho(r)`.
 
     Profiles implemented so far are:
@@ -72,11 +72,11 @@ def compute_3d_density(
     gcm.set_concentration(cdelta)
     gcm.set_mass(mdelta)
 
-    return gcm.eval_3d_density(r3d, z_cl)
+    return gcm.eval_3d_density(r3d, z_cl, verbose=verbose)
 
 
 def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
-                            halo_profile_model='nfw', massdef='mean'):
+                            halo_profile_model='nfw', massdef='mean', verbose=False):
     r""" Computes the surface mass density
 
     .. math::
@@ -129,7 +129,7 @@ def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     gcm.set_concentration(cdelta)
     gcm.set_mass(mdelta)
 
-    return gcm.eval_surface_density(r_proj, z_cl)
+    return gcm.eval_surface_density(r_proj, z_cl, verbose=verbose)
 
 
 def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,

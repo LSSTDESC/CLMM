@@ -124,15 +124,23 @@ class NumCosmoCLMModeling(CLMModeling):
         """" set mass"""
         self.hdpm.props.log10MDelta = math.log10(mdelta)
 
-    def eval_3d_density(self, r3d, z_cl):
+    def eval_3d_density(self, r3d, z_cl, verbose=False):
         """"eval 3d density"""
+
+        if self.halo_profile_model == 'einasto' and verbose:
+            # print out the value of einasto 'alpha' parameter
+            print(f"Einasto alpha = {self.hdpm.props.alpha}")
 
         func = lambda r3d, z_cl: self.hdpm.eval_density(
             self.cosmo.be_cosmo, r3d, z_cl)
         return np.vectorize(func)(r3d, z_cl)
 
-    def eval_surface_density(self, r_proj, z_cl):
+    def eval_surface_density(self, r_proj, z_cl, verbose=False):
         """"eval surface density"""
+
+        if self.halo_profile_model == 'einasto' and verbose:
+                # print out the value of einasto 'alpha' parameter
+                print(f"Einasto alpha = {self.hdpm.props.alpha}")
 
         self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
         func = lambda r_proj, z_cl: self.cosmo.smd.sigma(

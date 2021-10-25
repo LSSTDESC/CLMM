@@ -116,20 +116,26 @@ class CCLCLMModeling(CLMModeling):
         """" set mass"""
         self.mdelta = mdelta/self.cor_factor
 
-    def eval_3d_density(self, r3d, z_cl):
+    def eval_3d_density(self, r3d, z_cl, verbose=False):
         """"eval 3d density"""
         a_cl = self.cosmo.get_a_from_z(z_cl)
         dens = self.hdpm.real(
             self.cosmo.be_cosmo, r3d/a_cl, self.mdelta, a_cl, self.mdef)
-        
-        if self.halo_profile_model == 'einasto':
+            
+        if self.halo_profile_model == 'einasto' and verbose:
+            # print out the value of einasto 'alpha' parameter
             alpha = self.hdpm._get_alpha (self.cosmo.be_cosmo, self.mdelta, a_cl, self.mdef)
             print(f"Einasto alpha = {alpha}")
 
         return dens*self.cor_factor/a_cl**3
 
-    def eval_surface_density(self, r_proj, z_cl):
+    def eval_surface_density(self, r_proj, z_cl, verbose=False):
         a_cl = self.cosmo.get_a_from_z(z_cl)
+        if self.halo_profile_model == 'einasto' and verbose:
+            # print out the value of einasto 'alpha' parameter
+            alpha = self.hdpm._get_alpha (self.cosmo.be_cosmo, self.mdelta, a_cl, self.mdef)
+            print(f"Einasto alpha = {alpha}")       
+
         if self.halo_profile_model == 'nfw':
             return self.hdpm.projected(self.cosmo.be_cosmo, r_proj/a_cl, self.mdelta, a_cl, self.mdef)*self.cor_factor/a_cl**2
         else:
@@ -138,6 +144,7 @@ class CCLCLMModeling(CLMModeling):
             ptf = interp1d(np.log(rtmp), np.log(tmp), bounds_error=False, fill_value=-100)
             return np.exp(ptf(np.log(r_proj)))
 
+        
 
     def eval_mean_surface_density(self, r_proj, z_cl):
         a_cl = self.cosmo.get_a_from_z(z_cl)

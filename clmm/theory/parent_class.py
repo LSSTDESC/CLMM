@@ -166,7 +166,7 @@ class CLMModeling:
         self._validate_input(
             radius, 0, "min(R) = %s Mpc! This value is not accepted.")
 
-    def eval_3d_density(self, r3d, z_cl):
+    def eval_3d_density(self, r3d, z_cl, verbose=False):
         r"""Retrieve the 3d density :math:`\rho(r)`.
 
         Parameters
@@ -205,7 +205,7 @@ class CLMModeling:
                 'Some source redshifts are <=0. Please check your inputs.')
         return self.cosmo.eval_sigma_crit(z_len, z_src)
 
-    def eval_surface_density(self, r_proj, z_cl):
+    def eval_surface_density(self, r_proj, z_cl, verbose=False):
         r""" Computes the surface mass density
 
         Parameters
