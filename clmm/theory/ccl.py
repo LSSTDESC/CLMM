@@ -55,6 +55,7 @@ class CCLCLMModeling(CLMModeling):
             'critical': 'critical',
             'virial': 'critical'}
         self.hdpm_dict = {'nfw': ccl.halos.HaloProfileNFW}
+        self.cosmo_class = CCLCosmology
         # Uncomment lines below when CCL einasto and hernquist profiles are stable
         # (also add version number)
         # if version.parse(ccl.__version__) >= version.parse('???'):
@@ -74,16 +75,9 @@ class CCLCLMModeling(CLMModeling):
         self.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
         self.set_cosmo(None)
 
-    def set_cosmo(self, cosmo):
-        """"set cosmo"""
-        self._set_cosmo(cosmo, CCLCosmology)
 
-    def set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
+    def _set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
         """"set halo density profile"""
-        # Check if choices are supported and put in lower case
-        massdef, halo_profile_model = self.validate_definitions(
-            massdef, halo_profile_model)
-
         # Check if we have already an instance of the required object, if not create one
         if not ((halo_profile_model==self.halo_profile_model)
                 and (massdef == self.massdef)
@@ -113,21 +107,21 @@ class CCLCLMModeling(CLMModeling):
         """" set mass"""
         self.mdelta = mdelta/self.cor_factor
 
-    def eval_3d_density(self, r3d, z_cl):
+    def _eval_3d_density(self, r3d, z_cl):
         """"eval 3d density"""
         a_cl = self.cosmo.get_a_from_z(z_cl)
         dens = self.hdpm.real(
             self.cosmo.be_cosmo, r3d/a_cl, self.mdelta, a_cl, self.mdef)
         return dens*self.cor_factor/a_cl**3
 
-    def eval_surface_density(self, r_proj, z_cl):
+    def _eval_surface_density(self, r_proj, z_cl):
         """"eval surface density"""
         a_cl = self.cosmo.get_a_from_z(z_cl)
         dens = self.hdpm.projected(
             self.cosmo.be_cosmo, r_proj/a_cl, self.mdelta, a_cl, self.mdef)
         return dens*self.cor_factor/a_cl**2
 
-    def eval_mean_surface_density(self, r_proj, z_cl):
+    def _eval_mean_surface_density(self, r_proj, z_cl):
         """"eval mean surface density"""
         a_cl = self.cosmo.get_a_from_z(z_cl)
         dens = self.hdpm.cumul2d(
@@ -135,7 +129,7 @@ class CCLCLMModeling(CLMModeling):
             self.cosmo.get_a_from_z(z_cl), self.mdef)
         return dens*self.cor_factor/a_cl**2
 
-    def eval_excess_surface_density(self, r_proj, z_cl):
+    def _eval_excess_surface_density(self, r_proj, z_cl):
         """"eval excess surface density"""
         a_cl = self.cosmo.get_a_from_z(z_cl)
         args = (self.cosmo.be_cosmo, r_proj/a_cl, self.mdelta, a_cl, self.mdef)
