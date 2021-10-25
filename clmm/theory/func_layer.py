@@ -9,12 +9,12 @@ import warnings
 import numpy as np
 
 from . import generic
-from . generic import compute_reduced_shear_from_convergence
+from . generic import compute_reduced_shear_from_convergence, compute_magnification_bias
 
 __all__ = generic.__all__+['compute_3d_density', 'compute_surface_density',
                            'compute_excess_surface_density', 'compute_critical_surface_density',
                            'compute_tangential_shear', 'compute_convergence',
-                           'compute_reduced_tangential_shear', 'compute_magnification']
+                           'compute_reduced_tangential_shear', 'compute_magnification','compute_magnification_bias']
 
 
 def compute_3d_density(
@@ -559,3 +559,72 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
             ' magnification = 1 for those galaxies.')
 
     return magnification
+
+
+
+def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200, halo_profile_model='nfw', massdef='mean', z_src_model='single_plane'):
+    
+    r""" Calculates magnification_bias from magnification $\mu$ and slope parameter $\alpha$ as :
+    .. math::
+     \mu^{\alpha - 1}.
+    The alpha parameter depends on the source sample and is computed as the slope of the 
+    cummulative numer counts at a given magnitude:
+    .. math::
+        \alpha =    \alpha \equiv \alpha(f) = - \frac{\rm{d}}{{\rm{dlog}}f} \log n_0(>f)
+        
+    or,
+    .. math::    
+        \alpha \equiv \alpha(m) = 2.5 \frac{\rm{d}}{\rm{dm}} \log n_0(<m)
+    
+    see e.g.  Bartelmann & Schneider 2001; Umetsu 2020
+    
+    Parameters
+    ----------    
+    r_proj : array_like, float
+        The projected radial positions in :math:`M\!pc`.
+    alpha : float
+        The slope of the cummulative source number counts.
+    mdelta : float
+        Galaxy cluster mass in :math:`M_\odot`.
+    cdelta : float
+        Galaxy cluster NFW concentration.
+    z_cluster : float
+        Galaxy cluster redshift
+    z_source : array_like, float
+        Background source galaxy redshift(s)
+    cosmo : clmm.cosmology.Cosmology object
+        CLMM Cosmology object
+    delta_mdef : int, optional
+        Mass overdensity definition.  Defaults to 200.
+    halo_profile_model : str, optional
+        Profile model parameterization (letter case independent):
+
+            * `nfw` (default);
+            * `einasto` - valid in numcosmo only;
+            * `hernquist` - valid in numcosmo only;
+
+    massdef : str, optional
+        Profile mass definition, with the following supported options (letter case independent):
+
+            * `mean` (default);
+            * `critical` - not in cluster_toolkit;
+            * `virial` - not in cluster_toolkit;
+
+    z_src_model : str, optional
+        Source redshift model, with the following supported options:
+            `single_plane` (default) - all sources at one redshift (if
+            `z_source` is a float) or known individual source galaxy redshifts
+            (if `z_source` is an array and `r_proj` is a float);
+
+
+    Returns
+    -------
+    compute_magnification_bias : array_like
+        magnification bias
+    """
+    
+    magnification = compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef, halo_profile_model, massdef, z_src_model)
+    
+    magnification_bias = magnification**(alpha - 1)
+    
+    return magnification_bias

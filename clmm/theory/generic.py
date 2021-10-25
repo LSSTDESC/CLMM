@@ -5,7 +5,7 @@ Model independent theory functions
 
 import numpy as np
 
-__all__ = ['compute_reduced_shear_from_convergence']
+__all__ = ['compute_reduced_shear_from_convergence', 'compute_magnification_bias']
 
 # functions that are general to all backends
 
@@ -29,7 +29,7 @@ def compute_reduced_shear_from_convergence(shear, convergence):
     return reduced_shear
 
 
-def compute_magnification_bias(magnification, alpha):
+def compute_magnification_bias_from_magnification(magnification, alpha):
     r""" Calculates magnification_bias from magnification and alpha parameter as :
     .. math::
      \mu^{\alpha - 1}
