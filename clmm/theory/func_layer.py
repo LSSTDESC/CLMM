@@ -9,7 +9,7 @@ import warnings
 import numpy as np
 
 from . import generic
-from . generic import compute_reduced_shear_from_convergence, compute_magnification_bias_from_magnification
+from . generic import *
 
 __all__ = generic.__all__+['compute_3d_density', 'compute_surface_density',
                            'compute_excess_surface_density', 'compute_critical_surface_density',
