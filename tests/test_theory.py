@@ -412,7 +412,7 @@ def test_shear_convergence_unittests(modeling_data):
     assert_allclose(1./((1-kappa)**2-abs(gammat)**2),
                     cfg['numcosmo_profiles']['mu'], 1.e2*reltol)
 
-    # Check that shear, reduced shear and convergence return zero and magnification returns one if
+    # Check that shear, reduced shear and convergence return zero and magnification and magnification bias returns one if
     # source is in front of the cluster
     # First, check for a array of radius and single source z
     radius = np.logspace(-2, 2, 10)
@@ -435,7 +435,11 @@ def test_shear_convergence_unittests(modeling_data):
         theo.compute_magnification(
             radius, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
         np.ones(len(radius)), 1.0e-10)
-
+    assert_allclose(
+        theo.compute_magnification_bias(
+            radius, alpha=-1, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
+        np.ones(len(radius)), 1.0e-10)
+    
     # Second, check a single radius and array of source z
     radius = 1.
     z_source = [0.25, 0.1, 0.14, 0.02]
@@ -455,7 +459,11 @@ def test_shear_convergence_unittests(modeling_data):
         theo.compute_magnification(
             radius, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
         np.ones(len(z_source)), 1.0e-10)
-
+    assert_allclose(
+        theo.compute_magnification_bias(
+            radius, alpha = -1, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
+        np.ones(len(z_source)), 1.0e-10)
+    
     # Object Oriented tests
     mod = theo.Modeling()
     mod.set_cosmo(cosmo)
