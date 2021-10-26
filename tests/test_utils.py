@@ -58,7 +58,7 @@ def test_correct_sigma_with_boost_model() :
     rvals = np.arange(1,11)
     sigma_vals = 2**np.arange(10)
 
-    for boost_model in utils.boost_models.values() :
+    for boost_model in utils.boost_models.keys() :
         # Check for no nans or inf with positive-definite rvals and sigma vals
         assert(np.all(np.isfinite(utils.correct_sigma_with_boost_model(rvals, sigma_vals, boost_model=boost_model))))
 
