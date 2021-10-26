@@ -5,7 +5,7 @@ import numpy as np
 from astropy.coordinates import SkyCoord
 from astropy import units as u
 from .. gcdata import GCData
-from . .utils import compute_radial_averages, make_bins, convert_units, arguments_consistency
+from . .utils import compute_radial_averages, make_bins, convert_units, arguments_consistency, validate_argument
 from .. theory import compute_critical_surface_density
 
 
@@ -13,7 +13,7 @@ def compute_tangential_and_cross_components(
         ra_lens, dec_lens, ra_source, dec_source,
         shear1, shear2, geometry='curve',
         is_deltasigma=False, cosmo=None,
-        z_lens=None, z_source=None, sigma_c=None):
+        z_lens=None, z_source=None, sigma_c=None, validate_input=True):
     r"""Computes tangential- and cross- components for shear or ellipticity
 
     To do so, we need the right ascension and declination of the lens and of all of the sources. We
@@ -98,6 +98,8 @@ def compute_tangential_and_cross_components(
     sigma_c : float, optional
         Critical surface density in units of :math:`M_\odot\ Mpc^{-2}`,
         if provided, `cosmo`, `z_lens` and `z_source` are not used.
+    validate_input: bool
+        Validade each input argument
 
     Returns
     -------
@@ -111,10 +113,20 @@ def compute_tangential_and_cross_components(
     # pylint: disable-msg=too-many-locals
     # Note: we make these quantities to be np.array so that a name is not passed from astropy
     # columns
-    ra_source_, dec_source_, shear1_, shear2_ = arguments_consistency(
-        [ra_source, dec_source, shear1, shear2],
-        names=('Ra', 'Dec', 'Shear1', 'Shear2'),
-        prefix='Tangential- and Cross- shape components sources')
+    if validate_input:
+        validate_argument(locals(), 'ra_source', 'float_array')
+        validate_argument(locals(), 'dec_source', 'float_array')
+        validate_argument(locals(), 'shear1', 'float_array')
+        validate_argument(locals(), 'shear2', 'float_array')
+        ra_source_, dec_source_, shear1_, shear2_ = arguments_consistency(
+            [ra_source, dec_source, shear1, shear2],
+            names=('Ra', 'Dec', 'Shear1', 'Shear2'),
+            prefix='Tangential- and Cross- shape components sources')
+    elif np.iterable(ra_source):
+        ra_source_, dec_source_, shear1_, shear2_ = (
+            np.array(col) for col in [ra_source, dec_source, shear1, shear2])
+    else:
+        ra_source_, dec_source_, shear1_, shear2_ = ra_source, dec_source, shear1, shear2
     # Compute the lensing angles
     if geometry == 'flat':
         angsep, phi = _compute_lensing_angles_flatsky(
@@ -271,7 +283,7 @@ def _compute_cross_shear(shear1, shear2, phi):
 def make_radial_profile(components, angsep, angsep_units, bin_units,
                         bins=10, include_empty_bins=False,
                         return_binnumber=False,
-                        cosmo=None, z_lens=None):
+                        cosmo=None, z_lens=None, validate_input=True):
     r"""Compute the angular profile of given components
 
     We assume that the cluster object contains information on the cross and
@@ -307,14 +319,14 @@ def make_radial_profile(components, angsep, angsep_units, bin_units,
         default to 10 equally spaced bins.
     include_empty_bins: bool, optional
         Also include empty bins in the returned table
-    gal_ids_in_bins: bool, optional
-        Also include the list of galaxies ID belonging to each bin in the returned table
     return_binnumber: bool, optional
         Also returns the indices of the bins for each object
-    cosmo: dict, optional
-        Cosmology parameters to convert angular separations to physical distances
+    cosmo : CLMM.Cosmology
+        CLMM Cosmology object to convert angular separations to physical distances
     z_lens: array, optional
         Redshift of the lens
+    validate_input: bool
+        Validade each input argument
 
     Returns
     -------
@@ -332,6 +344,17 @@ def make_radial_profile(components, angsep, angsep_units, bin_units,
     module.
     """
     # pylint: disable-msg=too-many-locals
+    if validate_input:
+        validate_argument(locals(), 'angsep', 'float_array')
+        validate_argument(locals(), 'angsep_units', str)
+        validate_argument(locals(), 'bin_units', str)
+        validate_argument(locals(), 'include_empty_bins', bool)
+        validate_argument(locals(), 'return_binnumber', bool)
+        validate_argument(locals(), 'z_lens', 'float_array')
+        comp_dict = {f'components[{i}]': comp for i, comp in enumerate(components)}
+        arguments_consistency(components, names=comp_dict.keys(), prefix='Input components')
+        for component in comp_dict:
+            validate_argument(comp_dict, component, 'float_array')
     # Check to see if we need to do a unit conversion
     if angsep_units is not bin_units:
         source_seps = convert_units(angsep, angsep_units, bin_units,
