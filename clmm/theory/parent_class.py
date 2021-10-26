@@ -61,7 +61,7 @@ class CLMModeling:
         if self.validate_input:
             if self.cosmo_class is None:
                 raise NotImplementedError
-            validate_argument(locals(), 'cosmo', self.cosmo_class)
+            validate_argument(locals(), 'cosmo', self.cosmo_class, none_ok=True)
         self._set_cosmo(cosmo)
         self.cosmo.validate_input = self.validate_input
 

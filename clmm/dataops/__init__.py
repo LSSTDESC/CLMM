@@ -350,7 +350,7 @@ def make_radial_profile(components, angsep, angsep_units, bin_units,
         validate_argument(locals(), 'bin_units', str)
         validate_argument(locals(), 'include_empty_bins', bool)
         validate_argument(locals(), 'return_binnumber', bool)
-        validate_argument(locals(), 'z_lens', 'float_array')
+        validate_argument(locals(), 'z_lens', 'float_array', none_ok=True)
         comp_dict = {f'components[{i}]': comp for i, comp in enumerate(components)}
         arguments_consistency(components, names=comp_dict.keys(), prefix='Input components')
         for component in comp_dict:
