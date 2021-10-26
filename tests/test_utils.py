@@ -64,7 +64,7 @@ def test_correct_sigma_with_boost_model() :
 
 
     # Test requesting unsupported boost model
-    assert_raises(ValueError,
+    assert_raises(KeyError,
                   utils.correct_sigma_with_boost_model(rvals, sigma_vals, boost_model='glue'))
 
 
@@ -77,7 +77,7 @@ def test_compute_radial_averages():
     xbins2 = [0., 5., 10.]
 
     # Test requesting an unsupported error model
-    assert_raises(KeyError, compute_radial_averages,
+    assert_raises(ValueError, compute_radial_averages,
                   binvals, binvals, [0., 10.], 'glue')
 
     # Check the default error model
