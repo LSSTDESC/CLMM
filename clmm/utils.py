@@ -384,8 +384,8 @@ _valid_types = {
 def validate_argument(loc, argname, valid_type, none_ok=True, argmin=None, argmax=None):
     r"""Validate argument type and raise errors.
 
-    Paramters
-    ---------
+    Parameters
+    ----------
     loc: dict
         Dictionaty with all input arguments. Should be locals().
     argname: str
@@ -407,13 +407,13 @@ def validate_argument(loc, argname, valid_type, none_ok=True, argmin=None, argma
     # Check for None
     if none_ok and (var is None):
         return
-    # Check for type
     # Check for type in array
     if valid_type in ('int_array', 'float_array') and np.iterable(var):
         types = _valid_types[valid_type]
         if not isinstance(var[0], types):
             err = f'{argname} must be {types}, received {type(var[0]).__name__}'
             raise TypeError(err)
+    # Check for type
     else:
         types = _valid_types.get(valid_type, valid_type)
         if types is not None:
