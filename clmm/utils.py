@@ -381,7 +381,8 @@ _valid_types = {
     'int_array': (int, np.integer)
     }
 
-def validate_argument(loc, argname, valid_type, none_ok=True, argmin=None, argmax=None):
+def validate_argument(loc, argname, valid_type, none_ok=True, argmin=None, argmax=None,
+                      eqmin=False, eqmax=False):
     r"""Validate argument type and raise errors.
 
     Parameters
@@ -402,6 +403,10 @@ def validate_argument(loc, argname, valid_type, none_ok=True, argmin=None, argma
         Minimum value allowed.
     argmax (optional) : int, float, None
         Maximum value allowed.
+    eqmin: bool
+        Accepts min(arg)==argmin.
+    eqmax: bool
+        Accepts max(arg)==argmax.
     """
     var = loc[argname]
     # Check for None
@@ -424,12 +429,12 @@ def validate_argument(loc, argname, valid_type, none_ok=True, argmin=None, argma
     if valid_type in (float, int, 'int_array', 'float_array'):
         var_array = np.array(var)
         if argmin is not None:
-            if var_array.min() <= argmin:
+            if (var_array.min()<argmin if eqmin else var_array.min()<=argmin):
                 err = f'{argname} must be greater than {argmin},' \
                       f' received {"vec_min:"*(var_array.size-1)}{var}'
                 raise ValueError(err)
         if argmax is not None:
-            if var_array.max() >= argmax:
+            if (var_array.max()>argmax if eqmax else var_array.max()>=argmax):
                 err = f'{argname} must be lesser than {argmax},' \
                       f' received {"vec_max:"*(var_array.size-1)}{var}'
                 raise ValueError(err)
