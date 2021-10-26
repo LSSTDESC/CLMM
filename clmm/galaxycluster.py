@@ -4,7 +4,7 @@ The GalaxyCluster class
 import pickle
 import warnings
 from .gcdata import GCData
-from .dataops import compute_tangential_and_cross_components, make_radial_profile
+from .dataops import compute_tangential_and_cross_components, make_radial_profile,_compute_galaxy_weights
 from .theory import compute_critical_surface_density
 from .plotting import plot_profiles
 
@@ -211,6 +211,75 @@ class GalaxyCluster():
             self.galcat[tan_component] = tangential_comp
             self.galcat[cross_component] = cross_comp
         return angsep, tangential_comp, cross_comp
+    
+    def compute_galaxy_weights(self, z_source='z', photoz_pdf='pzpdf', z_axis_photoz='pzbins', 
+                           shape_component1='e1', shape_component2='e2', 
+                           shape_component1_err='e1_err', shape_component2_err='e2_err', 
+                           add_photoz=False, add_shapenoise = False, add_shape_error=False, 
+                           weight_name='w_ls', p_background_name='p_background',
+                           cosmo=None,
+                           is_deltasigma=False, add=True):
+        r"""
+        Parameters:
+        -----------
+        z_source: string
+            column name : source redshifts
+        cosmo: clmm.Cosmology object
+        photoz_pdf : string
+            column name : photometric probablility density function of the source galaxies
+        z_axis_photoz : string
+            column name : redshift axis on which the individual photoz pdf is tabulated
+        shape_component1: string
+            column name : The measured shear (or reduced shear or ellipticity) 
+            of the source galaxies
+        shape_component2: array
+            column name : The measured shear (or reduced shear or ellipticity) 
+            of the source galaxies
+        shape_component1_err: array
+            column name : The measurement error on the 1st-component of ellipticity 
+            of the source galaxies
+        shape_component2_err: array
+            column name : The measurement error on the 2nd-component of ellipticity 
+            of the source galaxies
+        add_photoz : boolean
+            True for computing photometric weights
+        add_shapenoise : boolean
+            True for considering shapenoise in the weight computation
+        add_shape_error : boolean
+            True for considering measured shape error in the weight computation
+        weight_name : string
+            Name of the new column for the weak lensing weights in the galcat table
+        p_background : string
+            Name of the new column for the background probability in the galcat table
+        is_deltasigma: boolean
+            Indicates whether it is the excess surface density or the tangential shear
+        add : boolean
+            If True, add weight and background probability columns to the galcat table
+
+        Returns:
+        --------
+        w_ls: array
+            the individual lens source pair weights
+        p_background : array
+            the probability for being a background galaxy
+    """
+        
+        w_ls, p_background = _compute_galaxy_weights(self.z, cosmo, 
+                           z_source=self.galcat[z_source], pzpdf=self.galcat[photoz_pdf], 
+                           pzbins=self.galcat[z_axis_photoz], 
+                           shape_component1=self.galcat[shape_component1], 
+                           shape_component2=self.galcat[shape_component2], 
+                           shape_component1_err=self.galcat[shape_component1_err], 
+                           shape_component2_err=self.galcat[shape_component2_err], 
+                           add_photoz=add_photoz, add_shapenoise=add_shapenoise, 
+                           add_shape_error=add_shape_error, 
+                           is_deltasigma=is_deltasigma)
+        
+        if add == True:
+            
+            self.galcat[weight_name], self.galcat[p_background_name] = w_ls, p_background
+            
+        return w_ls, p_background
 
     def make_radial_profile(
             self, bin_units, bins=10, cosmo=None, tan_component_in='et', cross_component_in='ex',
