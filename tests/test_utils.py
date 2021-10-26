@@ -14,14 +14,13 @@ TOLERANCE = {'rtol': 1.0e-6, 'atol': 0}
 def test_compute_nfw_boost() :
     """Test the nfw model for boost factor"""
     # Test data
-    rvals = np.arange(10)
+    rvals = np.arange(1,11)
 
     boost_factors = utils.compute_nfw_boost(rvals)
 
-    test_boost_factors = np.array([0.97853982, 0.97853981, 0.97853979,
-                              0.97853975, 0.9785397 , 0.97853964,
-                              0.97853956, 0.97853946, 0.97853936,
-                              0.97853923])
+    test_boost_factors = np.array([0.97853981, 0.97853979, 0.97853975, 0.9785397,
+                                   0.97853964, 0.97853956, 0.97853946, 0.97853936,
+                                   0.97853923, 0.9785391])
     
    #  Test model
     assert_allclose(boost_factors, test_boost_factors)
@@ -29,7 +28,7 @@ def test_compute_nfw_boost() :
 def test_compute_powerlaw_boost() :
     """Test the powerlaw model for boost factor"""
     # Test data
-    rvals = np.arange(1,11)
+    rvals = np.arange(1,11) # Cannot contain 0 due to reciprocal term
 
     boost_factors = utils.compute_powerlaw_boost(rvals)
 
@@ -44,23 +43,32 @@ def test_compute_powerlaw_boost() :
 def test_correct_sigma_with_boost_values() :
     """ """
     # Make test data
-    rvals = np.arange(10)
+    rvals = np.arange(1,11)
     sigma_vals = 2**np.arange(10)
 
+    test_unit_boost_factors = np.ones(rvals.shape)
 
+    corrected_sigma = correct_sigma_with_boost_values(rvals, sigma_vals, test_unit_boost_factors)
+    assert_allclose(sigma_vals, test_unit_boost_factors)
+    
+    
 def test_correct_sigma_with_boost_model() :
     """ """
     # Make test data
-    rvals = np.arange(10)
+    rvals = np.arange(1,11)
     sigma_vals = 2**np.arange(10)
+
+    for boost_model in utils.boost_models.values() :
+        # Check for no nans or inf with positive-definite rvals and sigma vals
+        assert(np.all(np.isfinite(correct_sigma_with_boost_model(rvals, sigma_vals, boost_model=boost_model))))
+
 
     # Test requesting unsupported boost model
     assert_raises(ValueError,
                   correct_sigma_with_boost_model(rvals, sigma_vals, boost_model='glue')
 
 
-    assert_allclose()
-                  
+                   
 def test_compute_radial_averages():
     """ Tests compute_radial_averages, a function that computes several binned statistics """
     # Make some test data
