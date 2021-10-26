@@ -70,3 +70,5 @@ def test_instantiate(modeling_data):
 
     reduced_shear = mod.eval_reduced_tangential_shear(r_proj, z_cl, np.repeat(z_src, len(r_proj)))
     assert_allclose(reduced_shear, shear/(1.0-convergence), rtol=1.0e-12)
+
+

@@ -226,48 +226,54 @@ def helper_profiles(func):
                     defaulttruth, **TOLERANCE)
 
 
-def test_profiles(modeling_data):
+def test_profiles(modeling_data, profile_init):
     """ Tests for profile functions, get_3d_density, predict_surface_density,
     and predict_excess_surface_density """
-    helper_profiles(theo.compute_3d_density)
-    helper_profiles(theo.compute_surface_density)
-    helper_profiles(theo.compute_excess_surface_density)
 
-    reltol = modeling_data['theory_reltol']
+    if profile_init=='nfw' or theo.be_nick in ['nc','ccl']:
 
-    # Validation tests
-    # NumCosmo makes different choices for constants (Msun). We make this conversion
-    # by passing the ratio of SOLAR_MASS in kg from numcosmo and CLMM
-    cfg = load_validation_config()
-    cosmo = cfg['cosmo']
+        helper_profiles(theo.compute_3d_density)
+        helper_profiles(theo.compute_surface_density)
+        helper_profiles(theo.compute_excess_surface_density)
 
-    assert_allclose(theo.compute_3d_density(cosmo=cosmo, **cfg['RHO_PARAMS']),
-                    cfg['numcosmo_profiles']['rho'], reltol)
-    assert_allclose(theo.compute_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS']),
-                    cfg['numcosmo_profiles']['Sigma'], reltol)
-    assert_allclose(theo.compute_excess_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS']),
-                    cfg['numcosmo_profiles']['DeltaSigma'], reltol)
+        reltol = modeling_data['theory_reltol']
 
-    # Object Oriented tests
-    mod = theo.Modeling()
-    mod.set_cosmo(cosmo)
-    mod.set_halo_density_profile(
-        halo_profile_model=cfg['SIGMA_PARAMS']['halo_profile_model'])
-    mod.set_concentration(cfg['SIGMA_PARAMS']['cdelta'])
-    mod.set_mass(cfg['SIGMA_PARAMS']['mdelta'])
+        # Validation tests
+        # NumCosmo makes different choices for constants (Msun). We make this conversion
+        # by passing the ratio of SOLAR_MASS in kg from numcosmo and CLMM
+        cfg = load_validation_config()
+        cosmo = cfg['cosmo']
 
-    assert_allclose(
-        mod.eval_3d_density(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl']),
-        cfg['numcosmo_profiles']['rho'], reltol)
-    assert_allclose(
-        mod.eval_surface_density(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl']),
-        cfg['numcosmo_profiles']['Sigma'], reltol)
-    assert_allclose(
-        mod.eval_excess_surface_density(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl']),
-        cfg['numcosmo_profiles']['DeltaSigma'], reltol)
-    if mod.backend == 'ct':
-        assert_raises(ValueError, mod.eval_excess_surface_density,
-                      1e-12, cfg['SIGMA_PARAMS']['z_cl'])
+        assert_allclose(theo.compute_3d_density(cosmo=cosmo, **cfg['RHO_PARAMS']),
+                        cfg['numcosmo_profiles']['rho'], reltol)
+        assert_allclose(theo.compute_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS']),
+                        cfg['numcosmo_profiles']['Sigma'], reltol)
+        assert_allclose(theo.compute_excess_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS']),
+                        cfg['numcosmo_profiles']['DeltaSigma'], reltol)
+
+        # Object Oriented tests
+        mod = theo.Modeling()
+        mod.set_cosmo(cosmo)
+        mod.set_halo_density_profile(
+            halo_profile_model=cfg['SIGMA_PARAMS']['halo_profile_model'])
+        mod.set_concentration(cfg['SIGMA_PARAMS']['cdelta'])
+        mod.set_mass(cfg['SIGMA_PARAMS']['mdelta'])
+
+        assert_allclose(
+            mod.eval_3d_density(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl']),
+            cfg['numcosmo_profiles']['rho'], reltol)
+        assert_allclose(
+            mod.eval_surface_density(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl']),
+            cfg['numcosmo_profiles']['Sigma'], reltol)
+        assert_allclose(
+            mod.eval_excess_surface_density(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl']),
+            cfg['numcosmo_profiles']['DeltaSigma'], reltol)
+        if mod.backend == 'ct':
+            assert_raises(ValueError, mod.eval_excess_surface_density,
+                          1e-12, cfg['SIGMA_PARAMS']['z_cl'])
+
+    else:
+        print('Need to test for error')
 
 
 def test_compute_critical_surface_density(modeling_data):

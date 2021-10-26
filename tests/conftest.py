@@ -37,4 +37,9 @@ def cosmo_init(request):
 
     return param
 
+@pytest.fixture(scope="module", params=['nfw', 'einasto', 'hernquist'])
+def profile_init(request):
+    param = request.param
+
+    return param
 
