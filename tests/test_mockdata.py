@@ -71,18 +71,18 @@ def test_mock_data():
                                                          halo_profile_model='nfw')
         return gt_model
 
-    def mass_mock_cluster(mass=15.,guess=15.):
+    def mass_mock_cluster(mass=15., guess=15.):
 
         # Set up mock cluster
-        ngals=5000
+        ngals = 5000
         data = mock.generate_galaxy_catalog(10**mass, 0.3, 4, cosmo, 0.8, ngals=ngals)
 
         # Check whether the given ngals is the retrieved ngals
-        assert_equal(len(data['ra']),ngals)
+        assert_equal(len(data['ra']), ngals)
 
         # Check that there are no galaxies with |e|>1
-        assert_equal(np.count_nonzero((data['e1']>1) | (data['e1']<-1)),0)
-        assert_equal(np.count_nonzero((data['e2']>1) | (data['e2']<-1)),0)
+        assert_equal(np.count_nonzero((data['e1'] > 1) | (data['e1'] < -1)), 0)
+        assert_equal(np.count_nonzero((data['e2'] > 1) | (data['e2'] < -1)), 0)
 
         # Create shear profile
         cl = clmm.GalaxyCluster("test_cluster", 0.0, 0.0, 0.3, data)
@@ -90,11 +90,11 @@ def test_mock_data():
         binned = cl.make_radial_profile("Mpc", bins=da.make_bins(0.5, 5.0, 100),
                                   cosmo=cosmo, include_empty_bins=False)
 
-        popt,pcov = fitters['curve_fit'](lambda r, logm: nfw_shear_profile(r, logm, 0.8),
-                            binned['radius'],
-                            binned['gt'],
-                            np.ones_like(binned['gt'])*1.e-5,
-                            bounds=[13.,17.],p0=guess)
+        popt, pcov = fitters['curve_fit'](lambda r, logm: nfw_shear_profile(r, logm, 0.8),
+                             binned['radius'],
+                             binned['gt'],
+                             np.ones_like(binned['gt'])*1.e-5,
+                             bounds=[13.,17.], p0=guess)
 
         return popt[0]
 
