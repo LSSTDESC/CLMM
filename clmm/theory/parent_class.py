@@ -147,6 +147,7 @@ class CLMModeling:
         """
         if self.validate_input:
             validate_argument(locals(), 'r3d', 'float_array', argmin=0)
+            validate_argument(locals(), 'z_cl', 'float_array', argmin=0)
         return self._eval_3d_density(r3d=r3d, z_cl=z_cl)
 
     def _eval_3d_density(self, r3d, z_cl):
@@ -192,6 +193,7 @@ class CLMModeling:
         """
         if self.validate_input:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
+            validate_argument(locals(), 'z_cl', float, argmin=0)
         return self._eval_surface_density(r_proj=r_proj, z_cl=z_cl)
 
     def _eval_surface_density(self, r_proj, z_cl):
@@ -214,6 +216,7 @@ class CLMModeling:
         """
         if self.validate_input:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
+            validate_argument(locals(), 'z_cl', float, argmin=0)
         return self._eval_mean_surface_density(r_proj=r_proj, z_cl=z_cl)
 
     def _eval_mean_surface_density(self, r_proj, z_cl):
@@ -236,6 +239,7 @@ class CLMModeling:
         """
         if self.validate_input:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
+            validate_argument(locals(), 'z_cl', float, argmin=0)
         return self._eval_excess_surface_density(r_proj=r_proj, z_cl=z_cl)
 
     def _eval_excess_surface_density(self, r_proj, z_cl):
@@ -260,6 +264,8 @@ class CLMModeling:
         """
         if self.validate_input:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
+            validate_argument(locals(), 'z_cl', float, argmin=0)
+            validate_argument(locals(), 'z_src', 'float_array', argmin=0)
         return self._eval_tangential_shear(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
 
     def _eval_tangential_shear(self, r_proj, z_cl, z_src):
@@ -294,6 +300,8 @@ class CLMModeling:
         """
         if self.validate_input:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
+            validate_argument(locals(), 'z_cl', float, argmin=0)
+            validate_argument(locals(), 'z_src', 'float_array', argmin=0)
         return self._eval_convergence(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
 
     def _eval_convergence(self, r_proj, z_cl, z_src):
@@ -320,6 +328,8 @@ class CLMModeling:
         """
         if self.validate_input:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
+            validate_argument(locals(), 'z_cl', float, argmin=0)
+            validate_argument(locals(), 'z_src', 'float_array', argmin=0)
         return self._eval_reduced_tangential_shear(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
 
     def _eval_reduced_tangential_shear(self, r_proj, z_cl, z_src):
@@ -355,6 +365,8 @@ class CLMModeling:
         """
         if self.validate_input:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
+            validate_argument(locals(), 'z_cl', float, argmin=0)
+            validate_argument(locals(), 'z_src', 'float_array', argmin=0)
         return self._eval_magnification(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
 
     def _eval_magnification(self, r_proj, z_cl, z_src):
