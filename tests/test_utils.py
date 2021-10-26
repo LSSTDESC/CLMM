@@ -49,7 +49,7 @@ def test_correct_sigma_with_boost_values() :
     test_unit_boost_factors = np.ones(rvals.shape)
 
     corrected_sigma = utils.correct_sigma_with_boost_values(rvals, sigma_vals, test_unit_boost_factors)
-    assert_allclose(sigma_vals, test_unit_boost_factors)
+    assert_allclose(sigma_vals, corrected_sigma)
     
     
 def test_correct_sigma_with_boost_model() :
