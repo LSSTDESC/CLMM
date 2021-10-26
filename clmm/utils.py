@@ -152,8 +152,8 @@ def convert_units(dist1, unit1, unit2, redshift=None, cosmo=None):
         Unit for the output distances
     redshift : float
         Redshift used to convert between angular and physical units
-    cosmo : astropy.cosmology
-        Astropy cosmology object to compute angular diameter distance to
+    cosmo : CLMM.Cosmology
+        CLMM Cosmology object to compute angular diameter distance to
         convert between physical and angular units
 
     Returns
