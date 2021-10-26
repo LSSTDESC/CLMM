@@ -65,7 +65,7 @@ def test_correct_sigma_with_boost_model() :
 
     # Test requesting unsupported boost model
     assert_raises(ValueError,
-                  correct_sigma_with_boost_model(rvals, sigma_vals, boost_model='glue')
+                  correct_sigma_with_boost_model(rvals, sigma_vals, boost_model='glue'))
 
 
                    
