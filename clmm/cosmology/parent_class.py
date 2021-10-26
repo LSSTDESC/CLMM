@@ -47,10 +47,14 @@ class CLMMCosmology:
 
         Parameters
         ----------
-        be_cosmo: clmm.cosmology.Cosmology object, None
-            Input cosmology, used if not None
-        **kwargs
-            Individual cosmological parameters
+        H0: float
+            Hubble parameter.
+        Omega_b0: float
+            Mass density of baryons today.
+        Omega_dm0: float
+            Mass density of dark matter only (no baryons) today.
+        Omega_k0: float
+            Mass density of curvature today.
         """
         if self.validate_input:
             validate_argument(locals(), 'H0', float, argmin=0)
@@ -91,9 +95,9 @@ class CLMMCosmology:
         Parameters
         ----------
         be_cosmo: clmm.cosmology.Cosmology object, None
-            Input cosmology, used if not None
+            Input cosmology, used if not None.
         **kwargs
-            Individual cosmological parameters
+            Individual cosmological parameters, see init_from_params function.
         """
         if be_cosmo:
             self._init_from_cosmo(be_cosmo)
