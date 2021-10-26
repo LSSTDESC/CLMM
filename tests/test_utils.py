@@ -48,7 +48,7 @@ def test_correct_sigma_with_boost_values() :
 
     test_unit_boost_factors = np.ones(rvals.shape)
 
-    corrected_sigma = correct_sigma_with_boost_values(rvals, sigma_vals, test_unit_boost_factors)
+    corrected_sigma = utils.correct_sigma_with_boost_values(rvals, sigma_vals, test_unit_boost_factors)
     assert_allclose(sigma_vals, test_unit_boost_factors)
     
     
@@ -60,12 +60,12 @@ def test_correct_sigma_with_boost_model() :
 
     for boost_model in utils.boost_models.values() :
         # Check for no nans or inf with positive-definite rvals and sigma vals
-        assert(np.all(np.isfinite(correct_sigma_with_boost_model(rvals, sigma_vals, boost_model=boost_model))))
+        assert(np.all(np.isfinite(utils.correct_sigma_with_boost_model(rvals, sigma_vals, boost_model=boost_model))))
 
 
     # Test requesting unsupported boost model
     assert_raises(ValueError,
-                  correct_sigma_with_boost_model(rvals, sigma_vals, boost_model='glue'))
+                  utils.correct_sigma_with_boost_model(rvals, sigma_vals, boost_model='glue'))
 
 
                    
