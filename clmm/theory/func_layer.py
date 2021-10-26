@@ -59,6 +59,8 @@ def compute_3d_density(
     -------
     rho : array_like, float
         3-dimensional mass density in units of :math:`M_\odot\ Mpc^{-3}`
+    validate_input: bool
+        Validade each input argument
 
     Notes
     -----
@@ -119,6 +121,8 @@ def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     -------
     sigma : array_like, float
         2D projected surface density in units of :math:`M_\odot\ Mpc^{-2}`
+    validate_input: bool
+        Validade each input argument
 
     Notes
     -----
@@ -178,6 +182,9 @@ def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
             * `critical` - not in cluster_toolkit;
             * `virial` - not in cluster_toolkit;
 
+    validate_input: bool
+        Validade each input argument
+
     Returns
     -------
     deltasigma : array_like, float
@@ -215,6 +222,8 @@ def compute_critical_surface_density(cosmo, z_cluster, z_source, validate_input=
     -------
     sigma_c : float
         Cosmology-dependent critical surface density in units of :math:`M_\odot\ Mpc^{-2}`
+    validate_input: bool
+        Validade each input argument
 
     Notes
     -----
@@ -278,6 +287,8 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
             `single_plane` (default) - all sources at one redshift (if
             `z_source` is a float) or known individual source galaxy redshifts
             (if `z_source` is an array and `r_proj` is a float);
+    validate_input: bool
+        Validade each input argument
 
     Returns
     -------
@@ -362,6 +373,8 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
             `single_plane` (default) - all sources at one redshift (if
             `z_source` is a float) or known individual source galaxy redshifts
             (if `z_source` is an array and `r_proj` is a float);
+    validate_input: bool
+        Validade each input argument
 
     Returns
     -------
@@ -447,6 +460,8 @@ def compute_reduced_tangential_shear(
             `single_plane` (default) - all sources at one redshift (if
             `z_source` is a float) or known individual source galaxy redshifts
             (if `z_source` is an array and `r_proj` is a float);
+    validate_input: bool
+        Validade each input argument
 
     Returns
     -------
@@ -537,6 +552,8 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
             `single_plane` (default) - all sources at one redshift (if
             `z_source` is a float) or known individual source galaxy redshifts
             (if `z_source` is an array and `r_proj` is a float);
+    validate_input: bool
+        Validade each input argument
 
     Returns
     -------
