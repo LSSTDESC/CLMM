@@ -19,6 +19,11 @@ from .. utils import _patch_rho_crit_to_cd2018
 from .. cosmology.ccl import CCLCosmology
 Cosmology = CCLCosmology
 
+# functions for the 2h term
+from scipy.integrate import simps 
+from scipy.special import jv
+from scipy.interpolate import interp1d
+
 __all__ = ['CCLCLMModeling', 'Modeling', 'Cosmology']+func_layer.__all__
 
 
@@ -142,6 +147,35 @@ class CCLCLMModeling(CLMModeling):
         mean_dens = self.hdpm.cumul2d(*args)
         dens = self.hdpm.projected(*args)
         return (mean_dens-dens)*self.cor_factor/a_cl**2
+    
+    def eval_excess_surface_density_2h(self, r_proj, z_cl , b , kk = np.logspace(-5.,5.,1000), lsteps = 100 ):
+        """"eval excess surface density 2-halo term
+            equation 13. from Oguri & Hamana 2011 """
+        
+        
+        Da = ccl.angular_diameter_distance( self.cosmo.be_cosmo, 1, 1./(1. + z_cl))  
+        # Msun/Mpc**3
+        rho_m = ccl.rho_x( self.cosmo.be_cosmo, 
+                           1./(1. + z_cl), 
+                           'matter', 
+                           is_comoving = False )
+
+        pk = ccl.linear_matter_power( self.cosmo.be_cosmo , kk, 1./(1.+z_cl) )
+        interp_pk = interp1d( kk, pk, kind='cubic' )
+
+        theta = r_proj / Da
+
+        # calculate integral, units [Mpc]**-3
+        def __integrand__( l , theta ):
+
+            k = l / ((1 + z_cl) * Da)      
+            return l * jv( 2 , l * theta ) * interp_pk( k )
+        
+        ll = np.logspace( 0 , 6 , lsteps )
+
+        val = np.array( [ simps( __integrand__( ll , t ) , ll ) for t in theta ] )
+
+        return b * val * rho_m / ( 2 * np.pi  * ( 1 + z_cl )**3 * Da**2 )
 
     def eval_tangential_shear(self, r_proj, z_cl, z_src):
         """"eval tangential shear"""
