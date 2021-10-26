@@ -381,7 +381,7 @@ _valid_types = {
     'int_array': (int, np.integer)
     }
 
-def validate_argument(loc, argname, valid_type, none_ok=True, argmin=None, argmax=None,
+def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argmax=None,
                       eqmin=False, eqmax=False):
     r"""Validate argument type and raise errors.
 
@@ -392,7 +392,7 @@ def validate_argument(loc, argname, valid_type, none_ok=True, argmin=None, argma
     argname: str
         Name of argument to be tested.
     valid_type: str, type
-        Valid types for argument, options are object types or:
+        Valid types for argument, options are object types, list/tuple of types, or:
 
             * `int_array` - interger, interger array
             * `float_array` - float, float array
@@ -418,16 +418,24 @@ def validate_argument(loc, argname, valid_type, none_ok=True, argmin=None, argma
         if not isinstance(var[0], types):
             err = f'{argname} must be {types}, received {type(var[0]).__name__}'
             raise TypeError(err)
+    # Check for list/tuple of type
+    elif isinstance(valid_type, (list, tuple)):
+        if not any(isinstance(var, _valid_types.get(types, types)) for types in valid_type):
+            err = f'{argname} must be {valid_type}, received {type(var).__name__}'
+            raise TypeError(err)
     # Check for type
     else:
-        types = _valid_types.get(valid_type, valid_type)
-        if types is not None:
-            if not isinstance(var, types):
-                err = f'{argname} must be {valid_type}, received {type(var).__name__}'
-                raise TypeError(err)
+        if not isinstance(var, _valid_types.get(valid_type, valid_type)):
+            err = f'{argname} must be {valid_type}, received {type(var).__name__}'
+            raise TypeError(err)
     # Check min/max
-    if valid_type in (float, int, 'int_array', 'float_array'):
-        var_array = np.array(var)
+    if any(t is not None for t in (argmin, argmax)):
+        try:
+            var_array = np.array(var, dtype=float)
+        except:
+            err = f'{argname} ({type(var).__name__}) cannot be converted to number' \
+                  ' for min/max validation.'
+            raise TypeError(err)
         if argmin is not None:
             if (var_array.min()<argmin if eqmin else var_array.min()<=argmin):
                 err = f'{argname} must be greater than {argmin},' \
