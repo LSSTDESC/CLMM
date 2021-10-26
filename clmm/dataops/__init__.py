@@ -10,28 +10,29 @@ from .. theory import compute_critical_surface_density
 
 
 def compute_tangential_and_cross_components(
-                ra_lens, dec_lens, ra_source, dec_source,
-                shear1, shear2, geometry='curve',
-                is_deltasigma=False, cosmo=None,
-                z_lens=None, z_source=None, sigma_c=None):
+        ra_lens, dec_lens, ra_source, dec_source,
+        shear1, shear2, geometry='curve',
+        is_deltasigma=False, cosmo=None,
+        z_lens=None, z_source=None, sigma_c=None):
     r"""Computes tangential- and cross- components for shear or ellipticity
 
-    To do so, we need the right ascension and declination of the lens and of
-    all of the sources. We also need the two shape components of all of the sources.
+    To do so, we need the right ascension and declination of the lens and of all of the sources. We
+    also need the two shape components of all of the sources.
 
     These quantities can be handed to `tangential_and_cross_components` in two ways
 
     1. Pass in each as parameters::
 
-        compute_tangential_and_cross_components(ra_lens, dec_lens, ra_source, dec_source, shape_component1, shape_component2)
+        compute_tangential_and_cross_components(ra_lens, dec_lens, ra_source, dec_source,
+        shape_component1, shape_component2)
 
     2. As a method of `GalaxyCluster`::
 
         cluster.tangential_and_cross_components()
 
     The angular separation between the source and the lens, :math:`\theta`, and the azimuthal
-    position of the source relative to the lens, :math:`\phi`, are computed within the function
-    and the angular separation is returned.
+    position of the source relative to the lens, :math:`\phi`, are computed within the function and
+    the angular separation is returned.
 
     In the flat sky approximation, these angles are calculated using (_lens: lens, _source: source,
     RA is from right to left)
@@ -42,23 +43,28 @@ def compute_tangential_and_cross_components(
         \left(\alpha_l-\alpha_s\right)^2\cos^2(\delta_l)\\
         \tan\phi = & \frac{\delta_s-\delta_l}{\left(\alpha_l-\alpha_s\right)\cos(\delta_l)}
 
-    The tangential, :math:`g_t`, and cross, :math:`g_x`, ellipticity/shear components are calculated using the two
-    ellipticity/shear components :math:`g_1` and :math:`g_2` of the source galaxies, following Eq.7 and Eq.8
-    in Schrabback et al. (2018), arXiv:1611:03866
-    which is consistent with arXiv:0509252
+    The tangential, :math:`g_t`, and cross, :math:`g_x`, ellipticity/shear components are calculated
+    using the two ellipticity/shear components :math:`g_1` and :math:`g_2` of the source galaxies,
+    following Eq.7 and Eq.8 in Schrabback et al. (2018), arXiv:1611:03866 which is consistent with
+    arXiv:0509252
 
     .. math::
 
         g_t =& -\left( g_1\cos\left(2\phi\right)+g_2\sin\left(2\phi\right)\right)\\
         g_x =& g_1 \sin\left(2\phi\right)-g_2\cos\left(2\phi\right)
 
-    Finally, and if requested by the user throught the `is_deltasigma` flag, an estimate of the excess surface density :math:`\widehat{\Delta\Sigma}` is obtained from
+    Finally, and if requested by the user throught the `is_deltasigma` flag, an estimate of the
+    excess surface density :math:`\widehat{\Delta\Sigma}` is obtained from
 
     .. math::
 
         \widehat{\Delta\Sigma_{t,x}} = g_{t,x} \times \Sigma_c(cosmo, z_L, z_{\rm src})
 
-    where :math:`\Sigma_c` is the critical surface density that depends on the cosmology and on the lens and source redshifts. If :math:`g_{t,x}` correspond to the shear, the above expression is an accurate. However, if :math:`g_{t,x}` correspond to ellipticities or reduced shear, this expression only gives an estimate :math:`\widehat{\Delta\Sigma_{t,x}}`, valid only in the weak lensing regime.
+    where :math:`\Sigma_c` is the critical surface density that depends on the cosmology and on the
+    lens and source redshifts. If :math:`g_{t,x}` correspond to the shear, the above expression is
+    an accurate. However, if :math:`g_{t,x}` correspond to ellipticities or reduced shear, this
+    expression only gives an estimate :math:`\widehat{\Delta\Sigma_{t,x}}`, valid only in the weak
+    lensing regime.
 
     Parameters
     ----------
@@ -78,7 +84,8 @@ def compute_tangential_and_cross_components(
         Sky geometry to compute angular separation.
         Options are curve (uses astropy) or flat.
     is_deltasigma: bool
-        If `True`, the tangential and cross components returned are multiplied by Sigma_crit. Results in units of :math:`M_\odot\ Mpc^{-2}`
+        If `True`, the tangential and cross components returned are multiplied by Sigma_crit.
+        Results in units of :math:`M_\odot\ Mpc^{-2}`
     cosmo: clmm.Cosmology, optional
         Required if `is_deltasigma` is True and `sigma_c` not provided.
         Not used if `sigma_c` is provided.
@@ -101,19 +108,23 @@ def compute_tangential_and_cross_components(
     cross_component: array_like
         Cross shear (or assimilated quantity) for each source galaxy
     """
-    # Note: we make these quantities to be np.array so that a name is not passed from astropy columns
-    ra_source_, dec_source_, shear1_, shear2_ = arguments_consistency([ra_source, dec_source, shear1, shear2],
-                                                                names=('Ra', 'Dec', 'Shear1', 'Shear2'),
-                                                                prefix='Tangential- and Cross- shape components sources')
+    # pylint: disable-msg=too-many-locals
+    # Note: we make these quantities to be np.array so that a name is not passed from astropy
+    # columns
+    ra_source_, dec_source_, shear1_, shear2_ = arguments_consistency(
+        [ra_source, dec_source, shear1, shear2],
+        names=('Ra', 'Dec', 'Shear1', 'Shear2'),
+        prefix='Tangential- and Cross- shape components sources')
     # Compute the lensing angles
     if geometry == 'flat':
-        angsep, phi = _compute_lensing_angles_flatsky(ra_lens, dec_lens,
-                                                      ra_source_, dec_source_)
-    elif geometry=='curve':
-        angsep, phi = _compute_lensing_angles_astropy(ra_lens, dec_lens,
-                                                      ra_source_, dec_source_)
+        angsep, phi = _compute_lensing_angles_flatsky(
+            ra_lens, dec_lens, ra_source_, dec_source_)
+    elif geometry == 'curve':
+        angsep, phi = _compute_lensing_angles_astropy(
+            ra_lens, dec_lens, ra_source_, dec_source_)
     else:
-        raise NotImplementedError(f"Sky geometry {geometry} is not currently supported")
+        raise NotImplementedError(
+            f"Sky geometry {geometry} is not currently supported")
     # Compute the tangential and cross shears
     tangential_comp = _compute_tangential_shear(shear1_, shear2_, phi)
     cross_comp = _compute_cross_shear(shear1_, shear2_, phi)
@@ -122,7 +133,9 @@ def compute_tangential_and_cross_components(
         if sigma_c is None:
             # Need to verify that cosmology and redshifts are provided
             if any(t_ is None for t_ in (z_lens, z_source, cosmo)):
-                raise TypeError('To compute DeltaSigma, please provide a i) cosmology, ii) redshift of lens and sources')
+                raise TypeError(
+                    'To compute DeltaSigma, please provide a '
+                    'i) cosmology, ii) redshift of lens and sources')
             sigma_c = compute_critical_surface_density(cosmo, z_lens, z_source)
         tangential_comp *= sigma_c
         cross_comp *= sigma_c
@@ -170,17 +183,19 @@ def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_sourc
         raise ValueError("Cluster has an invalid dec in the source catalog")
     # Put angles between -pi and pi
     r2pi = lambda x: x-np.round(x/(2.0*math.pi))*2.0*math.pi
-    deltax = r2pi(np.radians(ra_source_list-ra_lens))*math.cos(math.radians(dec_lens))
+    deltax = r2pi(np.radians(ra_source_list-ra_lens)) * \
+        math.cos(math.radians(dec_lens))
     deltay = np.radians(dec_source_list-dec_lens)
     # Ensure that abs(delta ra) < pi
     #deltax[deltax >= np.pi] = deltax[deltax >= np.pi]-2.*np.pi
     #deltax[deltax < -np.pi] = deltax[deltax < -np.pi]+2.*np.pi
     angsep = np.sqrt(deltax**2+deltay**2)
     phi = np.arctan2(deltay, -deltax)
-    # Forcing phi to be zero everytime angsep is zero. This is necessary due to arctan2 features (it returns ).
-    phi[angsep==0.0] = 0.0
+    # Forcing phi to be zero everytime angsep is zero. This is necessary due to arctan2 features.
+    phi[angsep == 0.0] = 0.0
     if np.any(angsep > np.pi/180.):
-        warnings.warn("Using the flat-sky approximation with separations >1 deg may be inaccurate")
+        warnings.warn(
+            "Using the flat-sky approximation with separations >1 deg may be inaccurate")
     return angsep, phi
 
 
@@ -215,12 +230,14 @@ def _compute_lensing_angles_astropy(ra_lens, dec_lens, ra_source_list, dec_sourc
     if not all(-90. <= x_ <= 90 for x_ in dec_source_list):
         raise ValueError("Cluster has an invalid dec in the source catalog")
     sk_lens = SkyCoord(ra_lens*u.deg, dec_lens*u.deg, frame='icrs')
-    sk_src = SkyCoord(ra_source_list*u.deg, dec_source_list*u.deg, frame='icrs')
-    angsep, phi = sk_lens.separation(sk_src).rad, sk_lens.position_angle(sk_src).rad
+    sk_src = SkyCoord(ra_source_list*u.deg,
+                      dec_source_list*u.deg, frame='icrs')
+    angsep, phi = sk_lens.separation(
+        sk_src).rad, sk_lens.position_angle(sk_src).rad
     # Transformations for phi to have same orientation as _compute_lensing_angles_flatsky
     phi += 0.5*np.pi
-    phi[phi>np.pi] -= 2*np.pi
-    phi[angsep==0] = 0
+    phi[phi > np.pi] -= 2*np.pi
+    phi[angsep == 0] = 0
     return angsep, phi
 
 
@@ -302,8 +319,8 @@ def make_radial_profile(components, angsep, angsep_units, bin_units,
     Returns
     -------
     profile : GCData
-        Output table containing the radius grid points, the profile of the components `p_i`, errors `p_i_err` and number of sources.
-        The errors are defined as the standard errors in each bin.
+        Output table containing the radius grid points, the profile of the components `p_i`, errors
+        `p_i_err` and number of sources.  The errors are defined as the standard errors in each bin.
     binnumber: 1-D ndarray of ints, optional
         Indices of the bins (corresponding to `xbins`) in which each value
         of `xvals` belongs.  Same length as `yvals`.  A binnumber of `i` means the
@@ -311,8 +328,10 @@ def make_radial_profile(components, angsep, angsep_units, bin_units,
 
     Notes
     -----
-    This is an example of a place where the cosmology-dependence can be sequestered to another module.
+    This is an example of a place where the cosmology-dependence can be sequestered to another
+    module.
     """
+    # pylint: disable-msg=too-many-locals
     # Check to see if we need to do a unit conversion
     if angsep_units is not bin_units:
         source_seps = convert_units(angsep, angsep_units, bin_units,
@@ -325,8 +344,8 @@ def make_radial_profile(components, angsep, angsep_units, bin_units,
     # Create output table
     profile_table = GCData([bins[:-1], np.zeros(len(bins)-1), bins[1:]],
                            names=('radius_min', 'radius', 'radius_max'),
-                           meta={'bin_units' : bin_units}, # Add metadata
-                          )
+                           meta={'bin_units': bin_units},  # Add metadata
+                           )
     # Compute the binned averages and associated errors
     for i, component in enumerate(components):
         r_avg, comp_avg, comp_err, nsrc, binnumber = compute_radial_averages(
@@ -337,7 +356,7 @@ def make_radial_profile(components, angsep, angsep_units, bin_units,
     profile_table['n_src'] = nsrc
     # return empty bins?
     if not include_empty_bins:
-        profile_table = profile_table[nsrc>1]
+        profile_table = profile_table[nsrc > 1]
     if return_binnumber:
         return profile_table, binnumber
     return profile_table
