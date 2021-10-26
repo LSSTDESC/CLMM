@@ -37,8 +37,7 @@ def compute_nfw_boost(rvals, rs=1000, b0=0.1) :
 
 
 def compute_powerlaw_boost(rvals, rs=1000, b0=0.1, alpha=-1.0) :
-    """ Given a list of xvals, yvals and bins, sort into bins. If xvals or yvals
-    contain non-finite values, these are filtered.
+    """  Given a list of rvals, and optional rs and b0, and alpha, return the corresponding boost factor at each rval
 
     Parameters
     ----------
@@ -96,10 +95,11 @@ def correct_sigma_with_boost_model(rvals, sigma_vals, boost_model='nfw_boost', *
         radii
     sigma_vals : array_like
         uncorrected sigma with cluster member dilution
-    error_model : str, optional
+    boost_model : str, optional
         Boost model to use for correcting sigma
             `nfw_boost` - NFW profile model (Default)
             `powerlaw_boost` - Powerlaw profile
+    
 
     Returns
     -------
