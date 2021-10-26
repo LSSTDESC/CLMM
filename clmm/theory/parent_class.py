@@ -63,6 +63,7 @@ class CLMModeling:
                 raise NotImplementedError
             validate_argument(locals(), 'cosmo', self.cosmo_class)
         self._set_cosmo(cosmo)
+        self.cosmo.validate_input = self.validate_input
 
     def _set_cosmo(self, cosmo):
         r""" Sets the cosmology to the internal cosmology object"""
