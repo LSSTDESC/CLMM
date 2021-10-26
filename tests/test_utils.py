@@ -77,7 +77,7 @@ def test_compute_radial_averages():
     xbins2 = [0., 5., 10.]
 
     # Test requesting an unsupported error model
-    assert_raises(ValueError, compute_radial_averages,
+    assert_raises(KeyError, compute_radial_averages,
                   binvals, binvals, [0., 10.], 'glue')
 
     # Check the default error model
