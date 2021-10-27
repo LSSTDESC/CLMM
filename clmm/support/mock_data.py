@@ -3,6 +3,7 @@ import warnings
 import numpy as np
 from scipy import integrate
 from scipy.interpolate import interp1d
+from scipy.special import gamma, gammainc
 
 from ..gcdata import GCData
 from ..theory import compute_tangential_shear, compute_convergence
