@@ -258,10 +258,14 @@ class CLMModeling:
     def eval_convergence(self, r_proj, z_cl, z_src):
         r"""Computes the mass convergence
         .. math::
+        
             \kappa = \frac{\Sigma}{\Sigma_{crit}}
+
         or
         .. math::
+        
             \kappa = \kappa_\infty \times \beta_s
+            
         Parameters
         ----------
         r_proj : array_like
@@ -270,10 +274,12 @@ class CLMModeling:
             Galaxy cluster redshift
         z_src : array_like, float
             Background source galaxy redshift(s)
+            
         Returns
         -------
         kappa : array_like, float
             Mass convergence, kappa.
+            
         Notes
         -----
         Need to figure out if we want to raise exceptions rather than errors here?
@@ -306,8 +312,11 @@ class CLMModeling:
 
     def eval_magnification(self, r_proj, z_cl, z_src):
         r"""Computes the magnification
+        
         .. math::
+        
             \mu = \frac{1}{(1-\kappa)^2-|\gamma_t|^2}
+            
         Parameters
         ----------
         r_proj : array_like
@@ -316,10 +325,12 @@ class CLMModeling:
             Galaxy cluster redshift
         z_src : array_like, float
             Background source galaxy redshift(s)
+            
         Returns
         -------
         mu : array_like, float
             magnification, mu.
+            
         Notes
         -----
         The magnification is computed taking into account just the tangential
