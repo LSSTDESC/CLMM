@@ -336,10 +336,11 @@ def _draw_random_points_from_distribution(xmin, xmax, nobj, dist_func, xstep=0.0
     ndarray
         Random points with dist_func distribution
     """
-    xdomain = np.arange(xmin, xmax, xstep)
+    steps = int((xmax-xmin)/xstep)+2
+    xdomain = np.linspace(xmin, xmax, steps)
     # Cumulative probability function of the redshift distribution
-    probdist = np.vectorize(lambda zmax: integrate.quad(
-        dist_func, xmin, zmax)[0])(xdomain)
+    #probdist = np.vectorize(lambda zmax: integrate.quad(dist_func, xmin, zmax)[0])(xdomain)
+    probdist = dist_func(xdomain, is_cdf=True)-dist_func(xmin, is_cdf=True)
     # Get random values for probdist
     uniform_deviate = np.random.uniform(probdist.min(), probdist.max(), nobj)
     return interp1d(probdist, xdomain, kind='linear')(uniform_deviate)
