@@ -58,7 +58,3 @@ def compute_magnification_bias_from_magnification(magnification, alpha):
     """
     magnification_bias_from_magnification = np.array(magnification)**(np.array([alpha]).T - 1)
     return magnification_bias_from_magnification
-<<<<<<< HEAD
-=======
-
->>>>>>> 5e7a05adc161c678c6aa66f22e9f13b8dbed1bbc
