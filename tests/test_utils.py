@@ -6,7 +6,8 @@ from numpy.testing import assert_raises, assert_allclose
 import clmm.utils as utils
 import clmm.theory as md
 from clmm.utils import (
-    compute_radial_averages, make_bins, convert_shapes_to_epsilon, arguments_consistency)
+    compute_radial_averages, make_bins, convert_shapes_to_epsilon, arguments_consistency,
+    validate_argument)
 
 
 TOLERANCE = {'rtol': 1.0e-6, 'atol': 0}
@@ -301,3 +302,48 @@ def test_arguments_consistency():
     assert_raises(TypeError, arguments_consistency, [1, [1, 2]])
     assert_raises(TypeError, arguments_consistency, [[1], [1, 2]])
     assert_raises(TypeError, arguments_consistency, [1, 2], names=['a'])
+
+
+def test_validate_argument():
+    """test validate argument"""
+    loc = {'float': 1.1, 'int':3, 'str': 'test', 'int_array': [1, 2], 'float_array': [1.1, 1.2],
+           'float_str': '1.1', 'none':None,}
+    # Validate type
+    for type_ in (int, float, 'int_array', 'float_array', (str, int)):
+        assert validate_argument(loc, 'int', type_) is None
+    for type_ in (float, 'float_array', (str, float)):
+        assert validate_argument(loc, 'float', type_) is None
+    for type_ in ('int_array', 'float_array', (str, 'int_array')):
+        assert validate_argument(loc, 'int_array', type_) is None
+    for type_ in ('float_array', (str, 'float_array')):
+        assert validate_argument(loc, 'float_array', type_) is None
+    for type_ in (str, ('float_array', str, float)):
+        assert validate_argument(loc, 'str', type_) is None
+    assert validate_argument(loc, 'none', 'float', none_ok=True) is None # test none_ok
+
+    for type_ in (bool, (bool, tuple)):
+        for argname in loc:
+            assert_raises(TypeError, validate_argument, loc, argname, type_)
+
+    for type_ in (int, (str, 'int_array')):
+        assert_raises(TypeError, validate_argument, loc, 'float', type_)
+
+    for type_ in (int, float, (str, float)):
+        for argname in ('int_array', 'float_array'):
+            assert_raises(TypeError, validate_argument, loc, argname, type_)
+
+    for argname in ('float', 'int', 'int_array', 'float_array', 'float_str'):
+        assert validate_argument(loc, argname, ('float_array', str), argmin=0, argmax=4,
+                                 eqmin=False, eqmax=False) is None
+        assert validate_argument(loc, argname, ('float_array', str), argmin=0, argmax=4,
+                                 eqmin=True, eqmax=True) is None
+
+    assert_raises(TypeError, validate_argument, loc, 'str', ('float_array', str), argmin=0)
+
+
+    for argname in ('float', 'float_array', 'float_str'):
+        assert_raises(ValueError, validate_argument, loc, argname, ('float_array', str), argmin=1.1)
+        assert validate_argument(loc, argname, ('float_array', str), argmin=1.1, eqmin=True) is None
+        assert_raises(ValueError, validate_argument, loc, argname, ('float_array', str), argmax=1.1)
+
+    assert validate_argument(loc, 'float_array', ('float_array', str), argmax=1.2, eqmax=True) is None
