@@ -5,7 +5,6 @@ import numpy as np
 from .generic import *
 
 
-
 class CLMModeling:
     r"""Object with functions for halo mass modeling
     Attributes
@@ -356,7 +355,9 @@ class CLMModeling:
 
         Notes
         -----
-        Need to figure out if we want to raise exceptions rather than errors here?
+        The magnification is computed taking into account just the tangential
+        shear. This is valid for spherically averaged profiles, e.g., NFW and
+        Einasto (by construction the cross shear is zero).
         """
         magnification = self.eval_magnification(r_proj, z_cl, z_src)
         return compute_magnification_bias_from_magnification(magnification, alpha)
