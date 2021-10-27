@@ -186,6 +186,8 @@ def _chang_z_distrib(redshift, is_cdf=False):
     ----------
     redshift : float
         Galaxy redshift
+    is_cdf : bool
+        If True, returns cumulative distribution function.
 
     Returns
     -------
@@ -207,6 +209,8 @@ def _srd_z_distrib(redshift, is_cdf=False):
     ----------
     redshift : float
         Galaxy redshift
+    is_cdf : bool
+        If True, returns cumulative distribution function.
 
     Returns
     -------
