@@ -1,2 +1,5 @@
 [MESSAGES CONTROL]
-disable=W0401, R0903
+disable=R0913
+
+[TYPECHECK]
+ignored-classes=astropy.units, astropy.constants

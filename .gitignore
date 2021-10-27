@@ -6,8 +6,5 @@ __pycache__
 *.pyc
 *.egg*
 .ipynb*
-
-# Documentation Files
-docs/api/
-docs/_build/*
-docs/api.rst
+*.pkl
+.python-version
