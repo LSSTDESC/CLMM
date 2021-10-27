@@ -2,14 +2,7 @@
 CLMModeling abstract class
 """
 import numpy as np
-<<<<<<< HEAD
 from .generic import *
-
-=======
-
-from .generic import *
-
->>>>>>> 5e7a05adc161c678c6aa66f22e9f13b8dbed1bbc
 
 class CLMModeling:
     r"""Object with functions for halo mass modeling
@@ -367,7 +360,3 @@ class CLMModeling:
         """
         magnification = self.eval_magnification(r_proj, z_cl, z_src)
         return compute_magnification_bias_from_magnification(magnification, alpha)
-<<<<<<< HEAD
-=======
-
->>>>>>> 5e7a05adc161c678c6aa66f22e9f13b8dbed1bbc
