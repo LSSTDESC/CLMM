@@ -25,8 +25,8 @@ def compute_reduced_shear_from_convergence(shear, convergence):
 	array_like
 		Reduced shear
 	"""
-    reduced_shear = np.array(shear)/(1.-np.array(convergence))
-    return reduced_shear
+	reduced_shear = np.array(shear)/(1.-np.array(convergence))
+	return reduced_shear
 
 
 def compute_magnification_bias_from_magnification(magnification, alpha):
