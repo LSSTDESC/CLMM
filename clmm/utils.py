@@ -21,8 +21,10 @@ def compute_radial_averages(xvals, yvals, xbins, yerr=None, error_model='ste', w
         Errors of component y
     error_model : str, optional
         Statistical error model to use for y uncertainties. (letter case independent)
-            `ste` - Standard error [=std/sqrt(n) in unweighted computation] (Default).
-            `std` - Standard deviation.
+
+            * `ste` - Standard error [=std/sqrt(n) in unweighted computation] (Default).
+            * `std` - Standard deviation.
+
     weights: array_like, None
         Weights for averages.
 
