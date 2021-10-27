@@ -114,10 +114,21 @@ def compute_tangential_and_cross_components(
     # Note: we make these quantities to be np.array so that a name is not passed from astropy
     # columns
     if validate_input:
-        validate_argument(locals(), 'ra_source', 'float_array')
-        validate_argument(locals(), 'dec_source', 'float_array')
+        validate_argument(locals(), 'ra_source', 'float_array',
+                          argmin=-360, eqmin=True, argmax=360, eqmax=True)
+        validate_argument(locals(), 'dec_source', 'float_array',
+                          argmin=-90, eqmin=True, argmax=90, eqmax=True)
+        validate_argument(locals(), 'ra_lens', 'float_array',
+                          argmin=-360, eqmin=True, argmax=360, eqmax=True)
+        validate_argument(locals(), 'dec_lens', 'float_array',
+                          argmin=-90, eqmin=True, argmax=90, eqmax=True)
         validate_argument(locals(), 'shear1', 'float_array')
         validate_argument(locals(), 'shear2', 'float_array')
+        validate_argument(locals(), 'geometry', str)
+        validate_argument(locals(), 'is_deltasigma', bool)
+        validate_argument(locals(), 'z_lens', float, argmin=0, eqmin=True, none_ok=True)
+        validate_argument(locals(), 'z_source', 'float_array', argmin=0, eqmin=True, none_ok=True)
+        validate_argument(locals(), 'sigma_c', 'float_array', none_ok=True)
         ra_source_, dec_source_, shear1_, shear2_ = arguments_consistency(
             [ra_source, dec_source, shear1, shear2],
             names=('Ra', 'Dec', 'Shear1', 'Shear2'),
@@ -185,14 +196,6 @@ def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_sourc
     phi: array
         Azimuthal angle from the lens to the source in radians
     """
-    if not -360. <= ra_lens <= 360.:
-        raise ValueError(f"ra = {ra_lens} of lens if out of domain")
-    if not -90. <= dec_lens <= 90.:
-        raise ValueError(f"dec = {dec_lens} of lens if out of domain")
-    if not all(-360. <= x_ <= 360. for x_ in ra_source_list):
-        raise ValueError("Cluster has an invalid ra in source catalog")
-    if not all(-90. <= x_ <= 90 for x_ in dec_source_list):
-        raise ValueError("Cluster has an invalid dec in the source catalog")
     # Put angles between -pi and pi
     r2pi = lambda x: x-np.round(x/(2.0*math.pi))*2.0*math.pi
     deltax = r2pi(np.radians(ra_source_list-ra_lens)) * \
@@ -204,7 +207,10 @@ def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_sourc
     angsep = np.sqrt(deltax**2+deltay**2)
     phi = np.arctan2(deltay, -deltax)
     # Forcing phi to be zero everytime angsep is zero. This is necessary due to arctan2 features.
-    phi[angsep == 0.0] = 0.0
+    if np.iterable(phi):
+        phi[angsep == 0.0] = 0.0
+    else:
+        phi = 0.0 if angsep == 0.0 else phi
     if np.any(angsep > np.pi/180.):
         warnings.warn(
             "Using the flat-sky approximation with separations >1 deg may be inaccurate")
@@ -233,14 +239,6 @@ def _compute_lensing_angles_astropy(ra_lens, dec_lens, ra_source_list, dec_sourc
     phi: array
         Azimuthal angle from the lens to the source in radians
     """
-    if not -360. <= ra_lens <= 360.:
-        raise ValueError(f"ra = {ra_lens} of lens if out of domain")
-    if not -90. <= dec_lens <= 90.:
-        raise ValueError(f"dec = {dec_lens} of lens if out of domain")
-    if not all(-360. <= x_ <= 360. for x_ in ra_source_list):
-        raise ValueError("Cluster has an invalid ra in source catalog")
-    if not all(-90. <= x_ <= 90 for x_ in dec_source_list):
-        raise ValueError("Cluster has an invalid dec in the source catalog")
     sk_lens = SkyCoord(ra_lens*u.deg, dec_lens*u.deg, frame='icrs')
     sk_src = SkyCoord(ra_source_list*u.deg,
                       dec_source_list*u.deg, frame='icrs')
@@ -248,8 +246,12 @@ def _compute_lensing_angles_astropy(ra_lens, dec_lens, ra_source_list, dec_sourc
         sk_src).rad, sk_lens.position_angle(sk_src).rad
     # Transformations for phi to have same orientation as _compute_lensing_angles_flatsky
     phi += 0.5*np.pi
-    phi[phi > np.pi] -= 2*np.pi
-    phi[angsep == 0] = 0
+    if np.iterable(phi):
+        phi[phi > np.pi] -= 2*np.pi
+        phi[angsep == 0] = 0
+    else:
+        phi -= 2*np.pi if phi > np.pi else 0
+        phi = 0 if angsep == 0 else phi
     return angsep, phi
 
 
