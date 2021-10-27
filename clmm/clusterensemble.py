@@ -2,6 +2,7 @@
 The Cluster Ensemble class
 """
 
+from .gcdata import GCData
 from .galaxycluster import GalaxyCluster
 from collections import Sequence
 
@@ -12,22 +13,18 @@ class ClusterEnsemble():
     ----------
     unique_id : int or string
         Unique identifier of the galaxy cluster ensemble
-    gclist : list
-        List of galaxy cluster objects
+    data : GCData
+        Table with galaxy clusters data (i. e. ids, profiles, redshifts).
+    id_dict: dict
+        Dictionary of indicies given the cluster id
     """
-    def __init__(self, unique_id, gclist):
+    def __init__(self, unique_id, *args, **kwargs):
         """Initializes a ClusterEnsemble object
 
         Parameters
         ----------
         unique_id : int or string
             Unique identifier of the galaxy cluster ensemble
-        gclist : collections.Sequence
-            Array-like Sequence of galaxy cluster objects
-
-        Returns
-        ---------
-
         """
         if isinstance(unique_id, (int, str)):
             unique_id = str(unique_id)
@@ -42,18 +39,32 @@ class ClusterEnsemble():
                 raise TypeError('gclist entry incorrect type: %s'%type(gc))
 
         self.unique_id = unique_id
-        self.gclist = gclist
+        self.data = GCData
+        self.id_dict = {}
+        if len(args)>0 or len(kwargs)>0:
+            self._add_values(*args, **kwargs)
 
-    def __getitem__(self, key):
-        """Returns GalaxyCluster object at key in gclist"""
-        if ~isinstance(key, int):
-            raise TypeError('key incorrect type: %s'%type(key))
-        
-        return gclist[key]
+    def _add_values(self, gc_list, gc_cols):
+        """Add values for all attributes
+
+        Parameters
+        ----------
+        gc_list : list, tuple
+            List of GalaxyCluster objects.
+        gc_cols : list, tuple
+            List of GalaxyCluster objects.
+        """
+        for gc in gc_list:
+            self.add_cl_profile(gc)
+        self.id_dict = {i:ind for ind, i in enumerate(self['id'])}
+
+    def __getitem__(self, item):
+        """Returns self.data[item]"""
+        return self.data[item]
 
     def __len__(self):
         """Returns length of ClusterEnsemble"""
-        return len(gclist)
+        return len(self.data)
 
     def stack(self):
         """Produces a GalaxyCluster object by stacking elements of gclist
