@@ -157,31 +157,5 @@ class CTModeling(CLMModeling):
             r_proj, sigma_r_proj, sigma, self.mdelta*h,
             self.cdelta, Omega_m, delta=self.delta_mdef)*h*1.0e12  # pc**-2 to Mpc**-2
 
-    def eval_tangential_shear(self, r_proj, z_cl, z_src):
-        """"eval tangential shear"""
-        delta_sigma = self.eval_excess_surface_density(r_proj, z_cl)
-        sigma_c = self.eval_critical_surface_density(z_cl, z_src)
-        return delta_sigma/sigma_c
-
-    def eval_convergence(self, r_proj, z_cl, z_src):
-        """"eval convergence"""
-        sigma = self.eval_surface_density(r_proj, z_cl)
-        sigma_c = self.eval_critical_surface_density(z_cl, z_src)
-        return sigma/sigma_c
-
-    def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src):
-        """"eval reduced tangential shear"""
-        kappa = self.eval_convergence(r_proj, z_cl, z_src)
-        gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
-        return np.divide(gamma_t, (1-kappa))
-
-    def eval_magnification(self, r_proj, z_cl, z_src):
-        """"eval magnification"""
-        # The magnification is computed taking into account just the tangential
-        # shear. This is valid for spherically averaged profiles, e.g., NFW and
-        # Einasto (by construction the cross shear is zero).
-        kappa = self.eval_convergence(r_proj, z_cl, z_src)
-        gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
-        return 1./((1-kappa)**2-abs(gamma_t)**2)
 
 Modeling = CTModeling
