@@ -1,7 +1,6 @@
 """Functions to generate mock source galaxy distributions to demo lensing code"""
 import warnings
 import numpy as np
-from scipy import integrate
 from scipy.interpolate import interp1d
 from scipy.special import gamma, gammainc
 
