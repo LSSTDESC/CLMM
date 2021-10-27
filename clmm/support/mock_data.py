@@ -70,9 +70,8 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc,
         Cluster redshift
     cluster_c : float
         Cluster concentration in the same mass definition as delta_so
-    cosmo : dict
-        Dictionary of cosmological parameters. Must contain at least, Omega_c, Omega_b,
-        and H0
+    cosmo: clmm.Cosmology, optional
+        Cosmology object.
     zsrc : float or str
         Choose the source galaxy distribution to be fixed or drawn from a predefined distribution.
 
