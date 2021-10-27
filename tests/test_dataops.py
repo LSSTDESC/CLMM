@@ -413,9 +413,21 @@ def test_make_radial_profiles():
         # Test it runs with galaxy id's and int bins and no empty bins
         cluster.make_radial_profile(bin_units, bins=bins_radians, include_empty_bins=False,
                                     gal_ids_in_bins=True, table_name='profile3')
-        _test_profile_table_output(
-            cluster.profile3, bins_radians[1], expected_radius[1], bins_radians[2],
-            expected['tan_shear'][1], expected['cross_shear'][1], [2], p0='gt', p1='gx')
+        _test_profile_table_output(cluster.profile3, bins_radians[1], expected_radius[1], bins_radians[2],
+                                   expected['tan_shear'][1], expected['cross_shear'][1], [2],
+                                   p0='gt', p1='gx')
+        # Test passing zeror errors
+        cluster_err = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
+                                     galcat=gals['ra', 'dec', 'e1', 'e2', 'z', 'id'])
+        cluster_err.compute_tangential_and_cross_components(geometry=geometry)
+        cluster_err.galcat['et_err'] = 0
+        cluster_err.galcat['ex_err'] = 0
+        cluster_err.make_radial_profile(bin_units, bins=bins_radians, include_empty_bins=False,
+            tan_component_in_err='et_err', cross_component_in_err='ex_err')
+        for c in cluster_err.profile.colnames:
+            testing.assert_allclose(cluster.profile[c], cluster_err.profile[c], **TOLERANCE,
+                                    err_msg=f"Value for {c} in bin not expected.")
+
     ########################################
     ### Basic tests of cluster object ######
     ########################################

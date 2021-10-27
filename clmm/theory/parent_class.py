@@ -2,6 +2,7 @@
 CLMModeling abstract class
 """
 import numpy as np
+from .generic import compute_reduced_shear_from_convergence
 
 
 class CLMModeling:
@@ -273,7 +274,9 @@ class CLMModeling:
         array_like, float
             tangential shear
         """
-        raise NotImplementedError
+        delta_sigma = self.eval_excess_surface_density(r_proj, z_cl)
+        sigma_c = self.eval_critical_surface_density(z_cl, z_src)
+        return delta_sigma/sigma_c
 
     def eval_convergence(self, r_proj, z_cl, z_src):
         r"""Computes the mass convergence
@@ -304,7 +307,9 @@ class CLMModeling:
         -----
         Need to figure out if we want to raise exceptions rather than errors here?
         """
-        raise NotImplementedError
+        sigma = self.eval_surface_density(r_proj, z_cl)
+        sigma_c = self.eval_critical_surface_density(z_cl, z_src)
+        return sigma/sigma_c
 
     def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src):
         r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
@@ -327,7 +332,9 @@ class CLMModeling:
         -----
         Need to figure out if we want to raise exceptions rather than errors here?
         """
-        raise NotImplementedError
+        kappa = self.eval_convergence(r_proj, z_cl, z_src)
+        gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
+        return compute_reduced_shear_from_convergence(gamma_t, kappa)
 
     def eval_magnification(self, r_proj, z_cl, z_src):
         r"""Computes the magnification
@@ -351,6 +358,10 @@ class CLMModeling:
 
         Notes
         -----
-        Need to figure out if we want to raise exceptions rather than errors here?
+        The magnification is computed taking into account just the tangential
+        shear. This is valid for spherically averaged profiles, e.g., NFW and
+        Einasto (by construction the cross shear is zero).
         """
-        raise NotImplementedError
+        kappa = self.eval_convergence(r_proj, z_cl, z_src)
+        gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
+        return 1./((1-kappa)**2-abs(gamma_t)**2)
