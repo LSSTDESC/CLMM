@@ -22,8 +22,7 @@ def compute_reduced_shear_from_convergence(shear, convergence):
 
     Returns
     -------
-    reduced_shear : array_like
+    array_like
         Reduced shear
     """
-    reduced_shear = np.array(shear)/(1.-np.array(convergence))
-    return reduced_shear
+    return np.array(shear)/(1.-np.array(convergence))
