@@ -5,7 +5,7 @@ from astropy import units as u
 from .constants import Constants as const
 
 
-def compute_radial_averages(xvals, yvals, xbins, error_model='std/sqrt_n'):
+def compute_radial_averages(xvals, yvals, xbins, yerr=None, error_model='ste', weights=None):
     """ Given a list of xvals, yvals and bins, sort into bins. If xvals or yvals
     contain non-finite values, these are filtered.
 
@@ -17,19 +17,25 @@ def compute_radial_averages(xvals, yvals, xbins, error_model='std/sqrt_n'):
         Values to compute statistics on
     xbins: array_like
         Bin edges to sort into
+    yerr : array_like, None
+        Errors of component y
     error_model : str, optional
-        Error model to use for y uncertainties (letter case independent):
+        Statistical error model to use for y uncertainties. (letter case independent)
 
-            * `std/sqrt_n` - Standard Deviation/sqrt(Counts) (Default)
-            * `std` - Standard deviation
+            * `ste` - Standard error [=std/sqrt(n) in unweighted computation] (Default).
+            * `std` - Standard deviation.
+
+    weights: array_like, None
+        Weights for averages.
+
 
     Returns
     -------
-    meanx : array_like
+    mean_x : array_like
         Mean x value in each bin
-    meany : array_like
+    mean_y : array_like
         Mean y value in each bin
-    yerr : array_like
+    err_y: array_like
         Error on the mean y value in each bin. Specified by error_model
     num_objects : array_like
         Number of objects in each bin
@@ -42,34 +48,27 @@ def compute_radial_averages(xvals, yvals, xbins, error_model='std/sqrt_n'):
     error_model = error_model.lower()
     # binned_statics throus an error in case of non-finite values, so filtering those out
     filt = np.isfinite(xvals)*np.isfinite(yvals)
-
-    meanx, xbins, binnumber = binned_statistic(
-        xvals[filt], xvals[filt], statistic='mean', bins=xbins)[:3]
-    meany = binned_statistic(
-        xvals[filt], yvals[filt], statistic='mean', bins=xbins)[0]
+    x, y = np.array(xvals)[filt], np.array(yvals)[filt]
+    # normalize weights (and computers binnumber)
+    wts = np.ones(x.size) if weights is None else np.array(weights, dtype=float)[filt]
+    wts_sum, binnumber = binned_statistic(x, wts, statistic='sum', bins=xbins)[:3:2]
+    objs_in_bins = (binnumber>0)*(binnumber<=wts_sum.size) # mask for binnumber in range
+    wts[objs_in_bins] *= 1./wts_sum[binnumber[objs_in_bins]-1] # norm weights in each bin
+    weighted_bin_stat = lambda vals: binned_statistic(x, vals*wts, statistic='sum', bins=xbins)[0]
+    # means
+    mean_x = weighted_bin_stat(x)
+    mean_y = weighted_bin_stat(y)
+    # errors
+    data_yerr2 = 0 if yerr is None else weighted_bin_stat(np.array(yerr)[filt]**2*wts)
+    stat_yerr2 = weighted_bin_stat(y**2)-mean_y**2
+    if error_model == 'ste':
+        stat_yerr2 *= weighted_bin_stat(wts) # sum(wts^2)=1/n for not weighted
+    elif error_model != 'std':
+        raise ValueError(f"{error_model} not supported err model for binned stats")
+    err_y = np.sqrt(stat_yerr2+data_yerr2)
     # number of objects
-    num_objects = np.histogram(xvals[filt], xbins)[0]
-    n_zero = num_objects == 0
-
-    if error_model == 'std':
-        yerr = binned_statistic(
-            xvals[filt], yvals[filt], statistic='std', bins=xbins)[0]
-    elif error_model == 'std/sqrt_n':
-        yerr = binned_statistic(
-            xvals[filt], yvals[filt], statistic='std', bins=xbins)[0]
-        sqrt_n = np.sqrt(binned_statistic(
-            xvals[filt], yvals[filt], statistic='count', bins=xbins)[0])
-        sqrt_n[n_zero] = 1.0
-        yerr = yerr/sqrt_n
-    else:
-        raise ValueError(
-            f"{error_model} not supported err model for binned stats")
-
-    meanx[n_zero] = 0
-    meany[n_zero] = 0
-    yerr[n_zero] = 0
-
-    return meanx, meany, yerr, num_objects, binnumber
+    num_objects = np.histogram(x, xbins)[0]
+    return mean_x, mean_y, err_y, num_objects, binnumber
 
 
 def make_bins(rmin, rmax, nbins=10, method='evenwidth', source_seps=None):
