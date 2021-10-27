@@ -239,10 +239,11 @@ def _compute_ngals(ngal_density, field_size, cosmo, cluster_z, zsrc, zsrc_min=No
         ngals = int(ngals)
     elif zsrc in ('chang13', 'desc_srd'):
         z_distrib_func = _chang_z_distrib if zsrc == 'chang13' else _srd_z_distrib
-        # Compute the normalisation for the redshift distribution function (z=[0,\infty])
-        norm, _ = integrate.quad(z_distrib_func, 0., 100)
+        # Compute the normalisation for the redshift distribution function (z=[0, inf))
+        # z_distrib_func(0, is_cdf=True)=0
+        norm = z_distrib_func(np.inf, is_cdf=True)
         # Probability to find the galaxy in the requested redshift range
-        prob = integrate.quad(z_distrib_func, zsrc_min, zsrc_max)[0]/norm
+        prob = (z_distrib_func(zsrc_max, is_cdf=True) - z_distrib_func(zsrc_min, is_cdf=True))/norm
         ngals = int(ngals*prob)
     else:
         raise ValueError(f"zsrc (={zsrc}) must be float, 'chang13' or 'desc_src'")
