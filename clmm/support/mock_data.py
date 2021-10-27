@@ -6,7 +6,7 @@ from scipy.interpolate import interp1d
 
 from ..gcdata import GCData
 from ..theory import compute_tangential_shear, compute_convergence
-from ..utils import convert_units, compute_lensed_ellipticity
+from ..utils import convert_units, compute_lensed_ellipticity, validate_argument
 
 
 def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc,
@@ -14,7 +14,8 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc,
                             halo_profile_model='nfw', zsrc_min=None,
                             zsrc_max=7., field_size=8., shapenoise=None,
                             mean_e_err=None, photoz_sigma_unscaled=None,
-                            nretry=5, ngals=None, ngal_density=None):
+                            nretry=5, ngals=None, ngal_density=None,
+                            validate_input=True):
 
     r"""Generates a mock dataset of sheared background galaxies.
 
@@ -123,6 +124,8 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc,
         The number density of galaxies (in galaxies per square arcminute, from z=0 to z=infty).
         The number of galaxies to be drawn will then depend on the redshift distribution and
         user-defined redshift range.  If specified, the ngals argument will be ignored.
+    validate_input: bool
+        Validade each input argument
 
     Returns
     -------
@@ -137,10 +140,24 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc,
     #Too many local variables (25/15)
     #pylint: disable=R0914
 
-    _test_input_params(cluster_m, cluster_z, cluster_c, cosmo, zsrc, delta_so,
-                       massdef, halo_profile_model, zsrc_min, zsrc_max,
-                       field_size, shapenoise, mean_e_err,
-                       photoz_sigma_unscaled, nretry, ngals, ngal_density)
+    if validate_input:
+        validate_argument(locals(), 'cluster_m', float, argmin=0, eqmin=True)
+        validate_argument(locals(), 'cluster_z', float, argmin=0, eqmin=True)
+        validate_argument(locals(), 'cluster_c', float, argmin=0, eqmin=True)
+        validate_argument(locals(), 'zsrc', (float, str))
+        validate_argument(locals(), 'delta_so', float, argmin=0, eqmin=True)
+        validate_argument(locals(), 'massdef', str)
+        validate_argument(locals(), 'halo_profile_model', str)
+        validate_argument(locals(), 'zsrc_min', float, argmin=0, none_ok=True)
+        validate_argument(locals(), 'zsrc_max', float, argmin=0, eqmin=True)
+        validate_argument(locals(), 'field_size', float, argmin=0, eqmin=True)
+        validate_argument(locals(), 'shapenoise', float, argmin=0, none_ok=True)
+        validate_argument(locals(), 'mean_e_err', float, argmin=0, none_ok=True)
+        validate_argument(locals(), 'photoz_sigma_unscaled', float, argmin=0, none_ok=True)
+        validate_argument(locals(), 'nretry', int)
+        validate_argument(locals(), 'ngals', float, none_ok=True)
+        validate_argument(locals(), 'ngal_density', float, none_ok=True)
+
 
     if zsrc_min is None: zsrc_min = cluster_z+0.1
 
@@ -534,71 +551,3 @@ def _find_aphysical_galaxies(galaxy_catalog, zsrc_min):
     badgals = np.where((etot > 1.0) | (galaxy_catalog['ztrue'] < zsrc_min))[0]
     nbad = len(badgals)
     return nbad, badgals
-
-#def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc,
-                            #delta_so=200, massdef='mean',
-                            #halo_profile_model='nfw', zsrc_min=None,
-                            #zsrc_max=7., field_size=8., shapenoise=None,
-                            #mean_e_err=None, photoz_sigma_unscaled=None,
-                            #nretry=5, ngals=None, ngal_density=None):
-
-def _test_input_params(cluster_m, cluster_z, cluster_c, cosmo, zsrc, delta_so,
-                       massdef, halo_profile_model, zsrc_min, zsrc_max,
-                       field_size, shapenoise, mean_e_err,
-                       photoz_sigma_unscaled, nretry, ngals, ngal_density):
-    # all positive ints or floats
-    float_vars = (cluster_m, cluster_z, cluster_c, delta_so, zsrc_max,
-                  field_size)
-    float_names = ('cluster_m', 'cluster_z', 'cluster_c', 'Delta_S0',
-                   'zsrc_max', 'field_size')
-    int_vars = []
-    int_names = []
-    # will iterate over floats and then ints
-    var_types = ((float,int,np.floating,np.integer), (int,np.integer))
-    var_type_names = ('float', 'int')
-    for vars, names, types, typename in zip((float_vars,int_vars),
-                                            (float_names,int_names),
-                                            var_types, var_type_names):
-        for var, name in zip(vars, names):
-            if not isinstance(var, types):
-                err = f'{name} must be {typename},' \
-                      f' received {type(var).__name__}'
-                raise TypeError(err)
-            if np.iterable(var):
-                # in case it's a list or tuple
-                var = np.array(var)
-                if var.size > 1:
-                    err = f'{name} must be {typename}, received {type(var)}'
-                    raise TypeError(err)
-            if var <= 0:
-                err = f'{name} must be greater than zero, received {var}'
-                raise ValueError(err)
-    # all variables either None or semi-positive float
-    float_vars = (zsrc_min, shapenoise, mean_e_err, photoz_sigma_unscaled)
-    float_names = ('zsrc_min', 'shapenoise', 'mean_e_err',
-                   'photoz_sigma_unscaled')
-    int_vars = (nretry,)
-    int_names = ('nretry',)
-    for vars, names, types, typename in zip((float_vars,int_vars),
-                                            (float_names,int_names),
-                                            var_types, var_type_names):
-        for var, name,  in zip(vars, names):
-            if var is None:
-                continue
-            try:
-                var / 1
-            except TypeError:
-                err = f'if specified, a{name} must be float,' \
-                      f' received {type(var).__name__}'
-                raise TypeError(err)
-            if np.iterable(var):
-                # in case it's a list or tuple
-                var = np.array(var)
-                if var.size > 1:
-                    err = f'{name} must be None or float, received {type(var)}'
-                    raise TypeError(err)
-            if var < 0:
-                err = f'{name} must be greater than or equal to zero,' \
-                      f' received {var}'
-                raise ValueError(err)
-    return
