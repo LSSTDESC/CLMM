@@ -381,6 +381,29 @@ _valid_types = {
     'int_array': (int, np.integer)
     }
 
+def _is_valid(arg, valid_type):
+    r"""Check if argument is of valid type, supports arrays.
+
+    Parameters
+    ----------
+    arg: any
+        Argument to be tested.
+    valid_type: str, type
+        Valid types for argument, options are object types, list/tuple of types, or:
+
+            * `int_array` - interger, interger array
+            * `float_array` - float, float array
+
+    Returns
+    -------
+    valid: bool
+        Is argument valid
+    """
+    return (isinstance(arg[0], _valid_types[valid_type])
+                if (valid_type in ('int_array', 'float_array') and np.iterable(arg))
+                else isinstance(arg, _valid_types.get(valid_type, valid_type)))
+
+
 def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argmax=None,
                       eqmin=False, eqmax=False):
     r"""Validate argument type and raise errors.
@@ -412,22 +435,13 @@ def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argm
     # Check for None
     if none_ok and (var is None):
         return
-    # Check for type in array
-    if valid_type in ('int_array', 'float_array') and np.iterable(var):
-        types = _valid_types[valid_type]
-        if not isinstance(var[0], types):
-            err = f'{argname} must be {types}, received {type(var[0]).__name__}'
-            raise TypeError(err)
-    # Check for list/tuple of type
-    elif isinstance(valid_type, (list, tuple)):
-        if not any(isinstance(var, _valid_types.get(types, types)) for types in valid_type):
-            err = f'{argname} must be {valid_type}, received {type(var).__name__}'
-            raise TypeError(err)
     # Check for type
-    else:
-        if not isinstance(var, _valid_types.get(valid_type, valid_type)):
-            err = f'{argname} must be {valid_type}, received {type(var).__name__}'
-            raise TypeError(err)
+    valid = (any(_is_valid(var, types) for types in valid_type)
+                if isinstance(valid_type, (list, tuple))
+                else _is_valid(var, valid_type))
+    if not valid:
+        err = f'{argname} must be {valid_type}, received {type(var).__name__}'
+        raise TypeError(err)
     # Check min/max
     if any(t is not None for t in (argmin, argmax)):
         try:
