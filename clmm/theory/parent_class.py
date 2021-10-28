@@ -279,13 +279,13 @@ class CLMModeling:
 
     def eval_convergence(self, r_proj, z_cl, z_src):
         r"""Computes the mass convergence
-        .. math::
 
+        .. math::
             \kappa = \frac{\Sigma}{\Sigma_{crit}}
 
         or
-        .. math::
         
+        .. math::
             \kappa = \kappa_\infty \times \beta_s
 
         Parameters
@@ -339,7 +339,6 @@ class CLMModeling:
         r"""Computes the magnification
 
         .. math::
-
             \mu = \frac{1}{(1-\kappa)^2-|\gamma_t|^2}
 
         Parameters
@@ -370,7 +369,6 @@ class CLMModeling:
         r"""Computes the magnification bias
 
         .. math::
-
             \mu^{\alpha - 1}
 
         Parameters
