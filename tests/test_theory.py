@@ -428,9 +428,9 @@ def test_shear_convergence_unittests(modeling_data):
                     cfg['numcosmo_profiles']['mu'], 1.e2*reltol)
 
     # Validate magnification bias
-#    alpha = 3.78
-#    assert_allclose(theo.compute_magnification_bias(cosmo=cosmo, **cfg['GAMMA_PARAMS'], alpha=alpha),
-#                    (1./((1-kappa)**2-abs(gammat)**2))**(alpha - 1), 1.0e-10)
+    alpha = 3.78
+    assert_allclose(theo.compute_magnification_bias(cosmo=cosmo, **cfg['GAMMA_PARAMS'], alpha=alpha),
+                    (1./((1-kappa)**2-abs(gammat)**2))**(alpha - 1), 1.0e-10)
 #    assert_allclose((1./((1-kappa)**2-abs(gammat)**2))**(alpha - 1),
 #                    cfg['numcosmo_profiles']['mu']**(alpha - 1), 1.e2*reltol)
     
@@ -528,8 +528,8 @@ def test_shear_convergence_unittests(modeling_data):
 
 #    # Validate magnification bias
     alpha = -1.78
-#    assert_allclose(mod.eval_magnification_bias(*profile_pars, alpha=alpha),
-#                    1./((1-kappa)**2-abs(gammat)**2)**(alpha-1), 1.0e-10)
+    assert_allclose(mod.eval_magnification_bias(*profile_pars, alpha=alpha),
+                    1./((1-kappa)**2-abs(gammat)**2)**(alpha-1), 1.0e-10)
 #    assert_allclose(1./((1-kappa)**2-abs(gammat)**2)**(alpha-1),
 #                    cfg['numcosmo_profiles']['mu']**(alpha-1), 1.e2*reltol)
     

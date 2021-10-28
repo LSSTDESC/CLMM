@@ -2,10 +2,6 @@
 CLMModeling abstract class
 """
 import numpy as np
-<<<<<<< HEAD
-=======
-
->>>>>>> 1f431f1fa8df2450aab757d86c27aaa470f41a84
 from .generic import *
 from ..utils import validate_argument
 
@@ -54,16 +50,10 @@ class CLMModeling:
         self.validate_input = validate_input
         self.cosmo_class = None
 
-<<<<<<< HEAD
 
     def set_cosmo(self, cosmo):
         r""" Sets the cosmology to the internal cosmology object
-		
-=======
-    def set_cosmo(self, cosmo):
-        r""" Sets the cosmology to the internal cosmology object
 
->>>>>>> 1f431f1fa8df2450aab757d86c27aaa470f41a84
         Parameters
         ----------
         cosmo: clmm.Comology object, None
