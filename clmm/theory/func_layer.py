@@ -393,7 +393,10 @@ def compute_reduced_tangential_shear(
         r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
         delta_mdef=200, halo_profile_model='nfw', massdef='mean',
         z_src_model='single_plane'):
-    r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
+    r"""Computes the reduced tangential shear
+
+    .. math::
+        g_t = \frac{\gamma_t}{1-\kappa}
 
     Parameters
     ----------
@@ -565,20 +568,20 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
 def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200, halo_profile_model='nfw', massdef='mean', z_src_model='single_plane'):
     
     r""" Calculates magnification_bias from magnification $\mu$ and slope parameter $\alpha$ as :
-    .. math::
     
-    \mu^{\alpha - 1}.
+    .. math::
+        \mu^{\alpha - 1}.
     
     The alpha parameter depends on the source sample and is computed as the slope of the 
     cummulative numer counts at a given magnitude :
-    .. math::
     
-        \alpha
+    .. math::
+        \alpha = \alpha \equiv \alpha(f) = - \frac{\mathrm{d}}{\mathrm{d}\log{f}} \log{n_0(>f)}
 
     or,
-    .. math::
     
-        \alpha \equiv \alpha(m) = 2.5 \frac{\rm{d}}{\rm{dm}} \log n_0(<m)
+    .. math::
+        \alpha \equiv \alpha(m) = 2.5 \frac{\mathrm d}{\mathrm d m} \log{n_0(<m)}
     
     see e.g.  Bartelmann & Schneider 2001; Umetsu 2020
     
