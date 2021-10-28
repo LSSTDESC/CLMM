@@ -557,8 +557,8 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
 
     Returns
     -------
-    magnigication : array_like, float
-        Magnification (mu).
+    magnification : array_like, float
+        Magnification :math:`\mu`.
 
     Notes
     -----
@@ -599,17 +599,21 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
 
 def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200, halo_profile_model='nfw', massdef='mean', z_src_model='single_plane'):
     
-    r""" Calculates magnification_bias from magnification $\mu$ and slope parameter $\alpha$ as :
+    r""" Computes magnification bias from magnification :math:`\mu` and slope parameter :math:`\alpha` as :
+    
     .. math::
-     \mu^{\alpha - 1}.
+        \mu^{\alpha - 1}.
+    
     The alpha parameter depends on the source sample and is computed as the slope of the 
-    cummulative numer counts at a given magnitude:
+    cummulative numer counts at a given magnitude :
+    
     .. math::
-        \alpha =    \alpha \equiv \alpha(f) = - \frac{\rm{d}}{{\rm{dlog}}f} \log n_0(>f)
-        
+        \alpha \equiv \alpha(f) = - \frac{\mathrm{d}}{\mathrm{d}\log{f}} \log{n_0(>f)}
+
     or,
-    .. math::    
-        \alpha \equiv \alpha(m) = 2.5 \frac{\rm{d}}{\rm{dm}} \log n_0(<m)
+    
+    .. math::
+        \alpha \equiv \alpha(m) = 2.5 \frac{\mathrm d}{\mathrm d m} \log{n_0(<m)}
     
     see e.g.  Bartelmann & Schneider 2001; Umetsu 2020
     
@@ -654,7 +658,7 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
 
     Returns
     -------
-    compute_magnification_bias : array_like
+    magnification_bias : array_like
         magnification bias
     """
     

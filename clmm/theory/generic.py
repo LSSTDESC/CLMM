@@ -16,14 +16,14 @@ def compute_reduced_shear_from_convergence(shear, convergence):
 
     Parameters
     ----------
-    shear : array_like
+    shear : array_like, float
             Shear
-    convergence : array_like
+    convergence : array_like, float
             Convergence
 
     Returns
     -------
-    array_like
+    g : array_like, float
             Reduced shear
     """
     reduced_shear = np.array(shear)/(1.-np.array(convergence))
@@ -31,17 +31,22 @@ def compute_reduced_shear_from_convergence(shear, convergence):
 
 
 def compute_magnification_bias_from_magnification(magnification, alpha):
-    r""" Calculates magnification_bias from magnification and alpha parameter as :
+    r""" Computes magnification bias from magnification :math:`\mu` and slope parameter :math:`\alpha` as :
+    
     .. math::
-    \mu^{\alpha - 1}
+        \mu^{\alpha - 1}
+        
     The alpha parameter depends on the source sample and is computed as the slope of the 
     cummulative numer counts at a given magnitude:
+    
     .. math::
-            \alpha =    \alpha \equiv \alpha(f) = - \frac{\rm{d}}{{\rm{dlog}}f} \log n_0(>f)
+        \alpha \equiv \alpha(f) = - \frac{\mathrm d}{\mathrm d \log{f}} \log{n_0(>f)}
 
     or,
-    .. math::    
-            \alpha \equiv \alpha(m) = 2.5 \frac{\rm{d}}{\rm{dm}} \log n_0(<m)
+    
+    .. math::
+        \alpha \equiv \alpha(m) = 2.5 \frac{\mathrm d}{\mathrm d m} \log{n_0(<m)}
+            
     see e.g.  Bartelmann & Schneider 2001; Umetsu 2020
 
     Parameters
@@ -53,7 +58,7 @@ def compute_magnification_bias_from_magnification(magnification, alpha):
 
     Returns
     -------
-    compute_magnification_bias : array_like
+    magnification bias : array_like
             magnification bias
     """
     magnification_bias_from_magnification = np.array(
