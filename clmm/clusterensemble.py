@@ -24,7 +24,6 @@ class ClusterEnsemble():
     """
     def __init__(self, unique_id, colnames, gclist, *args, **kwargs):
         """Initializes a ClusterEnsemble object
-
         Parameters
         ----------
         unique_id : int or string
@@ -41,7 +40,6 @@ class ClusterEnsemble():
 
     def _add_values(self, gc_list, **kwargs):
         """Add values for all attributes
-
         Parameters
         ----------
         gc_list : list, tuple
@@ -76,7 +74,7 @@ class ClusterEnsemble():
     def make_individual_radial_profile(self, galaxycluster, cosmo = None, tan_component='et',
             cross_component='ex', sep='theta', weights = 'w_ls', bins = None):
         """Compute the individual shear profile from a single GalaxyCluster object 
-        and adds the averaged data in the stack file
+        and adds the averaged data in the data attribute.
         Parameters:
         ----------
         galaxycluster : GalaxyCluster
@@ -125,11 +123,12 @@ class ClusterEnsemble():
             self.data[key].append(data_to_save[i])
             
     def make_stacked_radial_profile(self, stacked_data):
-        """Compute stacked profile, add mean separation distances
+        """Compute stacked profile, and mean separation distances.
         Parameters:
         ----------
         stacked_data : dict
-        data with individual cross and tangential profile for each clusters in the ensemble
+            data with individual cross and tangential profile for each clusters in 
+            the ensemble
         Returns:
         -------
         r : array
@@ -144,9 +143,9 @@ class ClusterEnsemble():
         gx = np.average(stacked_data['gx'], axis = 0, weights = stacked_data['W_l'])
         return r, gt, gx
         
-    def compute_sample_covariance(self, stacked_data):
-        """Compute Sample covariance matrix for cross and tangential stacked profile 
-        add sample covariance matrix for tangential and cross profiles as attributes
+    def compute_sample_covariance(self):
+        """Compute Sample covariance matrix for cross and tangential and cross 
+        stacked profiles adds as attributes.
         Returns:
         -------
         sample_tangential_covariance_matrix : ndarray
@@ -154,20 +153,22 @@ class ClusterEnsemble():
         sample_cross_covariance_matrix : ndarray
             The sample covariance matrix for the stacked cross profile
         """
+        stacked_data = self.data
         n_catalogs = len(stacked_data['id'])
         self.sample_tangential_covariance_matrix = np.cov(np.array(stacked_data['gt']).T, 
                                                           bias = False)/n_catalogs
         self.sample_cross_covariance_matrix = np.cov(np.array(stacked_data['gx']).T, 
                                                           bias = False)/n_catalogs
     
-    def compute_bootstrap_covariance(self, stacked_data, n_bootstrap = 10):
+    def compute_bootstrap_covariance(self, n_bootstrap=10):
         """Compute the bootstrap covariance matrix, add boostrap covariance matrix for 
-        tangential and cross profiles as attributes
+        tangential and cross profiles as attributes.
         Parameters:
         ----------
         n_bootstrap : int
             number of bootstrap resamplings
         """
+        stacked_data = self.data
         stacked_data_table = Table(stacked_data)
         cluster_index = np.arange(len(stacked_data_table['id']))
         gt_boot, gx_boot = [], []
@@ -179,7 +180,7 @@ class ClusterEnsemble():
         self.bootstrap_tangential_covariance_matrix = np.cov(np.array(gt_boot).T, bias = False,ddof=0)
         self.bootstrap_cross_covariance_matrix = np.cov(np.array(gx_boot).T, bias = False)
     
-    def compute_jackknife_covariance(self, stacked_data, n_side = 2):
+    def compute_jackknife_covariance(self, n_side=2):
         """Compute the jackknife covariance matrix, add boostrap covariance matrix for 
         tangential and cross profiles as attributes.
         Uses healpix sky area sub-division : https://healpix.sourceforge.io
@@ -190,7 +191,8 @@ class ClusterEnsemble():
         """
         #may induce artificial noise if there are some healpix pixels 
         #not covering entirely the 2D map of clusters
-        ra, dec =  self.data['ra'], self.data['dec']
+        stacked_data = self.data
+        ra, dec =  stacked_data['ra'], stacked_data['dec']
         index = np.arange(len(self.data['id']))
         healpix = healpy.ang2pix(2**n_side, ra, dec, nest=True, lonlat=True)
         healpix_list_unique = np.unique(healpix)
