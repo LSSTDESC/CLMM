@@ -1,15 +1,16 @@
 """@file clusterensemble.py
 The Cluster Ensemble class
 """
+import numpy as np
+from scipy.stats import binned_statistic
+from astropy.table import Table
+from .plotting import mpl
+import healpy
 
 from .gcdata import GCData
 from .galaxycluster import GalaxyCluster
-import numpy as np
-from astropy.table import Table
-from collections import Sequence
-from scipy.stats import binned_statistic
 from .utils import compute_radial_averages
-import healpy
+
 class ClusterEnsemble():
     """Object that contains a list of GalaxyCluster objects
 
