@@ -143,10 +143,8 @@ class CCLCLMModeling(CLMModeling):
         dens = self.hdpm.projected(*args)
         return (mean_dens-dens)*self.cor_factor/a_cl**2
     
-    def eval_excess_surface_density_2h(self, r_proj, z_cl , b , kk = np.logspace(-5.,5.,1000), lsteps = 100 ):
-        """"eval excess surface density 2-halo term
-            equation 13. from Oguri & Hamana 2011 """
-        
+    def _eval_excess_surface_density_2h(self, r_proj, z_cl , b , lsteps = 100 ):
+        """"eval excess surface density 2-halo term"""
         
         Da = ccl.angular_diameter_distance( self.cosmo.be_cosmo, 1, 1./(1. + z_cl))  
         # Msun/Mpc**3
@@ -154,6 +152,8 @@ class CCLCLMModeling(CLMModeling):
                            1./(1. + z_cl), 
                            'matter', 
                            is_comoving = False )
+        
+        kk = np.logspace(-5.,5.,1000)
 
         pk = ccl.linear_matter_power( self.cosmo.be_cosmo , kk, 1./(1.+z_cl) )
         interp_pk = interp1d( kk, pk, kind='cubic' )
