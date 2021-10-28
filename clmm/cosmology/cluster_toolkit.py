@@ -73,16 +73,16 @@ class AstroPyCosmology(CLMMCosmology):
             raise ValueError(f"Unsupported parameter {key}")
         return value
 
-    def get_Omega_m(self, z):
+    def _get_Omega_m(self, z):
         return self.be_cosmo.Om(z)
 
-    def get_E2Omega_m(self, z):
+    def _get_E2Omega_m(self, z):
         return self.be_cosmo.Om(z)*(self.be_cosmo.H(z)/self.be_cosmo.H0)**2
 
-    def eval_da_z1z2(self, z1, z2):
+    def _eval_da_z1z2(self, z1, z2):
         return self.be_cosmo.angular_diameter_distance_z1z2(z1, z2).to_value(units.Mpc)
 
-    def eval_sigma_crit(self, z_len, z_src):
+    def _eval_sigma_crit(self, z_len, z_src):
         if np.any(np.array(z_src) <= z_len):
             warnings.warn(
                 'Some source redshifts are lower than the cluster redshift. '
