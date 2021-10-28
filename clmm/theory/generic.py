@@ -40,7 +40,7 @@ def compute_magnification_bias_from_magnification(magnification, alpha):
     cummulative numer counts at a given magnitude:
     
     .. math::
-        \alpha = \alpha \equiv \alpha(f) = - \frac{\mathrm d}{\mathrm d \log{f}} \log{n_0(>f)}
+        \alpha \equiv \alpha(f) = - \frac{\mathrm d}{\mathrm d \log{f}} \log{n_0(>f)}
 
     or,
     

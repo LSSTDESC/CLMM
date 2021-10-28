@@ -576,7 +576,7 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
     cummulative numer counts at a given magnitude :
     
     .. math::
-        \alpha = \alpha \equiv \alpha(f) = - \frac{\mathrm{d}}{\mathrm{d}\log{f}} \log{n_0(>f)}
+        \alpha \equiv \alpha(f) = - \frac{\mathrm{d}}{\mathrm{d}\log{f}} \log{n_0(>f)}
 
     or,
     
