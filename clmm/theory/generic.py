@@ -16,14 +16,14 @@ def compute_reduced_shear_from_convergence(shear, convergence):
 
     Parameters
     ----------
-    shear : array_like
+    shear : array_like, float
             Shear
-    convergence : array_like
+    convergence : array_like, float
             Convergence
 
     Returns
     -------
-    g : array_like
+    g : array_like, float
             Reduced shear
     """
     reduced_shear = np.array(shear)/(1.-np.array(convergence))
