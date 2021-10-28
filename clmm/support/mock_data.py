@@ -1,8 +1,8 @@
 """Functions to generate mock source galaxy distributions to demo lensing code"""
 import warnings
 import numpy as np
-from scipy import integrate
 from scipy.interpolate import interp1d
+from scipy.special import gamma, gammainc
 
 from ..gcdata import GCData
 from ..theory import compute_tangential_shear, compute_convergence
@@ -206,7 +206,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc,
     return galaxy_catalog
 
 
-def _chang_z_distrib(redshift):
+def _chang_z_distrib(redshift, is_cdf=False):
     """
     A private function that returns the Chang et al (2013) unnormalized galaxy redshift distribution
     function, with the fiducial set of parameters.
@@ -215,16 +215,21 @@ def _chang_z_distrib(redshift):
     ----------
     redshift : float
         Galaxy redshift
+    is_cdf : bool
+        If True, returns cumulative distribution function.
 
     Returns
     -------
     The value of the distribution at z
     """
     alpha, beta, redshift0 = 1.24, 1.01, 0.51
-    return (redshift**alpha)*np.exp(-(redshift/redshift0)**beta)
+    if is_cdf:
+        return redshift0**(alpha+1)*gammainc((alpha+1)/beta, (redshift/redshift0)**beta)/beta*gamma((alpha+1)/beta)
+    else:
+        return (redshift**alpha)*np.exp(-(redshift/redshift0)**beta)
 
 
-def _srd_z_distrib(redshift):
+def _srd_z_distrib(redshift, is_cdf=False):
     """
     A private function that returns the unnormalized galaxy redshift distribution function used in
     the LSST/DESC Science Requirement Document (arxiv:1809.01669).
@@ -233,13 +238,18 @@ def _srd_z_distrib(redshift):
     ----------
     redshift : float
         Galaxy redshift
+    is_cdf : bool
+        If True, returns cumulative distribution function.
 
     Returns
     -------
     The value of the distribution at z
     """
     alpha, beta, redshift0 = 2., 0.9, 0.28
-    return (redshift**alpha)*np.exp(-(redshift/redshift0)**beta)
+    if is_cdf:
+        return redshift0**(alpha+1)*gammainc((alpha+1)/beta, (redshift/redshift0)**beta)/beta*gamma((alpha+1)/beta)
+    else:
+        return (redshift**alpha)*np.exp(-(redshift/redshift0)**beta)
 
 
 def _compute_ngals(ngal_density, field_size, cosmo, cluster_z, zsrc, zsrc_min=None, zsrc_max=None):
@@ -258,10 +268,11 @@ def _compute_ngals(ngal_density, field_size, cosmo, cluster_z, zsrc, zsrc_min=No
         ngals = int(ngals)
     elif zsrc in ('chang13', 'desc_srd'):
         z_distrib_func = _chang_z_distrib if zsrc == 'chang13' else _srd_z_distrib
-        # Compute the normalisation for the redshift distribution function (z=[0,\infty])
-        norm, _ = integrate.quad(z_distrib_func, 0., 100)
+        # Compute the normalisation for the redshift distribution function (z=[0, inf))
+        # z_distrib_func(0, is_cdf=True)=0
+        norm = z_distrib_func(np.inf, is_cdf=True)
         # Probability to find the galaxy in the requested redshift range
-        prob = integrate.quad(z_distrib_func, zsrc_min, zsrc_max)[0]/norm
+        prob = (z_distrib_func(zsrc_max, is_cdf=True) - z_distrib_func(zsrc_min, is_cdf=True))/norm
         ngals = int(ngals*prob)
     else:
         raise ValueError(f"zsrc (={zsrc}) must be float, 'chang13' or 'desc_src'")
@@ -370,10 +381,11 @@ def _draw_random_points_from_distribution(xmin, xmax, nobj, dist_func, xstep=0.0
     ndarray
         Random points with dist_func distribution
     """
-    xdomain = np.arange(xmin, xmax, xstep)
+    steps = int((xmax-xmin)/xstep)+2
+    xdomain = np.linspace(xmin, xmax, steps)
     # Cumulative probability function of the redshift distribution
-    probdist = np.vectorize(lambda zmax: integrate.quad(
-        dist_func, xmin, zmax)[0])(xdomain)
+    #probdist = np.vectorize(lambda zmax: integrate.quad(dist_func, xmin, zmax)[0])(xdomain)
+    probdist = dist_func(xdomain, is_cdf=True)-dist_func(xmin, is_cdf=True)
     # Get random values for probdist
     uniform_deviate = np.random.uniform(probdist.min(), probdist.max(), nobj)
     return interp1d(probdist, xdomain, kind='linear')(uniform_deviate)
