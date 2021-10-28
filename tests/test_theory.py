@@ -424,14 +424,14 @@ def test_shear_convergence_unittests(modeling_data):
     # Validate magnification
     assert_allclose(theo.compute_magnification(cosmo=cosmo, **cfg['GAMMA_PARAMS']),
                     1./((1-kappa)**2-abs(gammat)**2), 1.0e-10)
-    assert_allclose(1./((1-kappa)**2-abs(gammat)**2),
+    assert_allclose(1./((1-kappa*sigmac_corr)**2-abs(gammat*sigmac_corr)**2),
                     cfg['numcosmo_profiles']['mu'], 1.e2*reltol)
 
     # Validate magnification bias
     alpha = 3.78
     assert_allclose(theo.compute_magnification_bias(cosmo=cosmo, **cfg['GAMMA_PARAMS'], alpha=alpha),
                     (1./((1-kappa)**2-abs(gammat)**2))**(alpha - 1), 1.0e-10)
-    assert_allclose((1./((1-kappa)**2-abs(gammat)**2))**(alpha - 1),
+    assert_allclose((1./((1-kappa*sigmac_corr)**2-abs(gammat*sigmac_corr)**2))**(alpha - 1),
                     cfg['numcosmo_profiles']['mu']**(alpha - 1), 1.e3*reltol)
     
     # Check that shear, reduced shear and convergence return zero and magnification and magnification bias returns one if
@@ -523,14 +523,14 @@ def test_shear_convergence_unittests(modeling_data):
     # Validate magnification
     assert_allclose(mod.eval_magnification(*profile_pars),
                     1./((1-kappa)**2-abs(gammat)**2), 1.0e-10)
-    assert_allclose(1./((1-kappa)**2-abs(gammat)**2),
+    assert_allclose(1./((1-kappa*sigmac_corr)**2-abs(gammat*sigmac_corr)**2),
                     cfg['numcosmo_profiles']['mu'], 1.e2*reltol)
 
 #    # Validate magnification bias
     alpha = -1.78
     assert_allclose(mod.eval_magnification_bias(*profile_pars, alpha=alpha),
                     1./((1-kappa)**2-abs(gammat)**2)**(alpha-1), 1.0e-10)
-    assert_allclose(1./((1-kappa)**2-abs(gammat)**2)**(alpha-1),
+    assert_allclose(1./((1-kappa*sigmac_corr)**2-abs(gammat*sigmac_corr)**2)**(alpha-1),
                     cfg['numcosmo_profiles']['mu']**(alpha-1), 1.e3*reltol)
     
     # Check that shear, reduced shear and convergence return zero and magnification returns one if
