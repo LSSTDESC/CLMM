@@ -23,7 +23,7 @@ def compute_reduced_shear_from_convergence(shear, convergence):
 
     Returns
     -------
-    array_like
+    g : array_like
             Reduced shear
     """
     reduced_shear = np.array(shear)/(1.-np.array(convergence))
@@ -31,7 +31,7 @@ def compute_reduced_shear_from_convergence(shear, convergence):
 
 
 def compute_magnification_bias_from_magnification(magnification, alpha):
-    r""" Calculates magnification_bias from magnification and alpha parameter as :
+    r""" Computes magnification bias from magnification :math:`\mu` and slope parameter :math:`\alpha` as :
     
     .. math::
         \mu^{\alpha - 1}
@@ -58,7 +58,7 @@ def compute_magnification_bias_from_magnification(magnification, alpha):
 
     Returns
     -------
-    compute_magnification_bias : array_like
+    magnification bias : array_like
             magnification bias
     """
     magnification_bias_from_magnification = np.array(
