@@ -4,7 +4,8 @@ The GalaxyCluster class
 import pickle
 import warnings
 from .gcdata import GCData
-from .dataops import compute_tangential_and_cross_components, make_radial_profile,_compute_galaxy_weights
+from .dataops import (compute_tangential_and_cross_components, make_radial_profile,
+                      compute_galaxy_weights)
 from .theory import compute_critical_surface_density
 from .plotting import plot_profiles
 from .utils import validate_argument
@@ -202,35 +203,35 @@ class GalaxyCluster():
             self.galcat[tan_component] = tangential_comp
             self.galcat[cross_component] = cross_comp
         return angsep, tangential_comp, cross_comp
-    
-    def compute_galaxy_weights(self, z_source='z', photoz_pdf='pzpdf', z_axis_photoz='pzbins', 
-                           shape_component1='e1', shape_component2='e2', 
-                           shape_component1_err='e1_err', shape_component2_err='e2_err', 
-                           add_photoz=False, add_shapenoise = False, add_shape_error=False, 
-                           weight_name='w_ls', p_background_name='p_background',
-                           cosmo=None,
-                           is_deltasigma=False, add=True):
+
+    def compute_galaxy_weights(self, z_source='z', pzpdf='pzpdf', pzbins='pzbins',
+                               shape_component1='e1', shape_component2='e2',
+                               shape_component1_err='e1_err', shape_component2_err='e2_err',
+                               add_photoz=False, add_shapenoise=False, add_shape_error=False,
+                               weight_name='w_ls', p_background_name='p_background', cosmo=None,
+                               is_deltasigma=False, add=True):
         r"""
         Parameters:
         -----------
         z_source: string
             column name : source redshifts
-        cosmo: clmm.Cosmology object
-        photoz_pdf : string
+        cosmo: clmm.Comology object, None
+            CLMM Cosmology object.
+        pzpdf : string
             column name : photometric probablility density function of the source galaxies
-        z_axis_photoz : string
+        pzbins : string
             column name : redshift axis on which the individual photoz pdf is tabulated
         shape_component1: string
-            column name : The measured shear (or reduced shear or ellipticity) 
+            column name : The measured shear (or reduced shear or ellipticity)
             of the source galaxies
         shape_component2: array
-            column name : The measured shear (or reduced shear or ellipticity) 
+            column name : The measured shear (or reduced shear or ellipticity)
             of the source galaxies
         shape_component1_err: array
-            column name : The measurement error on the 1st-component of ellipticity 
+            column name : The measurement error on the 1st-component of ellipticity
             of the source galaxies
         shape_component2_err: array
-            column name : The measurement error on the 2nd-component of ellipticity 
+            column name : The measurement error on the 2nd-component of ellipticity
             of the source galaxies
         add_photoz : boolean
             True for computing photometric weights
@@ -253,23 +254,28 @@ class GalaxyCluster():
             the individual lens source pair weights
         p_background : array
             the probability for being a background galaxy
-    """
-        
-        w_ls, p_background = _compute_galaxy_weights(self.z, cosmo, 
-                           z_source=self.galcat[z_source], pzpdf=self.galcat[photoz_pdf], 
-                           pzbins=self.galcat[z_axis_photoz], 
-                           shape_component1=self.galcat[shape_component1], 
-                           shape_component2=self.galcat[shape_component2], 
-                           shape_component1_err=self.galcat[shape_component1_err], 
-                           shape_component2_err=self.galcat[shape_component2_err], 
-                           add_photoz=add_photoz, add_shapenoise=add_shapenoise, 
-                           add_shape_error=add_shape_error, 
-                           is_deltasigma=is_deltasigma)
-        
-        if add == True:
-            
+        """
+        required_cols = [shape_component1, shape_component2]
+        if add_photoz:
+            required_cols += [pzpdf, pzbins, z_source]
+        if add_shape_error:
+            required_cols += [shape_component1_err, shape_component2_err]
+        missing_cols = ', '.join([f"'{t_}'" for t_ in required_cols
+                                    if t_ not in self.galcat.columns])
+        if len(missing_cols)>0:
+            raise TypeError('Galaxy catalog missing required columns: '+missing_cols+\
+                            '. Do you mean to first convert column names?')
+        opt_cols = {}
+        for col in ('z_source', 'pzpdf', 'pzbins', 'shape_component1_err', 'shape_component2_err'):
+            opt_cols[col] = self.galcat[locals()[col]] if locals()[col] in self.galcat.columns \
+                                else None
+        w_ls, p_background = compute_galaxy_weights(
+            self.z, cosmo, shape_component1=self.galcat[shape_component1],
+            shape_component2=self.galcat[shape_component2], add_photoz=add_photoz,
+            add_shapenoise=add_shapenoise, add_shape_error=add_shape_error,
+            is_deltasigma=is_deltasigma, validate_input=self.validate_input, **opt_cols)
+        if add:
             self.galcat[weight_name], self.galcat[p_background_name] = w_ls, p_background
-            
         return w_ls, p_background
 
     def make_radial_profile(self,
@@ -310,10 +316,12 @@ class GalaxyCluster():
             default to 10 equally spaced bins.
         error_model : str, optional
             Statistical error model to use for y uncertainties. (letter case independent)
-                `ste` - Standard error [=std/sqrt(n) in unweighted computation] (Default).
-                `std` - Standard deviation.
-        cosmo: dict, optional
-            Cosmology parameters to convert angular separations to physical distances
+
+                * `ste` - Standard error [=std/sqrt(n) in unweighted computation] (Default).
+                * `std` - Standard deviation.
+
+        cosmo: clmm.Comology object, None
+            CLMM Cosmology object, used to convert angular separations to physical distances
         tan_component_in: string, optional
             Name of the tangential component column in `galcat` to be binned.
             Default: 'et'
