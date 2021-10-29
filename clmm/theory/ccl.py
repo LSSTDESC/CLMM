@@ -143,7 +143,7 @@ class CCLCLMModeling(CLMModeling):
         dens = self.hdpm.projected(*args)
         return (mean_dens-dens)*self.cor_factor/a_cl**2
     
-    def _eval_excess_surface_density_2h(self, r_proj, z_cl , b , lsteps = 100 ):
+    def _eval_excess_surface_density_2h(self, r_proj, z_cl , b , lsteps = 500 ):
         """"eval excess surface density 2-halo term"""
         
         Da = ccl.angular_diameter_distance( self.cosmo.be_cosmo, 1, 1./(1. + z_cl))  

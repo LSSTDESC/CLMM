@@ -376,7 +376,7 @@ class CLMModeling:
         return 1./((1-kappa)**2-abs(gamma_t)**2)
     
     
-    def eval_excess_surface_density_2h(self, r_proj, z_cl , b , lsteps = 100 ):
+    def eval_excess_surface_density_2h(self, r_proj, z_cl , b , lsteps = 500 ):
         r""" Computes the excess surface density two halo term following
             equation 13. from Oguri & Hamana 2011
 
@@ -403,6 +403,6 @@ class CLMModeling:
             validate_argument(locals(), 'lsteps', int, argmin=0)
         return self._eval_excess_surface_density_2h(r_proj=r_proj, z_cl=z_cl,  b =b , lsteps = lsteps)
     
-    def __eval_excess_surface_density_2h(self, r_proj, z_cl , b , lsteps = 100 ):
+    def __eval_excess_surface_density_2h(self, r_proj, z_cl , b , lsteps = 500 ):
         raise NotImplementedError
     
