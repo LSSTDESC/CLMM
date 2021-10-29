@@ -6,13 +6,17 @@ from scipy.interpolate import interp1d
 
 from ..gcdata import GCData
 from ..theory import compute_tangential_shear, compute_convergence
-from ..utils import convert_units, compute_lensed_ellipticity
+from ..utils import convert_units, compute_lensed_ellipticity, validate_argument
 
 
-def generate_galaxy_catalog(
-        cluster_m, cluster_z, cluster_c, cosmo, zsrc, delta_so=200, massdef='mean',
-        halo_profile_model='nfw', zsrc_min=None, zsrc_max=7., field_size=8., shapenoise=None,
-        photoz_sigma_unscaled=None, nretry=5, ngals=None, ngal_density=None):
+def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc,
+                            delta_so=200, massdef='mean',
+                            halo_profile_model='nfw', zsrc_min=None,
+                            zsrc_max=7., field_size=8., shapenoise=None,
+                            mean_e_err=None, photoz_sigma_unscaled=None,
+                            nretry=5, ngals=None, ngal_density=None,
+                            validate_input=True):
+
     r"""Generates a mock dataset of sheared background galaxies.
 
     We build galaxy catalogs following a series of steps.
@@ -45,13 +49,13 @@ def generate_galaxy_catalog(
 
     4. We predict the reduced tangential shear of each using the radial distances of each source
     from the lens, the source redshifts, and the lens mass, concentration, and redshift. In the
-    given cosmology for an NFW halo. The reduced tangential shear is then transformed into `g1` and
-    `g2`` components.
+    given cosmology for an NFW halo. The reduced tangential shear is then transformed into `g1` and `g2``
+    components.
 
-    5. If the `shapenoise=True`, intrinsic ellipticities (1,2) components are drawn from a Gaussian
-    distribution of width of `shapenoise`.  These ellipticities components are then combined with
-    `g1` and `g2` to provide lensed ellipticies `e1` and `e2`. If `shapenoise=False`, `g1` and `g2`
-    are directly used as ellipticity components.
+    5. If the `shapenoise=True`, intrinsic ellipticities (1,2) components are drawn from a Gaussian distribution of width of `shapenoise`.
+    These ellipticities components are then combined with `g1` and `g2` to provide lensed ellipticies `e1` and `e2`. If `shapenoise=False`,
+    `g1` and `g2` are directly used as ellipticity components.
+
 
     If the shape noise parameter is high, we may draw nonsensical values for ellipticities. We
     ensure that we does not return any nonsensical values for derived properties. We re-draw
@@ -66,9 +70,8 @@ def generate_galaxy_catalog(
         Cluster redshift
     cluster_c : float
         Cluster concentration in the same mass definition as delta_so
-    cosmo : dict
-        Dictionary of cosmological parameters. Must contain at least, Omega_c, Omega_b,
-        and H0
+    cosmo: clmm.Cosmology, optional
+        Cosmology object.
     zsrc : float or str
         Choose the source galaxy distribution to be fixed or drawn from a predefined distribution.
 
@@ -105,6 +108,11 @@ def generate_galaxy_catalog(
         Proper distance in Mpc  at the cluster redshift.
     shapenoise : float, optional
         If set, applies Gaussian shape noise to the galaxy shapes with a width set by `shapenoise`
+    mean_e_err : float, optional
+        Mean per-component ellipticity uncertainty. Currently,
+        individual uncertainties are drawn from a uniform distribution
+        in the range [0.9,1.1]*mean_e_err. If not provided, the output
+        table will not include this column.
     photoz_sigma_unscaled : float, optional
         If set, applies photo-z errors to source redshifts
     nretry : int, optional
@@ -115,6 +123,8 @@ def generate_galaxy_catalog(
         The number density of galaxies (in galaxies per square arcminute, from z=0 to z=infty).
         The number of galaxies to be drawn will then depend on the redshift distribution and
         user-defined redshift range.  If specified, the ngals argument will be ignored.
+    validate_input: bool
+        Validade each input argument
 
     Returns
     -------
@@ -129,24 +139,44 @@ def generate_galaxy_catalog(
     #Too many local variables (25/15)
     #pylint: disable=R0914
 
-    if zsrc_min is None:
-        zsrc_min = cluster_z+0.1
+    if validate_input:
+        validate_argument(locals(), 'cluster_m', float, argmin=0, eqmin=True)
+        validate_argument(locals(), 'cluster_z', float, argmin=0, eqmin=True)
+        validate_argument(locals(), 'cluster_c', float, argmin=0, eqmin=True)
+        validate_argument(locals(), 'zsrc', (float, str))
+        validate_argument(locals(), 'delta_so', float, argmin=0, eqmin=True)
+        validate_argument(locals(), 'massdef', str)
+        validate_argument(locals(), 'halo_profile_model', str)
+        validate_argument(locals(), 'zsrc_min', float, argmin=0, none_ok=True)
+        validate_argument(locals(), 'zsrc_max', float, argmin=0, eqmin=True)
+        validate_argument(locals(), 'field_size', float, argmin=0, eqmin=True)
+        validate_argument(locals(), 'shapenoise', float, argmin=0, none_ok=True)
+        validate_argument(locals(), 'mean_e_err', float, argmin=0, none_ok=True)
+        validate_argument(locals(), 'photoz_sigma_unscaled', float, argmin=0, none_ok=True)
+        validate_argument(locals(), 'nretry', int)
+        validate_argument(locals(), 'ngals', float, none_ok=True)
+        validate_argument(locals(), 'ngal_density', float, none_ok=True)
 
-    params = {'cluster_m': cluster_m, 'cluster_z': cluster_z, 'cluster_c': cluster_c,
-              'cosmo': cosmo, 'delta_so': delta_so, 'zsrc': zsrc, 'massdef': massdef,
-              'halo_profile_model': halo_profile_model,
-              'zsrc_min': zsrc_min, 'zsrc_max': zsrc_max,
-              'shapenoise': shapenoise, 'photoz_sigma_unscaled': photoz_sigma_unscaled,
-              'field_size': field_size}
+
+    if zsrc_min is None: zsrc_min = cluster_z+0.1
+
+    params = {'cluster_m' : cluster_m, 'cluster_z' : cluster_z, 'cluster_c' : cluster_c,
+              'cosmo' : cosmo, 'delta_so' : delta_so, 'zsrc' : zsrc, 'massdef' : massdef,
+              'halo_profile_model' : halo_profile_model,
+              'zsrc_min' : zsrc_min, 'zsrc_max' : zsrc_max,
+              'shapenoise' : shapenoise, 'mean_e_err': mean_e_err,
+              'photoz_sigma_unscaled' : photoz_sigma_unscaled,
+              'field_size' : field_size}
 
     if ngals is None and ngal_density is None:
-        raise ValueError(
-            'Either the number of galaxies "ngals" or the galaxy density "ngal_density"'
-            ' keyword must be specified')
+        err = 'Either the number of galaxies "ngals" or the galaxy density' \
+              ' "ngal_density" keyword must be specified'
+        raise ValueError(err)
 
     if ngals is not None and ngal_density is not None:
-        raise ValueError(
-            'The "ngals" and "ngal_density" keywords cannot both be set. Please use one only')
+        err = 'The "ngals" and "ngal_density" keywords cannot both be set.' \
+              ' Please use one only'
+        raise ValueError(err)
 
     if ngal_density is not None:
         # Compute the number of galaxies to be drawn
@@ -238,10 +268,12 @@ def _compute_ngals(ngal_density, field_size, cosmo, cluster_z, zsrc, zsrc_min=No
     return ngals
 
 
-def _generate_galaxy_catalog(
-        cluster_m, cluster_z, cluster_c, cosmo, ngals, zsrc, delta_so=None, massdef=None,
-        halo_profile_model=None, zsrc_min=None, zsrc_max=None, shapenoise=None,
-        photoz_sigma_unscaled=None, field_size=None):
+def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals,
+                             zsrc, delta_so=None, massdef=None,
+                             halo_profile_model=None, zsrc_min=None,
+                             zsrc_max=None, shapenoise=None,
+                             mean_e_err=None,
+                             photoz_sigma_unscaled=None, field_size=None):
     """A private function that skips the sanity checks on derived properties. This
     function should only be used when called directly from `generate_galaxy_catalog`.
     For a detailed description of each of the parameters, see the documentation of
@@ -263,12 +295,14 @@ def _generate_galaxy_catalog(
     # Compute the shear on each source galaxy
     gamt = compute_tangential_shear(galaxy_catalog['r_mpc'], mdelta=cluster_m,
                                     cdelta=cluster_c, z_cluster=cluster_z,
-                                    z_source=galaxy_catalog['ztrue'], cosmo=cosmo,
-                                    delta_mdef=delta_so, halo_profile_model=halo_profile_model,
+                                    z_source=galaxy_catalog['ztrue'],
+                                    cosmo=cosmo, delta_mdef=delta_so,
+                                    halo_profile_model=halo_profile_model,
                                     massdef=massdef,
                                     z_src_model='single_plane')
 
     gamx = np.zeros(ngals)
+
     kappa = compute_convergence(galaxy_catalog['r_mpc'], mdelta=cluster_m,
                                 cdelta=cluster_c, z_cluster=cluster_z,
                                 z_source=galaxy_catalog['ztrue'], cosmo=cosmo,
@@ -276,17 +310,11 @@ def _generate_galaxy_catalog(
                                 massdef=massdef,
                                 z_src_model='single_plane')
 
-    galaxy_catalog['gammat'] = gamt
-    galaxy_catalog['gammax'] = np.zeros(ngals)
 
-    galaxy_catalog['posangle'] = np.arctan2(galaxy_catalog['y_mpc'],
-                                            galaxy_catalog['x_mpc'])
-
-    # corresponding shear1,2 components
-    gam1 = -gamt*np.cos(2*galaxy_catalog['posangle']) + \
-        gamx*np.sin(2*galaxy_catalog['posangle'])
-    gam2 = -gamt*np.sin(2*galaxy_catalog['posangle']) - \
-        gamx*np.cos(2*galaxy_catalog['posangle'])
+    posangle = np.arctan2(galaxy_catalog['y_mpc'], galaxy_catalog['x_mpc'])
+    #corresponding shear1,2 components
+    gam1 = -gamt*np.cos(2*posangle) + gamx*np.sin(2*posangle)
+    gam2 = -gamt*np.sin(2*posangle) - gamx*np.cos(2*posangle)
 
     # instrinsic ellipticities
     e1_intrinsic = 0
@@ -301,9 +329,22 @@ def _generate_galaxy_catalog(
     galaxy_catalog['e1'], galaxy_catalog['e2'] = compute_lensed_ellipticity(
         e1_intrinsic, e2_intrinsic, gam1, gam2, kappa)
 
+    cols = ['ra', 'dec', 'e1', 'e2']
+    # if adding uncertainties
+    if mean_e_err is not None:
+        galaxy_catalog['e_err'] \
+            = mean_e_err * np.random.uniform(0.9, 1.1, ngals)
+        galaxy_catalog['e1'] = np.random.normal(
+            galaxy_catalog['e1'], galaxy_catalog['e_err'])
+        galaxy_catalog['e2'] = np.random.normal(
+            galaxy_catalog['e2'], galaxy_catalog['e_err'])
+        cols = cols + ['e_err']
+    cols = cols + ['z', 'ztrue']
     if photoz_sigma_unscaled is not None:
-        return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z', 'ztrue', 'pzbins', 'pzpdf']
-    return galaxy_catalog['ra', 'dec', 'e1', 'e2', 'z', 'ztrue']
+        cols = cols + ['pzbins', 'pzpdf']
+
+    return galaxy_catalog[cols]
+
 
 
 def _draw_random_points_from_distribution(xmin, xmax, nobj, dist_func, xstep=0.001):

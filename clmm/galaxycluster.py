@@ -7,6 +7,7 @@ from .gcdata import GCData
 from .dataops import compute_tangential_and_cross_components, make_radial_profile,_compute_galaxy_weights
 from .theory import compute_critical_surface_density
 from .plotting import plot_profiles
+from .utils import validate_argument
 
 
 class GalaxyCluster():
@@ -24,14 +25,17 @@ class GalaxyCluster():
         Redshift of galaxy cluster center
     galcat : GCData
         Table of background galaxy data containing at least galaxy_id, ra, dec, e1, e2, z
+    validate_input: bool
+        Validade each input argument
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, validate_input=True, **kwargs):
         self.unique_id = None
         self.ra = None
         self.dec = None
         self.z = None
         self.galcat = None
+        self.validate_input = validate_input
         if len(args)>0 or len(kwargs)>0:
             self._add_values(*args, **kwargs)
             self._check_types()
@@ -47,30 +51,15 @@ class GalaxyCluster():
 
     def _check_types(self):
         """Check types of all attributes"""
-        if isinstance(self.unique_id, (int, str)): # should unique_id be a float?
-            self.unique_id = str(self.unique_id)
-        else:
-            raise TypeError(f'unique_id incorrect type: {type(self.unique_id)}')
-        try:
-            self.ra = float(self.ra)
-        except TypeError:
-            print(f'ra incorrect type: {type(self.ra)}')
-        try:
-            self.dec = float(self.dec)
-        except TypeError:
-            print(f'dec incorrect type: {type(self.dec)}')
-        try:
-            self.z = float(self.z)
-        except TypeError:
-            print(f'z incorrect type: {type(self.z)}')
-        if not isinstance(self.galcat, GCData):
-            raise TypeError(f'galcat incorrect type: {type(self.galcat)}')
-        if not -360. <= self.ra <= 360.:
-            raise ValueError(f'ra={self.ra} not in valid bounds: [-360, 360]')
-        if not -90. <= self.dec <= 90.:
-            raise ValueError(f'dec={self.dec} not in valid bounds: [-90, 90]')
-        if self.z < 0.:
-            raise ValueError(f'z={self.z} must be greater than 0')
+        validate_argument(vars(self), 'unique_id', (int, str))
+        validate_argument(vars(self), 'ra', (float, str), argmin=-360, eqmin=True, argmax=360, eqmax=True)
+        validate_argument(vars(self), 'dec', (float, str), argmin=-90, eqmin=True, argmax=90, eqmax=True)
+        validate_argument(vars(self), 'z', (float, str), argmin=0, eqmin=True)
+        validate_argument(vars(self), 'galcat', GCData)
+        self.unique_id = str(self.unique_id)
+        self.ra = float(self.ra)
+        self.dec = float(self.dec)
+        self.z = float(self.z)
 
     def save(self, filename, **kwargs):
         """Saves GalaxyCluster object to filename using Pickle"""
@@ -135,8 +124,9 @@ class GalaxyCluster():
                 raise TypeError('Galaxy catalog missing the redshift column. '
                                 'Cannot compute Sigma_crit')
             self.galcat.update_cosmo(cosmo, overwrite=True)
-            self.galcat['sigma_c'] = compute_critical_surface_density(cosmo=cosmo, z_cluster=self.z,
-                                                                  z_source=self.galcat['z'])
+            self.galcat['sigma_c'] = compute_critical_surface_density(
+                cosmo=cosmo, z_cluster=self.z, z_source=self.galcat['z'],
+                validate_input=self.validate_input)
 
     def compute_tangential_and_cross_components(
             self, shape_component1='e1', shape_component2='e2', tan_component='et',
@@ -205,7 +195,8 @@ class GalaxyCluster():
                 ra_source=self.galcat['ra'], dec_source=self.galcat['dec'],
                 shear1=self.galcat[shape_component1], shear2=self.galcat[shape_component2],
                 geometry=geometry, is_deltasigma=is_deltasigma,
-                sigma_c=self.galcat['sigma_c'] if 'sigma_c' in self.galcat.columns else None)
+                sigma_c=self.galcat['sigma_c'] if 'sigma_c' in self.galcat.columns else None,
+                validate_input=self.validate_input)
         if add:
             self.galcat['theta'] = angsep
             self.galcat[tan_component] = tangential_comp
@@ -281,10 +272,13 @@ class GalaxyCluster():
             
         return w_ls, p_background
 
-    def make_radial_profile(
-            self, bin_units, bins=10, cosmo=None, tan_component_in='et', cross_component_in='ex',
-            tan_component_out='gt', cross_component_out='gx', include_empty_bins=False,
-            gal_ids_in_bins=False, add=True, table_name='profile', overwrite=True):
+    def make_radial_profile(self,
+                            bin_units, bins=10, error_model='ste', cosmo=None,
+                            tan_component_in='et', cross_component_in='ex',
+                            tan_component_out='gt', cross_component_out='gx',
+                            tan_component_in_err=None, cross_component_in_err=None,
+                            include_empty_bins=False, gal_ids_in_bins=False,
+                            add=True, table_name='profile', overwrite=True):
         r"""Compute the shear or ellipticity profile of the cluster
 
         We assume that the cluster object contains information on the cross and
@@ -310,10 +304,14 @@ class GalaxyCluster():
             Allowed Options = ["radians", "deg", "arcmin", "arcsec", "kpc", "Mpc"]
             (letter case independent)
         bins : array_like, optional
-            User defined bins to use for the shear profile. If a list is provided, use that as the
-            bin edges. If a scalar is provided, create that many equally spaced bins between the
-            minimum and maximum angular separations in bin_units. If nothing is provided, default to
-            10 equally spaced bins.
+            User defined bins to use for the shear profile. If a list is provided, use that as
+            the bin edges. If a scalar is provided, create that many equally spaced bins between
+            the minimum and maximum angular separations in bin_units. If nothing is provided,
+            default to 10 equally spaced bins.
+        error_model : str, optional
+            Statistical error model to use for y uncertainties. (letter case independent)
+                `ste` - Standard error [=std/sqrt(n) in unweighted computation] (Default).
+                `std` - Standard deviation.
         cosmo: dict, optional
             Cosmology parameters to convert angular separations to physical distances
         tan_component_in: string, optional
@@ -328,6 +326,12 @@ class GalaxyCluster():
         cross_component_out: string, optional
             Name of the cross component binned profile column to be added in profile table.
             Default: 'gx'
+        tan_component_in_err: string, None, optional
+            Name of the tangential component error column in `galcat` to be binned.
+            Default: None
+        cross_component_in_err: string, None, optional
+            Name of the cross component error column in `galcat` to be binned.
+            Default: None
         include_empty_bins: bool, optional
             Also include empty bins in the returned table
         gal_ids_in_bins: bool, optional
@@ -363,9 +367,12 @@ class GalaxyCluster():
         profile_table, binnumber = make_radial_profile(
             [self.galcat[n].data for n in (tan_component_in, cross_component_in, 'z')],
             angsep=self.galcat['theta'], angsep_units='radians',
-            bin_units=bin_units, bins=bins, include_empty_bins=include_empty_bins,
-            return_binnumber=True,
-            cosmo=cosmo, z_lens=self.z)
+            bin_units=bin_units, bins=bins, error_model=error_model,
+            include_empty_bins=include_empty_bins, return_binnumber=True,
+            cosmo=cosmo, z_lens=self.z, validate_input=self.validate_input,
+            components_error=[None if n is None else self.galcat[n].data
+                              for n in (tan_component_in_err, cross_component_in_err, None)],
+            )
         # Reaname table columns
         for i, name in enumerate([tan_component_out, cross_component_out, 'z']):
             profile_table.rename_column(f'p_{i}', name)
