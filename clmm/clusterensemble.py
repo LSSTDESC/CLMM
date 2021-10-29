@@ -35,7 +35,7 @@ class ClusterEnsemble():
         else:
             raise TypeError('unique_id incorrect type: %s'%type(unique_id))
         self.unique_id = unique_id
-        self.data = {i:[] for i in colnames}
+        self.data = GCData({i:[] for i in colnames})
         if len(args)>0 or len(kwargs)>0:
             self._add_values(gclist, **kwargs)
 
@@ -120,8 +120,7 @@ class ClusterEnsemble():
                                                     bins=bins, range=None)
         data_to_save = [galaxycluster.id, galaxycluster.ra, galaxycluster.dec, galaxycluster.z, 
                         mean_sep, mean_gt, mean_gx, Wl]
-        for i, key in enumerate(self.data.keys()):
-            self.data[key].append(data_to_save[i])
+        self.data.add_row(data_to_save)
             
     def make_stacked_radial_profile(self, stacked_data):
         """Compute stacked profile, and mean separation distances.
