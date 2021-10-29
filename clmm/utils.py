@@ -151,8 +151,8 @@ def convert_units(dist1, unit1, unit2, redshift=None, cosmo=None):
         Unit for the output distances
     redshift : float
         Redshift used to convert between angular and physical units
-    cosmo : astropy.cosmology
-        Astropy cosmology object to compute angular diameter distance to
+    cosmo : CLMM.Cosmology
+        CLMM Cosmology object to compute angular diameter distance to
         convert between physical and angular units
 
     Returns
@@ -372,3 +372,90 @@ def _patch_rho_crit_to_cd2018(rho_crit_external):
         const.PC_TO_METER.value*1.0e6/const.SOLAR_MASS.value)
 
     return rhocrit_cd2018/rho_crit_external
+
+_valid_types = {
+    float: (float, int, np.floating, np.integer),
+    int: (int, np.integer),
+    'float_array': (float, int, np.floating, np.integer),
+    'int_array': (int, np.integer)
+    }
+
+def _is_valid(arg, valid_type):
+    r"""Check if argument is of valid type, supports arrays.
+
+    Parameters
+    ----------
+    arg: any
+        Argument to be tested.
+    valid_type: str, type
+        Valid types for argument, options are object types, list/tuple of types, or:
+
+            * `int_array` - interger, interger array
+            * `float_array` - float, float array
+
+    Returns
+    -------
+    valid: bool
+        Is argument valid
+    """
+    return (isinstance(arg[0], _valid_types[valid_type])
+                if (valid_type in ('int_array', 'float_array') and np.iterable(arg))
+                else isinstance(arg, _valid_types.get(valid_type, valid_type)))
+
+
+def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argmax=None,
+                      eqmin=False, eqmax=False):
+    r"""Validate argument type and raise errors.
+
+    Parameters
+    ----------
+    loc: dict
+        Dictionaty with all input arguments. Should be locals().
+    argname: str
+        Name of argument to be tested.
+    valid_type: str, type
+        Valid types for argument, options are object types, list/tuple of types, or:
+
+            * `int_array` - interger, interger array
+            * `float_array` - float, float array
+
+    none_ok: True
+        Accepts None as a valid type.
+    argmin (optional) : int, float, None
+        Minimum value allowed.
+    argmax (optional) : int, float, None
+        Maximum value allowed.
+    eqmin: bool
+        Accepts min(arg)==argmin.
+    eqmax: bool
+        Accepts max(arg)==argmax.
+    """
+    var = loc[argname]
+    # Check for None
+    if none_ok and (var is None):
+        return
+    # Check for type
+    valid = (any(_is_valid(var, types) for types in valid_type)
+                if isinstance(valid_type, (list, tuple))
+                else _is_valid(var, valid_type))
+    if not valid:
+        err = f'{argname} must be {valid_type}, received {type(var).__name__}'
+        raise TypeError(err)
+    # Check min/max
+    if any(t is not None for t in (argmin, argmax)):
+        try:
+            var_array = np.array(var, dtype=float)
+        except:
+            err = f'{argname} ({type(var).__name__}) cannot be converted to number' \
+                  ' for min/max validation.'
+            raise TypeError(err)
+        if argmin is not None:
+            if (var_array.min()<argmin if eqmin else var_array.min()<=argmin):
+                err = f'{argname} must be greater than {argmin},' \
+                      f' received {"vec_min:"*(var_array.size-1)}{var}'
+                raise ValueError(err)
+        if argmax is not None:
+            if (var_array.max()>argmax if eqmax else var_array.max()>=argmax):
+                err = f'{argname} must be lesser than {argmax},' \
+                      f' received {"vec_max:"*(var_array.size-1)}{var}'
+                raise ValueError(err)
