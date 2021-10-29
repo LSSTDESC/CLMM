@@ -24,7 +24,7 @@ class ClusterEnsemble():
     id_dict: dict
         Dictionary of indicies given the cluster id
     """
-    def __init__(self, unique_id, colnames, gclist, *args, **kwargs):
+    def __init__(self, unique_id, gclist, *args, **kwargs):
         """Initializes a ClusterEnsemble object
         Parameters
         ----------
@@ -36,8 +36,7 @@ class ClusterEnsemble():
         else:
             raise TypeError('unique_id incorrect type: %s'%type(unique_id))
         self.unique_id = unique_id
-        self.data = GCData(names=colnames, meta={'bin_units': None},
-                           dtype=[np.object for c in colnames])
+        self.data = GCData(meta={'bin_units': None})
         if len(args)>0 or len(kwargs)>0:
             self._add_values(gclist, **kwargs)
 
@@ -128,6 +127,7 @@ class ClusterEnsemble():
             self.data.meta['bin_units'] = bin_units
         elif self.data.meta['bin_units'] != bin_units:
             raise ValueError('inconsistent units')
+        # This will be replaced when gc has weights on make_radial_profile
         profile_table = make_radial_profile(
             [galaxycluster.galcat[n].data for n in (tan_component_in, cross_component_in, 'z')],
             angsep=galaxycluster.galcat['theta'], angsep_units='radians',
@@ -137,11 +137,17 @@ class ClusterEnsemble():
             components_error=[None if n is None else galaxycluster.galcat[n].data
                               for n in (tan_component_in_err, cross_component_in_err, None)],
             )
-        profile_table[weights_out] = 1 # to be removed after issue 443 is merged
+        profile_table[weights_out] = 1
         data_to_save = [galaxycluster.unique_id, galaxycluster.ra, galaxycluster.dec, galaxycluster.z,
                         *[np.array(profile_table[col]) for col in
                             ('radius', 'p_0', 'p_1', weights_out)]]
-        self.data.add_row(data_to_save)
+        # to be removed down to here after issue 443 is merged
+        if len(self.data)==0:
+            for col, data in zip(['cluster_id', 'ra', 'dec', 'z', 'radius', tan_component_out,
+                                  cross_component_out, weights_out], data_to_save):
+                self.data[col] = [data]
+        else:
+            self.data.add_row(data_to_save)
 
     def make_stacked_radial_profile(self, tan_component='gt', cross_component='gx',
                                     weights='W_l'):
@@ -158,9 +164,9 @@ class ClusterEnsemble():
         weights : str
             Name of the weights column in `data`.
         """
-        radius, components = make_stacked_radial_profile(self.data['radius'], self.data[weights],
-                                                         [self.data[tan_component],
-                                                            self.data[cross_component]])
+        radius, components = make_stacked_radial_profile(
+            self.data['radius'], self.data[weights],
+            [self.data[tan_component], self.data[cross_component]])
         self.stacked_data = GCData([radius, *components], meta=self.data.meta,
                                     names=('radius', tan_component, cross_component))
 
@@ -169,17 +175,14 @@ class ClusterEnsemble():
         stacked profiles adds as attributes.
         Returns:
         -------
-        sample_tangential_covariance_matrix : ndarray
+        sample_tangential_covariance : ndarray
             The sample covariance matrix for the stacked tangential profile
-        sample_cross_covariance_matrix : ndarray
+        sample_cross_covariance : ndarray
             The sample covariance matrix for the stacked cross profile
         """
-        stacked_data = self.data
-        n_catalogs = len(stacked_data['id'])
-        self.sample_tangential_covariance_matrix = np.cov(np.array(stacked_data['gt']).T,
-                                                          bias = False)/n_catalogs
-        self.sample_cross_covariance_matrix = np.cov(np.array(stacked_data['gx']).T,
-                                                          bias = False)/n_catalogs
+        n_catalogs = len(self.data)
+        self.sample_tangential_covariance = np.cov(self.data['gt'].T, bias = False)/n_catalogs
+        self.sample_cross_covariance = np.cov(self.data['gt'].T, bias = False)/n_catalogs
 
     def compute_bootstrap_covariance(self, n_bootstrap=10):
         """Compute the bootstrap covariance matrix, add boostrap covariance matrix for
@@ -189,17 +192,17 @@ class ClusterEnsemble():
         n_bootstrap : int
             number of bootstrap resamplings
         """
-        stacked_data = self.data
-        stacked_data_table = Table(stacked_data)
-        cluster_index = np.arange(len(stacked_data_table['id']))
+        cluster_index = np.arange(len(self.data))
         gt_boot, gx_boot = [], []
         for n_boot in range(n_bootstrap):
             cluster_index_bootstrap = np.random.choice(cluster_index, len(cluster_index))
-            stacked_data_table_bootstrap = stacked_data_table[cluster_index_bootstrap]
-            r, gt, gx = self.make_stacked_radial_profile(stacked_data_table_bootstrap)
+            data_bootstrap = self.data[cluster_index_bootstrap]
+            r, (gt, gx) = make_stacked_radial_profile(
+                            data_bootstrap['radius'], data_bootstrap['W_l'],
+                            [data_bootstrap['gt'], data_bootstrap['gx']])
             gt_boot.append(gt), gx_boot.append(gx)
-        self.bootstrap_tangential_covariance_matrix = np.cov(np.array(gt_boot).T, bias = False,ddof=0)
-        self.bootstrap_cross_covariance_matrix = np.cov(np.array(gx_boot).T, bias = False)
+        self.bootstrap_tangential_covariance = np.cov(np.array(gt_boot).T, bias = False,ddof=0)
+        self.bootstrap_cross_covariance = np.cov(np.array(gx_boot).T, bias = False)
 
     def compute_jackknife_covariance(self, n_side=2):
         """Compute the jackknife covariance matrix, add boostrap covariance matrix for
@@ -212,21 +215,20 @@ class ClusterEnsemble():
         """
         #may induce artificial noise if there are some healpix pixels
         #not covering entirely the 2D map of clusters
-        stacked_data = self.data
-        ra, dec =  stacked_data['ra'], stacked_data['dec']
-        index = np.arange(len(self.data['id']))
-        healpix = healpy.ang2pix(2**n_side, ra, dec, nest=True, lonlat=True)
-        healpix_list_unique = np.unique(healpix)
-        n_jack = len(healpix_list_unique)
+        index = np.arange(len(self.data))
+        pixels = healpy.ang2pix(2**n_side, self.data['ra'], self.data['dec'],
+                                nest=True, lonlat=True)
+        pixels_list_unique = np.unique(pixels)
+        n_jack = len(pixels_list_unique)
         gt_jack, gx_jack = [], []
-        for i, hp_list_delete in enumerate(healpix_list_unique):
-                mask_in_area = np.isin(healpix, hp_list_delete)
-                mask_out_area = np.invert(mask_in_area)
-                stacked_data_table_jackknife = Table(stacked_data)[mask_out_area]
-                r, gt, gx = self.make_stacked_radial_profile(stacked_data_table_jackknife)
-                gt_jack.append(gt), gx_jack.append(gx)
+        for i, hp_list_delete in enumerate(pixels_list_unique):
+            mask_in_area = np.isin(pixels, hp_list_delete)
+            data_jk = self.data[~mask_in_area]
+            r, (gt, gx) = make_stacked_radial_profile(data_jk['radius'], data_jk['W_l'],
+                                                      [data_jk['gt'], data_jk['gx']])
+            gt_jack.append(gt), gx_jack.append(gx)
         coeff = (n_jack - 1)**2/(n_jack)
-        self.jackknife_tangential_covariance_matrix = coeff * np.cov(np.array(gt_jack).T,
-                                                                    bias = False, ddof=0)
-        self.jackknife_cross_covariance_matrix = coeff * np.cov(np.array(gx_jack).T,
-                                                               bias = False, ddof=0)
+        self.jackknife_tangential_covariance = coeff*np.cov(np.array(gt_jack).T,
+                                                            bias=False, ddof=0)
+        self.jackknife_cross_covariance = coeff*np.cov(np.array(gx_jack).T,
+                                                       bias=False, ddof=0)
