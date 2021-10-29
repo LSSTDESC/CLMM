@@ -143,34 +143,26 @@ class CCLCLMModeling(CLMModeling):
         dens = self.hdpm.projected(*args)
         return (mean_dens-dens)*self.cor_factor/a_cl**2
     
-    def _eval_excess_surface_density_2h(self, r_proj, z_cl , b , lsteps = 500 ):
-        """"eval excess surface density 2-halo term"""
-        
-        Da = ccl.angular_diameter_distance( self.cosmo.be_cosmo, 1, 1./(1. + z_cl))  
-        # Msun/Mpc**3
-        rho_m = ccl.rho_x( self.cosmo.be_cosmo, 
-                           1./(1. + z_cl), 
-                           'matter', 
-                           is_comoving = False )
-        
+    
+    def _eval_excess_surface_density_2h(self, r_proj, z_cl , halo_bias=1. , lsteps=500):
+        """"eval excess surface density 2-halo term"""      
+        a_cl = self.cosmo.get_a_from_z(z_cl)
+        da = self.cosmo.eval_da(z_cl)
+        rho_m = ccl.rho_x(self.cosmo.be_cosmo, a_cl, 'matter', is_comoving = False) # Msun/Mpc**3
+
         kk = np.logspace(-5.,5.,1000)
-
-        pk = ccl.linear_matter_power( self.cosmo.be_cosmo , kk, 1./(1.+z_cl) )
-        interp_pk = interp1d( kk, pk, kind='cubic' )
-
-        theta = r_proj / Da
+        pk = ccl.linear_matter_power(self.cosmo.be_cosmo , kk, a_cl)
+        interp_pk = interp1d(kk, pk, kind='cubic')
+        theta = r_proj / da
 
         # calculate integral, units [Mpc]**-3
         def __integrand__( l , theta ):
-
-            k = l / ((1 + z_cl) * Da)      
+            k = l / ((1 + z_cl) * da)      
             return l * jv( 2 , l * theta ) * interp_pk( k )
         
         ll = np.logspace( 0 , 6 , lsteps )
-
         val = np.array( [ simps( __integrand__( ll , t ) , ll ) for t in theta ] )
-
-        return b * val * rho_m / ( 2 * np.pi  * ( 1 + z_cl )**3 * Da**2 )
+        return halo_bias * val * rho_m / ( 2 * np.pi  * ( 1 + z_cl )**3 * da**2 )
 
 
 Modeling = CCLCLMModeling
