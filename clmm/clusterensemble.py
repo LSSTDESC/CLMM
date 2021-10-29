@@ -82,7 +82,7 @@ class ClusterEnsemble():
         """Compute the individual shear profile from a single GalaxyCluster object
         and adds the averaged data in the data attribute.
 
-        Parameters:
+        Parameters
         ----------
         galaxycluster : GalaxyCluster
             GalaxyCluster object with cluster metadata and background galaxy data
@@ -146,6 +146,17 @@ class ClusterEnsemble():
     def make_stacked_radial_profile(self, tan_component='gt', cross_component='gx',
                                     weights='W_l'):
         """Computes stacked profile and mean separation distances and add it internally.
+
+        Parameters
+        ----------
+        tan_component : string, optional
+            Name of the tangential component column in `data`.
+            Default: 'gt'
+        cross_component : string, optional
+            Name of the cross component column in `data`.
+            Default: 'gx'
+        weights : str
+            Name of the weights column in `data`.
         """
         radius, components = make_stacked_radial_profile(self.data['radius'], self.data[weights],
                                                          [self.data[tan_component],
