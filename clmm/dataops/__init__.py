@@ -300,13 +300,15 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, pzpdf=None, pzbins=None
         w_ls_geo = p_background/norm
 
     #computing w_ls_shape
-    err_e_shapenoise = np.zeros(len(shape_component1))
-    err_e_measurement = np.zeros(len(shape_component1))
+    err_e2_shapenoise = np.zeros(len(shape_component1))
+    err_e2_measurement = np.zeros(len(shape_component1))
     if add_shapenoise:
-        err_e_shapenoise = np.sqrt(np.std(shape_component1)**2 + np.std(shape_component2)**2)
-    if add_shape_error == True :
-        err_e_measurement = np.sqrt(shape_component1_err**2 + shape_component2_err**2)
-    w_ls_shape = 1./(err_e_measurement**2 + err_e_shapenoise**2)
+        err_e2_shapenoise = np.std(shape_component1)**2 + np.std(shape_component2)**2
+    if add_shape_error:
+        err_e2_measurement = shape_component1_err**2 + shape_component2_err**2
+    err_e2 = err_e2_measurement + err_e2_shapenoise
+    w_ls_shape = np.ones(len(shape_component1))
+    w_ls_shape[err_e2>0] = 1/err_e2[err_e2>0]
 
     w_ls = w_ls_shape * w_ls_geo
     return w_ls, p_background
