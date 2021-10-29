@@ -165,69 +165,70 @@ def compute_tangential_and_cross_components(
         cross_comp *= sigma_c
     return angsep, tangential_comp, cross_comp
 
-def _compute_galaxy_weights(z_lens, cosmo, z_source=None, pzpdf=None, pzbins=None, 
-                           shape_component1=None, shape_component2=None, 
-                           shape_component1_err=None, shape_component2_err=None, 
-                           add_photoz=False, add_shapenoise=False, add_shape_error=False, 
-                           is_deltasigma=False):
-    
+def compute_galaxy_weights(z_lens, cosmo, z_source=None, pzpdf=None, pzbins=None,
+                           shape_component1=None, shape_component2=None,
+                           shape_component1_err=None, shape_component2_err=None,
+                           add_photoz=False, add_shapenoise=False, add_shape_error=False,
+                           is_deltasigma=False, validate_input=True):
+
     r"""Compute the individual lens-source pair weights $w_{ls}$.
-    
+
     The weights $w_{ls}$ expresses as : $w_{ls} = w_ls_geo * w_ls_shape$, following E. S. Sheldon et al.
     (2003), arXiv:astro-ph/0312036:
-    
-    1. the geometrical weight `w_ls_geo` depends on the lens and source redshift informations. 
+
+    1. the geometrical weight `w_ls_geo` depends on the lens and source redshift informations.
     This function allows the user to compute `w_ls_geo` using true (a.) or photometric (b.) redshifts of source galaxies.
         a. true background galaxy redshifts, considering the excess surface density:
-        
+
         .. math::
-        
+
         w_{ls, geo} = 1. / \Sigma_c(cosmo, z_L, z_{\rm src})^2
-        
+
         .. math::
-        
+
         b. photometric background galaxy redshifts:
-        
+
         .. math::
-        
+
         w_{ls, geo} = [\int_{\delta + z_L} dz_s p_{\rm photoz}(z_s) \Sigma_c(cosmo, z_L, z_s)^{-1}] ^2
-        
+
         .. math::
-        
+
         for the tangential shear, the weights 'w_ls_geo` are 1
-        
+
     2. The shape weight `w_ls_shape` depends on shapenoise and/or shape measurement errors
-    
+
         .. math::
-        
+
         w_{ls, shape} = 1/(\sigma_{\rm shapenoise}^2 + \sigma_{\rm measurement}^2)
-        
+
         .. math::
-        
+
     The total weight `w_ls` is the product of the geometrical weight and the shape weight.
-    
+
     The probability for a galaxy to be in the background of the cluster is defined by:
-    
+
     .. math::
-        
-        P(z_s > z_l) = [\int_{z_L}^{+\infty} dz_s p_{\rm photoz}(z_s) 
-        
+
+        P(z_s > z_l) = [\int_{z_L}^{+\infty} dz_s p_{\rm photoz}(z_s)
+
     .. math::
-    
+
     The function return the probability for a galaxy to be in the background of the cluster;
-    if photometric probability density functions are provoded, the function computes the above 
+    if photometric probability density functions are provoded, the function computes the above
     integral. In the case of true redshifts, it returns 1 if `z_s > z_l` else returns 0.
-    
+
     Parameters:
     -----------
     z_lens: float
         Redshift of the lens.
     z_source: array, optional
-        Redshift of the source.
-    cosmo: clmm.Cosmology object
-    pzpdf : array
+        Redshift of the source. Used only with add_photoz=True.
+    cosmo: clmm.Comology object, None
+        CLMM Cosmology object.
+    pzpdf : array, optional
         Photometric probablility density functions of the source galaxies
-    pzbins : array
+    pzbins : array, optional
         Redshift axis on which the individual photoz pdf is tabulated
     shape_component1: array
         The measured shear (or reduced shear or ellipticity) of the source galaxies
@@ -245,7 +246,9 @@ def _compute_galaxy_weights(z_lens, cosmo, z_source=None, pzpdf=None, pzbins=Non
         True for considering measured shape error in the weight computation
     is_deltasigma: boolean
         Indicates whether it is the excess surface density or the tangential shear
-        
+    validate_input: bool
+        Validade each input argument
+
     Returns:
     --------
     w_ls: array
@@ -253,49 +256,61 @@ def _compute_galaxy_weights(z_lens, cosmo, z_source=None, pzpdf=None, pzbins=Non
     p_background : array
         Probability for being a background galaxy
     """
+    if validate_input:
+        validate_argument(locals(), 'z_lens', float, argmin=0, eqmin=True)
+        validate_argument(locals(), 'z_source', 'float_array', argmin=0, eqmin=True, none_ok=True)
+        validate_argument(locals(), 'pzpdf', 'float_array')
+        validate_argument(locals(), 'pzbins', 'float_array')
+        validate_argument(locals(), 'shape_component1', 'float_array')
+        validate_argument(locals(), 'shape_component2', 'float_array')
+        validate_argument(locals(), 'shape_component1_err', 'float_array', none_ok=True)
+        validate_argument(locals(), 'shape_component2_err', 'float_array', none_ok=True)
+        validate_argument(locals(), 'add_photoz', str)
+        validate_argument(locals(), 'add_shape_error', bool)
+        validate_argument(locals(), 'add_shape_error', bool)
+        validate_argument(locals(), 'is_deltasigma', bool)
+        arguments_consistency(
+            [shape_component1, shape_component2],
+            names=('shape_component1', 'shape_component2'),
+            prefix='Shape components sources')
+
     #computing w_ls_geo
-    w_ls_geo = 1
-    if add_photoz == False:
-        p_background = np.zeros(len(z_source))
-        index_source = np.arange(len(p_background))
-        p_background[index_source[z_source > z_lens]] = 1
-        w_ls_geo = p_background
-        if is_deltasigma == True:
-            sigma_crit = cosmo.eval_sigma_crit(z_lens, z_source)
-            w_ls_geo = p_background/sigma_crit**2
-        else: w_ls_geo = p_background
-    if add_photoz == True:
-        photoz_z_axis_grid = np.linspace(0,5,100)
+    if add_photoz:
+        # adding these lines to interpolate CLMM redshift grid for each galaxies
+        # to a constant redshift grid for all galaxies. If there is a constant grid for all galaxies
+        # these lines are not necessary and photoz_z_axis_grid_cut, photoz_matrix = pzbins, pzpdf
+        photoz_z_axis_grid = np.linspace(0, 5, 100)
         photoz_z_axis_grid_cut = photoz_z_axis_grid[photoz_z_axis_grid > z_lens]
-        sigma_crit_grid = cosmo.eval_sigma_crit(z_lens, photoz_z_axis_grid_cut)
-        n_gal = len(pzpdf)
-        photoz_matrix = np.zeros([n_gal, len(photoz_z_axis_grid_cut)])
-        #adding this line to interpolate CLMM redshift grid for each galaxies
-        #to a constant redshift grid for all galaxies, this line is not necessary 
-        #is there is a constant grid for all galaxies
-        for gal_index in range(n_gal):
-            photoz_matrix[gal_index,:] = np.interp(photoz_z_axis_grid_cut, pzbins[gal_index], pzpdf[gal_index])
-        p_background = scipy.integrate.simps(photoz_matrix, x = photoz_z_axis_grid_cut, axis = 1)
+        photoz_matrix = np.array([np.interp(photoz_z_axis_grid_cut, pzbin, pdf)
+                                    for pzbin, pdf in zip(pzbins, pzpdf)])
+        ###
+        p_background = scipy.integrate.simps(photoz_matrix, x=photoz_z_axis_grid_cut, axis = 1)
+        w_ls_geo = 1
         if is_deltasigma == True:
-            integral_sigma_crit_1 = scipy.integrate.simps(photoz_matrix * (1./sigma_crit_grid),
-                                                          x = photoz_z_axis_grid_cut, axis = 1)
-            sigma_crit = 1. /(integral_sigma_crit_1)
-            w_ls_geo = 1. /sigma_crit ** 2
-        else: w_ls_geo = 1
-    w_ls_shape = 1
-    if add_shapenoise == True : 
+            sigma_crit_grid = cosmo.eval_sigma_crit(z_lens, photoz_z_axis_grid_cut)
+            # w_ls_geo = 1/(int sigma_c^-1)^2
+            w_ls_geo = (scipy.integrate.simps(photoz_matrix * (1./sigma_crit_grid),
+                                              x=photoz_z_axis_grid_cut, axis = 1))**-2
+    else:
+        p_background = np.zeros(len(z_source))
+        p_background[z_source > z_lens] = 1
+        norm = 1
+        if is_deltasigma:
+            norm = cosmo.eval_sigma_crit(z_lens, z_source)**2
+        w_ls_geo = p_background/norm
+
+    #computing w_ls_shape
+    err_e_shapenoise = np.zeros(len(shape_component1))
+    err_e_measurement = np.zeros(len(shape_component1))
+    if add_shapenoise:
         err_e_shapenoise = np.sqrt(np.std(shape_component1)**2 + np.std(shape_component2)**2)
-        if add_shape_error == True : 
-            err_e_measurement = np.sqrt(shape_component1_err**2 + shape_component2_err**2)
-            w_ls_shape = 1. /(err_e_measurement**2 + err_e_shapenoise**2)
-        else: w_ls_shape = 1. /(err_e_shapenoise**2)
-    else: 
-        if add_shape_error == True : 
-            err_e_measurement = np.sqrt(shape_component1_err**2 + shape_component2_err**2)
-            w_ls_shape = 1. /(err_e_measurement**2)
-    w_ls = w_ls_shape * w_ls_geo   
+    if add_shape_error == True :
+        err_e_measurement = np.sqrt(shape_component1_err**2 + shape_component2_err**2)
+    w_ls_shape = 1./(err_e_measurement**2 + err_e_shapenoise**2)
+
+    w_ls = w_ls_shape * w_ls_geo
     return w_ls, p_background
-        
+
 def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_source_list):
     r"""Compute the angular separation between the lens and the source and the azimuthal
     angle from the lens to the source in radians.
