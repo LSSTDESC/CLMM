@@ -288,9 +288,9 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, pzpdf=None, pzbins=None
         w_ls_geo = 1
         if is_deltasigma == True:
             sigma_crit_grid = cosmo.eval_sigma_crit(z_lens, photoz_z_axis_grid_cut)
-            # w_ls_geo = 1/(int sigma_c^-1)^2
+            # w_ls_geo = (int sigma_c^-1)^2
             w_ls_geo = (scipy.integrate.simps(photoz_matrix * (1./sigma_crit_grid),
-                                              x=photoz_z_axis_grid_cut, axis = 1))**-2
+                                              x=photoz_z_axis_grid_cut, axis = 1))**2
     else:
         p_background = np.zeros(len(z_source))
         p_background[z_source > z_lens] = 1
