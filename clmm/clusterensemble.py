@@ -10,6 +10,7 @@ import healpy
 from .gcdata import GCData
 from .galaxycluster import GalaxyCluster
 from .utils import compute_radial_averages
+from .dataops import make_radial_profile, make_stacked_radial_profile
 
 class ClusterEnsemble():
     """Object that contains a list of GalaxyCluster objects
@@ -35,7 +36,8 @@ class ClusterEnsemble():
         else:
             raise TypeError('unique_id incorrect type: %s'%type(unique_id))
         self.unique_id = unique_id
-        self.data = GCData({i:[] for i in colnames})
+        self.data = GCData(names=colnames, meta={'bin_units': None},
+                           dtype=[np.object for c in colnames])
         if len(args)>0 or len(kwargs)>0:
             self._add_values(gclist, **kwargs)
 
