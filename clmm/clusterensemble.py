@@ -42,6 +42,7 @@ class ClusterEnsemble():
 
     def _add_values(self, gc_list, **kwargs):
         """Add values for all attributes
+
         Parameters
         ----------
         gc_list : list, tuple
@@ -62,9 +63,6 @@ class ClusterEnsemble():
 
     def stack(self):
         """Produces a GalaxyCluster object by stacking elements of gclist
-
-        Parameters
-        ---------
 
         Returns
         ---------
@@ -96,8 +94,10 @@ class ClusterEnsemble():
             default to 10 equally spaced bins.
         error_model : str, optional
             Statistical error model to use for y uncertainties. (letter case independent)
-                `ste` - Standard error [=std/sqrt(n) in unweighted computation] (Default).
-                `std` - Standard deviation.
+
+                * `ste` - Standard error [=std/sqrt(n) in unweighted computation] (Default).
+                * `std` - Standard deviation.
+
         cosmo: dict, optional
             Cosmology parameters to convert angular separations to physical distances
         tan_component_in: string, optional
@@ -173,7 +173,8 @@ class ClusterEnsemble():
     def compute_sample_covariance(self):
         """Compute Sample covariance matrix for cross and tangential and cross
         stacked profiles adds as attributes.
-        Returns:
+
+        Returns
         -------
         sample_tangential_covariance : ndarray
             The sample covariance matrix for the stacked tangential profile
@@ -187,7 +188,8 @@ class ClusterEnsemble():
     def compute_bootstrap_covariance(self, n_bootstrap=10):
         """Compute the bootstrap covariance matrix, add boostrap covariance matrix for
         tangential and cross profiles as attributes.
-        Parameters:
+
+        Parameters
         ----------
         n_bootstrap : int
             number of bootstrap resamplings
@@ -208,7 +210,8 @@ class ClusterEnsemble():
         """Compute the jackknife covariance matrix, add boostrap covariance matrix for
         tangential and cross profiles as attributes.
         Uses healpix sky area sub-division : https://healpix.sourceforge.io
-        Parameters:
+
+        Parameters
         ----------
         n_side : int
             healpix sky area division parameter (number of sky area : 12*n_side^2)
