@@ -397,7 +397,7 @@ def make_radial_profile(components, angsep, angsep_units, bin_units,
 def make_stacked_radial_profile(angsep, weights, components):
     """Compute stacked profile, and mean separation distances.
 
-    Parameters:
+    Parameters
     ----------
     angsep: 2d array
         Transvesal distances corresponding to each object with shape `n_obj, n_rad_bins`.
@@ -407,7 +407,7 @@ def make_stacked_radial_profile(angsep, weights, components):
         List of 2d properties of each array to be stacked with shape
         `n_components, n_obj, n_rad_bins`.
 
-    Returns:
+    Returns
     -------
     staked_angsep: array
         Mean transversal distance in each radial bin.
