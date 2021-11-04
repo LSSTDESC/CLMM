@@ -3,6 +3,7 @@ Model independent theory functions
 """
 # Functions to model halo profiles
 
+import warnings
 import numpy as np
 
 __all__ = ['compute_reduced_shear_from_convergence',
@@ -61,6 +62,8 @@ def compute_magnification_bias_from_magnification(magnification, alpha):
     magnification bias : array_like
             magnification bias
     """
+    if np.any(np.array(magnification) < 0):
+        warnings.warn('Magnification is negative for certain radii, returning nan for magnification bias in this case.')
     magnification_bias_from_magnification = np.array(
         magnification)**(np.array([alpha]).T - 1)
     return magnification_bias_from_magnification

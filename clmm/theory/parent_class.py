@@ -2,6 +2,7 @@
 CLMModeling abstract class
 """
 import numpy as np
+import warnings
 from .generic import *
 from ..utils import validate_argument
 
