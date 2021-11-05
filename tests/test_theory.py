@@ -269,6 +269,18 @@ def test_profiles(modeling_data):
         assert_raises(ValueError, mod.eval_excess_surface_density,
                       1e-12, cfg['SIGMA_PARAMS']['z_cl'])
 
+def test_2halo_term(modeling_data):
+
+    cfg = load_validation_config()
+    cosmo = cfg['cosmo']
+
+    # Object Oriented tests
+    mod = theo.Modeling()
+    mod.set_cosmo(cosmo)
+
+    if mod.backend is not 'ccl':
+        assert_raises(NotImplementedError, mod.eval_excess_surface_density_2h,
+                      1., cfg['SIGMA_PARAMS']['z_cl'])
 
 def test_compute_critical_surface_density(modeling_data):
     """ Validation test for critical surface density """
