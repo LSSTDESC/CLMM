@@ -145,7 +145,7 @@ class CCLCLMModeling(CLMModeling):
     
     
     def _eval_excess_surface_density_2h(self, r_proj, z_cl , halo_bias=1. , lsteps=500):
-        """"eval excess surface density 2-halo term"""      
+        """"eval excess surface density from the 2-halo term"""      
         a_cl = self.cosmo.get_a_from_z(z_cl)
         da = self.cosmo.eval_da(z_cl)
         rho_m = ccl.rho_x(self.cosmo.be_cosmo, a_cl, 'matter', is_comoving = False) # Msun/Mpc**3

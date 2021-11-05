@@ -70,7 +70,7 @@ class CLMModeling:
         self.cosmo = cosmo if cosmo is not None else self.cosmo_class()
 
     def set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
-        r""" Sets the definitios for the halo profile
+        r""" Sets the definitions for the halo profile
 
         Parameters
         ----------
@@ -246,6 +246,41 @@ class CLMModeling:
     def _eval_excess_surface_density(self, r_proj, z_cl):
         raise NotImplementedError
 
+    def eval_excess_surface_density_2h(self, r_proj, z_cl, halo_bias=1. , lsteps=500):
+        r""" Computes the 2-halo term excess surface density (CCL backend only)
+
+        Parameters
+        ----------
+        r_proj : array_like
+            Projected radial position from the cluster center in :math:`M\!pc`.
+        z_cl: float
+            Redshift of the cluster
+        halo_bias: float (optional)
+            Value of the halo bias
+        lsteps: int (optional)
+            Number of steps for numerical integration
+
+        Returns
+        -------
+        array_like, float
+            Excess surface density from the 2-halo term in units of :math:`M_\odot\ Mpc^{-2}`.
+        """
+
+        if self.validate_input:
+            validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
+            validate_argument(locals(), 'z_cl', float, argmin=0)
+            validate_argument(locals(), 'halo_bias', float)
+            validate_argument(locals(), 'lsteps', int, argmin=1)
+
+        if self.backend is not 'ccl':
+            raise NotImplementedError(f"2-halo term not currently supported with the {self.backend} backend. Use the CCL backend instead")
+        else:
+            return self._eval_excess_surface_density_2h(r_proj, z_cl, halo_bias=halo_bias, lsteps=lsteps)
+
+    def _eval_excess_surface_density_2h(self, r_proj, z_cl , halo_bias=1. , lsteps=500):
+        raise NotImplementedError
+
+
     def eval_tangential_shear(self, r_proj, z_cl, z_src):
         r"""Computes the tangential shear
 
@@ -374,35 +409,4 @@ class CLMModeling:
         kappa = self.eval_convergence(r_proj, z_cl, z_src)
         gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
         return 1./((1-kappa)**2-abs(gamma_t)**2)
-    
-    
-    def eval_excess_surface_density_2h(self, r_proj, z_cl , b , lsteps = 500 ):
-        r""" Computes the excess surface density two halo term following
-            equation 13. from Oguri & Hamana 2011
-
-        Parameters
-        ----------
-        r_proj : array_like
-            Projected radial position from the cluster center in :math:`M\!pc`.
-        z_cl: float
-            Redshift of the cluster.
-        b: float
-            Halo bias
-        lsteps: int
-            Number of steps in the numerical integration 
-
-        Returns
-        -------
-        array_like, float
-            Excess surface density of the two halo term in units of :math:`M_\odot\ Mpc^{-2}`.
-        """
-        if self.validate_input:
-            validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
-            validate_argument(locals(), 'z_cl', float, argmin=0)
-            validate_argument(locals(), 'b', float, argmin=0)
-            validate_argument(locals(), 'lsteps', int, argmin=0)
-        return self._eval_excess_surface_density_2h(r_proj=r_proj, z_cl=z_cl,  b =b , lsteps = lsteps)
-    
-    def __eval_excess_surface_density_2h(self, r_proj, z_cl , b , lsteps = 500 ):
-        raise NotImplementedError
     
