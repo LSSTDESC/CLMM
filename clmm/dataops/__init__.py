@@ -170,56 +170,46 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, pzpdf=None, pzbins=None
                            shape_component1_err=None, shape_component2_err=None,
                            add_photoz=False, add_shapenoise=False, add_shape_error=False,
                            is_deltasigma=False, validate_input=True):
+    r"""Computes the individual lens-source pair weights
 
-    r"""Compute the individual lens-source pair weights $w_{ls}$.
-
-    The weights $w_{ls}$ expresses as : $w_{ls} = w_ls_geo * w_ls_shape$, following E. S. Sheldon et al.
+    The weights :math:`w_{ls}` express as : :math:`w_{ls} = w_{ls, \rm{geo}} \times w_{ls, \rm{shape}}`, following E. S. Sheldon et al.
     (2003), arXiv:astro-ph/0312036:
 
-    1. the geometrical weight `w_ls_geo` depends on the lens and source redshift informations.
-    This function allows the user to compute `w_ls_geo` using true (a.) or photometric (b.) redshifts of source galaxies.
-        a. true background galaxy redshifts, considering the excess surface density:
+    1. The geometrical weight :math:`w_{ls, \rm{geo}}` depends on lens and source redshift information. When considering only 
+    redshift point estimates, the weights read
 
         .. math::
 
-        w_{ls, geo} = 1. / \Sigma_c(cosmo, z_L, z_{\rm src})^2
+            w_{ls, \rm{geo}} = \Sigma_c(\rm{cosmo}, z_L, z_{\rm src})^{-2}\;.
+    
+        If the redshift pdf of each source, :math:`p_{\rm photoz}(z_s)`, is known, the weights are computed instead as
+    
+        .. math::
+
+            w_{ls, \rm{geo}} = \left[\int_{\delta + z_L} dz_s p_{\rm photoz}(z_s) \Sigma_c(\rm{cosmo}, z_L, z_s)^{-1}\right]^2
+
+        for the tangential shear, the weights 'w_{ls, \rm{geo}}` are 1.
+
+    2. The shape weight :math:`w_{ls,{\rm shape}}` depends on shapenoise and/or shape measurement errors
 
         .. math::
 
-        b. photometric background galaxy redshifts:
+            w_{ls, \rm{shape}} = 1/(\sigma_{\rm shapenoise}^2 + \sigma_{\rm measurement}^2)
+
+
+    3. The probability for a galaxy to be in the background of the cluster is defined by:
 
         .. math::
 
-        w_{ls, geo} = [\int_{\delta + z_L} dz_s p_{\rm photoz}(z_s) \Sigma_c(cosmo, z_L, z_s)^{-1}] ^2
+            P(z_s > z_l) = [\int_{z_L}^{+\infty} dz_s p_{\rm photoz}(z_s)
 
-        .. math::
+        The function return the probability for a galaxy to be in the background of the cluster;
+        if photometric probability density functions are provoded, the function computes the above
+        integral. In the case of true redshifts, it returns 1 if :math:`z_s > z_l` else returns 0.
 
-        for the tangential shear, the weights 'w_ls_geo` are 1
-
-    2. The shape weight `w_ls_shape` depends on shapenoise and/or shape measurement errors
-
-        .. math::
-
-        w_{ls, shape} = 1/(\sigma_{\rm shapenoise}^2 + \sigma_{\rm measurement}^2)
-
-        .. math::
-
-    The total weight `w_ls` is the product of the geometrical weight and the shape weight.
-
-    The probability for a galaxy to be in the background of the cluster is defined by:
-
-    .. math::
-
-        P(z_s > z_l) = [\int_{z_L}^{+\infty} dz_s p_{\rm photoz}(z_s)
-
-    .. math::
-
-    The function return the probability for a galaxy to be in the background of the cluster;
-    if photometric probability density functions are provoded, the function computes the above
-    integral. In the case of true redshifts, it returns 1 if `z_s > z_l` else returns 0.
-
-    Parameters:
-    -----------
+    
+    Parameters
+    ----------
     z_lens: float
         Redshift of the lens.
     z_source: array, optional
@@ -249,8 +239,8 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, pzpdf=None, pzbins=None
     validate_input: bool
         Validade each input argument
 
-    Returns:
-    --------
+    Returns
+    -------
     w_ls: array
         Individual lens source pair weights
     p_background : array

@@ -211,8 +211,9 @@ class GalaxyCluster():
                                weight_name='w_ls', p_background_name='p_background', cosmo=None,
                                is_deltasigma=False, add=True):
         r"""
-        Parameters:
-        -----------
+
+        Parameters
+        ----------
         z_source: string
             column name : source redshifts
         cosmo: clmm.Comology object, None
@@ -248,8 +249,8 @@ class GalaxyCluster():
         add : boolean
             If True, add weight and background probability columns to the galcat table
 
-        Returns:
-        --------
+        Returns
+        -------
         w_ls: array
             the individual lens source pair weights
         p_background : array
