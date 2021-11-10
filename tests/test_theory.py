@@ -1,7 +1,7 @@
 """Tests for theory/"""
 import json
 import numpy as np
-from numpy.testing import assert_raises, assert_allclose
+from numpy.testing import assert_raises, assert_allclose, assert_equal
 from astropy.cosmology import FlatLambdaCDM, LambdaCDM
 import clmm.theory as theo
 from clmm.constants import Constants as clc
@@ -281,6 +281,12 @@ def test_2halo_term(modeling_data):
     if mod.backend is not 'ccl':
         assert_raises(NotImplementedError, mod.eval_excess_surface_density_2h,
                       1., cfg['SIGMA_PARAMS']['z_cl'])
+    else:
+        # Just checking that it runs and returns array of the right length
+        # To be updated with proper comparison to benchmark when available
+        assert_equal(len(mod.eval_excess_surface_density_2h(cfg['SIGMA_PARAMS']['r_proj'],
+                                                               cfg['SIGMA_PARAMS']['z_cl'])),
+                        len(cfg['SIGMA_PARAMS']['r_proj'])) 
 
 def test_compute_critical_surface_density(modeling_data):
     """ Validation test for critical surface density """
