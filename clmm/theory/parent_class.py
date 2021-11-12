@@ -3,7 +3,7 @@ CLMModeling abstract class
 """
 import numpy as np
 import warnings
-from .generic import *
+from .generic import compute_reduced_shear_from_convergence, compute_magnification_bias_from_magnification
 from ..utils import validate_argument
 
 
