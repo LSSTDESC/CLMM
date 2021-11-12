@@ -283,7 +283,7 @@ class CLMModeling:
             \kappa = \frac{\Sigma}{\Sigma_{crit}}
 
         or
-        
+
         .. math::
             \kappa = \kappa_\infty \times \beta_s
 
@@ -405,5 +405,13 @@ class CLMModeling:
         shear. This is valid for spherically averaged profiles, e.g., NFW and
         Einasto (by construction the cross shear is zero).
         """
+        if self.validate_input:
+            validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
+            validate_argument(locals(), 'z_cl', float, argmin=0)
+            validate_argument(locals(), 'z_src', 'float_array', argmin=0)
+            validate_argument(locals(), 'alpha', 'float_array', argmin=0)
+        return self._eval_magnification_bias(r_proj=r_proj, z_cl=z_cl, z_src=z_src, alpha=alpha)
+
+    def _eval_magnification_bias(self, r_proj, z_cl, z_src, alpha):
         magnification = self.eval_magnification(r_proj, z_cl, z_src)
         return compute_magnification_bias_from_magnification(magnification, alpha)
