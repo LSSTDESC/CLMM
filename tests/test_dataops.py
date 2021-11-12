@@ -65,26 +65,6 @@ def test_compute_lensing_angles_flatsky():
     ra_l, dec_l = 161., 65.
     ra_s, dec_s = np.array([-355., 355.]), np.array([-85., 85.])
 
-    for compute_lensing_angles in (da._compute_lensing_angles_flatsky,
-                                   da._compute_lensing_angles_astropy):
-        # Test domains on inputs
-        testing.assert_raises(ValueError, compute_lensing_angles,
-                              -365., dec_l, ra_s, dec_s)
-        testing.assert_raises(ValueError, compute_lensing_angles,
-                              365., dec_l, ra_s, dec_s)
-        testing.assert_raises(ValueError, compute_lensing_angles,
-                              ra_l, 95., ra_s, dec_s)
-        testing.assert_raises(ValueError, compute_lensing_angles,
-                              ra_l, -95., ra_s, dec_s)
-        testing.assert_raises(ValueError, compute_lensing_angles,
-                              ra_l, dec_l, ra_s-10., dec_s)
-        testing.assert_raises(ValueError, compute_lensing_angles,
-                              ra_l, dec_l, ra_s+10., dec_s)
-        testing.assert_raises(ValueError, compute_lensing_angles,
-                              ra_l, dec_l, ra_s, dec_s-10.)
-        testing.assert_raises(ValueError, compute_lensing_angles,
-                              ra_l, dec_l, ra_s, dec_s+10.)
-
     # Ensure that we throw a warning with >1 deg separation
     testing.assert_warns(UserWarning, da._compute_lensing_angles_flatsky,
                          ra_l, dec_l, np.array([151.32, 161.34]), np.array([41.49, 51.55]))
@@ -170,6 +150,30 @@ def test_compute_tangential_and_cross_components(modeling_data):
     # Geometries to test
     geo_tests = [('flat', expected_flat), ('curve', expected_curve)]
     geo_tests = geo_tests[:1]  # <<DELETE THIS LINE WHEN CURVE VALUES ADDED>>
+    # Quick test using curve geometry <<DELETE THIS LINE WHEN CURVE VALUES ADDED>>
+    da.compute_tangential_and_cross_components(
+        ra_lens=ra_lens, dec_lens=dec_lens, ra_source=gals['ra'][0], dec_source=gals['dec'][0],
+        shear1=gals['e1'][0], shear2=gals['e2'][0], geometry='curve', validate_input=False)
+    # Test domains on inputs
+    ra_l, dec_l = 161., 65.
+    ra_s, dec_s = np.array([-355., 355.]), np.array([-85., 85.])
+    shear1, shear2 = gals['e1'][:2], gals['e2'][:2]
+    testing.assert_raises(ValueError, da.compute_tangential_and_cross_components,
+                          -365., dec_l, ra_s, dec_s, shear1, shear2)
+    testing.assert_raises(ValueError, da.compute_tangential_and_cross_components,
+                          365., dec_l, ra_s, dec_s, shear1, shear2)
+    testing.assert_raises(ValueError, da.compute_tangential_and_cross_components,
+                          ra_l, 95., ra_s, dec_s, shear1, shear2)
+    testing.assert_raises(ValueError, da.compute_tangential_and_cross_components,
+                          ra_l, -95., ra_s, dec_s, shear1, shear2)
+    testing.assert_raises(ValueError, da.compute_tangential_and_cross_components,
+                          ra_l, dec_l, ra_s-10., dec_s, shear1, shear2)
+    testing.assert_raises(ValueError, da.compute_tangential_and_cross_components,
+                          ra_l, dec_l, ra_s+10., dec_s, shear1, shear2)
+    testing.assert_raises(ValueError, da.compute_tangential_and_cross_components,
+                          ra_l, dec_l, ra_s, dec_s-10., shear1, shear2)
+    testing.assert_raises(ValueError, da.compute_tangential_and_cross_components,
+                          ra_l, dec_l, ra_s, dec_s+10., shear1, shear2)
     # test incosnsitent data
     testing.assert_raises(TypeError, da.compute_tangential_and_cross_components,
                           ra_lens=ra_lens, dec_lens=dec_lens,
@@ -205,6 +209,27 @@ def test_compute_tangential_and_cross_components(modeling_data):
         testing.assert_allclose(tshear, expected['tangential_shear'], **TOLERANCE,
                                 err_msg="Tangential Shear not correct when passing lists")
         testing.assert_allclose(xshear, expected['cross_shear'], **TOLERANCE,
+                                err_msg="Cross Shear not correct when passing lists")
+        # Test without validation
+        angsep, tshear, xshear = da.compute_tangential_and_cross_components(
+            ra_lens=ra_lens, dec_lens=dec_lens, ra_source=list(gals['ra']),
+            dec_source=list(gals['dec']), shear1=list(gals['e1']), shear2=list(gals['e2']),
+            geometry=geometry, validate_input=False)
+        testing.assert_allclose(angsep, expected['angsep'], **TOLERANCE,
+                                err_msg="Angular Separation not correct when passing lists")
+        testing.assert_allclose(tshear, expected['tangential_shear'], **TOLERANCE,
+                                err_msg="Tangential Shear not correct when passing lists")
+        testing.assert_allclose(xshear, expected['cross_shear'], **TOLERANCE,
+                                err_msg="Cross Shear not correct when passing lists")
+        # Test without validation and float arguments
+        angsep, tshear, xshear = da.compute_tangential_and_cross_components(
+            ra_lens=ra_lens, dec_lens=dec_lens, ra_source=gals['ra'][0], dec_source=gals['dec'][0],
+            shear1=gals['e1'][0], shear2=gals['e2'][0], geometry=geometry, validate_input=False)
+        testing.assert_allclose(angsep, expected['angsep'][0], **TOLERANCE,
+                                err_msg="Angular Separation not correct when passing lists")
+        testing.assert_allclose(tshear, expected['tangential_shear'][0], **TOLERANCE,
+                                err_msg="Tangential Shear not correct when passing lists")
+        testing.assert_allclose(xshear, expected['cross_shear'][0], **TOLERANCE,
                                 err_msg="Cross Shear not correct when passing lists")
     # Use the cluster method
     cluster = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
@@ -413,9 +438,21 @@ def test_make_radial_profiles():
         # Test it runs with galaxy id's and int bins and no empty bins
         cluster.make_radial_profile(bin_units, bins=bins_radians, include_empty_bins=False,
                                     gal_ids_in_bins=True, table_name='profile3')
-        _test_profile_table_output(
-            cluster.profile3, bins_radians[1], expected_radius[1], bins_radians[2],
-            expected['tan_shear'][1], expected['cross_shear'][1], [2], p0='gt', p1='gx')
+        _test_profile_table_output(cluster.profile3, bins_radians[1], expected_radius[1], bins_radians[2],
+                                   expected['tan_shear'][1], expected['cross_shear'][1], [2],
+                                   p0='gt', p1='gx')
+        # Test passing zeror errors
+        cluster_err = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
+                                     galcat=gals['ra', 'dec', 'e1', 'e2', 'z', 'id'])
+        cluster_err.compute_tangential_and_cross_components(geometry=geometry)
+        cluster_err.galcat['et_err'] = 0
+        cluster_err.galcat['ex_err'] = 0
+        cluster_err.make_radial_profile(bin_units, bins=bins_radians, include_empty_bins=False,
+            tan_component_in_err='et_err', cross_component_in_err='ex_err')
+        for c in cluster_err.profile.colnames:
+            testing.assert_allclose(cluster.profile[c], cluster_err.profile[c], **TOLERANCE,
+                                    err_msg=f"Value for {c} in bin not expected.")
+
     ########################################
     ### Basic tests of cluster object ######
     ########################################
