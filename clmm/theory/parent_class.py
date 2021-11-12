@@ -409,7 +409,7 @@ class CLMModeling:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', float, argmin=0)
             validate_argument(locals(), 'z_src', 'float_array', argmin=0)
-            validate_argument(locals(), 'alpha', 'float_array', argmin=0)
+            validate_argument(locals(), 'alpha', 'float_array')
         return self._eval_magnification_bias(r_proj=r_proj, z_cl=z_cl, z_src=z_src, alpha=alpha)
 
     def _eval_magnification_bias(self, r_proj, z_cl, z_src, alpha):
