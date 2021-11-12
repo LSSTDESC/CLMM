@@ -2,6 +2,8 @@
 CLMModeling abstract class
 """
 import numpy as np
+from .generic import compute_reduced_shear_from_convergence
+from ..utils import validate_argument
 
 
 class CLMModeling:
@@ -25,10 +27,14 @@ class CLMModeling:
         Dictionary with the definitions for mass
     hdpm_dict: dict
         Dictionary with the definitions for profile
+    validate_input: bool
+        Validade each input argument
+    cosmo_class: type
+        Type of used cosmology objects
     """
     # pylint: disable=too-many-instance-attributes
 
-    def __init__(self):
+    def __init__(self, validate_input=True):
         self.backend = None
 
         self.massdef = ''
@@ -41,61 +47,27 @@ class CLMModeling:
         self.mdef_dict = {}
         self.hdpm_dict = {}
 
-    def validate_definitions(self, massdef, halo_profile_model):
-        r""" Makes sure values of `massdef` and `halo_profile_model` are in the supported options
-        and fixes casing (code works with lowercase).
-
-        Parameters
-        ----------
-        massdef: str, optional
-            Profile mass definition.
-        halo_profile_model: str, optional
-            Profile model parameterization.
-
-        Returns
-        -------
-        massdef: str
-            Lowercase profile mass definition.
-        halo_profile_model: str
-            Lowercase profile model parameterization.
-        """
-        # make case independent
-        massdef, halo_profile_model = massdef.lower(), halo_profile_model.lower()
-        if not massdef in self.mdef_dict:
-            raise ValueError(
-                f"Halo density profile mass definition {massdef} not currently supported")
-        if not halo_profile_model in self.hdpm_dict:
-            raise ValueError(
-                f"Halo density profile model {halo_profile_model} not currently supported")
-        return massdef, halo_profile_model
+        self.validate_input = validate_input
+        self.cosmo_class = None
 
     def set_cosmo(self, cosmo):
         r""" Sets the cosmology to the internal cosmology object
 
         Parameters
         ----------
-        cosmo: clmm.Comology
-            CLMM Cosmology object
-        """
-        raise NotImplementedError
-
-    def _set_cosmo(self, cosmo, cosmo_out_class):
-        r""" Sets the cosmology to the internal cosmology object
-
-        Parameters
-        ----------
         cosmo: clmm.Comology object, None
-            CLMM Cosmology object. If is None, creates a new instance of cosmo_out_class().
-        cosmo_out_class: clmm.modbackend Cosmology class
-            Cosmology Output for the output object.
+            CLMM Cosmology object. If is None, creates a new instance of self.cosmo_class().
         """
-        if cosmo is not None:
-            if not isinstance(cosmo, cosmo_out_class):
-                raise ValueError(
-                    f'Cosmo input ({type(cosmo)}) must be a {cosmo_out_class} object.')
-            self.cosmo = cosmo
-        else:
-            self.cosmo = cosmo_out_class()
+        if self.validate_input:
+            if self.cosmo_class is None:
+                raise NotImplementedError
+            validate_argument(locals(), 'cosmo', self.cosmo_class, none_ok=True)
+        self._set_cosmo(cosmo)
+        self.cosmo.validate_input = self.validate_input
+
+    def _set_cosmo(self, cosmo):
+        r""" Sets the cosmology to the internal cosmology object"""
+        self.cosmo = cosmo if cosmo is not None else self.cosmo_class()
 
     def set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
         r""" Sets the definitios for the halo profile
@@ -109,6 +81,22 @@ class CLMModeling:
         delta_mdef: int
             Overdensity number
         """
+        # make case independent
+        massdef, halo_profile_model = massdef.lower(), halo_profile_model.lower()
+        if self.validate_input:
+            validate_argument(locals(), 'massdef', str)
+            validate_argument(locals(), 'halo_profile_model', str)
+            validate_argument(locals(), 'delta_mdef', int, argmin=0)
+            if not massdef in self.mdef_dict:
+                raise ValueError(
+                    f"Halo density profile mass definition {massdef} not currently supported")
+            if not halo_profile_model in self.hdpm_dict:
+                raise ValueError(
+                    f"Halo density profile model {halo_profile_model} not currently supported")
+        return self._set_halo_density_profile(halo_profile_model=halo_profile_model,
+                                              massdef=massdef, delta_mdef=delta_mdef)
+
+    def _set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
         raise NotImplementedError
 
     def set_mass(self, mdelta):
@@ -119,8 +107,8 @@ class CLMModeling:
         mdelta : float
             Galaxy cluster mass :math:`M_\Delta` in units of :math:`M_\odot`
         """
-        self._validate_input(
-            mdelta, 0, "min(mdelta) = %s! This value is not accepted.")
+        if self.validate_input:
+            validate_argument(locals(), 'mdelta', float, argmin=0)
         self._set_mass(mdelta)
 
     def _set_mass(self, mdelta):
@@ -135,36 +123,13 @@ class CLMModeling:
         cdelta: float
             Concentration
         """
-        self._validate_input(
-            cdelta, 0, "min(cdelta) = %s! This value is not accepted.")
+        if self.validate_input:
+            validate_argument(locals(), 'cdelta', float, argmin=0)
         self._set_concentration(cdelta)
 
     def _set_concentration(self, cdelta):
         r""" Actuall sets the value of the concentration (without value check)"""
         raise NotImplementedError
-
-    def _validate_input(self, in_val, vmin, err_msg='value %s <= vmin'):
-        r'''Raises error if input value<=vmin
-
-        Parameters
-        ----------
-        radius: array, float
-            Input radius
-        '''
-        in_min = np.min(in_val)
-        if in_min <= vmin:
-            raise ValueError(err_msg % str(in_min))
-
-    def _check_input_radius(self, radius):
-        r'''Raises error if input radius is not positive
-
-        Parameters
-        ----------
-        radius: array, float
-            Input radius
-        '''
-        self._validate_input(
-            radius, 0, "min(R) = %s Mpc! This value is not accepted.")
 
     def eval_3d_density(self, r3d, z_cl):
         r"""Retrieve the 3d density :math:`\rho(r)`.
@@ -181,6 +146,12 @@ class CLMModeling:
         array_like, float
             3-dimensional mass density in units of :math:`M_\odot\ Mpc^{-3}`
         """
+        if self.validate_input:
+            validate_argument(locals(), 'r3d', 'float_array', argmin=0)
+            validate_argument(locals(), 'z_cl', 'float_array', argmin=0)
+        return self._eval_3d_density(r3d=r3d, z_cl=z_cl)
+
+    def _eval_3d_density(self, r3d, z_cl):
         raise NotImplementedError
 
     def eval_critical_surface_density(self, z_len, z_src):
@@ -198,11 +169,12 @@ class CLMModeling:
         float
             Cosmology-dependent critical surface density in units of :math:`M_\odot\ Mpc^{-2}`
         """
-        if z_len <= 0:
-            raise ValueError('Redshift for lens <= 0.')
-        if np.min(z_src) <= 0:
-            raise ValueError(
-                'Some source redshifts are <=0. Please check your inputs.')
+        if self.validate_input:
+            validate_argument(locals(), 'z_len', float, argmin=0)
+            validate_argument(locals(), 'z_src', 'float_array', argmin=0)
+        return self._eval_critical_surface_density(z_len=z_len, z_src=z_src)
+
+    def _eval_critical_surface_density(self, z_len, z_src):
         return self.cosmo.eval_sigma_crit(z_len, z_src)
 
     def eval_surface_density(self, r_proj, z_cl):
@@ -220,6 +192,12 @@ class CLMModeling:
         array_like, float
             2D projected surface density in units of :math:`M_\odot\ Mpc^{-2}`
         """
+        if self.validate_input:
+            validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
+            validate_argument(locals(), 'z_cl', float, argmin=0)
+        return self._eval_surface_density(r_proj=r_proj, z_cl=z_cl)
+
+    def _eval_surface_density(self, r_proj, z_cl):
         raise NotImplementedError
 
     def eval_mean_surface_density(self, r_proj, z_cl):
@@ -237,6 +215,12 @@ class CLMModeling:
         array_like, float
             Excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
         """
+        if self.validate_input:
+            validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
+            validate_argument(locals(), 'z_cl', float, argmin=0)
+        return self._eval_mean_surface_density(r_proj=r_proj, z_cl=z_cl)
+
+    def _eval_mean_surface_density(self, r_proj, z_cl):
         raise NotImplementedError
 
     def eval_excess_surface_density(self, r_proj, z_cl):
@@ -254,6 +238,12 @@ class CLMModeling:
         array_like, float
             Excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
         """
+        if self.validate_input:
+            validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
+            validate_argument(locals(), 'z_cl', float, argmin=0)
+        return self._eval_excess_surface_density(r_proj=r_proj, z_cl=z_cl)
+
+    def _eval_excess_surface_density(self, r_proj, z_cl):
         raise NotImplementedError
 
     def eval_tangential_shear(self, r_proj, z_cl, z_src):
@@ -273,7 +263,16 @@ class CLMModeling:
         array_like, float
             tangential shear
         """
-        raise NotImplementedError
+        if self.validate_input:
+            validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
+            validate_argument(locals(), 'z_cl', float, argmin=0)
+            validate_argument(locals(), 'z_src', 'float_array', argmin=0)
+        return self._eval_tangential_shear(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
+
+    def _eval_tangential_shear(self, r_proj, z_cl, z_src):
+        delta_sigma = self.eval_excess_surface_density(r_proj, z_cl)
+        sigma_c = self.eval_critical_surface_density(z_cl, z_src)
+        return delta_sigma/sigma_c
 
     def eval_convergence(self, r_proj, z_cl, z_src):
         r"""Computes the mass convergence
@@ -297,14 +296,19 @@ class CLMModeling:
 
         Returns
         -------
-        kappa : array_like, float
+        array_like, float
             Mass convergence, kappa.
-
-        Notes
-        -----
-        Need to figure out if we want to raise exceptions rather than errors here?
         """
-        raise NotImplementedError
+        if self.validate_input:
+            validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
+            validate_argument(locals(), 'z_cl', float, argmin=0)
+            validate_argument(locals(), 'z_src', 'float_array', argmin=0)
+        return self._eval_convergence(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
+
+    def _eval_convergence(self, r_proj, z_cl, z_src):
+        sigma = self.eval_surface_density(r_proj, z_cl)
+        sigma_c = self.eval_critical_surface_density(z_cl, z_src)
+        return sigma/sigma_c
 
     def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src, z_src_model='single_plane',
                                       beta_s_mean=None, beta_s_square_mean=None):
@@ -376,14 +380,19 @@ class CLMModeling:
 
         Returns
         -------
-        gt : array_like, float
+        array_like, float
             Reduced tangential shear
-
-        Notes
-        -----
-        Need to figure out if we want to raise exceptions rather than errors here?
         """
-        raise NotImplementedError
+        if self.validate_input:
+            validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
+            validate_argument(locals(), 'z_cl', float, argmin=0)
+            validate_argument(locals(), 'z_src', 'float_array', argmin=0)
+        return self._eval_reduced_tangential_shear(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
+
+    def _eval_reduced_tangential_shear(self, r_proj, z_cl, z_src):
+        kappa = self.eval_convergence(r_proj, z_cl, z_src)
+        gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
+        return compute_reduced_shear_from_convergence(gamma_t, kappa)
 
     def eval_magnification(self, r_proj, z_cl, z_src):
         r"""Computes the magnification
@@ -407,6 +416,17 @@ class CLMModeling:
 
         Notes
         -----
-        Need to figure out if we want to raise exceptions rather than errors here?
+        The magnification is computed taking into account just the tangential
+        shear. This is valid for spherically averaged profiles, e.g., NFW and
+        Einasto (by construction the cross shear is zero).
         """
-        raise NotImplementedError
+        if self.validate_input:
+            validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
+            validate_argument(locals(), 'z_cl', float, argmin=0)
+            validate_argument(locals(), 'z_src', 'float_array', argmin=0)
+        return self._eval_magnification(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
+
+    def _eval_magnification(self, r_proj, z_cl, z_src):
+        kappa = self.eval_convergence(r_proj, z_cl, z_src)
+        gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
+        return 1./((1-kappa)**2-abs(gamma_t)**2)
