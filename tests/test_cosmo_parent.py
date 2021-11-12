@@ -34,12 +34,13 @@ def test_class(modeling_data):
                   CLMMCosmology._set_param, None, None, None)
     assert_raises(NotImplementedError, CLMMCosmology._get_param, None, None)
     assert_raises(AttributeError, CLMMCosmology.set_be_cosmo, None, None)
-    assert_raises(NotImplementedError, CLMMCosmology._get_Omega_m, None, None)
+    assert_raises(NotImplementedError, CLMMCosmology.get_Omega_m, None, None)
     assert_raises(NotImplementedError,
-                  CLMMCosmology._eval_da_z1z2, None, None, None)
+                  CLMMCosmology.eval_da_z1z2, None, None, None)
+    assert_raises(AttributeError, CLMMCosmology.eval_da, None, None)
     assert_raises(NotImplementedError,
-                  CLMMCosmology._eval_sigma_crit, None, None, None)
-    assert_raises(NotImplementedError, CLMMCosmology._get_E2Omega_m, None, None)
+                  CLMMCosmology.eval_sigma_crit, None, None, None)
+    assert_raises(NotImplementedError, CLMMCosmology.get_E2Omega_m, None, None)
 
 
 TOLERANCE = {'rtol': 1.0e-12}

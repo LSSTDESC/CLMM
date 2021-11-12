@@ -2,7 +2,6 @@
 """
 # CLMM Cosmology object abstract superclass
 import numpy as np
-from ..utils import validate_argument
 
 
 class CLMMCosmology:
@@ -15,14 +14,11 @@ class CLMMCosmology:
         Name of back-end used
     be_cosmo: cosmology library
         Cosmology library used in the back-end
-    validate_input: bool
-        Validade each input argument
     """
 
-    def __init__(self, validate_input=True, **kwargs):
+    def __init__(self, **kwargs):
         self.backend = None
         self.be_cosmo = None
-        self.validate_input = validate_input
         self.set_be_cosmo(**kwargs)
 
     def __getitem__(self, key):
@@ -41,28 +37,6 @@ class CLMMCosmology:
         To be filled in child classes
         """
         raise NotImplementedError
-
-    def init_from_params(self, H0=67.66, Omega_b0=0.049, Omega_dm0=0.262, Omega_k0=0.0):
-        """Set the cosmology from parameters
-
-        Parameters
-        ----------
-        H0: float
-            Hubble parameter.
-        Omega_b0: float
-            Mass density of baryons today.
-        Omega_dm0: float
-            Mass density of dark matter only (no baryons) today.
-        Omega_k0: float
-            Mass density of curvature today.
-        """
-        if self.validate_input:
-            validate_argument(locals(), 'H0', float, argmin=0)
-            validate_argument(locals(), 'Omega_b0', float, argmin=0, eqmin=True)
-            validate_argument(locals(), 'Omega_dm0', float, argmin=0, eqmin=True)
-            validate_argument(locals(), 'Omega_k0', float, argmin=0, eqmin=True)
-        self._init_from_params(
-            H0=H0, Omega_b0=Omega_b0, Omega_dm0=Omega_dm0, Omega_k0=Omega_k0)
 
     def _init_from_params(self, **kwargs):
         """
@@ -95,14 +69,14 @@ class CLMMCosmology:
         Parameters
         ----------
         be_cosmo: clmm.cosmology.Cosmology object, None
-            Input cosmology, used if not None.
+            Input cosmology, used if not None
         **kwargs
-            Individual cosmological parameters, see init_from_params function.
+            Individual cosmological parameters
         """
         if be_cosmo:
             self._init_from_cosmo(be_cosmo)
         else:
-            self.init_from_params(
+            self._init_from_params(
                 H0=H0, Omega_b0=Omega_b0, Omega_dm0=Omega_dm0, Omega_k0=Omega_k0)
 
     def get_Omega_m(self, z):
@@ -123,11 +97,6 @@ class CLMMCosmology:
         -----
         Need to decide if non-relativist neutrinos will contribute here.
         """
-        if self.validate_input:
-            validate_argument(locals(), 'z', 'float_array', argmin=0, eqmin=True)
-        return self._get_Omega_m(z=z)
-
-    def _get_Omega_m(self, z):
         raise NotImplementedError
 
     def get_E2Omega_m(self, z):
@@ -149,11 +118,6 @@ class CLMMCosmology:
         -----
         Need to decide if non-relativist neutrinos will contribute here.
         """
-        if self.validate_input:
-            validate_argument(locals(), 'z', 'float_array', argmin=0, eqmin=True)
-        return self._get_E2Omega_m(z=z)
-
-    def _get_E2Omega_m(self, z):
         raise NotImplementedError
 
     def eval_da_z1z2(self, z1, z2):
@@ -176,12 +140,6 @@ class CLMMCosmology:
         -----
         Describe the vectorization.
         """
-        if self.validate_input:
-            validate_argument(locals(), 'z1', 'float_array', argmin=0, eqmin=True)
-            validate_argument(locals(), 'z2', 'float_array', argmin=0, eqmin=True)
-        return self._eval_da_z1z2(z1=z1, z2=z2)
-
-    def _eval_da_z1z2(self, z1, z2):
         raise NotImplementedError
 
     def eval_da(self, z):
@@ -202,8 +160,6 @@ class CLMMCosmology:
         -----
         Describe the vectorization.
         """
-        if self.validate_input:
-            validate_argument(locals(), 'z', 'float_array', argmin=0, eqmin=True)
         return self.eval_da_z1z2(0.0, z)
 
     def eval_da_a1a2(self, a1, a2=1.):
@@ -231,11 +187,6 @@ class CLMMCosmology:
         float
             Angular diameter distance in units :math:`M\!pc`
         """
-        if self.validate_input:
-            validate_argument(locals(), 'a1', 'float_array', argmin=0, eqmin=True,
-                              argmax=1, eqmax=True)
-            validate_argument(locals(), 'a2', 'float_array', argmin=0, eqmin=True,
-                              argmax=1, eqmax=True)
         z1 = self.get_z_from_a(a2)
         z2 = self.get_z_from_a(a1)
         return self.eval_da_z1z2(z1, z2)
@@ -251,9 +202,10 @@ class CLMMCosmology:
         scale_factor : array_like
             Scale factor
         """
-        if self.validate_input:
-            validate_argument(locals(), 'z', 'float_array', argmin=0, eqmin=True)
         z = np.array(z)
+        if np.any(z < 0.0):
+            raise ValueError(
+                "Cannot convert negative redshift to scale factor")
         return 1.0/(1.0+z)
 
     def get_z_from_a(self, a):
@@ -267,10 +219,10 @@ class CLMMCosmology:
         z : array_like
             Redshift
         """
-        if self.validate_input:
-            validate_argument(locals(), 'a', 'float_array', argmin=0, eqmin=True,
-                              argmax=1, eqmax=True)
         a = np.array(a)
+        if np.any(a > 1.0):
+            raise ValueError(
+                "Cannot convert invalid scale factor a > 1 to redshift")
         return (1.0/a)-1.0
 
     def rad2mpc(self, dist1, redshift):
@@ -293,9 +245,6 @@ class CLMMCosmology:
         dist2 : array_like
             Distances in Mpc
         """
-        if self.validate_input:
-            validate_argument(locals(), 'dist1', 'float_array', argmin=0, eqmin=True)
-            validate_argument(locals(), 'redshift', 'float_array', argmin=0, eqmin=True)
         return dist1*self.eval_da(redshift)
 
     def mpc2rad(self, dist1, redshift):
@@ -318,9 +267,6 @@ class CLMMCosmology:
         dist2 : array_like
             Distances in radians
         """
-        if self.validate_input:
-            validate_argument(locals(), 'dist1', 'float_array', argmin=0, eqmin=True)
-            validate_argument(locals(), 'redshift', 'float_array', argmin=0, eqmin=True)
         return dist1/self.eval_da(redshift)
 
     def eval_sigma_crit(self, z_len, z_src):
@@ -338,10 +284,4 @@ class CLMMCosmology:
         float
             Cosmology-dependent critical surface density in units of :math:`M_\odot\ Mpc^{-2}`
         """
-        if self.validate_input:
-            validate_argument(locals(), 'z_len', float, argmin=0, eqmin=True)
-            validate_argument(locals(), 'z_src', 'float_array', argmin=0)
-        return self._eval_sigma_crit(z_len=z_len, z_src=z_src)
-
-    def _eval_sigma_crit(self, z_len, z_src):
         raise NotImplementedError

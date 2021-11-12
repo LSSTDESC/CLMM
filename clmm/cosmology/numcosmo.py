@@ -105,20 +105,20 @@ class NumCosmoCosmology(CLMMCosmology):
         self.dist = dist
         self.dist.prepare_if_needed(self.be_cosmo)
 
-    def _get_Omega_m(self, z):
+    def get_Omega_m(self, z):
 
         return self.be_cosmo.E2Omega_m(z)/self.be_cosmo.E2(z)
 
-    def _get_E2Omega_m(self, z):
+    def get_E2Omega_m(self, z):
 
         return self.be_cosmo.E2Omega_m(z)
 
-    def _eval_da_z1z2(self, z1, z2):
+    def eval_da_z1z2(self, z1, z2):
 
         return np.vectorize(self.dist.angular_diameter_z1_z2)(
             self.be_cosmo, z1, z2)*self.be_cosmo.RH_Mpc()
 
-    def _eval_sigma_crit(self, z_len, z_src):
+    def eval_sigma_crit(self, z_len, z_src):
 
         self.smd.prepare_if_needed(self.be_cosmo)
 

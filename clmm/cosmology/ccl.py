@@ -69,19 +69,19 @@ class CCLCosmology(CLMMCosmology):
             raise ValueError(f"Unsupported parameter {key}")
         return value
 
-    def _get_Omega_m(self, z):
+    def get_Omega_m(self, z):
         return ccl.omega_x(self.be_cosmo, 1.0/(1.0+z), "matter")
 
-    def _get_E2Omega_m(self, z):
+    def get_E2Omega_m(self, z):
         a = 1.0/(1.0+z)
         return ccl.omega_x(self.be_cosmo, a, "matter")*(ccl.h_over_h0(self.be_cosmo, a))**2
 
-    def _eval_da_z1z2(self, z1, z2):
+    def eval_da_z1z2(self, z1, z2):
         a1 = 1.0/(1.0+z1)
         a2 = 1.0/(1.0+z2)
         return np.vectorize(ccl.angular_diameter_distance)(self.be_cosmo, a1, a2)
 
-    def _eval_sigma_crit(self, z_len, z_src):
+    def eval_sigma_crit(self, z_len, z_src):
         a_len = self.get_a_from_z(z_len)
         a_src = np.atleast_1d(self.get_a_from_z(z_src))
         cte = ccl.physical_constants.CLIGHT**2 / \
