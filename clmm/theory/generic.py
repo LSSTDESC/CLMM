@@ -32,7 +32,8 @@ def compute_reduced_shear_from_convergence(shear, convergence):
 
 
 def compute_magnification_bias_from_magnification(magnification, alpha):
-    r""" Computes magnification bias from magnification :math:`\mu` and slope parameter :math:`\alpha` as :
+    r""" Computes magnification bias from magnification :math:`\mu` and slope parameter 
+    :math:`\alpha` as :
     
     .. math::
         \mu^{\alpha - 1}
@@ -63,7 +64,8 @@ def compute_magnification_bias_from_magnification(magnification, alpha):
             magnification bias
     """
     if np.any(np.array(magnification) < 0):
-        warnings.warn('Magnification is negative for certain radii, returning nan for magnification bias in this case.')
+        warnings.warn('Magnification is negative for certain radii, \
+                      returning nan for magnification bias in this case.')
     magnification_bias_from_magnification = np.array(
         magnification)**(np.array([alpha]).T - 1)
     return magnification_bias_from_magnification

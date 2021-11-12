@@ -189,11 +189,14 @@ def test_compute_magnification_bias(modeling_data):
 
     # Check output including: float, list, ndarray
     assert_allclose(
-        theo.compute_magnification_bias_from_magnification(magnification[0], alpha[0]), truth[0][0],**TOLERANCE)
+        theo.compute_magnification_bias_from_magnification(
+            magnification[0], alpha[0]), truth[0][0],**TOLERANCE)
     assert_allclose(
-        theo.compute_magnification_bias_from_magnification(magnification, alpha), truth, **TOLERANCE)
+        theo.compute_magnification_bias_from_magnification(
+            magnification, alpha), truth, **TOLERANCE)
     assert_allclose(
-        theo.compute_magnification_bias_from_magnification(np.array(magnification), np.array(alpha)),
+        theo.compute_magnification_bias_from_magnification(
+            np.array(magnification), np.array(alpha)),
         np.array(truth), **TOLERANCE)
 
 def helper_profiles(func):
@@ -278,7 +281,8 @@ def test_profiles(modeling_data):
         mod.eval_surface_density(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl']),
         cfg['numcosmo_profiles']['Sigma'], reltol)
     assert_allclose(
-        mod.eval_excess_surface_density(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl']),
+        mod.eval_excess_surface_density(cfg['SIGMA_PARAMS']['r_proj'], 
+                                        cfg['SIGMA_PARAMS']['z_cl']),
         cfg['numcosmo_profiles']['DeltaSigma'], reltol)
     if mod.backend == 'ct':
         assert_raises(ValueError, mod.eval_excess_surface_density,
@@ -304,11 +308,13 @@ def test_compute_critical_surface_density(modeling_data):
     z_cluster = 0.3
     z_source = 0.2
     assert_allclose(
-        theo.compute_critical_surface_density(cfg['cosmo'], z_cluster=z_cluster, z_source=z_source),
+        theo.compute_critical_surface_density(
+            cfg['cosmo'], z_cluster=z_cluster, z_source=z_source),
         np.inf, 1.0e-10)
     z_source = [0.2, 0.12, 0.25]
     assert_allclose(
-        theo.compute_critical_surface_density(cfg['cosmo'], z_cluster=z_cluster, z_source=z_source),
+        theo.compute_critical_surface_density(
+        cfg['cosmo'], z_cluster=z_cluster, z_source=z_source),
         [np.inf, np.inf, np.inf], 1.0e-10)
     # Check usage with cluster object function
     z_src = np.array([cfg['TEST_CASE']['z_source']])
@@ -429,13 +435,15 @@ def test_shear_convergence_unittests(modeling_data):
 
     # Validate magnification bias
     alpha = 3.78
-    assert_allclose(theo.compute_magnification_bias(cosmo=cosmo, **cfg['GAMMA_PARAMS'], alpha=alpha),
+    assert_allclose(theo.compute_magnification_bias(
+        cosmo=cosmo, **cfg['GAMMA_PARAMS'], alpha=alpha),
                     (1./((1-kappa)**2-abs(gammat)**2))**(alpha - 1), 1.0e-10)
     assert_allclose((1./((1-kappa*sigmac_corr)**2-abs(gammat*sigmac_corr)**2))**(alpha - 1),
                     cfg['numcosmo_profiles']['mu']**(alpha - 1), 1.e3*reltol)
     
-    # Check that shear, reduced shear and convergence return zero and magnification and magnification bias returns one if
-    # source is in front of the cluster
+    # Check that shear, reduced shear and convergence return zero
+    # and magnification and magnification bias returns one
+    # if source is in front of the cluster
     # First, check for a array of radius and single source z
     radius = np.logspace(-2, 2, 10)
     z_cluster = 0.3
@@ -459,7 +467,8 @@ def test_shear_convergence_unittests(modeling_data):
         np.ones(len(radius)), 1.0e-10)
     assert_allclose(
         theo.compute_magnification_bias(
-            radius, alpha=-1, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
+            radius, alpha=-1, mdelta=1.e15, cdelta=4., z_cluster=z_cluster,
+            z_source=z_source, cosmo=cosmo),
         np.ones(len(radius)), 1.0e-10)
     
     # Second, check a single radius and array of source z
@@ -483,7 +492,8 @@ def test_shear_convergence_unittests(modeling_data):
         np.ones(len(z_source)), 1.0e-10)
     assert_allclose(
         theo.compute_magnification_bias(
-            radius, alpha = -1, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
+            radius, alpha = -1, mdelta=1.e15, cdelta=4., z_cluster=z_cluster,
+            z_source=z_source, cosmo=cosmo),
         np.ones(len(z_source)), 1.0e-10)
     
     # Object Oriented tests

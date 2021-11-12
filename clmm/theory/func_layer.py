@@ -14,7 +14,8 @@ from . generic import *
 __all__ = generic.__all__+['compute_3d_density', 'compute_surface_density',
                            'compute_excess_surface_density', 'compute_critical_surface_density',
                            'compute_tangential_shear', 'compute_convergence',
-                           'compute_reduced_tangential_shear', 'compute_magnification','compute_magnification_bias']
+                        'compute_reduced_tangential_shear','compute_magnification',
+                           'compute_magnification_bias']
 
 
 def compute_3d_density(
@@ -597,9 +598,12 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
 
 
 
-def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200, halo_profile_model='nfw', massdef='mean', z_src_model='single_plane'):
+def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_source, cosmo,
+                               delta_mdef=200, halo_profile_model='nfw', massdef='mean',
+                               z_src_model='single_plane'):
     
-    r""" Computes magnification bias from magnification :math:`\mu` and slope parameter :math:`\alpha` as :
+    r""" Computes magnification bias from magnification :math:`\mu` 
+    and slope parameter :math:`\alpha` as :
     
     .. math::
         \mu^{\alpha - 1}.
@@ -662,7 +666,8 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
         magnification bias
     """
     
-    magnification = compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef, halo_profile_model, massdef, z_src_model)
+    magnification = compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
+                                          delta_mdef, halo_profile_model, massdef, z_src_model)
     magnification_bias = compute_magnification_bias_from_magnification(magnification, alpha)
 
     return magnification_bias
