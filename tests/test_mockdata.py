@@ -42,33 +42,40 @@ def test_mock_data():
     # A proper test should be implemented
     mock.generate_galaxy_catalog(
         1e15, 0.3, 4, cosmo, 0.8, ngals=None, ngal_density=1)
+    
     # Simple test to check if option with zsrc=chang13 is working
     # A proper test should be implemented
     mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 'chang13', ngals=100)
     mock.generate_galaxy_catalog(
         1e15, 0.3, 4, cosmo, 'chang13', ngal_density=1)
+    
     # Simple test to check if option with zsrc=desc_src is working
     # A proper test should be implemented
     mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 'desc_srd', ngals=100)
     mock.generate_galaxy_catalog(
         1e15, 0.3, 4, cosmo, 'desc_srd', ngal_density=1)
+    
     # Simple test to check if option with pdz is working
     # A proper test should be implemented
-    mock.generate_galaxy_catalog(
-        1e15, 0.3, 4, cosmo, 0.8, ngals=100, photoz_sigma_unscaled=.1)
+    mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.8, ngals=100, photoz_sigma_unscaled=.1)
+    
+    # Simple test to check if option with mean_e_err is working
+    # A proper test should be implemented
+    mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.8, ngals=100, mean_e_err=0.01)
 
-    def nfw_shear_profile(radius, logm, z_src):
-        mass = 10.**logm
-        gt_model = clmm.compute_reduced_tangential_shear(
-            radius, mass, 4, 0.3, z_src, cosmo, delta_mdef=200, halo_profile_model='nfw')
+    def nfw_shear_profile(r, logm, z_src):
+        m = 10.**logm
+        gt_model = clmm.compute_reduced_tangential_shear(r,
+                                                         m, 4, 0.3, z_src, cosmo,
+                                                         delta_mdef=200,
+                                                         halo_profile_model='nfw')
         return gt_model
 
     def mass_mock_cluster(mass=15., guess=15.):
 
         # Set up mock cluster
         ngals = 5000
-        data = mock.generate_galaxy_catalog(
-            10**mass, 0.3, 4, cosmo, 0.8, ngals=ngals)
+        data = mock.generate_galaxy_catalog(10**mass, 0.3, 4, cosmo, 0.8, ngals=ngals)
 
         # Check whether the given ngals is the retrieved ngals
         assert_equal(len(data['ra']), ngals)
@@ -78,16 +85,16 @@ def test_mock_data():
         assert_equal(np.count_nonzero((data['e2'] > 1) | (data['e2'] < -1)), 0)
 
         # Create shear profile
-        cluster = clmm.GalaxyCluster("test_cluster", 0.0, 0.0, 0.3, data)
-        cluster.compute_tangential_and_cross_components(geometry="flat")
-        binned = cluster.make_radial_profile("Mpc", bins=da.make_bins(0.5, 5.0, 100),
-                                        cosmo=cosmo, include_empty_bins=False)
+        cl = clmm.GalaxyCluster("test_cluster", 0.0, 0.0, 0.3, data)
+        theta, g_t, g_x = cl.compute_tangential_and_cross_components(geometry="flat")
+        binned = cl.make_radial_profile("Mpc", bins=da.make_bins(0.5, 5.0, 100),
+                                  cosmo=cosmo, include_empty_bins=False)
 
-        popt = fitters['curve_fit'](
-            lambda r, logm: nfw_shear_profile(r, logm, 0.8),
-            binned['radius'], binned['gt'],
-            np.ones_like(binned['gt'])*1.e-5,
-            bounds=[13., 17.], p0=guess)[0]
+        popt, pcov = fitters['curve_fit'](lambda r, logm: nfw_shear_profile(r, logm, 0.8),
+                             binned['radius'],
+                             binned['gt'],
+                             np.ones_like(binned['gt'])*1.e-5,
+                             bounds=[13.,17.], p0=guess)
 
         return popt[0]
 
@@ -152,9 +159,8 @@ def test_z_distr():
     hist = np.histogram(data['z'], bins=bins)
     norm, _ = quad(mock._srd_z_distrib, zmin, zmax)
     # Expected number of galaxies in bin i = Ntot*distrib(z_{bin center})*binsize/norm
-    srd = np.array([mock._srd_z_distrib(z)*ngals *
-                   0.1/norm for z in bins[:-1]+0.05])
-    assert_allclose(hist[0], srd, atol=100, rtol=0.1)
+    srd = np.array([mock._srd_z_distrib(z)*ngals*0.1/norm for z in bins[:-1]+0.05])
+    assert_allclose(hist[0],srd,atol=100,rtol=0.1)
 
 
 def test_shapenoise():
@@ -169,6 +175,7 @@ def test_shapenoise():
     data = mock.generate_galaxy_catalog(
         10**15., 0.3, 4, cosmo, 0.8, ngals=50000, shapenoise=0.5)
     # Check that there are no galaxies with |e|>1
+
     assert_equal(np.count_nonzero((data['e1'] > 1) | (data['e1'] < -1)), 0)
     assert_equal(np.count_nonzero((data['e2'] > 1) | (data['e2'] < -1)), 0)
 

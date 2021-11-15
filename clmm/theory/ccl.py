@@ -47,8 +47,9 @@ class CCLCLMModeling(CLMModeling):
     """
     # pylint: disable=too-many-instance-attributes
 
-    def __init__(self, massdef='mean', delta_mdef=200, halo_profile_model='nfw'):
-        CLMModeling.__init__(self)
+    def __init__(self, massdef='mean', delta_mdef=200, halo_profile_model='nfw',
+                 validate_input=True):
+        CLMModeling.__init__(self, validate_input)
         # Update class attributes
         self.backend = 'ccl'
         self.mdef_dict = {
@@ -58,6 +59,7 @@ class CCLCLMModeling(CLMModeling):
         self.hdpm_dict = {'nfw': ccl.halos.HaloProfileNFW,
                           'einasto': ccl.halos.HaloProfileEinasto,
                           'hernquist': ccl.halos.HaloProfileHernquist}
+        self.cosmo_class = CCLCosmology
         # Uncomment lines below when CCL einasto and hernquist profiles are stable (also add version number)
         #if version.parse(ccl.__version__) >= version.parse('???'):
         # self.hdpm_dict.update({
@@ -76,16 +78,9 @@ class CCLCLMModeling(CLMModeling):
         self.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
         self.set_cosmo(None)
 
-    def set_cosmo(self, cosmo):
-        """"set cosmo"""
-        self._set_cosmo(cosmo, CCLCosmology)
 
-    def set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
+    def _set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
         """"set halo density profile"""
-        # Check if choices are supported and put in lower case
-        massdef, halo_profile_model = self.validate_definitions(
-            massdef, halo_profile_model)
-
         # Check if we have already an instance of the required object, if not create one
         if not ((halo_profile_model==self.halo_profile_model)
                 and (massdef == self.massdef)
@@ -116,7 +111,7 @@ class CCLCLMModeling(CLMModeling):
         """" set mass"""
         self.mdelta = mdelta/self.cor_factor
 
-    def eval_3d_density(self, r3d, z_cl, verbose=False):
+    def _eval_3d_density(self, r3d, z_cl, verbose=False):
         """"eval 3d density"""
         a_cl = self.cosmo.get_a_from_z(z_cl)
         dens = self.hdpm.real(
@@ -129,7 +124,7 @@ class CCLCLMModeling(CLMModeling):
 
         return dens*self.cor_factor/a_cl**3
 
-    def eval_surface_density(self, r_proj, z_cl, verbose=False):
+    def _eval_surface_density(self, r_proj, z_cl, verbose=False):
         a_cl = self.cosmo.get_a_from_z(z_cl)
         if self.halo_profile_model == 'einasto' and verbose:
             # print out the value of einasto 'alpha' parameter
@@ -146,7 +141,8 @@ class CCLCLMModeling(CLMModeling):
 
         
 
-    def eval_mean_surface_density(self, r_proj, z_cl):
+    def _eval_mean_surface_density(self, r_proj, z_cl):
+        """"eval mean surface density"""
         a_cl = self.cosmo.get_a_from_z(z_cl)
         if self.halo_profile_model =='nfw':
             return self.hdpm.cumul2d(self.cosmo.be_cosmo, r_proj/a_cl, self.mdelta, self.cosmo.get_a_from_z(z_cl), self.mdef)*self.cor_factor/a_cl**2
@@ -156,7 +152,8 @@ class CCLCLMModeling(CLMModeling):
             ptf = interp1d(np.log(rtmp), np.log(tmp), bounds_error=False, fill_value=-100)
             return np.exp(ptf(np.log(r_proj)))
 
-    def eval_excess_surface_density(self, r_proj, z_cl):
+    def _eval_excess_surface_density(self, r_proj, z_cl):
+        """"eval excess surface density"""
         a_cl = self.cosmo.get_a_from_z(z_cl)
         r_cor = r_proj/a_cl
 
@@ -166,32 +163,5 @@ class CCLCLMModeling(CLMModeling):
         else:
             return self.eval_mean_surface_density(r_proj, z_cl) - self.eval_surface_density(r_proj, z_cl)
 
-    def eval_tangential_shear(self, r_proj, z_cl, z_src):
-        """"eval tangential shear"""
-        sigma_excess = self.eval_excess_surface_density(r_proj, z_cl)
-        sigma_crit = self.eval_critical_surface_density(z_cl, z_src)
-
-        return sigma_excess/sigma_crit
-
-    def eval_convergence(self, r_proj, z_cl, z_src):
-        """"eval convergence"""
-        sigma = self.eval_surface_density(r_proj, z_cl)
-        sigma_crit = self.eval_critical_surface_density(z_cl, z_src)
-
-        return sigma/sigma_crit
-
-    def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src):
-        """"eval reduced tangential shear"""
-        kappa = self.eval_convergence(r_proj, z_cl, z_src)
-        gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
-
-        return np.divide(gamma_t, (1-kappa))
-
-    def eval_magnification(self, r_proj, z_cl, z_src):
-        """"eval magnification"""
-        kappa = self.eval_convergence(r_proj, z_cl, z_src)
-        gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
-
-        return 1.0/((1.0-kappa)**2-np.abs(gamma_t)**2)
 
 Modeling = CCLCLMModeling

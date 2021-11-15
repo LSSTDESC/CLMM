@@ -5,7 +5,7 @@ import numpy as np
 from astropy.coordinates import SkyCoord
 from astropy import units as u
 from .. gcdata import GCData
-from . .utils import compute_radial_averages, make_bins, convert_units, arguments_consistency
+from . .utils import compute_radial_averages, make_bins, convert_units, arguments_consistency, validate_argument
 from .. theory import compute_critical_surface_density
 
 
@@ -13,7 +13,7 @@ def compute_tangential_and_cross_components(
         ra_lens, dec_lens, ra_source, dec_source,
         shear1, shear2, geometry='curve',
         is_deltasigma=False, cosmo=None,
-        z_lens=None, z_source=None, sigma_c=None):
+        z_lens=None, z_source=None, sigma_c=None, validate_input=True):
     r"""Computes tangential- and cross- components for shear or ellipticity
 
     To do so, we need the right ascension and declination of the lens and of all of the sources. We
@@ -98,6 +98,8 @@ def compute_tangential_and_cross_components(
     sigma_c : float, optional
         Critical surface density in units of :math:`M_\odot\ Mpc^{-2}`,
         if provided, `cosmo`, `z_lens` and `z_source` are not used.
+    validate_input: bool
+        Validade each input argument
 
     Returns
     -------
@@ -111,10 +113,31 @@ def compute_tangential_and_cross_components(
     # pylint: disable-msg=too-many-locals
     # Note: we make these quantities to be np.array so that a name is not passed from astropy
     # columns
-    ra_source_, dec_source_, shear1_, shear2_ = arguments_consistency(
-        [ra_source, dec_source, shear1, shear2],
-        names=('Ra', 'Dec', 'Shear1', 'Shear2'),
-        prefix='Tangential- and Cross- shape components sources')
+    if validate_input:
+        validate_argument(locals(), 'ra_source', 'float_array',
+                          argmin=-360, eqmin=True, argmax=360, eqmax=True)
+        validate_argument(locals(), 'dec_source', 'float_array',
+                          argmin=-90, eqmin=True, argmax=90, eqmax=True)
+        validate_argument(locals(), 'ra_lens', 'float_array',
+                          argmin=-360, eqmin=True, argmax=360, eqmax=True)
+        validate_argument(locals(), 'dec_lens', 'float_array',
+                          argmin=-90, eqmin=True, argmax=90, eqmax=True)
+        validate_argument(locals(), 'shear1', 'float_array')
+        validate_argument(locals(), 'shear2', 'float_array')
+        validate_argument(locals(), 'geometry', str)
+        validate_argument(locals(), 'is_deltasigma', bool)
+        validate_argument(locals(), 'z_lens', float, argmin=0, eqmin=True, none_ok=True)
+        validate_argument(locals(), 'z_source', 'float_array', argmin=0, eqmin=True, none_ok=True)
+        validate_argument(locals(), 'sigma_c', 'float_array', none_ok=True)
+        ra_source_, dec_source_, shear1_, shear2_ = arguments_consistency(
+            [ra_source, dec_source, shear1, shear2],
+            names=('Ra', 'Dec', 'Shear1', 'Shear2'),
+            prefix='Tangential- and Cross- shape components sources')
+    elif np.iterable(ra_source):
+        ra_source_, dec_source_, shear1_, shear2_ = (
+            np.array(col) for col in [ra_source, dec_source, shear1, shear2])
+    else:
+        ra_source_, dec_source_, shear1_, shear2_ = ra_source, dec_source, shear1, shear2
     # Compute the lensing angles
     if geometry == 'flat':
         angsep, phi = _compute_lensing_angles_flatsky(
@@ -173,14 +196,6 @@ def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_sourc
     phi: array
         Azimuthal angle from the lens to the source in radians
     """
-    if not -360. <= ra_lens <= 360.:
-        raise ValueError(f"ra = {ra_lens} of lens if out of domain")
-    if not -90. <= dec_lens <= 90.:
-        raise ValueError(f"dec = {dec_lens} of lens if out of domain")
-    if not all(-360. <= x_ <= 360. for x_ in ra_source_list):
-        raise ValueError("Cluster has an invalid ra in source catalog")
-    if not all(-90. <= x_ <= 90 for x_ in dec_source_list):
-        raise ValueError("Cluster has an invalid dec in the source catalog")
     # Put angles between -pi and pi
     r2pi = lambda x: x-np.round(x/(2.0*math.pi))*2.0*math.pi
     deltax = r2pi(np.radians(ra_source_list-ra_lens)) * \
@@ -192,7 +207,10 @@ def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_sourc
     angsep = np.sqrt(deltax**2+deltay**2)
     phi = np.arctan2(deltay, -deltax)
     # Forcing phi to be zero everytime angsep is zero. This is necessary due to arctan2 features.
-    phi[angsep == 0.0] = 0.0
+    if np.iterable(phi):
+        phi[angsep == 0.0] = 0.0
+    else:
+        phi = 0.0 if angsep == 0.0 else phi
     if np.any(angsep > np.pi/180.):
         warnings.warn(
             "Using the flat-sky approximation with separations >1 deg may be inaccurate")
@@ -221,14 +239,6 @@ def _compute_lensing_angles_astropy(ra_lens, dec_lens, ra_source_list, dec_sourc
     phi: array
         Azimuthal angle from the lens to the source in radians
     """
-    if not -360. <= ra_lens <= 360.:
-        raise ValueError(f"ra = {ra_lens} of lens if out of domain")
-    if not -90. <= dec_lens <= 90.:
-        raise ValueError(f"dec = {dec_lens} of lens if out of domain")
-    if not all(-360. <= x_ <= 360. for x_ in ra_source_list):
-        raise ValueError("Cluster has an invalid ra in source catalog")
-    if not all(-90. <= x_ <= 90 for x_ in dec_source_list):
-        raise ValueError("Cluster has an invalid dec in the source catalog")
     sk_lens = SkyCoord(ra_lens*u.deg, dec_lens*u.deg, frame='icrs')
     sk_src = SkyCoord(ra_source_list*u.deg,
                       dec_source_list*u.deg, frame='icrs')
@@ -236,8 +246,12 @@ def _compute_lensing_angles_astropy(ra_lens, dec_lens, ra_source_list, dec_sourc
         sk_src).rad, sk_lens.position_angle(sk_src).rad
     # Transformations for phi to have same orientation as _compute_lensing_angles_flatsky
     phi += 0.5*np.pi
-    phi[phi > np.pi] -= 2*np.pi
-    phi[angsep == 0] = 0
+    if np.iterable(phi):
+        phi[phi > np.pi] -= 2*np.pi
+        phi[angsep == 0] = 0
+    else:
+        phi -= 2*np.pi if phi > np.pi else 0
+        phi = 0 if angsep == 0 else phi
     return angsep, phi
 
 
@@ -269,9 +283,9 @@ def _compute_cross_shear(shear1, shear2, phi):
 
 
 def make_radial_profile(components, angsep, angsep_units, bin_units,
-                        bins=10, include_empty_bins=False,
-                        return_binnumber=False,
-                        cosmo=None, z_lens=None):
+                        bins=10, components_error=None, error_model='ste',
+                        include_empty_bins=False, return_binnumber=False,
+                        cosmo=None, z_lens=None, validate_input=True):
     r"""Compute the angular profile of given components
 
     We assume that the cluster object contains information on the cross and
@@ -305,16 +319,22 @@ def make_radial_profile(components, angsep, angsep_units, bin_units,
         the bin edges. If a scalar is provided, create that many equally spaced bins between
         the minimum and maximum angular separations in bin_units. If nothing is provided,
         default to 10 equally spaced bins.
+    components_error: list of arrays, None
+        List of errors for input arrays
+    error_model : str, optional
+        Statistical error model to use for y uncertainties. (letter case independent)
+            `ste` - Standard error [=std/sqrt(n) in unweighted computation] (Default).
+            `std` - Standard deviation.
     include_empty_bins: bool, optional
         Also include empty bins in the returned table
-    gal_ids_in_bins: bool, optional
-        Also include the list of galaxies ID belonging to each bin in the returned table
     return_binnumber: bool, optional
         Also returns the indices of the bins for each object
-    cosmo: dict, optional
-        Cosmology parameters to convert angular separations to physical distances
+    cosmo : CLMM.Cosmology
+        CLMM Cosmology object to convert angular separations to physical distances
     z_lens: array, optional
         Redshift of the lens
+    validate_input: bool
+        Validade each input argument
 
     Returns
     -------
@@ -332,6 +352,17 @@ def make_radial_profile(components, angsep, angsep_units, bin_units,
     module.
     """
     # pylint: disable-msg=too-many-locals
+    if validate_input:
+        validate_argument(locals(), 'angsep', 'float_array')
+        validate_argument(locals(), 'angsep_units', str)
+        validate_argument(locals(), 'bin_units', str)
+        validate_argument(locals(), 'include_empty_bins', bool)
+        validate_argument(locals(), 'return_binnumber', bool)
+        validate_argument(locals(), 'z_lens', 'float_array', none_ok=True)
+        comp_dict = {f'components[{i}]': comp for i, comp in enumerate(components)}
+        arguments_consistency(components, names=comp_dict.keys(), prefix='Input components')
+        for component in comp_dict:
+            validate_argument(comp_dict, component, 'float_array')
     # Check to see if we need to do a unit conversion
     if angsep_units is not bin_units:
         source_seps = convert_units(angsep, angsep_units, bin_units,
@@ -349,7 +380,8 @@ def make_radial_profile(components, angsep, angsep_units, bin_units,
     # Compute the binned averages and associated errors
     for i, component in enumerate(components):
         r_avg, comp_avg, comp_err, nsrc, binnumber = compute_radial_averages(
-            source_seps, component, xbins=bins, error_model='std/sqrt_n')
+            source_seps, component, xbins=bins,
+            yerr=None if components_error is None else components_error[i])
         profile_table[f'p_{i}'] = comp_avg
         profile_table[f'p_{i}_err'] = comp_err
     profile_table['radius'] = r_avg
