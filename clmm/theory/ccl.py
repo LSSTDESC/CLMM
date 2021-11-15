@@ -102,7 +102,6 @@ class CCLCLMModeling(CLMModeling):
             if cur_values:
                 self.conc.c = cur_cdelta
         
-
     def _set_concentration(self, cdelta):
         """" set concentration"""
         self.conc.c = cdelta
@@ -111,35 +110,28 @@ class CCLCLMModeling(CLMModeling):
         """" set mass"""
         self.mdelta = mdelta/self.cor_factor
 
-    def _eval_3d_density(self, r3d, z_cl, verbose=False):
+    def _get_einasto_alpha(self, z_cl=None): 
+        """"get the value of the Einasto slope"""
+        a_cl = self.cosmo.get_a_from_z(z_cl)
+        return self.hdpm._get_alpha (self.cosmo.be_cosmo, self.mdelta, a_cl, self.mdef)
+
+    def _eval_3d_density(self, r3d, z_cl):
         """"eval 3d density"""
         a_cl = self.cosmo.get_a_from_z(z_cl)
         dens = self.hdpm.real(
             self.cosmo.be_cosmo, r3d/a_cl, self.mdelta, a_cl, self.mdef)
             
-        if self.halo_profile_model == 'einasto' and verbose:
-            # print out the value of einasto 'alpha' parameter
-            alpha = self.hdpm._get_alpha (self.cosmo.be_cosmo, self.mdelta, a_cl, self.mdef)
-            print(f"Einasto alpha = {alpha}")
-
         return dens*self.cor_factor/a_cl**3
 
-    def _eval_surface_density(self, r_proj, z_cl, verbose=False):
+    def _eval_surface_density(self, r_proj, z_cl):
         a_cl = self.cosmo.get_a_from_z(z_cl)
-        if self.halo_profile_model == 'einasto' and verbose:
-            # print out the value of einasto 'alpha' parameter
-            alpha = self.hdpm._get_alpha (self.cosmo.be_cosmo, self.mdelta, a_cl, self.mdef)
-            print(f"Einasto alpha = {alpha}")       
-
         if self.halo_profile_model == 'nfw':
             return self.hdpm.projected(self.cosmo.be_cosmo, r_proj/a_cl, self.mdelta, a_cl, self.mdef)*self.cor_factor/a_cl**2
         else:
             rtmp = np.geomspace(np.min(r_proj)/10., np.max(r_proj)*10., 1000)
             tmp = self.hdpm.projected (self.cosmo.be_cosmo, rtmp/a_cl, self.mdelta, a_cl, self.mdef)*self.cor_factor/a_cl**2
             ptf = interp1d(np.log(rtmp), np.log(tmp), bounds_error=False, fill_value=-100)
-            return np.exp(ptf(np.log(r_proj)))
-
-        
+            return np.exp(ptf(np.log(r_proj)))  
 
     def _eval_mean_surface_density(self, r_proj, z_cl):
         """"eval mean surface density"""

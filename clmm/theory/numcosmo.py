@@ -115,31 +115,27 @@ class NumCosmoCLMModeling(CLMModeling):
         self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
 
     def _set_concentration(self, cdelta):
-        """" set concentration"""
+        """"set concentration"""
         self.hdpm.props.cDelta = cdelta
 
     def _set_mass(self, mdelta):
-        """" set mass"""
+        """"set mass"""
         self.hdpm.props.log10MDelta = math.log10(mdelta)
 
-    def eval_3d_density(self, r3d, z_cl, verbose=False):
+    def _get_einasto_alpha(self, z_cl=None):
+        """"get the value of the Einasto slope"""
+        # Note that z_cl is needed for the CCL backend only
+        # 
+        return self.hdpm.props.alpha
+
+    def _eval_3d_density(self, r3d, z_cl):
         """"eval 3d density"""
-
-        if self.halo_profile_model == 'einasto' and verbose:
-            # print out the value of einasto 'alpha' parameter
-            print(f"Einasto alpha = {self.hdpm.props.alpha}")
-
         func = lambda r3d, z_cl: self.hdpm.eval_density(
             self.cosmo.be_cosmo, r3d, z_cl)
         return np.vectorize(func)(r3d, z_cl)
 
-    def eval_surface_density(self, r_proj, z_cl, verbose=False):
+    def _eval_surface_density(self, r_proj, z_cl):
         """"eval surface density"""
-
-        if self.halo_profile_model == 'einasto' and verbose:
-                # print out the value of einasto 'alpha' parameter
-                print(f"Einasto alpha = {self.hdpm.props.alpha}")
-
         self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
         func = lambda r_proj, z_cl: self.cosmo.smd.sigma(
             self.hdpm, self.cosmo.be_cosmo, r_proj, z_cl)

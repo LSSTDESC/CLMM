@@ -154,6 +154,7 @@ class CLMModeling:
         self._validate_input(
             radius, 0, "min(R) = %s Mpc! This value is not accepted.")
 
+
     def eval_3d_density(self, r3d, z_cl, verbose=False):
         r"""Retrieve the 3d density :math:`\rho(r)`.
 
@@ -172,6 +173,10 @@ class CLMModeling:
         if self.validate_input:
             validate_argument(locals(), 'r3d', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', 'float_array', argmin=0)
+
+        if self.halo_profile_model=='einasto' and verbose:
+            print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
+
         return self._eval_3d_density(r3d=r3d, z_cl=z_cl)
 
     def _eval_3d_density(self, r3d, z_cl):
@@ -218,12 +223,17 @@ class CLMModeling:
         if self.validate_input:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', float, argmin=0)
+
+        if self.halo_profile_model=='einasto' and verbose:
+            print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
+
         return self._eval_surface_density(r_proj=r_proj, z_cl=z_cl)
+
 
     def _eval_surface_density(self, r_proj, z_cl):
         raise NotImplementedError
 
-    def eval_mean_surface_density(self, r_proj, z_cl):
+    def eval_mean_surface_density(self, r_proj, z_cl, verbose=False):
         r""" Computes the mean value of surface density inside radius r_proj
 
         Parameters
@@ -241,12 +251,16 @@ class CLMModeling:
         if self.validate_input:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', float, argmin=0)
+
+        if self.halo_profile_model=='einasto' and verbose:
+            print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
+
         return self._eval_mean_surface_density(r_proj=r_proj, z_cl=z_cl)
 
     def _eval_mean_surface_density(self, r_proj, z_cl):
         raise NotImplementedError
 
-    def eval_excess_surface_density(self, r_proj, z_cl):
+    def eval_excess_surface_density(self, r_proj, z_cl, verbose=False):
         r""" Computes the excess surface density
 
         Parameters
@@ -264,12 +278,16 @@ class CLMModeling:
         if self.validate_input:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', float, argmin=0)
+
+        if self.halo_profile_model=='einasto' and verbose:
+            print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
+
         return self._eval_excess_surface_density(r_proj=r_proj, z_cl=z_cl)
 
     def _eval_excess_surface_density(self, r_proj, z_cl):
         raise NotImplementedError
 
-    def eval_tangential_shear(self, r_proj, z_cl, z_src):
+    def eval_tangential_shear(self, r_proj, z_cl, z_src, verbose=False):
         r"""Computes the tangential shear
 
         Parameters
@@ -290,6 +308,10 @@ class CLMModeling:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', float, argmin=0)
             validate_argument(locals(), 'z_src', 'float_array', argmin=0)
+
+        if self.halo_profile_model=='einasto' and verbose:
+            print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
+
         return self._eval_tangential_shear(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
 
     def _eval_tangential_shear(self, r_proj, z_cl, z_src):
@@ -297,7 +319,7 @@ class CLMModeling:
         sigma_c = self.eval_critical_surface_density(z_cl, z_src)
         return delta_sigma/sigma_c
 
-    def eval_convergence(self, r_proj, z_cl, z_src):
+    def eval_convergence(self, r_proj, z_cl, z_src, verbose=False):
         r"""Computes the mass convergence
 
         .. math::
@@ -326,14 +348,18 @@ class CLMModeling:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', float, argmin=0)
             validate_argument(locals(), 'z_src', 'float_array', argmin=0)
+
+        if self.halo_profile_model=='einasto' and verbose:
+            print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
+
         return self._eval_convergence(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
 
-    def _eval_convergence(self, r_proj, z_cl, z_src):
-        sigma = self.eval_surface_density(r_proj, z_cl)
+    def _eval_convergence(self, r_proj, z_cl, z_src, verbose=False):
+        sigma = self.eval_surface_density(r_proj, z_cl, verbose=verbose)
         sigma_c = self.eval_critical_surface_density(z_cl, z_src)
         return sigma/sigma_c
 
-    def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src):
+    def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src, verbose=False):
         r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
 
         Parameters
@@ -354,6 +380,10 @@ class CLMModeling:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', float, argmin=0)
             validate_argument(locals(), 'z_src', 'float_array', argmin=0)
+
+        if self.halo_profile_model=='einasto' and verbose:
+            print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
+
         return self._eval_reduced_tangential_shear(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
 
     def _eval_reduced_tangential_shear(self, r_proj, z_cl, z_src):
@@ -361,7 +391,7 @@ class CLMModeling:
         gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
         return compute_reduced_shear_from_convergence(gamma_t, kappa)
 
-    def eval_magnification(self, r_proj, z_cl, z_src):
+    def eval_magnification(self, r_proj, z_cl, z_src, verbose=False):
         r"""Computes the magnification
 
         .. math::
@@ -391,6 +421,10 @@ class CLMModeling:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', float, argmin=0)
             validate_argument(locals(), 'z_src', 'float_array', argmin=0)
+
+        if self.halo_profile_model=='einasto' and verbose:
+            print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
+
         return self._eval_magnification(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
 
     def _eval_magnification(self, r_proj, z_cl, z_src):

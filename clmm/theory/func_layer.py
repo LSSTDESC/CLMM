@@ -142,7 +142,7 @@ def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     return sigma
 
 def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
-                                   halo_profile_model='nfw', massdef='mean', validate_input=True):
+                                   halo_profile_model='nfw', massdef='mean', verbose=False, validate_input=True):
     r""" Computes the excess surface density
 
     .. math::
@@ -196,7 +196,7 @@ def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
     gcm.set_concentration(cdelta)
     gcm.set_mass(mdelta)
 
-    deltasigma = gcm.eval_excess_surface_density(r_proj, z_cl)
+    deltasigma = gcm.eval_excess_surface_density(r_proj, z_cl, verbose=verbose)
 
     gcm.validate_input = True
     return deltasigma
@@ -239,8 +239,8 @@ def compute_critical_surface_density(cosmo, z_cluster, z_source, validate_input=
 
 
 def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
-                             halo_profile_model='nfw', massdef='mean', z_src_model='single_plane',
-                             validate_input=True):
+                             halo_profile_model='nfw', massdef='mean', z_src_model='single_plane', 
+                             verbose=False, validate_input=True):
     r"""Computes the tangential shear
 
     .. math::
@@ -316,7 +316,7 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
                 f"Rmin = {np.min(r_proj):.2e} Mpc/h! This value is too small "
                 "and may cause computational issues.")
 
-        gammat = gcm.eval_tangential_shear(r_proj, z_cluster, z_source)
+        gammat = gcm.eval_tangential_shear(r_proj, z_cluster, z_source, verbose=verbose)
     else:
         raise ValueError("Unsupported z_src_model")
 
@@ -326,7 +326,7 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
 
 def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
                         halo_profile_model='nfw', massdef='mean', z_src_model='single_plane',
-                        validate_input=True):
+                        verbose=False, validate_input=True):
     r"""Computes the mass convergence
 
     .. math::
@@ -398,7 +398,7 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
         gcm.set_concentration(cdelta)
         gcm.set_mass(mdelta)
 
-        kappa = gcm.eval_convergence(r_proj, z_cluster, z_source)
+        kappa = gcm.eval_convergence(r_proj, z_cluster, z_source, verbose=verbose)
 
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average'+\
@@ -421,7 +421,7 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
 def compute_reduced_tangential_shear(
         r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
         delta_mdef=200, halo_profile_model='nfw', massdef='mean',
-        z_src_model='single_plane', validate_input=True):
+        z_src_model='single_plane', verbose=False, validate_input=True):
     r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
 
     Parameters
@@ -485,7 +485,7 @@ def compute_reduced_tangential_shear(
         gcm.set_mass(mdelta)
 
         red_tangential_shear = gcm.eval_reduced_tangential_shear(
-            r_proj, z_cluster, z_source)
+            r_proj, z_cluster, z_source, verbose=verbose)
 
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average'+
@@ -510,7 +510,7 @@ def compute_reduced_tangential_shear(
 
 def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
                           halo_profile_model='nfw', massdef='mean', z_src_model='single_plane',
-                          validate_input=True):
+                          verbose=False, validate_input=True):
     r"""Computes the magnification
 
     .. math::
@@ -575,7 +575,7 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
         gcm.set_concentration(cdelta)
         gcm.set_mass(mdelta)
 
-        magnification = gcm.eval_magnification(r_proj, z_cluster, z_source)
+        magnification = gcm.eval_magnification(r_proj, z_cluster, z_source, verbose=verbose)
 
     # elif z_src_model == 'known_z_src': # Discrete case
     #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average'+\
