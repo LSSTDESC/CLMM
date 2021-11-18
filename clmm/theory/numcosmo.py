@@ -122,6 +122,9 @@ class NumCosmoCLMModeling(CLMModeling):
         """"set mass"""
         self.hdpm.props.log10MDelta = math.log10(mdelta)
 
+    def _set_einasto_alpha(self, alpha):
+        self.hdpm.props.alpha = alpha
+
     def _get_einasto_alpha(self, z_cl=None):
         """"get the value of the Einasto slope"""
         # Note that z_cl is needed for the CCL backend only
