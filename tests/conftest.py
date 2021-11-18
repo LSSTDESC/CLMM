@@ -6,7 +6,7 @@ import importlib
 import clmm
 
 #@pytest.fixture(scope="module", params=["ccl", "nc", "ct", "notabackend", "testnotabackend"])
-@pytest.fixture(scope="module", params=[{'nick': 'ccl', 'cosmo_reltol': 8.0e-8, 'dataops_reltol': 3.0e-8, 'theory_reltol': 2.0e-6, 'theory_reltol_num': 2.0e-3}, 
+@pytest.fixture(scope="module", params=[{'nick': 'ccl', 'cosmo_reltol': 8.0e-8, 'dataops_reltol': 3.0e-8, 'theory_reltol': 2.0e-6, 'theory_reltol_num': 1.0e-2}, 
                                         {'nick': 'nc',  'cosmo_reltol': 1.0e-8, 'dataops_reltol': 1.0e-8, 'theory_reltol': 1.0e-8, 'theory_reltol_num': 1.0e-8},  
                                         {'nick': 'ct',  'cosmo_reltol': 1.0e-5, 'dataops_reltol': 5.0e-6, 'theory_reltol' : 3.5e-3, 'theory_reltol_num': 3.5e-3},
                                         {'nick': 'notabackend', 'cosmo_reltol': 8.0e-8, 'dataops_reltol': 3.0e-8, 'theory_reltol': 2.0e-6},
