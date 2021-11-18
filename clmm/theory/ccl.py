@@ -110,7 +110,7 @@ class CCLCLMModeling(CLMModeling):
         """" set mass"""
         self.mdelta = mdelta/self.cor_factor
 
-    def _get_einasto_alpha(self, z_cl=None): 
+    def _get_einasto_alpha(self, z_cl): 
         """"get the value of the Einasto slope"""
         a_cl = self.cosmo.get_a_from_z(z_cl)
         return self.hdpm._get_alpha (self.cosmo.be_cosmo, self.mdelta, a_cl, self.mdef)
