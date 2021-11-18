@@ -19,7 +19,7 @@ __all__ = generic.__all__+['compute_3d_density', 'compute_surface_density',
 
 def compute_3d_density(
         r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
-        halo_profile_model='nfw', massdef='mean', verbose=False, validate_input=True):
+        halo_profile_model='nfw', massdef='mean', alpha=None, verbose=False, validate_input=True):
     r"""Retrieve the 3d density :math:`\rho(r)`.
 
     Profiles implemented so far are:
@@ -73,6 +73,8 @@ def compute_3d_density(
         halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
     gcm.set_concentration(cdelta)
     gcm.set_mass(mdelta)
+    if alpha is not None:
+        gcm.set_einasto_alpha(alpha)
 
     rho = gcm.eval_3d_density(r3d, z_cl, verbose=verbose)
 
@@ -81,7 +83,7 @@ def compute_3d_density(
 
 
 def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
-                            halo_profile_model='nfw', massdef='mean', verbose=False, validate_input=True):
+                            halo_profile_model='nfw', massdef='mean', alpha=None, verbose=False, validate_input=True):
     r""" Computes the surface mass density
 
     .. math::
@@ -135,14 +137,16 @@ def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
         halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
     gcm.set_concentration(cdelta)
     gcm.set_mass(mdelta)
-
+    if alpha is not None:
+        gcm.set_einasto_alpha(alpha)
+    
     sigma = gcm.eval_surface_density(r_proj, z_cl, verbose=verbose)
 
     gcm.validate_input = True
     return sigma
 
 def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
-                                   halo_profile_model='nfw', massdef='mean', verbose=False, validate_input=True):
+                                   halo_profile_model='nfw', massdef='mean', alpha=None, verbose=False, validate_input=True):
     r""" Computes the excess surface density
 
     .. math::
@@ -195,6 +199,8 @@ def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
         halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
     gcm.set_concentration(cdelta)
     gcm.set_mass(mdelta)
+    if alpha is not None:
+        gcm.set_einasto_alpha(alpha)
 
     deltasigma = gcm.eval_excess_surface_density(r_proj, z_cl, verbose=verbose)
 
@@ -239,7 +245,7 @@ def compute_critical_surface_density(cosmo, z_cluster, z_source, validate_input=
 
 
 def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
-                             halo_profile_model='nfw', massdef='mean', z_src_model='single_plane', 
+                             halo_profile_model='nfw', massdef='mean', alpha=None, z_src_model='single_plane', 
                              verbose=False, validate_input=True):
     r"""Computes the tangential shear
 
@@ -310,7 +316,8 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
             halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
         gcm.set_concentration(cdelta)
         gcm.set_mass(mdelta)
-
+        if alpha is not None:
+            gcm.set_einasto_alpha(alpha)
         if np.min(r_proj) < 1.e-11:
             raise ValueError(
                 f"Rmin = {np.min(r_proj):.2e} Mpc/h! This value is too small "
@@ -325,7 +332,7 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
 
 
 def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
-                        halo_profile_model='nfw', massdef='mean', z_src_model='single_plane',
+                        halo_profile_model='nfw', massdef='mean', alpha=None, z_src_model='single_plane',
                         verbose=False, validate_input=True):
     r"""Computes the mass convergence
 
@@ -388,7 +395,7 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     `z_src_model`. We will need :math:`\gamma_\infty` and :math:`\kappa_\infty`
     for alternative z_src_models using :math:`\beta_s`.
     """
-
+    
     if z_src_model == 'single_plane':
 
         gcm.validate_input = validate_input
@@ -397,6 +404,8 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
             halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
         gcm.set_concentration(cdelta)
         gcm.set_mass(mdelta)
+        if alpha is not None:
+          gcm.set_einasto_alpha(alpha)
 
         kappa = gcm.eval_convergence(r_proj, z_cluster, z_source, verbose=verbose)
 
@@ -420,7 +429,7 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
 
 def compute_reduced_tangential_shear(
         r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
-        delta_mdef=200, halo_profile_model='nfw', massdef='mean',
+        delta_mdef=200, halo_profile_model='nfw', massdef='mean', alpha=None,
         z_src_model='single_plane', verbose=False, validate_input=True):
     r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
 
@@ -475,6 +484,7 @@ def compute_reduced_tangential_shear(
     `z_src_model`. We will need :math:`\gamma_\infty` and :math:`\kappa_\infty`
     for alternative z_src_models using :math:`\beta_s`.
     """
+
     if z_src_model == 'single_plane':
 
         gcm.validate_input = validate_input
@@ -483,6 +493,8 @@ def compute_reduced_tangential_shear(
             halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
         gcm.set_concentration(cdelta)
         gcm.set_mass(mdelta)
+        if alpha is not None:
+            gcm.set_einasto_alpha(alpha)
 
         red_tangential_shear = gcm.eval_reduced_tangential_shear(
             r_proj, z_cluster, z_source, verbose=verbose)
@@ -509,7 +521,7 @@ def compute_reduced_tangential_shear(
 
 
 def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
-                          halo_profile_model='nfw', massdef='mean', z_src_model='single_plane',
+                          halo_profile_model='nfw', massdef='mean', alpha=None, z_src_model='single_plane',
                           verbose=False, validate_input=True):
     r"""Computes the magnification
 
@@ -566,6 +578,7 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
     integration) options for `z_src_model`. We will need :math:`\gamma_\infty` and
     :math:`\kappa_\infty` for alternative z_src_models using :math:`\beta_s`.
     """
+
     if z_src_model == 'single_plane':
 
         gcm.validate_input = validate_input
@@ -574,6 +587,8 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
             halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
         gcm.set_concentration(cdelta)
         gcm.set_mass(mdelta)
+        if alpha is not None:
+            gcm.set_einasto_alpha(alpha)
 
         magnification = gcm.eval_magnification(r_proj, z_cluster, z_source, verbose=verbose)
 
