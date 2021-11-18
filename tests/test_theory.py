@@ -40,12 +40,12 @@ def load_validation_config(halo_profile_model=None):
     numcosmo_path = 'tests/data/numcosmo/'
 
     if halo_profile_model == 'einasto':
-        with open(numcosmo_path+'config_einasto_hernquist_benchmarks.json', 'r') as fin:
+        with open(numcosmo_path+'config_einasto_benchmarks.json', 'r') as fin:
             testcase = json.load(fin)
         numcosmo_profile = np.genfromtxt(
             numcosmo_path+'radial_profiles_einasto.txt', names=True)
     elif halo_profile_model == 'hernquist':
-        with open(numcosmo_path+'config_einasto_hernquist_benchmarks.json', 'r') as fin:
+        with open(numcosmo_path+'config_hernquist_benchmarks.json', 'r') as fin:
             testcase = json.load(fin)
         numcosmo_profile = np.genfromtxt(
             numcosmo_path+'radial_profiles_hernquist.txt', names=True)
@@ -96,22 +96,14 @@ def load_validation_config(halo_profile_model=None):
         'halo_profile_model': testcase['density_profile_parametrization'],
         'z_src_model': 'single_plane',
     }
-    if halo_profile_model == 'einasto' and theo.be_nick=='nc':
-        return {'TEST_CASE': testcase, 'z_source': testcase['z_source'],
-                'cosmo': cosmo,
-                'cosmo_pars': {k.replace('cosmo_', ''): v for k, v in testcase.items()
-                               if 'cosmo_' in k},
-                'RHO_PARAMS': RHO_PARAMS, 'SIGMA_PARAMS': SIGMA_PARAMS, 'GAMMA_PARAMS': GAMMA_PARAMS,
-                'numcosmo_profiles': numcosmo_profile, 'TEST_CASE_SIGMAC_PCST': testcase_SIGMAC_PCST,
-                'CLMM_SIGMAC_PCST': CLMM_SIGMAC_PCST, 'alpha_einasto': testcase['alpha_einasto']}
-    else:
-        return {'TEST_CASE': testcase, 'z_source': testcase['z_source'],
-        'cosmo': cosmo,
-        'cosmo_pars': {k.replace('cosmo_', ''): v for k, v in testcase.items()
-                       if 'cosmo_' in k},
-        'RHO_PARAMS': RHO_PARAMS, 'SIGMA_PARAMS': SIGMA_PARAMS, 'GAMMA_PARAMS': GAMMA_PARAMS,
-        'numcosmo_profiles': numcosmo_profile, 'TEST_CASE_SIGMAC_PCST': testcase_SIGMAC_PCST,
-        'CLMM_SIGMAC_PCST': CLMM_SIGMAC_PCST}
+
+    return {'TEST_CASE': testcase, 'z_source': testcase['z_source'],
+    'cosmo': cosmo,
+    'cosmo_pars': {k.replace('cosmo_', ''): v for k, v in testcase.items()
+                   if 'cosmo_' in k},
+    'RHO_PARAMS': RHO_PARAMS, 'SIGMA_PARAMS': SIGMA_PARAMS, 'GAMMA_PARAMS': GAMMA_PARAMS,
+    'numcosmo_profiles': numcosmo_profile, 'TEST_CASE_SIGMAC_PCST': testcase_SIGMAC_PCST,
+    'CLMM_SIGMAC_PCST': CLMM_SIGMAC_PCST}
 
 # --------------------------------------------------------------------------
 
@@ -281,12 +273,12 @@ def test_profiles(modeling_data, profile_init):
         # Need to set the alpha value for the NC backend to the one used for the benchmarks,
         # which is the CCL default value
         if profile_init=='einasto' and theo.be_nick=='nc': 
-            alpha = cfg['alpha_einasto'] 
+            alpha = cfg['TEST_CASE']['alpha_einasto'] 
             mod.set_einasto_alpha(alpha)
         else:
             alpha = None
         assert_allclose(
-            mod.eval_3d_density(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl']),
+            mod.eval_3d_density(cfg['RHO_PARAMS']['r3d'], cfg['RHO_PARAMS']['z_cl']),
             cfg['numcosmo_profiles']['rho'], reltol)
         assert_allclose(
             mod.eval_surface_density(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl']),
