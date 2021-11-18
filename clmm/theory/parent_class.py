@@ -115,6 +115,24 @@ class CLMModeling:
         r""" Actually sets the value of the :math:`M_\Delta` (without value check)"""
         raise NotImplementedError
 
+    def set_einasto_alpha(self, alpha):
+        r""" Sets the value of the :math:`\alpha` parameter for the Einasto profile
+
+        Parameters
+        ----------
+        alpha : float
+        """
+        if self.halo_profile_model!='einasto' or self.backend!='nc':
+            raise NotImplementedError("The Einasto slope cannot be set for your combination of profile choice or modeling backend.")
+        else:
+            if self.validate_input:
+                validate_argument(locals(), 'alpha', float)
+            self._set_einasto_alpha(alpha)
+
+    def _set_einasto_alpha(self, alpha):
+        r""" Actually sets the value of the :math:`\alpha` parameter for the Einasto profile"""
+        raise NotImplementedError
+
     def set_concentration(self, cdelta):
         r""" Sets the concentration
 
