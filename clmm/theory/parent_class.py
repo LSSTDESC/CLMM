@@ -2,6 +2,12 @@
 CLMModeling abstract class
 """
 import numpy as np
+
+# functions for the 2h term
+from scipy.integrate import simps
+from scipy.special import jv
+from scipy.interpolate import interp1d
+
 from .generic import compute_reduced_shear_from_convergence
 from ..utils import validate_argument
 
@@ -278,7 +284,23 @@ class CLMModeling:
             return self._eval_excess_surface_density_2h(r_proj, z_cl, halo_bias=halo_bias, lsteps=lsteps)
 
     def _eval_excess_surface_density_2h(self, r_proj, z_cl , halo_bias=1. , lsteps=500):
-        raise NotImplementedError
+        """"eval excess surface density from the 2-halo term"""
+        da = self.cosmo.eval_da(z_cl)
+        rho_m = self.cosmo._get_rho_m(z_cl)
+
+        kk = np.logspace(-5.,5.,1000)
+        pk = self.cosmo.eval_linear_matter_powerspectrum(kk, z_cl)
+        interp_pk = interp1d(kk, pk, kind='cubic')
+        theta = r_proj / da
+
+        # calculate integral, units [Mpc]**-3
+        def __integrand__( l , theta ):
+            k = l / ((1 + z_cl) * da)
+            return l * jv( 2 , l * theta ) * interp_pk( k )
+
+        ll = np.logspace( 0 , 6 , lsteps )
+        val = np.array( [ simps( __integrand__( ll , t ) , ll ) for t in theta ] )
+        return halo_bias * val * rho_m / ( 2 * np.pi  * ( 1 + z_cl )**3 * da**2 )
 
 
     def eval_tangential_shear(self, r_proj, z_cl, z_src):
@@ -409,4 +431,3 @@ class CLMModeling:
         kappa = self.eval_convergence(r_proj, z_cl, z_src)
         gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
         return 1./((1-kappa)**2-abs(gamma_t)**2)
-    

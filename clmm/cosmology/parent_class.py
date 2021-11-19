@@ -156,6 +156,26 @@ class CLMMCosmology:
     def _get_E2Omega_m(self, z):
         raise NotImplementedError
 
+    def get_rho_m(self, z):
+        r"""Gets physical matter density at a given redshift.
+
+        Parameters
+        ----------
+        z : float
+            Redshift.
+
+        Returns
+        -------
+        float
+            Matter density :math:`M_\odot\ Mpc^{-3}`.
+        """
+        if self.validate_input:
+            validate_argument(locals(), 'z', 'float_array', argmin=0, eqmin=True)
+        return self._get_rho_m(z=z)
+
+    def _get_rho_m(self, z):
+        raise NotImplementedError
+
     def eval_da_z1z2(self, z1, z2):
         r"""Computes the angular diameter distance between z1 and z2.
 
@@ -344,4 +364,26 @@ class CLMMCosmology:
         return self._eval_sigma_crit(z_len=z_len, z_src=z_src)
 
     def _eval_sigma_crit(self, z_len, z_src):
+        raise NotImplementedError
+
+    def eval_linear_matter_powerspectrum(self, k_vals, redshift):
+        r"""Computes the linear matter power spectrum
+
+        Parameters
+        ----------
+        k_vals : array_like, float
+            Wavenumber k [math:`Mpc^{-1}`] values to compute the power spectrum.
+        redshift : float
+            Redshift to get the power spectrum.
+
+        Returns
+        -------
+        array_like, float
+            Linear matter spectrum in units of math:`Mpc^{3}`.
+        """
+        if self.validate_input:
+            validate_argument(locals(), 'k_vals', 'float_array', argmin=0)
+        return self._eval_linear_matter_powerspectrum(k_vals, redshift)
+
+    def _eval_linear_matter_powerspectrum(self, k_vals, redshift):
         raise NotImplementedError
