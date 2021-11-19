@@ -334,34 +334,28 @@ def helper_physics_functions(func, additional_kwargs={}):
     2. Test that exceptions are thrown for unsupported zsource models and profiles
     """
     # Make some base objects
-    rproj = np.logspace(-2, 2, 100)
-    mdelta = 1.0e15
-    cdelta = 4.0
-    z_cl = 0.2
-    z_src = 0.45
-    cosmo = theo.Cosmology(Omega_dm0=0.25, Omega_b0=0.05, H0=70.0)
+    kwargs = {
+        'r_proj':np.logspace(-2, 2, 100),
+        'mdelta':1.0e15,
+        'cdelta':4.0,
+        'z_cluster':0.2,
+        'z_source':0.45,
+        'cosmo':theo.Cosmology(Omega_dm0=0.25, Omega_b0=0.05, H0=70.0),
+    }
+    kwargs.update(additional_kwargs)
 
     # Test defaults
 
-    defaulttruth = func(rproj, mdelta, cdelta, z_cl, z_src, cosmo, delta_mdef=200,
-                        halo_profile_model='nfw', z_src_model='single_plane')
-    assert_allclose(func(rproj, mdelta, cdelta, z_cl, z_src, cosmo, halo_profile_model='nfw',
-                         z_src_model='single_plane'), defaulttruth, **TOLERANCE)
-    assert_allclose(func(rproj, mdelta, cdelta, z_cl, z_src, cosmo, delta_mdef=200,
-                         z_src_model='single_plane'), defaulttruth, **TOLERANCE)
-    assert_allclose(func(rproj, mdelta, cdelta, z_cl, z_src, cosmo, delta_mdef=200,
-                         halo_profile_model='nfw'), defaulttruth, **TOLERANCE)
+    defaulttruth = func(**kwargs, delta_mdef=200, halo_profile_model='nfw',
+                        z_src_model='single_plane')
+    assert_allclose(func(**kwargs, delta_mdef=200), defaulttruth, **TOLERANCE)
+    assert_allclose(func(**kwargs, halo_profile_model='nfw'), defaulttruth, **TOLERANCE)
+    assert_allclose(func(**kwargs, z_src_model='single_plane'), defaulttruth, **TOLERANCE)
 
     # Test for exception on unsupported z_src_model and halo profiles
-    assert_raises(
-        ValueError, func, rproj, mdelta, cdelta, z_cl, z_src, cosmo, delta_mdef=200,
-        halo_profile_model='blah', massdef='mean', z_src_model='single_plane')
-    assert_raises(
-        ValueError, func, rproj, mdelta, cdelta, z_cl, z_src, cosmo, delta_mdef=200,
-        halo_profile_model='nfw', massdef='blah', z_src_model='single_plane')
-    assert_raises(
-        ValueError, func, rproj, mdelta, cdelta, z_cl, z_src, cosmo, delta_mdef=200,
-        halo_profile_model='nfw', massdef='mean', z_src_model='blah')
+    assert_raises(ValueError, func, **kwargs, halo_profile_model='blah')
+    assert_raises(ValueError, func, **kwargs, massdef='blah')
+    assert_raises(ValueError, func, **kwargs, z_src_model='blah')
 
 
 def test_shear_convergence_unittests(modeling_data):
@@ -370,6 +364,7 @@ def test_shear_convergence_unittests(modeling_data):
     helper_physics_functions(theo.compute_convergence)
     helper_physics_functions(theo.compute_reduced_tangential_shear)
     helper_physics_functions(theo.compute_magnification)
+    helper_physics_functions(theo.compute_magnification_bias, {'alpha':1.})
 
     reltol = modeling_data['theory_reltol']
 
@@ -557,3 +552,22 @@ def test_shear_convergence_unittests(modeling_data):
                     np.ones(len(z_source)), 1.0e-10)
     assert_allclose(mod.eval_magnification_bias(radius, z_cluster, z_source, alpha),
                     np.ones(len(z_source)), 1.0e-10)
+
+def test_compute_magnification_bias(modeling_data):
+    """ Unit tests for compute_magnification_bias_from_magnification """
+    # Make some base objects
+    magnification = [1.0, 1.0, 1.001, 0.76]
+    alpha = [1., -2.7, 5.]
+    truth = [[1., 1., 1., 1.],[1., 1., 0.99630868, 2.76051244],[1., 1., 1.004006  , 0.33362176]]
+
+    # Check output including: float, list, ndarray
+    assert_allclose(
+        theo.compute_magnification_bias_from_magnification(
+            magnification[0], alpha[0]), truth[0][0],**TOLERANCE)
+    assert_allclose(
+        theo.compute_magnification_bias_from_magnification(
+            magnification, alpha), truth, **TOLERANCE)
+    assert_allclose(
+        theo.compute_magnification_bias_from_magnification(
+            np.array(magnification), np.array(alpha)),
+        np.array(truth), **TOLERANCE)
