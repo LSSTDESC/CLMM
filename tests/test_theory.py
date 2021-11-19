@@ -180,25 +180,6 @@ def test_compute_reduced_shear(modeling_data):
         theo.compute_reduced_shear_from_convergence(np.array(shear), np.array(convergence)),
         np.array(truth), **TOLERANCE)
 
-def test_compute_magnification_bias(modeling_data):
-    """ Unit tests for compute_magnification_bias_from_magnification """
-    # Make some base objects
-    magnification = [1.0, 1.0, 1.001, 0.76]
-    alpha = [1., -2.7, 5.]
-    truth = [[1., 1., 1., 1.],[1., 1., 0.99630868, 2.76051244],[1., 1., 1.004006  , 0.33362176]]
-
-    # Check output including: float, list, ndarray
-    assert_allclose(
-        theo.compute_magnification_bias_from_magnification(
-            magnification[0], alpha[0]), truth[0][0],**TOLERANCE)
-    assert_allclose(
-        theo.compute_magnification_bias_from_magnification(
-            magnification, alpha), truth, **TOLERANCE)
-    assert_allclose(
-        theo.compute_magnification_bias_from_magnification(
-            np.array(magnification), np.array(alpha)),
-        np.array(truth), **TOLERANCE)
-
 def helper_profiles(func):
     """ A helper function to repeat a set of unit tests on several functions
     that expect the same inputs.
@@ -341,7 +322,7 @@ def test_compute_critical_surface_density(modeling_data):
                     [np.inf, np.inf, np.inf], 1.0e-10)
 
 
-def helper_physics_functions(func):
+def helper_physics_functions(func, additional_kwargs={}):
     """ A helper function to repeat a set of unit tests on several functions
     that expect the same inputs.
 

@@ -66,6 +66,4 @@ def compute_magnification_bias_from_magnification(magnification, alpha):
     if np.any(np.array(magnification) < 0):
         warnings.warn('Magnification is negative for certain radii, \
                     returning nan for magnification bias in this case.')
-    magnification_bias_from_magnification = np.array(
-        magnification)**(np.array([alpha]).T - 1)
-    return magnification_bias_from_magnification
+    return np.array(magnification)**(np.array([alpha]).T - 1)

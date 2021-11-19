@@ -600,7 +600,7 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
 
 def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_source, cosmo,
                                delta_mdef=200, halo_profile_model='nfw', massdef='mean',
-                               z_src_model='single_plane'):
+                               z_src_model='single_plane', validate_input=True):
     
     r""" Computes magnification bias from magnification :math:`\mu` 
     and slope parameter :math:`\alpha` as :
@@ -665,9 +665,24 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
     magnification_bias : array_like
         magnification bias
     """
-    
-    magnification = compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
-                                          delta_mdef, halo_profile_model, massdef, z_src_model)
-    magnification_bias = compute_magnification_bias_from_magnification(magnification, alpha)
+    if np.any(np.array(z_source) <= z_cluster):
+        warnings.warn(
+            'Some source redshifts are lower than the cluster redshift.'
+            ' magnification = 1 for those galaxies.')
+    if z_src_model == 'single_plane':
 
+        gcm.validate_input = validate_input
+        gcm.set_cosmo(cosmo)
+        gcm.set_halo_density_profile(
+            halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
+        gcm.set_concentration(cdelta)
+        gcm.set_mass(mdelta)
+
+        magnification_bias = gcm.eval_magnification_bias(r_proj, z_cluster, z_source, alpha)
+
+    else:
+        raise ValueError("Unsupported z_src_model")
+
+
+    gcm.validate_input = True
     return magnification_bias
