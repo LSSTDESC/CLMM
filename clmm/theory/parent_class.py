@@ -278,8 +278,10 @@ class CLMModeling:
             validate_argument(locals(), 'halo_bias', float)
             validate_argument(locals(), 'lsteps', int, argmin=1)
 
-        if self.backend is not 'ccl':
-            raise NotImplementedError(f"2-halo term not currently supported with the {self.backend} backend. Use the CCL backend instead")
+        if self.backend not in ('ccl', 'nc'):
+            raise NotImplementedError(
+                f"2-halo term not currently supported with the {self.backend} backend. "
+                "Use the CCL or NumCosmo backend instead")
         else:
             return self._eval_excess_surface_density_2h(r_proj, z_cl, halo_bias=halo_bias, lsteps=lsteps)
 
