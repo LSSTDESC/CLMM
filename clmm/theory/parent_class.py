@@ -9,6 +9,8 @@ from scipy.special import jv
 from scipy.interpolate import interp1d
 
 from .generic import compute_reduced_shear_from_convergence
+import warnings
+from .generic import compute_reduced_shear_from_convergence, compute_magnification_bias_from_magnification
 from ..utils import validate_argument
 
 
@@ -55,6 +57,7 @@ class CLMModeling:
 
         self.validate_input = validate_input
         self.cosmo_class = None
+
 
     def set_cosmo(self, cosmo):
         r""" Sets the cosmology to the internal cosmology object
@@ -433,3 +436,42 @@ class CLMModeling:
         kappa = self.eval_convergence(r_proj, z_cl, z_src)
         gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
         return 1./((1-kappa)**2-abs(gamma_t)**2)
+    
+    def eval_magnification_bias(self, r_proj, z_cl, z_src, alpha):
+        r"""Computes the magnification bias
+
+        .. math::
+            \mu^{\alpha - 1}
+
+        Parameters
+        ----------
+        r_proj : array_like
+            The projected radial positions in :math:`M\!pc`.
+        z_cl : float
+            Galaxy cluster redshift
+        z_src : array_like, float
+            Background source galaxy redshift(s)
+        alpha : float
+            Slope of the cummulative number count of background sources at a given magnitude
+
+        Returns
+        -------
+        mu_bias : array_like, float
+            magnification bias.
+
+        Notes
+        -----
+        The magnification is computed taking into account just the tangential
+        shear. This is valid for spherically averaged profiles, e.g., NFW and
+        Einasto (by construction the cross shear is zero).
+        """
+        if self.validate_input:
+            validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
+            validate_argument(locals(), 'z_cl', float, argmin=0)
+            validate_argument(locals(), 'z_src', 'float_array', argmin=0)
+            validate_argument(locals(), 'alpha', 'float_array')
+        return self._eval_magnification_bias(r_proj=r_proj, z_cl=z_cl, z_src=z_src, alpha=alpha)
+
+    def _eval_magnification_bias(self, r_proj, z_cl, z_src, alpha):
+        magnification = self.eval_magnification(r_proj, z_cl, z_src)
+        return compute_magnification_bias_from_magnification(magnification, alpha)
