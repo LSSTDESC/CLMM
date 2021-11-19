@@ -113,6 +113,9 @@ class NumCosmoCosmology(CLMMCosmology):
 
         return self.be_cosmo.E2Omega_m(z)
 
+    def _get_rho_m(self, z):
+        raise NotImplementedError
+
     def _eval_da_z1z2(self, z1, z2):
 
         return np.vectorize(self.dist.angular_diameter_z1_z2)(
@@ -125,3 +128,6 @@ class NumCosmoCosmology(CLMMCosmology):
         func = lambda z_len, z_src: self.smd.sigma_critical(
             self.be_cosmo, z_src, z_len, z_len)
         return np.vectorize(func)(z_len, z_src)
+
+    def _eval_linear_matter_powerspectrum(self, k_vals, redshift):
+        raise NotImplementedError
