@@ -26,9 +26,10 @@ def compute_nfw_boost(rvals, rs=1000, b0=0.1) :
     x = rvals/rs
 
     def _calc_finternal(x) :
-        radicand = abs(x**2-1)
-        
-        finternal = np.arctan( np.sqrt(radicand) ) / np.sqrt(radicand)
+
+        radicand = x**2-1
+
+        finternal = -1j *  np.log( (1 + np.lib.scimath.sqrt(radicand)*1j) / (1 - np.lib.scimath.sqrt(radicand)*1j) ) / ( 2 * np.lib.scimath.sqrt(radicand) )
 
         return np.nan_to_num(finternal, copy=False, nan=1.0)
 
