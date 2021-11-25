@@ -31,7 +31,7 @@ def compute_nfw_boost(rvals, rs=1000, b0=0.1) :
 
         finternal = -1j *  np.log( (1 + np.lib.scimath.sqrt(radicand)*1j) / (1 - np.lib.scimath.sqrt(radicand)*1j) ) / ( 2 * np.lib.scimath.sqrt(radicand) )
 
-        return np.nan_to_num(finternal, copy=False, nan=1.0)
+        return np.nan_to_num(finternal, copy=False, nan=1.0).real
 
     return 1. + b0 * (1 - _calc_finternal(x)) / (x**2 - 1)
         
