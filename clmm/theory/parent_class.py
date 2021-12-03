@@ -330,8 +330,8 @@ class CLMModeling:
                 * `single_plane` (default): all sources at one redshift (if `z_source` is a float) \
                     or known individual source galaxy redshifts (if `z_source` is an array and \
                     `r_proj` is a float);
-                * `weighing_the_giants_b`: use the equation (6) in Weighing the Giants - III \
-                    (https://arxiv.org/abs/1208.0605) to evaluate tangential reduced shear;
+                * `applegate14`: use the equation (6) in Weighing the Giants - III \
+                    (Applegate et al. 2014; https://arxiv.org/abs/1208.0605) to evaluate tangential reduced shear;
 
         beta_s_mean: <D_LS/D_S*D_inf/D_L,inf>
         beta_s_square_mean: <(D_LS/D_S*D_inf/D_L,inf)**2>
@@ -358,7 +358,7 @@ class CLMModeling:
         # elif z_src_model == 'z_src_distribution': # Continuous ( from a distribution) case
         #     raise NotImplementedError('Need to implement Beta_s and Beta_s2 calculation from'+
         #                               'integrating distribution of redshifts in each radial bin')
-        elif z_src_model == 'weighing_the_giants_b':
+        elif z_src_model == 'applegate14':
             if beta_s_mean is None or beta_s_square_mean is None:
                 raise ValueError("beta_s_mean or beta_s_square_mean is not given.")
             else:
