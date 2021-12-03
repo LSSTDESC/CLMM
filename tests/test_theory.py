@@ -406,7 +406,7 @@ def test_shear_convergence_unittests(modeling_data):
     cfg_inf['GAMMA_PARAMS']['z_source'] = 1000.
     gammat_inf = theo.compute_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'])
     kappa_inf = theo.compute_convergence(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'])
-    cfg_inf['GAMMA_PARAMS']['z_src_model'] = 'weighing_the_giants_b'
+    cfg_inf['GAMMA_PARAMS']['z_src_model'] = 'applegate14'
     assert_allclose(theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'], beta_s_mean=beta_s_mean, beta_s_square_mean=beta_s_square_mean),
                     beta_s_mean * gammat_inf/(1.0 - beta_s_square_mean / beta_s_mean * kappa_inf), 1.0e-10)
 
@@ -520,7 +520,7 @@ def test_shear_convergence_unittests(modeling_data):
     source_redshift_inf = 1000. 
     gammat_inf = mod.eval_tangential_shear(profile_pars[0], profile_pars[1], source_redshift_inf) #np.inf)
     kappa_inf = mod.eval_convergence(profile_pars[0], profile_pars[1], source_redshift_inf) #np.inf)
-    assert_allclose(mod.eval_reduced_tangential_shear(*profile_pars, 'weighing_the_giants_b', beta_s_mean, beta_s_square_mean), beta_s_mean * gammat_inf/(1.0 - beta_s_square_mean / beta_s_mean * kappa_inf), 1.0e-10)
+    assert_allclose(mod.eval_reduced_tangential_shear(*profile_pars, 'applegate14', beta_s_mean, beta_s_square_mean), beta_s_mean * gammat_inf/(1.0 - beta_s_square_mean / beta_s_mean * kappa_inf), 1.0e-10)
 
     assert_allclose(gammat*sigmac_corr/(1.-(kappa*sigmac_corr)),
                     cfg['numcosmo_profiles']['gt'], 1.e2*reltol)
