@@ -18,9 +18,9 @@ def test_compute_nfw_boost() :
 
     boost_factors = utils.compute_nfw_boost(rvals)
 
-    test_boost_factors = np.array([0.97853981, 0.97853979, 0.97853975, 0.9785397,
-                                   0.97853964, 0.97853956, 0.97853946, 0.97853936,
-                                   0.97853923, 0.9785391])
+    test_boost_factors = np.array([1.66009126, 1.59077917, 1.55023667, 
+                                   1.52147373, 1.4991658, 1.48094117,
+                                   1.46553467, 1.4521911, 1.44042332, 1.42989872])
     
    #  Test model
     assert_allclose(boost_factors, test_boost_factors)
