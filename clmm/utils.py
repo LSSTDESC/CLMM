@@ -459,3 +459,37 @@ def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argm
                 err = f'{argname} must be lesser than {argmax},' \
                       f' received {"vec_max:"*(var_array.size-1)}{var}'
                 raise ValueError(err)
+
+                
+                
+                
+def beta(z_cl, z_s, cosmo):
+    """Geometric lensing efficicency  beta = max(0, Dang_ls/Dang_s)  Eq.2 in https://arxiv.org/pdf/1611.03866.pdf"""
+    beta = np.heaviside(z_s-z_cl,0) * DA_ls_over_DA_s(z_cl, z_s, cosmo)
+    return beta
+
+def beta_s(z_cl, z_s, z_inf, cosmo):
+    """Geometric lensing efficicency ratio beta_s =beta(z_s)/beta(z_inf)"""
+    beta_s = beta(z_cl,z_s,cosmo) / beta(z_cl,z_inf,cosmo)
+    return beta_s
+
+def compute_B_mean(z_cl, pdz, cosmo, zmin=None, zmax=4.0, nsteps=1000, delta_z_cut=0.1):
+    if zmin==None:
+        zmin = z_cl + delta_z_cut
+    z_int = np.linspace(zmin, zmax, nsteps)
+    B_mean = np.nansum( beta(z_cl, z_int, cosmo) * pdz(z_int)) / np.nansum(pdz(z_int))
+    return B_mean
+
+def compute_Bs_mean(z_cl, z_inf, pdz, cosmo,  zmin=None, zmax=4.0, nsteps=1000, delta_z_cut=0.1):
+    if zmin==None:
+        zmin =z_cl + delta_z_cut
+    z_int = np.linspace(zmin, zmax, nsteps)
+    Bs_mean = np.nansum( beta_s(z_cl, z_int, z_inf, cosmo) * pdz(z_int)) / np.nansum(pdz(z_int))
+    return Bs_mean
+
+def compute_Bs_square_mean(z_cl, z_inf, pdz, cosmo,  zmin=None, zmax=4.0, nsteps=1000, delta_z_cut=0.1):
+    if zmin==None:
+        zmin = z_cl + delta_z_cut
+    z_int = np.linspace(zmin, zmax, nsteps)
+    Bs_mean = np.nansum( beta_s(z_cl, z_int, z_inf, cosmo)**2 * pdz(z_int)) / np.nansum(pdz(z_int))
+    return Bs_mean
