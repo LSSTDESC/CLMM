@@ -312,7 +312,8 @@ class CLMModeling:
         sigma_c = self.eval_critical_surface_density(z_cl, z_src)
         return sigma/sigma_c
 
-    def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src):
+    def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src, z_src_model='single_plane',
+                                      beta_s_mean=None, beta_s_square_mean=None):
         r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
 
         Parameters
@@ -323,19 +324,62 @@ class CLMModeling:
             Galaxy cluster redshift
         z_src : array_like, float
             Background source galaxy redshift(s)
+        z_src_model : str, optional
+            Source redshift model, with the following supported options:
+
+                * `single_plane` (default): all sources at one redshift (if `z_source` is a float) \
+                    or known individual source galaxy redshifts (if `z_source` is an array and \
+                    `r_proj` is a float);
+                * `applegate14`: use the equation (6) in Weighing the Giants - III \
+                    (Applegate et al. 2014; https://arxiv.org/abs/1208.0605) to evaluate tangential reduced shear;
+
+        beta_s_mean: array_like, float
+            Lensing efficiency averaged over the galaxy redshift distribution   
+
+                .. math::
+                    \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right\rangle
+    
+        beta_s_square_mean: array_like, float
+            Square of the lensing efficiency averaged over the galaxy redshift distribution    
+
+                .. math::
+                    \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
 
         Returns
         -------
-        array_like, float
+        gt : array_like, float
             Reduced tangential shear
+
+        Notes
+        -----
+        Need to figure out if we want to raise exceptions rather than errors here?
         """
         if self.validate_input:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', float, argmin=0)
             validate_argument(locals(), 'z_src', 'float_array', argmin=0)
-        return self._eval_reduced_tangential_shear(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
 
-    def _eval_reduced_tangential_shear(self, r_proj, z_cl, z_src):
+        if z_src_model == 'single_plane':
+            gt = self._eval_reduced_tangential_shear_sp(r_proj, z_cl, z_src)
+        # elif z_src_model == 'known_z_src': # Discrete case
+        #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average'+
+        #                               'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
+        # elif z_src_model == 'z_src_distribution': # Continuous ( from a distribution) case
+        #     raise NotImplementedError('Need to implement Beta_s and Beta_s2 calculation from'+
+        #                               'integrating distribution of redshifts in each radial bin')
+        elif z_src_model == 'applegate14':
+            if beta_s_mean is None or beta_s_square_mean is None:
+                raise ValueError("beta_s_mean or beta_s_square_mean is not given.")
+            else:
+                z_source = 1000. #np.inf # INF or a very large number
+                gammat = self._eval_tangential_shear(r_proj, z_cl, z_source)
+                kappa = self._eval_convergence(r_proj, z_cl, z_source)
+                gt = beta_s_mean * gammat / (1. - beta_s_square_mean / beta_s_mean * kappa)
+        else:
+            raise ValueError("Unsupported z_src_model")
+        return gt
+
+    def _eval_reduced_tangential_shear_sp(self, r_proj, z_cl, z_src):
         kappa = self.eval_convergence(r_proj, z_cl, z_src)
         gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
         return compute_reduced_shear_from_convergence(gamma_t, kappa)
