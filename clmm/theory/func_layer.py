@@ -466,8 +466,18 @@ def compute_reduced_tangential_shear(
             * `applegate14`: use the equation (6) in Weighing the Giants - III \
                 (Applegate et al. 2014; https://arxiv.org/abs/1208.0605) to evaluate tangential reduced shear;
 
-    beta_s_mean: <D_LS/D_S*D_inf/D_L,inf>
-    beta_s_square_mean: <(D_LS/D_S*D_inf/D_L,inf)**2>
+    beta_s_mean: array_like, float
+        Lensing efficiency averaged over the galaxy redshift distribution   
+
+            .. math::
+                \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right\rangle
+    
+    beta_s_square_mean: array_like, float
+        Square of the lensing efficiency averaged over the galaxy redshift distribution    
+
+            .. math::
+                \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
+
 
     Returns
     -------
