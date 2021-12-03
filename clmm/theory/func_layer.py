@@ -463,8 +463,8 @@ def compute_reduced_tangential_shear(
             * `single_plane` (default): all sources at one redshift (if `z_source` is a float) \
                 or known individual source galaxy redshifts (if `z_source` is an array and \
                 `r_proj` is a float);
-            * `weighing_the_giants_b`: use the equation (6) in Weighing the Giants - III \
-                (https://arxiv.org/abs/1208.0605) to evaluate tangential reduced shear;
+            * `applegate14`: use the equation (6) in Weighing the Giants - III \
+                (Applegate et al. 2014; https://arxiv.org/abs/1208.0605) to evaluate tangential reduced shear;
 
     beta_s_mean: <D_LS/D_S*D_inf/D_L,inf>
     beta_s_square_mean: <(D_LS/D_S*D_inf/D_L,inf)**2>
