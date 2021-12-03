@@ -170,7 +170,7 @@ class NumCosmoCLMModeling(CLMModeling):
         return np.vectorize(func)(r_proj, z_src, z_cl)
 
     def _eval_reduced_tangential_shear_sp(self, r_proj, z_cl, z_src):
-        """"eval reduced tangential shear single plane"""
+        """"eval reduced tangential shear considering a single redshift plane for background sources"""
 
         self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
         if (isinstance(r_proj, (list, np.ndarray))
