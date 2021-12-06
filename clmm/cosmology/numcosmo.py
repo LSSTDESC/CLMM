@@ -143,10 +143,17 @@ class NumCosmoCosmology(CLMMCosmology):
             prim  = Nc.HIPrimPowerLaw.new ()
             self.be_cosmo.add_submodel (prim)
 
+        # Computing the PS from the CLASS backend of Numcosmo
         ps_cbe  = Nc.PowspecMLCBE.new ()
         ps_cbe.peek_cbe().props.use_ppf = True
         ps_cbe.prepare (self.be_cosmo)
+
+        # Using instead the BBKS approximate transfer function
+        # ps_bbks = Nc.PowspecMLTransfer.new (Nc.TransferFuncBBKS.new()) 
+        # ps_bbks.prepare (self.be_cosmo)
+        
         res = []
         for k in k_vals:
             res.append(ps_cbe.eval (self.be_cosmo, 0.5, k))
+            # res.append(ps_bbks.eval (self.be_cosmo, 0.5, k))
         return res
