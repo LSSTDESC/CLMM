@@ -7,6 +7,7 @@ import gi
 gi.require_version('NumCosmo', '1.0')
 gi.require_version('NumCosmoMath', '1.0')
 from gi.repository import NumCosmo as Nc
+from gi.repository import NumCosmoMath as Ncm
 
 from .parent_class import CLMMCosmology
 
@@ -114,7 +115,11 @@ class NumCosmoCosmology(CLMMCosmology):
         return self.be_cosmo.E2Omega_m(z)
 
     def _get_rho_m(self, z):
-        raise NotImplementedError
+        # total matter density in physical units [Msun/Mpc3]
+        rho_m = self._get_E2Omega_m(z) * \
+            Ncm.C.crit_mass_density_h2_solar_mass_Mpc3() * \
+            self._get_param('h') * self._get_param('h')
+        return rho_m
 
     def _eval_da_z1z2(self, z1, z2):
 
@@ -130,4 +135,18 @@ class NumCosmoCosmology(CLMMCosmology):
         return np.vectorize(func)(z_len, z_src)
 
     def _eval_linear_matter_powerspectrum(self, k_vals, redshift):
-        raise NotImplementedError
+     
+        if self.be_cosmo.reion is None:
+            reion = Nc.HIReionCamb.new ()
+            self.be_cosmo.add_submodel (reion)
+        if self.be_cosmo.prim is None:
+            prim  = Nc.HIPrimPowerLaw.new ()
+            self.be_cosmo.add_submodel (prim)
+
+        ps_cbe  = Nc.PowspecMLCBE.new ()
+        ps_cbe.peek_cbe().props.use_ppf = True
+        ps_cbe.prepare (self.be_cosmo)
+        res = []
+        for k in k_vals:
+            res.append(ps_cbe.eval (self.be_cosmo, 0.5, k))
+        return res

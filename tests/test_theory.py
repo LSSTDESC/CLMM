@@ -278,13 +278,13 @@ def test_2halo_term(modeling_data):
     mod = theo.Modeling()
     mod.set_cosmo(cosmo)
 
-    if mod.backend is not 'ccl':
-        assert_raises(NotImplementedError, mod.eval_excess_surface_density_2h,
+    if mod.backend not in ['ccl','nc']:
+        assert_raises(NotImplementedError, mod.eval_excess_surface_density_2h_nobias,
                       1., cfg['SIGMA_PARAMS']['z_cl'])
     else:
         # Just checking that it runs and returns array of the right length
         # To be updated with proper comparison to benchmark when available
-        assert_equal(len(mod.eval_excess_surface_density_2h(cfg['SIGMA_PARAMS']['r_proj'],
+        assert_equal(len(mod.eval_excess_surface_density_2h_nobias(cfg['SIGMA_PARAMS']['r_proj'],
                                                                cfg['SIGMA_PARAMS']['z_cl'])),
                         len(cfg['SIGMA_PARAMS']['r_proj'])) 
 

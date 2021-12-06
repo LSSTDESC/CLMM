@@ -77,6 +77,7 @@ class CCLCosmology(CLMMCosmology):
         return ccl.omega_x(self.be_cosmo, a, "matter")*(ccl.h_over_h0(self.be_cosmo, a))**2
 
     def _get_rho_m(self, z):
+        # total matter density in physical units [Msun/Mpc3]
         a = self.get_a_from_z(z)
         return ccl.rho_x(self.be_cosmo, a, 'matter', is_comoving = False)
 
