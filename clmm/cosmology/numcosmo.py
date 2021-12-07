@@ -135,6 +135,13 @@ class NumCosmoCosmology(CLMMCosmology):
         return np.vectorize(func)(z_len, z_src)
 
     def _eval_linear_matter_powerspectrum(self, k_vals, redshift):
+
+        # Using the BBKS approximate transfer function
+        ps = Nc.PowspecMLTransfer.new (Nc.TransferFuncBBKS.new()) 
+
+        # Instead, computing the PS from the CLASS backend of Numcosmo
+        # ps  = Nc.PowspecMLCBE.new ()
+        # ps.peek_cbe().props.use_ppf = True
      
         if self.be_cosmo.reion is None:
             reion = Nc.HIReionCamb.new ()
@@ -142,18 +149,16 @@ class NumCosmoCosmology(CLMMCosmology):
         if self.be_cosmo.prim is None:
             prim  = Nc.HIPrimPowerLaw.new ()
             self.be_cosmo.add_submodel (prim)
+            # The default CLMM cosmology has ns=0.96 and sigma8=0.8
+            # Need to adapt the NC cosmology accordingly
+            self.be_cosmo.prim.props.n_SA = 0.96
+            psf = Ncm.PowspecFilter.new (ps, Ncm.PowspecFilterType.TOPHAT)
+            old_amplitude = np.exp (self.be_cosmo.prim.props.ln10e10ASA)
+            self.be_cosmo.prim.props.ln10e10ASA = np.log ((0.8 / self.be_cosmo.sigma8(psf))**2 * old_amplitude)
 
-        # Computing the PS from the CLASS backend of Numcosmo
-        ps_cbe  = Nc.PowspecMLCBE.new ()
-        ps_cbe.peek_cbe().props.use_ppf = True
-        ps_cbe.prepare (self.be_cosmo)
-
-        # Using instead the BBKS approximate transfer function
-        # ps_bbks = Nc.PowspecMLTransfer.new (Nc.TransferFuncBBKS.new()) 
-        # ps_bbks.prepare (self.be_cosmo)
+        ps.prepare (self.be_cosmo)
         
         res = []
         for k in k_vals:
-            res.append(ps_cbe.eval (self.be_cosmo, 0.5, k))
-            # res.append(ps_bbks.eval (self.be_cosmo, 0.5, k))
+            res.append(ps.eval (self.be_cosmo, redshift, k))
         return res
