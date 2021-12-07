@@ -136,7 +136,8 @@ class NumCosmoCosmology(CLMMCosmology):
 
     def _eval_linear_matter_powerspectrum(self, k_vals, redshift):
 
-        # Using the BBKS approximate transfer function
+        # Using the BBKS approximate transfer function as this is the 
+        # default for the CCL backend as well
         ps = Nc.PowspecMLTransfer.new (Nc.TransferFuncBBKS.new()) 
 
         # Instead, computing the PS from the CLASS backend of Numcosmo
