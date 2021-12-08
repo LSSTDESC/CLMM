@@ -474,14 +474,14 @@ def compute_B_mean(z_cl, pdz, cosmo, zmin=None, zmax=4.0, nsteps=1000, delta_z_c
     if zmin==None:
         zmin = z_cl + delta_z_cut
     z_int = np.linspace(zmin, zmax, nsteps)
-    B_mean = np.nansum( beta(z_cl, z_int, cosmo) * pdz(z_int)) / np.nansum(pdz(z_int))
+    B_mean = np.nansum(beta(z_cl, z_int, cosmo) * pdz(z_int)) / np.nansum(pdz(z_int))
     return B_mean
 
 def compute_Bs_mean(z_cl, z_inf, pdz, cosmo,  zmin=None, zmax=4.0, nsteps=1000, delta_z_cut=0.1):
     if zmin==None:
-        zmin =z_cl + delta_z_cut
+        zmin = z_cl + delta_z_cut
     z_int = np.linspace(zmin, zmax, nsteps)
-    Bs_mean = np.nansum( beta_s(z_cl, z_int, z_inf, cosmo) * pdz(z_int)) / np.nansum(pdz(z_int))
+    Bs_mean = np.nansum(beta_s(z_cl, z_int, z_inf, cosmo) * pdz(z_int)) / np.nansum(pdz(z_int))
     return Bs_mean
 
 def compute_Bs_square_mean(z_cl, z_inf, pdz, cosmo,  zmin=None, zmax=4.0, nsteps=1000, delta_z_cut=0.1):
