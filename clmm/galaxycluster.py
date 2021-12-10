@@ -256,25 +256,26 @@ class GalaxyCluster():
         p_background : array
             the probability for being a background galaxy
         """
-        required_cols = [shape_component1, shape_component2]
+        input_info = locals()
+        required_cols = {col:input_info[col] for col in ('shape_component1', 'shape_component2')}
         if add_photoz:
-            required_cols += [pzpdf, pzbins, z_source]
+            required_cols.update({col:input_info[col] for col in ('pzpdf', 'pzbins')})
+        else:
+            required_cols['z_source'] = input_info['z_source']
         if add_shape_error:
-            required_cols += [shape_component1_err, shape_component2_err]
-        missing_cols = ', '.join([f"'{t_}'" for t_ in required_cols
+            required_cols.update({col:input_info[col] for col in ('shape_component1_err',
+                                                                'shape_component2_err',)})
+        missing_cols = ', '.join([f"'{t_}'" for t_ in required_cols.values()
                                     if t_ not in self.galcat.columns])
         if len(missing_cols)>0:
             raise TypeError('Galaxy catalog missing required columns: '+missing_cols+\
                             '. Do you mean to first convert column names?')
-        opt_cols = {}
-        for col in ('z_source', 'pzpdf', 'pzbins', 'shape_component1_err', 'shape_component2_err'):
-            opt_cols[col] = self.galcat[locals()[col]] if locals()[col] in self.galcat.columns \
-                                else None
+        cols = {key: self.galcat[colname] for key, colname in required_cols.items()}
+        print(required_cols)
         w_ls, p_background = compute_galaxy_weights(
-            self.z, cosmo, shape_component1=self.galcat[shape_component1],
-            shape_component2=self.galcat[shape_component2], add_photoz=add_photoz,
-            add_shapenoise=add_shapenoise, add_shape_error=add_shape_error,
-            is_deltasigma=is_deltasigma, validate_input=self.validate_input, **opt_cols)
+            self.z, cosmo, add_shapenoise=add_shapenoise,
+            is_deltasigma=is_deltasigma, validate_input=self.validate_input,
+            **cols)
         if add:
             self.galcat[weight_name], self.galcat[p_background_name] = w_ls, p_background
         return w_ls, p_background
