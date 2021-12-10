@@ -168,8 +168,7 @@ def compute_tangential_and_cross_components(
 def compute_galaxy_weights(z_lens, cosmo, z_source=None, pzpdf=None, pzbins=None,
                            shape_component1=None, shape_component2=None,
                            shape_component1_err=None, shape_component2_err=None,
-                           add_photoz=False, add_shapenoise=False, add_shape_error=False,
-                           is_deltasigma=False, validate_input=True):
+                           add_shapenoise=False, is_deltasigma=False, validate_input=True):
     r"""Computes the individual lens-source pair weights
 
     The weights :math:`w_{ls}` express as : :math:`w_{ls} = w_{ls, \rm{geo}} \times w_{ls, \rm{shape}}`, following E. S. Sheldon et al.
@@ -213,13 +212,14 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, pzpdf=None, pzbins=None
     z_lens: float
         Redshift of the lens.
     z_source: array, optional
-        Redshift of the source. Used only with add_photoz=True.
+        Redshift of the source. Used only if pzpdf=pzbins=None.
     cosmo: clmm.Comology object, None
         CLMM Cosmology object.
     pzpdf : array, optional
-        Photometric probablility density functions of the source galaxies
+        Photometric probablility density functions of the source galaxies.
+        Used instead of z_source if provided.
     pzbins : array, optional
-        Redshift axis on which the individual photoz pdf is tabulated
+        Redshift axis on which the individual photoz pdf is tabulated.
     shape_component1: array
         The measured shear (or reduced shear or ellipticity) of the source galaxies
     shape_component2: array
@@ -228,12 +228,8 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, pzpdf=None, pzbins=None
         The measurement error on the 1st-component of ellipticity of the source galaxies
     shape_component2_err: array
         The measurement error on the 2nd-component of ellipticity of the source galaxies
-    add_photoz : boolean
-        True if considering photometric redshifts
     add_shapenoise : boolean
         True for considering shapenoise in the weight computation
-    add_shape_error : boolean
-        True for considering measured shape error in the weight computation
     is_deltasigma: boolean
         Indicates whether it is the excess surface density or the tangential shear
     validate_input: bool
@@ -255,17 +251,23 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, pzpdf=None, pzbins=None
         validate_argument(locals(), 'shape_component2', 'float_array')
         validate_argument(locals(), 'shape_component1_err', 'float_array', none_ok=True)
         validate_argument(locals(), 'shape_component2_err', 'float_array', none_ok=True)
-        validate_argument(locals(), 'add_photoz', bool)
-        validate_argument(locals(), 'add_shape_error', bool)
-        validate_argument(locals(), 'add_shape_error', bool)
+        validate_argument(locals(), 'add_shapenoise', bool)
         validate_argument(locals(), 'is_deltasigma', bool)
         arguments_consistency(
             [shape_component1, shape_component2],
             names=('shape_component1', 'shape_component2'),
             prefix='Shape components sources')
 
-    #computing w_ls_geo
-    if add_photoz:
+    if (pzpdf is None)!=(pzbins is None):
+        raise ValueError('pzbins must be provided with pzpdf.')
+    if pzpdf is None:
+        p_background = np.zeros(len(z_source))
+        p_background[z_source > z_lens] = 1
+        norm = 1
+        if is_deltasigma:
+            norm = cosmo.eval_sigma_crit(z_lens, z_source)**2
+        w_ls_geo = p_background/norm
+    else:
         # adding these lines to interpolate CLMM redshift grid for each galaxies
         # to a constant redshift grid for all galaxies. If there is a constant grid for all galaxies
         # these lines are not necessary and photoz_z_axis_grid_cut, photoz_matrix = pzbins, pzpdf
@@ -281,22 +283,13 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, pzpdf=None, pzbins=None
             # w_ls_geo = (int sigma_c^-1)^2
             w_ls_geo = (scipy.integrate.simps(photoz_matrix * (1./sigma_crit_grid),
                                               x=photoz_z_axis_grid_cut, axis = 1))**2
-    else:
-        p_background = np.zeros(len(z_source))
-        p_background[z_source > z_lens] = 1
-        norm = 1
-        if is_deltasigma:
-            norm = cosmo.eval_sigma_crit(z_lens, z_source)**2
-        w_ls_geo = p_background/norm
 
     #computing w_ls_shape
-    err_e2_shapenoise = np.zeros(len(shape_component1))
-    err_e2_measurement = np.zeros(len(shape_component1))
+    err_e2 = np.zeros(len(shape_component1))
     if add_shapenoise:
-        err_e2_shapenoise = np.std(shape_component1)**2 + np.std(shape_component2)**2
-    if add_shape_error:
-        err_e2_measurement = shape_component1_err**2 + shape_component2_err**2
-    err_e2 = err_e2_measurement + err_e2_shapenoise
+        err_e2 += np.std(shape_component1)**2 + np.std(shape_component2)**2
+    err_e2 += 0 if shape_component1_err is None else shape_component1_err**2
+    err_e2 += 0 if shape_component2_err is None else shape_component2_err**2
     w_ls_shape = np.ones(len(shape_component1))
     w_ls_shape[err_e2>0] = 1/err_e2[err_e2>0]
 
