@@ -271,7 +271,6 @@ class GalaxyCluster():
             raise TypeError('Galaxy catalog missing required columns: '+missing_cols+\
                             '. Do you mean to first convert column names?')
         cols = {key: self.galcat[colname] for key, colname in required_cols.items()}
-        print(required_cols)
         w_ls, p_background = compute_galaxy_weights(
             self.z, cosmo, add_shapenoise=add_shapenoise,
             is_deltasigma=is_deltasigma, validate_input=self.validate_input,
