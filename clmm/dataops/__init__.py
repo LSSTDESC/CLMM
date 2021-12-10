@@ -201,10 +201,44 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin, kernel=lambda z: 1.):
     kernel_matrix = kernel(z_grid)
     return scipy.integrate.simps(pz_matrix*kernel_matrix, x=z_grid, axis=1)
 
+
+def compute_background_probability(z_lens, z_source=None, pzpdf=None, pzbins=None, validate_input=True):
+    r"""Probability for being a background galaxy
+
+    Parameters
+    ----------
+    z_lens: float
+        Redshift of the lens.
+    z_source: array, optional
+        Redshift of the source. Used only if pzpdf=pzbins=None.
+    pzpdf : array, optional
+        Photometric probablility density functions of the source galaxies.
+        Used instead of z_source if provided.
+    pzbins : array, optional
+        Redshift axis on which the individual photoz pdf is tabulated.
+
+    Returns
+    -------
+    p_background : array
+        Probability for being a background galaxy
+    """
+    if validate_input:
+        validate_argument(locals(), 'z_lens', float, argmin=0, eqmin=True)
+        validate_argument(locals(), 'z_source', 'float_array', argmin=0, eqmin=True, none_ok=True)
+    if (pzpdf is None)!=(pzbins is None):
+        raise ValueError('pzbins must be provided with pzpdf.')
+    if pzpdf is None:
+        p_background = np.array(z_source>z_lens, dtype=float)
+    else:
+        p_background = _integ_pzfuncs(pzpdf, pzbins, z_lens)
+    return p_background
+
+
 def compute_galaxy_weights(z_lens, cosmo, z_source=None, pzpdf=None, pzbins=None,
                            shape_component1=None, shape_component2=None,
                            shape_component1_err=None, shape_component2_err=None,
-                           add_shapenoise=False, is_deltasigma=False, validate_input=True):
+                           p_background=None, add_shapenoise=False, is_deltasigma=False,
+                           validate_input=True):
     r"""Computes the individual lens-source pair weights
 
     The weights :math:`w_{ls}` express as : :math:`w_{ls} = w_{ls, \rm{geo}} \times w_{ls, \rm{shape}}`, following E. S. Sheldon et al.
@@ -264,6 +298,8 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, pzpdf=None, pzbins=None
         The measurement error on the 1st-component of ellipticity of the source galaxies
     shape_component2_err: array
         The measurement error on the 2nd-component of ellipticity of the source galaxies
+    p_background : array, optional
+        Probabilities for galaxies being a background galaxy. If not provided it is computed.
     add_shapenoise : boolean
         True for considering shapenoise in the weight computation
     is_deltasigma: boolean
@@ -275,8 +311,6 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, pzpdf=None, pzbins=None
     -------
     w_ls: array
         Individual lens source pair weights
-    p_background : array
-        Probability for being a background galaxy
     """
     if validate_input:
         validate_argument(locals(), 'z_lens', float, argmin=0, eqmin=True)
@@ -287,6 +321,7 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, pzpdf=None, pzbins=None
         validate_argument(locals(), 'shape_component2', 'float_array')
         validate_argument(locals(), 'shape_component1_err', 'float_array', none_ok=True)
         validate_argument(locals(), 'shape_component2_err', 'float_array', none_ok=True)
+        validate_argument(locals(), 'p_background', 'float_array', none_ok=True)
         validate_argument(locals(), 'add_shapenoise', bool)
         validate_argument(locals(), 'is_deltasigma', bool)
         arguments_consistency(
@@ -294,19 +329,17 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, pzpdf=None, pzbins=None
             names=('shape_component1', 'shape_component2'),
             prefix='Shape components sources')
 
-    if (pzpdf is None)!=(pzbins is None):
-        raise ValueError('pzbins must be provided with pzpdf.')
+    #computing p_background
+    if p_background is None:
+        p_background = compute_background_probability(z_lens, z_source, pzpdf, pzbins)
 
     #computing w_ls_geo
     if pzpdf is None:
-        p_background = np.zeros(len(z_source))
-        p_background[z_source > z_lens] = 1
         norm = 1
         if is_deltasigma:
             norm = cosmo.eval_sigma_crit(z_lens, z_source)**2
         w_ls_geo = p_background/norm
     else:
-        p_background = _integ_pzfuncs(pzpdf, pzbins, z_lens)
         w_ls_geo = 1
         if is_deltasigma == True:
             w_ls_geo = _integ_pzfuncs(
@@ -323,7 +356,8 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, pzpdf=None, pzbins=None
     w_ls_shape[err_e2>0] = 1/err_e2[err_e2>0]
 
     w_ls = w_ls_shape * w_ls_geo
-    return w_ls, p_background
+
+    return w_ls
 
 def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_source_list):
     r"""Compute the angular separation between the lens and the source and the azimuthal

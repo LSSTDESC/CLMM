@@ -5,7 +5,7 @@ import pickle
 import warnings
 from .gcdata import GCData
 from .dataops import (compute_tangential_and_cross_components, make_radial_profile,
-                      compute_galaxy_weights)
+                      compute_galaxy_weights, compute_background_probability)
 from .theory import compute_critical_surface_density
 from .plotting import plot_profiles
 from .utils import validate_argument
@@ -204,13 +204,55 @@ class GalaxyCluster():
             self.galcat[cross_component] = cross_comp
         return angsep, tangential_comp, cross_comp
 
+    def compute_background_probability(self, z_source='z', pzpdf='pzpdf', pzbins='pzbins',
+                                       add_photoz=False, p_background_name='p_background',
+                                       add=True):
+        r"""Probability for being a background galaxy
+
+        Parameters
+        ----------
+        z_source: string
+            column name : source redshifts
+        pzpdf : string
+            column name : photometric probablility density function of the source galaxies
+        pzbins : string
+            column name : redshift axis on which the individual photoz pdf is tabulated
+        add_photoz : boolean
+            True for computing photometric probabilities
+        add : boolean
+            If True, add background probability columns to the galcat table
+
+        Returns
+        -------
+        p_background : array
+            Probability for being a background galaxy
+        """
+        input_info = locals()
+        required_cols = {}
+        if add_photoz:
+            required_cols.update({col:input_info[col] for col in ('pzpdf', 'pzbins')})
+        else:
+            required_cols['z_source'] = input_info['z_source']
+        missing_cols = ', '.join([f"'{t_}'" for t_ in required_cols.values()
+                                    if t_ not in self.galcat.columns])
+        if len(missing_cols)>0:
+            raise TypeError('Galaxy catalog missing required columns: '+missing_cols+\
+                            '. Do you mean to first convert column names?')
+        cols = {key: self.galcat[colname] for key, colname in required_cols.items()}
+        p_background = compute_background_probability(
+            self.z, validate_input=self.validate_input, **cols)
+        if add:
+            self.galcat[p_background_name] = p_background
+        return p_background
+
     def compute_galaxy_weights(self, z_source='z', pzpdf='pzpdf', pzbins='pzbins',
                                shape_component1='e1', shape_component2='e2',
                                shape_component1_err='e1_err', shape_component2_err='e2_err',
                                add_photoz=False, add_shapenoise=False, add_shape_error=False,
-                               weight_name='w_ls', p_background_name='p_background', cosmo=None,
+                               weight_name='w_ls', p_background_name='p_background',
+                               recompute_p_background=True, cosmo=None,
                                is_deltasigma=False, add=True):
-        r"""
+        r"""Computes the individual lens-source pair weights
 
         Parameters
         ----------
@@ -244,10 +286,12 @@ class GalaxyCluster():
             Name of the new column for the weak lensing weights in the galcat table
         p_background : string
             Name of the new column for the background probability in the galcat table
+        recompute_p_background: boolean
+            Forces re-computation of p_background if already in catalog.
         is_deltasigma: boolean
             Indicates whether it is the excess surface density or the tangential shear
         add : boolean
-            If True, add weight and background probability columns to the galcat table
+            If True, add weight column to the galcat table
 
         Returns
         -------
@@ -260,7 +304,7 @@ class GalaxyCluster():
         required_cols = {col:input_info[col] for col in ('shape_component1', 'shape_component2')}
         if add_photoz:
             required_cols.update({col:input_info[col] for col in ('pzpdf', 'pzbins')})
-        else:
+        elif is_deltasigma:
             required_cols['z_source'] = input_info['z_source']
         if add_shape_error:
             required_cols.update({col:input_info[col] for col in ('shape_component1_err',
@@ -270,14 +314,22 @@ class GalaxyCluster():
         if len(missing_cols)>0:
             raise TypeError('Galaxy catalog missing required columns: '+missing_cols+\
                             '. Do you mean to first convert column names?')
+
+        if p_background_name not in self.galcat.columns or recompute_p_background:
+            self.compute_background_probability(
+                z_source=z_source, pzpdf=pzpdf, pzbins=pzbins,
+                add_photoz=add_photoz, p_background_name=p_background_name)
+            required_cols['p_background'] = p_background_name
+
         cols = {key: self.galcat[colname] for key, colname in required_cols.items()}
-        w_ls, p_background = compute_galaxy_weights(
+
+        w_ls = compute_galaxy_weights(
             self.z, cosmo, add_shapenoise=add_shapenoise,
             is_deltasigma=is_deltasigma, validate_input=self.validate_input,
             **cols)
         if add:
-            self.galcat[weight_name], self.galcat[p_background_name] = w_ls, p_background
-        return w_ls, p_background
+            self.galcat[weight_name] = w_ls
+        return w_ls
 
     def make_radial_profile(self,
                             bin_units, bins=10, error_model='ste', cosmo=None,
