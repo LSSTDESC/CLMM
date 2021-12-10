@@ -137,11 +137,11 @@ class ClusterEnsemble():
             components_error=[None if n is None else galaxycluster.galcat[n].data
                               for n in (tan_component_in_err, cross_component_in_err, None)],
             )
-        profile_table[weights_out] = 1
+        profile_table[weights_out] = 1 # rm this line
         data_to_save = [galaxycluster.unique_id, galaxycluster.ra, galaxycluster.dec, galaxycluster.z,
                         *[np.array(profile_table[col]) for col in
                             ('radius', 'p_0', 'p_1', weights_out)]]
-        # to be removed down to here after issue 443 is merged
+        # to be fixed down to here after issue 443 is merged
         if len(self.data)==0:
             for col, data in zip(['cluster_id', 'ra', 'dec', 'z', 'radius', tan_component_out,
                                   cross_component_out, weights_out], data_to_save):
