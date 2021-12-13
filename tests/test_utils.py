@@ -6,7 +6,8 @@ from numpy.testing import assert_raises, assert_allclose
 import clmm.utils as utils
 import clmm.theory as md
 from clmm.utils import (
-    compute_radial_averages, make_bins, convert_shapes_to_epsilon, arguments_consistency)
+    compute_radial_averages, make_bins, convert_shapes_to_epsilon, arguments_consistency,
+    validate_argument)
 
 
 TOLERANCE = {'rtol': 1.0e-6, 'atol': 0}
@@ -78,44 +79,67 @@ def test_compute_radial_averages():
     xbins2 = [0., 5., 10.]
 
     # Test requesting an unsupported error model
-    assert_raises(ValueError, compute_radial_averages,
-                  binvals, binvals, [0., 10.], 'glue')
+    assert_raises(ValueError, compute_radial_averages, binvals, binvals, [0., 10.], error_model='glue')
 
     # Check the default error model
-    assert_allclose(
-        compute_radial_averages(binvals, binvals, xbins1)[:4], [[np.mean(binvals)],
-        [np.mean(binvals)], [np.std(binvals)/np.sqrt(len(binvals))], [6]], **TOLERANCE)
+    assert_allclose(compute_radial_averages(binvals, binvals, xbins1)[:4],
+                    [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)/np.sqrt(len(binvals))],
+                    [6]],
+                    **TOLERANCE)
+    # Test weights
+        # Normalized
+    assert_allclose(compute_radial_averages([1, 1], [2, 3], [1, 2], weights=[.5, .5])[:3],
+                    ([1], [2.5], [1/np.sqrt(8)]),
+                    **TOLERANCE)
+        # Not normalized
+    assert_allclose(compute_radial_averages([1, 1], [2, 3], [1, 2], weights=[5, 5])[:3],
+                    ([1], [2.5], [1/np.sqrt(8)]),
+                    **TOLERANCE)
+        # Values outside bins
+    assert_allclose(compute_radial_averages([1, 1, 3], [2, 3, 1000], [1, 2], weights=[.5, .5, 100])[:3],
+                    ([1], [2.5], [1/np.sqrt(8)]),
+                    **TOLERANCE)
+        # Weighted values == Repeated values (std only)
+    assert_allclose(compute_radial_averages([1, 1], [2, 3], [1, 2], weights=[1, 2], error_model='std')[:3],
+                   compute_radial_averages([1, 1, 1], [2, 3, 3], [1, 2], error_model='std')[:3],
+                    **TOLERANCE)
+        # Zero yerr
+    assert_allclose(compute_radial_averages([1, 1], [2, 3], [1, 2], weights=[.5, .5], yerr=[0, 0])[:3],
+                    ([1], [2.5], [1/np.sqrt(8)]),
+                    **TOLERANCE)
+        # With yerr
+    assert_allclose(compute_radial_averages([1, 1], [2, 3], [1, 2], weights=[.5, .5], yerr=[1, 1])[:3],
+                    ([1], [2.5], [np.sqrt(5/8)]),
+                    **TOLERANCE)
 
     # Test 3 objects in one bin with various error models
-    assert_allclose(
-        compute_radial_averages(binvals, binvals, xbins1, error_model='std/sqrt_n')[:4],
-        [[np.mean(binvals)], [np.mean(binvals)], [ np.std(binvals)/np.sqrt(len(binvals))], [6]],
-        **TOLERANCE)
-    assert_allclose(
-        compute_radial_averages( binvals, binvals, xbins1, error_model='std')[:4],
-        [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)], [6]], **TOLERANCE)
+    assert_allclose(compute_radial_averages(binvals, binvals, xbins1, error_model='ste')[:4],
+                    [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)/np.sqrt(len(binvals))], [6]],
+                    **TOLERANCE)
+    assert_allclose(compute_radial_averages(binvals, binvals, xbins1, error_model='std')[:4],
+                    [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)],
+                    [6]], **TOLERANCE)
 
     # Repeat test with different error_model case
-    assert_allclose(
-        compute_radial_averages(binvals, binvals, xbins1, error_model='STD/SQRT_N')[:4],
-        [[np.mean(binvals)], [np.mean(binvals)], [ np.std(binvals)/np.sqrt(len(binvals))], [6]],
-        **TOLERANCE)
-    assert_allclose(
-        compute_radial_averages( binvals, binvals, xbins1, error_model='STD')[:4],
-        [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)], [6]], **TOLERANCE)
+    assert_allclose(compute_radial_averages(binvals, binvals, xbins1, error_model='STE')[:4],
+                    [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)/np.sqrt(len(binvals))], [6]],
+                    **TOLERANCE)
+    assert_allclose(compute_radial_averages(binvals, binvals, xbins1, error_model='STD')[:4],
+                    [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)],
+                    [6]], **TOLERANCE)
+
 
     # A slightly more complicated case with two bins
     inbin1 = binvals[(binvals > xbins2[0]) & (binvals < xbins2[1])]
     inbin2 = binvals[(binvals > xbins2[1]) & (binvals < xbins2[2])]
-    assert_allclose(
-        compute_radial_averages(binvals, binvals, xbins2, error_model='std/sqrt_n')[:4],
-        [[np.mean(inbin1), np.mean(inbin2)], [np.mean(inbin1), np.mean(inbin2)],
-         [np.std(inbin1)/np.sqrt(len(inbin1)), np.std(inbin2)/np.sqrt(len(inbin2))], [3, 3]],
-         **TOLERANCE)
-    assert_allclose(
-        compute_radial_averages( binvals, binvals, xbins2, error_model='std')[:4],
-        [[np.mean(inbin1), np.mean(inbin2)], [np.mean(inbin1), np.mean(inbin2)], [np.std(inbin1),
-        np.std(inbin2)], [3, 3]], **TOLERANCE)
+    assert_allclose(compute_radial_averages(binvals, binvals, xbins2, error_model='ste')[:4],
+                    [[np.mean(inbin1), np.mean(inbin2)], [np.mean(inbin1), np.mean(inbin2)],
+                     [np.std(inbin1)/np.sqrt(len(inbin1)), np.std(inbin2)/np.sqrt(len(inbin2))],
+                     [3,3]], **TOLERANCE)
+    assert_allclose(compute_radial_averages(binvals, binvals, xbins2, error_model='std')[:4],
+                    [[np.mean(inbin1), np.mean(inbin2)], [np.mean(inbin1), np.mean(inbin2)],
+                     [np.std(inbin1), np.std(inbin2)],
+                     [3,3]], **TOLERANCE)
 
     # Test a much larger, random sample with unevenly spaced bins
     binvals = np.loadtxt('tests/data/radial_average_test_array.txt')
@@ -123,20 +147,17 @@ def test_compute_radial_averages():
     inbin1 = binvals[(binvals > xbins2[0]) & (binvals < xbins2[1])]
     inbin2 = binvals[(binvals > xbins2[1]) & (binvals < xbins2[2])]
     inbin3 = binvals[(binvals > xbins2[2]) & (binvals < xbins2[3])]
-    assert_allclose(
-        compute_radial_averages(binvals, binvals, xbins2, error_model='std/sqrt_n')[:4],
-        [[np.mean(inbin1), np.mean(inbin2), np.mean(inbin3)],
-         [np.mean(inbin1), np.mean(inbin2), np.mean(inbin3)],
-         [np.std(inbin1)/np.sqrt(len(inbin1)), np.std(inbin2)/np.sqrt(len(inbin2)),
-          np.std(inbin3)/np.sqrt(len(inbin3))],
-         [inbin1.size, inbin2.size, inbin3.size]], **TOLERANCE)
-    assert_allclose(
-        compute_radial_averages( binvals, binvals, xbins2, error_model='std')[:4],
-        [[np.mean(inbin1), np.mean(inbin2), np.mean(inbin3)],
-         [np.mean(inbin1), np.mean(inbin2), np.mean(inbin3)],
-         [np.std(inbin1), np.std(inbin2), np.std(inbin3)],
-         [inbin1.size, inbin2.size, inbin3.size]], **TOLERANCE)
-
+    assert_allclose(compute_radial_averages(binvals, binvals, xbins2, error_model='ste')[:4],
+                    [[np.mean(inbin1), np.mean(inbin2), np.mean(inbin3)],
+                     [np.mean(inbin1), np.mean(inbin2), np.mean(inbin3)],
+                     [np.std(inbin1)/np.sqrt(len(inbin1)), np.std(inbin2)/np.sqrt(len(inbin2)),
+                      np.std(inbin3)/np.sqrt(len(inbin3))],
+                     [inbin1.size, inbin2.size, inbin3.size]], **TOLERANCE)
+    assert_allclose(compute_radial_averages(binvals, binvals, xbins2, error_model='std')[:4],
+                    [[np.mean(inbin1), np.mean(inbin2), np.mean(inbin3)],
+                     [np.mean(inbin1), np.mean(inbin2), np.mean(inbin3)],
+                     [np.std(inbin1), np.std(inbin2), np.std(inbin3)],
+                     [inbin1.size, inbin2.size, inbin3.size]], **TOLERANCE)
 
 def test_make_bins():
     """ Test the make_bins function. Right now this function is pretty simplistic and the
@@ -359,3 +380,48 @@ def test_arguments_consistency():
     assert_raises(TypeError, arguments_consistency, [1, [1, 2]])
     assert_raises(TypeError, arguments_consistency, [[1], [1, 2]])
     assert_raises(TypeError, arguments_consistency, [1, 2], names=['a'])
+
+
+def test_validate_argument():
+    """test validate argument"""
+    loc = {'float': 1.1, 'int':3, 'str': 'test', 'int_array': [1, 2], 'float_array': [1.1, 1.2],
+           'float_str': '1.1', 'none':None,}
+    # Validate type
+    for type_ in (int, float, 'int_array', 'float_array', (str, int)):
+        assert validate_argument(loc, 'int', type_) is None
+    for type_ in (float, 'float_array', (str, float)):
+        assert validate_argument(loc, 'float', type_) is None
+    for type_ in ('int_array', 'float_array', (str, 'int_array')):
+        assert validate_argument(loc, 'int_array', type_) is None
+    for type_ in ('float_array', (str, 'float_array')):
+        assert validate_argument(loc, 'float_array', type_) is None
+    for type_ in (str, ('float_array', str, float)):
+        assert validate_argument(loc, 'str', type_) is None
+    assert validate_argument(loc, 'none', 'float', none_ok=True) is None # test none_ok
+
+    for type_ in (bool, (bool, tuple)):
+        for argname in loc:
+            assert_raises(TypeError, validate_argument, loc, argname, type_)
+
+    for type_ in (int, (str, 'int_array')):
+        assert_raises(TypeError, validate_argument, loc, 'float', type_)
+
+    for type_ in (int, float, (str, float)):
+        for argname in ('int_array', 'float_array'):
+            assert_raises(TypeError, validate_argument, loc, argname, type_)
+
+    for argname in ('float', 'int', 'int_array', 'float_array', 'float_str'):
+        assert validate_argument(loc, argname, ('float_array', str), argmin=0, argmax=4,
+                                 eqmin=False, eqmax=False) is None
+        assert validate_argument(loc, argname, ('float_array', str), argmin=0, argmax=4,
+                                 eqmin=True, eqmax=True) is None
+
+    assert_raises(TypeError, validate_argument, loc, 'str', ('float_array', str), argmin=0)
+
+
+    for argname in ('float', 'float_array', 'float_str'):
+        assert_raises(ValueError, validate_argument, loc, argname, ('float_array', str), argmin=1.1)
+        assert validate_argument(loc, argname, ('float_array', str), argmin=1.1, eqmin=True) is None
+        assert_raises(ValueError, validate_argument, loc, argname, ('float_array', str), argmax=1.1)
+
+    assert validate_argument(loc, 'float_array', ('float_array', str), argmax=1.2, eqmax=True) is None

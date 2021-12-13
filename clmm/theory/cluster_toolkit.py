@@ -65,27 +65,22 @@ class CTModeling(CLMModeling):
     """
     # pylint: disable=too-many-instance-attributes
 
-    def __init__(self, massdef='mean', delta_mdef=200, halo_profile_model='nfw'):
-        CLMModeling.__init__(self)
+    def __init__(self, massdef='mean', delta_mdef=200, halo_profile_model='nfw',
+                 validate_input=True):
+        CLMModeling.__init__(self, validate_input)
         # Update class attributes
         self.backend = 'ct'
         self.mdef_dict = {'mean': 'mean'}
         self.hdpm_dict = {'nfw': 'nfw'}
+        self.cosmo_class = AstroPyCosmology
         # Attributes exclusive to this class
         self.cor_factor = _patch_rho_crit_to_cd2018(2.77533742639e+11)
         # Set halo profile and cosmology
         self.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
         self.set_cosmo(None)
 
-    def set_cosmo(self, cosmo):
-        """"set cosmo"""
-        self._set_cosmo(cosmo, AstroPyCosmology)
-
-    def set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
+    def _set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
         """"set halo density profile"""
-        # Check if choices are supported and put in lower case
-        massdef, halo_profile_model = self.validate_definitions(
-            massdef, halo_profile_model)
         # Update values
         self.halo_profile_model = halo_profile_model
         self.massdef = massdef
@@ -99,7 +94,7 @@ class CTModeling(CLMModeling):
         """" set mass"""
         self.mdelta = mdelta
 
-    def eval_3d_density(self, r3d, z_cl):
+    def _eval_3d_density(self, r3d, z_cl):
         """"eval 3d density"""
         h = self.cosmo['h']
         Omega_m = self.cosmo.get_E2Omega_m(z_cl)*self.cor_factor
@@ -107,7 +102,7 @@ class CTModeling(CLMModeling):
             _assert_correct_type_ct(r3d)*h, self.mdelta*h,
             self.cdelta, Omega_m, delta=self.delta_mdef)*h**2
 
-    def eval_surface_density(self, r_proj, z_cl):
+    def _eval_surface_density(self, r_proj, z_cl):
         """"eval surface density"""
         h = self.cosmo['h']
         Omega_m = self.cosmo.get_E2Omega_m(z_cl)*self.cor_factor
@@ -115,7 +110,7 @@ class CTModeling(CLMModeling):
             _assert_correct_type_ct(r_proj)*h, self.mdelta*h,
             self.cdelta, Omega_m, delta=self.delta_mdef)*h*1.0e12  # pc**-2 to Mpc**-2
 
-    def eval_mean_surface_density(self, r_proj, z_cl):
+    def _eval_mean_surface_density(self, r_proj, z_cl):
         r''' Computes the mean value of surface density inside radius r_proj
 
         Parameters
@@ -135,9 +130,9 @@ class CTModeling(CLMModeling):
         This function just adds eval_surface_density+eval_excess_surface_density
         '''
         return (self.eval_surface_density(r_proj, z_cl)
-        +self.eval_excess_surface_density(r_proj, z_cl))
+                +self.eval_excess_surface_density(r_proj, z_cl))
 
-    def eval_excess_surface_density(self, r_proj, z_cl):
+    def _eval_excess_surface_density(self, r_proj, z_cl):
         """"eval excess surface density"""
         if np.min(r_proj) < 1.e-11:
             raise ValueError(
@@ -157,31 +152,5 @@ class CTModeling(CLMModeling):
             r_proj, sigma_r_proj, sigma, self.mdelta*h,
             self.cdelta, Omega_m, delta=self.delta_mdef)*h*1.0e12  # pc**-2 to Mpc**-2
 
-    def eval_tangential_shear(self, r_proj, z_cl, z_src):
-        """"eval tangential shear"""
-        delta_sigma = self.eval_excess_surface_density(r_proj, z_cl)
-        sigma_c = self.eval_critical_surface_density(z_cl, z_src)
-        return delta_sigma/sigma_c
-
-    def eval_convergence(self, r_proj, z_cl, z_src):
-        """"eval convergence"""
-        sigma = self.eval_surface_density(r_proj, z_cl)
-        sigma_c = self.eval_critical_surface_density(z_cl, z_src)
-        return sigma/sigma_c
-
-    def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src):
-        """"eval reduced tangential shear"""
-        kappa = self.eval_convergence(r_proj, z_cl, z_src)
-        gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
-        return np.divide(gamma_t, (1-kappa))
-
-    def eval_magnification(self, r_proj, z_cl, z_src):
-        """"eval magnification"""
-        # The magnification is computed taking into account just the tangential
-        # shear. This is valid for spherically averaged profiles, e.g., NFW and
-        # Einasto (by construction the cross shear is zero).
-        kappa = self.eval_convergence(r_proj, z_cl, z_src)
-        gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
-        return 1./((1-kappa)**2-abs(gamma_t)**2)
 
 Modeling = CTModeling
