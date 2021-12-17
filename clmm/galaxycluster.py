@@ -129,6 +129,33 @@ class GalaxyCluster():
                 cosmo=cosmo, z_cluster=self.z, z_source=self.galcat['z'],
                 validate_input=self.validate_input)
 
+    def _get_input_galdata(self, col_dict, required_cols=None):
+        """
+        Checks required columns exist in galcat and returns kwargs dictionary
+        to be passed to dataops functions.
+
+        Parametters
+        -----------
+        col_dict: dict
+            Dictionary with the names of the dataops arguments as keys and galcat columns
+            as values, made to usually pass locals() here.
+        required_cols: list, None
+            List of column names required. If None, checks all columns.
+
+        Returns
+        -------
+        dict
+            Dictionary with the data to be passed to functions by **kwargs method.
+        """
+        use_cols = col_dict if required_cols is None \
+                    else {col:col_dict[col] for col in required_cols}
+        missing_cols = ', '.join([f"'{t_}'" for t_ in use_cols.values()
+                                    if t_ not in self.galcat.columns])
+        if len(missing_cols)>0:
+            raise TypeError(f'Galaxy catalog missing required columns: {missing_cols}')
+        return {key: self.galcat[colname] for key, colname in use_cols.items()}
+
+
     def compute_tangential_and_cross_components(
             self, shape_component1='e1', shape_component2='e2', tan_component='et',
             cross_component='ex', geometry='curve', is_deltasigma=False, cosmo=None, add=True):
@@ -182,52 +209,21 @@ class GalaxyCluster():
             Cross shear (or assimilated quantity) for each source galaxy
         """
         # Check is all the required data is available
-        missing_cols = ', '.join(
-            [f"'{t_}'" for t_ in ('ra', 'dec', shape_component1, shape_component2)
-                if t_ not in self.galcat.columns])
-        if len(missing_cols)>0:
-            raise TypeError('Galaxy catalog missing required columns: '+missing_cols+\
-                            '. Do you mean to first convert column names?')
+        cols = self._get_input_galdata(
+            {'ra_source':'ra', 'dec_source':'dec',
+             'shear1': shape_component1, 'shear2': shape_component2})
         if is_deltasigma:
             self.add_critical_surface_density(cosmo)
+            cols['sigma_c'] = self.galcat['sigma_c']
         # compute shears
         angsep, tangential_comp, cross_comp = compute_tangential_and_cross_components(
-                ra_lens=self.ra, dec_lens=self.dec,
-                ra_source=self.galcat['ra'], dec_source=self.galcat['dec'],
-                shear1=self.galcat[shape_component1], shear2=self.galcat[shape_component2],
-                geometry=geometry, is_deltasigma=is_deltasigma,
-                sigma_c=self.galcat['sigma_c'] if 'sigma_c' in self.galcat.columns else None,
-                validate_input=self.validate_input)
+                ra_lens=self.ra, dec_lens=self.dec, geometry=geometry, is_deltasigma=is_deltasigma,
+                validate_input=self.validate_input, **cols)
         if add:
             self.galcat['theta'] = angsep
             self.galcat[tan_component] = tangential_comp
             self.galcat[cross_component] = cross_comp
         return angsep, tangential_comp, cross_comp
-
-    def _get_input_galdata(self, col_dict, required_cols):
-        """
-        Checks required columns exist in galcat and returns kwargs dictionary
-        to be passed to dataops functions.
-
-        Parametters
-        -----------
-        col_dict: dict
-            Dictionary with the names of the dataops arguments as keys and galcat columns
-            as values, made to usually pass locals() here.
-        required_cols: list
-            List of column names required.
-
-        Returns
-        -------
-        dict
-            Dictionary with the data to be passed to functions by **kwargs method.
-        """
-        use_cols = {col:col_dict[col] for col in required_cols}
-        missing_cols = ', '.join([f"'{t_}'" for t_ in use_cols.values()
-                                    if t_ not in self.galcat.columns])
-        if len(missing_cols)>0:
-            raise TypeError(f'Galaxy catalog missing required columns: {missing_cols}')
-        return {key: self.galcat[colname] for key, colname in use_cols.items()}
 
     def compute_background_probability(self, z_source='z', pzpdf='pzpdf', pzbins='pzbins',
                                        add_photoz=False, p_background_name='p_background',
@@ -252,11 +248,7 @@ class GalaxyCluster():
         p_background : array
             Probability for being a background galaxy
         """
-        required_cols = []
-        if add_photoz:
-            required_cols += ['pzpdf', 'pzbins']
-        else:
-            required_cols += ['z_source']
+        required_cols = ['pzpdf', 'pzbins'] if add_photoz else ['z_source']
         cols = self._get_input_galdata(locals(), required_cols)
         p_background = compute_background_probability(
             self.z, validate_input=self.validate_input, **cols)
