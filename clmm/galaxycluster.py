@@ -204,6 +204,31 @@ class GalaxyCluster():
             self.galcat[cross_component] = cross_comp
         return angsep, tangential_comp, cross_comp
 
+    def _get_input_galdata(self, col_dict, required_cols):
+        """
+        Checks required columns exist in galcat and returns kwargs dictionary
+        to be passed to dataops functions.
+
+        Parametters
+        -----------
+        col_dict: dict
+            Dictionary with the names of the dataops arguments as keys and galcat columns
+            as values, made to usually pass locals() here.
+        required_cols: list
+            List of column names required.
+
+        Returns
+        -------
+        dict
+            Dictionary with the data to be passed to functions by **kwargs method.
+        """
+        use_cols = {col:col_dict[col] for col in required_cols}
+        missing_cols = ', '.join([f"'{t_}'" for t_ in use_cols.values()
+                                    if t_ not in self.galcat.columns])
+        if len(missing_cols)>0:
+            raise TypeError(f'Galaxy catalog missing required columns: {missing_cols}')
+        return {key: self.galcat[colname] for key, colname in use_cols.items()}
+
     def compute_background_probability(self, z_source='z', pzpdf='pzpdf', pzbins='pzbins',
                                        add_photoz=False, p_background_name='p_background',
                                        add=True):
@@ -227,18 +252,12 @@ class GalaxyCluster():
         p_background : array
             Probability for being a background galaxy
         """
-        input_info = locals()
-        required_cols = {}
+        required_cols = []
         if add_photoz:
-            required_cols.update({col:input_info[col] for col in ('pzpdf', 'pzbins')})
+            required_cols += ['pzpdf', 'pzbins']
         else:
-            required_cols['z_source'] = input_info['z_source']
-        missing_cols = ', '.join([f"'{t_}'" for t_ in required_cols.values()
-                                    if t_ not in self.galcat.columns])
-        if len(missing_cols)>0:
-            raise TypeError('Galaxy catalog missing required columns: '+missing_cols+\
-                            '. Do you mean to first convert column names?')
-        cols = {key: self.galcat[colname] for key, colname in required_cols.items()}
+            required_cols += ['z_source']
+        cols = self._get_input_galdata(locals(), required_cols)
         p_background = compute_background_probability(
             self.z, validate_input=self.validate_input, **cols)
         if add:
@@ -284,7 +303,7 @@ class GalaxyCluster():
             True for considering measured shape error in the weight computation
         weight_name : string
             Name of the new column for the weak lensing weights in the galcat table
-        p_background : string
+        p_background_name : string
             Name of the new column for the background probability in the galcat table
         recompute_p_background: boolean
             Forces re-computation of p_background if already in catalog.
@@ -300,29 +319,25 @@ class GalaxyCluster():
         p_background : array
             the probability for being a background galaxy
         """
-        input_info = locals()
-        required_cols = {col:input_info[col] for col in ('shape_component1', 'shape_component2')}
+        # input cols
+        required_cols = ['shape_component1', 'shape_component2']
         if add_photoz:
-            required_cols.update({col:input_info[col] for col in ('pzpdf', 'pzbins')})
+            required_cols += ['pzpdf', 'pzbins']
         elif is_deltasigma:
-            required_cols['z_source'] = input_info['z_source']
+            required_cols += ['z_source']
         if add_shape_error:
-            required_cols.update({col:input_info[col] for col in ('shape_component1_err',
-                                                                'shape_component2_err',)})
-        missing_cols = ', '.join([f"'{t_}'" for t_ in required_cols.values()
-                                    if t_ not in self.galcat.columns])
-        if len(missing_cols)>0:
-            raise TypeError('Galaxy catalog missing required columns: '+missing_cols+\
-                            '. Do you mean to first convert column names?')
-
+            required_cols += ['shape_component1_err', 'shape_component2_err']
+        cols = self._get_input_galdata(locals(), required_cols)
+        # handles p_background
         if p_background_name not in self.galcat.columns or recompute_p_background:
             self.compute_background_probability(
                 z_source=z_source, pzpdf=pzpdf, pzbins=pzbins,
                 add_photoz=add_photoz, p_background_name=p_background_name)
-            required_cols['p_background'] = p_background_name
-
-        cols = {key: self.galcat[colname] for key, colname in required_cols.items()}
-
+        if p_background_name not in self.galcat.columns:
+            raise TypeError(
+                f'Galaxy catalog missing required column: {p_background_name}')
+        cols['p_background'] = self.galcat[p_background_name]
+        # computes weights
         w_ls = compute_galaxy_weights(
             self.z, cosmo, add_shapenoise=add_shapenoise,
             is_deltasigma=is_deltasigma, validate_input=self.validate_input,
