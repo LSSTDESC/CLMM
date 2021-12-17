@@ -158,7 +158,7 @@ def test_astropyify_ccl_cosmo(modeling_data):
 
 
 def test_compute_reduced_shear(modeling_data):
-    """ Unit tests for compute_reduced_shear """
+    """ Unit tests for compute_reduced_shear_from_convergence """
     # Make some base objects
     shear = [0.5, 0.75, 1.25, 0.0]
     convergence = [0.75, -0.2, 0.0, 2.3]
@@ -179,7 +179,6 @@ def test_compute_reduced_shear(modeling_data):
     assert_allclose(
         theo.compute_reduced_shear_from_convergence(np.array(shear), np.array(convergence)),
         np.array(truth), **TOLERANCE)
-
 
 def helper_profiles(func):
     """ A helper function to repeat a set of unit tests on several functions
@@ -263,7 +262,8 @@ def test_profiles(modeling_data):
         mod.eval_surface_density(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl']),
         cfg['numcosmo_profiles']['Sigma'], reltol)
     assert_allclose(
-        mod.eval_excess_surface_density(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl']),
+        mod.eval_excess_surface_density(cfg['SIGMA_PARAMS']['r_proj'], 
+                                        cfg['SIGMA_PARAMS']['z_cl']),
         cfg['numcosmo_profiles']['DeltaSigma'], reltol)
     if mod.backend == 'ct':
         assert_raises(ValueError, mod.eval_excess_surface_density,
@@ -289,11 +289,13 @@ def test_compute_critical_surface_density(modeling_data):
     z_cluster = 0.3
     z_source = 0.2
     assert_allclose(
-        theo.compute_critical_surface_density(cfg['cosmo'], z_cluster=z_cluster, z_source=z_source),
+        theo.compute_critical_surface_density(
+            cfg['cosmo'], z_cluster=z_cluster, z_source=z_source),
         np.inf, 1.0e-10)
     z_source = [0.2, 0.12, 0.25]
     assert_allclose(
-        theo.compute_critical_surface_density(cfg['cosmo'], z_cluster=z_cluster, z_source=z_source),
+        theo.compute_critical_surface_density(
+        cfg['cosmo'], z_cluster=z_cluster, z_source=z_source),
         [np.inf, np.inf, np.inf], 1.0e-10)
     # Check usage with cluster object function
     z_src = np.array([cfg['TEST_CASE']['z_source']])
@@ -320,7 +322,7 @@ def test_compute_critical_surface_density(modeling_data):
                     [np.inf, np.inf, np.inf], 1.0e-10)
 
 
-def helper_physics_functions(func):
+def helper_physics_functions(func, additional_kwargs={}):
     """ A helper function to repeat a set of unit tests on several functions
     that expect the same inputs.
 
@@ -332,34 +334,28 @@ def helper_physics_functions(func):
     2. Test that exceptions are thrown for unsupported zsource models and profiles
     """
     # Make some base objects
-    rproj = np.logspace(-2, 2, 100)
-    mdelta = 1.0e15
-    cdelta = 4.0
-    z_cl = 0.2
-    z_src = 0.45
-    cosmo = theo.Cosmology(Omega_dm0=0.25, Omega_b0=0.05, H0=70.0)
+    kwargs = {
+        'r_proj':np.logspace(-2, 2, 100),
+        'mdelta':1.0e15,
+        'cdelta':4.0,
+        'z_cluster':0.2,
+        'z_source':0.45,
+        'cosmo':theo.Cosmology(Omega_dm0=0.25, Omega_b0=0.05, H0=70.0),
+    }
+    kwargs.update(additional_kwargs)
 
     # Test defaults
 
-    defaulttruth = func(rproj, mdelta, cdelta, z_cl, z_src, cosmo, delta_mdef=200,
-                        halo_profile_model='nfw', z_src_model='single_plane')
-    assert_allclose(func(rproj, mdelta, cdelta, z_cl, z_src, cosmo, halo_profile_model='nfw',
-                         z_src_model='single_plane'), defaulttruth, **TOLERANCE)
-    assert_allclose(func(rproj, mdelta, cdelta, z_cl, z_src, cosmo, delta_mdef=200,
-                         z_src_model='single_plane'), defaulttruth, **TOLERANCE)
-    assert_allclose(func(rproj, mdelta, cdelta, z_cl, z_src, cosmo, delta_mdef=200,
-                         halo_profile_model='nfw'), defaulttruth, **TOLERANCE)
+    defaulttruth = func(**kwargs, delta_mdef=200, halo_profile_model='nfw',
+                        z_src_model='single_plane')
+    assert_allclose(func(**kwargs, delta_mdef=200), defaulttruth, **TOLERANCE)
+    assert_allclose(func(**kwargs, halo_profile_model='nfw'), defaulttruth, **TOLERANCE)
+    assert_allclose(func(**kwargs, z_src_model='single_plane'), defaulttruth, **TOLERANCE)
 
     # Test for exception on unsupported z_src_model and halo profiles
-    assert_raises(
-        ValueError, func, rproj, mdelta, cdelta, z_cl, z_src, cosmo, delta_mdef=200,
-        halo_profile_model='blah', massdef='mean', z_src_model='single_plane')
-    assert_raises(
-        ValueError, func, rproj, mdelta, cdelta, z_cl, z_src, cosmo, delta_mdef=200,
-        halo_profile_model='nfw', massdef='blah', z_src_model='single_plane')
-    assert_raises(
-        ValueError, func, rproj, mdelta, cdelta, z_cl, z_src, cosmo, delta_mdef=200,
-        halo_profile_model='nfw', massdef='mean', z_src_model='blah')
+    assert_raises(ValueError, func, **kwargs, halo_profile_model='blah')
+    assert_raises(ValueError, func, **kwargs, massdef='blah')
+    assert_raises(ValueError, func, **kwargs, z_src_model='blah')
 
 
 def test_shear_convergence_unittests(modeling_data):
@@ -368,6 +364,7 @@ def test_shear_convergence_unittests(modeling_data):
     helper_physics_functions(theo.compute_convergence)
     helper_physics_functions(theo.compute_reduced_tangential_shear)
     helper_physics_functions(theo.compute_magnification)
+    helper_physics_functions(theo.compute_magnification_bias, {'alpha':1.})
 
     reltol = modeling_data['theory_reltol']
 
@@ -403,17 +400,36 @@ def test_shear_convergence_unittests(modeling_data):
     # Validate reduced tangential shear
     assert_allclose(theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg['GAMMA_PARAMS']),
                     gammat/(1.0-kappa), 1.0e-10)
+
+    beta_s_mean, beta_s_square_mean = 0.9, 0.6
+    cfg_inf = load_validation_config()
+    cfg_inf['GAMMA_PARAMS']['z_source'] = 1000.
+    gammat_inf = theo.compute_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'])
+    kappa_inf = theo.compute_convergence(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'])
+    cfg_inf['GAMMA_PARAMS']['z_src_model'] = 'applegate14'
+    assert_allclose(theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'], beta_s_mean=beta_s_mean, beta_s_square_mean=beta_s_square_mean),
+                    beta_s_mean * gammat_inf/(1.0 - beta_s_square_mean / beta_s_mean * kappa_inf), 1.0e-10)
+
     assert_allclose(gammat*sigmac_corr/(1.-(kappa*sigmac_corr)),
                     cfg['numcosmo_profiles']['gt'], 1.e2*reltol)
 
     # Validate magnification
     assert_allclose(theo.compute_magnification(cosmo=cosmo, **cfg['GAMMA_PARAMS']),
                     1./((1-kappa)**2-abs(gammat)**2), 1.0e-10)
-    assert_allclose(1./((1-kappa)**2-abs(gammat)**2),
+    assert_allclose(1./((1-kappa*sigmac_corr)**2-abs(gammat*sigmac_corr)**2),
                     cfg['numcosmo_profiles']['mu'], 1.e2*reltol)
 
-    # Check that shear, reduced shear and convergence return zero and magnification returns one if
-    # source is in front of the cluster
+    # Validate magnification bias
+    alpha = 3.78
+    assert_allclose(theo.compute_magnification_bias(
+        cosmo=cosmo, **cfg['GAMMA_PARAMS'], alpha=alpha),
+                    (1./((1-kappa)**2-abs(gammat)**2))**(alpha - 1), 1.0e-10)
+    assert_allclose((1./((1-kappa*sigmac_corr)**2-abs(gammat*sigmac_corr)**2))**(alpha - 1),
+                    cfg['numcosmo_profiles']['mu']**(alpha - 1), 1.e3*reltol)
+    
+    # Check that shear, reduced shear and convergence return zero
+    # and magnification and magnification bias returns one
+    # if source is in front of the cluster
     # First, check for a array of radius and single source z
     radius = np.logspace(-2, 2, 10)
     z_cluster = 0.3
@@ -435,7 +451,12 @@ def test_shear_convergence_unittests(modeling_data):
         theo.compute_magnification(
             radius, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
         np.ones(len(radius)), 1.0e-10)
-
+    assert_allclose(
+        theo.compute_magnification_bias(
+            radius, alpha=-1, mdelta=1.e15, cdelta=4., z_cluster=z_cluster,
+            z_source=z_source, cosmo=cosmo),
+        np.ones(len(radius)), 1.0e-10)
+    
     # Second, check a single radius and array of source z
     radius = 1.
     z_source = [0.25, 0.1, 0.14, 0.02]
@@ -455,7 +476,12 @@ def test_shear_convergence_unittests(modeling_data):
         theo.compute_magnification(
             radius, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
         np.ones(len(z_source)), 1.0e-10)
-
+    assert_allclose(
+        theo.compute_magnification_bias(
+            radius, alpha = -1, mdelta=1.e15, cdelta=4., z_cluster=z_cluster,
+            z_source=z_source, cosmo=cosmo),
+        np.ones(len(z_source)), 1.0e-10)
+    
     # Object Oriented tests
     mod = theo.Modeling()
     mod.set_cosmo(cosmo)
@@ -487,21 +513,38 @@ def test_shear_convergence_unittests(modeling_data):
     # Validate reduced tangential shear
     assert_allclose(mod.eval_reduced_tangential_shear(*profile_pars),
                     gammat/(1.0-kappa), 1.0e-10)
+
+
+    beta_s_mean = 0.6
+    beta_s_square_mean = 0.4 
+    source_redshift_inf = 1000. 
+    gammat_inf = mod.eval_tangential_shear(profile_pars[0], profile_pars[1], source_redshift_inf) #np.inf)
+    kappa_inf = mod.eval_convergence(profile_pars[0], profile_pars[1], source_redshift_inf) #np.inf)
+    assert_allclose(mod.eval_reduced_tangential_shear(*profile_pars, 'applegate14', beta_s_mean, beta_s_square_mean), beta_s_mean * gammat_inf/(1.0 - beta_s_square_mean / beta_s_mean * kappa_inf), 1.0e-10)
+
     assert_allclose(gammat*sigmac_corr/(1.-(kappa*sigmac_corr)),
                     cfg['numcosmo_profiles']['gt'], 1.e2*reltol)
 
     # Validate magnification
     assert_allclose(mod.eval_magnification(*profile_pars),
                     1./((1-kappa)**2-abs(gammat)**2), 1.0e-10)
-    assert_allclose(1./((1-kappa)**2-abs(gammat)**2),
+    assert_allclose(1./((1-kappa*sigmac_corr)**2-abs(gammat*sigmac_corr)**2),
                     cfg['numcosmo_profiles']['mu'], 1.e2*reltol)
 
+#    # Validate magnification bias
+    alpha = -1.78
+    assert_allclose(mod.eval_magnification_bias(*profile_pars, alpha=alpha),
+                    1./((1-kappa)**2-abs(gammat)**2)**(alpha-1), 1.0e-10)
+    assert_allclose(1./((1-kappa*sigmac_corr)**2-abs(gammat*sigmac_corr)**2)**(alpha-1),
+                    cfg['numcosmo_profiles']['mu']**(alpha-1), 1.e3*reltol)
+    
     # Check that shear, reduced shear and convergence return zero and magnification returns one if
     # source is in front of the cluster
     # First, check for a array of radius and single source z
     radius = np.logspace(-2, 2, 10)
     z_cluster = 0.3
     z_source = 0.2
+    
 
     assert_allclose(mod.eval_convergence(radius, z_cluster, z_source),
                     np.zeros(len(radius)), 1.0e-10)
@@ -511,7 +554,9 @@ def test_shear_convergence_unittests(modeling_data):
         radius, z_cluster, z_source), np.zeros(len(radius)), 1.0e-10)
     assert_allclose(mod.eval_magnification(
         radius, z_cluster, z_source), np.ones(len(radius)), 1.0e-10)
-
+    assert_allclose(mod.eval_magnification_bias(
+        radius, z_cluster, z_source, alpha), np.ones(len(radius)), 1.0e-10)
+    
     # Second, check a single radius and array of source z
     radius = 1.
     z_source = [0.25, 0.1, 0.14, 0.02]
@@ -524,3 +569,24 @@ def test_shear_convergence_unittests(modeling_data):
         radius, z_cluster, z_source), np.zeros(len(z_source)), 1.0e-10)
     assert_allclose(mod.eval_magnification(radius, z_cluster, z_source),
                     np.ones(len(z_source)), 1.0e-10)
+    assert_allclose(mod.eval_magnification_bias(radius, z_cluster, z_source, alpha),
+                    np.ones(len(z_source)), 1.0e-10)
+
+def test_compute_magnification_bias(modeling_data):
+    """ Unit tests for compute_magnification_bias_from_magnification """
+    # Make some base objects
+    magnification = [1.0, 1.0, 1.001, 0.76]
+    alpha = [1., -2.7, 5.]
+    truth = [[1., 1., 1., 1.],[1., 1., 0.99630868, 2.76051244],[1., 1., 1.004006  , 0.33362176]]
+
+    # Check output including: float, list, ndarray
+    assert_allclose(
+        theo.compute_magnification_bias_from_magnification(
+            magnification[0], alpha[0]), truth[0][0],**TOLERANCE)
+    assert_allclose(
+        theo.compute_magnification_bias_from_magnification(
+            magnification, alpha), truth, **TOLERANCE)
+    assert_allclose(
+        theo.compute_magnification_bias_from_magnification(
+            np.array(magnification), np.array(alpha)),
+        np.array(truth), **TOLERANCE)
