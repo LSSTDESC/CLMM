@@ -242,7 +242,7 @@ def compute_critical_surface_density(cosmo, z_cluster, z_source, validate_input=
 
 def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
                              halo_profile_model='nfw', massdef='mean', z_src_model='single_plane',
-                             validate_input=True):
+                             beta_s=None, validate_input=True):
     r"""Computes the tangential shear
 
     .. math::
@@ -285,9 +285,20 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
 
     z_src_model : str, optional
         Source redshift model, with the following supported options:
-            `single_plane` (default) - all sources at one redshift (if
+           * `single_plane` (default) - all sources at one redshift (if
             `z_source` is a float) or known individual source galaxy redshifts
             (if `z_source` is an array and `r_proj` is a float);
+           * `applegate14`: use the equation (6) in Weighing the Giants - III \
+                (Applegate et al. 2014; https://arxiv.org/abs/1208.0605) to evaluate tangential reduced shear,
+                where the numerator of this equation is the tangential shear;
+    
+    beta_s :array_like, float
+         ratio of angular diameter distances between the lens and the source, the lens and the observer at infinity, 
+         the distance to the source and the distance to the observer. 
+         
+         .. math::
+             \beta_s = \frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}
+    
     validate_input: bool
         Validade each input argument
 
@@ -304,23 +315,16 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     `z_src_model`. We will need :math:`\gamma_\infty` and :math:`\kappa_\infty`
     for alternative z_src_models using :math:`\beta_s`.
     """
-    if z_src_model == 'single_plane':
+    
+    gcm.validate_input = validate_input
+    gcm.set_cosmo(cosmo)
+    gcm.set_halo_density_profile(
+        halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
+    gcm.set_concentration(cdelta)
+    gcm.set_mass(mdelta)
 
-        gcm.validate_input = validate_input
-        gcm.set_cosmo(cosmo)
-        gcm.set_halo_density_profile(
-            halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
-        gcm.set_concentration(cdelta)
-        gcm.set_mass(mdelta)
-
-        if np.min(r_proj) < 1.e-11:
-            raise ValueError(
-                f"Rmin = {np.min(r_proj):.2e} Mpc/h! This value is too small "
-                "and may cause computational issues.")
-
-        gammat = gcm.eval_tangential_shear(r_proj, z_cluster, z_source)
-    else:
-        raise ValueError("Unsupported z_src_model")
+    gammat = gcm.eval_tangential_shear(r_proj, z_cluster, z_source, z_src_model, beta_s)
+    
 
     gcm.validate_input = True
     return gammat

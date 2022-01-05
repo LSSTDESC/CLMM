@@ -390,8 +390,18 @@ def test_shear_convergence_unittests(modeling_data):
     # Validate tangential shear
     gammat = theo.compute_tangential_shear(cosmo=cosmo, **cfg['GAMMA_PARAMS'])
     assert_allclose(gammat*sigmac_corr,
-                    cfg['numcosmo_profiles']['gammat'], reltol)
+                   cfg['numcosmo_profiles']['gammat'], reltol)
 
+    cfg_inf = load_validation_config()    
+    cfg_inf['GAMMA_PARAMS']['z_source'] = 1000.
+    gammat_inf = theo.compute_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS']) 
+
+    cfg_cts = load_validation_config()
+    cfg_cts['GAMMA_PARAMS']['z_src_model'] = 'applegate14'    
+    beta_s = 0.5
+    assert_allclose(theo.compute_tangential_shear(cosmo=cosmo, **cfg_cts['GAMMA_PARAMS'], beta_s=beta_s),
+                    gammat_inf * beta_s, reltol)
+                    
     # Validate convergence
     kappa = theo.compute_convergence(cosmo=cosmo, **cfg['GAMMA_PARAMS'])
     assert_allclose(kappa*sigmac_corr,
@@ -402,9 +412,6 @@ def test_shear_convergence_unittests(modeling_data):
                     gammat/(1.0-kappa), 1.0e-10)
 
     beta_s_mean, beta_s_square_mean = 0.9, 0.6
-    cfg_inf = load_validation_config()
-    cfg_inf['GAMMA_PARAMS']['z_source'] = 1000.
-    gammat_inf = theo.compute_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'])
     kappa_inf = theo.compute_convergence(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'])
     cfg_inf['GAMMA_PARAMS']['z_src_model'] = 'applegate14'
     assert_allclose(theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'], beta_s_mean=beta_s_mean, beta_s_square_mean=beta_s_square_mean),

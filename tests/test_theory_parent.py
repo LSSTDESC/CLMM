@@ -20,6 +20,7 @@ def test_unimplemented(modeling_data):
     assert_raises(NotImplementedError, mod.eval_mean_surface_density, [0.3], 0.3)
     assert_raises(NotImplementedError, mod.eval_excess_surface_density, [0.3], 0.3)
     assert_raises(NotImplementedError, mod.eval_tangential_shear, [0.3], 0.3, 0.5)
+    assert_raises(NotImplementedError, mod.eval_tangential_shear, [0.3], 0.3, 0.5, 'applegate14', 0.8)
     assert_raises(NotImplementedError, mod.eval_reduced_tangential_shear, [0.3], 0.3, 0.5)
     assert_raises(NotImplementedError, mod.eval_reduced_tangential_shear, [0.3], 0.3, 0.5, 'applegate14', 0.6, 0.4)
     assert_raises(NotImplementedError, mod.eval_convergence, [0.3], 0.3, 0.5)
@@ -61,7 +62,7 @@ def test_instantiate(modeling_data):
 
     assert_allclose(sigma_excess, (sigma_mean-sigma), rtol=5.0e-15)
 
-    shear = mod.eval_tangential_shear(r_proj, z_cl, z_src)
+    shear = mod.eval_tangential_shear(r_proj, z_cl, z_src, 'single_plane', None)
     convergence = mod.eval_convergence(r_proj, z_cl, z_src)
     reduced_shear = mod.eval_reduced_tangential_shear(r_proj, z_cl, z_src)
     magnification = mod.eval_magnification(r_proj, z_cl, z_src)
@@ -75,7 +76,7 @@ def test_instantiate(modeling_data):
     beta_s_mean = 0.9
     beta_s_square_mean = 0.6
     source_redshift_inf = 1000. 
-    shear_inf = mod.eval_tangential_shear(r_proj, z_cl, source_redshift_inf)
+    shear_inf = mod.eval_tangential_shear(r_proj, z_cl, source_redshift_inf, 'single_plane', None)
     convergence_inf = mod.eval_convergence(r_proj, z_cl, source_redshift_inf)
     reduced_shear = mod.eval_reduced_tangential_shear(r_proj, z_cl, z_src, 'applegate14', beta_s_mean, beta_s_square_mean)
     assert_allclose(reduced_shear, beta_s_mean * shear_inf/(1.0 - beta_s_square_mean / beta_s_mean * convergence_inf), rtol=1.0e-12)
