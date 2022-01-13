@@ -2,7 +2,7 @@
 tests for clusterensemble.py
 """
 import os
-from numpy.testing import assert_raises, assert_equal
+from numpy.testing import assert_raises, assert_equal, assert_allclose
 import clmm
 import numpy as np
 from clmm import clusterensemble
@@ -12,8 +12,10 @@ from clmm.support import mock_data as mock
 import matplotlib.pyplot as plt
 import clmm.dataops as da
 
+TOLERANCE = {'rtol': 5.0e-4, 'atol': 1.e-4}
+
 def test_cluster_ensemble():
-    """test lenght of clusterensemble attributes"""
+    """test clusterensemble attributes"""
     cosmo = Cosmology(H0=70, Omega_dm0=0.262, Omega_b0=0.049)
     #create galaxycluster object
     ra_lens, dec_lens, z_lens = 120., 42., 0.5
@@ -77,14 +79,30 @@ def test_covariance():
     ce = clusterensemble.ClusterEnsemble(ensemble_id, gclist, tan_component_in='et',
     cross_component_in='ex', weights_in = 'w_ls', bins=bins, bin_units='Mpc', cosmo=cosmo)
     ce.make_stacked_radial_profile()
+    
+    #profile
+    gt_individual, gx_individual = ce.data['gt'], ce.data['gx']
+    Wl_individual = ce.data['W_l']
+    gt_stack = np.average(gt_individual, weights=Wl_individual, axis = 0)
+    gx_stack = np.average(gx_individual, weights=Wl_individual, axis = 0)
+    gt_stack_method = ce.stacked_data['gt']
+    gx_stack_method = ce.stacked_data['gx']
+    assert_equal(gt_stack,gt_stack_method)
+    assert_equal(gx_stack,gx_stack_method)
     ce.compute_sample_covariance()
     ce.compute_bootstrap_covariance(n_bootstrap=3)
     ce.compute_jackknife_covariance(n_side=2)
+    
     #cross vs tangential covariances within a method
     assert_equal(ce.sample_tangential_covariance.shape,ce.sample_cross_covariance.shape )
     assert_equal(ce.bootstrap_tangential_covariance.shape,ce.bootstrap_cross_covariance.shape )
     assert_equal(ce.jackknife_tangential_covariance.shape,ce.jackknife_cross_covariance.shape )
+    
     #comparing methods
     assert_equal(ce.sample_tangential_covariance.shape,ce.bootstrap_tangential_covariance.shape )
     assert_equal(ce.bootstrap_tangential_covariance.shape,ce.jackknife_tangential_covariance.shape )
     assert_equal(ce.jackknife_tangential_covariance.shape,ce.sample_tangential_covariance.shape )
+    
+    #comparing brut force calculation for sample covariance
+    std_gt_stack = np.std(gt_individual, axis = 0)/np.sqrt(n_catalogs-1)
+    assert_allclose(ce.sample_tangential_covariance.diagonal()**.5, std_gt_stack, 1e-6)
