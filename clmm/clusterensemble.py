@@ -9,7 +9,7 @@ import healpy
 
 from .gcdata import GCData
 from .galaxycluster import GalaxyCluster
-from .utils import compute_radial_averages
+from .utils import compute_radial_averages, convert_units
 from .dataops import make_radial_profile, make_stacked_radial_profile
 
 class ClusterEnsemble():
@@ -137,7 +137,13 @@ class ClusterEnsemble():
             components_error=[None if n is None else galaxycluster.galcat[n].data
                               for n in (tan_component_in_err, cross_component_in_err, None)],
             )
-        profile_table[weights_out] = 1 # rm this line
+        #profile_table[weights_out] = 1 rm this line
+        if bin_units != 'radians':
+            bins = convert_units(bins, bin_units, 'radians', redshift=galaxycluster.z, cosmo=cosmo)
+        profile_table[weights_out] = binned_statistic(galaxycluster.galcat['theta'], 
+                                                       galaxycluster.galcat[weights_in], 
+                                                       statistic='sum', 
+                                                       bins = bins)[0]
         data_to_save = [galaxycluster.unique_id, galaxycluster.ra, galaxycluster.dec, galaxycluster.z,
                         *[np.array(profile_table[col]) for col in
                             ('radius', 'p_0', 'p_1', weights_out)]]
