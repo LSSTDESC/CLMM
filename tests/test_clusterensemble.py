@@ -38,16 +38,21 @@ def test_cluster_ensemble():
     cluster.compute_tangential_and_cross_components()
     bins = bins_radians
     gc_list = [cluster]
+    
+    #test without kwargs, args
     ce = clusterensemble.ClusterEnsemble('cluster_ensemble', gc_list, tan_component_in='et',
     cross_component_in='ex', weights_in = 'w_ls', bins=bins, bin_units='radians', cosmo=cosmo)
+    
     #test the lenght of the clusterensemble data attribute
     assert_equal(ce.__len__(), 1)
+    
+    #test the lenght of the clusterensemble data attribute (after doubling the number of individual cluster)
     ce._add_values([cluster], tan_component_in='et',cross_component_in='ex', 
                    weights_in = 'w_ls', bins=bins, bin_units='radians', cosmo=cosmo)
-    #test the lenght of the clusterensemble data attribute (after doubling the number of individual cluster)
     assert_equal(ce.__len__(), 2)
     #test if the len of averaged profile has the lenght of binning axis
     assert_equal(len(ce.data['W_l'][0]), len(bins_radians)-1)
+    assert_equal(ce.__getitem__('gt'), ce.data['gt'])
     
 def test_covariance():
     """test the shapes of covariance matrix with different methods"""
@@ -76,11 +81,17 @@ def test_covariance():
     ensemble_id = 1
     names = ['id', 'ra', 'dec', 'z', 'radius', 'gt', 'gx', 'W_l']
     bins = np.logspace(np.log10(0.3),np.log10(5), 10)
+    
+    #test without args, kwargs
+    ce = clusterensemble.ClusterEnsemble(ensemble_id, gclist)
+    assert_raises(KeyError, ce.make_stacked_radial_profile)
+    
+    #test with args, kwargs
     ce = clusterensemble.ClusterEnsemble(ensemble_id, gclist, tan_component_in='et',
     cross_component_in='ex', weights_in = 'w_ls', bins=bins, bin_units='Mpc', cosmo=cosmo)
     ce.make_stacked_radial_profile()
     
-    #profile
+    #comparing brut force calculation for cross and tangential component
     gt_individual, gx_individual = ce.data['gt'], ce.data['gx']
     Wl_individual = ce.data['W_l']
     gt_stack = np.average(gt_individual, weights=Wl_individual, axis = 0)
@@ -93,16 +104,16 @@ def test_covariance():
     ce.compute_bootstrap_covariance(n_bootstrap=3)
     ce.compute_jackknife_covariance(n_side=2)
     
-    #cross vs tangential covariances within a method
+    #cross vs tangential covariances within a method -> shapes
     assert_equal(ce.sample_tangential_covariance.shape,ce.sample_cross_covariance.shape )
     assert_equal(ce.bootstrap_tangential_covariance.shape,ce.bootstrap_cross_covariance.shape )
     assert_equal(ce.jackknife_tangential_covariance.shape,ce.jackknife_cross_covariance.shape )
     
-    #comparing methods
+    #comparing covariance estimation methods -> shapes
     assert_equal(ce.sample_tangential_covariance.shape,ce.bootstrap_tangential_covariance.shape )
     assert_equal(ce.bootstrap_tangential_covariance.shape,ce.jackknife_tangential_covariance.shape )
     assert_equal(ce.jackknife_tangential_covariance.shape,ce.sample_tangential_covariance.shape )
     
-    #comparing brut force calculation for sample covariance
+    #comparing brut force calculation for sample variance
     std_gt_stack = np.std(gt_individual, axis = 0)/np.sqrt(n_catalogs-1)
     assert_allclose(ce.sample_tangential_covariance.diagonal()**.5, std_gt_stack, 1e-6)
