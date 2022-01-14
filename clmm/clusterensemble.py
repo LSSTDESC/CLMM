@@ -189,7 +189,7 @@ class ClusterEnsemble():
         """
         n_catalogs = len(self.data)
         self.sample_tangential_covariance = np.cov(self.data['gt'].T, bias = False)/n_catalogs
-        self.sample_cross_covariance = np.cov(self.data['gt'].T, bias = False)/n_catalogs
+        self.sample_cross_covariance = np.cov(self.data['gx'].T, bias = False)/n_catalogs
 
     def compute_bootstrap_covariance(self, n_bootstrap=10):
         """Compute the bootstrap covariance matrix, add boostrap covariance matrix for
