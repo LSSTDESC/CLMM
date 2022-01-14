@@ -68,7 +68,7 @@ Overview of the code can be found [here](OVERVIEW.md)
 
 ## Contributing <a name="contributing"></a>
 
-Contributing documentation can be found [here](CONTRIBUTING.md)
+If you wish to contribute, please follow the guidelines described [here](CONTRIBUTING.md).
 
 ## Contact <a name="contact"></a>
 If you have comments, questions, or feedback, please [write us an issue](https://github.com/LSSTDESC/CLMM/issues).
