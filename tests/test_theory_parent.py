@@ -83,3 +83,5 @@ def test_instantiate(modeling_data):
     reduced_shear = mod.eval_reduced_tangential_shear(r_proj, z_cl, np.repeat(z_src, len(r_proj)), 'applegate14', beta_s_mean, beta_s_square_mean)
     assert_allclose(reduced_shear, beta_s_mean * shear_inf/(1.0 - beta_s_square_mean / beta_s_mean * convergence_inf), rtol=1.0e-12)
     
+    assert_raises(NotImplementedError, mod.eval_reduced_tangential_shear, r_proj, z_cl,
+                  np.repeat(z_src, len(r_proj)), 'applegate14', beta_s_mean, None)
