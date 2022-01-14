@@ -3,17 +3,19 @@
 [![Build and Check](https://github.com/LSSTDESC/CLMM/workflows/Build%20and%20Check/badge.svg)](https://github.com/LSSTDESC/CLMM/actions?query=workflow%3A%22Build+and+Check%22)
 [![Coverage Status](https://coveralls.io/repos/github/LSSTDESC/CLMM/badge.svg?branch=main)](https://coveralls.io/github/LSSTDESC/CLMM?branch=main)
 
-The LSST-DESC Cluster Lensing Mass Modeling (CLMM) code is a Python library for performing galaxy cluster mass reconstruction from weak lensing observables. CLMM is associated with Key Tasks _DC1 SW+RQ_ and _DC2 SW_ of the LSST-DESC [Science Roadmap](https://lsstdesc.org/sites/default/files/DESC_SRM_V1_4.pdf) pertaining to absolute and relative mass calibration.
+The LSST-DESC Cluster Lensing Mass Modeling (CLMM) code is a DESC tool consisting of a Python library for performing galaxy cluster mass reconstruction from weak lensing observables. CLMM is associated with Key Tasks _DC1 SW+RQ_ and _DC2 SW_ of the LSST-DESC [Science Roadmap](https://lsstdesc.org/sites/default/files/DESC_SRM_V1_4.pdf) pertaining to absolute and relative mass calibration.
 <!---CLMM is descended from [clmassmod](https://github.com/deapplegate/clmassmod) but distinguished by its modular structure and scope, which encompasses both simulated data sets with a known truth and observed data from which we aim to discover the truth.--->
-The documentation of the code can be found [here](http://lsstdesc.org/CLMM/). 
-The journal paper that describes the development and validation of `CLMM` v1.0 can be found [here](https://ui.adsabs.harvard.edu/abs/2021MNRAS.508.6092A/abstract).
+The documentation of the code can be found [here](http://lsstdesc.org/CLMM/) and the overview of the code can be found [here](OVERVIEW.md).
+The journal paper that describes the development and validation of `CLMM` v1.0 can be found [here](https://ui.adsabs.harvard.edu/abs/2021MNRAS.508.6092A/abstract). Please follow the guidelines listed below to install, use, contribute and reference CLMM.
 
 ## Table of contents
-1. [Requirements](#requirements)
-2. [Installation](#installation)
-3. [Overview](#overview)
-4. [Contributing](#contributing)
+1. [Installing CLMM](#installing)
+2. [Using CLMM](#using)
+3. [Contributing to CLMM](#contributing)
 5. [Contact](#contact)
+6. [Acknowledgements](#acknowledgements)
+
+# Installing CLMM <a name="installing"></a>
 
 ## Requirements <a name="requirements"></a>
 
@@ -62,19 +64,9 @@ To run the tests you can do:
 
   `pytest`
 
-## Code overview and main features <a name="overview"></a>
+# Using CLMM <a name="using"></a>
 
-Overview of the code can be found [here](OVERVIEW.md)
-
-## Contributing <a name="contributing"></a>
-
-If you wish to contribute, please follow the guidelines described [here](CONTRIBUTING.md).
-
-## Contact <a name="contact"></a>
-If you have comments, questions, or feedback, please [write us an issue](https://github.com/LSSTDESC/CLMM/issues).
-
-
-# License, Credits, Feedback etc
+## License, Credits, Feedback etc
 
 This code has been released by DESC, although it is still under active
 development.  It is accompanied by a journal paper that describes the
@@ -119,7 +111,13 @@ the `CCL` publication be cited.  See details
 The `Cluster Toolkit` documentation can be found
 [here](https://cluster-toolkit.readthedocs.io/en/latest/#)
 
-# Contact
+
+# Contributing to CLMM <a name="contributing"></a>
+
+If you wish to contribute, please follow the guidelines described [here](CONTRIBUTING.md).
+
+
+# Contact <a name="contact"></a>
 
 If you have comments, questions, or feedback, please [write us an
 issue](https://github.com/LSSTDESC/CLMM/issues).
@@ -129,7 +127,7 @@ The current leads of the LSST DESC CLMM Topical Team are Celine Combet
 marina.ricci@lmu.de)
 
 
-# Acknowledgements
+# Acknowledgements <a name="acknowledgements"></a>
 
 The DESC acknowledges ongoing support from the Institut National de
 Physique Nucl\'eaire et de Physique des Particules in France; the
