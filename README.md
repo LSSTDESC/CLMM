@@ -5,7 +5,8 @@
 
 The LSST-DESC Cluster Lensing Mass Modeling (CLMM) code is a Python library for performing galaxy cluster mass reconstruction from weak lensing observables. CLMM is associated with Key Tasks _DC1 SW+RQ_ and _DC2 SW_ of the LSST-DESC [Science Roadmap](https://lsstdesc.org/sites/default/files/DESC_SRM_V1_4.pdf) pertaining to absolute and relative mass calibration.
 <!---CLMM is descended from [clmassmod](https://github.com/deapplegate/clmassmod) but distinguished by its modular structure and scope, which encompasses both simulated data sets with a known truth and observed data from which we aim to discover the truth.--->
-The documentation of the code can be found [here](http://lsstdesc.org/CLMM/).
+The documentation of the code can be found [here](http://lsstdesc.org/CLMM/). 
+The journal paper that describes the development and validation of `CLMM` v1.0 can be found [here](https://ui.adsabs.harvard.edu/abs/2021MNRAS.508.6092A/abstract).
 
 ## Table of contents
 1. [Requirements](#requirements)
