@@ -116,7 +116,9 @@ class NumCosmoCosmology(CLMMCosmology):
 
     def _get_rho_crit(self, z):
 
-        return Ncm.C.crit_mass_density_h2_solar_mass_Mpc3()*self.be_cosmo.h()**2*self.be_cosmo.E2(z)
+        rho_crit0_over_h2 = Ncm.C.crit_mass_density_h2_solar_mass_Mpc3()
+
+        return rho_crit0_over_h2*self.be_cosmo.h()**2*self.be_cosmo.E2(z)
 
     def _eval_da_z1z2(self, z1, z2):
 
