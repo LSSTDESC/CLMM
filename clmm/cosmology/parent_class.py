@@ -156,6 +156,14 @@ class CLMMCosmology:
     def _get_E2Omega_m(self, z):
         raise NotImplementedError
 
+    def get_rho_crit(self, z):
+        if self.validate_input:
+            validate_argument(locals(), 'z', 'float_array', argmin=0, eqmin=True)
+        return self._get_rho_crit(z=z)
+
+    def _get_rho_crit(self, z):
+        return NotImplementedError
+
     def eval_da_z1z2(self, z1, z2):
         r"""Computes the angular diameter distance between z1 and z2.
 
