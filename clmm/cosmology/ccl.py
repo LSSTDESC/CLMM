@@ -76,6 +76,10 @@ class CCLCosmology(CLMMCosmology):
         a = 1.0/(1.0+z)
         return ccl.omega_x(self.be_cosmo, a, "matter")*(ccl.h_over_h0(self.be_cosmo, a))**2
 
+    def _get_rho_crit(self, z):
+        a = 1.0/(1.0+z)
+        return ccl.rho_x(self.be_cosmo, a, 'critical', is_comoving=False)
+
     def _eval_da_z1z2(self, z1, z2):
         a1 = 1.0/(1.0+z1)
         a2 = 1.0/(1.0+z2)

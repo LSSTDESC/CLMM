@@ -7,6 +7,7 @@ import gi
 gi.require_version('NumCosmo', '1.0')
 gi.require_version('NumCosmoMath', '1.0')
 from gi.repository import NumCosmo as Nc
+from gi.repository import NumCosmoMath as Ncm
 
 from .parent_class import CLMMCosmology
 
@@ -112,6 +113,10 @@ class NumCosmoCosmology(CLMMCosmology):
     def _get_E2Omega_m(self, z):
 
         return self.be_cosmo.E2Omega_m(z)
+
+    def _get_rho_crit(self, z):
+
+        return Ncm.C.crit_mass_density_h2_solar_mass_Mpc3()*self.be_cosmo.h()**2*self.be_cosmo.E2(z)
 
     def _eval_da_z1z2(self, z1, z2):
 
