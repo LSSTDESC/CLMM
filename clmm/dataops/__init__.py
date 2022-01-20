@@ -285,7 +285,7 @@ def _compute_cross_shear(shear1, shear2, phi):
 def make_radial_profile(components, angsep, angsep_units, bin_units,
                         bins=10, components_error=None, error_model='ste',
                         include_empty_bins=False, return_binnumber=False,
-                        cosmo=None, z_lens=None, validate_input=True):
+                        cosmo=None, z_lens=None, validate_input=True, weights=None):
     r"""Compute the angular profile of given components
 
     We assume that the cluster object contains information on the cross and
@@ -381,7 +381,7 @@ def make_radial_profile(components, angsep, angsep_units, bin_units,
     for i, component in enumerate(components):
         r_avg, comp_avg, comp_err, nsrc, binnumber = compute_radial_averages(
             source_seps, component, xbins=bins,
-            yerr=None if components_error is None else components_error[i])
+            yerr=None if components_error is None else components_error[i], weights=weights)
         profile_table[f'p_{i}'] = comp_avg
         profile_table[f'p_{i}_err'] = comp_err
     profile_table['radius'] = r_avg
