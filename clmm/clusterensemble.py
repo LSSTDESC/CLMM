@@ -133,17 +133,17 @@ class ClusterEnsemble():
             angsep=galaxycluster.galcat['theta'], angsep_units='radians',
             bin_units=bin_units, bins=bins, error_model=error_model,
             include_empty_bins=True, return_binnumber=False,
-            cosmo=cosmo, z_lens=galaxycluster.z, #weights=galaxycluster.galcat[weights_in],
+            cosmo=cosmo, z_lens=galaxycluster.z, weights=galaxycluster.galcat[weights_in],
             components_error=[None if n is None else galaxycluster.galcat[n].data
                               for n in (tan_component_in_err, cross_component_in_err, None)],
             )
-        profile_table[weights_out] = 1 #rm this line
+        #profile_table[weights_out] = 1 #rm this line
         if bin_units != 'radians':
             bins = convert_units(bins, bin_units, 'radians', redshift=galaxycluster.z, cosmo=cosmo)
-        #profile_table[weights_out] = binned_statistic(galaxycluster.galcat['theta'], 
-        #                                               galaxycluster.galcat[weights_in], 
-        #                                               statistic='sum', 
-        #                                               bins = bins)[0]
+        profile_table[weights_out] = binned_statistic(galaxycluster.galcat['theta'], 
+                                                       galaxycluster.galcat[weights_in], 
+                                                       statistic='sum', 
+                                                       bins = bins)[0]
         data_to_save = [galaxycluster.unique_id, galaxycluster.ra, galaxycluster.dec, galaxycluster.z,
                         *[np.array(profile_table[col]) for col in
                             ('radius', 'p_0', 'p_1', weights_out)]]
@@ -209,8 +209,10 @@ class ClusterEnsemble():
                             data_bootstrap['radius'], data_bootstrap['W_l'],
                             [data_bootstrap['gt'], data_bootstrap['gx']])
             gt_boot.append(gt), gx_boot.append(gx)
-        self.bootstrap_tangential_covariance = np.cov(np.array(gt_boot).T, bias = False,ddof=0)
-        self.bootstrap_cross_covariance = np.cov(np.array(gx_boot).T, bias = False)
+        n_catalogs = len(self.data)
+        coeff = (n_catalogs/(n_catalogs-1))**2
+        self.bootstrap_tangential_covariance = coeff*np.cov(np.array(gt_boot).T, bias = False,ddof=0)
+        self.bootstrap_cross_covariance = coeff*np.cov(np.array(gx_boot).T, bias = False)
 
     def compute_jackknife_covariance(self, n_side=2):
         """Compute the jackknife covariance matrix, add boostrap covariance matrix for
