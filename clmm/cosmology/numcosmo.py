@@ -108,17 +108,20 @@ class NumCosmoCosmology(CLMMCosmology):
 
     def _get_Omega_m(self, z):
 
-        return self.be_cosmo.E2Omega_m(z)/self.be_cosmo.E2(z)
+        return self._get_E2Omega_m(z)/self._get_E2(z)
 
     def _get_E2Omega_m(self, z):
 
-        return self.be_cosmo.E2Omega_m(z)
+        return np.vectorize(Nc.HICosmo.E2Omega_m)(self.be_cosmo, z)
+
+    def _get_E2(self, z):
+
+        return np.vectorize(Nc.HICosmo.E2)(self.be_cosmo, z)
 
     def _get_rho_crit(self, z):
 
-        rho_crit0_over_h2 = Ncm.C.crit_mass_density_h2_solar_mass_Mpc3()
-
-        return rho_crit0_over_h2*self.be_cosmo.h()**2*self.be_cosmo.E2(z)
+        return Ncm.C.crit_mass_density_h2_solar_mass_Mpc3()*\
+    self['h']**2*self._get_E2(z)
 
     def _eval_da_z1z2(self, z1, z2):
 
