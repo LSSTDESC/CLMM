@@ -24,10 +24,14 @@ class NFW():
         """
         self.Mdelta = Mdelta
         self.c = c
-        self.delta_mdef = delta_mdef
-        if massdef == 'matter': alpha = cosmo.get_Omega_m(z)
-        else : alpha = 1
-        rho_critical = cosmo.get_rho_crit(z)#.to(u.Msun / u.Mpc**3).value
+
+        if massdef == 'matter':
+            alpha = cosmo.get_Omega_m(z)
+        else :
+            alpha = 1
+
+        rho_critical = cosmo.get_rho_crit(z) #Msun / Mpc**3
+
         self.rdelta = ((Mdelta * 3) / (alpha * 4 * np.pi * delta_mdef * rho_critical)) ** (1/3)
         self.rs = self.rdelta / self.c
 
