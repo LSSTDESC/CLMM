@@ -18,6 +18,7 @@ class NFW():
             overdensity scale (200, 500, etc.)
         cosmo : CLMMCosmology
             Cosmology object
+
         Returns:
         --------
         Compute specific halo quantities (r_delta, r_s) for the mass profile
@@ -39,11 +40,12 @@ class NFW():
         return np.log(1 + c) - c/(1 + c)
 
     def M(self, r3d):
-        r"""
-        Attributes:
-        -----------
+        """
+        Parameters
+        ----------
         r3d : array
             3d radius from the halo center
+
         Returns:
         --------
         M_in_r : array
@@ -55,8 +57,8 @@ class NFW():
 
 def convert_def(Mdelta1, c1, z, massdef1, delta_mdef1, massdef2, delta_mdef2, cosmo):
     r"""
-    Attributes:
-    -----------
+    Parameters
+    ----------
     Mdelta1: float
         halo mass (1st SOD definition)
     c1: float
@@ -74,6 +76,7 @@ def convert_def(Mdelta1, c1, z, massdef1, delta_mdef1, massdef2, delta_mdef2, co
         background density (2nd SOD definition)
     cosmo_astropy: astropy object
         cosmology
+
     Returns:
     --------
     M2fit, c2fit: float, float

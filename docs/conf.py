@@ -63,7 +63,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'CLMM'
-copyright = '2018-2021, LSST DESC CLMM Contributors'
+copyright = '2018-2022, LSST DESC CLMM Contributors'
 author = 'LSST DESC CLMM Contributors'
 language = 'en'
 
@@ -149,7 +149,7 @@ nbconvert_opts = ['--to rst',
                   f'--output-dir {outdir}']
 
 for demo in [*demofiles, *examplefiles]:
-    com = ' '.join(['jupyter nbconvert']+nbconvert_opts+[demo])
+    com = ' '.join(['jupyter-nbconvert']+nbconvert_opts+[demo])
     subprocess.run(com, shell=True)
 
 
