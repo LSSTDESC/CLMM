@@ -4,8 +4,8 @@ from scipy.optimize import fsolve
 class NFW():
     def __init__(self, Mdelta, c, z, massdef, delta_mdef, cosmo):
         r"""
-        Attributes:
-        -----------
+        Attributes
+        ----------
         Mdelta : float
             halo mass
         c : float
@@ -19,8 +19,8 @@ class NFW():
         cosmo : CLMMCosmology
             Cosmology object
 
-        Returns:
-        --------
+        Returns
+        -------
         Compute specific halo quantities (r_delta, r_s) for the mass profile
         """
         self.Mdelta = Mdelta
@@ -43,11 +43,11 @@ class NFW():
         """
         Parameters
         ----------
-        r3d : array
-            3d radius from the halo center
+        r3d : array_like
+            3D radius from the halo center
 
-        Returns:
-        --------
+        Returns
+        -------
         M_in_r : array
             Mass enclosed in a sphere of radius r
         """
@@ -77,8 +77,8 @@ def convert_def(Mdelta1, c1, z, massdef1, delta_mdef1, massdef2, delta_mdef2, co
     cosmo_astropy: astropy object
         cosmology
 
-    Returns:
-    --------
+    Returns
+    -------
     M2fit, c2fit: float, float
         mass and concentration for the 2nd halo definition
     """
