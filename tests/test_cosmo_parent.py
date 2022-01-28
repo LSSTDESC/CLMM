@@ -163,6 +163,7 @@ def test_cosmo_basic(modeling_data, cosmo_init):
 
     # Test pk - just consistency! A better test must be implemented
     if cosmo.backend in ('ccl', 'nc'):
+        k = np.logspace(-2, 1, 20)
         assert_allclose(
             cosmo.eval_linear_matter_powerspectrum(k, 0.1),
             cosmo.eval_linear_matter_powerspectrum(k, 0.1),
