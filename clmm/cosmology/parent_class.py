@@ -3,6 +3,7 @@
 # CLMM Cosmology object abstract superclass
 import numpy as np
 from ..utils import validate_argument
+from ..constants import Constants as const
 
 
 class CLMMCosmology:
@@ -174,7 +175,9 @@ class CLMMCosmology:
         return self._get_rho_m(z=z)
 
     def _get_rho_m(self, z):
-        raise NotImplementedError
+        rhocrit_cd2018 = (3.0e16*const.PC_TO_METER.value)/(
+                          8.0*np.pi*const.GNEWT.value*const.SOLAR_MASS.value)
+        return rhocrit_cd2018*(z+1)**3*self['Omega_m0']*self['h']**2
 
     def eval_da_z1z2(self, z1, z2):
         r"""Computes the angular diameter distance between z1 and z2.
