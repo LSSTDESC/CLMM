@@ -411,6 +411,11 @@ def test_shear_convergence_unittests(modeling_data):
     assert_raises(ValueError, theo.compute_tangential_shear,
                   1.e-12, 1.e15, 4, 0.2, 0.45, cosmo)
 
+    # Chech error for z_src_model='applegate14' and no beta
+    assert_raises(ValueError, theo.compute_reduced_tangential_shear,
+                  1, 1.e15, 4, 0.2, 0.45, cosmo,
+                  z_src_model='applegate14')
+
     # Validate tangential shear
     gammat = theo.compute_tangential_shear(cosmo=cosmo, **cfg['GAMMA_PARAMS'])
     assert_allclose(gammat*sigmac_corr,
