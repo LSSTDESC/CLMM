@@ -287,6 +287,12 @@ def test_2halo_term(modeling_data):
         assert_equal(len(mod.eval_excess_surface_density_2h_nobias(cfg['SIGMA_PARAMS']['r_proj'],
                                                                cfg['SIGMA_PARAMS']['z_cl'])),
                         len(cfg['SIGMA_PARAMS']['r_proj'])) 
+        assert_allclose(
+            theo.compute_excess_surface_density_2h_nobias(
+                cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl'], cosmo),
+            mod.eval_excess_surface_density_2h_nobias(
+                cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl']),
+            1.0e-10)
 
 def test_compute_critical_surface_density(modeling_data):
     """ Validation test for critical surface density """
