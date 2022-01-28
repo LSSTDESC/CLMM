@@ -4,6 +4,7 @@ import numpy as np
 from numpy.testing import assert_raises, assert_allclose, assert_equal
 import clmm.theory as theo
 from clmm.cosmology.parent_class import CLMMCosmology
+from clmm.constants import Constants as const
 # ----------- Some Helper Functions for the Validation Tests ---------------
 
 
@@ -40,6 +41,8 @@ def test_class(modeling_data):
     assert_raises(NotImplementedError,
                   CLMMCosmology._eval_sigma_crit, None, None, None)
     assert_raises(NotImplementedError, CLMMCosmology._get_E2Omega_m, None, None)
+    assert_raises(NotImplementedError,
+                  CLMMCosmology._eval_linear_matter_powerspectrum, None, None, None)
 
 
 TOLERANCE = {'rtol': 1.0e-12}
@@ -147,6 +150,18 @@ def test_cosmo_basic(modeling_data, cosmo_init):
 
     # Test initializing cosmo
     theo.Cosmology(be_cosmo=cosmo.be_cosmo)
+
+
+    # Test get rho matter
+    rhocrit_mks = 3.0*100.0*100.0/(8.0*np.pi*const.GNEWT.value)
+    rhocrit_cd2018 = (rhocrit_mks*1000.0*1000.0*
+        const.PC_TO_METER.value*1.0e6/const.SOLAR_MASS.value)
+    for z in np.linspace(0.0, 2.0, 5):
+        assert_allclose(
+            cosmo.get_rho_m(z),
+            rhocrit_cd2018*(z+1)**3*cosmo['Omega_m0']*cosmo['h']**2,
+            rtol=1e-5)
+
 
 
 def _rad2mpc_helper(dist, redshift, cosmo, do_inverse):
