@@ -291,7 +291,7 @@ class CLMModeling:
         rho_m = self.cosmo._get_rho_m(z_cl)
 
         kk = np.logspace(-5.,5.,1000)
-        pk = self.cosmo.eval_linear_matter_powerspectrum(kk, z_cl)
+        pk = self.cosmo._eval_linear_matter_powerspectrum(kk, z_cl)
         interp_pk = interp1d(kk, pk, kind='cubic')
         theta = r_proj / da
 
