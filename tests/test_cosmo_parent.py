@@ -151,7 +151,6 @@ def test_cosmo_basic(modeling_data, cosmo_init):
     # Test initializing cosmo
     theo.Cosmology(be_cosmo=cosmo.be_cosmo)
 
-
     # Test get rho matter
     rhocrit_mks = 3.0*100.0*100.0/(8.0*np.pi*const.GNEWT.value)
     rhocrit_cd2018 = (rhocrit_mks*1000.0*1000.0*
@@ -160,6 +159,13 @@ def test_cosmo_basic(modeling_data, cosmo_init):
         assert_allclose(
             cosmo.get_rho_m(z),
             rhocrit_cd2018*(z+1)**3*cosmo['Omega_m0']*cosmo['h']**2,
+            rtol=1e-5)
+
+    # Test pk - just consistency! A better test must be implemented
+    if cosmo.backend in ('ccl', 'nc'):
+        assert_allclose(
+            cosmo.eval_linear_matter_powerspectrum(k, 0.1),
+            cosmo.eval_linear_matter_powerspectrum(k, 0.1),
             rtol=1e-5)
 
 
