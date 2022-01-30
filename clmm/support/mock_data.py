@@ -325,8 +325,26 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals,
                                 massdef=massdef,
                                 z_src_model='single_plane')
 
+    posangle_old = np.arctan2(galaxy_catalog['y_mpc'], galaxy_catalog['x_mpc'])
 
-    posangle = np.arctan2(galaxy_catalog['y_mpc'], galaxy_catalog['x_mpc'])
+    c_cl = SkyCoord(cluster_ra*u.deg, cluster_dec*u.deg, frame='icrs') 
+    c_gal = SkyCoord(galaxy_catalog['ra']*u.deg, galaxy_catalog['dec']*u.deg, frame='icrs') 
+    
+    # # position angle of drawn galaxies w.r.t cluster center
+    angsep, posangle = c_cl.separation(c_gal).rad, c_cl.position_angle(c_gal).rad
+
+    posangle += 0.5*np.pi
+    if np.iterable(posangle):
+        posangle[posangle > np.pi] -= 2*np.pi
+        posangle[angsep == 0] = 0
+    else:
+        posangle -= 2*np.pi if posangle > np.pi else 0
+        posangle = 0 if angsep == 0 else posangle
+
+    galaxy_catalog['posangle'] = posangle
+    galaxy_catalog['posangle_old'] = posangle_old
+    galaxy_catalog['angsep'] = angsep
+
     #corresponding shear1,2 components
     gam1 = -gamt*np.cos(2*posangle) + gamx*np.sin(2*posangle)
     gam2 = -gamt*np.sin(2*posangle) - gamx*np.cos(2*posangle)
@@ -344,7 +362,7 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals,
     galaxy_catalog['e1'], galaxy_catalog['e2'] = compute_lensed_ellipticity(
         e1_intrinsic, e2_intrinsic, gam1, gam2, kappa)
 
-    cols = ['ra', 'dec', 'e1', 'e2']
+    cols = ['ra', 'dec', 'e1', 'e2', 'posangle', 'posangle_old', 'angsep']
     # if adding uncertainties
     if mean_e_err is not None:
         galaxy_catalog['e_err'] \
@@ -531,22 +549,25 @@ def _draw_galaxy_positions(galaxy_catalog, ngals, cluster_ra, cluster_dec, clust
         -(field_size/2.), field_size/2., size=ngals)
     galaxy_catalog['r_mpc'] = np.sqrt(
         galaxy_catalog['x_mpc']**2+galaxy_catalog['y_mpc']**2)
+
+    # ra and dec for a cluster in (0,0)
     ra = -np.rad2deg(galaxy_catalog['x_mpc']/lens_distance)
     dec = np.rad2deg(galaxy_catalog['y_mpc']/lens_distance)
-
     c1 = SkyCoord(ra*u.deg, dec*u.deg, frame='icrs')
     c1_cl = SkyCoord(0.*u.deg, 0.*u.deg, frame='icrs') 
-
-    c2_cl = SkyCoord(cluster_ra*u.deg, cluster_dec*u.deg, frame='icrs') 
-    
+ 
     # position angle of drawn galaxies w.r.t cluster center in original position c1_cl = (0,0)
     position_angle = c1_cl.position_angle(c1).to(u.deg)
-
+ 
     # separation of drawn galaxies w.r.t cluster center in original position c1_cl = (0,0)
-    sep = c1.separation(c1_cl)
+    sep = c1_cl.separation(c1)
 
-    # new galaxy (ra,dec) w.r.t the new cluster position c2_cl = (cluster_ra, cluster_dec)
-    new_coord = c2_cl.directional_offset_by(position_angle, sep)  
+    # cluster actual position
+    c2_cl = SkyCoord(cluster_ra*u.deg, cluster_dec*u.deg, frame='icrs') 
+ 
+    # new galaxy (ra,dec) w.r.t the new cluster position c2_cl
+    new_coord = c2_cl.directional_offset_by(position_angle, sep)
+
     galaxy_catalog['ra'] = new_coord.ra.degree
     galaxy_catalog['dec'] = new_coord.dec.degree
   
