@@ -386,6 +386,7 @@ class CLMMCosmology:
         """
         if self.validate_input:
             validate_argument(locals(), 'k_vals', 'float_array', argmin=0)
+            validate_argument(locals(), 'z', 'float', argmin=0)
         return self._eval_linear_matter_powerspectrum(k_vals, redshift)
 
     def _eval_linear_matter_powerspectrum(self, k_vals, redshift):
