@@ -19,6 +19,20 @@ def load_validation_config():
     cosmo = theo.Cosmology(H0=testcase['cosmo_H0'], Omega_dm0=testcase['cosmo_Odm0'],
                            Omega_b0=testcase['cosmo_Ob0'])
     return cosmo, testcase
+
+def load_validation_config_ps():
+    """ Loads values precomputed by numcosmo for comparison """
+    numcosmo_path = 'tests/data/numcosmo/'
+    with open(numcosmo_path+'config_ps.json', 'r') as fin:
+        testcase = json.load(fin)
+    numcosmo_ps = np.genfromtxt(
+        numcosmo_path+'matter_power_spectrum.txt', names=True)
+    # Cosmology
+    cosmo = theo.Cosmology(H0=testcase['cosmo_H0'], Omega_dm0=testcase['cosmo_Odm0'],
+                           Omega_b0=testcase['cosmo_Ob0'])
+    z = testcase['z']
+    return cosmo, z, numcosmo_ps
+
 # --------------------------------------------------------------------------
 
 
@@ -169,6 +183,11 @@ def test_cosmo_basic(modeling_data, cosmo_init):
             cosmo.eval_linear_matter_powerspectrum(k, 0.1),
             rtol=1e-5)
 
+def test_matter_power_spectrum():
+    cosmo_ps, z, ps = load_validation_config_ps()
+    if cosmo_ps.backend in ('ccl', 'nc'):
+        kvals = ps['k']
+        assert_allclose(cosmo_ps.eval_linear_matter_powerspectrum(kvals, z), ps['P_of_k'], 5.e-3)
 
 
 def _rad2mpc_helper(dist, redshift, cosmo, do_inverse):
@@ -210,3 +229,4 @@ def test_convert_rad_to_mpc():
             H0=70.0, Omega_dm0=oneomm-0.045, Omega_b0=0.045), do_inverse=False)
         _rad2mpc_helper(1.0, 0.5, theo.Cosmology(
             H0=70.0, Omega_dm0=oneomm-0.045, Omega_b0=0.045), do_inverse=True)
+
