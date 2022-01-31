@@ -325,12 +325,10 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals,
                                 massdef=massdef,
                                 z_src_model='single_plane')
 
-    posangle_old = np.arctan2(galaxy_catalog['y_mpc'], galaxy_catalog['x_mpc'])
-
     c_cl = SkyCoord(cluster_ra*u.deg, cluster_dec*u.deg, frame='icrs') 
     c_gal = SkyCoord(galaxy_catalog['ra']*u.deg, galaxy_catalog['dec']*u.deg, frame='icrs') 
     
-    # # position angle of drawn galaxies w.r.t cluster center
+    # position angle of drawn galaxies w.r.t cluster center
     angsep, posangle = c_cl.separation(c_gal).rad, c_cl.position_angle(c_gal).rad
 
     posangle += 0.5*np.pi
@@ -340,10 +338,6 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals,
     else:
         posangle -= 2*np.pi if posangle > np.pi else 0
         posangle = 0 if angsep == 0 else posangle
-
-    galaxy_catalog['posangle'] = posangle
-    galaxy_catalog['posangle_old'] = posangle_old
-    galaxy_catalog['angsep'] = angsep
 
     #corresponding shear1,2 components
     gam1 = -gamt*np.cos(2*posangle) + gamx*np.sin(2*posangle)
@@ -362,7 +356,7 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals,
     galaxy_catalog['e1'], galaxy_catalog['e2'] = compute_lensed_ellipticity(
         e1_intrinsic, e2_intrinsic, gam1, gam2, kappa)
 
-    cols = ['ra', 'dec', 'e1', 'e2', 'posangle', 'posangle_old', 'angsep']
+    cols = ['ra', 'dec', 'e1', 'e2']
     # if adding uncertainties
     if mean_e_err is not None:
         galaxy_catalog['e_err'] \
