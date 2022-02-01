@@ -13,25 +13,13 @@ def load_validation_config():
     numcosmo_path = 'tests/data/numcosmo/'
     with open(numcosmo_path+'config.json', 'r') as fin:
         testcase = json.load(fin)
-    numcosmo_profile = np.genfromtxt(
-        numcosmo_path+'radial_profiles.txt', names=True)
-    # Cosmology
-    cosmo = theo.Cosmology(H0=testcase['cosmo_H0'], Omega_dm0=testcase['cosmo_Odm0'],
-                           Omega_b0=testcase['cosmo_Ob0'])
-    return cosmo, testcase
-
-def load_validation_config_ps():
-    """ Loads values precomputed by numcosmo for comparison """
-    numcosmo_path = 'tests/data/numcosmo/'
-    with open(numcosmo_path+'config_ps.json', 'r') as fin:
-        testcase = json.load(fin)
     numcosmo_ps = np.genfromtxt(
         numcosmo_path+'matter_power_spectrum.txt', names=True)
     # Cosmology
     cosmo = theo.Cosmology(H0=testcase['cosmo_H0'], Omega_dm0=testcase['cosmo_Odm0'],
                            Omega_b0=testcase['cosmo_Ob0'])
-    z = testcase['z']
-    return cosmo, z, numcosmo_ps
+ 
+    return cosmo, testcase, numcosmo_ps
 
 # --------------------------------------------------------------------------
 
@@ -153,7 +141,7 @@ def test_cosmo_basic(modeling_data, cosmo_init):
     assert_allclose(cosmo.eval_da_z1z2(0.0, z),
                     cosmo.eval_da_z1z2(0.0, z), rtol=8.0e-15)
     # Test da(a1, a1)
-    cosmo, testcase = load_validation_config()
+    cosmo, testcase, _ = load_validation_config()
     assert_allclose(cosmo.eval_da_a1a2(testcase['aexp_cluster']),
                     testcase['dl'], reltol)
     assert_allclose(cosmo.eval_da_a1a2(testcase['aexp_source']),
@@ -183,11 +171,12 @@ def test_cosmo_basic(modeling_data, cosmo_init):
             cosmo.eval_linear_matter_powerspectrum(k, 0.1),
             rtol=1e-5)
 
-def test_matter_power_spectrum():
-    cosmo_ps, z, ps = load_validation_config_ps()
+def test_matter_power_spectrum(modeling_data):
+    cosmo_ps, testcase, ps = load_validation_config()
     if cosmo_ps.backend in ('ccl', 'nc'):
+        reltol = modeling_data['ps_reltol']
         kvals = ps['k']
-        assert_allclose(cosmo_ps.eval_linear_matter_powerspectrum(kvals, z), ps['P_of_k'], 5.e-3)
+        assert_allclose(cosmo_ps.eval_linear_matter_powerspectrum(kvals, testcase['z_cluster']), ps['P_of_k'], reltol)
 
 
 def _rad2mpc_helper(dist, redshift, cosmo, do_inverse):
