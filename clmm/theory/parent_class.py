@@ -332,7 +332,7 @@ class CLMModeling:
                     `r_proj` is a float);
                 * `applegate14`: use the equation (6) in Weighing the Giants - III \
                     (Applegate et al. 2014; https://arxiv.org/abs/1208.0605) to evaluate tangential reduced shear;
-                * `schrabback`: use the equation (12) in Cluster Mass Calibration at High Redshift \
+                * `schrabback18`: use the equation (12) in Cluster Mass Calibration at High Redshift \
                     (Schrabback et al. 2017; https://arxiv.org/abs/1611.03866) to evaluate tangential reduced shear;
                 
         beta_s_mean: array_like, float
@@ -378,7 +378,7 @@ class CLMModeling:
                 kappa = self._eval_convergence(r_proj, z_cl, z_source)
                 gt = beta_s_mean * gammat / (1. - beta_s_square_mean / beta_s_mean * kappa)
         
-        elif z_src_model == 'schrabback':
+        elif z_src_model == 'schrabback18':
             if beta_s_mean is None or beta_s_square_mean is None:
                 raise ValueError("beta_s_mean or beta_s_square_mean is not given.")
             else:
