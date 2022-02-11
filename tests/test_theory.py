@@ -400,6 +400,21 @@ def test_shear_convergence_unittests(modeling_data):
     # Validate reduced tangential shear
     assert_allclose(theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg['GAMMA_PARAMS']),
                     gammat/(1.0-kappa), 1.0e-10)
+
+    beta_s_mean, beta_s_square_mean = 0.9, 0.6
+    cfg_inf = load_validation_config()
+    cfg_inf['GAMMA_PARAMS']['z_source'] = 1000.
+    gammat_inf = theo.compute_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'])
+    kappa_inf = theo.compute_convergence(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'])
+    cfg_inf['GAMMA_PARAMS']['z_src_model'] = 'applegate14'
+    assert_allclose(theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'], beta_s_mean=beta_s_mean, beta_s_square_mean=beta_s_square_mean),
+                    beta_s_mean * gammat_inf/(1.0 - beta_s_square_mean / beta_s_mean * kappa_inf), 1.0e-10)
+
+    cfg_inf['GAMMA_PARAMS']['z_src_model'] = 'schrabback18'
+    assert_allclose(theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'], beta_s_mean=beta_s_mean, beta_s_square_mean=beta_s_square_mean),
+                    (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean * kappa_inf) * (beta_s_mean * gammat_inf / (1. - beta_s_mean * kappa_inf)), 1.0e-10)
+    
+    
     assert_allclose(gammat*sigmac_corr/(1.-(kappa*sigmac_corr)),
                     cfg['numcosmo_profiles']['gt'], 1.e2*reltol)
 
@@ -503,6 +518,16 @@ def test_shear_convergence_unittests(modeling_data):
     # Validate reduced tangential shear
     assert_allclose(mod.eval_reduced_tangential_shear(*profile_pars),
                     gammat/(1.0-kappa), 1.0e-10)
+
+
+    beta_s_mean = 0.6
+    beta_s_square_mean = 0.4 
+    source_redshift_inf = 1000. 
+    gammat_inf = mod.eval_tangential_shear(profile_pars[0], profile_pars[1], source_redshift_inf) #np.inf)
+    kappa_inf = mod.eval_convergence(profile_pars[0], profile_pars[1], source_redshift_inf) #np.inf)
+    assert_allclose(mod.eval_reduced_tangential_shear(*profile_pars, 'applegate14', beta_s_mean, beta_s_square_mean), beta_s_mean * gammat_inf/(1.0 - beta_s_square_mean / beta_s_mean * kappa_inf), 1.0e-10)
+    assert_allclose(mod.eval_reduced_tangential_shear(*profile_pars, 'schrabback18', beta_s_mean, beta_s_square_mean), (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean * kappa_inf) * (beta_s_mean * gammat_inf / (1. - beta_s_mean * kappa_inf)), 1.0e-10)
+
     assert_allclose(gammat*sigmac_corr/(1.-(kappa*sigmac_corr)),
                     cfg['numcosmo_profiles']['gt'], 1.e2*reltol)
 

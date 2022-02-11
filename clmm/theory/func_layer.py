@@ -423,7 +423,8 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
 def compute_reduced_tangential_shear(
         r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
         delta_mdef=200, halo_profile_model='nfw', massdef='mean',
-        z_src_model='single_plane', validate_input=True):
+        z_src_model='single_plane', beta_s_mean=None, beta_s_square_mean=None,
+        validate_input=True):
     r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
 
     Parameters
@@ -458,11 +459,27 @@ def compute_reduced_tangential_shear(
 
     z_src_model : str, optional
         Source redshift model, with the following supported options:
-            `single_plane` (default) - all sources at one redshift (if
-            `z_source` is a float) or known individual source galaxy redshifts
-            (if `z_source` is an array and `r_proj` is a float);
-    validate_input: bool
-        Validade each input argument
+
+            * `single_plane` (default): all sources at one redshift (if `z_source` is a float) \
+                or known individual source galaxy redshifts (if `z_source` is an array and \
+                `r_proj` is a float);
+            * `applegate14`: use the equation (6) in Weighing the Giants - III \
+                (Applegate et al. 2014; https://arxiv.org/abs/1208.0605) to evaluate tangential reduced shear;
+            * `schrabback18`: use the equation (12) in Cluster Mass Calibration at High Redshift \
+                (Schrabback et al. 2017; https://arxiv.org/abs/1611.03866) to evaluate tangential reduced shear;
+                
+    beta_s_mean: array_like, float
+        Lensing efficiency averaged over the galaxy redshift distribution   
+
+            .. math::
+                \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right\rangle
+    
+    beta_s_square_mean: array_like, float
+        Square of the lensing efficiency averaged over the galaxy redshift distribution    
+
+            .. math::
+                \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
+
 
     Returns
     -------
@@ -477,31 +494,16 @@ def compute_reduced_tangential_shear(
     `z_src_model`. We will need :math:`\gamma_\infty` and :math:`\kappa_\infty`
     for alternative z_src_models using :math:`\beta_s`.
     """
-    if z_src_model == 'single_plane':
+    gcm.validate_input = validate_input
 
-        gcm.validate_input = validate_input
-        gcm.set_cosmo(cosmo)
-        gcm.set_halo_density_profile(
-            halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
-        gcm.set_concentration(cdelta)
-        gcm.set_mass(mdelta)
+    gcm.set_cosmo(cosmo)
+    gcm.set_halo_density_profile(
+        halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
+    gcm.set_concentration(cdelta)
+    gcm.set_mass(mdelta)
 
-        red_tangential_shear = gcm.eval_reduced_tangential_shear(
-            r_proj, z_cluster, z_source)
-
-    # elif z_src_model == 'known_z_src': # Discrete case
-    #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average'+
-    #                               'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
-    # elif z_src_model == 'z_src_distribution': # Continuous ( from a distribution) case
-    #     raise NotImplementedError('Need to implement Beta_s and Beta_s2 calculation from'+
-    #                               'integrating distribution of redshifts in each radial bin')
-    else:
-        raise ValueError("Unsupported z_src_model")
-
-    if np.any(np.array(z_source) <= z_cluster):
-        warnings.warn(
-            'Some source redshifts are lower than the cluster redshift.'
-            ' shear = 0 for those galaxies.')
+    red_tangential_shear = gcm.eval_reduced_tangential_shear(
+        r_proj, z_cluster, z_source, z_src_model, beta_s_mean, beta_s_square_mean)
 
     gcm.validate_input = True
     return red_tangential_shear
