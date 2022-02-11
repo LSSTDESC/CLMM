@@ -4,7 +4,7 @@ CLMModeling abstract class
 import numpy as np
 import warnings
 from .generic import compute_reduced_shear_from_convergence, compute_magnification_bias_from_magnification
-from ..utils import validate_argument
+from ..utils import validate_argument, compute_Bs_mean, compute_Bs_square_mean
 
 
 class CLMModeling:
@@ -371,7 +371,9 @@ class CLMModeling:
         #                               'integrating distribution of redshifts in each radial bin')
         elif z_src_model == 'applegate14':
             if beta_s_mean is None or beta_s_square_mean is None:
-                raise ValueError("beta_s_mean or beta_s_square_mean is not given.")
+                beta_s_mean = compute_Bs_mean (z_cl, 1000., self.cosmo)
+                beta_s_square_mean = compute_Bs_square_mean (z_cl, 1000., self.cosmo)
+            
             else:
                 z_source = 1000. #np.inf # INF or a very large number
                 gammat = self._eval_tangential_shear(r_proj, z_cl, z_source)
@@ -380,7 +382,8 @@ class CLMModeling:
         
         elif z_src_model == 'schrabback18':
             if beta_s_mean is None or beta_s_square_mean is None:
-                raise ValueError("beta_s_mean or beta_s_square_mean is not given.")
+                beta_s_mean = compute_Bs_mean (z_cl, 1000.,self.cosmo)
+                beta_s_square_mean = compute_Bs_square_mean (z_cl, 1000., self.cosmo)
             else:
                 z_source = 1000. #np.inf # INF or a very large number
                 gammat = self._eval_tangential_shear(r_proj, z_cl, z_source)

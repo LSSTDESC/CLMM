@@ -367,3 +367,18 @@ def test_validate_argument():
         assert_raises(ValueError, validate_argument, loc, argname, ('float_array', str), argmax=1.1)
 
     assert validate_argument(loc, 'float_array', ('float_array', str), argmax=1.2, eqmax=True) is None
+
+def test_beta_functions():
+    z_cl = 1.0
+    z_s = 2.4 
+    z_inf =1000.
+    zmax = 15.0
+    nsteps = 1000
+    cosmo = md.Cosmology(H0=70.0, Omega_dm0=0.27 - 0.045,
+                  Omega_b0=0.045, Omega_k0=0.0)
+    alphat, betat, redshift0t = 1.24, 1.01, 0.51
+    test1 = utils.compute_beta(z_cl, z_s, cosmo)
+    test2 = utils.compute_B_mean(z_cl,cosmo, zmax, nsteps)  
+    test3 = utils.compute_Bs_mean(z_cl,z_inf,cosmo, zmax, nsteps)
+    test4 = utils.compute_Bs_square_mean(z_cl,z_inf,cosmo, zmax, nsteps)    
+    

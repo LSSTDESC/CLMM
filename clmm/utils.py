@@ -460,33 +460,192 @@ def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argm
                       f' received {"vec_max:"*(var_array.size-1)}{var}'
                 raise ValueError(err)
 
-def beta(z_cl, z_s, cosmo):
-    """Geometric lensing efficicency  beta = max(0, Dang_ls/Dang_s)  Eq.2 in https://arxiv.org/pdf/1611.03866.pdf"""
+def compute_beta(z_cl, z_s, cosmo):
+    r"""Geometric lensing efficicency  
+    
+    .. math:: 
+        beta = max(0, Dang_ls/Dang_s)
+        
+    Eq.2 in https://arxiv.org/pdf/1611.03866.pdf    
+    
+    Parameters
+    ----------
+    z_cl: float
+            Galaxy cluster redshift
+    z_s:  float
+            Source galaxy  redshift
+    cosmo: Cosmology
+        Cosmology object
+    
+    Returns
+    -------
+    float
+        Geometric lensing efficicency
+    """
     beta = np.heaviside(z_s-z_cl, 0) * cosmo.eval_da_z1z2(z_cl, z_s) / cosmo.eval_da(z_cl)
     return beta
 
-def beta_s(z_cl, z_s, z_inf, cosmo):
-    """Geometric lensing efficicency ratio beta_s =beta(z_s)/beta(z_inf)"""
-    beta_s = beta(z_cl, z_s, cosmo) / beta(z_cl, z_inf, cosmo)
+def compute_beta_s(z_cl, z_s, z_inf, cosmo):
+    r"""Geometric lensing efficicency ratio 
+    
+    .. math:: 
+        beta_s =beta(z_s)/beta(z_inf)
+
+    Parameters
+    ----------
+    z_cl: float
+            Galaxy cluster redshift
+    z_s:  float
+            Source galaxy redshift
+    z_inf: float
+            Redshift at infinity
+    cosmo: Cosmology
+        Cosmology object
+    
+    Returns
+    -------
+    float
+        Geometric lensing efficicency ratio
+    """
+    beta_s = compute_beta(z_cl, z_s, cosmo) / compute_beta(z_cl, z_inf, cosmo)
     return beta_s
 
-def compute_B_mean(z_cl, pdz, cosmo, zmin=None, zmax=4.0, nsteps=1000, delta_z_cut=0.1):
-    if zmin==None:
-        zmin = z_cl + delta_z_cut
-    z_int = np.linspace(zmin, zmax, nsteps)
-    B_mean = np.nansum(beta(z_cl, z_int, cosmo) * pdz(z_int)) / np.nansum(pdz(z_int))
-    return B_mean
+def compute_B_mean(z_cl, cosmo, zmax=4.0, nsteps=1000, delta_z_cut=0.1, zmin=None, pdz=None):
+    r"""Mean value of the geometric lensing efficicency  
+    
+    .. math:: 
+       \left\<beta\right\> =\frac{\sum_{z = z_{min}}^{z = z_{max}}\beta(z)p(z)}{\sum_{z = z_{min}}^{z = z_{max}}p(z)}
 
-def compute_Bs_mean(z_cl, z_inf, pdz, cosmo,  zmin=None, zmax=4.0, nsteps=1000, delta_z_cut=0.1):
+    Parameters
+    ----------
+    z_cl: float
+            Galaxy cluster redshift
+    z_inf: float
+            Redshift at infinity
+    pdz: function
+            Redshift probability density function. Default is\
+            Chang et al (2013) unnormalized galaxy redshift distribution\
+            function.
+    zmin: float
+            Minimum redshift to be set as the source of the galaxy\
+             when performing the sum.
+    zmax: float
+            Maximum redshift to be set as the source of the galaxy\
+            when performing the sum.
+    nsteps: int
+            Number of steps to divide the redshift interval $zmax - zmin$
+    delta_z_cut: float
+            Redshift interval to be summed with the galaxy redshift to return\
+            a $zmin$ if not provided by the user.
+    cosmo: Cosmology
+        Cosmology object
+    
+    Returns
+    -------
+    float
+        Mean value of the geometric lensing efficicency
+    """
+    if pdz == None:
+        alpha, beta, redshift0 = 1.24, 1.01, 0.51
+        def pdz(z):
+            return (z**alpha)*np.exp(-(z/redshift0)**beta)
+    
     if zmin==None:
         zmin = z_cl + delta_z_cut
     z_int = np.linspace(zmin, zmax, nsteps)
-    Bs_mean = np.nansum(beta_s(z_cl, z_int, z_inf, cosmo) * pdz(z_int)) / np.nansum(pdz(z_int))
+    B_mean = np.nansum(compute_beta(z_cl, z_int, cosmo)* pdz(z_int)) / np.nansum(pdz(z_int))
+    return B_mean    
+
+def compute_Bs_mean(z_cl, z_inf, cosmo, zmax=4.0, nsteps=1000, delta_z_cut=0.1, zmin=None, pdz=None):
+    r"""Mean value of the geometric lensing efficicency ratio 
+    
+    .. math:: 
+       \left\<beta_s\right\> =\frac{\sum_{z = z_{min}}^{z = z_{max}}\beta_s(z)p(z)}{\sum_{z = z_{min}}^{z = z_{max}}p(z)}
+
+    Parameters
+    ----------
+    z_cl: float
+            Galaxy cluster redshift
+    z_inf: float
+            Redshift at infinity
+    pdz: function
+            Redshift probability density function. Default is\
+            Chang et al (2013) unnormalized galaxy redshift distribution\
+            function.
+    zmin: float
+            Minimum redshift to be set as the source of the galaxy\
+            when performing the sum.
+    zmax: float
+            Minimum redshift to be set as the source of the galaxy\
+            when performing the sum.
+    nsteps: int
+            Number of steps to divide the redshift interval $zmax - zmin$
+    delta_z_cut: float
+            Redshift interval to be summed with the galaxy redshift to return\
+            a $zmin$ if not provided by the user.
+    cosmo: Cosmology
+        Cosmology object
+    
+    Returns
+    -------
+    float
+        Mean value of the geometric lensing efficicency ratio
+    """   
+    if pdz == None:
+        alpha, beta, redshift0 = 1.24, 1.01, 0.51
+
+        def pdz(z):
+            return (z**alpha)*np.exp(-(z/redshift0)**beta)
+
+
+    if zmin==None:
+        zmin = z_cl + delta_z_cut
+    z_int = np.linspace(zmin, zmax, nsteps)
+    Bs_mean = np.nansum(compute_beta_s(z_cl, z_int, z_inf, cosmo) * pdz(z_int)) / np.nansum(pdz(z_int))
     return Bs_mean
 
-def compute_Bs_square_mean(z_cl, z_inf, pdz, cosmo,  zmin=None, zmax=4.0, nsteps=1000, delta_z_cut=0.1):
+def compute_Bs_square_mean(z_cl, z_inf, cosmo, zmax=4.0, nsteps=1000, delta_z_cut=0.1, zmin=None, pdz=None):
+    r"""Mean square value of the geometric lensing efficicency ratio 
+    
+    .. math:: 
+       \left\<beta_s\right\>2 =\frac{\sum_{z = z_{min}}^{z = z_{max}}\beta_s^2(z)p(z)}{\sum_{z = z_{min}}^{z = z_{max}}p(z)}
+
+    Parameters
+    ----------
+    z_cl: float
+            Galaxy cluster redshift
+    z_inf: float
+            Redshift at infinity
+    pdz: function
+            Redshift probability density function. Default is\
+            Chang et al (2013) unnormalized galaxy redshift distribution\
+            function.
+    zmin: float
+            Minimum redshift to be set as the source of the galaxy\
+            when performing the sum.
+    zmax: float
+            Minimum redshift to be set as the source of the galaxy\
+            when performing the sum.
+    nsteps: int
+            Number of steps to divide the redshift interval $zmax - zmin$
+    delta_z_cut: float
+            Redshift interval to be summed with the galaxy redshift to return\
+            a $zmin$ if not provided by the user.
+    cosmo: Cosmology
+        Cosmology object
+    
+    Returns
+    -------
+    float
+        Mean square value of the geometric lensing efficicency ratio.
+    """ 
+    if pdz == None:
+        alpha, beta, redshift0 = 1.24, 1.01, 0.51
+        def pdz(z):
+            return (z**alpha)*np.exp(-(z/redshift0)**beta)
+
     if zmin==None:
         zmin = z_cl + delta_z_cut
     z_int = np.linspace(zmin, zmax, nsteps)
-    Bs_mean = np.nansum(beta_s(z_cl, z_int, z_inf, cosmo)**2 * pdz(z_int)) / np.nansum(pdz(z_int))
+    Bs_mean = np.nansum(compute_beta_s(z_cl, z_int, z_inf, cosmo)**2 * pdz(z_int)) / np.nansum(pdz(z_int))
     return Bs_mean
