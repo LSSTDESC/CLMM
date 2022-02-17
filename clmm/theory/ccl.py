@@ -101,7 +101,9 @@ class CCLCLMModeling(CLMModeling):
                 self.conc, **self.hdpm_opts[halo_profile_model])
             if cur_values:
                 self.conc.c = cur_cdelta
-            self.hdpm.update_precision_fftlog(padding_hi_fftlog=1000)
+            self.hdpm.update_precision_fftlog(padding_lo_fftlog=1e-4,
+                                              padding_hi_fftlog=1e3
+                                             )
         
     def _set_concentration(self, cdelta):
         """" set concentration"""
