@@ -374,11 +374,23 @@ def test_beta_functions():
     z_inf =1000.
     zmax = 15.0
     nsteps = 1000
+    zmin = z_cl + 0.1
+    z_int = np.linspace(zmin, zmax, nsteps)    
     cosmo = md.Cosmology(H0=70.0, Omega_dm0=0.27 - 0.045,
                   Omega_b0=0.045, Omega_k0=0.0)
-    alphat, betat, redshift0t = 1.24, 1.01, 0.51
-    test1 = utils.compute_beta(z_cl, z_s, cosmo)
-    test2 = utils.compute_B_mean(z_cl,cosmo, zmax, nsteps)  
-    test3 = utils.compute_Bs_mean(z_cl,z_inf,cosmo, zmax, nsteps)
-    test4 = utils.compute_Bs_square_mean(z_cl,z_inf,cosmo, zmax, nsteps)    
+    beta_test = np.heaviside(z_s-z_cl, 0) * cosmo.eval_da_z1z2(z_cl, z_s) / cosmo.eval_da(z_cl) 
+    beta_s_test = utils.compute_beta(z_cl, z_s, cosmo) / utils.compute_beta(z_cl, z_inf, cosmo)
+    def pdz(z):
+        return (z**1.24)*np.exp(-(z/0.51)**1.01)
     
+    test1 = utils.compute_beta(z_cl, z_s, cosmo)
+    test2 = utils.compute_beta_s(z_cl, z_s, z_inf, cosmo)  
+    test3 = utils.compute_B_mean(z_cl,cosmo, zmax, nsteps) 
+    test4 = utils.compute_Bs_mean(z_cl,z_inf,cosmo, zmax, nsteps)
+    test5 = utils.compute_Bs_square_mean(z_cl,z_inf,cosmo, zmax, nsteps)    
+    
+    assert_allclose(test1, beta_test, **TOLERANCE)
+    assert_allclose(test2, beta_s_test, **TOLERANCE)
+    assert_allclose(test3, np.nansum(utils.compute_beta(z_cl, z_int, cosmo)* pdz(z_int)) / np.nansum(pdz(z_int)), **TOLERANCE)
+    assert_allclose(test4, np.nansum(utils.compute_beta_s(z_cl, z_int, z_inf, cosmo) * pdz(z_int)) / np.nansum(pdz(z_int)), **TOLERANCE)
+    assert_allclose(test5, np.nansum(utils.compute_beta_s(z_cl, z_int, z_inf, cosmo)**2 * pdz(z_int)) / np.nansum(pdz(z_int)), **TOLERANCE)
