@@ -298,8 +298,32 @@ def test_compute_tangential_and_cross_components(modeling_data):
                                 err_msg="Tangential Shear not correct when using cluster method")
         testing.assert_allclose(xDS, expected['cross_DS'], reltol,
                                 err_msg="Cross Shear not correct when using cluster method")
-        
-        
+
+
+def test_compute_background_probability():
+    """test for compute background probability"""
+    z_lens = .1
+    z_source = np.array([.22, .35, 1.7])
+
+    # true redshift
+    p_bkg = da.compute_background_probability(
+        z_lens, z_source=z_source, pzpdf=None, pzbins=None, validate_input=True)
+    expected = np.array([1., 1., 1.])
+    testing.assert_allclose(p_bkg, expected, **TOLERANCE)
+
+    #photoz + deltasigma
+    pzbin = np.linspace(.0001, 5, 100)
+    pzbins = np.zeros([len(z_source), len(pzbin)])
+    pzpdf = pzbins
+
+    for i in range(3):
+        pzpdf[i,:] = multivariate_normal.pdf(pzbin, mean = z_source[i], cov = .3)
+        pzbins[i,:] = pzbin
+
+    testing.assert_raises(ValueError, da.compute_background_probability,
+        z_lens, z_source=z_source, pzpdf=None, pzbins=pzbins, validate_input=True)
+
+
 def test_compute_galaxy_weights():
     """test for compute galaxy weights"""
     cosmo = Cosmology(H0 = 71.0, Omega_dm0 = 0.265 - 0.0448, Omega_b0 = 0.0448, Omega_k0 = 0.0)
@@ -318,7 +342,7 @@ def test_compute_galaxy_weights():
                            validate_input=True)
     expected = np.array([4.58644320e-31, 9.68145632e-31, 5.07260777e-31])
     testing.assert_allclose(weights*1e20, expected*1e20,**TOLERANCE)
-    
+
     #photoz + deltasigma
     pzbin = np.linspace(.0001, 5, 100)
     pzbins = np.zeros([len(z_source), len(pzbin)])
@@ -335,6 +359,15 @@ def test_compute_galaxy_weights():
     expected = np.array([9.07709345e-33, 1.28167582e-32, 4.16870389e-32])
     testing.assert_allclose(weights*1e20, expected*1e20,**TOLERANCE)
 
+    # test with noise
+    weights = da.compute_galaxy_weights(z_lens, cosmo, z_source=None, pzpdf=pzpdf, pzbins=pzbins,
+                           shape_component1=shape_component1, shape_component2=shape_component2,
+                           shape_component1_err=None, shape_component2_err=None,
+                           p_background=None, add_shapenoise=True, is_deltasigma=True,
+                           validate_input=True)
+
+    expected = np.array([9.07709345e-33, 1.28167582e-32, 4.16870389e-32])
+    testing.assert_allclose(weights*1e20, expected*1e20,**TOLERANCE)
 
 def _test_profile_table_output(profile, expected_rmin, expected_radius, expected_rmax,
                                expected_p0, expected_p1, expected_nsrc,
