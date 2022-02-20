@@ -9,6 +9,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2.3.2
+      with: python-version: '3.6'
     - name: Install prereq using apt
       run: sudo apt-get update; sudo apt-get install libgsl0-dev swig3.0 libfftw3-dev gobject-introspection python-gobject gfortran libmpfr-dev libhdf5-dev liblapack-dev libnlopt-dev libcfitsio-dev gir1.2-glib-2.0 libgirepository1.0-dev python3-gi python3-setuptools python3-pytest-cov python3-sphinx python3-sphinx-rtd-theme python3-nbconvert python3-jupyter-client jupyter-client jupyter-nbconvert sphinx-common pandoc -y
     - name: Install NumCosmo from source
@@ -21,20 +23,20 @@ jobs:
         sudo make install
     - name: Install prereq using pip
       run: |        
-        python3.6 numcosmo-0.15.4/examples/example_simple.py
-        sudo python3.6 -m pip install numpy==1.17 scipy==1.3 astropy==3.0 matplotlib
+        python numcosmo-0.15.4/examples/example_simple.py
+        sudo python -m pip install numpy==1.17 scipy==1.3 astropy==3.0 matplotlib
     - name: Install the package
-      run: sudo python3.6 setup.py install
+      run: sudo python setup.py install
     - name: Install cluster_toolkit from source
       run: |
         git clone https://github.com/tmcclintock/cluster_toolkit.git
         cd cluster_toolkit
-        sudo python3.6 setup.py install
+        sudo python setup.py install
     - name: Install CCL from source
       run: |
         git clone https://github.com/LSSTDESC/CCL
         cd CCL
-        sudo python3.6 setup.py install
+        sudo python setup.py install
     - name: Run the unit tests
       run: |
         pytest-3 tests/ --ignore=cluster_toolkit/tests --cov=clmm/
@@ -42,7 +44,7 @@ jobs:
         DISPLAY: test
     - name: Install Sphinx prereq
       run: |
-        sudo python3.6 -m pip install sphinx_rtd_theme -U
+        sudo python -m pip install sphinx_rtd_theme -U
     - name: Run the docs
       run: |
         make -C docs/ html
@@ -50,5 +52,5 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        sudo python3.6 -m pip install coveralls
+        sudo python -m pip install coveralls
         coveralls --service=github
