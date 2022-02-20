@@ -22,7 +22,7 @@ jobs:
     - name: Install prereq using pip
       run: |
         python3 numcosmo-0.15.2/examples/example_simple.py
-        sudo pip3 install numpy==1.17 scipy==1.3 astropy==4.0.6 matplotlib
+        sudo pip3 install numpy==1.17 scipy==1.3 astropy==4.0 matplotlib
     - name: Install the package
       run: |
         sudo python3 setup.py install
