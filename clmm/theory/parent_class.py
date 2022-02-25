@@ -304,7 +304,56 @@ class CLMModeling:
         val = np.array( [ simps( __integrand__( ll , t ) , ll ) for t in theta ] )
         return val * rho_m / ( 2 * np.pi  * ( 1 + z_cl )**3 * da**2 )
 
+    def eval_surface_density_2h_nobias(self, r_proj, z_cl, lsteps=500):
+        r""" Computes the 2-halo term surface density (CCL backend only)
 
+        Parameters
+        ----------
+        r_proj : array_like
+            Projected radial position from the cluster center in :math:`M\!pc`.
+        z_cl: float
+            Redshift of the cluster
+        lsteps: int (optional)
+            Number of steps for numerical integration
+
+        Returns
+        -------
+        array_like, float
+            Excess surface density from the 2-halo term in units of :math:`M_\odot\ Mpc^{-2}`.
+        """
+
+        if self.validate_input:
+            validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
+            validate_argument(locals(), 'z_cl', float, argmin=0)
+            validate_argument(locals(), 'lsteps', int, argmin=1)
+
+        if self.backend not in ('ccl', 'nc'):
+            raise NotImplementedError(
+                f"2-halo term not currently supported with the {self.backend} backend. "
+                "Use the CCL or NumCosmo backend instead")
+        else:
+            return self._eval_surface_density_2h_nobias(r_proj, z_cl, lsteps=lsteps)
+
+    def _eval_surface_density_2h_nobias(self, r_proj, z_cl, lsteps=500):
+        """"eval surface density from the 2-halo term"""
+        da = self.cosmo.eval_da(z_cl)
+        rho_m = self.cosmo._get_rho_m(z_cl)
+
+        kk = np.logspace(-5.,5.,1000)
+        pk = self.cosmo._eval_linear_matter_powerspectrum(kk, z_cl)
+        interp_pk = interp1d(kk, pk, kind='cubic')
+        theta = r_proj / da
+
+        # calculate integral, units [Mpc]**-3
+        def __integrand__( l , theta ):
+            k = l / ((1 + z_cl) * da)
+            return l * jv( 0 , l * theta ) * interp_pk( k )
+
+        ll = np.logspace( 0 , 6 , lsteps )
+        val = np.array( [ simps( __integrand__( ll , t ) , ll ) for t in theta ] )
+        return val * rho_m / ( 2 * np.pi  * ( 1 + z_cl )**3 * da**2 )
+    
+    
     def eval_tangential_shear(self, r_proj, z_cl, z_src):
         r"""Computes the tangential shear
 

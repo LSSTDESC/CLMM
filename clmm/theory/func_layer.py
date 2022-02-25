@@ -13,6 +13,7 @@ from . generic import compute_reduced_shear_from_convergence, compute_magnificat
 
 __all__ = generic.__all__+['compute_3d_density', 'compute_surface_density',
                            'compute_excess_surface_density','compute_excess_surface_density_2h_nobias', 
+                           'compute_surface_density_2h_nobias',
                            'compute_critical_surface_density',
                            'compute_tangential_shear', 'compute_convergence',
                         'compute_reduced_tangential_shear','compute_magnification',
@@ -235,7 +236,7 @@ def compute_excess_surface_density_2h_nobias(r_proj, z_cl, cosmo, lsteps=500, va
     Returns
     -------
     deltasigma_2h : array_like, float
-        2-hgalo term excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
+        2-halo term excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
     """
     gcm.validate_input = validate_input
     gcm.set_cosmo(cosmo)
@@ -244,6 +245,47 @@ def compute_excess_surface_density_2h_nobias(r_proj, z_cl, cosmo, lsteps=500, va
     
     gcm.validate_input = True
     return deltasigma_2h
+
+def compute_surface_density_2h_nobias(r_proj, z_cl, cosmo, lsteps=500, validate_input=True):
+    r""" Computes the 2-halo term surface density from eq.(13) of Oguri & Hamana (2011)
+
+    .. math::
+        \Sigma_{\rm 2h}(R) = \frac{\rho_m(z)b(M)}{(1 + z)^3D_A(z)^2} \int\frac{ldl}{(2\pi)} P_{\rm mm}(k_l, z)J_0(l\theta)
+
+    where
+
+    .. math::
+        k_l = \frac{l}{D_A(z)(1 +z)}
+    
+    and :math:`b(M)` is the halo bias
+
+    Parameters
+    ----------
+    r_proj : array_like
+        Projected radial position from the cluster center in :math:`M\!pc`.
+    z_cl: float
+        Redshift of the cluster
+    cosmo : clmm.cosmology.Cosmology object
+        CLMM Cosmology object
+    halo_bias : float, optional
+        Value of the halo bias
+    lsteps : int, optional
+        Steps for the numerical integration 
+    validate_input: bool
+        Validade each input argument
+
+    Returns
+    -------
+    sigma_2h : array_like, float
+        2-halo term surface density in units of :math:`M_\odot\ Mpc^{-2}`.
+    """
+    gcm.validate_input = validate_input
+    gcm.set_cosmo(cosmo)
+
+    sigma_2h = gcm.eval_surface_density_2h_nobias(r_proj, z_cl, lsteps=lsteps)
+    
+    gcm.validate_input = True
+    return sigma_2h
 
 def compute_critical_surface_density(cosmo, z_cluster, z_source, validate_input=True):
     r"""Computes the critical surface density
