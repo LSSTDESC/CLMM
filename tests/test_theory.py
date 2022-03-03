@@ -245,6 +245,12 @@ def test_profiles(modeling_data, profile_init):
     """ Tests for profile functions, get_3d_density, predict_surface_density,
     and predict_excess_surface_density """
 
+    # Validation tests
+    # NumCosmo makes different choices for constants (Msun). We make this conversion
+    # by passing the ratio of SOLAR_MASS in kg from numcosmo and CLMM
+    cfg = load_validation_config(halo_profile_model=profile_init)
+    cosmo = cfg['cosmo']
+
     if (profile_init=='nfw' or theo.be_nick in ['nc','ccl']) and modeling_data['nick'] not in ['notabackend','testnotabackend']:
 
         helper_profiles(theo.compute_3d_density)
@@ -255,11 +261,6 @@ def test_profiles(modeling_data, profile_init):
             reltol = modeling_data['theory_reltol']
         else:
             reltol = modeling_data['theory_reltol_num']
-        # Validation tests
-        # NumCosmo makes different choices for constants (Msun). We make this conversion
-        # by passing the ratio of SOLAR_MASS in kg from numcosmo and CLMM
-        cfg = load_validation_config(halo_profile_model=profile_init)
-        cosmo = cfg['cosmo']
 
 
         # Object Oriented tests
@@ -300,6 +301,22 @@ def test_profiles(modeling_data, profile_init):
 
     else:
         print('Need to test for error')
+
+    # Einasto-specific tests - checks errors are raised appropriately
+    if profile_init=='einasto' and theo.be_nick!='nc':
+        alpha = 0.5
+        mod = theo.Modeling()
+        # mod.set_cosmo(cosmo)
+        # mod.set_halo_density_profile(
+        #     halo_profile_model=cfg['SIGMA_PARAMS']['halo_profile_model'])
+        # mod.set_concentration(cfg['SIGMA_PARAMS']['cdelta'])
+        # mod.set_mass(cfg['SIGMA_PARAMS']['mdelta']) 
+
+        assert_raises(NotImplementedError, mod.set_einasto_alpha, alpha)
+        assert_raises(NotImplementedError, theo.compute_convergence,0.1,1.e15,4,0.1,0.5,cosmo, alpha=alpha)  
+        assert_raises(NotImplementedError, theo.compute_tangential_shear,0.1,1.e15,4,0.1,0.5,cosmo, alpha=alpha)
+        assert_raises(NotImplementedError, theo.compute_reduced_tangential_shear,0.1,1.e15,4,0.1,0.5,cosmo, alpha=alpha)
+     
 
 def test_compute_critical_surface_density(modeling_data):
     """ Validation test for critical surface density """
