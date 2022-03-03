@@ -278,13 +278,13 @@ def test_profiles(modeling_data, profile_init):
         else:
             alpha = None
         assert_allclose(
-            mod.eval_3d_density(cfg['RHO_PARAMS']['r3d'], cfg['RHO_PARAMS']['z_cl']),
+            mod.eval_3d_density(cfg['RHO_PARAMS']['r3d'], cfg['RHO_PARAMS']['z_cl'], verbose=True),
             cfg['numcosmo_profiles']['rho'], reltol)
         assert_allclose(
-            mod.eval_surface_density(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl']),
+            mod.eval_surface_density(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl'], verbose=True),
             cfg['numcosmo_profiles']['Sigma'], reltol)
         assert_allclose(
-            mod.eval_excess_surface_density(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl']),
+            mod.eval_excess_surface_density(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl'], verbose=True),
             cfg['numcosmo_profiles']['DeltaSigma'], reltol)
         if mod.backend == 'ct':
             assert_raises(ValueError, mod.eval_excess_surface_density,
@@ -292,11 +292,11 @@ def test_profiles(modeling_data, profile_init):
 
         # Functional interface tests
         # alpha is None unless testing Einasto with the NC backend
-        assert_allclose(theo.compute_3d_density(cosmo=cosmo, **cfg['RHO_PARAMS'], alpha=alpha),
+        assert_allclose(theo.compute_3d_density(cosmo=cosmo, **cfg['RHO_PARAMS'], alpha=alpha, verbose=True),
                         cfg['numcosmo_profiles']['rho'], reltol)
-        assert_allclose(theo.compute_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS'], alpha=alpha),
+        assert_allclose(theo.compute_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS'], alpha=alpha, verbose=True),
                         cfg['numcosmo_profiles']['Sigma'], reltol)
-        assert_allclose(theo.compute_excess_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS'], alpha=alpha),
+        assert_allclose(theo.compute_excess_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS'], alpha=alpha, verbose=True),
                         cfg['numcosmo_profiles']['DeltaSigma'], reltol)
 
     else:
@@ -306,11 +306,6 @@ def test_profiles(modeling_data, profile_init):
     if profile_init=='einasto' and theo.be_nick!='nc':
         alpha = 0.5
         mod = theo.Modeling()
-        # mod.set_cosmo(cosmo)
-        # mod.set_halo_density_profile(
-        #     halo_profile_model=cfg['SIGMA_PARAMS']['halo_profile_model'])
-        # mod.set_concentration(cfg['SIGMA_PARAMS']['cdelta'])
-        # mod.set_mass(cfg['SIGMA_PARAMS']['mdelta']) 
 
         assert_raises(NotImplementedError, mod.set_einasto_alpha, alpha)
         assert_raises(NotImplementedError, theo.compute_convergence,0.1,1.e15,4,0.1,0.5,cosmo, alpha=alpha)  
