@@ -18,7 +18,6 @@ def test_mock_data():
     """ Run generate_galaxy_catalog 1000 times and assert that retrieved mass is always consistent
     with input
     """
-
     # Basic raise tests
     assert_raises(ValueError, mock.generate_galaxy_catalog,
                   1e15, 0.3, 4, cosmo, 0.8, ngals=None)
@@ -75,7 +74,11 @@ def test_mock_data():
 
         # Set up mock cluster
         ngals = 5000
-        data = mock.generate_galaxy_catalog(10**mass, 0.3, 4, cosmo, 0.8, ngals=ngals)
+        cluster_ra = 20.
+        cluster_dec = -23.2
+        cluster_z = 0.3
+
+        data = mock.generate_galaxy_catalog(10**mass, cluster_z, 4, cosmo, 0.8, ngals=ngals, cluster_ra=cluster_ra, cluster_dec=cluster_dec)
 
         # Check whether the given ngals is the retrieved ngals
         assert_equal(len(data['ra']), ngals)
@@ -85,7 +88,7 @@ def test_mock_data():
         assert_equal(np.count_nonzero((data['e2'] > 1) | (data['e2'] < -1)), 0)
 
         # Create shear profile
-        cl = clmm.GalaxyCluster("test_cluster", 0.0, 0.0, 0.3, data)
+        cl = clmm.GalaxyCluster("test_cluster", cluster_ra, cluster_dec, cluster_z, data)
         theta, g_t, g_x = cl.compute_tangential_and_cross_components(geometry="flat")
         binned = cl.make_radial_profile("Mpc", bins=da.make_bins(0.5, 5.0, 100),
                                   cosmo=cosmo, include_empty_bins=False)
