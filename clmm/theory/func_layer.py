@@ -473,7 +473,9 @@ def compute_reduced_tangential_shear(
                 `r_proj` is a float);
             * `applegate14`: use the equation (6) in Weighing the Giants - III \
                 (Applegate et al. 2014; https://arxiv.org/abs/1208.0605) to evaluate tangential reduced shear;
-
+            * `schrabback18`: use the equation (12) in Cluster Mass Calibration at High Redshift \
+                (Schrabback et al. 2017; https://arxiv.org/abs/1611.03866) to evaluate tangential reduced shear;
+                
     beta_s_mean: array_like, float
         Lensing efficiency averaged over the galaxy redshift distribution   
 
