@@ -322,12 +322,10 @@ class GalaxyCluster():
         cols = self._get_input_galdata(locals(), required_cols)
         # handles p_background
         if p_background_name not in self.galcat.columns or recompute_p_background:
+            print(f'(re)computing {p_background_name}')
             self.compute_background_probability(
                 z_source=z_source, pzpdf=pzpdf, pzbins=pzbins,
                 add_photoz=add_photoz, p_background_name=p_background_name)
-        if p_background_name not in self.galcat.columns:
-            raise TypeError(
-                f'Galaxy catalog missing required column: {p_background_name}')
         cols['p_background'] = self.galcat[p_background_name]
         # computes weights
         w_ls = compute_galaxy_weights(
