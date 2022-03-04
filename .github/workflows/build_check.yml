@@ -1,6 +1,6 @@
 name: Build and Check
 
-on: [push, pull_request]
+on: pull_request
 
 jobs:
   build-gcc-ubuntu:
