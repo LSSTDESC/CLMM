@@ -313,13 +313,8 @@ def test_compute_background_probability():
 
     #photoz + deltasigma
     pzbin = np.linspace(.0001, 5, 100)
-    pzbins = np.zeros([len(z_source), len(pzbin)])
-    pzpdf = pzbins
-
-    for i in range(3):
-        pzpdf[i,:] = multivariate_normal.pdf(pzbin, mean = z_source[i], cov = .3)
-        pzbins[i,:] = pzbin
-
+    pzbins = [pzbin for i in range(z_source.size)]
+    pzpdf = [multivariate_normal.pdf(pzbin, mean=z, cov=.3) for z in z_source]
     testing.assert_raises(ValueError, da.compute_background_probability,
         z_lens, z_source=z_source, pzpdf=None, pzbins=pzbins, validate_input=True)
 
@@ -345,11 +340,8 @@ def test_compute_galaxy_weights():
 
     #photoz + deltasigma
     pzbin = np.linspace(.0001, 5, 100)
-    pzbins = np.zeros([len(z_source), len(pzbin)])
-    pzpdf = pzbins
-    for i in range(3):
-        pzpdf[i,:] = multivariate_normal.pdf(pzbin, mean = z_source[i], cov = .3)
-        pzbins[i,:] = pzbin
+    pzbins = [pzbin for i in range(len(z_source))]
+    pzpdf = [multivariate_normal.pdf(pzbin, mean=z, cov=.3) for z in z_source]
     weights = da.compute_galaxy_weights(z_lens, cosmo, z_source=None, pzpdf=pzpdf, pzbins=pzbins,
                            shape_component1=shape_component1, shape_component2=shape_component2,
                            shape_component1_err=None, shape_component2_err=None,
