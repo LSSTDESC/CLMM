@@ -259,7 +259,7 @@ class GalaxyCluster():
     def compute_galaxy_weights(self, z_source='z', pzpdf='pzpdf', pzbins='pzbins',
                                shape_component1='e1', shape_component2='e2',
                                shape_component1_err='e1_err', shape_component2_err='e2_err',
-                               use_photoz=False, add_shapenoise=False, add_shape_error=False,
+                               use_photoz=False, use_shape_noise=False, use_shape_error=False,
                                weight_name='w_ls', p_background_name='p_background',
                                recompute_p_background=True, cosmo=None,
                                is_deltasigma=False, add=True):
@@ -289,9 +289,9 @@ class GalaxyCluster():
             of the source galaxies
         use_photoz : boolean
             True for computing photometric weights
-        add_shapenoise : boolean
+        use_shape_noise : boolean
             True for considering shapenoise in the weight computation
-        add_shape_error : boolean
+        use_shape_error : boolean
             True for considering measured shape error in the weight computation
         weight_name : string
             Name of the new column for the weak lensing weights in the galcat table
@@ -317,7 +317,7 @@ class GalaxyCluster():
             required_cols += ['pzpdf', 'pzbins']
         elif is_deltasigma:
             required_cols += ['z_source']
-        if add_shape_error:
+        if use_shape_error:
             required_cols += ['shape_component1_err', 'shape_component2_err']
         cols = self._get_input_galdata(locals(), required_cols)
         # handles p_background
@@ -329,7 +329,7 @@ class GalaxyCluster():
         cols['p_background'] = self.galcat[p_background_name]
         # computes weights
         w_ls = compute_galaxy_weights(
-            self.z, cosmo, add_shapenoise=add_shapenoise,
+            self.z, cosmo, use_shape_noise=use_shape_noise,
             is_deltasigma=is_deltasigma, validate_input=self.validate_input,
             **cols)
         if add:

@@ -203,7 +203,7 @@ def test_integrity_of_weightfuncs():
 
     # test with noise
     cluster.compute_galaxy_weights(cosmo=cosmo, use_shape_noise=True, use_photoz=True,
-                                   add_shape_error=True, is_deltasigma=True)
+                                   use_shape_error=True, is_deltasigma=True)
 
     expected = np.array([9.07709345e-33, 1.28167582e-32, 4.16870389e-32])
     assert_allclose(cluster.galcat['w_ls']*1e20, expected*1e20,**TOLERANCE)
