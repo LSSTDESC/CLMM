@@ -24,7 +24,7 @@ CLMM requires Python version 3.6 or later.  CLMM has the following dependencies:
 
 - [NumPy](http://www.numpy.org/) (1.17 or later)
 - [SciPy](http://www.numpy.org/) (1.3 or later)
-- [Astropy](https://www.astropy.org/) (4.x or later for units and cosmology dependence)  
+- [Astropy](https://www.astropy.org/) (4.0 or later for units and cosmology dependence)  
 (Please avoid Astropy 5.0 since there is bug breaking CCL backend. It has been fixed in Astropy 5.0.1.)
 - [Matplotlib](https://matplotlib.org/) (for plotting and going through tutorials)
 
