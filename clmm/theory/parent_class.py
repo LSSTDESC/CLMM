@@ -135,6 +135,25 @@ class CLMModeling:
         r""" Actually sets the value of the :math:`\alpha` parameter for the Einasto profile"""
         raise NotImplementedError
 
+    def get_einasto_alpha(self, z_cl=None):
+        r""" Returns the value of the :math:`\alpha` parameter for the Einasto profile, if defined
+
+        Parameters
+        ----------
+        z_cl : float
+            Cluster redshift (required for Einasto with the CCL backend, will be ignored for NC)
+        """
+        if self.halo_profile_model!='einasto':
+            raise ValueError(f"Wrong profile model. Currently profile = {self.halo_profile_model}")
+        elif self.backend not in ['ccl', 'nc']:
+            raise NotImplementedError(f"The model backend does not support the Einasto parametrisation")
+        else:
+            return self._get_einasto_alpha(z_cl)
+
+    def _get_einasto_alpha(self, z_cl=None):
+        r""" Returns the value of the :math:`\alpha` parameter for the Einasto profile, if defined"""
+        raise NotImplementedError
+
     def set_concentration(self, cdelta):
         r""" Sets the concentration
 

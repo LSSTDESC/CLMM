@@ -311,7 +311,7 @@ def test_profiles(modeling_data, profile_init):
         assert_raises(NotImplementedError, theo.compute_convergence,0.1,1.e15,4,0.1,0.5,cosmo, alpha=alpha)  
         assert_raises(NotImplementedError, theo.compute_tangential_shear,0.1,1.e15,4,0.1,0.5,cosmo, alpha=alpha)
         assert_raises(NotImplementedError, theo.compute_reduced_tangential_shear,0.1,1.e15,4,0.1,0.5,cosmo, alpha=alpha)
-     
+
 
 def test_compute_critical_surface_density(modeling_data):
     """ Validation test for critical surface density """
