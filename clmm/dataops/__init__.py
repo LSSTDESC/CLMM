@@ -237,7 +237,7 @@ def compute_background_probability(z_lens, z_source=None, pzpdf=None, pzbins=Non
 def compute_galaxy_weights(z_lens, cosmo, z_source=None, pzpdf=None, pzbins=None,
                            shape_component1=None, shape_component2=None,
                            shape_component1_err=None, shape_component2_err=None,
-                           p_background=None, add_shapenoise=False, is_deltasigma=False,
+                           p_background=None, use_shape_noise=False, is_deltasigma=False,
                            validate_input=True):
     r"""Computes the individual lens-source pair weights
 
@@ -300,7 +300,7 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, pzpdf=None, pzbins=None
         The measurement error on the 2nd-component of ellipticity of the source galaxies
     p_background : array, optional
         Probabilities for galaxies being a background galaxy. If not provided it is computed.
-    add_shapenoise : boolean
+    use_shape_noise : boolean
         True for considering shapenoise in the weight computation
     is_deltasigma: boolean
         Indicates whether it is the excess surface density or the tangential shear
@@ -322,7 +322,7 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, pzpdf=None, pzbins=None
         validate_argument(locals(), 'shape_component1_err', 'float_array', none_ok=True)
         validate_argument(locals(), 'shape_component2_err', 'float_array', none_ok=True)
         validate_argument(locals(), 'p_background', 'float_array', none_ok=True)
-        validate_argument(locals(), 'add_shapenoise', bool)
+        validate_argument(locals(), 'use_shape_noise', bool)
         validate_argument(locals(), 'is_deltasigma', bool)
         arguments_consistency(
             [shape_component1, shape_component2],
@@ -348,7 +348,7 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, pzpdf=None, pzbins=None
 
     #computing w_ls_shape
     err_e2 = np.zeros(len(shape_component1))
-    if add_shapenoise:
+    if use_shape_noise:
         err_e2 += np.std(shape_component1)**2 + np.std(shape_component2)**2
     err_e2 += 0 if shape_component1_err is None else shape_component1_err**2
     err_e2 += 0 if shape_component2_err is None else shape_component2_err**2

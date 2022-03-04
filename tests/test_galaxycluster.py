@@ -184,7 +184,7 @@ def test_integrity_of_weightfuncs():
              shape_component1_err, shape_component2_err, z_source],
             names=('e1', 'e2', 'e1_err', 'e2_err', 'z')))
     #true redshift + deltasigma
-    cluster.compute_galaxy_weights(cosmo=cosmo, add_shapenoise=False,
+    cluster.compute_galaxy_weights(cosmo=cosmo, use_shape_noise=False,
                                    is_deltasigma=True)
     expected = np.array([4.58644320e-31, 9.68145632e-31, 5.07260777e-31])
     assert_allclose(cluster.galcat['w_ls']*1e20, expected*1e20,**TOLERANCE)
@@ -196,13 +196,13 @@ def test_integrity_of_weightfuncs():
     pzbin = np.linspace(.0001, 5, 100)
     cluster.galcat['pzbins'] = [pzbin for i in range(len(z_source))]
     cluster.galcat['pzpdf'] = [multivariate_normal.pdf(pzbin, mean=z, cov=.3) for z in z_source]
-    cluster.compute_galaxy_weights(cosmo=cosmo, add_shapenoise=False, use_photoz=True,
+    cluster.compute_galaxy_weights(cosmo=cosmo, use_shape_noise=False, use_photoz=True,
                                    is_deltasigma=True)
     expected = np.array([9.07709345e-33, 1.28167582e-32, 4.16870389e-32])
     assert_allclose(cluster.galcat['w_ls']*1e20, expected*1e20,**TOLERANCE)
 
     # test with noise
-    cluster.compute_galaxy_weights(cosmo=cosmo, add_shapenoise=True, use_photoz=True,
+    cluster.compute_galaxy_weights(cosmo=cosmo, use_shape_noise=True, use_photoz=True,
                                    add_shape_error=True, is_deltasigma=True)
 
     expected = np.array([9.07709345e-33, 1.28167582e-32, 4.16870389e-32])
