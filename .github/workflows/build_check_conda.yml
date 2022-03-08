@@ -12,7 +12,7 @@ jobs:
     - uses: conda-incubator/setup-miniconda@v2
     - name: Install prereq using conda
       run: |
-        conda install gobject-introspection pygobject -y
+        conda install -c conda-forge gobject-introspection pygobject -y
     - name: Install prereq using pip
       run: |
         sudo pip3 install -r requirements.txt
