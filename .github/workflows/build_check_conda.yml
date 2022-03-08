@@ -41,8 +41,8 @@ jobs:
         $CONDA/bin/python -m pip install sphinx_rtd_theme -U
     - name: Run the docs
       run: |
-        export SPHINXBUILD=$CONDA/bin/sphinx-build
-        export SPHINXAPIDOC=$CONDA/bin/sphinx-apidoc
+        SPHINXBUILD=$CONDA/bin/sphinx-build
+        SPHINXAPIDOC=$CONDA/bin/sphinx-apidoc
         make -C docs/ html
     - name: Coveralls
       env:
