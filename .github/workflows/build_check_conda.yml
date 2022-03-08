@@ -27,11 +27,9 @@ jobs:
         git clone https://github.com/tmcclintock/cluster_toolkit.git
         cd cluster_toolkit
         $CONDA/bin/python setup.py install
-    - name: Install CCL from source
+    - name: Install CCL from conda-forge
       run: |
-        git clone https://github.com/LSSTDESC/CCL
-        cd CCL
-        $CONDA/bin/python setup.py install
+        conda install -c conda-forge pyccl -y
     - name: Run the unit tests
       run: |
         $CONDA/bin/python -m pip install pytest pytest-cov
