@@ -273,10 +273,10 @@ def test_profiles(modeling_data, profile_init):
         # Need to set the alpha value for the NC backend to the one used for the benchmarks,
         # which is the CCL default value
         if profile_init=='einasto' and theo.be_nick=='nc': 
-            alpha = cfg['TEST_CASE']['alpha_einasto'] 
-            mod.set_einasto_alpha(alpha)
+            alpha_ein = cfg['TEST_CASE']['alpha_einasto'] 
+            mod.set_einasto_alpha(alpha_ein)
         else:
-            alpha = None
+            alpha_ein = None
         assert_allclose(
             mod.eval_3d_density(cfg['RHO_PARAMS']['r3d'], cfg['RHO_PARAMS']['z_cl'], verbose=True),
             cfg['numcosmo_profiles']['rho'], reltol)
@@ -291,12 +291,12 @@ def test_profiles(modeling_data, profile_init):
                           1e-12, cfg['SIGMA_PARAMS']['z_cl'])
 
         # Functional interface tests
-        # alpha is None unless testing Einasto with the NC backend
-        assert_allclose(theo.compute_3d_density(cosmo=cosmo, **cfg['RHO_PARAMS'], alpha=alpha, verbose=True),
+        # alpha_ein is None unless testing Einasto with the NC backend
+        assert_allclose(theo.compute_3d_density(cosmo=cosmo, **cfg['RHO_PARAMS'], alpha_ein=alpha_ein, verbose=True),
                         cfg['numcosmo_profiles']['rho'], reltol)
-        assert_allclose(theo.compute_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS'], alpha=alpha, verbose=True),
+        assert_allclose(theo.compute_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS'], alpha_ein=alpha_ein, verbose=True),
                         cfg['numcosmo_profiles']['Sigma'], reltol)
-        assert_allclose(theo.compute_excess_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS'], alpha=alpha, verbose=True),
+        assert_allclose(theo.compute_excess_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS'], alpha_ein=alpha_ein, verbose=True),
                         cfg['numcosmo_profiles']['DeltaSigma'], reltol)
 
     else:
@@ -304,18 +304,18 @@ def test_profiles(modeling_data, profile_init):
 
     # Einasto-specific tests - checks errors are raised appropriately
     if profile_init=='einasto': 
-        alpha = 0.5
+        alpha_ein = 0.5
         if theo.be_nick!='nc':
             mod = theo.Modeling()
-            assert_raises(NotImplementedError, mod.set_einasto_alpha, alpha)
-            assert_raises(NotImplementedError, theo.compute_convergence,0.1,1.e15,4,0.1,0.5,cosmo, alpha=alpha)  
-            assert_raises(NotImplementedError, theo.compute_tangential_shear,0.1,1.e15,4,0.1,0.5,cosmo, alpha=alpha)
-            assert_raises(NotImplementedError, theo.compute_reduced_tangential_shear,0.1,1.e15,4,0.1,0.5,cosmo, alpha=alpha)
+            assert_raises(NotImplementedError, mod.set_einasto_alpha, alpha_ein)
+            assert_raises(NotImplementedError, theo.compute_convergence,0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)  
+            assert_raises(NotImplementedError, theo.compute_tangential_shear,0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)
+            assert_raises(NotImplementedError, theo.compute_reduced_tangential_shear,0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)
         else:
             mod = theo.Modeling()
             mod.set_halo_density_profile(halo_profile_model=profile_init)
-            mod.set_einasto_alpha(alpha)
-            assert_allclose(mod.get_einasto_alpha(), alpha, reltol) 
+            mod.set_einasto_alpha(alpha_ein)
+            assert_allclose(mod.get_einasto_alpha(), alpha_ein, reltol) 
         
     if profile_init!='einasto':
         mod = theo.Modeling()
