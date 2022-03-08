@@ -12,8 +12,8 @@ from . import generic
 from . generic import compute_reduced_shear_from_convergence, compute_magnification_bias_from_magnification
 
 __all__ = generic.__all__+['compute_3d_density', 'compute_surface_density',
-                           'compute_excess_surface_density','compute_excess_surface_density_2h_nobias', 
-                           'compute_surface_density_2h_nobias',
+                           'compute_excess_surface_density','compute_excess_surface_density_2h', 
+                           'compute_surface_density_2h',
                            'compute_critical_surface_density',
                            'compute_tangential_shear', 'compute_convergence',
                         'compute_reduced_tangential_shear','compute_magnification',
@@ -205,7 +205,7 @@ def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
     gcm.validate_input = True
     return deltasigma
 
-def compute_excess_surface_density_2h_nobias(r_proj, z_cl, cosmo, lsteps=500, validate_input=True):
+def compute_excess_surface_density_2h(r_proj, z_cl, cosmo, halobias=1., lsteps=500, validate_input=True):
     r""" Computes the 2-halo term excess surface density from eq.(13) of Oguri & Hamana (2011)
 
     .. math::
@@ -226,7 +226,7 @@ def compute_excess_surface_density_2h_nobias(r_proj, z_cl, cosmo, lsteps=500, va
         Redshift of the cluster
     cosmo : clmm.cosmology.Cosmology object
         CLMM Cosmology object
-    halo_bias : float, optional
+    halobias : float, optional
         Value of the halo bias
     lsteps : int, optional
         Steps for the numerical integration 
@@ -241,12 +241,12 @@ def compute_excess_surface_density_2h_nobias(r_proj, z_cl, cosmo, lsteps=500, va
     gcm.validate_input = validate_input
     gcm.set_cosmo(cosmo)
 
-    deltasigma_2h = gcm.eval_excess_surface_density_2h_nobias(r_proj, z_cl, lsteps=lsteps)
+    deltasigma_2h = gcm.eval_excess_surface_density_2h(r_proj, z_cl, halobias=halobias, lsteps=lsteps)
     
     gcm.validate_input = True
     return deltasigma_2h
 
-def compute_surface_density_2h_nobias(r_proj, z_cl, cosmo, lsteps=500, validate_input=True):
+def compute_surface_density_2h(r_proj, z_cl, cosmo, halobias=1, lsteps=500, validate_input=True):
     r""" Computes the 2-halo term surface density from eq.(13) of Oguri & Hamana (2011)
 
     .. math::
@@ -267,7 +267,7 @@ def compute_surface_density_2h_nobias(r_proj, z_cl, cosmo, lsteps=500, validate_
         Redshift of the cluster
     cosmo : clmm.cosmology.Cosmology object
         CLMM Cosmology object
-    halo_bias : float, optional
+    halobias : float, optional
         Value of the halo bias
     lsteps : int, optional
         Steps for the numerical integration 
@@ -282,7 +282,7 @@ def compute_surface_density_2h_nobias(r_proj, z_cl, cosmo, lsteps=500, validate_
     gcm.validate_input = validate_input
     gcm.set_cosmo(cosmo)
 
-    sigma_2h = gcm.eval_surface_density_2h_nobias(r_proj, z_cl, lsteps=lsteps)
+    sigma_2h = gcm.eval_surface_density_2h(r_proj, z_cl, halobias = halobias, lsteps=lsteps)
     
     gcm.validate_input = True
     return sigma_2h

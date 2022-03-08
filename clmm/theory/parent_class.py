@@ -255,7 +255,7 @@ class CLMModeling:
     def _eval_excess_surface_density(self, r_proj, z_cl):
         raise NotImplementedError
 
-    def eval_excess_surface_density_2h_nobias(self, r_proj, z_cl, lsteps=500):
+    def eval_excess_surface_density_2h(self, r_proj, z_cl, halobias=1., lsteps=500):
         r""" Computes the 2-halo term excess surface density (CCL backend only)
 
         Parameters
@@ -264,6 +264,8 @@ class CLMModeling:
             Projected radial position from the cluster center in :math:`M\!pc`.
         z_cl: float
             Redshift of the cluster
+        halobias : float, optional
+            Value of the halo bias
         lsteps: int (optional)
             Number of steps for numerical integration
 
@@ -277,15 +279,17 @@ class CLMModeling:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', float, argmin=0)
             validate_argument(locals(), 'lsteps', int, argmin=1)
+            validate_argument(locals(), 'halobias', float, argmin=0)
+
 
         if self.backend not in ('ccl', 'nc'):
             raise NotImplementedError(
                 f"2-halo term not currently supported with the {self.backend} backend. "
                 "Use the CCL or NumCosmo backend instead")
         else:
-            return self._eval_excess_surface_density_2h_nobias(r_proj, z_cl, lsteps=lsteps)
+            return self._eval_excess_surface_density_2h(r_proj, z_cl, halobias=halobias, lsteps=lsteps)
 
-    def _eval_excess_surface_density_2h_nobias(self, r_proj, z_cl, lsteps=500):
+    def _eval_excess_surface_density_2h(self, r_proj, z_cl, halobias=1.,lsteps=500):
         """"eval excess surface density from the 2-halo term"""
         da = self.cosmo.eval_da(z_cl)
         rho_m = self.cosmo._get_rho_m(z_cl)
@@ -302,9 +306,9 @@ class CLMModeling:
 
         ll = np.logspace( 0 , 6 , lsteps )
         val = np.array( [ simps( __integrand__( ll , t ) , ll ) for t in theta ] )
-        return val * rho_m / ( 2 * np.pi  * ( 1 + z_cl )**3 * da**2 )
+        return halobias * val * rho_m / ( 2 * np.pi  * ( 1 + z_cl )**3 * da**2 )
 
-    def eval_surface_density_2h_nobias(self, r_proj, z_cl, lsteps=500):
+    def eval_surface_density_2h(self, r_proj, z_cl, halobias=1., lsteps=500):
         r""" Computes the 2-halo term surface density (CCL backend only)
 
         Parameters
@@ -313,6 +317,8 @@ class CLMModeling:
             Projected radial position from the cluster center in :math:`M\!pc`.
         z_cl: float
             Redshift of the cluster
+        halobias : float, optional
+           Value of the halo bias
         lsteps: int (optional)
             Number of steps for numerical integration
 
@@ -326,15 +332,16 @@ class CLMModeling:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', float, argmin=0)
             validate_argument(locals(), 'lsteps', int, argmin=1)
+            validate_argument(locals(), 'halobias', float, argmin=0)
 
         if self.backend not in ('ccl', 'nc'):
             raise NotImplementedError(
                 f"2-halo term not currently supported with the {self.backend} backend. "
                 "Use the CCL or NumCosmo backend instead")
         else:
-            return self._eval_surface_density_2h_nobias(r_proj, z_cl, lsteps=lsteps)
+            return self._eval_surface_density_2h(r_proj, z_cl, halobias=halobias, lsteps=lsteps)
 
-    def _eval_surface_density_2h_nobias(self, r_proj, z_cl, lsteps=500):
+    def _eval_surface_density_2h(self, r_proj, z_cl, halobias=1., lsteps=500):
         """"eval surface density from the 2-halo term"""
         da = self.cosmo.eval_da(z_cl)
         rho_m = self.cosmo._get_rho_m(z_cl)
@@ -351,7 +358,7 @@ class CLMModeling:
 
         ll = np.logspace( 0 , 6 , lsteps )
         val = np.array( [ simps( __integrand__( ll , t ) , ll ) for t in theta ] )
-        return val * rho_m / ( 2 * np.pi  * ( 1 + z_cl )**3 * da**2 )
+        return halobias * val * rho_m / ( 2 * np.pi  * ( 1 + z_cl )**3 * da**2 )
     
     
     def eval_tangential_shear(self, r_proj, z_cl, z_src):

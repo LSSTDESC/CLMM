@@ -279,32 +279,32 @@ def test_2halo_term(modeling_data):
     mod.set_cosmo(cosmo)
 
     if mod.backend not in ['ccl','nc']:
-        assert_raises(NotImplementedError, mod.eval_surface_density_2h_nobias,
+        assert_raises(NotImplementedError, mod.eval_surface_density_2h,
                       1., cfg['SIGMA_PARAMS']['z_cl'])
-        assert_raises(NotImplementedError, mod.eval_excess_surface_density_2h_nobias,
+        assert_raises(NotImplementedError, mod.eval_excess_surface_density_2h,
                       1., cfg['SIGMA_PARAMS']['z_cl'])
     else:
         # Just checking that it runs and returns array of the right length
         # To be updated with proper comparison to benchmark when available
-        assert_equal(len(mod.eval_surface_density_2h_nobias(cfg['SIGMA_PARAMS']['r_proj'],
+        assert_equal(len(mod.eval_surface_density_2h(cfg['SIGMA_PARAMS']['r_proj'],
                                                                cfg['SIGMA_PARAMS']['z_cl'])),
                         len(cfg['SIGMA_PARAMS']['r_proj'])) 
-        assert_equal(len(mod.eval_excess_surface_density_2h_nobias(cfg['SIGMA_PARAMS']['r_proj'],
+        assert_equal(len(mod.eval_excess_surface_density_2h(cfg['SIGMA_PARAMS']['r_proj'],
                                                                cfg['SIGMA_PARAMS']['z_cl'])),
                         len(cfg['SIGMA_PARAMS']['r_proj'])) 
 
         # Checks that OO-oriented and functional interface give the same results
         assert_allclose(
-            theo.compute_excess_surface_density_2h_nobias(
+            theo.compute_excess_surface_density_2h(
                 cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl'], cosmo),
-            mod.eval_excess_surface_density_2h_nobias(
+            mod.eval_excess_surface_density_2h(
                 cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl']),
             1.0e-10)
 
         assert_allclose(
-            theo.compute_surface_density_2h_nobias(
+            theo.compute_surface_density_2h(
                 cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl'], cosmo),
-            mod.eval_surface_density_2h_nobias(
+            mod.eval_surface_density_2h(
                 cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl']),
             1.0e-10)
 
