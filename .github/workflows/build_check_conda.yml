@@ -12,22 +12,22 @@ jobs:
     - uses: conda-incubator/setup-miniconda@v2
     - name: Install prereq using pip
       run: |
-        pip3 install -r requirements.txt
+        sudo pip3 install -r requirements.txt
     - name: Install the package
       run: python3 setup.py install
     - name: Install NumCosmo from conda-forge
       run: |
-        conda install -c conda-forge numcosmo
+        conda install -c conda-forge numcosmo -y
     - name: Install cluster_toolkit from source
       run: |
         git clone https://github.com/tmcclintock/cluster_toolkit.git
         cd cluster_toolkit
-        python3 setup.py install
+        sudo python3 setup.py install
     - name: Install CCL from source
       run: |
         git clone https://github.com/LSSTDESC/CCL
         cd CCL
-        python3 setup.py install
+        sudo python3 setup.py install
     - name: Run the unit tests
       run: |
         pytest-3 tests/ --ignore=cluster_toolkit/tests --cov=clmm/
@@ -35,7 +35,7 @@ jobs:
         DISPLAY: test
     - name: Install Sphinx prereq
       run: |
-        pip3 install sphinx_rtd_theme -U
+        sudo pip3 install sphinx_rtd_theme -U
     - name: Run the docs
       run: |
         make -C docs/ html
@@ -43,5 +43,5 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        pip3 install coveralls
+        sudo pip3 install coveralls
         coveralls --service=github
