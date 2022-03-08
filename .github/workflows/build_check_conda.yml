@@ -15,7 +15,7 @@ jobs:
         conda install -c conda-forge gobject-introspection pygobject -y
     - name: Install prereq using pip
       run: |
-        pip install -r requirements.txt
+        $CONDA/bin/python -m pip install -r requirements.txt
     - name: Install the package
       run: |
         python setup.py install
