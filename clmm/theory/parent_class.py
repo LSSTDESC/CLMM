@@ -144,9 +144,7 @@ class CLMModeling:
             Cluster redshift (required for Einasto with the CCL backend, will be ignored for NC)
         """
         if self.halo_profile_model!='einasto':
-            raise ValueError(f"Wrong profile model. Currently profile = {self.halo_profile_model}")
-        elif self.backend not in ['ccl', 'nc']:
-            raise NotImplementedError(f"The model backend does not support the Einasto parametrisation")
+            raise ValueError(f"Wrong profile model. Current profile = {self.halo_profile_model}")
         else:
             return self._get_einasto_alpha(z_cl)
 

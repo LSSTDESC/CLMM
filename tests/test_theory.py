@@ -303,15 +303,23 @@ def test_profiles(modeling_data, profile_init):
         print('Need to test for error')
 
     # Einasto-specific tests - checks errors are raised appropriately
-    if profile_init=='einasto' and theo.be_nick!='nc':
+    if profile_init=='einasto': 
         alpha = 0.5
+        if theo.be_nick!='nc':
+            mod = theo.Modeling()
+            assert_raises(NotImplementedError, mod.set_einasto_alpha, alpha)
+            assert_raises(NotImplementedError, theo.compute_convergence,0.1,1.e15,4,0.1,0.5,cosmo, alpha=alpha)  
+            assert_raises(NotImplementedError, theo.compute_tangential_shear,0.1,1.e15,4,0.1,0.5,cosmo, alpha=alpha)
+            assert_raises(NotImplementedError, theo.compute_reduced_tangential_shear,0.1,1.e15,4,0.1,0.5,cosmo, alpha=alpha)
+        else:
+            mod = theo.Modeling()
+            mod.set_halo_density_profile(halo_profile_model=profile_init)
+            mod.set_einasto_alpha(alpha)
+            assert_allclose(mod.get_einasto_alpha(), alpha, reltol) 
+        
+    if profile_init!='einasto':
         mod = theo.Modeling()
-
-        assert_raises(NotImplementedError, mod.set_einasto_alpha, alpha)
-        assert_raises(NotImplementedError, theo.compute_convergence,0.1,1.e15,4,0.1,0.5,cosmo, alpha=alpha)  
-        assert_raises(NotImplementedError, theo.compute_tangential_shear,0.1,1.e15,4,0.1,0.5,cosmo, alpha=alpha)
-        assert_raises(NotImplementedError, theo.compute_reduced_tangential_shear,0.1,1.e15,4,0.1,0.5,cosmo, alpha=alpha)
-
+        assert_raises(ValueError, mod.get_einasto_alpha) 
 
 def test_compute_critical_surface_density(modeling_data):
     """ Validation test for critical surface density """
@@ -449,9 +457,13 @@ def test_shear_convergence_unittests(modeling_data):
     cfg_inf['GAMMA_PARAMS']['z_source'] = 1000.
     gammat_inf = theo.compute_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'])
     kappa_inf = theo.compute_convergence(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'])
+
     cfg_inf['GAMMA_PARAMS']['z_src_model'] = 'applegate14'
     assert_allclose(theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'], beta_s_mean=beta_s_mean, beta_s_square_mean=beta_s_square_mean),
                     beta_s_mean * gammat_inf/(1.0 - beta_s_square_mean / beta_s_mean * kappa_inf), 1.0e-10)
+
+    assert_raises(ValueError, theo.compute_reduced_tangential_shear, cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'], beta_s_mean=None, beta_s_square_mean=None)
+
 
     cfg_inf['GAMMA_PARAMS']['z_src_model'] = 'schrabback18'
     assert_allclose(theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'], beta_s_mean=beta_s_mean, beta_s_square_mean=beta_s_square_mean),
@@ -460,6 +472,8 @@ def test_shear_convergence_unittests(modeling_data):
     
     assert_allclose(gammat*sigmac_corr/(1.-(kappa*sigmac_corr)),
                     cfg['numcosmo_profiles']['gt'], 1.e2*reltol)
+
+    assert_raises(ValueError, theo.compute_reduced_tangential_shear, cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'], beta_s_mean=None, beta_s_square_mean=None)
 
     # Validate magnification
     assert_allclose(theo.compute_magnification(cosmo=cosmo, **cfg['GAMMA_PARAMS']),
