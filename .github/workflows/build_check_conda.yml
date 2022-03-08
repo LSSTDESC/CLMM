@@ -18,7 +18,7 @@ jobs:
         $CONDA/bin/python -m pip install -r requirements.txt
     - name: Install the package
       run: |
-        python setup.py install
+        $CONDA/bin/python setup.py install
     - name: Install NumCosmo from conda-forge
       run: |
         conda install -c conda-forge numcosmo -y
@@ -26,21 +26,21 @@ jobs:
       run: |
         git clone https://github.com/tmcclintock/cluster_toolkit.git
         cd cluster_toolkit
-        python setup.py install
+        $CONDA/bin/python setup.py install
     - name: Install CCL from source
       run: |
         git clone https://github.com/LSSTDESC/CCL
         cd CCL
-        python setup.py install
+        $CONDA/bin/python setup.py install
     - name: Run the unit tests
       run: |
-        pip install pytest pytest-cov
-        pytest tests/ --ignore=cluster_toolkit/tests --cov=clmm/
+        $CONDA/bin/python -m pip install pytest pytest-cov
+        $CONDA/bin/python -m pytest tests/ --ignore=cluster_toolkit/tests --cov=clmm/
       env:
         DISPLAY: test
     - name: Install Sphinx prereq
       run: |
-        pip install sphinx_rtd_theme -U
+        $CONDA/bin/python -m pip install sphinx_rtd_theme -U
     - name: Run the docs
       run: |
         make -C docs/ html
@@ -48,5 +48,5 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        pip install coveralls
-        coveralls --service=github
+        $CONDA/bin/python -m pip install coveralls
+        $CONDA/bin/python -m coveralls --service=github
