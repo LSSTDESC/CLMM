@@ -31,7 +31,8 @@ jobs:
         sudo python3 setup.py install
     - name: Run the unit tests
       run: |
-        pytest-3 tests/ --ignore=cluster_toolkit/tests --cov=clmm/
+        sudo pip install pytest pytest-cov
+        pytest tests/ --ignore=cluster_toolkit/tests --cov=clmm/
       env:
         DISPLAY: test
     - name: Install Sphinx prereq
