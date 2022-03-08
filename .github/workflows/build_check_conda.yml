@@ -9,6 +9,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Install prereq using apt
+      run: sudo apt-get update; sudo apt-get install gobject-introspection python-gobject python3-gi python3-pytest-cov python3-sphinx python3-sphinx-rtd-theme python3-nbconvert python3-jupyter-client jupyter-client jupyter-nbconvert sphinx-common pandoc -y
     - uses: conda-incubator/setup-miniconda@v2
     - name: Install prereq using pip
       run: |
@@ -31,8 +33,7 @@ jobs:
         sudo python3 setup.py install
     - name: Run the unit tests
       run: |
-        sudo pip install pytest pytest-cov
-        pytest tests/ --ignore=cluster_toolkit/tests --cov=clmm/
+        pytest-3 tests/ --ignore=cluster_toolkit/tests --cov=clmm/
       env:
         DISPLAY: test
     - name: Install Sphinx prereq
