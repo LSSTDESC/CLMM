@@ -41,9 +41,8 @@ jobs:
         $CONDA/bin/python -m pip install sphinx_rtd_theme -U
     - name: Run the docs
       run: |
-        SPHINXBUILD=$CONDA/bin/sphinx-build
-        SPHINXAPIDOC=$CONDA/bin/sphinx-apidoc
-        make -C docs/ html
+        $CONDA/bin/sphinx-apidoc --separate --no-toc -f -M -o api ./clmm
+        $CONDA/bin/sphinx-build -M html  "./docs" "./docs/_build" -W
     - name: Coveralls
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
