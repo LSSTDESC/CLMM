@@ -14,7 +14,8 @@ jobs:
       run: |
         sudo pip3 install -r requirements.txt
     - name: Install the package
-      run: python3 setup.py install
+      run: |
+        sudo python3 setup.py install
     - name: Install NumCosmo from conda-forge
       run: |
         conda install -c conda-forge numcosmo -y
