@@ -12,7 +12,7 @@ jobs:
     - uses: conda-incubator/setup-miniconda@v2
     - name: Install prereq using conda
       run: |
-        conda install -c conda-forge gobject-introspection pygobject -y
+        conda install -c conda-forge gobject-introspection pygobject cmake swig -y
         echo "$CONDA/bin" >> $GITHUB_PATH
     - name: Install prereq using pip
       run: |
@@ -28,9 +28,11 @@ jobs:
         git clone https://github.com/tmcclintock/cluster_toolkit.git
         cd cluster_toolkit
         python setup.py install
-    - name: Install CCL from conda-forge
+    - name: Install CCL from source
       run: |
-        conda install -c conda-forge pyccl -y
+        git clone https://github.com/LSSTDESC/CCL
+        cd CCL
+        python setup.py install
     - name: Run the unit tests
       run: |
         pip install pytest pytest-cov
