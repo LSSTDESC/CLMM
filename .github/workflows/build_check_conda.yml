@@ -39,7 +39,7 @@ jobs:
         DISPLAY: test
     - name: Install Sphinx prereq
       run: |
-        pip install -U sphinx_rtd_theme nbconvert pandoc ipython
+        conda install sphinx_rtd_theme nbconvert pandoc ipython
     - name: Run the docs
       run: |
         make -C docs/ html
