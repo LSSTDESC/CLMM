@@ -39,7 +39,7 @@ jobs:
         DISPLAY: test
     - name: Install Sphinx prereq
       run: |
-        pip install -U sphinx_rtd_theme nbconvert
+        pip install -U sphinx_rtd_theme nbconvert pandoc
     - name: Run the docs
       run: |
         sphinx-apidoc --separate --no-toc -f -M -o api ./clmm
