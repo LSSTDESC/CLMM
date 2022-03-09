@@ -13,12 +13,13 @@ jobs:
     - name: Install prereq using conda
       run: |
         conda install -c conda-forge gobject-introspection pygobject -y
+        echo '$CONDA/bin' >> $GITHUB_PATH
     - name: Install prereq using pip
       run: |
-        $CONDA/bin/python -m pip install -r requirements.txt
+        pip install -r requirements.txt
     - name: Install the package
       run: |
-        $CONDA/bin/python setup.py install
+        python setup.py install
     - name: Install NumCosmo from conda-forge
       run: |
         conda install -c conda-forge numcosmo -y
@@ -26,26 +27,26 @@ jobs:
       run: |
         git clone https://github.com/tmcclintock/cluster_toolkit.git
         cd cluster_toolkit
-        $CONDA/bin/python setup.py install
+        python setup.py install
     - name: Install CCL from conda-forge
       run: |
         conda install -c conda-forge pyccl -y
     - name: Run the unit tests
       run: |
-        $CONDA/bin/python -m pip install pytest pytest-cov
-        $CONDA/bin/python -m pytest tests/ --ignore=cluster_toolkit/tests --cov=clmm/
+        pip install pytest pytest-cov
+        pytest tests/ --ignore=cluster_toolkit/tests --cov=clmm/
       env:
         DISPLAY: test
     - name: Install Sphinx prereq
       run: |
-        $CONDA/bin/python -m pip install sphinx_rtd_theme -U
+        pip install sphinx_rtd_theme -U
     - name: Run the docs
       run: |
-        $CONDA/bin/sphinx-apidoc --separate --no-toc -f -M -o api ./clmm
-        $CONDA/bin/sphinx-build -M html  "./docs" "./docs/_build" -W
+        sphinx-apidoc --separate --no-toc -f -M -o api ./clmm
+        sphinx-build -M html  "./docs" "./docs/_build" -W
     - name: Coveralls
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        $CONDA/bin/python -m pip install coveralls
-        $CONDA/bin/python -m coveralls --service=github
+        pip install coveralls
+        python -m coveralls --service=github
