@@ -16,7 +16,6 @@ jobs:
         echo "$CONDA/bin" >> $GITHUB_PATH
     - name: Install prereq using pip
       run: |
-        echo "$PATH"
         pip install -r requirements.txt
     - name: Install the package
       run: |
@@ -40,7 +39,7 @@ jobs:
         DISPLAY: test
     - name: Install Sphinx prereq
       run: |
-        pip install sphinx_rtd_theme -U
+        pip install -U sphinx_rtd_theme nbconvert
     - name: Run the docs
       run: |
         sphinx-apidoc --separate --no-toc -f -M -o api ./clmm
