@@ -42,8 +42,7 @@ jobs:
         pip install -U sphinx_rtd_theme nbconvert pandoc
     - name: Run the docs
       run: |
-        sphinx-apidoc --separate --no-toc -f -M -o api ./clmm
-        sphinx-build -M html  "./docs" "./docs/_build" -W
+        make -C docs/ html
     - name: Coveralls
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
