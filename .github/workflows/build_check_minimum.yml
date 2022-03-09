@@ -1,4 +1,4 @@
-name: Build and Check
+name: Build and Check Minimum
 
 on: pull_request
 
