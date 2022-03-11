@@ -76,6 +76,9 @@ class AstroPyCosmology(CLMMCosmology):
     def _get_Omega_m(self, z):
         return self.be_cosmo.Om(z)
 
+    def _get_E2(self, z):
+        return (self.be_cosmo.H(z)/self.be_cosmo.H0)**2
+
     def _get_E2Omega_m(self, z):
         return self.be_cosmo.Om(z)*(self.be_cosmo.H(z)/self.be_cosmo.H0)**2
 
