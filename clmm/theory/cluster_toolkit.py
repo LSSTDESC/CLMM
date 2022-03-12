@@ -82,7 +82,13 @@ class CTModeling(CLMModeling):
         # Set halo profile and cosmology
         self.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
         self.set_cosmo(None)
-        self.Omega_m = {
+
+        #Exploit cluster-toolkit's calculation to get massdef='critical'
+        #CT takes the argument 'Omega_m' to culculate rho_m(z) from rho_c (in M_sun*h^2/Mpc^3)
+        #Passing (H(z)/H0)^2*Omega_m(z)=E(z)^2*Omega_m(z) is expected
+        #Passing (H(z)/H0)^2=E^2 will effectively change the massdef to 'critical'
+        #by calculating rho_c(z), instead of rho_m(z), from rho_c
+        self.Omega = {
             'mean': self.cosmo._get_E2Omega_m,
             'critical': self.cosmo._get_E2,
             'virial': self.cosmo._get_E2}
@@ -105,7 +111,7 @@ class CTModeling(CLMModeling):
     def _eval_3d_density(self, r3d, z_cl):
         """"eval 3d density"""
         h = self.cosmo['h']
-        Omega_m = self.Omega_m[self.massdef](z_cl)*self.cor_factor
+        Omega_m = self.Omega[self.massdef](z_cl)*self.cor_factor
 
         return ct.density.rho_nfw_at_r(
             _assert_correct_type_ct(r3d)*h, self.mdelta*h,
@@ -114,7 +120,7 @@ class CTModeling(CLMModeling):
     def _eval_surface_density(self, r_proj, z_cl):
         """"eval surface density"""
         h = self.cosmo['h']
-        Omega_m = self.Omega_m[self.massdef](z_cl)*self.cor_factor
+        Omega_m = self.Omega[self.massdef](z_cl)*self.cor_factor
 
         return ct.deltasigma.Sigma_nfw_at_R(
             _assert_correct_type_ct(r_proj)*h, self.mdelta*h,
@@ -150,7 +156,7 @@ class CTModeling(CLMModeling):
                 " This value is too small and may cause computational issues.")
 
         h = self.cosmo['h']
-        Omega_m = self.Omega_m[self.massdef](z_cl)*self.cor_factor
+        Omega_m = self.Omega[self.massdef](z_cl)*self.cor_factor
 
         r_proj = _assert_correct_type_ct(r_proj)*h
         # Computing sigma on a larger range than the radial range requested,
