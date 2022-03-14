@@ -2,7 +2,7 @@
 """ Tests for utils.py """
 import numpy as np
 from numpy.testing import assert_raises, assert_allclose
-
+from scipy.integrate import quad
 import clmm.utils as utils
 import clmm.theory as md
 from clmm.utils import (
@@ -379,18 +379,29 @@ def test_beta_functions():
     cosmo = md.Cosmology(H0=70.0, Omega_dm0=0.27 - 0.045,
                   Omega_b0=0.045, Omega_k0=0.0)
     beta_test = np.heaviside(z_s-z_cl, 0) * cosmo.eval_da_z1z2(z_cl, z_s) / cosmo.eval_da(z_cl) 
-    beta_s_test = utils.compute_beta(z_cl, z_s, cosmo) / utils.compute_beta(z_cl, z_inf, cosmo)
+    beta_s_test = utils.compute_beta(z_s, z_cl, cosmo) / utils.compute_beta(z_inf, z_cl, cosmo)
     def pdz(z):
         return (z**1.24)*np.exp(-(z/0.51)**1.01)
     
-    test1 = utils.compute_beta(z_cl, z_s, cosmo)
-    test2 = utils.compute_beta_s(z_cl, z_s, z_inf, cosmo)  
-    test3 = utils.compute_B_mean(z_cl,cosmo, zmax, nsteps) 
-    test4 = utils.compute_Bs_mean(z_cl,z_inf,cosmo, zmax, nsteps)
-    test5 = utils.compute_Bs_square_mean(z_cl,z_inf,cosmo, zmax, nsteps)    
+    def integrand1(z_i,z_cl=z_cl, cosmo=cosmo):
+        return utils.compute_beta(z_i, z_cl, cosmo) * pdz(z_i)
+    
+    def integrand2(z_i, z_inf=z_inf, z_cl=z_cl, cosmo=cosmo):
+        return utils.compute_beta_s(z_i, z_cl, z_inf, cosmo) * pdz(z_i)
+    
+    def integrand3(z_i, z_inf=z_inf, z_cl=z_cl, cosmo=cosmo):
+        return utils.compute_beta_s(z_i, z_cl, z_inf, cosmo)**2 * pdz(z_i)
+    
+    
+        
+    test1 = utils.compute_beta(z_s, z_cl, cosmo)
+    test2 = utils.compute_beta_s(z_s, z_cl, z_inf, cosmo)  
+    test3 = utils.compute_B_mean(z_cl, cosmo, zmax) 
+    test4 = utils.compute_Bs_mean(z_cl, z_inf,cosmo, zmax)
+    test5 = utils.compute_Bs_square_mean(z_cl,z_inf,cosmo, zmax)    
     
     assert_allclose(test1, beta_test, **TOLERANCE)
     assert_allclose(test2, beta_s_test, **TOLERANCE)
-    assert_allclose(test3, np.nansum(utils.compute_beta(z_cl, z_int, cosmo)* pdz(z_int)) / np.nansum(pdz(z_int)), **TOLERANCE)
-    assert_allclose(test4, np.nansum(utils.compute_beta_s(z_cl, z_int, z_inf, cosmo) * pdz(z_int)) / np.nansum(pdz(z_int)), **TOLERANCE)
-    assert_allclose(test5, np.nansum(utils.compute_beta_s(z_cl, z_int, z_inf, cosmo)**2 * pdz(z_int)) / np.nansum(pdz(z_int)), **TOLERANCE)
+    assert_allclose(test3, quad(integrand1, zmin, zmax)[0] / quad(pdz, zmin, zmax)[0], **TOLERANCE)
+    assert_allclose(test4, quad(integrand2, zmin, zmax)[0] / quad(pdz, zmin, zmax)[0], **TOLERANCE)
+    assert_allclose(test5, quad(integrand3, zmin, zmax)[0] / quad(pdz, zmin, zmax)[0], **TOLERANCE)

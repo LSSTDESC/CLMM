@@ -390,7 +390,7 @@ class CLMModeling:
         
         elif z_src_model == 'schrabback18':
             if beta_s_mean is None or beta_s_square_mean is None:
-                beta_s_mean = compute_Bs_mean (z_cl, 1000.,self.cosmo, pdz=pdz)
+                beta_s_mean = compute_Bs_mean (z_cl, 1000., self.cosmo, pdz=pdz)
                 beta_s_square_mean = compute_Bs_square_mean (z_cl, 1000., self.cosmo, pdz=pdz)
             z_source = 1000. #np.inf # INF or a very large number
             gammat = self._eval_tangential_shear(r_proj, z_cl, z_source)
