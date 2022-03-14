@@ -112,7 +112,6 @@ class CTModeling(CLMModeling):
         """"eval 3d density"""
         h = self.cosmo['h']
         Omega_m = self.Omega[self.massdef](z_cl)*self.cor_factor
-
         return ct.density.rho_nfw_at_r(
             _assert_correct_type_ct(r3d)*h, self.mdelta*h,
             self.cdelta, Omega_m, delta=self.delta_mdef)*h**2
@@ -121,7 +120,6 @@ class CTModeling(CLMModeling):
         """"eval surface density"""
         h = self.cosmo['h']
         Omega_m = self.Omega[self.massdef](z_cl)*self.cor_factor
-
         return ct.deltasigma.Sigma_nfw_at_R(
             _assert_correct_type_ct(r_proj)*h, self.mdelta*h,
             self.cdelta, Omega_m, delta=self.delta_mdef)*h*1.0e12  # pc**-2 to Mpc**-2
