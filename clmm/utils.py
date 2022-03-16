@@ -545,9 +545,7 @@ def compute_B_mean(z_cl, cosmo, zmax=4.0, delta_z_cut=0.1, zmin=None, pdz=None):
         Mean value of the geometric lensing efficicency
     """
     if pdz == None:
-        alpha, beta, redshift0 = 1.24, 1.01, 0.51
-        def pdz(z):
-            return (z**alpha)*np.exp(-(z/redshift0)**beta)
+        pdz = _chang_z_distrib
     def integrand(z_i, z_cl=z_cl, cosmo=cosmo):
         return compute_beta(z_i, z_cl, cosmo) * pdz(z_i)
     
@@ -591,10 +589,7 @@ def compute_Bs_mean(z_cl, z_inf, cosmo, zmax=4.0, delta_z_cut=0.1, zmin=None, pd
         Mean value of the geometric lensing efficicency ratio
     """   
     if pdz == None:
-        alpha, beta, redshift0 = 1.24, 1.01, 0.51
-
-        def pdz(z):
-            return (z**alpha)*np.exp(-(z/redshift0)**beta)
+        pdz = _chang_z_distrib
 
     def integrand(z_i, z_cl=z_cl, z_inf=z_inf, cosmo=cosmo):
         return compute_beta_s(z_i, z_cl, z_inf, cosmo) * pdz(z_i)
