@@ -1,6 +1,7 @@
 """General utility functions that are used in multiple modules"""
 import numpy as np
 from scipy.stats import binned_statistic
+from scipy.special import gamma, gammainc
 from astropy import units as u
 from .constants import Constants as const
 from scipy.integrate import quad
@@ -637,9 +638,7 @@ def compute_Bs_square_mean(z_cl, z_inf, cosmo, zmax=4.0, delta_z_cut=0.1, zmin=N
         Mean square value of the geometric lensing efficicency ratio.
     """ 
     if pdz == None:
-        alpha, beta, redshift0 = 1.24, 1.01, 0.51
-        def pdz(z):
-            return (z**alpha)*np.exp(-(z/redshift0)**beta)
+        pdz = _chang_z_distrib
     
     def integrand(z_i, z_cl=z_cl, z_inf=z_inf, cosmo=cosmo):
         return compute_beta_s(z_i, z_cl, z_inf, cosmo)**2 * pdz(z_i)
@@ -648,3 +647,47 @@ def compute_Bs_square_mean(z_cl, z_inf, cosmo, zmax=4.0, delta_z_cut=0.1, zmin=N
         zmin = z_cl + delta_z_cut
     Bs_mean = quad(integrand, zmin, zmax)[0] / quad(pdz, zmin, zmax)[0]
     return Bs_mean
+
+def _chang_z_distrib(redshift, is_cdf=False):
+    """
+    A private function that returns the Chang et al (2013) unnormalized galaxy redshift distribution
+    function, with the fiducial set of parameters.
+
+    Parameters
+    ----------
+    redshift : float
+        Galaxy redshift
+    is_cdf : bool
+        If True, returns cumulative distribution function.
+
+    Returns
+    -------
+    The value of the distribution at z
+    """
+    alpha, beta, redshift0 = 1.24, 1.01, 0.51
+    if is_cdf:
+        return redshift0**(alpha+1)*gammainc((alpha+1)/beta, (redshift/redshift0)**beta)/beta*gamma((alpha+1)/beta)
+    else:
+        return (redshift**alpha)*np.exp(-(redshift/redshift0)**beta)
+
+def _srd_z_distrib(redshift, is_cdf=False):
+    """
+    A private function that returns the unnormalized galaxy redshift distribution function used in
+    the LSST/DESC Science Requirement Document (arxiv:1809.01669).
+
+    Parameters
+    ----------
+    redshift : float
+        Galaxy redshift
+    is_cdf : bool
+        If True, returns cumulative distribution function.
+
+    Returns
+    -------
+    The value of the distribution at z
+    """
+    alpha, beta, redshift0 = 2., 0.9, 0.28
+    if is_cdf:
+        return redshift0**(alpha+1)*gammainc((alpha+1)/beta, (redshift/redshift0)**beta)/beta*gamma((alpha+1)/beta)
+    else:
+        return (redshift**alpha)*np.exp(-(redshift/redshift0)**beta)
