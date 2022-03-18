@@ -284,8 +284,12 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals,
     angsep, posangle = c_cl.separation(c_gal).rad, c_cl.position_angle(c_gal).rad
 
     posangle += 0.5*np.pi
-    posangle[posangle > np.pi] -= 2*np.pi
-    posangle[angsep == 0] = 0
+    if np.iterable(posangle):
+        posangle[posangle > np.pi] -= 2*np.pi
+        posangle[angsep == 0] = 0
+    else:
+        posangle -= 2*np.pi if posangle > np.pi else 0
+        posangle = 0 if angsep == 0 else posangle
 
     #corresponding shear1,2 components
     gam1 = -gamt*np.cos(2*posangle) + gamx*np.sin(2*posangle)
