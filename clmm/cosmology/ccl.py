@@ -46,7 +46,7 @@ class CCLCosmology(CLMMCosmology):
 
         self.be_cosmo = ccl.Cosmology(
             Omega_c=Omega_dm0, Omega_b=Omega_b0, Omega_k=Omega_k0, h=H0/100.0, sigma8=0.8, n_s=0.96,
-            T_CMB=2.7255, Neff=3.046, m_nu=[0.06, 0.0, 0.0], transfer_function='bbks',
+            T_CMB=2.7255, Neff=3.046, m_nu=[0.06, 0.0, 0.0], transfer_function='eisenstein_hu',
             matter_power_spectrum='linear')
 
     def _set_param(self, key, value):
@@ -70,15 +70,20 @@ class CCLCosmology(CLMMCosmology):
         return value
 
     def _get_Omega_m(self, z):
-        return ccl.omega_x(self.be_cosmo, 1.0/(1.0+z), "matter")
+        return ccl.omega_x(self.be_cosmo, self.get_a_from_z(z), "matter")
 
     def _get_E2Omega_m(self, z):
-        a = 1.0/(1.0+z)
+        a = self.get_a_from_z(z)
         return ccl.omega_x(self.be_cosmo, a, "matter")*(ccl.h_over_h0(self.be_cosmo, a))**2
 
+    def _get_rho_m(self, z):
+        # total matter density in physical units [Msun/Mpc3]
+        a = self.get_a_from_z(z)
+        return ccl.rho_x(self.be_cosmo, a, 'matter', is_comoving = False)
+
     def _eval_da_z1z2(self, z1, z2):
-        a1 = 1.0/(1.0+z1)
-        a2 = 1.0/(1.0+z2)
+        a1 = self.get_a_from_z(z1)
+        a2 = self.get_a_from_z(z2)
         return np.vectorize(ccl.angular_diameter_distance)(self.be_cosmo, a1, a2)
 
     def _eval_sigma_crit(self, z_len, z_src):
@@ -105,3 +110,7 @@ class CCLCosmology(CLMMCosmology):
         res[~z_cut] = np.Inf
 
         return np.squeeze(res)
+
+    def _eval_linear_matter_powerspectrum(self, k_vals, redshift):
+        return ccl.linear_matter_power(
+            self.be_cosmo , k_vals, self.get_a_from_z(redshift))
