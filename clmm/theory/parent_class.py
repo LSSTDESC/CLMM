@@ -2,6 +2,13 @@
 CLMModeling abstract class
 """
 import numpy as np
+
+# functions for the 2h term
+from scipy.integrate import simps
+from scipy.special import jv
+from scipy.interpolate import interp1d
+
+from .generic import compute_reduced_shear_from_convergence
 import warnings
 from .generic import compute_reduced_shear_from_convergence, compute_magnification_bias_from_magnification
 from ..utils import validate_argument
@@ -72,7 +79,7 @@ class CLMModeling:
         self.cosmo = cosmo if cosmo is not None else self.cosmo_class()
 
     def set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
-        r""" Sets the definitios for the halo profile
+        r""" Sets the definitions for the halo profile
 
         Parameters
         ----------
@@ -248,6 +255,112 @@ class CLMModeling:
     def _eval_excess_surface_density(self, r_proj, z_cl):
         raise NotImplementedError
 
+    def eval_excess_surface_density_2h(self, r_proj, z_cl, halobias=1., lsteps=500):
+        r""" Computes the 2-halo term excess surface density (CCL backend only)
+
+        Parameters
+        ----------
+        r_proj : array_like
+            Projected radial position from the cluster center in :math:`M\!pc`.
+        z_cl: float
+            Redshift of the cluster
+        halobias : float, optional
+            Value of the halo bias
+        lsteps: int (optional)
+            Number of steps for numerical integration
+
+        Returns
+        -------
+        array_like, float
+            Excess surface density from the 2-halo term in units of :math:`M_\odot\ Mpc^{-2}`.
+        """
+
+        if self.validate_input:
+            validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
+            validate_argument(locals(), 'z_cl', float, argmin=0)
+            validate_argument(locals(), 'lsteps', int, argmin=1)
+            validate_argument(locals(), 'halobias', float, argmin=0)
+
+
+        if self.backend not in ('ccl', 'nc'):
+            raise NotImplementedError(
+                f"2-halo term not currently supported with the {self.backend} backend. "
+                "Use the CCL or NumCosmo backend instead")
+        else:
+            return self._eval_excess_surface_density_2h(r_proj, z_cl, halobias=halobias, lsteps=lsteps)
+
+    def _eval_excess_surface_density_2h(self, r_proj, z_cl, halobias=1.,lsteps=500):
+        """"eval excess surface density from the 2-halo term"""
+        da = self.cosmo.eval_da(z_cl)
+        rho_m = self.cosmo._get_rho_m(z_cl)
+
+        kk = np.logspace(-5.,5.,1000)
+        pk = self.cosmo._eval_linear_matter_powerspectrum(kk, z_cl)
+        interp_pk = interp1d(kk, pk, kind='cubic')
+        theta = r_proj / da
+
+        # calculate integral, units [Mpc]**-3
+        def __integrand__( l , theta ):
+            k = l / ((1 + z_cl) * da)
+            return l * jv( 2 , l * theta ) * interp_pk( k )
+
+        ll = np.logspace( 0 , 6 , lsteps )
+        val = np.array( [ simps( __integrand__( ll , t ) , ll ) for t in theta ] )
+        return halobias * val * rho_m / ( 2 * np.pi  * ( 1 + z_cl )**3 * da**2 )
+
+    def eval_surface_density_2h(self, r_proj, z_cl, halobias=1., lsteps=500):
+        r""" Computes the 2-halo term surface density (CCL backend only)
+
+        Parameters
+        ----------
+        r_proj : array_like
+            Projected radial position from the cluster center in :math:`M\!pc`.
+        z_cl: float
+            Redshift of the cluster
+        halobias : float, optional
+           Value of the halo bias
+        lsteps: int (optional)
+            Number of steps for numerical integration
+
+        Returns
+        -------
+        array_like, float
+            Excess surface density from the 2-halo term in units of :math:`M_\odot\ Mpc^{-2}`.
+        """
+
+        if self.validate_input:
+            validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
+            validate_argument(locals(), 'z_cl', float, argmin=0)
+            validate_argument(locals(), 'lsteps', int, argmin=1)
+            validate_argument(locals(), 'halobias', float, argmin=0)
+
+        if self.backend not in ('ccl', 'nc'):
+            raise NotImplementedError(
+                f"2-halo term not currently supported with the {self.backend} backend. "
+                "Use the CCL or NumCosmo backend instead")
+        else:
+            return self._eval_surface_density_2h(r_proj, z_cl, halobias=halobias, lsteps=lsteps)
+
+    def _eval_surface_density_2h(self, r_proj, z_cl, halobias=1., lsteps=500):
+        """"eval surface density from the 2-halo term"""
+        da = self.cosmo.eval_da(z_cl)
+        rho_m = self.cosmo._get_rho_m(z_cl)
+
+        kk = np.logspace(-5.,5.,1000)
+        pk = self.cosmo._eval_linear_matter_powerspectrum(kk, z_cl)
+        interp_pk = interp1d(kk, pk, kind='cubic')
+        theta = r_proj / da
+
+        # calculate integral, units [Mpc]**-3
+        def __integrand__( l , theta ):
+            k = l / ((1 + z_cl) * da)
+            return l * jv( 0 , l * theta ) * interp_pk( k )
+
+        ll = np.logspace( 0 , 6 , lsteps )
+        val = np.array( [ simps( __integrand__( ll , t ) , ll ) for t in theta ] )
+        return halobias * val * rho_m / ( 2 * np.pi  * ( 1 + z_cl )**3 * da**2 )
+    
+    
     def eval_tangential_shear(self, r_proj, z_cl, z_src):
         r"""Computes the tangential shear
 
