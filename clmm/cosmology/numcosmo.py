@@ -109,6 +109,10 @@ class NumCosmoCosmology(CLMMCosmology):
 
         return self.be_cosmo.E2Omega_m(z)/self.be_cosmo.E2(z)
 
+    def _get_E2(self, z):
+
+        return self.be_cosmo.E2(z)
+
     def _get_E2Omega_m(self, z):
 
         return self.be_cosmo.E2Omega_m(z)
