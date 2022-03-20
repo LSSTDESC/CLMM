@@ -2,23 +2,27 @@ import numpy as np
 from scipy.optimize import fsolve
 
 class NFW():
-    def __init__(self, mdelta, cdelta, z, massdef, delta_mdef, cosmo):
         r"""
         Attributes
         ----------
-        mdelta : float
-            halo mass for the given massdef
-        cdelta : float
-            halo concentration
-        z : float
-            halo redshift
-        massdef : str
-            background density required for the SOD definition (critical, mean)
-        delta_mdef : float
-            overdensity scale (200, 500, etc.)
-        cosmo : CLMMCosmology
+        mdelta: float
+            Halo mass for the given massdef :math:`M_\Delta` in units of :math:`M_\odot`
+        cdelta: float
+            Halo concentration
+        rdelta: float
+            Radius of the sphere enclosing mdelta
+        rs: float
+            Scale radius
+        z: float
+            Halo redshift
+        massdef: str
+            Background density definition (`critical`, `mean`)
+        delta_mdef: float
+            Overdensity scale (200, 500, etc.)
+        cosmo: CLMMCosmology
             Cosmology object
         """
+    def __init__(self, mdelta, cdelta, z, massdef, delta_mdef, cosmo):
         self.mdelta = mdelta
         self.cdelta = cdelta
         self.z = z
