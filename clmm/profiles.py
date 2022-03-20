@@ -31,7 +31,7 @@ class NFW():
         else :
             alpha = 1
 
-        rho_c = cosmo.get_rho_crit(z) #Msun / Mpc**3
+        rho_c = cosmo.get_rho_c(z) #Msun / Mpc**3
 
         self.rdelta = ((mdelta * 3) / (alpha * 4 * np.pi * delta_mdef * rho_c)) ** (1/3)
         self.rs = self.rdelta / self.cdelta
@@ -69,8 +69,9 @@ class NFW():
         NFW profile: NFW
             NFW object
         """
-        mdelta2, cdelta2 = convert_def(self.mdelta, self.cdelta, self.z, self.massdef, self.delta_mdef, massdef, delta_mdef, self.cosmo)
-        return NFW(mdelta2, cdelta2, self.z, massdef=massdef, delta_mdef=delta_mdef, cosmo=self.cosmo)
+        mdelta2, cdelta2 = convert_def(self.mdelta, self.cdelta, self.z,\
+        self.massdef, self.delta_mdef, massdef, delta_mdef, self.cosmo)
+        return NFW(mdelta2, cdelta2, self.z, massdef, delta_mdef, self.cosmo)
 
 def convert_def(mdelta1, cdelta1, z, massdef1, delta_mdef1, massdef2, delta_mdef2, cosmo):
     r"""
