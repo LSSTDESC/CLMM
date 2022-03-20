@@ -2,26 +2,27 @@ import numpy as np
 from scipy.optimize import fsolve
 
 class NFW():
-        r"""
-        Attributes
-        ----------
-        mdelta: float
-            Halo mass for the given massdef :math:`M_\Delta` in units of :math:`M_\odot`
-        cdelta: float
-            Halo concentration
-        rdelta: float
-            Radius of the sphere enclosing mdelta
-        rs: float
-            Scale radius
-        z: float
-            Halo redshift
-        massdef: str
-            Background density definition (`critical`, `mean`)
-        delta_mdef: float
-            Overdensity scale (200, 500, etc.)
-        cosmo: CLMMCosmology
-            Cosmology object
-        """
+    r"""
+    Attributes
+    ----------
+    mdelta: float
+        Halo mass for the given massdef :math:`M_\Delta` in units of :math:`M_\odot`
+    cdelta: float
+        Halo concentration
+    rdelta: float
+        Radius of the sphere enclosing mdelta
+    rs: float
+        Scale radius
+    z: float
+        Halo redshift
+    massdef: str
+        Background density definition (`critical`, `mean`)
+    delta_mdef: float
+        Overdensity scale (200, 500, etc.)
+    cosmo: CLMMCosmology
+        Cosmology object
+    """
+
     def __init__(self, mdelta, cdelta, z, massdef, delta_mdef, cosmo):
         self.mdelta = mdelta
         self.cdelta = cdelta
@@ -64,9 +65,9 @@ class NFW():
         Parameters
         ----------
         massdef: float
-            Overdensity scale (2nd SOD definition)
+            Background density definition (`critical`, `mean`)
         delta_mdef: str
-            background density (2nd SOD definition)
+            Overdensity scale (2nd SOD definition)
 
         Returns
         -------
@@ -77,30 +78,31 @@ class NFW():
         self.massdef, self.delta_mdef, massdef, delta_mdef, self.cosmo)
         return NFW(mdelta2, cdelta2, self.z, massdef, delta_mdef, self.cosmo)
 
-def convert_def(mdelta1, cdelta1, z, massdef1, delta_mdef1, massdef2, delta_mdef2, cosmo):
+def convert_def(mdelta1, cdelta1, z, massdef1, delta_mdef1,
+                massdef2, delta_mdef2, cosmo):
     r"""
     Parameters
     ----------
     mdelta1: float
         halo mass (1st SOD definition)
-    c1: float
+    cdelta1: float
         halo concentration (1st SOD definition)
     z: float
         halo redshift
     massdef1: float
-        Overdensity scale (1st SOD definition)
+        Background density definition (1st SOD definition)
     delta_mdef1: str
-        background density (1st SOD definition)
+        Overdensity scale (1st SOD definition)
     massdef2: float
-        Overdensity scale (2nd SOD definition)
+        Background density definition (2nd SOD definition)
     delta_mdef2: str
-        background density (2nd SOD definition)
+        Overdensity scale (2nd SOD definition)
     cosmo : CLMMCosmology
             Cosmology object
 
     Returns
     -------
-    M2fit, c2fit: float, float
+    mdelta2, cdelta2: float, float
         mass and concentration for the 2nd halo definition
     """
 
