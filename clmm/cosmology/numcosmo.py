@@ -121,7 +121,7 @@ class NumCosmoCosmology(CLMMCosmology):
     def _get_rho_c(self, z):
 
         return Ncm.C.crit_mass_density_h2_solar_mass_Mpc3()*\
-    self['h']**2*self._get_E2(z)
+    self._get_param('h')**2*self._get_E2(z)
 
     def _get_rho_m(self, z):
         # total matter density in physical units [Msun/Mpc3]
