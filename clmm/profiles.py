@@ -2,13 +2,13 @@ import numpy as np
 from scipy.optimize import fsolve
 
 class NFW():
-    def __init__(self, Mdelta, c, z, massdef, delta_mdef, cosmo):
+    def __init__(self, mdelta, cdelta, z, massdef, delta_mdef, cosmo):
         r"""
         Attributes
         ----------
-        Mdelta : float
-            halo mass
-        c : float
+        mdelta : float
+            halo mass for the given massdef
+        cdelta : float
             halo concentration
         z : float
             halo redshift
@@ -18,25 +18,25 @@ class NFW():
             overdensity scale (200, 500, etc.)
         cosmo : CLMMCosmology
             Cosmology object
-
-        Returns
-        -------
-        Compute specific halo quantities (r_delta, r_s) for the mass profile
         """
-        self.Mdelta = Mdelta
-        self.c = c
+        self.mdelta = mdelta
+        self.cdelta = cdelta
+        self.z = z
+        self.massdef = massdef
+        self.delta_mdef = delta_mdef
+        self.cosmo = cosmo
 
-        if massdef == 'matter':
+        if massdef == 'mean':
             alpha = cosmo.get_Omega_m(z)
         else :
             alpha = 1
 
-        rho_critical = cosmo.get_rho_crit(z) #Msun / Mpc**3
+        rho_c = cosmo.get_rho_crit(z) #Msun / Mpc**3
 
-        self.rdelta = ((Mdelta * 3) / (alpha * 4 * np.pi * delta_mdef * rho_critical)) ** (1/3)
-        self.rs = self.rdelta / self.c
+        self.rdelta = ((mdelta * 3) / (alpha * 4 * np.pi * delta_mdef * rho_c)) ** (1/3)
+        self.rs = self.rdelta / self.cdelta
 
-    def _delta_c(self, c):
+    def _Delta_c(self, c):
         return np.log(1 + c) - c/(1 + c)
 
     def M(self, r3d):
@@ -48,18 +48,35 @@ class NFW():
 
         Returns
         -------
-        M_in_r : array
-            Mass enclosed in a sphere of radius r
+        M : array
+            Mass enclosed within a sphere of radius r3d
         """
         x = np.array(r3d)/self.rs
-        M = self.Mdelta * self._delta_c(x) / self._delta_c(self.c)
+        M = self.mdelta * self._Delta_c(x) / self._Delta_c(self.cdelta)
         return M
 
-def convert_def(Mdelta1, c1, z, massdef1, delta_mdef1, massdef2, delta_mdef2, cosmo):
+    def to_def(self, massdef, delta_mdef):
+        """
+        Parameters
+        ----------
+        massdef: float
+            Overdensity scale (2nd SOD definition)
+        delta_mdef: str
+            background density (2nd SOD definition)
+
+        Returns
+        -------
+        NFW profile: NFW
+            NFW object
+        """
+        mdelta2, cdelta2 = convert_def(self.mdelta, self.cdelta, self.z, self.massdef, self.delta_mdef, massdef, delta_mdef, self.cosmo)
+        return NFW(mdelta2, cdelta2, self.z, massdef=massdef, delta_mdef=delta_mdef, cosmo=self.cosmo)
+
+def convert_def(mdelta1, cdelta1, z, massdef1, delta_mdef1, massdef2, delta_mdef2, cosmo):
     r"""
     Parameters
     ----------
-    Mdelta1: float
+    mdelta1: float
         halo mass (1st SOD definition)
     c1: float
         halo concentration (1st SOD definition)
@@ -69,28 +86,27 @@ def convert_def(Mdelta1, c1, z, massdef1, delta_mdef1, massdef2, delta_mdef2, co
         Overdensity scale (1st SOD definition)
     delta_mdef1: str
         background density (1st SOD definition)
-
     massdef2: float
         Overdensity scale (2nd SOD definition)
     delta_mdef2: str
         background density (2nd SOD definition)
-    cosmo_astropy: astropy object
-        cosmology
+    cosmo : CLMMCosmology
+            Cosmology object
 
     Returns
     -------
     M2fit, c2fit: float, float
         mass and concentration for the 2nd halo definition
     """
-    cl1 = NFW(Mdelta1, c1, z, massdef1, delta_mdef1, cosmo)
 
-    def f(param):
-        Mdelta2, c2 = param    
-        cl2 = NFW(Mdelta2, c2, z, massdef2, delta_mdef2, cosmo)
-        first_term = Mdelta1 - cl2.M(cl1.rdelta)
-        second_term = Mdelta2 - cl1.M(cl2.rdelta)  
-        return first_term, second_term
-    x0 = [Mdelta1, c1]
-    M2fit, c2fit = fsolve(func = f, x0 = x0, maxfev = 1000)
-    M2fit, c2fit = fsolve(func = f, x0 = [M2fit, c2fit], maxfev = 100)
-    return M2fit, c2fit
+    def1 = NFW(mdelta1, cdelta1, z, massdef1, delta_mdef1, cosmo)
+
+    def f(params):
+        mdelta2, cdelta2 = params
+        def2 = NFW(mdelta2, cdelta2, z, massdef2, delta_mdef2, cosmo)
+        return def1.mdelta - def2.M(def1.rdelta), def2.mdelta - def1.M(def2.rdelta)
+
+    mdelta2_fit, cdelta2_fit = fsolve(func = f, x0 = [mdelta1, cdelta1], maxfev = 1000)
+    mdelta2_fit, cdelta2_fit = fsolve(func = f, x0 = [mdelta2_fit, cdelta2_fit], maxfev = 100)
+
+    return mdelta2_fit, cdelta2_fit
