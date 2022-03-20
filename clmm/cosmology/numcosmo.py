@@ -123,6 +123,13 @@ class NumCosmoCosmology(CLMMCosmology):
         return Ncm.C.crit_mass_density_h2_solar_mass_Mpc3()*\
     self['h']**2*self._get_E2(z)
 
+    def _get_rho_m(self, z):
+        # total matter density in physical units [Msun/Mpc3]
+        rho_m = self._get_E2Omega_m(z) * \
+            Ncm.C.crit_mass_density_h2_solar_mass_Mpc3() * \
+            self._get_param('h') * self._get_param('h')
+        return rho_m
+
     def _eval_da_z1z2(self, z1, z2):
 
         return np.vectorize(self.dist.angular_diameter_z1_z2)(
@@ -135,3 +142,33 @@ class NumCosmoCosmology(CLMMCosmology):
         func = lambda z_len, z_src: self.smd.sigma_critical(
             self.be_cosmo, z_src, z_len, z_len)
         return np.vectorize(func)(z_len, z_src)
+
+    def _eval_linear_matter_powerspectrum(self, k_vals, redshift):
+
+        # Using the EH transfer function as this is the 
+        # default for the CCL backend as well
+        ps = Nc.PowspecMLTransfer.new (Nc.TransferFuncEH.new()) 
+
+        # Instead, computing the PS from the CLASS backend of Numcosmo
+        # ps  = Nc.PowspecMLCBE.new ()
+        # ps.peek_cbe().props.use_ppf = True
+     
+        if self.be_cosmo.reion is None:
+            reion = Nc.HIReionCamb.new ()
+            self.be_cosmo.add_submodel (reion)
+        if self.be_cosmo.prim is None:
+            prim  = Nc.HIPrimPowerLaw.new ()
+            self.be_cosmo.add_submodel (prim)
+            # The default CLMM cosmology has ns=0.96 and sigma8=0.8
+            # Need to adapt the NC cosmology accordingly
+            self.be_cosmo.prim.props.n_SA = 0.96
+            psf = Ncm.PowspecFilter.new (ps, Ncm.PowspecFilterType.TOPHAT)
+            old_amplitude = np.exp (self.be_cosmo.prim.props.ln10e10ASA)
+            self.be_cosmo.prim.props.ln10e10ASA = np.log ((0.8 / self.be_cosmo.sigma8(psf))**2 * old_amplitude)
+
+        ps.prepare (self.be_cosmo)
+        
+        res = []
+        for k in k_vals:
+            res.append(ps.eval (self.be_cosmo, redshift, k))
+        return res
