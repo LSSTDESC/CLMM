@@ -118,7 +118,7 @@ class NumCosmoCosmology(CLMMCosmology):
 
         return np.vectorize(Nc.HICosmo.E2)(self.be_cosmo, z)
 
-    def _get_rho_crit(self, z):
+    def _get_rho_c(self, z):
 
         return Ncm.C.crit_mass_density_h2_solar_mass_Mpc3()*\
     self['h']**2*self._get_E2(z)

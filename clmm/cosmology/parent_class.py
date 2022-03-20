@@ -179,13 +179,25 @@ class CLMMCosmology:
                           8.0*np.pi*const.GNEWT.value*const.SOLAR_MASS.value)
         return rhocrit_cd2018*(z+1)**3*self['Omega_m0']*self['h']**2
 
-    def get_rho_crit(self, z):
+    def get_rho_c(self, z):
+        r"""Gets physical critical density at a given redshift.
+
+        Parameters
+        ----------
+        z : float
+            Redshift.
+
+        Returns
+        -------
+        float
+            Critical density :math:`M_\odot\ Mpc^{-3}`.
+        """
         if self.validate_input:
             validate_argument(locals(), 'z', 'float_array', argmin=0, eqmin=True)
-        return self._get_rho_crit(z=z)
+        return self._get_rho_c(z=z)
 
-    def _get_rho_crit(self, z):
-        return NotImplementedError
+    def _get_rho_c(self, z):
+        raise NotImplementedError
 
     def eval_da_z1z2(self, z1, z2):
         r"""Computes the angular diameter distance between z1 and z2.

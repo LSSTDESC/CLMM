@@ -81,7 +81,7 @@ class CCLCosmology(CLMMCosmology):
         a = self.get_a_from_z(z)
         return ccl.rho_x(self.be_cosmo, a, 'matter', is_comoving = False)
 
-    def _get_rho_crit(self, z):
+    def _get_rho_c(self, z):
         a = 1.0/(1.0+z)
         return ccl.rho_x(self.be_cosmo, a, 'critical', is_comoving=False)
 
