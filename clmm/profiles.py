@@ -32,13 +32,11 @@ class NFW():
         self.cosmo = cosmo
 
         if massdef == 'mean':
-            alpha = cosmo.get_Omega_m(z)
+            rho = self.cosmo.get_rho_m(z)
         else :
-            alpha = 1
+            rho = self.cosmo.get_rho_c(z) #Msun / Mpc**3
+        self.rdelta = ((mdelta * 3) / (4 * np.pi * delta_mdef * rho)) ** (1/3)
 
-        rho_c = cosmo.get_rho_c(z) #Msun / Mpc**3
-
-        self.rdelta = ((mdelta * 3) / (alpha * 4 * np.pi * delta_mdef * rho_c)) ** (1/3)
         self.rs = self.rdelta / self.cdelta
 
     def _Delta_c(self, c):
