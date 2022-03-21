@@ -395,9 +395,9 @@ def test_beta_functions():
 
     test1 = utils.compute_beta(z_s, z_cl, cosmo)
     test2 = utils.compute_beta_s(z_s, z_cl, z_inf, cosmo)
-    test3 = utils.compute_B_mean(z_cl, cosmo, zmax)
-    test4 = utils.compute_Bs_mean(z_cl, z_inf,cosmo, zmax)
-    test5 = utils.compute_Bs_square_mean(z_cl, z_inf,cosmo, zmax)
+    test3 = utils.compute_beta_mean(z_cl, cosmo, zmax)
+    test4 = utils.compute_beta_s_mean(z_cl, z_inf,cosmo, zmax)
+    test5 = utils.compute_beta_s_square_mean(z_cl, z_inf,cosmo, zmax)
     
     assert_allclose(test1, beta_test, **TOLERANCE)
     assert_allclose(test2, beta_s_test, **TOLERANCE)

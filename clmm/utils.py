@@ -511,7 +511,7 @@ def compute_beta_s(z_s, z_cl, z_inf, cosmo):
     beta_s = compute_beta(z_s, z_cl, cosmo) / compute_beta(z_inf, z_cl, cosmo)
     return beta_s
 
-def compute_B_mean(z_cl, cosmo, zmax=4.0, delta_z_cut=0.1, zmin=None, pdz=None):
+def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, pdz=None):
     r"""Mean value of the geometric lensing efficicency  
     
     .. math:: 
@@ -523,7 +523,7 @@ def compute_B_mean(z_cl, cosmo, zmax=4.0, delta_z_cut=0.1, zmin=None, pdz=None):
             Galaxy cluster redshift
     z_inf: float
             Redshift at infinity
-    pdz: 1 argument function
+    pdz:  argument function
             Redshift probability density function. Default is\
             Chang et al (2013) unnormalized galaxy redshift distribution\
             function.
@@ -534,8 +534,8 @@ def compute_B_mean(z_cl, cosmo, zmax=4.0, delta_z_cut=0.1, zmin=None, pdz=None):
             Maximum redshift to be set as the source of the galaxy\
             when performing the sum.
     delta_z_cut: float
-            Redshift interval to be summed with the galaxy redshift to return\
-            a $zmin$ if not provided by the user.
+            Redshift interval to be summed with $z_cl$ to return\
+            $zmin$. This feature is not used if $z_min$ is provided by the user.
     cosmo: Cosmology
         Cosmology object
     
@@ -555,7 +555,7 @@ def compute_B_mean(z_cl, cosmo, zmax=4.0, delta_z_cut=0.1, zmin=None, pdz=None):
     B_mean = quad(integrand, zmin, zmax)[0] / quad(pdz, zmin, zmax)[0]
     return B_mean    
 
-def compute_Bs_mean(z_cl, z_inf, cosmo, zmax=4.0, delta_z_cut=0.1, zmin=None, pdz=None):
+def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, pdz=None):
     r"""Mean value of the geometric lensing efficicency ratio 
     
     .. math:: 
@@ -567,7 +567,7 @@ def compute_Bs_mean(z_cl, z_inf, cosmo, zmax=4.0, delta_z_cut=0.1, zmin=None, pd
             Galaxy cluster redshift
     z_inf: float
             Redshift at infinity
-    pdz: 1 argument function
+    pdz:  argument function
             Redshift probability density function. Default is\
             Chang et al (2013) unnormalized galaxy redshift distribution\
             function.
@@ -578,8 +578,8 @@ def compute_Bs_mean(z_cl, z_inf, cosmo, zmax=4.0, delta_z_cut=0.1, zmin=None, pd
             Minimum redshift to be set as the source of the galaxy\
             when performing the sum.
     delta_z_cut: float
-            Redshift interval to be summed with the galaxy redshift to return\
-            a $zmin$ if not provided by the user.
+            Redshift interval to be summed with $z_cl$ to return\
+            $zmin$. This feature is not used if $z_min$ is provided by the user.
     cosmo: Cosmology
         Cosmology object
     
@@ -599,7 +599,7 @@ def compute_Bs_mean(z_cl, z_inf, cosmo, zmax=4.0, delta_z_cut=0.1, zmin=None, pd
     Bs_mean = quad(integrand, zmin, zmax)[0] / quad(pdz, zmin, zmax)[0]
     return Bs_mean
 
-def compute_Bs_square_mean(z_cl, z_inf, cosmo, zmax=4.0, delta_z_cut=0.1, zmin=None, pdz=None):
+def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, pdz=None):
     r"""Mean square value of the geometric lensing efficicency ratio 
     
     .. math:: 
@@ -611,7 +611,7 @@ def compute_Bs_square_mean(z_cl, z_inf, cosmo, zmax=4.0, delta_z_cut=0.1, zmin=N
             Galaxy cluster redshift
     z_inf: float
             Redshift at infinity
-    pdz: 1 argument function
+    pdz:  argument function
             Redshift probability density function. Default is\
             Chang et al (2013) unnormalized galaxy redshift distribution\
             function.
@@ -622,8 +622,8 @@ def compute_Bs_square_mean(z_cl, z_inf, cosmo, zmax=4.0, delta_z_cut=0.1, zmin=N
             Minimum redshift to be set as the source of the galaxy\
             when performing the sum.
     delta_z_cut: float
-            Redshift interval to be summed with the galaxy redshift to return\
-            a $zmin$ if not provided by the user.
+            Redshift interval to be summed with $z_cl$ to return\
+            $zmin$. This feature is not used if $z_min$ is provided by the user.
     cosmo: Cosmology
         Cosmology object
     
@@ -640,8 +640,8 @@ def compute_Bs_square_mean(z_cl, z_inf, cosmo, zmax=4.0, delta_z_cut=0.1, zmin=N
     
     if zmin==None:
         zmin = z_cl + delta_z_cut
-    Bs_mean = quad(integrand, zmin, zmax)[0] / quad(pdz, zmin, zmax)[0]
-    return Bs_mean
+    Bs_square_mean = quad(integrand, zmin, zmax)[0] / quad(pdz, zmin, zmax)[0]
+    return Bs_square_mean
 
 def _chang_z_distrib(redshift, is_cdf=False):
     """

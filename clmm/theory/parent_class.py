@@ -4,7 +4,7 @@ CLMModeling abstract class
 import numpy as np
 import warnings
 from .generic import compute_reduced_shear_from_convergence, compute_magnification_bias_from_magnification
-from ..utils import validate_argument, compute_Bs_mean, compute_Bs_square_mean
+from ..utils import validate_argument, compute_beta_s_mean, compute_beta_s_square_mean
 
 
 class CLMModeling:
@@ -380,19 +380,21 @@ class CLMModeling:
         #     raise NotImplementedError('Need to implement Beta_s and Beta_s2 calculation from'+
         #                               'integrating distribution of redshifts in each radial bin')
         elif z_src_model == 'applegate14':
-            if beta_s_mean is None or beta_s_square_mean is None:
-                beta_s_mean = compute_Bs_mean (z_cl, 1000., self.cosmo, pdz=pdz)
-                beta_s_square_mean = compute_Bs_square_mean (z_cl, 1000., self.cosmo, pdz=pdz)
             z_source = 1000. #np.inf # INF or a very large number
+            z_inf = z_source
+            if beta_s_mean is None or beta_s_square_mean is None:
+                beta_s_mean = compute_beta_s_mean (z_cl, z_inf, self.cosmo, pdz=pdz)
+                beta_s_square_mean = compute_beta_s_square_mean (z_cl, z_inf, self.cosmo, pdz=pdz)
             gammat = self._eval_tangential_shear(r_proj, z_cl, z_source)
             kappa = self._eval_convergence(r_proj, z_cl, z_source)
             gt = beta_s_mean * gammat / (1. - beta_s_square_mean / beta_s_mean * kappa)
         
         elif z_src_model == 'schrabback18':
-            if beta_s_mean is None or beta_s_square_mean is None:
-                beta_s_mean = compute_Bs_mean (z_cl, 1000., self.cosmo, pdz=pdz)
-                beta_s_square_mean = compute_Bs_square_mean (z_cl, 1000., self.cosmo, pdz=pdz)
             z_source = 1000. #np.inf # INF or a very large number
+            z_inf = z_source
+            if beta_s_mean is None or beta_s_square_mean is None:
+                beta_s_mean = compute_beta_s_mean (z_cl, z_inf, self.cosmo, pdz=pdz)
+                beta_s_square_mean = compute_beta_s_square_mean (z_cl, z_inf, self.cosmo, pdz=pdz)
             gammat = self._eval_tangential_shear(r_proj, z_cl, z_source)
             kappa = self._eval_convergence(r_proj, z_cl, z_source)
             gt = (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean * kappa) * (beta_s_mean * gammat / (1. - beta_s_mean * kappa))

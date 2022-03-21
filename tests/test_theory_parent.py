@@ -4,7 +4,7 @@ import numpy as np
 from numpy.testing import assert_raises, assert_allclose
 import clmm.theory as theo
 from clmm.theory.parent_class import CLMModeling
-from clmm.utils import compute_Bs_square_mean, compute_Bs_mean
+from clmm.utils import compute_beta_s_square_mean, compute_beta_s_mean
 
 def test_unimplemented(modeling_data):
     """ Unit tests abstract class unimplemented methdods """
@@ -96,8 +96,8 @@ def test_instantiate(modeling_data):
     beta_s_mean = None
     beta_s_square_mean = None
     
-    beta_s_square_test = compute_Bs_square_mean(z_cl, 1000., mod.cosmo)
-    beta_s_test = compute_Bs_mean(z_cl, 1000., mod.cosmo)   
+    beta_s_square_test = compute_beta_s_square_mean(z_cl, 1000., mod.cosmo)
+    beta_s_test = compute_beta_s_mean(z_cl, 1000., mod.cosmo)   
     reduced_shear = mod.eval_reduced_tangential_shear(r_proj, z_cl, z_src, 'applegate14', beta_s_mean, beta_s_square_mean)
     assert_allclose(reduced_shear, beta_s_test* shear_inf/(1.0 - beta_s_square_test / beta_s_test * convergence_inf), rtol=1.0e-12)
     
