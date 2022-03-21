@@ -112,7 +112,7 @@ class NumCosmoCosmology(CLMMCosmology):
 
     def _get_E2(self, z):
 
-        return self.be_cosmo.E2(z)
+        return np.vectorize(self.be_cosmo.E2)(z)
 
     def _get_E2Omega_m(self, z):
 
