@@ -116,7 +116,7 @@ class NumCosmoCosmology(CLMMCosmology):
 
     def _get_E2Omega_m(self, z):
 
-        return self.be_cosmo.E2Omega_m(z)
+        return np.vectorize(self.be_cosmo.E2Omega_m)(z)
 
     def _get_rho_m(self, z):
         # total matter density in physical units [Msun/Mpc3]
