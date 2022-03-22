@@ -523,7 +523,7 @@ def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, pdz=No
             Galaxy cluster redshift
     z_inf: float
             Redshift at infinity
-    pdz:  argument function
+    pdz: one-parameter function
             Redshift probability density function. Default is\
             Chang et al (2013) unnormalized galaxy redshift distribution\
             function.
@@ -567,7 +567,7 @@ def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=Non
             Galaxy cluster redshift
     z_inf: float
             Redshift at infinity
-    pdz:  argument function
+    pdz: one-parameter function
             Redshift probability density function. Default is\
             Chang et al (2013) unnormalized galaxy redshift distribution\
             function.
@@ -611,7 +611,7 @@ def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, z
             Galaxy cluster redshift
     z_inf: float
             Redshift at infinity
-    pdz:  argument function
+    pdz: one-parameter function
             Redshift probability density function. Default is\
             Chang et al (2013) unnormalized galaxy redshift distribution\
             function.
