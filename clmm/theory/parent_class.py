@@ -448,7 +448,7 @@ class CLMModeling:
                 * `schrabback18`: use the equation (12) in Cluster Mass Calibration at High Redshift \
                     (Schrabback et al. 2017; https://arxiv.org/abs/1611.03866) to evaluate tangential reduced shear;
         
-        pdz: one parameter function
+        pdz: one-parameter function
             The probability density distribution of the redshift. This function takes /
             the redshift as its only parameter and returns its probability. It is /
             optional to provide this function, which can be used to compute the beta values.
