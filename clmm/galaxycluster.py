@@ -260,8 +260,7 @@ class GalaxyCluster():
                                shape_component1='e1', shape_component2='e2',
                                shape_component1_err='e1_err', shape_component2_err='e2_err',
                                use_photoz=False, use_shape_noise=False, use_shape_error=False,
-                               weight_name='w_ls', p_background_name='p_background',
-                               recompute_p_background=True, cosmo=None,
+                               weight_name='w_ls',cosmo=None,
                                is_deltasigma=False, add=True):
         r"""Computes the individual lens-source pair weights
 
@@ -321,12 +320,12 @@ class GalaxyCluster():
             required_cols += ['shape_component1_err', 'shape_component2_err']
         cols = self._get_input_galdata(locals(), required_cols)
         # handles p_background
-        if p_background_name not in self.galcat.columns or recompute_p_background:
-            print(f'(re)computing {p_background_name}')
-            self.compute_background_probability(
-                z_source=z_source, pzpdf=pzpdf, pzbins=pzbins,
-                use_photoz=use_photoz, p_background_name=p_background_name)
-        cols['p_background'] = self.galcat[p_background_name]
+        #if p_background_name not in self.galcat.columns or recompute_p_background:
+        #print(f'(re)computing {p_background_name}')
+        #    self.compute_background_probability(
+        #        z_source=z_source, pzpdf=pzpdf, pzbins=pzbins,
+        #        use_photoz=use_photoz, p_background_name=p_background_name)
+        #cols['p_background'] = self.galcat[p_background_name]
         # computes weights
         w_ls = compute_galaxy_weights(
             self.z, cosmo, use_shape_noise=use_shape_noise,
