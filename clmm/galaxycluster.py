@@ -294,10 +294,6 @@ class GalaxyCluster():
             True for considering measured shape error in the weight computation
         weight_name : string
             Name of the new column for the weak lensing weights in the galcat table
-        p_background_name : string
-            Name of the new column for the background probability in the galcat table
-        recompute_p_background: boolean
-            Forces re-computation of p_background if already in catalog.
         is_deltasigma: boolean
             Indicates whether it is the excess surface density or the tangential shear
         add : boolean
@@ -307,8 +303,6 @@ class GalaxyCluster():
         -------
         w_ls: array
             the individual lens source pair weights
-        p_background : array
-            the probability for being a background galaxy
         """
         # input cols
         required_cols = ['shape_component1', 'shape_component2']
