@@ -55,8 +55,8 @@ def compute_3d_density(
         Profile mass definition, with the following supported options (letter case independent):
 
             * `mean` (default);
-            * `critical` - not in cluster_toolkit;
-            * `virial` - not in cluster_toolkit;
+            * `critical`;
+            * `virial`;
 
     Returns
     -------
