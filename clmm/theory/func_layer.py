@@ -117,8 +117,8 @@ def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
         Profile mass definition, with the following supported options (letter case independent):
 
             * `mean` (default);
-            * `critical` - not in cluster_toolkit;
-            * `virial` - not in cluster_toolkit;
+            * `critical` ;
+            * `virial` ;
 
     Returns
     -------
