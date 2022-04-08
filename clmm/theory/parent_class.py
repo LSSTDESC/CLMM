@@ -483,12 +483,7 @@ class CLMModeling:
 
         if z_src_model == 'single_plane':
             gt = self._eval_reduced_tangential_shear_sp(r_proj, z_cl, z_src)
-        # elif z_src_model == 'known_z_src': # Discrete case
-        #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average'+
-        #                               'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
-        # elif z_src_model == 'z_src_distribution': # Continuous ( from a distribution) case
-        #     raise NotImplementedError('Need to implement Beta_s and Beta_s2 calculation from'+
-        #                               'integrating distribution of redshifts in each radial bin')
+            
         elif z_src_model == 'applegate14':
             z_source = 1000. #np.inf # INF or a very large number
             z_inf = z_source
