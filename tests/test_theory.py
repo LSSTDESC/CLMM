@@ -1,7 +1,7 @@
 """Tests for theory/"""
 import json
 import numpy as np
-from numpy.testing import assert_raises, assert_allclose
+from numpy.testing import assert_raises, assert_allclose, assert_equal
 from astropy.cosmology import FlatLambdaCDM, LambdaCDM
 import clmm.theory as theo
 from clmm.constants import Constants as clc
@@ -269,6 +269,44 @@ def test_profiles(modeling_data):
         assert_raises(ValueError, mod.eval_excess_surface_density,
                       1e-12, cfg['SIGMA_PARAMS']['z_cl'])
 
+def test_2halo_term(modeling_data):
+
+    cfg = load_validation_config()
+    cosmo = cfg['cosmo']
+
+    # Object Oriented tests
+    mod = theo.Modeling()
+    mod.set_cosmo(cosmo)
+
+    if mod.backend not in ['ccl','nc']:
+        assert_raises(NotImplementedError, mod.eval_surface_density_2h,
+                      1., cfg['SIGMA_PARAMS']['z_cl'])
+        assert_raises(NotImplementedError, mod.eval_excess_surface_density_2h,
+                      1., cfg['SIGMA_PARAMS']['z_cl'])
+    else:
+        # Just checking that it runs and returns array of the right length
+        # To be updated with proper comparison to benchmark when available
+        assert_equal(len(mod.eval_surface_density_2h(cfg['SIGMA_PARAMS']['r_proj'],
+                                                               cfg['SIGMA_PARAMS']['z_cl'])),
+                        len(cfg['SIGMA_PARAMS']['r_proj'])) 
+        assert_equal(len(mod.eval_excess_surface_density_2h(cfg['SIGMA_PARAMS']['r_proj'],
+                                                               cfg['SIGMA_PARAMS']['z_cl'])),
+                        len(cfg['SIGMA_PARAMS']['r_proj'])) 
+
+        # Checks that OO-oriented and functional interface give the same results
+        assert_allclose(
+            theo.compute_excess_surface_density_2h(
+                cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl'], cosmo),
+            mod.eval_excess_surface_density_2h(
+                cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl']),
+            1.0e-10)
+
+        assert_allclose(
+            theo.compute_surface_density_2h(
+                cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl'], cosmo),
+            mod.eval_surface_density_2h(
+                cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl']),
+            1.0e-10)
 
 def test_compute_critical_surface_density(modeling_data):
     """ Validation test for critical surface density """
@@ -387,6 +425,11 @@ def test_shear_convergence_unittests(modeling_data):
     assert_raises(ValueError, theo.compute_tangential_shear,
                   1.e-12, 1.e15, 4, 0.2, 0.45, cosmo)
 
+    # Chech error for z_src_model='applegate14' and no beta
+    assert_raises(ValueError, theo.compute_reduced_tangential_shear,
+                  1, 1.e15, 4, 0.2, 0.45, cosmo,
+                  z_src_model='applegate14')
+
     # Validate tangential shear
     gammat = theo.compute_tangential_shear(cosmo=cosmo, **cfg['GAMMA_PARAMS'])
     assert_allclose(gammat*sigmac_corr,
@@ -407,9 +450,16 @@ def test_shear_convergence_unittests(modeling_data):
     gammat_inf = theo.compute_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'])
     kappa_inf = theo.compute_convergence(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'])
     cfg_inf['GAMMA_PARAMS']['z_src_model'] = 'applegate14'
+    assert_raises(ValueError, theo.compute_reduced_tangential_shear, cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'], beta_s_mean=None, beta_s_square_mean=None)
     assert_allclose(theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'], beta_s_mean=beta_s_mean, beta_s_square_mean=beta_s_square_mean),
                     beta_s_mean * gammat_inf/(1.0 - beta_s_square_mean / beta_s_mean * kappa_inf), 1.0e-10)
 
+    cfg_inf['GAMMA_PARAMS']['z_src_model'] = 'schrabback18'
+    assert_raises(ValueError, theo.compute_reduced_tangential_shear, cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'], beta_s_mean=None, beta_s_square_mean=None)
+    assert_allclose(theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'], beta_s_mean=beta_s_mean, beta_s_square_mean=beta_s_square_mean),
+                    (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean * kappa_inf) * (beta_s_mean * gammat_inf / (1. - beta_s_mean * kappa_inf)), 1.0e-10)
+    
+    
     assert_allclose(gammat*sigmac_corr/(1.-(kappa*sigmac_corr)),
                     cfg['numcosmo_profiles']['gt'], 1.e2*reltol)
 
@@ -521,6 +571,7 @@ def test_shear_convergence_unittests(modeling_data):
     gammat_inf = mod.eval_tangential_shear(profile_pars[0], profile_pars[1], source_redshift_inf) #np.inf)
     kappa_inf = mod.eval_convergence(profile_pars[0], profile_pars[1], source_redshift_inf) #np.inf)
     assert_allclose(mod.eval_reduced_tangential_shear(*profile_pars, 'applegate14', beta_s_mean, beta_s_square_mean), beta_s_mean * gammat_inf/(1.0 - beta_s_square_mean / beta_s_mean * kappa_inf), 1.0e-10)
+    assert_allclose(mod.eval_reduced_tangential_shear(*profile_pars, 'schrabback18', beta_s_mean, beta_s_square_mean), (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean * kappa_inf) * (beta_s_mean * gammat_inf / (1. - beta_s_mean * kappa_inf)), 1.0e-10)
 
     assert_allclose(gammat*sigmac_corr/(1.-(kappa*sigmac_corr)),
                     cfg['numcosmo_profiles']['gt'], 1.e2*reltol)

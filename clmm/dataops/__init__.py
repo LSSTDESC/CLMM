@@ -2,6 +2,7 @@
 import math
 import warnings
 import numpy as np
+import scipy
 from astropy.coordinates import SkyCoord
 from astropy import units as u
 from .. gcdata import GCData
@@ -164,6 +165,199 @@ def compute_tangential_and_cross_components(
         cross_comp *= sigma_c
     return angsep, tangential_comp, cross_comp
 
+def _integ_pzfuncs(pzpdf, pzbins, zmin, kernel=lambda z: 1.):
+    r"""
+    Integrates photo-z pdf with a given kernel. This function was created to allow for data with
+    different photo-z binnings.
+
+
+    Parameters
+    ----------
+    pzpdf : list of arrays
+        Photometric probablility density functions of the source galaxies.
+    pzbins : list of arrays
+        Redshift axis on which the individual photoz pdf is tabulated.
+    zmin : float
+        Minimum redshift for integration
+    kernel : function
+        Function to be integrated with the pdf, must be f(z_array) format.
+
+    Returns
+    -------
+    array
+        Kernel integrated with the pdf of each galaxy.
+
+    Notes
+    -----
+        Will be replaced by qp at some point.
+    """
+    # adding these lines to interpolate CLMM redshift grid for each galaxies
+    # to a constant redshift grid for all galaxies. If there is a constant grid for all galaxies
+    # these lines are not necessary and z_grid, pz_matrix = pzbins, pzpdf
+    z_grid = np.linspace(0, 5, 100)
+    z_grid = z_grid[z_grid>zmin]
+    pz_matrix = np.array([np.interp(z_grid, pzbin, pdf)
+                         for pzbin, pdf in zip(pzbins, pzpdf)])
+    kernel_matrix = kernel(z_grid)
+    return scipy.integrate.simps(pz_matrix*kernel_matrix, x=z_grid, axis=1)
+
+
+def compute_background_probability(z_lens, z_source=None, pzpdf=None, pzbins=None, validate_input=True):
+    r"""Probability for being a background galaxy
+
+    Parameters
+    ----------
+    z_lens: float
+        Redshift of the lens.
+    z_source: array, optional
+        Redshift of the source. Used only if pzpdf=pzbins=None.
+    pzpdf : array, optional
+        Photometric probablility density functions of the source galaxies.
+        Used instead of z_source if provided.
+    pzbins : array, optional
+        Redshift axis on which the individual photoz pdf is tabulated.
+
+    Returns
+    -------
+    p_background : array
+        Probability for being a background galaxy
+    """
+    if validate_input:
+        validate_argument(locals(), 'z_lens', float, argmin=0, eqmin=True)
+        validate_argument(locals(), 'z_source', 'float_array', argmin=0, eqmin=True, none_ok=True)
+    if (pzpdf is None)!=(pzbins is None):
+        raise ValueError('pzbins must be provided with pzpdf.')
+    if pzpdf is None:
+        p_background = np.array(z_source>z_lens, dtype=float)
+    else:
+        p_background = _integ_pzfuncs(pzpdf, pzbins, z_lens)
+    return p_background
+
+
+def compute_galaxy_weights(z_lens, cosmo, z_source=None, pzpdf=None, pzbins=None,
+                           shape_component1=None, shape_component2=None,
+                           shape_component1_err=None, shape_component2_err=None,
+                           p_background=None, use_shape_noise=False, is_deltasigma=False,
+                           validate_input=True):
+    r"""Computes the individual lens-source pair weights
+
+    The weights :math:`w_{ls}` express as : :math:`w_{ls} = w_{ls, \rm{geo}} \times w_{ls, \rm{shape}}`, following E. S. Sheldon et al.
+    (2003), arXiv:astro-ph/0312036:
+
+    1. The geometrical weight :math:`w_{ls, \rm{geo}}` depends on lens and source redshift information. When considering only
+    redshift point estimates, the weights read
+
+        .. math::
+
+            w_{ls, \rm{geo}} = \Sigma_c(\rm{cosmo}, z_L, z_{\rm src})^{-2}\;.
+
+        If the redshift pdf of each source, :math:`p_{\rm photoz}(z_s)`, is known, the weights are computed instead as
+
+        .. math::
+
+            w_{ls, \rm{geo}} = \left[\int_{\delta + z_L} dz_s p_{\rm photoz}(z_s) \Sigma_c(\rm{cosmo}, z_L, z_s)^{-1}\right]^2
+
+        for the tangential shear, the weights 'w_{ls, \rm{geo}}` are 1.
+
+    2. The shape weight :math:`w_{ls,{\rm shape}}` depends on shapenoise and/or shape measurement errors
+
+        .. math::
+
+            w_{ls, \rm{shape}} = 1/(\sigma_{\rm shapenoise}^2 + \sigma_{\rm measurement}^2)
+
+
+    3. The probability for a galaxy to be in the background of the cluster is defined by:
+
+        .. math::
+
+            P(z_s > z_l) = [\int_{z_L}^{+\infty} dz_s p_{\rm photoz}(z_s)
+
+        The function return the probability for a galaxy to be in the background of the cluster;
+        if photometric probability density functions are provoded, the function computes the above
+        integral. In the case of true redshifts, it returns 1 if :math:`z_s > z_l` else returns 0.
+
+
+    Parameters
+    ----------
+    z_lens: float
+        Redshift of the lens.
+    z_source: array, optional
+        Redshift of the source. Used only if pzpdf=pzbins=None.
+    cosmo: clmm.Comology object, None
+        CLMM Cosmology object.
+    pzpdf : array, optional
+        Photometric probablility density functions of the source galaxies.
+        Used instead of z_source if provided.
+    pzbins : array, optional
+        Redshift axis on which the individual photoz pdf is tabulated.
+    shape_component1: array
+        The measured shear (or reduced shear or ellipticity) of the source galaxies
+    shape_component2: array
+        The measured shear (or reduced shear or ellipticity) of the source galaxies
+    shape_component1_err: array
+        The measurement error on the 1st-component of ellipticity of the source galaxies
+    shape_component2_err: array
+        The measurement error on the 2nd-component of ellipticity of the source galaxies
+    p_background : array, optional
+        Probabilities for galaxies being a background galaxy. If not provided it is computed.
+    use_shape_noise : boolean
+        True for considering shapenoise in the weight computation
+    is_deltasigma: boolean
+        Indicates whether it is the excess surface density or the tangential shear
+    validate_input: bool
+        Validade each input argument
+
+    Returns
+    -------
+    w_ls: array
+        Individual lens source pair weights
+    """
+    if validate_input:
+        validate_argument(locals(), 'z_lens', float, argmin=0, eqmin=True)
+        validate_argument(locals(), 'z_source', 'float_array', argmin=0, eqmin=True, none_ok=True)
+        #validate_argument(locals(), 'pzpdf', 'float_array')
+        #validate_argument(locals(), 'pzbins', 'float_array')
+        validate_argument(locals(), 'shape_component1', 'float_array')
+        validate_argument(locals(), 'shape_component2', 'float_array')
+        validate_argument(locals(), 'shape_component1_err', 'float_array', none_ok=True)
+        validate_argument(locals(), 'shape_component2_err', 'float_array', none_ok=True)
+        validate_argument(locals(), 'p_background', 'float_array', none_ok=True)
+        validate_argument(locals(), 'use_shape_noise', bool)
+        validate_argument(locals(), 'is_deltasigma', bool)
+        arguments_consistency(
+            [shape_component1, shape_component2],
+            names=('shape_component1', 'shape_component2'),
+            prefix='Shape components sources')
+
+    #computing p_background
+    if p_background is None:
+        p_background = compute_background_probability(z_lens, z_source, pzpdf, pzbins)
+
+    #computing w_ls_geo
+    if pzpdf is None:
+        norm = 1
+        if is_deltasigma:
+            norm = cosmo.eval_sigma_crit(z_lens, z_source)**2
+        w_ls_geo = p_background/norm
+    else:
+        w_ls_geo = 1
+        if is_deltasigma == True:
+            w_ls_geo = _integ_pzfuncs(
+                pzpdf, pzbins, z_lens,
+                kernel=lambda z: 1./cosmo.eval_sigma_crit(z_lens, z))**2
+
+    #computing w_ls_shape
+    err_e2 = np.zeros(len(shape_component1))
+    if use_shape_noise:
+        err_e2 += np.std(shape_component1)**2 + np.std(shape_component2)**2
+    err_e2 += 0 if shape_component1_err is None else shape_component1_err**2
+    err_e2 += 0 if shape_component2_err is None else shape_component2_err**2
+    w_ls_shape = np.ones(len(shape_component1))
+    w_ls_shape[err_e2>0] = 1/err_e2[err_e2>0]
+
+    w_ls = w_ls_shape * w_ls_geo
+
+    return w_ls
 
 def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_source_list):
     r"""Compute the angular separation between the lens and the source and the azimuthal

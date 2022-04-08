@@ -22,6 +22,7 @@ def test_unimplemented(modeling_data):
     assert_raises(NotImplementedError, mod.eval_tangential_shear, [0.3], 0.3, 0.5)
     assert_raises(NotImplementedError, mod.eval_reduced_tangential_shear, [0.3], 0.3, 0.5)
     assert_raises(NotImplementedError, mod.eval_reduced_tangential_shear, [0.3], 0.3, 0.5, 'applegate14', 0.6, 0.4)
+    assert_raises(NotImplementedError, mod.eval_reduced_tangential_shear, [0.3], 0.3, 0.5, 'schrabback18', 0.6, 0.4)
     assert_raises(NotImplementedError, mod.eval_convergence, [0.3], 0.3, 0.5)
     assert_raises(NotImplementedError, mod.eval_magnification, [0.3], 0.3, 0.5)
 
@@ -77,11 +78,18 @@ def test_instantiate(modeling_data):
     source_redshift_inf = 1000. 
     shear_inf = mod.eval_tangential_shear(r_proj, z_cl, source_redshift_inf)
     convergence_inf = mod.eval_convergence(r_proj, z_cl, source_redshift_inf)
+
     reduced_shear = mod.eval_reduced_tangential_shear(r_proj, z_cl, z_src, 'applegate14', beta_s_mean, beta_s_square_mean)
     assert_allclose(reduced_shear, beta_s_mean * shear_inf/(1.0 - beta_s_square_mean / beta_s_mean * convergence_inf), rtol=1.0e-12)
     
     reduced_shear = mod.eval_reduced_tangential_shear(r_proj, z_cl, np.repeat(z_src, len(r_proj)), 'applegate14', beta_s_mean, beta_s_square_mean)
     assert_allclose(reduced_shear, beta_s_mean * shear_inf/(1.0 - beta_s_square_mean / beta_s_mean * convergence_inf), rtol=1.0e-12)
     
+    reduced_shear = mod.eval_reduced_tangential_shear(r_proj, z_cl, z_src, 'schrabback18', beta_s_mean, beta_s_square_mean)
+    assert_allclose(reduced_shear, (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean * convergence_inf) * (beta_s_mean * shear_inf / (1. - beta_s_mean * convergence_inf)), rtol=1.0e-12)
+
+    reduced_shear = mod.eval_reduced_tangential_shear(r_proj, z_cl, np.repeat(z_src, len(r_proj)), 'schrabback18', beta_s_mean, beta_s_square_mean)
+    assert_allclose(reduced_shear, (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean * convergence_inf) * (beta_s_mean * shear_inf / (1. - beta_s_mean * convergence_inf)), rtol=1.0e-12)
+
     assert_raises(ValueError, mod.eval_reduced_tangential_shear, r_proj, z_cl,
                   np.repeat(z_src, len(r_proj)), 'applegate14', beta_s_mean, None)
