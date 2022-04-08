@@ -217,13 +217,13 @@ def _compute_ngals(ngal_density, field_size, cosmo, cluster_z, zsrc, zsrc_min=No
     `generate_galaxy_catalog`.
     """
     field_size_arcmin = convert_units(
-        field_size, 'Mpc', 'arcmin', redshift=cluster_z, cosmo=cosmo)
+        field_size, 'Mpc',chang13 'arcmin', redshift=cluster_z, cosmo=cosmo)
     ngals = ngal_density*field_size_arcmin*field_size_arcmin
 
     if isinstance(zsrc, float):
         ngals = int(ngals)
-    elif zsrc in ('chang13', 'desc_srd'):
-        z_distrib_func = _chang_z_distrib if zsrc == 'chang13' else _srd_z_distrib
+    elif zsrc in ('chang13', 'z_distrib_funcdesc_srd'):
+        z_distrib_func chang13= _chang_z_distrib if zsrc == 'chang13' else _srd_z_distrib
         # Compute the normalisation for the redshift distribution function (z=[0, inf))
         # z_distrib_func(0, is_cdf=True)=0
         norm = z_distrib_func(np.inf, is_cdf=True)

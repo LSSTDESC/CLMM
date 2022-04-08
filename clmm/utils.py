@@ -511,7 +511,7 @@ def compute_beta_s(z_s, z_cl, z_inf, cosmo):
     beta_s = compute_beta(z_s, z_cl, cosmo) / compute_beta(z_inf, z_cl, cosmo)
     return beta_s
 
-def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, pdz=None):
+def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_distrib_func=None):
     r"""Mean value of the geometric lensing efficicency  
     
     .. math:: 
@@ -523,9 +523,9 @@ def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, pdz=No
             Galaxy cluster redshift
     z_inf: float
             Redshift at infinity
-    pdz: one-parameter function
-            Redshift probability density function. Default is\
-            Chang et al (2013) unnormalized galaxy redshift distribution\
+    z_distrib_func: one-parameter function
+            Redshift distribution function. Default is\
+            Chang et al (2013) distribution\
             function.
     zmin: float
             Minimum redshift to be set as the source of the galaxy\
@@ -544,18 +544,18 @@ def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, pdz=No
     float
         Mean value of the geometric lensing efficicency
     """
-    if pdz == None:
-        pdz = _chang_z_distrib
+    if z_distrib_func == None:
+        z_distrib_func = _chang_z_distrib
     def integrand(z_i, z_cl=z_cl, cosmo=cosmo):
-        return compute_beta(z_i, z_cl, cosmo) * pdz(z_i)
+        return compute_beta(z_i, z_cl, cosmo) * z_distrib_func(z_i)
     
     if zmin==None:
         zmin = z_cl + delta_z_cut
     
-    B_mean = quad(integrand, zmin, zmax)[0] / quad(pdz, zmin, zmax)[0]
+    B_mean = quad(integrand, zmin, zmax)[0] / quad(z_distrib_func, zmin, zmax)[0]
     return B_mean    
 
-def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, pdz=None):
+def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_distrib_func=None):
     r"""Mean value of the geometric lensing efficicency ratio 
     
     .. math:: 
@@ -567,9 +567,9 @@ def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=Non
             Galaxy cluster redshift
     z_inf: float
             Redshift at infinity
-    pdz: one-parameter function
-            Redshift probability density function. Default is\
-            Chang et al (2013) unnormalized galaxy redshift distribution\
+    z_distrib_func: one-parameter function
+            Redshift distribution function. Default is\
+            Chang et al (2013) distribution\
             function.
     zmin: float
             Minimum redshift to be set as the source of the galaxy\
@@ -588,18 +588,18 @@ def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=Non
     float
         Mean value of the geometric lensing efficicency ratio
     """   
-    if pdz == None:
-        pdz = _chang_z_distrib
+    if z_distrib_func == None:
+        z_distrib_func = _chang_z_distrib
 
     def integrand(z_i, z_cl=z_cl, z_inf=z_inf, cosmo=cosmo):
-        return compute_beta_s(z_i, z_cl, z_inf, cosmo) * pdz(z_i)
+        return compute_beta_s(z_i, z_cl, z_inf, cosmo) * z_distrib_func(z_i)
 
     if zmin==None:
         zmin = z_cl + delta_z_cut
-    Bs_mean = quad(integrand, zmin, zmax)[0] / quad(pdz, zmin, zmax)[0]
+    Bs_mean = quad(integrand, zmin, zmax)[0] / quad(z_distrib_func, zmin, zmax)[0]
     return Bs_mean
 
-def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, pdz=None):
+def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_distrib_func=None):
     r"""Mean square value of the geometric lensing efficicency ratio 
     
     .. math:: 
@@ -611,9 +611,9 @@ def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, z
             Galaxy cluster redshift
     z_inf: float
             Redshift at infinity
-    pdz: one-parameter function
-            Redshift probability density function. Default is\
-            Chang et al (2013) unnormalized galaxy redshift distribution\
+    z_distrib_func: one-parameter function
+            Redshift distribution function. Default is\
+            Chang et al (2013) distribution\
             function.
     zmin: float
             Minimum redshift to be set as the source of the galaxy\
@@ -632,15 +632,15 @@ def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, z
     float
         Mean square value of the geometric lensing efficicency ratio.
     """ 
-    if pdz == None:
-        pdz = _chang_z_distrib
+    if z_distrib_func == None:
+        z_distrib_func = _chang_z_distrib
     
     def integrand(z_i, z_cl=z_cl, z_inf=z_inf, cosmo=cosmo):
-        return compute_beta_s(z_i, z_cl, z_inf, cosmo)**2 * pdz(z_i)
+        return compute_beta_s(z_i, z_cl, z_inf, cosmo)**2 * z_distrib_func(z_i)
     
     if zmin==None:
         zmin = z_cl + delta_z_cut
-    Bs_square_mean = quad(integrand, zmin, zmax)[0] / quad(pdz, zmin, zmax)[0]
+    Bs_square_mean = quad(integrand, zmin, zmax)[0] / quad(z_distrib_func, zmin, zmax)[0]
     return Bs_square_mean
 
 def _chang_z_distrib(redshift, is_cdf=False):
