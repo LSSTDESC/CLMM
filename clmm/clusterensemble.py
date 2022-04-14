@@ -227,7 +227,7 @@ class ClusterEnsemble():
         #may induce artificial noise if there are some healpix pixels
         #not covering entirely the 2D map of clusters
         index = np.arange(len(self.data))
-        pixels = healpy.ang2pix(2**n_side, self.data['ra'], self.data['dec'],
+        pixels = healpy.ang2pix(n_side, self.data['ra'], self.data['dec'],
                                 nest=True, lonlat=True)
         pixels_list_unique = np.unique(pixels)
         n_jack = len(pixels_list_unique)
