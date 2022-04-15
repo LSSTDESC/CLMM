@@ -2,10 +2,14 @@
 Tests for datatype and galaxycluster
 """
 import os
-from numpy.testing import assert_raises, assert_equal
+import numpy as np
+from numpy.testing import assert_raises, assert_equal, assert_allclose
 import clmm
 from clmm import GCData
+from clmm import Cosmology
+from scipy.stats import multivariate_normal
 
+TOLERANCE = {'rtol': 1.e-7, 'atol': 1.e-7}
 
 def test_initialization():
     """test initialization"""
@@ -142,6 +146,67 @@ def test_integrity_of_lensfuncs():
                             dec=34., z=0.3, galcat=galcat_noz)
     assert_raises(TypeError, cluster.add_critical_surface_density, cosmo)
 
+def test_integrity_of_probfuncs():
+    """test integrity of prob funcs"""
+    ra_source, dec_source = [120.1, 119.9, 119.9], [41.9, 42.2, 42.2]
+    id_source, z_sources = [1, 2, 3], [1, 1, 1]
+    cluster = clmm.GalaxyCluster(
+        unique_id='1', ra=161.3, dec=34., z=0.3,
+        galcat=GCData([ra_source, dec_source, z_sources, id_source],
+                      names=('ra', 'dec', 'z', 'id')))
+    # true redshift
+    cluster.compute_background_probability(use_photoz=False, p_background_name='p_bkg_true')
+    expected = np.array([1., 1., 1.])
+    assert_allclose(cluster.galcat['p_bkg_true'], expected, **TOLERANCE)
+
+    #photoz + deltasigma
+    assert_raises(TypeError, cluster.compute_background_probability, use_photoz=True)
+    pzbin = np.linspace(.0001, 5, 100)
+    cluster.galcat['pzbins'] = [pzbin for i in range(len(z_sources))]
+    cluster.galcat['pzpdf'] = [multivariate_normal.pdf(pzbin, mean=z, cov=.01) for z in z_sources]
+    cluster.compute_background_probability(use_photoz=True, p_background_name='p_bkg_pz')
+    assert_allclose(cluster.galcat['p_bkg_pz'], expected, **TOLERANCE)
+
+def test_integrity_of_weightfuncs():
+    """test integrity of weight funcs"""
+    cosmo = Cosmology(H0=71.0, Omega_dm0=0.265 - 0.0448, Omega_b0=0.0448, Omega_k0=0.0)
+    z_lens = .1
+    z_source = [.22, .35, 1.7]
+    shape_component1 = np.array([.143, .063, -.171])
+    shape_component2 = np.array([-.011, .012,-.250])
+    shape_component1_err = np.array([.11, .01, .2])
+    shape_component2_err = np.array([.14, .16, .21])
+    p_background = np.array([1., 1., 1.])
+    cluster = clmm.GalaxyCluster(
+        unique_id='1', ra=161.3, dec=34., z=z_lens,
+        galcat=GCData(
+            [shape_component1, shape_component2,
+             shape_component1_err, shape_component2_err, z_source],
+            names=('e1', 'e2', 'e1_err', 'e2_err', 'z')))
+    #true redshift + deltasigma
+    cluster.compute_galaxy_weights(cosmo=cosmo, use_shape_noise=False,
+                                   is_deltasigma=True)
+    expected = np.array([4.58644320e-31, 9.68145632e-31, 5.07260777e-31])
+    assert_allclose(cluster.galcat['w_ls']*1e20, expected*1e20,**TOLERANCE)
+
+    #photoz + deltasigma
+    pzbin = np.linspace(.0001, 5, 100)
+    pzbins = np.zeros([len(z_source), len(pzbin)])
+    pzpdf = pzbins
+    pzbin = np.linspace(.0001, 5, 100)
+    cluster.galcat['pzbins'] = [pzbin for i in range(len(z_source))]
+    cluster.galcat['pzpdf'] = [multivariate_normal.pdf(pzbin, mean=z, cov=.3) for z in z_source]
+    cluster.compute_galaxy_weights(cosmo=cosmo, use_shape_noise=False, use_photoz=True,
+                                   is_deltasigma=True)
+    expected = np.array([9.07709345e-33, 1.28167582e-32, 4.16870389e-32])
+    assert_allclose(cluster.galcat['w_ls']*1e20, expected*1e20,**TOLERANCE)
+
+    # test with noise
+    cluster.compute_galaxy_weights(cosmo=cosmo, use_shape_noise=True, use_photoz=True,
+                                   use_shape_error=True, is_deltasigma=True)
+
+    expected = np.array([9.07709345e-33, 1.28167582e-32, 4.16870389e-32])
+    assert_allclose(cluster.galcat['w_ls']*1e20, expected*1e20,**TOLERANCE)
 
 def test_plot_profiles():
     """test plot profiles"""

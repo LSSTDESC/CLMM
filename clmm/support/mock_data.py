@@ -150,7 +150,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, cluste
         validate_argument(locals(), 'delta_so', float, argmin=0, eqmin=True)
         validate_argument(locals(), 'massdef', str)
         validate_argument(locals(), 'halo_profile_model', str)
-        validate_argument(locals(), 'zsrc_min', float, argmin=0, none_ok=True)
+        validate_argument(locals(), 'zsrc_min', float, argmin=0, eqmin=True, none_ok=True)
         validate_argument(locals(), 'zsrc_max', float, argmin=0, eqmin=True)
         validate_argument(locals(), 'field_size', float, argmin=0, eqmin=True)
         validate_argument(locals(), 'shapenoise', float, argmin=0, none_ok=True)
