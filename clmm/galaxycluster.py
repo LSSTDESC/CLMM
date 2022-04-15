@@ -40,9 +40,10 @@ class GalaxyCluster():
         if len(args)>0 or len(kwargs)>0:
             self._add_values(*args, **kwargs)
             self._check_types()
+            if 'ra' in self.galcat.colnames:
+                self.set_galcat_ra_lower(ra_low=0)
 
-    def _add_values(self, unique_id: str, ra: float, dec: float, z: float,
-                 galcat: GCData):
+    def _add_values(self, unique_id: str, ra: float, dec: float, z: float, galcat: GCData):
         """Add values for all attributes"""
         self.unique_id = unique_id
         self.ra = ra
@@ -513,3 +514,18 @@ class GalaxyCluster():
             xscale=xscale, yscale=yscale,
             tangential_component_label=tangential_component,
             cross_component_label=cross_component)
+
+    def set_galcat_ra_lower(self, ra_low=0):
+        """
+        Set window of values for galcat ra to [ra_low, ra_low+360[
+
+        Parameters
+        ----------
+        ra_low: float
+            Lower value for RA range, can be -180 or 0
+
+        """
+        if ra_low not in (-180., 0.):
+            raise ValueError('ra_low must be -180 or 0')
+        self.galcat['ra'][self.galcat['ra']<ra_low] += 360.
+        self.galcat['ra'][self.galcat['ra']>=ra_low+360.] -= 360.
