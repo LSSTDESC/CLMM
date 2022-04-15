@@ -311,7 +311,8 @@ def test_profiles(modeling_data, profile_init):
             assert_raises(NotImplementedError, theo.compute_convergence,0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)  
             assert_raises(NotImplementedError, theo.compute_tangential_shear,0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)
             assert_raises(NotImplementedError, theo.compute_reduced_tangential_shear,0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)
-        else:
+            assert_raises(NotImplementedError, theo.compute_magnification,0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)
+        else:            
             mod = theo.Modeling()
             mod.set_halo_density_profile(halo_profile_model=profile_init)
             mod.set_einasto_alpha(alpha_ein)
