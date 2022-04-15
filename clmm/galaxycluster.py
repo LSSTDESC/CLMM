@@ -256,19 +256,12 @@ class GalaxyCluster():
             self.galcat[cross_component] = cross_comp
         return angsep, tangential_comp, cross_comp
 
-    def compute_background_probability(self, z_source='z', pzpdf='pzpdf', pzbins='pzbins',
-                                       use_photoz=False, p_background_name='p_background',
+    def compute_background_probability(self, use_photoz=False, p_background_name='p_background',
                                        add=True):
         r"""Probability for being a background galaxy
 
         Parameters
         ----------
-        z_source: string
-            column name : source redshifts
-        pzpdf : string
-            column name : photometric probablility density function of the source galaxies
-        pzbins : string
-            column name : redshift axis on which the individual photoz pdf is tabulated
         use_photoz : boolean
             True for computing photometric probabilities
         add : boolean
@@ -279,32 +272,23 @@ class GalaxyCluster():
         p_background : array
             Probability for being a background galaxy
         """
+        col_dict = {'pzpdf':'pzpdf', 'pzbins':'pzbins', 'z_source':'z'}
         required_cols = ['pzpdf', 'pzbins'] if use_photoz else ['z_source']
-        cols = self._get_input_galdata(locals(), required_cols)
+        cols = self._get_input_galdata(col_dict, required_cols)
         p_background = compute_background_probability(
             self.z, validate_input=self.validate_input, **cols)
         if add:
             self.galcat[p_background_name] = p_background
         return p_background
 
-    def compute_galaxy_weights(self, z_source='z', pzpdf='pzpdf', pzbins='pzbins',
-                               shape_component1='e1', shape_component2='e2',
+    def compute_galaxy_weights(self, shape_component1='e1', shape_component2='e2',
                                shape_component1_err='e1_err', shape_component2_err='e2_err',
                                use_photoz=False, use_shape_noise=False, use_shape_error=False,
-                               weight_name='w_ls',cosmo=None,
-                               is_deltasigma=False, add=True):
+                               weight_name='w_ls', cosmo=None, is_deltasigma=False, add=True):
         r"""Computes the individual lens-source pair weights
 
         Parameters
         ----------
-        z_source: string
-            column name : source redshifts
-        cosmo: clmm.Comology object, None
-            CLMM Cosmology object.
-        pzpdf : string
-            column name : photometric probablility density function of the source galaxies
-        pzbins : string
-            column name : redshift axis on which the individual photoz pdf is tabulated
         shape_component1: string
             column name : The measured shear (or reduced shear or ellipticity)
             of the source galaxies
@@ -325,6 +309,8 @@ class GalaxyCluster():
             True for considering measured shape error in the weight computation
         weight_name : string
             Name of the new column for the weak lensing weights in the galcat table
+        cosmo: clmm.Comology object, None
+            CLMM Cosmology object.
         is_deltasigma: boolean
             Indicates whether it is the excess surface density or the tangential shear
         add : boolean
@@ -336,6 +322,8 @@ class GalaxyCluster():
             the individual lens source pair weights
         """
         # input cols
+        col_dict = {'pzpdf':'pzpdf', 'pzbins':'pzbins', 'z_source':'z'}
+        col_dict.update(locals())
         required_cols = ['shape_component1', 'shape_component2']
         if use_photoz:
             required_cols += ['pzpdf', 'pzbins']
@@ -343,7 +331,7 @@ class GalaxyCluster():
             required_cols += ['z_source']
         if use_shape_error:
             required_cols += ['shape_component1_err', 'shape_component2_err']
-        cols = self._get_input_galdata(locals(), required_cols)
+        cols = self._get_input_galdata(col_dict, required_cols)
         # handles p_background
         #if p_background_name not in self.galcat.columns or recompute_p_background:
         #print(f'(re)computing {p_background_name}')
