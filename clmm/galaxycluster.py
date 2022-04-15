@@ -129,6 +129,32 @@ class GalaxyCluster():
                 cosmo=cosmo, z_cluster=self.z, z_source=self.galcat['z'],
                 validate_input=self.validate_input)
 
+    def add_mean_critical_surface_density(self, cosmo):
+        r"""Computes the means critical surface density, average over the redshift pdf, for each galaxy in `galcat`.
+        It only runs if input cosmo != galcat cosmo or if `sigma_c` not in `galcat`.
+
+        Parameters
+        ----------
+        cosmo : clmm.Cosmology object
+            CLMM Cosmology object
+
+        Returns
+        -------
+        None
+        """
+        if cosmo is None:
+            raise TypeError('To compute Sigma_crit, please provide a cosmology')
+        if cosmo.get_desc() != self.galcat.meta['cosmo'] or 'sigma_c_mean' not in self.galcat:
+            if self.z is None:
+                raise TypeError('Cluster\'s redshift is None. Cannot compute Sigma_crit')
+            if 'pzbins' not in self.galcat.columns or 'pzpdf' not in self.galcat.columns:
+                raise TypeError('Galaxy catalog missing the redshift column. '
+                                'Cannot compute Sigma_crit')
+            self.galcat.update_cosmo(cosmo, overwrite=True)
+            self.galcat['sigma_c_mean'] = compute_critical_surface_density(
+                cosmo=cosmo, z_cluster=self.z, use_pdz=True, pzbins=self.galcat['pzbins'], pzpdf=self.galcat['pzpdf'],
+                validate_input=self.validate_input)
+
     def _get_input_galdata(self, col_dict, required_cols=None):
         """
         Checks required columns exist in galcat and returns kwargs dictionary
@@ -158,7 +184,7 @@ class GalaxyCluster():
 
     def compute_tangential_and_cross_components(
             self, shape_component1='e1', shape_component2='e2', tan_component='et',
-            cross_component='ex', geometry='curve', is_deltasigma=False, cosmo=None, add=True):
+            cross_component='ex', geometry='curve', is_deltasigma=False, use_pdz=False, cosmo=None, add=True):
         r"""Adds a tangential- and cross- components for shear or ellipticity to self
 
         Calls `clmm.dataops.compute_tangential_and_cross_components` with the following arguments:
@@ -212,12 +238,17 @@ class GalaxyCluster():
         cols = self._get_input_galdata(
             {'ra_source':'ra', 'dec_source':'dec',
              'shear1': shape_component1, 'shear2': shape_component2})
-        if is_deltasigma:
+        
+        if is_deltasigma and not use_pdz:
             self.add_critical_surface_density(cosmo)
             cols['sigma_c'] = self.galcat['sigma_c']
+        if is_deltasigma and use_pdz:
+            self.add_mean_critical_surface_density(cosmo)
+            cols['sigma_c'] = self.galcat['sigma_c_mean']
+
         # compute shears
         angsep, tangential_comp, cross_comp = compute_tangential_and_cross_components(
-                ra_lens=self.ra, dec_lens=self.dec, geometry=geometry, is_deltasigma=is_deltasigma,
+                ra_lens=self.ra, dec_lens=self.dec, geometry=geometry, is_deltasigma=is_deltasigma, use_pdz=use_pdz,
                 validate_input=self.validate_input, **cols)
         if add:
             self.galcat['theta'] = angsep

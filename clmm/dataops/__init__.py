@@ -6,7 +6,7 @@ import scipy
 from astropy.coordinates import SkyCoord
 from astropy import units as u
 from .. gcdata import GCData
-from . .utils import compute_radial_averages, make_bins, convert_units, arguments_consistency, validate_argument
+from . .utils import compute_radial_averages, make_bins, convert_units, arguments_consistency, validate_argument, _integ_pzfuncs
 from .. theory import compute_critical_surface_density
 
 
@@ -14,7 +14,8 @@ def compute_tangential_and_cross_components(
         ra_lens, dec_lens, ra_source, dec_source,
         shear1, shear2, geometry='curve',
         is_deltasigma=False, cosmo=None,
-        z_lens=None, z_source=None, sigma_c=None, validate_input=True):
+        z_lens=None, z_source=None, sigma_c=None, use_pdz=False, zbins=None, pdz=None, 
+        validate_input=True):
     r"""Computes tangential- and cross- components for shear or ellipticity
 
     To do so, we need the right ascension and declination of the lens and of all of the sources. We
@@ -153,53 +154,62 @@ def compute_tangential_and_cross_components(
     tangential_comp = _compute_tangential_shear(shear1_, shear2_, phi)
     cross_comp = _compute_cross_shear(shear1_, shear2_, phi)
     # If the is_deltasigma flag is True, multiply the results by Sigma_crit.
+
     if is_deltasigma:
-        if sigma_c is None:
+        if sigma_c is None and use_pdz is False:
             # Need to verify that cosmology and redshifts are provided
             if any(t_ is None for t_ in (z_lens, z_source, cosmo)):
                 raise TypeError(
                     'To compute DeltaSigma, please provide a '
                     'i) cosmology, ii) redshift of lens and sources')
-            sigma_c = compute_critical_surface_density(cosmo, z_lens, z_source)
+            sigma_c = compute_critical_surface_density(cosmo, z_lens, z_source=z_source)
+        elif sigma_c is None:
+            # Need to verify that cosmology, lens redshift, source redshift bins and 
+            # source redshift pdf are provided
+            if any(t_ is None for t_ in (z_lens, cosmo, zbins, pdz)):
+                raise TypeError(
+                    'To compute DeltaSigma using the redshift pdz of the sources, please provide a '
+                    'i) cosmology, ii) lens redshift, iii) source redshift bins and iv) source redshift pdf')
+            sigma_c = compute_critical_surface_density(cosmo, z_lens, use_pdz=use_pdz, zbins=zbins, pdz=pdz)
         tangential_comp *= sigma_c
         cross_comp *= sigma_c
     return angsep, tangential_comp, cross_comp
 
-def _integ_pzfuncs(pzpdf, pzbins, zmin, kernel=lambda z: 1.):
-    r"""
-    Integrates photo-z pdf with a given kernel. This function was created to allow for data with
-    different photo-z binnings.
+# def _integ_pzfuncs(pzpdf, pzbins, zmin, kernel=lambda z: 1.):
+#     r"""
+#     Integrates photo-z pdf with a given kernel. This function was created to allow for data with
+#     different photo-z binnings.
 
 
-    Parameters
-    ----------
-    pzpdf : list of arrays
-        Photometric probablility density functions of the source galaxies.
-    pzbins : list of arrays
-        Redshift axis on which the individual photoz pdf is tabulated.
-    zmin : float
-        Minimum redshift for integration
-    kernel : function
-        Function to be integrated with the pdf, must be f(z_array) format.
+#     Parameters
+#     ----------
+#     pzpdf : list of arrays
+#         Photometric probablility density functions of the source galaxies.
+#     pzbins : list of arrays
+#         Redshift axis on which the individual photoz pdf is tabulated.
+#     zmin : float
+#         Minimum redshift for integration
+#     kernel : function
+#         Function to be integrated with the pdf, must be f(z_array) format.
 
-    Returns
-    -------
-    array
-        Kernel integrated with the pdf of each galaxy.
+#     Returns
+#     -------
+#     array
+#         Kernel integrated with the pdf of each galaxy.
 
-    Notes
-    -----
-        Will be replaced by qp at some point.
-    """
-    # adding these lines to interpolate CLMM redshift grid for each galaxies
-    # to a constant redshift grid for all galaxies. If there is a constant grid for all galaxies
-    # these lines are not necessary and z_grid, pz_matrix = pzbins, pzpdf
-    z_grid = np.linspace(0, 5, 100)
-    z_grid = z_grid[z_grid>zmin]
-    pz_matrix = np.array([np.interp(z_grid, pzbin, pdf)
-                         for pzbin, pdf in zip(pzbins, pzpdf)])
-    kernel_matrix = kernel(z_grid)
-    return scipy.integrate.simps(pz_matrix*kernel_matrix, x=z_grid, axis=1)
+#     Notes
+#     -----
+#         Will be replaced by qp at some point.
+#     """
+#     # adding these lines to interpolate CLMM redshift grid for each galaxies
+#     # to a constant redshift grid for all galaxies. If there is a constant grid for all galaxies
+#     # these lines are not necessary and z_grid, pz_matrix = pzbins, pzpdf
+#     z_grid = np.linspace(0, 5, 100)
+#     z_grid = z_grid[z_grid>zmin]
+#     pz_matrix = np.array([np.interp(z_grid, pzbin, pdf)
+#                          for pzbin, pdf in zip(pzbins, pzpdf)])
+#     kernel_matrix = kernel(z_grid)
+#     return scipy.integrate.simps(pz_matrix*kernel_matrix, x=z_grid, axis=1)
 
 
 def compute_background_probability(z_lens, z_source=None, pzpdf=None, pzbins=None, validate_input=True):

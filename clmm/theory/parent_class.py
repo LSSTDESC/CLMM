@@ -11,7 +11,7 @@ from scipy.interpolate import interp1d
 from .generic import compute_reduced_shear_from_convergence
 import warnings
 from .generic import compute_reduced_shear_from_convergence, compute_magnification_bias_from_magnification
-from ..utils import validate_argument
+from ..utils import validate_argument, _integ_pzfuncs
 
 
 class CLMModeling:
@@ -163,7 +163,7 @@ class CLMModeling:
     def _eval_3d_density(self, r3d, z_cl):
         raise NotImplementedError
 
-    def eval_critical_surface_density(self, z_len, z_src):
+    def eval_critical_surface_density(self, z_len, z_src=None, use_pdz=False, pzbins=None, pzpdf=None):
         r"""Computes the critical surface density
 
         Parameters
@@ -180,8 +180,17 @@ class CLMModeling:
         """
         if self.validate_input:
             validate_argument(locals(), 'z_len', float, argmin=0)
-            validate_argument(locals(), 'z_src', 'float_array', argmin=0)
-        return self._eval_critical_surface_density(z_len=z_len, z_src=z_src)
+            validate_argument(locals(), 'z_src', 'float_array', argmin=0, none_ok=True)
+
+        if use_pdz==False:
+            return self._eval_critical_surface_density(z_len=z_len, z_src=z_src)
+        else:
+            if pzbins is None or pzpdf is None:
+                raise ValueError('Redshift bins and source redshift pdf must be provided when use_pdz is True')
+            else:
+                def inv_sigmac(redshift):
+                    return 1./self._eval_critical_surface_density(z_len=z_len, z_src=redshift)
+                return 1./_integ_pzfuncs(pzpdf, pzbins, 0., kernel=inv_sigmac)
 
     def _eval_critical_surface_density(self, z_len, z_src):
         return self.cosmo.eval_sigma_crit(z_len, z_src)

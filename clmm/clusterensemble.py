@@ -214,7 +214,7 @@ class ClusterEnsemble():
         self.bootstrap_tangential_covariance = coeff*np.cov(np.array(gt_boot).T, bias = False,ddof=0)
         self.bootstrap_cross_covariance = coeff*np.cov(np.array(gx_boot).T, bias = False)
 
-    def compute_jackknife_covariance(self, tan_component='gt', cross_component='gx', n_side=2):
+    def compute_jackknife_covariance(self, tan_component='gt', cross_component='gx', n_side=16):
         """Compute the jackknife covariance matrix, add boostrap covariance matrix for
         tangential and cross profiles as attributes.
         Uses healpix sky area sub-division : https://healpix.sourceforge.io

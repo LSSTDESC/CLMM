@@ -16,7 +16,7 @@ __all__ = generic.__all__+['compute_3d_density', 'compute_surface_density',
                            'compute_surface_density_2h',
                            'compute_critical_surface_density',
                            'compute_tangential_shear', 'compute_convergence',
-                        'compute_reduced_tangential_shear','compute_magnification',
+                           'compute_reduced_tangential_shear','compute_magnification',
                            'compute_magnification_bias']
 
 
@@ -287,7 +287,7 @@ def compute_surface_density_2h(r_proj, z_cl, cosmo, halobias=1, lsteps=500, vali
     gcm.validate_input = True
     return sigma_2h
 
-def compute_critical_surface_density(cosmo, z_cluster, z_source, validate_input=True):
+def compute_critical_surface_density(cosmo, z_cluster, z_source=None, use_pdz=False, pzbins=None, pzpdf=None, validate_input=True):
     r"""Computes the critical surface density
 
     .. math::
@@ -314,10 +314,9 @@ def compute_critical_surface_density(cosmo, z_cluster, z_source, validate_input=
     We will need :math:`\gamma_\infty` and :math:`\kappa_\infty` for alternative
     z_src_models using :math:`\beta_s`.
     """
-
     gcm.validate_input = validate_input
     gcm.set_cosmo(cosmo)
-    sigma_c = gcm.eval_critical_surface_density(z_cluster, z_source)
+    sigma_c = gcm.eval_critical_surface_density(z_cluster, z_src=z_source, use_pdz=use_pdz, pzbins=pzbins, pzpdf=pzpdf)
 
     gcm.validate_input = True
     return sigma_c
@@ -388,7 +387,6 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     for alternative z_src_models using :math:`\beta_s`.
     """
     if z_src_model == 'single_plane':
-
         gcm.validate_input = validate_input
         gcm.set_cosmo(cosmo)
         gcm.set_halo_density_profile(
