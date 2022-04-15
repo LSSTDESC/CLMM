@@ -453,12 +453,12 @@ def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argm
         if argmin is not None:
             if (var_array.min()<argmin if eqmin else var_array.min()<=argmin):
                 err = f'{argname} must be greater than {argmin},' \
-                      f' received {"vec_min:"*(var_array.size-1)}{var}'
+                      f' received min({argname}): {var.min()}'
                 raise ValueError(err)
         if argmax is not None:
             if (var_array.max()>argmax if eqmax else var_array.max()>=argmax):
                 err = f'{argname} must be lesser than {argmax},' \
-                      f' received {"vec_max:"*(var_array.size-1)}{var}'
+                      f' received max({argname}): {var.max()}'
                 raise ValueError(err)
 
 def _integ_pzfuncs(pzpdf, pzbins, zmin, kernel=lambda z: 1.):
