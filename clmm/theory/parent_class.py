@@ -175,30 +175,6 @@ class CLMModeling:
         r""" Actuall sets the value of the concentration (without value check)"""
         raise NotImplementedError
 
-    def _validate_input(self, in_val, vmin, err_msg='value %s <= vmin'):
-        r'''Raises error if input value<=vmin
-
-        Parameters
-        ----------
-        radius: array, float
-            Input radius
-        '''
-        in_min = np.min(in_val)
-        if in_min <= vmin:
-            raise ValueError(err_msg % str(in_min))
-
-    def _check_input_radius(self, radius):
-        r'''Raises error if input radius is not positive
-
-        Parameters
-        ----------
-        radius: array, float
-            Input radius
-        '''
-        self._validate_input(
-            radius, 0, "min(R) = %s Mpc! This value is not accepted.")
-
-
     def eval_3d_density(self, r3d, z_cl, verbose=False):
         r"""Retrieve the 3d density :math:`\rho(r)`.
 
