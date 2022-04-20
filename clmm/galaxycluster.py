@@ -103,7 +103,7 @@ class GalaxyCluster():
             f'<br>{self.galcat._html_table()}'
             )
 
-    def add_critical_surface_density(self, cosmo):
+    def add_critical_surface_density(self, cosmo, use_pdz=False):
         r"""Computes the critical surface density for each galaxy in `galcat`.
         It only runs if input cosmo != galcat cosmo or if `sigma_c` not in `galcat`.
 
@@ -111,6 +111,11 @@ class GalaxyCluster():
         ----------
         cosmo : clmm.Cosmology object
             CLMM Cosmology object
+        use_pdz : boolean
+            Flag to specify the use of the photoz pdf. If `False` (default), `sigma_c` is computed using the redshift point estimates of the
+            `z` column of the `galcat` table. If `True`, `sigma_c` is computed as 1/<1/Sigma_crit>, where the average is performed using
+            the individual galaxy redshift pdf. In that case, the `galcat` table should have `pzbins` 
+            and `pzpdf` columns.
 
         Returns
         -------
@@ -121,39 +126,23 @@ class GalaxyCluster():
         if cosmo.get_desc() != self.galcat.meta['cosmo'] or 'sigma_c' not in self.galcat:
             if self.z is None:
                 raise TypeError('Cluster\'s redshift is None. Cannot compute Sigma_crit')
-            if 'z' not in self.galcat.columns:
-                raise TypeError('Galaxy catalog missing the redshift column. '
-                                'Cannot compute Sigma_crit')
+            if use_pdz is False and 'z' not in self.galcat.columns:
+                raise TypeError("Galaxy catalog missing the redshift column (which should be called 'z')." 
+                                "Cannot compute Sigma_crit.")
+            if use_pdz and ('pzbins' not in self.galcat.columns or 'pzpdf' not in self.galcat.columns):
+                raise TypeError("Galaxy catalog missing the redshift distribution information. Need to have both a 'pzbins' and 'pzpdf' columns." 
+                                "Cannot compute 1/<1/Sigma_crit>.")
+
             self.galcat.update_cosmo(cosmo, overwrite=True)
-            self.galcat['sigma_c'] = compute_critical_surface_density(
-                cosmo=cosmo, z_cluster=self.z, z_source=self.galcat['z'],
-                validate_input=self.validate_input)
+            if use_pdz is False:
+                self.galcat['sigma_c'] = compute_critical_surface_density(
+                    cosmo=cosmo, z_cluster=self.z, z_source=self.galcat['z'],
+                    validate_input=self.validate_input)
+            else:
+                self.galcat['sigma_c'] = compute_critical_surface_density(
+                    cosmo=cosmo, z_cluster=self.z, use_pdz=True, pzbins=self.galcat['pzbins'], pzpdf=self.galcat['pzpdf'],
+                    validate_input=self.validate_input)
 
-    def add_mean_critical_surface_density(self, cosmo):
-        r"""Computes the means critical surface density, average over the redshift pdf, for each galaxy in `galcat`.
-        It only runs if input cosmo != galcat cosmo or if `sigma_c` not in `galcat`.
-
-        Parameters
-        ----------
-        cosmo : clmm.Cosmology object
-            CLMM Cosmology object
-
-        Returns
-        -------
-        None
-        """
-        if cosmo is None:
-            raise TypeError('To compute Sigma_crit, please provide a cosmology')
-        if cosmo.get_desc() != self.galcat.meta['cosmo'] or 'sigma_c_mean' not in self.galcat:
-            if self.z is None:
-                raise TypeError('Cluster\'s redshift is None. Cannot compute Sigma_crit')
-            if 'pzbins' not in self.galcat.columns or 'pzpdf' not in self.galcat.columns:
-                raise TypeError('Galaxy catalog missing the redshift column. '
-                                'Cannot compute Sigma_crit')
-            self.galcat.update_cosmo(cosmo, overwrite=True)
-            self.galcat['sigma_c_mean'] = compute_critical_surface_density(
-                cosmo=cosmo, z_cluster=self.z, use_pdz=True, pzbins=self.galcat['pzbins'], pzpdf=self.galcat['pzpdf'],
-                validate_input=self.validate_input)
 
     def _get_input_galdata(self, col_dict, required_cols=None):
         """
@@ -239,12 +228,9 @@ class GalaxyCluster():
             {'ra_source':'ra', 'dec_source':'dec',
              'shear1': shape_component1, 'shear2': shape_component2})
         
-        if is_deltasigma and not use_pdz:
-            self.add_critical_surface_density(cosmo)
+        if is_deltasigma:
+            self.add_critical_surface_density(cosmo, use_pdz=use_pdz)
             cols['sigma_c'] = self.galcat['sigma_c']
-        if is_deltasigma and use_pdz:
-            self.add_mean_critical_surface_density(cosmo)
-            cols['sigma_c'] = self.galcat['sigma_c_mean']
 
         # compute shears
         angsep, tangential_comp, cross_comp = compute_tangential_and_cross_components(
