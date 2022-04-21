@@ -14,7 +14,7 @@ def compute_tangential_and_cross_components(
         ra_lens, dec_lens, ra_source, dec_source,
         shear1, shear2, geometry='curve',
         is_deltasigma=False, cosmo=None,
-        z_lens=None, z_source=None, sigma_c=None, use_pdz=False, zbins=None, pdz=None, 
+        z_lens=None, z_source=None, sigma_c=None, use_pdz=False, pzbins=None, pzpdf=None, 
         validate_input=True):
     r"""Computes tangential- and cross- components for shear or ellipticity
 
@@ -170,7 +170,7 @@ def compute_tangential_and_cross_components(
                 raise TypeError(
                     'To compute DeltaSigma using the redshift pdz of the sources, please provide a '
                     'i) cosmology, ii) lens redshift, iii) source redshift bins and iv) source redshift pdf')
-            sigma_c = compute_critical_surface_density(cosmo, z_lens, use_pdz=use_pdz, zbins=zbins, pdz=pdz)
+            sigma_c = compute_critical_surface_density(cosmo, z_lens, use_pdz=use_pdz, pzbins=pzbins, pzpdf=pzpdf)
         tangential_comp *= sigma_c
         cross_comp *= sigma_c
     return angsep, tangential_comp, cross_comp
@@ -212,7 +212,7 @@ def compute_tangential_and_cross_components(
 #     return scipy.integrate.simps(pz_matrix*kernel_matrix, x=z_grid, axis=1)
 
 
-def compute_background_probability(z_lens, z_source=None, pzpdf=None, pzbins=None, validate_input=True):
+def compute_background_probability(z_lens, z_source=None, use_pdz=False, pzpdf=None, pzbins=None, validate_input=True):
     r"""Probability for being a background galaxy
 
     Parameters
@@ -235,19 +235,22 @@ def compute_background_probability(z_lens, z_source=None, pzpdf=None, pzbins=Non
     if validate_input:
         validate_argument(locals(), 'z_lens', float, argmin=0, eqmin=True)
         validate_argument(locals(), 'z_source', 'float_array', argmin=0, eqmin=True, none_ok=True)
-    if (pzpdf is None)!=(pzbins is None):
-        raise ValueError('pzbins must be provided with pzpdf.')
-    if pzpdf is None:
+    
+    if use_pdz is False:
+        if z_source is None:
+            raise ValueError('z_source must be provided.')  
         p_background = np.array(z_source>z_lens, dtype=float)
     else:
+        if (pzpdf is None or pzbins is None):
+            raise ValueError('pzbins must be provided with pzpdf.')
         p_background = _integ_pzfuncs(pzpdf, pzbins, z_lens)
+    
     return p_background
 
-
-def compute_galaxy_weights(z_lens, cosmo, z_source=None, pzpdf=None, pzbins=None,
-                           shape_component1=None, shape_component2=None,
-                           shape_component1_err=None, shape_component2_err=None,
-                           p_background=None, use_shape_noise=False, is_deltasigma=False,
+def compute_galaxy_weights(z_lens, cosmo, z_source=None, use_pdz=False, pzpdf=None, pzbins=None,
+                           use_shape_noise=False, shape_component1=None, shape_component2=None,
+                           use_shape_error=False, shape_component1_err=None, shape_component2_err=None,
+                           is_deltasigma=False, sigma_c=None,
                            validate_input=True):
     r"""Computes the individual lens-source pair weights
 
@@ -325,13 +328,14 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, pzpdf=None, pzbins=None
     if validate_input:
         validate_argument(locals(), 'z_lens', float, argmin=0, eqmin=True)
         validate_argument(locals(), 'z_source', 'float_array', argmin=0, eqmin=True, none_ok=True)
-        #validate_argument(locals(), 'pzpdf', 'float_array')
-        #validate_argument(locals(), 'pzbins', 'float_array')
+        validate_argument(locals(), 'use_pdz', bool)
+        # validate_argument(locals(), 'pzpdf', 'float_array')
+        # validate_argument(locals(), 'pzbins', 'float_array')
         validate_argument(locals(), 'shape_component1', 'float_array')
         validate_argument(locals(), 'shape_component2', 'float_array')
         validate_argument(locals(), 'shape_component1_err', 'float_array', none_ok=True)
         validate_argument(locals(), 'shape_component2_err', 'float_array', none_ok=True)
-        validate_argument(locals(), 'p_background', 'float_array', none_ok=True)
+#        validate_argument(locals(), 'p_background', 'float_array', none_ok=True)
         validate_argument(locals(), 'use_shape_noise', bool)
         validate_argument(locals(), 'is_deltasigma', bool)
         arguments_consistency(
@@ -339,31 +343,42 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, pzpdf=None, pzbins=None
             names=('shape_component1', 'shape_component2'),
             prefix='Shape components sources')
 
-    #computing p_background
-    if p_background is None:
-        p_background = compute_background_probability(z_lens, z_source, pzpdf, pzbins)
-
     #computing w_ls_geo
-    if pzpdf is None:
-        norm = 1
-        if is_deltasigma:
-            norm = cosmo.eval_sigma_crit(z_lens, z_source)**2
-        w_ls_geo = p_background/norm
+
+    if is_deltasigma is False:
+        w_ls_geo = 1.
     else:
-        w_ls_geo = 1
-        if is_deltasigma == True:
-            w_ls_geo = _integ_pzfuncs(
-                pzpdf, pzbins, z_lens,
-                kernel=lambda z: 1./cosmo.eval_sigma_crit(z_lens, z))**2
+        if sigma_c is None:
+            print('=========here===========')
+            sigma_c = compute_critical_surface_density(cosmo, z_lens, z_source=z_source, use_pdz=use_pdz, pzbins=pzbins, pzpdf=pzpdf)
+        w_ls_geo = 1./sigma_c**2
+
+#     if pzpdf is None:
+#         norm = 1
+#         if is_deltasigma:
+# #            norm = cosmo.eval_sigma_crit(z_lens, z_source)**2
+#             norm = compute_critical_surface_density(cosmo, z_lens, z_source=z_source)**2
+#         w_ls_geo = p_background/norm
+#     else:
+#         w_ls_geo = 1
+#         if is_deltasigma == True:
+#             w_ls_geo = _integ_pzfuncs(
+#                 pzpdf, pzbins, z_lens,
+#                 kernel=lambda z: 1./cosmo.eval_sigma_crit(z_lens, z))**2
 
     #computing w_ls_shape
     err_e2 = np.zeros(len(shape_component1))
     if use_shape_noise:
+        if shape_component1 is None or shape_component2 is None:
+            raise ValueError('With the shape noise option, the source shapes `shape_component_{1,2}` must be specified')
         err_e2 += np.std(shape_component1)**2 + np.std(shape_component2)**2
-    err_e2 += 0 if shape_component1_err is None else shape_component1_err**2
-    err_e2 += 0 if shape_component2_err is None else shape_component2_err**2
+    if use_shape_error:
+        if shape_component1_err is None or shape_component2_err is None:
+            raise ValueError('With the shape error option, the source shapes errors`shape_component_err{1,2}` must be specified')
+        err_e2 += shape_component1_err**2
+        err_e2 += shape_component2_err**2
     w_ls_shape = np.ones(len(shape_component1))
-    w_ls_shape[err_e2>0] = 1/err_e2[err_e2>0]
+    w_ls_shape[err_e2>0] = 1./err_e2[err_e2>0]
 
     w_ls = w_ls_shape * w_ls_geo
 

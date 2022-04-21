@@ -242,7 +242,7 @@ class GalaxyCluster():
             self.galcat[cross_component] = cross_comp
         return angsep, tangential_comp, cross_comp
 
-    def compute_background_probability(self, use_photoz=False, p_background_name='p_background',
+    def compute_background_probability(self, use_pdz=False, p_background_name='p_background',
                                        add=True):
         r"""Probability for being a background galaxy
 
@@ -259,17 +259,17 @@ class GalaxyCluster():
             Probability for being a background galaxy
         """
         col_dict = {'pzpdf':'pzpdf', 'pzbins':'pzbins', 'z_source':'z'}
-        required_cols = ['pzpdf', 'pzbins'] if use_photoz else ['z_source']
+        required_cols = ['pzpdf', 'pzbins'] if use_pdz else ['z_source']
         cols = self._get_input_galdata(col_dict, required_cols)
         p_background = compute_background_probability(
-            self.z, validate_input=self.validate_input, **cols)
+            self.z, use_pdz=use_pdz, validate_input=self.validate_input, **cols)
         if add:
             self.galcat[p_background_name] = p_background
         return p_background
 
     def compute_galaxy_weights(self, shape_component1='e1', shape_component2='e2',
                                shape_component1_err='e1_err', shape_component2_err='e2_err',
-                               use_photoz=False, use_shape_noise=False, use_shape_error=False,
+                               use_pdz=False, use_shape_noise=False, use_shape_error=False,
                                weight_name='w_ls', cosmo=None, is_deltasigma=False, add=True):
         r"""Computes the individual lens-source pair weights
 
@@ -308,13 +308,15 @@ class GalaxyCluster():
             the individual lens source pair weights
         """
         # input cols
-        col_dict = {'pzpdf':'pzpdf', 'pzbins':'pzbins', 'z_source':'z'}
+        col_dict = {'pzpdf':'pzpdf', 'pzbins':'pzbins', 'z_source':'z', 'sigma_c':'sigma_c'}
         col_dict.update(locals())
         required_cols = ['shape_component1', 'shape_component2']
-        if use_photoz:
+        if use_pdz:
             required_cols += ['pzpdf', 'pzbins']
-        elif is_deltasigma:
-            required_cols += ['z_source']
+        if is_deltasigma:
+            if 'sigma_c' not in self.galcat.columns:
+                self.add_critical_surface_density(cosmo, use_pdz=use_pdz)
+            required_cols += ['z_source','sigma_c']
         if use_shape_error:
             required_cols += ['shape_component1_err', 'shape_component2_err']
         cols = self._get_input_galdata(col_dict, required_cols)
@@ -325,6 +327,7 @@ class GalaxyCluster():
         #        z_source=z_source, pzpdf=pzpdf, pzbins=pzbins,
         #        use_photoz=use_photoz, p_background_name=p_background_name)
         #cols['p_background'] = self.galcat[p_background_name]
+        
         # computes weights
         w_ls = compute_galaxy_weights(
             self.z, cosmo, use_shape_noise=use_shape_noise,

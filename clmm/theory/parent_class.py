@@ -211,7 +211,7 @@ class CLMModeling:
             validate_argument(locals(), 'z_len', float, argmin=0)
             validate_argument(locals(), 'z_src', 'float_array', argmin=0, none_ok=True)
 
-        if use_pdz==False:
+        if use_pdz is False:
             return self._eval_critical_surface_density(z_len=z_len, z_src=z_src)
         else:
             if pzbins is None or pzpdf is None:
