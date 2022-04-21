@@ -32,8 +32,8 @@ class NFW():
         self.massdef = massdef
         self.delta_mdef = delta_mdef
         self.cosmo = cosmo
-        self.mdef_dict = {'mean': self.cosmo.get_rho_m(z),
-                          'critical': self.cosmo.get_rho_c(z) #Msun / Mpc**3
+        self.mdef_dict = {'mean': self.cosmo.get_rho_m,
+                          'critical': self.cosmo.get_rho_c #Msun / Mpc**3
                          }
 
     def _Delta_c(self, c):
@@ -44,7 +44,7 @@ class NFW():
         return ((mdelta * 3.) / (4. * np.pi * delta_mdef * rho)) ** (1./3.)
 
     def rdelta(self):
-        return self.rdelta(
+        return self._rdelta(
             self.mdelta, self.z, self.massdef, self.delta_mdef, self.cosmo)
 
     def _rs(self, mdelta, cdelta, z, massdef, delta_mdef, cosmo):
@@ -66,7 +66,7 @@ class NFW():
         M : array
             Mass enclosed within a sphere of radius r3d
         """
-        x = np.array(r3d)/self.rs
+        x = np.array(r3d)/self.rs()
         M = self.mdelta * self._Delta_c(x) / self._Delta_c(self.cdelta)
         return M
 
@@ -121,7 +121,7 @@ def convert_def(mdelta1, cdelta1, z, massdef1, delta_mdef1,
     def f(params):
         mdelta2, cdelta2 = params
         def2 = NFW(mdelta2, cdelta2, z, massdef2, delta_mdef2, cosmo)
-        return def1.mdelta - def2.M(def1.rdelta), def2.mdelta - def1.M(def2.rdelta)
+        return def1.mdelta - def2.M(def1.rdelta()), def2.mdelta - def1.M(def2.rdelta())
 
     mdelta2_fit, cdelta2_fit = fsolve(func = f, x0 = [mdelta1, cdelta1], maxfev = 1000)
     mdelta2_fit, cdelta2_fit = fsolve(func = f, x0 = [mdelta2_fit, cdelta2_fit], maxfev = 100)
