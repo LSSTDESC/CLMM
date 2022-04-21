@@ -267,32 +267,32 @@ class GalaxyCluster():
             self.galcat[p_background_name] = p_background
         return p_background
 
-    def compute_galaxy_weights(self, shape_component1='e1', shape_component2='e2',
-                               shape_component1_err='e1_err', shape_component2_err='e2_err',
-                               use_pdz=False, use_shape_noise=False, use_shape_error=False,
+    def compute_galaxy_weights(self, use_pdz=False, 
+                               use_shape_noise=False, shape_component1='e1', shape_component2='e2',
+                               use_shape_error=False, shape_component1_err='e1_err', shape_component2_err='e2_err',
                                weight_name='w_ls', cosmo=None, is_deltasigma=False, add=True):
         r"""Computes the individual lens-source pair weights
 
         Parameters
         ----------
+        use_pdz : boolean
+            True for computing photometric weights
+        use_shape_noise : boolean
+            True for considering shapenoise in the weight computation
         shape_component1: string
             column name : The measured shear (or reduced shear or ellipticity)
             of the source galaxies
         shape_component2: array
             column name : The measured shear (or reduced shear or ellipticity)
             of the source galaxies
+        use_shape_error : boolean
+            True for considering measured shape error in the weight computation
         shape_component1_err: array
             column name : The measurement error on the 1st-component of ellipticity
             of the source galaxies
         shape_component2_err: array
             column name : The measurement error on the 2nd-component of ellipticity
             of the source galaxies
-        use_photoz : boolean
-            True for computing photometric weights
-        use_shape_noise : boolean
-            True for considering shapenoise in the weight computation
-        use_shape_error : boolean
-            True for considering measured shape error in the weight computation
         weight_name : string
             Name of the new column for the weak lensing weights in the galcat table
         cosmo: clmm.Comology object, None

@@ -295,27 +295,36 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, use_pdz=False, pzpdf=No
     z_lens: float
         Redshift of the lens.
     z_source: array, optional
-        Redshift of the source. Used only if pzpdf=pzbins=None.
+        Redshift of the source (point estimate). Used only if `use_pdz=False`.
     cosmo: clmm.Comology object, None
         CLMM Cosmology object.
+    use_pdz: bool
+        Flag to use or not the source redshift p(z). If `False` (default) the point estimate 
+        provided by `z_source` is used.
     pzpdf : array, optional
         Photometric probablility density functions of the source galaxies.
-        Used instead of z_source if provided.
+        Used instead of z_source if `use_pdz=True`
     pzbins : array, optional
-        Redshift axis on which the individual photoz pdf is tabulated.
+        Redshift axis on which the individual photoz pdf is tabulated. Required if `use_pdz=True`
+    use_shapen_oise: bool
+        If `True` shape noise is included in the weight computation. It then requires 
+        `shape_componenet{1,2}` to be provided. Default: False.
     shape_component1: array
-        The measured shear (or reduced shear or ellipticity) of the source galaxies
+        The measured shear (or reduced shear or ellipticity) of the source galaxies, 
+        used if `use_shapenoise=True`
     shape_component2: array
-        The measured shear (or reduced shear or ellipticity) of the source galaxies
+        The measured shear (or reduced shear or ellipticity) of the source galaxies,
+        used if `use_shapenoise=True`
+    use_shape_error: bool
+        If `True` shape errors are included in the weight computation. It then requires 
+        shape_component{1,2}_err` to be provided. Default: False.    
     shape_component1_err: array
-        The measurement error on the 1st-component of ellipticity of the source galaxies
+        The measurement error on the 1st-component of ellipticity of the source galaxies,
+        used if `use_shape_error=True`
     shape_component2_err: array
-        The measurement error on the 2nd-component of ellipticity of the source galaxies
-    p_background : array, optional
-        Probabilities for galaxies being a background galaxy. If not provided it is computed.
-    use_shape_noise : boolean
-        True for considering shapenoise in the weight computation
-    is_deltasigma: boolean
+        The measurement error on the 2nd-component of ellipticity of the source galaxies,
+        used if `use_shape_error=True`
+    is_deltasigma: bool
         Indicates whether it is the excess surface density or the tangential shear
     validate_input: bool
         Validade each input argument
