@@ -1,6 +1,8 @@
 import numpy as np
 from scipy.optimize import fsolve
 
+from .utils import validate_argument
+
 class NFW():
     r"""
     Attributes
@@ -30,17 +32,27 @@ class NFW():
         self.massdef = massdef
         self.delta_mdef = delta_mdef
         self.cosmo = cosmo
-
-        if massdef == 'mean':
-            rho = self.cosmo.get_rho_m(z)
-        else :
-            rho = self.cosmo.get_rho_c(z) #Msun / Mpc**3
-        self.rdelta = ((mdelta * 3) / (4 * np.pi * delta_mdef * rho)) ** (1/3)
-
-        self.rs = self.rdelta / self.cdelta
+        self.mdef_dict = {'mean': self.cosmo.get_rho_m(z),
+                          'critical': self.cosmo.get_rho_c(z) #Msun / Mpc**3
+                         }
 
     def _Delta_c(self, c):
-        return np.log(1 + c) - c/(1 + c)
+        return np.log(1. + c) - c/(1 + c)
+
+    def _rdelta(self, mdelta, z, massdef, delta_mdef, cosmo):
+        rho = self.mdef_dict[self.massdef](z)
+        return ((mdelta * 3.) / (4. * np.pi * delta_mdef * rho)) ** (1./3.)
+
+    def rdelta(self):
+        return self.rdelta(
+            self.mdelta, self.z, self.massdef, self.delta_mdef, self.cosmo)
+
+    def _rs(self, mdelta, cdelta, z, massdef, delta_mdef, cosmo):
+        return self._rdelta(mdelta, z, massdef, delta_mdef, cosmo)/cdelta
+
+    def rs(self):
+        return self._rs(
+            self.mdelta, self.cdelta, self.z, self.massdef, self.delta_mdef, self.cosmo)
 
     def M(self, r3d):
         """
