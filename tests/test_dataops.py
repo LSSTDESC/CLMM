@@ -307,7 +307,7 @@ def test_compute_background_probability():
 
     # true redshift
     p_bkg = da.compute_background_probability(
-        z_lens, z_source=z_source, pzpdf=None, pzbins=None, validate_input=True)
+        z_lens, z_source=z_source, use_pdz=False, pzpdf=None, pzbins=None, validate_input=True)
     expected = np.array([1., 1., 1.])
     testing.assert_allclose(p_bkg, expected, **TOLERANCE)
 
@@ -316,7 +316,7 @@ def test_compute_background_probability():
     pzbins = [pzbin for i in range(z_source.size)]
     pzpdf = [multivariate_normal.pdf(pzbin, mean=z, cov=.3) for z in z_source]
     testing.assert_raises(ValueError, da.compute_background_probability,
-        z_lens, z_source=z_source, pzpdf=None, pzbins=pzbins, validate_input=True)
+        z_lens, z_source=z_source, use_pdz=True, pzpdf=None, pzbins=pzbins, validate_input=True)
 
 
 def test_compute_galaxy_weights():
@@ -330,10 +330,10 @@ def test_compute_galaxy_weights():
     shape_component2_err = np.array([.14, .16, .21])
     p_background = np.array([1., 1., 1.])
     #true redshift + deltasigma
-    weights = da.compute_galaxy_weights(z_lens, cosmo, z_source=z_source, pzpdf=None, pzbins=None,
+    weights = da.compute_galaxy_weights(z_lens, cosmo, z_source=z_source, use_pdz=False, pzpdf=None, pzbins=None,
                            shape_component1=shape_component1, shape_component2=shape_component2,
                            shape_component1_err=shape_component1_err, shape_component2_err=shape_component2_err,
-                           p_background=p_background, use_shape_noise=False, is_deltasigma=True,
+                           use_shape_noise=False, is_deltasigma=True,
                            validate_input=True)
     expected = np.array([4.58644320e-31, 9.68145632e-31, 5.07260777e-31])
     testing.assert_allclose(weights*1e20, expected*1e20,**TOLERANCE)
@@ -342,20 +342,20 @@ def test_compute_galaxy_weights():
     pzbin = np.linspace(.0001, 5, 100)
     pzbins = [pzbin for i in range(len(z_source))]
     pzpdf = [multivariate_normal.pdf(pzbin, mean=z, cov=.3) for z in z_source]
-    weights = da.compute_galaxy_weights(z_lens, cosmo, z_source=None, pzpdf=pzpdf, pzbins=pzbins,
+    weights = da.compute_galaxy_weights(z_lens, cosmo, z_source=None, use_pdz=True, pzpdf=pzpdf, pzbins=pzbins,
                            shape_component1=shape_component1, shape_component2=shape_component2,
                            shape_component1_err=None, shape_component2_err=None,
-                           p_background=None, use_shape_noise=False, is_deltasigma=True,
+                           use_shape_noise=False, is_deltasigma=True,
                            validate_input=True)
 
     expected = np.array([9.07709345e-33, 1.28167582e-32, 4.16870389e-32])
     testing.assert_allclose(weights*1e20, expected*1e20,**TOLERANCE)
 
     # test with noise
-    weights = da.compute_galaxy_weights(z_lens, cosmo, z_source=None, pzpdf=pzpdf, pzbins=pzbins,
+    weights = da.compute_galaxy_weights(z_lens, cosmo, z_source=None, use_pdz=True, pzpdf=pzpdf, pzbins=pzbins,
                            shape_component1=shape_component1, shape_component2=shape_component2,
                            shape_component1_err=None, shape_component2_err=None,
-                           p_background=None, use_shape_noise=True, is_deltasigma=True,
+                           use_shape_noise=True, is_deltasigma=True,
                            validate_input=True)
 
     expected = np.array([9.07709345e-33, 1.28167582e-32, 4.16870389e-32])
