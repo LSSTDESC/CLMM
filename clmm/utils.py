@@ -461,7 +461,7 @@ def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argm
                       f' received max({argname}): {var.max()}'
                 raise ValueError(err)
 
-def _integ_pzfuncs(pzpdf, pzbins, zmin, kernel=lambda z: 1.):
+def _integ_pzfuncs(pzpdf, pzbins, zmin, kernel=lambda z: 1., ngrid=1000):
     r"""
     Integrates photo-z pdf with a given kernel. This function was created to allow for data with
     different photo-z binnings.
@@ -490,7 +490,7 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin, kernel=lambda z: 1.):
     # adding these lines to interpolate CLMM redshift grid for each galaxies
     # to a constant redshift grid for all galaxies. If there is a constant grid for all galaxies
     # these lines are not necessary and z_grid, pz_matrix = pzbins, pzpdf
-    z_grid = np.linspace(0, 5, 100)
+    z_grid = np.linspace(0, 5, ngrid)
     z_grid = z_grid[z_grid>zmin]
     pz_matrix = np.array([np.interp(z_grid, pzbin, pdf)
                          for pzbin, pdf in zip(pzbins, pzpdf)])
