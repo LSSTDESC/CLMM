@@ -35,7 +35,7 @@ class HaloProfile:
         Parameters
         ----------
         cosmo: clmm.Comology object, None
-            CLMM Cosmology object. If is None, creates a new instance of self.cosmo_class().
+            CLMM Cosmology object. If is None, creates a new instance of CLMMCosmology.
         """
         if self.validate_input:
             validate_argument(locals(), 'cosmo', CLMMCosmology, none_ok=True)
@@ -114,6 +114,12 @@ class HaloProfile:
         self.cdelta = cdelta
 
     def set_z(self, z_cl):
+        r""" Sets the redshift
+        Parameters
+        ----------
+        z_cl: float
+            Redshift
+        """
         if self.validate_input:
             validate_argument(locals(), 'z_cl', float, argmin=0)
         self._set_z(z_cl)
@@ -126,6 +132,7 @@ class HaloProfile:
         Parameters
         ----------
         alpha : float
+            Einasto alpha parameter
         """
         if self.halo_profile_model!='einasto':
             raise NotImplementedError("The Einasto slope cannot be set for your combination of profile choice or modeling backend.")
@@ -147,10 +154,22 @@ class HaloProfile:
             return self._get_einasto_alpha(z_cl)
 
     def rdelta(self):
+        """
+        Returns
+        -------
+        rdelta : float
+            Spherical overdensity radius
+        """
         rho = self.mdef_dict[self.massdef](self.z_cl)
         return ((self.mdelta * 3.) / (4. * np.pi * self.delta_mdef * rho)) ** (1./3.)
 
     def rscale(self):
+        """
+        Returns
+        -------
+        rscale : float
+            Scale radius
+        """
         return self.rdelta()/self.cdelta
 
     def M(self, r3d):
@@ -175,9 +194,9 @@ class HaloProfile:
         Parameters
         ----------
         massdef: float
-            Background density definition (`critical`, `mean`)
+            Background density definition to convert to (`critical`, `mean`)
         delta_mdef: str
-            Overdensity scale (2nd SOD definition)
+            Overdensity scale to convert to
 
         Returns
         -------
@@ -202,18 +221,16 @@ class NFW(HaloProfile):
         Halo mass for the given massdef :math:`M_\Delta` in units of :math:`M_\odot`
     cdelta: float
         Halo concentration
-    rdelta: float
-        Radius of the sphere enclosing mdelta
-    rs: float
-        Scale radius
-    z: float
+    z_cl: float
         Halo redshift
+    cosmo: CLMMCosmology
+        Cosmology object
     massdef: str
         Background density definition (`critical`, `mean`)
     delta_mdef: float
         Overdensity scale (200, 500, etc.)
-    cosmo: CLMMCosmology
-        Cosmology object
+    validate_input: bool
+        Validade each input argument
     """
     def __init__(self, mdelta, cdelta, z_cl, cosmo,
                  massdef='mean', delta_mdef=200, validate_input=True):
@@ -279,6 +296,26 @@ class NFW(HaloProfile):
         return self.model(mdelta2, cdelta2, self.z_cl, self.cosmo, massdef, delta_mdef)
 
 class Einasto(HaloProfile):
+    r"""
+    Attributes
+    ----------
+    mdelta: float
+        Halo mass for the given massdef :math:`M_\Delta` in units of :math:`M_\odot`
+    cdelta: float
+        Halo concentration
+    z_cl: float
+        Halo redshift
+    cosmo: CLMMCosmology
+        Cosmology object
+    alpha: float
+        Einasto alpha parameter
+    massdef: str
+        Background density definition (`critical`, `mean`)
+    delta_mdef: float
+        Overdensity scale (200, 500, etc.)
+    validate_input: bool
+        Validade each input argument
+    """
     def __init__(self, mdelta, cdelta, z_cl, cosmo, alpha,
                  massdef='mean', delta_mdef=200, validate_input=True):
 
