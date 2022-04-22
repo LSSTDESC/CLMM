@@ -191,52 +191,8 @@ class HaloProfile:
                 raise ValueError(
                     f"Halo density profile mass definition {massdef} not currently supported")
 
-        mdelta2, cdelta2 = self._convert_def(self.mdelta, self.cdelta, self.z_cl, self.cosmo,\
-        self.massdef, self.delta_mdef, massdef, delta_mdef)
+        return self._to_def(massdef, delta_mdef)
 
-        return self.model(mdelta2, cdelta2, self.z_cl, self.cosmo, massdef, delta_mdef)
-
-    def _convert_def(self, mdelta1, cdelta1, z_cl, cosmo, massdef1, delta_mdef1,
-                     massdef2, delta_mdef2):
-        r"""
-        Parameters
-        ----------
-        mdelta1: float
-            halo mass (1st SOD definition)
-        cdelta1: float
-            halo concentration (1st SOD definition)
-        z_cl: float
-            halo redshift
-        massdef1: float
-            Background density definition (1st SOD definition)
-        delta_mdef1: str
-            Overdensity scale (1st SOD definition)
-        massdef2: float
-            Background density definition (2nd SOD definition)
-        delta_mdef2: str
-            Overdensity scale (2nd SOD definition)
-        cosmo : CLMMCosmology
-                Cosmology object
-
-        Returns
-        -------
-        mdelta2, cdelta2: float, float
-            mass and concentration for the 2nd halo definition
-        """
-        def1 = self.model(mdelta1, cdelta1, z_cl, cosmo,
-                         massdef1, delta_mdef1)
-        def1.set_cosmo(cosmo)
-        def f(params):
-            mdelta2, cdelta2 = params
-            def2 = self.model(mdelta2, cdelta2, z_cl, cosmo,
-                 massdef2, delta_mdef2)
-            def2.set_cosmo(cosmo)
-            return def1.mdelta - def2.M(def1.rdelta()), def2.mdelta - def1.M(def2.rdelta())
-
-        mdelta2_fit, cdelta2_fit = fsolve(func = f, x0 = [mdelta1, cdelta1], maxfev = 1000)
-        mdelta2_fit, cdelta2_fit = fsolve(func = f, x0 = [mdelta2_fit, cdelta2_fit], maxfev = 100)
-
-        return mdelta2_fit, cdelta2_fit
 
 class NFW(HaloProfile):
     r"""
@@ -277,16 +233,60 @@ class NFW(HaloProfile):
         M = self.mdelta * self._f_c(x) / self._f_c(self.cdelta)
         return M
 
+    def _convert_def(self, mdelta1, cdelta1, z_cl, cosmo, massdef1, delta_mdef1,
+                     massdef2, delta_mdef2):
+        r"""
+        Parameters
+        ----------
+        mdelta1: float
+            halo mass (1st SOD definition)
+        cdelta1: float
+            halo concentration (1st SOD definition)
+        z_cl: float
+            halo redshift
+        massdef1: float
+            Background density definition (1st SOD definition)
+        delta_mdef1: str
+            Overdensity scale (1st SOD definition)
+        massdef2: float
+            Background density definition (2nd SOD definition)
+        delta_mdef2: str
+            Overdensity scale (2nd SOD definition)
+        cosmo : CLMMCosmology
+                Cosmology object
+
+        Returns
+        -------
+        mdelta2, cdelta2: float, float
+            mass and concentration for the 2nd halo definition
+        """
+        def1 = self.model(mdelta1, cdelta1, z_cl, cosmo,
+                         massdef1, delta_mdef1)
+
+        def f(params):
+            mdelta2, cdelta2 = params
+            def2 = self.model(mdelta2, cdelta2, self.z_cl, self.cosmo, massdef2, delta_mdef2)
+            return def1.mdelta - def2.M(def1.rdelta()), def2.mdelta - def1.M(def2.rdelta())
+
+        mdelta2_fit, cdelta2_fit = fsolve(func = f, x0 = [mdelta1, cdelta1], maxfev = 1000)
+        mdelta2_fit, cdelta2_fit = fsolve(func = f, x0 = [mdelta2_fit, cdelta2_fit], maxfev = 100)
+
+        return mdelta2_fit, cdelta2_fit
+
+    def _to_def(self, massdef, delta_mdef):
+        mdelta2, cdelta2 = self._convert_def(self.mdelta, self.cdelta, self.z_cl, self.cosmo,
+                                             self.massdef, self.delta_mdef, massdef, delta_mdef)
+        return self.model(mdelta2, cdelta2, self.z_cl, self.cosmo, massdef, delta_mdef)
 
 class Einasto(HaloProfile):
-    def __init__(self, mdelta, cdelta, z_cl, cosmo,
+    def __init__(self, mdelta, cdelta, z_cl, cosmo, alpha,
                  massdef='mean', delta_mdef=200, validate_input=True):
 
         HaloProfile.__init__(self, mdelta=mdelta, cdelta=cdelta, z_cl=z_cl,
                              cosmo=cosmo, validate_input=validate_input)
 
-        # Set halo profile and cosmology
         self.set_halo_density_profile('einasto', massdef, delta_mdef)
+        self.set_einasto_alpha(alpha)
         self.model = self.model_dict[self.halo_profile_model]
 
     def _set_einasto_alpha(self, alpha):
@@ -306,3 +306,54 @@ class Einasto(HaloProfile):
         M = self.mdelta * self._f_c(x, alpha) / self._f_c(self.cdelta, alpha)
         return M
 
+    def _convert_aux(self, massdef2, delta_mdef2):
+
+        def1 = self.model(mdelta1, cdelta1, z_cl, cosmo, alpha,
+                         massdef1, delta_mdef1)
+
+    def _convert_def(self, mdelta1, cdelta1, z_cl, cosmo, massdef1, delta_mdef1,
+                     massdef2, delta_mdef2):
+        r"""
+        Parameters
+        ----------
+        mdelta1: float
+            halo mass (1st SOD definition)
+        cdelta1: float
+            halo concentration (1st SOD definition)
+        z_cl: float
+            halo redshift
+        massdef1: float
+            Background density definition (1st SOD definition)
+        delta_mdef1: str
+            Overdensity scale (1st SOD definition)
+        massdef2: float
+            Background density definition (2nd SOD definition)
+        delta_mdef2: str
+            Overdensity scale (2nd SOD definition)
+        cosmo : CLMMCosmology
+                Cosmology object
+
+        Returns
+        -------
+        mdelta2, cdelta2: float, float
+            mass and concentration for the 2nd halo definition
+        """
+        def1 = self.model(mdelta1, cdelta1, z_cl, cosmo, self.einasto_alpha,
+                         massdef1, delta_mdef1)
+
+        def f(params):
+            mdelta2, cdelta2 = params
+            def2 = self.model(mdelta2, cdelta2, self.z_cl, self.cosmo, self.einasto_alpha,
+                              massdef2, delta_mdef2)
+            return def1.mdelta - def2.M(def1.rdelta()), def2.mdelta - def1.M(def2.rdelta())
+
+        mdelta2_fit, cdelta2_fit = fsolve(func = f, x0 = [mdelta1, cdelta1], maxfev = 1000)
+        mdelta2_fit, cdelta2_fit = fsolve(func = f, x0 = [mdelta2_fit, cdelta2_fit], maxfev = 100)
+
+        return mdelta2_fit, cdelta2_fit
+
+    def _to_def(self, massdef, delta_mdef):
+        mdelta2, cdelta2 = self._convert_def(self.mdelta, self.cdelta, self.z_cl, self.cosmo,\
+                                             self.massdef, self.delta_mdef, massdef, delta_mdef)
+        return self.model(mdelta2, cdelta2, self.z_cl, self.cosmo,
+                          self.einasto_alpha, massdef, delta_mdef)
