@@ -13,7 +13,7 @@ class HaloProfile:
         self.set_cosmo(cosmo)
         self.set_mass(mdelta)
         self.set_concentration(cdelta)
-        self.z_cl = z_cl
+        self.set_z(z_cl)
 
 
         self.massdef = ''
@@ -112,6 +112,14 @@ class HaloProfile:
     def _set_concentration(self, cdelta):
         """" set concentration"""
         self.cdelta = cdelta
+
+    def set_z(self, z_cl):
+        if self.validate_input:
+            validate_argument(locals(), 'z_cl', float, argmin=0)
+        self._set_z(z_cl)
+
+    def _set_z(self, z_cl):
+        self.z_cl = z_cl
 
     def set_einasto_alpha(self, alpha):
         r""" Sets the value of the :math:`\alpha` parameter for the Einasto profile
