@@ -23,6 +23,7 @@ class HaloProfile:
 
         self.model_dict = {'nfw': NFW,
                            'einasto': Einasto,
+                           'hernquist': Hernquist,
                           }
 
         self.mdef_dict = {'mean': self.cosmo.get_rho_m,
@@ -339,31 +340,7 @@ class Einasto(HaloProfile):
 
     def _convert_def(self, mdelta1, cdelta1, z_cl, cosmo, massdef1, delta_mdef1,
                      massdef2, delta_mdef2):
-        r"""
-        Parameters
-        ----------
-        mdelta1: float
-            halo mass (1st SOD definition)
-        cdelta1: float
-            halo concentration (1st SOD definition)
-        z_cl: float
-            halo redshift
-        massdef1: float
-            Background density definition (1st SOD definition)
-        delta_mdef1: str
-            Overdensity scale (1st SOD definition)
-        massdef2: float
-            Background density definition (2nd SOD definition)
-        delta_mdef2: str
-            Overdensity scale (2nd SOD definition)
-        cosmo : CLMMCosmology
-                Cosmology object
 
-        Returns
-        -------
-        mdelta2, cdelta2: float, float
-            mass and concentration for the 2nd halo definition
-        """
         def1 = self.model(mdelta1, cdelta1, z_cl, cosmo, self.einasto_alpha,
                          massdef1, delta_mdef1)
 
@@ -410,7 +387,7 @@ class Hernquist(HaloProfile):
                              cosmo=cosmo, validate_input=validate_input)
 
         # Set halo profile and cosmology
-        self.set_halo_density_profile('nfw', massdef, delta_mdef)
+        self.set_halo_density_profile('hernquist', massdef, delta_mdef)
         self.model = self.model_dict[self.halo_profile_model]
 
     def _f_c(self, c):
@@ -418,31 +395,7 @@ class Hernquist(HaloProfile):
 
     def _convert_def(self, mdelta1, cdelta1, z_cl, cosmo, massdef1, delta_mdef1,
                      massdef2, delta_mdef2):
-        r"""
-        Parameters
-        ----------
-        mdelta1: float
-            halo mass (1st SOD definition)
-        cdelta1: float
-            halo concentration (1st SOD definition)
-        z_cl: float
-            halo redshift
-        massdef1: float
-            Background density definition (1st SOD definition)
-        delta_mdef1: str
-            Overdensity scale (1st SOD definition)
-        massdef2: float
-            Background density definition (2nd SOD definition)
-        delta_mdef2: str
-            Overdensity scale (2nd SOD definition)
-        cosmo : CLMMCosmology
-                Cosmology object
 
-        Returns
-        -------
-        mdelta2, cdelta2: float, float
-            mass and concentration for the 2nd halo definition
-        """
         def1 = self.model(mdelta1, cdelta1, z_cl, cosmo,
                          massdef1, delta_mdef1)
 
