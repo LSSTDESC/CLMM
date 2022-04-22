@@ -214,12 +214,11 @@ class HaloProfile:
                     f"Halo density profile mass definition {massdef2} not currently supported")
 
         if not getattr(self, '_to_def', False):
-            def1 = self.model(self.mdelta, self.cdelta, self.z_cl, self.cosmo,
-                              self.massdef, self.delta_mdef)
+
             def f(params):
                 m2, c2 = params
                 def2 = self.model(m2, c2, self.z_cl, self.cosmo, massdef2, delta_mdef2)
-                return def1.mdelta - def2.M(def1.rdelta()), def2.mdelta - def1.M(def2.rdelta())
+                return self.mdelta - def2.M(self.rdelta()), def2.mdelta - self.M(def2.rdelta())
 
             mdelta2, cdelta2 = fsolve(func = f, x0 = [self.mdelta, self.cdelta],
                                               maxfev = 1000)
