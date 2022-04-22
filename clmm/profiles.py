@@ -21,9 +21,9 @@ class HaloProfile:
         self.halo_profile_model = ''
         self.model = None
 
-        self.model_dict = {'nfw': NFW,
-                           'einasto': Einasto,
-                           'hernquist': Hernquist,
+        self.model_dict = {'nfw': HaloProfileNFW,
+                           'einasto': HaloProfileEinasto,
+                           'hernquist': HaloProfileHernquist,
                           }
 
         self.mdef_dict = {'mean': self.cosmo.get_rho_m,
