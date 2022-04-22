@@ -214,11 +214,12 @@ class HaloProfile:
                     f"Halo density profile mass definition {massdef2} not currently supported")
 
         if not getattr(self, '_to_def', False):
-
+            def1 = self.model(self.mdelta, self.cdelta, self.z_cl, self.cosmo,
+                              self.massdef, self.delta_mdef)
             def f(params):
                 m2, c2 = params
                 def2 = self.model(m2, c2, self.z_cl, self.cosmo, massdef2, delta_mdef2)
-                return self.mdelta - def2.M(self.rdelta()), def2.mdelta - self.M(def2.rdelta())
+                return def1.mdelta - def2.M(def1.rdelta()), def2.mdelta - def1.M(def2.rdelta())
 
             mdelta2, cdelta2 = fsolve(func = f, x0 = [self.mdelta, self.cdelta],
                                               maxfev = 1000)
@@ -260,7 +261,7 @@ class NFW(HaloProfile):
         self.model = self.model_dict[self.halo_profile_model]
 
     def _f_c(self, c):
-        return np.log(1. + c) - c/(1 + c)
+        return np.log(1. + c) - c/(1. + c)
 
 class Einasto(HaloProfile):
     r"""
@@ -301,7 +302,7 @@ class Einasto(HaloProfile):
 
     def _f_c(self, c):
         alpha = self.einasto_alpha
-        return gamma(3/alpha)*gammainc(3/alpha, 2/alpha*c**alpha)
+        return gamma(3./alpha)*gammainc(3./alpha, 2./alpha*c**alpha)
 
     def _to_def(self, massdef2, delta_mdef2):
 
@@ -347,4 +348,4 @@ class Hernquist(HaloProfile):
         self.model = self.model_dict[self.halo_profile_model]
 
     def _f_c(self, c):
-        return (c/(1 + c))**2
+        return (c/(1. + c))**2.
