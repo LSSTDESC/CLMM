@@ -232,10 +232,8 @@ class HaloProfile:
                 def2 = self.model(m2, c2, self.z_cl, self.cosmo, massdef2, delta_mdef2)
                 return self.mdelta - def2.M(self.rdelta()), def2.mdelta - self.M(def2.rdelta())
 
-            mdelta2, cdelta2 = fsolve(func = f, x0 = [self.mdelta, self.cdelta],
-                                              maxfev = 1000)
-            mdelta2, cdelta2 = fsolve(func = f, x0 = [mdelta2, cdelta2],
-                                              maxfev = 100)
+            mdelta2, cdelta2 = fsolve(func = f, x0 = [self.mdelta, self.cdelta])
+            mdelta2, cdelta2 = fsolve(func = f, x0 = [mdelta2, cdelta2])
 
             return self.model(mdelta2, cdelta2, self.z_cl, self.cosmo, massdef2, delta_mdef2)
 
