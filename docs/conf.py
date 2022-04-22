@@ -149,7 +149,7 @@ nbconvert_opts = ['--to rst',
                   f'--output-dir {outdir}']
 
 for demo in [*demofiles, *examplefiles]:
-    com = ' '.join(['jupyter-nbconvert']+nbconvert_opts+[demo])
+    com = ' '.join(['jupyter nbconvert']+nbconvert_opts+[demo])
     subprocess.run(com, shell=True)
 
 
