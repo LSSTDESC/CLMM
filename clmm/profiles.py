@@ -213,7 +213,7 @@ class HaloProfile:
                 raise ValueError(
                     f"Halo density profile mass definition {massdef2} not currently supported")
 
-        if getattr(self, '_to_def', True):
+        if not getattr(self, '_to_def', False):
 
             def f(params):
                 m2, c2 = params
