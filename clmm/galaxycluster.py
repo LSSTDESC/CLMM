@@ -312,8 +312,8 @@ class GalaxyCluster():
         """
         # input cols
         col_dict = {'pzpdf':'pzpdf', 'pzbins':'pzbins', 'z_source':'z', 'sigma_c':'sigma_c',
-        'shape_component1':'shape_component1', 'shape_component2':'shape_component2',
-        'shape_component1_err':'shape_component1_err', 'shape_component2_err':'shape_component2_err'}
+        'shape_component1':shape_component1, 'shape_component2':shape_component2,
+        'shape_component1_err':shape_component1_err, 'shape_component2_err':shape_component2_err}
         col_dict.update(locals())
         required_cols = ['shape_component1', 'shape_component2']
         if use_pdz:
