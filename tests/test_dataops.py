@@ -143,15 +143,15 @@ def test_compute_tangential_and_cross_components(modeling_data):
         # [-1010.889584349285, -69.9059242788237])*0.7*1.0e12*1.0002565513832675
     }
     expected_curve = {  # <<TO BE ADDED IN THE FUTURE>>
-        'angsep': np.array([]),
-        'cross_shear': np.array([]),
-        'tangential_shear': np.array([]),
-        'cross_DS': np.array([]),
-        'tangential_DS': np.array([]),
+        'angsep': np.array([0.002175111279323424171, 0.003723129781247932167]),
+        'cross_shear': np.array([0.277590689496438781, 0.639929479722048944]),
+        'tangential_shear': np.array([-0.23009434826803484841, -0.02214183783401518779]),
+        'cross_DS': np.array([8.58093068e+14, 1.33131522e+15]),
+        'tangential_DS': np.array([-7.08498103e+14, -4.89926917e+13]),
     }
     # Geometries to test
     geo_tests = [('flat', expected_flat), ('curve', expected_curve)]
-    geo_tests = geo_tests[:1]  # <<DELETE THIS LINE WHEN CURVE VALUES ADDED>>
+    # geo_tests = geo_tests[:1]  # <<DELETE THIS LINE WHEN CURVE VALUES ADDED>>
     # Quick test using curve geometry <<DELETE THIS LINE WHEN CURVE VALUES ADDED>>
     da.compute_tangential_and_cross_components(
         ra_lens=ra_lens, dec_lens=dec_lens, ra_source=gals['ra'][0], dec_source=gals['dec'][0],
