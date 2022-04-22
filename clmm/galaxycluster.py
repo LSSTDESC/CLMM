@@ -138,10 +138,13 @@ class GalaxyCluster():
                 self.galcat['sigma_c'] = compute_critical_surface_density(
                     cosmo=cosmo, z_cluster=self.z, z_source=self.galcat['z'],
                     validate_input=self.validate_input)
+                self.galcat.meta['sigmac_type']= 'standard'
             else:
                 self.galcat['sigma_c'] = compute_critical_surface_density(
                     cosmo=cosmo, z_cluster=self.z, use_pdz=True, pzbins=self.galcat['pzbins'], pzpdf=self.galcat['pzpdf'],
                     validate_input=self.validate_input)
+                self.galcat.meta['sigmac_type']= 'effective'
+
 
 
     def _get_input_galdata(self, col_dict, required_cols=None):

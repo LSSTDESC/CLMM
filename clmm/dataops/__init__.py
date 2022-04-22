@@ -358,7 +358,6 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, use_pdz=False, pzpdf=No
         w_ls_geo = 1.
     else:
         if sigma_c is None:
-            print('=========here===========')
             sigma_c = compute_critical_surface_density(cosmo, z_lens, z_source=z_source, use_pdz=use_pdz, pzbins=pzbins, pzpdf=pzpdf)
         w_ls_geo = 1./sigma_c**2
 
