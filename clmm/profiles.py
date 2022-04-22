@@ -10,10 +10,11 @@ class HaloProfile:
 
         self.validate_input = validate_input
 
+        self.set_cosmo(cosmo)
         self.set_mass(mdelta)
         self.set_concentration(cdelta)
         self.z_cl = z_cl
-        self.set_cosmo(cosmo)
+
 
         self.massdef = ''
         self.delta_mdef = 0
@@ -23,6 +24,11 @@ class HaloProfile:
         self.model_dict = {'nfw': NFW,
                            'einasto': Einasto,
                           }
+
+        self.mdef_dict = {'mean': self.cosmo.get_rho_m,
+                          'critical': self.cosmo.get_rho_c,
+                          'virial': self.cosmo.get_rho_c,
+                         }
 
     def set_cosmo(self, cosmo):
         r""" Sets the cosmology to the internal cosmology object
@@ -36,10 +42,6 @@ class HaloProfile:
         self._set_cosmo(cosmo)
         self.cosmo.validate_input = self.validate_input
         self.cor_factor = self.cosmo.cor_factor
-        self.mdef_dict = {'mean': self.cosmo.get_rho_m,
-                          'critical': self.cosmo.get_rho_c,
-                          'virial': self.cosmo.get_rho_c,
-                         }
 
     def _set_cosmo(self, cosmo):
         r""" Sets the cosmology to the internal cosmology object"""
@@ -62,10 +64,10 @@ class HaloProfile:
             validate_argument(locals(), 'massdef', str)
             validate_argument(locals(), 'halo_profile_model', str)
             validate_argument(locals(), 'delta_mdef', int, argmin=0)
-            if not massdef in ['mean', 'critical', 'virial']:
+            if not massdef in self.mdef_dict:
                 raise ValueError(
                     f"Halo density profile mass definition {massdef} not currently supported")
-            if not halo_profile_model in ['nfw', 'einasto', 'herquist']:
+            if not halo_profile_model in self.model_dict:
                 raise ValueError(
                     f"Halo density profile model {halo_profile_model} not currently supported")
         return self._set_halo_density_profile(halo_profile_model=halo_profile_model,
@@ -94,7 +96,7 @@ class HaloProfile:
 
     def _set_mass(self, mdelta):
         """" set mass"""
-        self.mdelta = mdelta
+        self.mdelta = mdelta/self.cor_factor
 
     def set_concentration(self, cdelta):
         r""" Sets the concentration
@@ -177,7 +179,7 @@ class HaloProfile:
         if self.validate_input:
             validate_argument(locals(), 'massdef', str)
             validate_argument(locals(), 'delta_mdef', int, argmin=0)
-            if not massdef in ['mean', 'critical', 'virial']:
+            if not massdef in self.mdef_dict:
                 raise ValueError(
                     f"Halo density profile mass definition {massdef} not currently supported")
 
