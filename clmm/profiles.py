@@ -32,7 +32,8 @@ class HaloProfile:
                          }
 
     def set_cosmo(self, cosmo):
-        r""" Sets the cosmology to the internal cosmology object
+        """ Sets the cosmology to the internal cosmology object
+
         Parameters
         ----------
         cosmo: clmm.Comology object, None
@@ -45,11 +46,12 @@ class HaloProfile:
         self.cor_factor = self.cosmo.cor_factor
 
     def _set_cosmo(self, cosmo):
-        r""" Sets the cosmology to the internal cosmology object"""
+        """ Sets the cosmology to the internal cosmology object"""
         self.cosmo = cosmo if cosmo is not None else CLMMCosmology()
 
     def set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
-        r""" Sets the definitions for the halo profile
+        """ Sets the definitions for the halo profile
+
         Parameters
         ----------
         halo_profile_model: str
@@ -75,7 +77,7 @@ class HaloProfile:
                                               massdef=massdef, delta_mdef=delta_mdef)
 
     def _set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
-        """"set halo density profile"""
+        """set halo density profile"""
         # Check if we have already an instance of the required object, if not create one
         if not ((halo_profile_model==self.halo_profile_model)
                 and (massdef == self.massdef)
@@ -85,7 +87,8 @@ class HaloProfile:
             self.delta_mdef = delta_mdef
 
     def set_mass(self, mdelta):
-        r""" Sets the value of the :math:`M_\Delta`
+        """ Sets the value of the :math:`M_\Delta`
+
         Parameters
         ----------
         mdelta : float
@@ -96,11 +99,12 @@ class HaloProfile:
         self._set_mass(mdelta)
 
     def _set_mass(self, mdelta):
-        """" set mass"""
+        """ set mass"""
         self.mdelta = mdelta/self.cor_factor
 
     def set_concentration(self, cdelta):
-        r""" Sets the concentration
+        """ Sets the concentration
+
         Parameters
         ----------
         cdelta: float
@@ -115,7 +119,8 @@ class HaloProfile:
         self.cdelta = cdelta
 
     def set_z(self, z_cl):
-        r""" Sets the redshift
+        """ Sets the redshift
+
         Parameters
         ----------
         z_cl: float
@@ -130,10 +135,11 @@ class HaloProfile:
 
     def set_einasto_alpha(self, alpha):
         r""" Sets the value of the :math:`\alpha` parameter for the Einasto profile
+
         Parameters
         ----------
         alpha : float
-            Einasto alpha parameter
+            Einasto :math:`\alpha` parameter
         """
         if self.halo_profile_model!='einasto':
             raise NotImplementedError("The Einasto slope cannot be set for your combination of profile choice or modeling backend.")
@@ -144,10 +150,16 @@ class HaloProfile:
 
     def get_einasto_alpha(self, z_cl=None):
         r""" Returns the value of the :math:`\alpha` parameter for the Einasto profile, if defined
+
         Parameters
         ----------
         z_cl : float
             Cluster redshift (required for Einasto with the CCL backend, will be ignored for NC)
+
+        Returns
+        -------
+        alpha : float
+            Einasto :math:`\alpha` parameter
         """
         if self.halo_profile_model!='einasto':
             raise ValueError(f"Wrong profile model. Current profile = {self.halo_profile_model}")
@@ -230,7 +242,7 @@ class HaloProfile:
         else:
             return self._to_def(massdef2, delta_mdef2)
 
-class NFW(HaloProfile):
+class HaloProfileNFW(HaloProfile):
     r"""
     Attributes
     ----------
@@ -262,7 +274,7 @@ class NFW(HaloProfile):
     def _f_c(self, c):
         return np.log(1. + c) - c/(1. + c)
 
-class Einasto(HaloProfile):
+class HaloProfileEinasto(HaloProfile):
     r"""
     Attributes
     ----------
@@ -275,7 +287,7 @@ class Einasto(HaloProfile):
     cosmo: CLMMCosmology
         Cosmology object
     alpha: float
-        Einasto alpha parameter
+        Einasto :math:`\alpha` parameter
     massdef: str
         Background density definition (`critical`, `mean`)
     delta_mdef: float
@@ -317,7 +329,7 @@ class Einasto(HaloProfile):
         return self.model(mdelta2, cdelta2, self.z_cl, self.cosmo,
                           self.einasto_alpha, massdef2, delta_mdef2)
 
-class Hernquist(HaloProfile):
+class HaloProfileHernquist(HaloProfile):
     r"""
     Attributes
     ----------
@@ -348,3 +360,4 @@ class Hernquist(HaloProfile):
 
     def _f_c(self, c):
         return (c/(1. + c))**2.
+
