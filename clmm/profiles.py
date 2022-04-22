@@ -333,11 +333,6 @@ class Einasto(HaloProfile):
         alpha = self.einasto_alpha
         return gamma(3/alpha)*gammainc(3/alpha, 2/alpha*c**alpha)
 
-    def _convert_aux(self, massdef2, delta_mdef2):
-
-        def1 = self.model(mdelta1, cdelta1, z_cl, cosmo, alpha,
-                         massdef1, delta_mdef1)
-
     def _convert_def(self, mdelta1, cdelta1, z_cl, cosmo, massdef1, delta_mdef1,
                      massdef2, delta_mdef2):
 
