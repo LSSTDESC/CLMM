@@ -192,13 +192,13 @@ class HaloProfile:
 
         return M
 
-    def to_def(self, massdef, delta_mdef):
+    def to_def(self, massdef2, delta_mdef2):
         """
         Parameters
         ----------
-        massdef: float
+        massdef2: float
             Background density definition to convert to (`critical`, `mean`)
-        delta_mdef: str
+        delta_mdef2: str
             Overdensity scale to convert to
 
         Returns
@@ -207,29 +207,28 @@ class HaloProfile:
             HaloProfile object
         """
         if self.validate_input:
-            validate_argument(locals(), 'massdef', str)
-            validate_argument(locals(), 'delta_mdef', int, argmin=0)
-            if not massdef in self.mdef_dict:
+            validate_argument(locals(), 'massdef2', str)
+            validate_argument(locals(), 'delta_mdef2', int, argmin=0)
+            if not massdef2 in self.mdef_dict:
                 raise ValueError(
-                    f"Halo density profile mass definition {massdef} not currently supported")
+                    f"Halo density profile mass definition {massdef2} not currently supported")
 
         if getattr(self, '_to_def', True):
-            def1 = self
 
             def f(params):
                 m2, c2 = params
                 def2 = self.model(m2, c2, self.z_cl, self.cosmo, massdef2, delta_mdef2)
-                return def1.mdelta - def2.M(def1.rdelta()), def2.mdelta - def1.M(def2.rdelta())
+                return self.mdelta - def2.M(self.rdelta()), def2.mdelta - self.M(def2.rdelta())
 
-            mdelta2, cdelta2 = fsolve(func = f, x0 = [mdelta1, cdelta1],
+            mdelta2, cdelta2 = fsolve(func = f, x0 = [self.mdelta, self.cdelta],
                                               maxfev = 1000)
             mdelta2, cdelta2 = fsolve(func = f, x0 = [mdelta2, cdelta2],
                                               maxfev = 100)
 
-            return self.model(mdelta2, cdelta2, self.z_cl, self.cosmo, massdef, delta_mdef)
+            return self.model(mdelta2, cdelta2, self.z_cl, self.cosmo, massdef2, delta_mdef2)
 
         else:
-            return self._to_def(massdef, delta_mdef)
+            return self._to_def(massdef2, delta_mdef2)
 
 class NFW(HaloProfile):
     r"""
@@ -304,26 +303,19 @@ class Einasto(HaloProfile):
         alpha = self.einasto_alpha
         return gamma(3/alpha)*gammainc(3/alpha, 2/alpha*c**alpha)
 
-    def _to_def(self, massdef, delta_mdef):
-
-        def1 = self
+    def _to_def(self, massdef2, delta_mdef2):
 
         def f(params):
             m2, c2 = params
             def2 = self.model(m2, c2, self.z_cl, self.cosmo, self.einasto_alpha,
                               massdef2, delta_mdef2)
-            return def1.mdelta - def2.M(def1.rdelta()), def2.mdelta - def1.M(def2.rdelta())
+            return self.mdelta - def2.M(self.rdelta()), def2.mdelta - self.M(def2.rdelta())
 
-        mdelta2, cdelta2 = fsolve(func = f, x0 = [mdelta1, cdelta1], maxfev = 1000)
+        mdelta2, cdelta2 = fsolve(func = f, x0 = [self.mdelta, self.cdelta], maxfev = 1000)
         mdelta2, cdelta2 = fsolve(func = f, x0 = [mdelta2, cdelta2], maxfev = 100)
 
-
-
-
-        mdelta2, cdelta2 = self._convert_def(self.mdelta, self.cdelta, self.z_cl, self.cosmo,\
-                                             self.massdef, self.delta_mdef, massdef, delta_mdef)
         return self.model(mdelta2, cdelta2, self.z_cl, self.cosmo,
-                          self.einasto_alpha, massdef, delta_mdef)
+                          self.einasto_alpha, massdef2, delta_mdef2)
 
 class Hernquist(HaloProfile):
     r"""
