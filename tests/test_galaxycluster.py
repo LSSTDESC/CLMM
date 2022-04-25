@@ -72,6 +72,17 @@ def test_integrity():  # Converge on name
     assert clmm.GalaxyCluster('1', '161.', '55.', '.3', GCData())
     assert clmm.GalaxyCluster('1', 161, 55, 1, GCData())
 
+    # Test default ra_min=0
+    cl = clmm.GalaxyCluster('1', -10, 55, 1, GCData({'ra': [-10.], 'dec':[0.]}))
+    assert_equal(cl.ra, 350)
+    assert_equal(cl.galcat['ra'], [350])
+
+    # Test set_galcat_ra_lower
+    assert_raises(ValueError, cl.set_ra_lower, 7)
+    cl.set_ra_lower(-180)
+    assert_equal(cl.ra, -10)
+    assert_equal(cl.galcat['ra'], [-10])
+
 
 def test_save_load():
     """test save load"""
