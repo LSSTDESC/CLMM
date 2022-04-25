@@ -1,0 +1,10 @@
+KERNEL=$1
+if [ "$KERNEL" == "" ]; then
+    KERNEL="python3"
+    echo "*** no kernel specified, using $KERNEL"
+fi
+
+mkdir -p _executed_nbs/
+for nb in examples/*.ipynb
+    do jupyter nbconvert --execute --ExecutePreprocessor.kernel_name=$KERNEL --output-dir _executed_nbs/ --to notebook $nb
+done
