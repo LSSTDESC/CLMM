@@ -8,3 +8,4 @@ __pycache__
 .ipynb*
 *.pkl
 .python-version
+_executed_nbs/
