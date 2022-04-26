@@ -146,16 +146,14 @@ def test_compute_tangential_and_cross_components(modeling_data):
         'angsep': np.array([0.002175111279323424171, 0.003723129781247932167]),
         'cross_shear': np.array([0.277590689496438781, 0.639929479722048944]),
         'tangential_shear': np.array([-0.23009434826803484841, -0.02214183783401518779]),
-        'cross_DS': np.array([8.58093068e+14, 1.33131522e+15]),
-        'tangential_DS': np.array([-7.08498103e+14, -4.89926917e+13]),
+        # DeltaSigma expected values for clmm.Cosmology(H0=70.0, Omega_dm0=0.275, Omega_b0=0.025)
+        'cross_DS': np.array([8.56731976e+14, 1.33141964e+15]),
+        #[8.34260933e+14 1.29598236e+15] for (H0=67.66, Omega_dm0=0.262, Omega_b0=0.049)
+        'tangential_DS': np.array([-7.10143363e+14, -4.60676976e+13]),
+        #[-6.91517162e+14 -4.48415523e+13] for (H0=67.66, Omega_dm0=0.262, Omega_b0=0.049)
     }
     # Geometries to test
     geo_tests = [('flat', expected_flat), ('curve', expected_curve)]
-    # geo_tests = geo_tests[:1]  # <<DELETE THIS LINE WHEN CURVE VALUES ADDED>>
-    # Quick test using curve geometry <<DELETE THIS LINE WHEN CURVE VALUES ADDED>>
-    da.compute_tangential_and_cross_components(
-        ra_lens=ra_lens, dec_lens=dec_lens, ra_source=gals['ra'][0], dec_source=gals['dec'][0],
-        shear1=gals['e1'][0], shear2=gals['e2'][0], geometry='curve', validate_input=False)
     # Test domains on inputs
     ra_l, dec_l = 161., 65.
     ra_s, dec_s = np.array([-355., 355.]), np.array([-85., 85.])
