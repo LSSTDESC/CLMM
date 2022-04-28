@@ -136,21 +136,19 @@ def test_compute_tangential_and_cross_components(modeling_data):
         'angsep': np.array([0.0021745039090962414, 0.0037238407383072053]),
         'cross_shear': np.array([0.2780316984090899, 0.6398792901134982]),
         'tangential_shear': np.array([-0.22956126563459447, -0.02354769805831558]),
-        # DeltaSigma expected values for clmm.Cosmology(H0=67.66, Omega_dm0=0.262, Omega_b0=0.049)
+        # DeltaSigma expected values for clmm.Cosmology(H0=70.0, Omega_dm0=0.275, Omega_b0=0.025)
         'cross_DS': np.array([8.58093068e+14, 1.33131522e+15]),
         # [1224.3326297393244, 1899.6061989365176])*0.7*1.0e12*1.0002565513832675
         'tangential_DS': np.array([-7.08498103e+14, -4.89926917e+13]),
         # [-1010.889584349285, -69.9059242788237])*0.7*1.0e12*1.0002565513832675
     }
-    expected_curve = {  # <<TO BE ADDED IN THE FUTURE>>
+    expected_curve = { 
         'angsep': np.array([0.002175111279323424171, 0.003723129781247932167]),
         'cross_shear': np.array([0.277590689496438781, 0.639929479722048944]),
         'tangential_shear': np.array([-0.23009434826803484841, -0.02214183783401518779]),
         # DeltaSigma expected values for clmm.Cosmology(H0=70.0, Omega_dm0=0.275, Omega_b0=0.025)
         'cross_DS': np.array([8.56731976e+14, 1.33141964e+15]),
-        #[8.34260933e+14 1.29598236e+15] for (H0=67.66, Omega_dm0=0.262, Omega_b0=0.049)
         'tangential_DS': np.array([-7.10143363e+14, -4.60676976e+13]),
-        #[-6.91517162e+14 -4.48415523e+13] for (H0=67.66, Omega_dm0=0.262, Omega_b0=0.049)
     }
     # Geometries to test
     geo_tests = [('flat', expected_flat), ('curve', expected_curve)]
@@ -394,24 +392,28 @@ def test_make_radial_profiles():
     angsep_units, bin_units = 'radians', 'radians'
     # Set up radial values
     bins_radians = np.array([0.002, 0.003, 0.004])
-    expected_radius = [0.0021745039090962414, 0.0037238407383072053]
+    expected_radius_flat = [0.0021745039090962414, 0.0037238407383072053]
+    expected_radius_curve = [0.002175111279323424171, 0.003723129781247932167]
     expected_flat = {
         'angsep': np.array([0.0021745039090962414, 0.0037238407383072053, 0.0037238407383072053]),
         'cross_shear': np.array([0.2780316984090899, 0.6398792901134982, 0.6398792901134982]),
         'tan_shear': np.array([-0.22956126563459447, -0.02354769805831558, -0.02354769805831558]),
     }
-    expected_curve = {  # <<TO BE ADDED IN THE FUTURE>>
-        'angsep': np.array([]),
-        'cross_shear': np.array([]),
-        'tan_shear': np.array([]),
+    expected_curve = {  
+        'angsep': np.array([0.002175111279323424171, 0.003723129781247932167, 0.003723129781247932167]),
+        'cross_shear': np.array([0.277590689496438781, 0.639929479722048944, 0.639929479722048944]),
+        'tan_shear': np.array([-0.23009434826803484841, -0.02214183783401518779, -0.02214183783401518779]),
     }
     # Geometries to test
     geo_tests = [('flat', expected_flat), ('curve', expected_curve)]
-    geo_tests = geo_tests[:1]  # <<DELETE THIS LINE WHEN CURVE VALUES ADDED>>
     for geometry, expected in geo_tests:
         #######################################
         ### Use without cluster object ########
         #######################################
+        if geometry == 'flat':
+          expected_radius = expected_radius_flat
+        elif geometry == 'curve':
+          expected_radius = expected_radius_curve
         angsep, tshear, xshear = da.compute_tangential_and_cross_components(
             ra_lens=ra_lens, dec_lens=dec_lens, ra_source=gals['ra'], dec_source=gals['dec'],
             shear1=gals['e1'], shear2=gals['e2'], geometry=geometry)
