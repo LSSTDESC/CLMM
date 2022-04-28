@@ -149,7 +149,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, cluste
         validate_argument(locals(), 'delta_so', float, argmin=0, eqmin=True)
         validate_argument(locals(), 'massdef', str)
         validate_argument(locals(), 'halo_profile_model', str)
-        validate_argument(locals(), 'zsrc_min', float, argmin=0, none_ok=True)
+        validate_argument(locals(), 'zsrc_min', float, argmin=0, eqmin=True, none_ok=True)
         validate_argument(locals(), 'zsrc_max', float, argmin=0, eqmin=True)
         validate_argument(locals(), 'field_size', float, argmin=0, eqmin=True)
         validate_argument(locals(), 'shapenoise', float, argmin=0, none_ok=True)
@@ -282,14 +282,7 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals,
     
     # position angle of drawn galaxies w.r.t cluster center
     angsep, posangle = c_cl.separation(c_gal).rad, c_cl.position_angle(c_gal).rad
-
-    posangle += 0.5*np.pi
-    if np.iterable(posangle):
-        posangle[posangle > np.pi] -= 2*np.pi
-        posangle[angsep == 0] = 0
-    else:
-        posangle -= 2*np.pi if posangle > np.pi else 0
-        posangle = 0 if angsep == 0 else posangle
+    posangle += 0.5*np.pi # for right convention
 
     #corresponding shear1,2 components
     gam1 = -gamt*np.cos(2*posangle) + gamx*np.sin(2*posangle)
