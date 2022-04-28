@@ -61,16 +61,6 @@ class ClusterEnsemble():
         """Returns length of ClusterEnsemble"""
         return len(self.data)
 
-    def stack(self):
-        """Produces a GalaxyCluster object by stacking elements of gclist
-
-        Returns
-        ---------
-        gc_stack : GalaxyCluster
-            Stacked galaxy cluster generated from elements of self.gclist
-        """
-        return
-
     def make_individual_radial_profile(self, galaxycluster, bin_units, bins=10, error_model='ste',
                                        cosmo=None, tan_component_in='et', cross_component_in='ex',
                                        tan_component_out='gt', cross_component_out='gx',
