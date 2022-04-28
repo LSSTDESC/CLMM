@@ -166,7 +166,7 @@ def compute_tangential_and_cross_components(
         elif sigma_c is None:
             # Need to verify that cosmology, lens redshift, source redshift bins and 
             # source redshift pdf are provided
-            if any(t_ is None for t_ in (z_lens, cosmo, zbins, pdz)):
+            if any(t_ is None for t_ in (z_lens, cosmo, pzbins, pzpdf)):
                 raise TypeError(
                     'To compute DeltaSigma using the redshift pdz of the sources, please provide a '
                     'i) cosmology, ii) lens redshift, iii) source redshift bins and iv) source redshift pdf')
