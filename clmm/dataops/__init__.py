@@ -361,19 +361,6 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, use_pdz=False, pzpdf=No
             sigma_c = compute_critical_surface_density(cosmo, z_lens, z_source=z_source, use_pdz=use_pdz, pzbins=pzbins, pzpdf=pzpdf)
         w_ls_geo = 1./sigma_c**2
 
-#     if pzpdf is None:
-#         norm = 1
-#         if is_deltasigma:
-# #            norm = cosmo.eval_sigma_crit(z_lens, z_source)**2
-#             norm = compute_critical_surface_density(cosmo, z_lens, z_source=z_source)**2
-#         w_ls_geo = p_background/norm
-#     else:
-#         w_ls_geo = 1
-#         if is_deltasigma == True:
-#             w_ls_geo = _integ_pzfuncs(
-#                 pzpdf, pzbins, z_lens,
-#                 kernel=lambda z: 1./cosmo.eval_sigma_crit(z_lens, z))**2
-
     #computing w_ls_shape
     err_e2 = np.zeros(len(shape_component1))
     if use_shape_noise:
