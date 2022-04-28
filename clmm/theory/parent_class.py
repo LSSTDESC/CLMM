@@ -266,7 +266,7 @@ class CLMModeling:
             Redshift of the cluster
         halobias : float, optional
             Value of the halo bias
-        lsteps: int (optional)
+        lsteps: int, optional
             Number of steps for numerical integration
 
         Returns
@@ -319,7 +319,7 @@ class CLMModeling:
             Redshift of the cluster
         halobias : float, optional
            Value of the halo bias
-        lsteps: int (optional)
+        lsteps: int, optional
             Number of steps for numerical integration
 
         Returns
@@ -440,29 +440,21 @@ class CLMModeling:
         z_src_model : str, optional
             Source redshift model, with the following supported options:
 
-                * `single_plane` (default): all sources at one redshift (if `z_source` is a float) \
-                    or known individual source galaxy redshifts (if `z_source` is an array and \
-                    `r_proj` is a float);
-                * `applegate14`: use the equation (6) in Weighing the Giants - III \
-                    (Applegate et al. 2014; https://arxiv.org/abs/1208.0605) to evaluate tangential reduced shear;
-                * `schrabback18`: use the equation (12) in Cluster Mass Calibration at High Redshift \
-                    (Schrabback et al. 2017; https://arxiv.org/abs/1611.03866) to evaluate tangential reduced shear;
+                * `single_plane` (default): all sources at one redshift (if `z_source` is a float)    or known individual source galaxy redshifts (if `z_source` is an array and `r_proj` is a float).
+                * `applegate14`: use the equation (6) in Weighing the Giants - III (Applegate et al. 2014; https://arxiv.org/abs/1208.0605) to evaluate tangential reduced shear.
+                * `schrabback18`: use the equation (12) in Cluster Mass Calibration at High Redshift (Schrabback et al. 2017; https://arxiv.org/abs/1611.03866) to evaluate tangential reduced shear.
         
         z_distrib_func: one-parameter function
             Redshift distribution function. This function is used to compute the beta values if they are not provided. The default is the Chang et al (2013) distribution function.
-        beta_s_mean: array_like, float
-            Lensing efficiency averaged over the galaxy redshift distribution. It is optional /
-            to provide this value. If not provided, it will be computed using the default redshift/
-            distribution or the one given by the user.   
+
+        beta_s_mean: array_like, float, optional
+            Lensing efficiency averaged over the galaxy redshift distribution. If not provided, it will be computed using the default redshift distribution or the one given by the user.
 
                 .. math::
                     \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right\rangle
     
-        beta_s_square_mean: array_like, float
-            Square of the lensing efficiency averaged over the galaxy redshift distribution.It is optional /
-            to provide this value. If not provided, it will be computed using the default redshift/
-            distribution or the one given by the user.   
-  
+        beta_s_square_mean: array_like, float, optional
+            Square of the lensing efficiency averaged over the galaxy redshift distribution. If not provided, it will be computed using the default redshift distribution or the one given by the user.
 
                 .. math::
                     \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle

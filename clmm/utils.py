@@ -411,7 +411,7 @@ def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argm
     Parameters
     ----------
     loc: dict
-        Dictionaty with all input arguments. Should be locals().
+        Dictionary with all input arguments. Should be locals().
     argname: str
         Name of argument to be tested.
     valid_type: str, type
