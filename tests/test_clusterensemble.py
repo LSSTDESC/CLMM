@@ -30,15 +30,20 @@ def test_cluster_ensemble():
     bins_radians = np.logspace(np.log10(.001), np.log10(.02), 10)
     bin_units = 'radians'
     names = ('ra', 'dec', 'theta', 'w_ls', 'e1', 'e2', 'z')
+
+    galcat = clmm.GCData([ra_source, dec_source, theta_source, w_ls, 
+                         shear1, shear2, z_source],
+                         names=names)
     # create cluster
     cluster = clmm.GalaxyCluster(unique_id='test', ra=ra_lens, dec=dec_lens, z=z_lens,
-                                 galcat=clmm.GCData([ra_source, dec_source, theta_source, w_ls,
-                                                shear1, shear2, z_source],
-                                               names=names))
+                                 galcat=galcat)
     cluster.compute_tangential_and_cross_components()
     bins = bins_radians
     gc_list = [cluster]
     
+    #check bad id
+    assert_raises(TypeError, clusterensemble.ClusterEnsemble, 1.3, gc_list)
+
     #test without kwargs, args
     ce = clusterensemble.ClusterEnsemble('cluster_ensemble', gc_list, tan_component_in='et',
     cross_component_in='ex', weights_in = 'w_ls', bins=bins, bin_units='radians', cosmo=cosmo)
@@ -89,7 +94,10 @@ def test_covariance():
     #test with args, kwargs
     ce = clusterensemble.ClusterEnsemble(ensemble_id, gclist, tan_component_in='et',
     cross_component_in='ex', weights_in = 'w_ls', bins=bins, bin_units='Mpc', cosmo=cosmo)
+
     ce.make_stacked_radial_profile()
+
+    assert_raises(ValueError, ce.make_individual_radial_profile,gclist[0], bin_units='radians')
     
     #comparing brut force calculation for cross and tangential component
     gt_individual, gx_individual = ce.data['gt'], ce.data['gx']
