@@ -361,7 +361,11 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, use_pdz=False, pzpdf=No
         w_ls_geo = 1./sigma_c**2
 
     #computing w_ls_shape
-    err_e2 = np.zeros(len(shape_component1))
+    if not use_pdz:
+        err_e2 = np.zeros(len(z_source))
+    else:
+        err_e2 = np.zeros(len(pzpdf))
+    
     if use_shape_noise:
         if shape_component1 is None or shape_component2 is None:
             raise ValueError('With the shape noise option, the source shapes `shape_component_{1,2}` must be specified')

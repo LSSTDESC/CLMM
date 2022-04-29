@@ -137,12 +137,16 @@ def test_print_gc():
 def test_integrity_of_lensfuncs():
     """test integrity of lensfuncs"""
     ra_source, dec_source = [120.1, 119.9, 119.9], [41.9, 42.2, 42.2]
-    id_source, z_sources = [1, 2, 3], [1, 1, 1]
-    galcat = GCData([ra_source, dec_source, z_sources, id_source],
-                    names=('ra', 'dec', 'z', 'id'))
+    id_source, z_source = [1, 2, 3], [1, 1, 1]
+    shape_component1 = np.array([.143, .063, -.171])
+    shape_component2 = np.array([-.011, .012,-.250])
+
+    galcat = GCData([ra_source, dec_source, z_source, id_source, shape_component1, shape_component2],
+                    names=('ra', 'dec', 'z', 'id', 'e1', 'e2'))
     galcat_noz = GCData([ra_source, dec_source, id_source],
                        names=('ra', 'dec', 'id'))
     cosmo = clmm.Cosmology(H0=70.0, Omega_dm0=0.275, Omega_b0=0.025)
+    
     # Missing cosmo
     cluster = clmm.GalaxyCluster(unique_id='1', ra=161.3,
                             dec=34., z=0.3, galcat=galcat)
@@ -156,6 +160,22 @@ def test_integrity_of_lensfuncs():
     cluster = clmm.GalaxyCluster(unique_id='1', ra=161.3,
                             dec=34., z=0.3, galcat=galcat_noz)
     assert_raises(TypeError, cluster.add_critical_surface_density, cosmo)
+    # Missing galaxy pdf if use_pdz is true
+    cluster = clmm.GalaxyCluster(unique_id='1', ra=161.3,
+                            dec=34., z=0.3, galcat=galcat_noz)
+    assert_raises(TypeError, cluster.add_critical_surface_density, cosmo, use_pdz=True)
+    # Check metadata addition
+    pzbin = np.linspace(.0001, 5, 100)
+    pzbins = np.zeros([len(z_source), len(pzbin)])
+    pzpdf = pzbins
+    pzbin = np.linspace(.0001, 5, 100)
+    cluster = clmm.GalaxyCluster(unique_id='1', ra=161.3,
+                            dec=34., z=0.3, galcat=galcat)
+    cluster.galcat['pzbins'] = [pzbin for i in range(len(z_source))]
+    cluster.galcat['pzpdf'] = [multivariate_normal.pdf(pzbin, mean=z, cov=.3) for z in z_source]
+
+    cluster.compute_tangential_and_cross_components(is_deltasigma=True, use_pdz=True, cosmo=cosmo, add=True)
+    assert_equal(cluster.galcat.meta['sigmac_type'], 'effective')
 
 def test_integrity_of_probfuncs():
     """test integrity of prob funcs"""

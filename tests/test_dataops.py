@@ -399,18 +399,18 @@ def test_compute_galaxy_weights():
     testing.assert_allclose(weights, expected,**TOLERANCE)
 
     # # test error when missing information
-    # testing.assert_raises(ValueError, da.compute_galaxy_weights, z_lens, cosmo, z_source=None, use_pdz=True, pzpdf=pzpdf, pzbins=pzbins,
-    #                        use_shape_noise=True, shape_component1=shape_component1, shape_component2=None,
-    #                        use_shape_error=False, shape_component1_err=None, shape_component2_err=None,
-    #                        is_deltasigma=False,
-    #                        validate_input=True)
+    testing.assert_raises(ValueError, da.compute_galaxy_weights, z_lens, cosmo, z_source=None, use_pdz=True, pzpdf=pzpdf, pzbins=pzbins,
+                           use_shape_noise=True, shape_component1=None, shape_component2=None,
+                           use_shape_error=False, shape_component1_err=None, shape_component2_err=None,
+                           is_deltasigma=False,
+                           validate_input=True)
 
-    # # test error when missing information
-    # testing.assert_raises(ValueError, da.compute_galaxy_weights, z_lens, cosmo, z_source=None, use_pdz=True, pzpdf=pzpdf, pzbins=pzbins,
-    #                        use_shape_noise=False,
-    #                        use_shape_error=True, shape_component1_err=shape_component1_err, shape_component2_err=None,
-    #                        is_deltasigma=False,
-    #                        validate_input=True)
+    # test error when missing information
+    testing.assert_raises(ValueError, da.compute_galaxy_weights, z_lens, cosmo, z_source=None, use_pdz=True, pzpdf=pzpdf, pzbins=pzbins,
+                           use_shape_noise=False,
+                           use_shape_error=True, shape_component1_err=None, shape_component2_err=None,
+                           is_deltasigma=False,
+                           validate_input=True)
 
 
 
