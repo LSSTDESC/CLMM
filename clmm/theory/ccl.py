@@ -60,12 +60,6 @@ class CCLCLMModeling(CLMModeling):
                           'einasto': ccl.halos.HaloProfileEinasto,
                           'hernquist': ccl.halos.HaloProfileHernquist}
         self.cosmo_class = CCLCosmology
-        # Uncomment lines below when CCL einasto and hernquist profiles are stable (also add version number)
-        #if version.parse(ccl.__version__) >= version.parse('???'):
-        # self.hdpm_dict.update({
-        #        'einasto': ccl.halos.HaloProfileEinasto,
-        #        'hernquist': ccl.halos.HaloProfileHernquist})
-        # Attributes exclusive to this class
         self.hdpm_opts = {'nfw': {'truncated': False,
                                   'projected_analytic': True,
                                   'cumul2d_analytic': True},
