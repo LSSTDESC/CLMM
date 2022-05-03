@@ -115,23 +115,30 @@ class NumCosmoCLMModeling(CLMModeling):
         self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
 
     def _set_concentration(self, cdelta):
-        """" set concentration"""
+        """"set concentration"""
         self.hdpm.props.cDelta = cdelta
 
     def _set_mass(self, mdelta):
-        """" set mass"""
+        """"set mass"""
         self.hdpm.props.log10MDelta = math.log10(mdelta)
+
+    def _set_einasto_alpha(self, alpha):
+        self.hdpm.props.alpha = alpha
+
+    def _get_einasto_alpha(self, z_cl=None):
+        """"get the value of the Einasto slope"""
+        # Note that z_cl is needed for the CCL backend only
+        # 
+        return self.hdpm.props.alpha
 
     def _eval_3d_density(self, r3d, z_cl):
         """"eval 3d density"""
-
         func = lambda r3d, z_cl: self.hdpm.eval_density(
             self.cosmo.be_cosmo, r3d, z_cl)
         return np.vectorize(func)(r3d, z_cl)
 
     def _eval_surface_density(self, r_proj, z_cl):
         """"eval surface density"""
-
         self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
         func = lambda r_proj, z_cl: self.cosmo.smd.sigma(
             self.hdpm, self.cosmo.be_cosmo, r_proj, z_cl)
