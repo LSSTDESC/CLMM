@@ -35,13 +35,26 @@ def compute_sigmac_physical_constant(lightspeed, gnewt, msun, pc_to_m):
     return (lightspeed*1000./pc_to_m)**2/(gnewt*msun/pc_to_m**3)
 
 
-def load_validation_config():
+def load_validation_config(halo_profile_model=None): 
     """ Loads values precomputed by numcosmo for comparison """
     numcosmo_path = 'tests/data/numcosmo/'
-    with open(numcosmo_path+'config.json', 'r') as fin:
-        testcase = json.load(fin)
-    numcosmo_profile = np.genfromtxt(
-        numcosmo_path+'radial_profiles.txt', names=True)
+
+    if halo_profile_model == 'einasto':
+        with open(numcosmo_path+'config_einasto_benchmarks.json', 'r') as fin:
+            testcase = json.load(fin)
+        numcosmo_profile = np.genfromtxt(
+            numcosmo_path+'radial_profiles_einasto.txt', names=True)
+    elif halo_profile_model == 'hernquist':
+        with open(numcosmo_path+'config_hernquist_benchmarks.json', 'r') as fin:
+            testcase = json.load(fin)
+        numcosmo_profile = np.genfromtxt(
+            numcosmo_path+'radial_profiles_hernquist.txt', names=True)
+    else:
+        # defaults to nfw profile
+        with open(numcosmo_path+'config.json', 'r') as fin:
+            testcase = json.load(fin)
+        numcosmo_profile = np.genfromtxt(
+            numcosmo_path+'radial_profiles.txt', names=True)
 
     # Physical Constants
     CLMM_SIGMAC_PCST = compute_sigmac_physical_constant(clc.CLIGHT_KMS.value,
@@ -63,6 +76,7 @@ def load_validation_config():
         'mdelta': testcase['cluster_mass'],
         'cdelta': testcase['cluster_concentration'],
         'z_cl': testcase['z_cluster'],
+        'halo_profile_model': testcase['density_profile_parametrization'],
     }
     SIGMA_PARAMS = {
         'r_proj': np.array(numcosmo_profile['r3d']),
@@ -82,13 +96,15 @@ def load_validation_config():
         'halo_profile_model': testcase['density_profile_parametrization'],
         'z_src_model': 'single_plane',
     }
+
     return {'TEST_CASE': testcase, 'z_source': testcase['z_source'],
-            'cosmo': cosmo,
-            'cosmo_pars': {k.replace('cosmo_', ''): v for k, v in testcase.items()
-                           if 'cosmo_' in k},
-            'RHO_PARAMS': RHO_PARAMS, 'SIGMA_PARAMS': SIGMA_PARAMS, 'GAMMA_PARAMS': GAMMA_PARAMS,
-            'numcosmo_profiles': numcosmo_profile, 'TEST_CASE_SIGMAC_PCST': testcase_SIGMAC_PCST,
-            'CLMM_SIGMAC_PCST': CLMM_SIGMAC_PCST}
+    'cosmo': cosmo,
+    'cosmo_pars': {k.replace('cosmo_', ''): v for k, v in testcase.items()
+                   if 'cosmo_' in k},
+    'RHO_PARAMS': RHO_PARAMS, 'SIGMA_PARAMS': SIGMA_PARAMS, 'GAMMA_PARAMS': GAMMA_PARAMS,
+    'numcosmo_profiles': numcosmo_profile, 'TEST_CASE_SIGMAC_PCST': testcase_SIGMAC_PCST,
+    'CLMM_SIGMAC_PCST': CLMM_SIGMAC_PCST}
+
 # --------------------------------------------------------------------------
 
 
@@ -225,49 +241,86 @@ def helper_profiles(func):
                     defaulttruth, **TOLERANCE)
 
 
-def test_profiles(modeling_data):
+def test_profiles(modeling_data, profile_init):
     """ Tests for profile functions, get_3d_density, predict_surface_density,
     and predict_excess_surface_density """
-    helper_profiles(theo.compute_3d_density)
-    helper_profiles(theo.compute_surface_density)
-    helper_profiles(theo.compute_excess_surface_density)
-
-    reltol = modeling_data['theory_reltol']
 
     # Validation tests
     # NumCosmo makes different choices for constants (Msun). We make this conversion
     # by passing the ratio of SOLAR_MASS in kg from numcosmo and CLMM
-    cfg = load_validation_config()
+    cfg = load_validation_config(halo_profile_model=profile_init)
     cosmo = cfg['cosmo']
 
-    assert_allclose(theo.compute_3d_density(cosmo=cosmo, **cfg['RHO_PARAMS']),
-                    cfg['numcosmo_profiles']['rho'], reltol)
-    assert_allclose(theo.compute_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS']),
-                    cfg['numcosmo_profiles']['Sigma'], reltol)
-    assert_allclose(theo.compute_excess_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS']),
-                    cfg['numcosmo_profiles']['DeltaSigma'], reltol)
+    if (profile_init=='nfw' or theo.be_nick in ['nc','ccl']) and modeling_data['nick'] not in ['notabackend','testnotabackend']:
 
-    # Object Oriented tests
-    mod = theo.Modeling()
-    mod.set_cosmo(cosmo)
-    mod.set_halo_density_profile(
-        halo_profile_model=cfg['SIGMA_PARAMS']['halo_profile_model'])
-    mod.set_concentration(cfg['SIGMA_PARAMS']['cdelta'])
-    mod.set_mass(cfg['SIGMA_PARAMS']['mdelta'])
+        helper_profiles(theo.compute_3d_density)
+        helper_profiles(theo.compute_surface_density)
+        helper_profiles(theo.compute_excess_surface_density)
 
-    assert_allclose(
-        mod.eval_3d_density(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl']),
-        cfg['numcosmo_profiles']['rho'], reltol)
-    assert_allclose(
-        mod.eval_surface_density(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl']),
-        cfg['numcosmo_profiles']['Sigma'], reltol)
-    assert_allclose(
-        mod.eval_excess_surface_density(cfg['SIGMA_PARAMS']['r_proj'], 
-                                        cfg['SIGMA_PARAMS']['z_cl']),
-        cfg['numcosmo_profiles']['DeltaSigma'], reltol)
-    if mod.backend == 'ct':
-        assert_raises(ValueError, mod.eval_excess_surface_density,
-                      1e-12, cfg['SIGMA_PARAMS']['z_cl'])
+        if profile_init == 'nfw':
+            reltol = modeling_data['theory_reltol']
+        else:
+            reltol = modeling_data['theory_reltol_num']
+
+
+        # Object Oriented tests
+        mod = theo.Modeling()
+        mod.set_cosmo(cosmo)
+        mod.set_halo_density_profile(
+            halo_profile_model=cfg['SIGMA_PARAMS']['halo_profile_model'])
+        mod.set_concentration(cfg['SIGMA_PARAMS']['cdelta'])
+        mod.set_mass(cfg['SIGMA_PARAMS']['mdelta']) 
+        # Need to set the alpha value for the NC backend to the one used for the benchmarks,
+        # which is the CCL default value
+        if profile_init=='einasto' and theo.be_nick=='nc': 
+            alpha_ein = cfg['TEST_CASE']['alpha_einasto'] 
+            mod.set_einasto_alpha(alpha_ein)
+        else:
+            alpha_ein = None
+        assert_allclose(
+            mod.eval_3d_density(cfg['RHO_PARAMS']['r3d'], cfg['RHO_PARAMS']['z_cl'], verbose=True),
+            cfg['numcosmo_profiles']['rho'], reltol)
+        assert_allclose(
+            mod.eval_surface_density(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl'], verbose=True),
+            cfg['numcosmo_profiles']['Sigma'], reltol)
+        assert_allclose(
+            mod.eval_excess_surface_density(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl'], verbose=True),
+            cfg['numcosmo_profiles']['DeltaSigma'], reltol)
+        if mod.backend == 'ct':
+            assert_raises(ValueError, mod.eval_excess_surface_density,
+                          1e-12, cfg['SIGMA_PARAMS']['z_cl'])
+
+        # Functional interface tests
+        # alpha_ein is None unless testing Einasto with the NC backend
+        assert_allclose(theo.compute_3d_density(cosmo=cosmo, **cfg['RHO_PARAMS'], alpha_ein=alpha_ein, verbose=True),
+                        cfg['numcosmo_profiles']['rho'], reltol)
+        assert_allclose(theo.compute_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS'], alpha_ein=alpha_ein, verbose=True),
+                        cfg['numcosmo_profiles']['Sigma'], reltol)
+        assert_allclose(theo.compute_excess_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS'], alpha_ein=alpha_ein, verbose=True),
+                        cfg['numcosmo_profiles']['DeltaSigma'], reltol)
+
+    else:
+        print('Need to test for error')
+
+    # Einasto-specific tests - checks errors are raised appropriately
+    if profile_init=='einasto': 
+        alpha_ein = 0.5
+        if theo.be_nick!='nc':
+            mod = theo.Modeling()
+            assert_raises(NotImplementedError, mod.set_einasto_alpha, alpha_ein)
+            assert_raises(NotImplementedError, theo.compute_convergence,0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)  
+            assert_raises(NotImplementedError, theo.compute_tangential_shear,0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)
+            assert_raises(NotImplementedError, theo.compute_reduced_tangential_shear,0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)
+            assert_raises(NotImplementedError, theo.compute_magnification,0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)
+        else:            
+            mod = theo.Modeling()
+            mod.set_halo_density_profile(halo_profile_model=profile_init)
+            mod.set_einasto_alpha(alpha_ein)
+            assert_allclose(mod.get_einasto_alpha(), alpha_ein, reltol) 
+        
+    if profile_init!='einasto':
+        mod = theo.Modeling()
+        assert_raises(ValueError, mod.get_einasto_alpha) 
 
 def test_2halo_term(modeling_data):
 
@@ -449,10 +502,14 @@ def test_shear_convergence_unittests(modeling_data):
     cfg_inf['GAMMA_PARAMS']['z_source'] = 1000.
     gammat_inf = theo.compute_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'])
     kappa_inf = theo.compute_convergence(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'])
+
     cfg_inf['GAMMA_PARAMS']['z_src_model'] = 'applegate14'
     assert_raises(ValueError, theo.compute_reduced_tangential_shear, cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'], beta_s_mean=None, beta_s_square_mean=None)
     assert_allclose(theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'], beta_s_mean=beta_s_mean, beta_s_square_mean=beta_s_square_mean),
                     beta_s_mean * gammat_inf/(1.0 - beta_s_square_mean / beta_s_mean * kappa_inf), 1.0e-10)
+
+    assert_raises(ValueError, theo.compute_reduced_tangential_shear, cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'], beta_s_mean=None, beta_s_square_mean=None)
+
 
     cfg_inf['GAMMA_PARAMS']['z_src_model'] = 'schrabback18'
     assert_raises(ValueError, theo.compute_reduced_tangential_shear, cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'], beta_s_mean=None, beta_s_square_mean=None)
@@ -462,6 +519,8 @@ def test_shear_convergence_unittests(modeling_data):
     
     assert_allclose(gammat*sigmac_corr/(1.-(kappa*sigmac_corr)),
                     cfg['numcosmo_profiles']['gt'], 1.e2*reltol)
+
+    assert_raises(ValueError, theo.compute_reduced_tangential_shear, cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'], beta_s_mean=None, beta_s_square_mean=None)
 
     # Validate magnification
     assert_allclose(theo.compute_magnification(cosmo=cosmo, **cfg['GAMMA_PARAMS']),
