@@ -543,7 +543,7 @@ def compute_reduced_tangential_shear(
         r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
         delta_mdef=200, halo_profile_model='nfw', massdef='mean', alpha_ein=None,
         z_src_model='single_plane', beta_s_mean=None, beta_s_square_mean=None,
-        validate_input=True, verbose=False):
+        z_distrib_func=None, validate_input=True, verbose=False):
     r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
 
     Parameters
@@ -591,36 +591,34 @@ def compute_reduced_tangential_shear(
             * `schrabback18`: use the equation (12) in Cluster Mass Calibration at High Redshift \
                 (Schrabback et al. 2017; https://arxiv.org/abs/1611.03866) to evaluate tangential reduced shear;
                 
-    beta_s_mean: array_like, float
-        Lensing efficiency averaged over the galaxy redshift distribution   
+        z_distrib_func: one-parameter function
+            Redshift distribution function. This function is used to compute the beta values if they are not provided. The default is the Chang et al (2013) distribution function.
 
-            .. math::
-                \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right\rangle
+        beta_s_mean: array_like, float, optional
+            Lensing efficiency averaged over the galaxy redshift distribution. If not provided, it will be computed using the default redshift distribution or the one given by the user.
+
+                .. math::
+                    \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right\rangle
     
-    beta_s_square_mean: array_like, float
-        Square of the lensing efficiency averaged over the galaxy redshift distribution    
-
-            .. math::
-                \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
+        beta_s_square_mean: array_like, float, optional
+            Square of the lensing efficiency averaged over the galaxy redshift distribution. If not provided, it will be computed using the default redshift distribution or the one given by the user.
+                
+                .. math::
+                    \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
     
     verbose : boolean, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends. 
     validate_input : bool, optional
         If True (default), the types of the arguments are checked before proceeding.
 
+                .. math::
+                    \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
 
     Returns
     -------
     gt : array_like, float
         Reduced tangential shear
 
-    Notes
-    -----
-    TODO: Implement `known_z_src` (known individual source galaxy redshifts
-    e.g. discrete case) and `z_src_distribution` (known source redshift
-    distribution e.g. continuous case requiring integration) options for
-    `z_src_model`. We will need :math:`\gamma_\infty` and :math:`\kappa_\infty`
-    for alternative z_src_models using :math:`\beta_s`.
     """
     gcm.validate_input = validate_input
     gcm.set_cosmo(cosmo)
@@ -632,7 +630,7 @@ def compute_reduced_tangential_shear(
         gcm.set_einasto_alpha(alpha_ein)
 
     red_tangential_shear = gcm.eval_reduced_tangential_shear(
-        r_proj, z_cluster, z_source, z_src_model, beta_s_mean, beta_s_square_mean, verbose=verbose)
+        r_proj, z_cluster, z_source, z_src_model, beta_s_mean, beta_s_square_mean, z_distrib_func, verbose=verbose)
 
     gcm.validate_input = True
     return red_tangential_shear

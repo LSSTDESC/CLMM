@@ -11,7 +11,7 @@ from scipy.interpolate import interp1d
 from .generic import compute_reduced_shear_from_convergence
 import warnings
 from .generic import compute_reduced_shear_from_convergence, compute_magnification_bias_from_magnification
-from ..utils import validate_argument
+from ..utils import validate_argument, compute_beta_s_mean, compute_beta_s_square_mean
 
 
 class CLMModeling:
@@ -318,7 +318,7 @@ class CLMModeling:
             Redshift of the cluster
         halobias : float, optional
             Value of the halo bias
-        lsteps: int (optional)
+        lsteps: int, optional
             Number of steps for numerical integration
 
         Returns
@@ -371,7 +371,7 @@ class CLMModeling:
             Redshift of the cluster
         halobias : float, optional
            Value of the halo bias
-        lsteps: int (optional)
+        lsteps: int, optional
             Number of steps for numerical integration
 
         Returns
@@ -486,7 +486,7 @@ class CLMModeling:
         return sigma/sigma_c
 
     def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src, z_src_model='single_plane',
-                                      beta_s_mean=None, beta_s_square_mean=None, verbose=False):
+                                      beta_s_mean=None, beta_s_square_mean=None, z_distrib_func=None, verbose=False):
         r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
 
         Parameters
@@ -500,22 +500,21 @@ class CLMModeling:
         z_src_model : str, optional
             Source redshift model, with the following supported options:
 
-                * `single_plane` (default): all sources at one redshift (if `z_source` is a float) \
-                    or known individual source galaxy redshifts (if `z_source` is an array and \
-                    `r_proj` is a float);
-                * `applegate14`: use the equation (6) in Weighing the Giants - III \
-                    (Applegate et al. 2014; https://arxiv.org/abs/1208.0605) to evaluate tangential reduced shear;
-                * `schrabback18`: use the equation (12) in Cluster Mass Calibration at High Redshift \
-                    (Schrabback et al. 2017; https://arxiv.org/abs/1611.03866) to evaluate tangential reduced shear;
-                
-        beta_s_mean: array_like, float
-            Lensing efficiency averaged over the galaxy redshift distribution   
+                * `single_plane` (default): all sources at one redshift (if `z_source` is a float)    or known individual source galaxy redshifts (if `z_source` is an array and `r_proj` is a float).
+                * `applegate14`: use the equation (6) in Weighing the Giants - III (Applegate et al. 2014; https://arxiv.org/abs/1208.0605) to evaluate tangential reduced shear.
+                * `schrabback18`: use the equation (12) in Cluster Mass Calibration at High Redshift (Schrabback et al. 2017; https://arxiv.org/abs/1611.03866) to evaluate tangential reduced shear.
+        
+        z_distrib_func: one-parameter function
+            Redshift distribution function. This function is used to compute the beta values if they are not provided. The default is the Chang et al (2013) distribution function.
+
+        beta_s_mean: array_like, float, optional
+            Lensing efficiency averaged over the galaxy redshift distribution. If not provided, it will be computed using the default redshift distribution or the one given by the user.
 
                 .. math::
                     \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right\rangle
     
-        beta_s_square_mean: array_like, float
-            Square of the lensing efficiency averaged over the galaxy redshift distribution    
+        beta_s_square_mean: array_like, float, optional
+            Square of the lensing efficiency averaged over the galaxy redshift distribution. If not provided, it will be computed using the default redshift distribution or the one given by the user.
 
                 .. math::
                     \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
@@ -539,29 +538,26 @@ class CLMModeling:
 
         if z_src_model == 'single_plane':
             gt = self._eval_reduced_tangential_shear_sp(r_proj, z_cl, z_src)
-        # elif z_src_model == 'known_z_src': # Discrete case
-        #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average'+
-        #                               'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
-        # elif z_src_model == 'z_src_distribution': # Continuous ( from a distribution) case
-        #     raise NotImplementedError('Need to implement Beta_s and Beta_s2 calculation from'+
-        #                               'integrating distribution of redshifts in each radial bin')
+            
         elif z_src_model == 'applegate14':
+            z_source = 1000. #np.inf # INF or a very large number
+            z_inf = z_source
             if beta_s_mean is None or beta_s_square_mean is None:
-                raise ValueError("beta_s_mean or beta_s_square_mean is not given.")
-            else:
-                z_source = 1000. #np.inf # INF or a very large number
-                gammat = self._eval_tangential_shear(r_proj, z_cl, z_source)
-                kappa = self._eval_convergence(r_proj, z_cl, z_source)
-                gt = beta_s_mean * gammat / (1. - beta_s_square_mean / beta_s_mean * kappa)
+                beta_s_mean = compute_beta_s_mean (z_cl, z_inf, self.cosmo, z_distrib_func=z_distrib_func)
+                beta_s_square_mean = compute_beta_s_square_mean (z_cl, z_inf, self.cosmo, z_distrib_func=z_distrib_func)
+            gammat = self._eval_tangential_shear(r_proj, z_cl, z_source)
+            kappa = self._eval_convergence(r_proj, z_cl, z_source)
+            gt = beta_s_mean * gammat / (1. - beta_s_square_mean / beta_s_mean * kappa)
         
         elif z_src_model == 'schrabback18':
+            z_source = 1000. #np.inf # INF or a very large number
+            z_inf = z_source
             if beta_s_mean is None or beta_s_square_mean is None:
-                raise ValueError("beta_s_mean or beta_s_square_mean is not given.")
-            else:
-                z_source = 1000. #np.inf # INF or a very large number
-                gammat = self._eval_tangential_shear(r_proj, z_cl, z_source)
-                kappa = self._eval_convergence(r_proj, z_cl, z_source)
-                gt = (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean * kappa) * (beta_s_mean * gammat / (1. - beta_s_mean * kappa))
+                beta_s_mean = compute_beta_s_mean (z_cl, z_inf, self.cosmo, z_distrib_func=z_distrib_func)
+                beta_s_square_mean = compute_beta_s_square_mean (z_cl, z_inf, self.cosmo, z_distrib_func=z_distrib_func)
+            gammat = self._eval_tangential_shear(r_proj, z_cl, z_source)
+            kappa = self._eval_convergence(r_proj, z_cl, z_source)
+            gt = (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean * kappa) * (beta_s_mean * gammat / (1. - beta_s_mean * kappa))
         
         else:
             raise ValueError("Unsupported z_src_model")

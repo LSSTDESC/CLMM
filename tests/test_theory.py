@@ -478,11 +478,6 @@ def test_shear_convergence_unittests(modeling_data):
     assert_raises(ValueError, theo.compute_tangential_shear,
                   1.e-12, 1.e15, 4, 0.2, 0.45, cosmo)
 
-    # Chech error for z_src_model='applegate14' and no beta
-    assert_raises(ValueError, theo.compute_reduced_tangential_shear,
-                  1, 1.e15, 4, 0.2, 0.45, cosmo,
-                  z_src_model='applegate14')
-
     # Validate tangential shear
     gammat = theo.compute_tangential_shear(cosmo=cosmo, **cfg['GAMMA_PARAMS'])
     assert_allclose(gammat*sigmac_corr,
@@ -504,23 +499,16 @@ def test_shear_convergence_unittests(modeling_data):
     kappa_inf = theo.compute_convergence(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'])
 
     cfg_inf['GAMMA_PARAMS']['z_src_model'] = 'applegate14'
-    assert_raises(ValueError, theo.compute_reduced_tangential_shear, cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'], beta_s_mean=None, beta_s_square_mean=None)
     assert_allclose(theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'], beta_s_mean=beta_s_mean, beta_s_square_mean=beta_s_square_mean),
                     beta_s_mean * gammat_inf/(1.0 - beta_s_square_mean / beta_s_mean * kappa_inf), 1.0e-10)
 
-    assert_raises(ValueError, theo.compute_reduced_tangential_shear, cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'], beta_s_mean=None, beta_s_square_mean=None)
-
-
     cfg_inf['GAMMA_PARAMS']['z_src_model'] = 'schrabback18'
-    assert_raises(ValueError, theo.compute_reduced_tangential_shear, cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'], beta_s_mean=None, beta_s_square_mean=None)
     assert_allclose(theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'], beta_s_mean=beta_s_mean, beta_s_square_mean=beta_s_square_mean),
                     (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean * kappa_inf) * (beta_s_mean * gammat_inf / (1. - beta_s_mean * kappa_inf)), 1.0e-10)
     
     
     assert_allclose(gammat*sigmac_corr/(1.-(kappa*sigmac_corr)),
                     cfg['numcosmo_profiles']['gt'], 1.e2*reltol)
-
-    assert_raises(ValueError, theo.compute_reduced_tangential_shear, cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'], beta_s_mean=None, beta_s_square_mean=None)
 
     # Validate magnification
     assert_allclose(theo.compute_magnification(cosmo=cosmo, **cfg['GAMMA_PARAMS']),
