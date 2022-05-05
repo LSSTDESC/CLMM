@@ -13,4 +13,4 @@ from .theory import (
 from .profiles import HaloProfileNFW, HaloProfileEinasto, HaloProfileHernquist
 from . import support
 
-__version__ = '1.1.4'
+__version__ = '1.1.8'

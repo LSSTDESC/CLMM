@@ -11,7 +11,7 @@ from scipy.interpolate import interp1d
 from .generic import compute_reduced_shear_from_convergence
 import warnings
 from .generic import compute_reduced_shear_from_convergence, compute_magnification_bias_from_magnification
-from ..utils import validate_argument
+from ..utils import validate_argument, compute_beta_s_mean, compute_beta_s_square_mean
 
 
 class CLMModeling:
@@ -124,6 +124,41 @@ class CLMModeling:
         r""" Actually sets the value of the :math:`M_\Delta` (without value check)"""
         raise NotImplementedError
 
+    def set_einasto_alpha(self, alpha):
+        r""" Sets the value of the :math:`\alpha` parameter for the Einasto profile
+
+        Parameters
+        ----------
+        alpha : float
+        """
+        if self.halo_profile_model!='einasto' or self.backend!='nc':
+            raise NotImplementedError("The Einasto slope cannot be set for your combination of profile choice or modeling backend.")
+        else:
+            if self.validate_input:
+                validate_argument(locals(), 'alpha', float)
+            self._set_einasto_alpha(alpha)
+
+    def _set_einasto_alpha(self, alpha):
+        r""" Actually sets the value of the :math:`\alpha` parameter for the Einasto profile"""
+        raise NotImplementedError
+
+    def get_einasto_alpha(self, z_cl=None):
+        r""" Returns the value of the :math:`\alpha` parameter for the Einasto profile, if defined
+
+        Parameters
+        ----------
+        z_cl : float
+            Cluster redshift (required for Einasto with the CCL backend, will be ignored for NC)
+        """
+        if self.halo_profile_model!='einasto':
+            raise ValueError(f"Wrong profile model. Current profile = {self.halo_profile_model}")
+        else:
+            return self._get_einasto_alpha(z_cl)
+
+    def _get_einasto_alpha(self, z_cl=None):
+        r""" Returns the value of the :math:`\alpha` parameter for the Einasto profile, if defined"""
+        raise NotImplementedError
+
     def set_concentration(self, cdelta):
         r""" Sets the concentration
 
@@ -140,7 +175,7 @@ class CLMModeling:
         r""" Actuall sets the value of the concentration (without value check)"""
         raise NotImplementedError
 
-    def eval_3d_density(self, r3d, z_cl):
+    def eval_3d_density(self, r3d, z_cl, verbose=False):
         r"""Retrieve the 3d density :math:`\rho(r)`.
 
         Parameters
@@ -158,6 +193,10 @@ class CLMModeling:
         if self.validate_input:
             validate_argument(locals(), 'r3d', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', 'float_array', argmin=0)
+
+        if self.halo_profile_model=='einasto' and verbose:
+            print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
+
         return self._eval_3d_density(r3d=r3d, z_cl=z_cl)
 
     def _eval_3d_density(self, r3d, z_cl):
@@ -186,7 +225,7 @@ class CLMModeling:
     def _eval_critical_surface_density(self, z_len, z_src):
         return self.cosmo.eval_sigma_crit(z_len, z_src)
 
-    def eval_surface_density(self, r_proj, z_cl):
+    def eval_surface_density(self, r_proj, z_cl, verbose=False):
         r""" Computes the surface mass density
 
         Parameters
@@ -204,12 +243,17 @@ class CLMModeling:
         if self.validate_input:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', float, argmin=0)
+
+        if self.halo_profile_model=='einasto' and verbose:
+            print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
+
         return self._eval_surface_density(r_proj=r_proj, z_cl=z_cl)
+
 
     def _eval_surface_density(self, r_proj, z_cl):
         raise NotImplementedError
 
-    def eval_mean_surface_density(self, r_proj, z_cl):
+    def eval_mean_surface_density(self, r_proj, z_cl, verbose=False):
         r""" Computes the mean value of surface density inside radius r_proj
 
         Parameters
@@ -227,12 +271,16 @@ class CLMModeling:
         if self.validate_input:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', float, argmin=0)
+
+        if self.halo_profile_model=='einasto' and verbose:
+            print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
+
         return self._eval_mean_surface_density(r_proj=r_proj, z_cl=z_cl)
 
     def _eval_mean_surface_density(self, r_proj, z_cl):
         raise NotImplementedError
 
-    def eval_excess_surface_density(self, r_proj, z_cl):
+    def eval_excess_surface_density(self, r_proj, z_cl, verbose=False):
         r""" Computes the excess surface density
 
         Parameters
@@ -250,6 +298,10 @@ class CLMModeling:
         if self.validate_input:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', float, argmin=0)
+
+        if self.halo_profile_model=='einasto' and verbose:
+            print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
+
         return self._eval_excess_surface_density(r_proj=r_proj, z_cl=z_cl)
 
     def _eval_excess_surface_density(self, r_proj, z_cl):
@@ -266,7 +318,7 @@ class CLMModeling:
             Redshift of the cluster
         halobias : float, optional
             Value of the halo bias
-        lsteps: int (optional)
+        lsteps: int, optional
             Number of steps for numerical integration
 
         Returns
@@ -319,7 +371,7 @@ class CLMModeling:
             Redshift of the cluster
         halobias : float, optional
            Value of the halo bias
-        lsteps: int (optional)
+        lsteps: int, optional
             Number of steps for numerical integration
 
         Returns
@@ -361,7 +413,7 @@ class CLMModeling:
         return halobias * val * rho_m / ( 2 * np.pi  * ( 1 + z_cl )**3 * da**2 )
     
     
-    def eval_tangential_shear(self, r_proj, z_cl, z_src):
+    def eval_tangential_shear(self, r_proj, z_cl, z_src, verbose=False):
         r"""Computes the tangential shear
 
         Parameters
@@ -382,6 +434,10 @@ class CLMModeling:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', float, argmin=0)
             validate_argument(locals(), 'z_src', 'float_array', argmin=0)
+
+        if self.halo_profile_model=='einasto' and verbose:
+            print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
+
         return self._eval_tangential_shear(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
 
     def _eval_tangential_shear(self, r_proj, z_cl, z_src):
@@ -389,7 +445,7 @@ class CLMModeling:
         sigma_c = self.eval_critical_surface_density(z_cl, z_src)
         return delta_sigma/sigma_c
 
-    def eval_convergence(self, r_proj, z_cl, z_src):
+    def eval_convergence(self, r_proj, z_cl, z_src, verbose=False):
         r"""Computes the mass convergence
 
         .. math::
@@ -418,15 +474,19 @@ class CLMModeling:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', float, argmin=0)
             validate_argument(locals(), 'z_src', 'float_array', argmin=0)
+
+        if self.halo_profile_model=='einasto' and verbose:
+            print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
+
         return self._eval_convergence(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
 
-    def _eval_convergence(self, r_proj, z_cl, z_src):
-        sigma = self.eval_surface_density(r_proj, z_cl)
+    def _eval_convergence(self, r_proj, z_cl, z_src, verbose=False):
+        sigma = self.eval_surface_density(r_proj, z_cl, verbose=verbose)
         sigma_c = self.eval_critical_surface_density(z_cl, z_src)
         return sigma/sigma_c
 
     def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src, z_src_model='single_plane',
-                                      beta_s_mean=None, beta_s_square_mean=None):
+                                      beta_s_mean=None, beta_s_square_mean=None, z_distrib_func=None, verbose=False):
         r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
 
         Parameters
@@ -440,22 +500,21 @@ class CLMModeling:
         z_src_model : str, optional
             Source redshift model, with the following supported options:
 
-                * `single_plane` (default): all sources at one redshift (if `z_source` is a float) \
-                    or known individual source galaxy redshifts (if `z_source` is an array and \
-                    `r_proj` is a float);
-                * `applegate14`: use the equation (6) in Weighing the Giants - III \
-                    (Applegate et al. 2014; https://arxiv.org/abs/1208.0605) to evaluate tangential reduced shear;
-                * `schrabback18`: use the equation (12) in Cluster Mass Calibration at High Redshift \
-                    (Schrabback et al. 2017; https://arxiv.org/abs/1611.03866) to evaluate tangential reduced shear;
-                
-        beta_s_mean: array_like, float
-            Lensing efficiency averaged over the galaxy redshift distribution   
+                * `single_plane` (default): all sources at one redshift (if `z_source` is a float)    or known individual source galaxy redshifts (if `z_source` is an array and `r_proj` is a float).
+                * `applegate14`: use the equation (6) in Weighing the Giants - III (Applegate et al. 2014; https://arxiv.org/abs/1208.0605) to evaluate tangential reduced shear.
+                * `schrabback18`: use the equation (12) in Cluster Mass Calibration at High Redshift (Schrabback et al. 2017; https://arxiv.org/abs/1611.03866) to evaluate tangential reduced shear.
+        
+        z_distrib_func: one-parameter function
+            Redshift distribution function. This function is used to compute the beta values if they are not provided. The default is the Chang et al (2013) distribution function.
+
+        beta_s_mean: array_like, float, optional
+            Lensing efficiency averaged over the galaxy redshift distribution. If not provided, it will be computed using the default redshift distribution or the one given by the user.
 
                 .. math::
                     \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right\rangle
     
-        beta_s_square_mean: array_like, float
-            Square of the lensing efficiency averaged over the galaxy redshift distribution    
+        beta_s_square_mean: array_like, float, optional
+            Square of the lensing efficiency averaged over the galaxy redshift distribution. If not provided, it will be computed using the default redshift distribution or the one given by the user.
 
                 .. math::
                     \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
@@ -474,31 +533,31 @@ class CLMModeling:
             validate_argument(locals(), 'z_cl', float, argmin=0)
             validate_argument(locals(), 'z_src', 'float_array', argmin=0)
 
+        if self.halo_profile_model=='einasto' and verbose:
+            print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
+
         if z_src_model == 'single_plane':
             gt = self._eval_reduced_tangential_shear_sp(r_proj, z_cl, z_src)
-        # elif z_src_model == 'known_z_src': # Discrete case
-        #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average'+
-        #                               'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
-        # elif z_src_model == 'z_src_distribution': # Continuous ( from a distribution) case
-        #     raise NotImplementedError('Need to implement Beta_s and Beta_s2 calculation from'+
-        #                               'integrating distribution of redshifts in each radial bin')
+            
         elif z_src_model == 'applegate14':
+            z_source = 1000. #np.inf # INF or a very large number
+            z_inf = z_source
             if beta_s_mean is None or beta_s_square_mean is None:
-                raise ValueError("beta_s_mean or beta_s_square_mean is not given.")
-            else:
-                z_source = 1000. #np.inf # INF or a very large number
-                gammat = self._eval_tangential_shear(r_proj, z_cl, z_source)
-                kappa = self._eval_convergence(r_proj, z_cl, z_source)
-                gt = beta_s_mean * gammat / (1. - beta_s_square_mean / beta_s_mean * kappa)
+                beta_s_mean = compute_beta_s_mean (z_cl, z_inf, self.cosmo, z_distrib_func=z_distrib_func)
+                beta_s_square_mean = compute_beta_s_square_mean (z_cl, z_inf, self.cosmo, z_distrib_func=z_distrib_func)
+            gammat = self._eval_tangential_shear(r_proj, z_cl, z_source)
+            kappa = self._eval_convergence(r_proj, z_cl, z_source)
+            gt = beta_s_mean * gammat / (1. - beta_s_square_mean / beta_s_mean * kappa)
         
         elif z_src_model == 'schrabback18':
+            z_source = 1000. #np.inf # INF or a very large number
+            z_inf = z_source
             if beta_s_mean is None or beta_s_square_mean is None:
-                raise ValueError("beta_s_mean or beta_s_square_mean is not given.")
-            else:
-                z_source = 1000. #np.inf # INF or a very large number
-                gammat = self._eval_tangential_shear(r_proj, z_cl, z_source)
-                kappa = self._eval_convergence(r_proj, z_cl, z_source)
-                gt = (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean * kappa) * (beta_s_mean * gammat / (1. - beta_s_mean * kappa))
+                beta_s_mean = compute_beta_s_mean (z_cl, z_inf, self.cosmo, z_distrib_func=z_distrib_func)
+                beta_s_square_mean = compute_beta_s_square_mean (z_cl, z_inf, self.cosmo, z_distrib_func=z_distrib_func)
+            gammat = self._eval_tangential_shear(r_proj, z_cl, z_source)
+            kappa = self._eval_convergence(r_proj, z_cl, z_source)
+            gt = (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean * kappa) * (beta_s_mean * gammat / (1. - beta_s_mean * kappa))
         
         else:
             raise ValueError("Unsupported z_src_model")
@@ -509,7 +568,7 @@ class CLMModeling:
         gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
         return compute_reduced_shear_from_convergence(gamma_t, kappa)
 
-    def eval_magnification(self, r_proj, z_cl, z_src):
+    def eval_magnification(self, r_proj, z_cl, z_src, verbose=False):
         r"""Computes the magnification
 
         .. math::
@@ -539,6 +598,10 @@ class CLMModeling:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', float, argmin=0)
             validate_argument(locals(), 'z_src', 'float_array', argmin=0)
+
+        if self.halo_profile_model=='einasto' and verbose:
+            print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
+
         return self._eval_magnification(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
 
     def _eval_magnification(self, r_proj, z_cl, z_src):
