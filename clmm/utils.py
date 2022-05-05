@@ -5,6 +5,115 @@ from astropy import units as u
 from .constants import Constants as const
 
 
+
+
+def compute_nfw_boost(rvals, rs=1000, b0=0.1) :
+    """ Given a list of rvals, and optional rs and b0, return the corresponding boost factor at each rval
+
+    Parameters
+    ----------
+    rvals : array_like
+        radii
+    rs : float (optional)
+        scale radius for NFW in same units as rvals (default 2000 kpc)
+    b0 : float (optional)
+
+    Returns
+    -------
+    boost_factors : array_like
+
+    """
+
+    x = rvals/rs
+
+    def _calc_finternal(x) :
+
+        radicand = x**2-1
+
+        finternal = -1j *  np.log( (1 + np.lib.scimath.sqrt(radicand)*1j) / (1 - np.lib.scimath.sqrt(radicand)*1j) ) / ( 2 * np.lib.scimath.sqrt(radicand) )
+
+        return np.nan_to_num(finternal, copy=False, nan=1.0).real
+
+    return 1. + b0 * (1 - _calc_finternal(x)) / (x**2 - 1)
+        
+
+
+def compute_powerlaw_boost(rvals, rs=1000, b0=0.1, alpha=-1.0) :
+    """  Given a list of rvals, and optional rs and b0, and alpha, return the corresponding boost factor at each rval
+
+    Parameters
+    ----------
+    rvals : array_like
+        radii
+    rs : float (optional)
+        scale radius for NFW in same units as rvals (default 2000 kpc)
+    b0 : float (optional)
+    alpha : float (optional)
+        exponent from Melchior+16
+
+    Returns
+    -------
+    boost_factors : array_like
+
+    """
+
+    x = rvals/rs
+
+    return 1. + b0 * (x)**alpha
+
+    
+
+boost_models = {'nfw_boost': compute_nfw_boost,
+                'powerlaw_boost': compute_powerlaw_boost}
+
+def correct_sigma_with_boost_values(rvals, sigma_vals, boost_factors):
+    """ Given a boost model and sigma profile, compute corrected sigma
+
+    Parameters
+    ----------
+    rvals : array_like
+        radii
+    sigma_vals : array_like
+        uncorrected sigma with cluster member dilution
+    boost_factors : array_like
+        Boost values pre-computed
+
+    Returns
+    -------
+    sigma_corrected : array_like
+        correted radial profile
+    """
+
+    sigma_corrected = sigma_vals / boost_factors
+    return sigma_corrected
+
+
+def correct_sigma_with_boost_model(rvals, sigma_vals, boost_model='nfw_boost', **boost_model_kw):
+    """ Given a boost model and sigma profile, compute corrected sigma
+
+    Parameters
+    ----------
+    rvals : array_like
+        radii
+    sigma_vals : array_like
+        uncorrected sigma with cluster member dilution
+    boost_model : str, optional
+        Boost model to use for correcting sigma
+            `nfw_boost` - NFW profile model (Default)
+            `powerlaw_boost` - Powerlaw profile
+    
+
+    Returns
+    -------
+    sigma_corrected : array_like
+        correted radial profile
+    """
+    boost_model_func = boost_models[boost_model]
+    boost_factors = boost_model_func(rvals, **boost_model_kw)
+
+    sigma_corrected = sigma_vals / boost_factors
+    return sigma_corrected
+
 def compute_radial_averages(xvals, yvals, xbins, yerr=None, error_model='ste', weights=None):
     """ Given a list of xvals, yvals and bins, sort into bins. If xvals or yvals
     contain non-finite values, these are filtered.
