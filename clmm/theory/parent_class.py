@@ -425,7 +425,7 @@ class CLMModeling:
         sigma_c = self.eval_critical_surface_density(z_cl, z_src)
         return sigma/sigma_c
 
-    def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src=None, z_src_model='single_plane',
+    def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src, z_src_model='single_plane',
                                       beta_s_mean=None, beta_s_square_mean=None, z_distrib_func=None):
         r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
 
@@ -471,11 +471,8 @@ class CLMModeling:
         if self.validate_input:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', float, argmin=0)
-            if z_src_model=='single_plane':
-                validate_argument(locals(), 'z_src', 'float_array', argmin=0)
-            else:
-                validate_argument(locals(), 'z_src', 'float_array', argmin=0, none_ok=True)
-                
+            validate_argument(locals(), 'z_src', 'float_array', argmin=0)
+
         if z_src_model == 'single_plane':
             gt = self._eval_reduced_tangential_shear_sp(r_proj, z_cl, z_src)
             
