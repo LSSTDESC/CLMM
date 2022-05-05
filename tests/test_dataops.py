@@ -4,6 +4,8 @@ from numpy import testing
 
 import clmm
 from clmm import GCData
+from clmm import Cosmology
+from scipy.stats import multivariate_normal
 import clmm.dataops as da
 
 TOLERANCE = {'rtol': 1.e-7, 'atol': 1.e-7}
@@ -134,26 +136,22 @@ def test_compute_tangential_and_cross_components(modeling_data):
         'angsep': np.array([0.0021745039090962414, 0.0037238407383072053]),
         'cross_shear': np.array([0.2780316984090899, 0.6398792901134982]),
         'tangential_shear': np.array([-0.22956126563459447, -0.02354769805831558]),
-        # DeltaSigma expected values for clmm.Cosmology(H0=67.66, Omega_dm0=0.262, Omega_b0=0.049)
+        # DeltaSigma expected values for clmm.Cosmology(H0=70.0, Omega_dm0=0.275, Omega_b0=0.025)
         'cross_DS': np.array([8.58093068e+14, 1.33131522e+15]),
         # [1224.3326297393244, 1899.6061989365176])*0.7*1.0e12*1.0002565513832675
         'tangential_DS': np.array([-7.08498103e+14, -4.89926917e+13]),
         # [-1010.889584349285, -69.9059242788237])*0.7*1.0e12*1.0002565513832675
     }
-    expected_curve = {  # <<TO BE ADDED IN THE FUTURE>>
-        'angsep': np.array([]),
-        'cross_shear': np.array([]),
-        'tangential_shear': np.array([]),
-        'cross_DS': np.array([]),
-        'tangential_DS': np.array([]),
+    expected_curve = { 
+        'angsep': np.array([0.002175111279323424171, 0.003723129781247932167]),
+        'cross_shear': np.array([0.277590689496438781, 0.639929479722048944]),
+        'tangential_shear': np.array([-0.23009434826803484841, -0.02214183783401518779]),
+        # DeltaSigma expected values for clmm.Cosmology(H0=70.0, Omega_dm0=0.275, Omega_b0=0.025)
+        'cross_DS': np.array([8.56731976e+14, 1.33141964e+15]),
+        'tangential_DS': np.array([-7.10143363e+14, -4.60676976e+13]),
     }
     # Geometries to test
     geo_tests = [('flat', expected_flat), ('curve', expected_curve)]
-    geo_tests = geo_tests[:1]  # <<DELETE THIS LINE WHEN CURVE VALUES ADDED>>
-    # Quick test using curve geometry <<DELETE THIS LINE WHEN CURVE VALUES ADDED>>
-    da.compute_tangential_and_cross_components(
-        ra_lens=ra_lens, dec_lens=dec_lens, ra_source=gals['ra'][0], dec_source=gals['dec'][0],
-        shear1=gals['e1'][0], shear2=gals['e2'][0], geometry='curve', validate_input=False)
     # Test domains on inputs
     ra_l, dec_l = 161., 65.
     ra_s, dec_s = np.array([-355., 355.]), np.array([-85., 85.])
@@ -298,6 +296,67 @@ def test_compute_tangential_and_cross_components(modeling_data):
                                 err_msg="Cross Shear not correct when using cluster method")
 
 
+def test_compute_background_probability():
+    """test for compute background probability"""
+    z_lens = .1
+    z_source = np.array([.22, .35, 1.7])
+
+    # true redshift
+    p_bkg = da.compute_background_probability(
+        z_lens, z_source=z_source, pzpdf=None, pzbins=None, validate_input=True)
+    expected = np.array([1., 1., 1.])
+    testing.assert_allclose(p_bkg, expected, **TOLERANCE)
+
+    #photoz + deltasigma
+    pzbin = np.linspace(.0001, 5, 100)
+    pzbins = [pzbin for i in range(z_source.size)]
+    pzpdf = [multivariate_normal.pdf(pzbin, mean=z, cov=.3) for z in z_source]
+    testing.assert_raises(ValueError, da.compute_background_probability,
+        z_lens, z_source=z_source, pzpdf=None, pzbins=pzbins, validate_input=True)
+
+
+def test_compute_galaxy_weights():
+    """test for compute galaxy weights"""
+    cosmo = Cosmology(H0 = 71.0, Omega_dm0 = 0.265 - 0.0448, Omega_b0 = 0.0448, Omega_k0 = 0.0)
+    z_lens = .1
+    z_source = [.22, .35, 1.7]
+    shape_component1 = np.array([.143, .063, -.171])
+    shape_component2 = np.array([-.011, .012,-.250])
+    shape_component1_err = np.array([.11, .01, .2])
+    shape_component2_err = np.array([.14, .16, .21])
+    p_background = np.array([1., 1., 1.])
+    #true redshift + deltasigma
+    weights = da.compute_galaxy_weights(z_lens, cosmo, z_source=z_source, pzpdf=None, pzbins=None,
+                           shape_component1=shape_component1, shape_component2=shape_component2,
+                           shape_component1_err=shape_component1_err, shape_component2_err=shape_component2_err,
+                           p_background=p_background, use_shape_noise=False, is_deltasigma=True,
+                           validate_input=True)
+    expected = np.array([4.58644320e-31, 9.68145632e-31, 5.07260777e-31])
+    testing.assert_allclose(weights*1e20, expected*1e20,**TOLERANCE)
+
+    #photoz + deltasigma
+    pzbin = np.linspace(.0001, 5, 100)
+    pzbins = [pzbin for i in range(len(z_source))]
+    pzpdf = [multivariate_normal.pdf(pzbin, mean=z, cov=.3) for z in z_source]
+    weights = da.compute_galaxy_weights(z_lens, cosmo, z_source=None, pzpdf=pzpdf, pzbins=pzbins,
+                           shape_component1=shape_component1, shape_component2=shape_component2,
+                           shape_component1_err=None, shape_component2_err=None,
+                           p_background=None, use_shape_noise=False, is_deltasigma=True,
+                           validate_input=True)
+
+    expected = np.array([9.07709345e-33, 1.28167582e-32, 4.16870389e-32])
+    testing.assert_allclose(weights*1e20, expected*1e20,**TOLERANCE)
+
+    # test with noise
+    weights = da.compute_galaxy_weights(z_lens, cosmo, z_source=None, pzpdf=pzpdf, pzbins=pzbins,
+                           shape_component1=shape_component1, shape_component2=shape_component2,
+                           shape_component1_err=None, shape_component2_err=None,
+                           p_background=None, use_shape_noise=True, is_deltasigma=True,
+                           validate_input=True)
+
+    expected = np.array([9.07709345e-33, 1.28167582e-32, 4.16870389e-32])
+    testing.assert_allclose(weights*1e20, expected*1e20,**TOLERANCE)
+
 def _test_profile_table_output(profile, expected_rmin, expected_radius, expected_rmax,
                                expected_p0, expected_p1, expected_nsrc,
                                expected_gal_id=None, p0='p_0', p1='p_1'):
@@ -333,24 +392,28 @@ def test_make_radial_profiles():
     angsep_units, bin_units = 'radians', 'radians'
     # Set up radial values
     bins_radians = np.array([0.002, 0.003, 0.004])
-    expected_radius = [0.0021745039090962414, 0.0037238407383072053]
+    expected_radius_flat = [0.0021745039090962414, 0.0037238407383072053]
+    expected_radius_curve = [0.002175111279323424171, 0.003723129781247932167]
     expected_flat = {
         'angsep': np.array([0.0021745039090962414, 0.0037238407383072053, 0.0037238407383072053]),
         'cross_shear': np.array([0.2780316984090899, 0.6398792901134982, 0.6398792901134982]),
         'tan_shear': np.array([-0.22956126563459447, -0.02354769805831558, -0.02354769805831558]),
     }
-    expected_curve = {  # <<TO BE ADDED IN THE FUTURE>>
-        'angsep': np.array([]),
-        'cross_shear': np.array([]),
-        'tan_shear': np.array([]),
+    expected_curve = {  
+        'angsep': np.array([0.002175111279323424171, 0.003723129781247932167, 0.003723129781247932167]),
+        'cross_shear': np.array([0.277590689496438781, 0.639929479722048944, 0.639929479722048944]),
+        'tan_shear': np.array([-0.23009434826803484841, -0.02214183783401518779, -0.02214183783401518779]),
     }
     # Geometries to test
     geo_tests = [('flat', expected_flat), ('curve', expected_curve)]
-    geo_tests = geo_tests[:1]  # <<DELETE THIS LINE WHEN CURVE VALUES ADDED>>
     for geometry, expected in geo_tests:
         #######################################
         ### Use without cluster object ########
         #######################################
+        if geometry == 'flat':
+          expected_radius = expected_radius_flat
+        elif geometry == 'curve':
+          expected_radius = expected_radius_curve
         angsep, tshear, xshear = da.compute_tangential_and_cross_components(
             ra_lens=ra_lens, dec_lens=dec_lens, ra_source=gals['ra'], dec_source=gals['dec'],
             shear1=gals['e1'], shear2=gals['e2'], geometry=geometry)

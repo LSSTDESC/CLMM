@@ -3,13 +3,14 @@ import warnings
 import numpy as np
 from scipy.interpolate import interp1d
 from scipy.special import gamma, gammainc
+from astropy import units as u
+from astropy.coordinates import SkyCoord
 
 from ..gcdata import GCData
 from ..theory import compute_tangential_shear, compute_convergence
 from ..utils import convert_units, compute_lensed_ellipticity, validate_argument
 
-
-def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc,
+def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, cluster_ra=0., cluster_dec=0.,
                             delta_so=200, massdef='mean',
                             halo_profile_model='nfw', zsrc_min=None,
                             zsrc_max=7., field_size=8., shapenoise=None,
@@ -143,11 +144,13 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc,
         validate_argument(locals(), 'cluster_m', float, argmin=0, eqmin=True)
         validate_argument(locals(), 'cluster_z', float, argmin=0, eqmin=True)
         validate_argument(locals(), 'cluster_c', float, argmin=0, eqmin=True)
+        validate_argument(locals(), 'cluster_dec', float, argmin=-90, argmax=90, eqmin=True, eqmax=True)
+        validate_argument(locals(), 'cluster_ra', float, argmin=-360., argmax=360., eqmin=True, eqmax=True)
         validate_argument(locals(), 'zsrc', (float, str))
         validate_argument(locals(), 'delta_so', float, argmin=0, eqmin=True)
         validate_argument(locals(), 'massdef', str)
         validate_argument(locals(), 'halo_profile_model', str)
-        validate_argument(locals(), 'zsrc_min', float, argmin=0, none_ok=True)
+        validate_argument(locals(), 'zsrc_min', float, argmin=0, eqmin=True, none_ok=True)
         validate_argument(locals(), 'zsrc_max', float, argmin=0, eqmin=True)
         validate_argument(locals(), 'field_size', float, argmin=0, eqmin=True)
         validate_argument(locals(), 'shapenoise', float, argmin=0, none_ok=True)
@@ -160,7 +163,8 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc,
 
     if zsrc_min is None: zsrc_min = cluster_z+0.1
 
-    params = {'cluster_m' : cluster_m, 'cluster_z' : cluster_z, 'cluster_c' : cluster_c,
+    params = {'cluster_m' : cluster_m, 'cluster_z' : cluster_z, 'cluster_c' : cluster_c, 
+              'cluster_ra' : cluster_ra, 'cluster_dec' : cluster_dec,
               'cosmo' : cosmo, 'delta_so' : delta_so, 'zsrc' : zsrc, 'massdef' : massdef,
               'halo_profile_model' : halo_profile_model,
               'zsrc_min' : zsrc_min, 'zsrc_max' : zsrc_max,
@@ -280,7 +284,7 @@ def _compute_ngals(ngal_density, field_size, cosmo, cluster_z, zsrc, zsrc_min=No
 
 
 def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals,
-                             zsrc, delta_so=None, massdef=None,
+                             zsrc, cluster_ra=None, cluster_dec=None,delta_so=None, massdef=None,
                              halo_profile_model=None, zsrc_min=None,
                              zsrc_max=None, shapenoise=None,
                              mean_e_err=None,
@@ -302,7 +306,7 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals,
             galaxy_catalog, photoz_sigma_unscaled)
     # Draw galaxy positions
     galaxy_catalog = _draw_galaxy_positions(
-        galaxy_catalog, ngals, cluster_z, cosmo, field_size)
+        galaxy_catalog, ngals, cluster_ra, cluster_dec, cluster_z, cosmo, field_size)
     # Compute the shear on each source galaxy
     gamt = compute_tangential_shear(galaxy_catalog['r_mpc'], mdelta=cluster_m,
                                     cdelta=cluster_c, z_cluster=cluster_z,
@@ -321,8 +325,13 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals,
                                 massdef=massdef,
                                 z_src_model='single_plane')
 
+    c_cl = SkyCoord(cluster_ra*u.deg, cluster_dec*u.deg, frame='icrs') 
+    c_gal = SkyCoord(galaxy_catalog['ra']*u.deg, galaxy_catalog['dec']*u.deg, frame='icrs') 
+    
+    # position angle of drawn galaxies w.r.t cluster center
+    angsep, posangle = c_cl.separation(c_gal).rad, c_cl.position_angle(c_gal).rad
+    posangle += 0.5*np.pi # for right convention
 
-    posangle = np.arctan2(galaxy_catalog['y_mpc'], galaxy_catalog['x_mpc'])
     #corresponding shear1,2 components
     gam1 = -gamt*np.cos(2*posangle) + gamx*np.sin(2*posangle)
     gam2 = -gamt*np.sin(2*posangle) - gamx*np.cos(2*posangle)
@@ -389,6 +398,7 @@ def _draw_random_points_from_distribution(xmin, xmax, nobj, dist_func, xstep=0.0
     # Get random values for probdist
     uniform_deviate = np.random.uniform(probdist.min(), probdist.max(), nobj)
     return interp1d(probdist, xdomain, kind='linear')(uniform_deviate)
+
 
 
 def _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals):
@@ -487,7 +497,7 @@ def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled):
     return galaxy_catalog
 
 
-def _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo, field_size):
+def _draw_galaxy_positions(galaxy_catalog, ngals, cluster_ra, cluster_dec, cluster_z, cosmo, field_size):
     """Draw positions of source galaxies around lens
 
     We draw physical x and y positions from uniform distribution with -4 and 4 Mpc of the
@@ -499,6 +509,10 @@ def _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo, field_size):
         Source galaxy catalog
     ngals : float
         The number of source galaxies to draw
+    cluster_ra : float
+        The cluster right ascension in degrees
+    cluster_dec : float
+        The cluster declination in degrees
     cluster_z : float
         The cluster redshift
     cosmo : dict
@@ -515,15 +529,35 @@ def _draw_galaxy_positions(galaxy_catalog, ngals, cluster_z, cosmo, field_size):
     """
     lens_distance = cosmo.eval_da(cluster_z)  # Mpc
 
+    # Draw galaxy around (ra,dec)=(0.0)
     galaxy_catalog['x_mpc'] = np.random.uniform(
         -(field_size/2.), field_size/2., size=ngals)
     galaxy_catalog['y_mpc'] = np.random.uniform(
         -(field_size/2.), field_size/2., size=ngals)
     galaxy_catalog['r_mpc'] = np.sqrt(
         galaxy_catalog['x_mpc']**2+galaxy_catalog['y_mpc']**2)
-    galaxy_catalog['ra'] = -np.rad2deg(galaxy_catalog['x_mpc']/lens_distance)
-    galaxy_catalog['dec'] = np.rad2deg(galaxy_catalog['y_mpc']/lens_distance)
 
+    # ra and dec for a cluster in (0,0)
+    ra = -np.rad2deg(galaxy_catalog['x_mpc']/lens_distance)
+    dec = np.rad2deg(galaxy_catalog['y_mpc']/lens_distance)
+    c1 = SkyCoord(ra*u.deg, dec*u.deg, frame='icrs')
+    c1_cl = SkyCoord(0.*u.deg, 0.*u.deg, frame='icrs') 
+ 
+    # position angle of drawn galaxies w.r.t cluster center in original position c1_cl = (0,0)
+    position_angle = c1_cl.position_angle(c1).to(u.deg)
+ 
+    # separation of drawn galaxies w.r.t cluster center in original position c1_cl = (0,0)
+    sep = c1_cl.separation(c1)
+
+    # cluster actual position
+    c2_cl = SkyCoord(cluster_ra*u.deg, cluster_dec*u.deg, frame='icrs') 
+ 
+    # new galaxy (ra,dec) w.r.t the new cluster position c2_cl
+    new_coord = c2_cl.directional_offset_by(position_angle, sep)
+
+    galaxy_catalog['ra'] = new_coord.ra.degree
+    galaxy_catalog['dec'] = new_coord.dec.degree
+  
     return galaxy_catalog
 
 
