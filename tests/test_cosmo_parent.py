@@ -140,6 +140,8 @@ def test_cosmo_basic(modeling_data, cosmo_init):
     assert_allclose(cosmo.eval_da(z), cosmo.eval_da_z1z2(0.0, z), rtol=8.0e-15)
     assert_allclose(cosmo.eval_da_z1z2(0.0, z),
                     cosmo.eval_da_z1z2(0.0, z), rtol=8.0e-15)
+    assert_allclose(cosmo.eval_da_z1z2(0.0, z),
+                    -cosmo.eval_da_z1z2(z, 0.0)/(1+z), rtol=8.0e-15)
     # Test da(a1, a1)
     cosmo, testcase, _ = load_validation_config()
     assert_allclose(cosmo.eval_da_a1a2(testcase['aexp_cluster']),
