@@ -101,29 +101,25 @@ class CCLCosmology(CLMMCosmology):
             return da
 
     def _eval_sigma_crit(self, z_len, z_src):
-        a_len = self.get_a_from_z(z_len)
-        a_src = np.atleast_1d(self.get_a_from_z(z_src))
         cte = ccl.physical_constants.CLIGHT**2 / \
             (4.0*np.pi*ccl.physical_constants.GNEWT *
              ccl.physical_constants.SOLAR_MASS)*ccl.physical_constants.MPC_TO_METER
 
-        z_cut = (a_src < a_len)
-        if np.isscalar(a_len):
-            a_len = np.repeat(a_len, len(a_src))
+        Ds = self.eval_da_z1z2(0, z_src)
+        Dl = self.eval_da_z1z2(0, z_len)
+        Dls = self.eval_da_z1z2(z_len, z_src)
 
-        res = np.zeros_like(a_src)
+        res = np.atleast_1d((cte*Ds/(Dl*Dls))*self.cor_factor)
+        if np.any(np.array(z_src) <= z_len):
+            warnings.warn(
+                'Some source redshifts are lower than the cluster redshift.'
+                'Returning Sigma_crit = np.inf for those galaxies.')
+            res[res<0] = np.Inf
 
-        if np.any(z_cut):
-            Ds = ccl.angular_diameter_distance(self.be_cosmo, a_src[z_cut])
-            Dl = ccl.angular_diameter_distance(self.be_cosmo, a_len[z_cut])
-            Dls = ccl.angular_diameter_distance(
-                self.be_cosmo, a_len[z_cut], a_src[z_cut])
-
-            res[z_cut] = (cte*Ds/(Dl*Dls))*self.cor_factor
-
-        res[~z_cut] = np.Inf
-
-        return np.squeeze(res)
+        if np.isscalar(z_len) and np.isscalar(z_src):
+            return res.item()
+        else:
+            return res
 
     def _eval_linear_matter_powerspectrum(self, k_vals, redshift):
         return ccl.linear_matter_power(
