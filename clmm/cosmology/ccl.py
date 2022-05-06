@@ -82,9 +82,23 @@ class CCLCosmology(CLMMCosmology):
         return ccl.rho_x(self.be_cosmo, a, 'matter', is_comoving = False)
 
     def _eval_da_z1z2(self, z1, z2):
-        a1 = self.get_a_from_z(z1)
-        a2 = self.get_a_from_z(z2)
-        return np.vectorize(ccl.angular_diameter_distance)(self.be_cosmo, a1, a2)
+        a1 = np.atleast_1d(self.get_a_from_z(z1))
+        a2 = np.atleast_1d(self.get_a_from_z(z2))
+        if len(a1)==1 and len(a2)!=1:
+            a1 = np.repeat(a1, len(a2))
+        if len(a2)==1 and len(a1)!=1:
+            a2 = np.repeat(a2, len(a1))
+
+        sign = np.sign(a1-a2)
+        swap = sign<0
+        a1[swap], a2[swap] = a2[swap], a1[swap]
+        da = ccl.angular_diameter_distance(self.be_cosmo, a1, a2)*sign
+        da[swap] *= a1[swap]/a2[swap]
+
+        if np.isscalar(z1) and np.isscalar(z2):
+            return da.item()
+        else:
+            return da
 
     def _eval_sigma_crit(self, z_len, z_src):
         a_len = self.get_a_from_z(z_len)
