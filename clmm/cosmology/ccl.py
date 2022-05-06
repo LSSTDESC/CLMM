@@ -86,7 +86,7 @@ class CCLCosmology(CLMMCosmology):
         a2 = np.atleast_1d(self.get_a_from_z(z2))
         if len(a1)==1 and len(a2)!=1:
             a1 = np.repeat(a1, len(a2))
-        if len(a2)==1 and len(a1)!=1:
+        elif len(a2)==1 and len(a1)!=1:
             a2 = np.repeat(a2, len(a1))
 
         sign = np.sign(a1-a2)
