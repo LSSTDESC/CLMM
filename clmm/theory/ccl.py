@@ -153,4 +153,36 @@ class CCLCLMModeling(CLMModeling):
             return self.eval_mean_surface_density(r_proj, z_cl) - self.eval_surface_density(r_proj, z_cl)
 
 
+    def _eval_convergence(self, r_proj, z_cl, z_src):
+        """"eval convergence""""
+        a_src = self.cosmo.get_a_from_z(z_src)
+        a_cl = self.cosmo.get_a_from_z(z_cl)
+                
+        return self.hdpm.convergence(self.cosmo.be_cosmo, r_proj/a_cl, self.mdelta, a_cl, a_src, self.mdef)
+        
+        
+    def _eval_tangential_shear(self, r_proj, z_cl, z_src):
+        """"eval tangential shear""""
+        a_src = self.cosmo.get_a_from_z(z_src)
+        a_cl = self.cosmo.get_a_from_z(z_cl)
+        
+        return self.hdpm.shear(self.cosmo.be_cosmo, r_proj/a_cl, self.mdelta, a_cl, a_src, self.mdef)
+        
+        
+    def _eval_reduced_tangential_shear_sp(self, r_proj, z_cl, z_src):
+        """"eval reduced tangential shear considering a single redshift plane for background sources"""
+        a_src = self.cosmo.get_a_from_z(z_src)
+        a_cl = self.cosmo.get_a_from_z(z_cl)
+        
+        return self.hdpm.reduced_shear(self.cosmo.be_cosmo, r_proj/a_cl, self.mdelta, a_cl, a_src, self.mdef)
+    
+     def _eval_magnification(self, r_proj, z_cl, z_src):
+        """"eval magnification"""
+        a_src = self.cosmo.get_a_from_z(z_src)
+        a_cl = self.cosmo.get_a_from_z(z_cl)
+        
+        return self.hdpm.magnification(self.cosmo.be_cosmo, r_proj/a_cl, self.mdelta, a_cl, a_src, self.mdef)
+    
+    
+    
 Modeling = CCLCLMModeling
