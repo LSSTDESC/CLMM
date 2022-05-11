@@ -86,10 +86,6 @@ class AstroPyCosmology(CLMMCosmology):
         return self.be_cosmo.angular_diameter_distance_z1z2(z1, z2).to_value(units.Mpc)
 
     def _eval_sigma_crit(self, z_len, z_src):
-        if np.any(np.array(z_src) <= z_len):
-            warnings.warn(
-                'Some source redshifts are lower than the cluster redshift. '
-                'Returning Sigma_crit = np.inf for those galaxies.')
         # Constants
         clight_pc_s = const.CLIGHT_KMS.value*1000./const.PC_TO_METER.value
         gnewt_pc3_msun_s2 = const.GNEWT.value * \

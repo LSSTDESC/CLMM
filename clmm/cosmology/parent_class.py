@@ -389,6 +389,10 @@ class CLMMCosmology:
         if self.validate_input:
             validate_argument(locals(), 'z_len', float, argmin=0, eqmin=True)
             validate_argument(locals(), 'z_src', 'float_array', argmin=0)
+        if np.any(z_len >= z_src):
+            warnings.warn(
+                'Some source redshifts are lower than the cluster redshift. '
+                'Returning Sigma_crit = np.inf for those galaxies.')
         return self._eval_sigma_crit(z_len=z_len, z_src=z_src)
 
     def _eval_sigma_crit(self, z_len, z_src):
