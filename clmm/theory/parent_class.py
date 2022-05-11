@@ -434,7 +434,10 @@ class CLMModeling:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', float, argmin=0)
             validate_argument(locals(), 'z_src', 'float_array', argmin=0)
-
+        if np.any(np.greater_equal(z_cl, z_src)):
+            warnings.warn(
+            'Some source redshifts are lower than the cluster redshift. '
+            'shear = 0 for those galaxies.')
         if self.halo_profile_model=='einasto' and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
