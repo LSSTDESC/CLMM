@@ -5,7 +5,6 @@ Main functions to encapsule oo calls
 # The functions expect a global instance of the actual CLMModeling named
 # `gcm'.
 
-import warnings
 import numpy as np
 
 from . import generic
@@ -530,11 +529,6 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     else:
         raise ValueError("Unsupported z_src_model")
 
-    if np.any(np.array(z_source) <= z_cluster):
-        warnings.warn(
-            'Some source redshifts are lower than the cluster redshift.'
-            ' kappa = 0 for those galaxies.')
-
     gcm.validate_input = True
     return kappa
 
@@ -725,11 +719,6 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
     else:
         raise ValueError("Unsupported z_src_model")
 
-    if np.any(np.array(z_source) <= z_cluster):
-        warnings.warn(
-            'Some source redshifts are lower than the cluster redshift.'
-            ' magnification = 1 for those galaxies.')
-
     gcm.validate_input = True
     return magnification
 
@@ -802,10 +791,6 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
     magnification_bias : array_like
         magnification bias
     """
-    if np.any(np.array(z_source) <= z_cluster):
-        warnings.warn(
-            'Some source redshifts are lower than the cluster redshift.'
-            ' magnification = 1 for those galaxies.')
     if z_src_model == 'single_plane':
 
         gcm.validate_input = validate_input
@@ -819,7 +804,6 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
 
     else:
         raise ValueError("Unsupported z_src_model")
-
 
     gcm.validate_input = True
     return magnification_bias

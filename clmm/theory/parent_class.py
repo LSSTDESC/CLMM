@@ -1,6 +1,7 @@
 """@file parent_class.py
 CLMModeling abstract class
 """
+import warnings
 import numpy as np
 
 # functions for the 2h term
@@ -411,8 +412,7 @@ class CLMModeling:
         ll = np.logspace( 0 , 6 , lsteps )
         val = np.array( [ simps( __integrand__( ll , t ) , ll ) for t in theta ] )
         return halobias * val * rho_m / ( 2 * np.pi  * ( 1 + z_cl )**3 * da**2 )
-    
-    
+
     def eval_tangential_shear(self, r_proj, z_cl, z_src, verbose=False):
         r"""Computes the tangential shear
 
@@ -474,7 +474,10 @@ class CLMModeling:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', float, argmin=0)
             validate_argument(locals(), 'z_src', 'float_array', argmin=0)
-
+        if np.any(np.greater_equal(z_cl, z_src)):
+            warnings.warn(
+            'Some source redshifts are lower than the cluster redshift. '
+            'kappa = 0 for those galaxies.')
         if self.halo_profile_model=='einasto' and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
@@ -503,7 +506,7 @@ class CLMModeling:
                 * `single_plane` (default): all sources at one redshift (if `z_source` is a float)    or known individual source galaxy redshifts (if `z_source` is an array and `r_proj` is a float).
                 * `applegate14`: use the equation (6) in Weighing the Giants - III (Applegate et al. 2014; https://arxiv.org/abs/1208.0605) to evaluate tangential reduced shear.
                 * `schrabback18`: use the equation (12) in Cluster Mass Calibration at High Redshift (Schrabback et al. 2017; https://arxiv.org/abs/1611.03866) to evaluate tangential reduced shear.
-        
+
         z_distrib_func: one-parameter function
             Redshift distribution function. This function is used to compute the beta values if they are not provided. The default is the Chang et al (2013) distribution function.
 
@@ -512,7 +515,7 @@ class CLMModeling:
 
                 .. math::
                     \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right\rangle
-    
+
         beta_s_square_mean: array_like, float, optional
             Square of the lensing efficiency averaged over the galaxy redshift distribution. If not provided, it will be computed using the default redshift distribution or the one given by the user.
 
@@ -538,7 +541,7 @@ class CLMModeling:
 
         if z_src_model == 'single_plane':
             gt = self._eval_reduced_tangential_shear_sp(r_proj, z_cl, z_src)
-            
+
         elif z_src_model == 'applegate14':
             z_source = 1000. #np.inf # INF or a very large number
             z_inf = z_source
@@ -548,7 +551,7 @@ class CLMModeling:
             gammat = self._eval_tangential_shear(r_proj, z_cl, z_source)
             kappa = self._eval_convergence(r_proj, z_cl, z_source)
             gt = beta_s_mean * gammat / (1. - beta_s_square_mean / beta_s_mean * kappa)
-        
+
         elif z_src_model == 'schrabback18':
             z_source = 1000. #np.inf # INF or a very large number
             z_inf = z_source
@@ -558,7 +561,7 @@ class CLMModeling:
             gammat = self._eval_tangential_shear(r_proj, z_cl, z_source)
             kappa = self._eval_convergence(r_proj, z_cl, z_source)
             gt = (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean * kappa) * (beta_s_mean * gammat / (1. - beta_s_mean * kappa))
-        
+
         else:
             raise ValueError("Unsupported z_src_model")
         return gt
@@ -598,7 +601,10 @@ class CLMModeling:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', float, argmin=0)
             validate_argument(locals(), 'z_src', 'float_array', argmin=0)
-
+        if np.any(np.greater_equal(z_cl, z_src)):
+            warnings.warn(
+            'Some source redshifts are lower than the cluster redshift. '
+            'magnification = 1 for those galaxies.')
         if self.halo_profile_model=='einasto' and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
@@ -608,7 +614,7 @@ class CLMModeling:
         kappa = self.eval_convergence(r_proj, z_cl, z_src)
         gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
         return 1./((1-kappa)**2-abs(gamma_t)**2)
-    
+
     def eval_magnification_bias(self, r_proj, z_cl, z_src, alpha):
         r"""Computes the magnification bias
 

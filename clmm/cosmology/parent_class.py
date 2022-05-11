@@ -1,6 +1,7 @@
 """@file parent_class.py
 """
 # CLMM Cosmology object abstract superclass
+import warnings
 import numpy as np
 from ..utils import validate_argument
 from ..constants import Constants as const
@@ -389,7 +390,7 @@ class CLMMCosmology:
         if self.validate_input:
             validate_argument(locals(), 'z_len', float, argmin=0, eqmin=True)
             validate_argument(locals(), 'z_src', 'float_array', argmin=0)
-        if np.any(z_len >= z_src):
+        if np.any(np.greater_equal(z_len, z_src)):
             warnings.warn(
                 'Some source redshifts are lower than the cluster redshift. '
                 'Returning Sigma_crit = np.inf for those galaxies.')
