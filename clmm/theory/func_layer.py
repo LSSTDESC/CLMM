@@ -57,12 +57,12 @@ def compute_3d_density(
             * `mean` (default);
             * `critical`;
             * `virial`;
-    
+
     alpha_ein : float, optional
         If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only available
         for the NumCosmo backend
     verbose : boolean, optional
-        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends. 
+        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends.
     validate_input : bool, optional
         If True (default), the types of the arguments are checked before proceeding.
 
@@ -132,7 +132,7 @@ def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
         If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only available
         for the NumCosmo backend
     verbose : boolean, optional
-        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends. 
+        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends.
     validate_input : bool, optional
         If True (default), the types of the arguments are checked before proceeding.
 
@@ -141,7 +141,7 @@ def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     -------
     sigma : array_like, float
         2D projected surface density in units of :math:`M_\odot\ Mpc^{-2}`
- 
+
     Notes
     -----
     Need to refactory so we only require arguments that are necessary for all models and use
@@ -155,7 +155,7 @@ def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     gcm.set_mass(mdelta)
     if alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
-    
+
     sigma = gcm.eval_surface_density(r_proj, z_cl, verbose=verbose)
 
     gcm.validate_input = True
@@ -205,7 +205,7 @@ def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
         If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only available
         for the NumCosmo backend
     verbose : boolean, optional
-        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends. 
+        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends.
     validate_input : bool, optional
         If True (default), the types of the arguments are checked before proceeding.
 
@@ -238,7 +238,7 @@ def compute_excess_surface_density_2h(r_proj, z_cl, cosmo, halobias=1., lsteps=5
 
     .. math::
         k_l = \frac{l}{D_A(z)(1 +z)}
-    
+
     and :math:`b(M)` is the halo bias
 
     Parameters
@@ -265,7 +265,7 @@ def compute_excess_surface_density_2h(r_proj, z_cl, cosmo, halobias=1., lsteps=5
     gcm.set_cosmo(cosmo)
 
     deltasigma_2h = gcm.eval_excess_surface_density_2h(r_proj, z_cl, halobias=halobias, lsteps=lsteps)
-    
+
     gcm.validate_input = True
     return deltasigma_2h
 
@@ -279,7 +279,7 @@ def compute_surface_density_2h(r_proj, z_cl, cosmo, halobias=1, lsteps=500, vali
 
     .. math::
         k_l = \frac{l}{D_A(z)(1 +z)}
-    
+
     and :math:`b(M)` is the halo bias
 
     Parameters
@@ -306,7 +306,7 @@ def compute_surface_density_2h(r_proj, z_cl, cosmo, halobias=1, lsteps=500, vali
     gcm.set_cosmo(cosmo)
 
     sigma_2h = gcm.eval_surface_density_2h(r_proj, z_cl, halobias = halobias, lsteps=lsteps)
-    
+
     gcm.validate_input = True
     return sigma_2h
 
@@ -398,7 +398,7 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
             `z_source` is a float) or known individual source galaxy redshifts
             (if `z_source` is an array and `r_proj` is a float);
     verbose : boolean, optional
-        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends. 
+        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends.
     validate_input : bool, optional
         If True (default), the types of the arguments are checked before proceeding.
 
@@ -490,7 +490,7 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
             `z_source` is a float) or known individual source galaxy redshifts
             (if `z_source` is an array and `r_proj` is a float);
     verbose : boolean, optional
-        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends. 
+        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends.
     validate_input : bool, optional
         If True (default), the types of the arguments are checked before proceeding.
 
@@ -759,7 +759,7 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
     see e.g.  Bartelmann & Schneider 2001; Umetsu 2020
 
     Parameters
-    ----------    
+    ----------
     r_proj : array_like, float
         The projected radial positions in :math:`M\!pc`.
     alpha : array like

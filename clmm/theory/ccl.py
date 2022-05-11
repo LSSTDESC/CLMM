@@ -97,7 +97,7 @@ class CCLCLMModeling(CLMModeling):
             self.hdpm.update_precision_fftlog(padding_lo_fftlog=1e-4,
                                               padding_hi_fftlog=1e3
                                              )
-        
+
     def _set_concentration(self, cdelta):
         """" set concentration"""
         self.conc.c = cdelta
@@ -116,7 +116,7 @@ class CCLCLMModeling(CLMModeling):
         a_cl = self.cosmo.get_a_from_z(z_cl)
         dens = self.hdpm.real(
             self.cosmo.be_cosmo, r3d/a_cl, self.mdelta, a_cl, self.mdef)
-            
+
         return dens*self.cor_factor/a_cl**3
 
     def _eval_surface_density(self, r_proj, z_cl):
