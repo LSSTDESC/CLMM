@@ -7,7 +7,6 @@ import pyccl as ccl
 
 import numpy as np
 from scipy.interpolate import interp1d
-import warnings
 from packaging import version
 
 from . import func_layer
