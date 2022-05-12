@@ -587,14 +587,17 @@ def compute_for_good_redshifts(function, z1, z2, bad_value, error_message):
     error_message: str
         Message to be displayed
     """
-    z_good = (np.array(z1)<np.array(z2))
-    if not z_good.all():
+    z_good = np.less(z1, z2)
+    if not np.all(z_good):
         warnings.warn(error_message)
-        if np.iterable(z1) or np.iterable(z2):
+        if np.iterable(z_good):
             res = np.full(z_good.size, bad_value)
-            res[z_good] = function(
-                z1[z_good] if np.iterable(z1) else z1,
-                z2[z_good] if np.iterable(z2) else z2)
+            if np.any(z_good):
+                res[z_good] = function(
+                    np.array(z1)[z_good] if np.iterable(z1) else z1,
+                    np.array(z2)[z_good] if np.iterable(z2) else z2)
+            else:
+                pass
         else:
             res = bad_value
     else:
