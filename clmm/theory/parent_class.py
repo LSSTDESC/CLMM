@@ -9,7 +9,6 @@ from scipy.integrate import simps
 from scipy.special import jv
 from scipy.interpolate import interp1d
 
-from .generic import compute_reduced_shear_from_convergence
 from .generic import compute_reduced_shear_from_convergence, compute_magnification_bias_from_magnification
 from ..utils import validate_argument, compute_beta_s_mean, compute_beta_s_square_mean
 
@@ -436,7 +435,7 @@ class CLMModeling:
         if np.any(np.greater_equal(z_cl, z_src)):
             warnings.warn(
             'Some source redshifts are lower than the cluster redshift. '
-            'shear = 0 for those galaxies.')
+            'shear = 0 for those galaxies.', stacklevel=2)
         if self.halo_profile_model=='einasto' and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
