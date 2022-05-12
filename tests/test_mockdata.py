@@ -2,12 +2,12 @@
 import warnings
 import numpy as np
 from numpy.testing import assert_raises, assert_allclose, assert_equal
-from scipy.integrate import quad
 import clmm
 import clmm.dataops as da
 from clmm.support import mock_data as mock
 from clmm.support.sampler import fitters
 from clmm import Cosmology
+from clmm.utils import _chang_z_distrib, _srd_z_distrib
 
 TOLERANCE = {'rtol': 5.0e-4, 'atol': 1.e-4}
 cosmo = Cosmology(H0=70.0, Omega_dm0=0.27 - 0.045,
@@ -147,7 +147,7 @@ def test_z_distr():
     assert_equal(np.count_nonzero((data['z'] < zmin) | (data['z'] > zmax)), 0)
     # Check that the z distribution follows Chang13 distribution
     hist = np.histogram(data['z'], bins=bins)
-    norm, _ = quad(mock._chang_z_distrib, zmin, zmax)
+    norm = _chang_z_distrib(zmax, is_cdf=True)-_chang_z_distrib(zmin, is_cdf=True)
     # Expected number of galaxies in bin i = Ntot*distrib(z_{bin center})*binsize/norm
     chang = np.array([mock._chang_z_distrib(z)*ngals *
                      0.1/norm for z in bins[:-1]+0.05])
@@ -160,7 +160,7 @@ def test_z_distr():
     assert_equal(np.count_nonzero((data['z'] < zmin) | (data['z'] > zmax)), 0)
     # Check that the z distribution follows Chang13 distribution
     hist = np.histogram(data['z'], bins=bins)
-    norm, _ = quad(mock._srd_z_distrib, zmin, zmax)
+    norm = _srd_z_distrib(zmax, is_cdf=True)-_srd_z_distrib(zmin, is_cdf=True)
     # Expected number of galaxies in bin i = Ntot*distrib(z_{bin center})*binsize/norm
     srd = np.array([mock._srd_z_distrib(z)*ngals*0.1/norm for z in bins[:-1]+0.05])
     assert_allclose(hist[0],srd,atol=100,rtol=0.1)

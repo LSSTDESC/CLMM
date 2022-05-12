@@ -2,13 +2,12 @@
 import warnings
 import numpy as np
 from scipy.interpolate import interp1d
-from scipy.special import gamma, gammainc
 from astropy import units as u
 from astropy.coordinates import SkyCoord
 
 from ..gcdata import GCData
 from ..theory import compute_tangential_shear, compute_convergence
-from ..utils import convert_units, compute_lensed_ellipticity, validate_argument
+from ..utils import convert_units, compute_lensed_ellipticity, validate_argument, _chang_z_distrib, _srd_z_distrib
 
 def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, cluster_ra=0., cluster_dec=0.,
                             delta_so=200, massdef='mean',
@@ -208,53 +207,6 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, cluste
     # Now that the catalog is final, add an id column
     galaxy_catalog['id'] = np.arange(ngals)
     return galaxy_catalog
-
-
-def _chang_z_distrib(redshift, is_cdf=False):
-    """
-    A private function that returns the Chang et al (2013) unnormalized galaxy redshift distribution
-    function, with the fiducial set of parameters.
-
-    Parameters
-    ----------
-    redshift : float
-        Galaxy redshift
-    is_cdf : bool
-        If True, returns cumulative distribution function.
-
-    Returns
-    -------
-    The value of the distribution at z
-    """
-    alpha, beta, redshift0 = 1.24, 1.01, 0.51
-    if is_cdf:
-        return redshift0**(alpha+1)*gammainc((alpha+1)/beta, (redshift/redshift0)**beta)/beta*gamma((alpha+1)/beta)
-    else:
-        return (redshift**alpha)*np.exp(-(redshift/redshift0)**beta)
-
-
-def _srd_z_distrib(redshift, is_cdf=False):
-    """
-    A private function that returns the unnormalized galaxy redshift distribution function used in
-    the LSST/DESC Science Requirement Document (arxiv:1809.01669).
-
-    Parameters
-    ----------
-    redshift : float
-        Galaxy redshift
-    is_cdf : bool
-        If True, returns cumulative distribution function.
-
-    Returns
-    -------
-    The value of the distribution at z
-    """
-    alpha, beta, redshift0 = 2., 0.9, 0.28
-    if is_cdf:
-        return redshift0**(alpha+1)*gammainc((alpha+1)/beta, (redshift/redshift0)**beta)/beta*gamma((alpha+1)/beta)
-    else:
-        return (redshift**alpha)*np.exp(-(redshift/redshift0)**beta)
-
 
 def _compute_ngals(ngal_density, field_size, cosmo, cluster_z, zsrc, zsrc_min=None, zsrc_max=None):
     """
