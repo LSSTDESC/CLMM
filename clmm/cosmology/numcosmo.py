@@ -133,8 +133,8 @@ class NumCosmoCosmology(CLMMCosmology):
 
     def _eval_sigma_crit(self, z_len, z_src):
 
-        self.smd.prepare_if_needed(self.be_cosmo)
-        #self.smd = Nc.WLSurfaceMassDensity.new(self.dist)
+        #self.smd.prepare_if_needed(self.be_cosmo)
+        self.smd = Nc.WLSurfaceMassDensity.new(self.dist)
 
         func = lambda z_len, z_src: self.smd.sigma_critical(
             self.be_cosmo, z_src, z_len, z_len)
