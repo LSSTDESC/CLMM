@@ -82,7 +82,7 @@ class AstroPyCosmology(CLMMCosmology):
     def _eval_da_z1z2_core(self, z1, z2):
         return self.be_cosmo.angular_diameter_distance_z1z2(z1, z2).to_value(units.Mpc)
 
-    def _eval_sigma_crit(self, z_len, z_src):
+    def _eval_sigma_crit_core(self, z_len, z_src):
         if np.any(np.array(z_src) <= z_len):
             warnings.warn(
                 'Some source redshifts are lower than the cluster redshift. '

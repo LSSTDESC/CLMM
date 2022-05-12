@@ -94,7 +94,7 @@ class CCLCosmology(CLMMCosmology):
 
         return res
 
-    def _eval_sigma_crit(self, z_len, z_src):
+    def _eval_sigma_crit_core(self, z_len, z_src):
         cte = ccl.physical_constants.CLIGHT**2 / \
             (4.0*np.pi*ccl.physical_constants.GNEWT *
              ccl.physical_constants.SOLAR_MASS)*ccl.physical_constants.MPC_TO_METER
