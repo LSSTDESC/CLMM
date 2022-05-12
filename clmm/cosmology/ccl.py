@@ -103,17 +103,7 @@ class CCLCosmology(CLMMCosmology):
         Dl = self.eval_da_z1z2(0, z_len)
         Dls = self.eval_da_z1z2(z_len, z_src)
 
-        res = np.atleast_1d((cte*Ds/(Dl*Dls))*self.cor_factor)
-        if np.any(np.array(z_src) <= z_len):
-            warnings.warn(
-                'Some source redshifts are lower than the cluster redshift.'
-                'Returning Sigma_crit = np.inf for those galaxies.')
-            res[res<0] = np.Inf
-
-        if np.isscalar(z_len) and np.isscalar(z_src):
-            return res.item()
-        else:
-            return res
+        return (cte*Ds/(Dl*Dls))*self.cor_factor
 
     def _eval_linear_matter_powerspectrum(self, k_vals, redshift):
         return ccl.linear_matter_power(
