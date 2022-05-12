@@ -453,7 +453,7 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
             `single_plane` (default) - all sources at one redshift (if
             `z_source` is a float) or known individual source galaxy redshifts
             (if `z_source` is an array and `r_proj` is a float);
-    verbose : boolean, optional
+    verbose : bool, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends. 
     validate_input : bool, optional
         If True (default), the types of the arguments are checked before proceeding.
@@ -544,7 +544,7 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
             `single_plane` (default) - all sources at one redshift (if
             `z_source` is a float) or known individual source galaxy redshifts
             (if `z_source` is an array and `r_proj` is a float);
-    verbose : boolean, optional
+    verbose : bool, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends. 
     validate_input : bool, optional
         If True (default), the types of the arguments are checked before proceeding.
@@ -661,7 +661,7 @@ def compute_reduced_tangential_shear(
                 .. math::
                     \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
     
-    verbose : boolean, optional
+    verbose : bool, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends. 
     validate_input : bool, optional
         If True (default), the types of the arguments are checked before proceeding.
@@ -740,7 +740,7 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
             `single_plane` (default) - all sources at one redshift (if
             `z_source` is a float) or known individual source galaxy redshifts
             (if `z_source` is an array and `r_proj` is a float);
-    verbose : boolean, optional
+    verbose : bool, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends. 
     validate_input : bool, optional
         If True (default), the types of the arguments are checked before proceeding.

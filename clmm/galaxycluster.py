@@ -111,7 +111,7 @@ class GalaxyCluster():
         ----------
         cosmo : clmm.Cosmology object
             CLMM Cosmology object
-        use_pdz : boolean
+        use_pdz : bool
             Flag to specify the use of the photoz pdf. If `False` (default), `sigma_c` is computed using the redshift point estimates of the
             `z` column of the `galcat` table. If `True`, `sigma_c` is computed as 1/<1/Sigma_crit>, where the average is performed using
             the individual galaxy redshift pdf. In that case, the `galcat` table should have `pzbins` 
@@ -251,9 +251,9 @@ class GalaxyCluster():
 
         Parameters
         ----------
-        use_photoz : boolean
+        use_photoz : bool
             True for computing photometric probabilities
-        add : boolean
+        add : bool
             If True, add background probability columns to the galcat table
 
         Returns
@@ -278,9 +278,9 @@ class GalaxyCluster():
 
         Parameters
         ----------
-        use_pdz : boolean
+        use_pdz : bool
             True for computing photometric weights
-        use_shape_noise : boolean
+        use_shape_noise : bool
             True for considering shapenoise in the weight computation
         shape_component1: string
             column name : The measured shear (or reduced shear or ellipticity)
@@ -288,7 +288,7 @@ class GalaxyCluster():
         shape_component2: array
             column name : The measured shear (or reduced shear or ellipticity)
             of the source galaxies
-        use_shape_error : boolean
+        use_shape_error : bool
             True for considering measured shape error in the weight computation
         shape_component1_err: array
             column name : The measurement error on the 1st-component of ellipticity
@@ -300,9 +300,9 @@ class GalaxyCluster():
             Name of the new column for the weak lensing weights in the galcat table
         cosmo: clmm.Comology object, None
             CLMM Cosmology object.
-        is_deltasigma: boolean
+        is_deltasigma: bool
             Indicates whether it is the excess surface density or the tangential shear
-        add : boolean
+        add : bool
             If True, add weight column to the galcat table
 
         Returns
