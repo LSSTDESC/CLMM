@@ -373,7 +373,7 @@ class CLMMCosmology:
 
     def _eval_sigma_crit(self, z_len, z_src):
         return compute_for_good_redshifts(
-            self._eval_sigma_crit_core, z1, z2, np.inf,
+            self._eval_sigma_crit_core, z_len, z_src, np.inf,
             error_message='Some source redshifts are lower than the cluster redshift. '
                           'Returning Sigma_crit = np.inf for those galaxies.')
 
