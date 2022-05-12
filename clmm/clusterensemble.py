@@ -22,7 +22,7 @@ class ClusterEnsemble():
     data : GCData
         Table with galaxy clusters data (i. e. ids, profiles, redshifts).
     id_dict: dict
-        Dictionary of indicies given the cluster id
+        Dictionary of indices given the cluster id
     """
     def __init__(self, unique_id, gclist, *args, **kwargs):
         """Initializes a ClusterEnsemble object
