@@ -39,9 +39,9 @@ def test_class(modeling_data):
     assert_raises(AttributeError, CLMMCosmology.set_be_cosmo, None, None)
     assert_raises(NotImplementedError, CLMMCosmology._get_Omega_m, None, None)
     assert_raises(NotImplementedError,
-                  CLMMCosmology._eval_da_z1z2, None, None, None)
+                  CLMMCosmology._eval_da_z1z2_core, None, None, None)
     assert_raises(NotImplementedError,
-                  CLMMCosmology._eval_sigma_crit, None, None, None)
+                  CLMMCosmology._eval_sigma_crit_core, None, None, None)
     assert_raises(NotImplementedError, CLMMCosmology._get_E2Omega_m, None, None)
     assert_raises(NotImplementedError,
                   CLMMCosmology._eval_linear_matter_powerspectrum, None, None, None)

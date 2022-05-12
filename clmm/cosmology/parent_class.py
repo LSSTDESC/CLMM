@@ -2,7 +2,7 @@
 """
 # CLMM Cosmology object abstract superclass
 import numpy as np
-from ..utils import validate_argument
+from ..utils import validate_argument, compute_for_good_redshifts
 from ..constants import Constants as const
 
 
@@ -205,6 +205,11 @@ class CLMMCosmology:
         return self._eval_da_z1z2(z1=z1, z2=z2)
 
     def _eval_da_z1z2(self, z1, z2):
+        return compute_for_good_redshifts(
+            self._eval_da_z1z2_core, z1, z2, np.nan,
+            error_message='Some values of z2 are lower z1. Returning da = np.nan for those.')
+
+    def _eval_da_z1z2_core(self, z1, z2):
         raise NotImplementedError
 
     def eval_da(self, z):
@@ -367,6 +372,12 @@ class CLMMCosmology:
         return self._eval_sigma_crit(z_len=z_len, z_src=z_src)
 
     def _eval_sigma_crit(self, z_len, z_src):
+        return compute_for_good_redshifts(
+            self._eval_sigma_crit_core, z1, z2, np.inf,
+            error_message='Some source redshifts are lower than the cluster redshift. '
+                          'Returning Sigma_crit = np.inf for those galaxies.')
+
+    def _eval_sigma_crit_core(self, z_len, z_src):
         raise NotImplementedError
 
     def eval_linear_matter_powerspectrum(self, k_vals, redshift):

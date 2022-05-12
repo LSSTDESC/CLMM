@@ -1,4 +1,5 @@
 """General utility functions that are used in multiple modules"""
+import warnings
 import numpy as np
 from scipy.stats import binned_statistic
 from scipy.special import gamma, gammainc
@@ -569,6 +570,36 @@ def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argm
                 err = f'{argname} must be lesser than {argmax},' \
                       f' received {"vec_max:"*(var_array.size-1)}{var}'
                 raise ValueError(err)
+
+def compute_for_good_redshifts(function, z1, z2, bad_value, error_message):
+    """Computes function only for z1>z2, the rest is filled with bad_value
+
+    Parameters
+    ----------
+    function: function
+        Function to be executed
+    z1: float, array
+        Redshift lower
+    z2: float, array
+        Redshift higher
+    bad_value: any
+        Value to be added when z1>=z2
+    error_message: str
+        Message to be displayed
+    """
+    z_good = (np.array(z1)<np.array(z2))
+    if not z_good.all():
+        warnings.warn(error_message)
+        if np.iterable(z1) or np.iterable(z2):
+            res = np.full(z_good.size, bad_value)
+            res[z_good] = function(
+                z1[z_good] if np.iterable(z1) else z1,
+                z2[z_good] if np.iterable(z2) else z2)
+        else:
+            res = bad_value
+    else:
+        res = function(z1, z2)
+    return res
 
 def compute_beta(z_s, z_cl, cosmo):
     r"""Geometric lensing efficicency  
