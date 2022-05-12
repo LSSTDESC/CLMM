@@ -320,7 +320,7 @@ def compute_critical_surface_density(cosmo, z_cluster, z_source=None, use_pdz=Fa
 
     or
 
-    - the 'effective critical surface density' is `use_pdz=True`
+    - the 'effective critical surface density' if `use_pdz=True`
      
     .. math::
         \langle \Sigma_{\rm crit}^{-1}\rangle^{-1} = \left(\int \frac{1}{\Sigma_{\rm crit}(z)} p(z) dz\right)^{-1} 

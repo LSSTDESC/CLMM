@@ -77,19 +77,19 @@ class ClusterEnsemble():
             Units to use for the radial bins of the shear profile
             Allowed Options = ["radians", "deg", "arcmin", "arcsec", "kpc", "Mpc"]
             (letter case independent)
-        bins : array_like, optional
+        bins : array_like or int, optional
             User defined bins to use for the shear profile. If a list is provided, use that as
-            the bin edges. If a scalar is provided, create that many equally spaced bins between
+            the bin edges. If a integer is provided, create that many equally spaced bins between
             the minimum and maximum angular separations in bin_units. If nothing is provided,
-            default to 10 equally spaced bins.
+            defaults to 10 equally spaced bins.
         error_model : str, optional
             Statistical error model to use for y uncertainties. (letter case independent)
 
                 * `ste` - Standard error [=std/sqrt(n) in unweighted computation] (Default).
                 * `std` - Standard deviation.
 
-        cosmo: dict, optional
-            Cosmology parameters to convert angular separations to physical distances
+        cosmo: clmm.Comology, optional
+            CLMM Cosmology object
         tan_component_in: string, optional
             Name of the tangential component column in `galcat` to be binned.
             Default: 'et'
