@@ -89,16 +89,10 @@ class CCLCosmology(CLMMCosmology):
         elif len(a2)==1 and len(a1)!=1:
             a2 = np.repeat(a2, len(a1))
 
-        sign = np.sign(a1-a2)
-        swap = sign<0
-        a1[swap], a2[swap] = a2[swap], a1[swap]
-        da = ccl.angular_diameter_distance(self.be_cosmo, a1, a2)*sign
-        da[swap] *= a1[swap]/a2[swap]
+        da = ccl.angular_diameter_distance(self.be_cosmo, a1, a2)
+        res = da if np.iterable(z1) or np.iterable(z2) else da.item()
 
-        if np.isscalar(z1) and np.isscalar(z2):
-            return da.item()
-        else:
-            return da
+        return res
 
     def _eval_sigma_crit(self, z_len, z_src):
         cte = ccl.physical_constants.CLIGHT**2 / \
