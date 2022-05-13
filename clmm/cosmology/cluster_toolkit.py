@@ -88,8 +88,8 @@ class AstroPyCosmology(CLMMCosmology):
         gnewt_pc3_msun_s2 = const.GNEWT.value * \
             const.SOLAR_MASS.value/const.PC_TO_METER.value**3
 
-        d_l = self.eval_da_z1z2(0, z_len)
-        d_s = self.eval_da_z1z2(0, z_src)
-        d_ls = self.eval_da_z1z2(z_len, z_src)
+        d_l = self._eval_da_z1z2_core(0, z_len)
+        d_s = self._eval_da_z1z2_core(0, z_src)
+        d_ls = self._eval_da_z1z2_core(z_len, z_src)
 
         return clight_pc_s**2/(4.0*np.pi*gnewt_pc3_msun_s2)*d_s/(d_l*d_ls)*1.0e6
