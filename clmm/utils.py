@@ -593,8 +593,6 @@ def compute_for_good_redshifts(function, z1, z2, bad_value, error_message):
                 res[z_good] = function(
                     np.array(z1)[z_good] if np.iterable(z1) else z1,
                     np.array(z2)[z_good] if np.iterable(z2) else z2)
-            else:
-                pass
         else:
             res = bad_value
     else:
