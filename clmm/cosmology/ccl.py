@@ -70,7 +70,12 @@ class CCLCosmology(CLMMCosmology):
         return value
 
     def _get_Omega_m(self, z):
-        return ccl.omega_x(self.be_cosmo, self.get_a_from_z(z), "matter")
+        a = self.get_a_from_z(z)
+        return ccl.omega_x(self.be_cosmo, a, "matter")
+
+    def _get_E2(self, z):
+        a = self.get_a_from_z(z)
+        return (ccl.h_over_h0(self.be_cosmo, a))**2
 
     def _get_E2Omega_m(self, z):
         a = self.get_a_from_z(z)

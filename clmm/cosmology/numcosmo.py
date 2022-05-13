@@ -110,13 +110,13 @@ class NumCosmoCosmology(CLMMCosmology):
 
         return self._get_E2Omega_m(z)/self._get_E2(z)
 
-    def _get_E2Omega_m(self, z):
-
-        return np.vectorize(Nc.HICosmo.E2Omega_m)(self.be_cosmo, z)
-
     def _get_E2(self, z):
 
-        return np.vectorize(Nc.HICosmo.E2)(self.be_cosmo, z)
+        return np.vectorize(self.be_cosmo.E2)(z)
+
+    def _get_E2Omega_m(self, z):
+
+        return np.vectorize(self.be_cosmo.E2Omega_m)(z)
 
     def _get_rho_c(self, z):
 
