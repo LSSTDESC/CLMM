@@ -161,7 +161,7 @@ class HaloProfile:
             Einasto :math:`\alpha` parameter
         """
         if self.halo_profile_model!='einasto':
-            raise ValueError(f"Wrong profile model. Current profile = {self.halo_profile_model}")
+            raise NotImplementedError(f"Wrong profile model. Current profile = {self.halo_profile_model}")
         else:
             return self._get_einasto_alpha(z_cl)
 
