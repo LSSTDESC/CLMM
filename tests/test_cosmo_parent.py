@@ -151,7 +151,7 @@ def test_cosmo_basic(modeling_data, cosmo_init):
                     testcase['dsl'], reltol)
     assert_allclose(cosmo.eval_da_a1a2(testcase['aexp_source'],
                                        [testcase['aexp_cluster']]*5),
-                    np.array([testcase['dsl']]*5), reltol)
+                    [testcase['dsl']]*5, reltol)
 
     # Test initializing cosmo
     theo.Cosmology(be_cosmo=cosmo.be_cosmo)
