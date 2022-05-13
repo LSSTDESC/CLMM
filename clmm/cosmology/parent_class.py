@@ -207,7 +207,7 @@ class CLMMCosmology:
     def _eval_da_z1z2(self, z1, z2):
         return compute_for_good_redshifts(
             self._eval_da_z1z2_core, z1, z2, np.nan,
-            error_message='Some values of z2 are lower z1. Returning da = np.nan for those.')
+            error_message='Some values of z2 are lower than z1. Returning da = np.nan for those.')
 
     def _eval_da_z1z2_core(self, z1, z2):
         raise NotImplementedError
