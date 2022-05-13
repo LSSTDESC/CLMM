@@ -43,7 +43,6 @@ class HaloProfile:
             validate_argument(locals(), 'cosmo', CLMMCosmology, none_ok=True)
         self._set_cosmo(cosmo)
         self.cosmo.validate_input = self.validate_input
-        self.cor_factor = self.cosmo.cor_factor
 
     def _set_cosmo(self, cosmo):
         """ Sets the cosmology to the internal cosmology object"""
@@ -100,7 +99,7 @@ class HaloProfile:
 
     def _set_mass(self, mdelta):
         """ set mass"""
-        self.mdelta = mdelta/self.cor_factor
+        self.mdelta = mdelta
 
     def set_concentration(self, cdelta):
         """ Sets the concentration
