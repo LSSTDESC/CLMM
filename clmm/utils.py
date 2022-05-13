@@ -575,9 +575,9 @@ def compute_for_good_redshifts(function, z1, z2, bad_value, error_message):
     ----------
     function: function
         Function to be executed
-    z1: float, array
+    z1: float, array_like
         Redshift lower
-    z2: float, array
+    z2: float, array_like
         Redshift higher
     bad_value: any
         Value to be added when z1>=z2
