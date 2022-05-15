@@ -82,10 +82,6 @@ class AstroPyCosmology(CLMMCosmology):
     def _get_E2Omega_m(self, z):
         return self.be_cosmo.Om(z)*(self.be_cosmo.H(z)/self.be_cosmo.H0)**2
 
-    def _get_rho_m(self, z):
-        return self.be_cosmo.Om(z)*\
-    self.be_cosmo.critical_density(z).to(units.Msun/units.Mpc**3).value
-
     def _get_rho_c(self, z):
         return self.be_cosmo.critical_density(z).to(units.Msun/units.Mpc**3).value
 
