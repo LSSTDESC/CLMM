@@ -154,35 +154,70 @@ class CCLCLMModeling(CLMModeling):
 
 
     def _eval_convergence(self, r_proj, z_cl, z_src):
-        """"eval convergence""""
-        a_src = self.cosmo.get_a_from_z(z_src)
-        a_cl = self.cosmo.get_a_from_z(z_cl)
+        """eval convergence"""
+        z_src_list = None
+        if type(z_src) == float:
+            z_src_list = [z_src for a in range(0, len(r_proj))]
+        else:
+            z_src_list = z_src
+            
+        a_src = [self.cosmo.get_a_from_z(reds_src) for reds_src in z_src_list]
+        a_cl = self.cosmo.get_a_from_z(z_cl)            
+        ra_proj = [radius/a_cl for radius in r_proj]
                 
-        return self.hdpm.convergence(self.cosmo.be_cosmo, r_proj/a_cl, self.mdelta, a_cl, a_src, self.mdef)
-        
+        func = lambda ra_proj, a_cl, a_src: self.hdpm.convergence(self.cosmo.be_cosmo, ra_proj, self.mdelta, a_cl, a_src, self.mdef)
+        return np.vectorize(func)(ra_proj, a_cl, a_src)
         
     def _eval_tangential_shear(self, r_proj, z_cl, z_src):
-        """"eval tangential shear""""
-        a_src = self.cosmo.get_a_from_z(z_src)
+        """eval tangential shear"""
+        z_src_list = None
+        if type(z_src) == float:
+            z_src_list = [z_src for a in range(0, len(r_proj))]
+        else:
+            z_src_list = z_src
+            
+        a_src = [self.cosmo.get_a_from_z(reds_src) for reds_src in z_src_list]
         a_cl = self.cosmo.get_a_from_z(z_cl)
+            
+        ra_proj = [radius/a_cl for radius in r_proj]
         
-        return self.hdpm.shear(self.cosmo.be_cosmo, r_proj/a_cl, self.mdelta, a_cl, a_src, self.mdef)
+        func = lambda ra_proj, a_cl, a_src: self.hdpm.shear(self.cosmo.be_cosmo, ra_proj, self.mdelta, a_cl, a_src, self.mdef)
+        return np.vectorize(func)(ra_proj, a_cl, a_src)
         
         
     def _eval_reduced_tangential_shear_sp(self, r_proj, z_cl, z_src):
-        """"eval reduced tangential shear considering a single redshift plane for background sources"""
-        a_src = self.cosmo.get_a_from_z(z_src)
+        """eval reduced tangential shear considering a single redshift plane for background sources"""
+        z_src_list = None
+        if type(z_src) == float:
+            z_src_list = [z_src for a in range(0, len(r_proj))]
+        else:
+            z_src_list = z_src
+            
+        a_src = [self.cosmo.get_a_from_z(reds_src) for reds_src in z_src_list]
         a_cl = self.cosmo.get_a_from_z(z_cl)
+            
+        ra_proj = [radius/a_cl for radius in r_proj]
         
-        return self.hdpm.reduced_shear(self.cosmo.be_cosmo, r_proj/a_cl, self.mdelta, a_cl, a_src, self.mdef)
-    
-     def _eval_magnification(self, r_proj, z_cl, z_src):
-        """"eval magnification"""
-        a_src = self.cosmo.get_a_from_z(z_src)
+        
+        func = lambda ra_proj, a_cl, a_src: self.hdpm.reduced_shear(self.cosmo.be_cosmo, ra_proj, self.mdelta, a_cl, a_src, self.mdef)
+        return np.vectorize(func)(ra_proj, a_cl, a_src)
+        
+            
+    def _eval_magnification(self, r_proj, z_cl, z_src):
+        """eval magnification"""
+        z_src_list = None
+        if type(z_src) == float:
+            z_src_list = [z_src for a in range(0, len(r_proj))]
+        else:
+            z_src_list = z_src
+            
+        a_src = [self.cosmo.get_a_from_z(reds_src) for reds_src in z_src_list]
         a_cl = self.cosmo.get_a_from_z(z_cl)
-        
-        return self.hdpm.magnification(self.cosmo.be_cosmo, r_proj/a_cl, self.mdelta, a_cl, a_src, self.mdef)
-    
+            
+        ra_proj = [radius/a_cl for radius in r_proj]
+        print('here')        
+        func = lambda ra_proj, a_cl, a_src: self.hdpm.magnification(self.cosmo.be_cosmo, ra_proj, self.mdelta, a_cl, a_src, self.mdef)
+        return np.vectorize(func)(ra_proj, a_cl, a_src)
     
     
 Modeling = CCLCLMModeling
