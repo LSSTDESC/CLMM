@@ -152,34 +152,33 @@ class CCLCLMModeling(CLMModeling):
         else:
             return self.eval_mean_surface_density(r_proj, z_cl) - self.eval_surface_density(r_proj, z_cl)
 
-
+    def _prepare_ccl(self, r_proj, z_cl, z_src):
+        """Function that Prepares the lists for the functions below"""
+        r_proj_l = None
+        z_src_l = None
+        if type(r_proj) == float:
+            r_proj_l = [r_proj]
+        else:
+            r_proj_l = r_proj
+        if type(z_src) == float:
+            z_src_l = [z_src for a in range(0, len(r_proj))]
+        else:
+            z_src_l = z_src
+        a_src = [self.cosmo.get_a_from_z(reds_src) for reds_src in z_src_l]
+        a_cl = self.cosmo.get_a_from_z(z_cl)
+        ra_proj = [radius/a_cl for radius in r_proj_l]
+        return [ra_proj, a_cl, a_src]
+    
     def _eval_convergence(self, r_proj, z_cl, z_src):
         """eval convergence"""
-        z_src_list = None
-        if type(z_src) == float:
-            z_src_list = [z_src for a in range(0, len(r_proj))]
-        else:
-            z_src_list = z_src
-            
-        a_src = [self.cosmo.get_a_from_z(reds_src) for reds_src in z_src_list]
-        a_cl = self.cosmo.get_a_from_z(z_cl)            
-        ra_proj = [radius/a_cl for radius in r_proj]
-                
+        ra_proj, a_cl, a_src =self._prepare_ccl(r_proj, z_cl, z_src)        
         func = lambda ra_proj, a_cl, a_src: self.hdpm.convergence(self.cosmo.be_cosmo, ra_proj, self.mdelta, a_cl, a_src, self.mdef)
+        
         return np.vectorize(func)(ra_proj, a_cl, a_src)
         
     def _eval_tangential_shear(self, r_proj, z_cl, z_src):
         """eval tangential shear"""
-        z_src_list = None
-        if type(z_src) == float:
-            z_src_list = [z_src for a in range(0, len(r_proj))]
-        else:
-            z_src_list = z_src
-            
-        a_src = [self.cosmo.get_a_from_z(reds_src) for reds_src in z_src_list]
-        a_cl = self.cosmo.get_a_from_z(z_cl)
-            
-        ra_proj = [radius/a_cl for radius in r_proj]
+        ra_proj, a_cl, a_src =self._prepare_ccl(r_proj, z_cl, z_src)        
         
         func = lambda ra_proj, a_cl, a_src: self.hdpm.shear(self.cosmo.be_cosmo, ra_proj, self.mdelta, a_cl, a_src, self.mdef)
         return np.vectorize(func)(ra_proj, a_cl, a_src)
@@ -187,17 +186,7 @@ class CCLCLMModeling(CLMModeling):
         
     def _eval_reduced_tangential_shear_sp(self, r_proj, z_cl, z_src):
         """eval reduced tangential shear considering a single redshift plane for background sources"""
-        z_src_list = None
-        if type(z_src) == float:
-            z_src_list = [z_src for a in range(0, len(r_proj))]
-        else:
-            z_src_list = z_src
-            
-        a_src = [self.cosmo.get_a_from_z(reds_src) for reds_src in z_src_list]
-        a_cl = self.cosmo.get_a_from_z(z_cl)
-            
-        ra_proj = [radius/a_cl for radius in r_proj]
-        
+        ra_proj, a_cl, a_src =self._prepare_ccl(r_proj, z_cl, z_src)        
         
         func = lambda ra_proj, a_cl, a_src: self.hdpm.reduced_shear(self.cosmo.be_cosmo, ra_proj, self.mdelta, a_cl, a_src, self.mdef)
         return np.vectorize(func)(ra_proj, a_cl, a_src)
@@ -205,17 +194,8 @@ class CCLCLMModeling(CLMModeling):
             
     def _eval_magnification(self, r_proj, z_cl, z_src):
         """eval magnification"""
-        z_src_list = None
-        if type(z_src) == float:
-            z_src_list = [z_src for a in range(0, len(r_proj))]
-        else:
-            z_src_list = z_src
-            
-        a_src = [self.cosmo.get_a_from_z(reds_src) for reds_src in z_src_list]
-        a_cl = self.cosmo.get_a_from_z(z_cl)
-            
-        ra_proj = [radius/a_cl for radius in r_proj]
-        print('here')        
+        ra_proj, a_cl, a_src =self._prepare_ccl(r_proj, z_cl, z_src)
+        
         func = lambda ra_proj, a_cl, a_src: self.hdpm.magnification(self.cosmo.be_cosmo, ra_proj, self.mdelta, a_cl, a_src, self.mdef)
         return np.vectorize(func)(ra_proj, a_cl, a_src)
     
