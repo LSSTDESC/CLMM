@@ -10,7 +10,10 @@ from scipy.interpolate import interp1d
 
 from .generic import compute_reduced_shear_from_convergence
 import warnings
-from .generic import compute_reduced_shear_from_convergence, compute_magnification_bias_from_magnification
+from .generic import (compute_reduced_shear_from_convergence,
+                      compute_magnification_bias_from_magnification,
+                      compute_rdelta, compute_profile_mass_in_radius,
+                      convert_profile_mass_concentration)
 from ..utils import validate_argument, compute_beta_s_mean, compute_beta_s_square_mean
 
 
@@ -48,6 +51,8 @@ class CLMModeling:
         self.massdef = ''
         self.delta_mdef = 0
         self.halo_profile_model = ''
+        self.mdelta = 0.
+        self.cdelta = 0.
 
         self.cosmo = None
 
@@ -119,6 +124,7 @@ class CLMModeling:
         if self.validate_input:
             validate_argument(locals(), 'mdelta', float, argmin=0)
         self._set_mass(mdelta)
+        self.mdelta = mdelta
 
     def _set_mass(self, mdelta):
         r""" Actually sets the value of the :math:`M_\Delta` (without value check)"""
@@ -170,6 +176,7 @@ class CLMModeling:
         if self.validate_input:
             validate_argument(locals(), 'cdelta', float, argmin=0)
         self._set_concentration(cdelta)
+        self.cdelta = cdelta
 
     def _set_concentration(self, cdelta):
         r""" Actuall sets the value of the concentration (without value check)"""
@@ -647,3 +654,30 @@ class CLMModeling:
     def _eval_magnification_bias(self, r_proj, z_cl, z_src, alpha):
         magnification = self.eval_magnification(r_proj, z_cl, z_src)
         return compute_magnification_bias_from_magnification(magnification, alpha)
+    def eval_rdelta(self, z_cl):
+        if self.validate_input:
+            validate_argument(locals(), 'z_cl', float, argmin=0)
+        return self._eval_rdelta(z_cl)
+    def _eval_rdelta(self, z_cl):
+        return compute_rdelta(self.mdelta, z_cl, self.cosmo, self.massdef, self.delta_mdef)
+    def eval_mass_in_radius(self, r3d, z_cl):
+        if self.validate_input:
+            validate_argument(locals(), 'r3d', 'float_array', argmin=0)
+            validate_argument(locals(), 'z_cl', float, argmin=0)
+        return self._eval_mass_in_radius(r3d, z_cl)
+    def _eval_mass_in_radius(self, r3d, z_cl):
+        alpha = self._get_einasto_alpha(z_cl) if self.halo_profile_model=='einasto' else None
+        return compute_profile_mass_in_radius(
+            r3d, z_cl, self.cosmo, self.mdelta, self.cdelta,
+            self.massdef, self.delta_mdef, self.halo_profile_model, alpha)
+    def _convert_mass_concentration(self, z_cl, massdef=None, delta_mdef=None,
+                                    halo_profile_model=None, alpha=None):
+        self_args, in_args = vars(self), locals()
+        self_args['alpha'] = self._get_einasto_alpha(z_cl)\
+                                if self.halo_profile_model=='einasto' else None
+        kwargs = {}
+        for key in ('massdef', 'delta_mdef', 'halo_profile_model', 'alpha'):
+            kwargs[key] = self_args[key]
+            kwargs[f'{key}2'] = in_args[key] if in_args[key] is not None else self_args[key]
+        return convert_profile_mass_concentration(
+            self.mdelta, self.cdelta, z_cl, self.cosmo, **kwargs)
