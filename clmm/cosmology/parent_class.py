@@ -327,8 +327,6 @@ class CLMMCosmology:
         cosmo : CLMMCosmology
             CLMMCosmology object to compute angular diameter distance to
             convert between physical and angular units
-        do_inverse : bool
-            If true, converts Mpc to radians
 
         Returns
         -------
@@ -353,8 +351,6 @@ class CLMMCosmology:
         cosmo : CLMMCosmology
             CLMMCosmology object to compute angular diameter distance to
             convert between physical and angular units
-        do_inverse : bool
-            If true, converts Mpc to radians
 
         Returns
         -------
