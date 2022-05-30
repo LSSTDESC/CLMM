@@ -324,8 +324,8 @@ class CLMMCosmology:
             Input distances in radians
         redshift : float
             Redshift used to convert between angular and physical units
-        cosmo : astropy.cosmology
-            Astropy cosmology object to compute angular diameter distance to
+        cosmo : CLMMCosmology
+            CLMMCosmology object to compute angular diameter distance to
             convert between physical and angular units
         do_inverse : bool
             If true, converts Mpc to radians
@@ -350,8 +350,8 @@ class CLMMCosmology:
             Input distances in Mpc
         redshift : float
             Redshift used to convert between angular and physical units
-        cosmo : astropy.cosmology
-            Astropy cosmology object to compute angular diameter distance to
+        cosmo : CLMMCosmology
+            CLMMCosmology object to compute angular diameter distance to
             convert between physical and angular units
         do_inverse : bool
             If true, converts Mpc to radians
