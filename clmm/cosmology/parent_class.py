@@ -322,7 +322,7 @@ class CLMMCosmology:
         ----------
         dist1 : float, array_like
             Input distances in radians
-        redshift : float, array_like
+        redshift : float
             Redshift used to convert between angular and physical units
         cosmo : astropy.cosmology
             Astropy cosmology object to compute angular diameter distance to
@@ -337,7 +337,7 @@ class CLMMCosmology:
         """
         if self.validate_input:
             validate_argument(locals(), 'dist1', 'float_array', argmin=0, eqmin=True)
-            validate_argument(locals(), 'redshift', 'float_array', argmin=0, eqmin=True)
+            validate_argument(locals(), 'redshift', float, argmin=0, eqmin=True)
         return dist1*self.eval_da(redshift)
 
     def mpc2rad(self, dist1, redshift):
@@ -348,7 +348,7 @@ class CLMMCosmology:
         ----------
         dist1 : float, array_like
             Input distances in Mpc
-        redshift : float, array_like
+        redshift : float
             Redshift used to convert between angular and physical units
         cosmo : astropy.cosmology
             Astropy cosmology object to compute angular diameter distance to
@@ -363,7 +363,7 @@ class CLMMCosmology:
         """
         if self.validate_input:
             validate_argument(locals(), 'dist1', 'float_array', argmin=0, eqmin=True)
-            validate_argument(locals(), 'redshift', 'float_array', argmin=0, eqmin=True)
+            validate_argument(locals(), 'redshift', float, argmin=0, eqmin=True)
         return dist1/self.eval_da(redshift)
 
     def eval_sigma_crit(self, z_len, z_src):
@@ -412,6 +412,7 @@ class CLMMCosmology:
         """
         if self.validate_input:
             validate_argument(locals(), 'k_vals', 'float_array', argmin=0)
+            validate_argument(locals(), 'redshift', float, argmin=0, eqmin=True)
         return self._eval_linear_matter_powerspectrum(k_vals, redshift)
 
     def _eval_linear_matter_powerspectrum(self, k_vals, redshift):
