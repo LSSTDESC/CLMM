@@ -86,7 +86,7 @@ def compute_profile_mass_in_radius(r3d, redshift, cosmo, mdelta, cdelta,
     if halo_profile_model=='nfw':
         prof_integ = lambda c: np.log(1. + c) - c/(1. + c)
     elif halo_profile_model=='einasto':
-        if einasto_alpha is None:
+        if alpha is None:
             raise ValueError('alpha must be provided when Einasto profile is selected!')
         prof_integ = lambda c: gamma(3./alpha)*gammainc(3./alpha, 2./alpha*c**alpha)
     elif halo_profile_model=='hernquist':
