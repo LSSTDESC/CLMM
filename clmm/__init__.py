@@ -10,7 +10,6 @@ from .theory import (
     compute_reduced_tangential_shear, compute_magnification, compute_magnification_bias,
     Modeling, Cosmology
 )
-from .profiles import HaloProfileNFW, HaloProfileEinasto, HaloProfileHernquist
 from . import support
 
 __version__ = '1.1.9'
