@@ -324,9 +324,6 @@ class CLMMCosmology:
             Input distances in radians
         redshift : float
             Redshift used to convert between angular and physical units
-        cosmo : CLMMCosmology
-            CLMMCosmology object to compute angular diameter distance to
-            convert between physical and angular units
 
         Returns
         -------
@@ -348,9 +345,6 @@ class CLMMCosmology:
             Input distances in Mpc
         redshift : float
             Redshift used to convert between angular and physical units
-        cosmo : CLMMCosmology
-            CLMMCosmology object to compute angular diameter distance to
-            convert between physical and angular units
 
         Returns
         -------
