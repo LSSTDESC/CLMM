@@ -36,18 +36,18 @@ def compute_reduced_shear_from_convergence(shear, convergence):
 def compute_magnification_bias_from_magnification(magnification, alpha):
     r""" Computes magnification bias from magnification :math:`\mu` and slope parameter 
     :math:`\alpha` as :
-    
+
     .. math::
         \mu^{\alpha - 1}
 
     The alpha parameter depends on the source sample and is computed as the slope of the 
     cummulative numer counts at a given magnitude:
-    
+
     .. math::
         \alpha \equiv \alpha(f) = - \frac{\mathrm d}{\mathrm d \log{f}} \log{n_0(>f)}
 
     or,
-    
+
     .. math::
         \alpha \equiv \alpha(m) = 2.5 \frac{\mathrm d}{\mathrm d m} \log{n_0(<m)}
 
@@ -69,7 +69,31 @@ def compute_magnification_bias_from_magnification(magnification, alpha):
         warnings.warn('Magnification is negative for certain radii, \
                     returning nan for magnification bias in this case.')
     return np.array(magnification)**(np.array([alpha]).T - 1)
+
 def compute_rdelta(mdelta, redshift, cosmo, massdef='mean', delta_mdef=200):
+    r"""Computes the radius for mdelta
+
+    .. math::
+        r_\Delta=\left(\frac{3 M_\Delta}{4 \pi \Delta \rho_{bkg}(z)}\right)^{1/3}
+
+    Parameters
+    ----------
+    mdelta : float
+        Mass in units of :math:`M_\odot`
+    redshift : float
+        Redshift of the cluster
+    cosmo : clmm.Cosmology
+        Cosmology object
+    massdef : str, None
+        Profile mass definition (`mean`, `critical`, `virial`).
+    delta_mdef : int, None
+        Mass overdensity definition.
+
+    Returns
+    -------
+    float
+        Radius in :math:`M\!pc`.
+    """
     # Check massdef
     if massdef=='mean':
         rho = cosmo.get_rho_m
@@ -78,9 +102,36 @@ def compute_rdelta(mdelta, redshift, cosmo, massdef='mean', delta_mdef=200):
     else:
         raise ValueError(f'massdef(={massdef}) must be mean, critical or virial')
     return ((3.*mdelta)/(4.*np.pi*delta_mdef*rho(redshift)))**(1./3.)
+
 def compute_profile_mass_in_radius(r3d, redshift, cosmo, mdelta, cdelta,
                                    massdef='mean', delta_mdef=200,
                                    halo_profile_model='nfw', alpha=None):
+    r"""Computes the mass inside a given radius of the profile.
+
+    Parameters
+    ----------
+    r3d : array_like, float
+        Radial position from the cluster center in :math:`M\!pc`.
+    refshift : float
+        Redshift of the cluster
+    mdelta : float
+        Mass of the profile in units of :math:`M_\odot`
+    cdelta : float
+        Concentration of the profile.
+    massdef : str, None
+        Profile mass definition (`mean`, `critical`, `virial`).
+    delta_mdef : int, None
+        Mass overdensity definition.
+    halo_profile_model : str
+        Profile model parameterization (`nfw`, `einasto`, `hernquist`).
+    alpha : float, None
+        Einasto slope, required when `halo_profile_model='einasto'`.
+
+    Returns
+    -------
+    array_like, float
+        Mass in units of :math:`M_\odot`
+    """
     rdelta = compute_rdelta(mdelta, redshift, cosmo, massdef, delta_mdef)
     # Check halo_profile_model
     if halo_profile_model=='nfw':
@@ -96,16 +147,41 @@ def compute_profile_mass_in_radius(r3d, redshift, cosmo, mdelta, cdelta,
                          'nfw, einasto, or hernquist!')
     x = np.array(r3d)/(rdelta/cdelta)
     return mdelta*prof_integ(x)/prof_integ(cdelta)
+
 def convert_profile_mass_concentration(
         mdelta, cdelta, redshift, cosmo, massdef, delta_mdef, halo_profile_model,
-        massdef2, delta_mdef2, halo_profile_model2, alpha=None, alpha2=None):
+        massdef2=None, delta_mdef2=None, halo_profile_model2=None, alpha=None, alpha2=None):
     """
     Parameters
     ----------
-    massdef2: float
-        Background density definition to convert to (`critical`, `mean`)
-    delta_mdef2: str
-        Overdensity scale to convert to
+    mdelta : float
+        Mass of the profile in units of :math:`M_\odot`
+    cdelta : float
+        Concentration of the profile.
+    refshift : float
+        Redshift of the cluster
+    cosmo : clmm.Cosmology
+        Cosmology object
+    massdef : str, None
+        Input profile mass definition (`mean`, `critical`, `virial`).
+    delta_mdef : int, None
+        Input mass overdensity definition.
+    halo_profile_model : str, None
+        Input profile model parameterization (`nfw`, `einasto`, `hernquist`).
+    massdef2 : str, None
+        Profile mass definition to convert to (`mean`, `critical`, `virial`).
+        If None, `massdef2=massdef`.
+    delta_mdef2 : int, None
+        Mass overdensity definition to convert to.
+        If None, `delta_mdef2=delta_mdef`.
+    halo_profile_model2 : str, None
+        Profile model parameterization to convert to (`nfw`, `einasto`, `hernquist`).
+        If None, `halo_profile_model2=halo_profile_model`.
+    alpha : float, None
+        Input Einasto slope when `halo_profile_model='einasto'`.
+    alpha2 : float, None
+        Einasto slope to convert to when `halo_profile_model='einasto'`.
+        If None, `alpha2=alpha`.
 
     Returns
     -------

@@ -656,7 +656,20 @@ class CLMModeling:
         return compute_magnification_bias_from_magnification(magnification, alpha)
 
     def eval_rdelta(self, z_cl):
-        r"""
+        r"""Retrieve the radius for mdelta
+
+        .. math::
+            r_\Delta=\left(\frac{3 M_\Delta}{4 \pi \Delta \rho_{bkg}(z)}\right)^{1/3}
+
+        Parameters
+        ----------
+        z_cl: float
+            Redshift of the cluster
+
+        Returns
+        -------
+        float
+            Radius in :math:`M\!pc`.
         """
         if self.validate_input:
             validate_argument(locals(), 'z_cl', float, argmin=0)
@@ -665,12 +678,28 @@ class CLMModeling:
     def _eval_rdelta(self, z_cl):
         return compute_rdelta(self.mdelta, z_cl, self.cosmo, self.massdef, self.delta_mdef)
 
-    def eval_mass_in_radius(self, r3d, z_cl):
-        r"""
+    def eval_mass_in_radius(self, r3d, z_cl, verbose=False):
+        r"""Computes the mass inside a given radius of the profile.
+
+        Parameters
+        ----------
+        r3d : array_like, float
+            Radial position from the cluster center in :math:`M\!pc`.
+        z_cl: float
+            Redshift of the cluster
+
+        Returns
+        -------
+        array_like, float
+            Mass in units of :math:`M_\odot`
         """
         if self.validate_input:
             validate_argument(locals(), 'r3d', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', float, argmin=0)
+
+        if self.halo_profile_model=='einasto' and verbose:
+            print(f"Einasto alpha (in) = {self._get_einasto_alpha(z_cl=z_cl)}")
+
         return self._eval_mass_in_radius(r3d, z_cl)
 
     def _eval_mass_in_radius(self, r3d, z_cl):
@@ -681,7 +710,31 @@ class CLMModeling:
 
     def convert_mass_concentration(self, z_cl, massdef=None, delta_mdef=None,
                                    halo_profile_model=None, alpha=None, verbose=False):
-        r"""
+        r"""Converts current mass and concentration to the values for a different model.
+
+        Parameters
+        ----------
+        z_cl: float
+            Redshift of the cluster
+        massdef : str, None
+            Profile mass definition to convert to (`mean`, `critical`, `virial`).
+            If None, same value of current model is used.
+        delta_mdef : int, None
+            Mass overdensity definition to convert to.
+            If None, same value of current model is used.
+        halo_profile_model : str, None
+            Profile model parameterization to convert to (`nfw`, `einasto`, `hernquist`).
+            If None, same value of current model is used.
+        alpha : float, None
+            Einasto slope to convert to when `halo_profile_model='einasto'`.
+            If None, same value of current model is used.
+
+        Returns
+        -------
+        float
+            Mass of different model in units of :math:`M_\odot`.
+        float
+            Concentration of different model.
         """
         if self.validate_input:
             validate_argument(locals(), 'r3d', 'float_array', argmin=0)
