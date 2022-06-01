@@ -756,12 +756,10 @@ class CLMModeling:
 
     def _convert_mass_concentration(self, z_cl, massdef=None, delta_mdef=None,
                                     halo_profile_model=None, alpha=None):
-        self_args, in_args = vars(self), locals()
-        self_args['alpha'] = self._get_einasto_alpha(z_cl)\
-                                if self.halo_profile_model=='einasto' else None
-        kwargs = {}
-        for key in ('massdef', 'delta_mdef', 'halo_profile_model', 'alpha'):
-            kwargs[key] = self_args[key]
-            kwargs[f'{key}2'] = in_args[key] if in_args[key] is not None else self_args[key]
+        alpha1 = self._get_einasto_alpha(z_cl) if self.halo_profile_model=='einasto' else None
         return convert_profile_mass_concentration(
-            self.mdelta, self.cdelta, z_cl, self.cosmo, **kwargs)
+            self.mdelta, self.cdelta, z_cl, self.cosmo,
+            massdef=self.massdef, delta_mdef=self.delta_mdef,
+            halo_profile_model=self.halo_profile_model, alpha=alpha1,
+            massdef2=massdef, delta_mdef2=delta_mdef,
+            halo_profile_model2=halo_profile_model, alpha2=alpha)

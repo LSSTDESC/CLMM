@@ -189,18 +189,21 @@ def convert_profile_mass_concentration(
         HaloProfile object
     """
     rdelta = compute_rdelta(mdelta, redshift, cosmo, massdef, delta_mdef)
+    # Prep other args
+    loc, keys = locals(), ('massdef', 'delta_mdef', 'halo_profile_model', 'alpha')
+    kwargs = {key:loc[key] for key in keys}
+    kwargs2 = {key:(loc[key] if loc[f'{keys}2']) is None else loc[f'{keys}2'])
+                for key in keys}
     # Eq. to solve
     def f(params):
         mdelta2, cdelta2 = params
         rdelta2 = compute_rdelta(mdelta2, redshift, cosmo, massdef2, delta_mdef2)
         mdelta2_rad1 = compute_profile_mass_in_radius(
-            rdelta, redshift, cosmo, mdelta2, cdelta2,
-            massdef2, delta_mdef2, halo_profile_model2, alpha2)
+            rdelta, redshift, cosmo, mdelta2, cdelta2, **kwargs2)
         mdelta1_rad2 = compute_profile_mass_in_radius(
-            rdelta2, redshift, cosmo, mdelta, cdelta,
-            massdef, delta_mdef, halo_profile_model, alpha)
+            rdelta2, redshift, cosmo, mdelta, cdelta, **kwargs)
         return mdelta-mdelta2_rad1, mdelta2-mdelta1_rad2
-    # Interate 2 times:
+    # Iterate 2 times:
     mdelta2, cdelta2 = fsolve(func=f, x0=[mdelta, cdelta])
     mdelta2, cdelta2 = fsolve(func=f, x0=[mdelta2, cdelta2])
 
