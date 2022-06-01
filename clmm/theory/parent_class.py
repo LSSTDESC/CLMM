@@ -654,22 +654,53 @@ class CLMModeling:
     def _eval_magnification_bias(self, r_proj, z_cl, z_src, alpha):
         magnification = self.eval_magnification(r_proj, z_cl, z_src)
         return compute_magnification_bias_from_magnification(magnification, alpha)
+
     def eval_rdelta(self, z_cl):
+        r"""
+        """
         if self.validate_input:
             validate_argument(locals(), 'z_cl', float, argmin=0)
         return self._eval_rdelta(z_cl)
+
     def _eval_rdelta(self, z_cl):
         return compute_rdelta(self.mdelta, z_cl, self.cosmo, self.massdef, self.delta_mdef)
+
     def eval_mass_in_radius(self, r3d, z_cl):
+        r"""
+        """
         if self.validate_input:
             validate_argument(locals(), 'r3d', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', float, argmin=0)
         return self._eval_mass_in_radius(r3d, z_cl)
+
     def _eval_mass_in_radius(self, r3d, z_cl):
         alpha = self._get_einasto_alpha(z_cl) if self.halo_profile_model=='einasto' else None
         return compute_profile_mass_in_radius(
             r3d, z_cl, self.cosmo, self.mdelta, self.cdelta,
             self.massdef, self.delta_mdef, self.halo_profile_model, alpha)
+
+    def convert_mass_concentration(self, z_cl, massdef=None, delta_mdef=None,
+                                   halo_profile_model=None, alpha=None, verbose=False):
+        r"""
+        """
+        if self.validate_input:
+            validate_argument(locals(), 'r3d', 'float_array', argmin=0)
+            validate_argument(locals(), 'z_cl', float, argmin=0)
+            validate_argument(locals(), 'massdef', str)
+            validate_argument(locals(), 'delta_mdef', int, argmin=0)
+            validate_argument(locals(), 'halo_profile_model', str)
+            validate_argument(locals(), 'alpha', 'float_array')
+
+        if self.halo_profile_model=='einasto' and verbose:
+            print(f"Einasto alpha (in) = {self._get_einasto_alpha(z_cl=z_cl)}")
+
+        if halo_profile_model=='einasto' and verbose:
+            print("Einasto alpha (out) = "
+                 f"{self._get_einasto_alpha(z_cl=z_cl) if alpha is None else alpha}")
+
+    return self._convert_mass_concentration(z_cl, massdef, delta_mdef,
+                                            halo_profile_model, alpha)
+
     def _convert_mass_concentration(self, z_cl, massdef=None, delta_mdef=None,
                                     halo_profile_model=None, alpha=None):
         self_args, in_args = vars(self), locals()
