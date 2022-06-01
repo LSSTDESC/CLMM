@@ -192,7 +192,7 @@ def convert_profile_mass_concentration(
     # Prep other args
     loc, keys = locals(), ('massdef', 'delta_mdef', 'halo_profile_model', 'alpha')
     kwargs = {key:loc[key] for key in keys}
-    kwargs2 = {key:(loc[key] if loc[f'{keys}2']) is None else loc[f'{keys}2'])
+    kwargs2 = {key:(loc[key] if loc[f'{key}2'] is None else loc[f'{key}2'])
                 for key in keys}
     # Eq. to solve
     def f(params):
