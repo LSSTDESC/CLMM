@@ -739,12 +739,11 @@ class CLMModeling:
             Concentration of different model.
         """
         if self.validate_input:
-            validate_argument(locals(), 'r3d', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', float, argmin=0)
-            validate_argument(locals(), 'massdef', str)
-            validate_argument(locals(), 'delta_mdef', int, argmin=0)
-            validate_argument(locals(), 'halo_profile_model', str)
-            validate_argument(locals(), 'alpha', 'float_array')
+            validate_argument(locals(), 'massdef', str, none_ok=True)
+            validate_argument(locals(), 'delta_mdef', int, argmin=0, none_ok=True)
+            validate_argument(locals(), 'halo_profile_model', str, none_ok=True)
+            validate_argument(locals(), 'alpha', 'float_array', none_ok=True)
 
         if self.halo_profile_model=='einasto' and verbose:
             print(f"Einasto alpha (in) = {self._get_einasto_alpha(z_cl=z_cl)}")
