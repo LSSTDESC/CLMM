@@ -716,9 +716,9 @@ def test_mass_conversion(modeling_data, profile_init):
         profile.set_concentration(cdelta)
         profile.set_mass(mdelta)
         if halo_profile_model=='einasto' and theo.be_nick=='nc':
-            profile.set_einasto_alpha(3.0)
+            profile.set_einasto_alpha(0.3)
 
-        assert_allclose(profile.eval_mass_in_radius(profile.eval_rdelta(z_cl), z_cl, True), mdelta, 1e-18)
+        assert_allclose(profile.eval_mass_in_radius(profile.eval_rdelta(z_cl), z_cl, True), mdelta, 1e-15)
 
         if halo_profile_model=='nfw':
             assert_allclose(profile.eval_rdelta(z_cl), 1.5548751530053142, reltol)
