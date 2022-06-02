@@ -107,8 +107,11 @@ class CLMModeling:
             if not halo_profile_model in self.hdpm_dict:
                 raise ValueError(
                     f"Halo density profile model {halo_profile_model} not currently supported")
-        return self._set_halo_density_profile(halo_profile_model=halo_profile_model,
-                                              massdef=massdef, delta_mdef=delta_mdef)
+        self._set_halo_density_profile(halo_profile_model=halo_profile_model,
+                                       massdef=massdef, delta_mdef=delta_mdef)
+        self.halo_profile_model = halo_profile_model
+        self.massdef = massdef
+        self.delta_mdef = delta_mdef
 
     def _set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
         raise NotImplementedError
