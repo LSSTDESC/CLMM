@@ -718,11 +718,11 @@ def test_mass_conversion(modeling_data, profile_init):
         if halo_profile_model=='einasto' and theo.be_nick=='nc':
             profile.set_einasto_alpha(3.0)
 
-        assert_allclose(profile.eval_mass_in_radius(profile.eval_rdelta(z_cl), z_cl), mdelta, 1e-18)
+        assert_allclose(profile.eval_mass_in_radius(profile.eval_rdelta(z_cl), z_cl, True), mdelta, 1e-18)
 
         if halo_profile_model=='nfw':
             assert_allclose(profile.eval_rdelta(z_cl), 1.5548751530053142, reltol)
-            assert_allclose(profile.eval_mass_in_radius(1., z_cl, True), 683427961195829.4, reltol)
+            assert_allclose(profile.eval_mass_in_radius(1., z_cl), 683427961195829.4, reltol)
 
         assert_raises(ValueError, profile.convert_mass_concentration, z_cl, massdef='blu')
         assert_raises(ValueError, profile.convert_mass_concentration, z_cl, halo_profile_model='bla')
@@ -736,3 +736,7 @@ def test_mass_conversion(modeling_data, profile_init):
                                     z_cl, massdef='critical', delta_mdef=500, verbose=True)
             assert_allclose(mdelta2, truth[halo_profile_model]['mdelta'], reltol)
             assert_allclose(cdelta2, truth[halo_profile_model]['cdelta'], reltol)
+        # catch error in generic.compute_profile_mass_in_radius('einasto', alpha=None)
+        if halo_profile_model=='einasto':
+            profile._get_einasto_alpha = lambda z_cl: None
+            assert_raises(ValueError, profile.convert_mass_concentration, z_cl)

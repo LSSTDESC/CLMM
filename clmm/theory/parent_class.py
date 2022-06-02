@@ -9,7 +9,6 @@ from scipy.special import jv
 from scipy.interpolate import interp1d
 
 from .generic import compute_reduced_shear_from_convergence
-import warnings
 from .generic import (compute_reduced_shear_from_convergence,
                       compute_magnification_bias_from_magnification,
                       compute_rdelta, compute_profile_mass_in_radius,
