@@ -748,7 +748,9 @@ class CLMModeling:
         if self.halo_profile_model=='einasto' and verbose:
             print(f"Einasto alpha (in) = {self._get_einasto_alpha(z_cl=z_cl)}")
 
-        if halo_profile_model=='einasto' and verbose:
+        if (halo_profile_model=='einasto'
+                    or (self.halo_profile_model=='einasto' and halo_profile_model==None))\
+                and verbose:
             print("Einasto alpha (out) = "
                  f"{self._get_einasto_alpha(z_cl=z_cl) if alpha is None else alpha}")
 
