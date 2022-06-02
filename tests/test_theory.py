@@ -35,7 +35,7 @@ def compute_sigmac_physical_constant(lightspeed, gnewt, msun, pc_to_m):
     return (lightspeed*1000./pc_to_m)**2/(gnewt*msun/pc_to_m**3)
 
 
-def load_validation_config(halo_profile_model=None): 
+def load_validation_config(halo_profile_model=None):
     """ Loads values precomputed by numcosmo for comparison """
     numcosmo_path = 'tests/data/numcosmo/'
 
@@ -269,11 +269,11 @@ def test_profiles(modeling_data, profile_init):
         mod.set_halo_density_profile(
             halo_profile_model=cfg['SIGMA_PARAMS']['halo_profile_model'])
         mod.set_concentration(cfg['SIGMA_PARAMS']['cdelta'])
-        mod.set_mass(cfg['SIGMA_PARAMS']['mdelta']) 
+        mod.set_mass(cfg['SIGMA_PARAMS']['mdelta'])
         # Need to set the alpha value for the NC backend to the one used for the benchmarks,
         # which is the CCL default value
-        if profile_init=='einasto' and theo.be_nick=='nc': 
-            alpha_ein = cfg['TEST_CASE']['alpha_einasto'] 
+        if profile_init=='einasto' and theo.be_nick=='nc':
+            alpha_ein = cfg['TEST_CASE']['alpha_einasto']
             mod.set_einasto_alpha(alpha_ein)
         else:
             alpha_ein = None
@@ -303,24 +303,24 @@ def test_profiles(modeling_data, profile_init):
         print('Need to test for error')
 
     # Einasto-specific tests - checks errors are raised appropriately
-    if profile_init=='einasto': 
+    if profile_init=='einasto':
         alpha_ein = 0.5
         if theo.be_nick!='nc':
             mod = theo.Modeling()
             assert_raises(NotImplementedError, mod.set_einasto_alpha, alpha_ein)
-            assert_raises(NotImplementedError, theo.compute_convergence,0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)  
+            assert_raises(NotImplementedError, theo.compute_convergence,0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)
             assert_raises(NotImplementedError, theo.compute_tangential_shear,0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)
             assert_raises(NotImplementedError, theo.compute_reduced_tangential_shear,0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)
             assert_raises(NotImplementedError, theo.compute_magnification,0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)
-        else:            
+        else:
             mod = theo.Modeling()
             mod.set_halo_density_profile(halo_profile_model=profile_init)
             mod.set_einasto_alpha(alpha_ein)
-            assert_allclose(mod.get_einasto_alpha(), alpha_ein, reltol) 
-        
+            assert_allclose(mod.get_einasto_alpha(), alpha_ein, reltol)
+
     if profile_init!='einasto':
         mod = theo.Modeling()
-        assert_raises(ValueError, mod.get_einasto_alpha) 
+        assert_raises(ValueError, mod.get_einasto_alpha)
 
 def test_2halo_term(modeling_data):
 
@@ -341,10 +341,10 @@ def test_2halo_term(modeling_data):
         # To be updated with proper comparison to benchmark when available
         assert_equal(len(mod.eval_surface_density_2h(cfg['SIGMA_PARAMS']['r_proj'],
                                                                cfg['SIGMA_PARAMS']['z_cl'])),
-                        len(cfg['SIGMA_PARAMS']['r_proj'])) 
+                        len(cfg['SIGMA_PARAMS']['r_proj']))
         assert_equal(len(mod.eval_excess_surface_density_2h(cfg['SIGMA_PARAMS']['r_proj'],
                                                                cfg['SIGMA_PARAMS']['z_cl'])),
-                        len(cfg['SIGMA_PARAMS']['r_proj'])) 
+                        len(cfg['SIGMA_PARAMS']['r_proj']))
 
         # Checks that OO-oriented and functional interface give the same results
         assert_allclose(
@@ -505,8 +505,8 @@ def test_shear_convergence_unittests(modeling_data):
     cfg_inf['GAMMA_PARAMS']['z_src_model'] = 'schrabback18'
     assert_allclose(theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'], beta_s_mean=beta_s_mean, beta_s_square_mean=beta_s_square_mean),
                     (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean * kappa_inf) * (beta_s_mean * gammat_inf / (1. - beta_s_mean * kappa_inf)), 1.0e-10)
-    
-    
+
+
     assert_allclose(gammat*sigmac_corr/(1.-(kappa*sigmac_corr)),
                     cfg['numcosmo_profiles']['gt'], 1.e2*reltol)
 
@@ -523,7 +523,7 @@ def test_shear_convergence_unittests(modeling_data):
                     (1./((1-kappa)**2-abs(gammat)**2))**(alpha - 1), 1.0e-10)
     assert_allclose((1./((1-kappa*sigmac_corr)**2-abs(gammat*sigmac_corr)**2))**(alpha - 1),
                     cfg['numcosmo_profiles']['mu']**(alpha - 1), 1.e3*reltol)
-    
+
     # Check that shear, reduced shear and convergence return zero
     # and magnification and magnification bias returns one
     # if source is in front of the cluster
@@ -553,7 +553,7 @@ def test_shear_convergence_unittests(modeling_data):
             radius, alpha=-1, mdelta=1.e15, cdelta=4., z_cluster=z_cluster,
             z_source=z_source, cosmo=cosmo),
         np.ones(len(radius)), 1.0e-10)
-    
+
     # Second, check a single radius and array of source z
     radius = 1.
     z_source = [0.25, 0.1, 0.14, 0.02]
@@ -578,7 +578,7 @@ def test_shear_convergence_unittests(modeling_data):
             radius, alpha = -1, mdelta=1.e15, cdelta=4., z_cluster=z_cluster,
             z_source=z_source, cosmo=cosmo),
         np.ones(len(z_source)), 1.0e-10)
-    
+
     # Object Oriented tests
     mod = theo.Modeling()
     mod.set_cosmo(cosmo)
@@ -613,8 +613,8 @@ def test_shear_convergence_unittests(modeling_data):
 
 
     beta_s_mean = 0.6
-    beta_s_square_mean = 0.4 
-    source_redshift_inf = 1000. 
+    beta_s_square_mean = 0.4
+    source_redshift_inf = 1000.
     gammat_inf = mod.eval_tangential_shear(profile_pars[0], profile_pars[1], source_redshift_inf) #np.inf)
     kappa_inf = mod.eval_convergence(profile_pars[0], profile_pars[1], source_redshift_inf) #np.inf)
     assert_allclose(mod.eval_reduced_tangential_shear(*profile_pars, 'applegate14', beta_s_mean, beta_s_square_mean), beta_s_mean * gammat_inf/(1.0 - beta_s_square_mean / beta_s_mean * kappa_inf), 1.0e-10)
@@ -635,14 +635,14 @@ def test_shear_convergence_unittests(modeling_data):
                     1./((1-kappa)**2-abs(gammat)**2)**(alpha-1), 1.0e-10)
     assert_allclose(1./((1-kappa*sigmac_corr)**2-abs(gammat*sigmac_corr)**2)**(alpha-1),
                     cfg['numcosmo_profiles']['mu']**(alpha-1), 1.e3*reltol)
-    
+
     # Check that shear, reduced shear and convergence return zero and magnification returns one if
     # source is in front of the cluster
     # First, check for a array of radius and single source z
     radius = np.logspace(-2, 2, 10)
     z_cluster = 0.3
     z_source = 0.2
-    
+
 
     assert_allclose(mod.eval_convergence(radius, z_cluster, z_source),
                     np.zeros(len(radius)), 1.0e-10)
@@ -654,7 +654,7 @@ def test_shear_convergence_unittests(modeling_data):
         radius, z_cluster, z_source), np.ones(len(radius)), 1.0e-10)
     assert_allclose(mod.eval_magnification_bias(
         radius, z_cluster, z_source, alpha), np.ones(len(radius)), 1.0e-10)
-    
+
     # Second, check a single radius and array of source z
     radius = 1.
     z_source = [0.25, 0.1, 0.14, 0.02]
@@ -688,3 +688,51 @@ def test_compute_magnification_bias(modeling_data):
         theo.compute_magnification_bias_from_magnification(
             np.array(magnification), np.array(alpha)),
         np.array(truth), **TOLERANCE)
+
+def test_mass_conversion(modeling_data, profile_init):
+    """ Unit tests for HaloProfile objects' instantiation """
+    if (profile_init=='nfw' or theo.be_nick in ['nc','ccl']) and\
+                modeling_data['nick'] not in ['notabackend','testnotabackend']:
+        reltol = modeling_data['theory_reltol']
+
+        ### Loads values precomputed by numcosmo for comparison
+        numcosmo_path = 'tests/data/numcosmo/'
+        with open(numcosmo_path+'config.json', 'r') as fin:
+            testcase = json.load(fin)
+        cosmo = theo.Cosmology(H0=testcase['cosmo_H0'], Omega_dm0=testcase['cosmo_Odm0'],
+                               Omega_b0=testcase['cosmo_Ob0'])
+        # Config
+        halo_profile_model = profile_init
+        mdelta = testcase['cluster_mass']
+        cdelta = testcase['cluster_concentration']
+        z_cl = testcase['z_cluster']
+        delta_mdef = 200
+        massdef = 'mean'
+        # Start tests
+        profile = theo.Modeling()
+        profile.set_cosmo(cosmo)
+        profile.set_halo_density_profile(
+            halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
+        profile.set_concentration(cdelta)
+        profile.set_mass(mdelta)
+        if halo_profile_model=='einasto' and theo.be_nick=='nc':
+            profile.set_einasto_alpha(3.0)
+
+        assert_allclose(profile.eval_mass_in_radius(profile.eval_rdelta(z_cl), z_cl), mdelta, 1e-18)
+
+        if halo_profile_model=='nfw':
+            assert_allclose(profile.eval_rdelta(z_cl), 1.5548751530053142, reltol)
+            assert_allclose(profile.eval_mass_in_radius(1., z_cl, True), 683427961195829.4, reltol)
+
+        assert_raises(ValueError, profile.convert_mass_concentration, z_cl, massdef='blu')
+        assert_raises(ValueError, profile.convert_mass_concentration, z_cl, halo_profile_model='bla')
+
+        truth = {
+            'nfw': {'mdelta': 617693839984902.6, 'cdelta': 2.3143737357611425},
+            'einasto': {'mdelta': 654444421625520.1, 'cdelta': 2.3593914002446486},
+            }
+        if halo_profile_model=='nfw' or (halo_profile_model=='einasto' and theo.be_nick=='nc'):
+            mdelta2, cdelta2 = profile.convert_mass_concentration(
+                                    z_cl, massdef='critical', delta_mdef=500, verbose=True)
+            assert_allclose(mdelta2, truth[halo_profile_model]['mdelta'], reltol)
+            assert_allclose(cdelta2, truth[halo_profile_model]['cdelta'], reltol)
