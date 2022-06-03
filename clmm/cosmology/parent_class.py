@@ -203,7 +203,7 @@ class CLMMCosmology:
 
         Notes
         -----
-        Describe the vectorization.
+        np.nan is returned for z1>z2.
         """
         if self.validate_input:
             validate_argument(locals(), 'z1', 'float_array', argmin=0, eqmin=True)
@@ -370,6 +370,10 @@ class CLMMCosmology:
         -------
         float, numpy.ndarray
             Cosmology-dependent critical surface density in units of :math:`M_\odot\ Mpc^{-2}`
+
+        Notes
+        -----
+        np.inf is returned for z_src<z_len.
         """
         if self.validate_input:
             validate_argument(locals(), 'z_len', float, argmin=0, eqmin=True)
