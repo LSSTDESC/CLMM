@@ -85,9 +85,9 @@ class CCLCosmology(CLMMCosmology):
         a1 = np.atleast_1d(self.get_a_from_z(z1))
         a2 = np.atleast_1d(self.get_a_from_z(z2))
         if len(a1)==1 and len(a2)!=1:
-            a1 = np.repeat(a1, len(a2))
+            a1 = np.full_like(a2, a1)
         elif len(a2)==1 and len(a1)!=1:
-            a2 = np.repeat(a2, len(a1))
+            a2 = np.full_like(a1, a2)
 
         da = ccl.angular_diameter_distance(self.be_cosmo, a1, a2)
         res = da if np.iterable(z1) or np.iterable(z2) else da.item()
