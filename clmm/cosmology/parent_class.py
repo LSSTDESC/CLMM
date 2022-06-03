@@ -288,7 +288,7 @@ class CLMMCosmology:
         Returns
         -------
         a : float, numpy.ndarray
-             Scale factor
+            Scale factor
         """
         if self.validate_input:
             validate_argument(locals(), 'z', 'float_array', argmin=0, eqmin=True)

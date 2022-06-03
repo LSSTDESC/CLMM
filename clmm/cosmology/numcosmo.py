@@ -143,7 +143,7 @@ class NumCosmoCosmology(CLMMCosmology):
         # Instead, computing the PS from the CLASS backend of Numcosmo
         # ps  = Nc.PowspecMLCBE.new ()
         # ps.peek_cbe().props.use_ppf = True
-     
+
         if self.be_cosmo.reion is None:
             reion = Nc.HIReionCamb.new ()
             self.be_cosmo.add_submodel (reion)
@@ -158,7 +158,7 @@ class NumCosmoCosmology(CLMMCosmology):
             self.be_cosmo.prim.props.ln10e10ASA = np.log ((0.8 / self.be_cosmo.sigma8(psf))**2 * old_amplitude)
 
         ps.prepare (self.be_cosmo)
-        
+
         res = []
         for k in k_vals:
             res.append(ps.eval (self.be_cosmo, redshift, k))
