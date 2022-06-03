@@ -38,6 +38,7 @@ def test_class(modeling_data):
     assert_raises(NotImplementedError, CLMMCosmology._get_param, None, None)
     assert_raises(AttributeError, CLMMCosmology.set_be_cosmo, None, None)
     assert_raises(NotImplementedError, CLMMCosmology._get_Omega_m, None, None)
+    assert_raises(NotImplementedError, CLMMCosmology._get_E2, None, None)
     assert_raises(NotImplementedError,
                   CLMMCosmology._eval_da_z1z2_core, None, None, None)
     assert_raises(NotImplementedError,
@@ -117,6 +118,7 @@ def test_cosmo_basic(modeling_data, cosmo_init):
     Omega_m0 = cosmo['Omega_m0']
     assert_allclose(cosmo.get_Omega_m(0.0), Omega_m0, **TOLERANCE)
     assert_allclose(cosmo.get_E2Omega_m(0.0), Omega_m0, **TOLERANCE)
+    assert_allclose(cosmo.get_E2Omega_m(0.0)/cosmo.get_E2(0.0), Omega_m0, **TOLERANCE)
     # Test getting all parameters
     for param in ("Omega_m0", "Omega_b0", "Omega_dm0", "Omega_k0", 'h', 'H0'):
         cosmo[param]

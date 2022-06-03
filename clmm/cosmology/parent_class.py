@@ -133,6 +133,31 @@ class CLMMCosmology:
     def _get_Omega_m(self, z):
         raise NotImplementedError
 
+    def get_E2(self, z):
+        r"""Gets the value of the hubble parameter (normalized at 0)
+
+        .. math::
+            E^2(z) = \frac{H(z)^{2}}{H_{0}^{2}}.
+
+        Parameters
+        ----------
+        z : float
+            Redshift.
+        Returns
+        -------
+        Hubble parameter : float
+            :math:`H(z)^{2}/H_{0}^{2}`.
+        Notes
+        -----
+        Need to decide if non-relativist neutrinos will contribute here.
+        """
+        if self.validate_input:
+            validate_argument(locals(), 'z', 'float_array', argmin=0, eqmin=True)
+        return self._get_E2(z=z)
+
+    def _get_E2(self, z):
+        raise NotImplementedError
+
     def get_E2Omega_m(self, z):
         r"""Gets the value of the dimensionless matter density times the Hubble parameter squared
         (normalized at 0)
