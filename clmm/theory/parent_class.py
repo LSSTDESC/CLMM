@@ -492,7 +492,8 @@ class CLMModeling:
         return sigma/sigma_c
 
     def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src, z_src_model='single_plane',
-                                      beta_s_mean=None, beta_s_square_mean=None, z_distrib_func=None, verbose=False):
+                                      beta_s_mean=None, beta_s_square_mean=None,
+                                      z_distrib_func=None, verbose=False):
         r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
 
         Parameters
@@ -553,8 +554,10 @@ class CLMModeling:
             z_source = 1000. #np.inf # INF or a very large number
             z_inf = z_source
             if beta_s_mean is None or beta_s_square_mean is None:
-                beta_s_mean = compute_beta_s_mean (z_cl, z_inf, self.cosmo, z_distrib_func=z_distrib_func)
-                beta_s_square_mean = compute_beta_s_square_mean (z_cl, z_inf, self.cosmo, z_distrib_func=z_distrib_func)
+                beta_s_mean = compute_beta_s_mean (z_cl, z_inf, self.cosmo,
+                                                   z_distrib_func=z_distrib_func)
+                beta_s_square_mean = compute_beta_s_square_mean (z_cl, z_inf, self.cosmo,
+                                                                 z_distrib_func=z_distrib_func)
             gammat = self._eval_tangential_shear(r_proj, z_cl, z_source)
             kappa = self._eval_convergence(r_proj, z_cl, z_source)
             gt = beta_s_mean * gammat / (1. - beta_s_square_mean / beta_s_mean * kappa)
@@ -563,11 +566,14 @@ class CLMModeling:
             z_source = 1000. #np.inf # INF or a very large number
             z_inf = z_source
             if beta_s_mean is None or beta_s_square_mean is None:
-                beta_s_mean = compute_beta_s_mean (z_cl, z_inf, self.cosmo, z_distrib_func=z_distrib_func)
-                beta_s_square_mean = compute_beta_s_square_mean (z_cl, z_inf, self.cosmo, z_distrib_func=z_distrib_func)
+                beta_s_mean = compute_beta_s_mean (z_cl, z_inf, self.cosmo,
+                                                   z_distrib_func=z_distrib_func)
+                beta_s_square_mean = compute_beta_s_square_mean (z_cl, z_inf, self.cosmo,
+                                                                 z_distrib_func=z_distrib_func)
             gammat = self._eval_tangential_shear(r_proj, z_cl, z_source)
             kappa = self._eval_convergence(r_proj, z_cl, z_source)
-            gt = (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean * kappa) * (beta_s_mean * gammat / (1. - beta_s_mean * kappa))
+            gt = (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.)\
+                  * beta_s_mean * kappa) * (beta_s_mean * gammat / (1. - beta_s_mean * kappa))
 
         else:
             raise ValueError("Unsupported z_src_model")
