@@ -2,6 +2,8 @@
 CLMModeling abstract class
 """
 import warnings
+warnings.filterwarnings("always", module='.*(theory).*')
+warnings.filterwarnings("ignore", module='.*(utils)')
 import numpy as np
 
 # functions for the 2h term
@@ -433,9 +435,9 @@ class CLMModeling:
             validate_argument(locals(), 'z_cl', float, argmin=0)
             validate_argument(locals(), 'z_src', 'float_array', argmin=0)
         if np.any(np.greater_equal(z_cl, z_src)):
-            warnings.warn(
-            'Some source redshifts are lower than the cluster redshift. '
-            'shear = 0 for those galaxies.', stacklevel=2)
+            warnings.warn('\n'
+            'Some source redshifts are lower than the cluster redshift.\n'
+            'Shear = 0 for those galaxies.', stacklevel=2)
         if self.halo_profile_model=='einasto' and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
@@ -476,9 +478,9 @@ class CLMModeling:
             validate_argument(locals(), 'z_cl', float, argmin=0)
             validate_argument(locals(), 'z_src', 'float_array', argmin=0)
         if np.any(np.greater_equal(z_cl, z_src)):
-            warnings.warn(
-            'Some source redshifts are lower than the cluster redshift. '
-            'kappa = 0 for those galaxies.')
+            warnings.warn('\n'
+            'Some source redshifts are lower than the cluster redshift.\n'
+            'Convergence = 0 for those galaxies.')
         if self.halo_profile_model=='einasto' and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
@@ -541,6 +543,10 @@ class CLMModeling:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
         if z_src_model == 'single_plane':
+            if np.any(np.greater_equal(z_cl, z_src)):
+                warnings.warn('\n'
+                'Some source redshifts are lower than the cluster redshift.\n'
+                'Reduced_shear = 0 for those galaxies.', stacklevel=2)
             gt = self._eval_reduced_tangential_shear_sp(r_proj, z_cl, z_src)
 
         elif z_src_model == 'applegate14':
@@ -603,9 +609,9 @@ class CLMModeling:
             validate_argument(locals(), 'z_cl', float, argmin=0)
             validate_argument(locals(), 'z_src', 'float_array', argmin=0)
         if np.any(np.greater_equal(z_cl, z_src)):
-            warnings.warn(
-            'Some source redshifts are lower than the cluster redshift. '
-            'magnification = 1 for those galaxies.')
+            warnings.warn('\n'
+            'Some source redshifts are lower than the cluster redshift.\n'
+            'Magnification = 1 for those galaxies.')
         if self.halo_profile_model=='einasto' and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
