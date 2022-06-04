@@ -85,35 +85,29 @@ class CCLCosmology(CLMMCosmology):
         a = self.get_a_from_z(z)
         return ccl.rho_x(self.be_cosmo, a, 'matter', is_comoving = False)
 
-    def _eval_da_z1z2(self, z1, z2):
-        a1 = self.get_a_from_z(z1)
-        a2 = self.get_a_from_z(z2)
-        return np.vectorize(ccl.angular_diameter_distance)(self.be_cosmo, a1, a2)
+    def _eval_da_z1z2_core(self, z1, z2):
+        a1 = np.atleast_1d(self.get_a_from_z(z1))
+        a2 = np.atleast_1d(self.get_a_from_z(z2))
+        if len(a1)==1 and len(a2)!=1:
+            a1 = np.full_like(a2, a1)
+        elif len(a2)==1 and len(a1)!=1:
+            a2 = np.full_like(a1, a2)
 
-    def _eval_sigma_crit(self, z_len, z_src):
-        a_len = self.get_a_from_z(z_len)
-        a_src = np.atleast_1d(self.get_a_from_z(z_src))
+        da = ccl.angular_diameter_distance(self.be_cosmo, a1, a2)
+        res = da if np.iterable(z1) or np.iterable(z2) else da.item()
+
+        return res
+
+    def _eval_sigma_crit_core(self, z_len, z_src):
         cte = ccl.physical_constants.CLIGHT**2 / \
             (4.0*np.pi*ccl.physical_constants.GNEWT *
              ccl.physical_constants.SOLAR_MASS)*ccl.physical_constants.MPC_TO_METER
 
-        z_cut = (a_src < a_len)
-        if np.isscalar(a_len):
-            a_len = np.repeat(a_len, len(a_src))
+        Ds = self._eval_da_z1z2_core(0, z_src)
+        Dl = self._eval_da_z1z2_core(0, z_len)
+        Dls = self._eval_da_z1z2_core(z_len, z_src)
 
-        res = np.zeros_like(a_src)
-
-        if np.any(z_cut):
-            Ds = ccl.angular_diameter_distance(self.be_cosmo, a_src[z_cut])
-            Dl = ccl.angular_diameter_distance(self.be_cosmo, a_len[z_cut])
-            Dls = ccl.angular_diameter_distance(
-                self.be_cosmo, a_len[z_cut], a_src[z_cut])
-
-            res[z_cut] = (cte*Ds/(Dl*Dls))*self.cor_factor
-
-        res[~z_cut] = np.Inf
-
-        return np.squeeze(res)
+        return (cte*Ds/(Dl*Dls))*self.cor_factor
 
     def _eval_linear_matter_powerspectrum(self, k_vals, redshift):
         return ccl.linear_matter_power(

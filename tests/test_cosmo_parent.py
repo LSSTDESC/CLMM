@@ -40,9 +40,9 @@ def test_class(modeling_data):
     assert_raises(NotImplementedError, CLMMCosmology._get_Omega_m, None, None)
     assert_raises(NotImplementedError, CLMMCosmology._get_E2, None, None)
     assert_raises(NotImplementedError,
-                  CLMMCosmology._eval_da_z1z2, None, None, None)
+                  CLMMCosmology._eval_da_z1z2_core, None, None, None)
     assert_raises(NotImplementedError,
-                  CLMMCosmology._eval_sigma_crit, None, None, None)
+                  CLMMCosmology._eval_sigma_crit_core, None, None, None)
     assert_raises(NotImplementedError, CLMMCosmology._get_E2Omega_m, None, None)
     assert_raises(NotImplementedError,
                   CLMMCosmology._eval_linear_matter_powerspectrum, None, None, None)
@@ -152,6 +152,9 @@ def test_cosmo_basic(modeling_data, cosmo_init):
     assert_allclose(cosmo.eval_da_a1a2(testcase['aexp_source'],
                                        testcase['aexp_cluster']),
                     testcase['dsl'], reltol)
+    assert_allclose(cosmo.eval_da_a1a2(testcase['aexp_source'],
+                                       [testcase['aexp_cluster']]*5),
+                    [testcase['dsl']]*5, reltol)
 
     # Test initializing cosmo
     theo.Cosmology(be_cosmo=cosmo.be_cosmo)

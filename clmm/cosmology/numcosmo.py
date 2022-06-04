@@ -128,12 +128,12 @@ class NumCosmoCosmology(CLMMCosmology):
             self._get_param('h') * self._get_param('h')
         return rho_m
 
-    def _eval_da_z1z2(self, z1, z2):
+    def _eval_da_z1z2_core(self, z1, z2):
 
         return np.vectorize(self.dist.angular_diameter_z1_z2)(
             self.be_cosmo, z1, z2)*self.be_cosmo.RH_Mpc()
 
-    def _eval_sigma_crit(self, z_len, z_src):
+    def _eval_sigma_crit_core(self, z_len, z_src):
 
         self.smd.prepare_if_needed(self.be_cosmo)
 
