@@ -125,7 +125,6 @@ class NumCosmoCLMModeling(CLMModeling):
     def _get_einasto_alpha(self, z_cl=None):
         """"get the value of the Einasto slope"""
         # Note that z_cl is needed for the CCL backend only
-        # 
         return self.hdpm.props.alpha
 
     def _eval_3d_density(self, r3d, z_cl):

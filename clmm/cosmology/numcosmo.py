@@ -135,6 +135,8 @@ class NumCosmoCosmology(CLMMCosmology):
 
     def _eval_sigma_crit_core(self, z_len, z_src):
 
+        self.smd.prepare_if_needed(self.be_cosmo)
+
         func = lambda z_len, z_src: self.smd.sigma_critical(
             self.be_cosmo, z_src, z_len, z_len)
         return np.vectorize(func)(z_len, z_src)
