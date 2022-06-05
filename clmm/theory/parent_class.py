@@ -2,8 +2,7 @@
 CLMModeling abstract class
 """
 import warnings
-warnings.filterwarnings("always", module='.*(theory).*')
-warnings.filterwarnings("ignore", module='.*(utils)')
+warnings.filterwarnings("always", module='(clmm).*')
 import numpy as np
 
 # functions for the 2h term
@@ -203,7 +202,7 @@ class CLMModeling:
     def _eval_3d_density(self, r3d, z_cl):
         raise NotImplementedError
 
-    def eval_critical_surface_density(self, z_len, z_src):
+    def eval_critical_surface_density(self, z_len, z_src, show_warning=True):
         r"""Computes the critical surface density
 
         Parameters
@@ -221,10 +220,11 @@ class CLMModeling:
         if self.validate_input:
             validate_argument(locals(), 'z_len', float, argmin=0)
             validate_argument(locals(), 'z_src', 'float_array', argmin=0)
-        return self._eval_critical_surface_density(z_len=z_len, z_src=z_src)
+        return self._eval_critical_surface_density(z_len=z_len, z_src=z_src,
+                                                   show_warning=show_warning)
 
-    def _eval_critical_surface_density(self, z_len, z_src):
-        return self.cosmo.eval_sigma_crit(z_len, z_src)
+    def _eval_critical_surface_density(self, z_len, z_src, show_warning=True):
+        return self.cosmo.eval_sigma_crit(z_len, z_src, show_warning=show_warning)
 
     def eval_surface_density(self, r_proj, z_cl, verbose=False):
         r""" Computes the surface mass density
@@ -437,7 +437,7 @@ class CLMModeling:
         if np.any(np.greater_equal(z_cl, z_src)):
             warnings.warn('\n'
             'Some source redshifts are lower than the cluster redshift.\n'
-            'Shear = 0 for those galaxies.', stacklevel=2)
+            'Shear = 0 for those galaxies.')
         if self.halo_profile_model=='einasto' and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
@@ -445,7 +445,7 @@ class CLMModeling:
 
     def _eval_tangential_shear(self, r_proj, z_cl, z_src):
         delta_sigma = self.eval_excess_surface_density(r_proj, z_cl)
-        sigma_c = self.eval_critical_surface_density(z_cl, z_src)
+        sigma_c = self.eval_critical_surface_density(z_cl, z_src, show_warning=False)
         return delta_sigma/sigma_c
 
     def eval_convergence(self, r_proj, z_cl, z_src, verbose=False):
@@ -488,7 +488,7 @@ class CLMModeling:
 
     def _eval_convergence(self, r_proj, z_cl, z_src, verbose=False):
         sigma = self.eval_surface_density(r_proj, z_cl, verbose=verbose)
-        sigma_c = self.eval_critical_surface_density(z_cl, z_src)
+        sigma_c = self.eval_critical_surface_density(z_cl, z_src, show_warning=False)
         return sigma/sigma_c
 
     def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src, z_src_model='single_plane',
@@ -547,7 +547,7 @@ class CLMModeling:
             if np.any(np.greater_equal(z_cl, z_src)):
                 warnings.warn('\n'
                 'Some source redshifts are lower than the cluster redshift.\n'
-                'Reduced_shear = 0 for those galaxies.', stacklevel=2)
+                'Reduced_shear = 0 for those galaxies.')
             gt = self._eval_reduced_tangential_shear_sp(r_proj, z_cl, z_src)
 
         elif z_src_model == 'applegate14':
