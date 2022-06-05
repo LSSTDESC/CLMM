@@ -9,7 +9,10 @@ from scipy.optimize import fsolve
 from scipy.special import gamma, gammainc
 
 __all__ = ['compute_reduced_shear_from_convergence',
-           'compute_magnification_bias_from_magnification']
+           'compute_magnification_bias_from_magnification',
+           'compute_rdelta',
+           'compute_profile_mass_in_radius',
+           'convert_profile_mass_concentration']
 
 # functions that are general to all backends
 

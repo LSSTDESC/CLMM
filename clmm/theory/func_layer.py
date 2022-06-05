@@ -9,14 +9,17 @@ import warnings
 import numpy as np
 
 from . import generic
-from . generic import compute_reduced_shear_from_convergence, compute_magnification_bias_from_magnification
+from . generic import (compute_reduced_shear_from_convergence,
+                       compute_magnification_bias_from_magnification,
+                       compute_rdelta, compute_profile_mass_in_radius,
+                       convert_profile_mass_concentration)
 
 __all__ = generic.__all__+['compute_3d_density', 'compute_surface_density',
                            'compute_excess_surface_density','compute_excess_surface_density_2h', 
                            'compute_surface_density_2h',
                            'compute_critical_surface_density',
                            'compute_tangential_shear', 'compute_convergence',
-                        'compute_reduced_tangential_shear','compute_magnification',
+                           'compute_reduced_tangential_shear','compute_magnification',
                            'compute_magnification_bias']
 
 
