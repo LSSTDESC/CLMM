@@ -568,7 +568,7 @@ def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argm
                       f' received {"vec_max:"*(var_array.size-1)}{var}'
                 raise ValueError(err)
 
-def compute_for_good_redshifts(function, z1, z2, bad_value, error_message):
+def compute_for_good_redshifts(function, z1, z2, bad_value, error_message, show_warning=True):
     """Computes function only for z1>z2, the rest is filled with bad_value
 
     Parameters
@@ -586,7 +586,8 @@ def compute_for_good_redshifts(function, z1, z2, bad_value, error_message):
     """
     z_good = np.less(z1, z2)
     if not np.all(z_good):
-        warnings.warn(error_message)
+        if show_warning:
+            warnings.warn(error_message, stacklevel=2)
         if np.iterable(z_good):
             res = np.full(z_good.size, bad_value)
             if np.any(z_good):
