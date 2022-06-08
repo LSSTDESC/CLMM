@@ -86,7 +86,6 @@ class AstroPyCosmology(CLMMCosmology):
         return self.be_cosmo.critical_density(z).to(units.Msun/units.Mpc**3).value
 
     def _eval_da_z1z2_core(self, z1, z2):
-
         return self.be_cosmo.angular_diameter_distance_z1z2(z1, z2).to_value(units.Mpc)
 
     def _eval_sigma_crit_core(self, z_len, z_src):
