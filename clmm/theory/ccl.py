@@ -161,7 +161,7 @@ class CCLCLMModeling(CLMModeling):
         else:
             r_proj_l = r_proj
         if type(z_src) == float:
-            z_src_l = [z_src for a in range(0, len(r_proj))]
+            z_src_l = [z_src]*len(r_proj_l)
         else:
             z_src_l = z_src
         a_src = [self.cosmo.get_a_from_z(reds_src) for reds_src in z_src_l]
