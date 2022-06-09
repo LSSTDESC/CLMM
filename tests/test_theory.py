@@ -629,7 +629,7 @@ def test_shear_convergence_unittests(modeling_data):
     assert_allclose(1./((1-kappa*sigmac_corr)**2-abs(gammat*sigmac_corr)**2),
                     cfg['numcosmo_profiles']['mu'], 1.e2*reltol)
 
-#    # Validate magnification bias
+    # Validate magnification bias
     alpha = -1.78
     assert_allclose(mod.eval_magnification_bias(*profile_pars, alpha=alpha),
                     1./((1-kappa)**2-abs(gammat)**2)**(alpha-1), 1.0e-10)
