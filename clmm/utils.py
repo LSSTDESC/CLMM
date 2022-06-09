@@ -6,7 +6,7 @@ from scipy.special import gamma, gammainc
 from astropy import units as u
 from .constants import Constants as const
 from scipy.integrate import quad
-
+from scipy.interpolate import interp1d
 
 
 def compute_nfw_boost(rvals, rs=1000, b0=0.1) :
@@ -602,8 +602,8 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin, kernel=lambda z: 1., ngrid=1000):
     # these lines are not necessary and z_grid, pz_matrix = pzbins, pzpdf
     z_grid = np.linspace(0, 5, ngrid)
     z_grid = z_grid[z_grid>zmin]
-    pz_matrix = np.array([np.interp(z_grid, pzbin, pdf)
-                         for pzbin, pdf in zip(pzbins, pzpdf)])
+    pdf_interp_list = [interp1d(pzbin, pdf, bounds_error=False, fill_value=0.) for pzbin,pdf in zip(pzbins, pzpdf)]
+    pz_matrix = np.array([pdf_interp(z_grid) for pdf_interp in pdf_interp_list])
     kernel_matrix = kernel(z_grid)
     return scipy.integrate.simps(pz_matrix*kernel_matrix, x=z_grid, axis=1)
 
