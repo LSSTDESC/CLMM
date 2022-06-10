@@ -110,6 +110,28 @@ def compute_profile_mass_in_radius(r3d, redshift, cosmo, mdelta, cdelta,
                                    massdef='mean', delta_mdef=200,
                                    halo_profile_model='nfw', alpha=None):
     r"""Computes the mass inside a given radius of the profile.
+    The mass is calculated as
+
+    .. math::
+        M(<\text{r3d}) = M_{\Delta}\;\frac{f(\text{r3d}/r_{\Delta}/c_{\Delta})}{f(c_{\Delta})},
+
+    where :math:`f(x)` for the different models are
+
+    NFW:
+
+    .. math::
+        \quad \ln(1+x)-\frac{x}{1+x}
+
+    Einasto: (:math:`\gamma` is the lower incomplete gamma function)
+
+    .. math::
+        \gamma(\frac{3}{\alpha}, \frac{2}{\alpha}x^{\alpha})
+
+    Hernquist:
+
+    .. math::
+        \left(\frac{x}{1+x}\right)^2
+
 
     Parameters
     ----------
