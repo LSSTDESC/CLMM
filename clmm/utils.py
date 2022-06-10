@@ -1,9 +1,117 @@
 """General utility functions that are used in multiple modules"""
+import warnings
 import numpy as np
 from scipy.stats import binned_statistic
+from scipy.special import gamma, gammainc
 from astropy import units as u
 from .constants import Constants as const
+from scipy.integrate import quad
 
+
+
+def compute_nfw_boost(rvals, rs=1000, b0=0.1) :
+    """ Given a list of rvals, and optional rs and b0, return the corresponding boost factor at each rval
+
+    Parameters
+    ----------
+    rvals : array_like
+        radii
+    rs : float (optional)
+        scale radius for NFW in same units as rvals (default 2000 kpc)
+    b0 : float (optional)
+
+    Returns
+    -------
+    boost_factors : array_like
+
+    """
+
+    x = rvals/rs
+
+    def _calc_finternal(x) :
+
+        radicand = x**2-1
+
+        finternal = -1j *  np.log( (1 + np.lib.scimath.sqrt(radicand)*1j) / (1 - np.lib.scimath.sqrt(radicand)*1j) ) / ( 2 * np.lib.scimath.sqrt(radicand) )
+
+        return np.nan_to_num(finternal, copy=False, nan=1.0).real
+
+    return 1. + b0 * (1 - _calc_finternal(x)) / (x**2 - 1)
+
+
+def compute_powerlaw_boost(rvals, rs=1000, b0=0.1, alpha=-1.0) :
+    """  Given a list of rvals, and optional rs and b0, and alpha, return the corresponding boost factor at each rval
+
+    Parameters
+    ----------
+    rvals : array_like
+        radii
+    rs : float (optional)
+        scale radius for NFW in same units as rvals (default 2000 kpc)
+    b0 : float (optional)
+    alpha : float (optional)
+        exponent from Melchior+16
+
+    Returns
+    -------
+    boost_factors : array_like
+
+    """
+
+    x = rvals/rs
+
+    return 1. + b0 * (x)**alpha
+
+
+boost_models = {'nfw_boost': compute_nfw_boost,
+                'powerlaw_boost': compute_powerlaw_boost}
+
+def correct_sigma_with_boost_values(rvals, sigma_vals, boost_factors):
+    """ Given a boost model and sigma profile, compute corrected sigma
+
+    Parameters
+    ----------
+    rvals : array_like
+        radii
+    sigma_vals : array_like
+        uncorrected sigma with cluster member dilution
+    boost_factors : array_like
+        Boost values pre-computed
+
+    Returns
+    -------
+    sigma_corrected : array_like
+        correted radial profile
+    """
+
+    sigma_corrected = sigma_vals / boost_factors
+    return sigma_corrected
+
+
+def correct_sigma_with_boost_model(rvals, sigma_vals, boost_model='nfw_boost', **boost_model_kw):
+    """ Given a boost model and sigma profile, compute corrected sigma
+
+    Parameters
+    ----------
+    rvals : array_like
+        radii
+    sigma_vals : array_like
+        uncorrected sigma with cluster member dilution
+    boost_model : str, optional
+        Boost model to use for correcting sigma
+            `nfw_boost` - NFW profile model (Default)
+            `powerlaw_boost` - Powerlaw profile
+
+    Returns
+    -------
+    sigma_corrected : array_like
+        correted radial profile
+    """
+    boost_model_func = boost_models[boost_model]
+    boost_factors = boost_model_func(rvals, **boost_model_kw)
+
+    sigma_corrected = sigma_vals / boost_factors
+    return sigma_corrected
 
 def compute_radial_averages(xvals, yvals, xbins, yerr=None, error_model='ste', weights=None):
     """ Given a list of xvals, yvals and bins, sort into bins. If xvals or yvals
@@ -410,7 +518,7 @@ def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argm
     Parameters
     ----------
     loc: dict
-        Dictionaty with all input arguments. Should be locals().
+        Dictionary with all input arguments. Should be locals().
     argname: str
         Name of argument to be tested.
     valid_type: str, type
@@ -459,3 +567,260 @@ def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argm
                 err = f'{argname} must be lesser than {argmax},' \
                       f' received {"vec_max:"*(var_array.size-1)}{var}'
                 raise ValueError(err)
+
+def compute_for_good_redshifts(function, z1, z2, bad_value, error_message):
+    """Computes function only for z1>z2, the rest is filled with bad_value
+
+    Parameters
+    ----------
+    function: function
+        Function to be executed
+    z1: float, array_like
+        Redshift lower
+    z2: float, array_like
+        Redshift higher
+    bad_value: any
+        Value to be added when z1>=z2
+    error_message: str
+        Message to be displayed
+    """
+    z_good = np.less(z1, z2)
+    if not np.all(z_good):
+        warnings.warn(error_message)
+        if np.iterable(z_good):
+            res = np.full(z_good.size, bad_value)
+            if np.any(z_good):
+                res[z_good] = function(
+                    np.array(z1)[z_good] if np.iterable(z1) else z1,
+                    np.array(z2)[z_good] if np.iterable(z2) else z2)
+        else:
+            res = bad_value
+    else:
+        res = function(z1, z2)
+    return res
+
+def compute_beta(z_s, z_cl, cosmo):
+    r"""Geometric lensing efficicency
+
+    .. math::
+        beta = max(0, Dang_ls/Dang_s)
+
+    Eq.2 in https://arxiv.org/pdf/1611.03866.pdf
+
+    Parameters
+    ----------
+    z_cl: float
+            Galaxy cluster redshift
+    z_s:  float
+            Source galaxy  redshift
+    cosmo: Cosmology
+        Cosmology object
+
+    Returns
+    -------
+    float
+        Geometric lensing efficicency
+    """
+    beta = np.heaviside(z_s-z_cl, 0) * cosmo.eval_da_z1z2(z_cl, z_s) / cosmo.eval_da(z_cl)
+    return beta
+
+def compute_beta_s(z_s, z_cl, z_inf, cosmo):
+    r"""Geometric lensing efficicency ratio
+
+    .. math::
+        beta_s =beta(z_s)/beta(z_inf)
+
+    Parameters
+    ----------
+    z_cl: float
+            Galaxy cluster redshift
+    z_s:  float
+            Source galaxy redshift
+    z_inf: float
+            Redshift at infinity
+    cosmo: Cosmology
+        Cosmology object
+
+    Returns
+    -------
+    float
+        Geometric lensing efficicency ratio
+    """
+    beta_s = compute_beta(z_s, z_cl, cosmo) / compute_beta(z_inf, z_cl, cosmo)
+    return beta_s
+
+def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_distrib_func=None):
+    r"""Mean value of the geometric lensing efficicency
+
+    .. math::
+       \left\<beta\right\> =\frac{\sum_{z = z_{min}}^{z = z_{max}}\beta(z)p(z)}{\sum_{z = z_{min}}^{z = z_{max}}p(z)}
+
+    Parameters
+    ----------
+    z_cl: float
+            Galaxy cluster redshift
+    z_inf: float
+            Redshift at infinity
+    z_distrib_func: one-parameter function
+            Redshift distribution function. Default is\
+            Chang et al (2013) distribution\
+            function.
+    zmin: float
+            Minimum redshift to be set as the source of the galaxy\
+             when performing the sum.
+    zmax: float
+            Maximum redshift to be set as the source of the galaxy\
+            when performing the sum.
+    delta_z_cut: float
+            Redshift interval to be summed with $z_cl$ to return\
+            $zmin$. This feature is not used if $z_min$ is provided by the user.
+    cosmo: Cosmology
+        Cosmology object
+
+    Returns
+    -------
+    float
+        Mean value of the geometric lensing efficicency
+    """
+    if z_distrib_func == None:
+        z_distrib_func = _chang_z_distrib
+    def integrand(z_i, z_cl=z_cl, cosmo=cosmo):
+        return compute_beta(z_i, z_cl, cosmo) * z_distrib_func(z_i)
+
+    if zmin==None:
+        zmin = z_cl + delta_z_cut
+
+    B_mean = quad(integrand, zmin, zmax)[0] / quad(z_distrib_func, zmin, zmax)[0]
+    return B_mean    
+
+def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_distrib_func=None):
+    r"""Mean value of the geometric lensing efficicency ratio
+
+    .. math::
+       \left\<beta_s\right\> =\frac{\sum_{z = z_{min}}^{z = z_{max}}\beta_s(z)p(z)}{\sum_{z = z_{min}}^{z = z_{max}}p(z)}
+
+    Parameters
+    ----------
+    z_cl: float
+            Galaxy cluster redshift
+    z_inf: float
+            Redshift at infinity
+    z_distrib_func: one-parameter function
+            Redshift distribution function. Default is\
+            Chang et al (2013) distribution\
+            function.
+    zmin: float
+            Minimum redshift to be set as the source of the galaxy\
+            when performing the sum.
+    zmax: float
+            Minimum redshift to be set as the source of the galaxy\
+            when performing the sum.
+    delta_z_cut: float
+            Redshift interval to be summed with $z_cl$ to return\
+            $zmin$. This feature is not used if $z_min$ is provided by the user.
+    cosmo: Cosmology
+        Cosmology object
+
+    Returns
+    -------
+    float
+        Mean value of the geometric lensing efficicency ratio
+    """
+    if z_distrib_func == None:
+        z_distrib_func = _chang_z_distrib
+
+    def integrand(z_i, z_cl=z_cl, z_inf=z_inf, cosmo=cosmo):
+        return compute_beta_s(z_i, z_cl, z_inf, cosmo) * z_distrib_func(z_i)
+
+    if zmin==None:
+        zmin = z_cl + delta_z_cut
+    Bs_mean = quad(integrand, zmin, zmax)[0] / quad(z_distrib_func, zmin, zmax)[0]
+    return Bs_mean
+
+def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_distrib_func=None):
+    r"""Mean square value of the geometric lensing efficicency ratio
+
+    .. math::
+       \left\<beta_s\right\>2 =\frac{\sum_{z = z_{min}}^{z = z_{max}}\beta_s^2(z)p(z)}{\sum_{z = z_{min}}^{z = z_{max}}p(z)}
+
+    Parameters
+    ----------
+    z_cl: float
+            Galaxy cluster redshift
+    z_inf: float
+            Redshift at infinity
+    z_distrib_func: one-parameter function
+            Redshift distribution function. Default is\
+            Chang et al (2013) distribution\
+            function.
+    zmin: float
+            Minimum redshift to be set as the source of the galaxy\
+            when performing the sum.
+    zmax: float
+            Minimum redshift to be set as the source of the galaxy\
+            when performing the sum.
+    delta_z_cut: float
+            Redshift interval to be summed with $z_cl$ to return\
+            $zmin$. This feature is not used if $z_min$ is provided by the user.
+    cosmo: Cosmology
+        Cosmology object
+
+    Returns
+    -------
+    float
+        Mean square value of the geometric lensing efficicency ratio.
+    """
+    if z_distrib_func == None:
+        z_distrib_func = _chang_z_distrib
+
+    def integrand(z_i, z_cl=z_cl, z_inf=z_inf, cosmo=cosmo):
+        return compute_beta_s(z_i, z_cl, z_inf, cosmo)**2 * z_distrib_func(z_i)
+
+    if zmin==None:
+        zmin = z_cl + delta_z_cut
+    Bs_square_mean = quad(integrand, zmin, zmax)[0] / quad(z_distrib_func, zmin, zmax)[0]
+    return Bs_square_mean
+
+def _chang_z_distrib(redshift, is_cdf=False):
+    """
+    A private function that returns the Chang et al (2013) unnormalized galaxy redshift distribution
+    function, with the fiducial set of parameters.
+
+    Parameters
+    ----------
+    redshift : float
+        Galaxy redshift
+    is_cdf : bool
+        If True, returns cumulative distribution function.
+
+    Returns
+    -------
+    The value of the distribution at z
+    """
+    alpha, beta, redshift0 = 1.24, 1.01, 0.51
+    if is_cdf:
+        return redshift0**(alpha+1)*gammainc((alpha+1)/beta, (redshift/redshift0)**beta)/beta*gamma((alpha+1)/beta)
+    else:
+        return (redshift**alpha)*np.exp(-(redshift/redshift0)**beta)
+
+def _srd_z_distrib(redshift, is_cdf=False):
+    """
+    A private function that returns the unnormalized galaxy redshift distribution function used in
+    the LSST/DESC Science Requirement Document (arxiv:1809.01669).
+
+    Parameters
+    ----------
+    redshift : float
+        Galaxy redshift
+    is_cdf : bool
+        If True, returns cumulative distribution function.
+
+    Returns
+    -------
+    The value of the distribution at z
+    """
+    alpha, beta, redshift0 = 2., 0.9, 0.28
+    if is_cdf:
+        return redshift0**(alpha+1)*gammainc((alpha+1)/beta, (redshift/redshift0)**beta)/beta*gamma((alpha+1)/beta)
+    else:
+        return (redshift**alpha)*np.exp(-(redshift/redshift0)**beta)
