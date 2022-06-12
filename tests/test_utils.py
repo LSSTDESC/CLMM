@@ -436,7 +436,7 @@ def test_beta_functions():
     z_int = np.linspace(zmin, zmax, nsteps)    
     cosmo = md.Cosmology(H0=70.0, Omega_dm0=0.27 - 0.045,
                   Omega_b0=0.045, Omega_k0=0.0)
-    beta_test = np.heaviside(z_s-z_cl, 0) * cosmo.eval_da_z1z2(z_cl, z_s) / cosmo.eval_da(z_cl) 
+    beta_test = np.heaviside(z_s-z_cl, 0) * cosmo.eval_da_z1z2(z_cl, z_s) / cosmo.eval_da(z_s) 
     beta_s_test = utils.compute_beta(z_s, z_cl, cosmo) / utils.compute_beta(z_inf, z_cl, cosmo)
 
     def pdz(z):
