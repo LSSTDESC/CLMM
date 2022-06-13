@@ -4,6 +4,7 @@ import numpy as np
 from numpy.testing import assert_raises, assert_allclose, assert_equal
 import clmm.theory as theo
 from clmm.cosmology.parent_class import CLMMCosmology
+from clmm.constants import Constants as const
 # ----------- Some Helper Functions for the Validation Tests ---------------
 
 
@@ -12,12 +13,14 @@ def load_validation_config():
     numcosmo_path = 'tests/data/numcosmo/'
     with open(numcosmo_path+'config.json', 'r') as fin:
         testcase = json.load(fin)
-    numcosmo_profile = np.genfromtxt(
-        numcosmo_path+'radial_profiles.txt', names=True)
+    numcosmo_ps = np.genfromtxt(
+        numcosmo_path+'matter_power_spectrum.txt', names=True)
     # Cosmology
     cosmo = theo.Cosmology(H0=testcase['cosmo_H0'], Omega_dm0=testcase['cosmo_Odm0'],
                            Omega_b0=testcase['cosmo_Ob0'])
-    return cosmo, testcase
+
+    return cosmo, testcase, numcosmo_ps
+
 # --------------------------------------------------------------------------
 
 
@@ -34,13 +37,16 @@ def test_class(modeling_data):
                   CLMMCosmology._set_param, None, None, None)
     assert_raises(NotImplementedError, CLMMCosmology._get_param, None, None)
     assert_raises(AttributeError, CLMMCosmology.set_be_cosmo, None, None)
-    assert_raises(NotImplementedError, CLMMCosmology.get_Omega_m, None, None)
+    assert_raises(NotImplementedError, CLMMCosmology._get_Omega_m, None, None)
+    assert_raises(NotImplementedError, CLMMCosmology._get_rho_c, None, None)
+    assert_raises(NotImplementedError, CLMMCosmology._get_E2, None, None)
     assert_raises(NotImplementedError,
-                  CLMMCosmology.eval_da_z1z2, None, None, None)
-    assert_raises(AttributeError, CLMMCosmology.eval_da, None, None)
+                  CLMMCosmology._eval_da_z1z2_core, None, None, None)
     assert_raises(NotImplementedError,
-                  CLMMCosmology.eval_sigma_crit, None, None, None)
-    assert_raises(NotImplementedError, CLMMCosmology.get_E2Omega_m, None, None)
+                  CLMMCosmology._eval_sigma_crit_core, None, None, None)
+    assert_raises(NotImplementedError, CLMMCosmology._get_E2Omega_m, None, None)
+    assert_raises(NotImplementedError,
+                  CLMMCosmology._eval_linear_matter_powerspectrum, None, None, None)
 
 
 TOLERANCE = {'rtol': 1.0e-12}
@@ -113,6 +119,7 @@ def test_cosmo_basic(modeling_data, cosmo_init):
     Omega_m0 = cosmo['Omega_m0']
     assert_allclose(cosmo.get_Omega_m(0.0), Omega_m0, **TOLERANCE)
     assert_allclose(cosmo.get_E2Omega_m(0.0), Omega_m0, **TOLERANCE)
+    assert_allclose(cosmo.get_E2Omega_m(0.0)/cosmo.get_E2(0.0), Omega_m0, **TOLERANCE)
     # Test getting all parameters
     for param in ("Omega_m0", "Omega_b0", "Omega_dm0", "Omega_k0", 'h', 'H0'):
         cosmo[param]
@@ -137,7 +144,7 @@ def test_cosmo_basic(modeling_data, cosmo_init):
     assert_allclose(cosmo.eval_da_z1z2(0.0, z),
                     cosmo.eval_da_z1z2(0.0, z), rtol=8.0e-15)
     # Test da(a1, a1)
-    cosmo, testcase = load_validation_config()
+    cosmo, testcase, _ = load_validation_config()
     assert_allclose(cosmo.eval_da_a1a2(testcase['aexp_cluster']),
                     testcase['dl'], reltol)
     assert_allclose(cosmo.eval_da_a1a2(testcase['aexp_source']),
@@ -145,9 +152,41 @@ def test_cosmo_basic(modeling_data, cosmo_init):
     assert_allclose(cosmo.eval_da_a1a2(testcase['aexp_source'],
                                        testcase['aexp_cluster']),
                     testcase['dsl'], reltol)
+    assert_allclose(cosmo.eval_da_a1a2(testcase['aexp_source'],
+                                       [testcase['aexp_cluster']]*5),
+                    [testcase['dsl']]*5, reltol)
 
     # Test initializing cosmo
     theo.Cosmology(be_cosmo=cosmo.be_cosmo)
+
+    # Test get rho matter
+    rhocrit_mks = 3.0*100.0*100.0/(8.0*np.pi*const.GNEWT.value)
+    rhocrit_cd2018 = (rhocrit_mks*1000.0*1000.0*
+        const.PC_TO_METER.value*1.0e6/const.SOLAR_MASS.value)
+    for z in np.linspace(0.0, 2.0, 5):
+        assert_allclose(
+            cosmo.get_rho_m(z),
+            rhocrit_cd2018*(z+1)**3*cosmo['Omega_m0']*cosmo['h']**2,
+            rtol=1e-5)
+        assert_allclose(
+            cosmo.get_rho_c(z),
+            cosmo.get_rho_m(z)/cosmo.get_Omega_m(z),
+            rtol=1e-5)
+
+    # Test pk - just consistency! A better test must be implemented
+    if cosmo.backend in ('ccl', 'nc'):
+        k = np.logspace(-2, 1, 20)
+        assert_allclose(
+            cosmo.eval_linear_matter_powerspectrum(k, 0.1),
+            cosmo.eval_linear_matter_powerspectrum(k, 0.1),
+            rtol=1e-5)
+
+def test_matter_power_spectrum(modeling_data):
+    cosmo_ps, testcase, ps = load_validation_config()
+    if cosmo_ps.backend in ('ccl', 'nc'):
+        reltol = modeling_data['ps_reltol']
+        kvals = ps['k']
+        assert_allclose(cosmo_ps.eval_linear_matter_powerspectrum(kvals, testcase['z_cluster']), ps['P_of_k'], reltol)
 
 
 def _rad2mpc_helper(dist, redshift, cosmo, do_inverse):
@@ -189,3 +228,4 @@ def test_convert_rad_to_mpc():
             H0=70.0, Omega_dm0=oneomm-0.045, Omega_b0=0.045), do_inverse=False)
         _rad2mpc_helper(1.0, 0.5, theo.Cosmology(
             H0=70.0, Omega_dm0=oneomm-0.045, Omega_b0=0.045), do_inverse=True)
+
