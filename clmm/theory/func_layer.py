@@ -8,14 +8,17 @@ Main functions to encapsule oo calls
 import numpy as np
 
 from . import generic
-from . generic import compute_reduced_shear_from_convergence, compute_magnification_bias_from_magnification
+from . generic import (compute_reduced_shear_from_convergence,
+                       compute_magnification_bias_from_magnification,
+                       compute_rdelta, compute_profile_mass_in_radius,
+                       convert_profile_mass_concentration)
 
 __all__ = generic.__all__+['compute_3d_density', 'compute_surface_density',
                            'compute_excess_surface_density','compute_excess_surface_density_2h', 
                            'compute_surface_density_2h',
                            'compute_critical_surface_density',
                            'compute_tangential_shear', 'compute_convergence',
-                        'compute_reduced_tangential_shear','compute_magnification',
+                           'compute_reduced_tangential_shear','compute_magnification',
                            'compute_magnification_bias']
 
 
@@ -61,7 +64,7 @@ def compute_3d_density(
         If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only available
         for the NumCosmo backend
     verbose : boolean, optional
-        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends.
+        If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL backends.
     validate_input : bool, optional
         If True (default), the types of the arguments are checked before proceeding.
 
@@ -131,7 +134,7 @@ def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
         If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only available
         for the NumCosmo backend
     verbose : boolean, optional
-        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends.
+        If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL backends.
     validate_input : bool, optional
         If True (default), the types of the arguments are checked before proceeding.
 
@@ -204,7 +207,7 @@ def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
         If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only available
         for the NumCosmo backend
     verbose : boolean, optional
-        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends.
+        If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL backends.
     validate_input : bool, optional
         If True (default), the types of the arguments are checked before proceeding.
 
@@ -397,7 +400,7 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
             `z_source` is a float) or known individual source galaxy redshifts
             (if `z_source` is an array and `r_proj` is a float);
     verbose : boolean, optional
-        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends.
+        If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL backends.
     validate_input : bool, optional
         If True (default), the types of the arguments are checked before proceeding.
 
@@ -489,7 +492,7 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
             `z_source` is a float) or known individual source galaxy redshifts
             (if `z_source` is an array and `r_proj` is a float);
     verbose : boolean, optional
-        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends.
+        If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL backends.
     validate_input : bool, optional
         If True (default), the types of the arguments are checked before proceeding.
 
@@ -601,7 +604,7 @@ def compute_reduced_tangential_shear(
                     \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
 
     verbose : boolean, optional
-        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends.
+        If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL backends.
     validate_input : bool, optional
         If True (default), the types of the arguments are checked before proceeding.
 
@@ -680,7 +683,7 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
             `z_source` is a float) or known individual source galaxy redshifts
             (if `z_source` is an array and `r_proj` is a float);
     verbose : boolean, optional
-        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends.
+        If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL backends.
     validate_input : bool, optional
         If True (default), the types of the arguments are checked before proceeding.
 

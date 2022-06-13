@@ -85,6 +85,10 @@ class CCLCosmology(CLMMCosmology):
         a = self.get_a_from_z(z)
         return ccl.rho_x(self.be_cosmo, a, 'matter', is_comoving = False)
 
+    def _get_rho_c(self, z):
+        a = self.get_a_from_z(z)
+        return ccl.rho_x(self.be_cosmo, a, 'critical', is_comoving=False)
+
     def _eval_da_z1z2_core(self, z1, z2):
         a1 = np.atleast_1d(self.get_a_from_z(z1))
         a2 = np.atleast_1d(self.get_a_from_z(z2))

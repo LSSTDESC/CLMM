@@ -63,7 +63,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'CLMM'
-copyright = '2018-2021, LSST DESC CLMM Contributors'
+copyright = '2018-2022, LSST DESC CLMM Contributors'
 author = 'LSST DESC CLMM Contributors'
 language = 'en'
 
