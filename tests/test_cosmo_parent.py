@@ -18,7 +18,7 @@ def load_validation_config():
     # Cosmology
     cosmo = theo.Cosmology(H0=testcase['cosmo_H0'], Omega_dm0=testcase['cosmo_Odm0'],
                            Omega_b0=testcase['cosmo_Ob0'])
- 
+
     return cosmo, testcase, numcosmo_ps
 
 # --------------------------------------------------------------------------
@@ -38,11 +38,12 @@ def test_class(modeling_data):
     assert_raises(NotImplementedError, CLMMCosmology._get_param, None, None)
     assert_raises(AttributeError, CLMMCosmology.set_be_cosmo, None, None)
     assert_raises(NotImplementedError, CLMMCosmology._get_Omega_m, None, None)
+    assert_raises(NotImplementedError, CLMMCosmology._get_rho_c, None, None)
     assert_raises(NotImplementedError, CLMMCosmology._get_E2, None, None)
     assert_raises(NotImplementedError,
-                  CLMMCosmology._eval_da_z1z2, None, None, None)
+                  CLMMCosmology._eval_da_z1z2_core, None, None, None)
     assert_raises(NotImplementedError,
-                  CLMMCosmology._eval_sigma_crit, None, None, None)
+                  CLMMCosmology._eval_sigma_crit_core, None, None, None)
     assert_raises(NotImplementedError, CLMMCosmology._get_E2Omega_m, None, None)
     assert_raises(NotImplementedError,
                   CLMMCosmology._eval_linear_matter_powerspectrum, None, None, None)
@@ -151,6 +152,9 @@ def test_cosmo_basic(modeling_data, cosmo_init):
     assert_allclose(cosmo.eval_da_a1a2(testcase['aexp_source'],
                                        testcase['aexp_cluster']),
                     testcase['dsl'], reltol)
+    assert_allclose(cosmo.eval_da_a1a2(testcase['aexp_source'],
+                                       [testcase['aexp_cluster']]*5),
+                    [testcase['dsl']]*5, reltol)
 
     # Test initializing cosmo
     theo.Cosmology(be_cosmo=cosmo.be_cosmo)
@@ -163,6 +167,10 @@ def test_cosmo_basic(modeling_data, cosmo_init):
         assert_allclose(
             cosmo.get_rho_m(z),
             rhocrit_cd2018*(z+1)**3*cosmo['Omega_m0']*cosmo['h']**2,
+            rtol=1e-5)
+        assert_allclose(
+            cosmo.get_rho_c(z),
+            cosmo.get_rho_m(z)/cosmo.get_Omega_m(z),
             rtol=1e-5)
 
     # Test pk - just consistency! A better test must be implemented

@@ -1,4 +1,5 @@
 """General utility functions that are used in multiple modules"""
+import warnings
 import numpy as np
 import scipy
 from scipy.stats import binned_statistic
@@ -37,7 +38,6 @@ def compute_nfw_boost(rvals, rs=1000, b0=0.1) :
         return np.nan_to_num(finternal, copy=False, nan=1.0).real
 
     return 1. + b0 * (1 - _calc_finternal(x)) / (x**2 - 1)
-        
 
 
 def compute_powerlaw_boost(rvals, rs=1000, b0=0.1, alpha=-1.0) :
@@ -63,7 +63,6 @@ def compute_powerlaw_boost(rvals, rs=1000, b0=0.1, alpha=-1.0) :
 
     return 1. + b0 * (x)**alpha
 
-    
 
 boost_models = {'nfw_boost': compute_nfw_boost,
                 'powerlaw_boost': compute_powerlaw_boost}
@@ -103,7 +102,6 @@ def correct_sigma_with_boost_model(rvals, sigma_vals, boost_model='nfw_boost', *
         Boost model to use for correcting sigma
             `nfw_boost` - NFW profile model (Default)
             `powerlaw_boost` - Powerlaw profile
-    
 
     Returns
     -------
@@ -607,14 +605,45 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin, kernel=lambda z: 1., ngrid=1000):
     kernel_matrix = kernel(z_grid)
     return scipy.integrate.simps(pz_matrix*kernel_matrix, x=z_grid, axis=1)
 
+def compute_for_good_redshifts(function, z1, z2, bad_value, error_message):
+    """Computes function only for z1>z2, the rest is filled with bad_value
+
+    Parameters
+    ----------
+    function: function
+        Function to be executed
+    z1: float, array_like
+        Redshift lower
+    z2: float, array_like
+        Redshift higher
+    bad_value: any
+        Value to be added when z1>=z2
+    error_message: str
+        Message to be displayed
+    """
+    z_good = np.less(z1, z2)
+    if not np.all(z_good):
+        warnings.warn(error_message)
+        if np.iterable(z_good):
+            res = np.full(z_good.size, bad_value)
+            if np.any(z_good):
+                res[z_good] = function(
+                    np.array(z1)[z_good] if np.iterable(z1) else z1,
+                    np.array(z2)[z_good] if np.iterable(z2) else z2)
+        else:
+            res = bad_value
+    else:
+        res = function(z1, z2)
+    return res
+
 def compute_beta(z_s, z_cl, cosmo):
-    r"""Geometric lensing efficicency  
-    
-    .. math:: 
+    r"""Geometric lensing efficicency
+
+    .. math::
         beta = max(0, Dang_ls/Dang_s)
-        
-    Eq.2 in https://arxiv.org/pdf/1611.03866.pdf    
-    
+
+    Eq.2 in https://arxiv.org/pdf/1611.03866.pdf
+
     Parameters
     ----------
     z_cl: float
@@ -623,7 +652,7 @@ def compute_beta(z_s, z_cl, cosmo):
             Source galaxy  redshift
     cosmo: Cosmology
         Cosmology object
-    
+
     Returns
     -------
     float
@@ -633,9 +662,9 @@ def compute_beta(z_s, z_cl, cosmo):
     return beta
 
 def compute_beta_s(z_s, z_cl, z_inf, cosmo):
-    r"""Geometric lensing efficicency ratio 
-    
-    .. math:: 
+    r"""Geometric lensing efficicency ratio
+
+    .. math::
         beta_s =beta(z_s)/beta(z_inf)
 
     Parameters
@@ -648,7 +677,7 @@ def compute_beta_s(z_s, z_cl, z_inf, cosmo):
             Redshift at infinity
     cosmo: Cosmology
         Cosmology object
-    
+
     Returns
     -------
     float
@@ -658,9 +687,9 @@ def compute_beta_s(z_s, z_cl, z_inf, cosmo):
     return beta_s
 
 def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_distrib_func=None):
-    r"""Mean value of the geometric lensing efficicency  
-    
-    .. math:: 
+    r"""Mean value of the geometric lensing efficicency
+
+    .. math::
        \left\<beta\right\> =\frac{\sum_{z = z_{min}}^{z = z_{max}}\beta(z)p(z)}{\sum_{z = z_{min}}^{z = z_{max}}p(z)}
 
     Parameters
@@ -684,7 +713,7 @@ def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_dist
             $zmin$. This feature is not used if $z_min$ is provided by the user.
     cosmo: Cosmology
         Cosmology object
-    
+
     Returns
     -------
     float
@@ -694,17 +723,17 @@ def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_dist
         z_distrib_func = _chang_z_distrib
     def integrand(z_i, z_cl=z_cl, cosmo=cosmo):
         return compute_beta(z_i, z_cl, cosmo) * z_distrib_func(z_i)
-    
+
     if zmin==None:
         zmin = z_cl + delta_z_cut
-    
+
     B_mean = quad(integrand, zmin, zmax)[0] / quad(z_distrib_func, zmin, zmax)[0]
     return B_mean    
 
 def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_distrib_func=None):
-    r"""Mean value of the geometric lensing efficicency ratio 
-    
-    .. math:: 
+    r"""Mean value of the geometric lensing efficicency ratio
+
+    .. math::
        \left\<beta_s\right\> =\frac{\sum_{z = z_{min}}^{z = z_{max}}\beta_s(z)p(z)}{\sum_{z = z_{min}}^{z = z_{max}}p(z)}
 
     Parameters
@@ -728,12 +757,12 @@ def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=Non
             $zmin$. This feature is not used if $z_min$ is provided by the user.
     cosmo: Cosmology
         Cosmology object
-    
+
     Returns
     -------
     float
         Mean value of the geometric lensing efficicency ratio
-    """   
+    """
     if z_distrib_func == None:
         z_distrib_func = _chang_z_distrib
 
@@ -746,9 +775,9 @@ def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=Non
     return Bs_mean
 
 def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_distrib_func=None):
-    r"""Mean square value of the geometric lensing efficicency ratio 
-    
-    .. math:: 
+    r"""Mean square value of the geometric lensing efficicency ratio
+
+    .. math::
        \left\<beta_s\right\>2 =\frac{\sum_{z = z_{min}}^{z = z_{max}}\beta_s^2(z)p(z)}{\sum_{z = z_{min}}^{z = z_{max}}p(z)}
 
     Parameters
@@ -772,18 +801,18 @@ def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, z
             $zmin$. This feature is not used if $z_min$ is provided by the user.
     cosmo: Cosmology
         Cosmology object
-    
+
     Returns
     -------
     float
         Mean square value of the geometric lensing efficicency ratio.
-    """ 
+    """
     if z_distrib_func == None:
         z_distrib_func = _chang_z_distrib
-    
+
     def integrand(z_i, z_cl=z_cl, z_inf=z_inf, cosmo=cosmo):
         return compute_beta_s(z_i, z_cl, z_inf, cosmo)**2 * z_distrib_func(z_i)
-    
+
     if zmin==None:
         zmin = z_cl + delta_z_cut
     Bs_square_mean = quad(integrand, zmin, zmax)[0] / quad(z_distrib_func, zmin, zmax)[0]
