@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.galaxycluster &mdash; CLMM 1.0.0 documentation</title>
+  <title>clmm.galaxycluster &mdash; CLMM 1.2.0 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.0.0
+                1.2.0
               </div>
             
           
@@ -85,27 +85,30 @@
               
             
             
-              <p><span class="caption-text">Getting Started</span></p>
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../source/overview.html">Rapid overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../source/installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../source/citing.html">Citing CLMM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/citing.html">Using and citing CLMM</a></li>
 </ul>
-<p><span class="caption-text">Usage Demos</span></p>
+<p class="caption"><span class="caption-text">Usage Demos</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_mass_conversion.html">Mass conversion between spherical overdensity mass definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_boost_factors.html">Define cosmology object</a></li>
 </ul>
-<p><span class="caption-text">Mass Fitting Examples</span></p>
+<p class="caption"><span class="caption-text">Mass Fitting Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog_NC.html">Fit halo mass to shear profile using Numcosmo statistical framework</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/Example1_Fit_shear_profile_with_miscentering.html">Investigate the impact of miscentering on shear profiles</a></li>
 </ul>
-<p><span class="caption-text">Reference</span></p>
+<p class="caption"><span class="caption-text">Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api.html">API Documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../api/clmm.constants.html">clmm.constants module</a></li>
@@ -208,9 +211,11 @@
 <span class="kn">import</span> <span class="nn">pickle</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">.gcdata</span> <span class="kn">import</span> <span class="n">GCData</span>
-<span class="kn">from</span> <span class="nn">.dataops</span> <span class="kn">import</span> <span class="n">compute_tangential_and_cross_components</span><span class="p">,</span> <span class="n">make_radial_profile</span>
+<span class="kn">from</span> <span class="nn">.dataops</span> <span class="kn">import</span> <span class="p">(</span><span class="n">compute_tangential_and_cross_components</span><span class="p">,</span> <span class="n">make_radial_profile</span><span class="p">,</span>
+                      <span class="n">compute_galaxy_weights</span><span class="p">,</span> <span class="n">compute_background_probability</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.theory</span> <span class="kn">import</span> <span class="n">compute_critical_surface_density</span>
 <span class="kn">from</span> <span class="nn">.plotting</span> <span class="kn">import</span> <span class="n">plot_profiles</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">validate_argument</span>
 
 
 <div class="viewcode-block" id="GalaxyCluster"><a class="viewcode-back" href="../../api/clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster">[docs]</a><span class="k">class</span> <span class="nc">GalaxyCluster</span><span class="p">():</span>
@@ -228,20 +233,23 @@
 <span class="sd">        Redshift of galaxy cluster center</span>
 <span class="sd">    galcat : GCData</span>
 <span class="sd">        Table of background galaxy data containing at least galaxy_id, ra, dec, e1, e2, z</span>
+<span class="sd">    validate_input: bool</span>
+<span class="sd">        Validade each input argument</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">validate_input</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ra</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dec</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span> <span class="o">=</span> <span class="n">validate_input</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_add_values</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_check_types</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_ra_lower</span><span class="p">(</span><span class="n">ra_low</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_add_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ra</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dec</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-                 <span class="n">galcat</span><span class="p">:</span> <span class="n">GCData</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_add_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ra</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dec</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">galcat</span><span class="p">:</span> <span class="n">GCData</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add values for all attributes&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span> <span class="o">=</span> <span class="n">unique_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ra</span> <span class="o">=</span> <span class="n">ra</span>
@@ -251,30 +259,15 @@
 
     <span class="k">def</span> <span class="nf">_check_types</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Check types of all attributes&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">)):</span> <span class="c1"># should unique_id be a float?</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;unique_id incorrect type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ra</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ra</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ra incorrect type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ra</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">dec</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dec</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;dec incorrect type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dec</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;z incorrect type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">,</span> <span class="n">GCData</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;galcat incorrect type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="o">-</span><span class="mf">360.</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ra</span> <span class="o">&lt;=</span> <span class="mf">360.</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ra=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ra</span><span class="si">}</span><span class="s1"> not in valid bounds: [-360, 360]&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="o">-</span><span class="mf">90.</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dec</span> <span class="o">&lt;=</span> <span class="mf">90.</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;dec=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dec</span><span class="si">}</span><span class="s1"> not in valid bounds: [-90, 90]&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">&lt;</span> <span class="mf">0.</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;z=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="si">}</span><span class="s1"> must be greater than 0&#39;</span><span class="p">)</span>
+        <span class="n">validate_argument</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="s1">&#39;unique_id&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">))</span>
+        <span class="n">validate_argument</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="s1">&#39;ra&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> <span class="n">argmin</span><span class="o">=-</span><span class="mi">360</span><span class="p">,</span> <span class="n">eqmin</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">argmax</span><span class="o">=</span><span class="mi">360</span><span class="p">,</span> <span class="n">eqmax</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">validate_argument</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="s1">&#39;dec&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> <span class="n">argmin</span><span class="o">=-</span><span class="mi">90</span><span class="p">,</span> <span class="n">eqmin</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">argmax</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">eqmax</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">validate_argument</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">eqmin</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">validate_argument</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="s1">&#39;galcat&#39;</span><span class="p">,</span> <span class="n">GCData</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ra</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ra</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dec</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dec</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
 
 <div class="viewcode-block" id="GalaxyCluster.save"><a class="viewcode-back" href="../../api/clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Saves GalaxyCluster object to filename using Pickle&quot;&quot;&quot;</span>
@@ -339,8 +332,36 @@
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Galaxy catalog missing the redshift column. &#39;</span>
                                 <span class="s1">&#39;Cannot compute Sigma_crit&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">update_cosmo</span><span class="p">(</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;sigma_c&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">compute_critical_surface_density</span><span class="p">(</span><span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">z_cluster</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span>
-                                                                  <span class="n">z_source</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">])</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;sigma_c&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">compute_critical_surface_density</span><span class="p">(</span>
+                <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">z_cluster</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">],</span>
+                <span class="n">validate_input</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_input_galdata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">col_dict</span><span class="p">,</span> <span class="n">required_cols</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks required columns exist in galcat and returns kwargs dictionary</span>
+<span class="sd">        to be passed to dataops functions.</span>
+
+<span class="sd">        Parametters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        col_dict: dict</span>
+<span class="sd">            Dictionary with the names of the dataops arguments as keys and galcat columns</span>
+<span class="sd">            as values, made to usually pass locals() here.</span>
+<span class="sd">        required_cols: list, None</span>
+<span class="sd">            List of column names required. If None, checks all columns.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            Dictionary with the data to be passed to functions by **kwargs method.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">use_cols</span> <span class="o">=</span> <span class="n">col_dict</span> <span class="k">if</span> <span class="n">required_cols</span> <span class="ow">is</span> <span class="kc">None</span> \
+                    <span class="k">else</span> <span class="p">{</span><span class="n">col</span><span class="p">:</span><span class="n">col_dict</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">required_cols</span><span class="p">}</span>
+        <span class="n">missing_cols</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">t_</span><span class="si">}</span><span class="s2">&#39;&quot;</span> <span class="k">for</span> <span class="n">t_</span> <span class="ow">in</span> <span class="n">use_cols</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+                                    <span class="k">if</span> <span class="n">t_</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">columns</span><span class="p">])</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing_cols</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Galaxy catalog missing required columns: </span><span class="si">{</span><span class="n">missing_cols</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="n">colname</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">colname</span> <span class="ow">in</span> <span class="n">use_cols</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
 
 <div class="viewcode-block" id="GalaxyCluster.compute_tangential_and_cross_components"><a class="viewcode-back" href="../../api/clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster.compute_tangential_and_cross_components">[docs]</a>    <span class="k">def</span> <span class="nf">compute_tangential_and_cross_components</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">shape_component1</span><span class="o">=</span><span class="s1">&#39;e1&#39;</span><span class="p">,</span> <span class="n">shape_component2</span><span class="o">=</span><span class="s1">&#39;e2&#39;</span><span class="p">,</span> <span class="n">tan_component</span><span class="o">=</span><span class="s1">&#39;et&#39;</span><span class="p">,</span>
@@ -395,31 +416,133 @@
 <span class="sd">            Cross shear (or assimilated quantity) for each source galaxy</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Check is all the required data is available</span>
-        <span class="n">missing_cols</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-            <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">t_</span><span class="si">}</span><span class="s2">&#39;&quot;</span> <span class="k">for</span> <span class="n">t_</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;ra&#39;</span><span class="p">,</span> <span class="s1">&#39;dec&#39;</span><span class="p">,</span> <span class="n">shape_component1</span><span class="p">,</span> <span class="n">shape_component2</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">t_</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">columns</span><span class="p">])</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing_cols</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Galaxy catalog missing required columns: &#39;</span><span class="o">+</span><span class="n">missing_cols</span><span class="o">+</span>\
-                            <span class="s1">&#39;. Do you mean to first convert column names?&#39;</span><span class="p">)</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_input_galdata</span><span class="p">(</span>
+            <span class="p">{</span><span class="s1">&#39;ra_source&#39;</span><span class="p">:</span><span class="s1">&#39;ra&#39;</span><span class="p">,</span> <span class="s1">&#39;dec_source&#39;</span><span class="p">:</span><span class="s1">&#39;dec&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;shear1&#39;</span><span class="p">:</span> <span class="n">shape_component1</span><span class="p">,</span> <span class="s1">&#39;shear2&#39;</span><span class="p">:</span> <span class="n">shape_component2</span><span class="p">})</span>
         <span class="k">if</span> <span class="n">is_deltasigma</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_critical_surface_density</span><span class="p">(</span><span class="n">cosmo</span><span class="p">)</span>
+            <span class="n">cols</span><span class="p">[</span><span class="s1">&#39;sigma_c&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;sigma_c&#39;</span><span class="p">]</span>
         <span class="c1"># compute shears</span>
         <span class="n">angsep</span><span class="p">,</span> <span class="n">tangential_comp</span><span class="p">,</span> <span class="n">cross_comp</span> <span class="o">=</span> <span class="n">compute_tangential_and_cross_components</span><span class="p">(</span>
-                <span class="n">ra_lens</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec_lens</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dec</span><span class="p">,</span>
-                <span class="n">ra_source</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;ra&#39;</span><span class="p">],</span> <span class="n">dec_source</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;dec&#39;</span><span class="p">],</span>
-                <span class="n">shear1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="n">shape_component1</span><span class="p">],</span> <span class="n">shear2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="n">shape_component2</span><span class="p">],</span>
-                <span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span><span class="p">,</span> <span class="n">is_deltasigma</span><span class="o">=</span><span class="n">is_deltasigma</span><span class="p">,</span>
-                <span class="n">sigma_c</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;sigma_c&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;sigma_c&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">columns</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="n">ra_lens</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec_lens</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dec</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span><span class="p">,</span> <span class="n">is_deltasigma</span><span class="o">=</span><span class="n">is_deltasigma</span><span class="p">,</span>
+                <span class="n">validate_input</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">,</span> <span class="o">**</span><span class="n">cols</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">add</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;theta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">angsep</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="n">tan_component</span><span class="p">]</span> <span class="o">=</span> <span class="n">tangential_comp</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="n">cross_component</span><span class="p">]</span> <span class="o">=</span> <span class="n">cross_comp</span>
         <span class="k">return</span> <span class="n">angsep</span><span class="p">,</span> <span class="n">tangential_comp</span><span class="p">,</span> <span class="n">cross_comp</span></div>
 
-<div class="viewcode-block" id="GalaxyCluster.make_radial_profile"><a class="viewcode-back" href="../../api/clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster.make_radial_profile">[docs]</a>    <span class="k">def</span> <span class="nf">make_radial_profile</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">bin_units</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tan_component_in</span><span class="o">=</span><span class="s1">&#39;et&#39;</span><span class="p">,</span> <span class="n">cross_component_in</span><span class="o">=</span><span class="s1">&#39;ex&#39;</span><span class="p">,</span>
-            <span class="n">tan_component_out</span><span class="o">=</span><span class="s1">&#39;gt&#39;</span><span class="p">,</span> <span class="n">cross_component_out</span><span class="o">=</span><span class="s1">&#39;gx&#39;</span><span class="p">,</span> <span class="n">include_empty_bins</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-            <span class="n">gal_ids_in_bins</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">table_name</span><span class="o">=</span><span class="s1">&#39;profile&#39;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="GalaxyCluster.compute_background_probability"><a class="viewcode-back" href="../../api/clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster.compute_background_probability">[docs]</a>    <span class="k">def</span> <span class="nf">compute_background_probability</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="n">pzpdf</span><span class="o">=</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">,</span> <span class="n">pzbins</span><span class="o">=</span><span class="s1">&#39;pzbins&#39;</span><span class="p">,</span>
+                                       <span class="n">use_photoz</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">p_background_name</span><span class="o">=</span><span class="s1">&#39;p_background&#39;</span><span class="p">,</span>
+                                       <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Probability for being a background galaxy</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        z_source: string</span>
+<span class="sd">            column name : source redshifts</span>
+<span class="sd">        pzpdf : string</span>
+<span class="sd">            column name : photometric probablility density function of the source galaxies</span>
+<span class="sd">        pzbins : string</span>
+<span class="sd">            column name : redshift axis on which the individual photoz pdf is tabulated</span>
+<span class="sd">        use_photoz : boolean</span>
+<span class="sd">            True for computing photometric probabilities</span>
+<span class="sd">        add : boolean</span>
+<span class="sd">            If True, add background probability columns to the galcat table</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        p_background : array</span>
+<span class="sd">            Probability for being a background galaxy</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">required_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">,</span> <span class="s1">&#39;pzbins&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">use_photoz</span> <span class="k">else</span> <span class="p">[</span><span class="s1">&#39;z_source&#39;</span><span class="p">]</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_input_galdata</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="n">required_cols</span><span class="p">)</span>
+        <span class="n">p_background</span> <span class="o">=</span> <span class="n">compute_background_probability</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">validate_input</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">,</span> <span class="o">**</span><span class="n">cols</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">add</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="n">p_background_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">p_background</span>
+        <span class="k">return</span> <span class="n">p_background</span></div>
+
+<div class="viewcode-block" id="GalaxyCluster.compute_galaxy_weights"><a class="viewcode-back" href="../../api/clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster.compute_galaxy_weights">[docs]</a>    <span class="k">def</span> <span class="nf">compute_galaxy_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="n">pzpdf</span><span class="o">=</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">,</span> <span class="n">pzbins</span><span class="o">=</span><span class="s1">&#39;pzbins&#39;</span><span class="p">,</span>
+                               <span class="n">shape_component1</span><span class="o">=</span><span class="s1">&#39;e1&#39;</span><span class="p">,</span> <span class="n">shape_component2</span><span class="o">=</span><span class="s1">&#39;e2&#39;</span><span class="p">,</span>
+                               <span class="n">shape_component1_err</span><span class="o">=</span><span class="s1">&#39;e1_err&#39;</span><span class="p">,</span> <span class="n">shape_component2_err</span><span class="o">=</span><span class="s1">&#39;e2_err&#39;</span><span class="p">,</span>
+                               <span class="n">use_photoz</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">use_shape_noise</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">use_shape_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                               <span class="n">weight_name</span><span class="o">=</span><span class="s1">&#39;w_ls&#39;</span><span class="p">,</span><span class="n">cosmo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                               <span class="n">is_deltasigma</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes the individual lens-source pair weights</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        z_source: string</span>
+<span class="sd">            column name : source redshifts</span>
+<span class="sd">        cosmo: clmm.Comology object, None</span>
+<span class="sd">            CLMM Cosmology object.</span>
+<span class="sd">        pzpdf : string</span>
+<span class="sd">            column name : photometric probablility density function of the source galaxies</span>
+<span class="sd">        pzbins : string</span>
+<span class="sd">            column name : redshift axis on which the individual photoz pdf is tabulated</span>
+<span class="sd">        shape_component1: string</span>
+<span class="sd">            column name : The measured shear (or reduced shear or ellipticity)</span>
+<span class="sd">            of the source galaxies</span>
+<span class="sd">        shape_component2: array</span>
+<span class="sd">            column name : The measured shear (or reduced shear or ellipticity)</span>
+<span class="sd">            of the source galaxies</span>
+<span class="sd">        shape_component1_err: array</span>
+<span class="sd">            column name : The measurement error on the 1st-component of ellipticity</span>
+<span class="sd">            of the source galaxies</span>
+<span class="sd">        shape_component2_err: array</span>
+<span class="sd">            column name : The measurement error on the 2nd-component of ellipticity</span>
+<span class="sd">            of the source galaxies</span>
+<span class="sd">        use_photoz : boolean</span>
+<span class="sd">            True for computing photometric weights</span>
+<span class="sd">        use_shape_noise : boolean</span>
+<span class="sd">            True for considering shapenoise in the weight computation</span>
+<span class="sd">        use_shape_error : boolean</span>
+<span class="sd">            True for considering measured shape error in the weight computation</span>
+<span class="sd">        weight_name : string</span>
+<span class="sd">            Name of the new column for the weak lensing weights in the galcat table</span>
+<span class="sd">        is_deltasigma: boolean</span>
+<span class="sd">            Indicates whether it is the excess surface density or the tangential shear</span>
+<span class="sd">        add : boolean</span>
+<span class="sd">            If True, add weight column to the galcat table</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        w_ls: array</span>
+<span class="sd">            the individual lens source pair weights</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># input cols</span>
+        <span class="n">required_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;shape_component1&#39;</span><span class="p">,</span> <span class="s1">&#39;shape_component2&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">use_photoz</span><span class="p">:</span>
+            <span class="n">required_cols</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">,</span> <span class="s1">&#39;pzbins&#39;</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">is_deltasigma</span><span class="p">:</span>
+            <span class="n">required_cols</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;z_source&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">use_shape_error</span><span class="p">:</span>
+            <span class="n">required_cols</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;shape_component1_err&#39;</span><span class="p">,</span> <span class="s1">&#39;shape_component2_err&#39;</span><span class="p">]</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_input_galdata</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="n">required_cols</span><span class="p">)</span>
+        <span class="c1"># handles p_background</span>
+        <span class="c1">#if p_background_name not in self.galcat.columns or recompute_p_background:</span>
+        <span class="c1">#print(f&#39;(re)computing {p_background_name}&#39;)</span>
+        <span class="c1">#    self.compute_background_probability(</span>
+        <span class="c1">#        z_source=z_source, pzpdf=pzpdf, pzbins=pzbins,</span>
+        <span class="c1">#        use_photoz=use_photoz, p_background_name=p_background_name)</span>
+        <span class="c1">#cols[&#39;p_background&#39;] = self.galcat[p_background_name]</span>
+        <span class="c1"># computes weights</span>
+        <span class="n">w_ls</span> <span class="o">=</span> <span class="n">compute_galaxy_weights</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">use_shape_noise</span><span class="o">=</span><span class="n">use_shape_noise</span><span class="p">,</span>
+            <span class="n">is_deltasigma</span><span class="o">=</span><span class="n">is_deltasigma</span><span class="p">,</span> <span class="n">validate_input</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">cols</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">add</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="n">weight_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">w_ls</span>
+        <span class="k">return</span> <span class="n">w_ls</span></div>
+
+<div class="viewcode-block" id="GalaxyCluster.make_radial_profile"><a class="viewcode-back" href="../../api/clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster.make_radial_profile">[docs]</a>    <span class="k">def</span> <span class="nf">make_radial_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                            <span class="n">bin_units</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">error_model</span><span class="o">=</span><span class="s1">&#39;ste&#39;</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                            <span class="n">tan_component_in</span><span class="o">=</span><span class="s1">&#39;et&#39;</span><span class="p">,</span> <span class="n">cross_component_in</span><span class="o">=</span><span class="s1">&#39;ex&#39;</span><span class="p">,</span>
+                            <span class="n">tan_component_out</span><span class="o">=</span><span class="s1">&#39;gt&#39;</span><span class="p">,</span> <span class="n">cross_component_out</span><span class="o">=</span><span class="s1">&#39;gx&#39;</span><span class="p">,</span>
+                            <span class="n">tan_component_in_err</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cross_component_in_err</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                            <span class="n">include_empty_bins</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gal_ids_in_bins</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">table_name</span><span class="o">=</span><span class="s1">&#39;profile&#39;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compute the shear or ellipticity profile of the cluster</span>
 
 <span class="sd">        We assume that the cluster object contains information on the cross and</span>
@@ -445,12 +568,18 @@
 <span class="sd">            Allowed Options = [&quot;radians&quot;, &quot;deg&quot;, &quot;arcmin&quot;, &quot;arcsec&quot;, &quot;kpc&quot;, &quot;Mpc&quot;]</span>
 <span class="sd">            (letter case independent)</span>
 <span class="sd">        bins : array_like, optional</span>
-<span class="sd">            User defined bins to use for the shear profile. If a list is provided, use that as the</span>
-<span class="sd">            bin edges. If a scalar is provided, create that many equally spaced bins between the</span>
-<span class="sd">            minimum and maximum angular separations in bin_units. If nothing is provided, default to</span>
-<span class="sd">            10 equally spaced bins.</span>
-<span class="sd">        cosmo: dict, optional</span>
-<span class="sd">            Cosmology parameters to convert angular separations to physical distances</span>
+<span class="sd">            User defined bins to use for the shear profile. If a list is provided, use that as</span>
+<span class="sd">            the bin edges. If a scalar is provided, create that many equally spaced bins between</span>
+<span class="sd">            the minimum and maximum angular separations in bin_units. If nothing is provided,</span>
+<span class="sd">            default to 10 equally spaced bins.</span>
+<span class="sd">        error_model : str, optional</span>
+<span class="sd">            Statistical error model to use for y uncertainties. (letter case independent)</span>
+
+<span class="sd">                * `ste` - Standard error [=std/sqrt(n) in unweighted computation] (Default).</span>
+<span class="sd">                * `std` - Standard deviation.</span>
+
+<span class="sd">        cosmo: clmm.Comology object, None</span>
+<span class="sd">            CLMM Cosmology object, used to convert angular separations to physical distances</span>
 <span class="sd">        tan_component_in: string, optional</span>
 <span class="sd">            Name of the tangential component column in `galcat` to be binned.</span>
 <span class="sd">            Default: &#39;et&#39;</span>
@@ -463,6 +592,12 @@
 <span class="sd">        cross_component_out: string, optional</span>
 <span class="sd">            Name of the cross component binned profile column to be added in profile table.</span>
 <span class="sd">            Default: &#39;gx&#39;</span>
+<span class="sd">        tan_component_in_err: string, None, optional</span>
+<span class="sd">            Name of the tangential component error column in `galcat` to be binned.</span>
+<span class="sd">            Default: None</span>
+<span class="sd">        cross_component_in_err: string, None, optional</span>
+<span class="sd">            Name of the cross component error column in `galcat` to be binned.</span>
+<span class="sd">            Default: None</span>
 <span class="sd">        include_empty_bins: bool, optional</span>
 <span class="sd">            Also include empty bins in the returned table</span>
 <span class="sd">        gal_ids_in_bins: bool, optional</span>
@@ -498,9 +633,12 @@
         <span class="n">profile_table</span><span class="p">,</span> <span class="n">binnumber</span> <span class="o">=</span> <span class="n">make_radial_profile</span><span class="p">(</span>
             <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="p">(</span><span class="n">tan_component_in</span><span class="p">,</span> <span class="n">cross_component_in</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">)],</span>
             <span class="n">angsep</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;theta&#39;</span><span class="p">],</span> <span class="n">angsep_units</span><span class="o">=</span><span class="s1">&#39;radians&#39;</span><span class="p">,</span>
-            <span class="n">bin_units</span><span class="o">=</span><span class="n">bin_units</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">include_empty_bins</span><span class="o">=</span><span class="n">include_empty_bins</span><span class="p">,</span>
-            <span class="n">return_binnumber</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">z_lens</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+            <span class="n">bin_units</span><span class="o">=</span><span class="n">bin_units</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">error_model</span><span class="o">=</span><span class="n">error_model</span><span class="p">,</span>
+            <span class="n">include_empty_bins</span><span class="o">=</span><span class="n">include_empty_bins</span><span class="p">,</span> <span class="n">return_binnumber</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">z_lens</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">validate_input</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">,</span>
+            <span class="n">components_error</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span> <span class="k">if</span> <span class="n">n</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+                              <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="p">(</span><span class="n">tan_component_in_err</span><span class="p">,</span> <span class="n">cross_component_in_err</span><span class="p">,</span> <span class="kc">None</span><span class="p">)],</span>
+            <span class="p">)</span>
         <span class="c1"># Reaname table columns</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="n">tan_component_out</span><span class="p">,</span> <span class="n">cross_component_out</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">]):</span>
             <span class="n">profile_table</span><span class="o">.</span><span class="n">rename_column</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;p_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
@@ -581,7 +719,25 @@
                 <span class="n">cross_component_error</span> <span class="ow">in</span> <span class="n">profile</span><span class="o">.</span><span class="n">colnames</span> <span class="k">else</span> <span class="kc">None</span><span class="p">),</span>
             <span class="n">xscale</span><span class="o">=</span><span class="n">xscale</span><span class="p">,</span> <span class="n">yscale</span><span class="o">=</span><span class="n">yscale</span><span class="p">,</span>
             <span class="n">tangential_component_label</span><span class="o">=</span><span class="n">tangential_component</span><span class="p">,</span>
-            <span class="n">cross_component_label</span><span class="o">=</span><span class="n">cross_component</span><span class="p">)</span></div></div>
+            <span class="n">cross_component_label</span><span class="o">=</span><span class="n">cross_component</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GalaxyCluster.set_ra_lower"><a class="viewcode-back" href="../../api/clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster.set_ra_lower">[docs]</a>    <span class="k">def</span> <span class="nf">set_ra_lower</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ra_low</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set window of values for cluster and galcat RA to [ra_low, ra_low+360[</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ra_low: float</span>
+<span class="sd">            Lower value for RA range, can be -180 or 0</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">ra_low</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="o">-</span><span class="mf">180.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;ra_low must be -180 or 0&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ra</span> <span class="o">+=</span> <span class="mf">360.</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ra</span><span class="o">&lt;</span><span class="n">ra_low</span> <span class="k">else</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ra</span> <span class="o">-=</span> <span class="mf">360.</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ra</span><span class="o">&gt;=</span><span class="n">ra_low</span><span class="o">+</span><span class="mf">360.</span> <span class="k">else</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="s1">&#39;ra&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">colnames</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;ra&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;ra&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="n">ra_low</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">360.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;ra&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;ra&#39;</span><span class="p">]</span><span class="o">&gt;=</span><span class="n">ra_low</span><span class="o">+</span><span class="mf">360.</span><span class="p">]</span> <span class="o">-=</span> <span class="mf">360.</span></div></div>
 </pre></div>
 
            </div>
@@ -595,7 +751,7 @@
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
+        &copy; Copyright 2018-2022, LSST DESC CLMM Contributors
 
     </p>
   </div>

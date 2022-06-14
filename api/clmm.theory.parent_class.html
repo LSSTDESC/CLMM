@@ -4,16 +4,18 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.theory.parent_class module &mdash; CLMM 1.0.0 documentation</title>
+  <title>clmm.theory.parent_class module &mdash; CLMM 1.2.0 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
   
@@ -27,11 +29,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -63,7 +65,7 @@
             
             
               <div class="version">
-                1.0.0
+                1.2.0
               </div>
             
           
@@ -88,27 +90,30 @@
               
             
             
-              <p><span class="caption-text">Getting Started</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../source/overview.html">Rapid overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../source/installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../source/citing.html">Citing CLMM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../source/citing.html">Using and citing CLMM</a></li>
 </ul>
-<p><span class="caption-text">Usage Demos</span></p>
+<p class="caption" role="heading"><span class="caption-text">Usage Demos</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_mass_conversion.html">Mass conversion between spherical overdensity mass definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_boost_factors.html">Define cosmology object</a></li>
 </ul>
-<p><span class="caption-text">Mass Fitting Examples</span></p>
+<p class="caption" role="heading"><span class="caption-text">Mass Fitting Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog_NC.html">Fit halo mass to shear profile using Numcosmo statistical framework</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_shear_profile_with_miscentering.html">Investigate the impact of miscentering on shear profiles</a></li>
 </ul>
-<p><span class="caption-text">Reference</span></p>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="clmm.constants.html">clmm.constants module</a></li>
@@ -215,27 +220,57 @@
 <p>&#64;file parent_class.py
 CLMModeling abstract class</p>
 <dl class="py class">
-<dt id="clmm.theory.parent_class.CLMModeling">
-<em class="property">class </em><code class="sig-prename descclassname">clmm.theory.parent_class.</code><code class="sig-name descname">CLMModeling</code><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clmm.theory.parent_class.</span></span><span class="sig-name descname"><span class="pre">CLMModeling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">validate_input</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Object with functions for halo mass modeling</p>
 <dl class="field-list simple">
 <dt class="field-odd">Variables</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>backend</strong> (<em>str</em>) – Name of the backend being used</p></li>
-<li><p><strong>massdef</strong> (<em>str</em>) – Profile mass definition (<cite>mean</cite>, <cite>critical</cite>, <cite>virial</cite> - letter case independent)</p></li>
-<li><p><strong>delta_mdef</strong> (<em>int</em>) – Mass overdensity definition.</p></li>
-<li><p><strong>halo_profile_model</strong> (<em>str</em>) – Profile model parameterization (<cite>nfw</cite>, <cite>einasto</cite>, <cite>hernquist</cite> - letter case independent)</p></li>
-<li><p><strong>cosmo</strong> (<em>Cosmology</em>) – Cosmology object</p></li>
-<li><p><strong>hdpm</strong> (<em>Object</em>) – Backend object with halo profiles</p></li>
-<li><p><strong>mdef_dict</strong> (<em>dict</em>) – Dictionary with the definitions for mass</p></li>
-<li><p><strong>hdpm_dict</strong> (<em>dict</em>) – Dictionary with the definitions for profile</p></li>
+<li><p><strong>~CLMModeling.backend</strong> (<em>str</em>) – Name of the backend being used</p></li>
+<li><p><strong>~CLMModeling.massdef</strong> (<em>str</em>) – Profile mass definition (<cite>mean</cite>, <cite>critical</cite>, <cite>virial</cite> - letter case independent)</p></li>
+<li><p><strong>~CLMModeling.delta_mdef</strong> (<em>int</em>) – Mass overdensity definition.</p></li>
+<li><p><strong>~CLMModeling.halo_profile_model</strong> (<em>str</em>) – Profile model parameterization (<cite>nfw</cite>, <cite>einasto</cite>, <cite>hernquist</cite> - letter case independent)</p></li>
+<li><p><strong>~CLMModeling.cosmo</strong> (<em>Cosmology</em>) – Cosmology object</p></li>
+<li><p><strong>~CLMModeling.hdpm</strong> (<em>Object</em>) – Backend object with halo profiles</p></li>
+<li><p><strong>~CLMModeling.mdef_dict</strong> (<em>dict</em>) – Dictionary with the definitions for mass</p></li>
+<li><p><strong>~CLMModeling.hdpm_dict</strong> (<em>dict</em>) – Dictionary with the definitions for profile</p></li>
+<li><p><strong>~CLMModeling.validate_input</strong> (<em>bool</em>) – Validade each input argument</p></li>
+<li><p><strong>~CLMModeling.cosmo_class</strong> (<em>type</em>) – Type of used cosmology objects</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py method">
-<dt id="clmm.theory.parent_class.CLMModeling.eval_3d_density">
-<code class="sig-name descname">eval_3d_density</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r3d</span></em>, <em class="sig-param"><span class="n">z_cl</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_3d_density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_3d_density" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.convert_mass_concentration">
+<span class="sig-name descname"><span class="pre">convert_mass_concentration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">massdef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_mdef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halo_profile_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.convert_mass_concentration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.convert_mass_concentration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts current mass and concentration to the values for a different model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>z_cl</strong> (<em>float</em>) – Redshift of the cluster</p></li>
+<li><p><strong>massdef</strong> (<em>str</em><em>, </em><em>None</em>) – Profile mass definition to convert to (<cite>mean</cite>, <cite>critical</cite>, <cite>virial</cite>).
+If None, same value of current model is used.</p></li>
+<li><p><strong>delta_mdef</strong> (<em>int</em><em>, </em><em>None</em>) – Mass overdensity definition to convert to.
+If None, same value of current model is used.</p></li>
+<li><p><strong>halo_profile_model</strong> (<em>str</em><em>, </em><em>None</em>) – Profile model parameterization to convert to (<cite>nfw</cite>, <cite>einasto</cite>, <cite>hernquist</cite>).
+If None, same value of current model is used.</p></li>
+<li><p><strong>alpha</strong> (<em>float</em><em>, </em><em>None</em>) – Einasto slope to convert to when <cite>halo_profile_model=’einasto’</cite>.
+If None, same value of current model is used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>float</em> – Mass of different model in units of <span class="math notranslate nohighlight">\(M_\odot\)</span>.</p></li>
+<li><p><em>float</em> – Concentration of different model.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.eval_3d_density">
+<span class="sig-name descname"><span class="pre">eval_3d_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r3d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_3d_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_3d_density" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve the 3d density <span class="math notranslate nohighlight">\(\rho(r)\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -254,8 +289,8 @@ CLMModeling abstract class</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="clmm.theory.parent_class.CLMModeling.eval_convergence">
-<code class="sig-name descname">eval_convergence</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r_proj</span></em>, <em class="sig-param"><span class="n">z_cl</span></em>, <em class="sig-param"><span class="n">z_src</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_convergence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_convergence" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.eval_convergence">
+<span class="sig-name descname"><span class="pre">eval_convergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_convergence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_convergence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the mass convergence</p>
 <div class="math notranslate nohighlight">
 \[\kappa = \frac{\Sigma}{\Sigma_{crit}}\]</div>
@@ -271,19 +306,17 @@ CLMModeling abstract class</p>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>kappa</strong> – Mass convergence, kappa.</p>
+<dd class="field-even"><p>Mass convergence, kappa.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>array_like, float</p>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
-<p>Need to figure out if we want to raise exceptions rather than errors here?</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="clmm.theory.parent_class.CLMModeling.eval_critical_surface_density">
-<code class="sig-name descname">eval_critical_surface_density</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">z_len</span></em>, <em class="sig-param"><span class="n">z_src</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_critical_surface_density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_critical_surface_density" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.eval_critical_surface_density">
+<span class="sig-name descname"><span class="pre">eval_critical_surface_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_len</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_critical_surface_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_critical_surface_density" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the critical surface density</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -302,8 +335,8 @@ CLMModeling abstract class</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="clmm.theory.parent_class.CLMModeling.eval_excess_surface_density">
-<code class="sig-name descname">eval_excess_surface_density</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r_proj</span></em>, <em class="sig-param"><span class="n">z_cl</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_excess_surface_density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_excess_surface_density" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.eval_excess_surface_density">
+<span class="sig-name descname"><span class="pre">eval_excess_surface_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_excess_surface_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_excess_surface_density" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the excess surface density</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -322,8 +355,30 @@ CLMModeling abstract class</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="clmm.theory.parent_class.CLMModeling.eval_magnification">
-<code class="sig-name descname">eval_magnification</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r_proj</span></em>, <em class="sig-param"><span class="n">z_cl</span></em>, <em class="sig-param"><span class="n">z_src</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_magnification"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_magnification" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.eval_excess_surface_density_2h">
+<span class="sig-name descname"><span class="pre">eval_excess_surface_density_2h</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halobias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lsteps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_excess_surface_density_2h"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_excess_surface_density_2h" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the 2-halo term excess surface density (CCL backend only)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r_proj</strong> (<em>array_like</em>) – Projected radial position from the cluster center in <span class="math notranslate nohighlight">\(M\!pc\)</span>.</p></li>
+<li><p><strong>z_cl</strong> (<em>float</em>) – Redshift of the cluster</p></li>
+<li><p><strong>halobias</strong> (<em>float</em><em>, </em><em>optional</em>) – Value of the halo bias</p></li>
+<li><p><strong>lsteps</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of steps for numerical integration</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Excess surface density from the 2-halo term in units of <span class="math notranslate nohighlight">\(M_\odot\ Mpc^{-2}\)</span>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array_like, float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.eval_magnification">
+<span class="sig-name descname"><span class="pre">eval_magnification</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_magnification"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_magnification" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the magnification</p>
 <div class="math notranslate nohighlight">
 \[\mu = \frac{1}{(1-\kappa)^2-|\gamma_t|^2}\]</div>
@@ -343,12 +398,75 @@ CLMModeling abstract class</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>Need to figure out if we want to raise exceptions rather than errors here?</p>
+<p>The magnification is computed taking into account just the tangential
+shear. This is valid for spherically averaged profiles, e.g., NFW and
+Einasto (by construction the cross shear is zero).</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="clmm.theory.parent_class.CLMModeling.eval_mean_surface_density">
-<code class="sig-name descname">eval_mean_surface_density</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r_proj</span></em>, <em class="sig-param"><span class="n">z_cl</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_mean_surface_density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_mean_surface_density" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.eval_magnification_bias">
+<span class="sig-name descname"><span class="pre">eval_magnification_bias</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_magnification_bias"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_magnification_bias" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the magnification bias</p>
+<div class="math notranslate nohighlight">
+\[\mu^{\alpha - 1}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r_proj</strong> (<em>array_like</em>) – The projected radial positions in <span class="math notranslate nohighlight">\(M\!pc\)</span>.</p></li>
+<li><p><strong>z_cl</strong> (<em>float</em>) – Galaxy cluster redshift</p></li>
+<li><p><strong>z_src</strong> (<em>array_like</em><em>, </em><em>float</em>) – Background source galaxy redshift(s)</p></li>
+<li><p><strong>alpha</strong> (<em>float</em>) – Slope of the cummulative number count of background sources at a given magnitude</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>mu_bias</strong> – magnification bias.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array_like, float</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The magnification is computed taking into account just the tangential
+shear. This is valid for spherically averaged profiles, e.g., NFW and
+Einasto (by construction the cross shear is zero).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.eval_mass_in_radius">
+<span class="sig-name descname"><span class="pre">eval_mass_in_radius</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r3d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_mass_in_radius"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_mass_in_radius" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the mass inside a given radius of the profile.
+The mass is calculated as</p>
+<div class="math notranslate nohighlight">
+\[M(&lt;\text{r3d}) = M_{\Delta}\;\frac{f\left(\frac{\text{r3d}}{r_{\Delta}/c_{\Delta}}\right)}{f(c_{\Delta})},\]</div>
+<p>where <span class="math notranslate nohighlight">\(f(x)\)</span> for the different models are</p>
+<p>NFW:</p>
+<div class="math notranslate nohighlight">
+\[\quad \ln(1+x)-\frac{x}{1+x}\]</div>
+<p>Einasto: (<span class="math notranslate nohighlight">\(\gamma\)</span> is the lower incomplete gamma function)</p>
+<div class="math notranslate nohighlight">
+\[\gamma(\frac{3}{\alpha}, \frac{2}{\alpha}x^{\alpha})\]</div>
+<p>Hernquist:</p>
+<div class="math notranslate nohighlight">
+\[\left(\frac{x}{1+x}\right)^2\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r3d</strong> (<em>array_like</em><em>, </em><em>float</em>) – Radial position from the cluster center in <span class="math notranslate nohighlight">\(M\!pc\)</span>.</p></li>
+<li><p><strong>z_cl</strong> (<em>float</em>) – Redshift of the cluster</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Mass in units of <span class="math notranslate nohighlight">\(M_\odot\)</span></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array_like, float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.eval_mean_surface_density">
+<span class="sig-name descname"><span class="pre">eval_mean_surface_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_mean_surface_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_mean_surface_density" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the mean value of surface density inside radius r_proj</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -367,8 +485,27 @@ CLMModeling abstract class</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="clmm.theory.parent_class.CLMModeling.eval_reduced_tangential_shear">
-<code class="sig-name descname">eval_reduced_tangential_shear</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r_proj</span></em>, <em class="sig-param"><span class="n">z_cl</span></em>, <em class="sig-param"><span class="n">z_src</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_reduced_tangential_shear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_reduced_tangential_shear" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.eval_rdelta">
+<span class="sig-name descname"><span class="pre">eval_rdelta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_rdelta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_rdelta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves the radius for mdelta</p>
+<div class="math notranslate nohighlight">
+\[r_\Delta=\left(\frac{3 M_\Delta}{4 \pi \Delta \rho_{bkg}(z)}\right)^{1/3}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>z_cl</strong> (<em>float</em>) – Redshift of the cluster</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Radius in <span class="math notranslate nohighlight">\(M\!pc\)</span>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.eval_reduced_tangential_shear">
+<span class="sig-name descname"><span class="pre">eval_reduced_tangential_shear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'single_plane'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta_s_mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta_s_square_mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_distrib_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_reduced_tangential_shear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_reduced_tangential_shear" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the reduced tangential shear <span class="math notranslate nohighlight">\(g_t = \frac{\gamma_t}{1-\kappa}\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -376,6 +513,28 @@ CLMModeling abstract class</p>
 <li><p><strong>r_proj</strong> (<em>array_like</em>) – The projected radial positions in <span class="math notranslate nohighlight">\(M\!pc\)</span>.</p></li>
 <li><p><strong>z_cl</strong> (<em>float</em>) – Galaxy cluster redshift</p></li>
 <li><p><strong>z_src</strong> (<em>array_like</em><em>, </em><em>float</em>) – Background source galaxy redshift(s)</p></li>
+<li><p><strong>z_src_model</strong> (<em>str</em><em>, </em><em>optional</em>) – <p>Source redshift model, with the following supported options:</p>
+<blockquote>
+<div><ul>
+<li><p><cite>single_plane</cite> (default): all sources at one redshift (if <cite>z_source</cite> is a float)    or known individual source galaxy redshifts (if <cite>z_source</cite> is an array and <cite>r_proj</cite> is a float).</p></li>
+<li><p><cite>applegate14</cite>: use the equation (6) in Weighing the Giants - III (Applegate et al. 2014; <a class="reference external" href="https://arxiv.org/abs/1208.0605">https://arxiv.org/abs/1208.0605</a>) to evaluate tangential reduced shear.</p></li>
+<li><p><cite>schrabback18</cite>: use the equation (12) in Cluster Mass Calibration at High Redshift (Schrabback et al. 2017; <a class="reference external" href="https://arxiv.org/abs/1611.03866">https://arxiv.org/abs/1611.03866</a>) to evaluate tangential reduced shear.</p></li>
+</ul>
+</div></blockquote>
+</p></li>
+<li><p><strong>z_distrib_func</strong> (<em>one-parameter function</em>) – Redshift distribution function. This function is used to compute the beta values if they are not provided. The default is the Chang et al (2013) distribution function.</p></li>
+<li><p><strong>beta_s_mean</strong> (<em>array_like</em><em>, </em><em>float</em><em>, </em><em>optional</em>) – <p>Lensing efficiency averaged over the galaxy redshift distribution. If not provided, it will be computed using the default redshift distribution or the one given by the user.</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\[\langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right\rangle\]</div>
+</div></blockquote>
+</p></li>
+<li><p><strong>beta_s_square_mean</strong> (<em>array_like</em><em>, </em><em>float</em><em>, </em><em>optional</em>) – <p>Square of the lensing efficiency averaged over the galaxy redshift distribution. If not provided, it will be computed using the default redshift distribution or the one given by the user.</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\[\langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle\]</div>
+</div></blockquote>
+</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -390,8 +549,8 @@ CLMModeling abstract class</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="clmm.theory.parent_class.CLMModeling.eval_surface_density">
-<code class="sig-name descname">eval_surface_density</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r_proj</span></em>, <em class="sig-param"><span class="n">z_cl</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_surface_density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_surface_density" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.eval_surface_density">
+<span class="sig-name descname"><span class="pre">eval_surface_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_surface_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_surface_density" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the surface mass density</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -410,8 +569,30 @@ CLMModeling abstract class</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="clmm.theory.parent_class.CLMModeling.eval_tangential_shear">
-<code class="sig-name descname">eval_tangential_shear</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r_proj</span></em>, <em class="sig-param"><span class="n">z_cl</span></em>, <em class="sig-param"><span class="n">z_src</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_tangential_shear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_tangential_shear" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.eval_surface_density_2h">
+<span class="sig-name descname"><span class="pre">eval_surface_density_2h</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halobias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lsteps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_surface_density_2h"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_surface_density_2h" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the 2-halo term surface density (CCL backend only)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r_proj</strong> (<em>array_like</em>) – Projected radial position from the cluster center in <span class="math notranslate nohighlight">\(M\!pc\)</span>.</p></li>
+<li><p><strong>z_cl</strong> (<em>float</em>) – Redshift of the cluster</p></li>
+<li><p><strong>halobias</strong> (<em>float</em><em>, </em><em>optional</em>) – Value of the halo bias</p></li>
+<li><p><strong>lsteps</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of steps for numerical integration</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Excess surface density from the 2-halo term in units of <span class="math notranslate nohighlight">\(M_\odot\ Mpc^{-2}\)</span>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array_like, float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.eval_tangential_shear">
+<span class="sig-name descname"><span class="pre">eval_tangential_shear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_tangential_shear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_tangential_shear" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the tangential shear</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -431,8 +612,19 @@ CLMModeling abstract class</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="clmm.theory.parent_class.CLMModeling.set_concentration">
-<code class="sig-name descname">set_concentration</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cdelta</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.set_concentration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.set_concentration" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.get_einasto_alpha">
+<span class="sig-name descname"><span class="pre">get_einasto_alpha</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_cl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.get_einasto_alpha"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.get_einasto_alpha" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the value of the <span class="math notranslate nohighlight">\(\alpha\)</span> parameter for the Einasto profile, if defined</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>z_cl</strong> (<em>float</em>) – Cluster redshift (required for Einasto with the CCL backend, will be ignored for NC)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.set_concentration">
+<span class="sig-name descname"><span class="pre">set_concentration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cdelta</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.set_concentration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.set_concentration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the concentration</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -442,20 +634,31 @@ CLMModeling abstract class</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="clmm.theory.parent_class.CLMModeling.set_cosmo">
-<code class="sig-name descname">set_cosmo</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cosmo</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.set_cosmo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.set_cosmo" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.set_cosmo">
+<span class="sig-name descname"><span class="pre">set_cosmo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.set_cosmo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.set_cosmo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the cosmology to the internal cosmology object</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>cosmo</strong> (<em>clmm.Comology</em>) – CLMM Cosmology object</p>
+<dd class="field-odd"><p><strong>cosmo</strong> (<em>clmm.Comology object</em><em>, </em><em>None</em>) – CLMM Cosmology object. If is None, creates a new instance of self.cosmo_class().</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="clmm.theory.parent_class.CLMModeling.set_halo_density_profile">
-<code class="sig-name descname">set_halo_density_profile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">halo_profile_model</span><span class="o">=</span><span class="default_value">'nfw'</span></em>, <em class="sig-param"><span class="n">massdef</span><span class="o">=</span><span class="default_value">'mean'</span></em>, <em class="sig-param"><span class="n">delta_mdef</span><span class="o">=</span><span class="default_value">200</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.set_halo_density_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.set_halo_density_profile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the definitios for the halo profile</p>
+<dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.set_einasto_alpha">
+<span class="sig-name descname"><span class="pre">set_einasto_alpha</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.set_einasto_alpha"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.set_einasto_alpha" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the value of the <span class="math notranslate nohighlight">\(\alpha\)</span> parameter for the Einasto profile</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>alpha</strong> (<em>float</em>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.set_halo_density_profile">
+<span class="sig-name descname"><span class="pre">set_halo_density_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">halo_profile_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'nfw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">massdef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_mdef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.set_halo_density_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.set_halo_density_profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the definitions for the halo profile</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -468,34 +671,12 @@ CLMModeling abstract class</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="clmm.theory.parent_class.CLMModeling.set_mass">
-<code class="sig-name descname">set_mass</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mdelta</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.set_mass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.set_mass" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.set_mass">
+<span class="sig-name descname"><span class="pre">set_mass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mdelta</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.set_mass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.set_mass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the value of the <span class="math notranslate nohighlight">\(M_\Delta\)</span></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>mdelta</strong> (<em>float</em>) – Galaxy cluster mass <span class="math notranslate nohighlight">\(M_\Delta\)</span> in units of <span class="math notranslate nohighlight">\(M_\odot\)</span></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="clmm.theory.parent_class.CLMModeling.validate_definitions">
-<code class="sig-name descname">validate_definitions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">massdef</span></em>, <em class="sig-param"><span class="n">halo_profile_model</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.validate_definitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.validate_definitions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Makes sure values of <cite>massdef</cite> and <cite>halo_profile_model</cite> are in the supported options
-and fixes casing (code works with lowercase).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>massdef</strong> (<em>str</em><em>, </em><em>optional</em>) – Profile mass definition.</p></li>
-<li><p><strong>halo_profile_model</strong> (<em>str</em><em>, </em><em>optional</em>) – Profile model parameterization.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><strong>massdef</strong> (<em>str</em>) – Lowercase profile mass definition.</p></li>
-<li><p><strong>halo_profile_model</strong> (<em>str</em>) – Lowercase profile model parameterization.</p></li>
-</ul>
-</p>
 </dd>
 </dl>
 </dd></dl>
@@ -516,7 +697,7 @@ and fixes casing (code works with lowercase).</p>
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
+        &copy; Copyright 2018-2022, LSST DESC CLMM Contributors
 
     </p>
   </div>

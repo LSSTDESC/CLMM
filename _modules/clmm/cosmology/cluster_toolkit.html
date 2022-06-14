@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.cosmology.cluster_toolkit &mdash; CLMM 1.0.0 documentation</title>
+  <title>clmm.cosmology.cluster_toolkit &mdash; CLMM 1.2.0 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.0.0
+                1.2.0
               </div>
             
           
@@ -85,27 +85,30 @@
               
             
             
-              <p><span class="caption-text">Getting Started</span></p>
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/overview.html">Rapid overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/citing.html">Citing CLMM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/citing.html">Using and citing CLMM</a></li>
 </ul>
-<p><span class="caption-text">Usage Demos</span></p>
+<p class="caption"><span class="caption-text">Usage Demos</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_mass_conversion.html">Mass conversion between spherical overdensity mass definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_boost_factors.html">Define cosmology object</a></li>
 </ul>
-<p><span class="caption-text">Mass Fitting Examples</span></p>
+<p class="caption"><span class="caption-text">Mass Fitting Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog_NC.html">Fit halo mass to shear profile using Numcosmo statistical framework</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example1_Fit_shear_profile_with_miscentering.html">Investigate the impact of miscentering on shear profiles</a></li>
 </ul>
-<p><span class="caption-text">Reference</span></p>
+<p class="caption"><span class="caption-text">Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.constants.html">clmm.constants module</a></li>
@@ -277,31 +280,32 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported parameter </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">value</span>
 
-<div class="viewcode-block" id="AstroPyCosmology.get_Omega_m"><a class="viewcode-back" href="../../../api/clmm.cosmology.cluster_toolkit.html#clmm.cosmology.cluster_toolkit.AstroPyCosmology.get_Omega_m">[docs]</a>    <span class="k">def</span> <span class="nf">get_Omega_m</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">be_cosmo</span><span class="o">.</span><span class="n">Om</span><span class="p">(</span><span class="n">z</span><span class="p">)</span></div>
+    <span class="k">def</span> <span class="nf">_get_Omega_m</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">be_cosmo</span><span class="o">.</span><span class="n">Om</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
 
-<div class="viewcode-block" id="AstroPyCosmology.get_E2Omega_m"><a class="viewcode-back" href="../../../api/clmm.cosmology.cluster_toolkit.html#clmm.cosmology.cluster_toolkit.AstroPyCosmology.get_E2Omega_m">[docs]</a>    <span class="k">def</span> <span class="nf">get_E2Omega_m</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">be_cosmo</span><span class="o">.</span><span class="n">Om</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">be_cosmo</span><span class="o">.</span><span class="n">H</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">be_cosmo</span><span class="o">.</span><span class="n">H0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span></div>
+    <span class="k">def</span> <span class="nf">_get_E2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">be_cosmo</span><span class="o">.</span><span class="n">H</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">be_cosmo</span><span class="o">.</span><span class="n">H0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
 
-<div class="viewcode-block" id="AstroPyCosmology.eval_da_z1z2"><a class="viewcode-back" href="../../../api/clmm.cosmology.cluster_toolkit.html#clmm.cosmology.cluster_toolkit.AstroPyCosmology.eval_da_z1z2">[docs]</a>    <span class="k">def</span> <span class="nf">eval_da_z1z2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z1</span><span class="p">,</span> <span class="n">z2</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">be_cosmo</span><span class="o">.</span><span class="n">angular_diameter_distance_z1z2</span><span class="p">(</span><span class="n">z1</span><span class="p">,</span> <span class="n">z2</span><span class="p">)</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="n">units</span><span class="o">.</span><span class="n">Mpc</span><span class="p">)</span></div>
+    <span class="k">def</span> <span class="nf">_get_E2Omega_m</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">be_cosmo</span><span class="o">.</span><span class="n">Om</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">be_cosmo</span><span class="o">.</span><span class="n">H</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">be_cosmo</span><span class="o">.</span><span class="n">H0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
 
-<div class="viewcode-block" id="AstroPyCosmology.eval_sigma_crit"><a class="viewcode-back" href="../../../api/clmm.cosmology.cluster_toolkit.html#clmm.cosmology.cluster_toolkit.AstroPyCosmology.eval_sigma_crit">[docs]</a>    <span class="k">def</span> <span class="nf">eval_sigma_crit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_len</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">z_src</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">z_len</span><span class="p">):</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s1">&#39;Some source redshifts are lower than the cluster redshift. &#39;</span>
-                <span class="s1">&#39;Returning Sigma_crit = np.inf for those galaxies.&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_get_rho_c</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">be_cosmo</span><span class="o">.</span><span class="n">critical_density</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">units</span><span class="o">.</span><span class="n">Msun</span><span class="o">/</span><span class="n">units</span><span class="o">.</span><span class="n">Mpc</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">_eval_da_z1z2_core</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z1</span><span class="p">,</span> <span class="n">z2</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">be_cosmo</span><span class="o">.</span><span class="n">angular_diameter_distance_z1z2</span><span class="p">(</span><span class="n">z1</span><span class="p">,</span> <span class="n">z2</span><span class="p">)</span><span class="o">.</span><span class="n">to_value</span><span class="p">(</span><span class="n">units</span><span class="o">.</span><span class="n">Mpc</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_eval_sigma_crit_core</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_len</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
         <span class="c1"># Constants</span>
         <span class="n">clight_pc_s</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">CLIGHT_KMS</span><span class="o">.</span><span class="n">value</span><span class="o">*</span><span class="mf">1000.</span><span class="o">/</span><span class="n">const</span><span class="o">.</span><span class="n">PC_TO_METER</span><span class="o">.</span><span class="n">value</span>
         <span class="n">gnewt_pc3_msun_s2</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">GNEWT</span><span class="o">.</span><span class="n">value</span> <span class="o">*</span> \
             <span class="n">const</span><span class="o">.</span><span class="n">SOLAR_MASS</span><span class="o">.</span><span class="n">value</span><span class="o">/</span><span class="n">const</span><span class="o">.</span><span class="n">PC_TO_METER</span><span class="o">.</span><span class="n">value</span><span class="o">**</span><span class="mi">3</span>
 
-        <span class="n">d_l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_da_z1z2</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">z_len</span><span class="p">)</span>
-        <span class="n">d_s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_da_z1z2</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
-        <span class="n">d_ls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_da_z1z2</span><span class="p">(</span><span class="n">z_len</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
+        <span class="n">d_l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_da_z1z2_core</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">z_len</span><span class="p">)</span>
+        <span class="n">d_s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_da_z1z2_core</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
+        <span class="n">d_ls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_da_z1z2_core</span><span class="p">(</span><span class="n">z_len</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
 
-        <span class="n">beta_s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">d_ls</span><span class="o">/</span><span class="n">d_s</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">clight_pc_s</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="mf">4.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">gnewt_pc3_msun_s2</span><span class="p">)</span><span class="o">*</span><span class="mi">1</span><span class="o">/</span><span class="n">d_l</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="n">beta_s</span><span class="p">)</span><span class="o">*</span><span class="mf">1.0e6</span></div></div>
+        <span class="k">return</span> <span class="n">clight_pc_s</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="mf">4.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">gnewt_pc3_msun_s2</span><span class="p">)</span><span class="o">*</span><span class="n">d_s</span><span class="o">/</span><span class="p">(</span><span class="n">d_l</span><span class="o">*</span><span class="n">d_ls</span><span class="p">)</span><span class="o">*</span><span class="mf">1.0e6</span></div>
 </pre></div>
 
            </div>
@@ -315,7 +319,7 @@
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
+        &copy; Copyright 2018-2022, LSST DESC CLMM Contributors
 
     </p>
   </div>

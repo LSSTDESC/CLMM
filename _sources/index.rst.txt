@@ -30,6 +30,8 @@ The source code is publically available at https://github.com/LSSTDESC/CLMM
    compiled-examples/demo_dataops_functionality.rst
    compiled-examples/demo_theory_functionality.rst
    compiled-examples/data_and_model_demo_DC2.rst
+   compiled-examples/demo_mass_conversion.rst
+   compiled-examples/demo_boost_factors.rst
 .. toctree::
    :maxdepth: 1
    :caption: Mass Fitting Examples
@@ -38,6 +40,7 @@ The source code is publically available at https://github.com/LSSTDESC/CLMM
    compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.rst
    compiled-examples/Example3_Fit_Halo_Mass_to_Shear_Catalog.rst
    compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog_NC.rst
+   compiled-examples/Example1_Fit_shear_profile_with_miscentering.rst
 
 .. toctree::
    :maxdepth: 1

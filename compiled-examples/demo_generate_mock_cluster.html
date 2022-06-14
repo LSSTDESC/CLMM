@@ -4,16 +4,18 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Generate Mock Data &mdash; CLMM 1.0.0 documentation</title>
+  <title>Generate Mock Data &mdash; CLMM 1.2.0 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
   
@@ -27,11 +29,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -39,7 +40,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Measure a Profile" href="demo_dataops_functionality.html" />
-    <link rel="prev" title="Citing CLMM" href="../source/citing.html" /> 
+    <link rel="prev" title="Using and citing CLMM" href="../source/citing.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -63,7 +64,7 @@
             
             
               <div class="version">
-                1.0.0
+                1.2.0
               </div>
             
           
@@ -88,27 +89,30 @@
               
             
             
-              <p><span class="caption-text">Getting Started</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../source/overview.html">Rapid overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../source/installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../source/citing.html">Citing CLMM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../source/citing.html">Using and citing CLMM</a></li>
 </ul>
-<p><span class="caption-text">Usage Demos</span></p>
+<p class="caption" role="heading"><span class="caption-text">Usage Demos</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Generate Mock Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demo_dataops_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_mass_conversion.html">Mass conversion between spherical overdensity mass definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_boost_factors.html">Define cosmology object</a></li>
 </ul>
-<p><span class="caption-text">Mass Fitting Examples</span></p>
+<p class="caption" role="heading"><span class="caption-text">Mass Fitting Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Example2_Fit_Halo_Mass_to_Shear_Catalog_NC.html">Fit halo mass to shear profile using Numcosmo statistical framework</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example1_Fit_shear_profile_with_miscentering.html">Investigate the impact of miscentering on shear profiles</a></li>
 </ul>
-<p><span class="caption-text">Reference</span></p>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">API Documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.constants.html">clmm.constants module</a></li>
@@ -219,7 +223,7 @@ and/or CCL backends). Use the <code class="docutils literal notranslate"><span c
 line below to select your backend.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="c1">## Uncomment the following line if you want to use a specific modeling backend among &#39;ct&#39; (cluster-toolkit), &#39;ccl&#39; (CCL) or &#39;nc&#39; (Numcosmo). Default is &#39;ct&#39;</span>
-<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;CLMM_MODELING_BACKEND&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;nc&#39;</span>
+<span class="c1">#os.environ[&#39;CLMM_MODELING_BACKEND&#39;] = &#39;nc&#39;</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span> <span class="kn">import</span> <span class="nn">clmm</span>
@@ -236,7 +240,7 @@ line below to select your backend.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clmm</span><span class="o">.</span><span class="n">__version__</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.0.0&#39;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.2.0&#39;</span>
 </pre></div>
 </div>
 <section id="import-mock-data-module-and-setup-the-configuration">
@@ -260,8 +264,10 @@ of this notebook)</p>
 <span class="n">src_z</span> <span class="o">=</span> <span class="mf">0.8</span>
 <span class="n">concentration</span> <span class="o">=</span> <span class="mi">4</span>
 <span class="n">ngals</span> <span class="o">=</span> <span class="mi">1000</span> <span class="c1"># number of source galaxies</span>
-<span class="n">cluster_ra</span> <span class="o">=</span> <span class="mf">0.0</span>
-<span class="n">cluster_dec</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+<span class="c1"># Cluster centre coordinates</span>
+<span class="n">cluster_ra</span> <span class="o">=</span> <span class="mf">50.</span>
+<span class="n">cluster_dec</span> <span class="o">=</span> <span class="mf">87.</span>
 </pre></div>
 </div>
 </section>
@@ -273,25 +279,40 @@ of this notebook)</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">zsrc_min</span> <span class="o">=</span> <span class="n">cluster_z</span> <span class="o">+</span> <span class="mf">0.1</span>
 </pre></div>
 </div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ideal_data</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span>
-    <span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">src_z</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ideal_data</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span><span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">src_z</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">,</span>
+                                          <span class="n">cluster_ra</span><span class="o">=</span><span class="n">cluster_ra</span><span class="p">,</span> <span class="n">cluster_dec</span><span class="o">=</span><span class="n">cluster_dec</span><span class="p">)</span>
 </pre></div>
 </div>
 <ul class="simple">
 <li><p>Noisy data: shape noise, all galaxies at the same redshift</p></li>
 </ul>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">noisy_data_src_z</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span>
-    <span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">src_z</span><span class="p">,</span>
-    <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">noisy_data_src_z</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span><span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span>
+                                                <span class="n">src_z</span><span class="p">,</span> <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">,</span>
+                                                <span class="n">cluster_ra</span><span class="o">=</span><span class="n">cluster_ra</span><span class="p">,</span> <span class="n">cluster_dec</span><span class="o">=</span><span class="n">cluster_dec</span><span class="p">)</span>
 </pre></div>
+</div>
+<ul class="simple">
+<li><p>Noisy data: shape noise plus measurement error, all galaxies at the
+same redshift</p></li>
+</ul>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">noisy_data_src_z_e_err</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span><span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span>
+                                                      <span class="n">src_z</span><span class="p">,</span> <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">mean_e_err</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">,</span>
+                                                      <span class="n">cluster_ra</span><span class="o">=</span><span class="n">cluster_ra</span><span class="p">,</span> <span class="n">cluster_dec</span><span class="o">=</span><span class="n">cluster_dec</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="alert alert-warning docutils container">
+<p><strong>WARNING:</strong> Experimental feature. Uncertainties are created by
+simply drawing random numbers near the value specified by
+<code class="docutils literal notranslate"><span class="pre">mean_e_err</span></code>. Use at your own risk. This will be improved in future
+releases.</p>
 </div>
 <ul class="simple">
 <li><p>Noisy data: photo-z errors (and pdfs!), all galaxies at the same
 redshift</p></li>
 </ul>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">noisy_data_photoz</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span>
-    <span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">src_z</span><span class="p">,</span>
-    <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">noisy_data_photoz</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span><span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span>
+                                                 <span class="n">src_z</span><span class="p">,</span> <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">,</span>
+                                                 <span class="n">cluster_ra</span><span class="o">=</span><span class="n">cluster_ra</span><span class="p">,</span> <span class="n">cluster_dec</span><span class="o">=</span><span class="n">cluster_dec</span><span class="p">)</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -301,23 +322,28 @@ distribution instead of fixed <code class="docutils literal notranslate"><span c
 distribution given in the DESC Science Requirement Document. No shape
 noise or photoz errors.</p></li>
 </ul>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ideal_with_src_dist</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span>
-    <span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="s1">&#39;chang13&#39;</span><span class="p">,</span> <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span>
-    <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ideal_with_src_dist</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span><span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span>
+                                                   <span class="s1">&#39;chang13&#39;</span><span class="p">,</span> <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span> <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">,</span>
+                                                   <span class="n">cluster_ra</span><span class="o">=</span><span class="n">cluster_ra</span><span class="p">,</span> <span class="n">cluster_dec</span><span class="o">=</span><span class="n">cluster_dec</span><span class="p">)</span>
 </pre></div>
 </div>
 <ul class="simple">
 <li><p>Noisy data: galaxies following redshift distribution, redshift error,
 shape noise</p></li>
 </ul>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">allsystematics</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span>
-    <span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="s1">&#39;chang13&#39;</span><span class="p">,</span> <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span>
-    <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span> <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">allsystematics</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span><span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span>
+                                              <span class="s1">&#39;chang13&#39;</span><span class="p">,</span> <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+                                              <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">,</span> <span class="n">cluster_ra</span><span class="o">=</span><span class="n">cluster_ra</span><span class="p">,</span> <span class="n">cluster_dec</span><span class="o">=</span><span class="n">cluster_dec</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">allsystematics2</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span>
-    <span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="s1">&#39;desc_srd&#39;</span><span class="p">,</span> <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span>
-    <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span> <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">)</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">conda</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">clmmenv</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">numpy</span><span class="o">/</span><span class="n">ma</span><span class="o">/</span><span class="n">core</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">2826</span><span class="p">:</span> <span class="n">VisibleDeprecationWarning</span><span class="p">:</span> <span class="n">Creating</span> <span class="n">an</span> <span class="n">ndarray</span> <span class="kn">from</span> <span class="nn">ragged</span> <span class="n">nested</span> <span class="n">sequences</span> <span class="p">(</span><span class="n">which</span> <span class="ow">is</span> <span class="n">a</span> <span class="nb">list</span><span class="o">-</span><span class="ow">or</span><span class="o">-</span><span class="nb">tuple</span> <span class="n">of</span> <span class="n">lists</span><span class="o">-</span><span class="ow">or</span><span class="o">-</span><span class="n">tuples</span><span class="o">-</span><span class="ow">or</span> <span class="n">ndarrays</span> <span class="k">with</span> <span class="n">different</span> <span class="n">lengths</span> <span class="ow">or</span> <span class="n">shapes</span><span class="p">)</span> <span class="ow">is</span> <span class="n">deprecated</span><span class="o">.</span> <span class="n">If</span> <span class="n">you</span> <span class="n">meant</span> <span class="n">to</span> <span class="n">do</span> <span class="n">this</span><span class="p">,</span> <span class="n">you</span> <span class="n">must</span> <span class="n">specify</span> <span class="s1">&#39;dtype=object&#39;</span> <span class="n">when</span> <span class="n">creating</span> <span class="n">the</span> <span class="n">ndarray</span><span class="o">.</span>
+  <span class="n">_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">allsystematics2</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span><span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span>
+                                               <span class="s1">&#39;desc_srd&#39;</span><span class="p">,</span> <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span> <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span> <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+                                               <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">,</span>
+                                               <span class="n">cluster_ra</span><span class="o">=</span><span class="n">cluster_ra</span><span class="p">,</span> <span class="n">cluster_dec</span><span class="o">=</span><span class="n">cluster_dec</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Sanity check: checking that no galaxies were originally drawn below
@@ -350,11 +376,11 @@ galaxies at z=0.8, no redshift errors (z = ztrue)</p></li>
 <span class="n">ideal_data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">max_width</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>    <span class="n">ra</span>        <span class="n">dec</span>        <span class="n">e1</span>        <span class="n">e2</span>         <span class="n">z</span>       <span class="n">ztrue</span>    <span class="nb">id</span>
-<span class="o">----------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">----------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">---</span>
-<span class="o">-</span><span class="mf">6.633e-02</span> <span class="mf">1.310e-01</span> <span class="mf">8.843e-03</span> <span class="o">-</span><span class="mf">1.205e-02</span> <span class="mf">8.000e-01</span> <span class="mf">8.000e-01</span>   <span class="mi">0</span>
-<span class="o">-</span><span class="mf">7.608e-02</span> <span class="mf">1.871e-01</span> <span class="mf">7.337e-03</span> <span class="o">-</span><span class="mf">7.148e-03</span> <span class="mf">8.000e-01</span> <span class="mf">8.000e-01</span>   <span class="mi">1</span>
-<span class="o">-</span><span class="mf">1.050e-01</span> <span class="mf">2.125e-01</span> <span class="mf">5.088e-03</span> <span class="o">-</span><span class="mf">6.653e-03</span> <span class="mf">8.000e-01</span> <span class="mf">8.000e-01</span>   <span class="mi">2</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>    <span class="n">ra</span>       <span class="n">dec</span>        <span class="n">e1</span>         <span class="n">e2</span>        <span class="n">z</span>       <span class="n">ztrue</span>    <span class="nb">id</span>
+<span class="o">---------</span> <span class="o">---------</span> <span class="o">----------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">---</span>
+<span class="mf">4.684e+01</span> <span class="mf">8.681e+01</span>  <span class="mf">2.299e-04</span> <span class="mf">7.727e-03</span> <span class="mf">8.000e-01</span> <span class="mf">8.000e-01</span>   <span class="mi">0</span>
+<span class="mf">4.843e+01</span> <span class="mf">8.697e+01</span> <span class="o">-</span><span class="mf">2.011e-02</span> <span class="mf">1.584e-02</span> <span class="mf">8.000e-01</span> <span class="mf">8.000e-01</span>   <span class="mi">1</span>
+<span class="mf">5.088e+01</span> <span class="mf">8.717e+01</span>  <span class="mf">1.073e-02</span> <span class="mf">5.906e-03</span> <span class="mf">8.000e-01</span> <span class="mf">8.000e-01</span>   <span class="mi">2</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -366,11 +392,11 @@ galaxies at z=0.8, no redshift errors (z = ztrue)</p></li>
 <span class="n">noisy_data_photoz</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">max_width</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>    <span class="n">ra</span>        <span class="n">dec</span>         <span class="n">e1</span>         <span class="n">e2</span>         <span class="n">z</span>       <span class="n">ztrue</span>         <span class="n">pzbins</span> <span class="p">[</span><span class="mi">61</span><span class="p">]</span>             <span class="n">pzpdf</span> <span class="p">[</span><span class="mi">61</span><span class="p">]</span>        <span class="nb">id</span>
-<span class="o">----------</span> <span class="o">----------</span> <span class="o">----------</span> <span class="o">----------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">-----------------------</span> <span class="o">----------------------</span> <span class="o">---</span>
- <span class="mf">1.682e-02</span> <span class="o">-</span><span class="mf">9.438e-02</span> <span class="o">-</span><span class="mf">7.095e-03</span> <span class="o">-</span><span class="mf">6.420e-02</span> <span class="mf">9.086e-01</span> <span class="mf">8.000e-01</span>  <span class="mf">8.607e-03</span> <span class="o">..</span> <span class="mf">1.809e+00</span> <span class="mf">8.550e-22</span> <span class="o">..</span> <span class="mf">8.550e-22</span>   <span class="mi">0</span>
-<span class="o">-</span><span class="mf">7.761e-02</span>  <span class="mf">2.330e-01</span>  <span class="mf">4.327e-02</span> <span class="o">-</span><span class="mf">4.130e-02</span> <span class="mf">7.253e-01</span> <span class="mf">8.000e-01</span> <span class="o">-</span><span class="mf">1.747e-01</span> <span class="o">..</span> <span class="mf">1.625e+00</span> <span class="mf">8.550e-22</span> <span class="o">..</span> <span class="mf">8.550e-22</span>   <span class="mi">1</span>
-<span class="o">-</span><span class="mf">6.661e-02</span> <span class="o">-</span><span class="mf">2.045e-01</span>  <span class="mf">2.444e-02</span> <span class="o">-</span><span class="mf">4.726e-02</span> <span class="mf">6.918e-01</span> <span class="mf">8.000e-01</span> <span class="o">-</span><span class="mf">2.082e-01</span> <span class="o">..</span> <span class="mf">1.592e+00</span> <span class="mf">8.550e-22</span> <span class="o">..</span> <span class="mf">8.550e-22</span>   <span class="mi">2</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>    <span class="n">ra</span>       <span class="n">dec</span>        <span class="n">e1</span>         <span class="n">e2</span>         <span class="n">z</span>       <span class="n">ztrue</span>         <span class="n">pzbins</span> <span class="p">[</span><span class="mi">61</span><span class="p">]</span>             <span class="n">pzpdf</span> <span class="p">[</span><span class="mi">61</span><span class="p">]</span>        <span class="nb">id</span>
+<span class="o">---------</span> <span class="o">---------</span> <span class="o">----------</span> <span class="o">----------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">-----------------------</span> <span class="o">----------------------</span> <span class="o">---</span>
+<span class="mf">4.549e+01</span> <span class="mf">8.724e+01</span>  <span class="mf">3.567e-02</span> <span class="o">-</span><span class="mf">4.010e-02</span> <span class="mf">7.494e-01</span> <span class="mf">8.000e-01</span> <span class="o">-</span><span class="mf">1.506e-01</span> <span class="o">..</span> <span class="mf">1.649e+00</span> <span class="mf">8.550e-22</span> <span class="o">..</span> <span class="mf">8.550e-22</span>   <span class="mi">0</span>
+<span class="mf">5.254e+01</span> <span class="mf">8.691e+01</span> <span class="o">-</span><span class="mf">5.109e-02</span> <span class="o">-</span><span class="mf">3.199e-02</span> <span class="mf">7.966e-01</span> <span class="mf">8.000e-01</span> <span class="o">-</span><span class="mf">1.034e-01</span> <span class="o">..</span> <span class="mf">1.697e+00</span> <span class="mf">8.550e-22</span> <span class="o">..</span> <span class="mf">8.550e-22</span>   <span class="mi">1</span>
+<span class="mf">4.827e+01</span> <span class="mf">8.696e+01</span>  <span class="mf">2.831e-02</span>  <span class="mf">1.788e-02</span> <span class="mf">7.327e-01</span> <span class="mf">8.000e-01</span> <span class="o">-</span><span class="mf">1.673e-01</span> <span class="o">..</span> <span class="mf">1.633e+00</span> <span class="mf">8.550e-22</span> <span class="o">..</span> <span class="mf">8.550e-22</span>   <span class="mi">2</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -387,15 +413,33 @@ errors) might be.</p></li>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x7fb80b1af820</span><span class="o">&gt;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x155328cb33a0</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<img alt="../_images/demo_generate_mock_cluster_33_1.png" src="../_images/demo_generate_mock_cluster_33_1.png" />
+<img alt="../_images/demo_generate_mock_cluster_36_1.png" src="../_images/demo_generate_mock_cluster_36_1.png" />
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">allsystematics</span><span class="p">[</span><span class="s1">&#39;ztrue&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;true z&#39;</span><span class="p">);</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">allsystematics2</span><span class="p">[</span><span class="s1">&#39;ztrue&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;true z&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
-<img alt="../_images/demo_generate_mock_cluster_34_0.png" src="../_images/demo_generate_mock_cluster_34_0.png" />
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">array</span><span class="p">([</span><span class="mf">66.</span><span class="p">,</span> <span class="mf">71.</span><span class="p">,</span> <span class="mf">61.</span><span class="p">,</span> <span class="mf">59.</span><span class="p">,</span> <span class="mf">66.</span><span class="p">,</span> <span class="mf">72.</span><span class="p">,</span> <span class="mf">64.</span><span class="p">,</span> <span class="mf">69.</span><span class="p">,</span> <span class="mf">55.</span><span class="p">,</span> <span class="mf">66.</span><span class="p">,</span> <span class="mf">34.</span><span class="p">,</span> <span class="mf">42.</span><span class="p">,</span> <span class="mf">36.</span><span class="p">,</span>
+        <span class="mf">28.</span><span class="p">,</span> <span class="mf">21.</span><span class="p">,</span> <span class="mf">18.</span><span class="p">,</span> <span class="mf">31.</span><span class="p">,</span> <span class="mf">17.</span><span class="p">,</span> <span class="mf">22.</span><span class="p">,</span> <span class="mf">16.</span><span class="p">,</span>  <span class="mf">9.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">,</span>  <span class="mf">9.</span><span class="p">,</span>  <span class="mf">8.</span><span class="p">,</span>  <span class="mf">9.</span><span class="p">,</span>  <span class="mf">5.</span><span class="p">,</span>
+         <span class="mf">5.</span><span class="p">,</span>  <span class="mf">6.</span><span class="p">,</span>  <span class="mf">3.</span><span class="p">,</span>  <span class="mf">3.</span><span class="p">,</span>  <span class="mf">2.</span><span class="p">,</span>  <span class="mf">2.</span><span class="p">,</span>  <span class="mf">7.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>
+         <span class="mf">2.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">]),</span>
+ <span class="n">array</span><span class="p">([</span><span class="mf">0.40052056</span><span class="p">,</span> <span class="mf">0.48248837</span><span class="p">,</span> <span class="mf">0.56445619</span><span class="p">,</span> <span class="mf">0.646424</span>  <span class="p">,</span> <span class="mf">0.72839182</span><span class="p">,</span>
+        <span class="mf">0.81035963</span><span class="p">,</span> <span class="mf">0.89232745</span><span class="p">,</span> <span class="mf">0.97429526</span><span class="p">,</span> <span class="mf">1.05626308</span><span class="p">,</span> <span class="mf">1.13823089</span><span class="p">,</span>
+        <span class="mf">1.22019871</span><span class="p">,</span> <span class="mf">1.30216652</span><span class="p">,</span> <span class="mf">1.38413434</span><span class="p">,</span> <span class="mf">1.46610215</span><span class="p">,</span> <span class="mf">1.54806997</span><span class="p">,</span>
+        <span class="mf">1.63003779</span><span class="p">,</span> <span class="mf">1.7120056</span> <span class="p">,</span> <span class="mf">1.79397342</span><span class="p">,</span> <span class="mf">1.87594123</span><span class="p">,</span> <span class="mf">1.95790905</span><span class="p">,</span>
+        <span class="mf">2.03987686</span><span class="p">,</span> <span class="mf">2.12184468</span><span class="p">,</span> <span class="mf">2.20381249</span><span class="p">,</span> <span class="mf">2.28578031</span><span class="p">,</span> <span class="mf">2.36774812</span><span class="p">,</span>
+        <span class="mf">2.44971594</span><span class="p">,</span> <span class="mf">2.53168375</span><span class="p">,</span> <span class="mf">2.61365157</span><span class="p">,</span> <span class="mf">2.69561938</span><span class="p">,</span> <span class="mf">2.7775872</span> <span class="p">,</span>
+        <span class="mf">2.85955501</span><span class="p">,</span> <span class="mf">2.94152283</span><span class="p">,</span> <span class="mf">3.02349064</span><span class="p">,</span> <span class="mf">3.10545846</span><span class="p">,</span> <span class="mf">3.18742627</span><span class="p">,</span>
+        <span class="mf">3.26939409</span><span class="p">,</span> <span class="mf">3.3513619</span> <span class="p">,</span> <span class="mf">3.43332972</span><span class="p">,</span> <span class="mf">3.51529753</span><span class="p">,</span> <span class="mf">3.59726535</span><span class="p">,</span>
+        <span class="mf">3.67923316</span><span class="p">,</span> <span class="mf">3.76120098</span><span class="p">,</span> <span class="mf">3.84316879</span><span class="p">,</span> <span class="mf">3.92513661</span><span class="p">,</span> <span class="mf">4.00710443</span><span class="p">,</span>
+        <span class="mf">4.08907224</span><span class="p">,</span> <span class="mf">4.17104006</span><span class="p">,</span> <span class="mf">4.25300787</span><span class="p">,</span> <span class="mf">4.33497569</span><span class="p">,</span> <span class="mf">4.4169435</span> <span class="p">,</span>
+        <span class="mf">4.49891132</span><span class="p">]),</span>
+ <span class="o">&lt;</span><span class="n">BarContainer</span> <span class="nb">object</span> <span class="n">of</span> <span class="mi">50</span> <span class="n">artists</span><span class="o">&gt;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../_images/demo_generate_mock_cluster_37_1.png" src="../_images/demo_generate_mock_cluster_37_1.png" />
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># pdz for one of the galaxy in the catalog,</span>
 <span class="n">galid</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">allsystematics</span><span class="p">[</span><span class="s1">&#39;pzbins&#39;</span><span class="p">][</span><span class="n">galid</span><span class="p">],</span> <span class="n">allsystematics</span><span class="p">[</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">][</span><span class="n">galid</span><span class="p">])</span>
@@ -406,15 +450,12 @@ errors) might be.</p></li>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x7fb80e860760</span><span class="o">&gt;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x155328a899d0</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<img alt="../_images/demo_generate_mock_cluster_35_1.png" src="../_images/demo_generate_mock_cluster_35_1.png" />
+<img alt="../_images/demo_generate_mock_cluster_38_1.png" src="../_images/demo_generate_mock_cluster_38_1.png" />
 <p>Populate in a galaxy cluster object</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># At the moment mock data only allow for a cluster centred on (0,0)</span>
-<span class="n">cluster_ra</span> <span class="o">=</span> <span class="mf">0.0</span>
-<span class="n">cluster_dec</span> <span class="o">=</span> <span class="mf">0.0</span>
-<span class="n">gc_object</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">GalaxyCluster</span><span class="p">(</span><span class="n">cluster_id</span><span class="p">,</span> <span class="n">cluster_ra</span><span class="p">,</span> <span class="n">cluster_dec</span><span class="p">,</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gc_object</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">GalaxyCluster</span><span class="p">(</span><span class="n">cluster_id</span><span class="p">,</span> <span class="n">cluster_ra</span><span class="p">,</span> <span class="n">cluster_dec</span><span class="p">,</span>
                                <span class="n">cluster_z</span><span class="p">,</span> <span class="n">allsystematics</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -430,60 +471,67 @@ errors) might be.</p></li>
 <div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Text</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;Ellipticity 2&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/demo_generate_mock_cluster_39_1.png" src="../_images/demo_generate_mock_cluster_39_1.png" />
+<img alt="../_images/demo_generate_mock_cluster_42_1.png" src="../_images/demo_generate_mock_cluster_42_1.png" />
 </section>
 </section>
 <section id="generate-the-mock-data-catalog-with-different-field-of-view-options">
 <h2>Generate the mock data catalog with different field-of-view options<a class="headerlink" href="#generate-the-mock-data-catalog-with-different-field-of-view-options" title="Permalink to this headline">¶</a></h2>
 <p>In the examples above, <code class="docutils literal notranslate"><span class="pre">ngals=1000</span></code> galaxies were simulated in a field
-corresponding to a 8 Mpc/h x 8 Mpc/h (proper distance) square box at the
+corresponding to a 8 Mpc x 8 Mpc (proper distance) square box at the
 cluster redshift (this is the default). The user may however vary the
 field size and/or provide a galaxy density (instead of a number of
 galaxies). This is examplified below, using the <code class="docutils literal notranslate"><span class="pre">allsystematics</span></code>
 example.</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">ngals</span> <span class="pre">=</span> <span class="pre">1000</span></code> in a 4 x 4 Mpc/h box. Asking for the same number of
+<li><p><code class="docutils literal notranslate"><span class="pre">ngals</span> <span class="pre">=</span> <span class="pre">1000</span></code> in a 4 x 4 Mpc box. Asking for the same number of
 galaxies in a smaller field of view yields high galaxy density</p></li>
 </ul>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">allsystematics2</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span><span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span>
                                                <span class="s1">&#39;chang13&#39;</span><span class="p">,</span> <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span> <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span>
                                                <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
-                                               <span class="n">field_size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">)</span>
+                                               <span class="n">field_size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">,</span>
+                                               <span class="n">cluster_ra</span><span class="o">=</span><span class="n">cluster_ra</span><span class="p">,</span> <span class="n">cluster_dec</span><span class="o">=</span><span class="n">cluster_dec</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">allsystematics</span><span class="p">[</span><span class="s1">&#39;ra&#39;</span><span class="p">],</span><span class="n">allsystematics</span><span class="p">[</span><span class="s1">&#39;dec&#39;</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;default 8 x 8 Mpc/h FoV&#39;</span><span class="p">)</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">conda</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">clmmenv</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">numpy</span><span class="o">/</span><span class="n">ma</span><span class="o">/</span><span class="n">core</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">2826</span><span class="p">:</span> <span class="n">VisibleDeprecationWarning</span><span class="p">:</span> <span class="n">Creating</span> <span class="n">an</span> <span class="n">ndarray</span> <span class="kn">from</span> <span class="nn">ragged</span> <span class="n">nested</span> <span class="n">sequences</span> <span class="p">(</span><span class="n">which</span> <span class="ow">is</span> <span class="n">a</span> <span class="nb">list</span><span class="o">-</span><span class="ow">or</span><span class="o">-</span><span class="nb">tuple</span> <span class="n">of</span> <span class="n">lists</span><span class="o">-</span><span class="ow">or</span><span class="o">-</span><span class="n">tuples</span><span class="o">-</span><span class="ow">or</span> <span class="n">ndarrays</span> <span class="k">with</span> <span class="n">different</span> <span class="n">lengths</span> <span class="ow">or</span> <span class="n">shapes</span><span class="p">)</span> <span class="ow">is</span> <span class="n">deprecated</span><span class="o">.</span> <span class="n">If</span> <span class="n">you</span> <span class="n">meant</span> <span class="n">to</span> <span class="n">do</span> <span class="n">this</span><span class="p">,</span> <span class="n">you</span> <span class="n">must</span> <span class="n">specify</span> <span class="s1">&#39;dtype=object&#39;</span> <span class="n">when</span> <span class="n">creating</span> <span class="n">the</span> <span class="n">ndarray</span><span class="o">.</span>
+  <span class="n">_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">allsystematics</span><span class="p">[</span><span class="s1">&#39;ra&#39;</span><span class="p">],</span><span class="n">allsystematics</span><span class="p">[</span><span class="s1">&#39;dec&#39;</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;default 8 x 8 Mpc FoV&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">allsystematics2</span><span class="p">[</span><span class="s1">&#39;ra&#39;</span><span class="p">],</span><span class="n">allsystematics2</span><span class="p">[</span><span class="s1">&#39;dec&#39;</span><span class="p">],</span><span class="n">marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;user-defined FoV&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x7fb80e7ece20</span><span class="o">&gt;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x155328956160</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<img alt="../_images/demo_generate_mock_cluster_44_1.png" src="../_images/demo_generate_mock_cluster_44_1.png" />
+<img alt="../_images/demo_generate_mock_cluster_47_1.png" src="../_images/demo_generate_mock_cluster_47_1.png" />
 <ul class="simple">
-<li><p>Alternatively, the user may provide a galaxy density (here 1
+<li><p>Alternatively, the user may provide a galaxy density (here ~1
 gal/arcmin2 to roughly match 1000 galaxies, given the configuration)
 and the number of galaxies to draw will automatically be adjusted to
 the box size.</p></li>
 </ul>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">allsystematics3</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span><span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span>
-                                               <span class="s1">&#39;chang13&#39;</span><span class="p">,</span> <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span> <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span>
+                                               <span class="s1">&#39;chang13&#39;</span><span class="p">,</span> <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span> <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span>
                                               <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
-                                              <span class="n">ngal_density</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                                              <span class="n">ngal_density</span><span class="o">=</span><span class="mf">1.3</span><span class="p">,</span>
+                                              <span class="n">cluster_ra</span><span class="o">=</span><span class="n">cluster_ra</span><span class="p">,</span> <span class="n">cluster_dec</span><span class="o">=</span><span class="n">cluster_dec</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Number of drawn galaxies = </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">allsystematics3</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Number</span> <span class="n">of</span> <span class="n">drawn</span> <span class="n">galaxies</span> <span class="o">=</span> <span class="mi">761</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Number</span> <span class="n">of</span> <span class="n">drawn</span> <span class="n">galaxies</span> <span class="o">=</span> <span class="mi">989</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">allsystematics4</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span><span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span>
-                                               <span class="s1">&#39;desc_srd&#39;</span><span class="p">,</span> <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span> <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span>
+                                               <span class="s1">&#39;desc_srd&#39;</span><span class="p">,</span> <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span> <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span>
                                               <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
-                                              <span class="n">ngal_density</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                                              <span class="n">ngal_density</span><span class="o">=</span><span class="mf">1.3</span><span class="p">,</span>
+                                              <span class="n">cluster_ra</span><span class="o">=</span><span class="n">cluster_ra</span><span class="p">,</span> <span class="n">cluster_dec</span><span class="o">=</span><span class="n">cluster_dec</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Number of drawn galaxies = </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">allsystematics4</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Number</span> <span class="n">of</span> <span class="n">drawn</span> <span class="n">galaxies</span> <span class="o">=</span> <span class="mi">785</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Number</span> <span class="n">of</span> <span class="n">drawn</span> <span class="n">galaxies</span> <span class="o">=</span> <span class="mi">1020</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">allsystematics</span><span class="p">[</span><span class="s1">&#39;ra&#39;</span><span class="p">],</span><span class="n">allsystematics</span><span class="p">[</span><span class="s1">&#39;dec&#39;</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;ngals = 1000&#39;</span><span class="p">)</span>
@@ -491,10 +539,10 @@ the box size.</p></li>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x7fb811b4ba00</span><span class="o">&gt;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x15532883cc40</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<img alt="../_images/demo_generate_mock_cluster_48_1.png" src="../_images/demo_generate_mock_cluster_48_1.png" />
+<img alt="../_images/demo_generate_mock_cluster_51_1.png" src="../_images/demo_generate_mock_cluster_51_1.png" />
 </section>
 <section id="generate-mock-data-with-different-galaxy-cluster-options">
 <h2>Generate mock data with different galaxy cluster options<a class="headerlink" href="#generate-mock-data-with-different-galaxy-cluster-options" title="Permalink to this headline">¶</a></h2>
@@ -510,7 +558,8 @@ the NFW profile</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">allsystematics_500mean</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span>
     <span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="s1">&#39;chang13&#39;</span><span class="p">,</span> <span class="n">delta_so</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
     <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span>
-    <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span> <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">)</span>
+    <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span> <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">,</span>
+    <span class="n">cluster_ra</span><span class="o">=</span><span class="n">cluster_ra</span><span class="p">,</span> <span class="n">cluster_dec</span><span class="o">=</span><span class="n">cluster_dec</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -519,7 +568,8 @@ the NFW profile</p>
 <p>WARNING: error will be raised if using the cluster-toolkit backend</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">allsystematics_200critical</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span>
     <span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span><span class="s1">&#39;chang13&#39;</span><span class="p">,</span>  <span class="n">massdef</span><span class="o">=</span><span class="s1">&#39;critical&#39;</span><span class="p">,</span> <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span>
-    <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span> <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">)</span>
+    <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span> <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">,</span>
+    <span class="n">cluster_ra</span><span class="o">=</span><span class="n">cluster_ra</span><span class="p">,</span> <span class="n">cluster_dec</span><span class="o">=</span><span class="n">cluster_dec</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -529,7 +579,16 @@ the NFW profile</p>
 backends</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">allsystematics_200m_einasto</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span>
     <span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span><span class="s1">&#39;chang13&#39;</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;einasto&#39;</span><span class="p">,</span> <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span>
-    <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span> <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">)</span>
+    <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span> <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">,</span>
+    <span class="n">cluster_ra</span><span class="o">=</span><span class="n">cluster_ra</span><span class="p">,</span> <span class="n">cluster_dec</span><span class="o">=</span><span class="n">cluster_dec</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">conda</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">clmmenv</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">pyccl</span><span class="o">/</span><span class="n">core</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">887</span><span class="p">:</span> <span class="n">CCLWarning</span><span class="p">:</span> <span class="n">All</span> <span class="n">of</span> <span class="n">the</span> <span class="n">halo</span> <span class="n">mass</span> <span class="n">function</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span> <span class="ow">and</span> <span class="n">bias</span> <span class="n">models</span> <span class="ow">in</span> <span class="n">CCL</span> <span class="n">are</span> <span class="ow">not</span> <span class="n">properly</span> <span class="n">calibrated</span> <span class="k">for</span> <span class="n">cosmological</span> <span class="n">models</span> <span class="k">with</span> <span class="n">massive</span> <span class="n">neutrinos</span>
+  <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+<span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">conda</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">clmmenv</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">pyccl</span><span class="o">/</span><span class="n">core</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">675</span><span class="p">:</span> <span class="n">CCLWarning</span><span class="p">:</span> <span class="n">CCL</span> <span class="n">does</span> <span class="ow">not</span> <span class="n">properly</span> <span class="n">compute</span> <span class="n">the</span> <span class="n">linear</span> <span class="n">growth</span> <span class="n">rate</span> <span class="ow">in</span> <span class="n">cosmological</span> <span class="n">models</span> <span class="k">with</span> <span class="n">massive</span> <span class="n">neutrinos</span>
+  <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+<span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">conda</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">clmmenv</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">pyccl</span><span class="o">/</span><span class="n">core</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">734</span><span class="p">:</span> <span class="n">CCLWarning</span><span class="p">:</span> <span class="n">The</span> <span class="s1">&#39;eisenstein_hu&#39;</span> <span class="n">linear</span> <span class="n">power</span> <span class="n">spectrum</span> <span class="n">model</span> <span class="n">does</span> <span class="ow">not</span> <span class="n">properly</span> <span class="n">account</span> <span class="k">for</span> <span class="n">massive</span> <span class="n">neutrinos</span>
+  <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
 </pre></div>
 </div>
 </section>
@@ -548,7 +607,7 @@ backends</p>
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
+        &copy; Copyright 2018-2022, LSST DESC CLMM Contributors
 
     </p>
   </div>
