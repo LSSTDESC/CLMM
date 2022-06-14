@@ -50,7 +50,7 @@ Make sure we know which version we’re using
 
 .. parsed-literal::
 
-    '1.0.0'
+    '1.2.0'
 
 
 
@@ -91,8 +91,8 @@ We now set some parameters for a mock galaxy cluster.
     src_z = 0.8
     concentration = 4
     ngals = 10000
-    cluster_ra = 0.0
-    cluster_dec = 0.0
+    cluster_ra = 20.0
+    cluster_dec = 30.0
 
 Then we use the ``mock_data`` support module to generate a new galaxy
 catalog.
@@ -100,7 +100,7 @@ catalog.
 .. code:: ipython3
 
     ideal_data = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration,
-                                              cosmo, src_z, ngals=ngals)
+                                              cosmo, src_z, ngals=ngals, cluster_ra=cluster_ra, cluster_dec=cluster_dec)
 
 This galaxy catalog is then converted to a ``clmm.GalaxyCluster``
 object.
@@ -137,7 +137,7 @@ Any saved ``clmm.GalaxyCluster`` object may be read in for analysis.
 
 .. parsed-literal::
 
-    Cluster info = ID: Awesome_cluster ; ra: 0.0 ; dec: 0.0 ; z_l : 0.3
+    Cluster info = ID: Awesome_cluster ; ra: 20.0 ; dec: 30.0 ; z_l : 0.3
     The number of source galaxies is : 10000
 
 
@@ -181,7 +181,7 @@ tangential and cross shears for each source galaxy in the cluster.
 
 .. code:: ipython3
 
-    theta, g_t, g_x = da.compute_tangential_and_cross_components(ra_l, dec_l, ra_s, dec_s, e1, e2, geometry="flat")
+    theta, g_t, g_x = da.compute_tangential_and_cross_components(ra_l, dec_l, ra_s, dec_s, e1, e2)
 
 We can visualize the shear field at each galaxy location.
 
@@ -231,6 +231,12 @@ galaxy catalog in bins of radius.
         [g_t, g_x, z_s], theta, "radians", "Mpc", bins=bin_edges1, cosmo=cosmo, z_lens=z, include_empty_bins=False)
     res2 = da.make_radial_profile(
         [g_t, g_x, z_s], theta, "radians", "Mpc", bins=bin_edges2, cosmo=cosmo, z_lens=z, include_empty_bins=False)
+
+
+.. parsed-literal::
+
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.8/site-packages/clmm-1.2.0-py3.8.egg/clmm/utils.py:176: RuntimeWarning: invalid value encountered in sqrt
+
 
 Note that we set ``include_empty_bins=False`` explicitly here even
 though it is the default behavior. Setting the argument to ``True``
@@ -309,6 +315,12 @@ You can also run ``make_radial_profile`` direct on a
     cl.make_radial_profile("Mpc", bins=1000, cosmo=cosmo, include_empty_bins=False)
     pass
 
+
+.. parsed-literal::
+
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.8/site-packages/clmm-1.2.0-py3.8.egg/clmm/utils.py:176: RuntimeWarning: invalid value encountered in sqrt
+
+
 After running ``clmm.GalaxyCluster.make_radial_profile`` object, the
 object acquires the ``clmm.GalaxyCluster.profile`` attribute.
 
@@ -322,28 +334,28 @@ object acquires the ``clmm.GalaxyCluster.profile`` attribute.
 
     radius_min   radius  radius_max     gt      gt_err      gx       gx_err      z       z_err     n_src  
     ---------- --------- ---------- --------- --------- ---------- --------- --------- --------- ---------
-     1.929e-02 2.182e-02  2.490e-02 1.699e-01 4.854e-03 -1.670e-11 1.889e-12 8.000e-01 0.000e+00 2.000e+00
-     4.172e-02 4.415e-02  4.733e-02 1.354e-01 7.376e-05 -4.715e-11 5.896e-12 8.000e-01 0.000e+00 2.000e+00
-     5.855e-02 6.252e-02  6.416e-02 1.224e-01 2.610e-04  2.779e-11 3.953e-11 8.000e-01 0.000e+00 2.000e+00
-     1.595e-01 1.611e-01  1.651e-01 9.224e-02 7.363e-05 -3.827e-10 2.051e-10 8.000e-01 0.000e+00 2.000e+00
-     1.931e-01 1.937e-01  1.987e-01 8.657e-02 3.080e-05  4.157e-11 5.475e-10 8.000e-01 0.000e+00 2.000e+00
-     2.100e-01 2.141e-01  2.156e-01 8.349e-02 9.282e-05  3.166e-10 6.021e-10 8.000e-01 0.000e+00 2.000e+00
-     2.156e-01 2.186e-01  2.212e-01 8.283e-02 1.114e-04  1.473e-10 1.915e-10 8.000e-01 6.410e-17 3.000e+00
-     2.324e-01 2.357e-01  2.380e-01 8.049e-02 8.085e-05  1.168e-09 9.636e-11 8.000e-01 0.000e+00 2.000e+00
-     2.604e-01 2.644e-01  2.660e-01 7.687e-02 1.141e-05 -6.483e-10 6.653e-10 8.000e-01 0.000e+00 2.000e+00
-     2.773e-01 2.800e-01  2.829e-01 7.505e-02 4.587e-05  7.286e-10 5.629e-10 8.000e-01 0.000e+00 4.000e+00
+     1.929e-02 2.182e-02  2.490e-02 1.699e-01 4.854e-03 -8.544e-17 1.533e-18 8.000e-01 0.000e+00 2.000e+00
+     4.172e-02 4.415e-02  4.733e-02 1.354e-01 7.376e-05 -5.898e-17 2.453e-18 8.000e-01 0.000e+00 2.000e+00
+     5.855e-02 6.252e-02  6.416e-02 1.224e-01 2.610e-04 -6.939e-17 4.907e-18 8.000e-01 0.000e+00 2.000e+00
+     1.595e-01 1.611e-01  1.651e-01 9.224e-02 7.363e-05 -5.031e-17 3.680e-18 8.000e-01 0.000e+00 2.000e+00
+     1.931e-01 1.937e-01  1.987e-01 8.657e-02 3.080e-05 -3.990e-17 1.227e-18 8.000e-01 0.000e+00 2.000e+00
+     2.100e-01 2.141e-01  2.156e-01 8.349e-02 9.282e-05 -2.429e-17 1.717e-17 8.000e-01 0.000e+00 2.000e+00
+     2.156e-01 2.186e-01  2.212e-01 8.283e-02 1.114e-04 -3.845e-17 1.548e-18 8.000e-01 0.000e+00 3.000e+00
+     2.324e-01 2.357e-01  2.380e-01 8.049e-02 8.085e-05 -1.973e-17 1.395e-17 8.000e-01 0.000e+00 2.000e+00
+     2.604e-01 2.644e-01  2.660e-01 7.687e-02 1.141e-05 -1.887e-17 1.334e-17 8.000e-01 0.000e+00 2.000e+00
+     2.773e-01 2.800e-01  2.829e-01 7.505e-02 4.587e-05 -1.214e-17 8.972e-18 8.000e-01 0.000e+00 4.000e+00
            ...       ...        ...       ...       ...        ...       ...       ...       ...       ...
-     5.386e+00 5.390e+00  5.392e+00 5.316e-03 1.169e-06 -4.553e-08 8.939e-11 8.000e-01 0.000e+00 2.000e+00
-     5.397e+00 5.399e+00  5.403e+00 5.304e-03 7.402e-07  4.479e-08 2.328e-10 8.000e-01 6.410e-17 3.000e+00
-     5.420e+00 5.423e+00  5.425e+00 5.272e-03 1.025e-06 -1.509e-08 2.484e-08 8.000e-01 6.410e-17 3.000e+00
-     5.425e+00 5.430e+00  5.431e+00 5.263e-03 1.139e-06 -8.476e-11 3.253e-08 8.000e-01 0.000e+00 2.000e+00
-     5.437e+00 5.439e+00  5.442e+00 5.250e-03 9.064e-07  1.047e-10 2.307e-08 8.000e-01 0.000e+00 4.000e+00
-     5.448e+00 5.451e+00  5.453e+00 5.234e-03 6.452e-07 -2.246e-08 1.938e-08 8.000e-01 0.000e+00 4.000e+00
-     5.459e+00 5.461e+00  5.465e+00 5.222e-03 1.022e-06  4.581e-08 4.859e-10 8.000e-01 0.000e+00 2.000e+00
-     5.470e+00 5.471e+00  5.476e+00 5.208e-03 8.019e-07  4.540e-08 8.031e-11 8.000e-01 0.000e+00 2.000e+00
-     5.504e+00 5.508e+00  5.509e+00 5.161e-03 1.050e-06  1.491e-08 2.488e-08 8.000e-01 6.410e-17 3.000e+00
-     5.509e+00 5.511e+00  5.515e+00 5.156e-03 7.879e-07 -4.535e-08 6.684e-11 8.000e-01 0.000e+00 2.000e+00
-     5.616e+00 5.621e+00  5.622e+00 5.017e-03 2.007e-08 -4.643e-08 5.774e-11 8.000e-01 0.000e+00 2.000e+00
+     5.386e+00 5.390e+00  5.392e+00 5.316e-03 1.169e-06 -2.568e-18 3.354e-20 8.000e-01 0.000e+00 2.000e+00
+     5.397e+00 5.399e+00  5.403e+00 5.304e-03 7.402e-07 -8.674e-19 7.082e-19 8.000e-01 0.000e+00 3.000e+00
+     5.420e+00 5.423e+00  5.425e+00 5.272e-03 1.025e-06 -1.703e-18 7.174e-19 8.000e-01 0.000e+00 3.000e+00
+     5.425e+00 5.430e+00  5.431e+00 5.263e-03 1.139e-06 -1.342e-18 9.296e-19 8.000e-01 0.000e+00 2.000e+00
+     5.437e+00 5.439e+00  5.442e+00 5.250e-03 9.064e-07 -2.561e-18 1.174e-20 8.000e-01 0.000e+00 4.000e+00
+     5.448e+00 5.451e+00  5.453e+00 5.234e-03 6.452e-07 -1.931e-18 5.576e-19 8.000e-01 0.000e+00 4.000e+00
+     5.459e+00 5.461e+00  5.465e+00 5.222e-03 1.022e-06 -1.301e-18 9.200e-19 8.000e-01 0.000e+00 2.000e+00
+     5.470e+00 5.471e+00  5.476e+00 5.208e-03 8.019e-07 -1.274e-18 9.008e-19 8.000e-01 0.000e+00 2.000e+00
+     5.504e+00 5.508e+00  5.509e+00 5.161e-03 1.050e-06 -8.357e-19 6.824e-19 8.000e-01 0.000e+00 3.000e+00
+     5.509e+00 5.511e+00  5.515e+00 5.156e-03 7.879e-07 -2.507e-18 9.583e-21 8.000e-01 0.000e+00 2.000e+00
+     5.616e+00 5.621e+00  5.622e+00 5.017e-03 2.007e-08 -2.459e-18 5.989e-22 8.000e-01 0.000e+00 2.000e+00
     Length = 892 rows
 
 
@@ -356,16 +368,19 @@ cosmology has been chosen.
 Choosing a halo model
 ~~~~~~~~~~~~~~~~~~~~~
 
+-  Note: some samplers might pass arrays of size 1 to variables being
+   minimized. This can cause problems as clmm functions type check the
+   input. In this function below this is corrected by converting the
+   mass to a float: ``m = float(10.**logm)``
+
 .. code:: ipython3
 
     def nfw_to_shear_profile(logm, profile_info):
         [r, gt_profile, z_src_rbin] = profile_info
-        m = 10.**logm
-        gt_model = clmm.compute_reduced_tangential_shear(r,
-                                                         m, concentration,
-                                                         cluster_z, z_src_rbin, cosmo,
-                                                         delta_mdef=200,
-                                                         halo_profile_model='nfw')
+        m = float(10.**logm)
+        gt_model = clmm.compute_reduced_tangential_shear(
+            r, m, concentration, cluster_z, z_src_rbin, cosmo,
+            delta_mdef=200, halo_profile_model='nfw')
         return np.sum((gt_model - gt_profile)**2)
 
 Fitting a halo mass
@@ -391,7 +406,6 @@ as the samplers[‘minimize’], the two functions take the same arguments.
 .. code:: ipython3
 
     logm_0 = random.uniform(13., 17., 1)[0]
-    
     #logm_est1 = samplers['minimize'](nfw_to_shear_profile, logm_0,args=[r1, gt_profile1, z1])[0]
     logm_est1 = samplers['basinhopping'](nfw_to_shear_profile, logm_0, minimizer_kwargs={'args': ([r1, gt_profile1, z1])})[0]
     
@@ -406,7 +420,7 @@ as the samplers[‘minimize’], the two functions take the same arguments.
 
 .. parsed-literal::
 
-    (1019206621569830.1, 1060937988316266.2)
+    (1019206601188245.8, 1060937927530258.6)
 
 
 Next, we calculate the reduced tangential shear predicted by the two

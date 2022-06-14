@@ -40,9 +40,6 @@ First, we import some standard packages.
     from astropy import units
     plt.rcParams['font.family']=['gothambook','gotham','gotham-book','serif']
     
-    import warnings
-    warnings.filterwarnings('ignore')
-    
     clmm.__version__
 
 
@@ -50,7 +47,7 @@ First, we import some standard packages.
 
 .. parsed-literal::
 
-    '1.0.0'
+    '1.2.0'
 
 
 
@@ -95,8 +92,8 @@ We now set some parameters for a mock galaxy cluster:
     cluster_m = 1.e15 # M200,m [Msun]
     logm = np.log(cluster_m)/np.log(10)
     concentration = 4
-    cluster_ra = 0.
-    cluster_dec = 0.
+    cluster_ra = 20.
+    cluster_dec = 90.
     cluster_z = 0.4
     ngals = 10000
 
@@ -109,9 +106,18 @@ photoz errors + shape noise
 
 .. code:: ipython3
 
-    ideal_data = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration, cosmo, 'chang13', zsrc_min = cluster_z + 0.1, ngals=ngals)
+    ideal_data = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration, cosmo, 'chang13', zsrc_min = cluster_z + 0.1, ngals=ngals,
+                                             cluster_ra=cluster_ra, cluster_dec=cluster_dec)
     noisy_data = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration, cosmo, 'chang13', zsrc_min = cluster_z + 0.1,
-                                              shapenoise=0.05, photoz_sigma_unscaled=0.05, ngals=ngals)
+                                              shapenoise=0.05, photoz_sigma_unscaled=0.05, ngals=ngals,
+                                             cluster_ra=cluster_ra, cluster_dec=cluster_dec)
+
+
+.. parsed-literal::
+
+    /global/homes/a/aguena/.conda/envs/clmmenv/lib/python3.8/site-packages/numpy/ma/core.py:2826: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray.
+      _data = np.array(data, dtype=dtype, copy=copy,
+
 
 The galaxy catalogs are converted to a ``clmm.GalaxyCluster`` object and
 may be saved for later use.
@@ -173,8 +179,8 @@ cluster.
 
 .. code:: ipython3
 
-    cl_ideal.compute_tangential_and_cross_components(geometry="flat")
-    cl_noisy.compute_tangential_and_cross_components(geometry="flat")
+    cl_ideal.compute_tangential_and_cross_components()
+    cl_noisy.compute_tangential_and_cross_components()
     pass
 
 Radially binning the data
@@ -269,6 +275,12 @@ Before fitting, let’s first vizualise these models using the known true mass
     gt_model_noisy_singlez = model_reduced_tangential_shear_singlez(r,logm, cl_noisy.profile['z'])
     gt_model_noisy_zdistrib = model_reduced_tangential_shear_zdistrib(r,logm, noisy_data, cl_noisy, cl_noisy.profile)
 
+
+.. parsed-literal::
+
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.8/site-packages/clmm-1.2.0-py3.8.egg/clmm/utils.py:589: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
+
+
 .. code:: ipython3
 
     plt.figure(figsize=(20,8))
@@ -302,7 +314,7 @@ Before fitting, let’s first vizualise these models using the known true mass
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fa5f92c38b0>
+    <matplotlib.legend.Legend at 0x155328bcad90>
 
 
 
@@ -368,6 +380,12 @@ error to mass as :math:`\Delta M = M_{fit}\log(10)\Delta (\log_{10}M)`.
     
     m_est_noisy_singlez = 10.**popt[0]
     m_est_err_noisy_singlez =  m_est_noisy_singlez * np.sqrt(pcov[0][0]) * np.log(10) 
+
+
+
+.. parsed-literal::
+
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.8/site-packages/clmm-1.2.0-py3.8.egg/clmm/utils.py:589: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
 
 
 .. code:: ipython3
@@ -456,7 +474,7 @@ best-fit masses.
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fa5faa26e50>
+    <matplotlib.legend.Legend at 0x1553286ddd30>
 
 
 

@@ -4,16 +4,18 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.constants module &mdash; CLMM 1.0.0 documentation</title>
+  <title>clmm.constants module &mdash; CLMM 1.2.0 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
   
@@ -27,11 +29,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -63,7 +64,7 @@
             
             
               <div class="version">
-                1.0.0
+                1.2.0
               </div>
             
           
@@ -88,27 +89,30 @@
               
             
             
-              <p><span class="caption-text">Getting Started</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../source/overview.html">Rapid overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../source/installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../source/citing.html">Citing CLMM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../source/citing.html">Using and citing CLMM</a></li>
 </ul>
-<p><span class="caption-text">Usage Demos</span></p>
+<p class="caption" role="heading"><span class="caption-text">Usage Demos</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_mass_conversion.html">Mass conversion between spherical overdensity mass definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_boost_factors.html">Define cosmology object</a></li>
 </ul>
-<p><span class="caption-text">Mass Fitting Examples</span></p>
+<p class="caption" role="heading"><span class="caption-text">Mass Fitting Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog_NC.html">Fit halo mass to shear profile using Numcosmo statistical framework</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_shear_profile_with_miscentering.html">Investigate the impact of miscentering on shear profiles</a></li>
 </ul>
-<p><span class="caption-text">Reference</span></p>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Documentation</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">clmm.constants module</a></li>
@@ -212,49 +216,49 @@
 <span id="clmm-constants-module"></span><h1>clmm.constants module<a class="headerlink" href="#module-clmm.constants" title="Permalink to this headline">¶</a></h1>
 <p>Provide a consistent set of constants to use through CLMM</p>
 <dl class="py class">
-<dt id="clmm.constants.Constants">
-<em class="property">class </em><code class="sig-prename descclassname">clmm.constants.</code><code class="sig-name descname">Constants</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/constants.html#Constants"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.constants.Constants" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="clmm.constants.Constants">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clmm.constants.</span></span><span class="sig-name descname"><span class="pre">Constants</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/constants.html#Constants"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.constants.Constants" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
 <p>A set of constants for consistency throughout the
 code and dependencies.</p>
 <dl class="py attribute">
-<dt id="clmm.constants.Constants.CLIGHT">
-<code class="sig-name descname">CLIGHT</code><em class="property"> = 299792458.0</em><a class="headerlink" href="#clmm.constants.Constants.CLIGHT" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="clmm.constants.Constants.CLIGHT">
+<span class="sig-name descname"><span class="pre">CLIGHT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">299792458.0</span></em><a class="headerlink" href="#clmm.constants.Constants.CLIGHT" title="Permalink to this definition">¶</a></dt>
 <dd><p>Speed of light (m/s)</p>
 <p>Source: CODATA 2018</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="clmm.constants.Constants.CLIGHT_KMS">
-<code class="sig-name descname">CLIGHT_KMS</code><em class="property"> = 299792.458</em><a class="headerlink" href="#clmm.constants.Constants.CLIGHT_KMS" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="clmm.constants.Constants.CLIGHT_KMS">
+<span class="sig-name descname"><span class="pre">CLIGHT_KMS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">299792.458</span></em><a class="headerlink" href="#clmm.constants.Constants.CLIGHT_KMS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Speed of light (km/s)</p>
 <p>Source: CODATA 2018</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="clmm.constants.Constants.GNEWT">
-<code class="sig-name descname">GNEWT</code><em class="property"> = 6.6743e-11</em><a class="headerlink" href="#clmm.constants.Constants.GNEWT" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="clmm.constants.Constants.GNEWT">
+<span class="sig-name descname"><span class="pre">GNEWT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6.6743e-11</span></em><a class="headerlink" href="#clmm.constants.Constants.GNEWT" title="Permalink to this definition">¶</a></dt>
 <dd><p>Newton’s constant (m^3/kg/s^2)</p>
 <p>Source: CODATA 2018</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="clmm.constants.Constants.GNEWT_SOLAR_MASS">
-<code class="sig-name descname">GNEWT_SOLAR_MASS</code><em class="property"> = 1.3271244e+20</em><a class="headerlink" href="#clmm.constants.Constants.GNEWT_SOLAR_MASS" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="clmm.constants.Constants.GNEWT_SOLAR_MASS">
+<span class="sig-name descname"><span class="pre">GNEWT_SOLAR_MASS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.3271244e+20</span></em><a class="headerlink" href="#clmm.constants.Constants.GNEWT_SOLAR_MASS" title="Permalink to this definition">¶</a></dt>
 <dd><p>G x Solar mass (m^3/s^2)</p>
 <p>Source: IAU 2015</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="clmm.constants.Constants.PC_TO_METER">
-<code class="sig-name descname">PC_TO_METER</code><em class="property"> = 3.085677581491367e+16</em><a class="headerlink" href="#clmm.constants.Constants.PC_TO_METER" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="clmm.constants.Constants.PC_TO_METER">
+<span class="sig-name descname"><span class="pre">PC_TO_METER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3.085677581491367e+16</span></em><a class="headerlink" href="#clmm.constants.Constants.PC_TO_METER" title="Permalink to this definition">¶</a></dt>
 <dd><p>parsec to meter (m)</p>
 <p>Source: IAU 2015</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="clmm.constants.Constants.SOLAR_MASS">
-<code class="sig-name descname">SOLAR_MASS</code><em class="property"> = 1.988409870698051e+30</em><a class="headerlink" href="#clmm.constants.Constants.SOLAR_MASS" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="clmm.constants.Constants.SOLAR_MASS">
+<span class="sig-name descname"><span class="pre">SOLAR_MASS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.988409870698051e+30</span></em><a class="headerlink" href="#clmm.constants.Constants.SOLAR_MASS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Solar mass (kg)</p>
 <p>Source: IAU 2015/CODATA 2018</p>
 </dd></dl>
@@ -275,7 +279,7 @@ code and dependencies.</p>
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
+        &copy; Copyright 2018-2022, LSST DESC CLMM Contributors
 
     </p>
   </div>

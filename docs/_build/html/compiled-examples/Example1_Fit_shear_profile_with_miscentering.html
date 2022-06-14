@@ -1,0 +1,516 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Investigate the impact of miscentering on shear profiles &mdash; CLMM 1.2.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="API Documentation" href="../api.html" />
+    <link rel="prev" title="Fit halo mass to shear profile using Numcosmo statistical framework" href="Example2_Fit_Halo_Mass_to_Shear_Catalog_NC.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> CLMM
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../source/overview.html">Rapid overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../source/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../source/citing.html">Using and citing CLMM</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Usage Demos</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="demo_generate_mock_cluster.html">Generate Mock Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_dataops_functionality.html">Measure a Profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_mass_conversion.html">Mass conversion between spherical overdensity mass definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_boost_factors.html">Define cosmology object</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Mass Fitting Examples</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example2_Fit_Halo_Mass_to_Shear_Catalog_NC.html">Fit halo mass to shear profile using Numcosmo statistical framework</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Investigate the impact of miscentering on shear profiles</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.constants.html">clmm.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.cosmology.html">clmm.cosmology package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.cosmology.ccl.html">clmm.cosmology.ccl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.cosmology.cluster_toolkit.html">clmm.cosmology.cluster_toolkit module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.cosmology.numcosmo.html">clmm.cosmology.numcosmo module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.cosmology.parent_class.html">clmm.cosmology.parent_class module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.dataops.html">clmm.dataops package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.gcdata.html">clmm.gcdata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.theory.html">clmm.theory package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.be_setup.html">clmm.theory.be_setup module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.ccl.html">clmm.theory.ccl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.cluster_toolkit.html">clmm.theory.cluster_toolkit module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.func_layer.html">clmm.theory.func_layer module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.generic.html">clmm.theory.generic module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.numcosmo.html">clmm.theory.numcosmo module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.parent_class.html">clmm.theory.parent_class module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.plotting.html">clmm.plotting package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.utils.html">clmm.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.support.html">clmm.support package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.support.mock_data.html">clmm.support.mock_data module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.support.sampler.html">clmm.support.sampler module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CLMM</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Investigate the impact of miscentering on shear profiles</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/compiled-examples/Example1_Fit_shear_profile_with_miscentering.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="investigate-the-impact-of-miscentering-on-shear-profiles">
+<h1>Investigate the impact of miscentering on shear profiles<a class="headerlink" href="#investigate-the-impact-of-miscentering-on-shear-profiles" title="Permalink to this headline">¶</a></h1>
+<p><em>the LSST-DESC CLMM team</em></p>
+<p>This notebook demonstrates the impact of taking wrong cluster centers to
+construct and derive the mass from reduced shear profiles
+with<code class="docutils literal notranslate"><span class="pre">CLMM</span></code>. This notebook is based on notebook
+“demo_dataops_functionality.ipynb”.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">clmm</span>
+<span class="kn">import</span> <span class="nn">clmm.dataops</span>
+<span class="kn">from</span> <span class="nn">clmm.dataops</span> <span class="kn">import</span> <span class="n">compute_tangential_and_cross_components</span><span class="p">,</span> <span class="n">make_radial_profile</span><span class="p">,</span> <span class="n">make_bins</span>
+<span class="kn">from</span> <span class="nn">clmm.galaxycluster</span> <span class="kn">import</span> <span class="n">GalaxyCluster</span>
+<span class="kn">import</span> <span class="nn">clmm.utils</span> <span class="k">as</span> <span class="nn">u</span>
+<span class="kn">from</span> <span class="nn">clmm</span> <span class="kn">import</span> <span class="n">Cosmology</span>
+<span class="kn">from</span> <span class="nn">clmm.support</span> <span class="kn">import</span> <span class="n">mock_data</span> <span class="k">as</span> <span class="n">mock</span>
+<span class="kn">import</span> <span class="nn">clmm.galaxycluster</span> <span class="k">as</span> <span class="nn">gc</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">random</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">clmm.dataops</span> <span class="k">as</span> <span class="nn">da</span>
+<span class="kn">from</span> <span class="nn">clmm.support.sampler</span> <span class="kn">import</span> <span class="n">fitters</span>
+
+<span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">SkyCoord</span>
+<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
+</pre></div>
+</div>
+<p>Make sure we know which version we’re using</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clmm</span><span class="o">.</span><span class="n">__version__</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.2.0&#39;</span>
+</pre></div>
+</div>
+<section id="define-cosmology-object">
+<h2>Define cosmology object<a class="headerlink" href="#define-cosmology-object" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mock_cosmo</span> <span class="o">=</span> <span class="n">Cosmology</span><span class="p">(</span><span class="n">H0</span> <span class="o">=</span> <span class="mf">70.0</span><span class="p">,</span> <span class="n">Omega_dm0</span> <span class="o">=</span> <span class="mf">0.27</span> <span class="o">-</span> <span class="mf">0.045</span><span class="p">,</span> <span class="n">Omega_b0</span> <span class="o">=</span> <span class="mf">0.045</span><span class="p">,</span> <span class="n">Omega_k0</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span>
+</pre></div>
+</div>
+<section id="generate-cluster-objects-from-mock-data">
+<h3>1. Generate cluster objects from mock data<a class="headerlink" href="#generate-cluster-objects-from-mock-data" title="Permalink to this headline">¶</a></h3>
+<p>In this example, the mock data only include galaxies drawn from redshift
+distribution.</p>
+<p>Define toy cluster parameters for mock data generation</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cosmo</span> <span class="o">=</span> <span class="n">mock_cosmo</span>
+<span class="n">cluster_id</span> <span class="o">=</span> <span class="s2">&quot;Awesome_cluster&quot;</span>
+<span class="n">cluster_m</span> <span class="o">=</span> <span class="mf">1.e15</span>
+<span class="n">cluster_z</span> <span class="o">=</span> <span class="mf">0.3</span>
+<span class="n">concentration</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">ngal_density</span> <span class="o">=</span> <span class="mi">50</span> <span class="c1">#gal/arcmin2</span>
+<span class="n">cluster_ra</span> <span class="o">=</span> <span class="mf">20.</span>
+<span class="n">cluster_dec</span> <span class="o">=</span> <span class="mf">40.</span>
+<span class="n">zsrc_min</span> <span class="o">=</span> <span class="n">cluster_z</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="c1"># we only want to draw background galaxies</span>
+<span class="n">field_size</span> <span class="o">=</span> <span class="mi">20</span> <span class="c1">#Mpc</span>
+
+<span class="n">ideal_data_z</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span><span class="n">cluster_m</span><span class="p">,</span>
+                                            <span class="n">cluster_z</span><span class="p">,</span>
+                                            <span class="n">concentration</span><span class="p">,</span>
+                                            <span class="n">cosmo</span><span class="p">,</span>
+                                            <span class="s1">&#39;chang13&#39;</span><span class="p">,</span><span class="n">delta_so</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+                                            <span class="n">massdef</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+                                            <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span>
+                                            <span class="n">ngal_density</span><span class="o">=</span><span class="n">ngal_density</span><span class="p">,</span>
+                                            <span class="n">cluster_ra</span><span class="o">=</span><span class="n">cluster_ra</span><span class="p">,</span>
+                                            <span class="n">cluster_dec</span> <span class="o">=</span> <span class="n">cluster_dec</span><span class="p">,</span>
+                                            <span class="n">field_size</span><span class="o">=</span><span class="n">field_size</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We want to load this mock data into several CLMM cluster objects, with
+cluster centers located in a 0.4 x 0.4 degrees windows around the
+original cluster position <code class="docutils literal notranslate"><span class="pre">(cluster_ra,</span> <span class="pre">cluster_dec)</span></code>. The user can
+change the number of cluster centers if desired. We set the first center
+to <code class="docutils literal notranslate"><span class="pre">(cluster_ra,cluster_dec)</span></code> for comparison reasons, which
+corresponds to a == 0 in the cell below.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">center_number</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">cluster_list</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">coord</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_number</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">a</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">cluster_ra_new</span> <span class="o">=</span> <span class="n">cluster_ra</span>
+        <span class="n">cluster_dec_new</span> <span class="o">=</span> <span class="n">cluster_dec</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">cluster_ra_new</span>  <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">cluster_ra</span> <span class="o">-</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">cluster_ra</span> <span class="o">+</span> <span class="mf">0.2</span><span class="p">)</span>
+        <span class="n">cluster_dec_new</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">cluster_dec</span> <span class="o">-</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">cluster_dec</span> <span class="o">+</span> <span class="mf">0.2</span><span class="p">)</span>
+
+    <span class="n">cl</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">GalaxyCluster</span><span class="p">(</span><span class="n">cluster_id</span><span class="p">,</span> <span class="n">cluster_ra_new</span><span class="p">,</span> <span class="n">cluster_dec_new</span><span class="p">,</span>
+                               <span class="n">cluster_z</span><span class="p">,</span> <span class="n">ideal_data_z</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cluster info = ID:&quot;</span><span class="p">,</span> <span class="n">cl</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="s2">&quot;; ra:&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">%.2f</span><span class="s2">&quot;</span> <span class="o">%</span><span class="k">cl</span>.ra,
+          <span class="s2">&quot;; dec:&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">%.2f</span><span class="s2">&quot;</span> <span class="o">%</span><span class="k">cl</span>.dec, &quot;; z_l :&quot;, cl.z)
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The number of source galaxies is :&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">))</span>
+
+    <span class="n">cluster_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cl</span><span class="p">)</span>
+    <span class="n">coord</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SkyCoord</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">ra</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">cl</span><span class="o">.</span><span class="n">dec</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Cluster</span> <span class="n">info</span> <span class="o">=</span> <span class="n">ID</span><span class="p">:</span> <span class="n">Awesome_cluster</span> <span class="p">;</span> <span class="n">ra</span><span class="p">:</span> <span class="mf">20.00</span> <span class="p">;</span> <span class="n">dec</span><span class="p">:</span> <span class="mf">40.00</span> <span class="p">;</span> <span class="n">z_l</span> <span class="p">:</span> <span class="mf">0.3</span>
+<span class="n">The</span> <span class="n">number</span> <span class="n">of</span> <span class="n">source</span> <span class="n">galaxies</span> <span class="ow">is</span> <span class="p">:</span> <span class="mi">237965</span>
+<span class="n">Cluster</span> <span class="n">info</span> <span class="o">=</span> <span class="n">ID</span><span class="p">:</span> <span class="n">Awesome_cluster</span> <span class="p">;</span> <span class="n">ra</span><span class="p">:</span> <span class="mf">19.83</span> <span class="p">;</span> <span class="n">dec</span><span class="p">:</span> <span class="mf">40.09</span> <span class="p">;</span> <span class="n">z_l</span> <span class="p">:</span> <span class="mf">0.3</span>
+<span class="n">The</span> <span class="n">number</span> <span class="n">of</span> <span class="n">source</span> <span class="n">galaxies</span> <span class="ow">is</span> <span class="p">:</span> <span class="mi">237965</span>
+<span class="n">Cluster</span> <span class="n">info</span> <span class="o">=</span> <span class="n">ID</span><span class="p">:</span> <span class="n">Awesome_cluster</span> <span class="p">;</span> <span class="n">ra</span><span class="p">:</span> <span class="mf">20.04</span> <span class="p">;</span> <span class="n">dec</span><span class="p">:</span> <span class="mf">39.96</span> <span class="p">;</span> <span class="n">z_l</span> <span class="p">:</span> <span class="mf">0.3</span>
+<span class="n">The</span> <span class="n">number</span> <span class="n">of</span> <span class="n">source</span> <span class="n">galaxies</span> <span class="ow">is</span> <span class="p">:</span> <span class="mi">237965</span>
+<span class="n">Cluster</span> <span class="n">info</span> <span class="o">=</span> <span class="n">ID</span><span class="p">:</span> <span class="n">Awesome_cluster</span> <span class="p">;</span> <span class="n">ra</span><span class="p">:</span> <span class="mf">19.86</span> <span class="p">;</span> <span class="n">dec</span><span class="p">:</span> <span class="mf">39.84</span> <span class="p">;</span> <span class="n">z_l</span> <span class="p">:</span> <span class="mf">0.3</span>
+<span class="n">The</span> <span class="n">number</span> <span class="n">of</span> <span class="n">source</span> <span class="n">galaxies</span> <span class="ow">is</span> <span class="p">:</span> <span class="mi">237965</span>
+<span class="n">Cluster</span> <span class="n">info</span> <span class="o">=</span> <span class="n">ID</span><span class="p">:</span> <span class="n">Awesome_cluster</span> <span class="p">;</span> <span class="n">ra</span><span class="p">:</span> <span class="mf">20.13</span> <span class="p">;</span> <span class="n">dec</span><span class="p">:</span> <span class="mf">39.83</span> <span class="p">;</span> <span class="n">z_l</span> <span class="p">:</span> <span class="mf">0.3</span>
+<span class="n">The</span> <span class="n">number</span> <span class="n">of</span> <span class="n">source</span> <span class="n">galaxies</span> <span class="ow">is</span> <span class="p">:</span> <span class="mi">237965</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#Offset of the different cluster centers from the position 0,0 (in degree)</span>
+<span class="n">offset</span> <span class="o">=</span> <span class="p">[</span><span class="n">coord</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">separation</span><span class="p">(</span><span class="n">coord</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)]</span>
+</pre></div>
+</div>
+</section>
+<section id="basic-checks-and-plots">
+<h3>2. Basic checks and plots<a class="headerlink" href="#basic-checks-and-plots" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>galaxy positions</p></li>
+<li><p>redshift distribution</p></li>
+</ul>
+<p>For a better visualization, we plot all the different cluster centers,
+represented by the red dots.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">cl</span> <span class="ow">in</span> <span class="n">cluster_list</span><span class="p">:</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;ra&#39;</span><span class="p">],</span> <span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;dec&#39;</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">ra</span><span class="p">,</span> <span class="n">cl</span><span class="o">.</span><span class="n">dec</span><span class="p">,</span> <span class="s1">&#39;ro&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;dec&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="s2">&quot;large&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;ra&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="s2">&quot;large&quot;</span><span class="p">)</span>
+
+    <span class="n">hist</span> <span class="o">=</span> <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;$z_</span><span class="si">{source}</span><span class="s1">$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="s2">&quot;large&quot;</span><span class="p">)</span>
+    <span class="n">xt</span> <span class="o">=</span> <span class="p">{</span><span class="n">t</span><span class="p">:</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get_xticks</span><span class="p">()</span> <span class="k">if</span> <span class="n">t</span><span class="o">!=</span><span class="mi">0</span><span class="p">}</span>
+    <span class="n">xt</span><span class="p">[</span><span class="n">cl</span><span class="o">.</span><span class="n">z</span><span class="p">]</span> <span class="o">=</span><span class="s1">&#39;$z_</span><span class="si">{cl}</span><span class="s1">$&#39;</span>
+    <span class="n">xto</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">xt</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">+</span><span class="p">[</span><span class="n">cl</span><span class="o">.</span><span class="n">z</span><span class="p">])</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">xto</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">xt</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">xto</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get_xticklabels</span><span class="p">()[</span><span class="n">xto</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">z</span><span class="p">)]</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">xto</span><span class="p">))</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../_images/Example1_Fit_shear_profile_with_miscentering_13_0.png" src="../_images/Example1_Fit_shear_profile_with_miscentering_13_0.png" />
+</section>
+<section id="compute-the-center-effect-on-the-shear-profiles">
+<h3>3. Compute the center effect on the shear profiles<a class="headerlink" href="#compute-the-center-effect-on-the-shear-profiles" title="Permalink to this headline">¶</a></h3>
+<p>Next, we generate the profiles for all the Cluster objects and save the
+profiles into a list. We also save the <code class="docutils literal notranslate"><span class="pre">gt</span></code>, <code class="docutils literal notranslate"><span class="pre">gx</span></code>, and <code class="docutils literal notranslate"><span class="pre">radius</span></code>
+columns of each <code class="docutils literal notranslate"><span class="pre">profile</span></code> into lists, so we can make a plot of these
+components.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bin_edges</span> <span class="o">=</span> <span class="n">make_bins</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="c1"># We want to specify the same bins for all the centers.</span>
+
+<span class="n">profile_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">cl</span> <span class="ow">in</span> <span class="n">cluster_list</span><span class="p">:</span>
+    <span class="n">theta</span><span class="p">,</span> <span class="n">e_t</span><span class="p">,</span> <span class="n">e_x</span> <span class="o">=</span> <span class="n">compute_tangential_and_cross_components</span><span class="p">(</span>
+                    <span class="n">ra_lens</span><span class="o">=</span><span class="n">cl</span><span class="o">.</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec_lens</span><span class="o">=</span><span class="n">cl</span><span class="o">.</span><span class="n">dec</span><span class="p">,</span>
+                    <span class="n">ra_source</span><span class="o">=</span><span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;ra&#39;</span><span class="p">],</span> <span class="n">dec_source</span><span class="o">=</span><span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;dec&#39;</span><span class="p">],</span>
+                    <span class="n">shear1</span><span class="o">=</span><span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;e1&#39;</span><span class="p">],</span> <span class="n">shear2</span><span class="o">=</span><span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;e2&#39;</span><span class="p">])</span>
+    <span class="n">cl</span><span class="o">.</span><span class="n">compute_tangential_and_cross_components</span><span class="p">(</span><span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">cl</span><span class="o">.</span><span class="n">make_radial_profile</span><span class="p">(</span><span class="s2">&quot;Mpc&quot;</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span><span class="n">bins</span><span class="o">=</span><span class="n">bin_edges</span><span class="p">,</span> <span class="n">include_empty_bins</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">profile_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">profile</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">profile_list</span><span class="p">)):</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">profile_list</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span><span class="n">profile_list</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="s1">&#39;gt&#39;</span><span class="p">],</span><span class="n">profile_list</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="s1">&#39;gt_err&#39;</span><span class="p">],</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span><span class="sa">f</span><span class="s1">&#39;offset = </span><span class="si">{</span><span class="s2">&quot;</span><span class="si">{:.2f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">offset</span><span class="p">[</span><span class="n">a</span><span class="p">])</span><span class="si">}</span><span class="s1">°&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;log(radius)&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;gt&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../_images/Example1_Fit_shear_profile_with_miscentering_16_0.png" src="../_images/Example1_Fit_shear_profile_with_miscentering_16_0.png" />
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig2</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">profile_list</span><span class="p">)):</span>
+    <span class="n">fig2</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">profile_list</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span><span class="n">profile_list</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="s1">&#39;gx&#39;</span><span class="p">],</span><span class="n">profile_list</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="s1">&#39;gx_err&#39;</span><span class="p">],</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span><span class="sa">f</span><span class="s1">&#39;offset = </span><span class="si">{</span><span class="s2">&quot;</span><span class="si">{:.2f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">offset</span><span class="p">[</span><span class="n">a</span><span class="p">])</span><span class="si">}</span><span class="s1">°&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;log(radius)&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;gx&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../_images/Example1_Fit_shear_profile_with_miscentering_17_0.png" src="../_images/Example1_Fit_shear_profile_with_miscentering_17_0.png" />
+<p>Since we consider GalaxyCluster objects with no shape noise or photo-z
+errors, the center (0,0) gives the expected result <code class="docutils literal notranslate"><span class="pre">gx</span> <span class="pre">=</span> <span class="pre">0</span></code>, by
+construction. For the other cluster centers, we can see that the cross
+shear term average to zero as expected, but the profiles are noisier.</p>
+</section>
+<section id="compute-the-center-effect-by-fitting-the-halo-mass">
+<h3>4. Compute the center effect by fitting the Halo mass<a class="headerlink" href="#compute-the-center-effect-by-fitting-the-halo-mass" title="Permalink to this headline">¶</a></h3>
+<p>In this last step, we compute the fitting Halo mass with the <code class="docutils literal notranslate"><span class="pre">nfw</span></code>
+model and, using a plot, compare the impact of the Cluster centers on
+the weak lensing mass.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">clmm.support.sampler</span> <span class="kn">import</span> <span class="n">samplers</span>
+</pre></div>
+</div>
+<p>The function below defines the Halo model. For further information,
+check the notebook “Example2_Fit_Halo_Mass_to_Shear_Catalog.ipynb”</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">logm_0</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">13.</span><span class="p">,</span> <span class="mf">17.</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="k">def</span> <span class="nf">shear_profile_model</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">logm</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="mf">10.</span><span class="o">**</span><span class="n">logm</span>
+    <span class="n">gt_model</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">compute_reduced_tangential_shear</span><span class="p">(</span><span class="n">r</span><span class="p">,</span>
+                                                     <span class="n">m</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span>
+                                                     <span class="n">cluster_z</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span>
+                                                     <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+                                                     <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">gt_model</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cluster_list</span><span class="p">)):</span>
+    <span class="n">popt</span><span class="p">,</span><span class="n">pcov</span> <span class="o">=</span> <span class="n">fitters</span><span class="p">[</span><span class="s1">&#39;curve_fit&#39;</span><span class="p">](</span><span class="k">lambda</span> <span class="n">r</span><span class="p">,</span> <span class="n">logm</span><span class="p">:</span><span class="n">shear_profile_model</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">logm</span><span class="p">,</span> <span class="n">profile_list</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="s1">&#39;z&#39;</span><span class="p">]),</span>
+                    <span class="n">profile_list</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span>
+                    <span class="n">profile_list</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="s1">&#39;gt&#39;</span><span class="p">],</span>
+                    <span class="n">profile_list</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="s1">&#39;gt_err&#39;</span><span class="p">],</span> <span class="n">bounds</span><span class="o">=</span><span class="p">[</span><span class="mf">13.</span><span class="p">,</span><span class="mf">17.</span><span class="p">])</span>
+
+    <span class="n">m_est1</span> <span class="o">=</span> <span class="mf">10.</span><span class="o">**</span><span class="n">popt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">m_est_err1</span> <span class="o">=</span>  <span class="n">m_est1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">pcov</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="c1"># convert the error on logm to error on m</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The fitted mass is :&quot;</span><span class="p">,</span><span class="s2">&quot;</span><span class="si">%.2e</span><span class="s2">&quot;</span><span class="o">%</span><span class="k">m_est1</span>, &quot;for the offset distance:&quot;, &quot;%.2f&quot;%offset[a],&quot;}°&quot;)
+    <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">offset</span><span class="p">[</span><span class="n">a</span><span class="p">],</span> <span class="n">m_est1</span><span class="p">,</span> <span class="n">yerr</span> <span class="o">=</span> <span class="n">m_est_err1</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span><span class="c1">#, label=f&#39;Offset:{&quot;{:.2f}&quot;.format(offset[a])}°&#39;)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;offset [deg]&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;fitted mass $M_{200,m}$ [M$_{\odot}$]&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="mf">5.e12</span><span class="p">,</span><span class="mf">2.e15</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">cluster_m</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;input mass&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;best&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">The</span> <span class="n">fitted</span> <span class="n">mass</span> <span class="ow">is</span> <span class="p">:</span> <span class="mf">8.75e+14</span> <span class="k">for</span> <span class="n">the</span> <span class="n">offset</span> <span class="n">distance</span><span class="p">:</span> <span class="mf">0.00</span> <span class="n">degrees</span>
+<span class="n">The</span> <span class="n">fitted</span> <span class="n">mass</span> <span class="ow">is</span> <span class="p">:</span> <span class="mf">4.05e+14</span> <span class="k">for</span> <span class="n">the</span> <span class="n">offset</span> <span class="n">distance</span><span class="p">:</span> <span class="mf">0.15</span> <span class="n">degrees</span>
+<span class="n">The</span> <span class="n">fitted</span> <span class="n">mass</span> <span class="ow">is</span> <span class="p">:</span> <span class="mf">8.27e+14</span> <span class="k">for</span> <span class="n">the</span> <span class="n">offset</span> <span class="n">distance</span><span class="p">:</span> <span class="mf">0.05</span> <span class="n">degrees</span>
+<span class="n">The</span> <span class="n">fitted</span> <span class="n">mass</span> <span class="ow">is</span> <span class="p">:</span> <span class="mf">1.24e+14</span> <span class="k">for</span> <span class="n">the</span> <span class="n">offset</span> <span class="n">distance</span><span class="p">:</span> <span class="mf">0.19</span> <span class="n">degrees</span>
+<span class="n">The</span> <span class="n">fitted</span> <span class="n">mass</span> <span class="ow">is</span> <span class="p">:</span> <span class="mf">9.70e+13</span> <span class="k">for</span> <span class="n">the</span> <span class="n">offset</span> <span class="n">distance</span><span class="p">:</span> <span class="mf">0.20</span> <span class="n">degrees</span>
+</pre></div>
+</div>
+<img alt="../_images/Example1_Fit_shear_profile_with_miscentering_23_1.png" src="../_images/Example1_Fit_shear_profile_with_miscentering_23_1.png" />
+<p>We can see that for cluster centers differing from (0,0), we have a
+negative effect on the lensing mass, which increases with the offset
+distance.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2018-2022, LSST DESC CLMM Contributors
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

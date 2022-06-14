@@ -4,16 +4,18 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Basic usage of the cosmoDC2 extragalactic catalog with CLMM &mdash; CLMM 1.0.0 documentation</title>
+  <title>Basic usage of the cosmoDC2 extragalactic catalog with CLMM &mdash; CLMM 1.2.0 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
   
@@ -27,18 +29,18 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Fit halo mass to shear profile: 1. ideal data" href="Example1_Fit_Halo_Mass_to_Shear_Catalog.html" />
+    <link rel="next" title="Mass conversion between spherical overdensity mass definitions" href="demo_mass_conversion.html" />
     <link rel="prev" title="Model a Galaxy Cluster" href="demo_theory_functionality.html" /> 
 </head>
 
@@ -63,7 +65,7 @@
             
             
               <div class="version">
-                1.0.0
+                1.2.0
               </div>
             
           
@@ -88,27 +90,30 @@
               
             
             
-              <p><span class="caption-text">Getting Started</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../source/overview.html">Rapid overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../source/installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../source/citing.html">Citing CLMM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../source/citing.html">Using and citing CLMM</a></li>
 </ul>
-<p><span class="caption-text">Usage Demos</span></p>
+<p class="caption" role="heading"><span class="caption-text">Usage Demos</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="demo_generate_mock_cluster.html">Generate Mock Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demo_dataops_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_mass_conversion.html">Mass conversion between spherical overdensity mass definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_boost_factors.html">Define cosmology object</a></li>
 </ul>
-<p><span class="caption-text">Mass Fitting Examples</span></p>
+<p class="caption" role="heading"><span class="caption-text">Mass Fitting Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Example2_Fit_Halo_Mass_to_Shear_Catalog_NC.html">Fit halo mass to shear profile using Numcosmo statistical framework</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example1_Fit_shear_profile_with_miscentering.html">Investigate the impact of miscentering on shear profiles</a></li>
 </ul>
-<p><span class="caption-text">Reference</span></p>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">API Documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.constants.html">clmm.constants module</a></li>
@@ -226,6 +231,9 @@ those.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clmm</span><span class="o">.</span><span class="n">__version__</span>
 </pre></div>
 </div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.2.0&#39;</span>
+</pre></div>
+</div>
 <section id="prepare-a-clmm-galaxycluster-object-from-cosmodc2">
 <h2>1. Prepare a CLMM GalaxyCluster object from cosmoDC2<a class="headerlink" href="#prepare-a-clmm-galaxycluster-object-from-cosmodc2" title="Permalink to this headline">¶</a></h2>
 <section id="read-in-the-extragalactic-catalog-cosmodc2">
@@ -237,6 +245,9 @@ those.</p>
 <span class="n">dc2_cosmo</span> <span class="o">=</span> <span class="n">extragalactic_cat</span><span class="o">.</span><span class="n">cosmology</span>
 <span class="n">cosmo</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">Cosmology</span><span class="p">(</span><span class="n">H0</span> <span class="o">=</span> <span class="n">dc2_cosmo</span><span class="o">.</span><span class="n">H0</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">Omega_dm0</span> <span class="o">=</span> <span class="n">dc2_cosmo</span><span class="o">.</span><span class="n">Om0</span><span class="o">-</span><span class="n">dc2_cosmo</span><span class="o">.</span><span class="n">Ob0</span><span class="p">,</span> <span class="n">Omega_b0</span> <span class="o">=</span> <span class="n">dc2_cosmo</span><span class="o">.</span><span class="n">Ob0</span><span class="p">)</span>
 <span class="n">cosmo</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">clmm</span><span class="o">.</span><span class="n">cosmology</span><span class="o">.</span><span class="n">ccl</span><span class="o">.</span><span class="n">CCLCosmology</span> <span class="n">at</span> <span class="mh">0x15532148a250</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 </section>
@@ -252,6 +263,9 @@ those.</p>
                                                           <span class="sa">f</span><span class="s1">&#39;redshift&gt;</span><span class="si">{</span><span class="n">zmin</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;redshift&lt;</span><span class="si">{</span><span class="n">zmax</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">])</span>
 <span class="n">N_cl</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">massive_halos</span><span class="p">[</span><span class="s1">&#39;halo_mass&#39;</span><span class="p">])</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;There are </span><span class="si">{</span><span class="n">N_cl</span><span class="si">}</span><span class="s1"> clusters in this mass and redshift range&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">There</span> <span class="n">are</span> <span class="mi">4</span> <span class="n">clusters</span> <span class="ow">in</span> <span class="n">this</span> <span class="n">mass</span> <span class="ow">and</span> <span class="n">redshift</span> <span class="nb">range</span>
 </pre></div>
 </div>
 </section>
@@ -272,6 +286,11 @@ M<span class="math notranslate nohighlight">\(_{\odot}\; h^{-1}\)</span>.</p>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;halo_mass:      </span><span class="si">{</span><span class="n">massive_halos</span><span class="p">[</span><span class="s1">&#39;halo_mass&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">hostHaloMass</span><span class="p">:</span>   <span class="p">[</span><span class="mf">4.11498904e+14</span> <span class="mf">4.51343114e+14</span> <span class="mf">4.28283670e+14</span> <span class="mf">3.59993019e+14</span><span class="p">]</span>
+<span class="n">hostHaloMass</span><span class="o">/</span><span class="n">h</span><span class="p">:</span> <span class="p">[</span><span class="mf">5.79575921e+14</span> <span class="mf">6.35694527e+14</span> <span class="mf">6.03216436e+14</span> <span class="mf">5.07032421e+14</span><span class="p">]</span>
+<span class="n">halo_mass</span><span class="p">:</span>      <span class="p">[</span><span class="mf">5.79575921e+14</span> <span class="mf">6.35694527e+14</span> <span class="mf">6.03216436e+14</span> <span class="mf">5.07032421e+14</span><span class="p">]</span>
+</pre></div>
+</div>
 <p>Below, we use <code class="docutils literal notranslate"><span class="pre">halo_mass</span></code>.</p>
 </section>
 <section id="select-the-most-massive-one">
@@ -287,6 +306,9 @@ M<span class="math notranslate nohighlight">\(_{\odot}\; h^{-1}\)</span>.</p>
 <span class="n">id_cl</span> <span class="o">=</span> <span class="n">massive_halos</span><span class="p">[</span><span class="s1">&#39;halo_id&#39;</span><span class="p">][</span><span class="n">select</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 
 <span class="nb">print</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The most massive cluster is halo </span><span class="si">{</span><span class="n">id_cl</span><span class="si">}</span><span class="s1"> in ra = </span><span class="si">{</span><span class="n">ra_cl</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> deg, dec = </span><span class="si">{</span><span class="n">dec_cl</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> deg, z = </span><span class="si">{</span><span class="n">z_cl</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">, with mass = </span><span class="si">{</span><span class="n">mass_cl</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1"> Msun&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">The</span> <span class="n">most</span> <span class="n">massive</span> <span class="n">cluster</span> <span class="ow">is</span> <span class="n">halo</span> <span class="mi">95600097373</span> <span class="ow">in</span> <span class="n">ra</span> <span class="o">=</span> <span class="mf">64.26</span> <span class="n">deg</span><span class="p">,</span> <span class="n">dec</span> <span class="o">=</span> <span class="o">-</span><span class="mf">34.47</span> <span class="n">deg</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="mf">0.32</span><span class="p">,</span> <span class="k">with</span> <span class="n">mass</span> <span class="o">=</span> <span class="mf">6.36e+14</span> <span class="n">Msun</span>
 </pre></div>
 </div>
 </section>
@@ -346,6 +368,13 @@ used to instantiate a CLMM GalaxyCluster object.</p></li>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Count&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Number</span> <span class="n">of</span> <span class="n">galaxies</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">catalog</span><span class="p">:</span> <span class="n">Ngal</span> <span class="o">=</span> <span class="mi">36403</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Text</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;Count&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../_images/data_and_model_demo_DC2_19_2.png" src="../_images/data_and_model_demo_DC2_19_2.png" />
 </section>
 </section>
 <section id="use-clmm-to-compute-the-reduced-tangential-shear-profile">
@@ -359,7 +388,25 @@ available options of the functions below.</p>
 <span class="n">cl</span><span class="o">.</span><span class="n">make_radial_profile</span><span class="p">(</span><span class="s2">&quot;Mpc&quot;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bin_edges</span><span class="p">,</span><span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">include_empty_bins</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gal_ids_in_bins</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
-</section>
+<b>GCData</b><br> <b>defined by:</b> cosmo='CCLCosmology(H0=71.0, Omega_dm0=0.21999999999999997, Omega_b0=0.0448, Omega_k0=0.0)', bin_units='Mpc'<br> <b>with columns:</b> radius_min, radius, radius_max, gt, gt_err, gx, gx_err, z, z_err, n_src<br> 14 objects<br>
+<table id="table23446783685632" class="table-striped table-bordered table-condensed">
+<thead><tr><th>radius_min</th><th>radius</th><th>radius_max</th><th>gt</th><th>gt_err</th><th>gx</th><th>gx_err</th><th>z</th><th>z_err</th><th>n_src</th></tr></thead>
+<thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>int64</th></tr></thead>
+<tr><td>0.15</td><td>0.1763113582717511</td><td>0.19846556968648293</td><td>0.02037417866393367</td><td>0.003528427751069608</td><td>0.006753624804594845</td><td>0.0036875324065002747</td><td>0.971778890840735</td><td>0.05041615834029072</td><td>34</td></tr>
+<tr><td>0.19846556968648293</td><td>0.23210445375566377</td><td>0.26259054900653483</td><td>0.026797418763027252</td><td>0.0027189139082722173</td><td>0.000711937788625249</td><td>0.0023036485227813873</td><td>1.0205686894672048</td><td>0.05819391349532107</td><td>53</td></tr>
+<tr><td>0.26259054900653483</td><td>0.3058697088940231</td><td>0.3474345526857884</td><td>0.04106670063870147</td><td>0.0019084106346784937</td><td>0.0016804474260400156</td><td>0.0014455222242051198</td><td>1.0265077465792045</td><td>0.04849007345410984</td><td>82</td></tr>
+<tr><td>0.3474345526857884</td><td>0.4075257223112022</td><td>0.45969197618368907</td><td>0.04653729063271445</td><td>0.0011883552158441315</td><td>0.0009121476865501899</td><td>0.0007975140897055012</td><td>1.0371254245957022</td><td>0.03697891094370103</td><td>131</td></tr>
+<tr><td>0.45969197618368907</td><td>0.5397899983136085</td><td>0.60822019955734</td><td>0.049167484967430695</td><td>0.0007016225178216938</td><td>0.000190773563874366</td><td>0.00035815853218934155</td><td>0.9767212679612604</td><td>0.023443009952331062</td><td>260</td></tr>
+<tr><td>0.60822019955734</td><td>0.7073972580184479</td><td>0.8047384559998256</td><td>0.03782777299821916</td><td>0.0004936163860593943</td><td>0.0002264159673720296</td><td>0.00037354499832125955</td><td>0.9192423022575898</td><td>0.016325097831507804</td><td>464</td></tr>
+<tr><td>0.8047384559998256</td><td>0.9421644569184611</td><td>1.0647525074575073</td><td>0.025153752485285695</td><td>0.0003594902655390652</td><td>-0.00017164485861469945</td><td>0.0003212987611452581</td><td>0.9769176552238978</td><td>0.014443458340591317</td><td>730</td></tr>
+<tr><td>1.0647525074575073</td><td>1.2474471408466439</td><td>1.4087780864511024</td><td>0.02463519639404679</td><td>0.00028888360972401306</td><td>0.0006503197819960236</td><td>0.00028043852278122997</td><td>0.9833522811078521</td><td>0.010504902772299238</td><td>1200</td></tr>
+<tr><td>1.4087780864511024</td><td>1.652300213360886</td><td>1.8639596365956759</td><td>0.014223049439807508</td><td>0.00028200206943104186</td><td>0.0008294679292940299</td><td>0.0003006791397974386</td><td>0.9905470979103952</td><td>0.008631799998153306</td><td>2077</td></tr>
+<tr><td>1.8639596365956759</td><td>2.1826327746677823</td><td>2.46621207433047</td><td>0.008599580421441697</td><td>0.0002379301812214717</td><td>0.0001835849004552626</td><td>0.00020018841708021877</td><td>1.0075118379759902</td><td>0.006936712191470689</td><td>3478</td></tr>
+<tr><td>2.46621207433047</td><td>2.8820096226143472</td><td>3.263054561997864</td><td>0.012377544279896133</td><td>0.0001643608569325272</td><td>0.00029950361299735276</td><td>0.00014767823974576647</td><td>0.9944296000039343</td><td>0.004942296877405802</td><td>6186</td></tr>
+<tr><td>3.263054561997864</td><td>3.8078574097321094</td><td>4.317359883766556</td><td>0.009310564479903662</td><td>9.765887990236463e-05</td><td>-0.0005546602197688972</td><td>0.00011963442736483391</td><td>0.9923129147500154</td><td>0.003684104410564973</td><td>10860</td></tr>
+<tr><td>4.317359883766556</td><td>4.869885709290059</td><td>5.7123152591553135</td><td>0.004851708424542458</td><td>0.00010753043628393734</td><td>-0.0011034580754977676</td><td>0.00011530961849061012</td><td>0.9844667693302255</td><td>0.0038877964336626212</td><td>9743</td></tr>
+<tr><td>5.7123152591553135</td><td>5.958743529527653</td><td>7.557986014246993</td><td>0.001556568432104305</td><td>0.0003219125950674201</td><td>-0.0036876170325483744</td><td>0.00028155429723345535</td><td>1.0032329033132281</td><td>0.012230303156691607</td><td>1049</td></tr>
+</table></section>
 </section>
 <section id="sanity-check-use-clmm-to-compute-the-corresponding-nfw-model-given-the-halo-mass">
 <h2>3. Sanity check: use CLMM to compute the corresponding NFW model, given the halo mass<a class="headerlink" href="#sanity-check-use-clmm-to-compute-the-corresponding-nfw-model-given-the-halo-mass" title="Permalink to this headline">¶</a></h2>
@@ -395,6 +442,8 @@ corresponds to the standard error of the mean in the bin
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Reduced shear $\langle g_t\rangle$&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+<pre class="literal-block">Text(0, 0.5, 'Reduced shear $\langle g_t\rangle$')</pre>
+<img alt="../_images/data_and_model_demo_DC2_25_1.png" src="../_images/data_and_model_demo_DC2_25_1.png" />
 <p>Data and model are in rough agreement at large radii. In the inner
 region, the lack of resolution of the DC2 simulations yield an
 unphysical attenuation of the signal. This was remarked upon in the
@@ -415,7 +464,7 @@ galaxy-galaxy lensing.</p>
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
+        &copy; Copyright 2018-2022, LSST DESC CLMM Contributors
 
     </p>
   </div>

@@ -1,0 +1,481 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Mass conversion between spherical overdensity mass definitions &mdash; CLMM 1.2.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Define cosmology object" href="demo_boost_factors.html" />
+    <link rel="prev" title="Basic usage of the cosmoDC2 extragalactic catalog with CLMM" href="data_and_model_demo_DC2.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> CLMM
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../source/overview.html">Rapid overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../source/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../source/citing.html">Using and citing CLMM</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Usage Demos</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="demo_generate_mock_cluster.html">Generate Mock Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_dataops_functionality.html">Measure a Profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Mass conversion between spherical overdensity mass definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_boost_factors.html">Define cosmology object</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Mass Fitting Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example2_Fit_Halo_Mass_to_Shear_Catalog_NC.html">Fit halo mass to shear profile using Numcosmo statistical framework</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example1_Fit_shear_profile_with_miscentering.html">Investigate the impact of miscentering on shear profiles</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.constants.html">clmm.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.cosmology.html">clmm.cosmology package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.cosmology.ccl.html">clmm.cosmology.ccl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.cosmology.cluster_toolkit.html">clmm.cosmology.cluster_toolkit module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.cosmology.numcosmo.html">clmm.cosmology.numcosmo module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.cosmology.parent_class.html">clmm.cosmology.parent_class module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.dataops.html">clmm.dataops package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.gcdata.html">clmm.gcdata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.theory.html">clmm.theory package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.be_setup.html">clmm.theory.be_setup module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.ccl.html">clmm.theory.ccl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.cluster_toolkit.html">clmm.theory.cluster_toolkit module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.func_layer.html">clmm.theory.func_layer module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.generic.html">clmm.theory.generic module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.numcosmo.html">clmm.theory.numcosmo module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.parent_class.html">clmm.theory.parent_class module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.plotting.html">clmm.plotting package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.utils.html">clmm.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.support.html">clmm.support package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.support.mock_data.html">clmm.support.mock_data module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.support.sampler.html">clmm.support.sampler module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CLMM</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Mass conversion between spherical overdensity mass definitions</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/compiled-examples/demo_mass_conversion.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="mass-conversion-between-spherical-overdensity-mass-definitions">
+<h1>Mass conversion between spherical overdensity mass definitions<a class="headerlink" href="#mass-conversion-between-spherical-overdensity-mass-definitions" title="Permalink to this headline">¶</a></h1>
+<p>In this notebook, we demonstrates how to convert the mass and
+concentration between various mass definitions (going from <span class="math notranslate nohighlight">\(200m\)</span>
+to <span class="math notranslate nohighlight">\(500c\)</span> in this example), and related functionalities, using
+both the object-oriented and functional interfaces of the code.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;CLMM_MODELING_BACKEND&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ccl&#39;</span> <span class="c1"># here you may choose ccl, nc (NumCosmo) or ct (cluster_toolkit)</span>
+<span class="kn">import</span> <span class="nn">clmm</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+</pre></div>
+</div>
+<p>We define a cosmology first:</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cosmo</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">Cosmology</span><span class="p">(</span><span class="n">H0</span> <span class="o">=</span> <span class="mf">70.0</span><span class="p">,</span> <span class="n">Omega_dm0</span> <span class="o">=</span> <span class="mf">0.27</span> <span class="o">-</span> <span class="mf">0.045</span><span class="p">,</span> <span class="n">Omega_b0</span> <span class="o">=</span> <span class="mf">0.045</span><span class="p">,</span> <span class="n">Omega_k0</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">)</span>
+</pre></div>
+</div>
+<section id="create-a-clmm-modeling-object">
+<h2>Create a <code class="docutils literal notranslate"><span class="pre">CLMM</span></code> Modeling object<a class="headerlink" href="#create-a-clmm-modeling-object" title="Permalink to this headline">¶</a></h2>
+<section id="define-a-mass-profile-for-a-given-sod-definition">
+<h3>Define a mass profile for a given SOD definition<a class="headerlink" href="#define-a-mass-profile-for-a-given-sod-definition" title="Permalink to this headline">¶</a></h3>
+<p>We define halo parameters following the <span class="math notranslate nohighlight">\(200m\)</span> overdensity
+definition: 1. the mass <span class="math notranslate nohighlight">\(M_{200m}\)</span> 2. the concentration
+<span class="math notranslate nohighlight">\(c_{200m}\)</span></p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#first SOD definition</span>
+<span class="n">M1</span> <span class="o">=</span> <span class="mf">1e14</span>
+<span class="n">c1</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">massdef1</span> <span class="o">=</span> <span class="s1">&#39;mean&#39;</span>
+<span class="n">delta_mdef1</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="c1">#cluster redshift</span>
+<span class="n">z_cl</span> <span class="o">=</span> <span class="mf">0.4</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#create a clmm Modeling object for each profile parametrisation</span>
+<span class="n">nfw_def1</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">Modeling</span><span class="p">(</span><span class="n">massdef</span><span class="o">=</span><span class="n">massdef1</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef1</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">)</span>
+<span class="n">her_def1</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">Modeling</span><span class="p">(</span><span class="n">massdef</span><span class="o">=</span><span class="n">massdef1</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef1</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;hernquist&#39;</span><span class="p">)</span>
+<span class="n">ein_def1</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">Modeling</span><span class="p">(</span><span class="n">massdef</span><span class="o">=</span><span class="n">massdef1</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef1</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;einasto&#39;</span><span class="p">)</span>
+
+<span class="c1">#set the properties of the profiles</span>
+<span class="n">nfw_def1</span><span class="o">.</span><span class="n">set_mass</span><span class="p">(</span><span class="n">M1</span><span class="p">)</span>
+<span class="n">nfw_def1</span><span class="o">.</span><span class="n">set_concentration</span><span class="p">(</span><span class="n">c1</span><span class="p">)</span>
+<span class="n">nfw_def1</span><span class="o">.</span><span class="n">set_cosmo</span><span class="p">(</span><span class="n">cosmo</span><span class="p">)</span>
+
+<span class="n">her_def1</span><span class="o">.</span><span class="n">set_mass</span><span class="p">(</span><span class="n">M1</span><span class="p">)</span>
+<span class="n">her_def1</span><span class="o">.</span><span class="n">set_concentration</span><span class="p">(</span><span class="n">c1</span><span class="p">)</span>
+<span class="n">her_def1</span><span class="o">.</span><span class="n">set_cosmo</span><span class="p">(</span><span class="n">cosmo</span><span class="p">)</span>
+
+<span class="n">ein_def1</span><span class="o">.</span><span class="n">set_mass</span><span class="p">(</span><span class="n">M1</span><span class="p">)</span>
+<span class="n">ein_def1</span><span class="o">.</span><span class="n">set_concentration</span><span class="p">(</span><span class="n">c1</span><span class="p">)</span>
+<span class="n">ein_def1</span><span class="o">.</span><span class="n">set_cosmo</span><span class="p">(</span><span class="n">cosmo</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="compute-the-enclosed-mass-in-a-given-radius">
+<h2>Compute the enclosed mass in a given radius<a class="headerlink" href="#compute-the-enclosed-mass-in-a-given-radius" title="Permalink to this headline">¶</a></h2>
+<p>Calculate the enclosed masses within r with the class method
+<code class="docutils literal notranslate"><span class="pre">eval_mass_in_radius</span></code>. The calculation can also be done in the
+functional interface with <code class="docutils literal notranslate"><span class="pre">compute_profile_mass_in_radius</span></code>.</p>
+<p>The enclosed mass is calculated as</p>
+<div class="math notranslate nohighlight">
+\[M(&lt;\text{r}) = M_{\Delta}\;\frac{f\left(\frac{\text{r}}{r_{\Delta}/c_{\Delta}}\right)}{f(c_{\Delta})},\]</div>
+<p>where <span class="math notranslate nohighlight">\(f(x)\)</span> for the different models are</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\text{NFW}:\quad \ln(1+x)-\frac{x}{1+x}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\text{Einasto}:\quad \gamma\left(\frac{3}{\alpha}, \frac{2}{\alpha}x^{\alpha}\right)\quad \; (\gamma\text{ is the lower incomplete gamma function},\; \alpha\text{ is the index of the Einasto profile})\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\text{Hernquist}:\quad \left(\frac{x}{1+x}\right)^2\)</span></p></li>
+</ul>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="c1">#object oriented</span>
+<span class="n">nfw_def1_enclosed_oo</span> <span class="o">=</span> <span class="n">nfw_def1</span><span class="o">.</span><span class="n">eval_mass_in_radius</span><span class="p">(</span><span class="n">r3d</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">)</span>
+<span class="n">her_def1_enclosed_oo</span> <span class="o">=</span> <span class="n">her_def1</span><span class="o">.</span><span class="n">eval_mass_in_radius</span><span class="p">(</span><span class="n">r3d</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">)</span>
+<span class="n">ein_def1_enclosed_oo</span> <span class="o">=</span> <span class="n">ein_def1</span><span class="o">.</span><span class="n">eval_mass_in_radius</span><span class="p">(</span><span class="n">r3d</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">)</span>
+
+<span class="c1">#functional</span>
+<span class="n">nfw_def1_enclosed</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">compute_profile_mass_in_radius</span><span class="p">(</span><span class="n">r3d</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">redshift</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
+                                                        <span class="n">mdelta</span><span class="o">=</span><span class="n">M1</span><span class="p">,</span> <span class="n">cdelta</span><span class="o">=</span><span class="n">c1</span><span class="p">,</span>
+                                                        <span class="n">massdef</span><span class="o">=</span><span class="n">massdef1</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef1</span><span class="p">,</span>
+                                                        <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">)</span>
+<span class="n">her_def1_enclosed</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">compute_profile_mass_in_radius</span><span class="p">(</span><span class="n">r3d</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">redshift</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
+                                                        <span class="n">mdelta</span><span class="o">=</span><span class="n">M1</span><span class="p">,</span> <span class="n">cdelta</span><span class="o">=</span><span class="n">c1</span><span class="p">,</span>
+                                                        <span class="n">massdef</span><span class="o">=</span><span class="n">massdef1</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef1</span><span class="p">,</span>
+                                                        <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;hernquist&#39;</span><span class="p">)</span>
+<span class="n">ein_def1_enclosed</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">compute_profile_mass_in_radius</span><span class="p">(</span><span class="n">r3d</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">redshift</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
+                                                        <span class="n">mdelta</span><span class="o">=</span><span class="n">M1</span><span class="p">,</span> <span class="n">cdelta</span><span class="o">=</span><span class="n">c1</span><span class="p">,</span>
+                                                        <span class="n">massdef</span><span class="o">=</span><span class="n">massdef1</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef1</span><span class="p">,</span>
+                                                        <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;einasto&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">ein_def1</span><span class="o">.</span><span class="n">get_einasto_alpha</span><span class="p">(</span><span class="n">z_cl</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">conda</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">clmmenv</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">pyccl</span><span class="o">/</span><span class="n">core</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">887</span><span class="p">:</span> <span class="n">CCLWarning</span><span class="p">:</span> <span class="n">All</span> <span class="n">of</span> <span class="n">the</span> <span class="n">halo</span> <span class="n">mass</span> <span class="n">function</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span> <span class="ow">and</span> <span class="n">bias</span> <span class="n">models</span> <span class="ow">in</span> <span class="n">CCL</span> <span class="n">are</span> <span class="ow">not</span> <span class="n">properly</span> <span class="n">calibrated</span> <span class="k">for</span> <span class="n">cosmological</span> <span class="n">models</span> <span class="k">with</span> <span class="n">massive</span> <span class="n">neutrinos</span>
+  <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+<span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">conda</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">clmmenv</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">pyccl</span><span class="o">/</span><span class="n">core</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">675</span><span class="p">:</span> <span class="n">CCLWarning</span><span class="p">:</span> <span class="n">CCL</span> <span class="n">does</span> <span class="ow">not</span> <span class="n">properly</span> <span class="n">compute</span> <span class="n">the</span> <span class="n">linear</span> <span class="n">growth</span> <span class="n">rate</span> <span class="ow">in</span> <span class="n">cosmological</span> <span class="n">models</span> <span class="k">with</span> <span class="n">massive</span> <span class="n">neutrinos</span>
+  <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+<span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">conda</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">clmmenv</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">pyccl</span><span class="o">/</span><span class="n">core</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">734</span><span class="p">:</span> <span class="n">CCLWarning</span><span class="p">:</span> <span class="n">The</span> <span class="s1">&#39;eisenstein_hu&#39;</span> <span class="n">linear</span> <span class="n">power</span> <span class="n">spectrum</span> <span class="n">model</span> <span class="n">does</span> <span class="ow">not</span> <span class="n">properly</span> <span class="n">account</span> <span class="k">for</span> <span class="n">massive</span> <span class="n">neutrinos</span>
+  <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+</pre></div>
+</div>
+<p>Sanity check: comparison of the results given by the object-oriented and
+functional interface</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">nfw_def1_enclosed</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39; NFW functional&#39;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">nfw_def1_enclosed_oo</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39; NFW object oriented&#39;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">her_def1_enclosed</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Hernquist functional&#39;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">her_def1_enclosed_oo</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Hernquist object oriented&#39;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">ein_def1_enclosed</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Einasto functional&#39;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">ein_def1_enclosed_oo</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Einasto object oriented&#39;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$r\ [Mpc]$&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$M(&lt;r)\ [M_\odot]$&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../_images/demo_mass_conversion_12_0.png" src="../_images/demo_mass_conversion_12_0.png" />
+</section>
+<section id="compute-the-spherical-overdensity-radius">
+<h2>Compute the spherical overdensity radius<a class="headerlink" href="#compute-the-spherical-overdensity-radius" title="Permalink to this headline">¶</a></h2>
+<p>We can also compute the spherical overdensity radius, <span class="math notranslate nohighlight">\(r_{200m}\)</span>
+with <code class="docutils literal notranslate"><span class="pre">eval_rdelta</span></code> (resp. <code class="docutils literal notranslate"><span class="pre">compute_rdelta</span></code>) in the object oriented
+(resp. functional) interface as follows:</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## OO interface</span>
+<span class="n">r200m_oo</span> <span class="o">=</span> <span class="n">nfw_def1</span><span class="o">.</span><span class="n">eval_rdelta</span><span class="p">(</span><span class="n">z_cl</span><span class="p">)</span>
+
+<span class="c1">#functional interface</span>
+<span class="n">r200m</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">compute_rdelta</span><span class="p">(</span><span class="n">mdelta</span><span class="o">=</span><span class="n">M1</span><span class="p">,</span> <span class="n">redshift</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
+                            <span class="n">massdef</span><span class="o">=</span><span class="n">massdef1</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef1</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;r200m_oo = </span><span class="si">{</span><span class="n">r200m_oo</span><span class="si">}</span><span class="s1"> Mpc&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;r200m = </span><span class="si">{</span><span class="n">r200m</span><span class="si">}</span><span class="s1"> Mpc&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">r200m_oo</span> <span class="o">=</span> <span class="mf">1.056418142453307</span> <span class="n">Mpc</span>
+<span class="n">r200m</span> <span class="o">=</span> <span class="mf">1.056418142453307</span> <span class="n">Mpc</span>
+</pre></div>
+</div>
+</section>
+<section id="conversion-to-another-sod-definition-here-we-choose-500c">
+<h2>Conversion to another SOD definition (here we choose 500c)<a class="headerlink" href="#conversion-to-another-sod-definition-here-we-choose-500c" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># New SOD definition</span>
+<span class="n">massdef2</span> <span class="o">=</span> <span class="s1">&#39;critical&#39;</span>
+<span class="n">delta_mdef2</span> <span class="o">=</span> <span class="mi">500</span>
+</pre></div>
+</div>
+<p>To find <span class="math notranslate nohighlight">\(M_2\)</span> and <span class="math notranslate nohighlight">\(c_2\)</span> of the second SOD definition, we
+solve the system of equations: -
+<span class="math notranslate nohighlight">\(M_{M_1, c_1}(r_1) = M_{M_2, c_2}(r_1)\)</span> -
+<span class="math notranslate nohighlight">\(M_{M_1, c_1}(r_2) = M_{M_2, c_2}(r_2)\)</span></p>
+<p>where <span class="math notranslate nohighlight">\(M_{M_i, c_i}(r)\)</span> is the mass enclosed within a sphere of
+radius <span class="math notranslate nohighlight">\(r\)</span> specified by the overdensity mass <span class="math notranslate nohighlight">\(M_i\)</span> and
+concentration <span class="math notranslate nohighlight">\(c_i\)</span>. Here, <span class="math notranslate nohighlight">\(r_i\)</span> is chosen to be the
+overdensity radius <span class="math notranslate nohighlight">\(r_{\Delta_i}\)</span> of the <span class="math notranslate nohighlight">\(i\)</span>th overdensity
+definition, which is calculated with</p>
+<div class="math notranslate nohighlight">
+\[r_{\Delta_i} = \left(\frac{3M_{\Delta_i}}{4\pi \Delta_i \rho_{\text{bckgd},i}}\right)^{1/3}\]</div>
+<p>By identifying <span class="math notranslate nohighlight">\(M_{M_i, c_i}(r_i) = M_{\Delta_i}\)</span> we now have two
+equations with two unknowns, <span class="math notranslate nohighlight">\(M_2\)</span> and <span class="math notranslate nohighlight">\(c_2\)</span>: -
+<span class="math notranslate nohighlight">\(M_1 = M_{M_2, c_2}(r_1)\)</span> - <span class="math notranslate nohighlight">\(M_{M_1, c_1}(r_2) = M_2\)</span></p>
+<p>The conversion can be done by the <code class="docutils literal notranslate"><span class="pre">convert_mass_concentration</span></code> method
+of a modeling object and the output is the mass and concentration in the
+second SOD definition.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">M2_nfw_oo</span><span class="p">,</span> <span class="n">c2_nfw_oo</span> <span class="o">=</span> <span class="n">nfw_def1</span><span class="o">.</span><span class="n">convert_mass_concentration</span><span class="p">(</span><span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="n">massdef2</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef2</span><span class="p">)</span>
+<span class="n">M2_her_oo</span><span class="p">,</span> <span class="n">c2_her_oo</span> <span class="o">=</span> <span class="n">her_def1</span><span class="o">.</span><span class="n">convert_mass_concentration</span><span class="p">(</span><span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="n">massdef2</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef2</span><span class="p">)</span>
+<span class="n">M2_ein_oo</span><span class="p">,</span> <span class="n">c2_ein_oo</span> <span class="o">=</span> <span class="n">ein_def1</span><span class="o">.</span><span class="n">convert_mass_concentration</span><span class="p">(</span><span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="n">massdef2</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef2</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;NFW: M2 = </span><span class="si">{</span><span class="n">M2_nfw_oo</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1"> M_sun, c2 = </span><span class="si">{</span><span class="n">c2_nfw_oo</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;HER: M2 = </span><span class="si">{</span><span class="n">M2_her_oo</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1"> M_sun, c2 = </span><span class="si">{</span><span class="n">c2_her_oo</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;EIN: M2 = </span><span class="si">{</span><span class="n">M2_ein_oo</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1"> M_sun, c2 = </span><span class="si">{</span><span class="n">c2_ein_oo</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">NFW</span><span class="p">:</span> <span class="n">M2</span> <span class="o">=</span> <span class="mf">4.33e+13</span> <span class="n">M_sun</span><span class="p">,</span> <span class="n">c2</span> <span class="o">=</span> <span class="mf">1.33</span>
+<span class="n">HER</span><span class="p">:</span> <span class="n">M2</span> <span class="o">=</span> <span class="mf">6.48e+13</span> <span class="n">M_sun</span><span class="p">,</span> <span class="n">c2</span> <span class="o">=</span> <span class="mf">1.52</span>
+<span class="n">EIN</span><span class="p">:</span> <span class="n">M2</span> <span class="o">=</span> <span class="mf">4.36e+13</span> <span class="n">M_sun</span><span class="p">,</span> <span class="n">c2</span> <span class="o">=</span> <span class="mf">1.34</span>
+</pre></div>
+</div>
+<p>Similarly, there is functional interface to do the conversion (only
+showing it for NFW below)</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">M2</span><span class="p">,</span> <span class="n">c2</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">convert_profile_mass_concentration</span><span class="p">(</span>
+    <span class="n">mdelta</span><span class="o">=</span><span class="n">M1</span><span class="p">,</span> <span class="n">cdelta</span><span class="o">=</span><span class="n">c1</span><span class="p">,</span> <span class="n">redshift</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
+    <span class="n">massdef</span><span class="o">=</span><span class="n">massdef1</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef1</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">,</span>
+    <span class="n">massdef2</span><span class="o">=</span><span class="n">massdef2</span><span class="p">,</span> <span class="n">delta_mdef2</span><span class="o">=</span><span class="n">delta_mdef2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;NFW: M2 = </span><span class="si">{</span><span class="n">M2_nfw_oo</span><span class="si">:</span><span class="s1">.2e</span><span class="si">}</span><span class="s1"> M_sun, c2 = </span><span class="si">{</span><span class="n">c2_nfw_oo</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">NFW</span><span class="p">:</span> <span class="n">M2</span> <span class="o">=</span> <span class="mf">4.33e+13</span> <span class="n">M_sun</span><span class="p">,</span> <span class="n">c2</span> <span class="o">=</span> <span class="mf">1.33</span>
+</pre></div>
+</div>
+</section>
+<section id="check-conversion-by-looking-at-the-enclosed-mass">
+<h2>Check conversion by looking at the enclosed mass<a class="headerlink" href="#check-conversion-by-looking-at-the-enclosed-mass" title="Permalink to this headline">¶</a></h2>
+<p>To test the conversion method, we plot the relative difference for the
+enclosed mass between the two mass definitions.</p>
+<div class="math notranslate nohighlight">
+\[\left|\frac{M_{M_2, c_2}(&lt;r)}{M_{M_1, c_1}(&lt;r)}-1\right|\]</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">nfw_def2_enclosed</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">compute_profile_mass_in_radius</span><span class="p">(</span><span class="n">r3d</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">redshift</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
+                                                        <span class="n">mdelta</span><span class="o">=</span><span class="n">M2</span><span class="p">,</span> <span class="n">cdelta</span><span class="o">=</span><span class="n">c2</span><span class="p">,</span>
+                                                        <span class="n">massdef</span><span class="o">=</span><span class="n">massdef2</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef2</span><span class="p">,</span>
+                                                        <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">)</span>
+<span class="n">her_def2_enclosed</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">compute_profile_mass_in_radius</span><span class="p">(</span><span class="n">r3d</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">redshift</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
+                                                        <span class="n">mdelta</span><span class="o">=</span><span class="n">M2_her_oo</span><span class="p">,</span> <span class="n">cdelta</span><span class="o">=</span><span class="n">c2_her_oo</span><span class="p">,</span>
+                                                        <span class="n">massdef</span><span class="o">=</span><span class="n">massdef2</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef2</span><span class="p">,</span>
+                                                        <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;hernquist&#39;</span><span class="p">)</span>
+<span class="n">ein_def2_enclosed</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">compute_profile_mass_in_radius</span><span class="p">(</span><span class="n">r3d</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">redshift</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
+                                                        <span class="n">mdelta</span><span class="o">=</span><span class="n">M2_ein_oo</span><span class="p">,</span> <span class="n">cdelta</span><span class="o">=</span><span class="n">c2_ein_oo</span><span class="p">,</span>
+                                                        <span class="n">massdef</span><span class="o">=</span><span class="n">massdef2</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef2</span><span class="p">,</span>
+                                                        <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;einasto&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="n">ein_def1</span><span class="o">.</span><span class="n">get_einasto_alpha</span><span class="p">(</span><span class="n">z_cl</span><span class="p">))</span>
+
+<span class="n">fig2</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">fig2</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">abs</span><span class="p">(</span><span class="n">nfw_def2_enclosed</span><span class="o">/</span><span class="n">nfw_def1</span><span class="o">.</span><span class="n">eval_mass_in_radius</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">)</span>
+<span class="n">fig2</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">abs</span><span class="p">(</span><span class="n">her_def2_enclosed</span><span class="o">/</span><span class="n">her_def1</span><span class="o">.</span><span class="n">eval_mass_in_radius</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;hernquist&#39;</span><span class="p">)</span>
+<span class="n">fig2</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">abs</span><span class="p">(</span><span class="n">ein_def2_enclosed</span><span class="o">/</span><span class="n">ein_def1</span><span class="o">.</span><span class="n">eval_mass_in_radius</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;einasto&#39;</span><span class="p">)</span>
+<span class="n">fig2</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;r [Mpc]&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">fig2</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;relative difference&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">fig2</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../_images/demo_mass_conversion_23_0.png" src="../_images/demo_mass_conversion_23_0.png" />
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2018-2022, LSST DESC CLMM Contributors
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

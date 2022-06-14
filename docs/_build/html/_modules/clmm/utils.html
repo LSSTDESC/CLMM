@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.utils &mdash; CLMM 1.0.0 documentation</title>
+  <title>clmm.utils &mdash; CLMM 1.2.0 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.0.0
+                1.2.0
               </div>
             
           
@@ -85,27 +85,30 @@
               
             
             
-              <p><span class="caption-text">Getting Started</span></p>
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../source/overview.html">Rapid overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../source/installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../source/citing.html">Citing CLMM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/citing.html">Using and citing CLMM</a></li>
 </ul>
-<p><span class="caption-text">Usage Demos</span></p>
+<p class="caption"><span class="caption-text">Usage Demos</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_mass_conversion.html">Mass conversion between spherical overdensity mass definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_boost_factors.html">Define cosmology object</a></li>
 </ul>
-<p><span class="caption-text">Mass Fitting Examples</span></p>
+<p class="caption"><span class="caption-text">Mass Fitting Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog_NC.html">Fit halo mass to shear profile using Numcosmo statistical framework</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/Example1_Fit_shear_profile_with_miscentering.html">Investigate the impact of miscentering on shear profiles</a></li>
 </ul>
-<p><span class="caption-text">Reference</span></p>
+<p class="caption"><span class="caption-text">Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api.html">API Documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../api/clmm.constants.html">clmm.constants module</a></li>
@@ -203,13 +206,121 @@
             
   <h1>Source code for clmm.utils</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;General utility functions that are used in multiple modules&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">binned_statistic</span>
+<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">gammainc</span>
 <span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">u</span>
 <span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">Constants</span> <span class="k">as</span> <span class="n">const</span>
+<span class="kn">from</span> <span class="nn">scipy.integrate</span> <span class="kn">import</span> <span class="n">quad</span>
 
 
-<div class="viewcode-block" id="compute_radial_averages"><a class="viewcode-back" href="../../api/clmm.utils.html#clmm.utils.compute_radial_averages">[docs]</a><span class="k">def</span> <span class="nf">compute_radial_averages</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">yvals</span><span class="p">,</span> <span class="n">xbins</span><span class="p">,</span> <span class="n">error_model</span><span class="o">=</span><span class="s1">&#39;std/sqrt_n&#39;</span><span class="p">):</span>
+
+<div class="viewcode-block" id="compute_nfw_boost"><a class="viewcode-back" href="../../api/clmm.utils.html#clmm.utils.compute_nfw_boost">[docs]</a><span class="k">def</span> <span class="nf">compute_nfw_boost</span><span class="p">(</span><span class="n">rvals</span><span class="p">,</span> <span class="n">rs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">b0</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span> <span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; Given a list of rvals, and optional rs and b0, return the corresponding boost factor at each rval</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    rvals : array_like</span>
+<span class="sd">        radii</span>
+<span class="sd">    rs : float (optional)</span>
+<span class="sd">        scale radius for NFW in same units as rvals (default 2000 kpc)</span>
+<span class="sd">    b0 : float (optional)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    boost_factors : array_like</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">rvals</span><span class="o">/</span><span class="n">rs</span>
+
+    <span class="k">def</span> <span class="nf">_calc_finternal</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="p">:</span>
+
+        <span class="n">radicand</span> <span class="o">=</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span>
+
+        <span class="n">finternal</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span>  <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">lib</span><span class="o">.</span><span class="n">scimath</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">radicand</span><span class="p">)</span><span class="o">*</span><span class="mi">1</span><span class="n">j</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">lib</span><span class="o">.</span><span class="n">scimath</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">radicand</span><span class="p">)</span><span class="o">*</span><span class="mi">1</span><span class="n">j</span><span class="p">)</span> <span class="p">)</span> <span class="o">/</span> <span class="p">(</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">lib</span><span class="o">.</span><span class="n">scimath</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">radicand</span><span class="p">)</span> <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">finternal</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">nan</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+
+    <span class="k">return</span> <span class="mf">1.</span> <span class="o">+</span> <span class="n">b0</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">_calc_finternal</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="compute_powerlaw_boost"><a class="viewcode-back" href="../../api/clmm.utils.html#clmm.utils.compute_powerlaw_boost">[docs]</a><span class="k">def</span> <span class="nf">compute_powerlaw_boost</span><span class="p">(</span><span class="n">rvals</span><span class="p">,</span> <span class="n">rs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">b0</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">)</span> <span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;  Given a list of rvals, and optional rs and b0, and alpha, return the corresponding boost factor at each rval</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    rvals : array_like</span>
+<span class="sd">        radii</span>
+<span class="sd">    rs : float (optional)</span>
+<span class="sd">        scale radius for NFW in same units as rvals (default 2000 kpc)</span>
+<span class="sd">    b0 : float (optional)</span>
+<span class="sd">    alpha : float (optional)</span>
+<span class="sd">        exponent from Melchior+16</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    boost_factors : array_like</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">rvals</span><span class="o">/</span><span class="n">rs</span>
+
+    <span class="k">return</span> <span class="mf">1.</span> <span class="o">+</span> <span class="n">b0</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">**</span><span class="n">alpha</span></div>
+
+
+<span class="n">boost_models</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;nfw_boost&#39;</span><span class="p">:</span> <span class="n">compute_nfw_boost</span><span class="p">,</span>
+                <span class="s1">&#39;powerlaw_boost&#39;</span><span class="p">:</span> <span class="n">compute_powerlaw_boost</span><span class="p">}</span>
+
+<div class="viewcode-block" id="correct_sigma_with_boost_values"><a class="viewcode-back" href="../../api/clmm.utils.html#clmm.utils.correct_sigma_with_boost_values">[docs]</a><span class="k">def</span> <span class="nf">correct_sigma_with_boost_values</span><span class="p">(</span><span class="n">rvals</span><span class="p">,</span> <span class="n">sigma_vals</span><span class="p">,</span> <span class="n">boost_factors</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Given a boost model and sigma profile, compute corrected sigma</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    rvals : array_like</span>
+<span class="sd">        radii</span>
+<span class="sd">    sigma_vals : array_like</span>
+<span class="sd">        uncorrected sigma with cluster member dilution</span>
+<span class="sd">    boost_factors : array_like</span>
+<span class="sd">        Boost values pre-computed</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    sigma_corrected : array_like</span>
+<span class="sd">        correted radial profile</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">sigma_corrected</span> <span class="o">=</span> <span class="n">sigma_vals</span> <span class="o">/</span> <span class="n">boost_factors</span>
+    <span class="k">return</span> <span class="n">sigma_corrected</span></div>
+
+
+<div class="viewcode-block" id="correct_sigma_with_boost_model"><a class="viewcode-back" href="../../api/clmm.utils.html#clmm.utils.correct_sigma_with_boost_model">[docs]</a><span class="k">def</span> <span class="nf">correct_sigma_with_boost_model</span><span class="p">(</span><span class="n">rvals</span><span class="p">,</span> <span class="n">sigma_vals</span><span class="p">,</span> <span class="n">boost_model</span><span class="o">=</span><span class="s1">&#39;nfw_boost&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">boost_model_kw</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Given a boost model and sigma profile, compute corrected sigma</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    rvals : array_like</span>
+<span class="sd">        radii</span>
+<span class="sd">    sigma_vals : array_like</span>
+<span class="sd">        uncorrected sigma with cluster member dilution</span>
+<span class="sd">    boost_model : str, optional</span>
+<span class="sd">        Boost model to use for correcting sigma</span>
+<span class="sd">            `nfw_boost` - NFW profile model (Default)</span>
+<span class="sd">            `powerlaw_boost` - Powerlaw profile</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    sigma_corrected : array_like</span>
+<span class="sd">        correted radial profile</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">boost_model_func</span> <span class="o">=</span> <span class="n">boost_models</span><span class="p">[</span><span class="n">boost_model</span><span class="p">]</span>
+    <span class="n">boost_factors</span> <span class="o">=</span> <span class="n">boost_model_func</span><span class="p">(</span><span class="n">rvals</span><span class="p">,</span> <span class="o">**</span><span class="n">boost_model_kw</span><span class="p">)</span>
+
+    <span class="n">sigma_corrected</span> <span class="o">=</span> <span class="n">sigma_vals</span> <span class="o">/</span> <span class="n">boost_factors</span>
+    <span class="k">return</span> <span class="n">sigma_corrected</span></div>
+
+<div class="viewcode-block" id="compute_radial_averages"><a class="viewcode-back" href="../../api/clmm.utils.html#clmm.utils.compute_radial_averages">[docs]</a><span class="k">def</span> <span class="nf">compute_radial_averages</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">yvals</span><span class="p">,</span> <span class="n">xbins</span><span class="p">,</span> <span class="n">yerr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">error_model</span><span class="o">=</span><span class="s1">&#39;ste&#39;</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Given a list of xvals, yvals and bins, sort into bins. If xvals or yvals</span>
 <span class="sd">    contain non-finite values, these are filtered.</span>
 
@@ -221,18 +332,25 @@
 <span class="sd">        Values to compute statistics on</span>
 <span class="sd">    xbins: array_like</span>
 <span class="sd">        Bin edges to sort into</span>
+<span class="sd">    yerr : array_like, None</span>
+<span class="sd">        Errors of component y</span>
 <span class="sd">    error_model : str, optional</span>
-<span class="sd">        Error model to use for y uncertainties. (letter case independent)</span>
-<span class="sd">            `std/sqrt_n` - Standard Deviation/sqrt(Counts) (Default)</span>
-<span class="sd">            `std` - Standard deviation</span>
+<span class="sd">        Statistical error model to use for y uncertainties. (letter case independent)</span>
+
+<span class="sd">            * `ste` - Standard error [=std/sqrt(n) in unweighted computation] (Default).</span>
+<span class="sd">            * `std` - Standard deviation.</span>
+
+<span class="sd">    weights: array_like, None</span>
+<span class="sd">        Weights for averages.</span>
+
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    meanx : array_like</span>
+<span class="sd">    mean_x : array_like</span>
 <span class="sd">        Mean x value in each bin</span>
-<span class="sd">    meany : array_like</span>
+<span class="sd">    mean_y : array_like</span>
 <span class="sd">        Mean y value in each bin</span>
-<span class="sd">    yerr : array_like</span>
+<span class="sd">    err_y: array_like</span>
 <span class="sd">        Error on the mean y value in each bin. Specified by error_model</span>
 <span class="sd">    num_objects : array_like</span>
 <span class="sd">        Number of objects in each bin</span>
@@ -245,34 +363,27 @@
     <span class="n">error_model</span> <span class="o">=</span> <span class="n">error_model</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
     <span class="c1"># binned_statics throus an error in case of non-finite values, so filtering those out</span>
     <span class="n">filt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">xvals</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">yvals</span><span class="p">)</span>
-
-    <span class="n">meanx</span><span class="p">,</span> <span class="n">xbins</span><span class="p">,</span> <span class="n">binnumber</span> <span class="o">=</span> <span class="n">binned_statistic</span><span class="p">(</span>
-        <span class="n">xvals</span><span class="p">[</span><span class="n">filt</span><span class="p">],</span> <span class="n">xvals</span><span class="p">[</span><span class="n">filt</span><span class="p">],</span> <span class="n">statistic</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">xbins</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]</span>
-    <span class="n">meany</span> <span class="o">=</span> <span class="n">binned_statistic</span><span class="p">(</span>
-        <span class="n">xvals</span><span class="p">[</span><span class="n">filt</span><span class="p">],</span> <span class="n">yvals</span><span class="p">[</span><span class="n">filt</span><span class="p">],</span> <span class="n">statistic</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">xbins</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">xvals</span><span class="p">)[</span><span class="n">filt</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">yvals</span><span class="p">)[</span><span class="n">filt</span><span class="p">]</span>
+    <span class="c1"># normalize weights (and computers binnumber)</span>
+    <span class="n">wts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)[</span><span class="n">filt</span><span class="p">]</span>
+    <span class="n">wts_sum</span><span class="p">,</span> <span class="n">binnumber</span> <span class="o">=</span> <span class="n">binned_statistic</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">wts</span><span class="p">,</span> <span class="n">statistic</span><span class="o">=</span><span class="s1">&#39;sum&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">xbins</span><span class="p">)[:</span><span class="mi">3</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">objs_in_bins</span> <span class="o">=</span> <span class="p">(</span><span class="n">binnumber</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">binnumber</span><span class="o">&lt;=</span><span class="n">wts_sum</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="c1"># mask for binnumber in range</span>
+    <span class="n">wts</span><span class="p">[</span><span class="n">objs_in_bins</span><span class="p">]</span> <span class="o">*=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">wts_sum</span><span class="p">[</span><span class="n">binnumber</span><span class="p">[</span><span class="n">objs_in_bins</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># norm weights in each bin</span>
+    <span class="n">weighted_bin_stat</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">vals</span><span class="p">:</span> <span class="n">binned_statistic</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">vals</span><span class="o">*</span><span class="n">wts</span><span class="p">,</span> <span class="n">statistic</span><span class="o">=</span><span class="s1">&#39;sum&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">xbins</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c1"># means</span>
+    <span class="n">mean_x</span> <span class="o">=</span> <span class="n">weighted_bin_stat</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">mean_y</span> <span class="o">=</span> <span class="n">weighted_bin_stat</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="c1"># errors</span>
+    <span class="n">data_yerr2</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">yerr</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">weighted_bin_stat</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">yerr</span><span class="p">)[</span><span class="n">filt</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">wts</span><span class="p">)</span>
+    <span class="n">stat_yerr2</span> <span class="o">=</span> <span class="n">weighted_bin_stat</span><span class="p">(</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">-</span><span class="n">mean_y</span><span class="o">**</span><span class="mi">2</span>
+    <span class="k">if</span> <span class="n">error_model</span> <span class="o">==</span> <span class="s1">&#39;ste&#39;</span><span class="p">:</span>
+        <span class="n">stat_yerr2</span> <span class="o">*=</span> <span class="n">weighted_bin_stat</span><span class="p">(</span><span class="n">wts</span><span class="p">)</span> <span class="c1"># sum(wts^2)=1/n for not weighted</span>
+    <span class="k">elif</span> <span class="n">error_model</span> <span class="o">!=</span> <span class="s1">&#39;std&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">error_model</span><span class="si">}</span><span class="s2"> not supported err model for binned stats&quot;</span><span class="p">)</span>
+    <span class="n">err_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">stat_yerr2</span><span class="o">+</span><span class="n">data_yerr2</span><span class="p">)</span>
     <span class="c1"># number of objects</span>
-    <span class="n">num_objects</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">xvals</span><span class="p">[</span><span class="n">filt</span><span class="p">],</span> <span class="n">xbins</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">n_zero</span> <span class="o">=</span> <span class="n">num_objects</span> <span class="o">==</span> <span class="mi">0</span>
-
-    <span class="k">if</span> <span class="n">error_model</span> <span class="o">==</span> <span class="s1">&#39;std&#39;</span><span class="p">:</span>
-        <span class="n">yerr</span> <span class="o">=</span> <span class="n">binned_statistic</span><span class="p">(</span>
-            <span class="n">xvals</span><span class="p">[</span><span class="n">filt</span><span class="p">],</span> <span class="n">yvals</span><span class="p">[</span><span class="n">filt</span><span class="p">],</span> <span class="n">statistic</span><span class="o">=</span><span class="s1">&#39;std&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">xbins</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="k">elif</span> <span class="n">error_model</span> <span class="o">==</span> <span class="s1">&#39;std/sqrt_n&#39;</span><span class="p">:</span>
-        <span class="n">yerr</span> <span class="o">=</span> <span class="n">binned_statistic</span><span class="p">(</span>
-            <span class="n">xvals</span><span class="p">[</span><span class="n">filt</span><span class="p">],</span> <span class="n">yvals</span><span class="p">[</span><span class="n">filt</span><span class="p">],</span> <span class="n">statistic</span><span class="o">=</span><span class="s1">&#39;std&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">xbins</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">sqrt_n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">binned_statistic</span><span class="p">(</span>
-            <span class="n">xvals</span><span class="p">[</span><span class="n">filt</span><span class="p">],</span> <span class="n">yvals</span><span class="p">[</span><span class="n">filt</span><span class="p">],</span> <span class="n">statistic</span><span class="o">=</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">xbins</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="n">sqrt_n</span><span class="p">[</span><span class="n">n_zero</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
-        <span class="n">yerr</span> <span class="o">=</span> <span class="n">yerr</span><span class="o">/</span><span class="n">sqrt_n</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">error_model</span><span class="si">}</span><span class="s2"> not supported err model for binned stats&quot;</span><span class="p">)</span>
-
-    <span class="n">meanx</span><span class="p">[</span><span class="n">n_zero</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">meany</span><span class="p">[</span><span class="n">n_zero</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">yerr</span><span class="p">[</span><span class="n">n_zero</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-
-    <span class="k">return</span> <span class="n">meanx</span><span class="p">,</span> <span class="n">meany</span><span class="p">,</span> <span class="n">yerr</span><span class="p">,</span> <span class="n">num_objects</span><span class="p">,</span> <span class="n">binnumber</span></div>
+    <span class="n">num_objects</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">xbins</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">mean_x</span><span class="p">,</span> <span class="n">mean_y</span><span class="p">,</span> <span class="n">err_y</span><span class="p">,</span> <span class="n">num_objects</span><span class="p">,</span> <span class="n">binnumber</span></div>
 
 
 <div class="viewcode-block" id="make_bins"><a class="viewcode-back" href="../../api/clmm.utils.html#clmm.utils.make_bins">[docs]</a><span class="k">def</span> <span class="nf">make_bins</span><span class="p">(</span><span class="n">rmin</span><span class="p">,</span> <span class="n">rmax</span><span class="p">,</span> <span class="n">nbins</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;evenwidth&#39;</span><span class="p">,</span> <span class="n">source_seps</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -287,10 +398,12 @@
 <span class="sd">    nbins : float</span>
 <span class="sd">        Number of bins you want to create, default to 10.</span>
 <span class="sd">    method : str, optional</span>
-<span class="sd">        Binning method to use (letter case independent)</span>
-<span class="sd">            `evenwidth` - Default, evenly spaced bins between rmin and rmax</span>
-<span class="sd">            `evenlog10width` - Logspaced bins with even width in log10 between rmin and rmax</span>
-<span class="sd">            `equaloccupation` - Bins with equal occupation numbers</span>
+<span class="sd">        Binning method to use (letter case independent):</span>
+
+<span class="sd">            * `evenwidth` - Default, evenly spaced bins between rmin and rmax</span>
+<span class="sd">            * `evenlog10width` - Logspaced bins with even width in log10 between rmin and rmax</span>
+<span class="sd">            * `equaloccupation` - Bins with equal occupation numbers</span>
+
 <span class="sd">    source_seps : array_like</span>
 <span class="sd">        Radial distance of source separations</span>
 
@@ -353,8 +466,8 @@
 <span class="sd">        Unit for the output distances</span>
 <span class="sd">    redshift : float</span>
 <span class="sd">        Redshift used to convert between angular and physical units</span>
-<span class="sd">    cosmo : astropy.cosmology</span>
-<span class="sd">        Astropy cosmology object to compute angular diameter distance to</span>
+<span class="sd">    cosmo : CLMM.Cosmology</span>
+<span class="sd">        CLMM Cosmology object to compute angular diameter distance to</span>
 <span class="sd">        convert between physical and angular units</span>
 
 <span class="sd">    Returns</span>
@@ -574,6 +687,350 @@
         <span class="n">const</span><span class="o">.</span><span class="n">PC_TO_METER</span><span class="o">.</span><span class="n">value</span><span class="o">*</span><span class="mf">1.0e6</span><span class="o">/</span><span class="n">const</span><span class="o">.</span><span class="n">SOLAR_MASS</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">rhocrit_cd2018</span><span class="o">/</span><span class="n">rho_crit_external</span>
+
+<span class="n">_valid_types</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nb">float</span><span class="p">:</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">),</span>
+    <span class="nb">int</span><span class="p">:</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">),</span>
+    <span class="s1">&#39;float_array&#39;</span><span class="p">:</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">),</span>
+    <span class="s1">&#39;int_array&#39;</span><span class="p">:</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">)</span>
+    <span class="p">}</span>
+
+<span class="k">def</span> <span class="nf">_is_valid</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">valid_type</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Check if argument is of valid type, supports arrays.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    arg: any</span>
+<span class="sd">        Argument to be tested.</span>
+<span class="sd">    valid_type: str, type</span>
+<span class="sd">        Valid types for argument, options are object types, list/tuple of types, or:</span>
+
+<span class="sd">            * `int_array` - interger, interger array</span>
+<span class="sd">            * `float_array` - float, float array</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    valid: bool</span>
+<span class="sd">        Is argument valid</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">_valid_types</span><span class="p">[</span><span class="n">valid_type</span><span class="p">])</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">valid_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;int_array&#39;</span><span class="p">,</span> <span class="s1">&#39;float_array&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">iterable</span><span class="p">(</span><span class="n">arg</span><span class="p">))</span>
+                <span class="k">else</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">_valid_types</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">valid_type</span><span class="p">,</span> <span class="n">valid_type</span><span class="p">)))</span>
+
+
+<div class="viewcode-block" id="validate_argument"><a class="viewcode-back" href="../../api/clmm.utils.html#clmm.utils.validate_argument">[docs]</a><span class="k">def</span> <span class="nf">validate_argument</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">argname</span><span class="p">,</span> <span class="n">valid_type</span><span class="p">,</span> <span class="n">none_ok</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">argmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                      <span class="n">eqmin</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">eqmax</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Validate argument type and raise errors.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    loc: dict</span>
+<span class="sd">        Dictionary with all input arguments. Should be locals().</span>
+<span class="sd">    argname: str</span>
+<span class="sd">        Name of argument to be tested.</span>
+<span class="sd">    valid_type: str, type</span>
+<span class="sd">        Valid types for argument, options are object types, list/tuple of types, or:</span>
+
+<span class="sd">            * `int_array` - interger, interger array</span>
+<span class="sd">            * `float_array` - float, float array</span>
+
+<span class="sd">    none_ok: True</span>
+<span class="sd">        Accepts None as a valid type.</span>
+<span class="sd">    argmin (optional) : int, float, None</span>
+<span class="sd">        Minimum value allowed.</span>
+<span class="sd">    argmax (optional) : int, float, None</span>
+<span class="sd">        Maximum value allowed.</span>
+<span class="sd">    eqmin: bool</span>
+<span class="sd">        Accepts min(arg)==argmin.</span>
+<span class="sd">    eqmax: bool</span>
+<span class="sd">        Accepts max(arg)==argmax.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">var</span> <span class="o">=</span> <span class="n">loc</span><span class="p">[</span><span class="n">argname</span><span class="p">]</span>
+    <span class="c1"># Check for None</span>
+    <span class="k">if</span> <span class="n">none_ok</span> <span class="ow">and</span> <span class="p">(</span><span class="n">var</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span>
+    <span class="c1"># Check for type</span>
+    <span class="n">valid</span> <span class="o">=</span> <span class="p">(</span><span class="nb">any</span><span class="p">(</span><span class="n">_is_valid</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">types</span><span class="p">)</span> <span class="k">for</span> <span class="n">types</span> <span class="ow">in</span> <span class="n">valid_type</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">valid_type</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span>
+                <span class="k">else</span> <span class="n">_is_valid</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">valid_type</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">valid</span><span class="p">:</span>
+        <span class="n">err</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">argname</span><span class="si">}</span><span class="s1"> must be </span><span class="si">{</span><span class="n">valid_type</span><span class="si">}</span><span class="s1">, received </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">var</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+    <span class="c1"># Check min/max</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">t</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="p">(</span><span class="n">argmin</span><span class="p">,</span> <span class="n">argmax</span><span class="p">)):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">var_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">argname</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">var</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">) cannot be converted to number&#39;</span> \
+                  <span class="s1">&#39; for min/max validation.&#39;</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">argmin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">var_array</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">&lt;</span><span class="n">argmin</span> <span class="k">if</span> <span class="n">eqmin</span> <span class="k">else</span> <span class="n">var_array</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">&lt;=</span><span class="n">argmin</span><span class="p">):</span>
+                <span class="n">err</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">argname</span><span class="si">}</span><span class="s1"> must be greater than </span><span class="si">{</span><span class="n">argmin</span><span class="si">}</span><span class="s1">,&#39;</span> \
+                      <span class="sa">f</span><span class="s1">&#39; received </span><span class="si">{</span><span class="s2">&quot;vec_min:&quot;</span><span class="o">*</span><span class="p">(</span><span class="n">var_array</span><span class="o">.</span><span class="n">size</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="si">}{</span><span class="n">var</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">argmax</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">var_array</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">&gt;</span><span class="n">argmax</span> <span class="k">if</span> <span class="n">eqmax</span> <span class="k">else</span> <span class="n">var_array</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">&gt;=</span><span class="n">argmax</span><span class="p">):</span>
+                <span class="n">err</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">argname</span><span class="si">}</span><span class="s1"> must be lesser than </span><span class="si">{</span><span class="n">argmax</span><span class="si">}</span><span class="s1">,&#39;</span> \
+                      <span class="sa">f</span><span class="s1">&#39; received </span><span class="si">{</span><span class="s2">&quot;vec_max:&quot;</span><span class="o">*</span><span class="p">(</span><span class="n">var_array</span><span class="o">.</span><span class="n">size</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="si">}{</span><span class="n">var</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="compute_for_good_redshifts"><a class="viewcode-back" href="../../api/clmm.utils.html#clmm.utils.compute_for_good_redshifts">[docs]</a><span class="k">def</span> <span class="nf">compute_for_good_redshifts</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">z1</span><span class="p">,</span> <span class="n">z2</span><span class="p">,</span> <span class="n">bad_value</span><span class="p">,</span> <span class="n">error_message</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Computes function only for z1&gt;z2, the rest is filled with bad_value</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    function: function</span>
+<span class="sd">        Function to be executed</span>
+<span class="sd">    z1: float, array_like</span>
+<span class="sd">        Redshift lower</span>
+<span class="sd">    z2: float, array_like</span>
+<span class="sd">        Redshift higher</span>
+<span class="sd">    bad_value: any</span>
+<span class="sd">        Value to be added when z1&gt;=z2</span>
+<span class="sd">    error_message: str</span>
+<span class="sd">        Message to be displayed</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">z_good</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">less</span><span class="p">(</span><span class="n">z1</span><span class="p">,</span> <span class="n">z2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">z_good</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">error_message</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">iterable</span><span class="p">(</span><span class="n">z_good</span><span class="p">):</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">z_good</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">bad_value</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">z_good</span><span class="p">):</span>
+                <span class="n">res</span><span class="p">[</span><span class="n">z_good</span><span class="p">]</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">z1</span><span class="p">)[</span><span class="n">z_good</span><span class="p">]</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">iterable</span><span class="p">(</span><span class="n">z1</span><span class="p">)</span> <span class="k">else</span> <span class="n">z1</span><span class="p">,</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">z2</span><span class="p">)[</span><span class="n">z_good</span><span class="p">]</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">iterable</span><span class="p">(</span><span class="n">z2</span><span class="p">)</span> <span class="k">else</span> <span class="n">z2</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">bad_value</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">z1</span><span class="p">,</span> <span class="n">z2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">res</span></div>
+
+<div class="viewcode-block" id="compute_beta"><a class="viewcode-back" href="../../api/clmm.utils.html#clmm.utils.compute_beta">[docs]</a><span class="k">def</span> <span class="nf">compute_beta</span><span class="p">(</span><span class="n">z_s</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Geometric lensing efficicency</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        beta = max(0, Dang_ls/Dang_s)</span>
+
+<span class="sd">    Eq.2 in https://arxiv.org/pdf/1611.03866.pdf</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    z_cl: float</span>
+<span class="sd">            Galaxy cluster redshift</span>
+<span class="sd">    z_s:  float</span>
+<span class="sd">            Source galaxy  redshift</span>
+<span class="sd">    cosmo: Cosmology</span>
+<span class="sd">        Cosmology object</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        Geometric lensing efficicency</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">beta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">heaviside</span><span class="p">(</span><span class="n">z_s</span><span class="o">-</span><span class="n">z_cl</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">cosmo</span><span class="o">.</span><span class="n">eval_da_z1z2</span><span class="p">(</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_s</span><span class="p">)</span> <span class="o">/</span> <span class="n">cosmo</span><span class="o">.</span><span class="n">eval_da</span><span class="p">(</span><span class="n">z_cl</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">beta</span></div>
+
+<div class="viewcode-block" id="compute_beta_s"><a class="viewcode-back" href="../../api/clmm.utils.html#clmm.utils.compute_beta_s">[docs]</a><span class="k">def</span> <span class="nf">compute_beta_s</span><span class="p">(</span><span class="n">z_s</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_inf</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Geometric lensing efficicency ratio</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        beta_s =beta(z_s)/beta(z_inf)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    z_cl: float</span>
+<span class="sd">            Galaxy cluster redshift</span>
+<span class="sd">    z_s:  float</span>
+<span class="sd">            Source galaxy redshift</span>
+<span class="sd">    z_inf: float</span>
+<span class="sd">            Redshift at infinity</span>
+<span class="sd">    cosmo: Cosmology</span>
+<span class="sd">        Cosmology object</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        Geometric lensing efficicency ratio</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">beta_s</span> <span class="o">=</span> <span class="n">compute_beta</span><span class="p">(</span><span class="n">z_s</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">)</span> <span class="o">/</span> <span class="n">compute_beta</span><span class="p">(</span><span class="n">z_inf</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">beta_s</span></div>
+
+<div class="viewcode-block" id="compute_beta_mean"><a class="viewcode-back" href="../../api/clmm.utils.html#clmm.utils.compute_beta_mean">[docs]</a><span class="k">def</span> <span class="nf">compute_beta_mean</span><span class="p">(</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">zmax</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">delta_z_cut</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">zmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z_distrib_func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Mean value of the geometric lensing efficicency</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">       \left\&lt;beta\right\&gt; =\frac{\sum_{z = z_{min}}^{z = z_{max}}\beta(z)p(z)}{\sum_{z = z_{min}}^{z = z_{max}}p(z)}</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    z_cl: float</span>
+<span class="sd">            Galaxy cluster redshift</span>
+<span class="sd">    z_inf: float</span>
+<span class="sd">            Redshift at infinity</span>
+<span class="sd">    z_distrib_func: one-parameter function</span>
+<span class="sd">            Redshift distribution function. Default is\</span>
+<span class="sd">            Chang et al (2013) distribution\</span>
+<span class="sd">            function.</span>
+<span class="sd">    zmin: float</span>
+<span class="sd">            Minimum redshift to be set as the source of the galaxy\</span>
+<span class="sd">             when performing the sum.</span>
+<span class="sd">    zmax: float</span>
+<span class="sd">            Maximum redshift to be set as the source of the galaxy\</span>
+<span class="sd">            when performing the sum.</span>
+<span class="sd">    delta_z_cut: float</span>
+<span class="sd">            Redshift interval to be summed with $z_cl$ to return\</span>
+<span class="sd">            $zmin$. This feature is not used if $z_min$ is provided by the user.</span>
+<span class="sd">    cosmo: Cosmology</span>
+<span class="sd">        Cosmology object</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        Mean value of the geometric lensing efficicency</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">z_distrib_func</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">z_distrib_func</span> <span class="o">=</span> <span class="n">_chang_z_distrib</span>
+    <span class="k">def</span> <span class="nf">integrand</span><span class="p">(</span><span class="n">z_i</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">compute_beta</span><span class="p">(</span><span class="n">z_i</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">)</span> <span class="o">*</span> <span class="n">z_distrib_func</span><span class="p">(</span><span class="n">z_i</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">zmin</span><span class="o">==</span><span class="kc">None</span><span class="p">:</span>
+        <span class="n">zmin</span> <span class="o">=</span> <span class="n">z_cl</span> <span class="o">+</span> <span class="n">delta_z_cut</span>
+
+    <span class="n">B_mean</span> <span class="o">=</span> <span class="n">quad</span><span class="p">(</span><span class="n">integrand</span><span class="p">,</span> <span class="n">zmin</span><span class="p">,</span> <span class="n">zmax</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">quad</span><span class="p">(</span><span class="n">z_distrib_func</span><span class="p">,</span> <span class="n">zmin</span><span class="p">,</span> <span class="n">zmax</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">B_mean</span>    </div>
+
+<div class="viewcode-block" id="compute_beta_s_mean"><a class="viewcode-back" href="../../api/clmm.utils.html#clmm.utils.compute_beta_s_mean">[docs]</a><span class="k">def</span> <span class="nf">compute_beta_s_mean</span><span class="p">(</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_inf</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">zmax</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">delta_z_cut</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">zmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z_distrib_func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Mean value of the geometric lensing efficicency ratio</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">       \left\&lt;beta_s\right\&gt; =\frac{\sum_{z = z_{min}}^{z = z_{max}}\beta_s(z)p(z)}{\sum_{z = z_{min}}^{z = z_{max}}p(z)}</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    z_cl: float</span>
+<span class="sd">            Galaxy cluster redshift</span>
+<span class="sd">    z_inf: float</span>
+<span class="sd">            Redshift at infinity</span>
+<span class="sd">    z_distrib_func: one-parameter function</span>
+<span class="sd">            Redshift distribution function. Default is\</span>
+<span class="sd">            Chang et al (2013) distribution\</span>
+<span class="sd">            function.</span>
+<span class="sd">    zmin: float</span>
+<span class="sd">            Minimum redshift to be set as the source of the galaxy\</span>
+<span class="sd">            when performing the sum.</span>
+<span class="sd">    zmax: float</span>
+<span class="sd">            Minimum redshift to be set as the source of the galaxy\</span>
+<span class="sd">            when performing the sum.</span>
+<span class="sd">    delta_z_cut: float</span>
+<span class="sd">            Redshift interval to be summed with $z_cl$ to return\</span>
+<span class="sd">            $zmin$. This feature is not used if $z_min$ is provided by the user.</span>
+<span class="sd">    cosmo: Cosmology</span>
+<span class="sd">        Cosmology object</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        Mean value of the geometric lensing efficicency ratio</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">z_distrib_func</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">z_distrib_func</span> <span class="o">=</span> <span class="n">_chang_z_distrib</span>
+
+    <span class="k">def</span> <span class="nf">integrand</span><span class="p">(</span><span class="n">z_i</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_inf</span><span class="o">=</span><span class="n">z_inf</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">compute_beta_s</span><span class="p">(</span><span class="n">z_i</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_inf</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">)</span> <span class="o">*</span> <span class="n">z_distrib_func</span><span class="p">(</span><span class="n">z_i</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">zmin</span><span class="o">==</span><span class="kc">None</span><span class="p">:</span>
+        <span class="n">zmin</span> <span class="o">=</span> <span class="n">z_cl</span> <span class="o">+</span> <span class="n">delta_z_cut</span>
+    <span class="n">Bs_mean</span> <span class="o">=</span> <span class="n">quad</span><span class="p">(</span><span class="n">integrand</span><span class="p">,</span> <span class="n">zmin</span><span class="p">,</span> <span class="n">zmax</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">quad</span><span class="p">(</span><span class="n">z_distrib_func</span><span class="p">,</span> <span class="n">zmin</span><span class="p">,</span> <span class="n">zmax</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">Bs_mean</span></div>
+
+<div class="viewcode-block" id="compute_beta_s_square_mean"><a class="viewcode-back" href="../../api/clmm.utils.html#clmm.utils.compute_beta_s_square_mean">[docs]</a><span class="k">def</span> <span class="nf">compute_beta_s_square_mean</span><span class="p">(</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_inf</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">zmax</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">delta_z_cut</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">zmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z_distrib_func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Mean square value of the geometric lensing efficicency ratio</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">       \left\&lt;beta_s\right\&gt;2 =\frac{\sum_{z = z_{min}}^{z = z_{max}}\beta_s^2(z)p(z)}{\sum_{z = z_{min}}^{z = z_{max}}p(z)}</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    z_cl: float</span>
+<span class="sd">            Galaxy cluster redshift</span>
+<span class="sd">    z_inf: float</span>
+<span class="sd">            Redshift at infinity</span>
+<span class="sd">    z_distrib_func: one-parameter function</span>
+<span class="sd">            Redshift distribution function. Default is\</span>
+<span class="sd">            Chang et al (2013) distribution\</span>
+<span class="sd">            function.</span>
+<span class="sd">    zmin: float</span>
+<span class="sd">            Minimum redshift to be set as the source of the galaxy\</span>
+<span class="sd">            when performing the sum.</span>
+<span class="sd">    zmax: float</span>
+<span class="sd">            Minimum redshift to be set as the source of the galaxy\</span>
+<span class="sd">            when performing the sum.</span>
+<span class="sd">    delta_z_cut: float</span>
+<span class="sd">            Redshift interval to be summed with $z_cl$ to return\</span>
+<span class="sd">            $zmin$. This feature is not used if $z_min$ is provided by the user.</span>
+<span class="sd">    cosmo: Cosmology</span>
+<span class="sd">        Cosmology object</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        Mean square value of the geometric lensing efficicency ratio.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">z_distrib_func</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">z_distrib_func</span> <span class="o">=</span> <span class="n">_chang_z_distrib</span>
+
+    <span class="k">def</span> <span class="nf">integrand</span><span class="p">(</span><span class="n">z_i</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_inf</span><span class="o">=</span><span class="n">z_inf</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">compute_beta_s</span><span class="p">(</span><span class="n">z_i</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_inf</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">z_distrib_func</span><span class="p">(</span><span class="n">z_i</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">zmin</span><span class="o">==</span><span class="kc">None</span><span class="p">:</span>
+        <span class="n">zmin</span> <span class="o">=</span> <span class="n">z_cl</span> <span class="o">+</span> <span class="n">delta_z_cut</span>
+    <span class="n">Bs_square_mean</span> <span class="o">=</span> <span class="n">quad</span><span class="p">(</span><span class="n">integrand</span><span class="p">,</span> <span class="n">zmin</span><span class="p">,</span> <span class="n">zmax</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">quad</span><span class="p">(</span><span class="n">z_distrib_func</span><span class="p">,</span> <span class="n">zmin</span><span class="p">,</span> <span class="n">zmax</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">Bs_square_mean</span></div>
+
+<span class="k">def</span> <span class="nf">_chang_z_distrib</span><span class="p">(</span><span class="n">redshift</span><span class="p">,</span> <span class="n">is_cdf</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A private function that returns the Chang et al (2013) unnormalized galaxy redshift distribution</span>
+<span class="sd">    function, with the fiducial set of parameters.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    redshift : float</span>
+<span class="sd">        Galaxy redshift</span>
+<span class="sd">    is_cdf : bool</span>
+<span class="sd">        If True, returns cumulative distribution function.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    The value of the distribution at z</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">redshift0</span> <span class="o">=</span> <span class="mf">1.24</span><span class="p">,</span> <span class="mf">1.01</span><span class="p">,</span> <span class="mf">0.51</span>
+    <span class="k">if</span> <span class="n">is_cdf</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">redshift0</span><span class="o">**</span><span class="p">(</span><span class="n">alpha</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">gammainc</span><span class="p">((</span><span class="n">alpha</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">beta</span><span class="p">,</span> <span class="p">(</span><span class="n">redshift</span><span class="o">/</span><span class="n">redshift0</span><span class="p">)</span><span class="o">**</span><span class="n">beta</span><span class="p">)</span><span class="o">/</span><span class="n">beta</span><span class="o">*</span><span class="n">gamma</span><span class="p">((</span><span class="n">alpha</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">beta</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">redshift</span><span class="o">**</span><span class="n">alpha</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">redshift</span><span class="o">/</span><span class="n">redshift0</span><span class="p">)</span><span class="o">**</span><span class="n">beta</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_srd_z_distrib</span><span class="p">(</span><span class="n">redshift</span><span class="p">,</span> <span class="n">is_cdf</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A private function that returns the unnormalized galaxy redshift distribution function used in</span>
+<span class="sd">    the LSST/DESC Science Requirement Document (arxiv:1809.01669).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    redshift : float</span>
+<span class="sd">        Galaxy redshift</span>
+<span class="sd">    is_cdf : bool</span>
+<span class="sd">        If True, returns cumulative distribution function.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    The value of the distribution at z</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">redshift0</span> <span class="o">=</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.28</span>
+    <span class="k">if</span> <span class="n">is_cdf</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">redshift0</span><span class="o">**</span><span class="p">(</span><span class="n">alpha</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">gammainc</span><span class="p">((</span><span class="n">alpha</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">beta</span><span class="p">,</span> <span class="p">(</span><span class="n">redshift</span><span class="o">/</span><span class="n">redshift0</span><span class="p">)</span><span class="o">**</span><span class="n">beta</span><span class="p">)</span><span class="o">/</span><span class="n">beta</span><span class="o">*</span><span class="n">gamma</span><span class="p">((</span><span class="n">alpha</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">beta</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">redshift</span><span class="o">**</span><span class="n">alpha</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">redshift</span><span class="o">/</span><span class="n">redshift0</span><span class="p">)</span><span class="o">**</span><span class="n">beta</span><span class="p">)</span>
 </pre></div>
 
            </div>
@@ -587,7 +1044,7 @@
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
+        &copy; Copyright 2018-2022, LSST DESC CLMM Contributors
 
     </p>
   </div>

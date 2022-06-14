@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.cosmology.parent_class &mdash; CLMM 1.0.0 documentation</title>
+  <title>clmm.cosmology.parent_class &mdash; CLMM 1.2.0 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.0.0
+                1.2.0
               </div>
             
           
@@ -85,27 +85,30 @@
               
             
             
-              <p><span class="caption-text">Getting Started</span></p>
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/overview.html">Rapid overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/citing.html">Citing CLMM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/citing.html">Using and citing CLMM</a></li>
 </ul>
-<p><span class="caption-text">Usage Demos</span></p>
+<p class="caption"><span class="caption-text">Usage Demos</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_mass_conversion.html">Mass conversion between spherical overdensity mass definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_boost_factors.html">Define cosmology object</a></li>
 </ul>
-<p><span class="caption-text">Mass Fitting Examples</span></p>
+<p class="caption"><span class="caption-text">Mass Fitting Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog_NC.html">Fit halo mass to shear profile using Numcosmo statistical framework</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example1_Fit_shear_profile_with_miscentering.html">Investigate the impact of miscentering on shear profiles</a></li>
 </ul>
-<p><span class="caption-text">Reference</span></p>
+<p class="caption"><span class="caption-text">Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.constants.html">clmm.constants module</a></li>
@@ -206,6 +209,8 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="c1"># CLMM Cosmology object abstract superclass</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">validate_argument</span><span class="p">,</span> <span class="n">compute_for_good_redshifts</span>
+<span class="kn">from</span> <span class="nn">..constants</span> <span class="kn">import</span> <span class="n">Constants</span> <span class="k">as</span> <span class="n">const</span>
 
 
 <div class="viewcode-block" id="CLMMCosmology"><a class="viewcode-back" href="../../../api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology">[docs]</a><span class="k">class</span> <span class="nc">CLMMCosmology</span><span class="p">:</span>
@@ -218,11 +223,14 @@
 <span class="sd">        Name of back-end used</span>
 <span class="sd">    be_cosmo: cosmology library</span>
 <span class="sd">        Cosmology library used in the back-end</span>
+<span class="sd">    validate_input: bool</span>
+<span class="sd">        Validade each input argument</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">validate_input</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">be_cosmo</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span> <span class="o">=</span> <span class="n">validate_input</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_be_cosmo</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
@@ -241,6 +249,28 @@
 <span class="sd">        To be filled in child classes</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+<div class="viewcode-block" id="CLMMCosmology.init_from_params"><a class="viewcode-back" href="../../../api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.init_from_params">[docs]</a>    <span class="k">def</span> <span class="nf">init_from_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H0</span><span class="o">=</span><span class="mf">67.66</span><span class="p">,</span> <span class="n">Omega_b0</span><span class="o">=</span><span class="mf">0.049</span><span class="p">,</span> <span class="n">Omega_dm0</span><span class="o">=</span><span class="mf">0.262</span><span class="p">,</span> <span class="n">Omega_k0</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the cosmology from parameters</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        H0: float</span>
+<span class="sd">            Hubble parameter.</span>
+<span class="sd">        Omega_b0: float</span>
+<span class="sd">            Mass density of baryons today.</span>
+<span class="sd">        Omega_dm0: float</span>
+<span class="sd">            Mass density of dark matter only (no baryons) today.</span>
+<span class="sd">        Omega_k0: float</span>
+<span class="sd">            Mass density of curvature today.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">:</span>
+            <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;H0&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;Omega_b0&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">eqmin</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;Omega_dm0&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">eqmin</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;Omega_k0&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">eqmin</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_from_params</span><span class="p">(</span>
+            <span class="n">H0</span><span class="o">=</span><span class="n">H0</span><span class="p">,</span> <span class="n">Omega_b0</span><span class="o">=</span><span class="n">Omega_b0</span><span class="p">,</span> <span class="n">Omega_dm0</span><span class="o">=</span><span class="n">Omega_dm0</span><span class="p">,</span> <span class="n">Omega_k0</span><span class="o">=</span><span class="n">Omega_k0</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_init_from_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -273,14 +303,14 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        be_cosmo: clmm.cosmology.Cosmology object, None</span>
-<span class="sd">            Input cosmology, used if not None</span>
+<span class="sd">            Input cosmology, used if not None.</span>
 <span class="sd">        **kwargs</span>
-<span class="sd">            Individual cosmological parameters</span>
+<span class="sd">            Individual cosmological parameters, see init_from_params function.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">be_cosmo</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_init_from_cosmo</span><span class="p">(</span><span class="n">be_cosmo</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_init_from_params</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">init_from_params</span><span class="p">(</span>
                 <span class="n">H0</span><span class="o">=</span><span class="n">H0</span><span class="p">,</span> <span class="n">Omega_b0</span><span class="o">=</span><span class="n">Omega_b0</span><span class="p">,</span> <span class="n">Omega_dm0</span><span class="o">=</span><span class="n">Omega_dm0</span><span class="p">,</span> <span class="n">Omega_k0</span><span class="o">=</span><span class="n">Omega_k0</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CLMMCosmology.get_Omega_m"><a class="viewcode-back" href="../../../api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.get_Omega_m">[docs]</a>    <span class="k">def</span> <span class="nf">get_Omega_m</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
@@ -291,20 +321,52 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        z : float</span>
-<span class="sd">            Redshift.</span>
+<span class="sd">        z : float, array_like</span>
+<span class="sd">            Redshift</span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        Omega_m : float</span>
-<span class="sd">            dimensionless matter density, :math:`\Omega_m(z)`.</span>
+<span class="sd">        Omega_m : float, numpy.ndarray</span>
+<span class="sd">            Dimensionless matter density, :math:`\Omega_m(z)`</span>
+
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
 <span class="sd">        Need to decide if non-relativist neutrinos will contribute here.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">:</span>
+            <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;float_array&#39;</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">eqmin</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_Omega_m</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_Omega_m</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+<div class="viewcode-block" id="CLMMCosmology.get_E2"><a class="viewcode-back" href="../../../api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.get_E2">[docs]</a>    <span class="k">def</span> <span class="nf">get_E2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Gets the value of the hubble parameter (normalized at 0)</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            E^2(z) = \frac{H(z)^{2}}{H_{0}^{2}}.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        z : float</span>
+<span class="sd">            Redshift.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Hubble parameter : float</span>
+<span class="sd">            :math:`H(z)^{2}/H_{0}^{2}`.</span>
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Need to decide if non-relativist neutrinos will contribute here.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">:</span>
+            <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;float_array&#39;</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">eqmin</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_E2</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_E2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
 <div class="viewcode-block" id="CLMMCosmology.get_E2Omega_m"><a class="viewcode-back" href="../../../api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.get_E2Omega_m">[docs]</a>    <span class="k">def</span> <span class="nf">get_E2Omega_m</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Gets the value of the dimensionless matter density times hubble parameter</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Gets the value of the dimensionless matter density times the Hubble parameter squared</span>
 <span class="sd">        (normalized at 0)</span>
 
 <span class="sd">        .. math::</span>
@@ -312,58 +374,124 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        z : float</span>
-<span class="sd">            Redshift.</span>
+<span class="sd">        z : float, array_like</span>
+<span class="sd">            Redshift</span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        Omega_m : float</span>
-<span class="sd">            dimensionless matter density, :math:`\Omega_m(z)\;H(z)^{2}/H_{0}^{2}`.</span>
+<span class="sd">        Omega_m : float, numpy.ndarray</span>
+<span class="sd">            Dimensionless matter density, :math:`\Omega_m(z)\times H(z)^{2}/H_{0}^{2}`</span>
+
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
 <span class="sd">        Need to decide if non-relativist neutrinos will contribute here.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">:</span>
+            <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;float_array&#39;</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">eqmin</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_E2Omega_m</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CLMMCosmology.eval_da_z1z2"><a class="viewcode-back" href="../../../api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.eval_da_z1z2">[docs]</a>    <span class="k">def</span> <span class="nf">eval_da_z1z2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z1</span><span class="p">,</span> <span class="n">z2</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes the angular diameter distance between z1 and z2.</span>
+    <span class="k">def</span> <span class="nf">_get_E2Omega_m</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
-<span class="sd">        .. math::</span>
-<span class="sd">            d_a(z1, z2) = \frac{c}{H_0}\frac{1}{1+z2}\int_{z1}^{z2}\frac{dz&#39;}{E(z&#39;)}</span>
+<div class="viewcode-block" id="CLMMCosmology.get_rho_m"><a class="viewcode-back" href="../../../api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.get_rho_m">[docs]</a>    <span class="k">def</span> <span class="nf">get_rho_m</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Gets physical matter density at a given redshift.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        z1 : float</span>
-<span class="sd">            Redshift.</span>
-<span class="sd">        z2 : float</span>
-<span class="sd">            Redshift.</span>
+<span class="sd">        z : float, array_like</span>
+<span class="sd">            Redshift</span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        float</span>
-<span class="sd">            Angular diameter distance in units :math:`M\!pc`</span>
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        Describe the vectorization.</span>
+<span class="sd">        float, numpy.ndarray</span>
+<span class="sd">            Matter density :math:`M_\odot\ Mpc^{-3}`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">:</span>
+            <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;float_array&#39;</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">eqmin</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_rho_m</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CLMMCosmology.eval_da"><a class="viewcode-back" href="../../../api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.eval_da">[docs]</a>    <span class="k">def</span> <span class="nf">eval_da</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes the angular diameter distance between 0.0 and z.</span>
+    <span class="k">def</span> <span class="nf">_get_rho_m</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="n">rhocrit_cd2018</span> <span class="o">=</span> <span class="p">(</span><span class="mf">3.0e16</span><span class="o">*</span><span class="n">const</span><span class="o">.</span><span class="n">PC_TO_METER</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="o">/</span><span class="p">(</span>
+                          <span class="mf">8.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">const</span><span class="o">.</span><span class="n">GNEWT</span><span class="o">.</span><span class="n">value</span><span class="o">*</span><span class="n">const</span><span class="o">.</span><span class="n">SOLAR_MASS</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">rhocrit_cd2018</span><span class="o">*</span><span class="p">(</span><span class="n">z</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mi">3</span><span class="o">*</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;Omega_m0&#39;</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>
 
-<span class="sd">        .. math::</span>
-<span class="sd">            d_a(z) = \frac{c}{H_0}\frac{1}{1+z}\int_{0}^{z}\frac{dz&#39;}{E(z&#39;)}</span>
+<div class="viewcode-block" id="CLMMCosmology.get_rho_c"><a class="viewcode-back" href="../../../api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.get_rho_c">[docs]</a>    <span class="k">def</span> <span class="nf">get_rho_c</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Gets physical critical density at a given redshift.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        z : float</span>
 <span class="sd">            Redshift.</span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        float</span>
+<span class="sd">            Critical density :math:`M_\odot\ Mpc^{-3}`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">:</span>
+            <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;float_array&#39;</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">eqmin</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_rho_c</span><span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_rho_c</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+<div class="viewcode-block" id="CLMMCosmology.eval_da_z1z2"><a class="viewcode-back" href="../../../api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.eval_da_z1z2">[docs]</a>    <span class="k">def</span> <span class="nf">eval_da_z1z2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z1</span><span class="p">,</span> <span class="n">z2</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes the angular diameter distance between z1 and z2</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            d_a(z1, z2) = \frac{c}{H_0}\frac{1}{1+z2}\int_{z1}^{z2}\frac{dz&#39;}{E(z&#39;)}.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        z1 : float, array_like</span>
+<span class="sd">            Redshift</span>
+<span class="sd">        z2 : float, array_like</span>
+<span class="sd">            Redshift</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float, numpy.ndarray</span>
 <span class="sd">            Angular diameter distance in units :math:`M\!pc`</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        np.nan is returned for z1&gt;z2.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">:</span>
+            <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;z1&#39;</span><span class="p">,</span> <span class="s1">&#39;float_array&#39;</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">eqmin</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;z2&#39;</span><span class="p">,</span> <span class="s1">&#39;float_array&#39;</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">eqmin</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_da_z1z2</span><span class="p">(</span><span class="n">z1</span><span class="o">=</span><span class="n">z1</span><span class="p">,</span> <span class="n">z2</span><span class="o">=</span><span class="n">z2</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_eval_da_z1z2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z1</span><span class="p">,</span> <span class="n">z2</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">compute_for_good_redshifts</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_eval_da_z1z2_core</span><span class="p">,</span> <span class="n">z1</span><span class="p">,</span> <span class="n">z2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
+            <span class="n">error_message</span><span class="o">=</span><span class="s1">&#39;Some values of z2 are lower than z1. Returning da = np.nan for those.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_eval_da_z1z2_core</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z1</span><span class="p">,</span> <span class="n">z2</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+<div class="viewcode-block" id="CLMMCosmology.eval_da"><a class="viewcode-back" href="../../../api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.eval_da">[docs]</a>    <span class="k">def</span> <span class="nf">eval_da</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes the angular diameter distance between 0.0 and z</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            d_a(z) = \frac{c}{H_0}\frac{1}{1+z}\int_{0}^{z}\frac{dz&#39;}{E(z&#39;)}.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        z : float, array_like</span>
+<span class="sd">            Redshift</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float, numpy.ndarray</span>
+<span class="sd">            Angular diameter distance in units :math:`M\!pc`</span>
+
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
 <span class="sd">        Describe the vectorization.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">:</span>
+            <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;float_array&#39;</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">eqmin</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_da_z1z2</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CLMMCosmology.eval_da_a1a2"><a class="viewcode-back" href="../../../api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.eval_da_a1a2">[docs]</a>    <span class="k">def</span> <span class="nf">eval_da_a1a2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="o">=</span><span class="mf">1.</span><span class="p">):</span>
@@ -382,95 +510,102 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        a1 : float</span>
-<span class="sd">            Scale factor.</span>
-<span class="sd">        a2 : float, optional</span>
-<span class="sd">            Scale factor.</span>
+<span class="sd">        a1 : float, array_like</span>
+<span class="sd">            Scale factor</span>
+<span class="sd">        a2 : float, array_like, optional</span>
+<span class="sd">            Scale factor</span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        float</span>
+<span class="sd">        float, numpy.ndarray</span>
 <span class="sd">            Angular diameter distance in units :math:`M\!pc`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">:</span>
+            <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;a1&#39;</span><span class="p">,</span> <span class="s1">&#39;float_array&#39;</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">eqmin</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                              <span class="n">argmax</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">eqmax</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;a2&#39;</span><span class="p">,</span> <span class="s1">&#39;float_array&#39;</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">eqmin</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                              <span class="n">argmax</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">eqmax</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">z1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_z_from_a</span><span class="p">(</span><span class="n">a2</span><span class="p">)</span>
         <span class="n">z2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_z_from_a</span><span class="p">(</span><span class="n">a1</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_da_z1z2</span><span class="p">(</span><span class="n">z1</span><span class="p">,</span> <span class="n">z2</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CLMMCosmology.get_a_from_z"><a class="viewcode-back" href="../../../api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.get_a_from_z">[docs]</a>    <span class="k">def</span> <span class="nf">get_a_from_z</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Convert redshift to scale factor</span>
+        <span class="sd">&quot;&quot;&quot;Convert redshift to scale factor</span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        z : array_like</span>
+<span class="sd">        z : float, array_like</span>
 <span class="sd">            Redshift</span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        scale_factor : array_like</span>
+<span class="sd">        a : float, numpy.ndarray</span>
 <span class="sd">            Scale factor</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">:</span>
+            <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;float_array&#39;</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">eqmin</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">z</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Cannot convert negative redshift to scale factor&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">z</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CLMMCosmology.get_z_from_a"><a class="viewcode-back" href="../../../api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.get_z_from_a">[docs]</a>    <span class="k">def</span> <span class="nf">get_z_from_a</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Convert scale factor to redshift</span>
+        <span class="sd">&quot;&quot;&quot;Convert scale factor to redshift</span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        a : array_like</span>
+<span class="sd">        a : float, array_like</span>
 <span class="sd">            Scale factor</span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        z : array_like</span>
+<span class="sd">        z : float, numpy.ndarray</span>
 <span class="sd">            Redshift</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">:</span>
+            <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;float_array&#39;</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">eqmin</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                              <span class="n">argmax</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">eqmax</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">a</span> <span class="o">&gt;</span> <span class="mf">1.0</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Cannot convert invalid scale factor a &gt; 1 to redshift&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="n">a</span><span class="p">)</span><span class="o">-</span><span class="mf">1.0</span></div>
 
 <div class="viewcode-block" id="CLMMCosmology.rad2mpc"><a class="viewcode-back" href="../../../api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.rad2mpc">[docs]</a>    <span class="k">def</span> <span class="nf">rad2mpc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dist1</span><span class="p">,</span> <span class="n">redshift</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Convert between radians and Mpc using the small angle approximation</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert between radians and Mpc using the small angle approximation</span>
 <span class="sd">        and :math:`d = D_A \theta`.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        dist1 : array_like</span>
+<span class="sd">        dist1 : float, array_like</span>
 <span class="sd">            Input distances in radians</span>
 <span class="sd">        redshift : float</span>
 <span class="sd">            Redshift used to convert between angular and physical units</span>
-<span class="sd">        cosmo : astropy.cosmology</span>
-<span class="sd">            Astropy cosmology object to compute angular diameter distance to</span>
-<span class="sd">            convert between physical and angular units</span>
-<span class="sd">        do_inverse : bool</span>
-<span class="sd">            If true, converts Mpc to radians</span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        dist2 : array_like</span>
+<span class="sd">        dist2 : float, numpy.ndarray</span>
 <span class="sd">            Distances in Mpc</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">:</span>
+            <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;dist1&#39;</span><span class="p">,</span> <span class="s1">&#39;float_array&#39;</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">eqmin</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;redshift&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">eqmin</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">dist1</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_da</span><span class="p">(</span><span class="n">redshift</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CLMMCosmology.mpc2rad"><a class="viewcode-back" href="../../../api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.mpc2rad">[docs]</a>    <span class="k">def</span> <span class="nf">mpc2rad</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dist1</span><span class="p">,</span> <span class="n">redshift</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Convert between radians and Mpc using the small angle approximation</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert between radians and Mpc using the small angle approximation</span>
 <span class="sd">        and :math:`d = D_A \theta`.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        dist1 : array_like</span>
+<span class="sd">        dist1 : float, array_like</span>
 <span class="sd">            Input distances in Mpc</span>
 <span class="sd">        redshift : float</span>
 <span class="sd">            Redshift used to convert between angular and physical units</span>
-<span class="sd">        cosmo : astropy.cosmology</span>
-<span class="sd">            Astropy cosmology object to compute angular diameter distance to</span>
-<span class="sd">            convert between physical and angular units</span>
-<span class="sd">        do_inverse : bool</span>
-<span class="sd">            If true, converts Mpc to radians</span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        dist2 : array_like</span>
+<span class="sd">        dist2 : float, numpy.ndarray</span>
 <span class="sd">            Distances in radians</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">:</span>
+            <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;dist1&#39;</span><span class="p">,</span> <span class="s1">&#39;float_array&#39;</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">eqmin</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;redshift&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">eqmin</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">dist1</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_da</span><span class="p">(</span><span class="n">redshift</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CLMMCosmology.eval_sigma_crit"><a class="viewcode-back" href="../../../api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.eval_sigma_crit">[docs]</a>    <span class="k">def</span> <span class="nf">eval_sigma_crit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_len</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
@@ -480,15 +615,54 @@
 <span class="sd">        ----------</span>
 <span class="sd">        z_len : float</span>
 <span class="sd">            Lens redshift</span>
-<span class="sd">        z_src : array_like, float</span>
+<span class="sd">        z_src : float, array_like</span>
 <span class="sd">            Background source galaxy redshift(s)</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        float</span>
+<span class="sd">        float, numpy.ndarray</span>
 <span class="sd">            Cosmology-dependent critical surface density in units of :math:`M_\odot\ Mpc^{-2}`</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        np.inf is returned for z_src&lt;z_len.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">:</span>
+            <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;z_len&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">eqmin</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;z_src&#39;</span><span class="p">,</span> <span class="s1">&#39;float_array&#39;</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_sigma_crit</span><span class="p">(</span><span class="n">z_len</span><span class="o">=</span><span class="n">z_len</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="n">z_src</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_eval_sigma_crit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_len</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">compute_for_good_redshifts</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_eval_sigma_crit_core</span><span class="p">,</span> <span class="n">z_len</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span>
+            <span class="n">error_message</span><span class="o">=</span><span class="s1">&#39;Some source redshifts are lower than the cluster redshift. &#39;</span>
+                          <span class="s1">&#39;Returning Sigma_crit = np.inf for those galaxies.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_eval_sigma_crit_core</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_len</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+<div class="viewcode-block" id="CLMMCosmology.eval_linear_matter_powerspectrum"><a class="viewcode-back" href="../../../api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.eval_linear_matter_powerspectrum">[docs]</a>    <span class="k">def</span> <span class="nf">eval_linear_matter_powerspectrum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k_vals</span><span class="p">,</span> <span class="n">redshift</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes the linear matter power spectrum</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        k_vals : float, array_like</span>
+<span class="sd">            Wavenumber k [math:`Mpc^{-1}`] values to compute the power spectrum.</span>
+<span class="sd">        redshift : float</span>
+<span class="sd">            Redshift to get the power spectrum.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float, numpy.ndarray</span>
+<span class="sd">            Linear matter spectrum in units of math:`Mpc^{3}`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">:</span>
+            <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;k_vals&#39;</span><span class="p">,</span> <span class="s1">&#39;float_array&#39;</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;redshift&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">eqmin</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_linear_matter_powerspectrum</span><span class="p">(</span><span class="n">k_vals</span><span class="p">,</span> <span class="n">redshift</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_eval_linear_matter_powerspectrum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k_vals</span><span class="p">,</span> <span class="n">redshift</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 </pre></div>
 
            </div>
@@ -502,7 +676,7 @@
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
+        &copy; Copyright 2018-2022, LSST DESC CLMM Contributors
 
     </p>
   </div>

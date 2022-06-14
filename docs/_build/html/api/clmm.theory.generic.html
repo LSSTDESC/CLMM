@@ -4,16 +4,18 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.theory.generic module &mdash; CLMM 1.0.0 documentation</title>
+  <title>clmm.theory.generic module &mdash; CLMM 1.2.0 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
   
@@ -27,11 +29,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -63,7 +65,7 @@
             
             
               <div class="version">
-                1.0.0
+                1.2.0
               </div>
             
           
@@ -88,27 +90,30 @@
               
             
             
-              <p><span class="caption-text">Getting Started</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../source/overview.html">Rapid overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../source/installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../source/citing.html">Citing CLMM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../source/citing.html">Using and citing CLMM</a></li>
 </ul>
-<p><span class="caption-text">Usage Demos</span></p>
+<p class="caption" role="heading"><span class="caption-text">Usage Demos</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_mass_conversion.html">Mass conversion between spherical overdensity mass definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_boost_factors.html">Define cosmology object</a></li>
 </ul>
-<p><span class="caption-text">Mass Fitting Examples</span></p>
+<p class="caption" role="heading"><span class="caption-text">Mass Fitting Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog_NC.html">Fit halo mass to shear profile using Numcosmo statistical framework</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_shear_profile_with_miscentering.html">Investigate the impact of miscentering on shear profiles</a></li>
 </ul>
-<p><span class="caption-text">Reference</span></p>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="clmm.constants.html">clmm.constants module</a></li>
@@ -215,21 +220,149 @@
 <p>&#64;file generic.py
 Model independent theory functions</p>
 <dl class="py function">
-<dt id="clmm.theory.generic.compute_reduced_shear_from_convergence">
-<code class="sig-prename descclassname">clmm.theory.generic.</code><code class="sig-name descname">compute_reduced_shear_from_convergence</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">shear</span></em>, <em class="sig-param"><span class="n">convergence</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/generic.html#compute_reduced_shear_from_convergence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.theory.generic.compute_reduced_shear_from_convergence" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="clmm.theory.generic.compute_magnification_bias_from_magnification">
+<span class="sig-prename descclassname"><span class="pre">clmm.theory.generic.</span></span><span class="sig-name descname"><span class="pre">compute_magnification_bias_from_magnification</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">magnification</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/generic.html#compute_magnification_bias_from_magnification"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.generic.compute_magnification_bias_from_magnification" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes magnification bias from magnification <span class="math notranslate nohighlight">\(\mu\)</span> and slope parameter
+<span class="math notranslate nohighlight">\(\alpha\)</span> as :</p>
+<div class="math notranslate nohighlight">
+\[\mu^{\alpha - 1}\]</div>
+<p>The alpha parameter depends on the source sample and is computed as the slope of the
+cummulative numer counts at a given magnitude:</p>
+<div class="math notranslate nohighlight">
+\[\alpha \equiv \alpha(f) = - \frac{\mathrm d}{\mathrm d \log{f}} \log{n_0(&gt;f)}\]</div>
+<p>or,</p>
+<div class="math notranslate nohighlight">
+\[\alpha \equiv \alpha(m) = 2.5 \frac{\mathrm d}{\mathrm d m} \log{n_0(&lt;m)}\]</div>
+<p>see e.g.  Bartelmann &amp; Schneider 2001; Umetsu 2020</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>magnification</strong> (<em>array_like</em>) – Magnification</p></li>
+<li><p><strong>alpha</strong> (<em>array like</em>) – Source cummulative number density slope</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>magnification bias</strong> – magnification bias</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array_like</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clmm.theory.generic.compute_profile_mass_in_radius">
+<span class="sig-prename descclassname"><span class="pre">clmm.theory.generic.</span></span><span class="sig-name descname"><span class="pre">compute_profile_mass_in_radius</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r3d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redshift</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mdelta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cdelta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">massdef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_mdef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halo_profile_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'nfw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/generic.html#compute_profile_mass_in_radius"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.generic.compute_profile_mass_in_radius" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the mass inside a given radius of the profile.
+The mass is calculated as</p>
+<div class="math notranslate nohighlight">
+\[M(&lt;\text{r3d}) = M_{\Delta}\;\frac{f\left(\frac{\text{r3d}}{r_{\Delta}/c_{\Delta}}\right)}{f(c_{\Delta})},\]</div>
+<p>where <span class="math notranslate nohighlight">\(f(x)\)</span> for the different models are</p>
+<p>NFW:</p>
+<div class="math notranslate nohighlight">
+\[\quad \ln(1+x)-\frac{x}{1+x}\]</div>
+<p>Einasto: (<span class="math notranslate nohighlight">\(\gamma\)</span> is the lower incomplete gamma function)</p>
+<div class="math notranslate nohighlight">
+\[\gamma(\frac{3}{\alpha}, \frac{2}{\alpha}x^{\alpha})\]</div>
+<p>Hernquist:</p>
+<div class="math notranslate nohighlight">
+\[\left(\frac{x}{1+x}\right)^2\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r3d</strong> (<em>array_like</em><em>, </em><em>float</em>) – Radial position from the cluster center in <span class="math notranslate nohighlight">\(M\!pc\)</span>.</p></li>
+<li><p><strong>refshift</strong> (<em>float</em>) – Redshift of the cluster</p></li>
+<li><p><strong>mdelta</strong> (<em>float</em>) – Mass of the profile in units of <span class="math notranslate nohighlight">\(M_\odot\)</span></p></li>
+<li><p><strong>cdelta</strong> (<em>float</em>) – Concentration of the profile.</p></li>
+<li><p><strong>massdef</strong> (<em>str</em><em>, </em><em>None</em>) – Profile mass definition (<cite>mean</cite>, <cite>critical</cite>, <cite>virial</cite>).</p></li>
+<li><p><strong>delta_mdef</strong> (<em>int</em><em>, </em><em>None</em>) – Mass overdensity definition.</p></li>
+<li><p><strong>halo_profile_model</strong> (<em>str</em>) – Profile model parameterization (<cite>nfw</cite>, <cite>einasto</cite>, <cite>hernquist</cite>).</p></li>
+<li><p><strong>alpha</strong> (<em>float</em><em>, </em><em>None</em>) – Einasto slope, required when <cite>halo_profile_model=’einasto’</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Mass in units of <span class="math notranslate nohighlight">\(M_\odot\)</span></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array_like, float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clmm.theory.generic.compute_rdelta">
+<span class="sig-prename descclassname"><span class="pre">clmm.theory.generic.</span></span><span class="sig-name descname"><span class="pre">compute_rdelta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mdelta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redshift</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">massdef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_mdef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/generic.html#compute_rdelta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.generic.compute_rdelta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the radius for mdelta</p>
+<div class="math notranslate nohighlight">
+\[r_\Delta=\left(\frac{3 M_\Delta}{4 \pi \Delta \rho_{bkg}(z)}\right)^{1/3}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mdelta</strong> (<em>float</em>) – Mass in units of <span class="math notranslate nohighlight">\(M_\odot\)</span></p></li>
+<li><p><strong>redshift</strong> (<em>float</em>) – Redshift of the cluster</p></li>
+<li><p><strong>cosmo</strong> (<em>clmm.Cosmology</em>) – Cosmology object</p></li>
+<li><p><strong>massdef</strong> (<em>str</em><em>, </em><em>None</em>) – Profile mass definition (<cite>mean</cite>, <cite>critical</cite>, <cite>virial</cite>).</p></li>
+<li><p><strong>delta_mdef</strong> (<em>int</em><em>, </em><em>None</em>) – Mass overdensity definition.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Radius in <span class="math notranslate nohighlight">\(M\!pc\)</span>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clmm.theory.generic.compute_reduced_shear_from_convergence">
+<span class="sig-prename descclassname"><span class="pre">clmm.theory.generic.</span></span><span class="sig-name descname"><span class="pre">compute_reduced_shear_from_convergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shear</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convergence</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/generic.html#compute_reduced_shear_from_convergence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.generic.compute_reduced_shear_from_convergence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates reduced shear from shear and convergence</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>shear</strong> (<em>array_like</em>) – Shear</p></li>
-<li><p><strong>convergence</strong> (<em>array_like</em>) – Convergence</p></li>
+<li><p><strong>shear</strong> (<em>array_like</em><em>, </em><em>float</em>) – Shear</p></li>
+<li><p><strong>convergence</strong> (<em>array_like</em><em>, </em><em>float</em>) – Convergence</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>reduced_shear</strong> – Reduced shear</p>
+<dd class="field-even"><p><strong>g</strong> – Reduced shear</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>array_like</p>
+<dd class="field-odd"><p>array_like, float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clmm.theory.generic.convert_profile_mass_concentration">
+<span class="sig-prename descclassname"><span class="pre">clmm.theory.generic.</span></span><span class="sig-name descname"><span class="pre">convert_profile_mass_concentration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mdelta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cdelta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redshift</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">massdef</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_mdef</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halo_profile_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">massdef2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_mdef2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halo_profile_model2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/generic.html#convert_profile_mass_concentration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.generic.convert_profile_mass_concentration" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mdelta</strong> (<em>float</em>) – Mass of the profile in units of <span class="math notranslate nohighlight">\(M_\odot\)</span></p></li>
+<li><p><strong>cdelta</strong> (<em>float</em>) – Concentration of the profile.</p></li>
+<li><p><strong>refshift</strong> (<em>float</em>) – Redshift of the cluster</p></li>
+<li><p><strong>cosmo</strong> (<em>clmm.Cosmology</em>) – Cosmology object</p></li>
+<li><p><strong>massdef</strong> (<em>str</em><em>, </em><em>None</em>) – Input profile mass definition (<cite>mean</cite>, <cite>critical</cite>, <cite>virial</cite>).</p></li>
+<li><p><strong>delta_mdef</strong> (<em>int</em><em>, </em><em>None</em>) – Input mass overdensity definition.</p></li>
+<li><p><strong>halo_profile_model</strong> (<em>str</em><em>, </em><em>None</em>) – Input profile model parameterization (<cite>nfw</cite>, <cite>einasto</cite>, <cite>hernquist</cite>).</p></li>
+<li><p><strong>massdef2</strong> (<em>str</em><em>, </em><em>None</em>) – Profile mass definition to convert to (<cite>mean</cite>, <cite>critical</cite>, <cite>virial</cite>).
+If None, <cite>massdef2=massdef</cite>.</p></li>
+<li><p><strong>delta_mdef2</strong> (<em>int</em><em>, </em><em>None</em>) – Mass overdensity definition to convert to.
+If None, <cite>delta_mdef2=delta_mdef</cite>.</p></li>
+<li><p><strong>halo_profile_model2</strong> (<em>str</em><em>, </em><em>None</em>) – Profile model parameterization to convert to (<cite>nfw</cite>, <cite>einasto</cite>, <cite>hernquist</cite>).
+If None, <cite>halo_profile_model2=halo_profile_model</cite>.</p></li>
+<li><p><strong>alpha</strong> (<em>float</em><em>, </em><em>None</em>) – Input Einasto slope when <cite>halo_profile_model=’einasto’</cite>.</p></li>
+<li><p><strong>alpha2</strong> (<em>float</em><em>, </em><em>None</em>) – Einasto slope to convert to when <cite>halo_profile_model=’einasto’</cite>.
+If None, <cite>alpha2=alpha</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>HaloProfile object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>HaloProfile</p>
 </dd>
 </dl>
 </dd></dl>
@@ -248,7 +381,7 @@ Model independent theory functions</p>
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
+        &copy; Copyright 2018-2022, LSST DESC CLMM Contributors
 
     </p>
   </div>
