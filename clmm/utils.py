@@ -629,7 +629,7 @@ def compute_beta(z_s, z_cl, cosmo):
     float
         Geometric lensing efficicency
     """
-    beta = np.heaviside(z_s-z_cl, 0) * cosmo.eval_da_z1z2(z_cl, z_s) / cosmo.eval_da(z_cl)
+    beta = np.heaviside(z_s-z_cl, 0) * cosmo.eval_da_z1z2(z_cl, z_s) / cosmo.eval_da(z_s)
     return beta
 
 def compute_beta_s(z_s, z_cl, z_inf, cosmo):

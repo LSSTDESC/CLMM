@@ -108,8 +108,7 @@ class NumCosmoCosmology(CLMMCosmology):
 
     def _get_Omega_m(self, z):
 
-        return np.vectorize(self.be_cosmo.E2Omega_m)(z)/\
-    np.vectorize(self.be_cosmo.E2)(z)
+        return self._get_E2Omega_m(z)/self._get_E2(z)
 
     def _get_E2(self, z):
 
@@ -118,6 +117,11 @@ class NumCosmoCosmology(CLMMCosmology):
     def _get_E2Omega_m(self, z):
 
         return np.vectorize(self.be_cosmo.E2Omega_m)(z)
+
+    def _get_rho_c(self, z):
+
+        return Ncm.C.crit_mass_density_h2_solar_mass_Mpc3()*\
+    self._get_param('h')**2*self._get_E2(z)
 
     def _get_rho_m(self, z):
         # total matter density in physical units [Msun/Mpc3]
