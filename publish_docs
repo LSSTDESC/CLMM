@@ -4,7 +4,9 @@ python setup.py install --user > /dev/null
 
 cd docs/
 make clean
+sed -i -e 's/run_nb = False/run_nb = True/g' conf.py
 make html
+sed -i -e 's/run_nb = True/run_nb = False/g' conf.py
 cd ..
 
 MASTERCOMMIT="$(git log --pretty=format:'%h' -n 1 main)"
