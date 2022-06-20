@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Fit halo mass to shear profile: 2. realistic data and wrong model &mdash; CLMM 1.2.0 documentation</title>
+  <title>Fit halo mass to shear profile: 2. realistic data and wrong model &mdash; CLMM 1.2.1 documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                1.2.0
+                1.2.1
               </div>
             
           
@@ -103,14 +103,13 @@
 <li class="toctree-l1"><a class="reference internal" href="demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demo_mass_conversion.html">Mass conversion between spherical overdensity mass definitions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demo_boost_factors.html">Define cosmology object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_boost_factors.html">Compute boost factors</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Mass Fitting Examples</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Example2_Fit_Halo_Mass_to_Shear_Catalog_NC.html">Fit halo mass to shear profile using Numcosmo statistical framework</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Example1_Fit_shear_profile_with_miscentering.html">Investigate the impact of miscentering on shear profiles</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
@@ -253,7 +252,7 @@ the results.</p></li>
 <span class="n">clmm</span><span class="o">.</span><span class="n">__version__</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.2.0&#39;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.2.1&#39;</span>
 </pre></div>
 </div>
 <p>Next, we import <code class="docutils literal notranslate"><span class="pre">clmm</span></code>’s core modules.</p>
@@ -304,10 +303,6 @@ Chang et al. (2013) redshift distribution. - <code class="docutils literal notr
                                             <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
                                             <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">,</span>
                                             <span class="n">cluster_ra</span><span class="o">=</span><span class="n">cluster_ra</span><span class="p">,</span> <span class="n">cluster_dec</span><span class="o">=</span><span class="n">cluster_dec</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">conda</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">clmmenv</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">numpy</span><span class="o">/</span><span class="n">ma</span><span class="o">/</span><span class="n">core</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">2826</span><span class="p">:</span> <span class="n">VisibleDeprecationWarning</span><span class="p">:</span> <span class="n">Creating</span> <span class="n">an</span> <span class="n">ndarray</span> <span class="kn">from</span> <span class="nn">ragged</span> <span class="n">nested</span> <span class="n">sequences</span> <span class="p">(</span><span class="n">which</span> <span class="ow">is</span> <span class="n">a</span> <span class="nb">list</span><span class="o">-</span><span class="ow">or</span><span class="o">-</span><span class="nb">tuple</span> <span class="n">of</span> <span class="n">lists</span><span class="o">-</span><span class="ow">or</span><span class="o">-</span><span class="n">tuples</span><span class="o">-</span><span class="ow">or</span> <span class="n">ndarrays</span> <span class="k">with</span> <span class="n">different</span> <span class="n">lengths</span> <span class="ow">or</span> <span class="n">shapes</span><span class="p">)</span> <span class="ow">is</span> <span class="n">deprecated</span><span class="o">.</span> <span class="n">If</span> <span class="n">you</span> <span class="n">meant</span> <span class="n">to</span> <span class="n">do</span> <span class="n">this</span><span class="p">,</span> <span class="n">you</span> <span class="n">must</span> <span class="n">specify</span> <span class="s1">&#39;dtype=object&#39;</span> <span class="n">when</span> <span class="n">creating</span> <span class="n">the</span> <span class="n">ndarray</span><span class="o">.</span>
-  <span class="n">_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span>
 </pre></div>
 </div>
 <p>The galaxy catalogs are converted to a <code class="docutils literal notranslate"><span class="pre">clmm.GalaxyCluster</span></code> object and
@@ -370,7 +365,8 @@ galaxy catalog in bins of radius.</p>
 <span class="n">profile3</span> <span class="o">=</span> <span class="n">cl3</span><span class="o">.</span><span class="n">make_radial_profile</span><span class="p">(</span><span class="s2">&quot;Mpc&quot;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bin_edges</span><span class="p">,</span><span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="n">cori</span><span class="o">/</span><span class="mf">3.9</span><span class="o">-</span><span class="n">anaconda</span><span class="o">-</span><span class="mf">2021.11</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">1.2</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">py3</span><span class="o">.</span><span class="mf">8.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">utils</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">176</span><span class="p">:</span> <span class="ne">RuntimeWarning</span><span class="p">:</span> <span class="n">invalid</span> <span class="n">value</span> <span class="n">encountered</span> <span class="ow">in</span> <span class="n">sqrt</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">aguena</span><span class="o">/</span><span class="n">git_codes</span><span class="o">/</span><span class="n">CLMM</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">utils</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">176</span><span class="p">:</span> <span class="ne">RuntimeWarning</span><span class="p">:</span> <span class="n">invalid</span> <span class="n">value</span> <span class="n">encountered</span> <span class="ow">in</span> <span class="n">sqrt</span>
+  <span class="n">err_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">stat_yerr2</span><span class="o">+</span><span class="n">data_yerr2</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>After running <code class="docutils literal notranslate"><span class="pre">clmm.dataops.make_radial_profile</span></code> on a
@@ -384,18 +380,18 @@ galaxy catalog in bins of radius.</p>
 <span class="o">----------</span> <span class="o">---------</span> <span class="o">----------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">----------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">---------</span>
  <span class="mf">7.000e-01</span> <span class="mf">7.446e-01</span>  <span class="mf">7.863e-01</span> <span class="mf">4.359e-02</span> <span class="mf">1.313e-04</span> <span class="o">-</span><span class="mf">1.764e-17</span> <span class="mf">1.020e-18</span> <span class="mf">8.000e-01</span>       <span class="n">nan</span> <span class="mf">5.800e+01</span>
  <span class="mf">7.863e-01</span> <span class="mf">8.403e-01</span>  <span class="mf">8.831e-01</span> <span class="mf">3.990e-02</span> <span class="mf">1.101e-04</span> <span class="o">-</span><span class="mf">1.533e-17</span> <span class="mf">9.107e-19</span> <span class="mf">8.000e-01</span> <span class="mf">6.427e-09</span> <span class="mf">8.600e+01</span>
- <span class="mf">8.831e-01</span> <span class="mf">9.395e-01</span>  <span class="mf">9.920e-01</span> <span class="mf">3.659e-02</span> <span class="mf">1.003e-04</span> <span class="o">-</span><span class="mf">1.288e-17</span> <span class="mf">8.813e-19</span> <span class="mf">8.000e-01</span>       <span class="n">nan</span> <span class="mf">9.500e+01</span>
- <span class="mf">9.920e-01</span> <span class="mf">1.052e+00</span>  <span class="mf">1.114e+00</span> <span class="mf">3.337e-02</span> <span class="mf">8.507e-05</span> <span class="o">-</span><span class="mf">1.270e-17</span> <span class="mf">6.203e-19</span> <span class="mf">8.000e-01</span>       <span class="n">nan</span> <span class="mf">1.320e+02</span>
+ <span class="mf">8.831e-01</span> <span class="mf">9.395e-01</span>  <span class="mf">9.920e-01</span> <span class="mf">3.659e-02</span> <span class="mf">1.003e-04</span> <span class="o">-</span><span class="mf">1.292e-17</span> <span class="mf">8.742e-19</span> <span class="mf">8.000e-01</span>       <span class="n">nan</span> <span class="mf">9.500e+01</span>
+ <span class="mf">9.920e-01</span> <span class="mf">1.052e+00</span>  <span class="mf">1.114e+00</span> <span class="mf">3.337e-02</span> <span class="mf">8.507e-05</span> <span class="o">-</span><span class="mf">1.266e-17</span> <span class="mf">6.187e-19</span> <span class="mf">8.000e-01</span>       <span class="n">nan</span> <span class="mf">1.320e+02</span>
  <span class="mf">1.114e+00</span> <span class="mf">1.187e+00</span>  <span class="mf">1.251e+00</span> <span class="mf">3.007e-02</span> <span class="mf">7.161e-05</span> <span class="o">-</span><span class="mf">1.023e-17</span> <span class="mf">5.906e-19</span> <span class="mf">8.000e-01</span> <span class="mf">3.321e-09</span> <span class="mf">1.510e+02</span>
  <span class="mf">1.251e+00</span> <span class="mf">1.331e+00</span>  <span class="mf">1.406e+00</span> <span class="mf">2.711e-02</span> <span class="mf">6.612e-05</span> <span class="o">-</span><span class="mf">1.024e-17</span> <span class="mf">4.395e-19</span> <span class="mf">8.000e-01</span>       <span class="n">nan</span> <span class="mf">1.670e+02</span>
  <span class="mf">1.406e+00</span> <span class="mf">1.495e+00</span>  <span class="mf">1.579e+00</span> <span class="mf">2.428e-02</span> <span class="mf">5.252e-05</span> <span class="o">-</span><span class="mf">9.102e-18</span> <span class="mf">3.339e-19</span> <span class="mf">8.000e-01</span> <span class="mf">3.367e-09</span> <span class="mf">2.350e+02</span>
- <span class="mf">1.579e+00</span> <span class="mf">1.677e+00</span>  <span class="mf">1.773e+00</span> <span class="mf">2.167e-02</span> <span class="mf">3.915e-05</span> <span class="o">-</span><span class="mf">8.634e-18</span> <span class="mf">2.368e-19</span> <span class="mf">8.000e-01</span>       <span class="n">nan</span> <span class="mf">3.430e+02</span>
- <span class="mf">1.773e+00</span> <span class="mf">1.887e+00</span>  <span class="mf">1.992e+00</span> <span class="mf">1.918e-02</span> <span class="mf">3.437e-05</span> <span class="o">-</span><span class="mf">6.933e-18</span> <span class="mf">2.167e-19</span> <span class="mf">8.000e-01</span>       <span class="n">nan</span> <span class="mf">4.010e+02</span>
- <span class="mf">1.992e+00</span> <span class="mf">2.119e+00</span>  <span class="mf">2.237e+00</span> <span class="mf">1.694e-02</span> <span class="mf">2.755e-05</span> <span class="o">-</span><span class="mf">6.186e-18</span> <span class="mf">1.660e-19</span> <span class="mf">8.000e-01</span> <span class="mf">4.245e-09</span> <span class="mf">4.990e+02</span>
+ <span class="mf">1.579e+00</span> <span class="mf">1.677e+00</span>  <span class="mf">1.773e+00</span> <span class="mf">2.167e-02</span> <span class="mf">3.915e-05</span> <span class="o">-</span><span class="mf">8.644e-18</span> <span class="mf">2.370e-19</span> <span class="mf">8.000e-01</span>       <span class="n">nan</span> <span class="mf">3.430e+02</span>
+ <span class="mf">1.773e+00</span> <span class="mf">1.887e+00</span>  <span class="mf">1.992e+00</span> <span class="mf">1.918e-02</span> <span class="mf">3.437e-05</span> <span class="o">-</span><span class="mf">6.929e-18</span> <span class="mf">2.171e-19</span> <span class="mf">8.000e-01</span>       <span class="n">nan</span> <span class="mf">4.010e+02</span>
+ <span class="mf">1.992e+00</span> <span class="mf">2.119e+00</span>  <span class="mf">2.237e+00</span> <span class="mf">1.694e-02</span> <span class="mf">2.755e-05</span> <span class="o">-</span><span class="mf">6.184e-18</span> <span class="mf">1.660e-19</span> <span class="mf">8.000e-01</span> <span class="mf">4.245e-09</span> <span class="mf">4.990e+02</span>
  <span class="mf">2.237e+00</span> <span class="mf">2.377e+00</span>  <span class="mf">2.513e+00</span> <span class="mf">1.490e-02</span> <span class="mf">2.161e-05</span> <span class="o">-</span><span class="mf">5.482e-18</span> <span class="mf">1.254e-19</span> <span class="mf">8.000e-01</span> <span class="mf">4.009e-09</span> <span class="mf">6.630e+02</span>
- <span class="mf">2.513e+00</span> <span class="mf">2.672e+00</span>  <span class="mf">2.823e+00</span> <span class="mf">1.302e-02</span> <span class="mf">1.846e-05</span> <span class="o">-</span><span class="mf">4.746e-18</span> <span class="mf">1.016e-19</span> <span class="mf">8.000e-01</span>       <span class="n">nan</span> <span class="mf">7.800e+02</span>
- <span class="mf">2.823e+00</span> <span class="mf">2.999e+00</span>  <span class="mf">3.171e+00</span> <span class="mf">1.136e-02</span> <span class="mf">1.422e-05</span> <span class="o">-</span><span class="mf">4.090e-18</span> <span class="mf">7.766e-20</span> <span class="mf">8.000e-01</span>       <span class="n">nan</span> <span class="mf">1.042e+03</span>
- <span class="mf">3.171e+00</span> <span class="mf">3.369e+00</span>  <span class="mf">3.561e+00</span> <span class="mf">9.847e-03</span> <span class="mf">1.131e-05</span> <span class="o">-</span><span class="mf">3.646e-18</span> <span class="mf">5.918e-20</span> <span class="mf">8.000e-01</span> <span class="mf">6.299e-09</span> <span class="mf">1.301e+03</span>
+ <span class="mf">2.513e+00</span> <span class="mf">2.672e+00</span>  <span class="mf">2.823e+00</span> <span class="mf">1.302e-02</span> <span class="mf">1.846e-05</span> <span class="o">-</span><span class="mf">4.748e-18</span> <span class="mf">1.018e-19</span> <span class="mf">8.000e-01</span>       <span class="n">nan</span> <span class="mf">7.800e+02</span>
+ <span class="mf">2.823e+00</span> <span class="mf">2.999e+00</span>  <span class="mf">3.171e+00</span> <span class="mf">1.136e-02</span> <span class="mf">1.422e-05</span> <span class="o">-</span><span class="mf">4.091e-18</span> <span class="mf">7.767e-20</span> <span class="mf">8.000e-01</span>       <span class="n">nan</span> <span class="mf">1.042e+03</span>
+ <span class="mf">3.171e+00</span> <span class="mf">3.369e+00</span>  <span class="mf">3.561e+00</span> <span class="mf">9.847e-03</span> <span class="mf">1.131e-05</span> <span class="o">-</span><span class="mf">3.646e-18</span> <span class="mf">5.919e-20</span> <span class="mf">8.000e-01</span> <span class="mf">6.299e-09</span> <span class="mf">1.301e+03</span>
  <span class="mf">3.561e+00</span> <span class="mf">3.781e+00</span>  <span class="mf">4.000e+00</span> <span class="mf">8.514e-03</span> <span class="mf">8.968e-06</span> <span class="o">-</span><span class="mf">3.054e-18</span> <span class="mf">4.681e-20</span> <span class="mf">8.000e-01</span> <span class="mf">4.246e-09</span> <span class="mf">1.644e+03</span>
 </pre></div>
 </div>
@@ -416,7 +412,7 @@ galaxy catalog in bins of radius.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x155328a22760</span><span class="o">&gt;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x7fe6840f0be0</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="../_images/Example2_Fit_Halo_Mass_to_Shear_Catalog_33_1.png" src="../_images/Example2_Fit_Halo_Mass_to_Shear_Catalog_33_1.png" />

@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Generate Mock Data &mdash; CLMM 1.2.0 documentation</title>
+  <title>Generate Mock Data &mdash; CLMM 1.2.1 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                1.2.0
+                1.2.1
               </div>
             
           
@@ -102,14 +102,13 @@
 <li class="toctree-l1"><a class="reference internal" href="demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demo_mass_conversion.html">Mass conversion between spherical overdensity mass definitions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demo_boost_factors.html">Define cosmology object</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_boost_factors.html">Compute boost factors</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Mass Fitting Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Example2_Fit_Halo_Mass_to_Shear_Catalog_NC.html">Fit halo mass to shear profile using Numcosmo statistical framework</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Example1_Fit_shear_profile_with_miscentering.html">Investigate the impact of miscentering on shear profiles</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
@@ -221,7 +220,9 @@ data with different field-of-view options - Generate mock data with
 different galaxy cluster options (only available with the Numcosmo
 and/or CCL backends). Use the <code class="docutils literal notranslate"><span class="pre">os.environ['CLMM_MODELING_BACKEND']</span></code>
 line below to select your backend.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s1">&#39;.*(!).*&#39;</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="c1">## Uncomment the following line if you want to use a specific modeling backend among &#39;ct&#39; (cluster-toolkit), &#39;ccl&#39; (CCL) or &#39;nc&#39; (Numcosmo). Default is &#39;ct&#39;</span>
 <span class="c1">#os.environ[&#39;CLMM_MODELING_BACKEND&#39;] = &#39;nc&#39;</span>
 </pre></div>
@@ -240,7 +241,7 @@ line below to select your backend.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clmm</span><span class="o">.</span><span class="n">__version__</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.2.0&#39;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.2.1&#39;</span>
 </pre></div>
 </div>
 <section id="import-mock-data-module-and-setup-the-configuration">
@@ -336,10 +337,6 @@ shape noise</p></li>
                                               <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">,</span> <span class="n">cluster_ra</span><span class="o">=</span><span class="n">cluster_ra</span><span class="p">,</span> <span class="n">cluster_dec</span><span class="o">=</span><span class="n">cluster_dec</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">conda</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">clmmenv</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">numpy</span><span class="o">/</span><span class="n">ma</span><span class="o">/</span><span class="n">core</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">2826</span><span class="p">:</span> <span class="n">VisibleDeprecationWarning</span><span class="p">:</span> <span class="n">Creating</span> <span class="n">an</span> <span class="n">ndarray</span> <span class="kn">from</span> <span class="nn">ragged</span> <span class="n">nested</span> <span class="n">sequences</span> <span class="p">(</span><span class="n">which</span> <span class="ow">is</span> <span class="n">a</span> <span class="nb">list</span><span class="o">-</span><span class="ow">or</span><span class="o">-</span><span class="nb">tuple</span> <span class="n">of</span> <span class="n">lists</span><span class="o">-</span><span class="ow">or</span><span class="o">-</span><span class="n">tuples</span><span class="o">-</span><span class="ow">or</span> <span class="n">ndarrays</span> <span class="k">with</span> <span class="n">different</span> <span class="n">lengths</span> <span class="ow">or</span> <span class="n">shapes</span><span class="p">)</span> <span class="ow">is</span> <span class="n">deprecated</span><span class="o">.</span> <span class="n">If</span> <span class="n">you</span> <span class="n">meant</span> <span class="n">to</span> <span class="n">do</span> <span class="n">this</span><span class="p">,</span> <span class="n">you</span> <span class="n">must</span> <span class="n">specify</span> <span class="s1">&#39;dtype=object&#39;</span> <span class="n">when</span> <span class="n">creating</span> <span class="n">the</span> <span class="n">ndarray</span><span class="o">.</span>
-  <span class="n">_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span>
-</pre></div>
-</div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">allsystematics2</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span><span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span>
                                                <span class="s1">&#39;desc_srd&#39;</span><span class="p">,</span> <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span> <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span> <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
                                                <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">,</span>
@@ -373,33 +370,107 @@ galaxies at z=0.8, no redshift errors (z = ztrue)</p></li>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">ideal_data</span><span class="o">.</span><span class="n">colnames</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">n</span><span class="o">!=</span><span class="s1">&#39;id&#39;</span><span class="p">:</span>
         <span class="n">ideal_data</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">format</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%6.3e</span><span class="s2">&quot;</span>
-<span class="n">ideal_data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">max_width</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ideal_data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">show_in_notebook</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>    <span class="n">ra</span>       <span class="n">dec</span>        <span class="n">e1</span>         <span class="n">e2</span>        <span class="n">z</span>       <span class="n">ztrue</span>    <span class="nb">id</span>
-<span class="o">---------</span> <span class="o">---------</span> <span class="o">----------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">---</span>
-<span class="mf">4.684e+01</span> <span class="mf">8.681e+01</span>  <span class="mf">2.299e-04</span> <span class="mf">7.727e-03</span> <span class="mf">8.000e-01</span> <span class="mf">8.000e-01</span>   <span class="mi">0</span>
-<span class="mf">4.843e+01</span> <span class="mf">8.697e+01</span> <span class="o">-</span><span class="mf">2.011e-02</span> <span class="mf">1.584e-02</span> <span class="mf">8.000e-01</span> <span class="mf">8.000e-01</span>   <span class="mi">1</span>
-<span class="mf">5.088e+01</span> <span class="mf">8.717e+01</span>  <span class="mf">1.073e-02</span> <span class="mf">5.906e-03</span> <span class="mf">8.000e-01</span> <span class="mf">8.000e-01</span>   <span class="mi">2</span>
-</pre></div>
-</div>
-<ul class="simple">
+<i>GCData length=3</i>
+<table id="table140438799739824-372343" class="table-striped table-bordered table-condensed">
+<thead><tr><th>idx</th><th>ra</th><th>dec</th><th>e1</th><th>e2</th><th>z</th><th>ztrue</th><th>id</th></tr></thead>
+<tr><td>0</td><td>5.111e+01</td><td>8.709e+01</td><td>9.248e-03</td><td>1.899e-02</td><td>8.000e-01</td><td>8.000e-01</td><td>0</td></tr>
+<tr><td>1</td><td>5.205e+01</td><td>8.688e+01</td><td>6.570e-04</td><td>-1.335e-02</td><td>8.000e-01</td><td>8.000e-01</td><td>1</td></tr>
+<tr><td>2</td><td>5.419e+01</td><td>8.677e+01</td><td>-4.018e-04</td><td>-5.576e-03</td><td>8.000e-01</td><td>8.000e-01</td><td>2</td></tr>
+</table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+.dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+display: inline-block; margin-right: 1em; }
+.paginate_button { margin-right: 5px; }
+</style>
+<script>
+
+var astropy_sort_num = function(a, b) {
+    var a_num = parseFloat(a);
+    var b_num = parseFloat(b);
+
+    if (isNaN(a_num) && isNaN(b_num))
+        return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+    else if (!isNaN(a_num) && !isNaN(b_num))
+        return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+    else
+        return isNaN(a_num) ? -1 : 1;
+}
+
+require.config({paths: {
+    datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+}});
+require(["datatables"], function(){
+    console.log("$('#table140438799739824-372343').dataTable()");
+
+jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+    "optionalnum-asc": astropy_sort_num,
+    "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+});
+
+    $('#table140438799739824-372343').dataTable({
+        order: [],
+        pageLength: 50,
+        lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+        pagingType: "full_numbers",
+        columnDefs: [{targets: [0, 1, 2, 3, 4, 5, 6, 7], type: "optionalnum"}]
+    });
+});
+</script><ul class="simple">
 <li><p>With photo-z errors</p></li>
 </ul>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">noisy_data_photoz</span><span class="o">.</span><span class="n">colnames</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">n</span><span class="o">!=</span><span class="s1">&#39;id&#39;</span><span class="p">:</span>
         <span class="n">noisy_data_photoz</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">format</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%6.3e</span><span class="s2">&quot;</span>
-<span class="n">noisy_data_photoz</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">max_width</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">noisy_data_photoz</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">show_in_notebook</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>    <span class="n">ra</span>       <span class="n">dec</span>        <span class="n">e1</span>         <span class="n">e2</span>         <span class="n">z</span>       <span class="n">ztrue</span>         <span class="n">pzbins</span> <span class="p">[</span><span class="mi">61</span><span class="p">]</span>             <span class="n">pzpdf</span> <span class="p">[</span><span class="mi">61</span><span class="p">]</span>        <span class="nb">id</span>
-<span class="o">---------</span> <span class="o">---------</span> <span class="o">----------</span> <span class="o">----------</span> <span class="o">---------</span> <span class="o">---------</span> <span class="o">-----------------------</span> <span class="o">----------------------</span> <span class="o">---</span>
-<span class="mf">4.549e+01</span> <span class="mf">8.724e+01</span>  <span class="mf">3.567e-02</span> <span class="o">-</span><span class="mf">4.010e-02</span> <span class="mf">7.494e-01</span> <span class="mf">8.000e-01</span> <span class="o">-</span><span class="mf">1.506e-01</span> <span class="o">..</span> <span class="mf">1.649e+00</span> <span class="mf">8.550e-22</span> <span class="o">..</span> <span class="mf">8.550e-22</span>   <span class="mi">0</span>
-<span class="mf">5.254e+01</span> <span class="mf">8.691e+01</span> <span class="o">-</span><span class="mf">5.109e-02</span> <span class="o">-</span><span class="mf">3.199e-02</span> <span class="mf">7.966e-01</span> <span class="mf">8.000e-01</span> <span class="o">-</span><span class="mf">1.034e-01</span> <span class="o">..</span> <span class="mf">1.697e+00</span> <span class="mf">8.550e-22</span> <span class="o">..</span> <span class="mf">8.550e-22</span>   <span class="mi">1</span>
-<span class="mf">4.827e+01</span> <span class="mf">8.696e+01</span>  <span class="mf">2.831e-02</span>  <span class="mf">1.788e-02</span> <span class="mf">7.327e-01</span> <span class="mf">8.000e-01</span> <span class="o">-</span><span class="mf">1.673e-01</span> <span class="o">..</span> <span class="mf">1.633e+00</span> <span class="mf">8.550e-22</span> <span class="o">..</span> <span class="mf">8.550e-22</span>   <span class="mi">2</span>
-</pre></div>
-</div>
-<ul class="simple">
+<i>GCData length=3</i>
+<table id="table140438799739488-839880" class="table-striped table-bordered table-condensed">
+<thead><tr><th>idx</th><th>ra</th><th>dec</th><th>e1</th><th>e2</th><th>z</th><th>ztrue</th><th>pzbins [61]</th><th>pzpdf [61]</th><th>id</th></tr></thead>
+<tr><td>0</td><td>5.024e+01</td><td>8.719e+01</td><td>8.578e-02</td><td>3.218e-02</td><td>8.008e-01</td><td>8.000e-01</td><td>-9.923e-02 .. 1.701e+00</td><td>8.550e-22 .. 8.550e-22</td><td>0</td></tr>
+<tr><td>1</td><td>4.798e+01</td><td>8.719e+01</td><td>-4.438e-02</td><td>3.544e-02</td><td>7.291e-01</td><td>8.000e-01</td><td>-1.709e-01 .. 1.629e+00</td><td>8.550e-22 .. 8.550e-22</td><td>1</td></tr>
+<tr><td>2</td><td>4.769e+01</td><td>8.710e+01</td><td>-1.138e-01</td><td>-6.369e-03</td><td>8.515e-01</td><td>8.000e-01</td><td>-4.850e-02 .. 1.751e+00</td><td>8.550e-22 .. 8.550e-22</td><td>2</td></tr>
+</table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+.dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+display: inline-block; margin-right: 1em; }
+.paginate_button { margin-right: 5px; }
+</style>
+<script>
+
+var astropy_sort_num = function(a, b) {
+    var a_num = parseFloat(a);
+    var b_num = parseFloat(b);
+
+    if (isNaN(a_num) && isNaN(b_num))
+        return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+    else if (!isNaN(a_num) && !isNaN(b_num))
+        return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+    else
+        return isNaN(a_num) ? -1 : 1;
+}
+
+require.config({paths: {
+    datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+}});
+require(["datatables"], function(){
+    console.log("$('#table140438799739488-839880').dataTable()");
+
+jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+    "optionalnum-asc": astropy_sort_num,
+    "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+});
+
+    $('#table140438799739488-839880').dataTable({
+        order: [],
+        pageLength: 50,
+        lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+        pagingType: "full_numbers",
+        columnDefs: [{targets: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], type: "optionalnum"}]
+    });
+});
+</script><ul class="simple">
 <li><p>Histogram of the redshift distribution of background galaxies, for
 the true (originally drawn) redshift and the redshift once photoz
 errors have been added. By construction no true redshift occurs below
@@ -413,7 +484,7 @@ errors) might be.</p></li>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x155328cb33a0</span><span class="o">&gt;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x7fba74ada2e0</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="../_images/demo_generate_mock_cluster_36_1.png" src="../_images/demo_generate_mock_cluster_36_1.png" />
@@ -421,21 +492,21 @@ errors) might be.</p></li>
 <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">allsystematics2</span><span class="p">[</span><span class="s1">&#39;ztrue&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;true z&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">array</span><span class="p">([</span><span class="mf">66.</span><span class="p">,</span> <span class="mf">71.</span><span class="p">,</span> <span class="mf">61.</span><span class="p">,</span> <span class="mf">59.</span><span class="p">,</span> <span class="mf">66.</span><span class="p">,</span> <span class="mf">72.</span><span class="p">,</span> <span class="mf">64.</span><span class="p">,</span> <span class="mf">69.</span><span class="p">,</span> <span class="mf">55.</span><span class="p">,</span> <span class="mf">66.</span><span class="p">,</span> <span class="mf">34.</span><span class="p">,</span> <span class="mf">42.</span><span class="p">,</span> <span class="mf">36.</span><span class="p">,</span>
-        <span class="mf">28.</span><span class="p">,</span> <span class="mf">21.</span><span class="p">,</span> <span class="mf">18.</span><span class="p">,</span> <span class="mf">31.</span><span class="p">,</span> <span class="mf">17.</span><span class="p">,</span> <span class="mf">22.</span><span class="p">,</span> <span class="mf">16.</span><span class="p">,</span>  <span class="mf">9.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">,</span>  <span class="mf">9.</span><span class="p">,</span>  <span class="mf">8.</span><span class="p">,</span>  <span class="mf">9.</span><span class="p">,</span>  <span class="mf">5.</span><span class="p">,</span>
-         <span class="mf">5.</span><span class="p">,</span>  <span class="mf">6.</span><span class="p">,</span>  <span class="mf">3.</span><span class="p">,</span>  <span class="mf">3.</span><span class="p">,</span>  <span class="mf">2.</span><span class="p">,</span>  <span class="mf">2.</span><span class="p">,</span>  <span class="mf">7.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>
-         <span class="mf">2.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">]),</span>
- <span class="n">array</span><span class="p">([</span><span class="mf">0.40052056</span><span class="p">,</span> <span class="mf">0.48248837</span><span class="p">,</span> <span class="mf">0.56445619</span><span class="p">,</span> <span class="mf">0.646424</span>  <span class="p">,</span> <span class="mf">0.72839182</span><span class="p">,</span>
-        <span class="mf">0.81035963</span><span class="p">,</span> <span class="mf">0.89232745</span><span class="p">,</span> <span class="mf">0.97429526</span><span class="p">,</span> <span class="mf">1.05626308</span><span class="p">,</span> <span class="mf">1.13823089</span><span class="p">,</span>
-        <span class="mf">1.22019871</span><span class="p">,</span> <span class="mf">1.30216652</span><span class="p">,</span> <span class="mf">1.38413434</span><span class="p">,</span> <span class="mf">1.46610215</span><span class="p">,</span> <span class="mf">1.54806997</span><span class="p">,</span>
-        <span class="mf">1.63003779</span><span class="p">,</span> <span class="mf">1.7120056</span> <span class="p">,</span> <span class="mf">1.79397342</span><span class="p">,</span> <span class="mf">1.87594123</span><span class="p">,</span> <span class="mf">1.95790905</span><span class="p">,</span>
-        <span class="mf">2.03987686</span><span class="p">,</span> <span class="mf">2.12184468</span><span class="p">,</span> <span class="mf">2.20381249</span><span class="p">,</span> <span class="mf">2.28578031</span><span class="p">,</span> <span class="mf">2.36774812</span><span class="p">,</span>
-        <span class="mf">2.44971594</span><span class="p">,</span> <span class="mf">2.53168375</span><span class="p">,</span> <span class="mf">2.61365157</span><span class="p">,</span> <span class="mf">2.69561938</span><span class="p">,</span> <span class="mf">2.7775872</span> <span class="p">,</span>
-        <span class="mf">2.85955501</span><span class="p">,</span> <span class="mf">2.94152283</span><span class="p">,</span> <span class="mf">3.02349064</span><span class="p">,</span> <span class="mf">3.10545846</span><span class="p">,</span> <span class="mf">3.18742627</span><span class="p">,</span>
-        <span class="mf">3.26939409</span><span class="p">,</span> <span class="mf">3.3513619</span> <span class="p">,</span> <span class="mf">3.43332972</span><span class="p">,</span> <span class="mf">3.51529753</span><span class="p">,</span> <span class="mf">3.59726535</span><span class="p">,</span>
-        <span class="mf">3.67923316</span><span class="p">,</span> <span class="mf">3.76120098</span><span class="p">,</span> <span class="mf">3.84316879</span><span class="p">,</span> <span class="mf">3.92513661</span><span class="p">,</span> <span class="mf">4.00710443</span><span class="p">,</span>
-        <span class="mf">4.08907224</span><span class="p">,</span> <span class="mf">4.17104006</span><span class="p">,</span> <span class="mf">4.25300787</span><span class="p">,</span> <span class="mf">4.33497569</span><span class="p">,</span> <span class="mf">4.4169435</span> <span class="p">,</span>
-        <span class="mf">4.49891132</span><span class="p">]),</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">array</span><span class="p">([</span><span class="mf">77.</span><span class="p">,</span> <span class="mf">81.</span><span class="p">,</span> <span class="mf">91.</span><span class="p">,</span> <span class="mf">86.</span><span class="p">,</span> <span class="mf">93.</span><span class="p">,</span> <span class="mf">92.</span><span class="p">,</span> <span class="mf">79.</span><span class="p">,</span> <span class="mf">52.</span><span class="p">,</span> <span class="mf">54.</span><span class="p">,</span> <span class="mf">44.</span><span class="p">,</span> <span class="mf">33.</span><span class="p">,</span> <span class="mf">38.</span><span class="p">,</span> <span class="mf">36.</span><span class="p">,</span>
+        <span class="mf">36.</span><span class="p">,</span> <span class="mf">28.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">,</span>  <span class="mf">9.</span><span class="p">,</span> <span class="mf">12.</span><span class="p">,</span> <span class="mf">14.</span><span class="p">,</span>  <span class="mf">5.</span><span class="p">,</span>  <span class="mf">4.</span><span class="p">,</span>  <span class="mf">7.</span><span class="p">,</span>  <span class="mf">6.</span><span class="p">,</span>  <span class="mf">2.</span><span class="p">,</span>  <span class="mf">2.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>
+         <span class="mf">2.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>
+         <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">]),</span>
+ <span class="n">array</span><span class="p">([</span><span class="mf">0.40099721</span><span class="p">,</span> <span class="mf">0.51663666</span><span class="p">,</span> <span class="mf">0.63227611</span><span class="p">,</span> <span class="mf">0.74791556</span><span class="p">,</span> <span class="mf">0.86355501</span><span class="p">,</span>
+        <span class="mf">0.97919446</span><span class="p">,</span> <span class="mf">1.09483391</span><span class="p">,</span> <span class="mf">1.21047336</span><span class="p">,</span> <span class="mf">1.32611281</span><span class="p">,</span> <span class="mf">1.44175226</span><span class="p">,</span>
+        <span class="mf">1.55739171</span><span class="p">,</span> <span class="mf">1.67303115</span><span class="p">,</span> <span class="mf">1.7886706</span> <span class="p">,</span> <span class="mf">1.90431005</span><span class="p">,</span> <span class="mf">2.0199495</span> <span class="p">,</span>
+        <span class="mf">2.13558895</span><span class="p">,</span> <span class="mf">2.2512284</span> <span class="p">,</span> <span class="mf">2.36686785</span><span class="p">,</span> <span class="mf">2.4825073</span> <span class="p">,</span> <span class="mf">2.59814675</span><span class="p">,</span>
+        <span class="mf">2.7137862</span> <span class="p">,</span> <span class="mf">2.82942565</span><span class="p">,</span> <span class="mf">2.9450651</span> <span class="p">,</span> <span class="mf">3.06070455</span><span class="p">,</span> <span class="mf">3.176344</span>  <span class="p">,</span>
+        <span class="mf">3.29198345</span><span class="p">,</span> <span class="mf">3.4076229</span> <span class="p">,</span> <span class="mf">3.52326235</span><span class="p">,</span> <span class="mf">3.6389018</span> <span class="p">,</span> <span class="mf">3.75454125</span><span class="p">,</span>
+        <span class="mf">3.8701807</span> <span class="p">,</span> <span class="mf">3.98582015</span><span class="p">,</span> <span class="mf">4.10145959</span><span class="p">,</span> <span class="mf">4.21709904</span><span class="p">,</span> <span class="mf">4.33273849</span><span class="p">,</span>
+        <span class="mf">4.44837794</span><span class="p">,</span> <span class="mf">4.56401739</span><span class="p">,</span> <span class="mf">4.67965684</span><span class="p">,</span> <span class="mf">4.79529629</span><span class="p">,</span> <span class="mf">4.91093574</span><span class="p">,</span>
+        <span class="mf">5.02657519</span><span class="p">,</span> <span class="mf">5.14221464</span><span class="p">,</span> <span class="mf">5.25785409</span><span class="p">,</span> <span class="mf">5.37349354</span><span class="p">,</span> <span class="mf">5.48913299</span><span class="p">,</span>
+        <span class="mf">5.60477244</span><span class="p">,</span> <span class="mf">5.72041189</span><span class="p">,</span> <span class="mf">5.83605134</span><span class="p">,</span> <span class="mf">5.95169079</span><span class="p">,</span> <span class="mf">6.06733024</span><span class="p">,</span>
+        <span class="mf">6.18296969</span><span class="p">]),</span>
  <span class="o">&lt;</span><span class="n">BarContainer</span> <span class="nb">object</span> <span class="n">of</span> <span class="mi">50</span> <span class="n">artists</span><span class="o">&gt;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -450,7 +521,7 @@ errors) might be.</p></li>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x155328a899d0</span><span class="o">&gt;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x7fba74ce4df0</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="../_images/demo_generate_mock_cluster_38_1.png" src="../_images/demo_generate_mock_cluster_38_1.png" />
@@ -493,16 +564,12 @@ galaxies in a smaller field of view yields high galaxy density</p></li>
                                                <span class="n">cluster_ra</span><span class="o">=</span><span class="n">cluster_ra</span><span class="p">,</span> <span class="n">cluster_dec</span><span class="o">=</span><span class="n">cluster_dec</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">conda</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">clmmenv</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">numpy</span><span class="o">/</span><span class="n">ma</span><span class="o">/</span><span class="n">core</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">2826</span><span class="p">:</span> <span class="n">VisibleDeprecationWarning</span><span class="p">:</span> <span class="n">Creating</span> <span class="n">an</span> <span class="n">ndarray</span> <span class="kn">from</span> <span class="nn">ragged</span> <span class="n">nested</span> <span class="n">sequences</span> <span class="p">(</span><span class="n">which</span> <span class="ow">is</span> <span class="n">a</span> <span class="nb">list</span><span class="o">-</span><span class="ow">or</span><span class="o">-</span><span class="nb">tuple</span> <span class="n">of</span> <span class="n">lists</span><span class="o">-</span><span class="ow">or</span><span class="o">-</span><span class="n">tuples</span><span class="o">-</span><span class="ow">or</span> <span class="n">ndarrays</span> <span class="k">with</span> <span class="n">different</span> <span class="n">lengths</span> <span class="ow">or</span> <span class="n">shapes</span><span class="p">)</span> <span class="ow">is</span> <span class="n">deprecated</span><span class="o">.</span> <span class="n">If</span> <span class="n">you</span> <span class="n">meant</span> <span class="n">to</span> <span class="n">do</span> <span class="n">this</span><span class="p">,</span> <span class="n">you</span> <span class="n">must</span> <span class="n">specify</span> <span class="s1">&#39;dtype=object&#39;</span> <span class="n">when</span> <span class="n">creating</span> <span class="n">the</span> <span class="n">ndarray</span><span class="o">.</span>
-  <span class="n">_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span>
-</pre></div>
-</div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">allsystematics</span><span class="p">[</span><span class="s1">&#39;ra&#39;</span><span class="p">],</span><span class="n">allsystematics</span><span class="p">[</span><span class="s1">&#39;dec&#39;</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;default 8 x 8 Mpc FoV&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">allsystematics2</span><span class="p">[</span><span class="s1">&#39;ra&#39;</span><span class="p">],</span><span class="n">allsystematics2</span><span class="p">[</span><span class="s1">&#39;dec&#39;</span><span class="p">],</span><span class="n">marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;user-defined FoV&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x155328956160</span><span class="o">&gt;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x7fba74799f10</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="../_images/demo_generate_mock_cluster_47_1.png" src="../_images/demo_generate_mock_cluster_47_1.png" />
@@ -539,7 +606,7 @@ the box size.</p></li>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x15532883cc40</span><span class="o">&gt;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x7fba7466ffa0</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="../_images/demo_generate_mock_cluster_51_1.png" src="../_images/demo_generate_mock_cluster_51_1.png" />
@@ -581,14 +648,6 @@ backends</p>
     <span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span><span class="s1">&#39;chang13&#39;</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;einasto&#39;</span><span class="p">,</span> <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span>
     <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span> <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">,</span>
     <span class="n">cluster_ra</span><span class="o">=</span><span class="n">cluster_ra</span><span class="p">,</span> <span class="n">cluster_dec</span><span class="o">=</span><span class="n">cluster_dec</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">conda</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">clmmenv</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">pyccl</span><span class="o">/</span><span class="n">core</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">887</span><span class="p">:</span> <span class="n">CCLWarning</span><span class="p">:</span> <span class="n">All</span> <span class="n">of</span> <span class="n">the</span> <span class="n">halo</span> <span class="n">mass</span> <span class="n">function</span><span class="p">,</span> <span class="n">concentration</span><span class="p">,</span> <span class="ow">and</span> <span class="n">bias</span> <span class="n">models</span> <span class="ow">in</span> <span class="n">CCL</span> <span class="n">are</span> <span class="ow">not</span> <span class="n">properly</span> <span class="n">calibrated</span> <span class="k">for</span> <span class="n">cosmological</span> <span class="n">models</span> <span class="k">with</span> <span class="n">massive</span> <span class="n">neutrinos</span>
-  <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-<span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">conda</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">clmmenv</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">pyccl</span><span class="o">/</span><span class="n">core</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">675</span><span class="p">:</span> <span class="n">CCLWarning</span><span class="p">:</span> <span class="n">CCL</span> <span class="n">does</span> <span class="ow">not</span> <span class="n">properly</span> <span class="n">compute</span> <span class="n">the</span> <span class="n">linear</span> <span class="n">growth</span> <span class="n">rate</span> <span class="ow">in</span> <span class="n">cosmological</span> <span class="n">models</span> <span class="k">with</span> <span class="n">massive</span> <span class="n">neutrinos</span>
-  <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-<span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">conda</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">clmmenv</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">pyccl</span><span class="o">/</span><span class="n">core</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">734</span><span class="p">:</span> <span class="n">CCLWarning</span><span class="p">:</span> <span class="n">The</span> <span class="s1">&#39;eisenstein_hu&#39;</span> <span class="n">linear</span> <span class="n">power</span> <span class="n">spectrum</span> <span class="n">model</span> <span class="n">does</span> <span class="ow">not</span> <span class="n">properly</span> <span class="n">account</span> <span class="k">for</span> <span class="n">massive</span> <span class="n">neutrinos</span>
-  <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
 </pre></div>
 </div>
 </section>
