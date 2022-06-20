@@ -38,7 +38,7 @@ Make sure we know which version we’re using
 
 .. parsed-literal::
 
-    '1.2.0'
+    '1.2.1'
 
 
 
@@ -107,9 +107,8 @@ corresponds to a == 0 in the cell below.
         cl = clmm.GalaxyCluster(cluster_id, cluster_ra_new, cluster_dec_new,
                                    cluster_z, ideal_data_z)
         
-        print("Cluster info = ID:", cl.unique_id, "; ra:", "%.2f" %cl.ra,
-              "; dec:", "%.2f" %cl.dec, "; z_l :", cl.z)
-        print("The number of source galaxies is :", len(cl.galcat))
+        print(f'Cluster info = ID: {cl.unique_id}; ra: {cl.ra:.2f}; dec: {cl.dec:.2f}; z_l: {cl.z}')
+        print(f'The number of source galaxies is : {len(cl.galcat)}')
         
         cluster_list.append(cl)
         coord.append(SkyCoord(cl.ra*u.deg, cl.dec*u.deg))
@@ -117,15 +116,15 @@ corresponds to a == 0 in the cell below.
 
 .. parsed-literal::
 
-    Cluster info = ID: Awesome_cluster ; ra: 20.00 ; dec: 40.00 ; z_l : 0.3
+    Cluster info = ID: Awesome_cluster; ra: 20.00; dec: 40.00; z_l: 0.3
     The number of source galaxies is : 237965
-    Cluster info = ID: Awesome_cluster ; ra: 19.83 ; dec: 40.09 ; z_l : 0.3
+    Cluster info = ID: Awesome_cluster; ra: 19.83; dec: 40.09; z_l: 0.3
     The number of source galaxies is : 237965
-    Cluster info = ID: Awesome_cluster ; ra: 20.04 ; dec: 39.96 ; z_l : 0.3
+    Cluster info = ID: Awesome_cluster; ra: 20.04; dec: 39.96; z_l: 0.3
     The number of source galaxies is : 237965
-    Cluster info = ID: Awesome_cluster ; ra: 19.86 ; dec: 39.84 ; z_l : 0.3
+    Cluster info = ID: Awesome_cluster; ra: 19.86; dec: 39.84; z_l: 0.3
     The number of source galaxies is : 237965
-    Cluster info = ID: Awesome_cluster ; ra: 20.13 ; dec: 39.83 ; z_l : 0.3
+    Cluster info = ID: Awesome_cluster; ra: 20.13; dec: 39.83; z_l: 0.3
     The number of source galaxies is : 237965
 
 
@@ -275,7 +274,7 @@ check the notebook “Example2_Fit_Halo_Mass_to_Shear_Catalog.ipynb”
         m_est1 = 10.**popt[0]
         m_est_err1 =  m_est1 * np.sqrt(pcov[0][0]) * np.log(10) # convert the error on logm to error on m
     
-        print(f"The fitted mass is :","%.2e"%m_est1, "for the offset distance:", "%.2f"%offset[a],"}°")
+        print(f"The fitted mass is : {m_est1:.2e}, for the offset distance: {offset[a]:.2f} deg")
         plt.errorbar(offset[a], m_est1, yerr = m_est_err1, fmt='.', color='black', markersize=10)#, label=f'Offset:{"{:.2f}".format(offset[a])}°')
     
     plt.xlabel('offset [deg]', size=12)
@@ -290,11 +289,11 @@ check the notebook “Example2_Fit_Halo_Mass_to_Shear_Catalog.ipynb”
 
 .. parsed-literal::
 
-    The fitted mass is : 8.75e+14 for the offset distance: 0.00 degrees
-    The fitted mass is : 4.05e+14 for the offset distance: 0.15 degrees
-    The fitted mass is : 8.27e+14 for the offset distance: 0.05 degrees
-    The fitted mass is : 1.24e+14 for the offset distance: 0.19 degrees
-    The fitted mass is : 9.70e+13 for the offset distance: 0.20 degrees
+    The fitted mass is : 8.75e+14, for the offset distance: 0.00 deg
+    The fitted mass is : 4.05e+14, for the offset distance: 0.15 deg
+    The fitted mass is : 8.27e+14, for the offset distance: 0.05 deg
+    The fitted mass is : 1.24e+14, for the offset distance: 0.19 deg
+    The fitted mass is : 9.70e+13, for the offset distance: 0.20 deg
 
 
 

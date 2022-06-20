@@ -21,9 +21,10 @@ Imports specific to clmm
 
 .. code:: ipython3
 
+    import warnings
+    warnings.filterwarnings("ignore", message='.*(!).*')
     import os
     os.environ['CLMM_MODELING_BACKEND'] = 'ccl' # here you may choose ccl, nc (NumCosmo) or ct (cluster_toolkit)
-    
     import clmm
     import clmm.theory as m
     from clmm import Cosmology
@@ -39,7 +40,7 @@ Make sure we know which version we’re using
 
 .. parsed-literal::
 
-    '1.2.0'
+    '1.2.1'
 
 
 
@@ -140,8 +141,10 @@ Quick test of all theory functionality
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.8/site-packages/clmm-1.2.0-py3.8.egg/clmm/theory/generic.py:72: UserWarning: Magnification is negative for certain radii,                     returning nan for magnification bias in this case.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.8/site-packages/clmm-1.2.0-py3.8.egg/clmm/theory/generic.py:74: RuntimeWarning: invalid value encountered in power
+    /home/aguena/git_codes/CLMM/clmm/theory/generic.py:72: UserWarning: Magnification is negative for certain radii,                     returning nan for magnification bias in this case.
+      warnings.warn('Magnification is negative for certain radii, \
+    /home/aguena/git_codes/CLMM/clmm/theory/generic.py:74: RuntimeWarning: invalid value encountered in power
+      return np.array(magnification)**(np.array([alpha]).T - 1)
 
 
 Lensing quantities assuming sources follow a given redshift
@@ -222,7 +225,7 @@ Plot the predicted profiles
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x155328dd05b0>
+    <matplotlib.legend.Legend at 0x7efc36a11d90>
 
 
 
@@ -272,16 +275,8 @@ Plot the predicted profiles
     plot_profile(r3d, DeltaSigma_2h, '$\\Delta\\Sigma_{\\rm 2h}$')
 
 
-.. parsed-literal::
 
-    /global/homes/a/aguena/.conda/envs/clmmenv/lib/python3.8/site-packages/pyccl/core.py:734: CCLWarning: The 'eisenstein_hu' linear power spectrum model does not properly account for massive neutrinos
-      warnings.warn(
-    /global/homes/a/aguena/.conda/envs/clmmenv/lib/python3.8/site-packages/pyccl/core.py:675: CCLWarning: CCL does not properly compute the linear growth rate in cosmological models with massive neutrinos
-      warnings.warn(
-
-
-
-.. image:: demo_theory_functionality_files/demo_theory_functionality_34_1.png
+.. image:: demo_theory_functionality_files/demo_theory_functionality_34_0.png
 
 
 .. code:: ipython3
@@ -326,15 +321,9 @@ used, as follows:
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.conda/envs/clmmenv/lib/python3.8/site-packages/pyccl/core.py:887: CCLWarning: All of the halo mass function, concentration, and bias models in CCL are not properly calibrated for cosmological models with massive neutrinos
-      warnings.warn(
-
-
-.. parsed-literal::
-
-    Einasto alpha = 0.37135622580975836
+    Einasto alpha = 0.3713561546989172
 
 
 
-.. image:: demo_theory_functionality_files/demo_theory_functionality_37_2.png
+.. image:: demo_theory_functionality_files/demo_theory_functionality_37_1.png
 

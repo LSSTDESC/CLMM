@@ -13,6 +13,8 @@ line below to select your backend.
 
 .. code:: ipython3
 
+    import warnings
+    warnings.filterwarnings("ignore", message='.*(!).*')
     import os
     ## Uncomment the following line if you want to use a specific modeling backend among 'ct' (cluster-toolkit), 'ccl' (CCL) or 'nc' (Numcosmo). Default is 'ct'
     #os.environ['CLMM_MODELING_BACKEND'] = 'nc'
@@ -39,7 +41,7 @@ Make sure we know which version we’re using
 
 .. parsed-literal::
 
-    '1.2.0'
+    '1.2.1'
 
 
 
@@ -145,13 +147,6 @@ Generate the mock catalog with different source galaxy options
                                                   'chang13', zsrc_min=zsrc_min, photoz_sigma_unscaled=0.05, 
                                                   ngals=ngals, cluster_ra=cluster_ra, cluster_dec=cluster_dec)
 
-
-.. parsed-literal::
-
-    /global/homes/a/aguena/.conda/envs/clmmenv/lib/python3.8/site-packages/numpy/ma/core.py:2826: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray.
-      _data = np.array(data, dtype=dtype, copy=copy,
-
-
 .. code:: ipython3
 
     allsystematics2 = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration, cosmo, 
@@ -193,16 +188,60 @@ Inspect the catalog data
     for n in ideal_data.colnames: 
         if n!='id':
             ideal_data[n].format = "%6.3e" 
-    ideal_data[0:3].pprint(max_width=-1)
+    ideal_data[0:3].show_in_notebook()
 
 
-.. parsed-literal::
 
-        ra       dec        e1         e2        z       ztrue    id
-    --------- --------- ---------- --------- --------- --------- ---
-    4.684e+01 8.681e+01  2.299e-04 7.727e-03 8.000e-01 8.000e-01   0
-    4.843e+01 8.697e+01 -2.011e-02 1.584e-02 8.000e-01 8.000e-01   1
-    5.088e+01 8.717e+01  1.073e-02 5.906e-03 8.000e-01 8.000e-01   2
+
+.. raw:: html
+
+    <i>GCData length=3</i>
+    <table id="table140438799739824-372343" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>idx</th><th>ra</th><th>dec</th><th>e1</th><th>e2</th><th>z</th><th>ztrue</th><th>id</th></tr></thead>
+    <tr><td>0</td><td>5.111e+01</td><td>8.709e+01</td><td>9.248e-03</td><td>1.899e-02</td><td>8.000e-01</td><td>8.000e-01</td><td>0</td></tr>
+    <tr><td>1</td><td>5.205e+01</td><td>8.688e+01</td><td>6.570e-04</td><td>-1.335e-02</td><td>8.000e-01</td><td>8.000e-01</td><td>1</td></tr>
+    <tr><td>2</td><td>5.419e+01</td><td>8.677e+01</td><td>-4.018e-04</td><td>-5.576e-03</td><td>8.000e-01</td><td>8.000e-01</td><td>2</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140438799739824-372343').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140438799739824-372343').dataTable({
+            order: [],
+            pageLength: 50,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [0, 1, 2, 3, 4, 5, 6, 7], type: "optionalnum"}]
+        });
+    });
+    </script>
+
+
 
 
 -  With photo-z errors
@@ -212,16 +251,60 @@ Inspect the catalog data
     for n in noisy_data_photoz.colnames: 
         if n!='id':
             noisy_data_photoz[n].format = "%6.3e"
-    noisy_data_photoz[0:3].pprint(max_width=-1)
+    noisy_data_photoz[0:3].show_in_notebook()
 
 
-.. parsed-literal::
 
-        ra       dec        e1         e2         z       ztrue         pzbins [61]             pzpdf [61]        id
-    --------- --------- ---------- ---------- --------- --------- ----------------------- ---------------------- ---
-    4.549e+01 8.724e+01  3.567e-02 -4.010e-02 7.494e-01 8.000e-01 -1.506e-01 .. 1.649e+00 8.550e-22 .. 8.550e-22   0
-    5.254e+01 8.691e+01 -5.109e-02 -3.199e-02 7.966e-01 8.000e-01 -1.034e-01 .. 1.697e+00 8.550e-22 .. 8.550e-22   1
-    4.827e+01 8.696e+01  2.831e-02  1.788e-02 7.327e-01 8.000e-01 -1.673e-01 .. 1.633e+00 8.550e-22 .. 8.550e-22   2
+
+.. raw:: html
+
+    <i>GCData length=3</i>
+    <table id="table140438799739488-839880" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>idx</th><th>ra</th><th>dec</th><th>e1</th><th>e2</th><th>z</th><th>ztrue</th><th>pzbins [61]</th><th>pzpdf [61]</th><th>id</th></tr></thead>
+    <tr><td>0</td><td>5.024e+01</td><td>8.719e+01</td><td>8.578e-02</td><td>3.218e-02</td><td>8.008e-01</td><td>8.000e-01</td><td>-9.923e-02 .. 1.701e+00</td><td>8.550e-22 .. 8.550e-22</td><td>0</td></tr>
+    <tr><td>1</td><td>4.798e+01</td><td>8.719e+01</td><td>-4.438e-02</td><td>3.544e-02</td><td>7.291e-01</td><td>8.000e-01</td><td>-1.709e-01 .. 1.629e+00</td><td>8.550e-22 .. 8.550e-22</td><td>1</td></tr>
+    <tr><td>2</td><td>4.769e+01</td><td>8.710e+01</td><td>-1.138e-01</td><td>-6.369e-03</td><td>8.515e-01</td><td>8.000e-01</td><td>-4.850e-02 .. 1.751e+00</td><td>8.550e-22 .. 8.550e-22</td><td>2</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140438799739488-839880').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140438799739488-839880').dataTable({
+            order: [],
+            pageLength: 50,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], type: "optionalnum"}]
+        });
+    });
+    </script>
+
+
 
 
 -  Histogram of the redshift distribution of background galaxies, for
@@ -243,7 +326,7 @@ Inspect the catalog data
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x155328cb33a0>
+    <matplotlib.legend.Legend at 0x7fba74ada2e0>
 
 
 
@@ -262,21 +345,21 @@ Inspect the catalog data
 
 .. parsed-literal::
 
-    (array([66., 71., 61., 59., 66., 72., 64., 69., 55., 66., 34., 42., 36.,
-            28., 21., 18., 31., 17., 22., 16.,  9., 11.,  9.,  8.,  9.,  5.,
-             5.,  6.,  3.,  3.,  2.,  2.,  7.,  0.,  0.,  1.,  1.,  1.,  0.,
-             2.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  1.,  1.]),
-     array([0.40052056, 0.48248837, 0.56445619, 0.646424  , 0.72839182,
-            0.81035963, 0.89232745, 0.97429526, 1.05626308, 1.13823089,
-            1.22019871, 1.30216652, 1.38413434, 1.46610215, 1.54806997,
-            1.63003779, 1.7120056 , 1.79397342, 1.87594123, 1.95790905,
-            2.03987686, 2.12184468, 2.20381249, 2.28578031, 2.36774812,
-            2.44971594, 2.53168375, 2.61365157, 2.69561938, 2.7775872 ,
-            2.85955501, 2.94152283, 3.02349064, 3.10545846, 3.18742627,
-            3.26939409, 3.3513619 , 3.43332972, 3.51529753, 3.59726535,
-            3.67923316, 3.76120098, 3.84316879, 3.92513661, 4.00710443,
-            4.08907224, 4.17104006, 4.25300787, 4.33497569, 4.4169435 ,
-            4.49891132]),
+    (array([77., 81., 91., 86., 93., 92., 79., 52., 54., 44., 33., 38., 36.,
+            36., 28., 10.,  9., 12., 14.,  5.,  4.,  7.,  6.,  2.,  2.,  1.,
+             2.,  1.,  1.,  0.,  1.,  0.,  1.,  1.,  0.,  0.,  0.,  0.,  0.,
+             0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  1.]),
+     array([0.40099721, 0.51663666, 0.63227611, 0.74791556, 0.86355501,
+            0.97919446, 1.09483391, 1.21047336, 1.32611281, 1.44175226,
+            1.55739171, 1.67303115, 1.7886706 , 1.90431005, 2.0199495 ,
+            2.13558895, 2.2512284 , 2.36686785, 2.4825073 , 2.59814675,
+            2.7137862 , 2.82942565, 2.9450651 , 3.06070455, 3.176344  ,
+            3.29198345, 3.4076229 , 3.52326235, 3.6389018 , 3.75454125,
+            3.8701807 , 3.98582015, 4.10145959, 4.21709904, 4.33273849,
+            4.44837794, 4.56401739, 4.67965684, 4.79529629, 4.91093574,
+            5.02657519, 5.14221464, 5.25785409, 5.37349354, 5.48913299,
+            5.60477244, 5.72041189, 5.83605134, 5.95169079, 6.06733024,
+            6.18296969]),
      <BarContainer object of 50 artists>)
 
 
@@ -301,7 +384,7 @@ Inspect the catalog data
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x155328a899d0>
+    <matplotlib.legend.Legend at 0x7fba74ce4df0>
 
 
 
@@ -361,13 +444,6 @@ example.
                                                    field_size=4, ngals=ngals, 
                                                    cluster_ra=cluster_ra, cluster_dec=cluster_dec)
 
-
-.. parsed-literal::
-
-    /global/homes/a/aguena/.conda/envs/clmmenv/lib/python3.8/site-packages/numpy/ma/core.py:2826: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray.
-      _data = np.array(data, dtype=dtype, copy=copy,
-
-
 .. code:: ipython3
 
     plt.scatter(allsystematics['ra'],allsystematics['dec'], marker='.', label = 'default 8 x 8 Mpc FoV')
@@ -379,7 +455,7 @@ example.
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x155328956160>
+    <matplotlib.legend.Legend at 0x7fba74799f10>
 
 
 
@@ -433,7 +509,7 @@ example.
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x15532883cc40>
+    <matplotlib.legend.Legend at 0x7fba7466ffa0>
 
 
 
@@ -487,14 +563,3 @@ backends
         cluster_m, cluster_z, concentration, cosmo,'chang13', halo_profile_model='einasto', zsrc_min=zsrc_min,
         zsrc_max=7.0, shapenoise=0.05, photoz_sigma_unscaled=0.05, ngals=ngals,
         cluster_ra=cluster_ra, cluster_dec=cluster_dec)
-
-
-.. parsed-literal::
-
-    /global/homes/a/aguena/.conda/envs/clmmenv/lib/python3.8/site-packages/pyccl/core.py:887: CCLWarning: All of the halo mass function, concentration, and bias models in CCL are not properly calibrated for cosmological models with massive neutrinos
-      warnings.warn(
-    /global/homes/a/aguena/.conda/envs/clmmenv/lib/python3.8/site-packages/pyccl/core.py:675: CCLWarning: CCL does not properly compute the linear growth rate in cosmological models with massive neutrinos
-      warnings.warn(
-    /global/homes/a/aguena/.conda/envs/clmmenv/lib/python3.8/site-packages/pyccl/core.py:734: CCLWarning: The 'eisenstein_hu' linear power spectrum model does not properly account for massive neutrinos
-      warnings.warn(
-

@@ -10,6 +10,8 @@ both the object-oriented and functional interfaces of the code.
 
     import os
     os.environ['CLMM_MODELING_BACKEND'] = 'ccl' # here you may choose ccl, nc (NumCosmo) or ct (cluster_toolkit)
+    import warnings
+    warnings.filterwarnings("ignore", message='.*(!).*')
     import clmm
     import numpy as np
     import matplotlib.pyplot as plt
@@ -101,17 +103,6 @@ where :math:`f(x)` for the different models are
                                                             mdelta=M1, cdelta=c1,
                                                             massdef=massdef1, delta_mdef=delta_mdef1,
                                                             halo_profile_model='einasto', alpha=ein_def1.get_einasto_alpha(z_cl))
-
-
-.. parsed-literal::
-
-    /global/homes/a/aguena/.conda/envs/clmmenv/lib/python3.8/site-packages/pyccl/core.py:887: CCLWarning: All of the halo mass function, concentration, and bias models in CCL are not properly calibrated for cosmological models with massive neutrinos
-      warnings.warn(
-    /global/homes/a/aguena/.conda/envs/clmmenv/lib/python3.8/site-packages/pyccl/core.py:675: CCLWarning: CCL does not properly compute the linear growth rate in cosmological models with massive neutrinos
-      warnings.warn(
-    /global/homes/a/aguena/.conda/envs/clmmenv/lib/python3.8/site-packages/pyccl/core.py:734: CCLWarning: The 'eisenstein_hu' linear power spectrum model does not properly account for massive neutrinos
-      warnings.warn(
-
 
 Sanity check: comparison of the results given by the object-oriented and
 functional interface

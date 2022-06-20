@@ -50,7 +50,7 @@ Make sure we know which version we’re using
 
 .. parsed-literal::
 
-    '1.2.0'
+    '1.2.1'
 
 
 
@@ -235,7 +235,8 @@ galaxy catalog in bins of radius.
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.8/site-packages/clmm-1.2.0-py3.8.egg/clmm/utils.py:176: RuntimeWarning: invalid value encountered in sqrt
+    /home/aguena/git_codes/CLMM/clmm/utils.py:176: RuntimeWarning: invalid value encountered in sqrt
+      err_y = np.sqrt(stat_yerr2+data_yerr2)
 
 
 Note that we set ``include_empty_bins=False`` explicitly here even
@@ -318,7 +319,8 @@ You can also run ``make_radial_profile`` direct on a
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.8/site-packages/clmm-1.2.0-py3.8.egg/clmm/utils.py:176: RuntimeWarning: invalid value encountered in sqrt
+    /home/aguena/git_codes/CLMM/clmm/utils.py:176: RuntimeWarning: invalid value encountered in sqrt
+      err_y = np.sqrt(stat_yerr2+data_yerr2)
 
 
 After running ``clmm.GalaxyCluster.make_radial_profile`` object, the
@@ -420,7 +422,7 @@ as the samplers[‘minimize’], the two functions take the same arguments.
 
 .. parsed-literal::
 
-    (1019206601188245.8, 1060937927530258.6)
+    (1019206584193684.6, 1060937895523694.5)
 
 
 Next, we calculate the reduced tangential shear predicted by the two
