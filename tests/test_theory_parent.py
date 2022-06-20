@@ -65,6 +65,13 @@ def test_instantiate(modeling_data):
 
     assert_allclose(sigma_excess, (sigma_mean-sigma), rtol=5.0e-15)
 
+    sigma = mod.eval_surface_density(r_proj[0], z_cl)
+    sigma_mean = mod.eval_mean_surface_density(r_proj[0], z_cl)
+    sigma_excess = mod.eval_excess_surface_density(r_proj[0], z_cl)
+
+    assert_allclose(sigma_excess, (sigma_mean-sigma), rtol=5.0e-15)
+
+
     shear = mod.eval_tangential_shear(r_proj, z_cl, z_src)
     convergence = mod.eval_convergence(r_proj, z_cl, z_src)
     reduced_shear = mod.eval_reduced_tangential_shear(r_proj, z_cl, z_src)
