@@ -590,7 +590,7 @@ def compute_for_good_redshifts(function, z1, z2, bad_value, warning_message,
 
     z_good = np.less(z1, z2)
     if r_proj is not None:
-        r_proj = np.array(r_proj)*z_good
+        r_proj = np.array(r_proj)*np.full_like(z_good, True)
         z_good = z_good*r_proj.astype(bool)
         kwargs.update({'r_proj': r_proj[z_good] if np.iterable(r_proj) else r_proj})
 
