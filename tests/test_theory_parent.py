@@ -1,7 +1,7 @@
 """Tests for modeling.py"""
 
 import numpy as np
-from numpy.testing import assert_raises, assert_allclose
+from numpy.testing import assert_raises, assert_allclose, assert_warns
 import clmm.theory as theo
 from clmm.theory.parent_class import CLMModeling
 from clmm.utils import compute_beta_s_square_mean, compute_beta_s_mean
@@ -28,7 +28,6 @@ def test_unimplemented(modeling_data):
     assert_raises(NotImplementedError, mod.eval_reduced_tangential_shear, [0.3], 0.3, 0.5, 'schrabback18', 0.6, 0.4)
     assert_raises(NotImplementedError, mod.eval_convergence, [0.3], 0.3, 0.5)
     assert_raises(NotImplementedError, mod.eval_magnification, [0.3], 0.3, 0.5)
-
 
 def test_instantiate(modeling_data):
     """ Unit tests for modeling objects' instantiation """
@@ -158,6 +157,17 @@ def test_instantiate(modeling_data):
                      * beta_s_test * convergence_inf) *\
                     (beta_s_test * shear_inf / (1. - beta_s_test * convergence_inf)),
                     rtol=1.0e-12)
+
+def test_warnings(modeling_data):
+    """Test if warnings are issued"""
+
+    mod = theo.Modeling()
+    mod.set_concentration(4.0)
+    mod.set_mass(1.0e15)
+
+    assert_warns(UserWarning, mod.eval_tangential_shear, [0.3], 0.3, [0.2, 0.3, 0.4])
+    assert_warns(UserWarning, mod.eval_convergence, [0.3], 0.3, [0.2, 0.3, 0.4])
+    assert_warns(UserWarning, mod.eval_magnification, [0.3], 0.3, [0.2, 0.3, 0.4])
 
 def test_einasto(modeling_data):
     """ Basic checks that verbose option for the Einasto profile runs """

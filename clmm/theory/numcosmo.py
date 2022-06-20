@@ -68,9 +68,6 @@ class NumCosmoCLMModeling(CLMModeling):
         """"set cosmo"""
         CLMModeling._set_cosmo(self, cosmo)
 
-        self.cosmo.smd = Nc.WLSurfaceMassDensity.new(self.cosmo.dist)
-        self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
-
     def _set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
         """"set halo density profile"""
         # Check if we have already an instance of the required object, if not create one
@@ -128,7 +125,6 @@ class NumCosmoCLMModeling(CLMModeling):
     def _get_einasto_alpha(self, z_cl=None):
         """"get the value of the Einasto slope"""
         # Note that z_cl is needed for the CCL backend only
-        # 
         return self.hdpm.props.alpha
 
     def _eval_3d_density(self, r3d, z_cl):

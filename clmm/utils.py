@@ -568,8 +568,9 @@ def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argm
                       f' received {"vec_max:"*(var_array.size-1)}{var}'
                 raise ValueError(err)
 
-def compute_for_good_redshifts(function, z1, z2, bad_value, error_message,
-                               z1_arg_name='z1', z2_arg_name='z2', r_proj=None):
+def compute_for_good_redshifts(function, z1, z2, bad_value, warning_message,
+                               z1_arg_name='z1', z2_arg_name='z2', r_proj=None,
+                               show_warning=True):
     """Computes function only for z1>z2, the rest is filled with bad_value
 
     Parameters
@@ -582,19 +583,20 @@ def compute_for_good_redshifts(function, z1, z2, bad_value, error_message,
         Redshift higher
     bad_value: any
         Value to be added when z1>=z2
-    error_message: str
-        Message to be displayed
+    warning_message: str
+        Warning message to be displayed
     """
     kwargs = {z1_arg_name:locals()['z1'], z2_arg_name:locals()['z2']}
 
     z_good = np.less(z1, z2)
     if r_proj is not None:
-        r_proj = np.array(r_proj)
-        z_good = np.less(z1, z2)*r_proj.astype(bool)
+        r_proj = np.array(r_proj)*z_good
+        z_good = z_good*r_proj.astype(bool)
         kwargs.update({'r_proj': r_proj[z_good] if np.iterable(r_proj) else r_proj})
 
     if not np.all(z_good):
-        warnings.warn(error_message)
+        if show_warning:
+            warnings.warn(warning_message, stacklevel=2)
         if np.iterable(z_good):
             res = np.full(z_good.shape, bad_value)
             if np.any(z_good):

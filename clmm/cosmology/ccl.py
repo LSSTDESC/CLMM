@@ -1,7 +1,6 @@
 """@file ccl.py
 Cosmology using CCL
 """
-import warnings
 import numpy as np
 
 import pyccl as ccl

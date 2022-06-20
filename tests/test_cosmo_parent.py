@@ -1,7 +1,7 @@
 """Tests for clmm_cosmo.py"""
 import json
 import numpy as np
-from numpy.testing import assert_raises, assert_allclose, assert_equal
+from numpy.testing import assert_raises, assert_allclose, assert_equal, assert_warns
 import clmm.theory as theo
 from clmm.cosmology.parent_class import CLMMCosmology
 from clmm.constants import Constants as const
@@ -47,7 +47,6 @@ def test_class(modeling_data):
     assert_raises(NotImplementedError, CLMMCosmology._get_E2Omega_m, None, None)
     assert_raises(NotImplementedError,
                   CLMMCosmology._eval_linear_matter_powerspectrum, None, None, None)
-
 
 TOLERANCE = {'rtol': 1.0e-12}
 
@@ -115,6 +114,8 @@ def test_cosmo_basic(modeling_data, cosmo_init):
     """ Unit tests abstract class z and a methdods """
     reltol = modeling_data['cosmo_reltol']
     cosmo = theo.Cosmology(**cosmo_init)
+    # Test warnings
+    assert_warns(UserWarning, cosmo.eval_sigma_crit, 0.3, [0.2, 0.3, 0.4])
     # Test get_<PAR>(z)
     Omega_m0 = cosmo['Omega_m0']
     assert_allclose(cosmo.get_Omega_m(0.0), Omega_m0, **TOLERANCE)

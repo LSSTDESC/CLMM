@@ -39,6 +39,8 @@ class NumCosmoCosmology(CLMMCosmology):
             self.set_dist(dist)
         else:
             self.set_dist(Nc.Distance.new(dist_zmax))
+        self.smd = Nc.WLSurfaceMassDensity.new(self.dist)
+        self.smd.prepare_if_needed(self.be_cosmo)
 
     def _init_from_cosmo(self, be_cosmo):
 
@@ -147,7 +149,7 @@ class NumCosmoCosmology(CLMMCosmology):
 
         # Using the EH transfer function as this is the 
         # default for the CCL backend as well
-        ps = Nc.PowspecMLTransfer.new (Nc.TransferFuncEH.new()) 
+        ps = Nc.PowspecMLTransfer.new (Nc.TransferFuncEH.new())
 
         # Instead, computing the PS from the CLASS backend of Numcosmo
         # ps  = Nc.PowspecMLCBE.new ()

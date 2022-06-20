@@ -22,7 +22,7 @@ def test_compute_nfw_boost() :
     test_boost_factors = np.array([1.66009126, 1.59077917, 1.55023667, 
                                    1.52147373, 1.4991658, 1.48094117,
                                    1.46553467, 1.4521911, 1.44042332, 1.42989872])
-    
+
    #  Test model
     assert_allclose(boost_factors, test_boost_factors)
 
@@ -36,7 +36,7 @@ def test_compute_powerlaw_boost() :
     test_boost_factors = np.array([101., 51., 34.33333333,
                                    26., 21., 17.66666667, 15.28571429,
                                    13.5, 12.11111111, 11. ])
-    
+
     # Test model
     assert_allclose(boost_factors, test_boost_factors)
 
@@ -51,8 +51,7 @@ def test_correct_sigma_with_boost_values() :
 
     corrected_sigma = utils.correct_sigma_with_boost_values(rvals, sigma_vals, test_unit_boost_factors)
     assert_allclose(sigma_vals, corrected_sigma)
-    
-    
+
 def test_correct_sigma_with_boost_model() :
     """ """
     # Make test data
@@ -69,8 +68,6 @@ def test_correct_sigma_with_boost_model() :
                   utils.correct_sigma_with_boost_model,
                   rvals, sigma_vals, 'glue')
 
-
-                   
 def test_compute_radial_averages():
     """ Tests compute_radial_averages, a function that computes several binned statistics """
     # Make some test data
@@ -269,7 +266,7 @@ def test_convert_units():
     # Using astropy, circular now but this will be fine since we are going to be
     # swapping to CCL soon and then its kosher
     r_kpc, redshift = 20.0, 0.5
-#    d_a = cosmo.angular_diameter_distance(redshift).to('kpc').value
+    # d_a = cosmo.angular_diameter_distance(redshift).to('kpc').value
     d_a = cosmo.eval_da(redshift)*1.e3  # kpc
     truth = r_kpc*(1.0/d_a)*(180./np.pi)*60.
     assert_allclose(utils.convert_units(r_kpc, 'kpc', 'arcmin', redshift, cosmo),
@@ -397,7 +394,7 @@ def test_validate_argument():
         assert validate_argument(loc, 'float_array', type_) is None
     for type_ in (str, ('float_array', str, float)):
         assert validate_argument(loc, 'str', type_) is None
-    assert validate_argument(loc, 'none', 'float', none_ok=True) is None # test none_ok
+    assert validate_argument(loc, 'none', float, none_ok=True) is None # test none_ok
 
     for type_ in (bool, (bool, tuple)):
         for argname in loc:
@@ -441,13 +438,13 @@ def test_beta_functions():
 
     def pdz(z):
         return (z**1.24)*np.exp(-(z/0.51)**1.01)
-    
+
     def integrand1(z_i, z_cl=z_cl, cosmo=cosmo):
         return utils.compute_beta(z_i, z_cl, cosmo) * pdz(z_i)
-    
+
     def integrand2(z_i, z_inf=z_inf, z_cl=z_cl, cosmo=cosmo):
         return utils.compute_beta_s(z_i, z_cl, z_inf, cosmo) * pdz(z_i)
-    
+
     def integrand3(z_i, z_inf=z_inf, z_cl=z_cl, cosmo=cosmo):
         return utils.compute_beta_s(z_i, z_cl, z_inf, cosmo)**2 * pdz(z_i)
 
@@ -456,7 +453,7 @@ def test_beta_functions():
     test3 = utils.compute_beta_mean(z_cl, cosmo, zmax)
     test4 = utils.compute_beta_s_mean(z_cl, z_inf,cosmo, zmax)
     test5 = utils.compute_beta_s_square_mean(z_cl, z_inf,cosmo, zmax)
-    
+
     assert_allclose(test1, beta_test, **TOLERANCE)
     assert_allclose(test2, beta_s_test, **TOLERANCE)
     assert_allclose(test3, quad(integrand1, zmin, zmax)[0] / quad(pdz, zmin, zmax)[0], **TOLERANCE)

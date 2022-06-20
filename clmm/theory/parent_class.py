@@ -1,6 +1,8 @@
 """@file parent_class.py
 CLMModeling abstract class
 """
+import warnings
+warnings.filterwarnings("always", module='(clmm).*')
 import numpy as np
 
 # functions for the 2h term
@@ -212,7 +214,7 @@ class CLMModeling:
     def _eval_3d_density(self, r3d, z_cl):
         raise NotImplementedError
 
-    def eval_critical_surface_density(self, z_len, z_src):
+    def eval_critical_surface_density(self, z_len, z_src, show_warning=True):
         r"""Computes the critical surface density
 
         Parameters
@@ -230,10 +232,11 @@ class CLMModeling:
         if self.validate_input:
             validate_argument(locals(), 'z_len', float, argmin=0)
             validate_argument(locals(), 'z_src', 'float_array', argmin=0)
-        return self._eval_critical_surface_density(z_len=z_len, z_src=z_src)
+        return self._eval_critical_surface_density(z_len=z_len, z_src=z_src,
+                                                   show_warning=show_warning)
 
-    def _eval_critical_surface_density(self, z_len, z_src):
-        return self.cosmo.eval_sigma_crit(z_len, z_src)
+    def _eval_critical_surface_density(self, z_len, z_src, show_warning=True):
+        return self.cosmo.eval_sigma_crit(z_len, z_src, show_warning=show_warning)
 
     def eval_surface_density(self, r_proj, z_cl, verbose=False):
         r""" Computes the surface mass density
@@ -443,17 +446,16 @@ class CLMModeling:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', float, argmin=0)
             validate_argument(locals(), 'z_src', 'float_array', argmin=0)
-
         if self.halo_profile_model=='einasto' and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
         return compute_for_good_redshifts(self._eval_tangential_shear_core,
-                                          z_cl, z_src, 0., '',
+                                          z_cl, z_src, 0., '\nSome source redshifts are lower than the cluster redshift.\nShear = 0 for those galaxies.',
                                           'z_cl', 'z_src', r_proj)
 
     def _eval_tangential_shear_core(self, r_proj, z_cl, z_src):
         delta_sigma = self.eval_excess_surface_density(r_proj, z_cl)
-        sigma_c = self.eval_critical_surface_density(z_cl, z_src)
+        sigma_c = self.eval_critical_surface_density(z_cl, z_src, show_warning=False)
         return delta_sigma/sigma_c
 
     def eval_convergence(self, r_proj, z_cl, z_src, verbose=False):
@@ -485,21 +487,21 @@ class CLMModeling:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', float, argmin=0)
             validate_argument(locals(), 'z_src', 'float_array', argmin=0)
-
         if self.halo_profile_model=='einasto' and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
         return compute_for_good_redshifts(self._eval_convergence_core,
-                                          z_cl, z_src, 0., '',
+                                          z_cl, z_src, 0., '\nSome source redshifts are lower than the cluster redshift.\nConvergence = 0 for those galaxies.',
                                           'z_cl', 'z_src', r_proj)
 
     def _eval_convergence_core(self, r_proj, z_cl, z_src, verbose=False):
         sigma = self.eval_surface_density(r_proj, z_cl, verbose=verbose)
-        sigma_c = self.eval_critical_surface_density(z_cl, z_src)
+        sigma_c = self.eval_critical_surface_density(z_cl, z_src, show_warning=False)
         return sigma/sigma_c
 
     def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src, z_src_model='single_plane',
-                                      beta_s_mean=None, beta_s_square_mean=None, z_distrib_func=None, verbose=False):
+                                      beta_s_mean=None, beta_s_square_mean=None,
+                                      z_distrib_func=None, verbose=False):
         r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
 
         Parameters
@@ -551,15 +553,17 @@ class CLMModeling:
 
         if z_src_model == 'single_plane':
             gt = compute_for_good_redshifts(self._eval_reduced_tangential_shear_sp_core,
-                                          z_cl, z_src, 0., '',
+                                          z_cl, z_src, 0., '\nSome source redshifts are lower than the cluster redshift.\nReduced_shear = 0 for those galaxies.',
                                           'z_cl', 'z_src', r_proj)
 
         elif z_src_model == 'applegate14':
             z_source = 1000. #np.inf # INF or a very large number
             z_inf = z_source
             if beta_s_mean is None or beta_s_square_mean is None:
-                beta_s_mean = compute_beta_s_mean (z_cl, z_inf, self.cosmo, z_distrib_func=z_distrib_func)
-                beta_s_square_mean = compute_beta_s_square_mean (z_cl, z_inf, self.cosmo, z_distrib_func=z_distrib_func)
+                beta_s_mean = compute_beta_s_mean (z_cl, z_inf, self.cosmo,
+                                                   z_distrib_func=z_distrib_func)
+                beta_s_square_mean = compute_beta_s_square_mean (z_cl, z_inf, self.cosmo,
+                                                                 z_distrib_func=z_distrib_func)
             gammat = self.eval_tangential_shear(r_proj, z_cl, z_source)
             kappa = self.eval_convergence(r_proj, z_cl, z_source)
             gt = beta_s_mean * gammat / (1. - beta_s_square_mean / beta_s_mean * kappa)
@@ -568,11 +572,14 @@ class CLMModeling:
             z_source = 1000. #np.inf # INF or a very large number
             z_inf = z_source
             if beta_s_mean is None or beta_s_square_mean is None:
-                beta_s_mean = compute_beta_s_mean (z_cl, z_inf, self.cosmo, z_distrib_func=z_distrib_func)
-                beta_s_square_mean = compute_beta_s_square_mean (z_cl, z_inf, self.cosmo, z_distrib_func=z_distrib_func)
+                beta_s_mean = compute_beta_s_mean (z_cl, z_inf, self.cosmo,
+                                                   z_distrib_func=z_distrib_func)
+                beta_s_square_mean = compute_beta_s_square_mean (z_cl, z_inf, self.cosmo,
+                                                                 z_distrib_func=z_distrib_func)
             gammat = self.eval_tangential_shear(r_proj, z_cl, z_source)
             kappa = self.eval_convergence(r_proj, z_cl, z_source)
-            gt = (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean * kappa) * (beta_s_mean * gammat / (1. - beta_s_mean * kappa))
+            gt = (1.+(beta_s_square_mean/(beta_s_mean*beta_s_mean)-1.) * beta_s_mean * kappa) *\
+            (beta_s_mean * gammat / (1. - beta_s_mean * kappa))
 
         else:
             raise ValueError("Unsupported z_src_model")
@@ -613,12 +620,11 @@ class CLMModeling:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', float, argmin=0)
             validate_argument(locals(), 'z_src', 'float_array', argmin=0)
-
         if self.halo_profile_model=='einasto' and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
         return compute_for_good_redshifts(self._eval_magnification_core,
-                                          z_cl, z_src, 1., '',
+                                          z_cl, z_src, 1., '\nSome source redshifts are lower than the cluster redshift.\nMagnification = 1 for those galaxies.',
                                           'z_cl', 'z_src', r_proj)
 
     def _eval_magnification_core(self, r_proj, z_cl, z_src):
