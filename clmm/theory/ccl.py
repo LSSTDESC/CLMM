@@ -98,7 +98,7 @@ class CCLCLMModeling(CLMModeling):
             self.hdpm.update_precision_fftlog(padding_lo_fftlog=1e-4,
                                               padding_hi_fftlog=1e3
                                              )
-        
+
     def _set_concentration(self, cdelta):
         """" set concentration"""
         self.conc.c = cdelta
@@ -117,7 +117,7 @@ class CCLCLMModeling(CLMModeling):
         a_cl = self.cosmo.get_a_from_z(z_cl)
         dens = self.hdpm.real(
             self.cosmo.be_cosmo, r3d/a_cl, self.mdelta, a_cl, self.mdef)
-            
+
         return dens*self.cor_factor/a_cl**3
 
     def _eval_surface_density(self, r_proj, z_cl):
@@ -152,52 +152,44 @@ class CCLCLMModeling(CLMModeling):
         else:
             return self.eval_mean_surface_density(r_proj, z_cl) - self.eval_surface_density(r_proj, z_cl)
 
-    def _prepare_ccl(self, r_proj, z_cl, z_src):
-        """Function that Prepares the lists for the functions below"""
-        r_proj_l = None
-        z_src_l = None
-        if type(r_proj) == float:
-            r_proj_l = [r_proj]
-        else:
-            r_proj_l = r_proj
-        if type(z_src) == float:
-            z_src_l = [z_src]*len(r_proj_l)
-        else:
-            z_src_l = z_src
-        a_src = [self.cosmo.get_a_from_z(reds_src) for reds_src in z_src_l]
-        a_cl = self.cosmo.get_a_from_z(z_cl)
-        ra_proj = [radius/a_cl for radius in r_proj_l]
-        return [ra_proj, a_cl, a_src]
-    
-    def _eval_convergence(self, r_proj, z_cl, z_src):
+    def _eval_convergence_core(self, r_proj, z_cl, z_src):
         """eval convergence"""
-        ra_proj, a_cl, a_src =self._prepare_ccl(r_proj, z_cl, z_src)        
-        func = lambda ra_proj, a_cl, a_src: self.hdpm.convergence(self.cosmo.be_cosmo, ra_proj, self.mdelta, a_cl, a_src, self.mdef)
-        
-        return np.vectorize(func)(ra_proj, a_cl, a_src)
-        
-    def _eval_tangential_shear(self, r_proj, z_cl, z_src):
-        """eval tangential shear"""
-        ra_proj, a_cl, a_src =self._prepare_ccl(r_proj, z_cl, z_src)        
-        
-        func = lambda ra_proj, a_cl, a_src: self.hdpm.shear(self.cosmo.be_cosmo, ra_proj, self.mdelta, a_cl, a_src, self.mdef)
-        return np.vectorize(func)(ra_proj, a_cl, a_src)
-        
-        
-    def _eval_reduced_tangential_shear_sp(self, r_proj, z_cl, z_src):
-        """eval reduced tangential shear considering a single redshift plane for background sources"""
-        ra_proj, a_cl, a_src =self._prepare_ccl(r_proj, z_cl, z_src)        
-        
-        func = lambda ra_proj, a_cl, a_src: self.hdpm.reduced_shear(self.cosmo.be_cosmo, ra_proj, self.mdelta, a_cl, a_src, self.mdef)
-        return np.vectorize(func)(ra_proj, a_cl, a_src)
-        
-            
-    def _eval_magnification(self, r_proj, z_cl, z_src):
+        a_cl = self.cosmo.get_a_from_z(z_cl)
+        a_src = self.cosmo.get_a_from_z(z_src)
+
+        func = self.hdpm.convergence
+        res = func(self.cosmo.be_cosmo, r_proj/a_cl, self.mdelta, a_cl, a_src, self.mdef)
+
+        return res
+
+    def _eval_tangential_shear_core(self, r_proj, z_cl, z_src):
+        a_cl = self.cosmo.get_a_from_z(z_cl)
+        a_src = self.cosmo.get_a_from_z(z_src)
+
+        func = self.hdpm.shear
+        res = func(self.cosmo.be_cosmo, r_proj/a_cl, self.mdelta, a_cl, a_src, self.mdef)
+
+        return res
+
+    def _eval_reduced_tangential_shear_sp_core(self, r_proj, z_cl, z_src):
+        """eval reduced tangential shear with all background sources at the same plane"""
+        a_cl = self.cosmo.get_a_from_z(z_cl)
+        a_src = self.cosmo.get_a_from_z(z_src)
+
+        func = self.hdpm.reduced_shear
+        res = func(self.cosmo.be_cosmo, r_proj/a_cl, self.mdelta, a_cl, a_src, self.mdef)
+
+        return res
+
+    def _eval_magnification_core(self, r_proj, z_cl, z_src):
         """eval magnification"""
-        ra_proj, a_cl, a_src =self._prepare_ccl(r_proj, z_cl, z_src)
-        
-        func = lambda ra_proj, a_cl, a_src: self.hdpm.magnification(self.cosmo.be_cosmo, ra_proj, self.mdelta, a_cl, a_src, self.mdef)
-        return np.vectorize(func)(ra_proj, a_cl, a_src)
-    
-    
+        a_cl = self.cosmo.get_a_from_z(z_cl)
+        a_src = self.cosmo.get_a_from_z(z_src)
+
+        func = self.hdpm.magnification
+        res = func(self.cosmo.be_cosmo, r_proj/a_cl, self.mdelta, a_cl, a_src, self.mdef)
+
+        return res
+
+
 Modeling = CCLCLMModeling

@@ -11,7 +11,8 @@ from scipy.interpolate import interp1d
 from .generic import compute_reduced_shear_from_convergence
 import warnings
 from .generic import compute_reduced_shear_from_convergence, compute_magnification_bias_from_magnification
-from ..utils import validate_argument, compute_beta_s_mean, compute_beta_s_square_mean
+from ..utils import (validate_argument, compute_beta_s_mean, compute_beta_s_square_mean,
+                     compute_for_good_redshifts)
 
 
 class CLMModeling:
@@ -411,8 +412,7 @@ class CLMModeling:
         ll = np.logspace( 0 , 6 , lsteps )
         val = np.array( [ simps( __integrand__( ll , t ) , ll ) for t in theta ] )
         return halobias * val * rho_m / ( 2 * np.pi  * ( 1 + z_cl )**3 * da**2 )
-    
-    
+
     def eval_tangential_shear(self, r_proj, z_cl, z_src, verbose=False):
         r"""Computes the tangential shear
 
@@ -438,9 +438,11 @@ class CLMModeling:
         if self.halo_profile_model=='einasto' and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
-        return self._eval_tangential_shear(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
+        return compute_for_good_redshifts(self._eval_tangential_shear_core,
+                                          z_cl, z_src, 0., '',
+                                          'z_cl', 'z_src', r_proj)
 
-    def _eval_tangential_shear(self, r_proj, z_cl, z_src):
+    def _eval_tangential_shear_core(self, r_proj, z_cl, z_src):
         delta_sigma = self.eval_excess_surface_density(r_proj, z_cl)
         sigma_c = self.eval_critical_surface_density(z_cl, z_src)
         return delta_sigma/sigma_c
@@ -478,9 +480,11 @@ class CLMModeling:
         if self.halo_profile_model=='einasto' and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
-        return self._eval_convergence(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
+        return compute_for_good_redshifts(self._eval_convergence_core,
+                                          z_cl, z_src, 0., '',
+                                          'z_cl', 'z_src', r_proj)
 
-    def _eval_convergence(self, r_proj, z_cl, z_src, verbose=False):
+    def _eval_convergence_core(self, r_proj, z_cl, z_src, verbose=False):
         sigma = self.eval_surface_density(r_proj, z_cl, verbose=verbose)
         sigma_c = self.eval_critical_surface_density(z_cl, z_src)
         return sigma/sigma_c
@@ -537,16 +541,18 @@ class CLMModeling:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
         if z_src_model == 'single_plane':
-            gt = self._eval_reduced_tangential_shear_sp(r_proj, z_cl, z_src)
-            
+            gt = compute_for_good_redshifts(self._eval_reduced_tangential_shear_sp_core,
+                                          z_cl, z_src, 0., '',
+                                          'z_cl', 'z_src', r_proj)
+
         elif z_src_model == 'applegate14':
             z_source = 1000. #np.inf # INF or a very large number
             z_inf = z_source
             if beta_s_mean is None or beta_s_square_mean is None:
                 beta_s_mean = compute_beta_s_mean (z_cl, z_inf, self.cosmo, z_distrib_func=z_distrib_func)
                 beta_s_square_mean = compute_beta_s_square_mean (z_cl, z_inf, self.cosmo, z_distrib_func=z_distrib_func)
-            gammat = self._eval_tangential_shear(r_proj, z_cl, z_source)
-            kappa = self._eval_convergence(r_proj, z_cl, z_source)
+            gammat = self.eval_tangential_shear(r_proj, z_cl, z_source)
+            kappa = self.eval_convergence(r_proj, z_cl, z_source)
             gt = beta_s_mean * gammat / (1. - beta_s_square_mean / beta_s_mean * kappa)
         
         elif z_src_model == 'schrabback18':
@@ -555,15 +561,15 @@ class CLMModeling:
             if beta_s_mean is None or beta_s_square_mean is None:
                 beta_s_mean = compute_beta_s_mean (z_cl, z_inf, self.cosmo, z_distrib_func=z_distrib_func)
                 beta_s_square_mean = compute_beta_s_square_mean (z_cl, z_inf, self.cosmo, z_distrib_func=z_distrib_func)
-            gammat = self._eval_tangential_shear(r_proj, z_cl, z_source)
-            kappa = self._eval_convergence(r_proj, z_cl, z_source)
+            gammat = self.eval_tangential_shear(r_proj, z_cl, z_source)
+            kappa = self.eval_convergence(r_proj, z_cl, z_source)
             gt = (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean * kappa) * (beta_s_mean * gammat / (1. - beta_s_mean * kappa))
         
         else:
             raise ValueError("Unsupported z_src_model")
         return gt
 
-    def _eval_reduced_tangential_shear_sp(self, r_proj, z_cl, z_src):
+    def _eval_reduced_tangential_shear_sp_core(self, r_proj, z_cl, z_src):
         kappa = self.eval_convergence(r_proj, z_cl, z_src)
         gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
         return compute_reduced_shear_from_convergence(gamma_t, kappa)
@@ -602,13 +608,15 @@ class CLMModeling:
         if self.halo_profile_model=='einasto' and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
-        return self._eval_magnification(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
+        return compute_for_good_redshifts(self._eval_magnification_core,
+                                          z_cl, z_src, 1., '',
+                                          'z_cl', 'z_src', r_proj)
 
-    def _eval_magnification(self, r_proj, z_cl, z_src):
+    def _eval_magnification_core(self, r_proj, z_cl, z_src):
         kappa = self.eval_convergence(r_proj, z_cl, z_src)
         gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
         return 1./((1-kappa)**2-abs(gamma_t)**2)
-    
+
     def eval_magnification_bias(self, r_proj, z_cl, z_src, alpha):
         r"""Computes the magnification bias
 

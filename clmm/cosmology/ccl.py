@@ -100,15 +100,23 @@ class CCLCosmology(CLMMCosmology):
         return res
 
     def _eval_sigma_crit_core(self, z_len, z_src):
-        cte = ccl.physical_constants.CLIGHT**2 / \
-            (4.0*np.pi*ccl.physical_constants.GNEWT *
-             ccl.physical_constants.SOLAR_MASS)*ccl.physical_constants.MPC_TO_METER
+        #cte = ccl.physical_constants.CLIGHT**2 / \
+        #    (4.0*np.pi*ccl.physical_constants.GNEWT *
+        #     ccl.physical_constants.SOLAR_MASS)*ccl.physical_constants.MPC_TO_METER
 
-        Ds = self._eval_da_z1z2_core(0, z_src)
-        Dl = self._eval_da_z1z2_core(0, z_len)
-        Dls = self._eval_da_z1z2_core(z_len, z_src)
+        #Ds = self._eval_da_z1z2_core(0, z_src)
+        #Dl = self._eval_da_z1z2_core(0, z_len)
+        #Dls = self._eval_da_z1z2_core(z_len, z_src)
 
-        return (cte*Ds/(Dl*Dls))*self.cor_factor
+        #return (cte*Ds/(Dl*Dls))*self.cor_factor
+
+        # Use CCL function
+        a_len = self.get_a_from_z(z_len)
+        a_src = self.get_a_from_z(z_src)
+        if np.iterable(a_src):
+            a_len = np.full_like(a_src, a_len)
+
+        return self.be_cosmo.sigma_critical(a_len, a_src)
 
     def _eval_linear_matter_powerspectrum(self, k_vals, redshift):
         return ccl.linear_matter_power(

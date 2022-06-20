@@ -568,7 +568,8 @@ def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argm
                       f' received {"vec_max:"*(var_array.size-1)}{var}'
                 raise ValueError(err)
 
-def compute_for_good_redshifts(function, z1, z2, bad_value, error_message):
+def compute_for_good_redshifts(function, z1, z2, bad_value, error_message,
+                               z1_arg_name='z1', z2_arg_name='z2', r_proj=None):
     """Computes function only for z1>z2, the rest is filled with bad_value
 
     Parameters
@@ -584,19 +585,26 @@ def compute_for_good_redshifts(function, z1, z2, bad_value, error_message):
     error_message: str
         Message to be displayed
     """
+    kwargs = {z1_arg_name:locals()['z1'], z2_arg_name:locals()['z2']}
+
     z_good = np.less(z1, z2)
+    if r_proj is not None:
+        r_proj = np.array(r_proj)
+        z_good = np.less(z1, z2)*r_proj.astype(bool)
+        kwargs.update({'r_proj': r_proj[z_good] if np.iterable(r_proj) else r_proj})
+
     if not np.all(z_good):
         warnings.warn(error_message)
         if np.iterable(z_good):
-            res = np.full(z_good.size, bad_value)
+            res = np.full(z_good.shape, bad_value)
             if np.any(z_good):
-                res[z_good] = function(
-                    np.array(z1)[z_good] if np.iterable(z1) else z1,
-                    np.array(z2)[z_good] if np.iterable(z2) else z2)
+                kwargs[z1_arg_name] = np.array(z1)[z_good] if np.iterable(z1) else z1
+                kwargs[z2_arg_name] = np.array(z2)[z_good] if np.iterable(z2) else z2
+                res[z_good] = function(**kwargs)
         else:
             res = bad_value
     else:
-        res = function(z1, z2)
+        res = function(**kwargs)
     return res
 
 def compute_beta(z_s, z_cl, cosmo):

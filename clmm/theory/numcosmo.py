@@ -160,7 +160,7 @@ class NumCosmoCLMModeling(CLMModeling):
             self.hdpm, self.cosmo.be_cosmo, r_proj, z_cl)
         return np.vectorize(func)(r_proj, z_cl)
 
-    def _eval_tangential_shear(self, r_proj, z_cl, z_src):
+    def _eval_tangential_shear_core(self, r_proj, z_cl, z_src):
         """"eval tangential shear"""
 
         self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
@@ -168,7 +168,7 @@ class NumCosmoCLMModeling(CLMModeling):
             self.hdpm, self.cosmo.be_cosmo, r_proj, z_src, z_cl, z_cl)
         return np.vectorize(func)(r_proj, z_src, z_cl)
 
-    def _eval_convergence(self, r_proj, z_cl, z_src):
+    def _eval_convergence_core(self, r_proj, z_cl, z_src):
         """"eval convergence"""
 
         self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
@@ -176,7 +176,7 @@ class NumCosmoCLMModeling(CLMModeling):
             self.hdpm, self.cosmo.be_cosmo, r_proj, z_src, z_cl, z_cl)
         return np.vectorize(func)(r_proj, z_src, z_cl)
 
-    def _eval_reduced_tangential_shear_sp(self, r_proj, z_cl, z_src):
+    def _eval_reduced_tangential_shear_sp_core(self, r_proj, z_cl, z_src):
         """"eval reduced tangential shear considering a single redshift plane for background sources"""
 
         self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
@@ -189,7 +189,7 @@ class NumCosmoCLMModeling(CLMModeling):
         return func(self.hdpm, self.cosmo.be_cosmo, np.atleast_1d(r_proj), 1.0,
                     1.0, np.atleast_1d(z_src), z_cl, z_cl)
 
-    def _eval_magnification(self, r_proj, z_cl, z_src):
+    def _eval_magnification_core(self, r_proj, z_cl, z_src):
         """"eval magnification"""
 
         self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
