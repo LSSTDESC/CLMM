@@ -31,6 +31,8 @@ def test_mock_data():
     with warnings.catch_warnings(record=True) as warn:
         # Cause all warnings to always be triggered.
         warnings.simplefilter("always")
+        # Supress wanrnings for CCL older than 2.4.1.dev15
+        warnings.filterwarnings("ignore", module='.*(ccl).*')
         # Trigger a warning.
         np.random.seed(314)
         mock.generate_galaxy_catalog(
@@ -41,23 +43,23 @@ def test_mock_data():
     # A proper test should be implemented
     mock.generate_galaxy_catalog(
         1e15, 0.3, 4, cosmo, 0.8, ngals=None, ngal_density=1)
-    
+
     # Simple test to check if option with zsrc=chang13 is working
     # A proper test should be implemented
     mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 'chang13', ngals=100)
     mock.generate_galaxy_catalog(
         1e15, 0.3, 4, cosmo, 'chang13', ngal_density=1)
-    
+
     # Simple test to check if option with zsrc=desc_src is working
     # A proper test should be implemented
     mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 'desc_srd', ngals=100)
     mock.generate_galaxy_catalog(
         1e15, 0.3, 4, cosmo, 'desc_srd', ngal_density=1)
-    
+
     # Simple test to check if option with pdz is working
     # A proper test should be implemented
     mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.8, ngals=100, photoz_sigma_unscaled=.1)
-    
+
     # Simple test to check if option with mean_e_err is working
     # A proper test should be implemented
     mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.8, ngals=100, mean_e_err=0.01)
@@ -78,7 +80,9 @@ def test_mock_data():
         cluster_dec = -23.2
         cluster_z = 0.3
 
-        data = mock.generate_galaxy_catalog(10**mass, cluster_z, 4, cosmo, 0.8, ngals=ngals, cluster_ra=cluster_ra, cluster_dec=cluster_dec)
+        data = mock.generate_galaxy_catalog(10**mass, cluster_z, 4, cosmo, 0.8,
+                                            ngals=ngals, cluster_ra=cluster_ra,
+                                            cluster_dec=cluster_dec)
 
         # Check whether the given ngals is the retrieved ngals
         assert_equal(len(data['ra']), ngals)
