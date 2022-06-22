@@ -245,16 +245,19 @@ class GalaxyCluster():
             self.galcat[cross_component] = cross_comp
         return angsep, tangential_comp, cross_comp
 
-    def compute_background_probability(self, use_pdz=False, p_background_name='p_background',
-                                       add=True):
+    def compute_background_probability(self, use_pdz=False,
+                                       add=True, p_background_name='p_background'):
         r"""Probability for being a background galaxy
 
         Parameters
         ----------
-        use_photoz : bool
-            True for computing photometric probabilities
+        use_pdz : bool
+            If True, computes the probability using the photoz pdf 
         add : bool
             If True, add background probability columns to the galcat table
+        p_background_name : str, optional
+            User-defined name for the background probability column to be stored 
+            in the galcat table (i.e., if add=True)
 
         Returns
         -------

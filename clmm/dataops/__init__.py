@@ -515,6 +515,9 @@ def make_radial_profile(components, angsep, angsep_units, bin_units,
         Redshift of the lens
     validate_input: bool
         Validade each input argument
+    weights: array-like, optional
+        Array of individual galaxy weights. If specified, the radial binned profile is 
+        computed using a weighted average
 
     Returns
     -------
