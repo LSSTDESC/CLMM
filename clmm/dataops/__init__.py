@@ -175,43 +175,6 @@ def compute_tangential_and_cross_components(
         cross_comp *= sigma_c
     return angsep, tangential_comp, cross_comp
 
-# def _integ_pzfuncs(pzpdf, pzbins, zmin, kernel=lambda z: 1.):
-#     r"""
-#     Integrates photo-z pdf with a given kernel. This function was created to allow for data with
-#     different photo-z binnings.
-
-
-#     Parameters
-#     ----------
-#     pzpdf : list of arrays
-#         Photometric probablility density functions of the source galaxies.
-#     pzbins : list of arrays
-#         Redshift axis on which the individual photoz pdf is tabulated.
-#     zmin : float
-#         Minimum redshift for integration
-#     kernel : function
-#         Function to be integrated with the pdf, must be f(z_array) format.
-
-#     Returns
-#     -------
-#     array
-#         Kernel integrated with the pdf of each galaxy.
-
-#     Notes
-#     -----
-#         Will be replaced by qp at some point.
-#     """
-#     # adding these lines to interpolate CLMM redshift grid for each galaxies
-#     # to a constant redshift grid for all galaxies. If there is a constant grid for all galaxies
-#     # these lines are not necessary and z_grid, pz_matrix = pzbins, pzpdf
-#     z_grid = np.linspace(0, 5, 100)
-#     z_grid = z_grid[z_grid>zmin]
-#     pz_matrix = np.array([np.interp(z_grid, pzbin, pdf)
-#                          for pzbin, pdf in zip(pzbins, pzpdf)])
-#     kernel_matrix = kernel(z_grid)
-#     return scipy.integrate.simps(pz_matrix*kernel_matrix, x=z_grid, axis=1)
-
-
 def compute_background_probability(z_lens, z_source=None, use_pdz=False, pzpdf=None, pzbins=None, validate_input=True):
     r"""Probability for being a background galaxy
 

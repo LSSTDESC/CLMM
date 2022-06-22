@@ -585,6 +585,8 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin, kernel=lambda z: 1., ngrid=1000):
         Minimum redshift for integration
     kernel : function
         Function to be integrated with the pdf, must be f(z_array) format.
+    ngrid : int, optional
+        Number of points for the interpolation of the redshift pdf.
 
     Returns
     -------
