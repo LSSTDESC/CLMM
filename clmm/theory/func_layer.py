@@ -365,46 +365,6 @@ def compute_critical_surface_density(cosmo, z_cluster, z_source=None, use_pdz=Fa
     gcm.validate_input = True
     return sigma_c
 
-# def compute_effective_critical_surface_density(cosmo, z_cluster, pzbins, pzpdf, validate_input=True):
-#     r"""Computes the 'effective critical surface density' as
-
-#     .. math::
-#         \langle \Sigma_{crit}^{-1}\rangle^{-1} = \left(\int 1/\Sigma_{crit}(z) p(z) dz\right)^{-1} 
-    
-#     where :math:`p(z)` is the source photoz probability density function. 
-#     This is comes from the maximum likelihood estimator for evaluating a :math:`\Delta\Sigma` profile.
-
-#     Parameters
-#     ----------
-#     cosmo : clmm.cosmology.Cosmology object
-#         CLMM Cosmology object
-#     z_cluster : float
-#     pzbins : array-like
-#         Bins where the source redshift pdf is defined
-#     pzpdf : array-like
-#         Values of the source redshift pdf
-
-#     Returns
-#     -------
-#     sigma_c : float
-#         Cosmology-dependent 'effective critical surface density' in units of :math:`M_\odot\ Mpc^{-2}`
-#     validate_input: bool
-#         Validade each input argument
-
-#     Notes
-#     -----
-#     We will need :math:`\gamma_\infty` and :math:`\kappa_\infty` for alternative
-#     z_src_models using :math:`\beta_s`.
-#     """
-#     gcm.validate_input = validate_input
-#     gcm.set_cosmo(cosmo)
-#     sigma_c = gcm.eval_critical_surface_density(z_cluster, z_src=z_source, use_pdz=use_pdz, pzbins=pzbins, pzpdf=pzpdf)
-
-#     gcm.validate_input = True
-#     return sigma_c
-
-
-
 def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
                              halo_profile_model='nfw', massdef='mean', alpha_ein=None, z_src_model='single_plane', 
                              verbose=False, validate_input=True):
