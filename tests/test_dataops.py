@@ -268,21 +268,14 @@ def test_compute_tangential_and_cross_components(modeling_data):
         ra_source=gals['ra'], dec_source=gals['dec'], shear1=gals['e1'], shear2=gals['e2'],
         is_deltasigma=True, use_pdz=True, cosmo=cosmo, z_lens=z_lens, z_source=None)
 
-    
-    # Trying to got through line 165 of dataops/__init__.py
-    # da.compute_tangential_and_cross_components(ra_lens=ra_lens, dec_lens=dec_lens,
-    #                                            ra_source=gals['ra'][0], dec_source=gals['dec'][0], 
-    #                                            shear1=gals['e1'][0], shear2=gals['e2'][0],
-    #                                            is_deltasigma=True, use_pdz=False, cosmo=cosmo, z_lens=z_lens, 
-    #                                            z_source=gals['z'])
 
     # Trying to got through line 173 of dataops/__init__.py
-    # da.compute_tangential_and_cross_components(ra_lens=ra_lens, dec_lens=dec_lens,
-    #                                            ra_source=gals['ra'][0], dec_source=gals['dec'][0], 
-    #                                            shear1=gals['e1'][0], shear2=gals['e2'][0],
-    #                                            is_deltasigma=True, use_pdz=True, cosmo=cosmo, z_lens=z_lens, 
-    #                                            z_source=None, pzbins=[0.55,0.6,0.65,0.7,0.75], 
-    #                                            pzpdf=[0.01,1,0.01, 0.001, 0.0001])
+    da.compute_tangential_and_cross_components(ra_lens=ra_lens, dec_lens=dec_lens,
+                                               ra_source=gals['ra'][0], dec_source=gals['dec'][0], 
+                                               shear1=gals['e1'][0], shear2=gals['e2'][0],
+                                               is_deltasigma=True, use_pdz=True, cosmo=cosmo, z_lens=z_lens, 
+                                               z_source=None, pzbins=[[0.55,0.6,0.65,0.7,0.75]], 
+                                               pzpdf=[[0.01,1,0.01, 0.001, 0.0001]])
     
     # check values for DeltaSigma
     for geometry, expected in geo_tests:
