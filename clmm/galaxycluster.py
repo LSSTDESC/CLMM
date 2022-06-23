@@ -123,7 +123,7 @@ class GalaxyCluster():
         """
         if cosmo is None:
             raise TypeError('To compute Sigma_crit, please provide a cosmology')
-        if cosmo.get_desc() != self.galcat.meta['cosmo'] or 'sigma_c' not in self.galcat:
+        if cosmo.get_desc() != self.galcat.meta['cosmo'] or 'sigma_c' not in self.galcat.colnames:
             if self.z is None:
                 raise TypeError('Cluster\'s redshift is None. Cannot compute Sigma_crit')
             if use_pdz is False and 'z' not in self.galcat.columns:
