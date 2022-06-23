@@ -571,9 +571,8 @@ def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argm
 
 def _integ_pzfuncs(pzpdf, pzbins, zmin, kernel=lambda z: 1., ngrid=1000):
     r"""
-    Integrates photo-z pdf with a given kernel. This function was created to allow for data with
-    different photo-z binnings.
-
+    Integrates the product of a photo-z pdf with a given kernel. 
+    This function was created to allow for data with different photo-z binnings.
 
     Parameters
     ----------
@@ -583,8 +582,9 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin, kernel=lambda z: 1., ngrid=1000):
         Redshift axis on which the individual photoz pdf is tabulated.
     zmin : float
         Minimum redshift for integration
-    kernel : function
+    kernel : function, optional
         Function to be integrated with the pdf, must be f(z_array) format.
+        Default: kernel(z)=1 
     ngrid : int, optional
         Number of points for the interpolation of the redshift pdf.
 
