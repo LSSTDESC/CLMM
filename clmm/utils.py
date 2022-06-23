@@ -1,12 +1,13 @@
 """General utility functions that are used in multiple modules"""
 import warnings
 import numpy as np
+import scipy
 from scipy.stats import binned_statistic
 from scipy.special import gamma, gammainc
 from astropy import units as u
 from .constants import Constants as const
 from scipy.integrate import quad
-
+from scipy.interpolate import interp1d
 
 
 def compute_nfw_boost(rvals, rs=1000, b0=0.1) :
@@ -560,13 +561,51 @@ def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argm
         if argmin is not None:
             if (var_array.min()<argmin if eqmin else var_array.min()<=argmin):
                 err = f'{argname} must be greater than {argmin},' \
-                      f' received {"vec_min:"*(var_array.size-1)}{var}'
+                      f' received min({argname}): {var_array.min()}'
                 raise ValueError(err)
         if argmax is not None:
             if (var_array.max()>argmax if eqmax else var_array.max()>=argmax):
                 err = f'{argname} must be lesser than {argmax},' \
-                      f' received {"vec_max:"*(var_array.size-1)}{var}'
+                      f' received max({argname}): {var_array.max()}'
                 raise ValueError(err)
+
+def _integ_pzfuncs(pzpdf, pzbins, zmin, kernel=lambda z: 1., ngrid=1000):
+    r"""
+    Integrates the product of a photo-z pdf with a given kernel. 
+    This function was created to allow for data with different photo-z binnings.
+
+    Parameters
+    ----------
+    pzpdf : list of arrays
+        Photometric probablility density functions of the source galaxies.
+    pzbins : list of arrays
+        Redshift axis on which the individual photoz pdf is tabulated.
+    zmin : float
+        Minimum redshift for integration
+    kernel : function, optional
+        Function to be integrated with the pdf, must be f(z_array) format.
+        Default: kernel(z)=1 
+    ngrid : int, optional
+        Number of points for the interpolation of the redshift pdf.
+
+    Returns
+    -------
+    array
+        Kernel integrated with the pdf of each galaxy.
+
+    Notes
+    -----
+        Will be replaced by qp at some point.
+    """
+    # adding these lines to interpolate CLMM redshift grid for each galaxies
+    # to a constant redshift grid for all galaxies. If there is a constant grid for all galaxies
+    # these lines are not necessary and z_grid, pz_matrix = pzbins, pzpdf
+    z_grid = np.linspace(0, 5, ngrid)
+    z_grid = z_grid[z_grid>zmin]
+    pdf_interp_list = [interp1d(pzbin, pdf, bounds_error=False, fill_value=0.) for pzbin,pdf in zip(pzbins, pzpdf)]
+    pz_matrix = np.array([pdf_interp(z_grid) for pdf_interp in pdf_interp_list])
+    kernel_matrix = kernel(z_grid)
+    return scipy.integrate.simps(pz_matrix*kernel_matrix, x=z_grid, axis=1)
 
 def compute_for_good_redshifts(function, z1, z2, bad_value, error_message):
     """Computes function only for z1>z2, the rest is filled with bad_value
@@ -824,3 +863,4 @@ def _srd_z_distrib(redshift, is_cdf=False):
         return redshift0**(alpha+1)*gammainc((alpha+1)/beta, (redshift/redshift0)**beta)/beta*gamma((alpha+1)/beta)
     else:
         return (redshift**alpha)*np.exp(-(redshift/redshift0)**beta)
+        

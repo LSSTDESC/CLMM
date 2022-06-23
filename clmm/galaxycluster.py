@@ -103,7 +103,7 @@ class GalaxyCluster():
             f'<br>{self.galcat._html_table()}'
             )
 
-    def add_critical_surface_density(self, cosmo):
+    def add_critical_surface_density(self, cosmo, use_pdz=False):
         r"""Computes the critical surface density for each galaxy in `galcat`.
         It only runs if input cosmo != galcat cosmo or if `sigma_c` not in `galcat`.
 
@@ -111,6 +111,11 @@ class GalaxyCluster():
         ----------
         cosmo : clmm.Cosmology object
             CLMM Cosmology object
+        use_pdz : bool
+            Flag to specify the use of the photoz pdf. If `False` (default), `sigma_c` is computed using the redshift point estimates of the
+            `z` column of the `galcat` table. If `True`, `sigma_c` is computed as 1/<1/Sigma_crit>, where the average is performed using
+            the individual galaxy redshift pdf. In that case, the `galcat` table should have `pzbins` 
+            and `pzpdf` columns.
 
         Returns
         -------
@@ -121,13 +126,26 @@ class GalaxyCluster():
         if cosmo.get_desc() != self.galcat.meta['cosmo'] or 'sigma_c' not in self.galcat:
             if self.z is None:
                 raise TypeError('Cluster\'s redshift is None. Cannot compute Sigma_crit')
-            if 'z' not in self.galcat.columns:
-                raise TypeError('Galaxy catalog missing the redshift column. '
-                                'Cannot compute Sigma_crit')
+            if use_pdz is False and 'z' not in self.galcat.columns:
+                raise TypeError("Galaxy catalog missing the redshift column (which should be called 'z')." 
+                                "Cannot compute Sigma_crit.")
+            if use_pdz and ('pzbins' not in self.galcat.columns or 'pzpdf' not in self.galcat.columns):
+                raise TypeError("Galaxy catalog missing the redshift distribution information. Need to have both a 'pzbins' and 'pzpdf' columns." 
+                                "Cannot compute 1/<1/Sigma_crit>.")
+
             self.galcat.update_cosmo(cosmo, overwrite=True)
-            self.galcat['sigma_c'] = compute_critical_surface_density(
-                cosmo=cosmo, z_cluster=self.z, z_source=self.galcat['z'],
-                validate_input=self.validate_input)
+            if use_pdz is False:
+                self.galcat['sigma_c'] = compute_critical_surface_density(
+                    cosmo=cosmo, z_cluster=self.z, z_source=self.galcat['z'],
+                    validate_input=self.validate_input)
+                self.galcat.meta['sigmac_type']= 'standard'
+            else:
+                self.galcat['sigma_c'] = compute_critical_surface_density(
+                    cosmo=cosmo, z_cluster=self.z, use_pdz=True, pzbins=self.galcat['pzbins'], pzpdf=self.galcat['pzpdf'],
+                    validate_input=self.validate_input)
+                self.galcat.meta['sigmac_type']= 'effective'
+
+
 
     def _get_input_galdata(self, col_dict, required_cols=None):
         """
@@ -158,7 +176,7 @@ class GalaxyCluster():
 
     def compute_tangential_and_cross_components(
             self, shape_component1='e1', shape_component2='e2', tan_component='et',
-            cross_component='ex', geometry='curve', is_deltasigma=False, cosmo=None, add=True):
+            cross_component='ex', geometry='curve', is_deltasigma=False, use_pdz=False, cosmo=None, add=True):
         r"""Adds a tangential- and cross- components for shear or ellipticity to self
 
         Calls `clmm.dataops.compute_tangential_and_cross_components` with the following arguments:
@@ -212,12 +230,14 @@ class GalaxyCluster():
         cols = self._get_input_galdata(
             {'ra_source':'ra', 'dec_source':'dec',
              'shear1': shape_component1, 'shear2': shape_component2})
+        
         if is_deltasigma:
-            self.add_critical_surface_density(cosmo)
+            self.add_critical_surface_density(cosmo, use_pdz=use_pdz)
             cols['sigma_c'] = self.galcat['sigma_c']
+
         # compute shears
         angsep, tangential_comp, cross_comp = compute_tangential_and_cross_components(
-                ra_lens=self.ra, dec_lens=self.dec, geometry=geometry, is_deltasigma=is_deltasigma,
+                ra_lens=self.ra, dec_lens=self.dec, geometry=geometry, is_deltasigma=is_deltasigma, use_pdz=use_pdz,
                 validate_input=self.validate_input, **cols)
         if add:
             self.galcat['theta'] = angsep
@@ -225,78 +245,67 @@ class GalaxyCluster():
             self.galcat[cross_component] = cross_comp
         return angsep, tangential_comp, cross_comp
 
-    def compute_background_probability(self, z_source='z', pzpdf='pzpdf', pzbins='pzbins',
-                                       use_photoz=False, p_background_name='p_background',
-                                       add=True):
+    def compute_background_probability(self, use_pdz=False,
+                                       add=True, p_background_name='p_background'):
         r"""Probability for being a background galaxy
 
         Parameters
         ----------
-        z_source: string
-            column name : source redshifts
-        pzpdf : string
-            column name : photometric probablility density function of the source galaxies
-        pzbins : string
-            column name : redshift axis on which the individual photoz pdf is tabulated
-        use_photoz : boolean
-            True for computing photometric probabilities
-        add : boolean
+        use_pdz : bool
+            If True, computes the probability using the photoz pdf 
+        add : bool
             If True, add background probability columns to the galcat table
+        p_background_name : str, optional
+            User-defined name for the background probability column to be stored 
+            in the galcat table (i.e., if add=True)
 
         Returns
         -------
         p_background : array
             Probability for being a background galaxy
         """
-        required_cols = ['pzpdf', 'pzbins'] if use_photoz else ['z_source']
-        cols = self._get_input_galdata(locals(), required_cols)
+        col_dict = {'pzpdf':'pzpdf', 'pzbins':'pzbins', 'z_source':'z'}
+        required_cols = ['pzpdf', 'pzbins'] if use_pdz else ['z_source']
+        cols = self._get_input_galdata(col_dict, required_cols)
         p_background = compute_background_probability(
-            self.z, validate_input=self.validate_input, **cols)
+            self.z, use_pdz=use_pdz, validate_input=self.validate_input, **cols)
         if add:
             self.galcat[p_background_name] = p_background
         return p_background
 
-    def compute_galaxy_weights(self, z_source='z', pzpdf='pzpdf', pzbins='pzbins',
-                               shape_component1='e1', shape_component2='e2',
-                               shape_component1_err='e1_err', shape_component2_err='e2_err',
-                               use_photoz=False, use_shape_noise=False, use_shape_error=False,
-                               weight_name='w_ls',cosmo=None,
-                               is_deltasigma=False, add=True):
+    def compute_galaxy_weights(self, use_pdz=False, 
+                               use_shape_noise=False, shape_component1='e1', shape_component2='e2',
+                               use_shape_error=False, shape_component1_err='e1_err', shape_component2_err='e2_err',
+                               weight_name='w_ls', cosmo=None, is_deltasigma=False, add=True):
         r"""Computes the individual lens-source pair weights
 
         Parameters
         ----------
-        z_source: string
-            column name : source redshifts
-        cosmo: clmm.Comology object, None
-            CLMM Cosmology object.
-        pzpdf : string
-            column name : photometric probablility density function of the source galaxies
-        pzbins : string
-            column name : redshift axis on which the individual photoz pdf is tabulated
+        use_pdz : bool
+            True for computing photometric weights
+        use_shape_noise : bool
+            True for considering shapenoise in the weight computation
         shape_component1: string
             column name : The measured shear (or reduced shear or ellipticity)
             of the source galaxies
         shape_component2: array
             column name : The measured shear (or reduced shear or ellipticity)
             of the source galaxies
+        use_shape_error : bool
+            True for considering measured shape error in the weight computation
         shape_component1_err: array
             column name : The measurement error on the 1st-component of ellipticity
             of the source galaxies
         shape_component2_err: array
             column name : The measurement error on the 2nd-component of ellipticity
             of the source galaxies
-        use_photoz : boolean
-            True for computing photometric weights
-        use_shape_noise : boolean
-            True for considering shapenoise in the weight computation
-        use_shape_error : boolean
-            True for considering measured shape error in the weight computation
         weight_name : string
             Name of the new column for the weak lensing weights in the galcat table
-        is_deltasigma: boolean
+        cosmo: clmm.Comology object, None
+            CLMM Cosmology object.
+        is_deltasigma: bool
             Indicates whether it is the excess surface density or the tangential shear
-        add : boolean
+        add : bool
             If True, add weight column to the galcat table
 
         Returns
@@ -305,24 +314,26 @@ class GalaxyCluster():
             the individual lens source pair weights
         """
         # input cols
+        col_dict = {'pzpdf':'pzpdf', 'pzbins':'pzbins', 'z_source':'z', 'sigma_c':'sigma_c',
+        'shape_component1':shape_component1, 'shape_component2':shape_component2,
+        'shape_component1_err':shape_component1_err, 'shape_component2_err':shape_component2_err}
+        col_dict.update(locals())
         required_cols = ['shape_component1', 'shape_component2']
-        if use_photoz:
+        if use_pdz:
             required_cols += ['pzpdf', 'pzbins']
-        elif is_deltasigma:
-            required_cols += ['z_source']
+        if is_deltasigma:
+            if 'sigma_c' not in self.galcat.columns:
+                self.add_critical_surface_density(cosmo, use_pdz=use_pdz)
+            required_cols += ['z_source','sigma_c']
+        if use_shape_noise:
+            required_cols += ['shape_component1', 'shape_component2']
         if use_shape_error:
             required_cols += ['shape_component1_err', 'shape_component2_err']
-        cols = self._get_input_galdata(locals(), required_cols)
-        # handles p_background
-        #if p_background_name not in self.galcat.columns or recompute_p_background:
-        #print(f'(re)computing {p_background_name}')
-        #    self.compute_background_probability(
-        #        z_source=z_source, pzpdf=pzpdf, pzbins=pzbins,
-        #        use_photoz=use_photoz, p_background_name=p_background_name)
-        #cols['p_background'] = self.galcat[p_background_name]
+        cols = self._get_input_galdata(col_dict, required_cols)
+          
         # computes weights
         w_ls = compute_galaxy_weights(
-            self.z, cosmo, use_shape_noise=use_shape_noise,
+            self.z, cosmo, use_pdz=use_pdz, use_shape_noise=use_shape_noise, use_shape_error=use_shape_error,
             is_deltasigma=is_deltasigma, validate_input=self.validate_input,
             **cols)
         if add:

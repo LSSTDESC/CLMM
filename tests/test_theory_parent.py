@@ -113,6 +113,8 @@ def test_instantiate(modeling_data):
     reduced_shear = mod.eval_reduced_tangential_shear(r_proj, z_cl, np.repeat(z_src, len(r_proj)), 'schrabback18', beta_s_mean, beta_s_square_mean)
     assert_allclose(reduced_shear, (1. + (beta_s_square_test / (beta_s_test * beta_s_test) - 1.) * beta_s_test * convergence_inf) * (beta_s_test * shear_inf / (1. - beta_s_test * convergence_inf)), rtol=1.0e-12)
 
+    assert_raises(ValueError, mod.eval_critical_surface_density, z_cl, use_pdz=True)
+
 def test_einasto(modeling_data):
     """ Basic checks that verbose option for the Einasto profile runs """
 
@@ -127,3 +129,4 @@ def test_einasto(modeling_data):
         mod.eval_convergence(0.1,0.1,0.5, verbose=True)
         mod.eval_reduced_tangential_shear(0.1,0.1,0.5, verbose=True)
         mod.eval_magnification(0.1,0.1,0.5, verbose=True)
+#>>>>>>> main
