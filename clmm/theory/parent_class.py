@@ -93,16 +93,25 @@ class CLMModeling:
 
     @massdef.setter
     def massdef(self, massdef):
-        raise AttributeError('massdef can only be setted by set_halo_density_profile function')
+        self.set_halo_density_profile(
+            halo_profile_model=self.halo_profile_model, massdef=massdef,
+            delta_mdef=self.delta_mdef)
 
     @delta_mdef.setter
     def delta_mdef(self, delta_mdef):
-        raise AttributeError('delta_mdef can only be setted by set_halo_density_profile function')
+        self.set_halo_density_profile(
+            halo_profile_model=self.halo_profile_model, massdef=self.massdef,
+            delta_mdef=delta_mdef)
 
     @halo_profile_model.setter
     def halo_profile_model(self, halo_profile_model):
-        raise AttributeError(
-            'halo_profile_model can only be setted by set_halo_density_profile function')
+        self.set_halo_density_profile(
+            halo_profile_model=halo_profile_model, massdef=self.massdef,
+            delta_mdef=self.delta_mdef)
+
+
+    # 2. Functions to be implemented by children classes
+
 
     def _get_mass(self):
         r""" Gets the value of the :math:`M_\Delta`"""

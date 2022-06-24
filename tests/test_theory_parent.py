@@ -1,7 +1,7 @@
 """Tests for modeling.py"""
 
 import numpy as np
-from numpy.testing import assert_raises, assert_allclose
+from numpy.testing import assert_raises, assert_allclose, assert_equal
 import clmm.theory as theo
 from clmm.theory.parent_class import CLMModeling
 from clmm.utils import compute_beta_s_square_mean, compute_beta_s_mean
@@ -38,29 +38,30 @@ def test_instantiate(modeling_data):
 
     mod = theo.Modeling()
 
-    # test protected attributes
-    def temp():
-        mod.massdef = None
-    assert_raises(AttributeError, temp)
-    def temp():
-        mod.delta_mdef = None
-    assert_raises(AttributeError, temp)
-    def temp():
-        mod.halo_profile_model = None
-    assert_raises(AttributeError, temp)
-
     # test set_x funcs and self.xdelta funcs are equivalent
     cdelta, mdelta = 3.0, 0.5e15
+    halo_profile_model, massdef, delta_mdef = 'nfw', 'mean', 300
     mod.set_concentration(cdelta)
     mod.set_mass(mdelta)
+    mod.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
     assert_allclose(mod.cdelta, cdelta, 1e-15)
     assert_allclose(mod.mdelta, mdelta, 1e-15)
+    assert_allclose(mod.delta_mdef, delta_mdef, 1e-15)
+    assert_equal(mod.massdef, massdef)
+    assert_equal(mod.halo_profile_model, halo_profile_model)
 
     cdelta, mdelta = 4.0, 1.0e15
+    halo_profile_model, massdef, delta_mdef = 'nfw', 'mean', 200
     mod.cdelta = cdelta
     mod.mdelta = mdelta
+    mod.massdef = massdef
+    mod.delta_mdef = delta_mdef
+    mod.halo_profile_model = halo_profile_model
     assert_allclose(mod.cdelta, cdelta, 1e-15)
     assert_allclose(mod.mdelta, mdelta, 1e-15)
+    assert_allclose(mod.delta_mdef, delta_mdef, 1e-15)
+    assert_equal(mod.massdef, massdef)
+    assert_equal(mod.halo_profile_model, halo_profile_model)
 
     # check backend
     assert mod.backend == theo.be_nick
