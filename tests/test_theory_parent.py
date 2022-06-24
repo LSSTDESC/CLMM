@@ -158,6 +158,8 @@ def test_instantiate(modeling_data):
                     (beta_s_test * shear_inf / (1. - beta_s_test * convergence_inf)),
                     rtol=1.0e-12)
 
+    assert_raises(ValueError, mod.eval_critical_surface_density, z_cl, use_pdz=True)
+
 def test_warnings(modeling_data):
     """Test if warnings are issued"""
 
@@ -168,8 +170,6 @@ def test_warnings(modeling_data):
     assert_warns(UserWarning, mod.eval_tangential_shear, [0.3], 0.3, [0.2, 0.3, 0.4])
     assert_warns(UserWarning, mod.eval_convergence, [0.3], 0.3, [0.2, 0.3, 0.4])
     assert_warns(UserWarning, mod.eval_magnification, [0.3], 0.3, [0.2, 0.3, 0.4])
-
-    assert_raises(ValueError, mod.eval_critical_surface_density, z_cl, use_pdz=True)
 
 def test_einasto(modeling_data):
     """ Basic checks that verbose option for the Einasto profile runs """
@@ -185,4 +185,3 @@ def test_einasto(modeling_data):
         mod.eval_convergence(0.1,0.1,0.5, verbose=True)
         mod.eval_reduced_tangential_shear(0.1,0.1,0.5, verbose=True)
         mod.eval_magnification(0.1,0.1,0.5, verbose=True)
-#>>>>>>> main

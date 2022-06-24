@@ -214,7 +214,9 @@ class CLMModeling:
     def _eval_3d_density(self, r3d, z_cl):
         raise NotImplementedError
 
-    def eval_critical_surface_density(self, z_len, z_src=None, use_pdz=False, pzbins=None, pzpdf=None):
+    def eval_critical_surface_density(self, z_len, z_src=None,
+                                      use_pdz=False, pzbins=None, pzpdf=None,
+                                      show_warning=True):
         r"""Computes either 
 
         the critical surface density if `use_pdz=False`
@@ -225,11 +227,11 @@ class CLMModeling:
         or
 
         the 'effective critical surface density' if `use_pdz=True`
-         
+
         .. math::
-            \langle \Sigma_{\rm crit}^{-1}\rangle^{-1} = \left(\int \frac{1}{\Sigma_{\rm crit}(z)} p(z) dz\right)^{-1} 
-        
-        where :math:`p(z)` is the source photoz probability density function. 
+            \langle \Sigma_{\rm crit}^{-1}\rangle^{-1} = \left(\int \frac{1}{\Sigma_{\rm crit}(z)} p(z) dz\right)^{-1}
+
+        where :math:`p(z)` is the source photoz probability density function.
         This comes from the maximum likelihood estimator for evaluating a :math:`\Delta\Sigma` profile.
 
 
@@ -240,10 +242,10 @@ class CLMModeling:
         z_src : array_like, float
             Background source galaxy redshift(s)
         use_pdz : bool
-            Flag to use the photoz pdf. If `False` (default), `sigma_c` is computed using the source redshift point estimates `z_source`. 
-            If `True`, `sigma_c` is computed as 1/<1/Sigma_crit>, where the average is performed using 
-            the individual galaxy redshift pdf. In that case, the `pzbins` and `pzpdf` should be specified. 
-        
+            Flag to use the photoz pdf. If `False` (default), `sigma_c` is computed using the source redshift point estimates `z_source`.
+            If `True`, `sigma_c` is computed as 1/<1/Sigma_crit>, where the average is performed using
+            the individual galaxy redshift pdf. In that case, the `pzbins` and `pzpdf` should be specified.
+
         pzbins : array-like
             Bins where the source redshift pdf is defined
         pzpdf : array-like
@@ -257,7 +259,7 @@ class CLMModeling:
         sigma_c : array_like, float
             Cosmology-dependent (effective) critical surface density in units of :math:`M_\odot\ Mpc^{-2}`
     """
-        
+
         if self.validate_input:
             validate_argument(locals(), 'z_len', float, argmin=0)
             validate_argument(locals(), 'z_src', 'float_array', argmin=0, none_ok=True)
