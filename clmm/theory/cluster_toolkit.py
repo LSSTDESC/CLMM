@@ -74,6 +74,8 @@ class CTModeling(CLMModeling):
         self.cosmo_class = AstroPyCosmology
         # Attributes exclusive to this class
         self.cor_factor = _patch_rho_crit_to_cd2018(2.77533742639e+11)
+        self.__mdelta = 0.0 # internal use only
+        self.__cdelta = 0.0 # internal use only
 
         # Set halo profile and cosmology
         self.set_cosmo(None)
@@ -91,18 +93,23 @@ class CTModeling(CLMModeling):
 
     def _set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
         """"set halo density profile"""
-        # Update values
-        self.halo_profile_model = halo_profile_model
-        self.massdef = massdef
-        self.delta_mdef = delta_mdef
+        pass
+
+    def _get_concentration(self):
+        """"get concentration"""
+        return self.__cdelta
+
+    def _get_mass(self):
+        """"get mass"""
+        return self.__mdelta
 
     def _set_concentration(self, cdelta):
         """" set concentration"""
-        self.cdelta = cdelta
+        self.__cdelta = cdelta
 
     def _set_mass(self, mdelta):
         """" set mass"""
-        self.mdelta = mdelta
+        self.__mdelta = mdelta
 
     def _eval_3d_density(self, r3d, z_cl):
         """"eval 3d density"""

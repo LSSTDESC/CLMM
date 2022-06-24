@@ -77,21 +77,19 @@ class NumCosmoCLMModeling(CLMModeling):
         if not((halo_profile_model==self.halo_profile_model)
                 and (massdef==self.massdef)
                 and (delta_mdef==self.delta_mdef)):
-            self.halo_profile_model = halo_profile_model
-            self.massdef = massdef
 
-            cur_cdelta = 0.0
-            cur_values = False
-            if self.hdpm:
-                cur_cdelta = self.hdpm.props.cDelta
-                cur_log10_mdelta = self.hdpm.props.log10MDelta
-                cur_values = True
+            # Makes sure current cdelta/mdelta values are kept
+            has_cm_vals = self.hdpm is not None
+            if has_cm_vals:
+                cdelta = self.cdelta
+                log10_mdelta = self.hdpm.props.log10MDelta
 
             self.hdpm = self.hdpm_dict[halo_profile_model](
                 self.mdef_dict[massdef], delta_mdef)
-            if cur_values:
-                self.hdpm.props.cDelta = cur_cdelta
-                self.hdpm.props.log10MDelta = cur_log10_mdelta
+
+            if has_cm_vals:
+                self.cdelta = cdelta
+                self.hdpm.props.log10MDelta = log10_mdelta
 
     def get_mset(self):
         r"""
@@ -113,6 +111,14 @@ class NumCosmoCLMModeling(CLMModeling):
         self.cosmo.smd = mset.get(Nc.WLSurfaceMassDensity.id())
 
         self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
+
+    def _get_concentration(self):
+        """"get concentration"""
+        return self.hdpm.props.cDelta
+
+    def _get_mass(self):
+        """"get mass"""
+        return 10**self.hdpm.props.log10MDelta
 
     def _set_concentration(self, cdelta):
         """"set concentration"""

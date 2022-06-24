@@ -22,6 +22,10 @@ class CLMModeling:
     ----------
     backend: str
         Name of the backend being used
+    mdelta: float
+        Mass of the profile, in units of :math:`M_\odot`
+    cdelta: float
+        Concentration of the profile
     massdef : str
         Profile mass definition (`mean`, `critical`, `virial` - letter case independent)
     delta_mdef : int
@@ -46,11 +50,9 @@ class CLMModeling:
     def __init__(self, validate_input=True):
         self.backend = None
 
-        self.massdef = ''
-        self.delta_mdef = 0
-        self.halo_profile_model = ''
-        self.mdelta = 0.
-        self.cdelta = 0.
+        self.__massdef = ''
+        self.__delta_mdef = 0
+        self.__halo_profile_model = ''
 
         self.cosmo = None
 
@@ -60,6 +62,95 @@ class CLMModeling:
 
         self.validate_input = validate_input
         self.cosmo_class = None
+
+    @property
+    def mdelta(self):
+        return self._get_mass()
+
+    @property
+    def cdelta(self):
+        return self._get_concentration()
+
+    @property
+    def massdef(self):
+        return self.__massdef
+
+    @property
+    def delta_mdef(self):
+        return self.__delta_mdef
+
+    @property
+    def halo_profile_model(self):
+        return self.__halo_profile_model
+
+    @mdelta.setter
+    def mdelta(self, mdelta):
+        self.set_mass(mdelta)
+
+    @cdelta.setter
+    def cdelta(self, cdelta):
+        self.set_concentration(cdelta)
+
+    @massdef.setter
+    def massdef(self, massdef):
+        raise AttributeError('massdef can only be setted by set_halo_density_profile function')
+
+    @delta_mdef.setter
+    def delta_mdef(self, delta_mdef):
+        raise AttributeError('delta_mdef can only be setted by set_halo_density_profile function')
+
+    @halo_profile_model.setter
+    def halo_profile_model(self, halo_profile_model):
+        raise AttributeError(
+            'halo_profile_model can only be setted by set_halo_density_profile function')
+
+    def _get_mass(self):
+        r""" Gets the value of the :math:`M_\Delta`"""
+        raise NotImplementedError
+
+    def _get_concentration(self):
+        r""" Gets the value of the concentration"""
+        raise NotImplementedError
+
+    def set_mass(self, mdelta):
+        r""" Sets the value of the :math:`M_\Delta`.
+
+        Parameters
+        ----------
+        mdelta : float
+            Galaxy cluster mass :math:`M_\Delta` in units of :math:`M_\odot`
+
+        Notes
+        -----
+            This is equivalent to doing self.mdelta = mdelta
+        """
+        if self.validate_input:
+            validate_argument(locals(), 'mdelta', float, argmin=0)
+        self._set_mass(mdelta)
+
+    def _set_mass(self, mdelta):
+        r""" Actually sets the value of the :math:`M_\Delta` (without value check)"""
+        raise NotImplementedError
+
+    def set_concentration(self, cdelta):
+        r""" Sets the concentration
+
+        Parameters
+        ----------
+        cdelta: float
+            Concentration
+
+        Notes
+        -----
+            This is equivalent to doing self.cdelta = cdelta
+        """
+        if self.validate_input:
+            validate_argument(locals(), 'cdelta', float, argmin=0)
+        self._set_concentration(cdelta)
+
+    def _set_concentration(self, cdelta):
+        r""" Actuall sets the value of the concentration (without value check)"""
+        raise NotImplementedError
 
 
     def set_cosmo(self, cosmo):
@@ -105,30 +196,16 @@ class CLMModeling:
             if not halo_profile_model in self.hdpm_dict:
                 raise ValueError(
                     f"Halo density profile model {halo_profile_model} not currently supported")
+        # set the profile
         self._set_halo_density_profile(halo_profile_model=halo_profile_model,
                                        massdef=massdef, delta_mdef=delta_mdef)
-        self.halo_profile_model = halo_profile_model
-        self.massdef = massdef
-        self.delta_mdef = delta_mdef
+
+        # set internal quantities
+        self.__halo_profile_model = halo_profile_model
+        self.__massdef = massdef
+        self.__delta_mdef = delta_mdef
 
     def _set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
-        raise NotImplementedError
-
-    def set_mass(self, mdelta):
-        r""" Sets the value of the :math:`M_\Delta`
-
-        Parameters
-        ----------
-        mdelta : float
-            Galaxy cluster mass :math:`M_\Delta` in units of :math:`M_\odot`
-        """
-        if self.validate_input:
-            validate_argument(locals(), 'mdelta', float, argmin=0)
-        self._set_mass(mdelta)
-        self.mdelta = mdelta
-
-    def _set_mass(self, mdelta):
-        r""" Actually sets the value of the :math:`M_\Delta` (without value check)"""
         raise NotImplementedError
 
     def set_einasto_alpha(self, alpha):
@@ -164,23 +241,6 @@ class CLMModeling:
 
     def _get_einasto_alpha(self, z_cl=None):
         r""" Returns the value of the :math:`\alpha` parameter for the Einasto profile, if defined"""
-        raise NotImplementedError
-
-    def set_concentration(self, cdelta):
-        r""" Sets the concentration
-
-        Parameters
-        ----------
-        cdelta: float
-            Concentration
-        """
-        if self.validate_input:
-            validate_argument(locals(), 'cdelta', float, argmin=0)
-        self._set_concentration(cdelta)
-        self.cdelta = cdelta
-
-    def _set_concentration(self, cdelta):
-        r""" Actuall sets the value of the concentration (without value check)"""
         raise NotImplementedError
 
     def eval_3d_density(self, r3d, z_cl, verbose=False):
