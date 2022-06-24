@@ -397,7 +397,7 @@ def test_validate_argument():
         assert validate_argument(loc, 'float_array', type_) is None
     for type_ in (str, ('float_array', str, float)):
         assert validate_argument(loc, 'str', type_) is None
-    assert validate_argument(loc, 'none', 'float', none_ok=True) is None # test none_ok
+    assert validate_argument(loc, 'none', float, none_ok=True) is None # test none_ok
 
     for type_ in (bool, (bool, tuple)):
         for argname in loc:
