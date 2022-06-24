@@ -137,12 +137,16 @@ def test_print_gc():
 def test_integrity_of_lensfuncs():
     """test integrity of lensfuncs"""
     ra_source, dec_source = [120.1, 119.9, 119.9], [41.9, 42.2, 42.2]
-    id_source, z_sources = [1, 2, 3], [1, 1, 1]
-    galcat = GCData([ra_source, dec_source, z_sources, id_source],
-                    names=('ra', 'dec', 'z', 'id'))
+    id_source, z_source = [1, 2, 3], [1, 1, 1]
+    shape_component1 = np.array([.143, .063, -.171])
+    shape_component2 = np.array([-.011, .012,-.250])
+
+    galcat = GCData([ra_source, dec_source, z_source, id_source, shape_component1, shape_component2],
+                    names=('ra', 'dec', 'z', 'id', 'e1', 'e2'))
     galcat_noz = GCData([ra_source, dec_source, id_source],
                        names=('ra', 'dec', 'id'))
     cosmo = clmm.Cosmology(H0=70.0, Omega_dm0=0.275, Omega_b0=0.025)
+    
     # Missing cosmo
     cluster = clmm.GalaxyCluster(unique_id='1', ra=161.3,
                             dec=34., z=0.3, galcat=galcat)
@@ -156,6 +160,22 @@ def test_integrity_of_lensfuncs():
     cluster = clmm.GalaxyCluster(unique_id='1', ra=161.3,
                             dec=34., z=0.3, galcat=galcat_noz)
     assert_raises(TypeError, cluster.add_critical_surface_density, cosmo)
+    # Missing galaxy pdf if use_pdz is true
+    cluster = clmm.GalaxyCluster(unique_id='1', ra=161.3,
+                            dec=34., z=0.3, galcat=galcat_noz)
+    assert_raises(TypeError, cluster.add_critical_surface_density, cosmo, use_pdz=True)
+    # Check metadata addition
+    pzbin = np.linspace(.0001, 5, 100)
+    pzbins = np.zeros([len(z_source), len(pzbin)])
+    pzpdf = pzbins
+    pzbin = np.linspace(.0001, 5, 100)
+    cluster = clmm.GalaxyCluster(unique_id='1', ra=161.3,
+                            dec=34., z=0.3, galcat=galcat)
+    cluster.galcat['pzbins'] = [pzbin for i in range(len(z_source))]
+    cluster.galcat['pzpdf'] = [multivariate_normal.pdf(pzbin, mean=z, cov=.3) for z in z_source]
+
+    cluster.compute_tangential_and_cross_components(is_deltasigma=True, use_pdz=True, cosmo=cosmo, add=True)
+    assert_equal(cluster.galcat.meta['sigmac_type'], 'effective')
 
 def test_integrity_of_probfuncs():
     """test integrity of prob funcs"""
@@ -166,16 +186,16 @@ def test_integrity_of_probfuncs():
         galcat=GCData([ra_source, dec_source, z_sources, id_source],
                       names=('ra', 'dec', 'z', 'id')))
     # true redshift
-    cluster.compute_background_probability(use_photoz=False, p_background_name='p_bkg_true')
+    cluster.compute_background_probability(use_pdz=False, p_background_name='p_bkg_true')
     expected = np.array([1., 1., 1.])
     assert_allclose(cluster.galcat['p_bkg_true'], expected, **TOLERANCE)
 
     #photoz + deltasigma
     assert_raises(TypeError, cluster.compute_background_probability, use_photoz=True)
-    pzbin = np.linspace(.0001, 5, 100)
+    pzbin = np.linspace(.0001, 5, 1000)
     cluster.galcat['pzbins'] = [pzbin for i in range(len(z_sources))]
     cluster.galcat['pzpdf'] = [multivariate_normal.pdf(pzbin, mean=z, cov=.01) for z in z_sources]
-    cluster.compute_background_probability(use_photoz=True, p_background_name='p_bkg_pz')
+    cluster.compute_background_probability(use_pdz=True, p_background_name='p_bkg_pz')
     assert_allclose(cluster.galcat['p_bkg_pz'], expected, **TOLERANCE)
 
 def test_integrity_of_weightfuncs():
@@ -207,13 +227,13 @@ def test_integrity_of_weightfuncs():
     pzbin = np.linspace(.0001, 5, 100)
     cluster.galcat['pzbins'] = [pzbin for i in range(len(z_source))]
     cluster.galcat['pzpdf'] = [multivariate_normal.pdf(pzbin, mean=z, cov=.3) for z in z_source]
-    cluster.compute_galaxy_weights(cosmo=cosmo, use_shape_noise=False, use_photoz=True,
+    cluster.compute_galaxy_weights(cosmo=cosmo, use_shape_noise=False, use_pdz=True,
                                    is_deltasigma=True)
     expected = np.array([9.07709345e-33, 1.28167582e-32, 4.16870389e-32])
     assert_allclose(cluster.galcat['w_ls']*1e20, expected*1e20,**TOLERANCE)
 
     # test with noise
-    cluster.compute_galaxy_weights(cosmo=cosmo, use_shape_noise=True, use_photoz=True,
+    cluster.compute_galaxy_weights(cosmo=cosmo, use_shape_noise=True, use_pdz=True,
                                    use_shape_error=True, is_deltasigma=True)
 
     expected = np.array([9.07709345e-33, 1.28167582e-32, 4.16870389e-32])
