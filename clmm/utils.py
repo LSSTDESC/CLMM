@@ -621,7 +621,7 @@ def compute_beta(z_s, z_cl, cosmo):
     float
         Geometric lensing efficicency
     """
-    beta = np.heaviside(z_s-z_cl, 0) * cosmo.eval_da_z1z2(z_cl, z_s) / cosmo.eval_da(z_cl)
+    beta = np.heaviside(z_s-z_cl, 0) * cosmo.eval_da_z1z2(z_cl, z_s) / cosmo.eval_da(z_s)
     return beta
 
 def compute_beta_s(z_s, z_cl, z_inf, cosmo):
@@ -691,7 +691,7 @@ def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_dist
         zmin = z_cl + delta_z_cut
 
     B_mean = quad(integrand, zmin, zmax)[0] / quad(z_distrib_func, zmin, zmax)[0]
-    return B_mean    
+    return B_mean
 
 def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_distrib_func=None):
     r"""Mean value of the geometric lensing efficicency ratio
