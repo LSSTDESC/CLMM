@@ -124,7 +124,7 @@ apion, demoon, exon = False, False, False
 for entry in config:
     if not entry or entry[0] == '#':
         continue
-    if entry == 'APIDOC':
+    elif entry == 'APIDOC':
         apion, demoon, exon = True, False, False
         continue
     elif entry == 'DEMO':
@@ -145,11 +145,17 @@ for entry in config:
 outdir = 'compiled-examples/'
 nbconvert_opts = ['--to rst',
                   '--ExecutePreprocessor.kernel_name=python3',
-                  # '--execute',
+                   '--execute',
                   f'--output-dir {outdir}']
+nb_skip_run = [
+    '../examples/Example4_Fit_Halo_mass_to_HSC_data.ipynb',
+    ]
 
+run_nb = False
 for demo in [*demofiles, *examplefiles]:
     com = ' '.join(['jupyter nbconvert']+nbconvert_opts+[demo])
+    if demo in nb_skip_run or not run_nb:
+        com = com.replace(' --execute ', ' ')
     subprocess.run(com, shell=True)
 
 
