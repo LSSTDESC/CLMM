@@ -8,10 +8,11 @@ from scipy.integrate import simps
 from scipy.special import jv
 from scipy.interpolate import interp1d
 
-from .generic import compute_reduced_shear_from_convergence
-import warnings
-from .generic import compute_reduced_shear_from_convergence, compute_magnification_bias_from_magnification
-from ..utils import validate_argument, compute_beta_s_mean, compute_beta_s_square_mean
+from .generic import (compute_reduced_shear_from_convergence,
+                      compute_magnification_bias_from_magnification,
+                      compute_rdelta, compute_profile_mass_in_radius,
+                      convert_profile_mass_concentration)
+from ..utils import validate_argument, _integ_pzfuncs, compute_beta_s_mean, compute_beta_s_square_mean
 
 
 class CLMModeling:
@@ -48,6 +49,8 @@ class CLMModeling:
         self.massdef = ''
         self.delta_mdef = 0
         self.halo_profile_model = ''
+        self.mdelta = 0.
+        self.cdelta = 0.
 
         self.cosmo = None
 
@@ -102,8 +105,11 @@ class CLMModeling:
             if not halo_profile_model in self.hdpm_dict:
                 raise ValueError(
                     f"Halo density profile model {halo_profile_model} not currently supported")
-        return self._set_halo_density_profile(halo_profile_model=halo_profile_model,
-                                              massdef=massdef, delta_mdef=delta_mdef)
+        self._set_halo_density_profile(halo_profile_model=halo_profile_model,
+                                       massdef=massdef, delta_mdef=delta_mdef)
+        self.halo_profile_model = halo_profile_model
+        self.massdef = massdef
+        self.delta_mdef = delta_mdef
 
     def _set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
         raise NotImplementedError
@@ -119,6 +125,7 @@ class CLMModeling:
         if self.validate_input:
             validate_argument(locals(), 'mdelta', float, argmin=0)
         self._set_mass(mdelta)
+        self.mdelta = mdelta
 
     def _set_mass(self, mdelta):
         r""" Actually sets the value of the :math:`M_\Delta` (without value check)"""
@@ -170,6 +177,7 @@ class CLMModeling:
         if self.validate_input:
             validate_argument(locals(), 'cdelta', float, argmin=0)
         self._set_concentration(cdelta)
+        self.cdelta = cdelta
 
     def _set_concentration(self, cdelta):
         r""" Actuall sets the value of the concentration (without value check)"""
@@ -202,25 +210,63 @@ class CLMModeling:
     def _eval_3d_density(self, r3d, z_cl):
         raise NotImplementedError
 
-    def eval_critical_surface_density(self, z_len, z_src):
-        r"""Computes the critical surface density
+    def eval_critical_surface_density(self, z_len, z_src=None, use_pdz=False, pzbins=None, pzpdf=None):
+        r"""Computes either 
+
+        the critical surface density if `use_pdz=False`
+
+        .. math::
+            \Sigma_{\rm crit} = \frac{c^2}{4\pi G} \frac{D_s}{D_LD_{LS}}
+
+        or
+
+        the 'effective critical surface density' if `use_pdz=True`
+         
+        .. math::
+            \langle \Sigma_{\rm crit}^{-1}\rangle^{-1} = \left(\int \frac{1}{\Sigma_{\rm crit}(z)} p(z) dz\right)^{-1} 
+        
+        where :math:`p(z)` is the source photoz probability density function. 
+        This comes from the maximum likelihood estimator for evaluating a :math:`\Delta\Sigma` profile.
+
 
         Parameters
         ----------
         z_len : float
-            Lens redshift
+            Galaxy cluster redshift
         z_src : array_like, float
             Background source galaxy redshift(s)
+        use_pdz : bool
+            Flag to use the photoz pdf. If `False` (default), `sigma_c` is computed using the source redshift point estimates `z_source`. 
+            If `True`, `sigma_c` is computed as 1/<1/Sigma_crit>, where the average is performed using 
+            the individual galaxy redshift pdf. In that case, the `pzbins` and `pzpdf` should be specified. 
+        
+        pzbins : array-like
+            Bins where the source redshift pdf is defined
+        pzpdf : array-like
+            Values of the source redshift pdf
+        validate_input: bool
+            Validade each input argument
+
 
         Returns
         -------
-        float
-            Cosmology-dependent critical surface density in units of :math:`M_\odot\ Mpc^{-2}`
-        """
+        sigma_c : array_like, float
+            Cosmology-dependent (effective) critical surface density in units of :math:`M_\odot\ Mpc^{-2}`
+    """
+        
         if self.validate_input:
             validate_argument(locals(), 'z_len', float, argmin=0)
-            validate_argument(locals(), 'z_src', 'float_array', argmin=0)
-        return self._eval_critical_surface_density(z_len=z_len, z_src=z_src)
+            validate_argument(locals(), 'z_src', 'float_array', argmin=0, none_ok=True)
+
+        if use_pdz is False:
+            return self._eval_critical_surface_density(z_len=z_len, z_src=z_src)
+        else:
+            if pzbins is None or pzpdf is None:
+                raise ValueError('Redshift bins and source redshift pdf must be provided when use_pdz is True')
+            else:
+                def inv_sigmac(redshift):
+                    return 1./self._eval_critical_surface_density(z_len=z_len, z_src=redshift)
+                return 1./_integ_pzfuncs(pzpdf, pzbins, 0., kernel=inv_sigmac)
 
     def _eval_critical_surface_density(self, z_len, z_src):
         return self.cosmo.eval_sigma_crit(z_len, z_src)
@@ -411,8 +457,7 @@ class CLMModeling:
         ll = np.logspace( 0 , 6 , lsteps )
         val = np.array( [ simps( __integrand__( ll , t ) , ll ) for t in theta ] )
         return halobias * val * rho_m / ( 2 * np.pi  * ( 1 + z_cl )**3 * da**2 )
-    
-    
+
     def eval_tangential_shear(self, r_proj, z_cl, z_src, verbose=False):
         r"""Computes the tangential shear
 
@@ -503,7 +548,7 @@ class CLMModeling:
                 * `single_plane` (default): all sources at one redshift (if `z_source` is a float)    or known individual source galaxy redshifts (if `z_source` is an array and `r_proj` is a float).
                 * `applegate14`: use the equation (6) in Weighing the Giants - III (Applegate et al. 2014; https://arxiv.org/abs/1208.0605) to evaluate tangential reduced shear.
                 * `schrabback18`: use the equation (12) in Cluster Mass Calibration at High Redshift (Schrabback et al. 2017; https://arxiv.org/abs/1611.03866) to evaluate tangential reduced shear.
-        
+
         z_distrib_func: one-parameter function
             Redshift distribution function. This function is used to compute the beta values if they are not provided. The default is the Chang et al (2013) distribution function.
 
@@ -512,7 +557,7 @@ class CLMModeling:
 
                 .. math::
                     \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right\rangle
-    
+
         beta_s_square_mean: array_like, float, optional
             Square of the lensing efficiency averaged over the galaxy redshift distribution. If not provided, it will be computed using the default redshift distribution or the one given by the user.
 
@@ -538,7 +583,7 @@ class CLMModeling:
 
         if z_src_model == 'single_plane':
             gt = self._eval_reduced_tangential_shear_sp(r_proj, z_cl, z_src)
-            
+
         elif z_src_model == 'applegate14':
             z_source = 1000. #np.inf # INF or a very large number
             z_inf = z_source
@@ -548,7 +593,7 @@ class CLMModeling:
             gammat = self._eval_tangential_shear(r_proj, z_cl, z_source)
             kappa = self._eval_convergence(r_proj, z_cl, z_source)
             gt = beta_s_mean * gammat / (1. - beta_s_square_mean / beta_s_mean * kappa)
-        
+
         elif z_src_model == 'schrabback18':
             z_source = 1000. #np.inf # INF or a very large number
             z_inf = z_source
@@ -558,7 +603,7 @@ class CLMModeling:
             gammat = self._eval_tangential_shear(r_proj, z_cl, z_source)
             kappa = self._eval_convergence(r_proj, z_cl, z_source)
             gt = (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean * kappa) * (beta_s_mean * gammat / (1. - beta_s_mean * kappa))
-        
+
         else:
             raise ValueError("Unsupported z_src_model")
         return gt
@@ -608,7 +653,7 @@ class CLMModeling:
         kappa = self.eval_convergence(r_proj, z_cl, z_src)
         gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
         return 1./((1-kappa)**2-abs(gamma_t)**2)
-    
+
     def eval_magnification_bias(self, r_proj, z_cl, z_src, alpha):
         r"""Computes the magnification bias
 
@@ -647,3 +692,134 @@ class CLMModeling:
     def _eval_magnification_bias(self, r_proj, z_cl, z_src, alpha):
         magnification = self.eval_magnification(r_proj, z_cl, z_src)
         return compute_magnification_bias_from_magnification(magnification, alpha)
+
+    def eval_rdelta(self, z_cl):
+        r"""Retrieves the radius for mdelta
+
+        .. math::
+            r_\Delta=\left(\frac{3 M_\Delta}{4 \pi \Delta \rho_{bkg}(z)}\right)^{1/3}
+
+        Parameters
+        ----------
+        z_cl: float
+            Redshift of the cluster
+
+        Returns
+        -------
+        float
+            Radius in :math:`M\!pc`.
+        """
+        if self.validate_input:
+            validate_argument(locals(), 'z_cl', float, argmin=0)
+        return self._eval_rdelta(z_cl)
+
+    def _eval_rdelta(self, z_cl):
+        return compute_rdelta(self.mdelta, z_cl, self.cosmo, self.massdef, self.delta_mdef)
+
+    def eval_mass_in_radius(self, r3d, z_cl, verbose=False):
+        r"""Computes the mass inside a given radius of the profile.
+        The mass is calculated as
+
+        .. math::
+            M(<\text{r3d}) = M_{\Delta}\;\frac{f\left(\frac{\text{r3d}}{r_{\Delta}/c_{\Delta}}\right)}{f(c_{\Delta})},
+
+        where :math:`f(x)` for the different models are
+
+        NFW:
+
+        .. math::
+            \quad \ln(1+x)-\frac{x}{1+x}
+
+        Einasto: (:math:`\gamma` is the lower incomplete gamma function)
+
+        .. math::
+            \gamma(\frac{3}{\alpha}, \frac{2}{\alpha}x^{\alpha})
+
+        Hernquist:
+
+        .. math::
+            \left(\frac{x}{1+x}\right)^2
+
+        Parameters
+        ----------
+        r3d : array_like, float
+            Radial position from the cluster center in :math:`M\!pc`.
+        z_cl: float
+            Redshift of the cluster
+
+        Returns
+        -------
+        array_like, float
+            Mass in units of :math:`M_\odot`
+        """
+        if self.validate_input:
+            validate_argument(locals(), 'r3d', 'float_array', argmin=0)
+            validate_argument(locals(), 'z_cl', float, argmin=0)
+
+        if self.halo_profile_model=='einasto' and verbose:
+            print(f"Einasto alpha (in) = {self._get_einasto_alpha(z_cl=z_cl)}")
+
+        return self._eval_mass_in_radius(r3d, z_cl)
+
+    def _eval_mass_in_radius(self, r3d, z_cl):
+        alpha = self._get_einasto_alpha(z_cl) if self.halo_profile_model=='einasto' else None
+        return compute_profile_mass_in_radius(
+            r3d, z_cl, self.cosmo, self.mdelta, self.cdelta,
+            self.massdef, self.delta_mdef, self.halo_profile_model, alpha)
+
+    def convert_mass_concentration(self, z_cl, massdef=None, delta_mdef=None,
+                                   halo_profile_model=None, alpha=None, verbose=False):
+        r"""Converts current mass and concentration to the values for a different model.
+
+        Parameters
+        ----------
+        z_cl: float
+            Redshift of the cluster
+        massdef : str, None
+            Profile mass definition to convert to (`mean`, `critical`, `virial`).
+            If None, same value of current model is used.
+        delta_mdef : int, None
+            Mass overdensity definition to convert to.
+            If None, same value of current model is used.
+        halo_profile_model : str, None
+            Profile model parameterization to convert to (`nfw`, `einasto`, `hernquist`).
+            If None, same value of current model is used.
+        alpha : float, None
+            Einasto slope to convert to when `halo_profile_model='einasto'`.
+            If None, same value of current model is used.
+
+        Returns
+        -------
+        float
+            Mass of different model in units of :math:`M_\odot`.
+        float
+            Concentration of different model.
+        """
+        if self.validate_input:
+            validate_argument(locals(), 'z_cl', float, argmin=0)
+            validate_argument(locals(), 'massdef', str, none_ok=True)
+            validate_argument(locals(), 'delta_mdef', int, argmin=0, none_ok=True)
+            validate_argument(locals(), 'halo_profile_model', str, none_ok=True)
+            validate_argument(locals(), 'alpha', 'float_array', none_ok=True)
+
+        if self.halo_profile_model=='einasto' and verbose:
+            print(f"Einasto alpha (in) = {self._get_einasto_alpha(z_cl=z_cl)}")
+
+        if (halo_profile_model=='einasto'
+                    or (self.halo_profile_model=='einasto' and halo_profile_model==None))\
+                and verbose:
+            print("Einasto alpha (out) = "
+                 f"{self._get_einasto_alpha(z_cl=z_cl) if alpha is None else alpha}")
+
+        return self._convert_mass_concentration(z_cl, massdef, delta_mdef,
+                                                halo_profile_model, alpha)
+
+    def _convert_mass_concentration(self, z_cl, massdef=None, delta_mdef=None,
+                                    halo_profile_model=None, alpha=None):
+        alpha1 = self._get_einasto_alpha(z_cl) if self.halo_profile_model=='einasto' else None
+        return convert_profile_mass_concentration(
+            self.mdelta, self.cdelta, z_cl, self.cosmo,
+            massdef=self.massdef, delta_mdef=self.delta_mdef,
+            halo_profile_model=self.halo_profile_model, alpha=alpha1,
+            massdef2=massdef, delta_mdef2=delta_mdef,
+            halo_profile_model2=halo_profile_model, alpha2=alpha)
