@@ -18,7 +18,7 @@ def load_validation_config():
     # Cosmology
     cosmo = theo.Cosmology(H0=testcase['cosmo_H0'], Omega_dm0=testcase['cosmo_Odm0'],
                            Omega_b0=testcase['cosmo_Ob0'])
-
+ 
     return cosmo, testcase, numcosmo_ps
 
 # --------------------------------------------------------------------------
