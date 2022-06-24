@@ -64,6 +64,10 @@ class NumCosmoCLMModeling(CLMModeling):
         self.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
         self.set_cosmo(None)
 
+
+    # Functions implemented by child class
+
+
     def _set_cosmo(self, cosmo):
         """"set cosmo"""
         CLMModeling._set_cosmo(self, cosmo)
@@ -90,27 +94,6 @@ class NumCosmoCLMModeling(CLMModeling):
             if has_cm_vals:
                 self.cdelta = cdelta
                 self.hdpm.props.log10MDelta = log10_mdelta
-
-    def get_mset(self):
-        r"""
-        Gets a mass set (NumCosmo internal use)
-        """
-        mset = Ncm.MSet.empty_new()
-        mset.set(self.cosmo.be_cosmo)
-        mset.set(self.hdpm)
-        mset.set(self.cosmo.smd)
-        return mset
-
-    def set_mset(self, mset):
-        r"""
-        Sets a mass set (NumCosmo internal use)
-        """
-        self.cosmo.set_be_cosmo(mset.get(Nc.HICosmo.id()))
-
-        self.hdpm = mset.get(Nc.HaloDensityProfile.id())
-        self.cosmo.smd = mset.get(Nc.WLSurfaceMassDensity.id())
-
-        self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
 
     def _get_concentration(self):
         """"get concentration"""
@@ -203,5 +186,28 @@ class NumCosmoCLMModeling(CLMModeling):
         func = lambda r_proj, z_src, z_cl: self.cosmo.smd.magnification(
             self.hdpm, self.cosmo.be_cosmo, r_proj, z_src, z_cl, z_cl)
         return np.vectorize(func)(r_proj, z_src, z_cl)
+
+    # Functions unique to this class
+
+    def get_mset(self):
+        r"""
+        Gets a mass set (NumCosmo internal use)
+        """
+        mset = Ncm.MSet.empty_new()
+        mset.set(self.cosmo.be_cosmo)
+        mset.set(self.hdpm)
+        mset.set(self.cosmo.smd)
+        return mset
+
+    def set_mset(self, mset):
+        r"""
+        Sets a mass set (NumCosmo internal use)
+        """
+        self.cosmo.set_be_cosmo(mset.get(Nc.HICosmo.id()))
+
+        self.hdpm = mset.get(Nc.HaloDensityProfile.id())
+        self.cosmo.smd = mset.get(Nc.WLSurfaceMassDensity.id())
+
+        self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
 
 Modeling = NumCosmoCLMModeling

@@ -91,6 +91,10 @@ class CTModeling(CLMModeling):
 
         self.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
 
+
+    # Functions implemented by child class
+
+
     def _set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
         """"set halo density profile"""
         pass
