@@ -1,5 +1,5 @@
 """Tests for modeling.py"""
-
+from packaging import version
 import numpy as np
 from numpy.testing import assert_raises, assert_allclose, assert_warns
 import clmm.theory as theo
@@ -170,6 +170,13 @@ def test_warnings(modeling_data):
     assert_warns(UserWarning, mod.eval_tangential_shear, [0.3], 0.3, [0.2, 0.3, 0.4])
     assert_warns(UserWarning, mod.eval_convergence, [0.3], 0.3, [0.2, 0.3, 0.4])
     assert_warns(UserWarning, mod.eval_magnification, [0.3], 0.3, [0.2, 0.3, 0.4])
+
+    if theo.be_nick == 'ccl':
+        import pyccl as ccl
+        if not version.parse(ccl.__version__) < version.parse('2.4.1.dev15'):
+            ccl.__version__='2.4.0'
+        assert_warns(UserWarning, mod.eval_tangential_shear, [0.3], 0.3, [0.2, 0.3, 0.4])
+        assert_warns(UserWarning, mod.eval_convergence, [0.3], 0.3, [0.2, 0.3, 0.4])
 
 def test_einasto(modeling_data):
     """ Basic checks that verbose option for the Einasto profile runs """
