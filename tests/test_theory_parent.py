@@ -173,15 +173,6 @@ def test_warnings(modeling_data):
     assert_warns(UserWarning, mod.eval_magnification, [0.3], 0.3, [0.2, 0.3, 0.4])
 
     if theo.be_nick == 'ccl':
-        assert_warns(UserWarning, mod._eval_convergence_core, [0.3], 0.3, [0.2, 0.3, 0.4],
-                     force_old=True)
-        assert_warns(UserWarning, mod._eval_tangential_shear_core, [0.3], 0.3, [0.2, 0.3, 0.4],
-                     force_old=True)
-        assert_warns(UserWarning, mod._eval_reduced_tangential_shear_sp_core,
-                     [0.3], 0.3, [0.2, 0.3, 0.4], force_old=True)
-        assert_warns(UserWarning, mod._eval_magnification_core, [0.3], 0.3, [0.2, 0.3, 0.4],
-                     force_old=True)
-
         import pyccl as ccl
         if not version.parse(ccl.__version__) < version.parse('2.4.1.dev15'):
             ccl.__version__='2.4.0'
