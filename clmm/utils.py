@@ -393,13 +393,13 @@ def compute_lensed_ellipticity(ellipticity1_true, ellipticity2_true, shear1, she
     Following Schneider et al. (2006)
 
     .. math::
-        \epsilon^{\rm lensed}=\epsilon^{\rm lensed}_1+i\epsilon^{\rm lensed}_2=
-        \frac{\epsilon^{\rm true}+g}{1+g^\ast\epsilon^{\rm true}},
+        \epsilon^{\text{lensed}}=\epsilon^{\text{lensed}}_1+i\epsilon^{\text{lensed}}_2=
+        \frac{\epsilon^{\text{true}}+g}{1+g^\ast\epsilon^{\text{true}}},
 
     where, the complex reduced shear :math:`g` is obtained from the shear
     :math:`\gamma=\gamma_1+i\gamma_2` and convergence :math:`\kappa` as :math:`g =
-    \gamma/(1-\kappa)`, and the complex intrinsic ellipticity is :math:`\epsilon^{\rm
-    true}=\epsilon^{\rm true}_1+i\epsilon^{\rm true}_2`
+    \gamma/(1-\kappa)`, and the complex intrinsic ellipticity is :math:`\epsilon^{\text{
+    true}}=\epsilon^{\text{true}}_1+i\epsilon^{\text{true}}_2`
 
     Parameters
     ----------

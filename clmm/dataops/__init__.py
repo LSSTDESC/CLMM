@@ -60,7 +60,7 @@ def compute_tangential_and_cross_components(
 
     .. math::
 
-        \widehat{\Delta\Sigma_{t,x}} = g_{t,x} \times \Sigma_c(cosmo, z_L, z_{\rm src})
+        \widehat{\Delta\Sigma_{t,x}} = g_{t,x} \times \Sigma_c(cosmo, z_L, z_{\text{src}})
 
     where :math:`\Sigma_c` is the critical surface density that depends on the cosmology and on the
     lens and source redshifts. If :math:`g_{t,x}` correspond to the shear, the above expression is
@@ -227,7 +227,7 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, use_pdz=False, pzpdf=No
 
             w_{ls, \text{geo}} = \Sigma_c(\text{cosmo}, z_L, z_{\text{src}})^{-2}\;.
 
-        If the redshift pdf of each source, :math:`p_{\rm photoz}(z_s)`, is known, the weights are computed instead as
+        If the redshift pdf of each source, :math:`p_{\text{photoz}}(z_s)`, is known, the weights are computed instead as
 
         .. math::
 
@@ -235,7 +235,7 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, use_pdz=False, pzpdf=No
 
         for the tangential shear, the weights :math:`w_{ls, \text{geo}}` are 1.
 
-    2. The shape weight :math:`w_{ls,{\rm shape}}` depends on shapenoise and/or shape measurement errors
+    2. The shape weight :math:`w_{ls,{\text{shape}}}` depends on shapenoise and/or shape measurement errors
 
         .. math::
 
