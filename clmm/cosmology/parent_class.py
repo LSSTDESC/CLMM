@@ -256,10 +256,10 @@ class CLMMCosmology:
         return self._eval_da_z1z2(z1=z1, z2=z2)
 
     def _eval_da_z1z2(self, z1, z2):
+        warning_msg = '\nSome values of z2 are lower than z1.'+\
+        '\nda = np.nan for those.'
         return compute_for_good_redshifts(
-            self._eval_da_z1z2_core, z1, z2, np.nan,
-            warning_message='\nSome values of z2 are lower than z1.'
-                          '\nReturning da = np.nan for those.')
+            self._eval_da_z1z2_core, z1, z2, np.nan, warning_message=warning_msg)
 
     def _eval_da_z1z2_core(self, z1, z2):
         raise NotImplementedError
@@ -426,13 +426,13 @@ class CLMMCosmology:
             validate_argument(locals(), 'z_src', 'float_array', argmin=0)
         return self._eval_sigma_crit(z_len=z_len, z_src=z_src, show_warning=show_warning)
 
-    def _eval_sigma_crit(self, z_len, z_src, show_warning=True):
+    def _eval_sigma_crit(self, z_len, z_src, show_warning=False):
+        warning_msg = '\nSome source redshifts are lower than the cluster redshift.'+\
+        '\nSigma_crit = np.inf for those galaxies.'
         return compute_for_good_redshifts(
             self._eval_sigma_crit_core, z_len, z_src, np.inf,
             z1_arg_name='z_len', z2_arg_name='z_src',
-            warning_message='\nSome source redshifts are lower than the cluster redshift.'
-                          '\nReturning Sigma_crit = np.inf for those galaxies.',
-            show_warning=show_warning)
+            warning_message=warning_msg, show_warning=show_warning)
 
     def _eval_sigma_crit_core(self, z_len, z_src):
         raise NotImplementedError

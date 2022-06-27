@@ -217,12 +217,12 @@ class CLMModeling:
     def eval_critical_surface_density(self, z_len, z_src=None,
                                       use_pdz=False, pzbins=None, pzpdf=None,
                                       show_warning=True):
-        r"""Computes either 
+        r"""Computes either
 
         the critical surface density if `use_pdz=False`
 
         .. math::
-            \Sigma_{\rm crit} = \frac{c^2}{4\pi G} \frac{D_s}{D_LD_{LS}}
+            \Sigma_{\text{crit}} = \frac{c^2}{4\pi G} \frac{D_s}{D_LD_{LS}}
 
         or
 
@@ -232,7 +232,8 @@ class CLMModeling:
             \langle \Sigma_{\rm crit}^{-1}\rangle^{-1} = \left(\int \frac{1}{\Sigma_{\rm crit}(z)} p(z) dz\right)^{-1}
 
         where :math:`p(z)` is the source photoz probability density function.
-        This comes from the maximum likelihood estimator for evaluating a :math:`\Delta\Sigma` profile.
+        This comes from the maximum likelihood estimator for \
+        evaluating a :math:`\Delta\Sigma` profile.
 
 
         Parameters
@@ -256,7 +257,7 @@ class CLMModeling:
 
         Returns
         -------
-        sigma_c : array_like, float
+        sigma_c : numpy.ndarray, float
             Cosmology-dependent (effective) critical surface density in units of :math:`M_\odot\ Mpc^{-2}`
     """
 
@@ -265,7 +266,8 @@ class CLMModeling:
             validate_argument(locals(), 'z_src', 'float_array', argmin=0, none_ok=True)
 
         if use_pdz is False:
-            return self._eval_critical_surface_density(z_len=z_len, z_src=z_src)
+            return self._eval_critical_surface_density(z_len=z_len, z_src=z_src,
+                                                       show_warning=show_warning)
         else:
             if pzbins is None or pzpdf is None:
                 raise ValueError('Redshift bins and source redshift pdf must be provided when use_pdz is True')
@@ -274,7 +276,7 @@ class CLMModeling:
                     return 1./self._eval_critical_surface_density(z_len=z_len, z_src=redshift)
                 return 1./_integ_pzfuncs(pzpdf, pzbins, 0., kernel=inv_sigmac)
 
-    def _eval_critical_surface_density(self, z_len, z_src, show_warning=True):
+    def _eval_critical_surface_density(self, z_len, z_src, show_warning=False):
         return self.cosmo.eval_sigma_crit(z_len, z_src, show_warning=show_warning)
 
     def eval_surface_density(self, r_proj, z_cl, verbose=False):
@@ -391,7 +393,8 @@ class CLMModeling:
                 f"2-halo term not currently supported with the {self.backend} backend. "
                 "Use the CCL or NumCosmo backend instead")
         else:
-            return self._eval_excess_surface_density_2h(r_proj, z_cl, halobias=halobias, lsteps=lsteps)
+            return self._eval_excess_surface_density_2h(r_proj, z_cl,
+                                                        halobias=halobias, lsteps=lsteps)
 
     def _eval_excess_surface_density_2h(self, r_proj, z_cl, halobias=1.,lsteps=500):
         """"eval excess surface density from the 2-halo term"""
@@ -488,13 +491,15 @@ class CLMModeling:
         if self.halo_profile_model=='einasto' and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
+        warning_msg = '\nSome source redshifts are lower than the cluster redshift.'+\
+        '\nShear = 0 for those galaxies.'
         return compute_for_good_redshifts(self._eval_tangential_shear_core,
-                                          z_cl, z_src, 0., '\nSome source redshifts are lower than the cluster redshift.\nShear = 0 for those galaxies.',
+                                          z_cl, z_src, 0., warning_msg,
                                           'z_cl', 'z_src', r_proj)
 
     def _eval_tangential_shear_core(self, r_proj, z_cl, z_src):
-        delta_sigma = self.eval_excess_surface_density(r_proj, z_cl)
-        sigma_c = self.eval_critical_surface_density(z_cl, z_src, show_warning=False)
+        delta_sigma = self._eval_excess_surface_density(r_proj, z_cl)
+        sigma_c = self._eval_critical_surface_density(z_cl, z_src)
         return delta_sigma/sigma_c
 
     def eval_convergence(self, r_proj, z_cl, z_src, verbose=False):
@@ -529,13 +534,15 @@ class CLMModeling:
         if self.halo_profile_model=='einasto' and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
+        warning_msg = '\nSome source redshifts are lower than the cluster redshift.'+\
+        '\nConvergence = 0 for those galaxies.'
         return compute_for_good_redshifts(self._eval_convergence_core,
-                                          z_cl, z_src, 0., '\nSome source redshifts are lower than the cluster redshift.\nConvergence = 0 for those galaxies.',
+                                          z_cl, z_src, 0., warning_msg,
                                           'z_cl', 'z_src', r_proj)
 
-    def _eval_convergence_core(self, r_proj, z_cl, z_src, verbose=False):
-        sigma = self.eval_surface_density(r_proj, z_cl, verbose=verbose)
-        sigma_c = self.eval_critical_surface_density(z_cl, z_src, show_warning=False)
+    def _eval_convergence_core(self, r_proj, z_cl, z_src):
+        sigma = self._eval_surface_density(r_proj, z_cl)
+        sigma_c = self._eval_critical_surface_density(z_cl, z_src)
         return sigma/sigma_c
 
     def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src, z_src_model='single_plane',
@@ -591,9 +598,11 @@ class CLMModeling:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
         if z_src_model == 'single_plane':
+            warning_msg = '\nSome source redshifts are lower than the cluster redshift.'+\
+            '\nReduced_shear = 0 for those galaxies.'
             gt = compute_for_good_redshifts(self._eval_reduced_tangential_shear_sp_core,
-                                          z_cl, z_src, 0., '\nSome source redshifts are lower than the cluster redshift.\nReduced_shear = 0 for those galaxies.',
-                                          'z_cl', 'z_src', r_proj)
+                                            z_cl, z_src, 0., warning_msg,
+                                            'z_cl', 'z_src', r_proj)
 
         elif z_src_model == 'applegate14':
             z_source = 1000. #np.inf # INF or a very large number
@@ -662,8 +671,10 @@ class CLMModeling:
         if self.halo_profile_model=='einasto' and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
+        warning_msg = '\nSome source redshifts are lower than the cluster redshift.'+\
+        '\nMagnification = 1 for those galaxies.'
         return compute_for_good_redshifts(self._eval_magnification_core,
-                                          z_cl, z_src, 1., '\nSome source redshifts are lower than the cluster redshift.\nMagnification = 1 for those galaxies.',
+                                          z_cl, z_src, 1., warning_msg,
                                           'z_cl', 'z_src', r_proj)
 
     def _eval_magnification_core(self, r_proj, z_cl, z_src):
