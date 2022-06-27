@@ -635,7 +635,7 @@ def compute_for_good_redshifts(function, z1, z2, bad_value, warning_message,
 
     Returns
     -------
-    float, numpy.ndarray
+    Return type of `function`
         Output of `function` with value for `z1` >= `z2` replaced by `bad_value`
     """
     kwargs = {z1_arg_name:locals()['z1'], z2_arg_name:locals()['z2']}
