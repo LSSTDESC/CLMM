@@ -592,6 +592,8 @@ class CLMModeling:
             gammat_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=z_inf)
             kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=z_inf)
             
+        else:
+            raise ValueError("Unsupported z_src_model")            
             
         if z_src_model == 'applegate14':
             gt = beta_s_mean * gammat_inf / (1. - beta_s_square_mean / beta_s_mean * kappa_inf)
@@ -599,8 +601,6 @@ class CLMModeling:
         if z_src_model == 'schrabback18':
             gt = (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean * kappa_inf) * (beta_s_mean * gammat_inf / (1. - beta_s_mean * kappa_inf))
 
-        else:
-            raise ValueError("Unsupported z_src_model")
         return gt
 
     def _eval_reduced_tangential_shear_sp(self, r_proj, z_cl, z_src):
