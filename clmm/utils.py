@@ -623,7 +623,7 @@ def compute_for_good_redshifts(function, z1, z2, bad_value, warning_message,
     bad_value: any
         Value to fill when `z1` >= `z2`
     warning_message: str
-        Warning message to be displayed
+        Warning message to be displayed when `z1` >= `z2`
     z1_arg_name: str, optional
         Name of the keyword argument that `z1` is passed to. Default: 'z1'
     z2_arg_name: str, optional
@@ -631,7 +631,7 @@ def compute_for_good_redshifts(function, z1, z2, bad_value, warning_message,
     r_proj: float, array_like, optional
         Value to be passed to keyword argument `r_proj` of `function`. Default: None
     show_warning: bool, optional
-        When set to False, no warning will be raised. Default: True
+        When set to False, `warning_message` is not displayed. Default: True
 
     Returns
     -------
