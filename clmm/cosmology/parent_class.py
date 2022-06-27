@@ -110,7 +110,7 @@ class CLMMCosmology:
         r"""Gets the value of the dimensionless matter density
 
         .. math::
-            \Omega_m(z) = \frac{\rho_m(z)}{\rho_\mathrm{crit}(z)}.
+            \Omega_m(z) = \frac{\rho_m(z)}{\rho_\text{crit}(z)}.
 
         Parameters
         ----------
@@ -163,7 +163,7 @@ class CLMMCosmology:
         (normalized at 0)
 
         .. math::
-            \Omega_m(z) = \frac{\rho_m(z)}{\rho_\mathrm{crit}(z)}\frac{H(z)^{2}}{H_{0}^{2}}.
+            \Omega_m(z) = \frac{\rho_m(z)}{\rho_\text{crit}(z)}\frac{H(z)^{2}}{H_{0}^{2}}.
 
         Parameters
         ----------

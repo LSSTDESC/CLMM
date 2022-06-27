@@ -313,7 +313,7 @@ def compute_surface_density_2h(r_proj, z_cl, cosmo, halobias=1, lsteps=500, vali
     return sigma_2h
 
 def compute_critical_surface_density(cosmo, z_cluster, z_source=None, use_pdz=False, pzbins=None, pzpdf=None, validate_input=True):
-    r"""Computes either 
+    r"""Computes either
 
     - the critical surface density if `use_pdz=False`
 
@@ -323,10 +323,10 @@ def compute_critical_surface_density(cosmo, z_cluster, z_source=None, use_pdz=Fa
     or
 
     - the 'effective critical surface density' if `use_pdz=True`
-     
+
     .. math::
-        \langle \Sigma_{\rm crit}^{-1}\rangle^{-1} = \left(\int \frac{1}{\Sigma_{\rm crit}(z)} p(z) dz\right)^{-1} 
-    
+        \langle \Sigma_{\rm crit}^{-1}\rangle^{-1} = \left(\int \frac{1}{\Sigma_{\rm crit}(z)} p(z) dz\right)^{-1}
+
     where :math:`p(z)` is the source photoz probability density function. 
     This comes from the maximum likelihood estimator for evaluating a :math:`\Delta\Sigma` profile.
 

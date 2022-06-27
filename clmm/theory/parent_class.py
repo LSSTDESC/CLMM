@@ -229,7 +229,7 @@ class CLMModeling:
         the 'effective critical surface density' if `use_pdz=True`
 
         .. math::
-            \langle \Sigma_{\rm crit}^{-1}\rangle^{-1} = \left(\int \frac{1}{\Sigma_{\rm crit}(z)} p(z) dz\right)^{-1}
+            \langle \Sigma_{\text{crit}}^{-1}\rangle^{-1} = \left(\int \frac{1}{\Sigma_{\text{crit}}(z)} p(z) dz\right)^{-1}
 
         where :math:`p(z)` is the source photoz probability density function.
         This comes from the maximum likelihood estimator for \
@@ -308,7 +308,7 @@ class CLMModeling:
         raise NotImplementedError
 
     def eval_mean_surface_density(self, r_proj, z_cl, verbose=False):
-        r""" Computes the mean value of surface density inside radius r_proj
+        r""" Computes the mean value of surface density inside radius `r_proj`
 
         Parameters
         ----------
@@ -362,7 +362,7 @@ class CLMModeling:
         raise NotImplementedError
 
     def eval_excess_surface_density_2h(self, r_proj, z_cl, halobias=1., lsteps=500):
-        r""" Computes the 2-halo term excess surface density (CCL backend only)
+        r""" Computes the 2-halo term excess surface density (CCL and NC backends only)
 
         Parameters
         ----------
@@ -416,7 +416,7 @@ class CLMModeling:
         return halobias * val * rho_m / ( 2 * np.pi  * ( 1 + z_cl )**3 * da**2 )
 
     def eval_surface_density_2h(self, r_proj, z_cl, halobias=1., lsteps=500):
-        r""" Computes the 2-halo term surface density (CCL backend only)
+        r""" Computes the 2-halo term surface density (CCL and NC backends only)
 
         Parameters
         ----------
@@ -548,7 +548,10 @@ class CLMModeling:
     def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src, z_src_model='single_plane',
                                       beta_s_mean=None, beta_s_square_mean=None,
                                       z_distrib_func=None, verbose=False):
-        r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
+        r"""Computes the reduced tangential shear
+
+        .. math::
+            g_t = \frac{\gamma_t}{1-\kappa}
 
         Parameters
         ----------
@@ -561,7 +564,7 @@ class CLMModeling:
         z_src_model : str, optional
             Source redshift model, with the following supported options:
 
-                * `single_plane` (default): all sources at one redshift (if `z_source` is a float)    or known individual source galaxy redshifts (if `z_source` is an array and `r_proj` is a float).
+                * `single_plane` (default): all sources at one redshift (if `z_source` is a float) or known individual source galaxy redshifts (if `z_source` is array_like and `r_proj` is a float).
                 * `applegate14`: use the equation (6) in Weighing the Giants - III (Applegate et al. 2014; https://arxiv.org/abs/1208.0605) to evaluate tangential reduced shear.
                 * `schrabback18`: use the equation (12) in Cluster Mass Calibration at High Redshift (Schrabback et al. 2017; https://arxiv.org/abs/1611.03866) to evaluate tangential reduced shear.
 
