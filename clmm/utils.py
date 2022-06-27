@@ -571,7 +571,7 @@ def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argm
 
 def _integ_pzfuncs(pzpdf, pzbins, zmin, kernel=lambda z: 1., ngrid=1000):
     r"""
-    Integrates the product of a photo-z pdf with a given kernel.
+    Integrates the product of a photo-z pdf with a given kernel. 
     This function was created to allow for data with different photo-z binnings.
 
     Parameters
@@ -584,7 +584,7 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin, kernel=lambda z: 1., ngrid=1000):
         Minimum redshift for integration
     kernel : function, optional
         Function to be integrated with the pdf, must be f(z_array) format.
-        Default: kernel(z)=1
+        Default: kernel(z)=1 
     ngrid : int, optional
         Number of points for the interpolation of the redshift pdf.
 
@@ -730,7 +730,7 @@ def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_dist
         zmin = z_cl + delta_z_cut
 
     B_mean = quad(integrand, zmin, zmax)[0] / quad(z_distrib_func, zmin, zmax)[0]
-    return B_mean
+    return B_mean    
 
 def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_distrib_func=None):
     r"""Mean value of the geometric lensing efficicency ratio
@@ -752,7 +752,7 @@ def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=Non
             Minimum redshift to be set as the source of the galaxy\
             when performing the sum.
     zmax: float
-            Minimum redshift to be set as the source of the galaxy\
+            Maximum redshift to be set as the source of the galaxy\
             when performing the sum.
     delta_z_cut: float
             Redshift interval to be summed with $z_cl$ to return\
@@ -796,7 +796,7 @@ def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, z
             Minimum redshift to be set as the source of the galaxy\
             when performing the sum.
     zmax: float
-            Minimum redshift to be set as the source of the galaxy\
+            Maximum redshift to be set as the source of the galaxy\
             when performing the sum.
     delta_z_cut: float
             Redshift interval to be summed with $z_cl$ to return\
@@ -863,3 +863,4 @@ def _srd_z_distrib(redshift, is_cdf=False):
         return redshift0**(alpha+1)*gammainc((alpha+1)/beta, (redshift/redshift0)**beta)/beta*gamma((alpha+1)/beta)
     else:
         return (redshift**alpha)*np.exp(-(redshift/redshift0)**beta)
+        

@@ -530,7 +530,7 @@ class CLMModeling:
         sigma_c = self.eval_critical_surface_density(z_cl, z_src)
         return sigma/sigma_c
 
-    def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src, z_src_model='single_plane',
+    def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src, z_src_model='discrete',
                                       beta_s_mean=None, beta_s_square_mean=None, z_distrib_func=None, verbose=False):
         r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
 
@@ -545,7 +545,7 @@ class CLMModeling:
         z_src_model : str, optional
             Source redshift model, with the following supported options:
 
-                * `single_plane` (default): all sources at one redshift (if `z_source` is a float)    or known individual source galaxy redshifts (if `z_source` is an array and `r_proj` is a float).
+                * `discrete` (default): all sources at one redshift (if `z_source` is a float)    or known individual source galaxy redshifts (if `z_source` is an array and `r_proj` is a float).
                 * `applegate14`: use the equation (6) in Weighing the Giants - III (Applegate et al. 2014; https://arxiv.org/abs/1208.0605) to evaluate tangential reduced shear.
                 * `schrabback18`: use the equation (12) in Cluster Mass Calibration at High Redshift (Schrabback et al. 2017; https://arxiv.org/abs/1611.03866) to evaluate tangential reduced shear.
 
@@ -581,28 +581,23 @@ class CLMModeling:
         if self.halo_profile_model=='einasto' and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
-        if z_src_model == 'single_plane':
+        if z_src_model == 'discrete':
             gt = self._eval_reduced_tangential_shear_sp(r_proj, z_cl, z_src)
 
-        elif z_src_model == 'applegate14':
-            z_source = 1000. #np.inf # INF or a very large number
-            z_inf = z_source
+        elif z_src_model == 'applegate14' or z_src_model == 'schrabback18':
+            z_inf = 1000. #np.inf # INF or a very large number
             if beta_s_mean is None or beta_s_square_mean is None:
                 beta_s_mean = compute_beta_s_mean (z_cl, z_inf, self.cosmo, z_distrib_func=z_distrib_func)
                 beta_s_square_mean = compute_beta_s_square_mean (z_cl, z_inf, self.cosmo, z_distrib_func=z_distrib_func)
-            gammat = self._eval_tangential_shear(r_proj, z_cl, z_source)
-            kappa = self._eval_convergence(r_proj, z_cl, z_source)
-            gt = beta_s_mean * gammat / (1. - beta_s_square_mean / beta_s_mean * kappa)
-
-        elif z_src_model == 'schrabback18':
-            z_source = 1000. #np.inf # INF or a very large number
-            z_inf = z_source
-            if beta_s_mean is None or beta_s_square_mean is None:
-                beta_s_mean = compute_beta_s_mean (z_cl, z_inf, self.cosmo, z_distrib_func=z_distrib_func)
-                beta_s_square_mean = compute_beta_s_square_mean (z_cl, z_inf, self.cosmo, z_distrib_func=z_distrib_func)
-            gammat = self._eval_tangential_shear(r_proj, z_cl, z_source)
-            kappa = self._eval_convergence(r_proj, z_cl, z_source)
-            gt = (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean * kappa) * (beta_s_mean * gammat / (1. - beta_s_mean * kappa))
+            gammat_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=z_inf)
+            kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=z_inf)
+            
+            
+        if z_src_model == 'applegate14':
+            gt = beta_s_mean * gammat_inf / (1. - beta_s_square_mean / beta_s_mean * kappa_inf)
+            
+        if z_src_model == 'schrabback18':
+            gt = (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean * kappa_inf) * (beta_s_mean * gammat_inf / (1. - beta_s_mean * kappa_inf))
 
         else:
             raise ValueError("Unsupported z_src_model")

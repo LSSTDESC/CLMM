@@ -94,7 +94,7 @@ def load_validation_config(halo_profile_model=None):
         'z_source': testcase['z_source'],
         'delta_mdef': testcase['mass_Delta'],
         'halo_profile_model': testcase['density_profile_parametrization'],
-        'z_src_model': 'single_plane',
+        'z_src_model': 'discrete',
     }
 
     return {'TEST_CASE': testcase, 'z_source': testcase['z_source'],
@@ -278,16 +278,13 @@ def test_profiles(modeling_data, profile_init):
         else:
             alpha_ein = None
         assert_allclose(
-            mod.eval_3d_density(cfg['RHO_PARAMS']['r3d'],
-                                cfg['RHO_PARAMS']['z_cl'], verbose=True),
+            mod.eval_3d_density(cfg['RHO_PARAMS']['r3d'], cfg['RHO_PARAMS']['z_cl'], verbose=True),
             cfg['numcosmo_profiles']['rho'], reltol)
         assert_allclose(
-            mod.eval_surface_density(cfg['SIGMA_PARAMS']['r_proj'],
-                                     cfg['SIGMA_PARAMS']['z_cl'], verbose=True),
+            mod.eval_surface_density(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl'], verbose=True),
             cfg['numcosmo_profiles']['Sigma'], reltol)
         assert_allclose(
-            mod.eval_excess_surface_density(cfg['SIGMA_PARAMS']['r_proj'],
-                                            cfg['SIGMA_PARAMS']['z_cl'], verbose=True),
+            mod.eval_excess_surface_density(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl'], verbose=True),
             cfg['numcosmo_profiles']['DeltaSigma'], reltol)
         if mod.backend == 'ct':
             assert_raises(ValueError, mod.eval_excess_surface_density,
@@ -295,42 +292,35 @@ def test_profiles(modeling_data, profile_init):
 
         # Functional interface tests
         # alpha_ein is None unless testing Einasto with the NC backend
-        assert_allclose(theo.compute_3d_density(cosmo=cosmo, **cfg['RHO_PARAMS'],
-                                                alpha_ein=alpha_ein, verbose=True),
+        assert_allclose(theo.compute_3d_density(cosmo=cosmo, **cfg['RHO_PARAMS'], alpha_ein=alpha_ein, verbose=True),
                         cfg['numcosmo_profiles']['rho'], reltol)
-        assert_allclose(theo.compute_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS'],
-                                                     alpha_ein=alpha_ein, verbose=True),
+        assert_allclose(theo.compute_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS'], alpha_ein=alpha_ein, verbose=True),
                         cfg['numcosmo_profiles']['Sigma'], reltol)
-        assert_allclose(theo.compute_excess_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS'],
-                                                            alpha_ein=alpha_ein, verbose=True),
+        assert_allclose(theo.compute_excess_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS'], alpha_ein=alpha_ein, verbose=True),
                         cfg['numcosmo_profiles']['DeltaSigma'], reltol)
-
-        # Einasto-specific tests - checks errors are raised appropriately
-        if profile_init=='einasto':
-            alpha_ein = 0.5
-            if theo.be_nick!='nc':
-                mod = theo.Modeling()
-                assert_raises(NotImplementedError, mod.set_einasto_alpha, alpha_ein)
-                assert_raises(NotImplementedError, theo.compute_convergence,
-                              0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)
-                assert_raises(NotImplementedError, theo.compute_tangential_shear,
-                              0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)
-                assert_raises(NotImplementedError, theo.compute_reduced_tangential_shear,
-                              0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)
-                assert_raises(NotImplementedError, theo.compute_magnification,
-                              0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)
-            else:
-                mod = theo.Modeling()
-                mod.set_halo_density_profile(halo_profile_model=profile_init)
-                mod.set_einasto_alpha(alpha_ein)
-                assert_allclose(mod.get_einasto_alpha(), alpha_ein, reltol)
-
-        if profile_init!='einasto':
-            mod = theo.Modeling()
-            assert_raises(ValueError, mod.get_einasto_alpha)
 
     else:
         print('Need to test for error')
+
+    # Einasto-specific tests - checks errors are raised appropriately
+    if profile_init=='einasto':
+        alpha_ein = 0.5
+        if theo.be_nick!='nc':
+            mod = theo.Modeling()
+            assert_raises(NotImplementedError, mod.set_einasto_alpha, alpha_ein)
+            assert_raises(NotImplementedError, theo.compute_convergence,0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)
+            assert_raises(NotImplementedError, theo.compute_tangential_shear,0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)
+            assert_raises(NotImplementedError, theo.compute_reduced_tangential_shear,0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)
+            assert_raises(NotImplementedError, theo.compute_magnification,0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)
+        else:
+            mod = theo.Modeling()
+            mod.set_halo_density_profile(halo_profile_model=profile_init)
+            mod.set_einasto_alpha(alpha_ein)
+            assert_allclose(mod.get_einasto_alpha(), alpha_ein, reltol)
+
+    if profile_init!='einasto':
+        mod = theo.Modeling()
+        assert_raises(ValueError, mod.get_einasto_alpha)
 
 def test_2halo_term(modeling_data):
 
@@ -448,10 +438,10 @@ def helper_physics_functions(func, additional_kwargs={}):
     # Test defaults
 
     defaulttruth = func(**kwargs, delta_mdef=200, halo_profile_model='nfw',
-                        z_src_model='single_plane')
+                        z_src_model='discrete')
     assert_allclose(func(**kwargs, delta_mdef=200), defaulttruth, **TOLERANCE)
     assert_allclose(func(**kwargs, halo_profile_model='nfw'), defaulttruth, **TOLERANCE)
-    assert_allclose(func(**kwargs, z_src_model='single_plane'), defaulttruth, **TOLERANCE)
+    assert_allclose(func(**kwargs, z_src_model='discrete'), defaulttruth, **TOLERANCE)
 
     # Test for exception on unsupported z_src_model and halo profiles
     assert_raises(ValueError, func, **kwargs, halo_profile_model='blah')

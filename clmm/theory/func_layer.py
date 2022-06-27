@@ -366,7 +366,7 @@ def compute_critical_surface_density(cosmo, z_cluster, z_source=None, use_pdz=Fa
     return sigma_c
 
 def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
-                             halo_profile_model='nfw', massdef='mean', alpha_ein=None, z_src_model='single_plane', 
+                             halo_profile_model='nfw', massdef='mean', alpha_ein=None, z_src_model='discrete', 
                              verbose=False, validate_input=True):
     r"""Computes the tangential shear
 
@@ -413,7 +413,7 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
         for the NumCosmo backend
     z_src_model : str, optional
         Source redshift model, with the following supported options:
-            `single_plane` (default) - all sources at one redshift (if
+            `discrete` (default) - all sources at one redshift (if
             `z_source` is a float) or known individual source galaxy redshifts
             (if `z_source` is an array and `r_proj` is a float);
     verbose : bool, optional
@@ -434,7 +434,9 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     `z_src_model`. We will need :math:`\gamma_\infty` and :math:`\kappa_\infty`
     for alternative z_src_models using :math:`\beta_s`.
     """
-    if z_src_model == 'single_plane':
+    
+    if z_src_model == 'discrete':
+
         gcm.validate_input = validate_input
         gcm.set_cosmo(cosmo)
         gcm.set_halo_density_profile(
@@ -457,7 +459,7 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
 
 
 def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
-                        halo_profile_model='nfw', massdef='mean', alpha_ein=None, z_src_model='single_plane',
+                        halo_profile_model='nfw', massdef='mean', alpha_ein=None, z_src_model='discrete',
                         verbose=False, validate_input=True):
     r"""Computes the mass convergence
 
@@ -504,7 +506,7 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
         for the NumCosmo backend
     z_src_model : str, optional
         Source redshift model, with the following supported options:
-            `single_plane` (default) - all sources at one redshift (if
+            `discrete` (default) - all sources at one redshift (if
             `z_source` is a float) or known individual source galaxy redshifts
             (if `z_source` is an array and `r_proj` is a float);
     verbose : bool, optional
@@ -526,7 +528,7 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     for alternative z_src_models using :math:`\beta_s`.
     """
 
-    if z_src_model == 'single_plane':
+    if z_src_model == 'discrete':
 
         gcm.validate_input = validate_input
         gcm.set_cosmo(cosmo)
@@ -560,7 +562,7 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
 def compute_reduced_tangential_shear(
         r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
         delta_mdef=200, halo_profile_model='nfw', massdef='mean', alpha_ein=None,
-        z_src_model='single_plane', beta_s_mean=None, beta_s_square_mean=None,
+        z_src_model='discrete', beta_s_mean=None, beta_s_square_mean=None,
         z_distrib_func=None, validate_input=True, verbose=False):
     r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
 
@@ -601,7 +603,7 @@ def compute_reduced_tangential_shear(
     z_src_model : str, optional
         Source redshift model, with the following supported options:
 
-            * `single_plane` (default): all sources at one redshift (if `z_source` is a float) \
+            * `discrete` (default): all sources at one redshift (if `z_source` is a float) \
                 or known individual source galaxy redshifts (if `z_source` is an array and \
                 `r_proj` is a float);
             * `applegate14`: use the equation (6) in Weighing the Giants - III \
@@ -653,12 +655,10 @@ def compute_reduced_tangential_shear(
     gcm.validate_input = True
     return red_tangential_shear
 
-# The magnification is computed taking into account just the tangential shear. This is valid for
-# spherically averaged profiles, e.g., NFW and Einasto (by construction the cross shear is zero).
 
 
 def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
-                          halo_profile_model='nfw', massdef='mean', alpha_ein=None, z_src_model='single_plane',
+                          halo_profile_model='nfw', massdef='mean', alpha_ein=None, z_src_model='discrete',
                           verbose=False, validate_input=True):
     r"""Computes the magnification
 
@@ -700,7 +700,7 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
         for the NumCosmo backend
     z_src_model : str, optional
         Source redshift model, with the following supported options:
-            `single_plane` (default) - all sources at one redshift (if
+            `discrete` (default) - all sources at one redshift (if
             `z_source` is a float) or known individual source galaxy redshifts
             (if `z_source` is an array and `r_proj` is a float);
     verbose : bool, optional
@@ -721,7 +721,7 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
     :math:`\kappa_\infty` for alternative z_src_models using :math:`\beta_s`.
     """
 
-    if z_src_model == 'single_plane':
+    if z_src_model == 'discrete':
 
         gcm.validate_input = validate_input
         gcm.set_cosmo(cosmo)
@@ -755,7 +755,7 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
 
 def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_source, cosmo,
                                delta_mdef=200, halo_profile_model='nfw', massdef='mean',
-                               z_src_model='single_plane', validate_input=True):
+                               z_src_model='discrete', validate_input=True):
 
     r""" Computes magnification bias from magnification :math:`\mu` 
     and slope parameter :math:`\alpha` as :
@@ -810,7 +810,7 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
 
     z_src_model : str, optional
         Source redshift model, with the following supported options:
-            `single_plane` (default) - all sources at one redshift (if
+            `discrete` (default) - all sources at one redshift (if
             `z_source` is a float) or known individual source galaxy redshifts
             (if `z_source` is an array and `r_proj` is a float);
 
@@ -824,7 +824,7 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
         warnings.warn(
             'Some source redshifts are lower than the cluster redshift.'
             ' magnification = 1 for those galaxies.')
-    if z_src_model == 'single_plane':
+    if z_src_model == 'discrete':
 
         gcm.validate_input = validate_input
         gcm.set_cosmo(cosmo)
