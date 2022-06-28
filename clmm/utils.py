@@ -728,7 +728,7 @@ def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_dist
             Chang et al (2013) distribution function.
     zmin: float
             Minimum redshift to be set as the source of the galaxy \
-             when performing the sum.
+            when performing the sum.
     zmax: float
             Maximum redshift to be set as the source of the galaxy \
             when performing the sum.
