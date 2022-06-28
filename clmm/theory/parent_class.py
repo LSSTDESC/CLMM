@@ -199,7 +199,7 @@ class CLMModeling:
 
         Returns
         -------
-        array_like, float
+        numpy.ndarray, float
             3-dimensional mass density in units of :math:`M_\odot\ Mpc^{-3}`
         """
         if self.validate_input:
@@ -291,7 +291,7 @@ class CLMModeling:
 
         Returns
         -------
-        array_like, float
+        numpy.ndarray, float
             2D projected surface density in units of :math:`M_\odot\ Mpc^{-2}`
         """
         if self.validate_input:
@@ -319,7 +319,7 @@ class CLMModeling:
 
         Returns
         -------
-        array_like, float
+        numpy.ndarray, float
             Excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
         """
         if self.validate_input:
@@ -346,7 +346,7 @@ class CLMModeling:
 
         Returns
         -------
-        array_like, float
+        numpy.ndarray, float
             Excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
         """
         if self.validate_input:
@@ -377,7 +377,7 @@ class CLMModeling:
 
         Returns
         -------
-        array_like, float
+        numpy.ndarray, float
             Excess surface density from the 2-halo term in units of :math:`M_\odot\ Mpc^{-2}`.
         """
 
@@ -431,7 +431,7 @@ class CLMModeling:
 
         Returns
         -------
-        array_like, float
+        numpy.ndarray, float
             Excess surface density from the 2-halo term in units of :math:`M_\odot\ Mpc^{-2}`.
         """
 
@@ -481,7 +481,7 @@ class CLMModeling:
 
         Returns
         -------
-        array_like, float
+        numpy.ndarray, float
             tangential shear
         """
         if self.validate_input:
@@ -524,7 +524,7 @@ class CLMModeling:
 
         Returns
         -------
-        array_like, float
+        numpy.ndarray, float
             Mass convergence, kappa.
         """
         if self.validate_input:
@@ -585,7 +585,7 @@ class CLMModeling:
 
         Returns
         -------
-        gt : array_like, float
+        gt : numpy.ndarray, float
             Reduced tangential shear
 
         Notes
@@ -658,7 +658,7 @@ class CLMModeling:
 
         Returns
         -------
-        mu : array_like, float
+        mu : numpy.ndarray, float
             magnification, mu.
 
         Notes
@@ -704,7 +704,7 @@ class CLMModeling:
 
         Returns
         -------
-        mu_bias : array_like, float
+        mu_bias : numpy.ndarray, float
             magnification bias.
 
         Notes
@@ -780,7 +780,7 @@ class CLMModeling:
 
         Returns
         -------
-        array_like, float
+        numpy.ndarray, float
             Mass in units of :math:`M_\odot`
         """
         if self.validate_input:
