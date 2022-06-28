@@ -140,10 +140,11 @@ class CLMModeling:
 
         Parameters
         ----------
-        alpha : float
+        alpha: float
         """
         if self.halo_profile_model!='einasto' or self.backend!='nc':
-            raise NotImplementedError("The Einasto slope cannot be set for your combination of profile choice or modeling backend.")
+            raise NotImplementedError("The Einasto slope cannot be set for your combination of "+
+                                      "profile choice or modeling backend.")
         else:
             if self.validate_input:
                 validate_argument(locals(), 'alpha', float)
@@ -158,7 +159,7 @@ class CLMModeling:
 
         Parameters
         ----------
-        z_cl : float
+        z_cl: float
             Cluster redshift (required for Einasto with the CCL backend, will be ignored for NC)
         """
         if self.halo_profile_model!='einasto':
@@ -167,7 +168,9 @@ class CLMModeling:
             return self._get_einasto_alpha(z_cl)
 
     def _get_einasto_alpha(self, z_cl=None):
-        r""" Returns the value of the :math:`\alpha` parameter for the Einasto profile, if defined"""
+        r""" Returns the value of the :math:`\alpha` parameter for the Einasto profile,
+        if defined
+        """
         raise NotImplementedError
 
     def set_concentration(self, cdelta):
@@ -229,7 +232,8 @@ class CLMModeling:
         the 'effective critical surface density' if `use_pdz=True`
 
         .. math::
-            \langle \Sigma_{\text{crit}}^{-1}\rangle^{-1} = \left(\int \frac{1}{\Sigma_{\text{crit}}(z)} p(z) dz\right)^{-1}
+            \langle \Sigma_{\text{crit}}^{-1}\rangle^{-1} =
+            \left(\int \frac{1}{\Sigma_{\text{crit}}(z)} p(z) dz\right)^{-1}
 
         where :math:`p(z)` is the source photoz probability density function.
         This comes from the maximum likelihood estimator for \
@@ -243,9 +247,10 @@ class CLMModeling:
         z_src : array_like, float
             Background source galaxy redshift(s)
         use_pdz : bool
-            Flag to use the photoz pdf. If `False` (default), `sigma_c` is computed using the source redshift point estimates `z_source`.
-            If `True`, `sigma_c` is computed as 1/<1/Sigma_crit>, where the average is performed using
-            the individual galaxy redshift pdf. In that case, the `pzbins` and `pzpdf` should be specified.
+            Flag to use the photoz pdf. If `False` (default), `sigma_c` is computed using the
+            source redshift point estimates `z_source`. If `True`, `sigma_c` is computed as
+            1/<1/Sigma_crit>, where the average is performed using the individual galaxy redshift
+            pdf. In that case, the `pzbins` and `pzpdf` should be specified.
 
         pzbins : array-like
             Bins where the source redshift pdf is defined
@@ -258,8 +263,9 @@ class CLMModeling:
         Returns
         -------
         sigma_c : numpy.ndarray, float
-            Cosmology-dependent (effective) critical surface density in units of :math:`M_\odot\ Mpc^{-2}`
-    """
+            Cosmology-dependent (effective) critical surface density in units of
+            :math:`M_\odot\ Mpc^{-2}`
+        """
 
         if self.validate_input:
             validate_argument(locals(), 'z_len', float, argmin=0)
@@ -270,7 +276,8 @@ class CLMModeling:
                                                        show_warning=show_warning)
         else:
             if pzbins is None or pzpdf is None:
-                raise ValueError('Redshift bins and source redshift pdf must be provided when use_pdz is True')
+                raise ValueError('Redshift bins and source redshift pdf must be '+
+                                 'provided when use_pdz is True')
             else:
                 def inv_sigmac(redshift):
                     return 1./self._eval_critical_surface_density(z_len=z_len, z_src=redshift)
@@ -564,24 +571,37 @@ class CLMModeling:
         z_src_model : str, optional
             Source redshift model, with the following supported options:
 
-                * `single_plane` (default): all sources at one redshift (if `z_source` is a float) or known individual source galaxy redshifts (if `z_source` is array_like and `r_proj` is a float).
-                * `applegate14`: use the equation (6) in Weighing the Giants - III (Applegate et al. 2014; https://arxiv.org/abs/1208.0605) to evaluate tangential reduced shear.
-                * `schrabback18`: use the equation (12) in Cluster Mass Calibration at High Redshift (Schrabback et al. 2017; https://arxiv.org/abs/1611.03866) to evaluate tangential reduced shear.
+            * `single_plane` (default): all sources at one redshift (if `z_source` is a float) or
+              known individual source galaxy redshifts (if `z_source` is array_like and `r_proj`
+              is a float).
+
+            * `applegate14`: use the equation (6) in Weighing the Giants - III (Applegate et al. 
+              2014; https://arxiv.org/abs/1208.0605) to evaluate tangential reduced shear.
+
+            * `schrabback18`: use the equation (12) in Cluster Mass Calibration at High Redshift
+              (Schrabback et al. 2017; https://arxiv.org/abs/1611.03866) to evaluate tangential 
+              reduced shear.
 
         z_distrib_func: one-parameter function
-            Redshift distribution function. This function is used to compute the beta values if they are not provided. The default is the Chang et al (2013) distribution function.
+            Redshift distribution function. This function is used to compute the beta values
+            if they are not provided. The default is the Chang et al (2013) distribution function.
 
         beta_s_mean: array_like, float, optional
-            Lensing efficiency averaged over the galaxy redshift distribution. If not provided, it will be computed using the default redshift distribution or the one given by the user.
+            Lensing efficiency averaged over the galaxy redshift distribution. If not provided, it
+            will be computed using the default redshift distribution or the one given by the user.
 
                 .. math::
-                    \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right\rangle
+                    \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}
+                    {D_{L,\infty}}\right\rangle
 
         beta_s_square_mean: array_like, float, optional
-            Square of the lensing efficiency averaged over the galaxy redshift distribution. If not provided, it will be computed using the default redshift distribution or the one given by the user.
+            Square of the lensing efficiency averaged over the galaxy redshift distribution.
+            If not provided, it will be computed using the default redshift distribution
+            or the one given by the user.
 
                 .. math::
-                    \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
+                    \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}
+                    \frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
 
         Returns
         -------
@@ -752,7 +772,8 @@ class CLMModeling:
         The mass is calculated as
 
         .. math::
-            M(<\text{r3d}) = M_{\Delta}\;\frac{f\left(\frac{\text{r3d}}{r_{\Delta}/c_{\Delta}}\right)}{f(c_{\Delta})},
+            M(<\text{r3d}) = M_{\Delta}\;\frac{f\left(\frac{\text{r3d}}
+            {r_{\Delta}/c_{\Delta}}\right)}{f(c_{\Delta})},
 
         where :math:`f(x)` for the different models are
 
