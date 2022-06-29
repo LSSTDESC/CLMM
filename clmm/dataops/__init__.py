@@ -18,8 +18,8 @@ def compute_tangential_and_cross_components(
         validate_input=True):
     r"""Computes tangential- and cross- components for shear or ellipticity
 
-    To do so, we need the right ascension and declination of the lens and of all of the sources. We
-    also need the two shape components of all of the sources.
+    To do so, we need the right ascension and declination of the lens and of all of the sources.
+    We also need the two shape components of all of the sources.
 
     These quantities can be handed to `tangential_and_cross_components` in two ways
 
@@ -33,11 +33,11 @@ def compute_tangential_and_cross_components(
         cluster.tangential_and_cross_components()
 
     The angular separation between the source and the lens, :math:`\theta`, and the azimuthal
-    position of the source relative to the lens, :math:`\phi`, are computed within the function and
-    the angular separation is returned.
+    position of the source relative to the lens, :math:`\phi`, are computed within the function
+    and the angular separation is returned.
 
-    In the flat sky approximation, these angles are calculated using (_lens: lens, _source: source,
-    RA is from right to left)
+    In the flat sky approximation, these angles are calculated using (_lens: lens, _source:
+    source, RA is from right to left)
 
     .. math::
 
@@ -45,10 +45,10 @@ def compute_tangential_and_cross_components(
         \left(\alpha_l-\alpha_s\right)^2\cos^2(\delta_l)\\
         \tan\phi = & \frac{\delta_s-\delta_l}{\left(\alpha_l-\alpha_s\right)\cos(\delta_l)}
 
-    The tangential, :math:`g_t`, and cross, :math:`g_x`, ellipticity/shear components are calculated
-    using the two ellipticity/shear components :math:`g_1` and :math:`g_2` of the source galaxies,
-    following Eq.7 and Eq.8 in Schrabback et al. (2018), arXiv:1611:03866 which is consistent with
-    arXiv:0509252
+    The tangential, :math:`g_t`, and cross, :math:`g_x`, ellipticity/shear components are
+    calculated using the two ellipticity/shear components :math:`g_1` and :math:`g_2` of the
+    source galaxies, following Eq.7 and Eq.8 in Schrabback et al. (2018), arXiv:1611:03866 which
+    is consistent with arXiv:0509252
 
     .. math::
 
@@ -62,11 +62,11 @@ def compute_tangential_and_cross_components(
 
         \widehat{\Delta\Sigma_{t,x}} = g_{t,x} \times \Sigma_c(cosmo, z_L, z_{\text{src}})
 
-    where :math:`\Sigma_c` is the critical surface density that depends on the cosmology and on the
-    lens and source redshifts. If :math:`g_{t,x}` correspond to the shear, the above expression is
-    an accurate. However, if :math:`g_{t,x}` correspond to ellipticities or reduced shear, this
-    expression only gives an estimate :math:`\widehat{\Delta\Sigma_{t,x}}`, valid only in the weak
-    lensing regime.
+    where :math:`\Sigma_c` is the critical surface density that depends on the cosmology and on
+    the lens and source redshifts. If :math:`g_{t,x}` correspond to the shear, the above \
+    expression is an accurate. However, if :math:`g_{t,x}` correspond to ellipticities or reduced
+    shear, this expression only gives an estimate :math:`\widehat{\Delta\Sigma_{t,x}}`,
+    valid only in the weak lensing regime.
 
     Parameters
     ----------
@@ -168,8 +168,9 @@ def compute_tangential_and_cross_components(
             # source redshift pdf are provided
             if any(t_ is None for t_ in (z_lens, cosmo, pzbins, pzpdf)):
                 raise TypeError(
-                    'To compute DeltaSigma using the redshift pdz of the sources, please provide a '
-                    'i) cosmology, ii) lens redshift, iii) source redshift bins and iv) source redshift pdf')
+                    'To compute DeltaSigma using the redshift pdz of the sources, please provide'
+                    'i) cosmology, ii) lens redshift, iii) source redshift bins and '
+                    'iv) source redshift pdf')
             sigma_c = compute_critical_surface_density(cosmo, z_lens, use_pdz=use_pdz, pzbins=pzbins, pzpdf=pzpdf)
         tangential_comp *= sigma_c
         cross_comp *= sigma_c
@@ -217,29 +218,33 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, use_pdz=False, pzpdf=No
                            validate_input=True):
     r"""Computes the individual lens-source pair weights
 
-    The weights :math:`w_{ls}` express as : :math:`w_{ls} = w_{ls, \text{geo}} \times w_{ls, \text{shape}}`, following E. S. Sheldon et al.
-    (2003), arXiv:astro-ph/0312036:
+    The weights :math:`w_{ls}` express as : :math:`w_{ls} = w_{ls, \text{geo}} \times w_{ls,
+    \text{shape}}`, following E. S. Sheldon et al. (2003), arXiv:astro-ph/0312036:
 
-    1. The geometrical weight :math:`w_{ls, \text{geo}}` depends on lens and source redshift information. When considering only
-    redshift point estimates, the weights read
+    1. The geometrical weight :math:`w_{ls, \text{geo}}` depends on lens and source redshift
+    information. When considering only redshift point estimates, the weights read
 
         .. math::
 
             w_{ls, \text{geo}} = \Sigma_c(\text{cosmo}, z_L, z_{\text{src}})^{-2}\;.
 
-        If the redshift pdf of each source, :math:`p_{\text{photoz}}(z_s)`, is known, the weights are computed instead as
+        If the redshift pdf of each source, :math:`p_{\text{photoz}}(z_s)`, is known,
+        the weights are computed instead as
 
         .. math::
 
-            w_{ls, \text{geo}} = \left[\int_{\delta + z_L} dz_s p_{\text{photoz}}(z_s) \Sigma_c(\text{cosmo}, z_L, z_s)^{-1}\right]^2
+            w_{ls, \text{geo}} = \left[\int_{\delta + z_L} dz_s p_{\text{photoz}}(z_s)
+            \Sigma_c(\text{cosmo}, z_L, z_s)^{-1}\right]^2
 
         for the tangential shear, the weights :math:`w_{ls, \text{geo}}` are 1.
 
-    2. The shape weight :math:`w_{ls,{\text{shape}}}` depends on shapenoise and/or shape measurement errors
+    2. The shape weight :math:`w_{ls,{\text{shape}}}` depends on shapenoise and/or shape
+    measurement errors
 
         .. math::
 
-            w_{ls, \text{shape}} = 1/(\sigma_{\text{shapenoise}}^2 + \sigma_{\text{measurement}}^2)
+            w_{ls, \text{shape}} = 1/(\sigma_{\text{shapenoise}}^2 +
+            \sigma_{\text{measurement}}^2)
 
 
     3. The probability for a galaxy to be in the background of the cluster is defined by:
@@ -320,7 +325,8 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, use_pdz=False, pzpdf=No
         w_ls_geo = 1.
     else:
         if sigma_c is None:
-            sigma_c = compute_critical_surface_density(cosmo, z_lens, z_source=z_source, use_pdz=use_pdz, pzbins=pzbins, pzpdf=pzpdf)
+            sigma_c = compute_critical_surface_density(
+                cosmo, z_lens, z_source=z_source, use_pdz=use_pdz, pzbins=pzbins, pzpdf=pzpdf)
         w_ls_geo = 1./sigma_c**2
 
     #computing w_ls_shape
@@ -331,11 +337,13 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, use_pdz=False, pzpdf=No
 
     if use_shape_noise:
         if shape_component1 is None or shape_component2 is None:
-            raise ValueError('With the shape noise option, the source shapes `shape_component_{1,2}` must be specified')
+            raise ValueError('With the shape noise option, the source shapes '
+                             '`shape_component_{1,2}` must be specified')
         err_e2 += np.std(shape_component1)**2 + np.std(shape_component2)**2
     if use_shape_error:
         if shape_component1_err is None or shape_component2_err is None:
-            raise ValueError('With the shape error option, the source shapes errors`shape_component_err{1,2}` must be specified')
+            raise ValueError('With the shape error option, the source shapes '
+                             'errors`shape_component_err{1,2}` must be specified')
         err_e2 += shape_component1_err**2
         err_e2 += shape_component2_err**2
     w_ls_shape = np.ones(len(shape_component1))
@@ -522,8 +530,9 @@ def make_radial_profile(components, angsep, angsep_units, bin_units,
     Returns
     -------
     profile : GCData
-        Output table containing the radius grid points, the profile of the components `p_i`, errors
-        `p_i_err` and number of sources.  The errors are defined as the standard errors in each bin.
+        Output table containing the radius grid points, the profile of the components `p_i`,
+        errors `p_i_err` and number of sources. The errors are defined as the standard errors
+        in each bin.
     binnumber: 1-D ndarray of ints, optional
         Indices of the bins (corresponding to `xbins`) in which each value
         of `xvals` belongs.  Same length as `yvals`.  A binnumber of `i` means the
