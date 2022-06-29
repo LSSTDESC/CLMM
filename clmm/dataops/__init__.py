@@ -63,7 +63,7 @@ def compute_tangential_and_cross_components(
         \widehat{\Delta\Sigma_{t,x}} = g_{t,x} \times \Sigma_c(cosmo, z_L, z_{\text{src}})
 
     where :math:`\Sigma_c` is the critical surface density that depends on the cosmology and on
-    the lens and source redshifts. If :math:`g_{t,x}` correspond to the shear, the above \
+    the lens and source redshifts. If :math:`g_{t,x}` correspond to the shear, the above
     expression is an accurate. However, if :math:`g_{t,x}` correspond to ellipticities or reduced
     shear, this expression only gives an estimate :math:`\widehat{\Delta\Sigma_{t,x}}`,
     valid only in the weak lensing regime.

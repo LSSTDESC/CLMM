@@ -574,12 +574,10 @@ class CLMModeling:
             * `single_plane` (default): all sources at one redshift (if `z_source` is a float) or
               known individual source galaxy redshifts (if `z_source` is array_like and `r_proj`
               is a float).
-
-            * `applegate14`: use the equation (6) in Weighing the Giants - III (Applegate et al. 
+            * `applegate14`: use the equation (6) in Weighing the Giants - III (Applegate et al.
               2014; https://arxiv.org/abs/1208.0605) to evaluate tangential reduced shear.
-
             * `schrabback18`: use the equation (12) in Cluster Mass Calibration at High Redshift
-              (Schrabback et al. 2017; https://arxiv.org/abs/1611.03866) to evaluate tangential 
+              (Schrabback et al. 2017; https://arxiv.org/abs/1611.03866) to evaluate tangential
               reduced shear.
 
         z_distrib_func: one-parameter function
