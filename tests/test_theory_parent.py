@@ -24,8 +24,10 @@ def test_unimplemented(modeling_data):
     assert_raises(NotImplementedError, mod.eval_excess_surface_density, [0.3], 0.3)
     assert_raises(NotImplementedError, mod.eval_tangential_shear, [0.3], 0.3, 0.5)
     assert_raises(NotImplementedError, mod.eval_reduced_tangential_shear, [0.3], 0.3, 0.5)
-    assert_raises(NotImplementedError, mod.eval_reduced_tangential_shear, [0.3], 0.3, 0.5, 'applegate14', 0.6, 0.4)
-    assert_raises(NotImplementedError, mod.eval_reduced_tangential_shear, [0.3], 0.3, 0.5, 'schrabback18', 0.6, 0.4)
+    assert_raises(NotImplementedError, mod.eval_reduced_tangential_shear, [0.3], 0.3, 0.5,
+                  'applegate14', 0.6, 0.4)
+    assert_raises(NotImplementedError, mod.eval_reduced_tangential_shear, [0.3], 0.3, 0.5,
+                  'schrabback18', 0.6, 0.4)
     assert_raises(NotImplementedError, mod.eval_convergence, [0.3], 0.3, 0.5)
     assert_raises(NotImplementedError, mod.eval_magnification, [0.3], 0.3, 0.5)
 
