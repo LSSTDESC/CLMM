@@ -143,7 +143,7 @@ class CLMModeling:
         alpha: float
         """
         if self.halo_profile_model!='einasto' or self.backend!='nc':
-            raise NotImplementedError("The Einasto slope cannot be set for your combination of "+
+            raise NotImplementedError("The Einasto slope cannot be set for your combination of "
                                       "profile choice or modeling backend.")
         else:
             if self.validate_input:
@@ -276,7 +276,7 @@ class CLMModeling:
                                                        show_warning=show_warning)
         else:
             if pzbins is None or pzpdf is None:
-                raise ValueError('Redshift bins and source redshift pdf must be '+
+                raise ValueError('Redshift bins and source redshift pdf must be '
                                  'provided when use_pdz is True')
             else:
                 def inv_sigmac(redshift):
