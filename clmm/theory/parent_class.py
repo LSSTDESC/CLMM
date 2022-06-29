@@ -265,8 +265,8 @@ class CLMModeling:
                 raise ValueError('Redshift bins and source redshift pdf must be provided when use_pdz is True')
             else:
                 def inv_sigmac(redshift):
-                    return 1./self._eval_critical_surface_density(z_len=z_len, z_src=redshift)
-                return 1./_integ_pzfuncs(pzpdf, pzbins, 0., kernel=inv_sigmac)
+                    return 1./self._eval_critical_surface_density(z_len=z_len, z_src=redshift)        
+                return 1./_integ_pzfuncs(pzpdf, pzbins, kernel=inv_sigmac, is_unique_pzbins=np.all(pzbins==pzbins[0]))
 
     def _eval_critical_surface_density(self, z_len, z_src):
         return self.cosmo.eval_sigma_crit(z_len, z_src)
