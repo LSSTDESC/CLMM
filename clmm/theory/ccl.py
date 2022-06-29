@@ -124,10 +124,12 @@ class CCLCLMModeling(CLMModeling):
     def _eval_surface_density(self, r_proj, z_cl):
         a_cl = self.cosmo.get_a_from_z(z_cl)
         if self.halo_profile_model == 'nfw':
-            return self.hdpm.projected(self.cosmo.be_cosmo, r_proj/a_cl, self.mdelta, a_cl, self.mdef)*self.cor_factor/a_cl**2
+            return self.hdpm.projected(self.cosmo.be_cosmo, r_proj/a_cl, self.mdelta,
+                                       a_cl, self.mdef)*self.cor_factor/a_cl**2
         else:
             rtmp = np.geomspace(np.min(r_proj)/10., np.max(r_proj)*10., 1000)
-            tmp = self.hdpm.projected (self.cosmo.be_cosmo, rtmp/a_cl, self.mdelta, a_cl, self.mdef)*self.cor_factor/a_cl**2
+            tmp = self.hdpm.projected (self.cosmo.be_cosmo, rtmp/a_cl, self.mdelta,
+                                       a_cl, self.mdef)*self.cor_factor/a_cl**2
             ptf = interp1d(np.log(rtmp), np.log(tmp), bounds_error=False, fill_value=-100)
             return np.exp(ptf(np.log(r_proj)))  
 
@@ -135,10 +137,12 @@ class CCLCLMModeling(CLMModeling):
         """"eval mean surface density"""
         a_cl = self.cosmo.get_a_from_z(z_cl)
         if self.halo_profile_model =='nfw':
-            return self.hdpm.cumul2d(self.cosmo.be_cosmo, r_proj/a_cl, self.mdelta, self.cosmo.get_a_from_z(z_cl), self.mdef)*self.cor_factor/a_cl**2
+            return self.hdpm.cumul2d(self.cosmo.be_cosmo, r_proj/a_cl, self.mdelta,
+                                     a_cl, self.mdef)*self.cor_factor/a_cl**2
         else:
             rtmp = np.geomspace(np.min(r_proj)/10., np.max(r_proj)*10., 1000)
-            tmp = self.hdpm.cumul2d (self.cosmo.be_cosmo, rtmp/a_cl, self.mdelta, a_cl, self.mdef)*self.cor_factor/a_cl**2
+            tmp = self.hdpm.cumul2d (self.cosmo.be_cosmo, rtmp/a_cl, self.mdelta,
+                                     a_cl, self.mdef)*self.cor_factor/a_cl**2
             ptf = interp1d(np.log(rtmp), np.log(tmp), bounds_error=False, fill_value=-100)
             return np.exp(ptf(np.log(r_proj)))
 
@@ -148,10 +152,12 @@ class CCLCLMModeling(CLMModeling):
         r_cor = r_proj/a_cl
 
         if self.halo_profile_model =='nfw':
-            return (self.hdpm.cumul2d(self.cosmo.be_cosmo, r_cor, self.mdelta, self.cosmo.get_a_from_z(z_cl), self.mdef)-
-                    self.hdpm.projected(self.cosmo.be_cosmo, r_cor, self.mdelta, self.cosmo.get_a_from_z(z_cl), self.mdef))*self.cor_factor/a_cl**2
+            return (self.hdpm.cumul2d(self.cosmo.be_cosmo, r_cor, self.mdelta, a_cl, self.mdef)-
+                    self.hdpm.projected(self.cosmo.be_cosmo, r_cor, self.mdelta,
+                                        a_cl, self.mdef))*self.cor_factor/a_cl**2
         else:
-            return self.eval_mean_surface_density(r_proj, z_cl) - self.eval_surface_density(r_proj, z_cl)
+            return (self.eval_mean_surface_density(r_proj, z_cl)-
+                    self.eval_surface_density(r_proj, z_cl))
 
     def _eval_convergence_core(self, r_proj, z_cl, z_src):
         """eval convergence"""
