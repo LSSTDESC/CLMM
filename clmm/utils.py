@@ -11,7 +11,8 @@ from scipy.interpolate import interp1d
 
 
 def compute_nfw_boost(rvals, rs=1000, b0=0.1) :
-    """ Given a list of rvals, and optional rs and b0, return the corresponding boost factor at each rval
+    """ Given a list of rvals, and optional rs and b0, return the corresponding boost factor
+    at each rval
 
     Parameters
     ----------
@@ -23,7 +24,7 @@ def compute_nfw_boost(rvals, rs=1000, b0=0.1) :
 
     Returns
     -------
-    boost_factors : array_like
+    boost_factors : numpy.ndarray
 
     """
 
@@ -33,7 +34,9 @@ def compute_nfw_boost(rvals, rs=1000, b0=0.1) :
 
         radicand = x**2-1
 
-        finternal = -1j *  np.log( (1 + np.lib.scimath.sqrt(radicand)*1j) / (1 - np.lib.scimath.sqrt(radicand)*1j) ) / ( 2 * np.lib.scimath.sqrt(radicand) )
+        finternal = -1j * np.log((1 + np.lib.scimath.sqrt(radicand)*1j)/
+                                 (1 - np.lib.scimath.sqrt(radicand)*1j))/\
+        (2 * np.lib.scimath.sqrt(radicand))
 
         return np.nan_to_num(finternal, copy=False, nan=1.0).real
 
@@ -41,7 +44,8 @@ def compute_nfw_boost(rvals, rs=1000, b0=0.1) :
 
 
 def compute_powerlaw_boost(rvals, rs=1000, b0=0.1, alpha=-1.0) :
-    """  Given a list of rvals, and optional rs and b0, and alpha, return the corresponding boost factor at each rval
+    """  Given a list of `rvals`, and optional `rs` and `b0`, and `alpha`,
+    return the corresponding boost factor at each `rval`
 
     Parameters
     ----------
@@ -55,7 +59,7 @@ def compute_powerlaw_boost(rvals, rs=1000, b0=0.1, alpha=-1.0) :
 
     Returns
     -------
-    boost_factors : array_like
+    boost_factors : numpy.ndarray
 
     """
 
@@ -81,7 +85,7 @@ def correct_sigma_with_boost_values(rvals, sigma_vals, boost_factors):
 
     Returns
     -------
-    sigma_corrected : array_like
+    sigma_corrected : numpy.ndarray
         correted radial profile
     """
 
@@ -115,7 +119,7 @@ def correct_sigma_with_boost_model(rvals, sigma_vals, boost_model='nfw_boost', *
     return sigma_corrected
 
 def compute_radial_averages(xvals, yvals, xbins, yerr=None, error_model='ste', weights=None):
-    """ Given a list of xvals, yvals and bins, sort into bins. If xvals or yvals
+    """ Given a list of `xvals`, `yvals` and bins, sort into bins. If `xvals` or `yvals`
     contain non-finite values, these are filtered.
 
     Parameters
@@ -308,10 +312,11 @@ def convert_units(dist1, unit1, unit2, redshift=None, cosmo=None):
 
 
 def convert_shapes_to_epsilon(shape_1, shape_2, shape_definition='epsilon', kappa=0):
-    r""" Convert shape components 1 and 2 appropriately to make them estimators of the reduced shear
-    once averaged.  The shape 1 and 2 components may correspond to ellipticities according the
-    :math:`\epsilon`- or :math:`\chi`-definition, but also to the 1 and 2 components of the shear.
-    See Bartelmann & Schneider 2001 for details (https://arxiv.org/pdf/astro-ph/9912508.pdf).
+    r""" Convert shape components 1 and 2 appropriately to make them estimators of the
+    reduced shear once averaged.  The shape 1 and 2 components may correspond to ellipticities
+    according the :math:`\epsilon`- or :math:`\chi`-definition, but also to the 1 and 2 components
+    of the shear. See Bartelmann & Schneider 2001 for details
+    (https://arxiv.org/pdf/astro-ph/9912508.pdf).
 
     The :math:`\epsilon`-ellipticity is a direct estimator of
     the reduced shear. The shear :math:`\gamma` may be converted to reduced shear :math:`g` if the
@@ -323,13 +328,14 @@ def convert_shapes_to_epsilon(shape_1, shape_2, shape_definition='epsilon', kapp
     .. math::
      g=\frac{\gamma}{1-\kappa}
 
-    - If `shape_definition = 'chi'`, this function returns the corresponding `epsilon` ellipticities
+    - If `shape_definition = 'chi'`, this function returns the corresponding `epsilon`
+      ellipticities
 
     - If `shape_definition = 'shear'`, it returns the corresponding reduced shear, given the
       convergence `kappa`
 
-    - If `shape_definition = 'epsilon'` or `'reduced_shear'`, it returns them as is as no conversion
-      is needed.
+    - If `shape_definition = 'epsilon'` or `'reduced_shear'`, it returns them as is as no
+      conversion is needed.
 
     Parameters
     ----------
@@ -338,8 +344,8 @@ def convert_shapes_to_epsilon(shape_1, shape_2, shape_definition='epsilon', kapp
     shape_2 : array_like
         Input shapes or shears along secondary axis (g2 or e2)
     shape_definition : str
-        Definition of the input shapes, can be ellipticities 'epsilon' or 'chi' or shears 'shear' or
-        'reduced_shear'
+        Definition of the input shapes, can be ellipticities 'epsilon' or 'chi' or shears 'shear'
+        or 'reduced_shear'
     kappa : array_like
         Convergence for transforming to a reduced shear. Default is 0
 
@@ -715,7 +721,8 @@ def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_dist
     r"""Mean value of the geometric lensing efficicency
 
     .. math::
-       \left<\beta\right> = \frac{\sum_{z = z_{min}}^{z_{max}}\beta(z)p(z)}{\sum_{z = z_{min}}^{z_{max}}p(z)}
+       \left<\beta\right> = \frac{\sum_{z = z_{min}}^{z_{max}}\beta(z)p(z)}{\sum_{z =
+       z_{min}}^{z_{max}}p(z)}
 
     Parameters
     ----------
@@ -724,17 +731,14 @@ def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_dist
     z_inf: float
             Redshift at infinity
     z_distrib_func: one-parameter function
-            Redshift distribution function. Default is \
-            Chang et al (2013) distribution function.
+            Redshift distribution function. Default is Chang et al (2013) distribution function.
     zmin: float
-            Minimum redshift to be set as the source of the galaxy \
-            when performing the sum.
+            Minimum redshift to be set as the source of the galaxy when performing the sum.
     zmax: float
-            Maximum redshift to be set as the source of the galaxy \
-            when performing the sum.
+            Maximum redshift to be set as the source of the galaxy when performing the sum.
     delta_z_cut: float
-            Redshift interval to be summed with :math:`z_{cl}` to return \
-            :math:`z_{min}`. This feature is not used if :math:`z_{min}` is provided by the user.
+            Redshift interval to be summed with :math:`z_{cl}` to return :math:`z_{min}`.
+            This feature is not used if :math:`z_{min}` is provided by the user.
     cosmo: Cosmology
         Cosmology object
 
@@ -758,7 +762,8 @@ def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=Non
     r"""Mean value of the geometric lensing efficicency ratio
 
     .. math::
-       \left<\beta_s\right> =\frac{\sum_{z = z_{min}}^{z_{max}}\beta_s(z)p(z)}{\sum_{z = z_{min}}^{z_{max}}p(z)}
+       \left<\beta_s\right> =\frac{\sum_{z = z_{min}}^{z_{max}}\beta_s(z)p(z)}
+       {\sum_{z = z_{min}}^{z_{max}}p(z)}
 
     Parameters
     ----------
@@ -767,17 +772,14 @@ def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=Non
     z_inf: float
             Redshift at infinity
     z_distrib_func: one-parameter function
-            Redshift distribution function. Default is \
-            Chang et al (2013) distribution function.
+            Redshift distribution function. Default is Chang et al (2013) distribution function.
     zmin: float
-            Minimum redshift to be set as the source of the galaxy \
-            when performing the sum.
+            Minimum redshift to be set as the source of the galaxy when performing the sum.
     zmax: float
-            Minimum redshift to be set as the source of the galaxy \
-            when performing the sum.
+            Minimum redshift to be set as the source of the galaxy when performing the sum.
     delta_z_cut: float
-            Redshift interval to be summed with $z_cl$ to return \
-            :math:`z_{min}`. This feature is not used if :math:`z_{min}` is provided by the user.
+            Redshift interval to be summed with $z_cl$ to return :math:`z_{min}`. This feature is
+            not used if :math:`z_{min}` is provided by the user.
     cosmo: Cosmology
         Cosmology object
 
@@ -801,7 +803,8 @@ def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, z
     r"""Mean square value of the geometric lensing efficiency ratio
 
     .. math::
-       \left<\beta_s^2\right> =\frac{\sum_{z = z_{min}}^{z_{max}}\beta_s^2(z)p(z)}{\sum_{z = z_{min}}^{z_{max}}p(z)}
+       \left<\beta_s^2\right> =\frac{\sum_{z = z_{min}}^{z_{max}}\beta_s^2(z)p(z)}
+       {\sum_{z = z_{min}}^{z_{max}}p(z)}
 
     Parameters
     ----------
@@ -810,17 +813,14 @@ def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, z
     z_inf: float
             Redshift at infinity
     z_distrib_func: one-parameter function
-            Redshift distribution function. Default is \
-            Chang et al (2013) distribution function.
+            Redshift distribution function. Default is Chang et al (2013) distribution function.
     zmin: float
-            Minimum redshift to be set as the source of the galaxy \
-            when performing the sum.
+            Minimum redshift to be set as the source of the galaxy when performing the sum.
     zmax: float
-            Minimum redshift to be set as the source of the galaxy \
-            when performing the sum.
+            Minimum redshift to be set as the source of the galaxy when performing the sum.
     delta_z_cut: float
-            Redshift interval to be summed with :math:`z_{cl}` to return \
-            :math:`z_{min}`. This feature is not used if :math:`z_{min}` is provided by the user.
+            Redshift interval to be summed with :math:`z_{cl}` to return :math:`z_{min}`.
+            This feature is not used if :math:`z_{min}` is provided by the user.
     cosmo: Cosmology
         Cosmology object
 
@@ -842,8 +842,8 @@ def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, z
 
 def _chang_z_distrib(redshift, is_cdf=False):
     """
-    A private function that returns the Chang et al (2013) unnormalized galaxy redshift distribution
-    function, with the fiducial set of parameters.
+    A private function that returns the Chang et al (2013) unnormalized galaxy redshift
+    distribution function, with the fiducial set of parameters.
 
     Parameters
     ----------
@@ -858,7 +858,8 @@ def _chang_z_distrib(redshift, is_cdf=False):
     """
     alpha, beta, redshift0 = 1.24, 1.01, 0.51
     if is_cdf:
-        return redshift0**(alpha+1)*gammainc((alpha+1)/beta, (redshift/redshift0)**beta)/beta*gamma((alpha+1)/beta)
+        return redshift0**(alpha+1)*gammainc((alpha+1)/beta, (redshift/redshift0)**beta)/\
+    beta*gamma((alpha+1)/beta)
     else:
         return (redshift**alpha)*np.exp(-(redshift/redshift0)**beta)
 
@@ -880,6 +881,7 @@ def _srd_z_distrib(redshift, is_cdf=False):
     """
     alpha, beta, redshift0 = 2., 0.9, 0.28
     if is_cdf:
-        return redshift0**(alpha+1)*gammainc((alpha+1)/beta, (redshift/redshift0)**beta)/beta*gamma((alpha+1)/beta)
+        return redshift0**(alpha+1)*gammainc((alpha+1)/beta, (redshift/redshift0)**beta)/\
+    beta*gamma((alpha+1)/beta)
     else:
         return (redshift**alpha)*np.exp(-(redshift/redshift0)**beta)
