@@ -609,7 +609,7 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1., is_uniqu
         kernel_matrix = kernel(z_grid)
     else:
         # OK perform the integration directly from the pdf binning common to all galaxies
-        z_grid = pzbins[0]
+        z_grid = pzbins[0][pzbins[0]>=zmin and pzbins[0]<=zmax]
         pz_matrix = pzpdf
         kernel_matrix = kernel(z_grid)
 
