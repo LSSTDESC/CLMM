@@ -23,7 +23,7 @@ def compute_nfw_boost(rvals, rs=1000, b0=0.1) :
 
     Returns
     -------
-    boost_factors : array_like
+    boost_factors : numpy.ndarray
 
     """
 
@@ -55,7 +55,7 @@ def compute_powerlaw_boost(rvals, rs=1000, b0=0.1, alpha=-1.0) :
 
     Returns
     -------
-    boost_factors : array_like
+    boost_factors : numpy.ndarray
 
     """
 
@@ -79,7 +79,7 @@ def correct_sigma_with_boost_values(sigma_vals, boost_factors):
 
     Returns
     -------
-    sigma_corrected : array_like
+    sigma_corrected : numpy.ndarray
         correted radial profile
     """
 
@@ -103,7 +103,7 @@ def correct_sigma_with_boost_model(rvals, sigma_vals, boost_model='nfw_boost', *
 
     Returns
     -------
-    sigma_corrected : array_like
+    sigma_corrected : numpy.ndarray
         correted radial profile
     """
     boost_model_func = boost_models[boost_model]
