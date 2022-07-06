@@ -479,7 +479,7 @@ def make_radial_profile(components, angsep, angsep_units, bin_units,
 
     2. Call it as a method of a GalaxyCluster instance::
 
-        cluster.make_radial_profile('radians', 'radians')
+        cluster.make_radial_profile('radians')
 
     Parameters
     ----------

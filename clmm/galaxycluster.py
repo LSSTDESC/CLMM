@@ -355,7 +355,6 @@ class GalaxyCluster():
         Calls `clmm.dataops.make_radial_profile` with the following arguments:
         components: `galcat` components (tan_component_in, cross_component_in, z)
         angsep: `galcat` theta
-        angsep_units: radians
         bin_units: `input` bin_units
         bins: `input` bins
         include_empty_bins: `input` include_empty_bins
@@ -364,9 +363,6 @@ class GalaxyCluster():
 
         Parameters
         ----------
-        angsep_units : str
-            Units of the calculated separation of the source galaxies
-            Allowed Options = ["radians"]
         bin_units : str
             Units to use for the radial bins of the shear profile
             Allowed Options = ["radians", "deg", "arcmin", "arcsec", "kpc", "Mpc"]
@@ -414,6 +410,9 @@ class GalaxyCluster():
         overwrite: bool, optional
             Overwrite profile table.
             Default True
+        weights: array-like, optional
+            Array of individual galaxy weights. If specified, the radial binned profile is
+            computed using a weighted average
 
         Returns
         -------
