@@ -346,7 +346,8 @@ class GalaxyCluster():
                             tan_component_out='gt', cross_component_out='gx',
                             tan_component_in_err=None, cross_component_in_err=None,
                             include_empty_bins=False, gal_ids_in_bins=False,
-                            add=True, table_name='profile', overwrite=True, weights=None):
+                            add=True, table_name='profile', overwrite=True,
+                            weights=False, weights_name='w_ls'):
         r"""Compute the shear or ellipticity profile of the cluster
 
         We assume that the cluster object contains information on the cross and
@@ -411,9 +412,12 @@ class GalaxyCluster():
         overwrite: bool, optional
             Overwrite profile table.
             Default True
-        weights: array-like, optional
-            Array of individual galaxy weights. If specified, the radial binned profile is
-            computed using a weighted average
+        weights: bool, optional
+            Use the column `weights_name` in `galcat` as the weights
+            Default: False
+        weights_name: str, optional
+            Name of the weights column in `galcat`
+            Default: 'w_ls'
 
         Returns
         -------
@@ -442,7 +446,7 @@ class GalaxyCluster():
             cosmo=cosmo, z_lens=self.z, validate_input=self.validate_input,
             components_error=[None if n is None else self.galcat[n].data
                               for n in (tan_component_in_err, cross_component_in_err, None)],
-            weights=weights
+            weights=self.galcat[weights_name].data if weights else None
             )
         # Reaname table columns
         for i, name in enumerate([tan_component_out, cross_component_out, 'z']):
