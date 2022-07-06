@@ -412,8 +412,8 @@ class GalaxyCluster():
         overwrite: bool, optional
             Overwrite profile table.
             Default True
-        weights: bool, optional
-            Use the column `weights_name` in `galcat` as the weights
+        use_weights: bool, optional
+            If True, use the column `weights_name` in `galcat` as the weights
             Default: False
         weights_name: str, optional
             Name of the weights column in `galcat`
