@@ -446,7 +446,7 @@ class GalaxyCluster():
             cosmo=cosmo, z_lens=self.z, validate_input=self.validate_input,
             components_error=[None if n is None else self.galcat[n].data
                               for n in (tan_component_in_err, cross_component_in_err, None)],
-            weights=self.galcat[weights_name].data if weights else None
+            weights=self.galcat[weights_name].data if use_weights else None
             )
         # Reaname table columns
         for i, name in enumerate([tan_component_out, cross_component_out, 'z']):
