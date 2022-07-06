@@ -114,7 +114,7 @@ class GalaxyCluster():
         use_pdz : bool
             Flag to specify the use of the photoz pdf. If `False` (default), `sigma_c` is computed using the redshift point estimates of the
             `z` column of the `galcat` table. If `True`, `sigma_c` is computed as 1/<1/Sigma_crit>, where the average is performed using
-            the individual galaxy redshift pdf. In that case, the `galcat` table should have `pzbins` 
+            the individual galaxy redshift pdf. In that case, the `galcat` table should have `pzbins`
             and `pzpdf` columns.
 
         Returns
@@ -127,7 +127,7 @@ class GalaxyCluster():
             if self.z is None:
                 raise TypeError('Cluster\'s redshift is None. Cannot compute Sigma_crit')
             if use_pdz is False and 'z' not in self.galcat.columns:
-                raise TypeError("Galaxy catalog missing the redshift column (which should be called 'z')." 
+                raise TypeError("Galaxy catalog missing the redshift column (which should be called 'z')."
                                 "Cannot compute Sigma_crit.")
             if use_pdz and ('pzbins' not in self.galcat.columns or 'pzpdf' not in self.galcat.columns):
                 raise TypeError("Galaxy catalog missing the redshift distribution information. Need to have both a 'pzbins' and 'pzpdf' columns." 
@@ -230,7 +230,7 @@ class GalaxyCluster():
         cols = self._get_input_galdata(
             {'ra_source':'ra', 'dec_source':'dec',
              'shear1': shape_component1, 'shear2': shape_component2})
-        
+
         if is_deltasigma:
             self.add_critical_surface_density(cosmo, use_pdz=use_pdz)
             cols['sigma_c'] = self.galcat['sigma_c']
@@ -252,11 +252,11 @@ class GalaxyCluster():
         Parameters
         ----------
         use_pdz : bool
-            If True, computes the probability using the photoz pdf 
+            If True, computes the probability using the photoz pdf
         add : bool
             If True, add background probability columns to the galcat table
         p_background_name : str, optional
-            User-defined name for the background probability column to be stored 
+            User-defined name for the background probability column to be stored
             in the galcat table (i.e., if add=True)
 
         Returns
@@ -330,7 +330,7 @@ class GalaxyCluster():
         if use_shape_error:
             required_cols += ['shape_component1_err', 'shape_component2_err']
         cols = self._get_input_galdata(col_dict, required_cols)
-          
+
         # computes weights
         w_ls = compute_galaxy_weights(
             self.z, cosmo, use_pdz=use_pdz, use_shape_noise=use_shape_noise, use_shape_error=use_shape_error,

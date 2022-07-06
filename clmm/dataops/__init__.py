@@ -198,7 +198,7 @@ def compute_background_probability(z_lens, z_source=None, use_pdz=False, pzpdf=N
     if validate_input:
         validate_argument(locals(), 'z_lens', float, argmin=0, eqmin=True)
         validate_argument(locals(), 'z_source', 'float_array', argmin=0, eqmin=True, none_ok=True)
-    
+
     if use_pdz is False:
         if z_source is None:
             raise ValueError('z_source must be provided.')  
@@ -207,7 +207,7 @@ def compute_background_probability(z_lens, z_source=None, use_pdz=False, pzpdf=N
         if (pzpdf is None or pzbins is None):
             raise ValueError('pzbins must be provided with pzpdf.')
         p_background = _integ_pzfuncs(pzpdf, pzbins, z_lens)
-    
+
     return p_background
 
 def compute_galaxy_weights(z_lens, cosmo, z_source=None, use_pdz=False, pzpdf=None, pzbins=None,
@@ -270,17 +270,17 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, use_pdz=False, pzpdf=No
     pzbins : array, optional
         Redshift axis on which the individual photoz pdf is tabulated. Required if `use_pdz=True`
     use_shapen_oise: bool
-        If `True` shape noise is included in the weight computation. It then requires 
+        If `True` shape noise is included in the weight computation. It then requires
         `shape_componenet{1,2}` to be provided. Default: False.
     shape_component1: array
-        The measured shear (or reduced shear or ellipticity) of the source galaxies, 
+        The measured shear (or reduced shear or ellipticity) of the source galaxies,
         used if `use_shapenoise=True`
     shape_component2: array
         The measured shear (or reduced shear or ellipticity) of the source galaxies,
         used if `use_shapenoise=True`
     use_shape_error: bool
-        If `True` shape errors are included in the weight computation. It then requires 
-        shape_component{1,2}_err` to be provided. Default: False.    
+        If `True` shape errors are included in the weight computation. It then requires
+        shape_component{1,2}_err` to be provided. Default: False.
     shape_component1_err: array
         The measurement error on the 1st-component of ellipticity of the source galaxies,
         used if `use_shape_error=True`
@@ -328,7 +328,7 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, use_pdz=False, pzpdf=No
         err_e2 = np.zeros(len(z_source))
     else:
         err_e2 = np.zeros(len(pzpdf))
-    
+
     if use_shape_noise:
         if shape_component1 is None or shape_component2 is None:
             raise ValueError('With the shape noise option, the source shapes `shape_component_{1,2}` must be specified')
