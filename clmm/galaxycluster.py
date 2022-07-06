@@ -355,6 +355,7 @@ class GalaxyCluster():
         Calls `clmm.dataops.make_radial_profile` with the following arguments:
         components: `galcat` components (tan_component_in, cross_component_in, z)
         angsep: `galcat` theta
+        angsep_units: 'radians'
         bin_units: `input` bin_units
         bins: `input` bins
         include_empty_bins: `input` include_empty_bins
