@@ -347,7 +347,7 @@ class GalaxyCluster():
                             tan_component_in_err=None, cross_component_in_err=None,
                             include_empty_bins=False, gal_ids_in_bins=False,
                             add=True, table_name='profile', overwrite=True,
-                            weights=False, weights_name='w_ls'):
+                            use_weights=False, weights_name='w_ls'):
         r"""Compute the shear or ellipticity profile of the cluster
 
         We assume that the cluster object contains information on the cross and
