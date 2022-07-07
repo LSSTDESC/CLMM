@@ -928,12 +928,11 @@ def _draw_random_points_from_tab_distribution(x_tab, pdf_tab, nobj=1, xmin=None,
     pdf_tab = np.array(pdf_tab)
     # Compute the tabulated cumulative distribution
     if xmin:
-        x_tab = x_tab[x_tab>=xmin]
         pdf_tab = pdf_tab[x_tab>=xmin]
+        x_tab = x_tab[x_tab>=xmin]
     if xmin:
-        x_tab = x_tab[x_tab<=xmax]
         pdf_tab = pdf_tab[x_tab<=xmax]
-
+        x_tab = x_tab[x_tab<=xmax]
     cdf = np.array([simps(pdf_tab[:j], x_tab[:j]) for j in range(1, len(x_tab)+1)])
     # Normalise it
     cdf /= max(cdf)
