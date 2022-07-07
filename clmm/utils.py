@@ -930,7 +930,7 @@ def _draw_random_points_from_tab_distribution(x_tab, pdf_tab, nobj=1, xmin=None,
     if xmin:
         pdf_tab = pdf_tab[x_tab>=xmin]
         x_tab = x_tab[x_tab>=xmin]
-    if xmin:
+    if xmax:
         pdf_tab = pdf_tab[x_tab<=xmax]
         x_tab = x_tab[x_tab<=xmax]
     cdf = np.array([simps(pdf_tab[:j], x_tab[:j]) for j in range(1, len(x_tab)+1)])
