@@ -6,7 +6,7 @@ from scipy.stats import binned_statistic
 from scipy.special import gamma, gammainc
 from astropy import units as u
 from .constants import Constants as const
-from scipy.integrate import quad
+from scipy.integrate import quad, simps
 from scipy.interpolate import interp1d
 
 
@@ -871,3 +871,68 @@ def _srd_z_distrib(redshift, is_cdf=False):
         return redshift0**(alpha+1)*gammainc((alpha+1)/beta, (redshift/redshift0)**beta)/beta*gamma((alpha+1)/beta)
     else:
         return (redshift**alpha)*np.exp(-(redshift/redshift0)**beta)
+
+    
+def _draw_random_points_from_distribution(xmin, xmax, nobj, dist_func, xstep=0.001):
+    """Draw random points with a given distribution.
+
+    Uses a sampling technique found in Numerical Recipes in C, Chap 7.2: Transformation Method.
+
+    Parameters
+    ----------
+    xmin : float
+        The minimum source redshift allowed.
+    xmax : float, optional
+        If source redshifts are drawn, the maximum source redshift
+    nobj : float
+        Number of galaxies to generate
+    dist_func : function
+        Function of the required distribution
+    xstep : float
+        Size of the step to interpolate the culmulative distribution.
+
+    Returns
+    -------
+    ndarray
+        Random points with dist_func distribution
+    """
+    steps = int((xmax-xmin)/xstep)+2
+    xdomain = np.linspace(xmin, xmax, steps)
+    # Cumulative probability function of the redshift distribution
+    #probdist = np.vectorize(lambda zmax: integrate.quad(dist_func, xmin, zmax)[0])(xdomain)
+    probdist = dist_func(xdomain, is_cdf=True)-dist_func(xmin, is_cdf=True)
+    # Get random values for probdist
+    uniform_deviate = np.random.uniform(probdist.min(), probdist.max(), nobj)
+    return interp1d(probdist, xdomain, kind='linear')(uniform_deviate)
+
+def _draw_random_points_from_tab_distribution(x_tab, pdf_tab, nobj=1):
+    """Draw random points from a tabulated distribution.
+    NB: current implementation does not allow to restrict the drawing
+    to a given x range, but will draw over the while x_tab range where
+    the pdf is defined.
+
+    Parameters
+    ----------
+    x_tab : array-like
+        Values for which the tabulated pdf is provided
+    pdf_tab : array-like
+        Value of the pdf at the x_tab locations
+    nobj : int, optional
+        Number of random samples to generate. Default is 1.
+
+    Returns
+    -------
+    samples : ndarray
+        Random points following the pdf_tab distribution
+    """
+
+    # Compute the tabulated cumulative distribution
+    cdf = np.array([simps(pdf_tab[np.arange(j+1)], x_tab[np.arange(j+1)]) for j in range(len(x_tab))])
+    # Normalise it
+    cdf /= max(cdf)
+    # Interpolate the inverse CDF
+    inv_cdf = interp1d(cdf, x_tab, kind='linear', bounds_error=False, fill_value=0.)
+    # Finally generate sample from uniform distribution and 
+    # get the corresponding samples
+    samples = inv_cdf(np.random.random(nobj))
+    return samples
