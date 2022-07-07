@@ -872,7 +872,6 @@ def _srd_z_distrib(redshift, is_cdf=False):
     else:
         return (redshift**alpha)*np.exp(-(redshift/redshift0)**beta)
 
-    
 def _draw_random_points_from_distribution(xmin, xmax, nobj, dist_func, xstep=0.001):
     """Draw random points with a given distribution.
 
@@ -905,7 +904,7 @@ def _draw_random_points_from_distribution(xmin, xmax, nobj, dist_func, xstep=0.0
     uniform_deviate = np.random.uniform(probdist.min(), probdist.max(), nobj)
     return interp1d(probdist, xdomain, kind='linear')(uniform_deviate)
 
-def _draw_random_points_from_tab_distribution(x_tab, pdf_tab, nobj=1):
+def _draw_random_points_from_tab_distribution(x_tab, pdf_tab, nobj=1, xmin=None, xmax=None):
     """Draw random points from a tabulated distribution.
     NB: current implementation does not allow to restrict the drawing
     to a given x range, but will draw over the while x_tab range where
@@ -925,14 +924,22 @@ def _draw_random_points_from_tab_distribution(x_tab, pdf_tab, nobj=1):
     samples : ndarray
         Random points following the pdf_tab distribution
     """
-
+    x_tab = np.array(x_tab)
+    pdf_tab = np.array(pdf_tab)
     # Compute the tabulated cumulative distribution
-    cdf = np.array([simps(pdf_tab[np.arange(j+1)], x_tab[np.arange(j+1)]) for j in range(len(x_tab))])
+    if xmin:
+        x_tab = x_tab[x_tab>=xmin]
+        pdf_tab = pdf_tab[x_tab>=xmin]
+    if xmin:
+        x_tab = x_tab[x_tab<=xmax]
+        pdf_tab = pdf_tab[x_tab<=xmax]
+
+    cdf = np.array([simps(pdf_tab[:j], x_tab[:j]) for j in range(1, len(x_tab)+1)])
     # Normalise it
     cdf /= max(cdf)
     # Interpolate the inverse CDF
     inv_cdf = interp1d(cdf, x_tab, kind='linear', bounds_error=False, fill_value=0.)
-    # Finally generate sample from uniform distribution and 
+    # Finally generate sample from uniform distribution and
     # get the corresponding samples
     samples = inv_cdf(np.random.random(nobj))
     return samples
