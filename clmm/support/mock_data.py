@@ -7,7 +7,7 @@ from astropy.coordinates import SkyCoord
 
 from ..gcdata import GCData
 from ..theory import compute_tangential_shear, compute_convergence
-from ..utils import convert_units, compute_lensed_ellipticity, validate_argument, _chang_z_distrib, _srd_z_distrib
+from ..utils import convert_units, compute_lensed_ellipticity, validate_argument, _chang_z_distrib, _srd_z_distrib, _draw_random_points_from_distribution
 
 def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, cluster_ra=0., cluster_dec=0.,
                             delta_so=200, massdef='mean',
@@ -319,37 +319,37 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals,
 
 
 
-def _draw_random_points_from_distribution(xmin, xmax, nobj, dist_func, xstep=0.001):
-    """Draw random points with a given distribution.
+# def _draw_random_points_from_distribution(xmin, xmax, nobj, dist_func, xstep=0.001):
+#     """Draw random points with a given distribution.
 
-    Uses a sampling technique found in Numerical Recipes in C, Chap 7.2: Transformation Method.
+#     Uses a sampling technique found in Numerical Recipes in C, Chap 7.2: Transformation Method.
 
-    Parameters
-    ----------
-    xmin : float
-        The minimum source redshift allowed.
-    xmax : float, optional
-        If source redshifts are drawn, the maximum source redshift
-    nobj : float
-        Number of galaxies to generate
-    dist_func : function
-        Function of the required distribution
-    xstep : float
-        Size of the step to interpolate the culmulative distribution.
+#     Parameters
+#     ----------
+#     xmin : float
+#         The minimum source redshift allowed.
+#     xmax : float, optional
+#         If source redshifts are drawn, the maximum source redshift
+#     nobj : float
+#         Number of galaxies to generate
+#     dist_func : function
+#         Function of the required distribution
+#     xstep : float
+#         Size of the step to interpolate the culmulative distribution.
 
-    Returns
-    -------
-    ndarray
-        Random points with dist_func distribution
-    """
-    steps = int((xmax-xmin)/xstep)+2
-    xdomain = np.linspace(xmin, xmax, steps)
-    # Cumulative probability function of the redshift distribution
-    #probdist = np.vectorize(lambda zmax: integrate.quad(dist_func, xmin, zmax)[0])(xdomain)
-    probdist = dist_func(xdomain, is_cdf=True)-dist_func(xmin, is_cdf=True)
-    # Get random values for probdist
-    uniform_deviate = np.random.uniform(probdist.min(), probdist.max(), nobj)
-    return interp1d(probdist, xdomain, kind='linear')(uniform_deviate)
+#     Returns
+#     -------
+#     ndarray
+#         Random points with dist_func distribution
+#     """
+#     steps = int((xmax-xmin)/xstep)+2
+#     xdomain = np.linspace(xmin, xmax, steps)
+#     # Cumulative probability function of the redshift distribution
+#     #probdist = np.vectorize(lambda zmax: integrate.quad(dist_func, xmin, zmax)[0])(xdomain)
+#     probdist = dist_func(xdomain, is_cdf=True)-dist_func(xmin, is_cdf=True)
+#     # Get random values for probdist
+#     uniform_deviate = np.random.uniform(probdist.min(), probdist.max(), nobj)
+#     return interp1d(probdist, xdomain, kind='linear')(uniform_deviate)
 
 
 
