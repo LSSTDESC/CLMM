@@ -6,7 +6,7 @@ from scipy.stats import binned_statistic
 from scipy.special import gamma, gammainc
 from astropy import units as u
 from .constants import Constants as const
-from scipy.integrate import quad, simps
+from scipy.integrate import quad, cumulative_trapezoid
 from scipy.interpolate import interp1d
 
 
@@ -933,9 +933,10 @@ def _draw_random_points_from_tab_distribution(x_tab, pdf_tab, nobj=1, xmin=None,
     if xmax:
         pdf_tab = pdf_tab[x_tab<=xmax]
         x_tab = x_tab[x_tab<=xmax]
-    cdf = np.array([simps(pdf_tab[:j], x_tab[:j]) for j in range(1, len(x_tab)+1)])
+    #cdf = np.array([simps(pdf_tab[:j], x_tab[:j]) for j in range(1, len(x_tab)+1)])
+    cdf = cumulative_trapezoid(pdf_tab, x_tab, initial=0)
     # Normalise it
-    cdf /= max(cdf)
+    cdf /= cdf.max()
     # Interpolate the inverse CDF
     inv_cdf = interp1d(cdf, x_tab, kind='linear', bounds_error=False, fill_value=0.)
     # Finally generate sample from uniform distribution and
