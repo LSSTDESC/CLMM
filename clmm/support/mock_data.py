@@ -317,42 +317,6 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals,
 
     return galaxy_catalog[cols]
 
-
-
-# def _draw_random_points_from_distribution(xmin, xmax, nobj, dist_func, xstep=0.001):
-#     """Draw random points with a given distribution.
-
-#     Uses a sampling technique found in Numerical Recipes in C, Chap 7.2: Transformation Method.
-
-#     Parameters
-#     ----------
-#     xmin : float
-#         The minimum source redshift allowed.
-#     xmax : float, optional
-#         If source redshifts are drawn, the maximum source redshift
-#     nobj : float
-#         Number of galaxies to generate
-#     dist_func : function
-#         Function of the required distribution
-#     xstep : float
-#         Size of the step to interpolate the culmulative distribution.
-
-#     Returns
-#     -------
-#     ndarray
-#         Random points with dist_func distribution
-#     """
-#     steps = int((xmax-xmin)/xstep)+2
-#     xdomain = np.linspace(xmin, xmax, steps)
-#     # Cumulative probability function of the redshift distribution
-#     #probdist = np.vectorize(lambda zmax: integrate.quad(dist_func, xmin, zmax)[0])(xdomain)
-#     probdist = dist_func(xdomain, is_cdf=True)-dist_func(xmin, is_cdf=True)
-#     # Get random values for probdist
-#     uniform_deviate = np.random.uniform(probdist.min(), probdist.max(), nobj)
-#     return interp1d(probdist, xdomain, kind='linear')(uniform_deviate)
-
-
-
 def _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals):
     """Set source galaxy redshifts either set to a fixed value or draw from a predefined
     distribution. Return a table (GCData) of the source galaxies
