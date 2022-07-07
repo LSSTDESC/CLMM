@@ -123,7 +123,7 @@ class GalaxyCluster():
         """
         if cosmo is None:
             raise TypeError('To compute Sigma_crit, please provide a cosmology')
-        if cosmo.get_desc() != self.galcat.meta['cosmo'] or 'sigma_c' not in self.galcat.colnames:
+        if cosmo.get_desc() != self.galcat.meta['cosmo'] or 'sigma_c' not in self.galcat.columns:
             if self.z is None:
                 raise TypeError('Cluster\'s redshift is None. Cannot compute Sigma_crit')
             if use_pdz is False and 'z' not in self.galcat.columns:
@@ -512,20 +512,20 @@ class GalaxyCluster():
             raise ValueError(f"GalaxyClusters does not have a '{table_name}' table.")
         profile = getattr(self, table_name)
         for col in (tangential_component, cross_component):
-            if col not in profile.colnames:
+            if col not in profile.columns:
                 raise ValueError(f"Column for plotting '{col}' does not exist.")
         for col in (tangential_component_error, cross_component_error):
-            if col not in profile.colnames:
+            if col not in profile.columns:
                 warnings.warn(f"Column for plotting '{col}' does not exist.")
         return plot_profiles(
             rbins=profile['radius'],
             r_units=profile.meta['bin_units'],
             tangential_component=profile[tangential_component],
             tangential_component_error=(profile[tangential_component_error] if
-                tangential_component_error in profile.colnames else None),
+                tangential_component_error in profile.columns else None),
             cross_component=profile[cross_component],
             cross_component_error=(profile[cross_component_error] if
-                cross_component_error in profile.colnames else None),
+                cross_component_error in profile.columns else None),
             xscale=xscale, yscale=yscale,
             tangential_component_label=tangential_component,
             cross_component_label=cross_component)
@@ -544,6 +544,6 @@ class GalaxyCluster():
             raise ValueError('ra_low must be -180 or 0')
         self.ra += 360. if self.ra<ra_low else 0
         self.ra -= 360. if self.ra>=ra_low+360. else 0
-        if 'ra' in self.galcat.colnames:
+        if 'ra' in self.galcat.columns:
             self.galcat['ra'][self.galcat['ra']<ra_low] += 360.
             self.galcat['ra'][self.galcat['ra']>=ra_low+360.] -= 360.
