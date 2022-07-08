@@ -347,10 +347,12 @@ class GalaxyCluster():
 
         Parameters
         ----------
-        x_tab : array-like
-            Values for which the tabulated pdf is provided
-        pdf_tab : array-like
-            Value of the pdf at the x_tab locations
+        zcol_out : string
+            Name of the column of the galcat table where the random 
+            redshifts are to be stored. Default='z'
+        overwrite : bool
+            If True and if zcol_out already exists in the table, the column
+            will be overwritten by the new random values
         nobj : int, optional
             Number of random samples to generate. Default is 1.
         xmin : float
