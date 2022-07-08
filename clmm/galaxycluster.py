@@ -8,7 +8,7 @@ from .dataops import (compute_tangential_and_cross_components, make_radial_profi
                       compute_galaxy_weights, compute_background_probability)
 from .theory import compute_critical_surface_density
 from .plotting import plot_profiles
-from .utils import validate_argument
+from .utils import validate_argument, _draw_random_points_from_tab_distribution
 
 
 class GalaxyCluster():
@@ -340,6 +340,45 @@ class GalaxyCluster():
             self.galcat[weight_name] = w_ls
         return w_ls
 
+  
+    def draw_gal_z_from_pdz(self, zcol_out='z', overwrite=False, nobj=1, xmin=None, xmax=None):
+        """Draw random redshifts from the photoz pdf for each galaxy 
+        of the galcat table.
+
+        Parameters
+        ----------
+        x_tab : array-like
+            Values for which the tabulated pdf is provided
+        pdf_tab : array-like
+            Value of the pdf at the x_tab locations
+        nobj : int, optional
+            Number of random samples to generate. Default is 1.
+        xmin : float
+            Lower bound to draw redshift. Default is the min(x_tab)
+        xmax : float
+            Upper bound to draw redshift. Default is the max(x_tab)
+
+        Returns
+        -------
+        samples : ndarray
+            Random points following the pdf_tab distribution
+        """
+        
+        if 'pzpdf' not in self.galcat.columns or 'pzbins' not in self.galcat.columns:
+            raise TypeError('Missing galaxy photoz distributions')
+    
+        if zcol_out in self.galcat.columns and overwrite is False:
+            raise TypeError(f'Column {zcol_out} already exists in galcat. \
+                            Set overwrite=True to overwrite or use other column name')
+        
+        res = []
+        for pzbins, pzpdf in zip(self.galcat['pzbins'], self.galcat['pzpdf']):
+            res.append(_draw_random_points_from_tab_distribution(pzbins, pzpdf, nobj=nobj, xmin=xmin, xmax=xmax))
+
+        self.galcat[zcol_out] = res
+        return res
+                                  
+    
     def make_radial_profile(self,
                             bin_units, bins=10, error_model='ste', cosmo=None,
                             tan_component_in='et', cross_component_in='ex',
