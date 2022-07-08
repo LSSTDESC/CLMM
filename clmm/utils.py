@@ -906,9 +906,6 @@ def _draw_random_points_from_distribution(xmin, xmax, nobj, dist_func, xstep=0.0
 
 def _draw_random_points_from_tab_distribution(x_tab, pdf_tab, nobj=1, xmin=None, xmax=None):
     """Draw random points from a tabulated distribution.
-    NB: current implementation does not allow to restrict the drawing
-    to a given x range, but will draw over the while x_tab range where
-    the pdf is defined.
 
     Parameters
     ----------
@@ -918,6 +915,10 @@ def _draw_random_points_from_tab_distribution(x_tab, pdf_tab, nobj=1, xmin=None,
         Value of the pdf at the x_tab locations
     nobj : int, optional
         Number of random samples to generate. Default is 1.
+    xmin : float
+        Lower bound to draw redshift. Default is the min(x_tab)
+    xmax : float
+        Upper bound to draw redshift. Default is the max(x_tab)
 
     Returns
     -------
