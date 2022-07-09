@@ -227,7 +227,6 @@ def test_integrity_of_weightfuncs():
     pzbin = np.linspace(.0001, 5, 100)
     pzbins = np.zeros([len(z_source), len(pzbin)])
     pzpdf = pzbins
-    pzbin = np.linspace(.0001, 5, 100)
     cluster.galcat['pzbins'] = [pzbin for i in range(len(z_source))]
     cluster.galcat['pzpdf'] = [multivariate_normal.pdf(pzbin, mean=z, cov=.3) for z in z_source]
     cluster.compute_galaxy_weights(cosmo=cosmo, use_shape_noise=False, use_pdz=True,
@@ -244,7 +243,6 @@ def test_integrity_of_weightfuncs():
 
 def test_pzpdf_random_draw():
     """test draw_gal_z_from_pdz"""
-    cosmo = Cosmology(H0=71.0, Omega_dm0=0.265 - 0.0448, Omega_b0=0.0448, Omega_k0=0.0)
     z_lens = .1
     z_source = [.22, .35, 1.7]
     shape_component1 = np.array([.143, .063, -.171])
@@ -259,7 +257,6 @@ def test_pzpdf_random_draw():
     pzbin = np.linspace(.0001, 5, 100)
     pzbins = np.zeros([len(z_source), len(pzbin)])
     pzpdf = pzbins
-    pzbin = np.linspace(.0001, 5, 100)
     # test raising TypeError when required column is no available
     assert_raises(TypeError, cluster.draw_gal_z_from_pdz)
 
