@@ -895,7 +895,7 @@ def _draw_random_points_from_distribution(xmin, xmax, nobj, dist_func, xstep=0.0
     ndarray
         Random points with dist_func distribution
     """
-    steps = int((xmax-xmin)/xstep)+2
+    steps = int((xmax-xmin)/xstep)+1
     xdomain = np.linspace(xmin, xmax, steps)
     # Cumulative probability function of the redshift distribution
     #probdist = np.vectorize(lambda zmax: integrate.quad(dist_func, xmin, zmax)[0])(xdomain)
