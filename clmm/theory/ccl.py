@@ -161,7 +161,7 @@ class CCLCLMModeling(CLMModeling):
 
     def _eval_convergence_core(self, r_proj, z_cl, z_src):
         """eval convergence"""
-        if version.parse(ccl.__version__) < version.parse('2.4.1.dev15'):
+        if version.parse(ccl.__version__) < version.parse('2.5.0'):
             warnings.warn('\nOlder version of CCL detected')
             return super()._eval_convergence_core(r_proj, z_cl, z_src)
 
@@ -174,7 +174,7 @@ class CCLCLMModeling(CLMModeling):
         return res
 
     def _eval_tangential_shear_core(self, r_proj, z_cl, z_src):
-        if version.parse(ccl.__version__) < version.parse('2.4.1.dev15'):
+        if version.parse(ccl.__version__) < version.parse('2.5.0'):
             warnings.warn('\nOlder version of CCL detected')
             return super()._eval_tangential_shear_core(r_proj, z_cl, z_src)
 
@@ -188,7 +188,7 @@ class CCLCLMModeling(CLMModeling):
 
     def _eval_reduced_tangential_shear_sp_core(self, r_proj, z_cl, z_src):
         """eval reduced tangential shear with all background sources at the same plane"""
-        if version.parse(ccl.__version__) < version.parse('2.4.1.dev15'):
+        if version.parse(ccl.__version__) < version.parse('2.5.0'):
             warnings.warn('\nOlder version of CCL detected')
             return super()._eval_reduced_tangential_shear_sp_core(r_proj, z_cl, z_src)
 
@@ -202,7 +202,7 @@ class CCLCLMModeling(CLMModeling):
 
     def _eval_magnification_core(self, r_proj, z_cl, z_src):
         """eval magnification"""
-        if version.parse(ccl.__version__) < version.parse('2.4.1.dev15'):
+        if version.parse(ccl.__version__) < version.parse('2.5.0'):
             warnings.warn('\nOlder version of CCL detected')
             return super()._eval_magnification_core(r_proj, z_cl, z_src)
 
