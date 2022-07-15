@@ -176,7 +176,7 @@ def test_warnings(modeling_data):
 
     if theo.be_nick == 'ccl':
         import pyccl as ccl
-        if not version.parse(ccl.__version__) < version.parse('2.4.1.dev15'):
+        if not version.parse(ccl.__version__) < version.parse('2.5.0'):
             ccl.__version__='2.4.0'
         assert_warns(UserWarning, mod._eval_convergence_core, [0.3], 0.3, [0.2, 0.3, 0.4])
         assert_warns(UserWarning, mod._eval_tangential_shear_core, [0.3], 0.3, [0.2, 0.3, 0.4])
