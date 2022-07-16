@@ -53,8 +53,10 @@ class GalaxyCluster():
     def _check_types(self):
         """Check types of all attributes"""
         validate_argument(vars(self), 'unique_id', (int, str))
-        validate_argument(vars(self), 'ra', (float, str), argmin=-360, eqmin=True, argmax=360, eqmax=True)
-        validate_argument(vars(self), 'dec', (float, str), argmin=-90, eqmin=True, argmax=90, eqmax=True)
+        validate_argument(vars(self), 'ra', (float, str),
+                          argmin=-360, eqmin=True, argmax=360, eqmax=True)
+        validate_argument(vars(self), 'dec', (float, str),
+                          argmin=-90, eqmin=True, argmax=90, eqmax=True)
         validate_argument(vars(self), 'z', (float, str), argmin=0, eqmin=True)
         validate_argument(vars(self), 'galcat', GCData)
         self.unique_id = str(self.unique_id)
@@ -112,10 +114,11 @@ class GalaxyCluster():
         cosmo : clmm.Cosmology object
             CLMM Cosmology object
         use_pdz : bool
-            Flag to specify the use of the photoz pdf. If `False` (default), `sigma_c` is computed using the redshift point estimates of the
-            `z` column of the `galcat` table. If `True`, `sigma_c` is computed as 1/<1/Sigma_crit>, where the average is performed using
-            the individual galaxy redshift pdf. In that case, the `galcat` table should have `pzbins`
-            and `pzpdf` columns.
+            Flag to specify the use of the photoz pdf. If `False` (default), `sigma_c` is computed
+            using the redshift point estimates of the `z` column of the `galcat` table. If `True`,
+            `sigma_c` is computed as 1/<1/Sigma_crit>, where the average is performed using
+            the individual galaxy redshift pdf. In that case, the `galcat` table should have 
+            pzbins` and `pzpdf` columns.
 
         Returns
         -------
@@ -127,10 +130,12 @@ class GalaxyCluster():
             if self.z is None:
                 raise TypeError('Cluster\'s redshift is None. Cannot compute Sigma_crit')
             if use_pdz is False and 'z' not in self.galcat.columns:
-                raise TypeError("Galaxy catalog missing the redshift column (which should be called 'z')."
-                                "Cannot compute Sigma_crit.")
-            if use_pdz and ('pzbins' not in self.galcat.columns or 'pzpdf' not in self.galcat.columns):
-                raise TypeError("Galaxy catalog missing the redshift distribution information. Need to have both a 'pzbins' and 'pzpdf' columns." 
+                raise TypeError("Galaxy catalog missing the redshift column (which should be"
+                                "called 'z'). Cannot compute Sigma_crit.")
+            if use_pdz and ('pzbins' not in self.galcat.columns
+                            or 'pzpdf' not in self.galcat.columns):
+                raise TypeError("Galaxy catalog missing the redshift distribution information. "
+                                "Need to have both a 'pzbins' and 'pzpdf' columns."
                                 "Cannot compute 1/<1/Sigma_crit>.")
 
             self.galcat.update_cosmo(cosmo, overwrite=True)
@@ -141,7 +146,8 @@ class GalaxyCluster():
                 self.galcat.meta['sigmac_type']= 'standard'
             else:
                 self.galcat['sigma_c'] = compute_critical_surface_density(
-                    cosmo=cosmo, z_cluster=self.z, use_pdz=True, pzbins=self.galcat['pzbins'], pzpdf=self.galcat['pzpdf'],
+                    cosmo=cosmo, z_cluster=self.z, use_pdz=True,
+                    pzbins=self.galcat['pzbins'], pzpdf=self.galcat['pzpdf'],
                     validate_input=self.validate_input)
                 self.galcat.meta['sigmac_type']= 'effective'
 
@@ -175,8 +181,9 @@ class GalaxyCluster():
 
 
     def compute_tangential_and_cross_components(
-            self, shape_component1='e1', shape_component2='e2', tan_component='et',
-            cross_component='ex', geometry='curve', is_deltasigma=False, use_pdz=False, cosmo=None, add=True):
+        self, shape_component1='e1', shape_component2='e2', tan_component='et',
+        cross_component='ex', geometry='curve', is_deltasigma=False, use_pdz=False,
+        cosmo=None, add=True):
         r"""Adds a tangential- and cross- components for shear or ellipticity to self
 
         Calls `clmm.dataops.compute_tangential_and_cross_components` with the following arguments:
@@ -237,8 +244,9 @@ class GalaxyCluster():
 
         # compute shears
         angsep, tangential_comp, cross_comp = compute_tangential_and_cross_components(
-                ra_lens=self.ra, dec_lens=self.dec, geometry=geometry, is_deltasigma=is_deltasigma, use_pdz=use_pdz,
-                validate_input=self.validate_input, **cols)
+            ra_lens=self.ra, dec_lens=self.dec, geometry=geometry,
+            is_deltasigma=is_deltasigma, use_pdz=use_pdz,
+            validate_input=self.validate_input, **cols)
         if add:
             self.galcat['theta'] = angsep
             self.galcat[tan_component] = tangential_comp
@@ -273,9 +281,11 @@ class GalaxyCluster():
             self.galcat[p_background_name] = p_background
         return p_background
 
-    def compute_galaxy_weights(self, use_pdz=False, 
-                               use_shape_noise=False, shape_component1='e1', shape_component2='e2',
-                               use_shape_error=False, shape_component1_err='e1_err', shape_component2_err='e2_err',
+    def compute_galaxy_weights(self, use_pdz=False,
+                               use_shape_noise=False,
+                               shape_component1='e1', shape_component2='e2',
+                               use_shape_error=False,
+                               shape_component1_err='e1_err', shape_component2_err='e2_err',
                                weight_name='w_ls', cosmo=None, is_deltasigma=False, add=True):
         r"""Computes the individual lens-source pair weights
 
@@ -333,9 +343,9 @@ class GalaxyCluster():
 
         # computes weights
         w_ls = compute_galaxy_weights(
-            self.z, cosmo, use_pdz=use_pdz, use_shape_noise=use_shape_noise, use_shape_error=use_shape_error,
-            is_deltasigma=is_deltasigma, validate_input=self.validate_input,
-            **cols)
+            self.z, cosmo, use_pdz=use_pdz, use_shape_noise=use_shape_noise,
+            use_shape_error=use_shape_error, is_deltasigma=is_deltasigma,
+            validate_input=self.validate_input, **cols)
         if add:
             self.galcat[weight_name] = w_ls
         return w_ls
@@ -422,9 +432,9 @@ class GalaxyCluster():
         Returns
         -------
         profile : GCData
-            Output table containing the radius grid points, the tangential and cross shear profiles
-            on that grid, and the errors in the two shear profiles. The errors are defined as the
-            standard errors in each bin.
+            Output table containing the radius grid points, the tangential and cross shear
+            profiles on that grid, and the errors in the two shear profiles. The errors are
+            defined as the standard errors in each bin.
         """
         #Too many local variables (19/15)
         #pylint: disable=R0914
@@ -432,7 +442,7 @@ class GalaxyCluster():
         if not all([t_ in self.galcat.columns for t_ in
                 (tan_component_in, cross_component_in, 'theta')]):
             raise TypeError(
-                'Shear or ellipticity information is missing!  Galaxy catalog must have tangential '
+                'Shear or ellipticity information is missing. Galaxy catalog must have tangential'
                 'and cross shears (gt, gx) or ellipticities (et, ex). '
                 'Run compute_tangential_and_cross_components first.')
         if 'z' not in self.galcat.columns:
@@ -483,14 +493,14 @@ class GalaxyCluster():
         Parameters
         ----------
         tangential_component: str, optional
-            Name of the column in the galcat Table corresponding to the tangential component of the
-            shear or reduced shear (Delta Sigma not yet implemented). Default: 'gt'
+            Name of the column in the galcat Table corresponding to the tangential component of
+            the shear or reduced shear (Delta Sigma not yet implemented). Default: 'gt'
         tangential_component_error: str, optional
             Name of the column in the galcat Table corresponding to the uncertainty in tangential
             component of the shear or reduced shear. Default: 'gt_err'
         cross_component: str, optional
-            Name of the column in the galcat Table corresponding to the cross component of the shear
-            or reduced shear. Default: 'gx'
+            Name of the column in the galcat Table corresponding to the cross component of the
+            shear or reduced shear. Default: 'gx'
         cross_component_error: str, optional
             Name of the column in the galcat Table corresponding to the uncertainty in the cross
             component of the shear or reduced shear. Default: 'gx_err'
