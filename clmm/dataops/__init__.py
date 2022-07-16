@@ -6,7 +6,7 @@ import scipy
 from astropy.coordinates import SkyCoord
 from astropy import units as u
 from .. gcdata import GCData
-from . .utils import compute_radial_averages, make_bins, convert_units, arguments_consistency, validate_argument, _integ_pzfuncs
+from .. utils import compute_radial_averages, make_bins, convert_units, arguments_consistency, validate_argument, _integ_pzfuncs
 from .. theory import compute_critical_surface_density
 
 
@@ -239,7 +239,7 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, use_pdz=False, pzpdf=No
     measurement errors
 
         .. math::
-            w_{ls, \text{shape}} = 1/(\sigma_{\text{shapenoise}}^2 + 
+            w_{ls, \text{shape}} = 1/(\sigma_{\text{shapenoise}}^2 +
             \sigma_{\text{measurement}}^2)
 
 
@@ -523,13 +523,13 @@ def make_radial_profile(components, angsep, angsep_units, bin_units,
     validate_input: bool
         Validade each input argument
     weights: array-like, optional
-        Array of individual galaxy weights. If specified, the radial binned profile is 
+        Array of individual galaxy weights. If specified, the radial binned profile is
         computed using a weighted average
 
     Returns
     -------
     profile : GCData
-        Output table containing the radius grid points, the profile of the components `p_i`, 
+        Output table containing the radius grid points, the profile of the components `p_i`,
         errors `p_i_err` and number of sources.  The errors are defined as the standard errors in
         each bin.
     binnumber: 1-D ndarray of ints, optional
