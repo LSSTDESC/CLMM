@@ -22,6 +22,10 @@ class CLMModeling:
     ----------
     backend: str
         Name of the backend being used
+    mdelta: float
+        Mass of the profile, in units of :math:`M_\odot`
+    cdelta: float
+        Concentration of the profile
     massdef : str
         Profile mass definition (`mean`, `critical`, `virial` - letter case independent)
     delta_mdef : int
@@ -44,13 +48,12 @@ class CLMModeling:
     # pylint: disable=too-many-instance-attributes
 
     def __init__(self, validate_input=True):
+
         self.backend = None
 
-        self.massdef = ''
-        self.delta_mdef = 0
-        self.halo_profile_model = ''
-        self.mdelta = 0.
-        self.cdelta = 0.
+        self.__massdef = ''
+        self.__delta_mdef = 0
+        self.__halo_profile_model = ''
 
         self.cosmo = None
 
@@ -61,6 +64,230 @@ class CLMModeling:
         self.validate_input = validate_input
         self.cosmo_class = None
 
+
+    # 1. Object properties
+
+
+    @property
+    def mdelta(self):
+        return self._get_mass()
+
+    @property
+    def cdelta(self):
+        return self._get_concentration()
+
+    @property
+    def massdef(self):
+        return self.__massdef
+
+    @property
+    def delta_mdef(self):
+        return self.__delta_mdef
+
+    @property
+    def halo_profile_model(self):
+        return self.__halo_profile_model
+
+
+    # 1.a Object properties setter
+
+
+    @mdelta.setter
+    def mdelta(self, mdelta):
+        self.set_mass(mdelta)
+
+    @cdelta.setter
+    def cdelta(self, cdelta):
+        self.set_concentration(cdelta)
+
+    @massdef.setter
+    def massdef(self, massdef):
+        self.set_halo_density_profile(
+            halo_profile_model=self.halo_profile_model, massdef=massdef,
+            delta_mdef=self.delta_mdef)
+
+    @delta_mdef.setter
+    def delta_mdef(self, delta_mdef):
+        self.set_halo_density_profile(
+            halo_profile_model=self.halo_profile_model, massdef=self.massdef,
+            delta_mdef=delta_mdef)
+
+    @halo_profile_model.setter
+    def halo_profile_model(self, halo_profile_model):
+        self.set_halo_density_profile(
+            halo_profile_model=halo_profile_model, massdef=self.massdef,
+            delta_mdef=self.delta_mdef)
+
+
+    # 2. Functions to be implemented by children classes
+
+
+    def _get_mass(self):
+        r""" Gets the value of the :math:`M_\Delta`"""
+        raise NotImplementedError
+
+    def _get_concentration(self):
+        r""" Gets the value of the concentration"""
+        raise NotImplementedError
+
+    def _set_mass(self, mdelta):
+        r""" Actually sets the value of the :math:`M_\Delta` (without value check)"""
+        raise NotImplementedError
+
+    def _set_concentration(self, cdelta):
+        r""" Actuall sets the value of the concentration (without value check)"""
+        raise NotImplementedError
+
+    def _set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
+        raise NotImplementedError
+
+    def _set_einasto_alpha(self, alpha):
+        r""" Actually sets the value of the :math:`\alpha` parameter for the Einasto profile"""
+        raise NotImplementedError
+
+    def _get_einasto_alpha(self, z_cl=None):
+        r""" Returns the value of the :math:`\alpha` parameter for the Einasto profile, if defined"""
+        raise NotImplementedError
+
+    def _eval_3d_density(self, r3d, z_cl):
+        raise NotImplementedError
+
+    def _eval_surface_density(self, r_proj, z_cl):
+        raise NotImplementedError
+
+    def _eval_mean_surface_density(self, r_proj, z_cl):
+        raise NotImplementedError
+
+    def _eval_excess_surface_density(self, r_proj, z_cl):
+        raise NotImplementedError
+
+
+    # 3. Functions that can be used by all subclasses
+
+
+    def _eval_critical_surface_density(self, z_len, z_src):
+        return self.cosmo.eval_sigma_crit(z_len, z_src)
+
+    def _set_cosmo(self, cosmo):
+        r""" Sets the cosmology to the internal cosmology object"""
+        self.cosmo = cosmo if cosmo is not None else self.cosmo_class()
+
+    def _eval_excess_surface_density_2h(self, r_proj, z_cl, halobias=1.,lsteps=500):
+        """"eval excess surface density from the 2-halo term"""
+        da = self.cosmo.eval_da(z_cl)
+        rho_m = self.cosmo._get_rho_m(z_cl)
+
+        kk = np.logspace(-5.,5.,1000)
+        pk = self.cosmo._eval_linear_matter_powerspectrum(kk, z_cl)
+        interp_pk = interp1d(kk, pk, kind='cubic')
+        theta = r_proj / da
+
+        # calculate integral, units [Mpc]**-3
+        def __integrand__( l , theta ):
+            k = l / ((1 + z_cl) * da)
+            return l * jv( 2 , l * theta ) * interp_pk( k )
+
+        ll = np.logspace( 0 , 6 , lsteps )
+        val = np.array( [ simps( __integrand__( ll , t ) , ll ) for t in theta ] )
+        return halobias * val * rho_m / ( 2 * np.pi  * ( 1 + z_cl )**3 * da**2 )
+
+    def _eval_surface_density_2h(self, r_proj, z_cl, halobias=1., lsteps=500):
+        """"eval surface density from the 2-halo term"""
+        da = self.cosmo.eval_da(z_cl)
+        rho_m = self.cosmo._get_rho_m(z_cl)
+
+        kk = np.logspace(-5.,5.,1000)
+        pk = self.cosmo._eval_linear_matter_powerspectrum(kk, z_cl)
+        interp_pk = interp1d(kk, pk, kind='cubic')
+        theta = r_proj / da
+
+        # calculate integral, units [Mpc]**-3
+        def __integrand__( l , theta ):
+            k = l / ((1 + z_cl) * da)
+            return l * jv( 0 , l * theta ) * interp_pk( k )
+
+        ll = np.logspace( 0 , 6 , lsteps )
+        val = np.array( [ simps( __integrand__( ll , t ) , ll ) for t in theta ] )
+        return halobias * val * rho_m / ( 2 * np.pi  * ( 1 + z_cl )**3 * da**2 )
+
+    def _eval_tangential_shear(self, r_proj, z_cl, z_src):
+        delta_sigma = self.eval_excess_surface_density(r_proj, z_cl)
+        sigma_c = self.eval_critical_surface_density(z_cl, z_src)
+        return delta_sigma/sigma_c
+
+    def _eval_convergence(self, r_proj, z_cl, z_src, verbose=False):
+        sigma = self.eval_surface_density(r_proj, z_cl, verbose=verbose)
+        sigma_c = self.eval_critical_surface_density(z_cl, z_src)
+        return sigma/sigma_c
+
+    def _eval_reduced_tangential_shear_sp(self, r_proj, z_cl, z_src):
+        kappa = self.eval_convergence(r_proj, z_cl, z_src)
+        gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
+        return compute_reduced_shear_from_convergence(gamma_t, kappa)
+
+    def _eval_magnification(self, r_proj, z_cl, z_src):
+        kappa = self.eval_convergence(r_proj, z_cl, z_src)
+        gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
+        return 1./((1-kappa)**2-abs(gamma_t)**2)
+
+    def _eval_magnification_bias(self, r_proj, z_cl, z_src, alpha):
+        magnification = self.eval_magnification(r_proj, z_cl, z_src)
+        return compute_magnification_bias_from_magnification(magnification, alpha)
+
+    def _eval_rdelta(self, z_cl):
+        return compute_rdelta(self.mdelta, z_cl, self.cosmo, self.massdef, self.delta_mdef)
+
+    def _eval_mass_in_radius(self, r3d, z_cl):
+        alpha = self._get_einasto_alpha(z_cl) if self.halo_profile_model=='einasto' else None
+        return compute_profile_mass_in_radius(
+            r3d, z_cl, self.cosmo, self.mdelta, self.cdelta,
+            self.massdef, self.delta_mdef, self.halo_profile_model, alpha)
+
+    def _convert_mass_concentration(self, z_cl, massdef=None, delta_mdef=None,
+                                    halo_profile_model=None, alpha=None):
+        alpha1 = self._get_einasto_alpha(z_cl) if self.halo_profile_model=='einasto' else None
+        return convert_profile_mass_concentration(
+            self.mdelta, self.cdelta, z_cl, self.cosmo,
+            massdef=self.massdef, delta_mdef=self.delta_mdef,
+            halo_profile_model=self.halo_profile_model, alpha=alpha1,
+            massdef2=massdef, delta_mdef2=delta_mdef,
+            halo_profile_model2=halo_profile_model, alpha2=alpha)
+
+
+    # 4. Wrapper functions for input validation
+
+
+    def set_mass(self, mdelta):
+        r""" Sets the value of the :math:`M_\Delta`.
+
+        Parameters
+        ----------
+        mdelta : float
+            Galaxy cluster mass :math:`M_\Delta` in units of :math:`M_\odot`
+
+        Notes
+        -----
+            This is equivalent to doing self.mdelta = mdelta
+        """
+        if self.validate_input:
+            validate_argument(locals(), 'mdelta', float, argmin=0)
+        self._set_mass(mdelta)
+
+    def set_concentration(self, cdelta):
+        r""" Sets the concentration
+
+        Parameters
+        ----------
+        cdelta: float
+            Concentration
+
+        Notes
+        -----
+            This is equivalent to doing self.cdelta = cdelta
+        """
+        if self.validate_input:
+            validate_argument(locals(), 'cdelta', float, argmin=0)
+        self._set_concentration(cdelta)
 
     def set_cosmo(self, cosmo):
         r""" Sets the cosmology to the internal cosmology object
@@ -76,10 +303,6 @@ class CLMModeling:
             validate_argument(locals(), 'cosmo', self.cosmo_class, none_ok=True)
         self._set_cosmo(cosmo)
         self.cosmo.validate_input = self.validate_input
-
-    def _set_cosmo(self, cosmo):
-        r""" Sets the cosmology to the internal cosmology object"""
-        self.cosmo = cosmo if cosmo is not None else self.cosmo_class()
 
     def set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
         r""" Sets the definitions for the halo profile
@@ -105,31 +328,14 @@ class CLMModeling:
             if not halo_profile_model in self.hdpm_dict:
                 raise ValueError(
                     f"Halo density profile model {halo_profile_model} not currently supported")
+        # set the profile
         self._set_halo_density_profile(halo_profile_model=halo_profile_model,
                                        massdef=massdef, delta_mdef=delta_mdef)
-        self.halo_profile_model = halo_profile_model
-        self.massdef = massdef
-        self.delta_mdef = delta_mdef
 
-    def _set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
-        raise NotImplementedError
-
-    def set_mass(self, mdelta):
-        r""" Sets the value of the :math:`M_\Delta`
-
-        Parameters
-        ----------
-        mdelta : float
-            Galaxy cluster mass :math:`M_\Delta` in units of :math:`M_\odot`
-        """
-        if self.validate_input:
-            validate_argument(locals(), 'mdelta', float, argmin=0)
-        self._set_mass(mdelta)
-        self.mdelta = mdelta
-
-    def _set_mass(self, mdelta):
-        r""" Actually sets the value of the :math:`M_\Delta` (without value check)"""
-        raise NotImplementedError
+        # set internal quantities
+        self.__halo_profile_model = halo_profile_model
+        self.__massdef = massdef
+        self.__delta_mdef = delta_mdef
 
     def set_einasto_alpha(self, alpha):
         r""" Sets the value of the :math:`\alpha` parameter for the Einasto profile
@@ -145,10 +351,6 @@ class CLMModeling:
                 validate_argument(locals(), 'alpha', float)
             self._set_einasto_alpha(alpha)
 
-    def _set_einasto_alpha(self, alpha):
-        r""" Actually sets the value of the :math:`\alpha` parameter for the Einasto profile"""
-        raise NotImplementedError
-
     def get_einasto_alpha(self, z_cl=None):
         r""" Returns the value of the :math:`\alpha` parameter for the Einasto profile, if defined
 
@@ -161,27 +363,6 @@ class CLMModeling:
             raise ValueError(f"Wrong profile model. Current profile = {self.halo_profile_model}")
         else:
             return self._get_einasto_alpha(z_cl)
-
-    def _get_einasto_alpha(self, z_cl=None):
-        r""" Returns the value of the :math:`\alpha` parameter for the Einasto profile, if defined"""
-        raise NotImplementedError
-
-    def set_concentration(self, cdelta):
-        r""" Sets the concentration
-
-        Parameters
-        ----------
-        cdelta: float
-            Concentration
-        """
-        if self.validate_input:
-            validate_argument(locals(), 'cdelta', float, argmin=0)
-        self._set_concentration(cdelta)
-        self.cdelta = cdelta
-
-    def _set_concentration(self, cdelta):
-        r""" Actuall sets the value of the concentration (without value check)"""
-        raise NotImplementedError
 
     def eval_3d_density(self, r3d, z_cl, verbose=False):
         r"""Retrieve the 3d density :math:`\rho(r)`.
@@ -207,11 +388,8 @@ class CLMModeling:
 
         return self._eval_3d_density(r3d=r3d, z_cl=z_cl)
 
-    def _eval_3d_density(self, r3d, z_cl):
-        raise NotImplementedError
-
     def eval_critical_surface_density(self, z_len, z_src=None, use_pdz=False, pzbins=None, pzpdf=None):
-        r"""Computes either 
+        r"""Computes either
 
         the critical surface density if `use_pdz=False`
 
@@ -221,11 +399,11 @@ class CLMModeling:
         or
 
         the 'effective critical surface density' if `use_pdz=True`
-         
+
         .. math::
-            \langle \Sigma_{\rm crit}^{-1}\rangle^{-1} = \left(\int \frac{1}{\Sigma_{\rm crit}(z)} p(z) dz\right)^{-1} 
-        
-        where :math:`p(z)` is the source photoz probability density function. 
+            \langle \Sigma_{\rm crit}^{-1}\rangle^{-1} = \left(\int \frac{1}{\Sigma_{\rm crit}(z)} p(z) dz\right)^{-1}
+
+        where :math:`p(z)` is the source photoz probability density function.
         This comes from the maximum likelihood estimator for evaluating a :math:`\Delta\Sigma` profile.
 
 
@@ -236,10 +414,10 @@ class CLMModeling:
         z_src : array_like, float
             Background source galaxy redshift(s)
         use_pdz : bool
-            Flag to use the photoz pdf. If `False` (default), `sigma_c` is computed using the source redshift point estimates `z_source`. 
-            If `True`, `sigma_c` is computed as 1/<1/Sigma_crit>, where the average is performed using 
-            the individual galaxy redshift pdf. In that case, the `pzbins` and `pzpdf` should be specified. 
-        
+            Flag to use the photoz pdf. If `False` (default), `sigma_c` is computed using the source redshift point estimates `z_source`.
+            If `True`, `sigma_c` is computed as 1/<1/Sigma_crit>, where the average is performed using
+            the individual galaxy redshift pdf. In that case, the `pzbins` and `pzpdf` should be specified.
+
         pzbins : array-like
             Bins where the source redshift pdf is defined
         pzpdf : array-like
@@ -253,7 +431,7 @@ class CLMModeling:
         sigma_c : array_like, float
             Cosmology-dependent (effective) critical surface density in units of :math:`M_\odot\ Mpc^{-2}`
     """
-        
+
         if self.validate_input:
             validate_argument(locals(), 'z_len', float, argmin=0)
             validate_argument(locals(), 'z_src', 'float_array', argmin=0, none_ok=True)
@@ -267,9 +445,6 @@ class CLMModeling:
                 def inv_sigmac(redshift):
                     return 1./self._eval_critical_surface_density(z_len=z_len, z_src=redshift)
                 return 1./_integ_pzfuncs(pzpdf, pzbins, 0., kernel=inv_sigmac)
-
-    def _eval_critical_surface_density(self, z_len, z_src):
-        return self.cosmo.eval_sigma_crit(z_len, z_src)
 
     def eval_surface_density(self, r_proj, z_cl, verbose=False):
         r""" Computes the surface mass density
@@ -295,10 +470,6 @@ class CLMModeling:
 
         return self._eval_surface_density(r_proj=r_proj, z_cl=z_cl)
 
-
-    def _eval_surface_density(self, r_proj, z_cl):
-        raise NotImplementedError
-
     def eval_mean_surface_density(self, r_proj, z_cl, verbose=False):
         r""" Computes the mean value of surface density inside radius r_proj
 
@@ -323,9 +494,6 @@ class CLMModeling:
 
         return self._eval_mean_surface_density(r_proj=r_proj, z_cl=z_cl)
 
-    def _eval_mean_surface_density(self, r_proj, z_cl):
-        raise NotImplementedError
-
     def eval_excess_surface_density(self, r_proj, z_cl, verbose=False):
         r""" Computes the excess surface density
 
@@ -349,9 +517,6 @@ class CLMModeling:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
         return self._eval_excess_surface_density(r_proj=r_proj, z_cl=z_cl)
-
-    def _eval_excess_surface_density(self, r_proj, z_cl):
-        raise NotImplementedError
 
     def eval_excess_surface_density_2h(self, r_proj, z_cl, halobias=1., lsteps=500):
         r""" Computes the 2-halo term excess surface density (CCL backend only)
@@ -379,32 +544,12 @@ class CLMModeling:
             validate_argument(locals(), 'lsteps', int, argmin=1)
             validate_argument(locals(), 'halobias', float, argmin=0)
 
-
         if self.backend not in ('ccl', 'nc'):
             raise NotImplementedError(
                 f"2-halo term not currently supported with the {self.backend} backend. "
                 "Use the CCL or NumCosmo backend instead")
         else:
             return self._eval_excess_surface_density_2h(r_proj, z_cl, halobias=halobias, lsteps=lsteps)
-
-    def _eval_excess_surface_density_2h(self, r_proj, z_cl, halobias=1.,lsteps=500):
-        """"eval excess surface density from the 2-halo term"""
-        da = self.cosmo.eval_da(z_cl)
-        rho_m = self.cosmo._get_rho_m(z_cl)
-
-        kk = np.logspace(-5.,5.,1000)
-        pk = self.cosmo._eval_linear_matter_powerspectrum(kk, z_cl)
-        interp_pk = interp1d(kk, pk, kind='cubic')
-        theta = r_proj / da
-
-        # calculate integral, units [Mpc]**-3
-        def __integrand__( l , theta ):
-            k = l / ((1 + z_cl) * da)
-            return l * jv( 2 , l * theta ) * interp_pk( k )
-
-        ll = np.logspace( 0 , 6 , lsteps )
-        val = np.array( [ simps( __integrand__( ll , t ) , ll ) for t in theta ] )
-        return halobias * val * rho_m / ( 2 * np.pi  * ( 1 + z_cl )**3 * da**2 )
 
     def eval_surface_density_2h(self, r_proj, z_cl, halobias=1., lsteps=500):
         r""" Computes the 2-halo term surface density (CCL backend only)
@@ -439,25 +584,6 @@ class CLMModeling:
         else:
             return self._eval_surface_density_2h(r_proj, z_cl, halobias=halobias, lsteps=lsteps)
 
-    def _eval_surface_density_2h(self, r_proj, z_cl, halobias=1., lsteps=500):
-        """"eval surface density from the 2-halo term"""
-        da = self.cosmo.eval_da(z_cl)
-        rho_m = self.cosmo._get_rho_m(z_cl)
-
-        kk = np.logspace(-5.,5.,1000)
-        pk = self.cosmo._eval_linear_matter_powerspectrum(kk, z_cl)
-        interp_pk = interp1d(kk, pk, kind='cubic')
-        theta = r_proj / da
-
-        # calculate integral, units [Mpc]**-3
-        def __integrand__( l , theta ):
-            k = l / ((1 + z_cl) * da)
-            return l * jv( 0 , l * theta ) * interp_pk( k )
-
-        ll = np.logspace( 0 , 6 , lsteps )
-        val = np.array( [ simps( __integrand__( ll , t ) , ll ) for t in theta ] )
-        return halobias * val * rho_m / ( 2 * np.pi  * ( 1 + z_cl )**3 * da**2 )
-
     def eval_tangential_shear(self, r_proj, z_cl, z_src, verbose=False):
         r"""Computes the tangential shear
 
@@ -484,11 +610,6 @@ class CLMModeling:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
         return self._eval_tangential_shear(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
-
-    def _eval_tangential_shear(self, r_proj, z_cl, z_src):
-        delta_sigma = self.eval_excess_surface_density(r_proj, z_cl)
-        sigma_c = self.eval_critical_surface_density(z_cl, z_src)
-        return delta_sigma/sigma_c
 
     def eval_convergence(self, r_proj, z_cl, z_src, verbose=False):
         r"""Computes the mass convergence
@@ -524,11 +645,6 @@ class CLMModeling:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
         return self._eval_convergence(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
-
-    def _eval_convergence(self, r_proj, z_cl, z_src, verbose=False):
-        sigma = self.eval_surface_density(r_proj, z_cl, verbose=verbose)
-        sigma_c = self.eval_critical_surface_density(z_cl, z_src)
-        return sigma/sigma_c
 
     def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src, z_src_model='single_plane',
                                       beta_s_mean=None, beta_s_square_mean=None, z_distrib_func=None, verbose=False):
@@ -608,11 +724,6 @@ class CLMModeling:
             raise ValueError("Unsupported z_src_model")
         return gt
 
-    def _eval_reduced_tangential_shear_sp(self, r_proj, z_cl, z_src):
-        kappa = self.eval_convergence(r_proj, z_cl, z_src)
-        gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
-        return compute_reduced_shear_from_convergence(gamma_t, kappa)
-
     def eval_magnification(self, r_proj, z_cl, z_src, verbose=False):
         r"""Computes the magnification
 
@@ -649,11 +760,6 @@ class CLMModeling:
 
         return self._eval_magnification(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
 
-    def _eval_magnification(self, r_proj, z_cl, z_src):
-        kappa = self.eval_convergence(r_proj, z_cl, z_src)
-        gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
-        return 1./((1-kappa)**2-abs(gamma_t)**2)
-
     def eval_magnification_bias(self, r_proj, z_cl, z_src, alpha):
         r"""Computes the magnification bias
 
@@ -689,10 +795,6 @@ class CLMModeling:
             validate_argument(locals(), 'alpha', 'float_array')
         return self._eval_magnification_bias(r_proj=r_proj, z_cl=z_cl, z_src=z_src, alpha=alpha)
 
-    def _eval_magnification_bias(self, r_proj, z_cl, z_src, alpha):
-        magnification = self.eval_magnification(r_proj, z_cl, z_src)
-        return compute_magnification_bias_from_magnification(magnification, alpha)
-
     def eval_rdelta(self, z_cl):
         r"""Retrieves the radius for mdelta
 
@@ -712,9 +814,6 @@ class CLMModeling:
         if self.validate_input:
             validate_argument(locals(), 'z_cl', float, argmin=0)
         return self._eval_rdelta(z_cl)
-
-    def _eval_rdelta(self, z_cl):
-        return compute_rdelta(self.mdelta, z_cl, self.cosmo, self.massdef, self.delta_mdef)
 
     def eval_mass_in_radius(self, r3d, z_cl, verbose=False):
         r"""Computes the mass inside a given radius of the profile.
@@ -760,12 +859,6 @@ class CLMModeling:
             print(f"Einasto alpha (in) = {self._get_einasto_alpha(z_cl=z_cl)}")
 
         return self._eval_mass_in_radius(r3d, z_cl)
-
-    def _eval_mass_in_radius(self, r3d, z_cl):
-        alpha = self._get_einasto_alpha(z_cl) if self.halo_profile_model=='einasto' else None
-        return compute_profile_mass_in_radius(
-            r3d, z_cl, self.cosmo, self.mdelta, self.cdelta,
-            self.massdef, self.delta_mdef, self.halo_profile_model, alpha)
 
     def convert_mass_concentration(self, z_cl, massdef=None, delta_mdef=None,
                                    halo_profile_model=None, alpha=None, verbose=False):
@@ -813,13 +906,3 @@ class CLMModeling:
 
         return self._convert_mass_concentration(z_cl, massdef, delta_mdef,
                                                 halo_profile_model, alpha)
-
-    def _convert_mass_concentration(self, z_cl, massdef=None, delta_mdef=None,
-                                    halo_profile_model=None, alpha=None):
-        alpha1 = self._get_einasto_alpha(z_cl) if self.halo_profile_model=='einasto' else None
-        return convert_profile_mass_concentration(
-            self.mdelta, self.cdelta, z_cl, self.cosmo,
-            massdef=self.massdef, delta_mdef=self.delta_mdef,
-            halo_profile_model=self.halo_profile_model, alpha=alpha1,
-            massdef2=massdef, delta_mdef2=delta_mdef,
-            halo_profile_model2=halo_profile_model, alpha2=alpha)
