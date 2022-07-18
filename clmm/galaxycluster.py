@@ -230,7 +230,7 @@ class GalaxyCluster():
         cols = self._get_input_galdata(
             {'ra_source':'ra', 'dec_source':'dec',
              'shear1': shape_component1, 'shear2': shape_component2})
-        
+
         if is_deltasigma:
             self.add_critical_surface_density(cosmo, use_pdz=use_pdz)
             cols['sigma_c'] = self.galcat['sigma_c']
@@ -330,7 +330,7 @@ class GalaxyCluster():
         if use_shape_error:
             required_cols += ['shape_component1_err', 'shape_component2_err']
         cols = self._get_input_galdata(col_dict, required_cols)
-          
+
         # computes weights
         w_ls = compute_galaxy_weights(
             self.z, cosmo, use_pdz=use_pdz, use_shape_noise=use_shape_noise, use_shape_error=use_shape_error,
@@ -340,7 +340,7 @@ class GalaxyCluster():
             self.galcat[weight_name] = w_ls
         return w_ls
 
-  
+
     def draw_gal_z_from_pdz(self, zcol_out='z', overwrite=False, nobj=1, xmin=None, xmax=None):
         """Draw random redshifts from the photoz pdf for each galaxy 
         of the galcat table.
@@ -365,22 +365,22 @@ class GalaxyCluster():
         samples : ndarray
             Random points following the pdf_tab distribution
         """
-        
+
         if 'pzpdf' not in self.galcat.columns or 'pzbins' not in self.galcat.columns:
             raise TypeError('Missing galaxy photoz distributions')
-    
+
         if zcol_out in self.galcat.columns and overwrite is False:
             raise TypeError(f'Column {zcol_out} already exists in galcat. \
                             Set overwrite=True to overwrite or use other column name')
-        
+
         res = []
         for pzbins, pzpdf in zip(self.galcat['pzbins'], self.galcat['pzpdf']):
-            res.append(_draw_random_points_from_tab_distribution(pzbins, pzpdf, nobj=nobj, xmin=xmin, xmax=xmax))
+            res.append(_draw_random_points_from_tab_distribution(pzbins, pzpdf, nobj=nobj,
+                                                                 xmin=xmin, xmax=xmax))
 
         self.galcat[zcol_out] = res
         return res
-                                  
-    
+
     def make_radial_profile(self,
                             bin_units, bins=10, error_model='ste', cosmo=None,
                             tan_component_in='et', cross_component_in='ex',
