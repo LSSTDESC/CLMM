@@ -3,7 +3,7 @@ Tests for datatype and galaxycluster
 """
 import os
 import numpy as np
-from numpy.testing import assert_raises, assert_equal, assert_allclose
+from numpy.testing import assert_raises, assert_equal, assert_allclose, assert_warns
 import clmm
 from clmm import GCData
 from clmm import Cosmology
@@ -272,6 +272,10 @@ def test_pzpdf_random_draw():
     # test raising TypeError when the name of the new column is already in cluster.galcat
     # also test default overwrite=False and zcol_out='z'
     assert_raises(TypeError, cluster.draw_gal_z_from_pdz)
+    # Test raising warnings when xmin<min(pzbin) and xmax>max(pzbin)
+    assert_warns(UserWarning, cluster.draw_gal_z_from_pdz, zcol_out='z_test', xmin=pzbin.min()/10)
+    cluster.galcat.remove_column('z_test')
+    assert_warns(UserWarning, cluster.draw_gal_z_from_pdz, zcol_out='z_test', xmax=pzbin.max()*10)
     # test drawing 1 object from the whole range of pzpdf
     np.random.seed(0)
     cluster.draw_gal_z_from_pdz(zcol_out='z_random')
