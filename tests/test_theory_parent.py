@@ -178,11 +178,12 @@ def test_warnings(modeling_data):
         import pyccl as ccl
         if not version.parse(ccl.__version__) < version.parse('2.5.0'):
             ccl.__version__='2.4.0'
-        assert_warns(UserWarning, mod._eval_convergence_core, [0.3], 0.3, [0.2, 0.3, 0.4])
-        assert_warns(UserWarning, mod._eval_tangential_shear_core, [0.3], 0.3, [0.2, 0.3, 0.4])
-        assert_warns(UserWarning, mod._eval_reduced_tangential_shear_sp_core,
-                     [0.3], 0.3, [0.2, 0.3, 0.4])
-        assert_warns(UserWarning, mod._eval_magnification_core, [0.3], 0.3, [0.2, 0.3, 0.4])
+        #test warnings from using CCL<2.5.0
+        assert_warns(UserWarning, mod.eval_convergence, [0.3], 0.3, [0.4])
+        assert_warns(UserWarning, mod.eval_tangential_shear, [0.3], 0.3, [0.4])
+        assert_warns(UserWarning, mod.eval_reduced_tangential_shear,
+                     [0.3], 0.3, [0.4])
+        assert_warns(UserWarning, mod.eval_magnification, [0.3], 0.3, [0.4])
 
 def test_einasto(modeling_data):
     """ Basic checks that verbose option for the Einasto profile runs """
