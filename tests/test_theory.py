@@ -270,6 +270,8 @@ def test_profiles(modeling_data, profile_init):
             halo_profile_model=cfg['SIGMA_PARAMS']['halo_profile_model'])
         mod.set_concentration(cfg['SIGMA_PARAMS']['cdelta'])
         mod.set_mass(cfg['SIGMA_PARAMS']['mdelta'])
+        assert_allclose(mod.cdelta, cfg['SIGMA_PARAMS']['cdelta'], 1e-14)
+        assert_allclose(mod.mdelta, cfg['SIGMA_PARAMS']['mdelta'], 1e-14)
         # Need to set the alpha value for the NC backend to the one used for the benchmarks,
         # which is the CCL default value
         if profile_init=='einasto' and theo.be_nick=='nc':
