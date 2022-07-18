@@ -604,7 +604,7 @@ def compute_reduced_tangential_shear(
 
     alpha_ein : float, optional
         If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
-        Option only availablefor the NumCosmo backend
+        Option only available for the NumCosmo backend
 
     z_src_model : str, optional
         Source redshift model, with the following supported options:
