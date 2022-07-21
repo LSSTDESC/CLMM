@@ -646,17 +646,9 @@ class CLMModeling:
 
         return self._eval_convergence(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
 
-<<<<<<< HEAD
-    def _eval_convergence(self, r_proj, z_cl, z_src, verbose=False):
-        sigma = self.eval_surface_density(r_proj, z_cl, verbose=verbose)
-        sigma_c = self.eval_critical_surface_density(z_cl, z_src)
-        return sigma/sigma_c
 
     def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src, z_src_model='discrete',
-=======
-    def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src, z_src_model='single_plane',
->>>>>>> 8b3ab95ad90232098e3fc4e06f882513c66657f5
-                                      beta_s_mean=None, beta_s_square_mean=None, z_distrib_func=None, verbose=False):
+                                      beta_s_mean=None, beta_s_square_mean=None, z_distrib_func=None, gt_equation='applegate14', verbose=False):
         r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
 
         Parameters
@@ -669,10 +661,9 @@ class CLMModeling:
             Background source galaxy redshift(s)
         z_src_model : str, optional
             Source redshift model, with the following supported options:
-
-                * `discrete` (default): all sources at one redshift (if `z_source` is a float)    or known individual source galaxy redshifts (if `z_source` is an array and `r_proj` is a float).
-                * `applegate14`: use the equation (6) in Weighing the Giants - III (Applegate et al. 2014; https://arxiv.org/abs/1208.0605) to evaluate tangential reduced shear.
-                * `schrabback18`: use the equation (12) in Cluster Mass Calibration at High Redshift (Schrabback et al. 2017; https://arxiv.org/abs/1611.03866) to evaluate tangential reduced shear.
+            
+                * `discrete` (default): all sources at one redshift (if `z_source` is a float)    or known individual source galaxy redshifts (if `z_source` is an array and `r_proj` is a float);
+                * `distribution` : sources follow a redshift distribution function;
 
         z_distrib_func: one-parameter function
             Redshift distribution function. This function is used to compute the beta values if they are not provided. The default is the Chang et al (2013) distribution function.
@@ -688,6 +679,12 @@ class CLMModeling:
 
                 .. math::
                     \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
+                    
+        gt_equation: str, optional            
+            Expression for the compupuation of the approximated averaged reduced tangential shear. This is not used if z_src_model='discrete'. The supported options are:
+            
+                * `applegate14` (default): use the equation (6) in Weighing the Giants - III (Applegate et al. 2014; https://arxiv.org/abs/1208.0605).
+                * `schrabback18`: use the equation (12) in Cluster Mass Calibration at High Redshift (Schrabback et al. 2017; https://arxiv.org/abs/1611.03866).            
 
         Returns
         -------
@@ -709,7 +706,7 @@ class CLMModeling:
         if z_src_model == 'discrete':
             gt = self._eval_reduced_tangential_shear_sp(r_proj, z_cl, z_src)
 
-        elif z_src_model == 'applegate14' or z_src_model == 'schrabback18':
+        elif z_src_model == 'distribution':
             z_inf = 1000. #np.inf # INF or a very large number
             if beta_s_mean is None or beta_s_square_mean is None:
                 beta_s_mean = compute_beta_s_mean (z_cl, z_inf, self.cosmo, z_distrib_func=z_distrib_func)
@@ -717,14 +714,14 @@ class CLMModeling:
             gammat_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=z_inf)
             kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=z_inf)
             
+            if gt_equation == 'applegate14':
+                gt = beta_s_mean * gammat_inf / (1. - beta_s_square_mean / beta_s_mean * kappa_inf)            
+            elif gt_equation == 'schrabback18':
+                gt = (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean * kappa_inf) * (beta_s_mean * gammat_inf / (1. - beta_s_mean * kappa_inf))
+            else:
+                raise ValueError("Unsupported gt_equation") 
         else:
             raise ValueError("Unsupported z_src_model")            
-            
-        if z_src_model == 'applegate14':
-            gt = beta_s_mean * gammat_inf / (1. - beta_s_square_mean / beta_s_mean * kappa_inf)
-            
-        if z_src_model == 'schrabback18':
-            gt = (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean * kappa_inf) * (beta_s_mean * gammat_inf / (1. - beta_s_mean * kappa_inf))
 
         return gt
 
