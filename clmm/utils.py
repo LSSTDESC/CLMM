@@ -1,13 +1,12 @@
 """General utility functions that are used in multiple modules"""
 import warnings
 import numpy as np
-import scipy
+from astropy import units as u
 from scipy.stats import binned_statistic
 from scipy.special import gamma, gammainc
-from astropy import units as u
-from .constants import Constants as const
-from scipy.integrate import quad, cumulative_trapezoid
+from scipy.integrate import quad, cumulative_trapezoid, simps
 from scipy.interpolate import interp1d
+from .constants import Constants as const
 
 
 def compute_nfw_boost(rvals, rs=1000, b0=0.1) :
@@ -613,7 +612,7 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1., is_uniqu
         pz_matrix = pzpdf
         kernel_matrix = kernel(z_grid)
 
-    return scipy.integrate.simps(pz_matrix*kernel_matrix, x=z_grid, axis=1)
+    return simps(pz_matrix*kernel_matrix, x=z_grid, axis=1)
 
 def compute_for_good_redshifts(function, z1, z2, bad_value, error_message):
     """Computes function only for z1>z2, the rest is filled with bad_value
