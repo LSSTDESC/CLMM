@@ -935,16 +935,16 @@ def _draw_random_points_from_tab_distribution(x_tab, pdf_tab, nobj=1, xmin=None,
     # Interpolate cdf at xmin and xmax
     if xmin or xmax:
         cdf_interp = interp1d(x_tab, cdf, kind='linear')
-        if xmin:
+        if xmin is not None:
             if xmin<x_tab.min():
                 warnings.warn('`xmin` is less than the minimum value of `x_tab`. '+\
-                              f'Use min(x_tab)={x_tab.min()} instead.')
+                              f'Using min(x_tab)={x_tab.min()} instead.')
             else:
                 cdf_xmin = cdf_interp(xmin)
-        if xmax:
+        if xmax is not None:
             if xmax>x_tab.max():
                 warnings.warn('`xmax` is greater than the maximum value of `x_tab`. '+\
-                              f'Use max(x_tab)={x_tab.max()} instead.')
+                              f'Using max(x_tab)={x_tab.max()} instead.')
             else:
                 cdf_xmax = cdf_interp(xmax)
     # Interpolate the inverse CDF
