@@ -117,7 +117,7 @@ class GalaxyCluster():
             Flag to specify the use of the photoz pdf. If `False` (default), `sigma_c` is computed
             using the redshift point estimates of the `z` column of the `galcat` table. If `True`,
             `sigma_c` is computed as 1/<1/Sigma_crit>, where the average is performed using
-            the individual galaxy redshift pdf. In that case, the `galcat` table should have 
+            the individual galaxy redshift pdf. In that case, the `galcat` table should have
             pzbins` and `pzpdf` columns.
 
         Returns
@@ -352,13 +352,13 @@ class GalaxyCluster():
 
 
     def draw_gal_z_from_pdz(self, zcol_out='z', overwrite=False, nobj=1, xmin=None, xmax=None):
-        """Draw random redshifts from the photoz pdf for each galaxy 
+        """Draw random redshifts from the photoz pdf for each galaxy
         of the galcat table.
 
         Parameters
         ----------
         zcol_out : string
-            Name of the column of the galcat table where the random 
+            Name of the column of the galcat table where the random
             redshifts are to be stored. Default='z'
         overwrite : bool
             If True and if zcol_out already exists in the table, the column
