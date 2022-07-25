@@ -1,13 +1,12 @@
 """General utility functions that are used in multiple modules"""
 import warnings
 import numpy as np
-import scipy
+from astropy import units as u
 from scipy.stats import binned_statistic
 from scipy.special import gamma, gammainc
-from astropy import units as u
-from .constants import Constants as const
-from scipy.integrate import quad
+from scipy.integrate import quad, cumulative_trapezoid, simps
 from scipy.interpolate import interp1d
+from .constants import Constants as const
 
 
 def compute_nfw_boost(rvals, rs=1000, b0=0.1) :
@@ -569,7 +568,7 @@ def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argm
                       f' received max({argname}): {var_array.max()}'
                 raise ValueError(err)
 
-def _integ_pzfuncs(pzpdf, pzbins, zmin, kernel=lambda z: 1., ngrid=1000):
+def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1., is_unique_pzbins=False, ngrid=1000):
     r"""
     Integrates the product of a photo-z pdf with a given kernel.
     This function was created to allow for data with different photo-z binnings.
@@ -600,12 +599,20 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin, kernel=lambda z: 1., ngrid=1000):
     # adding these lines to interpolate CLMM redshift grid for each galaxies
     # to a constant redshift grid for all galaxies. If there is a constant grid for all galaxies
     # these lines are not necessary and z_grid, pz_matrix = pzbins, pzpdf
-    z_grid = np.linspace(0, 5, ngrid)
-    z_grid = z_grid[z_grid>zmin]
-    pdf_interp_list = [interp1d(pzbin, pdf, bounds_error=False, fill_value=0.) for pzbin,pdf in zip(pzbins, pzpdf)]
-    pz_matrix = np.array([pdf_interp(z_grid) for pdf_interp in pdf_interp_list])
-    kernel_matrix = kernel(z_grid)
-    return scipy.integrate.simps(pz_matrix*kernel_matrix, x=z_grid, axis=1)
+
+    if is_unique_pzbins==False:
+        # First need to interpolate on a fixed grid
+        z_grid = np.linspace(zmin, zmax, ngrid)
+        pdf_interp_list = [interp1d(pzbin, pdf, bounds_error=False, fill_value=0.) for pzbin,pdf in zip(pzbins, pzpdf)]
+        pz_matrix = np.array([pdf_interp(z_grid) for pdf_interp in pdf_interp_list])
+        kernel_matrix = kernel(z_grid)
+    else:
+        # OK perform the integration directly from the pdf binning common to all galaxies
+        z_grid = pzbins[0][(pzbins[0]>=zmin)*(pzbins[0]<=zmax)]
+        pz_matrix = pzpdf
+        kernel_matrix = kernel(z_grid)
+
+    return simps(pz_matrix*kernel_matrix, x=z_grid, axis=1)
 
 def compute_for_good_redshifts(function, z1, z2, bad_value, error_message):
     """Computes function only for z1>z2, the rest is filled with bad_value
@@ -863,3 +870,85 @@ def _srd_z_distrib(redshift, is_cdf=False):
         return redshift0**(alpha+1)*gammainc((alpha+1)/beta, (redshift/redshift0)**beta)/beta*gamma((alpha+1)/beta)
     else:
         return (redshift**alpha)*np.exp(-(redshift/redshift0)**beta)
+
+def _draw_random_points_from_distribution(xmin, xmax, nobj, dist_func, xstep=0.001):
+    """Draw random points with a given distribution.
+
+    Uses a sampling technique found in Numerical Recipes in C, Chap 7.2: Transformation Method.
+
+    Parameters
+    ----------
+    xmin : float
+        The minimum source redshift allowed.
+    xmax : float, optional
+        If source redshifts are drawn, the maximum source redshift
+    nobj : float
+        Number of galaxies to generate
+    dist_func : function
+        Function of the required distribution
+    xstep : float
+        Size of the step to interpolate the culmulative distribution.
+
+    Returns
+    -------
+    ndarray
+        Random points with dist_func distribution
+    """
+    steps = int((xmax-xmin)/xstep)+1
+    xdomain = np.linspace(xmin, xmax, steps)
+    # Cumulative probability function of the redshift distribution
+    #probdist = np.vectorize(lambda zmax: integrate.quad(dist_func, xmin, zmax)[0])(xdomain)
+    probdist = dist_func(xdomain, is_cdf=True)-dist_func(xmin, is_cdf=True)
+    # Get random values for probdist
+    uniform_deviate = np.random.uniform(probdist.min(), probdist.max(), nobj)
+    return interp1d(probdist, xdomain, kind='linear')(uniform_deviate)
+
+def _draw_random_points_from_tab_distribution(x_tab, pdf_tab, nobj=1, xmin=None, xmax=None):
+    """Draw random points from a tabulated distribution.
+
+    Parameters
+    ----------
+    x_tab : array-like
+        Values for which the tabulated pdf is provided
+    pdf_tab : array-like
+        Value of the pdf at the x_tab locations
+    nobj : int, optional
+        Number of random samples to generate. Default is 1.
+    xmin : float
+        Lower bound to draw redshift. Default is the min(x_tab)
+    xmax : float
+        Upper bound to draw redshift. Default is the max(x_tab)
+
+    Returns
+    -------
+    samples : ndarray
+        Random points following the pdf_tab distribution
+    """
+    x_tab = np.array(x_tab)
+    pdf_tab = np.array(pdf_tab)
+    #cdf = np.array([simps(pdf_tab[:j], x_tab[:j]) for j in range(1, len(x_tab)+1)])
+    cdf = cumulative_trapezoid(pdf_tab, x_tab, initial=0)
+    # Normalise it
+    cdf /= cdf.max()
+    cdf_xmin, cdf_xmax = 0.0, 1.0
+    # Interpolate cdf at xmin and xmax
+    if xmin or xmax:
+        cdf_interp = interp1d(x_tab, cdf, kind='linear')
+        if xmin is not None:
+            if xmin<x_tab.min():
+                warnings.warn('`xmin` is less than the minimum value of `x_tab`. '+\
+                              f'Using min(x_tab)={x_tab.min()} instead.')
+            else:
+                cdf_xmin = cdf_interp(xmin)
+        if xmax is not None:
+            if xmax>x_tab.max():
+                warnings.warn('`xmax` is greater than the maximum value of `x_tab`. '+\
+                              f'Using max(x_tab)={x_tab.max()} instead.')
+            else:
+                cdf_xmax = cdf_interp(xmax)
+    # Interpolate the inverse CDF
+    inv_cdf = interp1d(cdf, x_tab, kind='linear', bounds_error=False, fill_value=0.)
+    # Finally generate sample from uniform distribution and
+    # get the corresponding samples
+    samples = inv_cdf(np.random.random(nobj)*(cdf_xmax-cdf_xmin)+cdf_xmin)
+    return samples
