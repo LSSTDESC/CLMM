@@ -424,7 +424,7 @@ class CLMMCosmology:
         """
         if self.validate_input:
             validate_argument(locals(), 'z_len', float, argmin=0, eqmin=True)
-            validate_argument(locals(), 'z_src', 'float_array', argmin=0)
+            validate_argument(locals(), 'z_src', 'float_array', argmin=0, eqmin=True)
         return self._eval_sigma_crit(z_len=z_len, z_src=z_src, show_warning=show_warning)
 
     def _eval_sigma_crit(self, z_len, z_src, show_warning=False):
