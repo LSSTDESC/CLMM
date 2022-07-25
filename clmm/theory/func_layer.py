@@ -15,7 +15,7 @@ from . generic import (compute_reduced_shear_from_convergence,
                        convert_profile_mass_concentration)
 
 __all__ = generic.__all__+['compute_3d_density', 'compute_surface_density',
-                           'compute_excess_surface_density','compute_excess_surface_density_2h', 
+                           'compute_excess_surface_density','compute_excess_surface_density_2h',
                            'compute_surface_density_2h',
                            'compute_critical_surface_density',
                            'compute_tangential_shear', 'compute_convergence',
@@ -255,7 +255,7 @@ def compute_excess_surface_density_2h(r_proj, z_cl, cosmo, halobias=1., lsteps=5
     halobias : float, optional
         Value of the halo bias
     lsteps : int, optional
-        Steps for the numerical integration 
+        Steps for the numerical integration
     validate_input: bool
         Validade each input argument
 
@@ -296,7 +296,7 @@ def compute_surface_density_2h(r_proj, z_cl, cosmo, halobias=1, lsteps=500, vali
     halobias : float, optional
         Value of the halo bias
     lsteps : int, optional
-        Steps for the numerical integration 
+        Steps for the numerical integration
     validate_input: bool
         Validade each input argument
 
@@ -314,7 +314,7 @@ def compute_surface_density_2h(r_proj, z_cl, cosmo, halobias=1, lsteps=500, vali
     return sigma_2h
 
 def compute_critical_surface_density(cosmo, z_cluster, z_source=None, use_pdz=False, pzbins=None, pzpdf=None, validate_input=True):
-    r"""Computes either 
+    r"""Computes either
 
     - the critical surface density if `use_pdz=False`
 
@@ -324,11 +324,11 @@ def compute_critical_surface_density(cosmo, z_cluster, z_source=None, use_pdz=Fa
     or
 
     - the 'effective critical surface density' if `use_pdz=True`
-     
+
     .. math::
-        \langle \Sigma_{\rm crit}^{-1}\rangle^{-1} = \left(\int \frac{1}{\Sigma_{\rm crit}(z)} p(z) dz\right)^{-1} 
-    
-    where :math:`p(z)` is the source photoz probability density function. 
+        \langle \Sigma_{\rm crit}^{-1}\rangle^{-1} = \left(\int \frac{1}{\Sigma_{\rm crit}(z)} p(z) dz\right)^{-1}
+
+    where :math:`p(z)` is the source photoz probability density function.
     This comes from the maximum likelihood estimator for evaluating a :math:`\Delta\Sigma` profile.
 
 
@@ -341,9 +341,9 @@ def compute_critical_surface_density(cosmo, z_cluster, z_source=None, use_pdz=Fa
     z_source : array_like, float
         Background source galaxy redshift(s)
     use_pdz : bool
-        Flag to use the photoz pdf. If `False` (default), `sigma_c` is computed using the source redshift point estimates `z_source`. 
-        If `True`, `sigma_c` is computed as 1/<1/Sigma_crit>, where the average is performed using the individual galaxy redshift pdf. 
-        In that case, the `pzbins` and `pzpdf` should be specified. 
+        Flag to use the photoz pdf. If `False` (default), `sigma_c` is computed using the source redshift point estimates `z_source`.
+        If `True`, `sigma_c` is computed as 1/<1/Sigma_crit>, where the average is performed using the individual galaxy redshift pdf.
+        In that case, the `pzbins` and `pzpdf` should be specified.
     pzbins : array-like
         Bins where the source redshift pdf is defined
     pzpdf : array-like
@@ -366,7 +366,7 @@ def compute_critical_surface_density(cosmo, z_cluster, z_source=None, use_pdz=Fa
     return sigma_c
 
 def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
-                             halo_profile_model='nfw', massdef='mean', alpha_ein=None, z_src_model='discrete', 
+                             halo_profile_model='nfw', massdef='mean', alpha_ein=None, z_src_model='discrete',
                              verbose=False, validate_input=True):
     r"""Computes the tangential shear
 
@@ -417,7 +417,7 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
             `z_source` is a float) or known individual source galaxy redshifts
             (if `z_source` is an array and `r_proj` is a float);
     verbose : bool, optional
-        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends. 
+        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends.
     validate_input : bool, optional
         If True (default), the types of the arguments are checked before proceeding.
 
@@ -434,7 +434,7 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     `z_src_model`. We will need :math:`\gamma_\infty` and :math:`\kappa_\infty`
     for alternative z_src_models using :math:`\beta_s`.
     """
-    
+
     if z_src_model == 'discrete':
 
         gcm.validate_input = validate_input
@@ -510,7 +510,7 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
             `z_source` is a float) or known individual source galaxy redshifts
             (if `z_source` is an array and `r_proj` is a float);
     verbose : bool, optional
-        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends. 
+        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends.
     validate_input : bool, optional
         If True (default), the types of the arguments are checked before proceeding.
 
@@ -577,22 +577,26 @@ def compute_reduced_tangential_shear(
     z_cluster : float
         Galaxy cluster redshift
     z_source : array_like, float, one-parameter function or dict
-        Source redshift information depending on the `z_src_model` parameter. The options available are:       
-            * Background source galaxy redshift(s) (array_like, float) if `z_src_model`='discrete' (default),
-            * Background source galaxy redshift distribution function (one-parameter function) if `z_src_model`=`distribution`,
-            * Lensing efficiency parameter(s) averaged over the galaxy redshift distribution (dict) if `z_src_model`=`averaged lensing efficiency`.
-            The dictionnary should contain a 'beta_s_mean' key and a 'beta_s_square_mean' key with the appropriate corresponding values :
-                 *beta_s_mean: array_like, float
-                    Lensing efficiency averaged over the galaxy redshift distribution. 
+        Source redshift information depending on the `z_src_model` parameter:
+
+            * `discrete` (array_like, float): Background source galaxy redshift(s)
+            * `distribution` (one-parameter function):Background source galaxy redshift \
+            distribution function
+            * `averaged lensing efficiency` (dict): Lensing efficiency parameter(s) averaged \
+            over the galaxy redshift distribution. The dictionnary should contain a \
+            'beta_s_mean' key and a 'beta_s_square_mean' key with the appropriate \
+            corresponding values:
+
+                *beta_s_mean: array_like, float
+                    Lensing efficiency averaged over the galaxy redshift distribution.
                         .. math::
                             \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right\rangle
 
                 *beta_s_square_mean: array_like, float
-                    Square of the lensing efficiency averaged over the galaxy redshift distribution. 
+                    Square of the lensing efficiency averaged over the galaxy redshift distribution.
                         .. math::
                             \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
 
-                          
     cosmo : clmm.cosmology.Cosmology object
         CLMM Cosmology object
     delta_mdef : int, optional
@@ -619,22 +623,27 @@ def compute_reduced_tangential_shear(
         Source redshift model, with the following supported options:
 
             * `discrete` (default): all sources at one redshift (if `z_source` is a float) \
-                or known individual source galaxy redshifts (if `z_source` is an array and \
-                `r_proj` is a float);              
-            * `distribution` : sources follow a redshift distribution function. In this case the averaged lensing efficiency parameter(s) will be computed
-            and used to approximate the reduced tangential shear;
-            * `averaged lensing efficiency` : the source redshift distribution is described by the averaged lensing efficiency parameter(s). 
-            In this case these parameters will directly be used to approximate the reduced tangential shear;
-                
-    gt_equation: str, optional            
-        Expression for the compupuation of the approximated averaged reduced tangential shear. This is not used if `z_src_model`='discrete'. The supported options are:
-            
-            * `applegate14` (default): use the equation (6) in Weighing the Giants - III (Applegate et al. 2014; https://arxiv.org/abs/1208.0605).
-            * `schrabback18`: use the equation (12) in Cluster Mass Calibration at High Redshift (Schrabback et al. 2017; https://arxiv.org/abs/1611.03866).              
-            
+            or known individual source galaxy redshifts (if `z_source` is an array and \
+            `r_proj` is a float);
+            * `distribution` : sources follow a redshift distribution function. In this case \
+            the averaged lensing efficiency parameter(s) will be computed and used to \
+            approximate the reduced tangential shear;
+            * `averaged lensing efficiency` : the source redshift distribution is described by \
+            the averaged lensing efficiency parameter(s). In this case these parameters will \
+            directly be used to approximate the reduced tangential shear;
+
+    gt_equation: str, optional
+        Expression for the compupuation of the approximated averaged reduced tangential shear. \
+        This is not used if `z_src_model`='discrete'. The supported options are:
+
+            * `applegate14` (default): use the equation (6) in Weighing the Giants - III \
+            (Applegate et al. 2014; https://arxiv.org/abs/1208.0605).
+            * `schrabback18`: use the equation (12) in Cluster Mass Calibration at High Redshift \
+            (Schrabback et al. 2017; https://arxiv.org/abs/1611.03866).
+
     verbose : bool, optional
-        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends. 
-        
+        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends.
+
     validate_input : bool, optional
         If True (default), the types of the arguments are checked before proceeding.
 
@@ -710,7 +719,7 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
             `z_source` is a float) or known individual source galaxy redshifts
             (if `z_source` is an array and `r_proj` is a float);
     verbose : bool, optional
-        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends. 
+        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends.
     validate_input : bool, optional
         If True (default), the types of the arguments are checked before proceeding.
 
@@ -763,13 +772,13 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
                                delta_mdef=200, halo_profile_model='nfw', massdef='mean',
                                z_src_model='discrete', validate_input=True):
 
-    r""" Computes magnification bias from magnification :math:`\mu` 
+    r""" Computes magnification bias from magnification :math:`\mu`
     and slope parameter :math:`\alpha` as :
 
     .. math::
         \mu^{\alpha - 1}.
 
-    The alpha parameter depends on the source sample and is computed as the slope of the 
+    The alpha parameter depends on the source sample and is computed as the slope of the
     cummulative numer counts at a given magnitude :
 
     .. math::
