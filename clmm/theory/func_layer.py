@@ -576,8 +576,23 @@ def compute_reduced_tangential_shear(
         Galaxy cluster NFW concentration.
     z_cluster : float
         Galaxy cluster redshift
-    z_source : array_like, float
-        Background source galaxy redshift(s)
+    z_source : array_like, float, one-parameter function or dict
+        Source redshift information depending on the `z_src_model` parameter. The options available are:       
+            * Background source galaxy redshift(s) (array_like, float) if `z_src_model`='discrete' (default),
+            * Background source galaxy redshift distribution function (one-parameter function) if `z_src_model`=`distribution`,
+            * Lensing efficiency parameter(s) averaged over the galaxy redshift distribution (dict) if `z_src_model`=`averaged lensing efficiency`.
+            The dictionnary should contain a 'beta_s_mean' key and a 'beta_s_square_mean' key with the appropriate corresponding values :
+                 *beta_s_mean: array_like, float
+                    Lensing efficiency averaged over the galaxy redshift distribution. 
+                        .. math::
+                            \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right\rangle
+
+                *beta_s_square_mean: array_like, float
+                    Square of the lensing efficiency averaged over the galaxy redshift distribution. 
+                        .. math::
+                            \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
+
+                          
     cosmo : clmm.cosmology.Cosmology object
         CLMM Cosmology object
     delta_mdef : int, optional
@@ -606,25 +621,13 @@ def compute_reduced_tangential_shear(
             * `discrete` (default): all sources at one redshift (if `z_source` is a float) \
                 or known individual source galaxy redshifts (if `z_source` is an array and \
                 `r_proj` is a float);              
-            * `distribution` : sources follow a redshift distribution function.
-
-    z_distrib_func: one-parameter function
-        Redshift distribution function. This function is used to compute the beta values if they are not provided. The default is the Chang et al (2013) distribution function.
-
-    beta_s_mean: array_like, float, optional
-        Lensing efficiency averaged over the galaxy redshift distribution. If not provided, it will be computed using the default redshift distribution or the one given by the user.
-
-            .. math::
-                \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right\rangle
-
-    beta_s_square_mean: array_like, float, optional
-        Square of the lensing efficiency averaged over the galaxy redshift distribution. If not provided, it will be computed using the default redshift distribution or the one given by the user.
-
-            .. math::
-                \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
+            * `distribution` : sources follow a redshift distribution function. In this case the averaged lensing efficiency parameter(s) will be computed
+            and used to approximate the reduced tangential shear;
+            * `averaged lensing efficiency` : the source redshift distribution is described by the averaged lensing efficiency parameter(s). 
+            In this case these parameters will directly be used to approximate the reduced tangential shear;
                 
     gt_equation: str, optional            
-        Expression for the compupuation of the approximated averaged reduced tangential shear. This is not used if z_src_model='discrete'. The supported options are:
+        Expression for the compupuation of the approximated averaged reduced tangential shear. This is not used if `z_src_model`='discrete'. The supported options are:
             
             * `applegate14` (default): use the equation (6) in Weighing the Giants - III (Applegate et al. 2014; https://arxiv.org/abs/1208.0605).
             * `schrabback18`: use the equation (12) in Cluster Mass Calibration at High Redshift (Schrabback et al. 2017; https://arxiv.org/abs/1611.03866).              
@@ -653,7 +656,7 @@ def compute_reduced_tangential_shear(
         gcm.set_einasto_alpha(alpha_ein)
 
     red_tangential_shear = gcm.eval_reduced_tangential_shear(
-        r_proj, z_cluster, z_source, z_src_model, beta_s_mean, beta_s_square_mean, z_distrib_func, gt_equation, verbose=verbose)
+        r_proj, z_cluster, z_source, z_src_model, gt_equation, verbose=verbose)
 
     gcm.validate_input = True
     return red_tangential_shear
