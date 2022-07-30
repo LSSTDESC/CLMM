@@ -67,7 +67,7 @@ boost_models = {'nfw_boost': compute_nfw_boost,
                 'powerlaw_boost': compute_powerlaw_boost}
 
 def correct_sigma_with_boost_values(sigma_vals, boost_factors):
-    """ Given a boost model and sigma profile, compute corrected sigma
+    """ Given a list of boost values and sigma profile, compute corrected sigma
 
     Parameters
     ----------
