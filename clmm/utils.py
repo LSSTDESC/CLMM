@@ -568,7 +568,8 @@ def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argm
                       f' received max({argname}): {var_array.max()}'
                 raise ValueError(err)
 
-def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1., is_unique_pzbins=False, ngrid=1000):
+def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1., is_unique_pzbins=False,
+                   ngrid=1000, use_qp=False):
     r"""
     Integrates the product of a photo-z pdf with a given kernel.
     This function was created to allow for data with different photo-z binnings.
@@ -586,6 +587,8 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1., is_uniqu
         Default: kernel(z)=1
     ngrid : int, optional
         Number of points for the interpolation of the redshift pdf.
+    use_qp : bool
+        Use qp for computations.
 
     Returns
     -------
@@ -599,8 +602,17 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1., is_uniqu
     # adding these lines to interpolate CLMM redshift grid for each galaxies
     # to a constant redshift grid for all galaxies. If there is a constant grid for all galaxies
     # these lines are not necessary and z_grid, pz_matrix = pzbins, pzpdf
+    if use_qp:
+        import qp
+        qp_ensamble = qp.Ensemble(
+            qp.interp_irregular,
+            data=dict(xvals=pzbins, yvals=pzpdf, check_input=True),
+            )
+        z_grid = pzbins[0][(pzbins[0]>=zmin)*(pzbins[0]<=zmax)]
+        pz_matrix = qp_ensamble.pdf(z_grid)
+        kernel_matrix = kernel(z_grid)
 
-    if is_unique_pzbins==False:
+    elif is_unique_pzbins==False:
         # First need to interpolate on a fixed grid
         z_grid = np.linspace(zmin, zmax, ngrid)
         pdf_interp_list = [interp1d(pzbin, pdf, bounds_error=False, fill_value=0.) for pzbin,pdf in zip(pzbins, pzpdf)]
@@ -608,8 +620,9 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1., is_uniqu
         kernel_matrix = kernel(z_grid)
     else:
         # OK perform the integration directly from the pdf binning common to all galaxies
-        z_grid = pzbins[0][(pzbins[0]>=zmin)*(pzbins[0]<=zmax)]
-        pz_matrix = pzpdf
+        mask = (pzbins[0]>=zmin)*(pzbins[0]<=zmax)
+        z_grid = pzbins[0][mask]
+        pz_matrix = np.array([pdf[mask] for pdf in pzpdf])
         kernel_matrix = kernel(z_grid)
 
     return simps(pz_matrix*kernel_matrix, x=z_grid, axis=1)
