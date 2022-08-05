@@ -70,34 +70,55 @@ class CTModeling(CLMModeling):
         CLMModeling.__init__(self, validate_input)
         # Update class attributes
         self.backend = 'ct'
-        self.mdef_dict = {'mean': 'mean'}
         self.hdpm_dict = {'nfw': 'nfw'}
         self.cosmo_class = AstroPyCosmology
         # Attributes exclusive to this class
         self.cor_factor = _patch_rho_crit_to_cd2018(2.77533742639e+11)
+        self.__mdelta = 0.0 # internal use only
+        self.__cdelta = 0.0 # internal use only
+
         # Set halo profile and cosmology
-        self.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
         self.set_cosmo(None)
+        #Exploit cluster-toolkit's calculation to get massdef='critical'
+        #CT takes the argument 'Omega_m' to culculate rho_m(z) from rho_c (in M_sun*h^2/Mpc^3)
+        #Passing (H(z)/H0)^2*Omega_m(z)=E(z)^2*Omega_m(z) is expected
+        #Passing (H(z)/H0)^2=E^2 will effectively change the massdef to 'critical'
+        #by calculating rho_c(z), instead of rho_m(z), from rho_c
+        self.mdef_dict = {
+            'mean': self.cosmo.get_E2Omega_m,
+            'critical': self.cosmo.get_E2,
+            'virial': self.cosmo.get_E2}
+
+        self.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
+
+
+    # Functions implemented by child class
+
 
     def _set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
         """"set halo density profile"""
-        # Update values
-        self.halo_profile_model = halo_profile_model
-        self.massdef = massdef
-        self.delta_mdef = delta_mdef
+        pass
+
+    def _get_concentration(self):
+        """"get concentration"""
+        return self.__cdelta
+
+    def _get_mass(self):
+        """"get mass"""
+        return self.__mdelta
 
     def _set_concentration(self, cdelta):
         """" set concentration"""
-        self.cdelta = cdelta
+        self.__cdelta = cdelta
 
     def _set_mass(self, mdelta):
         """" set mass"""
-        self.mdelta = mdelta
+        self.__mdelta = mdelta
 
     def _eval_3d_density(self, r3d, z_cl):
         """"eval 3d density"""
         h = self.cosmo['h']
-        Omega_m = self.cosmo.get_E2Omega_m(z_cl)*self.cor_factor
+        Omega_m = self.mdef_dict[self.massdef](z_cl)*self.cor_factor
         return ct.density.rho_nfw_at_r(
             _assert_correct_type_ct(r3d)*h, self.mdelta*h,
             self.cdelta, Omega_m, delta=self.delta_mdef)*h**2
@@ -105,7 +126,7 @@ class CTModeling(CLMModeling):
     def _eval_surface_density(self, r_proj, z_cl):
         """"eval surface density"""
         h = self.cosmo['h']
-        Omega_m = self.cosmo.get_E2Omega_m(z_cl)*self.cor_factor
+        Omega_m = self.mdef_dict[self.massdef](z_cl)*self.cor_factor
         return ct.deltasigma.Sigma_nfw_at_R(
             _assert_correct_type_ct(r_proj)*h, self.mdelta*h,
             self.cdelta, Omega_m, delta=self.delta_mdef)*h*1.0e12  # pc**-2 to Mpc**-2
@@ -138,8 +159,10 @@ class CTModeling(CLMModeling):
             raise ValueError(
                 f"Rmin = {np.min(r_proj):.2e} Mpc!"
                 " This value is too small and may cause computational issues.")
-        Omega_m = self.cosmo.get_E2Omega_m(z_cl)*self.cor_factor
+
         h = self.cosmo['h']
+        Omega_m = self.mdef_dict[self.massdef](z_cl)*self.cor_factor
+
         r_proj = _assert_correct_type_ct(r_proj)*h
         # Computing sigma on a larger range than the radial range requested,
         # with at least 1000 points.

@@ -1,16 +1,16 @@
 """Functions to generate mock source galaxy distributions to demo lensing code"""
 import warnings
 import numpy as np
-from scipy.interpolate import interp1d
-from scipy.special import gamma, gammainc
 from astropy import units as u
 from astropy.coordinates import SkyCoord
 
 from ..gcdata import GCData
 from ..theory import compute_tangential_shear, compute_convergence
-from ..utils import convert_units, compute_lensed_ellipticity, validate_argument
+from ..utils import (convert_units, compute_lensed_ellipticity, validate_argument,
+                     _chang_z_distrib, _srd_z_distrib, _draw_random_points_from_distribution)
 
-def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, cluster_ra=0., cluster_dec=0.,
+def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc,
+                            cluster_ra=0., cluster_dec=0.,
                             delta_so=200, massdef='mean',
                             halo_profile_model='nfw', zsrc_min=None,
                             zsrc_max=7., field_size=8., shapenoise=None,
@@ -50,12 +50,13 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, cluste
 
     4. We predict the reduced tangential shear of each using the radial distances of each source
     from the lens, the source redshifts, and the lens mass, concentration, and redshift. In the
-    given cosmology for an NFW halo. The reduced tangential shear is then transformed into `g1` and `g2``
-    components.
+    given cosmology for an NFW halo. The reduced tangential shear is then transformed into `g1`
+    and `g2` components.
 
-    5. If the `shapenoise=True`, intrinsic ellipticities (1,2) components are drawn from a Gaussian distribution of width of `shapenoise`.
-    These ellipticities components are then combined with `g1` and `g2` to provide lensed ellipticies `e1` and `e2`. If `shapenoise=False`,
-    `g1` and `g2` are directly used as ellipticity components.
+    5. If the `shapenoise=True`, intrinsic ellipticities (1,2) components are drawn from a
+    Gaussian distribution of width of `shapenoise`. These ellipticities components are then
+    combined with `g1` and `g2` to provide lensed ellipticies `e1` and `e2`. If
+    `shapenoise=False`, `g1` and `g2` are directly used as ellipticity components.
 
 
     If the shape noise parameter is high, we may draw nonsensical values for ellipticities. We
@@ -144,8 +145,10 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, cluste
         validate_argument(locals(), 'cluster_m', float, argmin=0, eqmin=True)
         validate_argument(locals(), 'cluster_z', float, argmin=0, eqmin=True)
         validate_argument(locals(), 'cluster_c', float, argmin=0, eqmin=True)
-        validate_argument(locals(), 'cluster_dec', float, argmin=-90, argmax=90, eqmin=True, eqmax=True)
-        validate_argument(locals(), 'cluster_ra', float, argmin=-360., argmax=360., eqmin=True, eqmax=True)
+        validate_argument(locals(), 'cluster_dec', float, argmin=-90, argmax=90,
+                          eqmin=True, eqmax=True)
+        validate_argument(locals(), 'cluster_ra', float, argmin=-360., argmax=360.,
+                          eqmin=True, eqmax=True)
         validate_argument(locals(), 'zsrc', (float, str))
         validate_argument(locals(), 'delta_so', float, argmin=0, eqmin=True)
         validate_argument(locals(), 'massdef', str)
@@ -163,7 +166,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, cluste
 
     if zsrc_min is None: zsrc_min = cluster_z+0.1
 
-    params = {'cluster_m' : cluster_m, 'cluster_z' : cluster_z, 'cluster_c' : cluster_c, 
+    params = {'cluster_m' : cluster_m, 'cluster_z' : cluster_z, 'cluster_c' : cluster_c,
               'cluster_ra' : cluster_ra, 'cluster_dec' : cluster_dec,
               'cosmo' : cosmo, 'delta_so' : delta_so, 'zsrc' : zsrc, 'massdef' : massdef,
               'halo_profile_model' : halo_profile_model,
@@ -203,58 +206,11 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc, cluste
     # Final check to see if there are bad galaxies left
     if nbad > 1:
         warnings.warn(
-            "Not able to remove {} aphysical objects after {} iterations".format(nbad, nretry))
+            f'Not able to remove {nbad} aphysical objects after {nretry} iterations')
 
     # Now that the catalog is final, add an id column
     galaxy_catalog['id'] = np.arange(ngals)
     return galaxy_catalog
-
-
-def _chang_z_distrib(redshift, is_cdf=False):
-    """
-    A private function that returns the Chang et al (2013) unnormalized galaxy redshift distribution
-    function, with the fiducial set of parameters.
-
-    Parameters
-    ----------
-    redshift : float
-        Galaxy redshift
-    is_cdf : bool
-        If True, returns cumulative distribution function.
-
-    Returns
-    -------
-    The value of the distribution at z
-    """
-    alpha, beta, redshift0 = 1.24, 1.01, 0.51
-    if is_cdf:
-        return redshift0**(alpha+1)*gammainc((alpha+1)/beta, (redshift/redshift0)**beta)/beta*gamma((alpha+1)/beta)
-    else:
-        return (redshift**alpha)*np.exp(-(redshift/redshift0)**beta)
-
-
-def _srd_z_distrib(redshift, is_cdf=False):
-    """
-    A private function that returns the unnormalized galaxy redshift distribution function used in
-    the LSST/DESC Science Requirement Document (arxiv:1809.01669).
-
-    Parameters
-    ----------
-    redshift : float
-        Galaxy redshift
-    is_cdf : bool
-        If True, returns cumulative distribution function.
-
-    Returns
-    -------
-    The value of the distribution at z
-    """
-    alpha, beta, redshift0 = 2., 0.9, 0.28
-    if is_cdf:
-        return redshift0**(alpha+1)*gammainc((alpha+1)/beta, (redshift/redshift0)**beta)/beta*gamma((alpha+1)/beta)
-    else:
-        return (redshift**alpha)*np.exp(-(redshift/redshift0)**beta)
-
 
 def _compute_ngals(ngal_density, field_size, cosmo, cluster_z, zsrc, zsrc_min=None, zsrc_max=None):
     """
@@ -325,19 +281,12 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals,
                                 massdef=massdef,
                                 z_src_model='single_plane')
 
-    c_cl = SkyCoord(cluster_ra*u.deg, cluster_dec*u.deg, frame='icrs') 
-    c_gal = SkyCoord(galaxy_catalog['ra']*u.deg, galaxy_catalog['dec']*u.deg, frame='icrs') 
-    
+    c_cl = SkyCoord(cluster_ra*u.deg, cluster_dec*u.deg, frame='icrs')
+    c_gal = SkyCoord(galaxy_catalog['ra']*u.deg, galaxy_catalog['dec']*u.deg, frame='icrs')
+
     # position angle of drawn galaxies w.r.t cluster center
     angsep, posangle = c_cl.separation(c_gal).rad, c_cl.position_angle(c_gal).rad
-
-    posangle += 0.5*np.pi
-    if np.iterable(posangle):
-        posangle[posangle > np.pi] -= 2*np.pi
-        posangle[angsep == 0] = 0
-    else:
-        posangle -= 2*np.pi if posangle > np.pi else 0
-        posangle = 0 if angsep == 0 else posangle
+    posangle += 0.5*np.pi # for right convention
 
     #corresponding shear1,2 components
     gam1 = -gamt*np.cos(2*posangle) + gamx*np.sin(2*posangle)
@@ -371,42 +320,6 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals,
         cols = cols + ['pzbins', 'pzpdf']
 
     return galaxy_catalog[cols]
-
-
-
-def _draw_random_points_from_distribution(xmin, xmax, nobj, dist_func, xstep=0.001):
-    """Draw random points with a given distribution.
-
-    Uses a sampling technique found in Numerical Recipes in C, Chap 7.2: Transformation Method.
-
-    Parameters
-    ----------
-    xmin : float
-        The minimum source redshift allowed.
-    xmax : float, optional
-        If source redshifts are drawn, the maximum source redshift
-    nobj : float
-        Number of galaxies to generate
-    dist_func : function
-        Function of the required distribution
-    xstep : float
-        Size of the step to interpolate the culmulative distribution.
-
-    Returns
-    -------
-    ndarray
-        Random points with dist_func distribution
-    """
-    steps = int((xmax-xmin)/xstep)+2
-    xdomain = np.linspace(xmin, xmax, steps)
-    # Cumulative probability function of the redshift distribution
-    #probdist = np.vectorize(lambda zmax: integrate.quad(dist_func, xmin, zmax)[0])(xdomain)
-    probdist = dist_func(xdomain, is_cdf=True)-dist_func(xmin, is_cdf=True)
-    # Get random values for probdist
-    uniform_deviate = np.random.uniform(probdist.min(), probdist.max(), nobj)
-    return interp1d(probdist, xdomain, kind='linear')(uniform_deviate)
-
-
 
 def _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals):
     """Set source galaxy redshifts either set to a fixed value or draw from a predefined
@@ -463,7 +376,7 @@ def _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals):
     # Invalid entry
     else:
         raise ValueError(
-            "zsrc must be a float, chang13 or desc_srd. You set: {}".format(zsrc))
+            f'zsrc must be a float, chang13 or desc_srd. You set: {zsrc}')
 
     return GCData([zsrc_list, zsrc_list], names=('ztrue', 'z'))
 
@@ -504,7 +417,8 @@ def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled):
     return galaxy_catalog
 
 
-def _draw_galaxy_positions(galaxy_catalog, ngals, cluster_ra, cluster_dec, cluster_z, cosmo, field_size):
+def _draw_galaxy_positions(galaxy_catalog, ngals, cluster_ra, cluster_dec, cluster_z, cosmo,
+                           field_size):
     """Draw positions of source galaxies around lens
 
     We draw physical x and y positions from uniform distribution with -4 and 4 Mpc of the
@@ -548,23 +462,23 @@ def _draw_galaxy_positions(galaxy_catalog, ngals, cluster_ra, cluster_dec, clust
     ra = -np.rad2deg(galaxy_catalog['x_mpc']/lens_distance)
     dec = np.rad2deg(galaxy_catalog['y_mpc']/lens_distance)
     c1 = SkyCoord(ra*u.deg, dec*u.deg, frame='icrs')
-    c1_cl = SkyCoord(0.*u.deg, 0.*u.deg, frame='icrs') 
- 
+    c1_cl = SkyCoord(0.*u.deg, 0.*u.deg, frame='icrs')
+
     # position angle of drawn galaxies w.r.t cluster center in original position c1_cl = (0,0)
     position_angle = c1_cl.position_angle(c1).to(u.deg)
- 
+
     # separation of drawn galaxies w.r.t cluster center in original position c1_cl = (0,0)
     sep = c1_cl.separation(c1)
 
     # cluster actual position
-    c2_cl = SkyCoord(cluster_ra*u.deg, cluster_dec*u.deg, frame='icrs') 
- 
+    c2_cl = SkyCoord(cluster_ra*u.deg, cluster_dec*u.deg, frame='icrs')
+
     # new galaxy (ra,dec) w.r.t the new cluster position c2_cl
     new_coord = c2_cl.directional_offset_by(position_angle, sep)
 
     galaxy_catalog['ra'] = new_coord.ra.degree
     galaxy_catalog['dec'] = new_coord.dec.degree
-  
+
     return galaxy_catalog
 
 

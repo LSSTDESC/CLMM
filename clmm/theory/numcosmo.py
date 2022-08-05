@@ -64,6 +64,10 @@ class NumCosmoCLMModeling(CLMModeling):
         self.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
         self.set_cosmo(None)
 
+
+    # Functions implemented by child class
+
+
     def _set_cosmo(self, cosmo):
         """"set cosmo"""
         CLMModeling._set_cosmo(self, cosmo)
@@ -77,61 +81,53 @@ class NumCosmoCLMModeling(CLMModeling):
         if not((halo_profile_model==self.halo_profile_model)
                 and (massdef==self.massdef)
                 and (delta_mdef==self.delta_mdef)):
-            self.halo_profile_model = halo_profile_model
-            self.massdef = massdef
 
-            cur_cdelta = 0.0
-            cur_values = False
-            if self.hdpm:
-                cur_cdelta = self.hdpm.props.cDelta
-                cur_log10_mdelta = self.hdpm.props.log10MDelta
-                cur_values = True
+            # Makes sure current cdelta/mdelta values are kept
+            has_cm_vals = self.hdpm is not None
+            if has_cm_vals:
+                cdelta = self.cdelta
+                log10_mdelta = self.hdpm.props.log10MDelta
 
             self.hdpm = self.hdpm_dict[halo_profile_model](
                 self.mdef_dict[massdef], delta_mdef)
-            if cur_values:
-                self.hdpm.props.cDelta = cur_cdelta
-                self.hdpm.props.log10MDelta = cur_log10_mdelta
 
-    def get_mset(self):
-        r"""
-        Gets a mass set (NumCosmo internal use)
-        """
-        mset = Ncm.MSet.empty_new()
-        mset.set(self.cosmo.be_cosmo)
-        mset.set(self.hdpm)
-        mset.set(self.cosmo.smd)
-        return mset
+            if has_cm_vals:
+                self.cdelta = cdelta
+                self.hdpm.props.log10MDelta = log10_mdelta
 
-    def set_mset(self, mset):
-        r"""
-        Sets a mass set (NumCosmo internal use)
-        """
-        self.cosmo.set_be_cosmo(mset.get(Nc.HICosmo.id()))
+    def _get_concentration(self):
+        """"get concentration"""
+        return self.hdpm.props.cDelta
 
-        self.hdpm = mset.get(Nc.HaloDensityProfile.id())
-        self.cosmo.smd = mset.get(Nc.WLSurfaceMassDensity.id())
-
-        self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
+    def _get_mass(self):
+        """"get mass"""
+        return 10**self.hdpm.props.log10MDelta
 
     def _set_concentration(self, cdelta):
-        """" set concentration"""
+        """"set concentration"""
         self.hdpm.props.cDelta = cdelta
 
     def _set_mass(self, mdelta):
-        """" set mass"""
+        """"set mass"""
         self.hdpm.props.log10MDelta = math.log10(mdelta)
+
+    def _set_einasto_alpha(self, alpha):
+        self.hdpm.props.alpha = alpha
+
+    def _get_einasto_alpha(self, z_cl=None):
+        """"get the value of the Einasto slope"""
+        # Note that z_cl is needed for the CCL backend only
+        # 
+        return self.hdpm.props.alpha
 
     def _eval_3d_density(self, r3d, z_cl):
         """"eval 3d density"""
-
         func = lambda r3d, z_cl: self.hdpm.eval_density(
             self.cosmo.be_cosmo, r3d, z_cl)
         return np.vectorize(func)(r3d, z_cl)
 
     def _eval_surface_density(self, r_proj, z_cl):
         """"eval surface density"""
-
         self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
         func = lambda r_proj, z_cl: self.cosmo.smd.sigma(
             self.hdpm, self.cosmo.be_cosmo, r_proj, z_cl)
@@ -190,5 +186,28 @@ class NumCosmoCLMModeling(CLMModeling):
         func = lambda r_proj, z_src, z_cl: self.cosmo.smd.magnification(
             self.hdpm, self.cosmo.be_cosmo, r_proj, z_src, z_cl, z_cl)
         return np.vectorize(func)(r_proj, z_src, z_cl)
+
+    # Functions unique to this class
+
+    def get_mset(self):
+        r"""
+        Gets a mass set (NumCosmo internal use)
+        """
+        mset = Ncm.MSet.empty_new()
+        mset.set(self.cosmo.be_cosmo)
+        mset.set(self.hdpm)
+        mset.set(self.cosmo.smd)
+        return mset
+
+    def set_mset(self, mset):
+        r"""
+        Sets a mass set (NumCosmo internal use)
+        """
+        self.cosmo.set_be_cosmo(mset.get(Nc.HICosmo.id()))
+
+        self.hdpm = mset.get(Nc.HaloDensityProfile.id())
+        self.cosmo.smd = mset.get(Nc.WLSurfaceMassDensity.id())
+
+        self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
 
 Modeling = NumCosmoCLMModeling
