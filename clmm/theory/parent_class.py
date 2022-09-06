@@ -443,7 +443,7 @@ class CLMModeling:
                 raise ValueError('Redshift bins and source redshift pdf must be provided when use_pdz is True')
             else:
                 def inv_sigmac(redshift):
-                    return 1./self._eval_critical_surface_density(z_len=z_len, z_src=redshift)        
+                    return 1./self._eval_critical_surface_density(z_len=z_len, z_src=redshift)
                 return 1./_integ_pzfuncs(pzpdf, pzbins, kernel=inv_sigmac, is_unique_pzbins=np.all(pzbins==pzbins[0]))
 
     def eval_surface_density(self, r_proj, z_cl, verbose=False):
@@ -647,8 +647,8 @@ class CLMModeling:
         return self._eval_convergence(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
 
 
-    def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src, z_src_model='discrete',
-                                      beta_s_mean=None, beta_s_square_mean=None, z_distrib_func=None, gt_equation='applegate14', verbose=False):
+    def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src_info, z_src_type='discrete',
+                                      model='individual', verbose=False):
         r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
 
         Parameters
@@ -657,34 +657,48 @@ class CLMModeling:
             The projected radial positions in :math:`M\!pc`.
         z_cl : float
             Galaxy cluster redshift
-        z_src : array_like, float
-            Background source galaxy redshift(s)
-        z_src_model : str, optional
-            Source redshift model, with the following supported options:
-            
-                * `discrete` (default): all sources at one redshift (if `z_source` is a float)    or known individual source galaxy redshifts (if `z_source` is an array and `r_proj` is a float);
-                * `distribution` : sources follow a redshift distribution function;
+        z_src_info : array_like, float, function
+            Information on the background source galaxy redshift(s). Value required depends on z_src_type (see below).
+        z_src_type : str, optional
+            Type of redshift information provided, it describes z_src_info.
+            The following supported options are:
 
-        z_distrib_func: one-parameter function
-            Redshift distribution function. This function is used to compute the beta values if they are not provided. The default is the Chang et al (2013) distribution function.
+                * `discrete` (default) : The redshift of sources is provided by `z_src_info`.
+                  It can be individual redshifts for each source galaxy when `z_source` is an array
+                  or all sources are at the same redshift when `z_source` is a float.
 
-        beta_s_mean: array_like, float, optional
-            Lensing efficiency averaged over the galaxy redshift distribution. If not provided, it will be computed using the default redshift distribution or the one given by the user.
+                * `distribution` : A redshift distribution function is provided by `z_src_info`.
+                  `z_scr_info` must be a one dimentional function. If `z_scr_info=None`,
+                  the Chang et al (2013) distribution function is used.
 
-                .. math::
-                    \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right\rangle
+                * `beta` : The averaged lensing efficiency is provided by `z_src_info`.
+                  `z_scr_info` must be a tuple containing
+                  ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
+                  the lensing efficiency and square of the lensing efficiency averaged over
+                  the galaxy redshift distribution repectively.
 
-        beta_s_square_mean: array_like, float, optional
-            Square of the lensing efficiency averaged over the galaxy redshift distribution. If not provided, it will be computed using the default redshift distribution or the one given by the user.
+                    .. math::
+                        \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right\rangle
 
-                .. math::
-                    \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
-                    
-        gt_equation: str, optional            
-            Expression for the compupuation of the approximated averaged reduced tangential shear. This is not used if z_src_model='discrete'. The supported options are:
-            
-                * `applegate14` (default): use the equation (6) in Weighing the Giants - III (Applegate et al. 2014; https://arxiv.org/abs/1208.0605).
-                * `schrabback18`: use the equation (12) in Cluster Mass Calibration at High Redshift (Schrabback et al. 2017; https://arxiv.org/abs/1611.03866).            
+                    .. math::
+                        \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
+
+        model : str, optional
+            Type of computation to be made for reduced shears, options are:
+
+                * `individual` (default): Computes reduced shear for each `r_proj, z_src_info` pair
+                  individually. It requires `z_src_type` to be `discrete`.
+
+                * `applegate14` : Uses the approach from Weighing the Giants - III (equation 6 in
+                  Applegate et al. 2014; https://arxiv.org/abs/1208.0605). `z_scr_type` must be
+                  either `beta`, or `distribution` (that will be used to compute
+                  :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`)
+
+                * `schrabback18` : Uses the approach from Cluster Mass Calibration at High Redshift
+                  (equation 12 in Schrabback et al. 2017; https://arxiv.org/abs/1611.03866).
+                  `z_scr_type` must be either `beta`, or `distribution` (that will be used
+                  to compute :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`)
+
 
         Returns
         -------
@@ -698,30 +712,54 @@ class CLMModeling:
         if self.validate_input:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', float, argmin=0)
-            validate_argument(locals(), 'z_src', 'float_array', argmin=0)
+            if z_src_info_model=='discrete':
+                validate_argument(locals(), 'z_src_info', 'float_array', argmin=0)
+            elif z_src_info_model=='distribution':
+                validate_argument(locals(), 'z_src_info', 'function')
+            elif z_src_info_model=='beta':
+                validate_argument(locals(), 'z_src_info', 'array')
+                beta_info = {'beta_s_mean':z_src_info[0],
+                             'beta_s_square_mean':z_src_info[1]}
+                validate_argument(beta_info, 'beta_s_mean', 'float_array')
+                validate_argument(beta_info, 'beta_s_square_mean', 'float_array')
 
         if self.halo_profile_model=='einasto' and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
-        if z_src_model == 'discrete':
-            gt = self._eval_reduced_tangential_shear_sp(r_proj, z_cl, z_src)
-
-        elif z_src_model == 'distribution':
-            z_inf = 1000. #np.inf # INF or a very large number
-            if beta_s_mean is None or beta_s_square_mean is None:
-                beta_s_mean = compute_beta_s_mean (z_cl, z_inf, self.cosmo, z_distrib_func=z_distrib_func)
-                beta_s_square_mean = compute_beta_s_square_mean (z_cl, z_inf, self.cosmo, z_distrib_func=z_distrib_func)
-            gammat_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=z_inf)
-            kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=z_inf)
-            
-            if gt_equation == 'applegate14':
-                gt = beta_s_mean * gammat_inf / (1. - beta_s_square_mean / beta_s_mean * kappa_inf)            
-            elif gt_equation == 'schrabback18':
-                gt = (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean * kappa_inf) * (beta_s_mean * gammat_inf / (1. - beta_s_mean * kappa_inf))
+        if model == 'individual':
+            # z_src_info (float or array) is redshift
+            # Can add options with distribution here later
+            if z_src_type!='discrete':
+                raise ValueError(
+                    "model='individual' requires z_src_type='discrete',"
+                    f"z_src_type='{z_src_type}' was provided.")
+            gt = self._eval_reduced_tangential_shear_sp(r_proj, z_cl, z_src_info)
+        elif model in ('applegate14', 'schrabback18'):
+            if z_src_type=='beta':
+                # z_src_info (tuple) is (beta_s_mean, beta_s_square_mean)
+                beta_s_mean, beta_s_square_mean = z_src_info
+            elif z_src_type=='distribution':
+                # z_src_info (function) if PDZ
+                z_inf = 1000. #np.inf # INF or a very large number
+                beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, z_distrib_func=z_src_info)
+                beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo,
+                                                                z_distrib_func=z_src_info)
             else:
-                raise ValueError("Unsupported gt_equation") 
+                raise ValueError(
+                    f"model='{model}' requires z_src_type='distribution' or 'beta',"
+                    f"z_src_type='{z_src_type}' was provided.")
+
+            gammat_inf = self._eval_tangential_shear(r_proj, z_cl, z_src_info=z_inf)
+            kappa_inf = self._eval_convergence(r_proj, z_cl, z_src_info=z_inf)
+
+            if model == 'applegate14':
+                gt = beta_s_mean * gammat_inf / (1. - beta_s_square_mean / beta_s_mean * kappa_inf)
+            elif model == 'schrabback18':
+                gt = (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) \
+                           * beta_s_mean * kappa_inf ) \
+                      * (beta_s_mean * gammat_inf / (1. - beta_s_mean * kappa_inf))
         else:
-            raise ValueError("Unsupported z_src_model")            
+            raise ValueError(f"Unsupported model (='{model}')")
 
         return gt
 

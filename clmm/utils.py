@@ -485,7 +485,8 @@ _valid_types = {
     float: (float, int, np.floating, np.integer),
     int: (int, np.integer),
     'float_array': (float, int, np.floating, np.integer),
-    'int_array': (int, np.integer)
+    'int_array': (int, np.integer),
+    'array': (list, tuple, np.ndarray),
     }
 
 def _is_valid(arg, valid_type):
@@ -506,6 +507,8 @@ def _is_valid(arg, valid_type):
     valid: bool
         Is argument valid
     """
+    if valid_type=='function':
+        return callable(arg)
     return (isinstance(arg[0], _valid_types[valid_type])
                 if (valid_type in ('int_array', 'float_array') and np.iterable(arg))
                 else isinstance(arg, _valid_types.get(valid_type, valid_type)))
