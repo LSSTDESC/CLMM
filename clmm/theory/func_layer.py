@@ -580,19 +580,19 @@ def compute_reduced_tangential_shear(
         Source redshift information depending on the `z_src_model` parameter:
 
             * `discrete` (array_like, float): Background source galaxy redshift(s)
-            * `distribution` (one-parameter function):Background source galaxy redshift \
-            distribution function
-            * `averaged lensing efficiency` (dict): Lensing efficiency parameter(s) averaged \
-            over the galaxy redshift distribution. The dictionnary should contain a \
-            'beta_s_mean' key and a 'beta_s_square_mean' key with the appropriate \
-            corresponding values:
+            * `distribution` (one-parameter function):Background source galaxy redshift
+              distribution function
+            * `averaged lensing efficiency` (dict): Lensing efficiency parameter(s) averaged
+              over the galaxy redshift distribution. The dictionnary should contain a
+              `beta_s_mean` key and a `beta_s_square_mean` key with the appropriate
+              corresponding values:
 
-                *beta_s_mean: array_like, float
+                * beta_s_mean: array_like, float
                     Lensing efficiency averaged over the galaxy redshift distribution.
                         .. math::
                             \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right\rangle
 
-                *beta_s_square_mean: array_like, float
+                * beta_s_square_mean: array_like, float
                     Square of the lensing efficiency averaged over the galaxy redshift distribution.
                         .. math::
                             \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
@@ -622,24 +622,24 @@ def compute_reduced_tangential_shear(
     z_src_model : str, optional
         Source redshift model, with the following supported options:
 
-            * `discrete` (default): all sources at one redshift (if `z_source` is a float) \
-            or known individual source galaxy redshifts (if `z_source` is an array and \
-            `r_proj` is a float);
-            * `distribution` : sources follow a redshift distribution function. In this case \
-            the averaged lensing efficiency parameter(s) will be computed and used to \
-            approximate the reduced tangential shear;
-            * `averaged lensing efficiency` : the source redshift distribution is described by \
-            the averaged lensing efficiency parameter(s). In this case these parameters will \
-            directly be used to approximate the reduced tangential shear;
+            * `discrete` (default): all sources at one redshift (if `z_source` is a float)
+              or known individual source galaxy redshifts (if `z_source` is an array and
+              `r_proj` is a float);
+            * `distribution` : sources follow a redshift distribution function. In this case
+              the averaged lensing efficiency parameter(s) will be computed and used to
+              approximate the reduced tangential shear;
+            * `averaged lensing efficiency` : the source redshift distribution is described by
+              the averaged lensing efficiency parameter(s). In this case these parameters will
+              directly be used to approximate the reduced tangential shear;
 
     gt_equation: str, optional
-        Expression for the compupuation of the approximated averaged reduced tangential shear. \
-        This is not used if `z_src_model`='discrete'. The supported options are:
+        Expression for the compupuation of the approximated averaged reduced tangential shear.
+        This is not used if `z_src_model` = 'discrete'. The supported options are:
 
-            * `applegate14` (default): use the equation (6) in Weighing the Giants - III \
-            (Applegate et al. 2014; https://arxiv.org/abs/1208.0605).
-            * `schrabback18`: use the equation (12) in Cluster Mass Calibration at High Redshift \
-            (Schrabback et al. 2017; https://arxiv.org/abs/1611.03866).
+            * `applegate14` (default): use the equation (6) in Weighing the Giants - III
+              (Applegate et al. 2014; https://arxiv.org/abs/1208.0605).
+            * `schrabback18`: use the equation (12) in Cluster Mass Calibration at High Redshift
+              (Schrabback et al. 2017; https://arxiv.org/abs/1611.03866).
 
     verbose : bool, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends.
