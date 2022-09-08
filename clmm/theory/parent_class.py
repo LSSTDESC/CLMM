@@ -647,8 +647,8 @@ class CLMModeling:
         return self._eval_convergence(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
 
 
-    def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src_info, z_src_type='discrete',
-                                      model='individual', verbose=False):
+    def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src, z_src_info='discrete',
+                                      approx=None, verbose=False):
         r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
 
         Parameters
@@ -657,21 +657,21 @@ class CLMModeling:
             The projected radial positions in :math:`M\!pc`.
         z_cl : float
             Galaxy cluster redshift
-        z_src_info : array_like, float, function
-            Information on the background source galaxy redshift(s). Value required depends on z_src_type (see below).
-        z_src_type : str, optional
-            Type of redshift information provided, it describes z_src_info.
+        z_src : array_like, float, function
+            Information on the background source galaxy redshift(s). Value required depends on z_src_info (see below).
+        z_src_info : str, optional
+            Type of redshift information provided, it describes z_src.
             The following supported options are:
 
-                * `discrete` (default) : The redshift of sources is provided by `z_src_info`.
+                * `discrete` (default) : The redshift of sources is provided by `z_src`.
                   It can be individual redshifts for each source galaxy when `z_source` is an array
                   or all sources are at the same redshift when `z_source` is a float.
 
-                * `distribution` : A redshift distribution function is provided by `z_src_info`.
+                * `distribution` : A redshift distribution function is provided by `z_src`.
                   `z_scr_info` must be a one dimentional function. If `z_scr_info=None`,
                   the Chang et al (2013) distribution function is used.
 
-                * `beta` : The averaged lensing efficiency is provided by `z_src_info`.
+                * `beta` : The averaged lensing efficiency is provided by `z_src`.
                   `z_scr_info` must be a tuple containing
                   ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
                   the lensing efficiency and square of the lensing efficiency averaged over
@@ -683,20 +683,20 @@ class CLMModeling:
                     .. math::
                         \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
 
-        model : str, optional
+        approx : str, optional
             Type of computation to be made for reduced shears, options are:
 
-                * `individual` (default): Computes reduced shear for each `r_proj, z_src_info` pair
-                  individually. It requires `z_src_type` to be `discrete`.
+                * None (default): Full computation is made for each `r_proj, z_src` pair
+                  individually. It requires `z_src_info` to be `discrete`.
 
                 * `applegate14` : Uses the approach from Weighing the Giants - III (equation 6 in
-                  Applegate et al. 2014; https://arxiv.org/abs/1208.0605). `z_scr_type` must be
+                  Applegate et al. 2014; https://arxiv.org/abs/1208.0605). `z_scr_info` must be
                   either `beta`, or `distribution` (that will be used to compute
                   :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`)
 
                 * `schrabback18` : Uses the approach from Cluster Mass Calibration at High Redshift
                   (equation 12 in Schrabback et al. 2017; https://arxiv.org/abs/1611.03866).
-                  `z_scr_type` must be either `beta`, or `distribution` (that will be used
+                  `z_scr_info` must be either `beta`, or `distribution` (that will be used
                   to compute :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`)
 
 
@@ -712,54 +712,56 @@ class CLMModeling:
         if self.validate_input:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', float, argmin=0)
-            if z_src_info_model=='discrete':
+            validate_argument(locals(), 'z_src_info', str)
+            validate_argument(locals(), 'approx', str, none_ok=True)
+            if z_src_info=='discrete':
                 validate_argument(locals(), 'z_src_info', 'float_array', argmin=0)
-            elif z_src_info_model=='distribution':
+            elif z_src_info=='distribution':
                 validate_argument(locals(), 'z_src_info', 'function')
-            elif z_src_info_model=='beta':
+            elif z_src_info=='beta':
                 validate_argument(locals(), 'z_src_info', 'array')
-                beta_info = {'beta_s_mean':z_src_info[0],
-                             'beta_s_square_mean':z_src_info[1]}
+                beta_info = {'beta_s_mean':z_src[0],
+                             'beta_s_square_mean':z_src[1]}
                 validate_argument(beta_info, 'beta_s_mean', 'float_array')
                 validate_argument(beta_info, 'beta_s_square_mean', 'float_array')
 
         if self.halo_profile_model=='einasto' and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
-        if model == 'individual':
-            # z_src_info (float or array) is redshift
+        if approx is None:
+            # z_src (float or array) is redshift
             # Can add options with distribution here later
-            if z_src_type!='discrete':
+            if z_src_info!='discrete':
                 raise ValueError(
-                    "model='individual' requires z_src_type='discrete',"
-                    f"z_src_type='{z_src_type}' was provided.")
-            gt = self._eval_reduced_tangential_shear_sp(r_proj, z_cl, z_src_info)
-        elif model in ('applegate14', 'schrabback18'):
-            if z_src_type=='beta':
-                # z_src_info (tuple) is (beta_s_mean, beta_s_square_mean)
-                beta_s_mean, beta_s_square_mean = z_src_info
-            elif z_src_type=='distribution':
-                # z_src_info (function) if PDZ
+                    "approx=None requires z_src_info='discrete',"
+                    f"z_src_info='{z_src_info}' was provided.")
+            gt = self._eval_reduced_tangential_shear_sp(r_proj, z_cl, z_src)
+        elif approx in ('applegate14', 'schrabback18'):
+            if z_src_info=='beta':
+                # z_src (tuple) is (beta_s_mean, beta_s_square_mean)
+                beta_s_mean, beta_s_square_mean = z_src
+            elif z_src_info=='distribution':
+                # z_src (function) if PDZ
                 z_inf = 1000. #np.inf # INF or a very large number
-                beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, z_distrib_func=z_src_info)
+                beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, z_distrib_func=z_src)
                 beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo,
-                                                                z_distrib_func=z_src_info)
+                                                                z_distrib_func=z_src)
             else:
                 raise ValueError(
-                    f"model='{model}' requires z_src_type='distribution' or 'beta',"
-                    f"z_src_type='{z_src_type}' was provided.")
+                    f"approx='{approx}' requires z_src_info='distribution' or 'beta',"
+                    f"z_src_info='{z_src_info}' was provided.")
 
-            gammat_inf = self._eval_tangential_shear(r_proj, z_cl, z_src_info=z_inf)
-            kappa_inf = self._eval_convergence(r_proj, z_cl, z_src_info=z_inf)
+            gammat_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=z_inf)
+            kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=z_inf)
 
-            if model == 'applegate14':
+            if approx == 'applegate14':
                 gt = beta_s_mean * gammat_inf / (1. - beta_s_square_mean / beta_s_mean * kappa_inf)
-            elif model == 'schrabback18':
+            elif approx == 'schrabback18':
                 gt = (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) \
                            * beta_s_mean * kappa_inf ) \
                       * (beta_s_mean * gammat_inf / (1. - beta_s_mean * kappa_inf))
         else:
-            raise ValueError(f"Unsupported model (='{model}')")
+            raise ValueError(f"Unsupported approx (='{approx}')")
 
         return gt
 
