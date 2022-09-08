@@ -668,11 +668,11 @@ class CLMModeling:
                   or all sources are at the same redshift when `z_source` is a float.
 
                 * `distribution` : A redshift distribution function is provided by `z_src`.
-                  `z_scr_info` must be a one dimentional function. If `z_scr_info=None`,
+                  `z_src` must be a one dimentional function. If `z_src=None`,
                   the Chang et al (2013) distribution function is used.
 
                 * `beta` : The averaged lensing efficiency is provided by `z_src`.
-                  `z_scr_info` must be a tuple containing
+                  `z_src` must be a tuple containing
                   ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
                   the lensing efficiency and square of the lensing efficiency averaged over
                   the galaxy redshift distribution repectively.
@@ -690,13 +690,13 @@ class CLMModeling:
                   individually. It requires `z_src_info` to be `discrete`.
 
                 * `applegate14` : Uses the approach from Weighing the Giants - III (equation 6 in
-                  Applegate et al. 2014; https://arxiv.org/abs/1208.0605). `z_scr_info` must be
+                  Applegate et al. 2014; https://arxiv.org/abs/1208.0605). `z_src_info` must be
                   either `beta`, or `distribution` (that will be used to compute
                   :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`)
 
                 * `schrabback18` : Uses the approach from Cluster Mass Calibration at High Redshift
                   (equation 12 in Schrabback et al. 2017; https://arxiv.org/abs/1611.03866).
-                  `z_scr_info` must be either `beta`, or `distribution` (that will be used
+                  `z_src_info` must be either `beta`, or `distribution` (that will be used
                   to compute :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`)
 
 
@@ -715,11 +715,11 @@ class CLMModeling:
             validate_argument(locals(), 'z_src_info', str)
             validate_argument(locals(), 'approx', str, none_ok=True)
             if z_src_info=='discrete':
-                validate_argument(locals(), 'z_src_info', 'float_array', argmin=0)
+                validate_argument(locals(), 'z_src', 'float_array', argmin=0)
             elif z_src_info=='distribution':
-                validate_argument(locals(), 'z_src_info', 'function')
+                validate_argument(locals(), 'z_src', 'function')
             elif z_src_info=='beta':
-                validate_argument(locals(), 'z_src_info', 'array')
+                validate_argument(locals(), 'z_src', 'array')
                 beta_info = {'beta_s_mean':z_src[0],
                              'beta_s_square_mean':z_src[1]}
                 validate_argument(beta_info, 'beta_s_mean', 'float_array')
