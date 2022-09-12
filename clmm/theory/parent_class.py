@@ -658,7 +658,8 @@ class CLMModeling:
         z_cl : float
             Galaxy cluster redshift
         z_src : array_like, float, function
-            Information on the background source galaxy redshift(s). Value required depends on z_src_info (see below).
+            Information on the background source galaxy redshift(s). Value required depends on
+            `z_src_info` (see below).
         z_src_info : str, optional
             Type of redshift information provided, it describes z_src.
             The following supported options are:
@@ -717,7 +718,7 @@ class CLMModeling:
             if z_src_info=='discrete':
                 validate_argument(locals(), 'z_src', 'float_array', argmin=0)
             elif z_src_info=='distribution':
-                validate_argument(locals(), 'z_src', 'function')
+                validate_argument(locals(), 'z_src', 'function', none_ok=True)
             elif z_src_info=='beta':
                 validate_argument(locals(), 'z_src', 'array')
                 beta_info = {'beta_s_mean':z_src[0],
