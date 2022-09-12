@@ -621,12 +621,17 @@ def test_shear_convergence_unittests(modeling_data):
     source_redshift_inf = 1000.
     gammat_inf = mod.eval_tangential_shear(profile_pars[0], profile_pars[1], source_redshift_inf) #np.inf)
     kappa_inf = mod.eval_convergence(profile_pars[0], profile_pars[1], source_redshift_inf) #np.inf)
-    assert_allclose(mod.eval_reduced_tangential_shear(
-                        *profile_pars[:2], (beta_s_mean, beta_s_square_mean), 'beta', 'applegate14'),
-                    beta_s_mean * gammat_inf/(1.0 - beta_s_square_mean / beta_s_mean * kappa_inf), 1.0e-10)
-    assert_allclose(mod.eval_reduced_tangential_shear(
-                        *profile_pars[:2], (beta_s_mean, beta_s_square_mean), 'beta', 'schrabback18'),
-                    (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean * kappa_inf) * (beta_s_mean * gammat_inf / (1. - beta_s_mean * kappa_inf)), 1.0e-10)
+    assert_allclose(mod.eval_reduced_tangential_shear(*profile_pars[:2],
+                                                      (beta_s_mean, beta_s_square_mean),
+                                                      'beta', 'applegate14'),
+                    beta_s_mean * gammat_inf/(1.0 - beta_s_square_mean / beta_s_mean * kappa_inf),
+                    1.0e-10)
+    assert_allclose(mod.eval_reduced_tangential_shear(*profile_pars[:2],
+                                                      (beta_s_mean, beta_s_square_mean),
+                                                      'beta', 'schrabback18'),
+                    (1.+(beta_s_square_mean/(beta_s_mean*beta_s_mean)-1.)*beta_s_mean*kappa_inf) \
+                        *(beta_s_mean*gammat_inf/(1.-beta_s_mean*kappa_inf)),
+                    1.0e-10)
 
     assert_allclose(gammat*sigmac_corr/(1.-(kappa*sigmac_corr)),
                     cfg['numcosmo_profiles']['gt'], 1.e2*reltol)
