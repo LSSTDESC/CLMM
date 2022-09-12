@@ -738,12 +738,12 @@ class CLMModeling:
                     f"z_src_info='{z_src_info}' was provided.")
             gt = self._eval_reduced_tangential_shear_sp(r_proj, z_cl, z_src)
         elif approx in ('applegate14', 'schrabback18'):
+            z_inf = 1000. #np.inf # INF or a very large number
             if z_src_info=='beta':
                 # z_src (tuple) is (beta_s_mean, beta_s_square_mean)
                 beta_s_mean, beta_s_square_mean = z_src
             elif z_src_info=='distribution':
                 # z_src (function) if PDZ
-                z_inf = 1000. #np.inf # INF or a very large number
                 beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, z_distrib_func=z_src)
                 beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo,
                                                                 z_distrib_func=z_src)
