@@ -611,7 +611,7 @@ class CLMModeling:
 
         return self._eval_tangential_shear(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
 
-    def eval_convergence(self, r_proj, z_cl, z_src, verbose=False):
+    def eval_convergence(self, r_proj, z_cl, z_src, z_src_info='discrete', verbose=False):
         r"""Computes the mass convergence
 
         .. math::
@@ -639,12 +639,38 @@ class CLMModeling:
         if self.validate_input:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', float, argmin=0)
-            validate_argument(locals(), 'z_src', 'float_array', argmin=0)
-
+            validate_argument(locals(), 'z_src_info', str)
+            if z_src_info=='discrete':
+                validate_argument(locals(), 'z_src', 'float_array', argmin=0)
+            elif z_src_info=='distribution':
+                validate_argument(locals(), 'z_src', 'function', none_ok=True)
+            elif z_src_info=='beta':
+                validate_argument(locals(), 'z_src', 'array')
+                beta_info = {'beta_s_mean':z_src[0],
+                             'beta_s_square_mean':z_src[1]}
+                validate_argument(beta_info, 'beta_s_mean', 'float_array')
+                validate_argument(beta_info, 'beta_s_square_mean', 'float_array')
+                
+                
         if self.halo_profile_model=='einasto' and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
-        return self._eval_convergence(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
+        if z_src_info=='discrete':
+            kappa = self._eval_convergence(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
+        elif z_src_info in ('distribution', 'beta'):
+            z_inf = 1000. #np.inf # INF or a very large number
+            kappa_inf = self._eval_convergence(r_proj=r_proj, z_cl=z_cl, z_src=z_inf)
+            if z_src_info=='beta':
+                # z_src (tuple) is (beta_s_mean, beta_s_square_mean)
+                beta_s_mean, beta_s_square_mean = z_src
+            elif z_src_info=='distribution':
+                # z_src (function) if PDZ
+                beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, z_distrib_func=z_src)
+                beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo,
+                                                                z_distrib_func=z_src) 
+            kappa = beta_s_mean * kappa_inf
+        
+        return kappa
 
 
     def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src, z_src_info='discrete',
