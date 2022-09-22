@@ -270,7 +270,7 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals,
                                     cosmo=cosmo, delta_mdef=delta_so,
                                     halo_profile_model=halo_profile_model,
                                     massdef=massdef,
-                                    z_src_model='discrete')
+                                    z_src_info='discrete')
 
     gamx = np.zeros(ngals)
 
@@ -279,7 +279,7 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals,
                                 z_source=galaxy_catalog['ztrue'], cosmo=cosmo,
                                 delta_mdef=delta_so, halo_profile_model=halo_profile_model,
                                 massdef=massdef,
-                                z_src_model='discrete')
+                                z_src_info='discrete')
 
     c_cl = SkyCoord(cluster_ra*u.deg, cluster_dec*u.deg, frame='icrs')
     c_gal = SkyCoord(galaxy_catalog['ra']*u.deg, galaxy_catalog['dec']*u.deg, frame='icrs')
