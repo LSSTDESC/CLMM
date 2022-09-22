@@ -15,7 +15,7 @@ TOLERANCE = {'rtol': 1.0e-6, 'atol': 0}
 def test_compute_nfw_boost() :
     """Test the nfw model for boost factor"""
     # Test data
-    rvals = np.arange(1,11)
+    rvals = np.arange(1,11).tolist()
 
     boost_factors = utils.compute_nfw_boost(rvals)
 
@@ -29,7 +29,7 @@ def test_compute_nfw_boost() :
 def test_compute_powerlaw_boost() :
     """Test the powerlaw model for boost factor"""
     # Test data
-    rvals = np.arange(1,11) # Cannot contain 0 due to reciprocal term
+    rvals = np.arange(1,11).tolist() # Cannot contain 0 due to reciprocal term
 
     boost_factors = utils.compute_powerlaw_boost(rvals)
 
@@ -40,24 +40,22 @@ def test_compute_powerlaw_boost() :
     # Test model
     assert_allclose(boost_factors, test_boost_factors)
 
-
 def test_correct_sigma_with_boost_values() :
     """ """
     # Make test data
     rvals = np.arange(1,11)
-    sigma_vals = 2**np.arange(10)
+    sigma_vals = (2**np.arange(10)).tolist()
 
-    test_unit_boost_factors = np.ones(rvals.shape)
+    test_unit_boost_factors = np.ones(rvals.shape).tolist()
 
-    corrected_sigma = utils.correct_sigma_with_boost_values(rvals, sigma_vals,
-                                                            test_unit_boost_factors)
+    corrected_sigma = utils.correct_sigma_with_boost_values(sigma_vals, test_unit_boost_factors)
     assert_allclose(sigma_vals, corrected_sigma)
 
 def test_correct_sigma_with_boost_model() :
     """ """
     # Make test data
-    rvals = np.arange(1,11)
-    sigma_vals = 2**np.arange(10)
+    rvals = np.arange(1,11).tolist()
+    sigma_vals = (2**np.arange(10)).tolist()
 
     for boost_model in utils.boost_models.keys() :
         # Check for no nans or inf with positive-definite rvals and sigma vals
