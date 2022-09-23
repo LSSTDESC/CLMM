@@ -459,10 +459,10 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
             f"Rmin = {np.min(r_proj):.2e} Mpc/h! This value is too small "
             "and may cause computational issues.")
 
-    gammat = gcm.eval_tangential_shear(r_proj, z_cluster, z_source, z_src_info=z_src_info, verbose=verbose)
+    tangential_shear = gcm.eval_tangential_shear(r_proj, z_cluster, z_source, z_src_info=z_src_info, verbose=verbose)
 
     gcm.validate_input = True
-    return gammat
+    return tangential_shear
 
 
 def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
@@ -556,7 +556,7 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     if alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
 
-    kappa = gcm.eval_convergence(r_proj, z_cluster, z_source, z_src_info=z_src_info, verbose=verbose)
+    convergence = gcm.eval_convergence(r_proj, z_cluster, z_source, z_src_info=z_src_info, verbose=verbose)
 
     if np.any(np.array(z_source) <= z_cluster):
         warnings.warn(
@@ -564,7 +564,7 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
             ' kappa = 0 for those galaxies.')
 
     gcm.validate_input = True
-    return kappa
+    return convergence
 
 
 def compute_reduced_tangential_shear(
