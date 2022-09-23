@@ -388,8 +388,9 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
         Galaxy cluster NFW concentration.
     z_cluster : float
         Galaxy cluster redshift
-    z_source : array_like, float
-        Background source galaxy redshift(s)
+    z_source : array_like, float, function
+        Information on the background source galaxy redshift(s). Value required depends on
+        `z_src_info` (see below).
     cosmo : clmm.cosmology.Cosmology object
         CLMM Cosmology object
     delta_mdef : int, optional
@@ -412,10 +413,28 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
         If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only available
         for the NumCosmo backend
     z_src_info : str, optional
-        Source redshift model, with the following supported options:
-            `discrete` (default) - all sources at one redshift (if
-            `z_source` is a float) or known individual source galaxy redshifts
-            (if `z_source` is an array and `r_proj` is a float);
+        Type of redshift information provided, it describes z_src.
+        The following supported options are:
+
+            * `discrete` (default) : The redshift of sources is provided by `z_src`.
+              It can be individual redshifts for each source galaxy when `z_source` is an array
+              or all sources are at the same redshift when `z_source` is a float.
+
+            * `distribution` : A redshift distribution function is provided by `z_src`.
+              `z_src` must be a one dimentional function. If `z_src=None`,
+              the Chang et al (2013) distribution function is used.
+
+            * `beta` : The averaged lensing efficiency is provided by `z_src`.
+              `z_src` must be a tuple containing
+              ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
+              the lensing efficiency and square of the lensing efficiency averaged over
+              the galaxy redshift distribution repectively.
+
+                .. math::
+                    \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right\rangle
+
+                .. math::
+                    \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle   
     verbose : bool, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends.
     validate_input : bool, optional
@@ -425,34 +444,22 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     -------
     gammat : array_like, float
         Tangential shear
-
-    Notes
-    -----
-    TODO: Implement `known_z_src` (known individual source galaxy redshifts
-    e.g. discrete case) and `z_src_distribution` (known source redshift
-    distribution e.g. continuous case requiring integration) options for
-    `z_src_info`. We will need :math:`\gamma_\infty` and :math:`\kappa_\infty`
-    for alternative z_src_infos using :math:`\beta_s`.
     """
 
-    if z_src_info == 'discrete':
+    gcm.validate_input = validate_input
+    gcm.set_cosmo(cosmo)
+    gcm.set_halo_density_profile(
+        halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
+    gcm.set_concentration(cdelta)
+    gcm.set_mass(mdelta)
+    if alpha_ein is not None:
+        gcm.set_einasto_alpha(alpha_ein)
+    if np.min(r_proj) < 1.e-11:
+        raise ValueError(
+            f"Rmin = {np.min(r_proj):.2e} Mpc/h! This value is too small "
+            "and may cause computational issues.")
 
-        gcm.validate_input = validate_input
-        gcm.set_cosmo(cosmo)
-        gcm.set_halo_density_profile(
-            halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
-        gcm.set_concentration(cdelta)
-        gcm.set_mass(mdelta)
-        if alpha_ein is not None:
-            gcm.set_einasto_alpha(alpha_ein)
-        if np.min(r_proj) < 1.e-11:
-            raise ValueError(
-                f"Rmin = {np.min(r_proj):.2e} Mpc/h! This value is too small "
-                "and may cause computational issues.")
-
-        gammat = gcm.eval_tangential_shear(r_proj, z_cluster, z_source, verbose=verbose)
-    else:
-        raise ValueError("Unsupported z_src_info")
+    gammat = gcm.eval_tangential_shear(r_proj, z_cluster, z_source, z_src_info=z_src_info, verbose=verbose)
 
     gcm.validate_input = True
     return gammat
@@ -481,8 +488,9 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
         Galaxy cluster NFW concentration.
     z_cluster : float
         Galaxy cluster redshift
-    z_source : array_like, float
-        Background source galaxy redshift(s)
+    z_source : array_like, float, function
+        Information on the background source galaxy redshift(s). Value required depends on
+        `z_src_info` (see below).
     cosmo : clmm.cosmology.Cosmology object
         CLMM Cosmology object
     delta_mdef : int, optional
@@ -539,33 +547,21 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
 
     """
 
-    if z_src_info == 'discrete':
+    gcm.validate_input = validate_input
+    gcm.set_cosmo(cosmo)
+    gcm.set_halo_density_profile(
+        halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
+    gcm.set_concentration(cdelta)
+    gcm.set_mass(mdelta)
+    if alpha_ein is not None:
+        gcm.set_einasto_alpha(alpha_ein)
 
-        gcm.validate_input = validate_input
-        gcm.set_cosmo(cosmo)
-        gcm.set_halo_density_profile(
-            halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
-        gcm.set_concentration(cdelta)
-        gcm.set_mass(mdelta)
-        if alpha_ein is not None:
-            gcm.set_einasto_alpha(alpha_ein)
+    kappa = gcm.eval_convergence(r_proj, z_cluster, z_source, z_src_info=z_src_info, verbose=verbose)
 
-        kappa = gcm.eval_convergence(r_proj, z_cluster, z_source, verbose=verbose)
-
-        if np.any(np.array(z_source) <= z_cluster):
-            warnings.warn(
-                'Some source redshifts are lower than the cluster redshift.'
-                ' kappa = 0 for those galaxies.')
-
-    # elif z_src_info == 'known_z_src': # Discrete case
-    #     raise NotImplementedError('Need to implemnt Beta_s functionality, or average'+\
-    #                               'sigma/sigma_c kappa_t = Beta_s*kappa_inf')
-    # elif z_src_info == 'z_src_distribution': # Continuous ( from a distribution) case
-    #     raise NotImplementedError('Need to implement Beta_s calculation from integrating'+\
-    #                               'distribution of redshifts in each radial bin')
-    else:
-        raise ValueError("Unsupported z_src_info")
-
+    if np.any(np.array(z_source) <= z_cluster):
+        warnings.warn(
+            'Some source redshifts are lower than the cluster redshift.'
+            ' kappa = 0 for those galaxies.')
 
     gcm.validate_input = True
     return kappa
