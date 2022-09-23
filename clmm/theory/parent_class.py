@@ -865,7 +865,8 @@ class CLMModeling:
 
         return gt
 
-    def eval_magnification(self, r_proj, z_cl, z_src, verbose=False):
+    def eval_magnification(self, r_proj, z_cl, z_src, z_src_info='discrete',
+                           approx=None, verbose=False):
         r"""Computes the magnification
 
         .. math::
@@ -877,29 +878,96 @@ class CLMModeling:
             The projected radial positions in :math:`M\!pc`.
         z_cl : float
             Galaxy cluster redshift
-        z_src : array_like, float
-            Background source galaxy redshift(s)
+        z_src : array_like, float, function
+            Information on the background source galaxy redshift(s). Value required depends on
+            `z_src_info` (see below).
+        z_src_info : str, optional
+            Type of redshift information provided, it describes z_src.
+            The following supported options are:
+
+                * `discrete` (default) : The redshift of sources is provided by `z_src`.
+                  It can be individual redshifts for each source galaxy when `z_source` is an array
+                  or all sources are at the same redshift when `z_source` is a float.
+
+                * `distribution` : A redshift distribution function is provided by `z_src`.
+                  `z_src` must be a one dimentional function. If `z_src=None`,
+                  the Chang et al (2013) distribution function is used.
+
+                * `beta` : The averaged lensing efficiency is provided by `z_src`.
+                  `z_src` must be a tuple containing
+                  ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
+                  the lensing efficiency and square of the lensing efficiency averaged over
+                  the galaxy redshift distribution repectively.
+
+                    .. math::
+                        \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right\rangle
+
+                    .. math::
+                        \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
+
+        approx : str, optional
+            Type of computation to be made for reduced shears, options are:
+
+                * None (default): Full computation is made for each `r_proj, z_src` pair
+                  individually. It requires `z_src_info` to be `discrete`.
+
+                * `weak_lensing` : Uses the weak lensing approximation of the magnification :math:`\my \approx 1 + 2 \kappa`.
+                `z_src_info` must be either `beta`, or `distribution` (that will be used to compute
+                  :math:`\langle \beta_s \rangle`)
 
         Returns
         -------
         mu : array_like, float
             magnification, mu.
 
-        Notes
-        -----
-        The magnification is computed taking into account just the tangential
-        shear. This is valid for spherically averaged profiles, e.g., NFW and
-        Einasto (by construction the cross shear is zero).
         """
         if self.validate_input:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', float, argmin=0)
-            validate_argument(locals(), 'z_src', 'float_array', argmin=0)
+            validate_argument(locals(), 'z_src_info', str)
+            validate_argument(locals(), 'approx', str, none_ok=True)
+            if z_src_info=='discrete':
+                validate_argument(locals(), 'z_src', 'float_array', argmin=0)
+            elif z_src_info=='distribution':
+                validate_argument(locals(), 'z_src', 'function', none_ok=True)
+            elif z_src_info=='beta':
+                validate_argument(locals(), 'z_src', 'array')
+                beta_info = {'beta_s_mean':z_src[0],
+                             'beta_s_square_mean':z_src[1]}
+                validate_argument(beta_info, 'beta_s_mean', 'float_array')
+                validate_argument(beta_info, 'beta_s_square_mean', 'float_array')
 
         if self.halo_profile_model=='einasto' and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
-        return self._eval_magnification(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
+        if approx is None:
+            # z_src (float or array) is redshift
+            # Can add options with distribution here later
+            if z_src_info!='discrete':
+                raise ValueError(
+                    "approx=None requires z_src_info='discrete',"
+                    f"z_src_info='{z_src_info}' was provided.")
+            mu = self._eval_magnification(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
+        
+        elif approx == 'weak_lensing':
+        z_inf = 1000. #np.inf # INF or a very large number
+        kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=z_inf)
+            if z_src_info=='beta':
+                # z_src (tuple) is (beta_s_mean, beta_s_square_mean)
+                beta_s_mean, beta_s_square_mean = z_src
+            elif z_src_info=='distribution':
+                # z_src (function) if PDZ
+                beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, z_distrib_func=z_src)
+                beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo,
+                                                                z_distrib_func=z_src)
+            else:
+                raise ValueError(
+                    f"approx='{approx}' requires z_src_info='distribution' or 'beta',"
+                    f"z_src_info='{z_src_info}' was provided.")
+     
+            mu = 1 + 2*beta_s_mean*kappa_inf
+            
+        return mu
 
     def eval_magnification_bias(self, r_proj, z_cl, z_src, alpha):
         r"""Computes the magnification bias
@@ -923,11 +991,6 @@ class CLMModeling:
         mu_bias : array_like, float
             magnification bias.
 
-        Notes
-        -----
-        The magnification is computed taking into account just the tangential
-        shear. This is valid for spherically averaged profiles, e.g., NFW and
-        Einasto (by construction the cross shear is zero).
         """
         if self.validate_input:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
