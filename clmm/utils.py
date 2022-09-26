@@ -841,7 +841,7 @@ def z_distrib_model(redshift, model, is_cdf=False):
         Galaxy redshift
     model : str
         Name of the parametrisation model of the desired redshift distribution function.
-        Supported models are `Chang_et_al_2013` for Chang et al (2013) and `DESC_SRD` for
+        Supported models are `Chang_et_al_2013` for Chang et al (2013) and `desc_srd` for
         the LSST/DESC Science Requirement Document (arxiv:1809.01669).
     is_cdf : bool
         If True, returns cumulative distribution function.
@@ -850,9 +850,9 @@ def z_distrib_model(redshift, model, is_cdf=False):
     -------
     The value of the distribution at z for the given model name.
     """
-    if model == `Chang_et_al_2013`:
+    if model == "Chang_et_al_2013":
         return _chang_z_distrib(redshift, is_cdf=is_cdf)
-    elif model == `DESC_SRD`:
+    elif model == "desc_srd":
         return _srd_z_distrib(redshift, is_cdf=is_cdf)
     else:
         raise ValueError(f"Unsupported model (='{model}')")

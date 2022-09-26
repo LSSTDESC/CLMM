@@ -235,7 +235,7 @@ def _compute_ngals(ngal_density, field_size, cosmo, cluster_z, zsrc, zsrc_min=No
         prob = (z_distrib_func(zsrc_max, is_cdf=True) - z_distrib_func(zsrc_min, is_cdf=True))/norm
         ngals = int(ngals*prob)
     else:
-        raise ValueError(f"zsrc (={zsrc}) must be float, 'chang13' or 'desc_src'")
+        raise ValueError(f"zsrc (={zsrc}) must be float, 'chang13' or 'desc_srd'")
     return ngals
 
 
