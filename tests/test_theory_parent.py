@@ -1,7 +1,7 @@
 """Tests for modeling.py"""
 
 import numpy as np
-from numpy.testing import assert_raises, assert_allclose
+from numpy.testing import assert_raises, assert_allclose, assert_equal
 import clmm.theory as theo
 from clmm.theory.parent_class import CLMModeling
 from clmm.utils import compute_beta_s_square_mean, compute_beta_s_mean
@@ -15,8 +15,11 @@ def test_unimplemented(modeling_data):
     assert_raises(NotImplementedError, mod._set_halo_density_profile)
     assert_raises(NotImplementedError, mod._set_einasto_alpha, 0.5)
     assert_raises(NotImplementedError, mod._get_einasto_alpha)
+    assert_raises(NotImplementedError, mod._set_concentration, 4.0)
+    assert_raises(NotImplementedError, mod._set_mass, 1.0e15)
     assert_raises(NotImplementedError, mod.set_concentration, 4.0)
-    assert_raises(NotImplementedError, mod.set_concentration, 4.0)
+    assert_raises(NotImplementedError, mod._get_mass)
+    assert_raises(NotImplementedError, mod._get_concentration)
     assert_raises(NotImplementedError, mod.set_mass, 1.0e15)
     assert_raises(NotImplementedError, mod.eval_3d_density, [0.3], 0.3)
     assert_raises(NotImplementedError, mod.eval_surface_density, [0.3], 0.3)
@@ -34,8 +37,33 @@ def test_instantiate(modeling_data):
     """ Unit tests for modeling objects' instantiation """
 
     mod = theo.Modeling()
-    mod.set_concentration(4.0)
-    mod.set_mass(1.0e15)
+
+    # test set_x funcs and self.xdelta funcs are equivalent
+    cdelta, mdelta = 3.0, 0.5e15
+    halo_profile_model, massdef, delta_mdef = 'nfw', 'mean', 300
+    mod.set_concentration(cdelta)
+    mod.set_mass(mdelta)
+    mod.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
+    assert_allclose(mod.cdelta, cdelta, 1e-15)
+    assert_allclose(mod.mdelta, mdelta, 1e-15)
+    assert_allclose(mod.delta_mdef, delta_mdef, 1e-15)
+    assert_equal(mod.massdef, massdef)
+    assert_equal(mod.halo_profile_model, halo_profile_model)
+
+    cdelta, mdelta = 4.0, 1.0e15
+    halo_profile_model, massdef, delta_mdef = 'nfw', 'mean', 200
+    mod.cdelta = cdelta
+    mod.mdelta = mdelta
+    mod.massdef = massdef
+    mod.delta_mdef = delta_mdef
+    mod.halo_profile_model = halo_profile_model
+    assert_allclose(mod.cdelta, cdelta, 1e-15)
+    assert_allclose(mod.mdelta, mdelta, 1e-15)
+    assert_allclose(mod.delta_mdef, delta_mdef, 1e-15)
+    assert_equal(mod.massdef, massdef)
+    assert_equal(mod.halo_profile_model, halo_profile_model)
+
+    # check backend
     assert mod.backend == theo.be_nick
 
     assert_raises(TypeError, mod.set_cosmo, 3.0)
@@ -113,6 +141,8 @@ def test_instantiate(modeling_data):
     reduced_shear = mod.eval_reduced_tangential_shear(r_proj, z_cl, np.repeat(z_src, len(r_proj)), 'schrabback18', beta_s_mean, beta_s_square_mean)
     assert_allclose(reduced_shear, (1. + (beta_s_square_test / (beta_s_test * beta_s_test) - 1.) * beta_s_test * convergence_inf) * (beta_s_test * shear_inf / (1. - beta_s_test * convergence_inf)), rtol=1.0e-12)
 
+    assert_raises(ValueError, mod.eval_critical_surface_density, z_cl, use_pdz=True)
+
 def test_einasto(modeling_data):
     """ Basic checks that verbose option for the Einasto profile runs """
 
@@ -127,3 +157,4 @@ def test_einasto(modeling_data):
         mod.eval_convergence(0.1,0.1,0.5, verbose=True)
         mod.eval_reduced_tangential_shear(0.1,0.1,0.5, verbose=True)
         mod.eval_magnification(0.1,0.1,0.5, verbose=True)
+#>>>>>>> main
