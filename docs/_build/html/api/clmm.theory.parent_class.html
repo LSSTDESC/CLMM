@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.theory.parent_class module &mdash; CLMM 1.2.1 documentation</title>
+  <title>clmm.theory.parent_class module &mdash; CLMM 1.4.0 documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                1.2.1
+                1.4.0
               </div>
             
           
@@ -115,6 +115,7 @@
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="clmm.clusterensemble.html">clmm.clusterensemble module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.constants.html">clmm.constants module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.cosmology.html">clmm.cosmology package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="clmm.cosmology.ccl.html">clmm.cosmology.ccl module</a></li>
@@ -227,6 +228,8 @@ CLMModeling abstract class</p>
 <dt class="field-odd">Variables</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>~CLMModeling.backend</strong> (<em>str</em>) – Name of the backend being used</p></li>
+<li><p><strong>~CLMModeling.mdelta</strong> (<em>float</em>) – Mass of the profile, in units of <span class="math notranslate nohighlight">\(M_\odot\)</span></p></li>
+<li><p><strong>~CLMModeling.cdelta</strong> (<em>float</em>) – Concentration of the profile</p></li>
 <li><p><strong>~CLMModeling.massdef</strong> (<em>str</em>) – Profile mass definition (<cite>mean</cite>, <cite>critical</cite>, <cite>virial</cite> - letter case independent)</p></li>
 <li><p><strong>~CLMModeling.delta_mdef</strong> (<em>int</em>) – Mass overdensity definition.</p></li>
 <li><p><strong>~CLMModeling.halo_profile_model</strong> (<em>str</em>) – Profile model parameterization (<cite>nfw</cite>, <cite>einasto</cite>, <cite>hernquist</cite> - letter case independent)</p></li>
@@ -239,6 +242,11 @@ CLMModeling abstract class</p>
 </ul>
 </dd>
 </dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.cdelta">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cdelta</span></span><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.cdelta" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.convert_mass_concentration">
 <span class="sig-name descname"><span class="pre">convert_mass_concentration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">massdef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_mdef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halo_profile_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.convert_mass_concentration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.convert_mass_concentration" title="Permalink to this definition">¶</a></dt>
@@ -266,6 +274,11 @@ If None, same value of current model is used.</p></li>
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.delta_mdef">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delta_mdef</span></span><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.delta_mdef" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.eval_3d_density">
@@ -315,20 +328,35 @@ If None, same value of current model is used.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.eval_critical_surface_density">
-<span class="sig-name descname"><span class="pre">eval_critical_surface_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_len</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_critical_surface_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_critical_surface_density" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the critical surface density</p>
+<span class="sig-name descname"><span class="pre">eval_critical_surface_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_len</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_pdz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pzbins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pzpdf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_critical_surface_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_critical_surface_density" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes either</p>
+<p>the critical surface density if <cite>use_pdz=False</cite></p>
+<div class="math notranslate nohighlight">
+\[\Sigma_{\rm crit} = \frac{c^2}{4\pi G} \frac{D_s}{D_LD_{LS}}\]</div>
+<p>or</p>
+<p>the ‘effective critical surface density’ if <cite>use_pdz=True</cite></p>
+<div class="math notranslate nohighlight">
+\[\langle \Sigma_{\rm crit}^{-1}\rangle^{-1} = \left(\int \frac{1}{\Sigma_{\rm crit}(z)} p(z) dz\right)^{-1}\]</div>
+<p>where <span class="math notranslate nohighlight">\(p(z)\)</span> is the source photoz probability density function.
+This comes from the maximum likelihood estimator for evaluating a <span class="math notranslate nohighlight">\(\Delta\Sigma\)</span> profile.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>z_len</strong> (<em>float</em>) – Lens redshift</p></li>
+<li><p><strong>z_len</strong> (<em>float</em>) – Galaxy cluster redshift</p></li>
 <li><p><strong>z_src</strong> (<em>array_like</em><em>, </em><em>float</em>) – Background source galaxy redshift(s)</p></li>
+<li><p><strong>use_pdz</strong> (<em>bool</em>) – Flag to use the photoz pdf. If <cite>False</cite> (default), <cite>sigma_c</cite> is computed using the source redshift point estimates <cite>z_source</cite>.
+If <cite>True</cite>, <cite>sigma_c</cite> is computed as 1/&lt;1/Sigma_crit&gt;, where the average is performed using
+the individual galaxy redshift pdf. In that case, the <cite>pzbins</cite> and <cite>pzpdf</cite> should be specified.</p></li>
+<li><p><strong>pzbins</strong> (<em>array-like</em>) – Bins where the source redshift pdf is defined</p></li>
+<li><p><strong>pzpdf</strong> (<em>array-like</em>) – Values of the source redshift pdf</p></li>
+<li><p><strong>validate_input</strong> (<em>bool</em>) – Validade each input argument</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Cosmology-dependent critical surface density in units of <span class="math notranslate nohighlight">\(M_\odot\ Mpc^{-2}\)</span></p>
+<dd class="field-even"><p><strong>sigma_c</strong> – Cosmology-dependent (effective) critical surface density in units of <span class="math notranslate nohighlight">\(M_\odot\ Mpc^{-2}\)</span></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>float</p>
+<dd class="field-odd"><p>array_like, float</p>
 </dd>
 </dl>
 </dd></dl>
@@ -621,6 +649,21 @@ The mass is calculated as</p>
 </dl>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.halo_profile_model">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">halo_profile_model</span></span><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.halo_profile_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.massdef">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">massdef</span></span><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.massdef" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.mdelta">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mdelta</span></span><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.mdelta" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.set_concentration">
 <span class="sig-name descname"><span class="pre">set_concentration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cdelta</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.set_concentration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.set_concentration" title="Permalink to this definition">¶</a></dt>
@@ -630,6 +673,8 @@ The mass is calculated as</p>
 <dd class="field-odd"><p><strong>cdelta</strong> (<em>float</em>) – Concentration</p>
 </dd>
 </dl>
+<p class="rubric">Notes</p>
+<p>This is equivalent to doing self.cdelta = cdelta</p>
 </dd></dl>
 
 <dl class="py method">
@@ -672,12 +717,14 @@ The mass is calculated as</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.set_mass">
 <span class="sig-name descname"><span class="pre">set_mass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mdelta</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.set_mass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.set_mass" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the value of the <span class="math notranslate nohighlight">\(M_\Delta\)</span></p>
+<dd><p>Sets the value of the <span class="math notranslate nohighlight">\(M_\Delta\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>mdelta</strong> (<em>float</em>) – Galaxy cluster mass <span class="math notranslate nohighlight">\(M_\Delta\)</span> in units of <span class="math notranslate nohighlight">\(M_\odot\)</span></p>
 </dd>
 </dl>
+<p class="rubric">Notes</p>
+<p>This is equivalent to doing self.mdelta = mdelta</p>
 </dd></dl>
 
 </dd></dl>
@@ -696,7 +743,7 @@ The mass is calculated as</p>
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2018-2022, LSST DESC CLMM Contributors
+        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
 
     </p>
   </div>

@@ -1,0 +1,7 @@
+clmm.clusterensemble module
+===========================
+
+.. automodule:: clmm.clusterensemble
+   :members:
+   :undoc-members:
+   :show-inheritance:

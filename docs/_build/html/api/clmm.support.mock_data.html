@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.support.mock_data module &mdash; CLMM 1.2.1 documentation</title>
+  <title>clmm.support.mock_data module &mdash; CLMM 1.4.0 documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                1.2.1
+                1.4.0
               </div>
             
           
@@ -115,6 +115,7 @@
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="clmm.clusterensemble.html">clmm.clusterensemble module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.constants.html">clmm.constants module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.cosmology.html">clmm.cosmology package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="clmm.cosmology.ccl.html">clmm.cosmology.ccl module</a></li>
@@ -244,11 +245,12 @@ default side length of 8 Mpc) at the lens redhsift. We then convert to right asc
 declination using the cosmology defined in <cite>cosmo</cite>.</p>
 <p>4. We predict the reduced tangential shear of each using the radial distances of each source
 from the lens, the source redshifts, and the lens mass, concentration, and redshift. In the
-given cosmology for an NFW halo. The reduced tangential shear is then transformed into <cite>g1</cite> and <cite>g2`</cite>
-components.</p>
-<p>5. If the <cite>shapenoise=True</cite>, intrinsic ellipticities (1,2) components are drawn from a Gaussian distribution of width of <cite>shapenoise</cite>.
-These ellipticities components are then combined with <cite>g1</cite> and <cite>g2</cite> to provide lensed ellipticies <cite>e1</cite> and <cite>e2</cite>. If <cite>shapenoise=False</cite>,
-<cite>g1</cite> and <cite>g2</cite> are directly used as ellipticity components.</p>
+given cosmology for an NFW halo. The reduced tangential shear is then transformed into <cite>g1</cite>
+and <cite>g2</cite> components.</p>
+<p>5. If the <cite>shapenoise=True</cite>, intrinsic ellipticities (1,2) components are drawn from a
+Gaussian distribution of width of <cite>shapenoise</cite>. These ellipticities components are then
+combined with <cite>g1</cite> and <cite>g2</cite> to provide lensed ellipticies <cite>e1</cite> and <cite>e2</cite>. If
+<cite>shapenoise=False</cite>, <cite>g1</cite> and <cite>g2</cite> are directly used as ellipticity components.</p>
 <p>If the shape noise parameter is high, we may draw nonsensical values for ellipticities. We
 ensure that we does not return any nonsensical values for derived properties. We re-draw
 all galaxies with e1 or e2 outside the bounds of [-1, 1]. After 5 (default) attempts to
@@ -331,7 +333,7 @@ user-defined redshift range.  If specified, the ngals argument will be ignored.<
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2018-2022, LSST DESC CLMM Contributors
+        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
 
     </p>
   </div>

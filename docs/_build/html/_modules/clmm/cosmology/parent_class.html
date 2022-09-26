@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.cosmology.parent_class &mdash; CLMM 1.2.1 documentation</title>
+  <title>clmm.cosmology.parent_class &mdash; CLMM 1.4.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.2.1
+                1.4.0
               </div>
             
           
@@ -111,6 +111,7 @@
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.clusterensemble.html">clmm.clusterensemble module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.constants.html">clmm.constants module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.cosmology.html">clmm.cosmology package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.cosmology.ccl.html">clmm.cosmology.ccl module</a></li>
@@ -629,7 +630,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">:</span>
             <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;z_len&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">eqmin</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;z_src&#39;</span><span class="p">,</span> <span class="s1">&#39;float_array&#39;</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;z_src&#39;</span><span class="p">,</span> <span class="s1">&#39;float_array&#39;</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">eqmin</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_sigma_crit</span><span class="p">(</span><span class="n">z_len</span><span class="o">=</span><span class="n">z_len</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="n">z_src</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_eval_sigma_crit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_len</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
@@ -676,7 +677,7 @@
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2018-2022, LSST DESC CLMM Contributors
+        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
 
     </p>
   </div>

@@ -1,0 +1,492 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>clmm.clusterensemble &mdash; CLMM 1.4.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> CLMM
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.4.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../source/overview.html">Rapid overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/citing.html">Using and citing CLMM</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Usage Demos</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_mass_conversion.html">Mass conversion between spherical overdensity mass definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/demo_boost_factors.html">Compute boost factors</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Mass Fitting Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compiled-examples/Example1_Fit_shear_profile_with_miscentering.html">Investigate the impact of miscentering on shear profiles</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.clusterensemble.html">clmm.clusterensemble module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.constants.html">clmm.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.cosmology.html">clmm.cosmology package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/clmm.cosmology.ccl.html">clmm.cosmology.ccl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/clmm.cosmology.cluster_toolkit.html">clmm.cosmology.cluster_toolkit module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/clmm.cosmology.numcosmo.html">clmm.cosmology.numcosmo module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/clmm.cosmology.parent_class.html">clmm.cosmology.parent_class module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.dataops.html">clmm.dataops package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.gcdata.html">clmm.gcdata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.theory.html">clmm.theory package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/clmm.theory.be_setup.html">clmm.theory.be_setup module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/clmm.theory.ccl.html">clmm.theory.ccl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/clmm.theory.cluster_toolkit.html">clmm.theory.cluster_toolkit module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/clmm.theory.func_layer.html">clmm.theory.func_layer module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/clmm.theory.generic.html">clmm.theory.generic module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/clmm.theory.numcosmo.html">clmm.theory.numcosmo module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/clmm.theory.parent_class.html">clmm.theory.parent_class module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.plotting.html">clmm.plotting package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.utils.html">clmm.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/clmm.support.html">clmm.support package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/clmm.support.mock_data.html">clmm.support.mock_data module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/clmm.support.sampler.html">clmm.support.sampler module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">CLMM</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>clmm.clusterensemble</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for clmm.clusterensemble</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;@file clusterensemble.py</span>
+<span class="sd">The Cluster Ensemble class</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">binned_statistic</span>
+<span class="kn">from</span> <span class="nn">astropy.table</span> <span class="kn">import</span> <span class="n">Table</span>
+<span class="kn">from</span> <span class="nn">.plotting</span> <span class="kn">import</span> <span class="n">mpl</span>
+<span class="kn">import</span> <span class="nn">healpy</span>
+
+<span class="kn">from</span> <span class="nn">.gcdata</span> <span class="kn">import</span> <span class="n">GCData</span>
+<span class="kn">from</span> <span class="nn">.galaxycluster</span> <span class="kn">import</span> <span class="n">GalaxyCluster</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">compute_radial_averages</span><span class="p">,</span> <span class="n">convert_units</span>
+<span class="kn">from</span> <span class="nn">.dataops</span> <span class="kn">import</span> <span class="n">make_radial_profile</span><span class="p">,</span> <span class="n">make_stacked_radial_profile</span>
+
+<div class="viewcode-block" id="ClusterEnsemble"><a class="viewcode-back" href="../../api/clmm.clusterensemble.html#clmm.clusterensemble.ClusterEnsemble">[docs]</a><span class="k">class</span> <span class="nc">ClusterEnsemble</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Object that contains a list of GalaxyCluster objects</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    unique_id : int or string</span>
+<span class="sd">        Unique identifier of the galaxy cluster ensemble</span>
+<span class="sd">    data : GCData</span>
+<span class="sd">        Table with galaxy clusters data (i. e. ids, profiles, redshifts).</span>
+<span class="sd">    id_dict: dict</span>
+<span class="sd">        Dictionary of indices given the cluster id</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">,</span> <span class="n">gclist</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes a ClusterEnsemble object</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        unique_id : int or string</span>
+<span class="sd">            Unique identifier of the galaxy cluster ensemble</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">unique_id</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">)):</span>
+            <span class="n">unique_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">unique_id</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;unique_id incorrect type: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="nb">type</span><span class="p">(</span><span class="n">unique_id</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span> <span class="o">=</span> <span class="n">unique_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">GCData</span><span class="p">(</span><span class="n">meta</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;bin_units&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">})</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_values</span><span class="p">(</span><span class="n">gclist</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_add_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gc_list</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add values for all attributes</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        gc_list : list, tuple</span>
+<span class="sd">            List of GalaxyCluster objects.</span>
+<span class="sd">        gc_cols : list, tuple</span>
+<span class="sd">            List of GalaxyCluster objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">gc</span> <span class="ow">in</span> <span class="n">gc_list</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">make_individual_radial_profile</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns self.data[item]&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns length of ClusterEnsemble&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ClusterEnsemble.make_individual_radial_profile"><a class="viewcode-back" href="../../api/clmm.clusterensemble.html#clmm.clusterensemble.ClusterEnsemble.make_individual_radial_profile">[docs]</a>    <span class="k">def</span> <span class="nf">make_individual_radial_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">galaxycluster</span><span class="p">,</span> <span class="n">bin_units</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">error_model</span><span class="o">=</span><span class="s1">&#39;ste&#39;</span><span class="p">,</span>
+                                       <span class="n">cosmo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tan_component_in</span><span class="o">=</span><span class="s1">&#39;et&#39;</span><span class="p">,</span> <span class="n">cross_component_in</span><span class="o">=</span><span class="s1">&#39;ex&#39;</span><span class="p">,</span>
+                                       <span class="n">tan_component_out</span><span class="o">=</span><span class="s1">&#39;gt&#39;</span><span class="p">,</span> <span class="n">cross_component_out</span><span class="o">=</span><span class="s1">&#39;gx&#39;</span><span class="p">,</span>
+                                       <span class="n">tan_component_in_err</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cross_component_in_err</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                       <span class="n">weights_in</span><span class="o">=</span><span class="s1">&#39;w_ls&#39;</span><span class="p">,</span> <span class="n">weights_out</span><span class="o">=</span><span class="s1">&#39;W_l&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compute the individual shear profile from a single GalaxyCluster object</span>
+<span class="sd">        and adds the averaged data in the data attribute.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        galaxycluster : GalaxyCluster</span>
+<span class="sd">            GalaxyCluster object with cluster metadata and background galaxy data</span>
+<span class="sd">        bin_units : str</span>
+<span class="sd">            Units to use for the radial bins of the shear profile</span>
+<span class="sd">            Allowed Options = [&quot;radians&quot;, &quot;deg&quot;, &quot;arcmin&quot;, &quot;arcsec&quot;, &quot;kpc&quot;, &quot;Mpc&quot;]</span>
+<span class="sd">            (letter case independent)</span>
+<span class="sd">        bins : array_like or int, optional</span>
+<span class="sd">            User defined bins to use for the shear profile. If a list is provided, use that as</span>
+<span class="sd">            the bin edges. If a integer is provided, create that many equally spaced bins between</span>
+<span class="sd">            the minimum and maximum angular separations in bin_units. If nothing is provided,</span>
+<span class="sd">            defaults to 10 equally spaced bins.</span>
+<span class="sd">        error_model : str, optional</span>
+<span class="sd">            Statistical error model to use for y uncertainties. (letter case independent)</span>
+
+<span class="sd">                * `ste` - Standard error [=std/sqrt(n) in unweighted computation] (Default).</span>
+<span class="sd">                * `std` - Standard deviation.</span>
+
+<span class="sd">        cosmo: clmm.Comology, optional</span>
+<span class="sd">            CLMM Cosmology object</span>
+<span class="sd">        tan_component_in: string, optional</span>
+<span class="sd">            Name of the tangential component column in `galcat` to be binned.</span>
+<span class="sd">            Default: &#39;et&#39;</span>
+<span class="sd">        cross_component_in: string, optional</span>
+<span class="sd">            Name of the cross component column in `galcat` to be binned.</span>
+<span class="sd">            Default: &#39;ex&#39;</span>
+<span class="sd">        tan_component_out: string, optional</span>
+<span class="sd">            Name of the tangetial component binned column to be added in profile table.</span>
+<span class="sd">            Default: &#39;gt&#39;</span>
+<span class="sd">        cross_component_out: string, optional</span>
+<span class="sd">            Name of the cross component binned profile column to be added in profile table.</span>
+<span class="sd">            Default: &#39;gx&#39;</span>
+<span class="sd">        tan_component_in_err: string, None, optional</span>
+<span class="sd">            Name of the tangential component error column in `galcat` to be binned.</span>
+<span class="sd">            Default: None</span>
+<span class="sd">        cross_component_in_err: string, None, optional</span>
+<span class="sd">            Name of the cross component error column in `galcat` to be binned.</span>
+<span class="sd">            Default: None</span>
+<span class="sd">        weights_in : str, None</span>
+<span class="sd">            Name of the weight column in `galcat` to be considered in binning.</span>
+<span class="sd">        weights_out : str, None</span>
+<span class="sd">            Name of the weight column to be used in the added to the profile table.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;bin_units&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;bin_units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bin_units</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;bin_units&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">bin_units</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;inconsistent units&#39;</span><span class="p">)</span>
+        <span class="c1"># This will be replaced when gc has weights on make_radial_profile</span>
+        <span class="n">profile_table</span> <span class="o">=</span> <span class="n">make_radial_profile</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">galaxycluster</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="p">(</span><span class="n">tan_component_in</span><span class="p">,</span> <span class="n">cross_component_in</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">)],</span>
+            <span class="n">angsep</span><span class="o">=</span><span class="n">galaxycluster</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;theta&#39;</span><span class="p">],</span> <span class="n">angsep_units</span><span class="o">=</span><span class="s1">&#39;radians&#39;</span><span class="p">,</span>
+            <span class="n">bin_units</span><span class="o">=</span><span class="n">bin_units</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">error_model</span><span class="o">=</span><span class="n">error_model</span><span class="p">,</span>
+            <span class="n">include_empty_bins</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_binnumber</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">z_lens</span><span class="o">=</span><span class="n">galaxycluster</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">galaxycluster</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="n">weights_in</span><span class="p">],</span>
+            <span class="n">components_error</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span> <span class="k">if</span> <span class="n">n</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">galaxycluster</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+                              <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="p">(</span><span class="n">tan_component_in_err</span><span class="p">,</span> <span class="n">cross_component_in_err</span><span class="p">,</span> <span class="kc">None</span><span class="p">)],</span>
+            <span class="p">)</span>
+        <span class="c1">#profile_table[weights_out] = 1 #rm this line</span>
+        <span class="k">if</span> <span class="n">bin_units</span> <span class="o">!=</span> <span class="s1">&#39;radians&#39;</span><span class="p">:</span>
+            <span class="n">bins</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">bin_units</span><span class="p">,</span> <span class="s1">&#39;radians&#39;</span><span class="p">,</span> <span class="n">redshift</span><span class="o">=</span><span class="n">galaxycluster</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
+        <span class="n">profile_table</span><span class="p">[</span><span class="n">weights_out</span><span class="p">]</span> <span class="o">=</span> <span class="n">binned_statistic</span><span class="p">(</span><span class="n">galaxycluster</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;theta&#39;</span><span class="p">],</span> 
+                                                       <span class="n">galaxycluster</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="n">weights_in</span><span class="p">],</span> 
+                                                       <span class="n">statistic</span><span class="o">=</span><span class="s1">&#39;sum&#39;</span><span class="p">,</span> 
+                                                       <span class="n">bins</span> <span class="o">=</span> <span class="n">bins</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">data_to_save</span> <span class="o">=</span> <span class="p">[</span><span class="n">galaxycluster</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="n">galaxycluster</span><span class="o">.</span><span class="n">ra</span><span class="p">,</span> <span class="n">galaxycluster</span><span class="o">.</span><span class="n">dec</span><span class="p">,</span> <span class="n">galaxycluster</span><span class="o">.</span><span class="n">z</span><span class="p">,</span>
+                        <span class="o">*</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">profile_table</span><span class="p">[</span><span class="n">col</span><span class="p">])</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span>
+                            <span class="p">(</span><span class="s1">&#39;radius&#39;</span><span class="p">,</span> <span class="s1">&#39;p_0&#39;</span><span class="p">,</span> <span class="s1">&#39;p_1&#39;</span><span class="p">,</span> <span class="n">weights_out</span><span class="p">)]]</span>
+        <span class="c1"># to be fixed down to here after issue 443 is merged</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="s1">&#39;cluster_id&#39;</span><span class="p">,</span> <span class="s1">&#39;ra&#39;</span><span class="p">,</span> <span class="s1">&#39;dec&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;radius&#39;</span><span class="p">,</span> <span class="n">tan_component_out</span><span class="p">,</span>
+                                  <span class="n">cross_component_out</span><span class="p">,</span> <span class="n">weights_out</span><span class="p">],</span> <span class="n">data_to_save</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="n">data_to_save</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ClusterEnsemble.make_stacked_radial_profile"><a class="viewcode-back" href="../../api/clmm.clusterensemble.html#clmm.clusterensemble.ClusterEnsemble.make_stacked_radial_profile">[docs]</a>    <span class="k">def</span> <span class="nf">make_stacked_radial_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tan_component</span><span class="o">=</span><span class="s1">&#39;gt&#39;</span><span class="p">,</span> <span class="n">cross_component</span><span class="o">=</span><span class="s1">&#39;gx&#39;</span><span class="p">,</span>
+                                    <span class="n">weights</span><span class="o">=</span><span class="s1">&#39;W_l&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Computes stacked profile and mean separation distances and add it internally.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        tan_component : string, optional</span>
+<span class="sd">            Name of the tangential component column in `data`.</span>
+<span class="sd">            Default: &#39;gt&#39;</span>
+<span class="sd">        cross_component : string, optional</span>
+<span class="sd">            Name of the cross component column in `data`.</span>
+<span class="sd">            Default: &#39;gx&#39;</span>
+<span class="sd">        weights : str</span>
+<span class="sd">            Name of the weights column in `data`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">radius</span><span class="p">,</span> <span class="n">components</span> <span class="o">=</span> <span class="n">make_stacked_radial_profile</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">weights</span><span class="p">],</span>
+            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">tan_component</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">cross_component</span><span class="p">]])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stacked_data</span> <span class="o">=</span> <span class="n">GCData</span><span class="p">([</span><span class="n">radius</span><span class="p">,</span> <span class="o">*</span><span class="n">components</span><span class="p">],</span> <span class="n">meta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span>
+                                    <span class="n">names</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;radius&#39;</span><span class="p">,</span> <span class="n">tan_component</span><span class="p">,</span> <span class="n">cross_component</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="ClusterEnsemble.compute_sample_covariance"><a class="viewcode-back" href="../../api/clmm.clusterensemble.html#clmm.clusterensemble.ClusterEnsemble.compute_sample_covariance">[docs]</a>    <span class="k">def</span> <span class="nf">compute_sample_covariance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tan_component</span><span class="o">=</span><span class="s1">&#39;gt&#39;</span><span class="p">,</span> <span class="n">cross_component</span><span class="o">=</span><span class="s1">&#39;gx&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compute Sample covariance matrix for cross and tangential and cross</span>
+<span class="sd">        stacked profiles adds as attributes.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        sample_tangential_covariance : ndarray</span>
+<span class="sd">            The sample covariance matrix for the stacked tangential profile</span>
+<span class="sd">        sample_cross_covariance : ndarray</span>
+<span class="sd">            The sample covariance matrix for the stacked cross profile</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">n_catalogs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_tangential_covariance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">tan_component</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">bias</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span><span class="o">/</span><span class="n">n_catalogs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_cross_covariance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">cross_component</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">bias</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span><span class="o">/</span><span class="n">n_catalogs</span></div>
+
+<div class="viewcode-block" id="ClusterEnsemble.compute_bootstrap_covariance"><a class="viewcode-back" href="../../api/clmm.clusterensemble.html#clmm.clusterensemble.ClusterEnsemble.compute_bootstrap_covariance">[docs]</a>    <span class="k">def</span> <span class="nf">compute_bootstrap_covariance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tan_component</span><span class="o">=</span><span class="s1">&#39;gt&#39;</span><span class="p">,</span> <span class="n">cross_component</span><span class="o">=</span><span class="s1">&#39;gx&#39;</span><span class="p">,</span> <span class="n">n_bootstrap</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compute the bootstrap covariance matrix, add boostrap covariance matrix for</span>
+<span class="sd">        tangential and cross profiles as attributes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        n_bootstrap : int</span>
+<span class="sd">            number of bootstrap resamplings</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cluster_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
+        <span class="n">gt_boot</span><span class="p">,</span> <span class="n">gx_boot</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">n_boot</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_bootstrap</span><span class="p">):</span>
+            <span class="n">cluster_index_bootstrap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">cluster_index</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cluster_index</span><span class="p">))</span>
+            <span class="n">data_bootstrap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">cluster_index_bootstrap</span><span class="p">]</span>
+            <span class="n">r</span><span class="p">,</span> <span class="p">(</span><span class="n">gt</span><span class="p">,</span> <span class="n">gx</span><span class="p">)</span> <span class="o">=</span> <span class="n">make_stacked_radial_profile</span><span class="p">(</span>
+                            <span class="n">data_bootstrap</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="n">data_bootstrap</span><span class="p">[</span><span class="s1">&#39;W_l&#39;</span><span class="p">],</span>
+                            <span class="p">[</span><span class="n">data_bootstrap</span><span class="p">[</span><span class="n">tan_component</span><span class="p">],</span> <span class="n">data_bootstrap</span><span class="p">[</span><span class="n">cross_component</span><span class="p">]])</span>
+            <span class="n">gt_boot</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gt</span><span class="p">),</span> <span class="n">gx_boot</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gx</span><span class="p">)</span>
+        <span class="n">n_catalogs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">coeff</span> <span class="o">=</span> <span class="p">(</span><span class="n">n_catalogs</span><span class="o">/</span><span class="p">(</span><span class="n">n_catalogs</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bootstrap_tangential_covariance</span> <span class="o">=</span> <span class="n">coeff</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">gt_boot</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">bias</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span><span class="n">ddof</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bootstrap_cross_covariance</span> <span class="o">=</span> <span class="n">coeff</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">gx_boot</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">bias</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ClusterEnsemble.compute_jackknife_covariance"><a class="viewcode-back" href="../../api/clmm.clusterensemble.html#clmm.clusterensemble.ClusterEnsemble.compute_jackknife_covariance">[docs]</a>    <span class="k">def</span> <span class="nf">compute_jackknife_covariance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tan_component</span><span class="o">=</span><span class="s1">&#39;gt&#39;</span><span class="p">,</span> <span class="n">cross_component</span><span class="o">=</span><span class="s1">&#39;gx&#39;</span><span class="p">,</span> <span class="n">n_side</span><span class="o">=</span><span class="mi">16</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compute the jackknife covariance matrix, add boostrap covariance matrix for</span>
+<span class="sd">        tangential and cross profiles as attributes.</span>
+<span class="sd">        Uses healpix sky area sub-division : https://healpix.sourceforge.io</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        n_side : int</span>
+<span class="sd">            healpix sky area division parameter (number of sky area : 12*n_side^2)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#may induce artificial noise if there are some healpix pixels</span>
+        <span class="c1">#not covering entirely the 2D map of clusters</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
+        <span class="n">pixels</span> <span class="o">=</span> <span class="n">healpy</span><span class="o">.</span><span class="n">ang2pix</span><span class="p">(</span><span class="n">n_side</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ra&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dec&#39;</span><span class="p">],</span>
+                                <span class="n">nest</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">lonlat</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">pixels_list_unique</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">pixels</span><span class="p">)</span>
+        <span class="n">n_jack</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pixels_list_unique</span><span class="p">)</span>
+        <span class="n">gt_jack</span><span class="p">,</span> <span class="n">gx_jack</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">hp_list_delete</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pixels_list_unique</span><span class="p">):</span>
+            <span class="n">mask_in_area</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">pixels</span><span class="p">,</span> <span class="n">hp_list_delete</span><span class="p">)</span>
+            <span class="n">data_jk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="o">~</span><span class="n">mask_in_area</span><span class="p">]</span>
+            <span class="n">r</span><span class="p">,</span> <span class="p">(</span><span class="n">gt</span><span class="p">,</span> <span class="n">gx</span><span class="p">)</span> <span class="o">=</span> <span class="n">make_stacked_radial_profile</span><span class="p">(</span><span class="n">data_jk</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="n">data_jk</span><span class="p">[</span><span class="s1">&#39;W_l&#39;</span><span class="p">],</span>
+                                                      <span class="p">[</span><span class="n">data_jk</span><span class="p">[</span><span class="n">tan_component</span><span class="p">],</span> <span class="n">data_jk</span><span class="p">[</span><span class="n">cross_component</span><span class="p">]])</span>
+            <span class="n">gt_jack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gt</span><span class="p">),</span> <span class="n">gx_jack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gx</span><span class="p">)</span>
+        <span class="n">coeff</span> <span class="o">=</span> <span class="p">(</span><span class="n">n_jack</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="n">n_jack</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">jackknife_tangential_covariance</span> <span class="o">=</span> <span class="n">coeff</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">gt_jack</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+                                                            <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">jackknife_cross_covariance</span> <span class="o">=</span> <span class="n">coeff</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">gx_jack</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+                                                       <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
