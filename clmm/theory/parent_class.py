@@ -657,7 +657,9 @@ class CLMModeling:
                 beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo,
                                                                 z_distrib_func=z_src) 
             gammat = beta_s_mean * gammat_inf
-        
+        else:
+            raise ValueError(f"Unsupported z_src_info (='{z_src_info}')")
+            
         return gammat
     
     def eval_convergence(self, r_proj, z_cl, z_src, z_src_info='discrete', verbose=False):
@@ -742,7 +744,9 @@ class CLMModeling:
                 beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo,
                                                                 z_distrib_func=z_src) 
             kappa = beta_s_mean * kappa_inf
-        
+        else:
+            raise ValueError(f"Unsupported z_src_info (='{z_src_info}')")
+            
         return kappa
 
 
