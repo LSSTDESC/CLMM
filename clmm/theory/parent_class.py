@@ -605,9 +605,8 @@ class CLMModeling:
                   or all sources are at the same redshift when `z_source` is a float.
 
                 * `distribution` : A redshift distribution function is provided by `z_src`.
-                  `z_src` must be a one dimentional function. If `z_src=None`,
-                  the Chang et al (2013) distribution function is used.
-
+                  `z_src` must be a one dimentional function. 
+                  
                 * `beta` : The averaged lensing efficiency is provided by `z_src`.
                   `z_src` must be a tuple containing
                   ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
@@ -632,7 +631,7 @@ class CLMModeling:
             if z_src_info=='discrete':
                 validate_argument(locals(), 'z_src', 'float_array', argmin=0)
             elif z_src_info=='distribution':
-                validate_argument(locals(), 'z_src', 'function', none_ok=True)
+                validate_argument(locals(), 'z_src', 'function', none_ok=False)
             elif z_src_info=='beta':
                 validate_argument(locals(), 'z_src', 'array')
                 beta_info = {'beta_s_mean':z_src[0],
@@ -691,8 +690,7 @@ class CLMModeling:
                   or all sources are at the same redshift when `z_source` is a float.
 
                 * `distribution` : A redshift distribution function is provided by `z_src`.
-                  `z_src` must be a one dimentional function. If `z_src=None`,
-                  the Chang et al (2013) distribution function is used.
+                  `z_src` must be a one dimentional function. 
 
                 * `beta` : The averaged lensing efficiency is provided by `z_src`.
                   `z_src` must be a tuple containing
@@ -718,7 +716,7 @@ class CLMModeling:
             if z_src_info=='discrete':
                 validate_argument(locals(), 'z_src', 'float_array', argmin=0)
             elif z_src_info=='distribution':
-                validate_argument(locals(), 'z_src', 'function', none_ok=True)
+                validate_argument(locals(), 'z_src', 'function', none_ok=False)
             elif z_src_info=='beta':
                 validate_argument(locals(), 'z_src', 'array')
                 beta_info = {'beta_s_mean':z_src[0],
@@ -772,8 +770,7 @@ class CLMModeling:
                   or all sources are at the same redshift when `z_source` is a float.
 
                 * `distribution` : A redshift distribution function is provided by `z_src`.
-                  `z_src` must be a one dimentional function. If `z_src=None`,
-                  the Chang et al (2013) distribution function is used.
+                  `z_src` must be a one dimentional function. 
 
                 * `beta` : The averaged lensing efficiency is provided by `z_src`.
                   `z_src` must be a tuple containing
@@ -821,7 +818,7 @@ class CLMModeling:
             if z_src_info=='discrete':
                 validate_argument(locals(), 'z_src', 'float_array', argmin=0)
             elif z_src_info=='distribution':
-                validate_argument(locals(), 'z_src', 'function', none_ok=True)
+                validate_argument(locals(), 'z_src', 'function', none_ok=False)
             elif z_src_info=='beta':
                 validate_argument(locals(), 'z_src', 'array')
                 beta_info = {'beta_s_mean':z_src[0],
@@ -894,9 +891,8 @@ class CLMModeling:
                   or all sources are at the same redshift when `z_source` is a float.
 
                 * `distribution` : A redshift distribution function is provided by `z_src`.
-                  `z_src` must be a one dimentional function. If `z_src=None`,
-                  the Chang et al (2013) distribution function is used.
-
+                  `z_src` must be a one dimentional function.
+                  
                 * `beta` : The averaged lensing efficiency is provided by `z_src`.
                   `z_src` must be a tuple containing
                   ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
@@ -933,7 +929,7 @@ class CLMModeling:
             if z_src_info=='discrete':
                 validate_argument(locals(), 'z_src', 'float_array', argmin=0)
             elif z_src_info=='distribution':
-                validate_argument(locals(), 'z_src', 'function', none_ok=True)
+                validate_argument(locals(), 'z_src', 'function', none_ok=False)
             elif z_src_info=='beta':
                 validate_argument(locals(), 'z_src', 'array')
                 beta_info = {'beta_s_mean':z_src[0],

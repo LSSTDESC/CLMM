@@ -421,8 +421,7 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
               or all sources are at the same redshift when `z_source` is a float.
 
             * `distribution` : A redshift distribution function is provided by `z_src`.
-              `z_src` must be a one dimentional function. If `z_src=None`,
-              the Chang et al (2013) distribution function is used.
+              `z_src` must be a one dimentional function. 
 
             * `beta` : The averaged lensing efficiency is provided by `z_src`.
               `z_src` must be a tuple containing
@@ -521,8 +520,7 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
               or all sources are at the same redshift when `z_source` is a float.
 
             * `distribution` : A redshift distribution function is provided by `z_src`.
-              `z_src` must be a one dimentional function. If `z_src=None`,
-              the Chang et al (2013) distribution function is used.
+              `z_src` must be a one dimentional function. 
 
             * `beta` : The averaged lensing efficiency is provided by `z_src`.
               `z_src` must be a tuple containing
@@ -613,8 +611,7 @@ def compute_reduced_tangential_shear(
               or all sources are at the same redshift when `z_source` is a float.
 
             * `distribution` : A redshift distribution function is provided by `z_src`.
-              `z_src` must be a one dimentional function. If `z_src=None`,
-              the Chang et al (2013) distribution function is used.
+              `z_src` must be a one dimentional function. 
 
             * `beta` : The averaged lensing efficiency is provided by `z_src`.
               `z_src` must be a tuple containing
@@ -726,8 +723,7 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
                   or all sources are at the same redshift when `z_source` is a float.
 
                 * `distribution` : A redshift distribution function is provided by `z_src`.
-                  `z_src` must be a one dimentional function. If `z_src=None`,
-                  the Chang et al (2013) distribution function is used.
+                  `z_src` must be a one dimentional function. 
 
                 * `beta` : The averaged lensing efficiency is provided by `z_src`.
                   `z_src` must be a tuple containing
