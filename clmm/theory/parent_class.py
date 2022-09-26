@@ -950,8 +950,8 @@ class CLMModeling:
             mu = self._eval_magnification(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
         
         elif approx == 'weak_lensing':
-        z_inf = 1000. #np.inf # INF or a very large number
-        kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=z_inf)
+            z_inf = 1000. #np.inf # INF or a very large number
+            kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=z_inf)
             if z_src_info=='beta':
                 # z_src (tuple) is (beta_s_mean, beta_s_square_mean)
                 beta_s_mean, beta_s_square_mean = z_src
