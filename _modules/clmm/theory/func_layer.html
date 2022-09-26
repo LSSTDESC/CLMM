@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.theory.func_layer &mdash; CLMM 1.2.1 documentation</title>
+  <title>clmm.theory.func_layer &mdash; CLMM 1.4.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.2.1
+                1.4.0
               </div>
             
           
@@ -111,6 +111,7 @@
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.clusterensemble.html">clmm.clusterensemble module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.constants.html">clmm.constants module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.cosmology.html">clmm.cosmology package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.cosmology.ccl.html">clmm.cosmology.ccl module</a></li>
@@ -520,11 +521,24 @@
     <span class="n">gcm</span><span class="o">.</span><span class="n">validate_input</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="n">sigma_2h</span></div>
 
-<div class="viewcode-block" id="compute_critical_surface_density"><a class="viewcode-back" href="../../../api/clmm.theory.numcosmo.html#clmm.theory.compute_critical_surface_density">[docs]</a><span class="k">def</span> <span class="nf">compute_critical_surface_density</span><span class="p">(</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">z_cluster</span><span class="p">,</span> <span class="n">z_source</span><span class="p">,</span> <span class="n">validate_input</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes the critical surface density</span>
+<div class="viewcode-block" id="compute_critical_surface_density"><a class="viewcode-back" href="../../../api/clmm.theory.numcosmo.html#clmm.theory.compute_critical_surface_density">[docs]</a><span class="k">def</span> <span class="nf">compute_critical_surface_density</span><span class="p">(</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">z_cluster</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_pdz</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pzbins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pzpdf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">validate_input</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes either </span>
+
+<span class="sd">    - the critical surface density if `use_pdz=False`</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">        \Sigma_{crit} = \frac{c^2}{4\pi G} \frac{D_s}{D_LD_{LS}}</span>
+<span class="sd">        \Sigma_{\rm crit} = \frac{c^2}{4\pi G} \frac{D_s}{D_LD_{LS}}</span>
+
+<span class="sd">    or</span>
+
+<span class="sd">    - the &#39;effective critical surface density&#39; if `use_pdz=True`</span>
+<span class="sd">     </span>
+<span class="sd">    .. math::</span>
+<span class="sd">        \langle \Sigma_{\rm crit}^{-1}\rangle^{-1} = \left(\int \frac{1}{\Sigma_{\rm crit}(z)} p(z) dz\right)^{-1} </span>
+<span class="sd">    </span>
+<span class="sd">    where :math:`p(z)` is the source photoz probability density function. </span>
+<span class="sd">    This comes from the maximum likelihood estimator for evaluating a :math:`\Delta\Sigma` profile.</span>
+
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -534,27 +548,30 @@
 <span class="sd">        Galaxy cluster redshift</span>
 <span class="sd">    z_source : array_like, float</span>
 <span class="sd">        Background source galaxy redshift(s)</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    sigma_c : float</span>
-<span class="sd">        Cosmology-dependent critical surface density in units of :math:`M_\odot\ Mpc^{-2}`</span>
+<span class="sd">    use_pdz : bool</span>
+<span class="sd">        Flag to use the photoz pdf. If `False` (default), `sigma_c` is computed using the source redshift point estimates `z_source`. </span>
+<span class="sd">        If `True`, `sigma_c` is computed as 1/&lt;1/Sigma_crit&gt;, where the average is performed using the individual galaxy redshift pdf. </span>
+<span class="sd">        In that case, the `pzbins` and `pzpdf` should be specified. </span>
+<span class="sd">    pzbins : array-like</span>
+<span class="sd">        Bins where the source redshift pdf is defined</span>
+<span class="sd">    pzpdf : array-like</span>
+<span class="sd">        Values of the source redshift pdf</span>
 <span class="sd">    validate_input: bool</span>
 <span class="sd">        Validade each input argument</span>
 
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-<span class="sd">    We will need :math:`\gamma_\infty` and :math:`\kappa_\infty` for alternative</span>
-<span class="sd">    z_src_models using :math:`\beta_s`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    sigma_c : array_like, float</span>
+<span class="sd">        Cosmology-dependent (effective) critical surface density in units of :math:`M_\odot\ Mpc^{-2}`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">gcm</span><span class="o">.</span><span class="n">validate_input</span> <span class="o">=</span> <span class="n">validate_input</span>
     <span class="n">gcm</span><span class="o">.</span><span class="n">set_cosmo</span><span class="p">(</span><span class="n">cosmo</span><span class="p">)</span>
-    <span class="n">sigma_c</span> <span class="o">=</span> <span class="n">gcm</span><span class="o">.</span><span class="n">eval_critical_surface_density</span><span class="p">(</span><span class="n">z_cluster</span><span class="p">,</span> <span class="n">z_source</span><span class="p">)</span>
+    <span class="n">sigma_c</span> <span class="o">=</span> <span class="n">gcm</span><span class="o">.</span><span class="n">eval_critical_surface_density</span><span class="p">(</span><span class="n">z_cluster</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="n">z_source</span><span class="p">,</span> <span class="n">use_pdz</span><span class="o">=</span><span class="n">use_pdz</span><span class="p">,</span> <span class="n">pzbins</span><span class="o">=</span><span class="n">pzbins</span><span class="p">,</span> <span class="n">pzpdf</span><span class="o">=</span><span class="n">pzpdf</span><span class="p">)</span>
 
     <span class="n">gcm</span><span class="o">.</span><span class="n">validate_input</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="n">sigma_c</span></div>
-
 
 <div class="viewcode-block" id="compute_tangential_shear"><a class="viewcode-back" href="../../../api/clmm.theory.numcosmo.html#clmm.theory.compute_tangential_shear">[docs]</a><span class="k">def</span> <span class="nf">compute_tangential_shear</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">mdelta</span><span class="p">,</span> <span class="n">cdelta</span><span class="p">,</span> <span class="n">z_cluster</span><span class="p">,</span> <span class="n">z_source</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
                              <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">alpha_ein</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z_src_model</span><span class="o">=</span><span class="s1">&#39;single_plane&#39;</span><span class="p">,</span> 
@@ -607,8 +624,8 @@
 <span class="sd">            `single_plane` (default) - all sources at one redshift (if</span>
 <span class="sd">            `z_source` is a float) or known individual source galaxy redshifts</span>
 <span class="sd">            (if `z_source` is an array and `r_proj` is a float);</span>
-<span class="sd">    verbose : boolean, optional</span>
-<span class="sd">        If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL backends.</span>
+<span class="sd">    verbose : bool, optional</span>
+<span class="sd">        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends. </span>
 <span class="sd">    validate_input : bool, optional</span>
 <span class="sd">        If True (default), the types of the arguments are checked before proceeding.</span>
 
@@ -626,7 +643,6 @@
 <span class="sd">    for alternative z_src_models using :math:`\beta_s`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">z_src_model</span> <span class="o">==</span> <span class="s1">&#39;single_plane&#39;</span><span class="p">:</span>
-
         <span class="n">gcm</span><span class="o">.</span><span class="n">validate_input</span> <span class="o">=</span> <span class="n">validate_input</span>
         <span class="n">gcm</span><span class="o">.</span><span class="n">set_cosmo</span><span class="p">(</span><span class="n">cosmo</span><span class="p">)</span>
         <span class="n">gcm</span><span class="o">.</span><span class="n">set_halo_density_profile</span><span class="p">(</span>
@@ -699,8 +715,8 @@
 <span class="sd">            `single_plane` (default) - all sources at one redshift (if</span>
 <span class="sd">            `z_source` is a float) or known individual source galaxy redshifts</span>
 <span class="sd">            (if `z_source` is an array and `r_proj` is a float);</span>
-<span class="sd">    verbose : boolean, optional</span>
-<span class="sd">        If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL backends.</span>
+<span class="sd">    verbose : bool, optional</span>
+<span class="sd">        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends. </span>
 <span class="sd">    validate_input : bool, optional</span>
 <span class="sd">        If True (default), the types of the arguments are checked before proceeding.</span>
 
@@ -815,9 +831,9 @@
 
 <span class="sd">                .. math::</span>
 <span class="sd">                    \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle</span>
-
-<span class="sd">    verbose : boolean, optional</span>
-<span class="sd">        If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL backends.</span>
+<span class="sd">    </span>
+<span class="sd">    verbose : bool, optional</span>
+<span class="sd">        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends. </span>
 <span class="sd">    validate_input : bool, optional</span>
 <span class="sd">        If True (default), the types of the arguments are checked before proceeding.</span>
 
@@ -895,8 +911,8 @@
 <span class="sd">            `single_plane` (default) - all sources at one redshift (if</span>
 <span class="sd">            `z_source` is a float) or known individual source galaxy redshifts</span>
 <span class="sd">            (if `z_source` is an array and `r_proj` is a float);</span>
-<span class="sd">    verbose : boolean, optional</span>
-<span class="sd">        If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL backends.</span>
+<span class="sd">    verbose : bool, optional</span>
+<span class="sd">        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends. </span>
 <span class="sd">    validate_input : bool, optional</span>
 <span class="sd">        If True (default), the types of the arguments are checked before proceeding.</span>
 
@@ -1046,7 +1062,7 @@
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2018-2022, LSST DESC CLMM Contributors
+        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
 
     </p>
   </div>

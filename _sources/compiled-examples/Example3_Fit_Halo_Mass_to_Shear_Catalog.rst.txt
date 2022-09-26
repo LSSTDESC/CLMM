@@ -51,7 +51,7 @@ First, we import some standard packages.
 
 .. parsed-literal::
 
-    '1.2.1'
+    '1.4.0'
 
 
 
@@ -353,8 +353,7 @@ Before fitting, let’s first vizualise these models using the known true mass
 
 .. parsed-literal::
 
-    /home/aguena/git_codes/CLMM/clmm/utils.py:589: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-      warnings.warn(error_message)
+    /home/aguena/.local/lib/python3.9/site-packages/clmm-1.4.0-py3.9.egg/clmm/utils.py:633: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
 
 
 .. code:: ipython3
@@ -398,7 +397,7 @@ Before fitting, let’s first vizualise these models using the known true mass
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fab15f59d90>
+    <matplotlib.legend.Legend at 0x7f868f53b8e0>
 
 
 
@@ -513,8 +512,7 @@ order of magnitude for the mass to unity. From the associated error
 
 .. parsed-literal::
 
-    /home/aguena/git_codes/CLMM/clmm/utils.py:589: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-      warnings.warn(error_message)
+    /home/aguena/.local/lib/python3.9/site-packages/clmm-1.4.0-py3.9.egg/clmm/utils.py:633: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
 
 
 .. code:: ipython3
@@ -638,7 +636,7 @@ the naive approach, with respective best-fit masses.
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fab160ab250>
+    <matplotlib.legend.Legend at 0x7f868f0a7790>
 
 
 

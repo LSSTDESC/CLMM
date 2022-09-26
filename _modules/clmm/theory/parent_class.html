@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.theory.parent_class &mdash; CLMM 1.2.1 documentation</title>
+  <title>clmm.theory.parent_class &mdash; CLMM 1.4.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.2.1
+                1.4.0
               </div>
             
           
@@ -111,6 +111,7 @@
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.clusterensemble.html">clmm.clusterensemble module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.constants.html">clmm.constants module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.cosmology.html">clmm.cosmology package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.cosmology.ccl.html">clmm.cosmology.ccl module</a></li>
@@ -219,7 +220,7 @@
                       <span class="n">compute_magnification_bias_from_magnification</span><span class="p">,</span>
                       <span class="n">compute_rdelta</span><span class="p">,</span> <span class="n">compute_profile_mass_in_radius</span><span class="p">,</span>
                       <span class="n">convert_profile_mass_concentration</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">validate_argument</span><span class="p">,</span> <span class="n">compute_beta_s_mean</span><span class="p">,</span> <span class="n">compute_beta_s_square_mean</span>
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">validate_argument</span><span class="p">,</span> <span class="n">_integ_pzfuncs</span><span class="p">,</span> <span class="n">compute_beta_s_mean</span><span class="p">,</span> <span class="n">compute_beta_s_square_mean</span>
 
 
 <div class="viewcode-block" id="CLMModeling"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling">[docs]</a><span class="k">class</span> <span class="nc">CLMModeling</span><span class="p">:</span>
@@ -229,6 +230,10 @@
 <span class="sd">    ----------</span>
 <span class="sd">    backend: str</span>
 <span class="sd">        Name of the backend being used</span>
+<span class="sd">    mdelta: float</span>
+<span class="sd">        Mass of the profile, in units of :math:`M_\odot`</span>
+<span class="sd">    cdelta: float</span>
+<span class="sd">        Concentration of the profile</span>
 <span class="sd">    massdef : str</span>
 <span class="sd">        Profile mass definition (`mean`, `critical`, `virial` - letter case independent)</span>
 <span class="sd">    delta_mdef : int</span>
@@ -251,13 +256,12 @@
     <span class="c1"># pylint: disable=too-many-instance-attributes</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">validate_input</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">massdef</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">delta_mdef</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">halo_profile_model</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mdelta</span> <span class="o">=</span> <span class="mf">0.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cdelta</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__massdef</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__delta_mdef</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__halo_profile_model</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -268,6 +272,230 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span> <span class="o">=</span> <span class="n">validate_input</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cosmo_class</span> <span class="o">=</span> <span class="kc">None</span>
 
+
+    <span class="c1"># 1. Object properties</span>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mdelta</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_mass</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">cdelta</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_concentration</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">massdef</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__massdef</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">delta_mdef</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__delta_mdef</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">halo_profile_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__halo_profile_model</span>
+
+
+    <span class="c1"># 1.a Object properties setter</span>
+
+
+    <span class="nd">@mdelta</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">mdelta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mdelta</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_mass</span><span class="p">(</span><span class="n">mdelta</span><span class="p">)</span>
+
+    <span class="nd">@cdelta</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">cdelta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cdelta</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_concentration</span><span class="p">(</span><span class="n">cdelta</span><span class="p">)</span>
+
+    <span class="nd">@massdef</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">massdef</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">massdef</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_halo_density_profile</span><span class="p">(</span>
+            <span class="n">halo_profile_model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">halo_profile_model</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="n">massdef</span><span class="p">,</span>
+            <span class="n">delta_mdef</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">delta_mdef</span><span class="p">)</span>
+
+    <span class="nd">@delta_mdef</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">delta_mdef</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_halo_density_profile</span><span class="p">(</span>
+            <span class="n">halo_profile_model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">halo_profile_model</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">massdef</span><span class="p">,</span>
+            <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef</span><span class="p">)</span>
+
+    <span class="nd">@halo_profile_model</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">halo_profile_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_halo_density_profile</span><span class="p">(</span>
+            <span class="n">halo_profile_model</span><span class="o">=</span><span class="n">halo_profile_model</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">massdef</span><span class="p">,</span>
+            <span class="n">delta_mdef</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">delta_mdef</span><span class="p">)</span>
+
+
+    <span class="c1"># 2. Functions to be implemented by children classes</span>
+
+
+    <span class="k">def</span> <span class="nf">_get_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Gets the value of the :math:`M_\Delta`&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">_get_concentration</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Gets the value of the concentration&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">_set_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mdelta</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Actually sets the value of the :math:`M_\Delta` (without value check)&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">_set_concentration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cdelta</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Actuall sets the value of the concentration (without value check)&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">_set_halo_density_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">_set_einasto_alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Actually sets the value of the :math:`\alpha` parameter for the Einasto profile&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">_get_einasto_alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Returns the value of the :math:`\alpha` parameter for the Einasto profile, if defined&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">_eval_3d_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">_eval_surface_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">_eval_mean_surface_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">_eval_excess_surface_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+
+    <span class="c1"># 3. Functions that can be used by all subclasses</span>
+
+
+    <span class="k">def</span> <span class="nf">_eval_critical_surface_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_len</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">eval_sigma_crit</span><span class="p">(</span><span class="n">z_len</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_set_cosmo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Sets the cosmology to the internal cosmology object&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span> <span class="o">=</span> <span class="n">cosmo</span> <span class="k">if</span> <span class="n">cosmo</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo_class</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_eval_excess_surface_density_2h</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">halobias</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span><span class="n">lsteps</span><span class="o">=</span><span class="mi">500</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;&quot;eval excess surface density from the 2-halo term&quot;&quot;&quot;</span>
+        <span class="n">da</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">eval_da</span><span class="p">(</span><span class="n">z_cl</span><span class="p">)</span>
+        <span class="n">rho_m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">_get_rho_m</span><span class="p">(</span><span class="n">z_cl</span><span class="p">)</span>
+
+        <span class="n">kk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">-</span><span class="mf">5.</span><span class="p">,</span><span class="mf">5.</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span>
+        <span class="n">pk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">_eval_linear_matter_powerspectrum</span><span class="p">(</span><span class="n">kk</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
+        <span class="n">interp_pk</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">kk</span><span class="p">,</span> <span class="n">pk</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;cubic&#39;</span><span class="p">)</span>
+        <span class="n">theta</span> <span class="o">=</span> <span class="n">r_proj</span> <span class="o">/</span> <span class="n">da</span>
+
+        <span class="c1"># calculate integral, units [Mpc]**-3</span>
+        <span class="k">def</span> <span class="nf">__integrand__</span><span class="p">(</span> <span class="n">l</span> <span class="p">,</span> <span class="n">theta</span> <span class="p">):</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">l</span> <span class="o">/</span> <span class="p">((</span><span class="mi">1</span> <span class="o">+</span> <span class="n">z_cl</span><span class="p">)</span> <span class="o">*</span> <span class="n">da</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">l</span> <span class="o">*</span> <span class="n">jv</span><span class="p">(</span> <span class="mi">2</span> <span class="p">,</span> <span class="n">l</span> <span class="o">*</span> <span class="n">theta</span> <span class="p">)</span> <span class="o">*</span> <span class="n">interp_pk</span><span class="p">(</span> <span class="n">k</span> <span class="p">)</span>
+
+        <span class="n">ll</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span> <span class="mi">0</span> <span class="p">,</span> <span class="mi">6</span> <span class="p">,</span> <span class="n">lsteps</span> <span class="p">)</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span> <span class="p">[</span> <span class="n">simps</span><span class="p">(</span> <span class="n">__integrand__</span><span class="p">(</span> <span class="n">ll</span> <span class="p">,</span> <span class="n">t</span> <span class="p">)</span> <span class="p">,</span> <span class="n">ll</span> <span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">theta</span> <span class="p">]</span> <span class="p">)</span>
+        <span class="k">return</span> <span class="n">halobias</span> <span class="o">*</span> <span class="n">val</span> <span class="o">*</span> <span class="n">rho_m</span> <span class="o">/</span> <span class="p">(</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>  <span class="o">*</span> <span class="p">(</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">z_cl</span> <span class="p">)</span><span class="o">**</span><span class="mi">3</span> <span class="o">*</span> <span class="n">da</span><span class="o">**</span><span class="mi">2</span> <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_eval_surface_density_2h</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">halobias</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">lsteps</span><span class="o">=</span><span class="mi">500</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;&quot;eval surface density from the 2-halo term&quot;&quot;&quot;</span>
+        <span class="n">da</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">eval_da</span><span class="p">(</span><span class="n">z_cl</span><span class="p">)</span>
+        <span class="n">rho_m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">_get_rho_m</span><span class="p">(</span><span class="n">z_cl</span><span class="p">)</span>
+
+        <span class="n">kk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">-</span><span class="mf">5.</span><span class="p">,</span><span class="mf">5.</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span>
+        <span class="n">pk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">_eval_linear_matter_powerspectrum</span><span class="p">(</span><span class="n">kk</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
+        <span class="n">interp_pk</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">kk</span><span class="p">,</span> <span class="n">pk</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;cubic&#39;</span><span class="p">)</span>
+        <span class="n">theta</span> <span class="o">=</span> <span class="n">r_proj</span> <span class="o">/</span> <span class="n">da</span>
+
+        <span class="c1"># calculate integral, units [Mpc]**-3</span>
+        <span class="k">def</span> <span class="nf">__integrand__</span><span class="p">(</span> <span class="n">l</span> <span class="p">,</span> <span class="n">theta</span> <span class="p">):</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">l</span> <span class="o">/</span> <span class="p">((</span><span class="mi">1</span> <span class="o">+</span> <span class="n">z_cl</span><span class="p">)</span> <span class="o">*</span> <span class="n">da</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">l</span> <span class="o">*</span> <span class="n">jv</span><span class="p">(</span> <span class="mi">0</span> <span class="p">,</span> <span class="n">l</span> <span class="o">*</span> <span class="n">theta</span> <span class="p">)</span> <span class="o">*</span> <span class="n">interp_pk</span><span class="p">(</span> <span class="n">k</span> <span class="p">)</span>
+
+        <span class="n">ll</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span> <span class="mi">0</span> <span class="p">,</span> <span class="mi">6</span> <span class="p">,</span> <span class="n">lsteps</span> <span class="p">)</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span> <span class="p">[</span> <span class="n">simps</span><span class="p">(</span> <span class="n">__integrand__</span><span class="p">(</span> <span class="n">ll</span> <span class="p">,</span> <span class="n">t</span> <span class="p">)</span> <span class="p">,</span> <span class="n">ll</span> <span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">theta</span> <span class="p">]</span> <span class="p">)</span>
+        <span class="k">return</span> <span class="n">halobias</span> <span class="o">*</span> <span class="n">val</span> <span class="o">*</span> <span class="n">rho_m</span> <span class="o">/</span> <span class="p">(</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>  <span class="o">*</span> <span class="p">(</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">z_cl</span> <span class="p">)</span><span class="o">**</span><span class="mi">3</span> <span class="o">*</span> <span class="n">da</span><span class="o">**</span><span class="mi">2</span> <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_eval_tangential_shear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
+        <span class="n">delta_sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_excess_surface_density</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
+        <span class="n">sigma_c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_critical_surface_density</span><span class="p">(</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">delta_sigma</span><span class="o">/</span><span class="n">sigma_c</span>
+
+    <span class="k">def</span> <span class="nf">_eval_convergence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_surface_density</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="n">sigma_c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_critical_surface_density</span><span class="p">(</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sigma</span><span class="o">/</span><span class="n">sigma_c</span>
+
+    <span class="k">def</span> <span class="nf">_eval_reduced_tangential_shear_sp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
+        <span class="n">kappa</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_convergence</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
+        <span class="n">gamma_t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_tangential_shear</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">compute_reduced_shear_from_convergence</span><span class="p">(</span><span class="n">gamma_t</span><span class="p">,</span> <span class="n">kappa</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_eval_magnification</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
+        <span class="n">kappa</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_convergence</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
+        <span class="n">gamma_t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_tangential_shear</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mf">1.</span><span class="o">/</span><span class="p">((</span><span class="mi">1</span><span class="o">-</span><span class="n">kappa</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">-</span><span class="nb">abs</span><span class="p">(</span><span class="n">gamma_t</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_eval_magnification_bias</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
+        <span class="n">magnification</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_magnification</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">compute_magnification_bias_from_magnification</span><span class="p">(</span><span class="n">magnification</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_eval_rdelta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">compute_rdelta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mdelta</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">massdef</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta_mdef</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_eval_mass_in_radius</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_einasto_alpha</span><span class="p">(</span><span class="n">z_cl</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">halo_profile_model</span><span class="o">==</span><span class="s1">&#39;einasto&#39;</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">compute_profile_mass_in_radius</span><span class="p">(</span>
+            <span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mdelta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cdelta</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">massdef</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta_mdef</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">halo_profile_model</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_convert_mass_concentration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                    <span class="n">halo_profile_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">alpha1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_einasto_alpha</span><span class="p">(</span><span class="n">z_cl</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">halo_profile_model</span><span class="o">==</span><span class="s1">&#39;einasto&#39;</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">convert_profile_mass_concentration</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mdelta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cdelta</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="p">,</span>
+            <span class="n">massdef</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">massdef</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">delta_mdef</span><span class="p">,</span>
+            <span class="n">halo_profile_model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">halo_profile_model</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha1</span><span class="p">,</span>
+            <span class="n">massdef2</span><span class="o">=</span><span class="n">massdef</span><span class="p">,</span> <span class="n">delta_mdef2</span><span class="o">=</span><span class="n">delta_mdef</span><span class="p">,</span>
+            <span class="n">halo_profile_model2</span><span class="o">=</span><span class="n">halo_profile_model</span><span class="p">,</span> <span class="n">alpha2</span><span class="o">=</span><span class="n">alpha</span><span class="p">)</span>
+
+
+    <span class="c1"># 4. Wrapper functions for input validation</span>
+
+
+<div class="viewcode-block" id="CLMModeling.set_mass"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.set_mass">[docs]</a>    <span class="k">def</span> <span class="nf">set_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mdelta</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Sets the value of the :math:`M_\Delta`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        mdelta : float</span>
+<span class="sd">            Galaxy cluster mass :math:`M_\Delta` in units of :math:`M_\odot`</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">            This is equivalent to doing self.mdelta = mdelta</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">:</span>
+            <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;mdelta&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_mass</span><span class="p">(</span><span class="n">mdelta</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CLMModeling.set_concentration"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.set_concentration">[docs]</a>    <span class="k">def</span> <span class="nf">set_concentration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cdelta</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Sets the concentration</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cdelta: float</span>
+<span class="sd">            Concentration</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">            This is equivalent to doing self.cdelta = cdelta</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">:</span>
+            <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;cdelta&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_concentration</span><span class="p">(</span><span class="n">cdelta</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CLMModeling.set_cosmo"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.set_cosmo">[docs]</a>    <span class="k">def</span> <span class="nf">set_cosmo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Sets the cosmology to the internal cosmology object</span>
@@ -283,10 +511,6 @@
             <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;cosmo&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo_class</span><span class="p">,</span> <span class="n">none_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_cosmo</span><span class="p">(</span><span class="n">cosmo</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">validate_input</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span></div>
-
-    <span class="k">def</span> <span class="nf">_set_cosmo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Sets the cosmology to the internal cosmology object&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span> <span class="o">=</span> <span class="n">cosmo</span> <span class="k">if</span> <span class="n">cosmo</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo_class</span><span class="p">()</span>
 
 <div class="viewcode-block" id="CLMModeling.set_halo_density_profile"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.set_halo_density_profile">[docs]</a>    <span class="k">def</span> <span class="nf">set_halo_density_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Sets the definitions for the halo profile</span>
@@ -312,31 +536,14 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="n">halo_profile_model</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdpm_dict</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;Halo density profile model </span><span class="si">{</span><span class="n">halo_profile_model</span><span class="si">}</span><span class="s2"> not currently supported&quot;</span><span class="p">)</span>
+        <span class="c1"># set the profile</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_halo_density_profile</span><span class="p">(</span><span class="n">halo_profile_model</span><span class="o">=</span><span class="n">halo_profile_model</span><span class="p">,</span>
                                        <span class="n">massdef</span><span class="o">=</span><span class="n">massdef</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">halo_profile_model</span> <span class="o">=</span> <span class="n">halo_profile_model</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">massdef</span> <span class="o">=</span> <span class="n">massdef</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">delta_mdef</span> <span class="o">=</span> <span class="n">delta_mdef</span></div>
 
-    <span class="k">def</span> <span class="nf">_set_halo_density_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-
-<div class="viewcode-block" id="CLMModeling.set_mass"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.set_mass">[docs]</a>    <span class="k">def</span> <span class="nf">set_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mdelta</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Sets the value of the :math:`M_\Delta`</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        mdelta : float</span>
-<span class="sd">            Galaxy cluster mass :math:`M_\Delta` in units of :math:`M_\odot`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">:</span>
-            <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;mdelta&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set_mass</span><span class="p">(</span><span class="n">mdelta</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mdelta</span> <span class="o">=</span> <span class="n">mdelta</span></div>
-
-    <span class="k">def</span> <span class="nf">_set_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mdelta</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Actually sets the value of the :math:`M_\Delta` (without value check)&quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="c1"># set internal quantities</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__halo_profile_model</span> <span class="o">=</span> <span class="n">halo_profile_model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__massdef</span> <span class="o">=</span> <span class="n">massdef</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__delta_mdef</span> <span class="o">=</span> <span class="n">delta_mdef</span></div>
 
 <div class="viewcode-block" id="CLMModeling.set_einasto_alpha"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.set_einasto_alpha">[docs]</a>    <span class="k">def</span> <span class="nf">set_einasto_alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Sets the value of the :math:`\alpha` parameter for the Einasto profile</span>
@@ -352,10 +559,6 @@
                 <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_einasto_alpha</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_set_einasto_alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Actually sets the value of the :math:`\alpha` parameter for the Einasto profile&quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-
 <div class="viewcode-block" id="CLMModeling.get_einasto_alpha"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.get_einasto_alpha">[docs]</a>    <span class="k">def</span> <span class="nf">get_einasto_alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Returns the value of the :math:`\alpha` parameter for the Einasto profile, if defined</span>
 
@@ -368,27 +571,6 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Wrong profile model. Current profile = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">halo_profile_model</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_einasto_alpha</span><span class="p">(</span><span class="n">z_cl</span><span class="p">)</span></div>
-
-    <span class="k">def</span> <span class="nf">_get_einasto_alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Returns the value of the :math:`\alpha` parameter for the Einasto profile, if defined&quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-
-<div class="viewcode-block" id="CLMModeling.set_concentration"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.set_concentration">[docs]</a>    <span class="k">def</span> <span class="nf">set_concentration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cdelta</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Sets the concentration</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        cdelta: float</span>
-<span class="sd">            Concentration</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">:</span>
-            <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;cdelta&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set_concentration</span><span class="p">(</span><span class="n">cdelta</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cdelta</span> <span class="o">=</span> <span class="n">cdelta</span></div>
-
-    <span class="k">def</span> <span class="nf">_set_concentration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cdelta</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Actuall sets the value of the concentration (without value check)&quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
 <div class="viewcode-block" id="CLMModeling.eval_3d_density"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_3d_density">[docs]</a>    <span class="k">def</span> <span class="nf">eval_3d_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Retrieve the 3d density :math:`\rho(r)`.</span>
@@ -414,31 +596,63 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_3d_density</span><span class="p">(</span><span class="n">r3d</span><span class="o">=</span><span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_eval_3d_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+<div class="viewcode-block" id="CLMModeling.eval_critical_surface_density"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_critical_surface_density">[docs]</a>    <span class="k">def</span> <span class="nf">eval_critical_surface_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_len</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_pdz</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pzbins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pzpdf</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes either</span>
 
-<div class="viewcode-block" id="CLMModeling.eval_critical_surface_density"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_critical_surface_density">[docs]</a>    <span class="k">def</span> <span class="nf">eval_critical_surface_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_len</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes the critical surface density</span>
+<span class="sd">        the critical surface density if `use_pdz=False`</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            \Sigma_{\rm crit} = \frac{c^2}{4\pi G} \frac{D_s}{D_LD_{LS}}</span>
+
+<span class="sd">        or</span>
+
+<span class="sd">        the &#39;effective critical surface density&#39; if `use_pdz=True`</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            \langle \Sigma_{\rm crit}^{-1}\rangle^{-1} = \left(\int \frac{1}{\Sigma_{\rm crit}(z)} p(z) dz\right)^{-1}</span>
+
+<span class="sd">        where :math:`p(z)` is the source photoz probability density function.</span>
+<span class="sd">        This comes from the maximum likelihood estimator for evaluating a :math:`\Delta\Sigma` profile.</span>
+
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        z_len : float</span>
-<span class="sd">            Lens redshift</span>
+<span class="sd">            Galaxy cluster redshift</span>
 <span class="sd">        z_src : array_like, float</span>
 <span class="sd">            Background source galaxy redshift(s)</span>
+<span class="sd">        use_pdz : bool</span>
+<span class="sd">            Flag to use the photoz pdf. If `False` (default), `sigma_c` is computed using the source redshift point estimates `z_source`.</span>
+<span class="sd">            If `True`, `sigma_c` is computed as 1/&lt;1/Sigma_crit&gt;, where the average is performed using</span>
+<span class="sd">            the individual galaxy redshift pdf. In that case, the `pzbins` and `pzpdf` should be specified.</span>
+
+<span class="sd">        pzbins : array-like</span>
+<span class="sd">            Bins where the source redshift pdf is defined</span>
+<span class="sd">        pzpdf : array-like</span>
+<span class="sd">            Values of the source redshift pdf</span>
+<span class="sd">        validate_input: bool</span>
+<span class="sd">            Validade each input argument</span>
+
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        float</span>
-<span class="sd">            Cosmology-dependent critical surface density in units of :math:`M_\odot\ Mpc^{-2}`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        sigma_c : array_like, float</span>
+<span class="sd">            Cosmology-dependent (effective) critical surface density in units of :math:`M_\odot\ Mpc^{-2}`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">:</span>
             <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;z_len&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-            <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;z_src&#39;</span><span class="p">,</span> <span class="s1">&#39;float_array&#39;</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_critical_surface_density</span><span class="p">(</span><span class="n">z_len</span><span class="o">=</span><span class="n">z_len</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="n">z_src</span><span class="p">)</span></div>
+            <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;z_src&#39;</span><span class="p">,</span> <span class="s1">&#39;float_array&#39;</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">none_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_eval_critical_surface_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_len</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">eval_sigma_crit</span><span class="p">(</span><span class="n">z_len</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">use_pdz</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_critical_surface_density</span><span class="p">(</span><span class="n">z_len</span><span class="o">=</span><span class="n">z_len</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="n">z_src</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">pzbins</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">pzpdf</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Redshift bins and source redshift pdf must be provided when use_pdz is True&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">def</span> <span class="nf">inv_sigmac</span><span class="p">(</span><span class="n">redshift</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="mf">1.</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_eval_critical_surface_density</span><span class="p">(</span><span class="n">z_len</span><span class="o">=</span><span class="n">z_len</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="n">redshift</span><span class="p">)</span>        
+                <span class="k">return</span> <span class="mf">1.</span><span class="o">/</span><span class="n">_integ_pzfuncs</span><span class="p">(</span><span class="n">pzpdf</span><span class="p">,</span> <span class="n">pzbins</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="n">inv_sigmac</span><span class="p">,</span> <span class="n">is_unique_pzbins</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">pzbins</span><span class="o">==</span><span class="n">pzbins</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span></div>
 
 <div class="viewcode-block" id="CLMModeling.eval_surface_density"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_surface_density">[docs]</a>    <span class="k">def</span> <span class="nf">eval_surface_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Computes the surface mass density</span>
@@ -464,10 +678,6 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_surface_density</span><span class="p">(</span><span class="n">r_proj</span><span class="o">=</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">)</span></div>
 
-
-    <span class="k">def</span> <span class="nf">_eval_surface_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-
 <div class="viewcode-block" id="CLMModeling.eval_mean_surface_density"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_mean_surface_density">[docs]</a>    <span class="k">def</span> <span class="nf">eval_mean_surface_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Computes the mean value of surface density inside radius r_proj</span>
 
@@ -492,9 +702,6 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_mean_surface_density</span><span class="p">(</span><span class="n">r_proj</span><span class="o">=</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_eval_mean_surface_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-
 <div class="viewcode-block" id="CLMModeling.eval_excess_surface_density"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_excess_surface_density">[docs]</a>    <span class="k">def</span> <span class="nf">eval_excess_surface_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Computes the excess surface density</span>
 
@@ -518,9 +725,6 @@
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Einasto alpha = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_einasto_alpha</span><span class="p">(</span><span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_excess_surface_density</span><span class="p">(</span><span class="n">r_proj</span><span class="o">=</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">)</span></div>
-
-    <span class="k">def</span> <span class="nf">_eval_excess_surface_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
 <div class="viewcode-block" id="CLMModeling.eval_excess_surface_density_2h"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_excess_surface_density_2h">[docs]</a>    <span class="k">def</span> <span class="nf">eval_excess_surface_density_2h</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">halobias</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">lsteps</span><span class="o">=</span><span class="mi">500</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Computes the 2-halo term excess surface density (CCL backend only)</span>
@@ -548,32 +752,12 @@
             <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;lsteps&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;halobias&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
-
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;ccl&#39;</span><span class="p">,</span> <span class="s1">&#39;nc&#39;</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;2-halo term not currently supported with the </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="si">}</span><span class="s2"> backend. &quot;</span>
                 <span class="s2">&quot;Use the CCL or NumCosmo backend instead&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_excess_surface_density_2h</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">halobias</span><span class="o">=</span><span class="n">halobias</span><span class="p">,</span> <span class="n">lsteps</span><span class="o">=</span><span class="n">lsteps</span><span class="p">)</span></div>
-
-    <span class="k">def</span> <span class="nf">_eval_excess_surface_density_2h</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">halobias</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span><span class="n">lsteps</span><span class="o">=</span><span class="mi">500</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;&quot;eval excess surface density from the 2-halo term&quot;&quot;&quot;</span>
-        <span class="n">da</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">eval_da</span><span class="p">(</span><span class="n">z_cl</span><span class="p">)</span>
-        <span class="n">rho_m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">_get_rho_m</span><span class="p">(</span><span class="n">z_cl</span><span class="p">)</span>
-
-        <span class="n">kk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">-</span><span class="mf">5.</span><span class="p">,</span><span class="mf">5.</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span>
-        <span class="n">pk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">_eval_linear_matter_powerspectrum</span><span class="p">(</span><span class="n">kk</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
-        <span class="n">interp_pk</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">kk</span><span class="p">,</span> <span class="n">pk</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;cubic&#39;</span><span class="p">)</span>
-        <span class="n">theta</span> <span class="o">=</span> <span class="n">r_proj</span> <span class="o">/</span> <span class="n">da</span>
-
-        <span class="c1"># calculate integral, units [Mpc]**-3</span>
-        <span class="k">def</span> <span class="nf">__integrand__</span><span class="p">(</span> <span class="n">l</span> <span class="p">,</span> <span class="n">theta</span> <span class="p">):</span>
-            <span class="n">k</span> <span class="o">=</span> <span class="n">l</span> <span class="o">/</span> <span class="p">((</span><span class="mi">1</span> <span class="o">+</span> <span class="n">z_cl</span><span class="p">)</span> <span class="o">*</span> <span class="n">da</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">l</span> <span class="o">*</span> <span class="n">jv</span><span class="p">(</span> <span class="mi">2</span> <span class="p">,</span> <span class="n">l</span> <span class="o">*</span> <span class="n">theta</span> <span class="p">)</span> <span class="o">*</span> <span class="n">interp_pk</span><span class="p">(</span> <span class="n">k</span> <span class="p">)</span>
-
-        <span class="n">ll</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span> <span class="mi">0</span> <span class="p">,</span> <span class="mi">6</span> <span class="p">,</span> <span class="n">lsteps</span> <span class="p">)</span>
-        <span class="n">val</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span> <span class="p">[</span> <span class="n">simps</span><span class="p">(</span> <span class="n">__integrand__</span><span class="p">(</span> <span class="n">ll</span> <span class="p">,</span> <span class="n">t</span> <span class="p">)</span> <span class="p">,</span> <span class="n">ll</span> <span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">theta</span> <span class="p">]</span> <span class="p">)</span>
-        <span class="k">return</span> <span class="n">halobias</span> <span class="o">*</span> <span class="n">val</span> <span class="o">*</span> <span class="n">rho_m</span> <span class="o">/</span> <span class="p">(</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>  <span class="o">*</span> <span class="p">(</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">z_cl</span> <span class="p">)</span><span class="o">**</span><span class="mi">3</span> <span class="o">*</span> <span class="n">da</span><span class="o">**</span><span class="mi">2</span> <span class="p">)</span>
 
 <div class="viewcode-block" id="CLMModeling.eval_surface_density_2h"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_surface_density_2h">[docs]</a>    <span class="k">def</span> <span class="nf">eval_surface_density_2h</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">halobias</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">lsteps</span><span class="o">=</span><span class="mi">500</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Computes the 2-halo term surface density (CCL backend only)</span>
@@ -608,25 +792,6 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_surface_density_2h</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">halobias</span><span class="o">=</span><span class="n">halobias</span><span class="p">,</span> <span class="n">lsteps</span><span class="o">=</span><span class="n">lsteps</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_eval_surface_density_2h</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">halobias</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">lsteps</span><span class="o">=</span><span class="mi">500</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;&quot;eval surface density from the 2-halo term&quot;&quot;&quot;</span>
-        <span class="n">da</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">eval_da</span><span class="p">(</span><span class="n">z_cl</span><span class="p">)</span>
-        <span class="n">rho_m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">_get_rho_m</span><span class="p">(</span><span class="n">z_cl</span><span class="p">)</span>
-
-        <span class="n">kk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">-</span><span class="mf">5.</span><span class="p">,</span><span class="mf">5.</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span>
-        <span class="n">pk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">_eval_linear_matter_powerspectrum</span><span class="p">(</span><span class="n">kk</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
-        <span class="n">interp_pk</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">kk</span><span class="p">,</span> <span class="n">pk</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;cubic&#39;</span><span class="p">)</span>
-        <span class="n">theta</span> <span class="o">=</span> <span class="n">r_proj</span> <span class="o">/</span> <span class="n">da</span>
-
-        <span class="c1"># calculate integral, units [Mpc]**-3</span>
-        <span class="k">def</span> <span class="nf">__integrand__</span><span class="p">(</span> <span class="n">l</span> <span class="p">,</span> <span class="n">theta</span> <span class="p">):</span>
-            <span class="n">k</span> <span class="o">=</span> <span class="n">l</span> <span class="o">/</span> <span class="p">((</span><span class="mi">1</span> <span class="o">+</span> <span class="n">z_cl</span><span class="p">)</span> <span class="o">*</span> <span class="n">da</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">l</span> <span class="o">*</span> <span class="n">jv</span><span class="p">(</span> <span class="mi">0</span> <span class="p">,</span> <span class="n">l</span> <span class="o">*</span> <span class="n">theta</span> <span class="p">)</span> <span class="o">*</span> <span class="n">interp_pk</span><span class="p">(</span> <span class="n">k</span> <span class="p">)</span>
-
-        <span class="n">ll</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span> <span class="mi">0</span> <span class="p">,</span> <span class="mi">6</span> <span class="p">,</span> <span class="n">lsteps</span> <span class="p">)</span>
-        <span class="n">val</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span> <span class="p">[</span> <span class="n">simps</span><span class="p">(</span> <span class="n">__integrand__</span><span class="p">(</span> <span class="n">ll</span> <span class="p">,</span> <span class="n">t</span> <span class="p">)</span> <span class="p">,</span> <span class="n">ll</span> <span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">theta</span> <span class="p">]</span> <span class="p">)</span>
-        <span class="k">return</span> <span class="n">halobias</span> <span class="o">*</span> <span class="n">val</span> <span class="o">*</span> <span class="n">rho_m</span> <span class="o">/</span> <span class="p">(</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>  <span class="o">*</span> <span class="p">(</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">z_cl</span> <span class="p">)</span><span class="o">**</span><span class="mi">3</span> <span class="o">*</span> <span class="n">da</span><span class="o">**</span><span class="mi">2</span> <span class="p">)</span>
-
 <div class="viewcode-block" id="CLMModeling.eval_tangential_shear"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_tangential_shear">[docs]</a>    <span class="k">def</span> <span class="nf">eval_tangential_shear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes the tangential shear</span>
 
@@ -653,11 +818,6 @@
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Einasto alpha = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_einasto_alpha</span><span class="p">(</span><span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_tangential_shear</span><span class="p">(</span><span class="n">r_proj</span><span class="o">=</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="n">z_src</span><span class="p">)</span></div>
-
-    <span class="k">def</span> <span class="nf">_eval_tangential_shear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
-        <span class="n">delta_sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_excess_surface_density</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
-        <span class="n">sigma_c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_critical_surface_density</span><span class="p">(</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">delta_sigma</span><span class="o">/</span><span class="n">sigma_c</span>
 
 <div class="viewcode-block" id="CLMModeling.eval_convergence"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_convergence">[docs]</a>    <span class="k">def</span> <span class="nf">eval_convergence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes the mass convergence</span>
@@ -693,11 +853,6 @@
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Einasto alpha = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_einasto_alpha</span><span class="p">(</span><span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_convergence</span><span class="p">(</span><span class="n">r_proj</span><span class="o">=</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="n">z_src</span><span class="p">)</span></div>
-
-    <span class="k">def</span> <span class="nf">_eval_convergence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="n">sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_surface_density</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
-        <span class="n">sigma_c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_critical_surface_density</span><span class="p">(</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">sigma</span><span class="o">/</span><span class="n">sigma_c</span>
 
 <div class="viewcode-block" id="CLMModeling.eval_reduced_tangential_shear"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_reduced_tangential_shear">[docs]</a>    <span class="k">def</span> <span class="nf">eval_reduced_tangential_shear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_src_model</span><span class="o">=</span><span class="s1">&#39;single_plane&#39;</span><span class="p">,</span>
                                       <span class="n">beta_s_mean</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">beta_s_square_mean</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z_distrib_func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -777,11 +932,6 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsupported z_src_model&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">gt</span></div>
 
-    <span class="k">def</span> <span class="nf">_eval_reduced_tangential_shear_sp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
-        <span class="n">kappa</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_convergence</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
-        <span class="n">gamma_t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_tangential_shear</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">compute_reduced_shear_from_convergence</span><span class="p">(</span><span class="n">gamma_t</span><span class="p">,</span> <span class="n">kappa</span><span class="p">)</span>
-
 <div class="viewcode-block" id="CLMModeling.eval_magnification"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_magnification">[docs]</a>    <span class="k">def</span> <span class="nf">eval_magnification</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes the magnification</span>
 
@@ -818,11 +968,6 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_magnification</span><span class="p">(</span><span class="n">r_proj</span><span class="o">=</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="n">z_src</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_eval_magnification</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
-        <span class="n">kappa</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_convergence</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
-        <span class="n">gamma_t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_tangential_shear</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
-        <span class="k">return</span> <span class="mf">1.</span><span class="o">/</span><span class="p">((</span><span class="mi">1</span><span class="o">-</span><span class="n">kappa</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">-</span><span class="nb">abs</span><span class="p">(</span><span class="n">gamma_t</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-
 <div class="viewcode-block" id="CLMModeling.eval_magnification_bias"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_magnification_bias">[docs]</a>    <span class="k">def</span> <span class="nf">eval_magnification_bias</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes the magnification bias</span>
 
@@ -858,10 +1003,6 @@
             <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="s1">&#39;float_array&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_magnification_bias</span><span class="p">(</span><span class="n">r_proj</span><span class="o">=</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="n">z_src</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_eval_magnification_bias</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
-        <span class="n">magnification</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_magnification</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">compute_magnification_bias_from_magnification</span><span class="p">(</span><span class="n">magnification</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
-
 <div class="viewcode-block" id="CLMModeling.eval_rdelta"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_rdelta">[docs]</a>    <span class="k">def</span> <span class="nf">eval_rdelta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Retrieves the radius for mdelta</span>
 
@@ -881,9 +1022,6 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">:</span>
             <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;z_cl&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_rdelta</span><span class="p">(</span><span class="n">z_cl</span><span class="p">)</span></div>
-
-    <span class="k">def</span> <span class="nf">_eval_rdelta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">compute_rdelta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mdelta</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">massdef</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta_mdef</span><span class="p">)</span>
 
 <div class="viewcode-block" id="CLMModeling.eval_mass_in_radius"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_mass_in_radius">[docs]</a>    <span class="k">def</span> <span class="nf">eval_mass_in_radius</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes the mass inside a given radius of the profile.</span>
@@ -930,12 +1068,6 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_mass_in_radius</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_eval_mass_in_radius</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
-        <span class="n">alpha</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_einasto_alpha</span><span class="p">(</span><span class="n">z_cl</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">halo_profile_model</span><span class="o">==</span><span class="s1">&#39;einasto&#39;</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="k">return</span> <span class="n">compute_profile_mass_in_radius</span><span class="p">(</span>
-            <span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mdelta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cdelta</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">massdef</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta_mdef</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">halo_profile_model</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
-
 <div class="viewcode-block" id="CLMModeling.convert_mass_concentration"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.convert_mass_concentration">[docs]</a>    <span class="k">def</span> <span class="nf">convert_mass_concentration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                    <span class="n">halo_profile_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Converts current mass and concentration to the values for a different model.</span>
@@ -981,17 +1113,7 @@
                  <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_einasto_alpha</span><span class="p">(</span><span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">)</span> <span class="k">if</span> <span class="n">alpha</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">alpha</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert_mass_concentration</span><span class="p">(</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">massdef</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="p">,</span>
-                                                <span class="n">halo_profile_model</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span></div>
-
-    <span class="k">def</span> <span class="nf">_convert_mass_concentration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                                    <span class="n">halo_profile_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="n">alpha1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_einasto_alpha</span><span class="p">(</span><span class="n">z_cl</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">halo_profile_model</span><span class="o">==</span><span class="s1">&#39;einasto&#39;</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="k">return</span> <span class="n">convert_profile_mass_concentration</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">mdelta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cdelta</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="p">,</span>
-            <span class="n">massdef</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">massdef</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">delta_mdef</span><span class="p">,</span>
-            <span class="n">halo_profile_model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">halo_profile_model</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha1</span><span class="p">,</span>
-            <span class="n">massdef2</span><span class="o">=</span><span class="n">massdef</span><span class="p">,</span> <span class="n">delta_mdef2</span><span class="o">=</span><span class="n">delta_mdef</span><span class="p">,</span>
-            <span class="n">halo_profile_model2</span><span class="o">=</span><span class="n">halo_profile_model</span><span class="p">,</span> <span class="n">alpha2</span><span class="o">=</span><span class="n">alpha</span><span class="p">)</span></div>
+                                                <span class="n">halo_profile_model</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
@@ -1005,7 +1127,7 @@
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2018-2022, LSST DESC CLMM Contributors
+        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
 
     </p>
   </div>

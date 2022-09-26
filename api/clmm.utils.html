@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.utils module &mdash; CLMM 1.2.1 documentation</title>
+  <title>clmm.utils module &mdash; CLMM 1.4.0 documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                1.2.1
+                1.4.0
               </div>
             
           
@@ -115,6 +115,7 @@
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="clmm.clusterensemble.html">clmm.clusterensemble module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.constants.html">clmm.constants module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.cosmology.html">clmm.cosmology package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="clmm.cosmology.ccl.html">clmm.cosmology.ccl module</a></li>
@@ -455,7 +456,7 @@ true}=\epsilon^{\rm true}_1+i\epsilon^{\rm true}_2\)</span></p>
 <dd class="field-even"><p><strong>boost_factors</strong></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>array_like</p>
+<dd class="field-odd"><p>numpy.ndarray</p>
 </dd>
 </dl>
 </dd></dl>
@@ -477,7 +478,7 @@ true}=\epsilon^{\rm true}_1+i\epsilon^{\rm true}_2\)</span></p>
 <dd class="field-even"><p><strong>boost_factors</strong></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>array_like</p>
+<dd class="field-odd"><p>numpy.ndarray</p>
 </dd>
 </dl>
 </dd></dl>
@@ -610,19 +611,18 @@ convert between physical and angular units</p></li>
 <dd class="field-even"><p><strong>sigma_corrected</strong> – correted radial profile</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>array_like</p>
+<dd class="field-odd"><p>numpy.ndarray</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="clmm.utils.correct_sigma_with_boost_values">
-<span class="sig-prename descclassname"><span class="pre">clmm.utils.</span></span><span class="sig-name descname"><span class="pre">correct_sigma_with_boost_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rvals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boost_factors</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#correct_sigma_with_boost_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.correct_sigma_with_boost_values" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given a boost model and sigma profile, compute corrected sigma</p>
+<span class="sig-prename descclassname"><span class="pre">clmm.utils.</span></span><span class="sig-name descname"><span class="pre">correct_sigma_with_boost_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sigma_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boost_factors</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#correct_sigma_with_boost_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.correct_sigma_with_boost_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a list of boost values and sigma profile, compute corrected sigma</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>rvals</strong> (<em>array_like</em>) – radii</p></li>
 <li><p><strong>sigma_vals</strong> (<em>array_like</em>) – uncorrected sigma with cluster member dilution</p></li>
 <li><p><strong>boost_factors</strong> (<em>array_like</em>) – Boost values pre-computed</p></li>
 </ul>
@@ -631,7 +631,7 @@ convert between physical and angular units</p></li>
 <dd class="field-even"><p><strong>sigma_corrected</strong> – correted radial profile</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>array_like</p>
+<dd class="field-odd"><p>numpy.ndarray</p>
 </dd>
 </dl>
 </dd></dl>
@@ -708,7 +708,7 @@ convert between physical and angular units</p></li>
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2018-2022, LSST DESC CLMM Contributors
+        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
 
     </p>
   </div>

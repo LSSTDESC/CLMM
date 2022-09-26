@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Index &mdash; CLMM 1.2.1 documentation</title>
+  <title>Index &mdash; CLMM 1.4.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.2.1
+                1.4.0
               </div>
             
           
@@ -111,6 +111,7 @@
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.clusterensemble.html">clmm.clusterensemble module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/clmm.constants.html">clmm.constants module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/clmm.cosmology.html">clmm.cosmology package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="api/clmm.cosmology.ccl.html">clmm.cosmology.ccl module</a></li>
@@ -211,8 +212,10 @@
  <a href="#A"><strong>A</strong></a>
  | <a href="#B"><strong>B</strong></a>
  | <a href="#C"><strong>C</strong></a>
+ | <a href="#D"><strong>D</strong></a>
  | <a href="#E"><strong>E</strong></a>
  | <a href="#G"><strong>G</strong></a>
+ | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
@@ -257,10 +260,19 @@
         <li><a href="api/clmm.theory.ccl.html#clmm.theory.ccl.CCLCLMModeling">(class in clmm.theory.ccl)</a>
 </li>
       </ul></li>
+      <li><a href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.cdelta">cdelta (clmm.theory.parent_class.CLMModeling property)</a>
+</li>
       <li><a href="api/clmm.constants.html#clmm.constants.Constants.CLIGHT">CLIGHT (clmm.constants.Constants attribute)</a>
 </li>
       <li><a href="api/clmm.constants.html#clmm.constants.Constants.CLIGHT_KMS">CLIGHT_KMS (clmm.constants.Constants attribute)</a>
 </li>
+      <li>
+    clmm.clusterensemble
+
+      <ul>
+        <li><a href="api/clmm.clusterensemble.html#module-clmm.clusterensemble">module</a>
+</li>
+      </ul></li>
       <li>
     clmm.constants
 
@@ -419,6 +431,8 @@
 </li>
       <li><a href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling">CLMModeling (class in clmm.theory.parent_class)</a>
 </li>
+      <li><a href="api/clmm.clusterensemble.html#clmm.clusterensemble.ClusterEnsemble">ClusterEnsemble (class in clmm.clusterensemble)</a>
+</li>
       <li><a href="api/clmm.theory.html#clmm.theory.compute_3d_density">compute_3d_density() (in module clmm.theory)</a>
 
       <ul>
@@ -446,6 +460,8 @@
       <li><a href="api/clmm.utils.html#clmm.utils.compute_beta_s_mean">compute_beta_s_mean() (in module clmm.utils)</a>
 </li>
       <li><a href="api/clmm.utils.html#clmm.utils.compute_beta_s_square_mean">compute_beta_s_square_mean() (in module clmm.utils)</a>
+</li>
+      <li><a href="api/clmm.clusterensemble.html#clmm.clusterensemble.ClusterEnsemble.compute_bootstrap_covariance">compute_bootstrap_covariance() (clmm.clusterensemble.ClusterEnsemble method)</a>
 </li>
       <li><a href="api/clmm.theory.html#clmm.theory.compute_convergence">compute_convergence() (in module clmm.theory)</a>
 
@@ -505,6 +521,8 @@
         <li><a href="api/clmm.dataops.html#clmm.dataops.compute_galaxy_weights">(in module clmm.dataops)</a>
 </li>
       </ul></li>
+      <li><a href="api/clmm.clusterensemble.html#clmm.clusterensemble.ClusterEnsemble.compute_jackknife_covariance">compute_jackknife_covariance() (clmm.clusterensemble.ClusterEnsemble method)</a>
+</li>
       <li><a href="api/clmm.utils.html#clmm.utils.compute_lensed_ellipticity">compute_lensed_ellipticity() (in module clmm.utils)</a>
 </li>
       <li><a href="api/clmm.theory.html#clmm.theory.compute_magnification">compute_magnification() (in module clmm.theory)</a>
@@ -605,6 +623,8 @@
         <li><a href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.compute_reduced_tangential_shear">(in module clmm.theory.numcosmo)</a>
 </li>
       </ul></li>
+      <li><a href="api/clmm.clusterensemble.html#clmm.clusterensemble.ClusterEnsemble.compute_sample_covariance">compute_sample_covariance() (clmm.clusterensemble.ClusterEnsemble method)</a>
+</li>
       <li><a href="api/clmm.theory.html#clmm.theory.compute_surface_density">compute_surface_density() (in module clmm.theory)</a>
 
       <ul>
@@ -684,6 +704,18 @@
 </li>
       </ul></li>
       <li><a href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.CTModeling">CTModeling (class in clmm.theory.cluster_toolkit)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="D">D</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.delta_mdef">delta_mdef (clmm.theory.parent_class.CLMModeling property)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster.draw_gal_z_from_pdz">draw_gal_z_from_pdz() (clmm.galaxycluster.GalaxyCluster method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -774,6 +806,14 @@
   </ul></td>
 </tr></table>
 
+<h2 id="H">H</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.halo_profile_model">halo_profile_model (clmm.theory.parent_class.CLMModeling property)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -795,12 +835,24 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/clmm.utils.html#clmm.utils.make_bins">make_bins() (in module clmm.utils)</a>
 </li>
+      <li><a href="api/clmm.clusterensemble.html#clmm.clusterensemble.ClusterEnsemble.make_individual_radial_profile">make_individual_radial_profile() (clmm.clusterensemble.ClusterEnsemble method)</a>
+</li>
       <li><a href="api/clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster.make_radial_profile">make_radial_profile() (clmm.galaxycluster.GalaxyCluster method)</a>
 
       <ul>
         <li><a href="api/clmm.dataops.html#clmm.dataops.make_radial_profile">(in module clmm.dataops)</a>
 </li>
       </ul></li>
+      <li><a href="api/clmm.clusterensemble.html#clmm.clusterensemble.ClusterEnsemble.make_stacked_radial_profile">make_stacked_radial_profile() (clmm.clusterensemble.ClusterEnsemble method)</a>
+
+      <ul>
+        <li><a href="api/clmm.dataops.html#clmm.dataops.make_stacked_radial_profile">(in module clmm.dataops)</a>
+</li>
+      </ul></li>
+      <li><a href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.massdef">massdef (clmm.theory.parent_class.CLMModeling property)</a>
+</li>
+      <li><a href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.mdelta">mdelta (clmm.theory.parent_class.CLMModeling property)</a>
+</li>
       <li><a href="api/clmm.theory.html#clmm.theory.Modeling">Modeling (in module clmm.theory)</a>
 
       <ul>
@@ -815,6 +867,8 @@
     module
 
       <ul>
+        <li><a href="api/clmm.clusterensemble.html#module-clmm.clusterensemble">clmm.clusterensemble</a>
+</li>
         <li><a href="api/clmm.constants.html#module-clmm.constants">clmm.constants</a>
 </li>
         <li><a href="api/clmm.cosmology.html#module-clmm.cosmology">clmm.cosmology</a>
@@ -964,7 +1018,7 @@
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2018-2022, LSST DESC CLMM Contributors
+        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
 
     </p>
   </div>

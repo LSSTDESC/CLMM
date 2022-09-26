@@ -6,6 +6,7 @@ Information on specific functions, classes, and methods.
 .. toctree::
    :glob:
 
+   api/clmm.clusterensemble.rst
    api/clmm.constants.rst
    api/clmm.cosmology.rst
    api/clmm.dataops.rst
