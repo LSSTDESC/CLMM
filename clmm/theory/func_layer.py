@@ -555,11 +555,12 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
         gcm.set_einasto_alpha(alpha_ein)
 
     convergence = gcm.eval_convergence(r_proj, z_cluster, z_source, z_src_info=z_src_info, verbose=verbose)
-
-    if np.any(np.array(z_source) <= z_cluster):
-        warnings.warn(
-            'Some source redshifts are lower than the cluster redshift.'
-            ' kappa = 0 for those galaxies.')
+    
+    if z_src_info=='discrete':
+        if np.any(np.array(z_source) <= z_cluster):
+            warnings.warn(
+                'Some source redshifts are lower than the cluster redshift.'
+                ' kappa = 0 for those galaxies.')
 
     gcm.validate_input = True
     return convergence
@@ -770,10 +771,11 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
 
     magnification = gcm.eval_magnification(r_proj, z_cluster, z_source, z_src_info=z_src_info, approx=approx, verbose=verbose)
 
-    if np.any(np.array(z_source) <= z_cluster):
-        warnings.warn(
-            'Some source redshifts are lower than the cluster redshift.'
-            ' magnification = 1 for those galaxies.')
+    if z_src_info=='discrete':
+        if np.any(np.array(z_source) <= z_cluster):
+            warnings.warn(
+                'Some source redshifts are lower than the cluster redshift.'
+                ' magnification = 1 for those galaxies.')
 
     gcm.validate_input = True
     return magnification
@@ -847,11 +849,11 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
     magnification_bias : array_like
         magnification bias
     """
-    if np.any(np.array(z_source) <= z_cluster):
-        warnings.warn(
-            'Some source redshifts are lower than the cluster redshift.'
-            ' magnification = 1 for those galaxies.')
-    if z_src_info == 'discrete':
+    if z_src_info=='discrete':
+        if np.any(np.array(z_source) <= z_cluster):
+            warnings.warn(
+                'Some source redshifts are lower than the cluster redshift.'
+                ' magnification = 1 for those galaxies.')
 
         gcm.validate_input = validate_input
         gcm.set_cosmo(cosmo)

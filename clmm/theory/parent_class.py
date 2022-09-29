@@ -911,7 +911,7 @@ class CLMModeling:
                 * None (default): Full computation is made for each `r_proj, z_src` pair
                   individually. It requires `z_src_info` to be `discrete`.
 
-                * `weak_lensing` : Uses the weak lensing approximation of the magnification :math:`\my \approx 1 + 2 \kappa`.
+                * `weak lensing` : Uses the weak lensing approximation of the magnification :math:`\my \approx 1 + 2 \kappa`.
                 `z_src_info` must be either `beta`, or `distribution` (that will be used to compute
                   :math:`\langle \beta_s \rangle`)
 
@@ -949,7 +949,7 @@ class CLMModeling:
                     f"z_src_info='{z_src_info}' was provided.")
             mu = self._eval_magnification(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
         
-        elif approx == 'weak_lensing':
+        elif approx == 'weak lensing':
             z_inf = 1000. #np.inf # INF or a very large number
             kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=z_inf)
             if z_src_info=='beta':
@@ -966,7 +966,8 @@ class CLMModeling:
                     f"z_src_info='{z_src_info}' was provided.")
      
             mu = 1 + 2*beta_s_mean*kappa_inf
-            
+        else:
+            raise ValueError(f"Unsupported approx (='{approx}')")
         return mu
 
     def eval_magnification_bias(self, r_proj, z_cl, z_src, alpha):
