@@ -114,7 +114,7 @@ def correct_sigma_with_boost_model(rvals, sigma_vals, boost_model='nfw_boost', *
     return sigma_corrected
 
 def compute_radial_averages(xvals, yvals, xbins, yerr=None, error_model='ste', weights=None):
-    """ Given a list of `xvals`, `yvals` and bins, sort into bins. If `xvals` or `yvals`
+    """ Given a list of `xvals`, `yvals` and `xbins`, sort into bins. If `xvals` or `yvals`
     contain non-finite values, these are filtered.
 
     Parameters
