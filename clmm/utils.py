@@ -647,7 +647,7 @@ def compute_beta(z_s, z_cl, cosmo):
     r"""Geometric lensing efficicency
 
     .. math::
-        beta = max(0, Dang_ls/Dang_s)
+        \beta = max(0, d_{a\ ls}/d_{a\ s})
 
     Eq.2 in https://arxiv.org/pdf/1611.03866.pdf
 
@@ -672,7 +672,7 @@ def compute_beta_s(z_s, z_cl, z_inf, cosmo):
     r"""Geometric lensing efficicency ratio
 
     .. math::
-        beta_s =beta(z_s)/beta(z_inf)
+        \beta_s = \beta(z_s)/\beta(z_{inf})
 
     Parameters
     ----------
@@ -697,7 +697,8 @@ def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_dist
     r"""Mean value of the geometric lensing efficicency
 
     .. math::
-       \left\<beta\right\> =\frac{\sum_{z = z_{min}}^{z = z_{max}}\beta(z)p(z)}{\sum_{z = z_{min}}^{z = z_{max}}p(z)}
+       \left<\beta\right> = \frac{\sum_{z = z_{min}}^{z_{max}}\beta(z)p(z)}
+       {\sum_{z = z_{min}}^{z_{max}}p(z)}
 
     Parameters
     ----------
@@ -706,18 +707,14 @@ def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_dist
     z_inf: float
             Redshift at infinity
     z_distrib_func: one-parameter function
-            Redshift distribution function. Default is\
-            Chang et al (2013) distribution\
-            function.
+            Redshift distribution function. Default is Chang et al (2013) distribution function.
     zmin: float
-            Minimum redshift to be set as the source of the galaxy\
-             when performing the sum.
+            Minimum redshift to be set as the source of the galaxy when performing the sum.
     zmax: float
-            Maximum redshift to be set as the source of the galaxy\
-            when performing the sum.
+            Maximum redshift to be set as the source of the galaxy when performing the sum.
     delta_z_cut: float
-            Redshift interval to be summed with $z_cl$ to return\
-            $zmin$. This feature is not used if $z_min$ is provided by the user.
+            Redshift interval to be summed with :math:`z_{cl}` to return :math:`z_{min}`.
+            This feature is not used if :math:`z_{min}` is provided by the user.
     cosmo: Cosmology
         Cosmology object
 
@@ -741,7 +738,8 @@ def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=Non
     r"""Mean value of the geometric lensing efficicency ratio
 
     .. math::
-       \left\<beta_s\right\> =\frac{\sum_{z = z_{min}}^{z = z_{max}}\beta_s(z)p(z)}{\sum_{z = z_{min}}^{z = z_{max}}p(z)}
+       \left<\beta_s\right> =\frac{\sum_{z = z_{min}}^{z_{max}}\beta_s(z)p(z)}
+       {\sum_{z = z_{min}}^{z_{max}}p(z)}
 
     Parameters
     ----------
@@ -750,18 +748,14 @@ def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=Non
     z_inf: float
             Redshift at infinity
     z_distrib_func: one-parameter function
-            Redshift distribution function. Default is\
-            Chang et al (2013) distribution\
-            function.
+            Redshift distribution function. Default is Chang et al (2013) distribution function.
     zmin: float
-            Minimum redshift to be set as the source of the galaxy\
-            when performing the sum.
+            Minimum redshift to be set as the source of the galaxy when performing the sum.
     zmax: float
-            Minimum redshift to be set as the source of the galaxy\
-            when performing the sum.
+            Minimum redshift to be set as the source of the galaxy when performing the sum.
     delta_z_cut: float
-            Redshift interval to be summed with $z_cl$ to return\
-            $zmin$. This feature is not used if $z_min$ is provided by the user.
+            Redshift interval to be summed with $z_cl$ to return :math:`z_{min}`. This feature is
+            not used if :math:`z_{min}` is provided by the user.
     cosmo: Cosmology
         Cosmology object
 
@@ -782,10 +776,11 @@ def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=Non
     return Bs_mean
 
 def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_distrib_func=None):
-    r"""Mean square value of the geometric lensing efficicency ratio
+    r"""Mean square value of the geometric lensing efficiency ratio
 
     .. math::
-       \left\<beta_s\right\>2 =\frac{\sum_{z = z_{min}}^{z = z_{max}}\beta_s^2(z)p(z)}{\sum_{z = z_{min}}^{z = z_{max}}p(z)}
+       \left<\beta_s^2\right> =\frac{\sum_{z = z_{min}}^{z_{max}}\beta_s^2(z)p(z)}
+       {\sum_{z = z_{min}}^{z_{max}}p(z)}
 
     Parameters
     ----------
@@ -794,18 +789,14 @@ def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, z
     z_inf: float
             Redshift at infinity
     z_distrib_func: one-parameter function
-            Redshift distribution function. Default is\
-            Chang et al (2013) distribution\
-            function.
+            Redshift distribution function. Default is Chang et al (2013) distribution function.
     zmin: float
-            Minimum redshift to be set as the source of the galaxy\
-            when performing the sum.
+            Minimum redshift to be set as the source of the galaxy when performing the sum.
     zmax: float
-            Minimum redshift to be set as the source of the galaxy\
-            when performing the sum.
+            Minimum redshift to be set as the source of the galaxy when performing the sum.
     delta_z_cut: float
-            Redshift interval to be summed with $z_cl$ to return\
-            $zmin$. This feature is not used if $z_min$ is provided by the user.
+            Redshift interval to be summed with :math:`z_{cl}` to return :math:`z_{min}`.
+            This feature is not used if :math:`z_{min}` is provided by the user.
     cosmo: Cosmology
         Cosmology object
 
