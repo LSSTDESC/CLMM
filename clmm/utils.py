@@ -99,8 +99,9 @@ def correct_sigma_with_boost_model(rvals, sigma_vals, boost_model='nfw_boost', *
         uncorrected sigma with cluster member dilution
     boost_model : str, optional
         Boost model to use for correcting sigma
-            `nfw_boost` - NFW profile model (Default)
-            `powerlaw_boost` - Powerlaw profile
+
+            * 'nfw_boost' - NFW profile model (Default)
+            * 'powerlaw_boost' - Powerlaw profile
 
     Returns
     -------
@@ -130,8 +131,8 @@ def compute_radial_averages(xvals, yvals, xbins, yerr=None, error_model='ste', w
     error_model : str, optional
         Statistical error model to use for y uncertainties. (letter case independent)
 
-            * `ste` - Standard error [=std/sqrt(n) in unweighted computation] (Default).
-            * `std` - Standard deviation.
+            * 'ste' - Standard error [=std/sqrt(n) in unweighted computation] (Default).
+            * 'std' - Standard deviation.
 
     weights: array_like, None
         Weights for averages.
@@ -144,7 +145,7 @@ def compute_radial_averages(xvals, yvals, xbins, yerr=None, error_model='ste', w
     mean_y : array_like
         Mean y value in each bin
     err_y: array_like
-        Error on the mean y value in each bin. Specified by error_model
+        Error on the mean y value in each bin. Specified by `error_model`
     num_objects : array_like
         Number of objects in each bin
     binnumber: 1-D ndarray of ints
@@ -193,9 +194,9 @@ def make_bins(rmin, rmax, nbins=10, method='evenwidth', source_seps=None):
     method : str, optional
         Binning method to use (letter case independent):
 
-            * `evenwidth` - Default, evenly spaced bins between rmin and rmax
-            * `evenlog10width` - Logspaced bins with even width in log10 between rmin and rmax
-            * `equaloccupation` - Bins with equal occupation numbers
+            * 'evenwidth' - Default, evenly spaced bins between `rmin` and `rmax`
+            * 'evenlog10width' - Logspaced bins with even width in log10 between `rmin` and `rmax`
+            * 'equaloccupation' - Bins with equal occupation numbers
 
     source_seps : array_like
         Radial distance of source separations
@@ -369,18 +370,18 @@ def build_ellipticities(q11, q22, q12):
 
     Parameters
     ----------
-    q11 : float or array
+    q11 : float, numpy.array
         Second brightness moment tensor, component (1,1)
-    q22 : float or array
+    q22 : float, numpy.array
         Second brightness moment tensor, component (2,2)
-    q12 :  float or array
+    q12 :  float, numpy.array
         Second brightness moment tensor, component (1,2)
 
     Returns
     -------
-    chi1, chi2 : float or array
+    chi1, chi2 : float, numpy.array
         Ellipticities using the "chi definition"
-    epsilon1, epsilon2 : float or array
+    epsilon1, epsilon2 : float, numpy.array
         Ellipticities using the "epsilon definition"
     """
     norm_x, norm_e = q11+q22, q11+q22+2*np.sqrt(q11*q22-q12*q12)
@@ -404,19 +405,19 @@ def compute_lensed_ellipticity(ellipticity1_true, ellipticity2_true, shear1, she
 
     Parameters
     ----------
-    ellipticity1_true : float or array
+    ellipticity1_true : float, numpy.array
         Intrinsic ellipticity of the sources along the principal axis
-    ellipticity2_true : float or array
+    ellipticity2_true : float, numpy.array
         Intrinsic ellipticity of the sources along the second axis
-    shear1 :  float or array
+    shear1 :  float, numpy.array
         Shear component (not reduced shear) along the principal axis at the source location
-    shear2 :  float or array
+    shear2 :  float, numpy.array
         Shear component (not reduced shear) along the 45-degree axis at the source location
-    convergence :  float or array
+    convergence :  float, numpy.array
         Convergence at the source location
     Returns
     -------
-    e1, e2 : float or array
+    e1, e2 : float, numpy.array
         Lensed ellipicity along both reference axes.
     """
     # shear (as a complex number)
@@ -500,8 +501,8 @@ def _is_valid(arg, valid_type):
     valid_type: str, type
         Valid types for argument, options are object types, list/tuple of types, or:
 
-            * `int_array` - interger, interger array
-            * `float_array` - float, float array
+            * 'int_array' - interger, interger array
+            * 'float_array' - float, float array
 
     Returns
     -------
@@ -526,8 +527,8 @@ def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argm
     valid_type: str, type
         Valid types for argument, options are object types, list/tuple of types, or:
 
-            * `int_array` - interger, interger array
-            * `float_array` - float, float array
+            * 'int_array' - interger, interger array
+            * 'float_array' - float, float array
 
     none_ok: True
         Accepts None as a valid type.

@@ -79,6 +79,7 @@ pygments_style = 'sphinx'
 todo_include_todos = True
 add_function_parentheses = True
 add_module_names = True
+smartquotes = False
 
 
 # -- Options for HTML output ----------------------------------------------
