@@ -10,7 +10,8 @@ from .constants import Constants as const
 
 
 def compute_nfw_boost(rvals, rs=1000, b0=0.1) :
-    """ Given a list of rvals, and optional rs and b0, return the corresponding boost factor at each rval
+    """ Given a list of rvals, and optional rs and b0, return the corresponding boost factor
+    at each rval
 
     Parameters
     ----------
@@ -40,7 +41,8 @@ def compute_nfw_boost(rvals, rs=1000, b0=0.1) :
 
 
 def compute_powerlaw_boost(rvals, rs=1000, b0=0.1, alpha=-1.0) :
-    """  Given a list of rvals, and optional rs and b0, and alpha, return the corresponding boost factor at each rval
+    """  Given a list of `rvals`, and optional `rs` and `b0`, and `alpha`,
+    return the corresponding boost factor at each `rval`
 
     Parameters
     ----------
@@ -112,7 +114,7 @@ def correct_sigma_with_boost_model(rvals, sigma_vals, boost_model='nfw_boost', *
     return sigma_corrected
 
 def compute_radial_averages(xvals, yvals, xbins, yerr=None, error_model='ste', weights=None):
-    """ Given a list of xvals, yvals and bins, sort into bins. If xvals or yvals
+    """ Given a list of `xvals`, `yvals` and bins, sort into bins. If `xvals` or `yvals`
     contain non-finite values, these are filtered.
 
     Parameters
@@ -305,10 +307,11 @@ def convert_units(dist1, unit1, unit2, redshift=None, cosmo=None):
 
 
 def convert_shapes_to_epsilon(shape_1, shape_2, shape_definition='epsilon', kappa=0):
-    r""" Convert shape components 1 and 2 appropriately to make them estimators of the reduced shear
-    once averaged.  The shape 1 and 2 components may correspond to ellipticities according the
-    :math:`\epsilon`- or :math:`\chi`-definition, but also to the 1 and 2 components of the shear.
-    See Bartelmann & Schneider 2001 for details (https://arxiv.org/pdf/astro-ph/9912508.pdf).
+    r""" Convert shape components 1 and 2 appropriately to make them estimators of the
+    reduced shear once averaged.  The shape 1 and 2 components may correspond to ellipticities
+    according the :math:`\epsilon`- or :math:`\chi`-definition, but also to the 1 and 2 components
+    of the shear. See Bartelmann & Schneider 2001 for details
+    (https://arxiv.org/pdf/astro-ph/9912508.pdf).
 
     The :math:`\epsilon`-ellipticity is a direct estimator of
     the reduced shear. The shear :math:`\gamma` may be converted to reduced shear :math:`g` if the
@@ -320,13 +323,14 @@ def convert_shapes_to_epsilon(shape_1, shape_2, shape_definition='epsilon', kapp
     .. math::
      g=\frac{\gamma}{1-\kappa}
 
-    - If `shape_definition = 'chi'`, this function returns the corresponding `epsilon` ellipticities
+    - If `shape_definition = 'chi'`, this function returns the corresponding `epsilon`
+      ellipticities
 
     - If `shape_definition = 'shear'`, it returns the corresponding reduced shear, given the
       convergence `kappa`
 
-    - If `shape_definition = 'epsilon'` or `'reduced_shear'`, it returns them as is as no conversion
-      is needed.
+    - If `shape_definition = 'epsilon'` or `'reduced_shear'`, it returns them as is as no
+      conversion is needed.
 
     Parameters
     ----------
@@ -335,8 +339,8 @@ def convert_shapes_to_epsilon(shape_1, shape_2, shape_definition='epsilon', kapp
     shape_2 : array_like
         Input shapes or shears along secondary axis (g2 or e2)
     shape_definition : str
-        Definition of the input shapes, can be ellipticities 'epsilon' or 'chi' or shears 'shear' or
-        'reduced_shear'
+        Definition of the input shapes, can be ellipticities 'epsilon' or 'chi' or shears 'shear'
+        or 'reduced_shear'
     kappa : array_like
         Convergence for transforming to a reduced shear. Default is 0
 
@@ -390,13 +394,13 @@ def compute_lensed_ellipticity(ellipticity1_true, ellipticity2_true, shear1, she
     Following Schneider et al. (2006)
 
     .. math::
-        \epsilon^{\rm lensed}=\epsilon^{\rm lensed}_1+i\epsilon^{\rm lensed}_2=
-        \frac{\epsilon^{\rm true}+g}{1+g^\ast\epsilon^{\rm true}},
+        \epsilon^{\text{lensed}}=\epsilon^{\text{lensed}}_1+i\epsilon^{\text{lensed}}_2=
+        \frac{\epsilon^{\text{true}}+g}{1+g^\ast\epsilon^{\text{true}}},
 
     where, the complex reduced shear :math:`g` is obtained from the shear
     :math:`\gamma=\gamma_1+i\gamma_2` and convergence :math:`\kappa` as :math:`g =
-    \gamma/(1-\kappa)`, and the complex intrinsic ellipticity is :math:`\epsilon^{\rm
-    true}=\epsilon^{\rm true}_1+i\epsilon^{\rm true}_2`
+    \gamma/(1-\kappa)`, and the complex intrinsic ellipticity is :math:`\epsilon^{\text{
+    true}}=\epsilon^{\text{true}}_1+i\epsilon^{\text{true}}_2`
 
     Parameters
     ----------
@@ -613,7 +617,7 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1., is_uniqu
     return simps(pz_matrix*kernel_matrix, x=z_grid, axis=1)
 
 def compute_for_good_redshifts(function, z1, z2, bad_value, error_message):
-    """Computes function only for z1>z2, the rest is filled with bad_value
+    """Computes function only for `z1` < `z2`, the rest is filled with `bad_value`
 
     Parameters
     ----------
