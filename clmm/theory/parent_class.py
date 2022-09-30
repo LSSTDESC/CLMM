@@ -667,7 +667,7 @@ class CLMModeling:
                 # z_src (function) if PDZ
                 beta_kwargs = {} if beta_kwargs is None else beta_kwargs
                 _def_keys = ['zmin', 'zmax', 'delta_z_cut']
-                if any(key not in _def keys for key in beta_kwargs):
+                if any(key not in _def_keys for key in beta_kwargs):
                     raise KeyError(f'beta_kwargs must contain only {_def_keys} keys,'
                                    f' {bet_kwargs.keys()} provided.')
                 beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, z_distrib_func=z_src,
