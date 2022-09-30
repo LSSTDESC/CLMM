@@ -10,16 +10,16 @@ from .constants import Constants as const
 
 
 def compute_nfw_boost(rvals, rs=1000, b0=0.1) :
-    """ Given a list of rvals, and optional rs and b0, return the corresponding boost factor
+    """ Given a list of `rvals`, and optional `rs` and `b0`, return the corresponding boost factor
     at each rval
 
     Parameters
     ----------
     rvals : array_like
         radii
-    rs : float (optional)
+    rs : float, optional
         scale radius for NFW in same units as rvals (default 2000 kpc)
-    b0 : float (optional)
+    b0 : float, optional
 
     Returns
     -------
@@ -48,10 +48,10 @@ def compute_powerlaw_boost(rvals, rs=1000, b0=0.1, alpha=-1.0) :
     ----------
     rvals : array_like
         radii
-    rs : float (optional)
+    rs : float, optional
         scale radius for NFW in same units as rvals (default 2000 kpc)
-    b0 : float (optional)
-    alpha : float (optional)
+    b0 : float, optional
+    alpha : float, optional
         exponent from Melchior+16
 
     Returns
@@ -248,7 +248,7 @@ def convert_units(dist1, unit1, unit2, redshift=None, cosmo=None):
     (letter case independent)
 
     To convert between angular and physical units you must provide both
-    a redshift and a cosmology object.
+    a redshift and a CLMM Cosmology object.
 
     Parameters
     ----------
@@ -439,10 +439,10 @@ def arguments_consistency(arguments, names=None, prefix=''):
     ----------
     arguments: list, arrays, tuple
         Group of arguments to be checked
-    names: list, tuple
-        Names for each array, optional
-    prefix: str
-        Customized prefix for error message
+    names: list, tuple, optional
+        Names for each array
+    prefix: str, optional
+        Customized prefix for error message, Default: ''
 
     Returns
     -------
@@ -530,16 +530,16 @@ def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argm
             * 'int_array' - interger, interger array
             * 'float_array' - float, float array
 
-    none_ok: True
-        Accepts None as a valid type.
-    argmin (optional) : int, float, None
+    none_ok: bool, optional
+        If True, accepts None as a valid type. Default: False
+    argmin : int, float, None, optional
         Minimum value allowed.
-    argmax (optional) : int, float, None
+    argmax : int, float, None, optional
         Maximum value allowed.
-    eqmin: bool
-        Accepts min(arg)==argmin.
-    eqmax: bool
-        Accepts max(arg)==argmax.
+    eqmin: bool, optional
+        If True, accepts min(arg)==argmin. Default: False
+    eqmax: bool, optional
+        If True, accepts max(arg)==argmax. Default: False
     """
     var = loc[argname]
     # Check for None
@@ -662,8 +662,8 @@ def compute_beta(z_s, z_cl, cosmo):
             Galaxy cluster redshift
     z_s:  float
             Source galaxy  redshift
-    cosmo: Cosmology
-        Cosmology object
+    cosmo: CLMM.Cosmology
+        CLMM Cosmology object
 
     Returns
     -------
@@ -687,8 +687,8 @@ def compute_beta_s(z_s, z_cl, z_inf, cosmo):
             Source galaxy redshift
     z_inf: float
             Redshift at infinity
-    cosmo: Cosmology
-        Cosmology object
+    cosmo: CLMM.Cosmology
+        CLMM Cosmology object
 
     Returns
     -------
@@ -720,8 +720,8 @@ def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_dist
     delta_z_cut: float
             Redshift interval to be summed with :math:`z_{cl}` to return :math:`z_{min}`.
             This feature is not used if :math:`z_{min}` is provided by the user.
-    cosmo: Cosmology
-        Cosmology object
+    cosmo: CLMM.Cosmology
+        CLMM Cosmology object
 
     Returns
     -------
@@ -757,12 +757,12 @@ def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=Non
     zmin: float
             Minimum redshift to be set as the source of the galaxy when performing the sum.
     zmax: float
-            Minimum redshift to be set as the source of the galaxy when performing the sum.
+            Maximum redshift to be set as the source of the galaxy when performing the sum.
     delta_z_cut: float
-            Redshift interval to be summed with $z_cl$ to return :math:`z_{min}`. This feature is
-            not used if :math:`z_{min}` is provided by the user.
-    cosmo: Cosmology
-        Cosmology object
+            Redshift interval to be summed with :math:`z_{cl}` to return :math:`z_{min}`.
+            This feature is not used if :math:`z_{min}` is provided by the user.
+    cosmo: CLMM.Cosmology
+        CLMM Cosmology object
 
     Returns
     -------
@@ -798,12 +798,12 @@ def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, z
     zmin: float
             Minimum redshift to be set as the source of the galaxy when performing the sum.
     zmax: float
-            Minimum redshift to be set as the source of the galaxy when performing the sum.
+            Maximum redshift to be set as the source of the galaxy when performing the sum.
     delta_z_cut: float
             Redshift interval to be summed with :math:`z_{cl}` to return :math:`z_{min}`.
             This feature is not used if :math:`z_{min}` is provided by the user.
-    cosmo: Cosmology
-        Cosmology object
+    cosmo: CLMM.Cosmology
+        CLMM Cosmology object
 
     Returns
     -------
