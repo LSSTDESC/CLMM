@@ -584,7 +584,8 @@ class CLMModeling:
         else:
             return self._eval_surface_density_2h(r_proj, z_cl, halobias=halobias, lsteps=lsteps)
 
-    def eval_tangential_shear(self, r_proj, z_cl, z_src, z_src_info='discrete', verbose=False):
+    def eval_tangential_shear(self, r_proj, z_cl, z_src, z_src_info='discrete', beta_kwargs=None,
+                              verbose=False):
         r"""Computes the tangential shear
 
         Parameters
@@ -619,6 +620,18 @@ class CLMModeling:
                     .. math::
                         \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
 
+        beta_kwargs: None, dict
+            Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
+            Only used if `z_src_info='distribution'`. Possible keys are:
+
+                * `zmin` (None, float) : Minimum redshift to be set as the source of the galaxy
+                  when performing the sum. (default=None)
+                * `zmax` (float) : Maximum redshift to be set as the source of the galaxy
+                  when performing the sum. (default=10.0)
+                * `delta_z_cut` (float) : Redshift interval to be summed with $z_cl$ to return
+                  $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
+
+
         Returns
         -------
         array_like, float
@@ -652,9 +665,16 @@ class CLMModeling:
                 beta_s_mean, beta_s_square_mean = z_src
             elif z_src_info=='distribution':
                 # z_src (function) if PDZ
-                beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, z_distrib_func=z_src)
+                beta_kwargs = {} if beta_kwargs is None else beta_kwargs
+                _def_keys = ['zmin', 'zmax', 'delta_z_cut']
+                if any(key not in _def keys for key in beta_kwargs):
+                    raise KeyError(f'beta_kwargs must contain only {_def_keys} keys,'
+                                   f' {bet_kwargs.keys()} provided.')
+                beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, z_distrib_func=z_src,
+                                                  **beta_kwargs)
                 beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo,
-                                                                z_distrib_func=z_src) 
+                                                                z_distrib_func=z_src,
+                                                                **beta_kwargs)
             gammat = beta_s_mean * gammat_inf
         else:
             raise ValueError(f"Unsupported z_src_info (='{z_src_info}')")
