@@ -652,9 +652,11 @@ class CLMModeling:
                 beta_s_mean, beta_s_square_mean = z_src
             elif z_src_info=='distribution':
                 # z_src (function) if PDZ
-                beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, z_distrib_func=z_src)
-                beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo,
-                                                                z_distrib_func=z_src) 
+                beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, zmax=10.0,
+                                                  delta_z_cut=0.1, zmin=None, z_distrib_func=z_src)
+
+                beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo, zmax=10.0,
+                                                                delta_z_cut=0.1, zmin=None, z_distrib_func=z_src) 
             gammat = beta_s_mean * gammat_inf
         else:
             raise ValueError(f"Unsupported z_src_info (='{z_src_info}')")
@@ -670,7 +672,7 @@ class CLMModeling:
         or
 
         .. math::
-            \kappa = \kappa_\infty \times \beta_s
+            \kappa = \kappa_\infty \times <\beta_s>
 
         Parameters
         ----------
@@ -738,9 +740,11 @@ class CLMModeling:
                 beta_s_mean, beta_s_square_mean = z_src
             elif z_src_info=='distribution':
                 # z_src (function) if PDZ
-                beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, z_distrib_func=z_src)
-                beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo,
-                                                                z_distrib_func=z_src) 
+                beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, zmax=10.0,
+                                                  delta_z_cut=0.1, zmin=None, z_distrib_func=z_src)
+
+                beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo, zmax=10.0,
+                                                                delta_z_cut=0.1, zmin=None, z_distrib_func=z_src) 
             kappa = beta_s_mean * kappa_inf
         else:
             raise ValueError(f"Unsupported z_src_info (='{z_src_info}')")
@@ -844,9 +848,11 @@ class CLMModeling:
                 beta_s_mean, beta_s_square_mean = z_src
             elif z_src_info=='distribution':
                 # z_src (function) if PDZ
-                beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, z_distrib_func=z_src)
-                beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo,
-                                                                z_distrib_func=z_src)
+                beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, zmax=10.0,
+                                                  delta_z_cut=0.1, zmin=None, z_distrib_func=z_src)
+
+                beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo, zmax=10.0,
+                                                                delta_z_cut=0.1, zmin=None, z_distrib_func=z_src) 
             else:
                 raise ValueError(
                     f"approx='{approx}' requires z_src_info='distribution' or 'beta',"
@@ -957,9 +963,11 @@ class CLMModeling:
                 beta_s_mean, beta_s_square_mean = z_src
             elif z_src_info=='distribution':
                 # z_src (function) if PDZ
-                beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, z_distrib_func=z_src)
-                beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo,
-                                                                z_distrib_func=z_src)
+                beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, zmax=10.0,
+                                                  delta_z_cut=0.1, zmin=None, z_distrib_func=z_src)
+
+                beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo, zmax=10.0,
+                                                                delta_z_cut=0.1, zmin=None, z_distrib_func=z_src) 
             else:
                 raise ValueError(
                     f"approx='{approx}' requires z_src_info='distribution' or 'beta',"
