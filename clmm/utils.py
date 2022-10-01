@@ -126,16 +126,16 @@ def compute_radial_averages(xvals, yvals, xbins, yerr=None, error_model='ste', w
         Values to compute statistics on
     xbins: array_like
         Bin edges to sort into
-    yerr : array_like, None
-        Errors of component y
+    yerr : array_like, None, optional
+        Errors of component y. Default: None
     error_model : str, optional
         Statistical error model to use for y uncertainties. (letter case independent)
 
             * 'ste' - Standard error [=std/sqrt(n) in unweighted computation] (Default).
             * 'std' - Standard deviation.
 
-    weights: array_like, None
-        Weights for averages.
+    weights: array_like, None, optional
+        Weights for averages. Default: None
 
 
     Returns
@@ -189,7 +189,7 @@ def make_bins(rmin, rmax, nbins=10, method='evenwidth', source_seps=None):
         Minimum bin edges wanted
     rmax : float
         Maximum bin edges wanted
-    nbins : float
+    nbins : float, optional
         Number of bins you want to create, default to 10.
     method : str, optional
         Binning method to use (letter case independent):
@@ -198,8 +198,8 @@ def make_bins(rmin, rmax, nbins=10, method='evenwidth', source_seps=None):
             * 'evenlog10width' - Logspaced bins with even width in log10 between `rmin` and `rmax`
             * 'equaloccupation' - Bins with equal occupation numbers
 
-    source_seps : array_like
-        Radial distance of source separations
+    source_seps : array_like, None, optional
+        Radial distance of source separations. Default: None
 
     Returns
     -------
@@ -258,7 +258,7 @@ def convert_units(dist1, unit1, unit2, redshift=None, cosmo=None):
         Unit for the input distances
     unit2 : str
         Unit for the output distances
-    redshift : float
+    redshift : float, optional
         Redshift used to convert between angular and physical units
     cosmo : CLMM.Cosmology
         CLMM Cosmology object to compute angular diameter distance to
@@ -339,10 +339,10 @@ def convert_shapes_to_epsilon(shape_1, shape_2, shape_definition='epsilon', kapp
         Input shapes or shears along principal axis (g1 or e1)
     shape_2 : array_like
         Input shapes or shears along secondary axis (g2 or e2)
-    shape_definition : str
+    shape_definition : str, optional
         Definition of the input shapes, can be ellipticities 'epsilon' or 'chi' or shears 'shear'
-        or 'reduced_shear'
-    kappa : array_like
+        or 'reduced_shear'. Defaut: 'epsilon'
+    kappa : array_like, optional
         Convergence for transforming to a reduced shear. Default is 0
 
     Returns
