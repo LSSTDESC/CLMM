@@ -439,10 +439,10 @@ def arguments_consistency(arguments, names=None, prefix=''):
     ----------
     arguments: list, arrays, tuple
         Group of arguments to be checked
-    names: list, tuple, optional
-        Names for each array
+    names: list, tuple, None, optional
+        Names for each array. Default: None
     prefix: str, optional
-        Customized prefix for error message, Default: ''
+        Customized prefix for error message. Default: ''
 
     Returns
     -------
@@ -582,8 +582,10 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1., is_uniqu
         Photometric probablility density functions of the source galaxies.
     pzbins : list of arrays
         Redshift axis on which the individual photoz pdf is tabulated.
-    zmin : float
-        Minimum redshift for integration
+    zmin : float, optional
+        Minimum redshift for integration. Default: 0
+    zmax : float, optional
+        Maximum redshift for integration. Default: 5
     kernel : function, optional
         Function to be integrated with the pdf, must be f(z_array) format.
         Default: kernel(z)=1
@@ -592,7 +594,7 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1., is_uniqu
 
     Returns
     -------
-    array
+    numpy.ndarray
         Kernel integrated with the pdf of each galaxy.
 
     Notes
@@ -683,7 +685,7 @@ def compute_beta_s(z_s, z_cl, z_inf, cosmo):
     ----------
     z_cl: float
             Galaxy cluster redshift
-    z_s:  float
+    z_s: float
             Source galaxy redshift
     z_inf: float
             Redshift at infinity
@@ -823,15 +825,15 @@ def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, z
 
 def _chang_z_distrib(redshift, is_cdf=False):
     """
-    A private function that returns the Chang et al (2013) unnormalized galaxy redshift distribution
-    function, with the fiducial set of parameters.
+    A private function that returns the Chang et al (2013) unnormalized galaxy redshift
+    distribution function, with the fiducial set of parameters.
 
     Parameters
     ----------
     redshift : float
         Galaxy redshift
-    is_cdf : bool
-        If True, returns cumulative distribution function.
+    is_cdf : bool, optional
+        If True, returns cumulative distribution function. Default: False
 
     Returns
     -------
@@ -852,8 +854,8 @@ def _srd_z_distrib(redshift, is_cdf=False):
     ----------
     redshift : float
         Galaxy redshift
-    is_cdf : bool
-        If True, returns cumulative distribution function.
+    is_cdf : bool, optional
+        If True, returns cumulative distribution function. Default: False
 
     Returns
     -------
@@ -880,8 +882,8 @@ def _draw_random_points_from_distribution(xmin, xmax, nobj, dist_func, xstep=0.0
         Number of galaxies to generate
     dist_func : function
         Function of the required distribution
-    xstep : float
-        Size of the step to interpolate the culmulative distribution.
+    xstep : float, optional
+        Size of the step to interpolate the culmulative distribution. Default: 0.001
 
     Returns
     -------
@@ -908,9 +910,9 @@ def _draw_random_points_from_tab_distribution(x_tab, pdf_tab, nobj=1, xmin=None,
         Value of the pdf at the x_tab locations
     nobj : int, optional
         Number of random samples to generate. Default is 1.
-    xmin : float
+    xmin : float, optional
         Lower bound to draw redshift. Default is the min(x_tab)
-    xmax : float
+    xmax : float, optional
         Upper bound to draw redshift. Default is the max(x_tab)
 
     Returns
