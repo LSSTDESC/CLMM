@@ -128,7 +128,7 @@ def compute_radial_averages(xvals, yvals, xbins, yerr=None, error_model='ste', w
     xbins: array_like
         Bin edges to sort into
     yerr : array_like, None, optional
-        Errors of component y. Default: None
+        Errors of `yvals`. Default: None
     error_model : str, optional
         Statistical error model to use for y uncertainties. (letter case independent)
 
