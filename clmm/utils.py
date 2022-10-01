@@ -51,8 +51,9 @@ def compute_powerlaw_boost(rvals, rs=1000, b0=0.1, alpha=-1.0) :
     rs : float, optional
         scale radius for NFW in same units as rvals (default 2000 kpc)
     b0 : float, optional
+        Default: 0.1
     alpha : float, optional
-        exponent from Melchior+16
+        exponent from Melchior+16. Default: -1.0
 
     Returns
     -------
@@ -140,13 +141,13 @@ def compute_radial_averages(xvals, yvals, xbins, yerr=None, error_model='ste', w
 
     Returns
     -------
-    mean_x : array_like
+    mean_x : numpy.ndarray
         Mean x value in each bin
-    mean_y : array_like
+    mean_y : numpy.ndarray
         Mean y value in each bin
-    err_y: array_like
+    err_y: numpy.ndarray
         Error on the mean y value in each bin. Specified by `error_model`
-    num_objects : array_like
+    num_objects : numpy.ndarray
         Number of objects in each bin
     binnumber: 1-D ndarray of ints
         Indices of the bins (corresponding to `xbins`) in which each value
@@ -203,7 +204,7 @@ def make_bins(rmin, rmax, nbins=10, method='evenwidth', source_seps=None):
 
     Returns
     -------
-    binedges: array_like, float
+    binedges: numpy.ndarray
         n_bins+1 dimensional array that defines bin edges
     """
     # make case independent
@@ -252,21 +253,21 @@ def convert_units(dist1, unit1, unit2, redshift=None, cosmo=None):
 
     Parameters
     ----------
-    dist1 : array_like
+    dist1 : float, array_like
         Input distances
     unit1 : str
         Unit for the input distances
     unit2 : str
         Unit for the output distances
-    redshift : float, optional
-        Redshift used to convert between angular and physical units
-    cosmo : CLMM.Cosmology
+    redshift : float, None, optional
+        Redshift used to convert between angular and physical units. Default: None
+    cosmo : CLMM.Cosmology, None, optional
         CLMM Cosmology object to compute angular diameter distance to
-        convert between physical and angular units
+        convert between physical and angular units. Default: None
 
     Returns
     -------
-    dist2: array_like
+    dist2: float, numpy.ndarray
         Input distances converted to unit2
     """
     # make case independent
@@ -335,21 +336,21 @@ def convert_shapes_to_epsilon(shape_1, shape_2, shape_definition='epsilon', kapp
 
     Parameters
     ----------
-    shape_1 : array_like
+    shape_1 : float, numpy.ndarray
         Input shapes or shears along principal axis (g1 or e1)
-    shape_2 : array_like
+    shape_2 : float, numpy.ndarray
         Input shapes or shears along secondary axis (g2 or e2)
     shape_definition : str, optional
         Definition of the input shapes, can be ellipticities 'epsilon' or 'chi' or shears 'shear'
         or 'reduced_shear'. Defaut: 'epsilon'
-    kappa : array_like, optional
+    kappa : float, numpy.ndarray, optional
         Convergence for transforming to a reduced shear. Default is 0
 
     Returns
     -------
-    epsilon_1 : array_like
+    epsilon_1 : float, numpy.ndarray
         Epsilon ellipticity (or reduced shear) along principal axis (epsilon1)
-    epsilon_2 : array_like
+    epsilon_2 : float, numpy.ndarray
         Epsilon ellipticity (or reduced shear) along secondary axis (epsilon2)
     """
 
@@ -589,6 +590,8 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1., is_uniqu
     kernel : function, optional
         Function to be integrated with the pdf, must be f(z_array) format.
         Default: kernel(z)=1
+    is_unique_pzbins: bool, optional
+        Default: False
     ngrid : int, optional
         Number of points for the interpolation of the redshift pdf.
 
@@ -710,20 +713,20 @@ def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_dist
     Parameters
     ----------
     z_cl: float
-            Galaxy cluster redshift
-    z_inf: float
-            Redshift at infinity
-    z_distrib_func: one-parameter function
-            Redshift distribution function. Default is Chang et al (2013) distribution function.
-    zmin: float
-            Minimum redshift to be set as the source of the galaxy when performing the sum.
-    zmax: float
-            Maximum redshift to be set as the source of the galaxy when performing the sum.
-    delta_z_cut: float
-            Redshift interval to be summed with :math:`z_{cl}` to return :math:`z_{min}`.
-            This feature is not used if :math:`z_{min}` is provided by the user.
+        Galaxy cluster redshift
     cosmo: CLMM.Cosmology
         CLMM Cosmology object
+    zmax: float, optional
+        Maximum redshift to be set as the source of the galaxy when performing the sum.
+        Default: 10
+    delta_z_cut: float, optional
+        Redshift interval to be summed with :math:`z_{cl}` to return :math:`z_{min}`.
+        This feature is not used if :math:`z_{min}` is provided by the user. Default: 0.1
+    zmin: float, None, optional
+        Minimum redshift to be set as the source of the galaxy when performing the sum.
+        Default: None
+    z_distrib_func: one-parameter function, optional
+        Redshift distribution function. Default is Chang et al (2013) distribution function.
 
     Returns
     -------
@@ -751,20 +754,25 @@ def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=Non
     Parameters
     ----------
     z_cl: float
-            Galaxy cluster redshift
+        Galaxy cluster redshift
     z_inf: float
-            Redshift at infinity
-    z_distrib_func: one-parameter function
-            Redshift distribution function. Default is Chang et al (2013) distribution function.
-    zmin: float
-            Minimum redshift to be set as the source of the galaxy when performing the sum.
-    zmax: float
-            Maximum redshift to be set as the source of the galaxy when performing the sum.
-    delta_z_cut: float
-            Redshift interval to be summed with :math:`z_{cl}` to return :math:`z_{min}`.
-            This feature is not used if :math:`z_{min}` is provided by the user.
+        Redshift at infinity
     cosmo: CLMM.Cosmology
         CLMM Cosmology object
+    zmax: float
+        Maximum redshift to be set as the source of the galaxy when performing the sum.
+        Default: 10
+    delta_z_cut: float, optional
+        Redshift interval to be summed with :math:`z_{cl}` to return :math:`z_{min}`.
+        This feature is not used if :math:`z_{min}` is provided by the user. Default: 0.1
+    z_distrib_func: one-parameter function
+        Redshift distribution function. Default is Chang et al (2013) distribution function.
+    zmin: float, None, optional
+        Minimum redshift to be set as the source of the galaxy when performing the sum.
+        Default: None
+    z_distrib_func: one-parameter function, optional
+        Redshift distribution function. Default is Chang et al (2013) distribution function.
+
 
     Returns
     -------
@@ -795,17 +803,19 @@ def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, z
             Galaxy cluster redshift
     z_inf: float
             Redshift at infinity
-    z_distrib_func: one-parameter function
-            Redshift distribution function. Default is Chang et al (2013) distribution function.
-    zmin: float
-            Minimum redshift to be set as the source of the galaxy when performing the sum.
-    zmax: float
-            Maximum redshift to be set as the source of the galaxy when performing the sum.
-    delta_z_cut: float
-            Redshift interval to be summed with :math:`z_{cl}` to return :math:`z_{min}`.
-            This feature is not used if :math:`z_{min}` is provided by the user.
     cosmo: CLMM.Cosmology
         CLMM Cosmology object
+    zmax: float
+        Maximum redshift to be set as the source of the galaxy when performing the sum.
+        Default: 10
+    delta_z_cut: float, optional
+        Redshift interval to be summed with :math:`z_{cl}` to return :math:`z_{min}`.
+        This feature is not used if :math:`z_{min}` is provided by the user. Default: 0.1
+    zmin: float, None, optional
+        Minimum redshift to be set as the source of the galaxy when performing the sum.
+        Default: None
+    z_distrib_func: one-parameter function, optional
+        Redshift distribution function. Default is Chang et al (2013) distribution function.
 
     Returns
     -------
@@ -887,7 +897,7 @@ def _draw_random_points_from_distribution(xmin, xmax, nobj, dist_func, xstep=0.0
 
     Returns
     -------
-    ndarray
+    numpy.ndarray
         Random points with dist_func distribution
     """
     steps = int((xmax-xmin)/xstep)+1
@@ -917,7 +927,7 @@ def _draw_random_points_from_tab_distribution(x_tab, pdf_tab, nobj=1, xmin=None,
 
     Returns
     -------
-    samples : ndarray
+    samples : numpy.ndarray
         Random points following the pdf_tab distribution
     """
     x_tab = np.array(x_tab)
