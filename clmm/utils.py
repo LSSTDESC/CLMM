@@ -205,7 +205,7 @@ def make_bins(rmin, rmax, nbins=10, method='evenwidth', source_seps=None):
     Returns
     -------
     binedges: numpy.ndarray
-        array with `nbins`+1 elements that defines bin edges
+        array with `nbins` +1 elements that defines bin edges
     """
     # make case independent
     method = method.lower()
