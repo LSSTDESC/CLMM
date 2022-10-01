@@ -370,18 +370,18 @@ def build_ellipticities(q11, q22, q12):
 
     Parameters
     ----------
-    q11 : float, numpy.array
+    q11 : float, numpy.ndarray
         Second brightness moment tensor, component (1,1)
-    q22 : float, numpy.array
+    q22 : float, numpy.ndarray
         Second brightness moment tensor, component (2,2)
-    q12 :  float, numpy.array
+    q12 :  float, numpy.ndarray
         Second brightness moment tensor, component (1,2)
 
     Returns
     -------
-    chi1, chi2 : float, numpy.array
+    chi1, chi2 : float, numpy.ndarray
         Ellipticities using the "chi definition"
-    epsilon1, epsilon2 : float, numpy.array
+    epsilon1, epsilon2 : float, numpy.ndarray
         Ellipticities using the "epsilon definition"
     """
     norm_x, norm_e = q11+q22, q11+q22+2*np.sqrt(q11*q22-q12*q12)
@@ -405,19 +405,19 @@ def compute_lensed_ellipticity(ellipticity1_true, ellipticity2_true, shear1, she
 
     Parameters
     ----------
-    ellipticity1_true : float, numpy.array
+    ellipticity1_true : float, numpy.ndarray
         Intrinsic ellipticity of the sources along the principal axis
-    ellipticity2_true : float, numpy.array
+    ellipticity2_true : float, numpy.ndarray
         Intrinsic ellipticity of the sources along the second axis
-    shear1 :  float, numpy.array
+    shear1 :  float, numpy.ndarray
         Shear component (not reduced shear) along the principal axis at the source location
-    shear2 :  float, numpy.array
+    shear2 :  float, numpy.ndarray
         Shear component (not reduced shear) along the 45-degree axis at the source location
-    convergence :  float, numpy.array
+    convergence :  float, numpy.ndarray
         Convergence at the source location
     Returns
     -------
-    e1, e2 : float, numpy.array
+    e1, e2 : float, numpy.ndarray
         Lensed ellipicity along both reference axes.
     """
     # shear (as a complex number)
@@ -533,9 +533,9 @@ def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argm
     none_ok: bool, optional
         If True, accepts None as a valid type. Default: False
     argmin : int, float, None, optional
-        Minimum value allowed.
+        Minimum value allowed. Default: None
     argmax : int, float, None, optional
-        Maximum value allowed.
+        Maximum value allowed. Default: None
     eqmin: bool, optional
         If True, accepts min(arg)==argmin. Default: False
     eqmax: bool, optional
