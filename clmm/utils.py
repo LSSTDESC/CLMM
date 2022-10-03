@@ -186,10 +186,10 @@ def make_bins(rmin, rmax, nbins=10, method='evenwidth', source_seps=None):
 
     Parameters
     ----------
-    rmin : float
-        Minimum bin edges wanted
-    rmax : float
-        Maximum bin edges wanted
+    rmin : float, None
+        Minimum bin edges wanted. If None, min(`source_seps`) is used.
+    rmax : float, None
+        Maximum bin edges wanted. If None, max(`source_seps`) is used.
     nbins : float, optional
         Number of bins you want to create, default to 10.
     method : str, optional
@@ -200,7 +200,7 @@ def make_bins(rmin, rmax, nbins=10, method='evenwidth', source_seps=None):
             * 'equaloccupation' - Bins with equal occupation numbers
 
     source_seps : array_like, None, optional
-        Radial distance of source separations. Default: None
+        Radial distance of source separations. Needed if `method='equaloccupation'`. Default: None
 
     Returns
     -------
@@ -209,35 +209,33 @@ def make_bins(rmin, rmax, nbins=10, method='evenwidth', source_seps=None):
     """
     # make case independent
     method = method.lower()
-    # Check consistency
-    if (rmin > rmax) or (rmin < 0.0) or (rmax < 0.0):
-        raise ValueError(f"Invalid bin endpoints in make_bins, {rmin} {rmax}")
-    if (nbins <= 0) or not isinstance(nbins, int):
-        raise ValueError(
-            f"Invalid nbins={nbins}. Must be integer greater than 0.")
-
-    if method == 'evenwidth':
-        binedges = np.linspace(rmin, rmax, nbins+1, endpoint=True)
-    elif method == 'evenlog10width':
-        binedges = np.logspace(np.log10(rmin), np.log10(
-            rmax), nbins+1, endpoint=True)
-    elif method == 'equaloccupation':
+    if method == 'equaloccupation':
         if source_seps is None:
             raise ValueError(
                 f"Binning method '{method}' requires source separations array")
-        # by default, keep all galaxies
         seps = np.array(source_seps)
-        mask = np.full(seps.size, True)
-        if rmin is not None or rmax is not None:
-            # Need to filter source_seps to only keep galaxies in the [rmin, rmax]
-            rmin = seps.min() if rmin is None else rmin
-            rmax = seps.max() if rmax is None else rmax
-            mask = (seps >= rmin)*(seps <= rmax)
+        rmin = seps.min() if rmin is None else rmin
+        rmax = seps.max() if rmax is None else rmax
+        # Need to filter source_seps to only keep galaxies in the [rmin, rmax] with a mask
+        mask = (seps >= rmin)*(seps <= rmax)
         binedges = np.percentile(seps[mask], tuple(
-            np.linspace(0, 100, nbins+1, endpoint=True)))
+        np.linspace(0, 100, nbins+1, endpoint=True)))
     else:
-        raise ValueError(
-            f"Binning method '{method}' is not currently supported")
+        # Check consistency
+        if (rmin > rmax) or (rmin < 0.0) or (rmax < 0.0):
+            raise ValueError(f"Invalid bin endpoints in make_bins, {rmin} {rmax}")
+        if (nbins <= 0) or not isinstance(nbins, int):
+            raise ValueError(
+                f"Invalid nbins={nbins}. Must be integer greater than 0.")
+
+        if method == 'evenwidth':
+            binedges = np.linspace(rmin, rmax, nbins+1, endpoint=True)
+        elif method == 'evenlog10width':
+            binedges = np.logspace(np.log10(rmin), np.log10(
+                rmax), nbins+1, endpoint=True)
+        else:
+            raise ValueError(
+                f"Binning method '{method}' is not currently supported")
 
     return binedges
 
