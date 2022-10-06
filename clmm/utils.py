@@ -655,7 +655,7 @@ def compute_beta(z_s, z_cl, cosmo):
     r"""Geometric lensing efficicency
 
     .. math::
-        \beta = max(0, d_{a\ ls}/d_{a\ s})
+        \beta = max(0, D_{a,\ ls}/D_{a,\ s})
 
     Eq.2 in https://arxiv.org/pdf/1611.03866.pdf
 
