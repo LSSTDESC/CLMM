@@ -259,7 +259,7 @@ def convert_units(dist1, unit1, unit2, redshift=None, cosmo=None):
         Unit for the output distances
     redshift : float, None, optional
         Redshift used to convert between angular and physical units. Default: None
-    cosmo : CLMM.Cosmology, None, optional
+    cosmo : clmm.Cosmology, None, optional
         CLMM Cosmology object to compute angular diameter distance to
         convert between physical and angular units. Default: None
 
@@ -665,7 +665,7 @@ def compute_beta(z_s, z_cl, cosmo):
             Galaxy cluster redshift
     z_s:  float
             Source galaxy  redshift
-    cosmo: CLMM.Cosmology
+    cosmo: clmm.Cosmology
         CLMM Cosmology object
 
     Returns
@@ -690,7 +690,7 @@ def compute_beta_s(z_s, z_cl, z_inf, cosmo):
             Source galaxy redshift
     z_inf: float
             Redshift at infinity
-    cosmo: CLMM.Cosmology
+    cosmo: clmm.Cosmology
         CLMM Cosmology object
 
     Returns
@@ -712,7 +712,7 @@ def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_dist
     ----------
     z_cl: float
         Galaxy cluster redshift
-    cosmo: CLMM.Cosmology
+    cosmo: clmm.Cosmology
         CLMM Cosmology object
     zmax: float, optional
         Maximum redshift to be set as the source of the galaxy when performing the sum.
@@ -755,7 +755,7 @@ def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=Non
         Galaxy cluster redshift
     z_inf: float
         Redshift at infinity
-    cosmo: CLMM.Cosmology
+    cosmo: clmm.Cosmology
         CLMM Cosmology object
     zmax: float
         Maximum redshift to be set as the source of the galaxy when performing the sum.
@@ -801,7 +801,7 @@ def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, z
             Galaxy cluster redshift
     z_inf: float
             Redshift at infinity
-    cosmo: CLMM.Cosmology
+    cosmo: clmm.Cosmology
         CLMM Cosmology object
     zmax: float
         Maximum redshift to be set as the source of the galaxy when performing the sum.
