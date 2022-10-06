@@ -247,7 +247,7 @@ def convert_units(dist1, unit1, unit2, redshift=None, cosmo=None):
     (letter case independent)
 
     To convert between angular and physical units you must provide both
-    a redshift and a CLMM Cosmology object.
+    `redshift` and a CLMM Cosmology object `cosmo`.
 
     Parameters
     ----------
