@@ -907,7 +907,7 @@ class CLMModeling:
                 * None (default): Full computation is made for each `r_proj, z_src` pair
                   individually. It requires `z_src_info` to be `discrete`.
 
-                * `weak lensing` : Uses the weak lensing approximation of the magnification :math:`\my \approx 1 + 2 \kappa`.
+                * `weak lensing` : Uses the weak lensing approximation of the magnification :math:`\mu \approx 1 + 2 \kappa`.
                 `z_src_info` must be either `beta`, or `distribution` (that will be used to compute
                   :math:`\langle \beta_s \rangle`)
 
@@ -959,7 +959,8 @@ class CLMModeling:
             raise ValueError(f"Unsupported approx (='{approx}')")
         return mu
 
-    def eval_magnification_bias(self, r_proj, z_cl, z_src, alpha):
+    def eval_magnification_bias(self, r_proj, z_cl, z_src, alpha, z_src_info='discrete',
+                                approx=None, verbose=False):
         r"""Computes the magnification bias
 
         .. math::
@@ -971,23 +972,89 @@ class CLMModeling:
             The projected radial positions in :math:`M\!pc`.
         z_cl : float
             Galaxy cluster redshift
-        z_src : array_like, float
-            Background source galaxy redshift(s)
+        z_src : array_like, float, function
+            Information on the background source galaxy redshift(s). Value required depends on
+            `z_src_info` (see below).
         alpha : float
             Slope of the cummulative number count of background sources at a given magnitude
+        z_src_info : str, optional
+            Type of redshift information provided, it describes z_src.
+            The following supported options are:
+
+                * `discrete` (default) : The redshift of sources is provided by `z_src`.
+                  It can be individual redshifts for each source galaxy when `z_source` is an array
+                  or all sources are at the same redshift when `z_source` is a float.
+
+                * `distribution` : A redshift distribution function is provided by `z_src`.
+                  `z_src` must be a one dimentional function.
+                  
+                * `beta` : The averaged lensing efficiency is provided by `z_src`.
+                  `z_src` must be a tuple containing
+                  ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
+                  the lensing efficiency and square of the lensing efficiency averaged over
+                  the galaxy redshift distribution repectively.
+
+                    .. math::
+                        \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right\rangle
+
+                    .. math::
+                        \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
+
+        approx : str, optional
+            Type of computation to be made for reduced shears, options are:
+
+                * None (default): Full computation is made for each `r_proj, z_src` pair
+                  individually. It requires `z_src_info` to be `discrete`.
+
+                * `weak lensing` : Uses the weak lensing approximation of the magnification bias :math:`\mu \approx 1 + 2 \kappa \left(\alpha - 1 \right)`.
+                `z_src_info` must be either `beta`, or `distribution` (that will be used to compute
+                  :math:`\langle \beta_s \rangle`)
 
         Returns
         -------
         mu_bias : array_like, float
             magnification bias.
 
-        """
+        """            
         if self.validate_input:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', float, argmin=0)
-            validate_argument(locals(), 'z_src', 'float_array', argmin=0)
+            validate_argument(locals(), 'z_src_info', str)
             validate_argument(locals(), 'alpha', 'float_array')
-        return self._eval_magnification_bias(r_proj=r_proj, z_cl=z_cl, z_src=z_src, alpha=alpha)
+            validate_argument(locals(), 'approx', str, none_ok=True)
+            self._validate_z_src(locals())    
+            
+        if approx is None:
+            # z_src (float or array) is redshift
+            if z_src_info!='discrete':
+                raise ValueError(
+                    "approx=None requires z_src_info='discrete',"
+                    f"z_src_info='{z_src_info}' was provided.")
+            mu_bias = self._eval_magnification_bias(r_proj=r_proj, z_cl=z_cl, z_src=z_src, alpha=alpha)
+            
+        elif approx == 'weak lensing':
+            z_inf = 1000. #np.inf # INF or a very large number
+            kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=z_inf)
+            if z_src_info=='beta':
+                # z_src (tuple) is (beta_s_mean, beta_s_square_mean)
+                beta_s_mean, beta_s_square_mean = z_src
+            elif z_src_info=='distribution':
+                # z_src (function) if PDZ
+                beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, zmax=10.0,
+                                                  delta_z_cut=0.1, zmin=None, z_distrib_func=z_src)
+
+                beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo, zmax=10.0,
+                                                                delta_z_cut=0.1, zmin=None, z_distrib_func=z_src) 
+            else:
+                raise ValueError(
+                    f"approx='{approx}' requires z_src_info='distribution' or 'beta',"
+                    f"z_src_info='{z_src_info}' was provided.")
+     
+            mu_bias = 1 + 2*beta_s_mean*kappa_inf*(alpha-1)
+        else:
+            raise ValueError(f"Unsupported approx (='{approx}')")            
+            
+        return mu_bias
 
     def eval_rdelta(self, z_cl):
         r"""Retrieves the radius for mdelta

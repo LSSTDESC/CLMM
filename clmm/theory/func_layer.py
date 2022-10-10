@@ -715,28 +715,28 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
     alpha_ein : float, optional
         If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only available
         for the NumCosmo backend
-        z_src_info : str, optional
-            Type of redshift information provided, it describes z_src.
-            The following supported options are:
+    z_src_info : str, optional
+        Type of redshift information provided, it describes z_src.
+        The following supported options are:
 
-                * `discrete` (default) : The redshift of sources is provided by `z_src`.
-                  It can be individual redshifts for each source galaxy when `z_source` is an array
-                  or all sources are at the same redshift when `z_source` is a float.
+        * `discrete` (default) : The redshift of sources is provided by `z_src`.
+            It can be individual redshifts for each source galaxy when `z_source` is an array
+            or all sources are at the same redshift when `z_source` is a float.
 
-                * `distribution` : A redshift distribution function is provided by `z_src`.
-                  `z_src` must be a one dimentional function. 
+        * `distribution` : A redshift distribution function is provided by `z_src`.
+            `z_src` must be a one dimentional function. 
 
-                * `beta` : The averaged lensing efficiency is provided by `z_src`.
-                  `z_src` must be a tuple containing
-                  ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
-                  the lensing efficiency and square of the lensing efficiency averaged over
-                  the galaxy redshift distribution repectively.
+        * `beta` : The averaged lensing efficiency is provided by `z_src`.
+            `z_src` must be a tuple containing
+            ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
+            the lensing efficiency and square of the lensing efficiency averaged over
+            the galaxy redshift distribution repectively.
 
-                    .. math::
-                        \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right\rangle
+            .. math::
+                \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right\rangle
 
-                    .. math::
-                        \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
+            .. math::
+                \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
 
         approx : str, optional
             Type of computation to be made for reduced shears, options are:
@@ -817,8 +817,9 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
         Galaxy cluster NFW concentration.
     z_cluster : float
         Galaxy cluster redshift
-    z_source : array_like, float
-        Background source galaxy redshift(s)
+    z_source : array_like, float, function
+        Information on the background source galaxy redshift(s). Value required depends on
+        `z_src_info` (see below).
     cosmo : clmm.cosmology.Cosmology object
         CLMM Cosmology object
     delta_mdef : int, optional
@@ -838,10 +839,41 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
             * `virial` - not in cluster_toolkit;
 
     z_src_info : str, optional
-        Source redshift model, with the following supported options:
-            `discrete` (default) - all sources at one redshift (if
-            `z_source` is a float) or known individual source galaxy redshifts
-            (if `z_source` is an array and `r_proj` is a float);
+        Type of redshift information provided, it describes z_src.
+        The following supported options are:
+
+        * `discrete` (default) : The redshift of sources is provided by `z_src`.
+            It can be individual redshifts for each source galaxy when `z_source` is an array
+            or all sources are at the same redshift when `z_source` is a float.
+
+        * `distribution` : A redshift distribution function is provided by `z_src`.
+            `z_src` must be a one dimentional function. 
+
+        * `beta` : The averaged lensing efficiency is provided by `z_src`.
+            `z_src` must be a tuple containing
+            ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
+            the lensing efficiency and square of the lensing efficiency averaged over
+            the galaxy redshift distribution repectively.
+
+            .. math::
+                \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right\rangle
+
+            .. math::
+                \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
+
+        approx : str, optional
+            Type of computation to be made for reduced shears, options are:
+
+                * None (default): Full computation is made for each `r_proj, z_src` pair
+                  individually. It requires `z_src_info` to be `discrete`.
+
+                * `weak lensing` : Uses the weak lensing approximation of the magnification bias :math:`\mu \approx 1 + 2 \kappa \left(\alpha - 1 \right)`.
+                `z_src_info` must be either `beta`, or `distribution` (that will be used to compute
+                  :math:`\langle \beta_s \rangle`)
+    verbose : bool, optional
+        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends.
+    validate_input : bool, optional
+        If True (default), the types of the arguments are checked before proceeding.
 
 
     Returns
@@ -849,23 +881,22 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
     magnification_bias : array_like
         magnification bias
     """
+
+    gcm.validate_input = validate_input
+    gcm.set_cosmo(cosmo)
+    gcm.set_halo_density_profile(
+        halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
+    gcm.set_concentration(cdelta)
+    gcm.set_mass(mdelta)
+
+    magnification_bias = gcm.eval_magnification_bias(r_proj, z_cluster, z_source, alpha, z_src_info=z_src_info, approx=approx, verbose=verbose)
+    
     if z_src_info=='discrete':
         if np.any(np.array(z_source) <= z_cluster):
             warnings.warn(
                 'Some source redshifts are lower than the cluster redshift.'
-                ' magnification = 1 for those galaxies.')
+                ' magnification bias = 1 for those galaxies.')
 
-        gcm.validate_input = validate_input
-        gcm.set_cosmo(cosmo)
-        gcm.set_halo_density_profile(
-            halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
-        gcm.set_concentration(cdelta)
-        gcm.set_mass(mdelta)
-
-        magnification_bias = gcm.eval_magnification_bias(r_proj, z_cluster, z_source, alpha)
-
-    else:
-        raise ValueError("Unsupported z_src_info")
 
 
     gcm.validate_input = True
