@@ -879,7 +879,6 @@ def _functional_form(redshift, alpha, beta, redshift0, is_cdf=False):
         return redshift0**(alpha+1)*gammainc((alpha+1)/beta, (redshift/redshift0)**beta)/beta*gamma((alpha+1)/beta)
     else:
         return (redshift**alpha)*np.exp(-(redshift/redshift0)**beta)    
-    return 
     
 def _chang_z_distrib(redshift, is_cdf=False):
     """
