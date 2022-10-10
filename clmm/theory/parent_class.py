@@ -1182,7 +1182,7 @@ class CLMModeling:
             validate_argument(loc_dict, 'z_src', 'function', none_ok=False)
         elif loc_dict['z_src_info']=='beta':
             validate_argument(loc_dict, 'z_src', 'array')
-            beta_info = {'beta_s_mean':loc_dic['z_src'][0],
-                         'beta_s_square_mean':loc_dic['z_src'][1]}
+            beta_info = {'beta_s_mean':loc_dict['z_src'][0],
+                         'beta_s_square_mean':loc_dict['z_src'][1]}
             validate_argument(beta_info, 'beta_s_mean', 'float_array')
             validate_argument(beta_info, 'beta_s_square_mean', 'float_array')

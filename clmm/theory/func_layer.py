@@ -784,7 +784,7 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
 
 def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_source, cosmo,
                                delta_mdef=200, halo_profile_model='nfw', massdef='mean',
-                               z_src_info='discrete', validate_input=True):
+                               z_src_info='discrete', approx=None, verbose=False, validate_input=True):
 
     r""" Computes magnification bias from magnification :math:`\mu`
     and slope parameter :math:`\alpha` as :

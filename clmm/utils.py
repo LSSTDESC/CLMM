@@ -856,11 +856,11 @@ def z_distrib_model(redshift, model, is_cdf=False):
         raise ValueError(f"Unsupported model (='{model}')")
 
 def _functional_form(redshift, alpha, beta, redshift0, is_cdf=False):
-        """
+    """
     A private function that returns the functionnal form of the redshift distribution used in Chang et al (2013):
     
     .. math::
-       P(z) = z^{\\alpha}\times\exp^{\left(-\frac{z}{z0}^\beta\right)}   
+       P(z) = z^{\\alpha}\times\exp^{\left(-\frac{z}{z0}^\beta\right)}
 
     Parameters
     ----------
@@ -878,8 +878,8 @@ def _functional_form(redshift, alpha, beta, redshift0, is_cdf=False):
     if is_cdf:
         return redshift0**(alpha+1)*gammainc((alpha+1)/beta, (redshift/redshift0)**beta)/beta*gamma((alpha+1)/beta)
     else:
-        return (redshift**alpha)*np.exp(-(redshift/redshift0)**beta)    
-    
+        return (redshift**alpha)*np.exp(-(redshift/redshift0)**beta)
+
 def _chang_z_distrib(redshift, is_cdf=False):
     """
     A private function that returns the Chang et al (2013) unnormalized galaxy redshift distribution
