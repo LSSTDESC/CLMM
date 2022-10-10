@@ -22,11 +22,11 @@ def compute_nfw_boost(rvals, rs=1000, b0=0.1) :
 
     Returns
     -------
-    boost_factors : array_like
+    boost_factors : numpy.ndarray
 
     """
 
-    x = rvals/rs
+    x = np.array(rvals)/rs
 
     def _calc_finternal(x) :
 
@@ -54,11 +54,11 @@ def compute_powerlaw_boost(rvals, rs=1000, b0=0.1, alpha=-1.0) :
 
     Returns
     -------
-    boost_factors : array_like
+    boost_factors : numpy.ndarray
 
     """
 
-    x = rvals/rs
+    x = np.array(rvals)/rs
 
     return 1. + b0 * (x)**alpha
 
@@ -66,13 +66,11 @@ def compute_powerlaw_boost(rvals, rs=1000, b0=0.1, alpha=-1.0) :
 boost_models = {'nfw_boost': compute_nfw_boost,
                 'powerlaw_boost': compute_powerlaw_boost}
 
-def correct_sigma_with_boost_values(rvals, sigma_vals, boost_factors):
-    """ Given a boost model and sigma profile, compute corrected sigma
+def correct_sigma_with_boost_values(sigma_vals, boost_factors):
+    """ Given a list of boost values and sigma profile, compute corrected sigma
 
     Parameters
     ----------
-    rvals : array_like
-        radii
     sigma_vals : array_like
         uncorrected sigma with cluster member dilution
     boost_factors : array_like
@@ -80,11 +78,11 @@ def correct_sigma_with_boost_values(rvals, sigma_vals, boost_factors):
 
     Returns
     -------
-    sigma_corrected : array_like
+    sigma_corrected : numpy.ndarray
         correted radial profile
     """
 
-    sigma_corrected = sigma_vals / boost_factors
+    sigma_corrected = np.array(sigma_vals) / np.array(boost_factors)
     return sigma_corrected
 
 
@@ -104,13 +102,13 @@ def correct_sigma_with_boost_model(rvals, sigma_vals, boost_model='nfw_boost', *
 
     Returns
     -------
-    sigma_corrected : array_like
+    sigma_corrected : numpy.ndarray
         correted radial profile
     """
     boost_model_func = boost_models[boost_model]
     boost_factors = boost_model_func(rvals, **boost_model_kw)
 
-    sigma_corrected = sigma_vals / boost_factors
+    sigma_corrected = np.array(sigma_vals) / boost_factors
     return sigma_corrected
 
 def compute_radial_averages(xvals, yvals, xbins, yerr=None, error_model='ste', weights=None):
