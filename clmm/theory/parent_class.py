@@ -1109,11 +1109,11 @@ class CLMModeling:
         locals_dict: dict
             Should be the call locals()
         """
-        if loc_dic['z_src_info']=='discrete':
+        if loc_dict['z_src_info']=='discrete':
             validate_argument(loc_dict, 'z_src', 'float_array', argmin=0)
-        elif loc_dic['z_src_info']=='distribution':
+        elif loc_dict['z_src_info']=='distribution':
             validate_argument(loc_dict, 'z_src', 'function', none_ok=False)
-        elif loc_dic['z_src_info']=='beta':
+        elif loc_dict['z_src_info']=='beta':
             validate_argument(loc_dict, 'z_src', 'array')
             beta_info = {'beta_s_mean':loc_dic['z_src'][0],
                          'beta_s_square_mean':loc_dic['z_src'][1]}
