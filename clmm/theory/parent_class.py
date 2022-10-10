@@ -584,7 +584,8 @@ class CLMModeling:
         else:
             return self._eval_surface_density_2h(r_proj, z_cl, halobias=halobias, lsteps=lsteps)
 
-    def eval_tangential_shear(self, r_proj, z_cl, z_src, z_src_info='discrete', verbose=False):
+    def eval_tangential_shear(self, r_proj, z_cl, z_src, z_src_info='discrete', beta_kwargs=None,
+                              verbose=False):
         r"""Computes the tangential shear
 
         Parameters
@@ -619,6 +620,18 @@ class CLMModeling:
                     .. math::
                         \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
 
+        beta_kwargs: None, dict
+            Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
+            Only used if `z_src_info='distribution'`. Possible keys are:
+
+                * `zmin` (None, float) : Minimum redshift to be set as the source of the galaxy
+                  when performing the sum. (default=None)
+                * `zmax` (float) : Maximum redshift to be set as the source of the galaxy
+                  when performing the sum. (default=10.0)
+                * `delta_z_cut` (float) : Redshift interval to be summed with $z_cl$ to return
+                  $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
+
+
         Returns
         -------
         array_like, float
@@ -628,16 +641,7 @@ class CLMModeling:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', float, argmin=0)
             validate_argument(locals(), 'z_src_info', str)
-            if z_src_info=='discrete':
-                validate_argument(locals(), 'z_src', 'float_array', argmin=0)
-            elif z_src_info=='distribution':
-                validate_argument(locals(), 'z_src', 'function', none_ok=False)
-            elif z_src_info=='beta':
-                validate_argument(locals(), 'z_src', 'array')
-                beta_info = {'beta_s_mean':z_src[0],
-                             'beta_s_square_mean':z_src[1]}
-                validate_argument(beta_info, 'beta_s_mean', 'float_array')
-                validate_argument(beta_info, 'beta_s_square_mean', 'float_array')
+            self._validate_z_src(locals())
 
         if self.halo_profile_model=='einasto' and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
@@ -652,11 +656,16 @@ class CLMModeling:
                 beta_s_mean, beta_s_square_mean = z_src
             elif z_src_info=='distribution':
                 # z_src (function) if PDZ
-                beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, zmax=10.0,
-                                                  delta_z_cut=0.1, zmin=None, z_distrib_func=z_src)
-
-                beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo, zmax=10.0,
-                                                                delta_z_cut=0.1, zmin=None, z_distrib_func=z_src) 
+                beta_kwargs = {} if beta_kwargs is None else beta_kwargs
+                _def_keys = ['zmin', 'zmax', 'delta_z_cut']
+                if any(key not in _def_keys for key in beta_kwargs):
+                    raise KeyError(f'beta_kwargs must contain only {_def_keys} keys,'
+                                   f' {bet_kwargs.keys()} provided.')
+                beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, z_distrib_func=z_src,
+                                                  **beta_kwargs)
+                beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo,
+                                                                z_distrib_func=z_src,
+                                                                **beta_kwargs)
             gammat = beta_s_mean * gammat_inf
         else:
             raise ValueError(f"Unsupported z_src_info (='{z_src_info}')")
@@ -715,17 +724,7 @@ class CLMModeling:
             validate_argument(locals(), 'r_proj', 'float_array', argmin=0)
             validate_argument(locals(), 'z_cl', float, argmin=0)
             validate_argument(locals(), 'z_src_info', str)
-            if z_src_info=='discrete':
-                validate_argument(locals(), 'z_src', 'float_array', argmin=0)
-            elif z_src_info=='distribution':
-                validate_argument(locals(), 'z_src', 'function', none_ok=False)
-            elif z_src_info=='beta':
-                validate_argument(locals(), 'z_src', 'array')
-                beta_info = {'beta_s_mean':z_src[0],
-                             'beta_s_square_mean':z_src[1]}
-                validate_argument(beta_info, 'beta_s_mean', 'float_array')
-                validate_argument(beta_info, 'beta_s_square_mean', 'float_array')
-                
+            self._validate_z_src(locals())
                 
         if self.halo_profile_model=='einasto' and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
@@ -819,16 +818,7 @@ class CLMModeling:
             validate_argument(locals(), 'z_cl', float, argmin=0)
             validate_argument(locals(), 'z_src_info', str)
             validate_argument(locals(), 'approx', str, none_ok=True)
-            if z_src_info=='discrete':
-                validate_argument(locals(), 'z_src', 'float_array', argmin=0)
-            elif z_src_info=='distribution':
-                validate_argument(locals(), 'z_src', 'function', none_ok=False)
-            elif z_src_info=='beta':
-                validate_argument(locals(), 'z_src', 'array')
-                beta_info = {'beta_s_mean':z_src[0],
-                             'beta_s_square_mean':z_src[1]}
-                validate_argument(beta_info, 'beta_s_mean', 'float_array')
-                validate_argument(beta_info, 'beta_s_square_mean', 'float_array')
+            self._validate_z_src(locals())
 
         if self.halo_profile_model=='einasto' and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
@@ -932,16 +922,7 @@ class CLMModeling:
             validate_argument(locals(), 'z_cl', float, argmin=0)
             validate_argument(locals(), 'z_src_info', str)
             validate_argument(locals(), 'approx', str, none_ok=True)
-            if z_src_info=='discrete':
-                validate_argument(locals(), 'z_src', 'float_array', argmin=0)
-            elif z_src_info=='distribution':
-                validate_argument(locals(), 'z_src', 'function', none_ok=False)
-            elif z_src_info=='beta':
-                validate_argument(locals(), 'z_src', 'array')
-                beta_info = {'beta_s_mean':z_src[0],
-                             'beta_s_square_mean':z_src[1]}
-                validate_argument(beta_info, 'beta_s_mean', 'float_array')
-                validate_argument(beta_info, 'beta_s_square_mean', 'float_array')
+            self._validate_z_src(locals())
 
         if self.halo_profile_model=='einasto' and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
@@ -1119,3 +1100,22 @@ class CLMModeling:
 
         return self._convert_mass_concentration(z_cl, massdef, delta_mdef,
                                                 halo_profile_model, alpha)
+
+    def _validate_z_src(self, loc_dict):
+        r"""Validation for z_src
+
+        Parameters
+        ----------
+        locals_dict: dict
+            Should be the call locals()
+        """
+        if loc_dic['z_src_info']=='discrete':
+            validate_argument(loc_dict, 'z_src', 'float_array', argmin=0)
+        elif loc_dic['z_src_info']=='distribution':
+            validate_argument(loc_dict, 'z_src', 'function', none_ok=False)
+        elif loc_dic['z_src_info']=='beta':
+            validate_argument(loc_dict, 'z_src', 'array')
+            beta_info = {'beta_s_mean':loc_dic['z_src'][0],
+                         'beta_s_square_mean':loc_dic['z_src'][1]}
+            validate_argument(beta_info, 'beta_s_mean', 'float_array')
+            validate_argument(beta_info, 'beta_s_square_mean', 'float_array')
