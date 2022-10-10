@@ -875,7 +875,6 @@ def _functional_form(redshift, alpha, beta, redshift0, is_cdf=False):
     -------
     The value of the function at z
     """
-        
     if is_cdf:
         return redshift0**(alpha+1)*gammainc((alpha+1)/beta, (redshift/redshift0)**beta)/beta*gamma((alpha+1)/beta)
     else:
