@@ -1,7 +1,7 @@
 # pylint: disable=no-member, protected-access
 """ Tests for utils.py """
 import numpy as np
-from numpy.testing import assert_raises, assert_allclose
+from numpy.testing import assert_raises, assert_allclose, assert_equal
 from scipy.integrate import quad
 import clmm.utils as utils
 import clmm.theory as md
@@ -215,6 +215,10 @@ def test_make_bins():
                           method='equaloccupation', source_seps=test_array)
     assert_allclose(np.diff(np.histogram(test_array, bins=test_bins)[0]),
                     np.zeros(22), atol=2)
+    assert_equal(
+        make_bins(0, 15, nbins=23, method='equaloccupation', source_seps=test_array),
+        make_bins(None, None, nbins=23, method='equaloccupation', source_seps=test_array)
+                )
     assert_raises(ValueError, make_bins, 0, 10, 10, 'equaloccupation', None)
     assert_raises(ValueError, make_bins, 0, 10, 10, 'undefinedmethod')
 

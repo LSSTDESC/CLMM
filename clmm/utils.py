@@ -10,16 +10,16 @@ from .constants import Constants as const
 
 
 def compute_nfw_boost(rvals, rs=1000, b0=0.1) :
-    """ Given a list of rvals, and optional rs and b0, return the corresponding boost factor
+    """ Given a list of `rvals`, and optional `rs` and `b0`, return the corresponding boost factor
     at each rval
 
     Parameters
     ----------
     rvals : array_like
         radii
-    rs : float (optional)
+    rs : float, optional
         scale radius for NFW in same units as rvals (default 2000 kpc)
-    b0 : float (optional)
+    b0 : float, optional
 
     Returns
     -------
@@ -50,11 +50,12 @@ def compute_powerlaw_boost(rvals, rs=1000, b0=0.1, alpha=-1.0) :
     ----------
     rvals : array_like
         radii
-    rs : float (optional)
+    rs : float, optional
         scale radius for NFW in same units as rvals (default 2000 kpc)
-    b0 : float (optional)
-    alpha : float (optional)
-        exponent from Melchior+16
+    b0 : float, optional
+        Default: 0.1
+    alpha : float, optional
+        exponent from Melchior+16. Default: -1.0
 
     Returns
     -------
@@ -101,8 +102,9 @@ def correct_sigma_with_boost_model(rvals, sigma_vals, boost_model='nfw_boost', *
         uncorrected sigma with cluster member dilution
     boost_model : str, optional
         Boost model to use for correcting sigma
-            `nfw_boost` - NFW profile model (Default)
-            `powerlaw_boost` - Powerlaw profile
+
+            * 'nfw_boost' - NFW profile model (Default)
+            * 'powerlaw_boost' - Powerlaw profile
 
     Returns
     -------
@@ -116,7 +118,7 @@ def correct_sigma_with_boost_model(rvals, sigma_vals, boost_model='nfw_boost', *
     return sigma_corrected
 
 def compute_radial_averages(xvals, yvals, xbins, yerr=None, error_model='ste', weights=None):
-    """ Given a list of `xvals`, `yvals` and bins, sort into bins. If `xvals` or `yvals`
+    """ Given a list of `xvals`, `yvals` and `xbins`, sort into bins. If `xvals` or `yvals`
     contain non-finite values, these are filtered.
 
     Parameters
@@ -127,27 +129,27 @@ def compute_radial_averages(xvals, yvals, xbins, yerr=None, error_model='ste', w
         Values to compute statistics on
     xbins: array_like
         Bin edges to sort into
-    yerr : array_like, None
-        Errors of component y
+    yerr : array_like, None, optional
+        Errors of `yvals`. Default: None
     error_model : str, optional
         Statistical error model to use for y uncertainties. (letter case independent)
 
-            * `ste` - Standard error [=std/sqrt(n) in unweighted computation] (Default).
-            * `std` - Standard deviation.
+            * 'ste' - Standard error [=std/sqrt(n) in unweighted computation] (Default).
+            * 'std' - Standard deviation.
 
-    weights: array_like, None
-        Weights for averages.
+    weights: array_like, None, optional
+        Weights for averages. Default: None
 
 
     Returns
     -------
-    mean_x : array_like
+    mean_x : numpy.ndarray
         Mean x value in each bin
-    mean_y : array_like
+    mean_y : numpy.ndarray
         Mean y value in each bin
-    err_y: array_like
-        Error on the mean y value in each bin. Specified by error_model
-    num_objects : array_like
+    err_y: numpy.ndarray
+        Error on the mean y value in each bin. Specified by `error_model`
+    num_objects : numpy.ndarray
         Number of objects in each bin
     binnumber: 1-D ndarray of ints
         Indices of the bins (corresponding to `xbins`) in which each value
@@ -186,58 +188,56 @@ def make_bins(rmin, rmax, nbins=10, method='evenwidth', source_seps=None):
 
     Parameters
     ----------
-    rmin : float
-        Minimum bin edges wanted
-    rmax : float
-        Maximum bin edges wanted
-    nbins : float
+    rmin : float, None
+        Minimum bin edges wanted. If None, min(`source_seps`) is used.
+    rmax : float, None
+        Maximum bin edges wanted. If None, max(`source_seps`) is used.
+    nbins : float, optional
         Number of bins you want to create, default to 10.
     method : str, optional
         Binning method to use (letter case independent):
 
-            * `evenwidth` - Default, evenly spaced bins between rmin and rmax
-            * `evenlog10width` - Logspaced bins with even width in log10 between rmin and rmax
-            * `equaloccupation` - Bins with equal occupation numbers
+            * 'evenwidth' - Default, evenly spaced bins between `rmin` and `rmax`
+            * 'evenlog10width' - Logspaced bins with even width in log10 between `rmin` and `rmax`
+            * 'equaloccupation' - Bins with equal occupation numbers
 
-    source_seps : array_like
-        Radial distance of source separations
+    source_seps : array_like, None, optional
+        Radial distance of source separations. Needed if `method='equaloccupation'`. Default: None
 
     Returns
     -------
-    binedges: array_like, float
-        n_bins+1 dimensional array that defines bin edges
+    binedges: numpy.ndarray
+        array with `nbins` +1 elements that defines bin edges
     """
     # make case independent
     method = method.lower()
-    # Check consistency
-    if (rmin > rmax) or (rmin < 0.0) or (rmax < 0.0):
-        raise ValueError(f"Invalid bin endpoints in make_bins, {rmin} {rmax}")
-    if (nbins <= 0) or not isinstance(nbins, int):
-        raise ValueError(
-            f"Invalid nbins={nbins}. Must be integer greater than 0.")
-
-    if method == 'evenwidth':
-        binedges = np.linspace(rmin, rmax, nbins+1, endpoint=True)
-    elif method == 'evenlog10width':
-        binedges = np.logspace(np.log10(rmin), np.log10(
-            rmax), nbins+1, endpoint=True)
-    elif method == 'equaloccupation':
+    if method == 'equaloccupation':
         if source_seps is None:
             raise ValueError(
                 f"Binning method '{method}' requires source separations array")
-        # by default, keep all galaxies
         seps = np.array(source_seps)
-        mask = np.full(seps.size, True)
-        if rmin is not None or rmax is not None:
-            # Need to filter source_seps to only keep galaxies in the [rmin, rmax]
-            rmin = seps.min() if rmin is None else rmin
-            rmax = seps.max() if rmax is None else rmax
-            mask = (seps >= rmin)*(seps <= rmax)
+        rmin = seps.min() if rmin is None else rmin
+        rmax = seps.max() if rmax is None else rmax
+        # Need to filter source_seps to only keep galaxies in the [rmin, rmax] with a mask
+        mask = (seps >= rmin)*(seps <= rmax)
         binedges = np.percentile(seps[mask], tuple(
-            np.linspace(0, 100, nbins+1, endpoint=True)))
+        np.linspace(0, 100, nbins+1, endpoint=True)))
     else:
-        raise ValueError(
-            f"Binning method '{method}' is not currently supported")
+        # Check consistency
+        if (rmin > rmax) or (rmin < 0.0) or (rmax < 0.0):
+            raise ValueError(f"Invalid bin endpoints in make_bins, {rmin} {rmax}")
+        if (nbins <= 0) or not isinstance(nbins, int):
+            raise ValueError(
+                f"Invalid nbins={nbins}. Must be integer greater than 0.")
+
+        if method == 'evenwidth':
+            binedges = np.linspace(rmin, rmax, nbins+1, endpoint=True)
+        elif method == 'evenlog10width':
+            binedges = np.logspace(np.log10(rmin), np.log10(
+                rmax), nbins+1, endpoint=True)
+        else:
+            raise ValueError(
+                f"Binning method '{method}' is not currently supported")
 
     return binedges
 
@@ -249,25 +249,25 @@ def convert_units(dist1, unit1, unit2, redshift=None, cosmo=None):
     (letter case independent)
 
     To convert between angular and physical units you must provide both
-    a redshift and a cosmology object.
+    `redshift` and a CLMM Cosmology object `cosmo`.
 
     Parameters
     ----------
-    dist1 : array_like
+    dist1 : float, array_like
         Input distances
     unit1 : str
         Unit for the input distances
     unit2 : str
         Unit for the output distances
-    redshift : float
-        Redshift used to convert between angular and physical units
-    cosmo : CLMM.Cosmology
+    redshift : float, None, optional
+        Redshift used to convert between angular and physical units. Default: None
+    cosmo : clmm.Cosmology, None, optional
         CLMM Cosmology object to compute angular diameter distance to
-        convert between physical and angular units
+        convert between physical and angular units. Default: None
 
     Returns
     -------
-    dist2: array_like
+    dist2: float, numpy.ndarray
         Input distances converted to unit2
     """
     # make case independent
@@ -336,21 +336,21 @@ def convert_shapes_to_epsilon(shape_1, shape_2, shape_definition='epsilon', kapp
 
     Parameters
     ----------
-    shape_1 : array_like
+    shape_1 : float, numpy.ndarray
         Input shapes or shears along principal axis (g1 or e1)
-    shape_2 : array_like
+    shape_2 : float, numpy.ndarray
         Input shapes or shears along secondary axis (g2 or e2)
-    shape_definition : str
+    shape_definition : str, optional
         Definition of the input shapes, can be ellipticities 'epsilon' or 'chi' or shears 'shear'
-        or 'reduced_shear'
-    kappa : array_like
+        or 'reduced_shear'. Defaut: 'epsilon'
+    kappa : float, numpy.ndarray, optional
         Convergence for transforming to a reduced shear. Default is 0
 
     Returns
     -------
-    epsilon_1 : array_like
+    epsilon_1 : float, numpy.ndarray
         Epsilon ellipticity (or reduced shear) along principal axis (epsilon1)
-    epsilon_2 : array_like
+    epsilon_2 : float, numpy.ndarray
         Epsilon ellipticity (or reduced shear) along secondary axis (epsilon2)
     """
 
@@ -371,18 +371,18 @@ def build_ellipticities(q11, q22, q12):
 
     Parameters
     ----------
-    q11 : float or array
+    q11 : float, numpy.ndarray
         Second brightness moment tensor, component (1,1)
-    q22 : float or array
+    q22 : float, numpy.ndarray
         Second brightness moment tensor, component (2,2)
-    q12 :  float or array
+    q12 :  float, numpy.ndarray
         Second brightness moment tensor, component (1,2)
 
     Returns
     -------
-    chi1, chi2 : float or array
+    chi1, chi2 : float, numpy.ndarray
         Ellipticities using the "chi definition"
-    epsilon1, epsilon2 : float or array
+    epsilon1, epsilon2 : float, numpy.ndarray
         Ellipticities using the "epsilon definition"
     """
     norm_x, norm_e = q11+q22, q11+q22+2*np.sqrt(q11*q22-q12*q12)
@@ -406,19 +406,19 @@ def compute_lensed_ellipticity(ellipticity1_true, ellipticity2_true, shear1, she
 
     Parameters
     ----------
-    ellipticity1_true : float or array
+    ellipticity1_true : float, numpy.ndarray
         Intrinsic ellipticity of the sources along the principal axis
-    ellipticity2_true : float or array
+    ellipticity2_true : float, numpy.ndarray
         Intrinsic ellipticity of the sources along the second axis
-    shear1 :  float or array
+    shear1 :  float, numpy.ndarray
         Shear component (not reduced shear) along the principal axis at the source location
-    shear2 :  float or array
+    shear2 :  float, numpy.ndarray
         Shear component (not reduced shear) along the 45-degree axis at the source location
-    convergence :  float or array
+    convergence :  float, numpy.ndarray
         Convergence at the source location
     Returns
     -------
-    e1, e2 : float or array
+    e1, e2 : float, numpy.ndarray
         Lensed ellipicity along both reference axes.
     """
     # shear (as a complex number)
@@ -440,10 +440,10 @@ def arguments_consistency(arguments, names=None, prefix=''):
     ----------
     arguments: list, arrays, tuple
         Group of arguments to be checked
-    names: list, tuple
-        Names for each array, optional
-    prefix: str
-        Customized prefix for error message
+    names: list, tuple, None, optional
+        Names for each array. Default: None
+    prefix: str, optional
+        Customized prefix for error message. Default: ''
 
     Returns
     -------
@@ -502,8 +502,8 @@ def _is_valid(arg, valid_type):
     valid_type: str, type
         Valid types for argument, options are object types, list/tuple of types, or:
 
-            * `int_array` - interger, interger array
-            * `float_array` - float, float array
+            * 'int_array' - interger, interger array
+            * 'float_array' - float, float array
 
     Returns
     -------
@@ -528,19 +528,19 @@ def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argm
     valid_type: str, type
         Valid types for argument, options are object types, list/tuple of types, or:
 
-            * `int_array` - interger, interger array
-            * `float_array` - float, float array
+            * 'int_array' - interger, interger array
+            * 'float_array' - float, float array
 
-    none_ok: True
-        Accepts None as a valid type.
-    argmin (optional) : int, float, None
-        Minimum value allowed.
-    argmax (optional) : int, float, None
-        Maximum value allowed.
-    eqmin: bool
-        Accepts min(arg)==argmin.
-    eqmax: bool
-        Accepts max(arg)==argmax.
+    none_ok: bool, optional
+        If True, accepts None as a valid type. Default: False
+    argmin : int, float, None, optional
+        Minimum value allowed. Default: None
+    argmax : int, float, None, optional
+        Maximum value allowed. Default: None
+    eqmin: bool, optional
+        If True, accepts min(arg)==argmin. Default: False
+    eqmax: bool, optional
+        If True, accepts max(arg)==argmax. Default: False
     """
     var = loc[argname]
     # Check for None
@@ -583,17 +583,21 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1., is_uniqu
         Photometric probablility density functions of the source galaxies.
     pzbins : list of arrays
         Redshift axis on which the individual photoz pdf is tabulated.
-    zmin : float
-        Minimum redshift for integration
+    zmin : float, optional
+        Minimum redshift for integration. Default: 0
+    zmax : float, optional
+        Maximum redshift for integration. Default: 5
     kernel : function, optional
         Function to be integrated with the pdf, must be f(z_array) format.
         Default: kernel(z)=1
+    is_unique_pzbins: bool, optional
+        Default: False
     ngrid : int, optional
         Number of points for the interpolation of the redshift pdf.
 
     Returns
     -------
-    array
+    numpy.ndarray
         Kernel integrated with the pdf of each galaxy.
 
     Notes
@@ -621,7 +625,7 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1., is_uniqu
 def compute_for_good_redshifts(function, z1, z2, bad_value, warning_message,
                                z1_arg_name='z1', z2_arg_name='z2', r_proj=None,
                                show_warning=True):
-    """Computes function only for `z1` < `z2`, the rest is filled with bad_value
+    """Computes function only for `z1` < `z2`, the rest is filled with `bad_value`
 
     Parameters
     ----------
@@ -676,7 +680,7 @@ def compute_beta(z_s, z_cl, cosmo):
     r"""Geometric lensing efficicency
 
     .. math::
-        \beta = max(0, d_{a\ ls}/d_{a\ s})
+        \beta = max(0, D_{a,\ ls}/D_{a,\ s})
 
     Eq.2 in https://arxiv.org/pdf/1611.03866.pdf
 
@@ -686,8 +690,8 @@ def compute_beta(z_s, z_cl, cosmo):
             Galaxy cluster redshift
     z_s:  float
             Source galaxy  redshift
-    cosmo: Cosmology
-        Cosmology object
+    cosmo: clmm.Cosmology
+        CLMM Cosmology object
 
     Returns
     -------
@@ -707,12 +711,12 @@ def compute_beta_s(z_s, z_cl, z_inf, cosmo):
     ----------
     z_cl: float
             Galaxy cluster redshift
-    z_s:  float
+    z_s: float
             Source galaxy redshift
     z_inf: float
             Redshift at infinity
-    cosmo: Cosmology
-        Cosmology object
+    cosmo: clmm.Cosmology
+        CLMM Cosmology object
 
     Returns
     -------
@@ -726,26 +730,26 @@ def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_dist
     r"""Mean value of the geometric lensing efficicency
 
     .. math::
-       \left<\beta\right> = \frac{\sum_{z = z_{min}}^{z_{max}}\beta(z)p(z)}{\sum_{z =
-       z_{min}}^{z_{max}}p(z)}
+       \left<\beta\right> = \frac{\sum_{z = z_{min}}^{z_{max}}\beta(z)p(z)}
+       {\sum_{z = z_{min}}^{z_{max}}p(z)}
 
     Parameters
     ----------
     z_cl: float
-            Galaxy cluster redshift
-    z_inf: float
-            Redshift at infinity
-    z_distrib_func: one-parameter function
-            Redshift distribution function. Default is Chang et al (2013) distribution function.
-    zmin: float
-            Minimum redshift to be set as the source of the galaxy when performing the sum.
-    zmax: float
-            Maximum redshift to be set as the source of the galaxy when performing the sum.
-    delta_z_cut: float
-            Redshift interval to be summed with :math:`z_{cl}` to return :math:`z_{min}`.
-            This feature is not used if :math:`z_{min}` is provided by the user.
-    cosmo: Cosmology
-        Cosmology object
+        Galaxy cluster redshift
+    cosmo: clmm.Cosmology
+        CLMM Cosmology object
+    zmax: float, optional
+        Maximum redshift to be set as the source of the galaxy when performing the sum.
+        Default: 10
+    delta_z_cut: float, optional
+        Redshift interval to be summed with :math:`z_{cl}` to return :math:`z_{min}`.
+        This feature is not used if :math:`z_{min}` is provided by the user. Default: 0.1
+    zmin: float, None, optional
+        Minimum redshift to be set as the source of the galaxy when performing the sum.
+        Default: None
+    z_distrib_func: one-parameter function, optional
+        Redshift distribution function. Default is Chang et al (2013) distribution function.
 
     Returns
     -------
@@ -773,20 +777,24 @@ def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=Non
     Parameters
     ----------
     z_cl: float
-            Galaxy cluster redshift
+        Galaxy cluster redshift
     z_inf: float
-            Redshift at infinity
-    z_distrib_func: one-parameter function
-            Redshift distribution function. Default is Chang et al (2013) distribution function.
-    zmin: float
-            Minimum redshift to be set as the source of the galaxy when performing the sum.
+        Redshift at infinity
+    cosmo: clmm.Cosmology
+        CLMM Cosmology object
     zmax: float
-            Minimum redshift to be set as the source of the galaxy when performing the sum.
-    delta_z_cut: float
-            Redshift interval to be summed with $z_cl$ to return :math:`z_{min}`. This feature is
-            not used if :math:`z_{min}` is provided by the user.
-    cosmo: Cosmology
-        Cosmology object
+        Maximum redshift to be set as the source of the galaxy when performing the sum.
+        Default: 10
+    delta_z_cut: float, optional
+        Redshift interval to be summed with :math:`z_{cl}` to return :math:`z_{min}`.
+        This feature is not used if :math:`z_{min}` is provided by the user. Default: 0.1
+    z_distrib_func: one-parameter function
+        Redshift distribution function. Default is Chang et al (2013) distribution function.
+    zmin: float, None, optional
+        Minimum redshift to be set as the source of the galaxy when performing the sum.
+        Default: None
+    z_distrib_func: one-parameter function, optional
+        Redshift distribution function. Default is Chang et al (2013) distribution function.
 
     Returns
     -------
@@ -817,17 +825,19 @@ def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, z
             Galaxy cluster redshift
     z_inf: float
             Redshift at infinity
-    z_distrib_func: one-parameter function
-            Redshift distribution function. Default is Chang et al (2013) distribution function.
-    zmin: float
-            Minimum redshift to be set as the source of the galaxy when performing the sum.
+    cosmo: clmm.Cosmology
+        CLMM Cosmology object
     zmax: float
-            Minimum redshift to be set as the source of the galaxy when performing the sum.
-    delta_z_cut: float
-            Redshift interval to be summed with :math:`z_{cl}` to return :math:`z_{min}`.
-            This feature is not used if :math:`z_{min}` is provided by the user.
-    cosmo: Cosmology
-        Cosmology object
+        Maximum redshift to be set as the source of the galaxy when performing the sum.
+        Default: 10
+    delta_z_cut: float, optional
+        Redshift interval to be summed with :math:`z_{cl}` to return :math:`z_{min}`.
+        This feature is not used if :math:`z_{min}` is provided by the user. Default: 0.1
+    zmin: float, None, optional
+        Minimum redshift to be set as the source of the galaxy when performing the sum.
+        Default: None
+    z_distrib_func: one-parameter function, optional
+        Redshift distribution function. Default is Chang et al (2013) distribution function.
 
     Returns
     -------
@@ -854,8 +864,8 @@ def _chang_z_distrib(redshift, is_cdf=False):
     ----------
     redshift : float
         Galaxy redshift
-    is_cdf : bool
-        If True, returns cumulative distribution function.
+    is_cdf : bool, optional
+        If True, returns cumulative distribution function. Default: False
 
     Returns
     -------
@@ -877,8 +887,8 @@ def _srd_z_distrib(redshift, is_cdf=False):
     ----------
     redshift : float
         Galaxy redshift
-    is_cdf : bool
-        If True, returns cumulative distribution function.
+    is_cdf : bool, optional
+        If True, returns cumulative distribution function. Default: False
 
     Returns
     -------
@@ -906,12 +916,12 @@ def _draw_random_points_from_distribution(xmin, xmax, nobj, dist_func, xstep=0.0
         Number of galaxies to generate
     dist_func : function
         Function of the required distribution
-    xstep : float
-        Size of the step to interpolate the culmulative distribution.
+    xstep : float, optional
+        Size of the step to interpolate the culmulative distribution. Default: 0.001
 
     Returns
     -------
-    ndarray
+    numpy.ndarray
         Random points with dist_func distribution
     """
     steps = int((xmax-xmin)/xstep)+1
@@ -934,14 +944,14 @@ def _draw_random_points_from_tab_distribution(x_tab, pdf_tab, nobj=1, xmin=None,
         Value of the pdf at the x_tab locations
     nobj : int, optional
         Number of random samples to generate. Default is 1.
-    xmin : float
+    xmin : float, optional
         Lower bound to draw redshift. Default is the min(x_tab)
-    xmax : float
+    xmax : float, optional
         Upper bound to draw redshift. Default is the max(x_tab)
 
     Returns
     -------
-    samples : ndarray
+    samples : numpy.ndarray
         Random points following the pdf_tab distribution
     """
     x_tab = np.array(x_tab)
