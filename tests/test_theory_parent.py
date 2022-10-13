@@ -5,6 +5,7 @@ from numpy.testing import assert_raises, assert_allclose, assert_equal
 import clmm.theory as theo
 from clmm.theory.parent_class import CLMModeling
 from clmm.utils import compute_beta_s_square_mean, compute_beta_s_mean
+from clmm.z_distributions import chang2013, desc_srd
 
 def test_unimplemented(modeling_data):
     """ Unit tests abstract class unimplemented methdods """
@@ -125,10 +126,10 @@ def test_instantiate(modeling_data):
     
     beta_s_square_test = compute_beta_s_square_mean(z_cl, 1000., mod.cosmo)
     beta_s_test = compute_beta_s_mean(z_cl, 1000., mod.cosmo)   
-    reduced_shear = mod.eval_reduced_tangential_shear(r_proj, z_cl, None, 'distribution', 'applegate14')
+    reduced_shear = mod.eval_reduced_tangential_shear(r_proj, z_cl, chang2013, 'distribution', 'applegate14')
     assert_allclose(reduced_shear, beta_s_test* shear_inf/(1.0 - beta_s_square_test / beta_s_test * convergence_inf), rtol=1.0e-12)
     
-    reduced_shear = mod.eval_reduced_tangential_shear(r_proj, z_cl, None, 'distribution', 'schrabback18')
+    reduced_shear = mod.eval_reduced_tangential_shear(r_proj, z_cl, chang2013, 'distribution', 'schrabback18')
     assert_allclose(reduced_shear, (1. + (beta_s_square_test / (beta_s_test * beta_s_test) - 1.) * beta_s_test * convergence_inf) * (beta_s_test * shear_inf / (1. - beta_s_test * convergence_inf)), rtol=1.0e-12)
     
     assert_raises(ValueError, mod.eval_critical_surface_density, z_cl, use_pdz=True)
