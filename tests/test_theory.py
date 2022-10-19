@@ -473,7 +473,7 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
     # Validation Tests -------------------------
     # NumCosmo makes different choices for constants (Msun). We make this conversion
     # by passing the ratio of SOLAR_MASS in kg from numcosmo and CLMM
-    cfg = load_validation_config(profile_init)
+    cfg = load_validation_config(halo_profile_model=profile_init)
 
     if (profile_init=='nfw' or theo.be_nick in ['nc','ccl']) and\
     (modeling_data['nick'] not in ['notabackend','testnotabackend']):
