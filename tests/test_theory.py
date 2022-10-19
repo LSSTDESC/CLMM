@@ -501,17 +501,16 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
 
         # Validate tangential shear
         gammat = theo.compute_tangential_shear(cosmo=cosmo, **cfg['GAMMA_PARAMS'])
-        assert_allclose(gammat*sigmac_corr,
-                        cfg['numcosmo_profiles']['gammat'], reltol)
+        assert_allclose(gammat*sigmac_corr, cfg['numcosmo_profiles']['gammat'], reltol)
 
         # Validate convergence
         kappa = theo.compute_convergence(cosmo=cosmo, **cfg['GAMMA_PARAMS'])
-        assert_allclose(kappa*sigmac_corr,
-                        cfg['numcosmo_profiles']['kappa'], reltol)
+        assert_allclose(kappa*sigmac_corr, cfg['numcosmo_profiles']['kappa'], reltol)
 
         # Validate reduced tangential shear
-        assert_allclose(theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg['GAMMA_PARAMS']),
-                        gammat/(1.0-kappa), 1.0e-10)
+        assert_allclose(
+            theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg['GAMMA_PARAMS']),
+            gammat/(1.0-kappa), 1.0e-10)
 
         beta_s_mean, beta_s_square_mean = 0.9, 0.6
         cfg_inf = load_validation_config()
@@ -520,12 +519,21 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         kappa_inf = theo.compute_convergence(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'])
 
         cfg_inf['GAMMA_PARAMS']['z_src_model'] = 'applegate14'
-        assert_allclose(theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'], beta_s_mean=beta_s_mean, beta_s_square_mean=beta_s_square_mean),
-                        beta_s_mean * gammat_inf/(1.0 - beta_s_square_mean / beta_s_mean * kappa_inf), 1.0e-10)
+        assert_allclose(
+            theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'],
+                                                  beta_s_mean=beta_s_mean,
+                                                  beta_s_square_mean=beta_s_square_mean),
+            beta_s_mean * gammat_inf/(1.0 - beta_s_square_mean / beta_s_mean * kappa_inf),
+            1.0e-10)
 
         cfg_inf['GAMMA_PARAMS']['z_src_model'] = 'schrabback18'
-        assert_allclose(theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'], beta_s_mean=beta_s_mean, beta_s_square_mean=beta_s_square_mean),
-                        (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean * kappa_inf) * (beta_s_mean * gammat_inf / (1. - beta_s_mean * kappa_inf)), 1.0e-10)
+        assert_allclose(
+            theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'],
+                                                  beta_s_mean=beta_s_mean,
+                                                  beta_s_square_mean=beta_s_square_mean),
+            (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean *
+             kappa_inf) * (beta_s_mean * gammat_inf / (1. - beta_s_mean * kappa_inf)),
+            1.0e-10)
 
 
         assert_allclose(gammat*sigmac_corr/(1.-(kappa*sigmac_corr)),
@@ -543,9 +551,10 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         # this if will be removed once compute_magnification_bias takes alpha_ein
         if profile_init=='einasto' and theo.be_nick=='nc':
             del cfg['GAMMA_PARAMS']['alpha_ein']
-        assert_allclose(theo.compute_magnification_bias(
-            cosmo=cosmo, **cfg['GAMMA_PARAMS'], alpha=alpha),
-                        (1./((1-kappa)**2-abs(gammat)**2))**(alpha - 1), 1.0e-10)
+
+        assert_allclose(
+            theo.compute_magnification_bias( cosmo=cosmo, **cfg['GAMMA_PARAMS'], alpha=alpha),
+            (1./((1-kappa)**2-abs(gammat)**2))**(alpha - 1), 1.0e-10)
         assert_allclose((1./((1-kappa*sigmac_corr)**2-abs(gammat*sigmac_corr)**2))**(alpha - 1),
                         cfg['numcosmo_profiles']['mu']**(alpha - 1), 1.e3*reltol)
 
@@ -559,24 +568,28 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
 
         assert_allclose(
             theo.compute_convergence(
-                radius, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
+                radius, mdelta=1.e15, cdelta=4.,
+                z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
             np.zeros(len(radius)), 1.0e-10)
         assert_allclose(
             theo.compute_tangential_shear(
-                radius, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
+                radius, mdelta=1.e15, cdelta=4.,
+                z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
             np.zeros(len(radius)), 1.0e-10)
         assert_allclose(
             theo.compute_reduced_tangential_shear(
-                radius, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
+                radius, mdelta=1.e15, cdelta=4.,
+                z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
             np.zeros(len(radius)), 1.0e-10)
         assert_allclose(
             theo.compute_magnification(
-                radius, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
+                radius, mdelta=1.e15, cdelta=4.,
+                z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
             np.ones(len(radius)), 1.0e-10)
         assert_allclose(
             theo.compute_magnification_bias(
-                radius, alpha=-1, mdelta=1.e15, cdelta=4., z_cluster=z_cluster,
-                z_source=z_source, cosmo=cosmo),
+                radius, alpha=-1, mdelta=1.e15, cdelta=4.,
+                z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
             np.ones(len(radius)), 1.0e-10)
 
         # Second, check a single radius and array of source z
@@ -584,24 +597,28 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         z_source = [0.25, 0.1, 0.14, 0.02]
         assert_allclose(
             theo.compute_convergence(
-                radius, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
+                radius, mdelta=1.e15, cdelta=4.,
+                z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
             np.zeros(len(z_source)), 1.0e-10)
         assert_allclose(
             theo.compute_tangential_shear(
-                radius, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
+                radius, mdelta=1.e15, cdelta=4.,
+                z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
             np.zeros(len(z_source)), 1.0e-10)
         assert_allclose(
             theo.compute_reduced_tangential_shear(
-                radius, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
+                radius, mdelta=1.e15, cdelta=4.,
+                z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
             np.zeros(len(z_source)), 1.0e-10)
         assert_allclose(
             theo.compute_magnification(
-                radius, mdelta=1.e15, cdelta=4., z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
+                radius, mdelta=1.e15, cdelta=4.,
+                z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
             np.ones(len(z_source)), 1.0e-10)
         assert_allclose(
             theo.compute_magnification_bias(
-                radius, alpha = -1, mdelta=1.e15, cdelta=4., z_cluster=z_cluster,
-                z_source=z_source, cosmo=cosmo),
+                radius, alpha = -1, mdelta=1.e15, cdelta=4.,
+                z_cluster=z_cluster, z_source=z_source, cosmo=cosmo),
             np.ones(len(z_source)), 1.0e-10)
 
         # Object Oriented tests
@@ -626,8 +643,8 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         sigmac_corr = (sigma_c_undo/sigma_c)
 
         # Validate tangential shear
-        profile_pars = (cfg['GAMMA_PARAMS']['r_proj'], cfg['GAMMA_PARAMS']['z_cluster'],
-                        cfg['GAMMA_PARAMS']['z_source'])
+        profile_pars = [cfg['GAMMA_PARAMS']['r_proj'], cfg['GAMMA_PARAMS']['z_cluster'],
+                        cfg['GAMMA_PARAMS']['z_source']]
         gammat = mod.eval_tangential_shear(*profile_pars)
         assert_allclose(gammat*sigmac_corr,
                         cfg['numcosmo_profiles']['gammat'], reltol)
@@ -645,10 +662,20 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         beta_s_mean = 0.6
         beta_s_square_mean = 0.4
         source_redshift_inf = 1000.
-        gammat_inf = mod.eval_tangential_shear(profile_pars[0], profile_pars[1], source_redshift_inf) #np.inf)
-        kappa_inf = mod.eval_convergence(profile_pars[0], profile_pars[1], source_redshift_inf) #np.inf)
-        assert_allclose(mod.eval_reduced_tangential_shear(*profile_pars, 'applegate14', beta_s_mean, beta_s_square_mean), beta_s_mean * gammat_inf/(1.0 - beta_s_square_mean / beta_s_mean * kappa_inf), 1.0e-10)
-        assert_allclose(mod.eval_reduced_tangential_shear(*profile_pars, 'schrabback18', beta_s_mean, beta_s_square_mean), (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean * kappa_inf) * (beta_s_mean * gammat_inf / (1. - beta_s_mean * kappa_inf)), 1.0e-10)
+        gammat_inf = mod.eval_tangential_shear(
+            profile_pars[0], profile_pars[1], source_redshift_inf)
+        kappa_inf = mod.eval_convergence(profile_pars[0], profile_pars[1], source_redshift_inf)
+        assert_allclose(
+            mod.eval_reduced_tangential_shear(*profile_pars, 'applegate14',
+                                              beta_s_mean, beta_s_square_mean),
+            beta_s_mean * gammat_inf/(1.0 - beta_s_square_mean / beta_s_mean * kappa_inf),
+            1.0e-10)
+        assert_allclose(
+            mod.eval_reduced_tangential_shear(*profile_pars, 'schrabback18',
+                                              beta_s_mean, beta_s_square_mean),
+            (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean *
+             kappa_inf) * (beta_s_mean * gammat_inf / (1. - beta_s_mean * kappa_inf)),
+            1.0e-10)
 
         assert_allclose(gammat*sigmac_corr/(1.-(kappa*sigmac_corr)),
                         cfg['numcosmo_profiles']['gt'], 1.e2*reltol)
@@ -666,8 +693,9 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         assert_allclose(1./((1-kappa*sigmac_corr)**2-abs(gammat*sigmac_corr)**2)**(alpha-1),
                         cfg['numcosmo_profiles']['mu']**(alpha-1), 1.e3*reltol)
 
-        # Check that shear, reduced shear and convergence return zero and magnification returns one if
-        # source is in front of the cluster
+        # Check that shear, reduced shear and convergence return zero and magnification returns
+        # one if source is in front of the cluster
+
         # First, check for a array of radius and single source z
         radius = np.logspace(-2, 2, 10)
         z_cluster = 0.3
