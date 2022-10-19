@@ -495,7 +495,7 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         # Chech error is raised if too small radius
         assert_raises(ValueError, theo.compute_tangential_shear,
                       1.e-12, 1.e15, 4, 0.2, 0.45, cosmo)
-
+        # will remove theo.be_nick=='nc' when CCL allows setting alpha_ein
         if profile_init=='einasto' and theo.be_nick=='nc':
             cfg['GAMMA_PARAMS']['alpha_ein'] = cfg['TEST_CASE']['alpha_einasto']
 
@@ -610,8 +610,11 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
             halo_profile_model=cfg['GAMMA_PARAMS']['halo_profile_model'])
         mod.set_concentration(cfg['GAMMA_PARAMS']['cdelta'])
         mod.set_mass(cfg['GAMMA_PARAMS']['mdelta'])
+
+        # will remove theo.be_nick=='nc' when CCL allows setting alpha_ein
         if profile_init=='einasto' and theo.be_nick=='nc':
             mod.set_einasto_alpha(cfg['TEST_CASE']['alpha_einasto'])
+
         # First compute SigmaCrit to correct cosmology changes
         sigma_c = mod.eval_critical_surface_density(
             cfg['GAMMA_PARAMS']['z_cluster'], cfg['GAMMA_PARAMS']['z_source'])
