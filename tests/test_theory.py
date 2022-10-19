@@ -429,8 +429,9 @@ def helper_physics_functions(func, additional_kwargs={}):
     """ A helper function to repeat a set of unit tests on several functions
     that expect the same inputs.
 
-    Tests the following functions: predict_tangential_shear, predict_convergence,
-                                   predict_reduced_tangential_shear
+    Tests the following functions: compute_tangential_shear, compute_convergence,
+                                   compute_reduced_tangential_shear,
+                                   compute_magnification, compute_magnification_bias
 
     Tests that the functions:
     1. Test each default parameter to ensure that the defaults are not changed.
@@ -473,6 +474,7 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
     # NumCosmo makes different choices for constants (Msun). We make this conversion
     # by passing the ratio of SOLAR_MASS in kg from numcosmo and CLMM
     cfg = load_validation_config(profile_init)
+
     if (profile_init=='nfw' or theo.be_nick in ['nc','ccl']) and\
     (modeling_data['nick'] not in ['notabackend','testnotabackend']):
         if profile_init == 'nfw':
@@ -496,6 +498,7 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
 
         if profile_init=='einasto' and theo.be_nick=='nc':
             cfg['GAMMA_PARAMS']['alpha_ein'] = cfg['TEST_CASE']['alpha_einasto']
+
         # Validate tangential shear
         gammat = theo.compute_tangential_shear(cosmo=cosmo, **cfg['GAMMA_PARAMS'])
         assert_allclose(gammat*sigmac_corr,
@@ -536,6 +539,7 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
 
         # Validate magnification bias
         alpha = 3.78
+        # this if will removed once compute_magnification_bias takes alpha_ein
         if profile_init=='einasto' and theo.be_nick=='nc':
             del cfg['GAMMA_PARAMS']['alpha_ein']
         assert_allclose(theo.compute_magnification_bias(
