@@ -693,8 +693,8 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         assert_allclose(1./((1-kappa*sigmac_corr)**2-abs(gammat*sigmac_corr)**2)**(alpha-1),
                         cfg['numcosmo_profiles']['mu']**(alpha-1), 1.e3*reltol)
 
-        # Check that shear, reduced shear and convergence return zero and magnification returns
-        # one if source is in front of the cluster
+        # Check that shear, reduced shear and convergence return zero and magnification
+        # return one if source is in front of the cluster
 
         # First, check for a array of radius and single source z
         radius = np.logspace(-2, 2, 10)
