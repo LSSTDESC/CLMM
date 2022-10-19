@@ -200,8 +200,8 @@ def helper_profiles(func):
     """ A helper function to repeat a set of unit tests on several functions
     that expect the same inputs.
 
-    Tests the following functions: get_3d_density, predict_surface_density,
-                                   predict_excess_surface_density
+    Tests the following functions: compute_3d_density, compute_surface_density,
+                                   compute_excess_surface_density
 
     Tests that the functions:
     1. Throw an error if an invalid profile model is passed
@@ -242,8 +242,8 @@ def helper_profiles(func):
 
 
 def test_profiles(modeling_data, profile_init):
-    """ Tests for profile functions, get_3d_density, predict_surface_density,
-    and predict_excess_surface_density """
+    """ Tests for profile functions, get_3d_density, compute_surface_density,
+    and compute_excess_surface_density """
 
     # Validation tests
     # NumCosmo makes different choices for constants (Msun). We make this conversion
