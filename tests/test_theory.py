@@ -539,7 +539,8 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
 
         # Validate magnification bias
         alpha = 3.78
-        # this if will removed once compute_magnification_bias takes alpha_ein
+
+        # this if will be removed once compute_magnification_bias takes alpha_ein
         if profile_init=='einasto' and theo.be_nick=='nc':
             del cfg['GAMMA_PARAMS']['alpha_ein']
         assert_allclose(theo.compute_magnification_bias(
