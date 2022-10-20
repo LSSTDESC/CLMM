@@ -262,7 +262,6 @@ def test_profiles(modeling_data, profile_init):
         else:
             reltol = modeling_data['theory_reltol_num']
 
-
         # Object Oriented tests
         mod = theo.Modeling()
         mod.set_cosmo(cosmo)
@@ -459,23 +458,15 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
     # NumCosmo makes different choices for constants (Msun). We make this conversion
     # by passing the ratio of SOLAR_MASS in kg from numcosmo and CLMM
     cfg = load_validation_config(halo_profile_model=profile_init)
+    cosmo = cfg['cosmo']
 
     if (profile_init=='nfw' or theo.be_nick in ['nc','ccl']) and\
     (modeling_data['nick'] not in ['notabackend','testnotabackend']):
+
         if profile_init == 'nfw':
             reltol = modeling_data['theory_reltol']
         else:
             reltol = modeling_data['theory_reltol_num']
-
-        # First compute SigmaCrit to correct cosmology changes
-        cosmo = cfg['cosmo']
-        sigma_c = theo.compute_critical_surface_density(
-            cosmo, cfg['GAMMA_PARAMS']['z_cluster'], cfg['z_source'])
-
-        # Compute sigma_c in the new cosmology and get a correction factor
-        sigma_c_undo = theo.compute_critical_surface_density(
-            cosmo, cfg['GAMMA_PARAMS']['z_cluster'], cfg['z_source'])
-        sigmac_corr = (sigma_c_undo/sigma_c)
 
         # Chech error is raised if too small radius
         assert_raises(ValueError, theo.compute_tangential_shear,
@@ -503,11 +494,11 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
 
         # Validate tangential shear
         gammat = theo.compute_tangential_shear(cosmo=cosmo, **cfg['GAMMA_PARAMS'])
-        assert_allclose(gammat*sigmac_corr, cfg['numcosmo_profiles']['gammat'], reltol)
+        assert_allclose(gammat, cfg['numcosmo_profiles']['gammat'], reltol)
 
         # Validate convergence
         kappa = theo.compute_convergence(cosmo=cosmo, **cfg['GAMMA_PARAMS'])
-        assert_allclose(kappa*sigmac_corr, cfg['numcosmo_profiles']['kappa'], reltol)
+        assert_allclose(kappa, cfg['numcosmo_profiles']['kappa'], reltol)
 
         # Validate reduced tangential shear
         assert_allclose(
@@ -537,14 +528,13 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
              kappa_inf) * (beta_s_mean * gammat_inf / (1. - beta_s_mean * kappa_inf)),
             1.0e-10)
 
-
-        assert_allclose(gammat*sigmac_corr/(1.-(kappa*sigmac_corr)),
+        assert_allclose(gammat/(1.-(kappa)),
                         cfg['numcosmo_profiles']['gt'], 1.e2*reltol)
 
         # Validate magnification
         assert_allclose(theo.compute_magnification(cosmo=cosmo, **cfg['GAMMA_PARAMS']),
                         1./((1-kappa)**2-abs(gammat)**2), 1.0e-10)
-        assert_allclose(1./((1-kappa*sigmac_corr)**2-abs(gammat*sigmac_corr)**2),
+        assert_allclose(1./((1-kappa)**2-abs(gammat)**2),
                         cfg['numcosmo_profiles']['mu'], 1.e2*reltol)
 
         # Validate magnification bias
@@ -557,7 +547,7 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         assert_allclose(
             theo.compute_magnification_bias( cosmo=cosmo, **cfg['GAMMA_PARAMS'], alpha=alpha),
             (1./((1-kappa)**2-abs(gammat)**2))**(alpha - 1), 1.0e-10)
-        assert_allclose((1./((1-kappa*sigmac_corr)**2-abs(gammat*sigmac_corr)**2))**(alpha - 1),
+        assert_allclose((1./((1-kappa)**2-abs(gammat)**2))**(alpha - 1),
                         cfg['numcosmo_profiles']['mu']**(alpha - 1), 1.e3*reltol)
 
         # Check that shear, reduced shear and convergence return zero
@@ -636,31 +626,21 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         if profile_init=='einasto' and theo.be_nick=='nc':
             mod.set_einasto_alpha(cfg['TEST_CASE']['alpha_einasto'])
 
-        # First compute SigmaCrit to correct cosmology changes
-        sigma_c = mod.eval_critical_surface_density(
-            cfg['GAMMA_PARAMS']['z_cluster'], cfg['GAMMA_PARAMS']['z_source'])
-
-        # Compute sigma_c in the new cosmology and get a correction factor
-        sigma_c_undo = mod.eval_critical_surface_density(
-            cfg['GAMMA_PARAMS']['z_cluster'], cfg['GAMMA_PARAMS']['z_source'])
-        sigmac_corr = (sigma_c_undo/sigma_c)
-
         # Validate tangential shear
         profile_pars = [cfg['GAMMA_PARAMS']['r_proj'], cfg['GAMMA_PARAMS']['z_cluster'],
                         cfg['GAMMA_PARAMS']['z_source']]
         gammat = mod.eval_tangential_shear(*profile_pars)
-        assert_allclose(gammat*sigmac_corr,
+        assert_allclose(gammat,
                         cfg['numcosmo_profiles']['gammat'], reltol)
 
         # Validate convergence
         kappa = mod.eval_convergence(*profile_pars)
-        assert_allclose(kappa*sigmac_corr,
+        assert_allclose(kappa
                         cfg['numcosmo_profiles']['kappa'], reltol)
 
         # Validate reduced tangential shear
         assert_allclose(mod.eval_reduced_tangential_shear(*profile_pars),
                         gammat/(1.0-kappa), 1.0e-10)
-
 
         beta_s_mean = 0.6
         beta_s_square_mean = 0.4
@@ -680,20 +660,20 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
              kappa_inf) * (beta_s_mean * gammat_inf / (1. - beta_s_mean * kappa_inf)),
             1.0e-10)
 
-        assert_allclose(gammat*sigmac_corr/(1.-(kappa*sigmac_corr)),
+        assert_allclose(gammat(1.-(kappa)),
                         cfg['numcosmo_profiles']['gt'], 1.e2*reltol)
 
         # Validate magnification
         assert_allclose(mod.eval_magnification(*profile_pars),
                         1./((1-kappa)**2-abs(gammat)**2), 1.0e-10)
-        assert_allclose(1./((1-kappa*sigmac_corr)**2-abs(gammat*sigmac_corr)**2),
+        assert_allclose(1./((1-kappa)**2-abs(gammat)**2),
                         cfg['numcosmo_profiles']['mu'], 1.e2*reltol)
 
         # Validate magnification bias
         alpha = -1.78
         assert_allclose(mod.eval_magnification_bias(*profile_pars, alpha=alpha),
                         1./((1-kappa)**2-abs(gammat)**2)**(alpha-1), 1.0e-10)
-        assert_allclose(1./((1-kappa*sigmac_corr)**2-abs(gammat*sigmac_corr)**2)**(alpha-1),
+        assert_allclose(1./((1-kappa)**2-abs(gammat)**2)**(alpha-1),
                         cfg['numcosmo_profiles']['mu']**(alpha-1), 1.e3*reltol)
 
         # Check that shear, reduced shear and convergence return zero
@@ -704,7 +684,6 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         radius = np.logspace(-2, 2, 10)
         z_cluster = 0.3
         z_source = 0.2
-
 
         assert_allclose(mod.eval_convergence(radius, z_cluster, z_source),
                         np.zeros(len(radius)), 1.0e-10)
