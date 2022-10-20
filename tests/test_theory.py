@@ -242,7 +242,7 @@ def helper_profiles(func):
 
 
 def test_profiles(modeling_data, profile_init):
-    """ Tests for profile functions, get_3d_density, compute_surface_density,
+    """ Tests for profile functions, compute_3d_density, compute_surface_density,
     and compute_excess_surface_density """
 
     # Validation tests
