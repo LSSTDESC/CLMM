@@ -274,11 +274,20 @@ def test_profiles(modeling_data, profile_init):
         assert_allclose(mod.mdelta, cfg['SIGMA_PARAMS']['mdelta'], 1e-14)
         # Need to set the alpha value for the NC backend to the one used for the benchmarks,
         # which is the CCL default value
-        if profile_init=='einasto' and theo.be_nick=='nc':
+        if profile_init=='einasto':
             alpha_ein = cfg['TEST_CASE']['alpha_einasto']
-            mod.set_einasto_alpha(alpha_ein)
+            if theo.be_nick=='nc':
+                mod.set_einasto_alpha(alpha_ein)
+                assert_allclose(mod.get_einasto_alpha(), alpha_ein, reltol)
+
+            # will be removed once CCL allows setting alpha_ein
+            else:
+                assert_raises(NotImplementedError, mod.set_einasto_alpha, alpha_ein)
+                alpha_ein = None
         else:
+            assert_raises(ValueError, mod.get_einasto_alpha)
             alpha_ein = None
+
         assert_allclose(
             mod.eval_3d_density(cfg['RHO_PARAMS']['r3d'],
                                 cfg['RHO_PARAMS']['z_cl'], verbose=True),
@@ -306,30 +315,6 @@ def test_profiles(modeling_data, profile_init):
         assert_allclose(theo.compute_excess_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS'],
                                                             alpha_ein=alpha_ein, verbose=True),
                         cfg['numcosmo_profiles']['DeltaSigma'], reltol)
-
-        # Einasto-specific tests - checks errors are raised appropriately
-        if profile_init=='einasto':
-            alpha_ein = 0.5
-            if theo.be_nick!='nc':
-                mod = theo.Modeling()
-                assert_raises(NotImplementedError, mod.set_einasto_alpha, alpha_ein)
-                assert_raises(NotImplementedError, theo.compute_convergence,
-                              0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)
-                assert_raises(NotImplementedError, theo.compute_tangential_shear,
-                              0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)
-                assert_raises(NotImplementedError, theo.compute_reduced_tangential_shear,
-                              0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)
-                assert_raises(NotImplementedError, theo.compute_magnification,
-                              0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)
-            else:
-                mod = theo.Modeling()
-                mod.set_halo_density_profile(halo_profile_model=profile_init)
-                mod.set_einasto_alpha(alpha_ein)
-                assert_allclose(mod.get_einasto_alpha(), alpha_ein, reltol)
-
-        if profile_init!='einasto':
-            mod = theo.Modeling()
-            assert_raises(ValueError, mod.get_einasto_alpha)
 
     else:
         print('Need to test for error')
@@ -495,9 +480,26 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         # Chech error is raised if too small radius
         assert_raises(ValueError, theo.compute_tangential_shear,
                       1.e-12, 1.e15, 4, 0.2, 0.45, cosmo)
-        # will remove theo.be_nick=='nc' when CCL allows setting alpha_ein
-        if profile_init=='einasto' and theo.be_nick=='nc':
+
+        if profile_init=='einasto':
             cfg['GAMMA_PARAMS']['alpha_ein'] = cfg['TEST_CASE']['alpha_einasto']
+
+            # Einasto-specific tests - checks errors are raised appropriately
+            # will be removed once CCL allows setting alpha_ein
+            if theo.be_nick=='ccl':
+                alpha_ein = cfg['TEST_CASE']['alpha_einasto']
+                mod = theo.Modeling()
+                assert_raises(NotImplementedError, mod.set_einasto_alpha, alpha_ein)
+                assert_raises(NotImplementedError,
+                              theo.compute_convergence, cosmo=cosmo, **cfg['GAMMA_PARAMS'])
+                assert_raises(NotImplementedError,
+                              theo.compute_tangential_shear, cosmo=cosmo, **cfg['GAMMA_PARAMS'])
+                assert_raises(NotImplementedError,
+                              theo.compute_reduced_tangential_shear,
+                                  cosmo=cosmo, **cfg['GAMMA_PARAMS'])
+                assert_raises(NotImplementedError,
+                              theo.compute_magnification, cosmo=cosmo, **cfg['GAMMA_PARAMS'])
+                del cfg['GAMMA_PARAMS']['alpha_ein']
 
         # Validate tangential shear
         gammat = theo.compute_tangential_shear(cosmo=cosmo, **cfg['GAMMA_PARAMS'])
