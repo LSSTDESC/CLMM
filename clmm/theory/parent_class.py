@@ -350,7 +350,7 @@ class CLMModeling:
             raise NotImplementedError("The Einasto slope cannot be set for your combination of profile choice or modeling backend.")
         else:
             if self.validate_input:
-                if alpha != 'cosmo'
+                if alpha != 'cosmo':
                     validate_argument(locals(), 'alpha', float)
             self._set_einasto_alpha(alpha)
 
