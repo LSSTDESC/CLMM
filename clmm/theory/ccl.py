@@ -8,7 +8,7 @@ import pyccl as ccl
 import numpy as np
 from scipy.interpolate import interp1d
 import warnings
-from packaging import version
+from packaging.version import parse
 
 from . import func_layer
 from . func_layer import *
@@ -67,6 +67,7 @@ class CCLCLMModeling(CLMModeling):
                           'hernquist': {'truncated': False}}
         self.cor_factor = _patch_rho_crit_to_cd2018(ccl.physical_constants.RHO_CRITICAL)
         self.__mdelta_cor = 0.0 ## mass with corretion for input
+        self._new_version = True if parse(ccl.__version__) > parse('2.5.1') else False
 
         # Set halo profile and cosmology
         self.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
@@ -102,7 +103,7 @@ class CCLCLMModeling(CLMModeling):
     def _get_mass(self):
         """"get mass"""
         return self.__mdelta_cor*self.cor_factor
-        
+
     def _set_concentration(self, cdelta):
         """" set concentration"""
         self.conc.c = cdelta
@@ -111,17 +112,26 @@ class CCLCLMModeling(CLMModeling):
         """" set mass"""
         self.__mdelta_cor = mdelta/self.cor_factor
 
-    def _get_einasto_alpha(self, z_cl): 
+    def _set_einasto_alpha(self, alpha):
+        if self._new_version:
+            self.hdpm.update_parameters(alpha=alpha)
+        else:
+            raise NotImplementedError
+
+    def _get_einasto_alpha(self, z_cl=None):
         """"get the value of the Einasto slope"""
-        a_cl = self.cosmo.get_a_from_z(z_cl)
-        return self.hdpm._get_alpha (self.cosmo.be_cosmo, self.__mdelta_cor, a_cl, self.mdef)
+        if self._new_version and self.hdpm.alpha!='cosmo':
+            a_cl = 1 # a_cl does not matter in this case
+        else:
+            a_cl = self.cosmo.get_a_from_z(z_cl)
+        return self.hdpm._get_alpha(self.cosmo.be_cosmo, self.__mdelta_cor, a_cl, self.mdef)
 
     def _eval_3d_density(self, r3d, z_cl):
         """"eval 3d density"""
         a_cl = self.cosmo.get_a_from_z(z_cl)
         dens = self.hdpm.real(
             self.cosmo.be_cosmo, r3d/a_cl, self.__mdelta_cor, a_cl, self.mdef)
-            
+
         return dens*self.cor_factor/a_cl**3
 
     def _eval_surface_density(self, r_proj, z_cl):

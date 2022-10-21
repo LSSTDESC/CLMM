@@ -344,7 +344,7 @@ class CLMModeling:
         ----------
         alpha : float
         """
-        if self.halo_profile_model!='einasto' or self.backend!='nc':
+        if self.halo_profile_model!='einasto':
             raise NotImplementedError("The Einasto slope cannot be set for your combination of profile choice or modeling backend.")
         else:
             if self.validate_input:
