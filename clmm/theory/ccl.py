@@ -69,7 +69,7 @@ class CCLCLMModeling(CLMModeling):
         self.__mdelta_cor = 0.0 ## mass with corretion for input
         self._new_version = True if parse(ccl.__version__) > parse('2.5.1') else False
         if self._new_version:
-            self.hdpm_opts['einasto'].update({'alpha': 0.25})
+            self.hdpm_opts['einasto'].update({'alpha': 0.25}) # same as NC default
 
         # Set halo profile and cosmology
         self.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
