@@ -67,7 +67,7 @@ class CCLCLMModeling(CLMModeling):
                           'hernquist': {'truncated': False}}
         self.cor_factor = _patch_rho_crit_to_cd2018(ccl.physical_constants.RHO_CRITICAL)
         self.__mdelta_cor = 0.0 ## mass with corretion for input
-        self._new_version = True if parse(ccl.__version__) > parse('2.5.1') else False
+        self._new_version = bool(parse(ccl.__version__) > parse('2.5.1'))
         if self._new_version:
             self.hdpm_opts['einasto'].update({'alpha': 0.25}) # same as NC default
 
