@@ -6,7 +6,6 @@ import numpy as np
 from numpy.testing import assert_raises, assert_equal, assert_allclose, assert_warns
 import clmm
 from clmm import GCData
-from clmm import Cosmology
 from scipy.stats import multivariate_normal
 
 TOLERANCE = {'rtol': 1.e-7, 'atol': 1.e-7}

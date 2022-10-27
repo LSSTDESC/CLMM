@@ -6,7 +6,6 @@ import clmm
 import clmm.dataops as da
 from clmm.support import mock_data as mock
 from clmm.support.sampler import fitters
-from clmm import Cosmology
 from clmm.utils import _chang_z_distrib, _srd_z_distrib
 
 TOLERANCE = {'rtol': 5.0e-4, 'atol': 1.e-4}
