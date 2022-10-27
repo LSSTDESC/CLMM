@@ -775,11 +775,6 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
             * `weak_lensing` : Uses the weak lensing approximation of the magnification
               :math:`\my \approx 1 + 2 \kappa`. `z_src_info` must be either `beta`, or
               `distribution` (that will be used to compute :math:`\langle \beta_s \rangle`)
-
-<<<<<<< HEAD
-                * `weak_lensing` : Uses the weak lensing approximation of the magnification :math:`\my \approx 1 + 2 \kappa`.
-                `z_src_info` must be either `beta`, or `distribution` (that will be used to compute
-                  :math:`\langle \beta_s \rangle`)
     beta_kwargs: None, dict
         Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
         Only used if `z_src_info='distribution'`. Possible keys are:
@@ -790,8 +785,6 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
               when performing the sum. (default=10.0)
             * `delta_z_cut` (float) : Redshift interval to be summed with $z_cl$ to return
               $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
-=======
->>>>>>> 40f1310fc186601ea9e42152b189d0d621f48cd3
     verbose : bool, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends.
     validate_input : bool, optional
@@ -914,11 +907,6 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
               :math:`\mu \approx 1 + 2 \kappa \left(\alpha - 1 \right)`. `z_src_info` must be
               either `beta`, or `distribution` (that will be used to compute
               :math:`\langle \beta_s \rangle`)
-
-<<<<<<< HEAD
-                * `weak lensing` : Uses the weak lensing approximation of the magnification bias :math:`\mu \approx 1 + 2 \kappa \left(\alpha - 1 \right)`.
-                `z_src_info` must be either `beta`, or `distribution` (that will be used to compute
-                  :math:`\langle \beta_s \rangle`)
     beta_kwargs: None, dict
         Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
         Only used if `z_src_info='distribution'`. Possible keys are:
@@ -929,8 +917,6 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
               when performing the sum. (default=10.0)
             * `delta_z_cut` (float) : Redshift interval to be summed with $z_cl$ to return
               $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
-=======
->>>>>>> 40f1310fc186601ea9e42152b189d0d621f48cd3
     verbose : bool, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends.
     validate_input : bool, optional
