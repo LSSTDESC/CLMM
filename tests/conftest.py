@@ -25,7 +25,7 @@ def modeling_data(request):
     except ValueError:
         pytest.skip(f"Unsupported backend `{param}'.")
 
-    if avail:
+    if avail or param['nick'] in ['notabackend', 'testnotabackend']:
         os.environ['CLMM_MODELING_BACKEND'] = param['nick']
         importlib.reload(clmm.theory)
         importlib.reload(clmm.dataops)
