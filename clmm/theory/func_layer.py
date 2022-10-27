@@ -367,7 +367,7 @@ def compute_critical_surface_density(cosmo, z_cluster, z_source=None, use_pdz=Fa
 
 def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
                              halo_profile_model='nfw', massdef='mean', alpha_ein=None, z_src_info='discrete',
-                             verbose=False, validate_input=True):
+                             beta_kwargs=None, verbose=False, validate_input=True):
     r"""Computes the tangential shear
 
     .. math::
@@ -433,7 +433,17 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
                     \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right\rangle
 
                 .. math::
-                    \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle   
+                    \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
+    beta_kwargs: None, dict
+        Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
+        Only used if `z_src_info='distribution'`. Possible keys are:
+
+            * `zmin` (None, float) : Minimum redshift to be set as the source of the galaxy
+              when performing the sum. (default=None)
+            * `zmax` (float) : Maximum redshift to be set as the source of the galaxy
+              when performing the sum. (default=10.0)
+            * `delta_z_cut` (float) : Redshift interval to be summed with $z_cl$ to return
+              $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
     verbose : bool, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends.
     validate_input : bool, optional
@@ -458,7 +468,7 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
             f"Rmin = {np.min(r_proj):.2e} Mpc/h! This value is too small "
             "and may cause computational issues.")
 
-    tangential_shear = gcm.eval_tangential_shear(r_proj, z_cluster, z_source, z_src_info=z_src_info, verbose=verbose)
+    tangential_shear = gcm.eval_tangential_shear(r_proj, z_cluster, z_source, z_src_info=z_src_info, beta_kwargs=beta_kwargs, verbose=verbose)
 
     gcm.validate_input = True
     return tangential_shear
@@ -466,7 +476,7 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
 
 def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
                         halo_profile_model='nfw', massdef='mean', alpha_ein=None, z_src_info='discrete',
-                        verbose=False, validate_input=True):
+                        beta_kwargs=None, verbose=False, validate_input=True):
     r"""Computes the mass convergence
 
     .. math::
@@ -532,7 +542,17 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
                     \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right\rangle
 
                 .. math::
-                    \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle              
+                    \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
+    beta_kwargs: None, dict
+        Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
+        Only used if `z_src_info='distribution'`. Possible keys are:
+
+            * `zmin` (None, float) : Minimum redshift to be set as the source of the galaxy
+              when performing the sum. (default=None)
+            * `zmax` (float) : Maximum redshift to be set as the source of the galaxy
+              when performing the sum. (default=10.0)
+            * `delta_z_cut` (float) : Redshift interval to be summed with $z_cl$ to return
+              $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
     verbose : bool, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends.
     validate_input : bool, optional
@@ -554,7 +574,7 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     if alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
 
-    convergence = gcm.eval_convergence(r_proj, z_cluster, z_source, z_src_info=z_src_info, verbose=verbose)
+    convergence = gcm.eval_convergence(r_proj, z_cluster, z_source, z_src_info=z_src_info, beta_kwargs=beta_kwargs, verbose=verbose)
     
     if z_src_info=='discrete':
         if np.any(np.array(z_source) <= z_cluster):
@@ -569,7 +589,7 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
 def compute_reduced_tangential_shear(
         r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
         delta_mdef=200, halo_profile_model='nfw', massdef='mean', z_src_info='discrete',
-        approx=None, alpha_ein=None, validate_input=True, verbose=False):
+        approx=None, beta_kwargs=None, alpha_ein=None, validate_input=True, verbose=False):
     r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
 
     Parameters
@@ -641,7 +661,16 @@ def compute_reduced_tangential_shear(
               (equation 12 in Schrabback et al. 2017; https://arxiv.org/abs/1611.03866).
               `z_src_info` must be either `beta`, or `distribution` (that will be used
               to compute :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`)
+    beta_kwargs: None, dict
+        Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
+        Only used if `z_src_info='distribution'`. Possible keys are:
 
+            * `zmin` (None, float) : Minimum redshift to be set as the source of the galaxy
+              when performing the sum. (default=None)
+            * `zmax` (float) : Maximum redshift to be set as the source of the galaxy
+              when performing the sum. (default=10.0)
+            * `delta_z_cut` (float) : Redshift interval to be summed with $z_cl$ to return
+              $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
     alpha_ein : float, optional
         If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only available
         for the NumCosmo backend
@@ -666,7 +695,7 @@ def compute_reduced_tangential_shear(
         gcm.set_einasto_alpha(alpha_ein)
 
     red_tangential_shear = gcm.eval_reduced_tangential_shear(
-        r_proj, z_cluster, z_source, z_src_info=z_src_info, approx=approx, verbose=verbose)
+        r_proj, z_cluster, z_source, z_src_info=z_src_info, approx=approx, beta_kwargs=beta_kwargs, verbose=verbose)
 
     gcm.validate_input = True
     return red_tangential_shear
@@ -675,7 +704,7 @@ def compute_reduced_tangential_shear(
 
 def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
                           halo_profile_model='nfw', massdef='mean', alpha_ein=None, z_src_info='discrete',
-                          approx=None, verbose=False, validate_input=True):
+                          approx=None, beta_kwargs=None, verbose=False, validate_input=True):
     r"""Computes the magnification
 
     .. math::
@@ -747,6 +776,16 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
                 * `weak_lensing` : Uses the weak lensing approximation of the magnification :math:`\my \approx 1 + 2 \kappa`.
                 `z_src_info` must be either `beta`, or `distribution` (that will be used to compute
                   :math:`\langle \beta_s \rangle`)
+    beta_kwargs: None, dict
+        Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
+        Only used if `z_src_info='distribution'`. Possible keys are:
+
+            * `zmin` (None, float) : Minimum redshift to be set as the source of the galaxy
+              when performing the sum. (default=None)
+            * `zmax` (float) : Maximum redshift to be set as the source of the galaxy
+              when performing the sum. (default=10.0)
+            * `delta_z_cut` (float) : Redshift interval to be summed with $z_cl$ to return
+              $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
     verbose : bool, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends.
     validate_input : bool, optional
@@ -769,7 +808,7 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
     if alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
 
-    magnification = gcm.eval_magnification(r_proj, z_cluster, z_source, z_src_info=z_src_info, approx=approx, verbose=verbose)
+    magnification = gcm.eval_magnification(r_proj, z_cluster, z_source, z_src_info=z_src_info, approx=approx, beta_kwargs=beta_kwargs, verbose=verbose)
 
     if z_src_info=='discrete':
         if np.any(np.array(z_source) <= z_cluster):
@@ -784,7 +823,7 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
 
 def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_source, cosmo,
                                delta_mdef=200, halo_profile_model='nfw', massdef='mean',
-                               z_src_info='discrete', approx=None, verbose=False, validate_input=True):
+                               z_src_info='discrete', approx=None, beta_kwargs=None, verbose=False, validate_input=True):
 
     r""" Computes magnification bias from magnification :math:`\mu`
     and slope parameter :math:`\alpha` as :
@@ -870,6 +909,16 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
                 * `weak lensing` : Uses the weak lensing approximation of the magnification bias :math:`\mu \approx 1 + 2 \kappa \left(\alpha - 1 \right)`.
                 `z_src_info` must be either `beta`, or `distribution` (that will be used to compute
                   :math:`\langle \beta_s \rangle`)
+    beta_kwargs: None, dict
+        Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
+        Only used if `z_src_info='distribution'`. Possible keys are:
+
+            * `zmin` (None, float) : Minimum redshift to be set as the source of the galaxy
+              when performing the sum. (default=None)
+            * `zmax` (float) : Maximum redshift to be set as the source of the galaxy
+              when performing the sum. (default=10.0)
+            * `delta_z_cut` (float) : Redshift interval to be summed with $z_cl$ to return
+              $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
     verbose : bool, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends.
     validate_input : bool, optional
@@ -889,15 +938,13 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
     gcm.set_concentration(cdelta)
     gcm.set_mass(mdelta)
 
-    magnification_bias = gcm.eval_magnification_bias(r_proj, z_cluster, z_source, alpha, z_src_info=z_src_info, approx=approx, verbose=verbose)
+    magnification_bias = gcm.eval_magnification_bias(r_proj, z_cluster, z_source, alpha, z_src_info=z_src_info, approx=approx, beta_kwargs=beta_kwargs, verbose=verbose)
     
     if z_src_info=='discrete':
         if np.any(np.array(z_source) <= z_cluster):
             warnings.warn(
                 'Some source redshifts are lower than the cluster redshift.'
                 ' magnification bias = 1 for those galaxies.')
-
-
 
     gcm.validate_input = True
     return magnification_bias
