@@ -671,13 +671,9 @@ class CLMModeling:
             raise ValueError(f"Unsupported z_src_info (='{z_src_info}')")
 
         return gammat
-<<<<<<< HEAD
     
     def eval_convergence(self, r_proj, z_cl, z_src, z_src_info='discrete', beta_kwargs=None, verbose=False):
-=======
 
-    def eval_convergence(self, r_proj, z_cl, z_src, z_src_info='discrete', verbose=False):
->>>>>>> 40f1310fc186601ea9e42152b189d0d621f48cd3
         r"""Computes the mass convergence
 
         .. math::
@@ -944,12 +940,11 @@ class CLMModeling:
 
                 * None (default): Full computation is made for each `r_proj, z_src` pair
                   individually. It requires `z_src_info` to be `discrete`.
-
-<<<<<<< HEAD
-                * `weak lensing` : Uses the weak lensing approximation of the magnification :math:`\mu \approx 1 + 2 \kappa`.
-                `z_src_info` must be either `beta`, or `distribution` (that will be used to compute
-                  :math:`\langle \beta_s \rangle`)
                   
+                * `weak lensing` : Uses the weak lensing approximation of the magnification
+                  :math:`\mu \approx 1 + 2 \kappa`. `z_src_info` must be either `beta`, or
+                  `distribution` (that will be used to compute :math:`\langle \beta_s \rangle`)
+
         beta_kwargs: None, dict
             Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
             Only used if `z_src_info='distribution'`. Possible keys are:
@@ -960,11 +955,6 @@ class CLMModeling:
                   when performing the sum. (default=10.0)
                 * `delta_z_cut` (float) : Redshift interval to be summed with $z_cl$ to return
                   $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
-=======
-                * `weak lensing` : Uses the weak lensing approximation of the magnification
-                  :math:`\mu \approx 1 + 2 \kappa`. `z_src_info` must be either `beta`, or
-                  `distribution` (that will be used to compute :math:`\langle \beta_s \rangle`)
->>>>>>> 40f1310fc186601ea9e42152b189d0d621f48cd3
 
         Returns
         -------
