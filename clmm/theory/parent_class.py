@@ -672,7 +672,7 @@ class CLMModeling:
             
         return gammat
     
-    def eval_convergence(self, r_proj, z_cl, z_src, z_src_info='discrete', verbose=False):
+    def eval_convergence(self, r_proj, z_cl, z_src, z_src_info='discrete', beta_kwargs=None, verbose=False):
         r"""Computes the mass convergence
 
         .. math::
@@ -714,6 +714,18 @@ class CLMModeling:
 
                     .. math::
                         \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
+                        
+        beta_kwargs: None, dict
+            Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
+            Only used if `z_src_info='distribution'`. Possible keys are:
+
+                * `zmin` (None, float) : Minimum redshift to be set as the source of the galaxy
+                  when performing the sum. (default=None)
+                * `zmax` (float) : Maximum redshift to be set as the source of the galaxy
+                  when performing the sum. (default=10.0)
+                * `delta_z_cut` (float) : Redshift interval to be summed with $z_cl$ to return
+                  $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
+
 
         Returns
         -------
@@ -739,11 +751,17 @@ class CLMModeling:
                 beta_s_mean, beta_s_square_mean = z_src
             elif z_src_info=='distribution':
                 # z_src (function) if PDZ
-                beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, zmax=10.0,
-                                                  delta_z_cut=0.1, zmin=None, z_distrib_func=z_src)
-
-                beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo, zmax=10.0,
-                                                                delta_z_cut=0.1, zmin=None, z_distrib_func=z_src) 
+                beta_kwargs = {} if beta_kwargs is None else beta_kwargs
+                _def_keys = ['zmin', 'zmax', 'delta_z_cut']
+                if any(key not in _def_keys for key in beta_kwargs):
+                    raise KeyError(f'beta_kwargs must contain only {_def_keys} keys,'
+                                   f' {bet_kwargs.keys()} provided.')
+                beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, z_distrib_func=z_src,
+                                                  **beta_kwargs)
+                beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo,
+                                                                z_distrib_func=z_src,
+                                                                **beta_kwargs)
+                
             kappa = beta_s_mean * kappa_inf
         else:
             raise ValueError(f"Unsupported z_src_info (='{z_src_info}')")
@@ -752,7 +770,7 @@ class CLMModeling:
 
 
     def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src, z_src_info='discrete',
-                                      approx=None, verbose=False):
+                                      approx=None, beta_kwargs=None, verbose=False):
         r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
 
         Parameters
@@ -803,6 +821,17 @@ class CLMModeling:
                   `z_src_info` must be either `beta`, or `distribution` (that will be used
                   to compute :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`)
 
+        beta_kwargs: None, dict
+            Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
+            Only used if `z_src_info='distribution'`. Possible keys are:
+
+                * `zmin` (None, float) : Minimum redshift to be set as the source of the galaxy
+                  when performing the sum. (default=None)
+                * `zmax` (float) : Maximum redshift to be set as the source of the galaxy
+                  when performing the sum. (default=10.0)
+                * `delta_z_cut` (float) : Redshift interval to be summed with $z_cl$ to return
+                  $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
+
 
         Returns
         -------
@@ -837,12 +866,16 @@ class CLMModeling:
                 # z_src (tuple) is (beta_s_mean, beta_s_square_mean)
                 beta_s_mean, beta_s_square_mean = z_src
             elif z_src_info=='distribution':
-                # z_src (function) if PDZ
-                beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, zmax=10.0,
-                                                  delta_z_cut=0.1, zmin=None, z_distrib_func=z_src)
-
-                beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo, zmax=10.0,
-                                                                delta_z_cut=0.1, zmin=None, z_distrib_func=z_src) 
+                beta_kwargs = {} if beta_kwargs is None else beta_kwargs
+                _def_keys = ['zmin', 'zmax', 'delta_z_cut']
+                if any(key not in _def_keys for key in beta_kwargs):
+                    raise KeyError(f'beta_kwargs must contain only {_def_keys} keys,'
+                                   f' {bet_kwargs.keys()} provided.')
+                beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, z_distrib_func=z_src,
+                                                  **beta_kwargs)
+                beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo,
+                                                                z_distrib_func=z_src,
+                                                                **beta_kwargs)
             else:
                 raise ValueError(
                     f"approx='{approx}' requires z_src_info='distribution' or 'beta',"
@@ -863,7 +896,7 @@ class CLMModeling:
         return gt
 
     def eval_magnification(self, r_proj, z_cl, z_src, z_src_info='discrete',
-                           approx=None, verbose=False):
+                           approx=None, beta_kwargs=None, verbose=False):
         r"""Computes the magnification
 
         .. math::
@@ -910,6 +943,17 @@ class CLMModeling:
                 * `weak lensing` : Uses the weak lensing approximation of the magnification :math:`\mu \approx 1 + 2 \kappa`.
                 `z_src_info` must be either `beta`, or `distribution` (that will be used to compute
                   :math:`\langle \beta_s \rangle`)
+                  
+        beta_kwargs: None, dict
+            Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
+            Only used if `z_src_info='distribution'`. Possible keys are:
+
+                * `zmin` (None, float) : Minimum redshift to be set as the source of the galaxy
+                  when performing the sum. (default=None)
+                * `zmax` (float) : Maximum redshift to be set as the source of the galaxy
+                  when performing the sum. (default=10.0)
+                * `delta_z_cut` (float) : Redshift interval to be summed with $z_cl$ to return
+                  $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
 
         Returns
         -------
@@ -943,12 +987,16 @@ class CLMModeling:
                 # z_src (tuple) is (beta_s_mean, beta_s_square_mean)
                 beta_s_mean, beta_s_square_mean = z_src
             elif z_src_info=='distribution':
-                # z_src (function) if PDZ
-                beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, zmax=10.0,
-                                                  delta_z_cut=0.1, zmin=None, z_distrib_func=z_src)
-
-                beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo, zmax=10.0,
-                                                                delta_z_cut=0.1, zmin=None, z_distrib_func=z_src) 
+                beta_kwargs = {} if beta_kwargs is None else beta_kwargs
+                _def_keys = ['zmin', 'zmax', 'delta_z_cut']
+                if any(key not in _def_keys for key in beta_kwargs):
+                    raise KeyError(f'beta_kwargs must contain only {_def_keys} keys,'
+                                   f' {bet_kwargs.keys()} provided.')
+                beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, z_distrib_func=z_src,
+                                                  **beta_kwargs)
+                beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo,
+                                                                z_distrib_func=z_src,
+                                                                **beta_kwargs)
             else:
                 raise ValueError(
                     f"approx='{approx}' requires z_src_info='distribution' or 'beta',"
@@ -960,7 +1008,7 @@ class CLMModeling:
         return mu
 
     def eval_magnification_bias(self, r_proj, z_cl, z_src, alpha, z_src_info='discrete',
-                                approx=None, verbose=False):
+                                approx=None,beta_kwargs=None, verbose=False):
         r"""Computes the magnification bias
 
         .. math::
@@ -1009,6 +1057,18 @@ class CLMModeling:
                 * `weak lensing` : Uses the weak lensing approximation of the magnification bias :math:`\mu \approx 1 + 2 \kappa \left(\alpha - 1 \right)`.
                 `z_src_info` must be either `beta`, or `distribution` (that will be used to compute
                   :math:`\langle \beta_s \rangle`)
+                  
+        beta_kwargs: None, dict
+            Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
+            Only used if `z_src_info='distribution'`. Possible keys are:
+
+                * `zmin` (None, float) : Minimum redshift to be set as the source of the galaxy
+                  when performing the sum. (default=None)
+                * `zmax` (float) : Maximum redshift to be set as the source of the galaxy
+                  when performing the sum. (default=10.0)
+                * `delta_z_cut` (float) : Redshift interval to be summed with $z_cl$ to return
+                  $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
+
 
         Returns
         -------
@@ -1039,12 +1099,16 @@ class CLMModeling:
                 # z_src (tuple) is (beta_s_mean, beta_s_square_mean)
                 beta_s_mean, beta_s_square_mean = z_src
             elif z_src_info=='distribution':
-                # z_src (function) if PDZ
-                beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, zmax=10.0,
-                                                  delta_z_cut=0.1, zmin=None, z_distrib_func=z_src)
-
-                beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo, zmax=10.0,
-                                                                delta_z_cut=0.1, zmin=None, z_distrib_func=z_src) 
+                beta_kwargs = {} if beta_kwargs is None else beta_kwargs
+                _def_keys = ['zmin', 'zmax', 'delta_z_cut']
+                if any(key not in _def_keys for key in beta_kwargs):
+                    raise KeyError(f'beta_kwargs must contain only {_def_keys} keys,'
+                                   f' {bet_kwargs.keys()} provided.')
+                beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, z_distrib_func=z_src,
+                                                  **beta_kwargs)
+                beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo,
+                                                                z_distrib_func=z_src,
+                                                                **beta_kwargs)
             else:
                 raise ValueError(
                     f"approx='{approx}' requires z_src_info='distribution' or 'beta',"
