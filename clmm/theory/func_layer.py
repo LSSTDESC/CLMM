@@ -753,7 +753,7 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
             or all sources are at the same redshift when `z_source` is a float.
 
         * `distribution` : A redshift distribution function is provided by `z_src`.
-            `z_src` must be a one dimentional function. 
+            `z_src` must be a one dimentional function.
 
         * `beta` : The averaged lensing efficiency is provided by `z_src`.
             `z_src` must be a tuple containing
@@ -767,12 +767,16 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
             .. math::
                 \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
 
-        approx : str, optional
-            Type of computation to be made for reduced shears, options are:
+    approx : str, optional
+        Type of computation to be made for reduced shears, options are:
 
-                * None (default): Full computation is made for each `r_proj, z_src` pair
-                  individually. It requires `z_src_info` to be `discrete`.
+            * None (default): Full computation is made for each `r_proj, z_src` pair
+              individually. It requires `z_src_info` to be `discrete`.
+            * `weak_lensing` : Uses the weak lensing approximation of the magnification
+              :math:`\my \approx 1 + 2 \kappa`. `z_src_info` must be either `beta`, or
+              `distribution` (that will be used to compute :math:`\langle \beta_s \rangle`)
 
+<<<<<<< HEAD
                 * `weak_lensing` : Uses the weak lensing approximation of the magnification :math:`\my \approx 1 + 2 \kappa`.
                 `z_src_info` must be either `beta`, or `distribution` (that will be used to compute
                   :math:`\langle \beta_s \rangle`)
@@ -786,6 +790,8 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
               when performing the sum. (default=10.0)
             * `delta_z_cut` (float) : Redshift interval to be summed with $z_cl$ to return
               $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
+=======
+>>>>>>> 40f1310fc186601ea9e42152b189d0d621f48cd3
     verbose : bool, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends.
     validate_input : bool, optional
@@ -884,10 +890,8 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
         * `discrete` (default) : The redshift of sources is provided by `z_src`.
             It can be individual redshifts for each source galaxy when `z_source` is an array
             or all sources are at the same redshift when `z_source` is a float.
-
         * `distribution` : A redshift distribution function is provided by `z_src`.
-            `z_src` must be a one dimentional function. 
-
+            `z_src` must be a one dimentional function.
         * `beta` : The averaged lensing efficiency is provided by `z_src`.
             `z_src` must be a tuple containing
             ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
@@ -900,12 +904,18 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
             .. math::
                 \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
 
-        approx : str, optional
-            Type of computation to be made for reduced shears, options are:
+    approx : str, optional
+        Type of computation to be made for reduced shears, options are:
 
-                * None (default): Full computation is made for each `r_proj, z_src` pair
-                  individually. It requires `z_src_info` to be `discrete`.
+            * None (default): Full computation is made for each `r_proj, z_src` pair
+              individually. It requires `z_src_info` to be `discrete`.
 
+            * `weak lensing` : Uses the weak lensing approximation of the magnification bias
+              :math:`\mu \approx 1 + 2 \kappa \left(\alpha - 1 \right)`. `z_src_info` must be
+              either `beta`, or `distribution` (that will be used to compute
+              :math:`\langle \beta_s \rangle`)
+
+<<<<<<< HEAD
                 * `weak lensing` : Uses the weak lensing approximation of the magnification bias :math:`\mu \approx 1 + 2 \kappa \left(\alpha - 1 \right)`.
                 `z_src_info` must be either `beta`, or `distribution` (that will be used to compute
                   :math:`\langle \beta_s \rangle`)
@@ -919,6 +929,8 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
               when performing the sum. (default=10.0)
             * `delta_z_cut` (float) : Redshift interval to be summed with $z_cl$ to return
               $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
+=======
+>>>>>>> 40f1310fc186601ea9e42152b189d0d621f48cd3
     verbose : bool, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL backends.
     validate_input : bool, optional

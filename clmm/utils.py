@@ -772,6 +772,10 @@ def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=Non
     z_distrib_func: one-parameter function, optional
         Redshift distribution function. Default is Chang et al (2013) distribution function.
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 40f1310fc186601ea9e42152b189d0d621f48cd3
     Returns
     -------
     float
