@@ -203,7 +203,7 @@ def test_integrity_of_probfuncs():
 
 def test_integrity_of_weightfuncs():
     """test integrity of weight funcs"""
-    cosmo = Cosmology(H0=71.0, Omega_dm0=0.265 - 0.0448, Omega_b0=0.0448, Omega_k0=0.0)
+    cosmo = clmm.Cosmology(H0=71.0, Omega_dm0=0.265 - 0.0448, Omega_b0=0.0448, Omega_k0=0.0)
     z_lens = .1
     z_source = [.22, .35, 1.7]
     shape_component1 = np.array([.143, .063, -.171])

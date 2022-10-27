@@ -247,7 +247,7 @@ def test_compute_tangential_and_cross_components(modeling_data):
                                 err_msg="Cross Shear not correct when using cluster method")
     # Check behaviour for the deltasigma option.
     cosmo = clmm.Cosmology(H0=70.0, Omega_dm0=0.275, Omega_b0=0.025)
-    
+
     # test missing info for is_deltasigma=True
     testing.assert_raises(
         TypeError, da.compute_tangential_and_cross_components, ra_lens=ra_lens, dec_lens=dec_lens,
@@ -273,10 +273,10 @@ def test_compute_tangential_and_cross_components(modeling_data):
     da.compute_tangential_and_cross_components(ra_lens=ra_lens, dec_lens=dec_lens,
                                                ra_source=gals['ra'][0], dec_source=gals['dec'][0], 
                                                shear1=gals['e1'][0], shear2=gals['e2'][0],
-                                               is_deltasigma=True, use_pdz=True, cosmo=cosmo, z_lens=z_lens, 
+                                               is_deltasigma=True, use_pdz=True, cosmo=cosmo, z_lens=z_lens,
                                                z_source=None, pzbins=[[0.55,0.6,0.65,0.7,0.75]], 
                                                pzpdf=[[0.01,1,0.01, 0.001, 0.0001]])
-    
+
     # check values for DeltaSigma
     for geometry, expected in geo_tests:
         angsep_DS, tDS, xDS = da.compute_tangential_and_cross_components(
@@ -337,14 +337,14 @@ def test_compute_background_probability():
 
 def test_compute_galaxy_weights():
     """test for compute galaxy weights"""
-    cosmo = Cosmology(H0 = 71.0, Omega_dm0 = 0.265 - 0.0448, Omega_b0 = 0.0448, Omega_k0 = 0.0)
+    cosmo = clmm.Cosmology(H0 = 71.0, Omega_dm0 = 0.265 - 0.0448, Omega_b0 = 0.0448, Omega_k0 = 0.0)
     z_lens = .1
     z_source = [.22, .35, 1.7]
     shape_component1 = np.array([.143, .063, -.171])
     shape_component2 = np.array([-.011, .012,-.250])
     shape_component1_err = np.array([.11, .01, .2])
     shape_component2_err = np.array([.14, .16, .21])
- 
+
     #true redshift + deltasigma
     weights = da.compute_galaxy_weights(z_lens, cosmo, z_source=z_source, use_pdz=False, pzpdf=None, pzbins=None,
                            use_shape_noise=False, shape_component1=shape_component1, shape_component2=shape_component2,
