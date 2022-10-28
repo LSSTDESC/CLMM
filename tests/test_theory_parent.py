@@ -113,31 +113,31 @@ def test_instantiate(modeling_data):
     #Tests with pre-fixed beta values
     reduced_shear = mod.eval_reduced_tangential_shear(r_proj, z_cl, z_src, 'applegate14', beta_s_mean, beta_s_square_mean)
     assert_allclose(reduced_shear, beta_s_mean * shear_inf/(1.0 - beta_s_square_mean / beta_s_mean * convergence_inf), rtol=1.0e-12)
-    
+
     reduced_shear = mod.eval_reduced_tangential_shear(r_proj, z_cl, np.repeat(z_src, len(r_proj)), 'applegate14', beta_s_mean, beta_s_square_mean)
     assert_allclose(reduced_shear, beta_s_mean * shear_inf/(1.0 - beta_s_square_mean / beta_s_mean * convergence_inf), rtol=1.0e-12)
-    
+
     reduced_shear = mod.eval_reduced_tangential_shear(r_proj, z_cl, z_src, 'schrabback18', beta_s_mean, beta_s_square_mean)
     assert_allclose(reduced_shear, (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean * convergence_inf) * (beta_s_mean * shear_inf / (1. - beta_s_mean * convergence_inf)), rtol=1.0e-12)
 
     reduced_shear = mod.eval_reduced_tangential_shear(r_proj, z_cl, np.repeat(z_src, len(r_proj)), 'schrabback18', beta_s_mean, beta_s_square_mean)
     assert_allclose(reduced_shear, (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean * convergence_inf) * (beta_s_mean * shear_inf / (1. - beta_s_mean * convergence_inf)), rtol=1.0e-12)
-    
+
     #Tests where the function computes the beta values
     beta_s_mean = None
     beta_s_square_mean = None
-    
+
     beta_s_square_test = compute_beta_s_square_mean(z_cl, 1000., mod.cosmo)
     beta_s_test = compute_beta_s_mean(z_cl, 1000., mod.cosmo)   
     reduced_shear = mod.eval_reduced_tangential_shear(r_proj, z_cl, z_src, 'applegate14', beta_s_mean, beta_s_square_mean)
     assert_allclose(reduced_shear, beta_s_test* shear_inf/(1.0 - beta_s_square_test / beta_s_test * convergence_inf), rtol=1.0e-12)
-    
+
     reduced_shear = mod.eval_reduced_tangential_shear(r_proj, z_cl, np.repeat(z_src, len(r_proj)), 'applegate14', beta_s_mean, beta_s_square_mean)
     assert_allclose(reduced_shear, beta_s_test * shear_inf/(1.0 - beta_s_square_test / beta_s_test * convergence_inf), rtol=1.0e-12)
-    
+
     reduced_shear = mod.eval_reduced_tangential_shear(r_proj, z_cl, z_src, 'schrabback18', beta_s_mean, beta_s_square_mean)
     assert_allclose(reduced_shear, (1. + (beta_s_square_test / (beta_s_test * beta_s_test) - 1.) * beta_s_test * convergence_inf) * (beta_s_test * shear_inf / (1. - beta_s_test * convergence_inf)), rtol=1.0e-12)
-    
+
     reduced_shear = mod.eval_reduced_tangential_shear(r_proj, z_cl, np.repeat(z_src, len(r_proj)), 'schrabback18', beta_s_mean, beta_s_square_mean)
     assert_allclose(reduced_shear, (1. + (beta_s_square_test / (beta_s_test * beta_s_test) - 1.) * beta_s_test * convergence_inf) * (beta_s_test * shear_inf / (1. - beta_s_test * convergence_inf)), rtol=1.0e-12)
 
@@ -157,4 +157,3 @@ def test_einasto(modeling_data):
         mod.eval_convergence(0.1,0.1,0.5, verbose=True)
         mod.eval_reduced_tangential_shear(0.1,0.1,0.5, verbose=True)
         mod.eval_magnification(0.1,0.1,0.5, verbose=True)
-#>>>>>>> main
