@@ -23,7 +23,7 @@ def modeling_data(request):
     try:
         avail = clmm.theory.backend_is_available(param['nick'])
     except ValueError:
-        pytest.skip(f"Unsupported backend `{param}'.")
+        pytest.skip(f"Unsupported backend '{param}'.")
 
     if avail or param['nick']=='notabackend':
         os.environ['CLMM_MODELING_BACKEND'] = param['nick']
@@ -32,7 +32,7 @@ def modeling_data(request):
         importlib.reload(clmm)
         return param
     else:
-        pytest.skip(f"Backend not available `{param}'.")
+        pytest.skip(f"Backend not available '{param}'.")
 
 
 @pytest.fixture(scope="module", params=[{}, {"H0": 67.0, "Omega_b0": 0.06, "Omega_dm0": 0.22, "Omega_k0": 0.0}, {"H0": 67.0, "Omega_b0": 0.06, "Omega_dm0": 0.22, "Omega_k0": 0.01}])
