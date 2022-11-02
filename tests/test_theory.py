@@ -301,28 +301,32 @@ def test_profiles(modeling_data, profile_init):
         assert_allclose(theo.compute_excess_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS'], alpha_ein=alpha_ein, verbose=True),
                         cfg['numcosmo_profiles']['DeltaSigma'], reltol)
 
-    else:
-        print('Need to test for error')
-
-    # Einasto-specific tests - checks errors are raised appropriately
-    if profile_init=='einasto':
-        alpha_ein = 0.5
-        if theo.be_nick!='nc':
-            mod = theo.Modeling()
-            assert_raises(NotImplementedError, mod.set_einasto_alpha, alpha_ein)
-            assert_raises(NotImplementedError, theo.compute_convergence,0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)
-            assert_raises(NotImplementedError, theo.compute_tangential_shear,0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)
-            assert_raises(NotImplementedError, theo.compute_reduced_tangential_shear,0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)
-            assert_raises(NotImplementedError, theo.compute_magnification,0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)
-        else:
-            mod = theo.Modeling()
-            mod.set_halo_density_profile(halo_profile_model=profile_init)
-            mod.set_einasto_alpha(alpha_ein)
-            assert_allclose(mod.get_einasto_alpha(), alpha_ein, reltol)
+        # Einasto-specific tests - checks errors are raised appropriately
+        if profile_init=='einasto':
+            alpha_ein = 0.5
+            if theo.be_nick!='nc':
+                mod = theo.Modeling()
+                assert_raises(NotImplementedError, mod.set_einasto_alpha, alpha_ein)
+                assert_raises(NotImplementedError, theo.compute_convergence,
+                              0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)
+                assert_raises(NotImplementedError, theo.compute_tangential_shear,
+                              0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)
+                assert_raises(NotImplementedError, theo.compute_reduced_tangential_shear,
+                              0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)
+                assert_raises(NotImplementedError, theo.compute_magnification,
+                              0.1,1.e15,4,0.1,0.5,cosmo, alpha_ein=alpha_ein)
+            else:
+                mod = theo.Modeling()
+                mod.set_halo_density_profile(halo_profile_model=profile_init)
+                mod.set_einasto_alpha(alpha_ein)
+                assert_allclose(mod.get_einasto_alpha(), alpha_ein, reltol)
 
     if profile_init!='einasto':
         mod = theo.Modeling()
         assert_raises(ValueError, mod.get_einasto_alpha)
+
+    else:
+        print('Need to test for error')
 
 def test_2halo_term(modeling_data):
 
