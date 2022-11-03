@@ -400,6 +400,16 @@ def test_compute_galaxy_weights():
                            is_deltasigma=False,
                            validate_input=True)
 
+    assert_raises(TypeError, da.compute_galaxy_weights, z_lens, cosmo=None, z_source=None,
+                  use_pdz=False, pzpdf=pzpdf, pzbins=pzbins,
+                  use_shape_noise=True, shape_component1=None, shape_component2=None,
+                  use_shape_error=False, shape_component1_err=None, shape_component2_err=None,
+                  is_deltasigma=True, validate_input=True)
+    assert_raises(TypeError, da.compute_galaxy_weights, z_lens, cosmo=None, z_source=None,
+                  use_pdz=True, pzpdf=pzpdf, pzbins=pzbins,
+                  use_shape_noise=False,
+                  use_shape_error=False, shape_component1_err=None, shape_component2_err=None,
+                  is_deltasigma=True, validate_input=True)
 
 
 def _test_profile_table_output(profile, expected_rmin, expected_radius, expected_rmax,
