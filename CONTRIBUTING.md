@@ -119,7 +119,7 @@ Here's a list of additional resources which you may find helpful in navigating g
 * [The Github Help Pages](https://help.github.com/)
 
 ## Contact (alphabetical order) <a name="contact"></a>
-* [Michel Aguena](https://github.com/m-aguena) (LAPP / LIneA)
+* [Michel Aguena](https://github.com/m-aguena) (APC / LIneA)
 * [Doug Applegate](https://github.com/deapplegate) (Novartis)
 * [Camille Avestruz](https://github.com/cavestruz) (University of Michigan)
 * [Lucie Baumont](https://github.com/lbaumo) (SBU)
