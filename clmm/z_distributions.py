@@ -1,4 +1,6 @@
 """Redshift distribution functions"""
+import numpy as np
+from scipy.special import gamma, gammainc
 
 def _functional_form(redshift, alpha, beta, redshift0, is_cdf=False):
     """
