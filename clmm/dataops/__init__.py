@@ -7,7 +7,7 @@ from astropy.coordinates import SkyCoord
 from astropy import units as u
 from .. gcdata import GCData
 from .. utils import compute_radial_averages, make_bins, convert_units, arguments_consistency, validate_argument, _integ_pzfuncs
-from .. theory import compute_critical_surface_density
+from .. theory import compute_critical_surface_density, compute_critical_surface_density_eff
 
 
 def compute_tangential_and_cross_components(
@@ -159,7 +159,9 @@ def compute_tangential_and_cross_components(
                 raise TypeError(
                     'To compute DeltaSigma, please provide a '
                     'i) cosmology, ii) redshift of lens and sources')
+
             sigma_c = compute_critical_surface_density(cosmo, z_lens, z_source=z_source)
+
         elif sigma_c is None:
             # Need to verify that cosmology, lens redshift, source redshift bins and 
             # source redshift pdf are provided
@@ -169,8 +171,9 @@ def compute_tangential_and_cross_components(
                     'please provide a '
                     'i) cosmology, ii) lens redshift, iii) source redshift bins and'
                     'iv) source redshift pdf')
-            sigma_c = compute_critical_surface_density(cosmo, z_lens, use_pdz=use_pdz,
-                                                       pzbins=pzbins, pzpdf=pzpdf)
+
+            sigma_c = compute_critical_surface_density_eff(cosmo, z_lens, pzbins=pzbins, pzpdf=pzpdf)
+
         tangential_comp *= sigma_c
         cross_comp *= sigma_c
     return angsep, tangential_comp, cross_comp
@@ -319,10 +322,23 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, use_pdz=False, pzpdf=No
     if is_deltasigma is False:
         w_ls_geo = 1.
     else:
-        if sigma_c is None:
-            sigma_c = compute_critical_surface_density(cosmo, z_lens, z_source=z_source,
-                                                       use_pdz=use_pdz,
-                                                       pzbins=pzbins, pzpdf=pzpdf)
+        if sigma_c is None and use_pdz is False:
+            # Need to verify that cosmology and redshifts are provided
+            if any(t_ is None for t_ in (z_lens, z_source, cosmo)):
+                raise TypeError(
+                    'To compute DeltaSigma, please provide a '
+                    'i) cosmology, ii) redshift of lens and sources')
+            sigma_c = compute_critical_surface_density(cosmo, z_lens, z_source=z_source)
+        elif sigma_c is None:
+            # Need to verify that cosmology, lens redshift, source redshift bins and 
+            # source redshift pdf are provided
+            if any(t_ is None for t_ in (z_lens, cosmo, pzbins, pzpdf)):
+                raise TypeError(
+                    'To compute DeltaSigma using the redshift pdz of the sources, '
+                    'please provide a '
+                    'i) cosmology, ii) lens redshift, iii) source redshift bins and'
+                    'iv) source redshift pdf')
+            sigma_c = compute_critical_surface_density_eff(cosmo, z_lens, pzbins=pzbins, pzpdf=pzpdf)
         w_ls_geo = 1./sigma_c**2
 
     #computing w_ls_shape
