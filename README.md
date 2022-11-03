@@ -120,8 +120,8 @@ If you are not part of the DESC CLMM topical team, it is good to also contact us
 If you have comments, questions, or feedback, please [write us an
 issue](https://github.com/LSSTDESC/CLMM/issues).
 
-The current leads of the LSST DESC CLMM Topical Team are Celine Combet
-(combet, celine.combet@lpsc.in2p3.fr) and Marina Ricci (mricci,
+The current leads of the LSST DESC CLMM Topical Team are Michel Aguena
+(m-aguena, 	aguena@apc.in2p3.fr) and Marina Ricci (mricci,
 marina.ricci@lmu.de)
 
 
