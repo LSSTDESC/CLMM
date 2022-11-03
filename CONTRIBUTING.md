@@ -137,7 +137,7 @@ Here's a list of additional resources which you may find helpful in navigating g
 * [Hironao Miyatake](https://github.com/HironaoMiyatake) (Nagoya)
 * [Constantin Payerne](https://github.com/payerne) (LPSC)
 * [Mariana Penna-Lima](https://github.com/pennalima) (UnB - Brasilia / LIneA)
-* [Marina Ricci](https://github.com/marina-ricci) (LAPP)
+* [Marina Ricci](https://github.com/marina-ricci) (LMU)
 * [Cristobal Sifon](https://github.com/cristobal-sifon) (Princeton)
 * [Melanie Simet](https://github.com/msimet) (JPL)
 * [Martin Sommer](https://github.com/sipplund) (Bonn)
