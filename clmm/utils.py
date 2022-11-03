@@ -7,6 +7,7 @@ from scipy.special import gamma, gammainc
 from scipy.integrate import quad, cumulative_trapezoid, simps
 from scipy.interpolate import interp1d
 from .constants import Constants as const
+import .z_distributions as zdist
 
 
 def compute_nfw_boost(rvals, rs=1000, b0=0.1) :
@@ -735,7 +736,7 @@ def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_dist
         Mean value of the geometric lensing efficicency
     """
     if z_distrib_func == None:
-        z_distrib_func = _chang_z_distrib
+        z_distrib_func = zdist.chang2013
     def integrand(z_i, z_cl=z_cl, cosmo=cosmo):
         return compute_beta(z_i, z_cl, cosmo) * z_distrib_func(z_i)
 
@@ -778,7 +779,7 @@ def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=Non
         Mean value of the geometric lensing efficicency ratio
     """
     if z_distrib_func == None:
-        z_distrib_func = _chang_z_distrib
+        z_distrib_func = zdist.chang2013
 
     def integrand(z_i, z_cl=z_cl, z_inf=z_inf, cosmo=cosmo):
         return compute_beta_s(z_i, z_cl, z_inf, cosmo) * z_distrib_func(z_i)
@@ -821,7 +822,7 @@ def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, z
         Mean square value of the geometric lensing efficicency ratio.
     """
     if z_distrib_func == None:
-        z_distrib_func = _chang_z_distrib
+        z_distrib_func = zdist.chang2013
 
     def integrand(z_i, z_cl=z_cl, z_inf=z_inf, cosmo=cosmo):
         return compute_beta_s(z_i, z_cl, z_inf, cosmo)**2 * z_distrib_func(z_i)
@@ -852,75 +853,11 @@ def z_distrib_model(redshift, model, is_cdf=False):
     The value of the distribution at z for the given model name.
     """
     if model == "Chang_et_al_2013":
-        return _chang_z_distrib(redshift, is_cdf=is_cdf)
+        return zdist.chang2013(redshift, is_cdf=is_cdf)
     elif model == "desc_srd":
-        return _srd_z_distrib(redshift, is_cdf=is_cdf)
+        return zdist.desc_srd(redshift, is_cdf=is_cdf)
     else:
         raise ValueError(f"Unsupported model (='{model}')")
-
-def _functional_form(redshift, alpha, beta, redshift0, is_cdf=False):
-    """
-    A private function that returns the functionnal form of the redshift distribution used in Chang et al (2013):
-    
-    .. math::
-       P(z) = z^{\\alpha}\times\exp^{\left(-\frac{z}{z0}^\beta\right)}
-
-    Parameters
-    ----------
-    redshift : float
-        Galaxy redshift
-    alpha, beta, z0 : floats
-        Parameters describing the function
-    is_cdf : bool
-        If True, returns cumulative function.
-
-    Returns
-    -------
-    The value of the function at z
-    """
-    if is_cdf:
-        return redshift0**(alpha+1)*gammainc((alpha+1)/beta, (redshift/redshift0)**beta)/beta*gamma((alpha+1)/beta)
-    else:
-        return (redshift**alpha)*np.exp(-(redshift/redshift0)**beta)
-
-def _chang_z_distrib(redshift, is_cdf=False):
-    """
-    A private function that returns the Chang et al (2013) unnormalized galaxy redshift
-    distribution function, with the fiducial set of parameters.
-
-    Parameters
-    ----------
-    redshift : float
-        Galaxy redshift
-    is_cdf : bool, optional
-        If True, returns cumulative distribution function. Default: False
-
-    Returns
-    -------
-    The value of the distribution at z
-    """
-    alpha, beta, redshift0 = 1.24, 1.01, 0.51
-    return _functional_form(redshift, alpha, beta, redshift0, is_cdf)
-
-
-def _srd_z_distrib(redshift, is_cdf=False):
-    """
-    A private function that returns the unnormalized galaxy redshift distribution function used in
-    the LSST/DESC Science Requirement Document (arxiv:1809.01669).
-
-    Parameters
-    ----------
-    redshift : float
-        Galaxy redshift
-    is_cdf : bool, optional
-        If True, returns cumulative distribution function. Default: False
-
-    Returns
-    -------
-    The value of the distribution at z
-    """
-    alpha, beta, redshift0 = 2., 0.9, 0.28
-    return _functional_form(redshift, alpha, beta, redshift0, is_cdf)
 
 
 def _draw_random_points_from_distribution(xmin, xmax, nobj, dist_func, xstep=0.001):

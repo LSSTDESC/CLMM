@@ -7,7 +7,8 @@ from astropy.coordinates import SkyCoord
 from ..gcdata import GCData
 from ..theory import compute_tangential_shear, compute_convergence
 from ..utils import (convert_units, compute_lensed_ellipticity, validate_argument,
-                     _chang_z_distrib, _srd_z_distrib, _draw_random_points_from_distribution)
+                     _draw_random_points_from_distribution)
+import ..z_distributions as zdist
 
 def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc,
                             cluster_ra=0., cluster_dec=0.,
@@ -227,7 +228,7 @@ def _compute_ngals(ngal_density, field_size, cosmo, cluster_z, zsrc, zsrc_min=No
     if isinstance(zsrc, float):
         ngals = int(ngals)
     elif zsrc in ('chang13', 'desc_srd'):
-        z_distrib_func = _chang_z_distrib if zsrc == 'chang13' else _srd_z_distrib
+        z_distrib_func = zdist.chang2013 if zsrc == 'chang13' else zdist.desc_srd
         # Compute the normalisation for the redshift distribution function (z=[0, inf))
         # z_distrib_func(0, is_cdf=True)=0
         norm = z_distrib_func(np.inf, is_cdf=True)
@@ -362,12 +363,12 @@ def _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals):
     # Draw zsrc from Chang et al. 2013
     elif zsrc == 'chang13':
         zsrc_list = _draw_random_points_from_distribution(
-            zsrc_min, zsrc_max, ngals, _chang_z_distrib)
+            zsrc_min, zsrc_max, ngals, zdist.chang2013)
 
     # Draw zsrc from the distribution used in the DESC SRD (arxiv:1809.01669)
     elif zsrc == 'desc_srd':
         zsrc_list = _draw_random_points_from_distribution(
-            zsrc_min, zsrc_max, ngals, _srd_z_distrib)
+            zsrc_min, zsrc_max, ngals, zdist.desc_srd)
 
     # Draw zsrc from a uniform distribution between zmin and zmax
     elif zsrc == 'uniform':
