@@ -707,17 +707,17 @@ class CLMModeling:
             if beta_s_mean is None or beta_s_square_mean is None:
                 beta_s_mean = compute_beta_s_mean (z_cl, self.z_inf, self.cosmo, z_distrib_func=z_distrib_func)
                 beta_s_square_mean = compute_beta_s_square_mean (z_cl, self.z_inf, self.cosmo, z_distrib_func=z_distrib_func)
-            gammat = self._eval_tangential_shear(r_proj, z_cl, self.z_inf)
-            kappa = self._eval_convergence(r_proj, z_cl, self.z_inf)
-            gt = beta_s_mean * gammat / (1. - beta_s_square_mean / beta_s_mean * kappa)
+            gammat_inf = self._eval_tangential_shear(r_proj, z_cl, self.z_inf)
+            kappa_inf = self._eval_convergence(r_proj, z_cl, self.z_inf)
+            gt = beta_s_mean * gammat_inf / (1. - beta_s_square_mean / beta_s_mean * kappa_inf)
 
         elif z_src_model == 'schrabback18':
             if beta_s_mean is None or beta_s_square_mean is None:
                 beta_s_mean = compute_beta_s_mean (z_cl, self.z_inf, self.cosmo, z_distrib_func=z_distrib_func)
                 beta_s_square_mean = compute_beta_s_square_mean (z_cl, self.z_inf, self.cosmo, z_distrib_func=z_distrib_func)
-            gammat = self._eval_tangential_shear(r_proj, z_cl, self.z_inf)
-            kappa = self._eval_convergence(r_proj, z_cl, self.z_inf)
-            gt = (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean * kappa) * (beta_s_mean * gammat / (1. - beta_s_mean * kappa))
+            gammat_inf = self._eval_tangential_shear(r_proj, z_cl, self.z_inf)
+            kappa_inf = self._eval_convergence(r_proj, z_cl, self.z_inf)
+            gt = (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean * kappa_inf) * (beta_s_mean * gammat_inf / (1. - beta_s_mean * kappa_inf))
 
         else:
             raise ValueError("Unsupported z_src_model")
