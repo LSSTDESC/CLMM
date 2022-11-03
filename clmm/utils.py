@@ -664,10 +664,10 @@ def compute_beta(z_s, z_cl, cosmo):
 
     Parameters
     ----------
-    z_cl: float
-            Galaxy cluster redshift
     z_s:  float
             Source galaxy redshift
+    z_cl: float
+            Galaxy cluster redshift
     cosmo: clmm.Cosmology
         CLMM Cosmology object
 
@@ -687,10 +687,10 @@ def compute_beta_s(z_s, z_cl, z_inf, cosmo):
 
     Parameters
     ----------
-    z_cl: float
-            Galaxy cluster redshift
     z_s: float
             Source galaxy redshift
+    z_cl: float
+            Galaxy cluster redshift
     z_inf: float
             Redshift at infinity
     cosmo: clmm.Cosmology
