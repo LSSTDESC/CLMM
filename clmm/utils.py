@@ -3,11 +3,10 @@ import warnings
 import numpy as np
 from astropy import units as u
 from scipy.stats import binned_statistic
-from scipy.special import gamma, gammainc
 from scipy.integrate import quad, cumulative_trapezoid, simps
 from scipy.interpolate import interp1d
 from .constants import Constants as const
-import .z_distributions as zdist
+from . import z_distributions as zdist
 
 
 def compute_nfw_boost(rvals, rs=1000, b0=0.1) :

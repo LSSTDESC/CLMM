@@ -8,7 +8,7 @@ from ..gcdata import GCData
 from ..theory import compute_tangential_shear, compute_convergence
 from ..utils import (convert_units, compute_lensed_ellipticity, validate_argument,
                      _draw_random_points_from_distribution)
-import ..z_distributions as zdist
+from .. import z_distributions as zdist
 
 def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc,
                             cluster_ra=0., cluster_dec=0.,
