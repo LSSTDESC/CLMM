@@ -132,7 +132,7 @@ Here's a list of additional resources which you may find helpful in navigating g
 * [Brandyn Lee](https://github.com/brandynlee) (UTD)
 * [Anja von der Linden](https://github.com/anjavdl) (SBU)
 * [Binyang Liu](https://github.com/rbliu) (Brown)
-* [Alex Malz](https://github.com/aimalz) (NYU --> RUB)
+* [Alex Malz](https://github.com/aimalz) (CMU)
 * [Tom McClintock](https://github.com/tmcclintock) (BNL)
 * [Hironao Miyatake](https://github.com/HironaoMiyatake) (Nagoya)
 * [Constantin Payerne](https://github.com/payerne) (LPSC)
