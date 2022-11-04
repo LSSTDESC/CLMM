@@ -654,7 +654,7 @@ def compute_for_good_redshifts(function, z1, z2, bad_value, error_message):
         res = function(z1, z2)
     return res
 
-def compute_beta(z_s, z_cl, cosmo):
+def compute_beta(z_src, z_cl, cosmo):
     r"""Geometric lensing efficicency
 
     .. math::
@@ -664,7 +664,7 @@ def compute_beta(z_s, z_cl, cosmo):
 
     Parameters
     ----------
-    z_s:  float
+    z_src:  float
             Source galaxy redshift
     z_cl: float
             Galaxy cluster redshift
@@ -676,18 +676,18 @@ def compute_beta(z_s, z_cl, cosmo):
     float
         Geometric lensing efficicency
     """
-    beta = np.heaviside(z_s-z_cl, 0) * cosmo.eval_da_z1z2(z_cl, z_s) / cosmo.eval_da(z_s)
+    beta = np.heaviside(z_src-z_cl, 0) * cosmo.eval_da_z1z2(z_cl, z_src) / cosmo.eval_da(z_src)
     return beta
 
-def compute_beta_s(z_s, z_cl, z_inf, cosmo):
+def compute_beta_s(z_src, z_cl, z_inf, cosmo):
     r"""Geometric lensing efficicency ratio
 
     .. math::
-        \beta_s = \beta(z_s)/\beta(z_{inf})
+        \beta_s = \beta(z_src)/\beta(z_{inf})
 
     Parameters
     ----------
-    z_s: float
+    z_src: float
             Source galaxy redshift
     z_cl: float
             Galaxy cluster redshift
@@ -701,7 +701,7 @@ def compute_beta_s(z_s, z_cl, z_inf, cosmo):
     float
         Geometric lensing efficicency ratio
     """
-    beta_s = compute_beta(z_s, z_cl, cosmo) / compute_beta(z_inf, z_cl, cosmo)
+    beta_s = compute_beta(z_src, z_cl, cosmo) / compute_beta(z_inf, z_cl, cosmo)
     return beta_s
 
 def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_distrib_func=None):
