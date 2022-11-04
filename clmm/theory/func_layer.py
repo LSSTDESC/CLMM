@@ -72,7 +72,7 @@ def compute_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
 
     Returns
     -------
-    rho : np.ndarray, float
+    rho : numpy.ndarray, float
         3-dimensional mass density in units of :math:`M_\odot\ Mpc^{-3}`
 
     Notes
@@ -145,7 +145,7 @@ def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
 
     Returns
     -------
-    sigma : np.ndarray, float
+    sigma : numpy.ndarray, float
         2D projected surface density in units of :math:`M_\odot\ Mpc^{-2}`
 
     Notes
@@ -219,7 +219,7 @@ def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
 
     Returns
     -------
-    deltasigma : np.ndarray, float
+    deltasigma : numpy.ndarray, float
         Excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
     """
     gcm.validate_input = validate_input
@@ -268,7 +268,7 @@ def compute_excess_surface_density_2h(r_proj, z_cl, cosmo, halobias=1., lsteps=5
 
     Returns
     -------
-    deltasigma_2h : np.ndarray, float
+    deltasigma_2h : numpy.ndarray, float
         2-halo term excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
     """
     gcm.validate_input = validate_input
@@ -311,7 +311,7 @@ def compute_surface_density_2h(r_proj, z_cl, cosmo, halobias=1, lsteps=500, vali
 
     Returns
     -------
-    sigma_2h : np.ndarray, float
+    sigma_2h : numpy.ndarray, float
         2-halo term surface density in units of :math:`M_\odot\ Mpc^{-2}`.
     """
     gcm.validate_input = validate_input
@@ -368,7 +368,7 @@ def compute_critical_surface_density(cosmo, z_cluster, z_source=None,
 
     Returns
     -------
-    sigma_c : np.ndarray, float
+    sigma_c : numpy.ndarray, float
         Cosmology-dependent (effective) critical surface density in units of
         :math:`M_\odot\ Mpc^{-2}`
     """
@@ -473,7 +473,7 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
 
     Returns
     -------
-    gammat : np.ndarray, float
+    gammat : numpy.ndarray, float
         Tangential shear
     """
 
@@ -590,7 +590,7 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
 
     Returns
     -------
-    kappa : np.ndarray, float
+    kappa : numpy.ndarray, float
         Mass convergence, kappa.
 
     """
@@ -717,7 +717,7 @@ def compute_reduced_tangential_shear(
 
     Returns
     -------
-    gt : np.ndarray, float
+    gt : numpy.ndarray, float
         Reduced tangential shear
 
     """
@@ -835,7 +835,7 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
 
     Returns
     -------
-    magnification : np.ndarray, float
+    magnification : numpy.ndarray, float
         Magnification :math:`\mu`.
 
     """
@@ -976,7 +976,7 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
 
     Returns
     -------
-    magnification_bias : np.ndarray
+    magnification_bias : numpy.ndarray
         magnification bias
     """
 
