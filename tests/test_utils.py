@@ -441,18 +441,19 @@ def test_beta_functions():
     beta_test = np.heaviside(z_s-z_cl, 0) * cosmo.eval_da_z1z2(z_cl, z_s) / cosmo.eval_da(z_s)
     beta_s_test = utils.compute_beta(z_s, z_cl, cosmo) / utils.compute_beta(z_inf, z_cl, cosmo)
 
-    def integrand1(z_i, z_cl=z_cl, cosmo=cosmo):
-        return utils.compute_beta(z_i, z_cl, cosmo) * pdz(z_i)
-
-    def integrand2(z_i, z_inf=z_inf, z_cl=z_cl, cosmo=cosmo):
-        return utils.compute_beta_s(z_i, z_cl, z_inf, cosmo) * pdz(z_i)
-
-    def integrand3(z_i, z_inf=z_inf, z_cl=z_cl, cosmo=cosmo):
-        return utils.compute_beta_s(z_i, z_cl, z_inf, cosmo)**2 * pdz(z_i)
-
     # None defaults to chang2013 for compute_beta* functions
 
-    for model in (zdist.chang2013, zdist.desc_src):
+    for model in (zdist.chang2013, zdist.desc_srd):
+
+        def integrand1(z_i, z_cl=z_cl, cosmo=cosmo):
+            return utils.compute_beta(z_i, z_cl, cosmo) * model(z_i)
+
+        def integrand2(z_i, z_inf=z_inf, z_cl=z_cl, cosmo=cosmo):
+            return utils.compute_beta_s(z_i, z_cl, z_inf, cosmo) * model(z_i)
+
+        def integrand3(z_i, z_inf=z_inf, z_cl=z_cl, cosmo=cosmo):
+            return utils.compute_beta_s(z_i, z_cl, z_inf, cosmo)**2 * model(z_i)
+
 
         test1 = utils.compute_beta(z_s, z_cl, cosmo)
         test2 = utils.compute_beta_s(z_s, z_cl, z_inf, cosmo)
@@ -469,4 +470,3 @@ def test_beta_functions():
                         **TOLERANCE)
         assert_allclose(test5, quad(integrand3, zmin, zmax)[0] / quad(model, zmin, zmax)[0],
                         **TOLERANCE)
-    assert_raises(ValueError, utils.z_distrib_model, 1, 'notvalid')
