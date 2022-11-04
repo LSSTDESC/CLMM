@@ -8,7 +8,7 @@ import clmm.utils as utils
 from clmm.utils import (
     compute_radial_averages, make_bins, convert_shapes_to_epsilon, arguments_consistency,
     validate_argument)
-from clmm.z_distributions import desc_srd
+from clmm import z_distributions as zdist
 
 
 TOLERANCE = {'rtol': 1.0e-6, 'atol': 0}
@@ -451,26 +451,22 @@ def test_beta_functions():
         return utils.compute_beta_s(z_i, z_cl, z_inf, cosmo)**2 * pdz(z_i)
 
     # None defaults to chang2013 for compute_beta* functions
-    z_dist = {'Chang_et_al_2013': None, 'desc_srd': desc_srd}
 
-    for model in ('Chang_et_al_2013', 'desc_srd'):
-
-        def pdz(z):
-            return utils.z_distrib_model(z, model)
+    for model in (zdist.chang2013, zdist.desc_src):
 
         test1 = utils.compute_beta(z_s, z_cl, cosmo)
         test2 = utils.compute_beta_s(z_s, z_cl, z_inf, cosmo)
-        test3 = utils.compute_beta_mean(z_cl, cosmo, zmax, z_distrib_func=z_dist[model])
-        test4 = utils.compute_beta_s_mean(z_cl, z_inf, cosmo, zmax, z_distrib_func=z_dist[model])
+        test3 = utils.compute_beta_mean(z_cl, cosmo, zmax, z_distrib_func=model)
+        test4 = utils.compute_beta_s_mean(z_cl, z_inf, cosmo, zmax, z_distrib_func=model)
         test5 = utils.compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax,
-                                                 z_distrib_func=z_dist[model])
+                                                 z_distrib_func=model)
 
         assert_allclose(test1, beta_test, **TOLERANCE)
         assert_allclose(test2, beta_s_test, **TOLERANCE)
-        assert_allclose(test3, quad(integrand1, zmin, zmax)[0] / quad(pdz, zmin, zmax)[0],
+        assert_allclose(test3, quad(integrand1, zmin, zmax)[0] / quad(model, zmin, zmax)[0],
                         **TOLERANCE)
-        assert_allclose(test4, quad(integrand2, zmin, zmax)[0] / quad(pdz, zmin, zmax)[0],
+        assert_allclose(test4, quad(integrand2, zmin, zmax)[0] / quad(model, zmin, zmax)[0],
                         **TOLERANCE)
-        assert_allclose(test5, quad(integrand3, zmin, zmax)[0] / quad(pdz, zmin, zmax)[0],
+        assert_allclose(test5, quad(integrand3, zmin, zmax)[0] / quad(model, zmin, zmax)[0],
                         **TOLERANCE)
     assert_raises(ValueError, utils.z_distrib_model, 1, 'notvalid')
