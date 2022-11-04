@@ -601,34 +601,36 @@ class CLMModeling:
             Type of redshift information provided, it describes z_src.
             The following supported options are:
 
-                * `discrete` (default) : The redshift of sources is provided by `z_src`.
-                  It can be individual redshifts for each source galaxy when `z_source` is an array
-                  or all sources are at the same redshift when `z_source` is a float.
+                * 'discrete' (default) : The redshift of sources is provided by `z_src`.
+                  It can be individual redshifts for each source galaxy when `z_source` is an
+                  arrayor all sources are at the same redshift when `z_source` is a float.
 
-                * `distribution` : A redshift distribution function is provided by `z_src`.
+                * 'distribution' : A redshift distribution function is provided by `z_src`.
                   `z_src` must be a one dimentional function.
 
-                * `beta` : The averaged lensing efficiency is provided by `z_src`.
+                * 'beta' : The averaged lensing efficiency is provided by `z_src`.
                   `z_src` must be a tuple containing
                   ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
                   the lensing efficiency and square of the lensing efficiency averaged over
                   the galaxy redshift distribution repectively.
 
                     .. math::
-                        \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right\rangle
+                        \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}
+                        {D_{L,\infty}}\right\rangle
 
                     .. math::
-                        \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
+                        \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}
+                        {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
 
         beta_kwargs: None, dict
             Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
             Only used if `z_src_info='distribution'`. Possible keys are:
 
-                * `zmin` (None, float) : Minimum redshift to be set as the source of the galaxy
+                * 'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
                   when performing the sum. (default=None)
-                * `zmax` (float) : Maximum redshift to be set as the source of the galaxy
+                * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
                   when performing the sum. (default=10.0)
-                * `delta_z_cut` (float) : Redshift interval to be summed with $z_cl$ to return
+                * 'delta_z_cut' (float) : Redshift interval to be summed with $z_cl$ to return
                   $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
 
 
@@ -693,34 +695,36 @@ class CLMModeling:
             Type of redshift information provided, it describes z_src.
             The following supported options are:
 
-                * `discrete` (default) : The redshift of sources is provided by `z_src`.
-                  It can be individual redshifts for each source galaxy when `z_source` is an array
-                  or all sources are at the same redshift when `z_source` is a float.
+                * 'discrete' (default) : The redshift of sources is provided by `z_src`.
+                  It can be individual redshifts for each source galaxy when `z_source` is an
+                  array or all sources are at the same redshift when `z_source` is a float.
 
-                * `distribution` : A redshift distribution function is provided by `z_src`.
+                * 'distribution' : A redshift distribution function is provided by `z_src`.
                   `z_src` must be a one dimentional function.
 
-                * `beta` : The averaged lensing efficiency is provided by `z_src`.
+                * 'beta' : The averaged lensing efficiency is provided by `z_src`.
                   `z_src` must be a tuple containing
                   ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
                   the lensing efficiency and square of the lensing efficiency averaged over
                   the galaxy redshift distribution repectively.
 
                     .. math::
-                        \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right\rangle
+                        \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}
+                        {D_{L,\infty}}\right\rangle
 
                     .. math::
-                        \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
+                        \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}
+                        {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
 
         beta_kwargs: None, dict
             Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
             Only used if `z_src_info='distribution'`. Possible keys are:
 
-                * `zmin` (None, float) : Minimum redshift to be set as the source of the galaxy
+                * 'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
                   when performing the sum. (default=None)
-                * `zmax` (float) : Maximum redshift to be set as the source of the galaxy
+                * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
                   when performing the sum. (default=10.0)
-                * `delta_z_cut` (float) : Redshift interval to be summed with $z_cl$ to return
+                * 'delta_z_cut' (float) : Redshift interval to be summed with $z_cl$ to return
                   $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
 
 
@@ -779,24 +783,26 @@ class CLMModeling:
             Type of redshift information provided, it describes z_src.
             The following supported options are:
 
-                * `discrete` (default) : The redshift of sources is provided by `z_src`.
-                  It can be individual redshifts for each source galaxy when `z_source` is an array
-                  or all sources are at the same redshift when `z_source` is a float.
+                * 'discrete' (default) : The redshift of sources is provided by `z_src`.
+                  It can be individual redshifts for each source galaxy when `z_source` is an
+                  array or all sources are at the same redshift when `z_source` is a float.
 
-                * `distribution` : A redshift distribution function is provided by `z_src`.
+                * 'distribution' : A redshift distribution function is provided by `z_src`.
                   `z_src` must be a one dimentional function.
 
-                * `beta` : The averaged lensing efficiency is provided by `z_src`.
+                * 'beta' : The averaged lensing efficiency is provided by `z_src`.
                   `z_src` must be a tuple containing
                   ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
                   the lensing efficiency and square of the lensing efficiency averaged over
                   the galaxy redshift distribution repectively.
 
                     .. math::
-                        \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right\rangle
+                        \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}
+                        {D_{L,\infty}}\right\rangle
 
                     .. math::
-                        \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
+                        \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}
+                        {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
 
         approx : str, optional
             Type of computation to be made for reduced shears, options are:
@@ -804,13 +810,14 @@ class CLMModeling:
                 * None (default): Full computation is made for each `r_proj, z_src` pair
                   individually. It requires `z_src_info` to be `discrete`.
 
-                * `applegate14` : Uses the approach from Weighing the Giants - III (equation 6 in
+                * 'applegate14' : Uses the approach from Weighing the Giants - III (equation 6 in
                   Applegate et al. 2014; https://arxiv.org/abs/1208.0605). `z_src_info` must be
                   either `beta`, or `distribution` (that will be used to compute
                   :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`)
 
-                * `schrabback18` : Uses the approach from Cluster Mass Calibration at High Redshift
-                  (equation 12 in Schrabback et al. 2017; https://arxiv.org/abs/1611.03866).
+                * 'schrabback18' : Uses the approach from Cluster Mass Calibration at High
+                  Redshift (equation 12 in Schrabback et al. 2017;
+                  https://arxiv.org/abs/1611.03866).
                   `z_src_info` must be either `beta`, or `distribution` (that will be used
                   to compute :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`)
 
@@ -818,11 +825,11 @@ class CLMModeling:
             Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
             Only used if `z_src_info='distribution'`. Possible keys are:
 
-                * `zmin` (None, float) : Minimum redshift to be set as the source of the galaxy
+                * 'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
                   when performing the sum. (default=None)
-                * `zmax` (float) : Maximum redshift to be set as the source of the galaxy
+                * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
                   when performing the sum. (default=10.0)
-                * `delta_z_cut` (float) : Redshift interval to be summed with $z_cl$ to return
+                * 'delta_z_cut' (float) : Redshift interval to be summed with $z_cl$ to return
                   $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
 
 
@@ -904,24 +911,26 @@ class CLMModeling:
             Type of redshift information provided, it describes z_src.
             The following supported options are:
 
-                * `discrete` (default) : The redshift of sources is provided by `z_src`.
+                * 'discrete' (default) : The redshift of sources is provided by `z_src`.
                   It can be individual redshifts for each source galaxy when `z_source` is an
                   arrayor all sources are at the same redshift when `z_source` is a float.
 
-                * `distribution` : A redshift distribution function is provided by `z_src`.
+                * 'distribution' : A redshift distribution function is provided by `z_src`.
                   `z_src` must be a one dimentional function.
 
-                * `beta` : The averaged lensing efficiency is provided by `z_src`.
+                * 'beta' : The averaged lensing efficiency is provided by `z_src`.
                   `z_src` must be a tuple containing
                   ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
                   the lensing efficiency and square of the lensing efficiency averaged over
                   the galaxy redshift distribution repectively.
 
                     .. math::
-                        \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right\rangle
+                        \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}
+                        {D_{L,\infty}}\right\rangle
 
                     .. math::
-                        \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
+                        \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}
+                        {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
 
         approx : str, optional
             Type of computation to be made for reduced shears, options are:
@@ -929,7 +938,7 @@ class CLMModeling:
                 * None (default): Full computation is made for each `r_proj, z_src` pair
                   individually. It requires `z_src_info` to be `discrete`.
 
-                * `weak lensing` : Uses the weak lensing approximation of the magnification
+                * 'weak lensing' : Uses the weak lensing approximation of the magnification
                   :math:`\mu \approx 1 + 2 \kappa`. `z_src_info` must be either `beta`, or
                   `distribution` (that will be used to compute :math:`\langle \beta_s \rangle`)
 
@@ -937,11 +946,11 @@ class CLMModeling:
             Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
             Only used if `z_src_info='distribution'`. Possible keys are:
 
-                * `zmin` (None, float) : Minimum redshift to be set as the source of the galaxy
+                * 'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
                   when performing the sum. (default=None)
-                * `zmax` (float) : Maximum redshift to be set as the source of the galaxy
+                * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
                   when performing the sum. (default=10.0)
-                * `delta_z_cut` (float) : Redshift interval to be summed with $z_cl$ to return
+                * 'delta_z_cut' (float) : Redshift interval to be summed with $z_cl$ to return
                   $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
 
         Returns
@@ -1014,24 +1023,26 @@ class CLMModeling:
             Type of redshift information provided, it describes z_src.
             The following supported options are:
 
-                * `discrete` (default) : The redshift of sources is provided by `z_src`.
-                  It can be individual redshifts for each source galaxy when `z_source` is an array
-                  or all sources are at the same redshift when `z_source` is a float.
+                * 'discrete' (default) : The redshift of sources is provided by `z_src`.
+                  It can be individual redshifts for each source galaxy when `z_source` is an
+                  array or all sources are at the same redshift when `z_source` is a float.
 
-                * `distribution` : A redshift distribution function is provided by `z_src`.
+                * 'distribution' : A redshift distribution function is provided by `z_src`.
                   `z_src` must be a one dimentional function.
 
-                * `beta` : The averaged lensing efficiency is provided by `z_src`.
+                * 'beta' : The averaged lensing efficiency is provided by `z_src`.
                   `z_src` must be a tuple containing
                   ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
                   the lensing efficiency and square of the lensing efficiency averaged over
                   the galaxy redshift distribution repectively.
 
                     .. math::
-                        \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right\rangle
+                        \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}
+                        {D_{L,\infty}}\right\rangle
 
                     .. math::
-                        \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
+                        \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}
+                        {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
 
         approx : str, optional
             Type of computation to be made for reduced shears, options are:
@@ -1039,7 +1050,7 @@ class CLMModeling:
                 * None (default): Full computation is made for each `r_proj, z_src` pair
                   individually. It requires `z_src_info` to be `discrete`.
 
-                * `weak lensing` : Uses the weak lensing approximation of the magnification bias
+                * 'weak lensing' : Uses the weak lensing approximation of the magnification bias
                   :math:`\mu \approx 1 + 2 \kappa \left(\alpha - 1 \right)`. `z_src_info` must be
                   either `beta`, or `distribution` (that will be used to compute
                   :math:`\langle \beta_s \rangle`)
@@ -1048,11 +1059,11 @@ class CLMModeling:
             Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
             Only used if `z_src_info='distribution'`. Possible keys are:
 
-                * `zmin` (None, float) : Minimum redshift to be set as the source of the galaxy
+                * 'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
                   when performing the sum. (default=None)
-                * `zmax` (float) : Maximum redshift to be set as the source of the galaxy
+                * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
                   when performing the sum. (default=10.0)
-                * `delta_z_cut` (float) : Redshift interval to be summed with $z_cl$ to return
+                * 'delta_z_cut' (float) : Redshift interval to be summed with $z_cl$ to return
                   $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
 
 

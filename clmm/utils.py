@@ -654,7 +654,7 @@ def compute_for_good_redshifts(function, z1, z2, bad_value, error_message):
         res = function(z1, z2)
     return res
 
-def compute_beta(z_s, z_cl, cosmo):
+def compute_beta(z_src, z_cl, cosmo):
     r"""Geometric lensing efficicency
 
     .. math::
@@ -664,10 +664,10 @@ def compute_beta(z_s, z_cl, cosmo):
 
     Parameters
     ----------
+    z_src:  float
+            Source galaxy redshift
     z_cl: float
             Galaxy cluster redshift
-    z_s:  float
-            Source galaxy  redshift
     cosmo: clmm.Cosmology
         CLMM Cosmology object
 
@@ -676,21 +676,21 @@ def compute_beta(z_s, z_cl, cosmo):
     float
         Geometric lensing efficicency
     """
-    beta = np.heaviside(z_s-z_cl, 0) * cosmo.eval_da_z1z2(z_cl, z_s) / cosmo.eval_da(z_s)
+    beta = np.heaviside(z_src-z_cl, 0) * cosmo.eval_da_z1z2(z_cl, z_src) / cosmo.eval_da(z_src)
     return beta
 
-def compute_beta_s(z_s, z_cl, z_inf, cosmo):
+def compute_beta_s(z_src, z_cl, z_inf, cosmo):
     r"""Geometric lensing efficicency ratio
 
     .. math::
-        \beta_s = \beta(z_s)/\beta(z_{inf})
+        \beta_s = \beta(z_src)/\beta(z_{inf})
 
     Parameters
     ----------
+    z_src: float
+            Source galaxy redshift
     z_cl: float
             Galaxy cluster redshift
-    z_s: float
-            Source galaxy redshift
     z_inf: float
             Redshift at infinity
     cosmo: clmm.Cosmology
@@ -701,7 +701,7 @@ def compute_beta_s(z_s, z_cl, z_inf, cosmo):
     float
         Geometric lensing efficicency ratio
     """
-    beta_s = compute_beta(z_s, z_cl, cosmo) / compute_beta(z_inf, z_cl, cosmo)
+    beta_s = compute_beta(z_src, z_cl, cosmo) / compute_beta(z_inf, z_cl, cosmo)
     return beta_s
 
 def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_distrib_func=None):
@@ -734,7 +734,7 @@ def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_dist
     float
         Mean value of the geometric lensing efficicency
     """
-    if z_distrib_func == None:
+    if z_distrib_func is None:
         z_distrib_func = zdist.chang2013
     def integrand(z_i, z_cl=z_cl, cosmo=cosmo):
         return compute_beta(z_i, z_cl, cosmo) * z_distrib_func(z_i)
@@ -743,7 +743,7 @@ def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_dist
         zmin = z_cl + delta_z_cut
 
     B_mean = quad(integrand, zmin, zmax)[0] / quad(z_distrib_func, zmin, zmax)[0]
-    return B_mean    
+    return B_mean
 
 def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_distrib_func=None):
     r"""Mean value of the geometric lensing efficicency ratio
@@ -777,7 +777,7 @@ def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=Non
     float
         Mean value of the geometric lensing efficicency ratio
     """
-    if z_distrib_func == None:
+    if z_distrib_func is None:
         z_distrib_func = zdist.chang2013
 
     def integrand(z_i, z_cl=z_cl, z_inf=z_inf, cosmo=cosmo):
@@ -820,7 +820,7 @@ def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, z
     float
         Mean square value of the geometric lensing efficicency ratio.
     """
-    if z_distrib_func == None:
+    if z_distrib_func is None:
         z_distrib_func = zdist.chang2013
 
     def integrand(z_i, z_cl=z_cl, z_inf=z_inf, cosmo=cosmo):

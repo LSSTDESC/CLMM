@@ -7,6 +7,8 @@ import clmm.theory as theo
 from clmm.constants import Constants as clc
 from clmm.galaxycluster import GalaxyCluster
 from clmm import GCData
+from clmm.utils import compute_beta_s_square_mean, compute_beta_s_mean
+from clmm.z_distributions import chang2013, desc_srd
 
 TOLERANCE = {'rtol': 1.0e-8}
 
@@ -486,50 +488,26 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
                               theo.compute_magnification, cosmo=cosmo, **cfg['GAMMA_PARAMS'])
                 del cfg['GAMMA_PARAMS']['alpha_ein']
 
-        # Validate tangential shear
+        # Validate tangential shear - discrete case
         gammat = theo.compute_tangential_shear(cosmo=cosmo, **cfg['GAMMA_PARAMS'])
         assert_allclose(gammat, cfg['numcosmo_profiles']['gammat'], reltol)
 
-        # Validate convergence
+        # Validate convergence - discrete case
         kappa = theo.compute_convergence(cosmo=cosmo, **cfg['GAMMA_PARAMS'])
         assert_allclose(kappa, cfg['numcosmo_profiles']['kappa'], reltol)
 
-        # Validate reduced tangential shear
-        assert_allclose(
-            theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg['GAMMA_PARAMS']),
-            gammat/(1.0-kappa), 1.0e-10)
-        assert_allclose(
-            theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg['GAMMA_PARAMS']),
-            cfg['numcosmo_profiles']['gt'], 1.e2*reltol)
+        # Validate reduced tangential shear - discrete case
+        gt = theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg['GAMMA_PARAMS'])
+        assert_allclose(gt, gammat/(1.0-kappa), 1.0e-10)
+        assert_allclose(gt, cfg['numcosmo_profiles']['gt'], 1.e2*reltol)
 
-        beta_s_mean, beta_s_square_mean = 0.9, 0.6
-        cfg_inf = load_validation_config()
-        cfg_inf['GAMMA_PARAMS']['z_source'] = 1000.
-        gammat_inf = theo.compute_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'])
-        kappa_inf = theo.compute_convergence(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'])
-
-        cfg_inf['GAMMA_PARAMS']['z_source'] = (beta_s_mean, beta_s_square_mean)
-        cfg_inf['GAMMA_PARAMS']['z_src_info'] = 'beta'
-        cfg_inf['GAMMA_PARAMS']['approx'] = 'applegate14'
-        assert_allclose(
-            theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS']),
-            beta_s_mean * gammat_inf/(1.0 - beta_s_square_mean / beta_s_mean * kappa_inf),
-            1.0e-10)
-
-        cfg_inf['GAMMA_PARAMS']['approx'] = 'schrabback18'
-        assert_allclose(
-            theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS']),
-            (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean * 
-             kappa_inf) * (beta_s_mean * gammat_inf / (1. - beta_s_mean * kappa_inf)),
-            1.0e-10)
-
-        # Validate magnification
+        # Validate magnification - discrete case
         assert_allclose(theo.compute_magnification(cosmo=cosmo, **cfg['GAMMA_PARAMS']),
                         1./((1-kappa)**2-abs(gammat)**2), 1.0e-10)
         assert_allclose(theo.compute_magnification(cosmo=cosmo, **cfg['GAMMA_PARAMS']),
                         cfg['numcosmo_profiles']['mu'], 1.e2*reltol)
 
-        # Validate magnification bias
+        # Validate magnification bias - discrete case
         alpha = 3.78
 
         # this if will be removed once compute_magnification_bias takes alpha_ein
@@ -542,6 +520,146 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         assert_allclose(
             theo.compute_magnification_bias(cosmo=cosmo, **cfg['GAMMA_PARAMS'], alpha=alpha),
             cfg['numcosmo_profiles']['mu']**(alpha - 1), 1.e3*reltol)
+
+        cfg_inf = load_validation_config()
+
+        # compute some values
+        cfg_inf['GAMMA_PARAMS']['z_source'] = 1000.
+        beta_s_mean = compute_beta_s_mean(
+            cfg_inf['GAMMA_PARAMS']['z_cluster'], cfg_inf['GAMMA_PARAMS']['z_source'], cosmo)
+        beta_s_square_mean = compute_beta_s_square_mean(
+            cfg_inf['GAMMA_PARAMS']['z_cluster'], cfg_inf['GAMMA_PARAMS']['z_source'], cosmo)
+
+        gammat_inf = theo.compute_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'])
+        kappa_inf = theo.compute_convergence(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'])
+
+        # test z_src = chang2013 distribution
+        cfg_inf['GAMMA_PARAMS']['z_source'] = chang2013
+        cfg_inf['GAMMA_PARAMS']['z_src_info'] = 'distribution'
+        # tangential shear
+        assert_allclose(
+            theo.compute_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS']),
+            beta_s_mean * gammat_inf, 1.0e-10)
+
+        assert_raises(KeyError,
+                      theo.compute_tangential_shear, cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'],
+                      beta_kwargs={'notavalidkey': 0.})
+
+        # convergence
+        assert_allclose(
+            theo.compute_convergence(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS']),
+            beta_s_mean * kappa_inf, 1.0e-10)
+
+        assert_raises(KeyError,
+                      theo.compute_convergence, cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'],
+                      beta_kwargs={'notavalidkey': 0.})
+
+        # reduced tangential shear
+        cfg_inf['GAMMA_PARAMS']['approx'] = 'applegate14'
+        assert_allclose(
+            theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS']),
+            beta_s_mean * gammat_inf/(1.0 - beta_s_square_mean / beta_s_mean * kappa_inf),
+            1.0e-10)
+
+        cfg_inf['GAMMA_PARAMS']['approx'] = 'schrabback18'
+        assert_allclose(
+            theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS']),
+            (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean *
+             kappa_inf) * (beta_s_mean * gammat_inf / (1. - beta_s_mean * kappa_inf)),
+            1.0e-10)
+        assert_raises(KeyError,
+                      theo.compute_reduced_tangential_shear, cosmo=cosmo,
+                      **cfg_inf['GAMMA_PARAMS'],
+                      beta_kwargs={'notavalidkey': 0.})
+
+        cfg_inf['GAMMA_PARAMS']['approx'] = 'notanvalidapprox'
+        assert_raises(ValueError,
+                      theo.compute_reduced_tangential_shear, cosmo=cosmo,
+                      **cfg_inf['GAMMA_PARAMS'])
+
+        # magnification
+        cfg_inf['GAMMA_PARAMS']['approx'] = 'weak lensing'
+        assert_allclose(
+            theo.compute_magnification(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS']),
+            1 + 2*beta_s_mean*kappa_inf, 1.0e-10)
+        assert_raises(KeyError,
+                      theo.compute_magnification, cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'],
+                      beta_kwargs={'notavalidkey': 0.})
+        # magnification bias
+        assert_allclose(
+            theo.compute_magnification_bias(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'], alpha=2),
+            1 + 2*beta_s_mean*kappa_inf, 1.0e-10)
+        assert_raises(KeyError,
+                      theo.compute_magnification_bias, cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'],
+                      alpha=2,
+                      beta_kwargs={'notavalidkey': 0.})
+
+        # test errors and also prepare for the next round of tests
+        del cfg_inf['GAMMA_PARAMS']['approx']
+        # test ValueError from unsupported approx
+        assert_raises(ValueError,
+                      theo.compute_reduced_tangential_shear, cosmo=cosmo,
+                      **cfg_inf['GAMMA_PARAMS'],
+                      approx='notvalid')
+        assert_raises(ValueError,
+                      theo.compute_magnification, cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'],
+                      approx='notvalid')
+        assert_raises(ValueError,
+                      theo.compute_magnification_bias, cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'],
+                      alpha=2,
+                      approx='notvalid')
+        # test ValueError from unsupported z_src_info
+        cfg_inf['GAMMA_PARAMS']['z_src_info'] = 'notvalid'
+        assert_raises(ValueError,
+                      theo.compute_tangential_shear, cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'])
+        assert_raises(ValueError,
+                      theo.compute_convergence, cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'])
+        assert_raises(ValueError,
+                      theo.compute_reduced_tangential_shear, cosmo=cosmo,
+                      **cfg_inf['GAMMA_PARAMS'],
+                      approx='applegate14')
+        assert_raises(ValueError,
+                      theo.compute_magnification, cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'],
+                      approx='weak lensing')
+        assert_raises(ValueError,
+                      theo.compute_magnification_bias, cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'],
+                      alpha=2,
+                      approx='weak lensing')
+
+        #test z_src_info = 'beta'
+        beta_s_mean, beta_s_square_mean = 0.9, 0.6
+        cfg_inf['GAMMA_PARAMS']['z_source'] = (beta_s_mean, beta_s_square_mean)
+        cfg_inf['GAMMA_PARAMS']['z_src_info'] = 'beta'
+        # tangential shear
+        assert_allclose(
+            theo.compute_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS']),
+            beta_s_mean * gammat_inf, 1.0e-10)
+        # convergence
+        assert_allclose(
+            theo.compute_convergence(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS']),
+            beta_s_mean * kappa_inf, 1.0e-10)
+        # reduced tangential shear
+        cfg_inf['GAMMA_PARAMS']['approx'] = 'applegate14'
+        assert_allclose(
+            theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS']),
+            beta_s_mean * gammat_inf/(1.0 - beta_s_square_mean / beta_s_mean * kappa_inf),
+            1.0e-10)
+
+        cfg_inf['GAMMA_PARAMS']['approx'] = 'schrabback18'
+        assert_allclose(
+            theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS']),
+            (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean *
+             kappa_inf) * (beta_s_mean * gammat_inf / (1. - beta_s_mean * kappa_inf)),
+            1.0e-10)
+        # magnification
+        cfg_inf['GAMMA_PARAMS']['approx'] = 'weak lensing'
+        assert_allclose(
+            theo.compute_magnification(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS']),
+            1 + 2*beta_s_mean*kappa_inf, 1.0e-10)
+        # magnification bias
+        assert_allclose(
+            theo.compute_magnification_bias(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'], alpha=2),
+            1 + 2*beta_s_mean*kappa_inf, 1.0e-10)
 
         # Check that shear, reduced shear and convergence return zero
         # and magnification and magnification bias return one
