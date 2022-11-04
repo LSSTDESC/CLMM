@@ -1241,7 +1241,7 @@ class CLMModeling:
             _def_keys = ['zmin', 'zmax', 'delta_z_cut']
             if any(key not in _def_keys for key in beta_kwargs):
                 raise KeyError(f'beta_kwargs must contain only {_def_keys} keys, '
-                               f' {bet_kwargs.keys()} provided.')
+                               f' {beta_kwargs.keys()} provided.')
         elif loc_dict['z_src_info']=='beta':
             validate_argument(loc_dict, 'z_src', 'array')
             beta_info = {'beta_s_mean':loc_dict['z_src'][0],
