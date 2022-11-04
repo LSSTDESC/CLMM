@@ -711,7 +711,7 @@ class CLMModeling:
 
                     .. math::
                         \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
-                        
+
         beta_kwargs: None, dict
             Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
             Only used if `z_src_info='distribution'`. Possible keys are:
@@ -928,7 +928,7 @@ class CLMModeling:
 
                 * None (default): Full computation is made for each `r_proj, z_src` pair
                   individually. It requires `z_src_info` to be `discrete`.
-                  
+
                 * `weak lensing` : Uses the weak lensing approximation of the magnification
                   :math:`\mu \approx 1 + 2 \kappa`. `z_src_info` must be either `beta`, or
                   `distribution` (that will be used to compute :math:`\langle \beta_s \rangle`)
