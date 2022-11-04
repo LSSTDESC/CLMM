@@ -1237,7 +1237,7 @@ class CLMModeling:
             validate_argument(loc_dict, 'z_src', 'float_array', argmin=0)
         elif loc_dict['z_src_info']=='distribution':
             validate_argument(loc_dict, 'z_src', 'function', none_ok=False)
-            beta_kwargs = {} if loc_dict['zbeta_kwargs'] is None else loc_dict['zbeta_kwargs']
+            beta_kwargs = {} if loc_dict['beta_kwargs'] is None else loc_dict['beta_kwargs']
             _def_keys = ['zmin', 'zmax', 'delta_z_cut']
             if any(key not in _def_keys for key in beta_kwargs):
                 raise KeyError(f'beta_kwargs must contain only {_def_keys} keys, '
