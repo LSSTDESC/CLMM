@@ -831,33 +831,6 @@ def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, z
     Bs_square_mean = quad(integrand, zmin, zmax)[0] / quad(z_distrib_func, zmin, zmax)[0]
     return Bs_square_mean
 
-def z_distrib_model(redshift, model, is_cdf=False):
-    """
-    A private function that returns unnormalized galaxy redshift distribution
-    function, with the fiducial set of parameters, given the parametrisation model specified.
-
-    Parameters
-    ----------
-    redshift : float
-        Galaxy redshift
-    model : str
-        Name of the parametrisation model of the desired redshift distribution function.
-        Supported models are `Chang_et_al_2013` for Chang et al (2013) and `desc_srd` for
-        the LSST/DESC Science Requirement Document (arxiv:1809.01669).
-    is_cdf : bool
-        If True, returns cumulative distribution function.
-
-    Returns
-    -------
-    The value of the distribution at z for the given model name.
-    """
-    if model == "Chang_et_al_2013":
-        return zdist.chang2013(redshift, is_cdf=is_cdf)
-    elif model == "desc_srd":
-        return zdist.desc_srd(redshift, is_cdf=is_cdf)
-    else:
-        raise ValueError(f"Unsupported model (='{model}')")
-
 
 def _draw_random_points_from_distribution(xmin, xmax, nobj, dist_func, xstep=0.001):
     """Draw random points with a given distribution.
