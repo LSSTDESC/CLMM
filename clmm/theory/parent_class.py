@@ -172,12 +172,12 @@ class CLMModeling:
         r""" Sets the cosmology to the internal cosmology object"""
         self.cosmo = cosmo if cosmo is not None else self.cosmo_class()
 
-    def _eval_excess_surface_density_2h(self, r_proj, z_cl, halobias=1.,lsteps=500):
+    def _eval_excess_surface_density_2h(self, r_proj, z_cl, halobias=1., lsteps=500):
         """"eval excess surface density from the 2-halo term"""
         da = self.cosmo.eval_da(z_cl)
         rho_m = self.cosmo._get_rho_m(z_cl)
 
-        kk = np.logspace(-5.,5.,1000)
+        kk = np.logspace(-5., 5., 1000)
         pk = self.cosmo._eval_linear_matter_powerspectrum(kk, z_cl)
         interp_pk = interp1d(kk, pk, kind='cubic')
         theta = r_proj / da
@@ -196,7 +196,7 @@ class CLMModeling:
         da = self.cosmo.eval_da(z_cl)
         rho_m = self.cosmo._get_rho_m(z_cl)
 
-        kk = np.logspace(-5.,5.,1000)
+        kk = np.logspace(-5., 5., 1000)
         pk = self.cosmo._eval_linear_matter_powerspectrum(kk, z_cl)
         interp_pk = interp1d(kk, pk, kind='cubic')
         theta = r_proj / da
@@ -657,10 +657,6 @@ class CLMModeling:
             elif z_src_info=='distribution':
                 # z_src (function) if PDZ
                 beta_kwargs = {} if beta_kwargs is None else beta_kwargs
-                _def_keys = ['zmin', 'zmax', 'delta_z_cut']
-                if any(key not in _def_keys for key in beta_kwargs):
-                    raise KeyError(f'beta_kwargs must contain only {_def_keys} keys,'
-                                   f' {bet_kwargs.keys()} provided.')
                 beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, z_distrib_func=z_src,
                                                   **beta_kwargs)
                 beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo,
@@ -671,7 +667,7 @@ class CLMModeling:
             raise ValueError(f"Unsupported z_src_info (='{z_src_info}')")
 
         return gammat
-    
+
     def eval_convergence(self, r_proj, z_cl, z_src, z_src_info='discrete', beta_kwargs=None, verbose=False):
 
         r"""Computes the mass convergence
@@ -753,16 +749,12 @@ class CLMModeling:
             elif z_src_info=='distribution':
                 # z_src (function) if PDZ
                 beta_kwargs = {} if beta_kwargs is None else beta_kwargs
-                _def_keys = ['zmin', 'zmax', 'delta_z_cut']
-                if any(key not in _def_keys for key in beta_kwargs):
-                    raise KeyError(f'beta_kwargs must contain only {_def_keys} keys,'
-                                   f' {bet_kwargs.keys()} provided.')
                 beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, z_distrib_func=z_src,
                                                   **beta_kwargs)
                 beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo,
                                                                 z_distrib_func=z_src,
                                                                 **beta_kwargs)
-                
+
             kappa = beta_s_mean * kappa_inf
         else:
             raise ValueError(f"Unsupported z_src_info (='{z_src_info}')")
@@ -858,7 +850,7 @@ class CLMModeling:
             # Can add options with distribution here later
             if z_src_info!='discrete':
                 raise ValueError(
-                    "approx=None requires z_src_info='discrete',"
+                    "approx=None requires z_src_info='discrete', "
                     f"z_src_info='{z_src_info}' was provided.")
             gt = self._eval_reduced_tangential_shear_sp(r_proj, z_cl, z_src)
         elif approx in ('applegate14', 'schrabback18'):
@@ -868,10 +860,6 @@ class CLMModeling:
                 beta_s_mean, beta_s_square_mean = z_src
             elif z_src_info=='distribution':
                 beta_kwargs = {} if beta_kwargs is None else beta_kwargs
-                _def_keys = ['zmin', 'zmax', 'delta_z_cut']
-                if any(key not in _def_keys for key in beta_kwargs):
-                    raise KeyError(f'beta_kwargs must contain only {_def_keys} keys,'
-                                   f' {bet_kwargs.keys()} provided.')
                 beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, z_distrib_func=z_src,
                                                   **beta_kwargs)
                 beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo,
@@ -879,7 +867,7 @@ class CLMModeling:
                                                                 **beta_kwargs)
             else:
                 raise ValueError(
-                    f"approx='{approx}' requires z_src_info='distribution' or 'beta',"
+                    f"approx='{approx}' requires z_src_info='distribution' or 'beta', "
                     f"z_src_info='{z_src_info}' was provided.")
 
             gammat_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=z_inf)
@@ -977,7 +965,7 @@ class CLMModeling:
             # Can add options with distribution here later
             if z_src_info!='discrete':
                 raise ValueError(
-                    "approx=None requires z_src_info='discrete',"
+                    "approx=None requires z_src_info='discrete', "
                     f"z_src_info='{z_src_info}' was provided.")
             mu = self._eval_magnification(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
 
@@ -989,10 +977,6 @@ class CLMModeling:
                 beta_s_mean, beta_s_square_mean = z_src
             elif z_src_info=='distribution':
                 beta_kwargs = {} if beta_kwargs is None else beta_kwargs
-                _def_keys = ['zmin', 'zmax', 'delta_z_cut']
-                if any(key not in _def_keys for key in beta_kwargs):
-                    raise KeyError(f'beta_kwargs must contain only {_def_keys} keys,'
-                                   f' {bet_kwargs.keys()} provided.')
                 beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, z_distrib_func=z_src,
                                                   **beta_kwargs)
                 beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo,
@@ -1000,7 +984,7 @@ class CLMModeling:
                                                                 **beta_kwargs)
             else:
                 raise ValueError(
-                    f"approx='{approx}' requires z_src_info='distribution' or 'beta',"
+                    f"approx='{approx}' requires z_src_info='distribution' or 'beta', "
                     f"z_src_info='{z_src_info}' was provided.")
 
             mu = 1 + 2*beta_s_mean*kappa_inf
@@ -1009,7 +993,7 @@ class CLMModeling:
         return mu
 
     def eval_magnification_bias(self, r_proj, z_cl, z_src, alpha, z_src_info='discrete',
-                                approx=None,beta_kwargs=None, verbose=False):
+                                approx=None, beta_kwargs=None, verbose=False):
         r"""Computes the magnification bias
 
         .. math::
@@ -1059,7 +1043,7 @@ class CLMModeling:
                   :math:`\mu \approx 1 + 2 \kappa \left(\alpha - 1 \right)`. `z_src_info` must be
                   either `beta`, or `distribution` (that will be used to compute
                   :math:`\langle \beta_s \rangle`)
-                  
+
         beta_kwargs: None, dict
             Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
             Only used if `z_src_info='distribution'`. Possible keys are:
@@ -1084,13 +1068,13 @@ class CLMModeling:
             validate_argument(locals(), 'z_src_info', str)
             validate_argument(locals(), 'alpha', 'float_array')
             validate_argument(locals(), 'approx', str, none_ok=True)
-            self._validate_z_src(locals())    
+            self._validate_z_src(locals())
 
         if approx is None:
             # z_src (float or array) is redshift
             if z_src_info!='discrete':
                 raise ValueError(
-                    "approx=None requires z_src_info='discrete',"
+                    "approx=None requires z_src_info='discrete', "
                     f"z_src_info='{z_src_info}' was provided.")
             mu_bias = self._eval_magnification_bias(r_proj=r_proj, z_cl=z_cl, z_src=z_src, alpha=alpha)
 
@@ -1102,10 +1086,6 @@ class CLMModeling:
                 beta_s_mean, beta_s_square_mean = z_src
             elif z_src_info=='distribution':
                 beta_kwargs = {} if beta_kwargs is None else beta_kwargs
-                _def_keys = ['zmin', 'zmax', 'delta_z_cut']
-                if any(key not in _def_keys for key in beta_kwargs):
-                    raise KeyError(f'beta_kwargs must contain only {_def_keys} keys,'
-                                   f' {bet_kwargs.keys()} provided.')
                 beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, z_distrib_func=z_src,
                                                   **beta_kwargs)
                 beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo,
@@ -1113,7 +1093,7 @@ class CLMModeling:
                                                                 **beta_kwargs)
             else:
                 raise ValueError(
-                    f"approx='{approx}' requires z_src_info='distribution' or 'beta',"
+                    f"approx='{approx}' requires z_src_info='distribution' or 'beta', "
                     f"z_src_info='{z_src_info}' was provided.")
 
             mu_bias = 1 + 2*beta_s_mean*kappa_inf*(alpha-1)
@@ -1246,6 +1226,11 @@ class CLMModeling:
             validate_argument(loc_dict, 'z_src', 'float_array', argmin=0)
         elif loc_dict['z_src_info']=='distribution':
             validate_argument(loc_dict, 'z_src', 'function', none_ok=False)
+            beta_kwargs = {} if loc_dict['zbeta_kwargs'] is None else loc_dict['zbeta_kwargs']
+            _def_keys = ['zmin', 'zmax', 'delta_z_cut']
+            if any(key not in _def_keys for key in beta_kwargs):
+                raise KeyError(f'beta_kwargs must contain only {_def_keys} keys, '
+                               f' {bet_kwargs.keys()} provided.')
         elif loc_dict['z_src_info']=='beta':
             validate_argument(loc_dict, 'z_src', 'array')
             beta_info = {'beta_s_mean':loc_dict['z_src'][0],
