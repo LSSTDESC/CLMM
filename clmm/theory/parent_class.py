@@ -4,7 +4,7 @@ CLMModeling abstract class
 import numpy as np
 
 # functions for the 2h term
-from scipy.integrate import simps
+from scipy.integrate import simps, quad
 from scipy.special import jv
 from scipy.interpolate import interp1d
 
@@ -12,7 +12,7 @@ from .generic import (compute_reduced_shear_from_convergence,
                       compute_magnification_bias_from_magnification,
                       compute_rdelta, compute_profile_mass_in_radius,
                       convert_profile_mass_concentration)
-from ..utils import validate_argument, _integ_pzfuncs, compute_beta_s_mean, compute_beta_s_square_mean
+from ..utils import validate_argument, _integ_pzfuncs, compute_beta_s_mean, compute_beta_s_square_mean, compute_beta_s_func
 
 
 class CLMModeling:
@@ -853,13 +853,34 @@ class CLMModeling:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
         if approx is None:
-            # z_src (float or array) is redshift
-            # Can add options with distribution here later
-            if z_src_info!='discrete':
+            if z_src_info=='distribution':
+                z_inf = 1000. #np.inf # INF or a very large number
+
+                def integrand(z_i, r_i):
+                    return z_src(z_i)*compute_beta_s_func(z_i, z_cl, z_inf, self.cosmo,
+                                                           self._eval_tangential_shear,
+                                                           r_i, z_cl, z_inf)\
+                    /(1-compute_beta_s_func(z_i, z_cl, z_inf, self.cosmo,
+                                            self._eval_convergence,
+                                            r_i, z_cl, z_inf))
+                kwargs = {'zmax': 10.0, 'delta_z_cut': 0.1, 'zmin': None} if beta_kwargs is None\
+                else beta_kwargs
+                zmax = kwargs['zmax']
+                delta_z_cut = kwargs['delta_z_cut']
+                zmin = z_cl+delta_z_cut if kwargs['zmin'] is None else kwargs['zmin']
+
+                gt = np.zeros_like(r_proj)
+                for i, r in enumerate(r_proj):
+                    gt[i] = quad(integrand, zmin, zmax, r)[0]
+                # Normalize
+                gt /= quad(z_src, zmin, zmax)[0]
+            elif z_src_info=='discrete':
+                gt = self._eval_reduced_tangential_shear_sp(r_proj, z_cl, z_src)
+            else:
                 raise ValueError(
-                    "approx=None requires z_src_info='discrete', "
+                    "approx=None requires z_src_info='discrete' or 'distribution',"
                     f"z_src_info='{z_src_info}' was provided.")
-            gt = self._eval_reduced_tangential_shear_sp(r_proj, z_cl, z_src)
+
         elif approx in ('applegate14', 'schrabback18'):
             z_inf = 1000. #np.inf # INF or a very large number
             if z_src_info=='beta':
@@ -970,13 +991,34 @@ class CLMModeling:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
         if approx is None:
-            # z_src (float or array) is redshift
-            # Can add options with distribution here later
-            if z_src_info!='discrete':
+            if z_src_info=='distribution':
+                z_inf = 1000. #np.inf # INF or a very large number
+
+                def integrand(z_i, r_i):
+                    return z_src(z_i)/((1-compute_beta_s_func(z_i, z_cl, z_inf, self.cosmo,
+                                                              self._eval_convergence,
+                                                              r_i, z_cl, z_inf))**2\
+                                       -(compute_beta_s_func(z_i, z_cl, z_inf, self.cosmo,
+                                                             self._eval_tangential_shear,
+                                                             r_i, z_cl, z_inf))**2)
+
+                kwargs = {'zmax': 10.0, 'delta_z_cut': 0.1, 'zmin': None} if beta_kwargs is None\
+                else beta_kwargs
+                zmax = kwargs['zmax']
+                delta_z_cut = kwargs['delta_z_cut']
+                zmin = z_cl+delta_z_cut if kwargs['zmin'] is None else kwargs['zmin']
+
+                mu = np.zeros_like(r_proj)
+                for i, r in enumerate(r_proj):
+                    mu[i] = quad(integrand, zmin, zmax, (r))[0]
+                # Normalize
+                mu /= quad(z_src, zmin, zmax)[0]
+            elif z_src_info=='discrete':
+                mu = self._eval_magnification(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
+            else:
                 raise ValueError(
-                    "approx=None requires z_src_info='discrete', "
+                    "approx=None requires z_src_info='discrete' or 'distribution',"
                     f"z_src_info='{z_src_info}' was provided.")
-            mu = self._eval_magnification(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
 
         elif approx == 'weak lensing':
             z_inf = 1000. #np.inf # INF or a very large number
@@ -1083,11 +1125,35 @@ class CLMModeling:
 
         if approx is None:
             # z_src (float or array) is redshift
-            if z_src_info!='discrete':
+            if z_src_info=='distribution':
+                z_inf = 1000. #np.inf # INF or a very large number
+
+                def integrand(z_i, r_i):
+                    return z_src(z_i)/((1-compute_beta_s_func(z_i, z_cl, z_inf, self.cosmo,
+                                                              self._eval_convergence,
+                                                              r_i, z_cl, z_inf))**2\
+                                       -(compute_beta_s_func(z_i, z_cl, z_inf, self.cosmo,
+                                                             self._eval_tangential_shear,
+                                                             r_i, z_cl, z_inf))**2)**(alpha-1)
+
+                kwargs = {'zmax': 10.0, 'delta_z_cut': 0.1, 'zmin': None} if beta_kwargs is None\
+                else beta_kwargs
+                zmax = kwargs['zmax']
+                delta_z_cut = kwargs['delta_z_cut']
+                zmin = z_cl+delta_z_cut if kwargs['zmin'] is None else kwargs['zmin']
+
+                mu_bias = np.zeros_like(r_proj)
+                for i, r in enumerate(r_proj):
+                    mu_bias[i] = quad(integrand, zmin, zmax, (r))[0]
+                # Normalize
+                mu_bias /= quad(z_src, zmin, zmax)[0]
+            elif z_src_info=='discrete':
+                mu_bias = self._eval_magnification_bias(
+                    r_proj=r_proj, z_cl=z_cl, z_src=z_src, alpha=alpha)
+            else:
                 raise ValueError(
-                    "approx=None requires z_src_info='discrete', "
+                    "approx=None requires z_src_info='discrete' or 'distribution',"
                     f"z_src_info='{z_src_info}' was provided.")
-            mu_bias = self._eval_magnification_bias(r_proj=r_proj, z_cl=z_cl, z_src=z_src, alpha=alpha)
 
         elif approx == 'weak lensing':
             z_inf = 1000. #np.inf # INF or a very large number
