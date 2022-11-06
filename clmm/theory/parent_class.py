@@ -584,8 +584,8 @@ class CLMModeling:
         else:
             return self._eval_surface_density_2h(r_proj, z_cl, halobias=halobias, lsteps=lsteps)
 
-    def eval_tangential_shear(self, r_proj, z_cl, z_src, z_src_info='discrete', beta_kwargs=None,
-                              verbose=False):
+    def eval_tangential_shear(self, r_proj, z_cl, z_src, z_src_info='discrete',
+                              beta_kwargs=None, verbose=False):
         r"""Computes the tangential shear
 
         Parameters
@@ -673,7 +673,8 @@ class CLMModeling:
 
         return gammat
 
-    def eval_convergence(self, r_proj, z_cl, z_src, z_src_info='discrete', beta_kwargs=None, verbose=False):
+    def eval_convergence(self, r_proj, z_cl, z_src, z_src_info='discrete',
+                         beta_kwargs=None, verbose=False):
 
         r"""Computes the mass convergence
 
