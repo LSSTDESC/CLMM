@@ -414,7 +414,7 @@ class CLMModeling:
         z_src : array_like, float
             Background source galaxy redshift(s)
         use_pdz : bool
-            Flag to use the photoz pdf. If `False` (default), `sigma_c` is computed using the source redshift point estimates `z_source`.
+            Flag to use the photoz pdf. If `False` (default), `sigma_c` is computed using the source redshift point estimates `z_src`.
             If `True`, `sigma_c` is computed as 1/<1/Sigma_crit>, where the average is performed using
             the individual galaxy redshift pdf. In that case, the `pzbins` and `pzpdf` should be specified.
 
@@ -602,8 +602,8 @@ class CLMModeling:
             The following supported options are:
 
                 * 'discrete' (default) : The redshift of sources is provided by `z_src`.
-                  It can be individual redshifts for each source galaxy when `z_source` is an
-                  arrayor all sources are at the same redshift when `z_source` is a float.
+                  It can be individual redshifts for each source galaxy when `z_src` is an
+                  arrayor all sources are at the same redshift when `z_src` is a float.
 
                 * 'distribution' : A redshift distribution function is provided by `z_src`.
                   `z_src` must be a one dimentional function.
@@ -700,8 +700,8 @@ class CLMModeling:
             The following supported options are:
 
                 * 'discrete' (default) : The redshift of sources is provided by `z_src`.
-                  It can be individual redshifts for each source galaxy when `z_source` is an
-                  array or all sources are at the same redshift when `z_source` is a float.
+                  It can be individual redshifts for each source galaxy when `z_src` is an
+                  array or all sources are at the same redshift when `z_src` is a float.
 
                 * 'distribution' : A redshift distribution function is provided by `z_src`.
                   `z_src` must be a one dimentional function.
@@ -794,8 +794,8 @@ class CLMModeling:
             The following supported options are:
 
                 * 'discrete' (default) : The redshift of sources is provided by `z_src`.
-                  It can be individual redshifts for each source galaxy when `z_source` is an
-                  array or all sources are at the same redshift when `z_source` is a float.
+                  It can be individual redshifts for each source galaxy when `z_src` is an
+                  array or all sources are at the same redshift when `z_src` is a float.
 
                 * 'distribution' : A redshift distribution function is provided by `z_src`.
                   `z_src` must be a one dimentional function.
@@ -946,8 +946,8 @@ class CLMModeling:
             The following supported options are:
 
                 * 'discrete' (default) : The redshift of sources is provided by `z_src`.
-                  It can be individual redshifts for each source galaxy when `z_source` is an
-                  arrayor all sources are at the same redshift when `z_source` is a float.
+                  It can be individual redshifts for each source galaxy when `z_src` is an
+                  arrayor all sources are at the same redshift when `z_src` is a float.
 
                 * 'distribution' : A redshift distribution function is provided by `z_src`.
                   `z_src` must be a one dimentional function.
@@ -1098,8 +1098,8 @@ class CLMModeling:
             The following supported options are:
 
                 * 'discrete' (default) : The redshift of sources is provided by `z_src`.
-                  It can be individual redshifts for each source galaxy when `z_source` is an
-                  array or all sources are at the same redshift when `z_source` is a float.
+                  It can be individual redshifts for each source galaxy when `z_src` is an
+                  array or all sources are at the same redshift when `z_src` is a float.
 
                 * 'distribution' : A redshift distribution function is provided by `z_src`.
                   `z_src` must be a one dimentional function.
