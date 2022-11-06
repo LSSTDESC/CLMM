@@ -13,27 +13,28 @@ def test_unimplemented(modeling_data):
     mod = CLMModeling()
 
     assert_raises(NotImplementedError, mod.set_cosmo, None)
-    assert_raises(NotImplementedError, mod._set_halo_density_profile)
-    assert_raises(NotImplementedError, mod._set_einasto_alpha, 0.5)
-    assert_raises(NotImplementedError, mod._get_einasto_alpha)
-    assert_raises(NotImplementedError, mod._set_concentration, 4.0)
-    assert_raises(NotImplementedError, mod._set_mass, 1.0e15)
-    assert_raises(NotImplementedError, mod.set_concentration, 4.0)
     assert_raises(NotImplementedError, mod._get_mass)
     assert_raises(NotImplementedError, mod._get_concentration)
     assert_raises(NotImplementedError, mod.set_mass, 1.0e15)
+    assert_raises(NotImplementedError, mod._set_mass, 1.0e15)
+    assert_raises(NotImplementedError, mod.set_concentration, 4.0)
+    assert_raises(NotImplementedError, mod._set_concentration, 4.0)
+    assert_raises(NotImplementedError, mod._set_halo_density_profile)
+    assert_raises(NotImplementedError, mod._set_einasto_alpha, 0.5)
+    assert_raises(NotImplementedError, mod._get_einasto_alpha)
     assert_raises(NotImplementedError, mod.eval_3d_density, [0.3], 0.3)
     assert_raises(NotImplementedError, mod.eval_surface_density, [0.3], 0.3)
     assert_raises(NotImplementedError, mod.eval_mean_surface_density, [0.3], 0.3)
     assert_raises(NotImplementedError, mod.eval_excess_surface_density, [0.3], 0.3)
     assert_raises(NotImplementedError, mod.eval_tangential_shear, [0.3], 0.3, 0.5)
+    assert_raises(NotImplementedError, mod.eval_convergence, [0.3], 0.3, 0.5)
     assert_raises(NotImplementedError, mod.eval_reduced_tangential_shear, [0.3], 0.3, 0.5)
     assert_raises(NotImplementedError, mod.eval_reduced_tangential_shear, [0.3], 0.3, (0.6, 0.4),
                   'beta', 'applegate14')
     assert_raises(NotImplementedError, mod.eval_reduced_tangential_shear, [0.3], 0.3, (0.6, 0.4),
                   'beta', 'schrabback18')
-    assert_raises(NotImplementedError, mod.eval_convergence, [0.3], 0.3, 0.5)
     assert_raises(NotImplementedError, mod.eval_magnification, [0.3], 0.3, 0.5)
+    assert_raises(NotImplementedError, mod.eval_magnification_bias, [0.3], 0.3, 0.5, 2)
 
 
 def test_instantiate(modeling_data):
