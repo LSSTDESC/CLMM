@@ -1081,6 +1081,9 @@ class CLMModeling:
             validate_argument(locals(), 'approx', str, none_ok=True)
             self._validate_z_src(locals())
 
+        if self.halo_profile_model=='einasto' and verbose:
+            print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
+
         if approx is None:
             # z_src (float or array) is redshift
             if z_src_info!='discrete':
