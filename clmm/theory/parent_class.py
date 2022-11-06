@@ -633,6 +633,9 @@ class CLMModeling:
                 * 'delta_z_cut' (float) : Redshift interval to be summed with $z_cl$ to return
                   $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
 
+        verbose : bool, optional
+            If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
+            CCL backends.
 
         Returns
         -------
@@ -727,6 +730,9 @@ class CLMModeling:
                 * 'delta_z_cut' (float) : Redshift interval to be summed with $z_cl$ to return
                   $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
 
+        verbose : bool, optional
+            If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
+            CCL backends.
 
         Returns
         -------
@@ -768,7 +774,10 @@ class CLMModeling:
 
     def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src, z_src_info='discrete',
                                       approx=None, beta_kwargs=None, verbose=False):
-        r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
+        r"""Computes the reduced tangential shear
+
+        .. math::
+            g_t = \frac{\gamma_t}{1-\kappa}
 
         Parameters
         ----------
@@ -808,17 +817,17 @@ class CLMModeling:
             Type of computation to be made for reduced shears, options are:
 
                 * None (default): Full computation is made for each `r_proj, z_src` pair
-                  individually. It requires `z_src_info` to be `discrete`.
+                  individually. It requires `z_src_info` to be 'discrete' or 'distribution'.
 
                 * 'applegate14' : Uses the approach from Weighing the Giants - III (equation 6 in
                   Applegate et al. 2014; https://arxiv.org/abs/1208.0605). `z_src_info` must be
-                  either `beta`, or `distribution` (that will be used to compute
+                  either 'beta', or 'distribution' (that will be used to compute
                   :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`)
 
                 * 'schrabback18' : Uses the approach from Cluster Mass Calibration at High
                   Redshift (equation 12 in Schrabback et al. 2017;
                   https://arxiv.org/abs/1611.03866).
-                  `z_src_info` must be either `beta`, or `distribution` (that will be used
+                  `z_src_info` must be either 'beta', or 'distribution' (that will be used
                   to compute :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`)
 
         beta_kwargs: None, dict
@@ -832,6 +841,9 @@ class CLMModeling:
                 * 'delta_z_cut' (float) : Redshift interval to be summed with $z_cl$ to return
                   $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
 
+        verbose : bool, optional
+            If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
+            CCL backends.
 
         Returns
         -------
@@ -957,11 +969,11 @@ class CLMModeling:
             Type of computation to be made for reduced shears, options are:
 
                 * None (default): Full computation is made for each `r_proj, z_src` pair
-                  individually. It requires `z_src_info` to be `discrete`.
+                  individually. It requires `z_src_info` to be 'discrete' or 'distribution'.
 
                 * 'weak lensing' : Uses the weak lensing approximation of the magnification
-                  :math:`\mu \approx 1 + 2 \kappa`. `z_src_info` must be either `beta`, or
-                  `distribution` (that will be used to compute :math:`\langle \beta_s \rangle`)
+                  :math:`\mu \approx 1 + 2 \kappa`. `z_src_info` must be either 'beta', or
+                  'distribution' (that will be used to compute :math:`\langle \beta_s \rangle`)
 
         beta_kwargs: None, dict
             Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
@@ -973,6 +985,10 @@ class CLMModeling:
                   when performing the sum. (default=10.0)
                 * 'delta_z_cut' (float) : Redshift interval to be summed with $z_cl$ to return
                   $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
+
+        verbose : bool, optional
+            If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
+            CCL backends.
 
         Returns
         -------
@@ -1105,11 +1121,11 @@ class CLMModeling:
             Type of computation to be made for reduced shears, options are:
 
                 * None (default): Full computation is made for each `r_proj, z_src` pair
-                  individually. It requires `z_src_info` to be `discrete`.
+                  individually. It requires `z_src_info` to be 'discrete' or 'distribution'.
 
                 * 'weak lensing' : Uses the weak lensing approximation of the magnification bias
                   :math:`\mu \approx 1 + 2 \kappa \left(\alpha - 1 \right)`. `z_src_info` must be
-                  either `beta`, or `distribution` (that will be used to compute
+                  either 'beta', or 'distribution' (that will be used to compute
                   :math:`\langle \beta_s \rangle`)
 
         beta_kwargs: None, dict
@@ -1123,6 +1139,9 @@ class CLMModeling:
                 * 'delta_z_cut' (float) : Redshift interval to be summed with $z_cl$ to return
                   $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
 
+        verbose : bool, optional
+            If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
+            CCL backends.
 
         Returns
         -------
@@ -1137,6 +1156,9 @@ class CLMModeling:
             validate_argument(locals(), 'alpha', 'float_array')
             validate_argument(locals(), 'approx', str, none_ok=True)
             self._validate_z_src(locals())
+
+        if self.halo_profile_model=='einasto' and verbose:
+            print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
         if approx is None:
             # z_src (float or array) is redshift
