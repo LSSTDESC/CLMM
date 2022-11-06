@@ -1023,6 +1023,7 @@ class CLMModeling:
         elif approx == 'weak lensing':
             z_inf = 1000. #np.inf # INF or a very large number
             kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=z_inf)
+            gamma_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=z_inf)
             if z_src_info=='beta':
                 # z_src (tuple) is (beta_s_mean, beta_s_square_mean)
                 beta_s_mean, beta_s_square_mean = z_src
@@ -1038,7 +1039,21 @@ class CLMModeling:
                     f"approx='{approx}' requires z_src_info='distribution' or 'beta', "
                     f"z_src_info='{z_src_info}' was provided.")
 
-            mu = 1 + 2*beta_s_mean*kappa_inf
+            #mu = 1 + 2*beta_s_mean*kappa_inf
+
+            mu = 1 / ((1 - beta_s_mean*kappa_inf)**2 - (beta_s_mean*gamma_inf)**2)
+            # correction terms
+            # exact
+            mu *= 1-(beta_s_mean*kappa_inf-beta_s_mean*gamma_inf)
+            mu *= 1-(beta_s_mean*kappa_inf+beta_s_mean*gamma_inf)
+            # Taylor expansion with optimized prefactor of cross terms
+            mu *= 1+(beta_s_mean*kappa_inf-beta_s_mean*gamma_inf)\
+                   +beta_s_square_mean*kappa_inf**2+beta_s_square_mean*gamma_inf**2\
+                   +4*beta_s_square_mean*kappa_inf*gamma_inf
+            mu *= 1+(beta_s_mean*kappa_inf+beta_s_mean*gamma_inf)\
+                   +beta_s_square_mean*kappa_inf**2+beta_s_square_mean*gamma_inf**2\
+                   -4*beta_s_square_mean*kappa_inf*gamma_inf
+
         else:
             raise ValueError(f"Unsupported approx (='{approx}')")
         return mu
@@ -1158,6 +1173,7 @@ class CLMModeling:
         elif approx == 'weak lensing':
             z_inf = 1000. #np.inf # INF or a very large number
             kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=z_inf)
+            gamma_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=z_inf)
             if z_src_info=='beta':
                 # z_src (tuple) is (beta_s_mean, beta_s_square_mean)
                 beta_s_mean, beta_s_square_mean = z_src
@@ -1173,7 +1189,21 @@ class CLMModeling:
                     f"approx='{approx}' requires z_src_info='distribution' or 'beta', "
                     f"z_src_info='{z_src_info}' was provided.")
 
-            mu_bias = 1 + 2*beta_s_mean*kappa_inf*(alpha-1)
+            #mu_bias = 1 + 2*beta_s_mean*kappa_inf*(alpha-1)
+
+            mu_bias = (1/((1 - beta_s_mean*kappa_inf)**2 - (beta_s_mean*gamma_inf)**2))**(alpha-1)
+            # correction terms
+            # exact
+            mu_bias *= (1-(beta_s_mean*kappa_inf-beta_s_mean*gamma_inf))**(alpha-1)
+            mu_bias *= (1-(beta_s_mean*kappa_inf+beta_s_mean*gamma_inf))**(alpha-1)
+            # Taylor expansion with optimized prefactor of cross terms
+            mu_bias *= (1+(beta_s_mean*kappa_inf-beta_s_mean*gamma_inf)\
+                   +beta_s_square_mean*kappa_inf**2+beta_s_square_mean*gamma_inf**2\
+                   +4*beta_s_square_mean*kappa_inf*gamma_inf)**(alpha-1)
+            mu_bias *= (1+(beta_s_mean*kappa_inf+beta_s_mean*gamma_inf)\
+                   +beta_s_square_mean*kappa_inf**2+beta_s_square_mean*gamma_inf**2\
+                   -4*beta_s_square_mean*kappa_inf*gamma_inf)**(alpha-1)
+
         else:
             raise ValueError(f"Unsupported approx (='{approx}')")
 
