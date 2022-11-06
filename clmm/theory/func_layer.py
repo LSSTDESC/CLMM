@@ -50,14 +50,14 @@ def compute_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     halo_profile_model : str, optional
         Profile model parameterization (letter case independent):
 
-            * 'nfw' (default);
-            * 'einasto' - valid in numcosmo only;
-            * 'hernquist' - valid in numcosmo only;
+            * 'nfw' (default)
+            * 'einasto' - not in cluster_toolkit
+            * 'hernquist' - not in cluster_toolkit
 
     massdef : str, optional
         Profile mass definition, with the following supported options (letter case independent):
 
-            * 'mean' (default);
+            * 'mean' (default)
             * 'critical';
             * 'virial';
 
@@ -122,14 +122,14 @@ def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     halo_profile_model : str, optional
         Profile model parameterization (letter case independent):
 
-            * 'nfw' (default);
-            * 'einasto' - valid in numcosmo only;
-            * 'hernquist' - valid in numcosmo only;
+            * 'nfw' (default)
+            * 'einasto' - not in cluster_toolkit
+            * 'hernquist' - not in cluster_toolkit
 
     massdef : str, optional
         Profile mass definition, with the following supported options (letter case independent):
 
-            * 'mean' (default);
+            * 'mean' (default)
             * 'critical' ;
             * 'virial' ;
 
@@ -197,16 +197,16 @@ def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
     halo_profile_model : str, optional
         Profile model parameterization (letter case independent):
 
-            * 'nfw' (default);
-            * 'einasto' - valid in numcosmo only;
-            * 'hernquist' - valid in numcosmo only;
+            * 'nfw' (default)
+            * 'einasto' - not in cluster_toolkit
+            * 'hernquist' - not in cluster_toolkit
 
     massdef : str, optional
         Profile mass definition, with the following supported options (letter case independent):
 
-            * 'mean' (default);
-            * 'critical' - not in cluster_toolkit;
-            * 'virial' - not in cluster_toolkit;
+            * 'mean' (default)
+            * 'critical' - not in cluster_toolkit
+            * 'virial' - not in cluster_toolkit
 
     alpha_ein : float, optional
         If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only
@@ -415,16 +415,16 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     halo_profile_model : str, optional
         Profile model parameterization (letter case independent):
 
-            * 'nfw' (default);
-            * 'einasto' - valid in numcosmo only;
-            * 'hernquist' - valid in numcosmo only;
+            * 'nfw' (default)
+            * 'einasto' - not in cluster_toolkit
+            * 'hernquist' - not in cluster_toolkit
 
     massdef : str, optional
         Profile mass definition, with the following supported options (letter case independent):
 
-            * 'mean' (default);
-            * 'critical' - not in cluster_toolkit;
-            * 'virial' - not in cluster_toolkit;
+            * 'mean' (default)
+            * 'critical' - not in cluster_toolkit
+            * 'virial' - not in cluster_toolkit
 
     alpha_ein : float, optional
         If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only
@@ -532,16 +532,16 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     halo_profile_model : str, optional
         Profile model parameterization (letter case independent):
 
-            * 'nfw' (default);
-            * 'einasto' - valid in numcosmo only;
-            * 'hernquist' - valid in numcosmo only;
+            * 'nfw' (default)
+            * 'einasto' - not in cluster_toolkit
+            * 'hernquist' - not in cluster_toolkit
 
     massdef : str, optional
         Profile mass definition, with the following supported options (letter case independent):
 
-            * 'mean' (default);
-            * 'critical' - not in cluster_toolkit;
-            * 'virial' - not in cluster_toolkit;
+            * 'mean' (default)
+            * 'critical' - not in cluster_toolkit
+            * 'virial' - not in cluster_toolkit
 
     alpha_ein : float, optional
         If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only
@@ -646,16 +646,16 @@ def compute_reduced_tangential_shear(
     halo_profile_model : str, optional
         Profile model parameterization (letter case independent):
 
-            * 'nfw' (default);
-            * 'einasto' - valid in numcosmo only;
-            * 'hernquist' - valid in numcosmo only;
+            * 'nfw' (default)
+            * 'einasto' - not in cluster_toolkit
+            * 'hernquist' - not in cluster_toolkit
 
     massdef : str, optional
         Profile mass definition, with the following supported options (letter case independent):
 
-            * 'mean' (default);
-            * 'critical' - not in cluster_toolkit;
-            * 'virial' - not in cluster_toolkit;
+            * 'mean' (default)
+            * 'critical' - not in cluster_toolkit
+            * 'virial' - not in cluster_toolkit
 
     z_src_info : str, optional
         Type of redshift information provided, it describes z_source.
@@ -771,16 +771,16 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
     halo_profile_model : str, optional
         Profile model parameterization (letter case independent):
 
-            * 'nfw' (default);
-            * 'einasto' - valid in numcosmo only;
-            * 'hernquist' - valid in numcosmo only;
+            * 'nfw' (default)
+            * 'einasto' - not in cluster_toolkit
+            * 'hernquist' - not in cluster_toolkit
 
     massdef : str, optional
         Profile mass definition, with the following supported options (letter case independent):
 
-            * 'mean' (default);
-            * 'critical' - not in cluster_toolkit;
-            * 'virial' - not in cluster_toolkit;
+            * 'mean' (default)
+            * 'critical' - not in cluster_toolkit
+            * 'virial' - not in cluster_toolkit
 
     alpha_ein : float, optional
         If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only
@@ -914,16 +914,16 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
     halo_profile_model : str, optional
         Profile model parameterization (letter case independent):
 
-            * 'nfw' (default);
-            * 'einasto' - valid in numcosmo only;
-            * 'hernquist' - valid in numcosmo only;
+            * 'nfw' (default)
+            * 'einasto' - not in cluster_toolkit
+            * 'hernquist' - not in cluster_toolkit
 
     massdef : str, optional
         Profile mass definition, with the following supported options (letter case independent):
 
-            * 'mean' (default);
-            * 'critical' - not in cluster_toolkit;
-            * 'virial' - not in cluster_toolkit;
+            * 'mean' (default)
+            * 'critical' - not in cluster_toolkit
+            * 'virial' - not in cluster_toolkit
 
     z_src_info : str, optional
         Type of redshift information provided, it describes z_source.
