@@ -58,8 +58,8 @@ def compute_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
         Profile mass definition, with the following supported options (letter case independent):
 
             * 'mean' (default)
-            * 'critical';
-            * 'virial';
+            * 'critical'
+            * 'virial'
 
     alpha_ein : float, optional
         If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only
@@ -130,8 +130,8 @@ def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
         Profile mass definition, with the following supported options (letter case independent):
 
             * 'mean' (default)
-            * 'critical' ;
-            * 'virial' ;
+            * 'critical'
+            * 'virial'
 
     alpha_ein : float, optional
         If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only
@@ -205,8 +205,8 @@ def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
         Profile mass definition, with the following supported options (letter case independent):
 
             * 'mean' (default)
-            * 'critical' - not in cluster_toolkit
-            * 'virial' - not in cluster_toolkit
+            * 'critical'
+            * 'virial'
 
     alpha_ein : float, optional
         If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only
@@ -423,8 +423,8 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
         Profile mass definition, with the following supported options (letter case independent):
 
             * 'mean' (default)
-            * 'critical' - not in cluster_toolkit
-            * 'virial' - not in cluster_toolkit
+            * 'critical'
+            * 'virial'
 
     alpha_ein : float, optional
         If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only
@@ -540,8 +540,8 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
         Profile mass definition, with the following supported options (letter case independent):
 
             * 'mean' (default)
-            * 'critical' - not in cluster_toolkit
-            * 'virial' - not in cluster_toolkit
+            * 'critical'
+            * 'virial'
 
     alpha_ein : float, optional
         If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only
@@ -654,8 +654,8 @@ def compute_reduced_tangential_shear(
         Profile mass definition, with the following supported options (letter case independent):
 
             * 'mean' (default)
-            * 'critical' - not in cluster_toolkit
-            * 'virial' - not in cluster_toolkit
+            * 'critical'
+            * 'virial'
 
     z_src_info : str, optional
         Type of redshift information provided, it describes z_source.
@@ -779,8 +779,8 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
         Profile mass definition, with the following supported options (letter case independent):
 
             * 'mean' (default)
-            * 'critical' - not in cluster_toolkit
-            * 'virial' - not in cluster_toolkit
+            * 'critical'
+            * 'virial'
 
     alpha_ein : float, optional
         If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only
@@ -922,8 +922,8 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
         Profile mass definition, with the following supported options (letter case independent):
 
             * 'mean' (default)
-            * 'critical' - not in cluster_toolkit
-            * 'virial' - not in cluster_toolkit
+            * 'critical'
+            * 'virial'
 
     z_src_info : str, optional
         Type of redshift information provided, it describes z_source.
