@@ -10,7 +10,6 @@ from .constants import Constants as const
 import matplotlib.pyplot as plt
 
 from astropy.cosmology import LambdaCDM #update
-from astropy import constants as astconst #update
 
 class profiles:
     '''A class to generate 2D covnergence profiles on a regular grid
@@ -80,15 +79,20 @@ class profiles:
         if np.all(r_vals.value) == None:
             r_vals = self.r_vals
         
+        G = const.GNEWT.value * u.N * u.m**2 /u.kg**2
+        c = const.CLIGHT.value * u.m / u.s
+        Msol = const.SOLAR_MASS.value * u.kg 
+
         cosmo = LambdaCDM(H0=self.H_0, Om0=self.Omega_m, Ode0=self.Omega_Lambda, Tcmb0=self.Tcmb0)
 
-        r_200 = ( (astconst.G * self.M)/(100. * cosmo.H(self.z_l)**2) )**(1./3.)
+        r_200 = ( (G * self.M)/(100. * cosmo.H(self.z_l)**2) )**(1./3.)
         r_s = r_200 * self.c
         delta_c = (200./3.) * ( self.c**3 / ( np.log(1+self.c) - ( self.c/(1+self.c) ) ) )
         
         x = r_vals/r_s
+        x = x.value
 
-        Sigma_crit_coeff = astconst.c**2 / (4. * np.pi * astconst.G)
+        Sigma_crit_coeff = c**2 / (4. * np.pi * G)
 
         D_s = cosmo.angular_diameter_distance(self.z_s)  
         D_d = cosmo.angular_diameter_distance(self.z_l)  
@@ -105,7 +109,7 @@ class profiles:
         nfw = coeff * f_internal
 
         if self.sig:
-            return nfw.to(astconst.M_sun / u.Mpc**2).real
+            return nfw.to(Msol / u.Mpc**2).real
         if not self.sig:
             return (nfw.real / Sigma_crit).decompose()
 
@@ -203,57 +207,6 @@ def getRadial(radius_map,r_bins,angle_map,phi_bins,kappa_map,et_map):
     return kappa_radial,gammat_radial
 
 
-def plot_maps_and_profiles(kappa_map,e1_map,e2_map,et_map,ex_map,
-                       kappa_radial,gammat_radial,r_bins):
-    '''quickly plot the convergence, e1,e2, ex,et and radial profiles
-    '''
-    fig, ax = plt.subplots(2,3,figsize=[9,6])
-    ax.ravel()
-    
-    ax[0,0].imshow(kappa_map,origin = 'lower')
-    ax[0,0].set_title(r'$\kappa$')
-
-
-    ax[0,1].imshow(e1_map,origin = 'lower')
-    ax[0,1].set_title(r'$e_1$')
-
-
-    ax[0,2].imshow(e2_map,origin = 'lower')
-    ax[0,2].set_title(r'$e_2$')
-
-
-    ax[1,0].imshow(et_map,origin = 'lower')
-    ax[1,0].set_title(r'$e_t$')
-
-
-    ax[1,1].imshow(ex_map,origin = 'lower')
-    ax[1,1].set_title(r'$e_x$')
-
-    
-    
-    r_bins_mid = 0.5 * (r_bins[1:] + r_bins[:-1])
-
-    ax[1,2].plot(r_bins_mid, kappa_radial.mean(axis=-1), label=r'$\kappa(r)$')
-    ax[1,2].plot(r_bins_mid, gammat_radial.mean(axis=-1), label=r'$\gamma_t(r)$')
-    
-    plt.legend()
-    plt.show()
-    
-    fig,ax = plt.subplots(1,2)
-    
-    ax[0].imshow(kappa_radial,origin='lower')
-    ax[1].imshow(gammat_radial,origin='lower')
-    
-    ax[0].set_ylabel('r')
-    ax[0].set_xlabel('$\phi$')
-    
-    ax[1].set_ylabel('r')
-    ax[1].set_xlabel('$\phi$')
-    
-    ax[0].set_title(r'$\kappa$')
-    ax[1].set_title(r'$\gamma_t$')
-
-    plt.show()
 
 def compute_nfw_boost(rvals, rs=1000, b0=0.1) :
     """ Given a list of rvals, and optional rs and b0, return the corresponding boost factor at each rval
