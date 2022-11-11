@@ -1059,7 +1059,7 @@ class CLMModeling:
             #mu = 1 + 2*beta_s_mean*kappa_inf
 
             # Taylor expansion with up to second-order terms
-            mu *= 1+2*beta_s_mean*kappa_inf\
+            mu = 1+2*beta_s_mean*kappa_inf\
                    +beta_s_square_mean*gamma_inf**2\
                    +3*beta_s_square_mean*kappa_inf**2
 
@@ -1207,7 +1207,7 @@ class CLMModeling:
             #mu_bias = 1 + 2*beta_s_mean*kappa_inf*(alpha-1)
 
             # Taylor expansion with up to second-order terms
-            mu_bias *= 1+(alpha-1)*(2*beta_s_mean*kappa_inf+beta_s_square_mean*gamma_inf**2)\
+            mu_bias = 1+(alpha-1)*(2*beta_s_mean*kappa_inf+beta_s_square_mean*gamma_inf**2)\
                         +(2*alpha-1)*(alpha-1)*beta_s_square_mean*kappa_inf**2
 
         else:
