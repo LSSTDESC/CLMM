@@ -1058,18 +1058,10 @@ class CLMModeling:
 
             #mu = 1 + 2*beta_s_mean*kappa_inf
 
-            mu = 1 / ((1 - beta_s_mean*kappa_inf)**2 - (beta_s_mean*gamma_inf)**2)
-            # correction terms
-            # exact
-            mu *= 1-(beta_s_mean*kappa_inf-beta_s_mean*gamma_inf)
-            mu *= 1-(beta_s_mean*kappa_inf+beta_s_mean*gamma_inf)
-            # Taylor expansion with optimized prefactor of cross terms
-            mu *= 1+(beta_s_mean*kappa_inf-beta_s_mean*gamma_inf)\
-                   +beta_s_square_mean*kappa_inf**2+beta_s_square_mean*gamma_inf**2\
-                   +4*beta_s_square_mean*kappa_inf*gamma_inf
-            mu *= 1+(beta_s_mean*kappa_inf+beta_s_mean*gamma_inf)\
-                   +beta_s_square_mean*kappa_inf**2+beta_s_square_mean*gamma_inf**2\
-                   -4*beta_s_square_mean*kappa_inf*gamma_inf
+            # Taylor expansion with up to second-order terms
+            mu *= 1+2*beta_s_mean*kappa_inf\
+                   +beta_s_square_mean*gamma_inf**2\
+                   +3*beta_s_square_mean*kappa_inf**2
 
         else:
             raise ValueError(f"Unsupported approx (='{approx}')")
@@ -1214,18 +1206,9 @@ class CLMModeling:
 
             #mu_bias = 1 + 2*beta_s_mean*kappa_inf*(alpha-1)
 
-            mu_bias = (1/((1 - beta_s_mean*kappa_inf)**2 - (beta_s_mean*gamma_inf)**2))**(alpha-1)
-            # correction terms
-            # exact
-            mu_bias *= (1-(beta_s_mean*kappa_inf-beta_s_mean*gamma_inf))**(alpha-1)
-            mu_bias *= (1-(beta_s_mean*kappa_inf+beta_s_mean*gamma_inf))**(alpha-1)
-            # Taylor expansion with optimized prefactor of cross terms
-            mu_bias *= (1+(beta_s_mean*kappa_inf-beta_s_mean*gamma_inf)\
-                   +beta_s_square_mean*kappa_inf**2+beta_s_square_mean*gamma_inf**2\
-                   +4*beta_s_square_mean*kappa_inf*gamma_inf)**(alpha-1)
-            mu_bias *= (1+(beta_s_mean*kappa_inf+beta_s_mean*gamma_inf)\
-                   +beta_s_square_mean*kappa_inf**2+beta_s_square_mean*gamma_inf**2\
-                   -4*beta_s_square_mean*kappa_inf*gamma_inf)**(alpha-1)
+            # Taylor expansion with up to second-order terms
+            mu_bias *= 1+(alpha-1)*(2*beta_s_mean*kappa_inf+beta_s_square_mean*gamma_inf**2)\
+                        +(2*alpha-1)*(alpha-1)*beta_s_square_mean*kappa_inf**2
 
         else:
             raise ValueError(f"Unsupported approx (='{approx}')")
