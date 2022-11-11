@@ -12,9 +12,26 @@ import matplotlib.pyplot as plt
 from astropy.cosmology import LambdaCDM #update
 
 class profiles:
-    '''A class to generate 2D covnergence profiles on a regular grid
-    ''' 
+    """A class to generate 2D covnergence profiles on a regular grid
+    """
+
     def __init__(self,M,c,z_l,z_s,sig=False):
+        
+        """Initialise the halo and lensing geometry
+
+           Parameters
+           ----------
+           M: float
+               halo mass
+           c: float
+               halo concentration
+           z_l: float
+               lens redshift
+           z_s: flaot
+               source redshift
+           delta_sig: bool (optional)  
+               If False, return convergence profile, if True, return delta Sigma profile
+        """
         
         self.M = M
         self.c = c
@@ -28,6 +45,21 @@ class profiles:
     
     def cosmology(self, H_0 = 70., Omega_m = 0.3, Omega_Lambda = 0.7, Tcmb0=2.725):
         
+        """ Set the cosmology of the object
+
+        Parameters
+        ----------
+        H_0: float
+            Hubble parameter
+        Omega_m: float
+            Mass density parameter (baryon + dark matter)
+        Omega_Lambda: float
+            Effective mass density of dark energy
+        Tcmb0: float
+            cmb temperature at z=0
+    
+        """
+
         self.H_0 = H_0
         self.Omega_m = Omega_m
         self.Tcmb0 = Tcmb0
@@ -37,12 +69,24 @@ class profiles:
         
         
     def get_r_vals(self,nbins,lower_r,upper_r,log=False):
-        '''create radial bins for profiles
-        nbins: number of bins
-        lower_r: lowest bin value
-        upper_r: highest bin value
-        returns bin edges in units provided, or kpc if none are provided
-        '''
+        """Create radial bins for profiles
+        
+        Parameters
+        ----------
+        nbins: int
+            number of bins
+        lower_r: float
+            lowest bin value
+        upper_r: float
+            highest bin value
+        log: bool (optional)
+            return bins with linear (False) or log (True) separation
+
+        Returns 
+        -------
+        r_vals: np.ndarray    
+            bin edges in units provided, or kpc if none are provided
+        """
         #create r values
         self.nbins = nbins
         self.lower_r = lower_r
@@ -68,13 +112,18 @@ class profiles:
         return self.r_vals
     
     def kappa_NFW(self,r_vals=None):
-        '''r_vals: radial bin values for halo lensing profile
-           M: halo mass
-           c: concentration
-           z_l: lens redshift
-           z_s: source redshift
-           delta_sig: If False, return convergence profile, if True, return delta Sigma profile
-        '''
+        """Produce a 1D NFW lensing profile
+
+        Parameters
+        ----------
+        r_vals: np.ndarray (optional) 
+           radial bin values for halo lensing profile
+        
+        Returns
+        -------
+        nfw: np.ndarray
+            1D NFW lensing profile
+        """
         
         if np.all(r_vals.value) == None:
             r_vals = self.r_vals
@@ -114,10 +163,20 @@ class profiles:
             return (nfw.real / Sigma_crit).decompose()
 
     def make_grid(self,npix,r_max):
-        '''make 2D grid centered on origin
-        npix: resolution of grid
-        r_max: width of grid is 2*r_max
-        '''
+        """make 2D grid centered on origin
+        
+        Parameters
+        ----------
+        npix: int 
+            resolution of grid
+        r_max: float 
+            width of grid is 2*r_max
+
+        Returns
+        -------
+        r_2D: np.ndarray
+            2D grid centered on origin
+        """
         
         npix *= 1j #imaginary so that ogrid knows to interpret npix as array size
         y,x = np.ogrid[-r_max:r_max:npix,-r_max:r_max:npix]
@@ -126,9 +185,20 @@ class profiles:
         return r_2D
 
     def kappa_NFW_2D(self,npix,r_max):
+        """Create 2D NFW profile on grid
         
-        '''create 2D NFW profile on grid
-        '''
+        Parameters
+        ----------
+        npix: int
+            resolution of grid
+        r_max: float
+            set width of grid (2*r_max)
+
+        Returns
+        -------
+        kappa_NFW: np.ndarray
+            2D NFW map
+        """
         
         self.npix = npix
         self.r_max = r_max
@@ -139,9 +209,21 @@ class profiles:
 
 
 def KaiserSquires(Sigma):
-    '''Apply the Kaiser Squires algorithm to a 2D convergence field
-       Returns the complex shear as e1 and e2
-    '''
+    """Apply the Kaiser Squires algorithm to a 2D convergence field
+
+       Parameters
+       ----------
+       Sigma: np.ndarray
+           convergence map       
+
+       Returns 
+       -------
+       e1: np.ndarray
+           real component of complex shear map
+       e2: np.ndarray
+           imaginary component of complex shear map
+    """
+    
     kappa_tilde = np.fft.fft2(Sigma)
 
     k = np.fft.fftfreq(kappa_tilde.shape[0])
@@ -161,9 +243,30 @@ def KaiserSquires(Sigma):
     return e1, e2
 
 def getTangetial(e1, e2, center, dx=10./1000.):
-    '''Measure the tangential and cross shear maps from the e1 and e2 maps
+    """Measure the tangential and cross shear maps from the e1 and e2 maps
        Requires a center as an input, about which the tangential and cross maps are calculated
-    '''
+
+       Parameters
+       ----------
+       e1: np.ndarray
+           real component of complex shear map
+       e2: np.ndarray
+           imaginary component of complex shear map
+       center: list
+           x and y coordinates of the center of the map as numpy array indices [center 1, center 2]
+      
+       Returns
+       -------
+       et: np.ndarray
+           tangentail shear map
+       ex: np.ndarray
+           cross shear map
+       radius: np.ndarray
+           radius map
+       anlge: np.ndarray
+           angle map       
+    """
+
     n = e1.shape[0]
 
     xx = np.arange(-n/2, n/2)*dx
@@ -186,8 +289,31 @@ def getTangetial(e1, e2, center, dx=10./1000.):
     return et, ex, radius, angle
 
 def getRadial(radius_map,r_bins,angle_map,phi_bins,kappa_map,et_map):
-    '''Bin a map into radial and angular bins as a 2d histogram
-    '''
+    """Bin a map into radial and angular bins as a 2d histogram
+    
+    Parameters
+    ----------
+    radius_map: np.ndarray
+        2d radius map
+    r_bins: np.ndarray
+        1d radial bins
+    angle_map: np.ndarray
+       2d angle map
+    phi_bins: np.ndarray
+       1d angular bins
+    kappa_map: np.ndarray
+       2d convergence map
+    et_map: np.ndarray
+       2d tangential shear map
+            
+    Returns
+    -------
+    kappa_radial: np.ndarray
+        1d convergence radial profile
+    gammat_radial: np.ndarray
+        1d tangential shear radial profile
+
+    """
     _N = np.zeros((len(r_bins)-1, len(phi_bins)-1))
     _K = np.zeros((len(r_bins)-1, len(phi_bins)-1))
     _GT = np.zeros((len(r_bins)-1, len(phi_bins)-1))
