@@ -665,9 +665,9 @@ def compute_beta(z_src, z_cl, cosmo):
     Parameters
     ----------
     z_src:  float
-            Source galaxy redshift
+        Source galaxy redshift
     z_cl: float
-            Galaxy cluster redshift
+        Galaxy cluster redshift
     cosmo: clmm.Cosmology
         CLMM Cosmology object
 
@@ -683,16 +683,16 @@ def compute_beta_s(z_src, z_cl, z_inf, cosmo):
     r"""Geometric lensing efficicency ratio
 
     .. math::
-        \beta_s = \beta(z_src)/\beta(z_{inf})
+        \beta_s = \beta(z_{src})/\beta(z_{inf})
 
     Parameters
     ----------
     z_src: float
-            Source galaxy redshift
+        Source galaxy redshift
     z_cl: float
-            Galaxy cluster redshift
+        Galaxy cluster redshift
     z_inf: float
-            Redshift at infinity
+        Redshift at infinity
     cosmo: clmm.Cosmology
         CLMM Cosmology object
 
@@ -703,6 +703,39 @@ def compute_beta_s(z_src, z_cl, z_inf, cosmo):
     """
     beta_s = compute_beta(z_src, z_cl, cosmo) / compute_beta(z_inf, z_cl, cosmo)
     return beta_s
+
+def compute_beta_s_func(z_src, z_cl, z_inf, cosmo, func, *args, **kwargs):
+    r"""Geometric lensing efficicency ratio times a value of a function
+
+    .. math::
+        \beta_{s}\times \text{func} = \beta_s(z_{src}, z_{cl}, z_{inf})
+        \times\text{func}(*args,\ **kwargs)
+
+    Parameters
+    ----------
+    z_src: float
+        Source galaxy redshift
+    z_cl: float
+        Galaxy cluster redshift
+    z_inf: float
+        Redshift at infinity
+    cosmo: clmm.Cosmology
+        CLMM Cosmology object
+    func: callable
+        A scalar function
+    *args: positional arguments
+        args to be passed to `func`
+    **kwargs: keyword arguments
+        kwargs to be passed to `func`
+
+    Returns
+    -------
+    float
+        Geometric lensing efficicency ratio
+    """
+    beta_s = compute_beta(z_src, z_cl, cosmo) / compute_beta(z_inf, z_cl, cosmo)
+    beta_s_func = beta_s * func(*args, **kwargs)
+    return beta_s_func
 
 def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_distrib_func=None):
     r"""Mean value of the geometric lensing efficicency
@@ -798,9 +831,9 @@ def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, z
     Parameters
     ----------
     z_cl: float
-            Galaxy cluster redshift
+        Galaxy cluster redshift
     z_inf: float
-            Redshift at infinity
+        Redshift at infinity
     cosmo: clmm.Cosmology
         CLMM Cosmology object
     zmax: float

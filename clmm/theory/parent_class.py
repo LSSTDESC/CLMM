@@ -4,7 +4,7 @@ CLMModeling abstract class
 import numpy as np
 
 # functions for the 2h term
-from scipy.integrate import simps
+from scipy.integrate import simps, quad
 from scipy.special import jv
 from scipy.interpolate import interp1d
 
@@ -12,7 +12,7 @@ from .generic import (compute_reduced_shear_from_convergence,
                       compute_magnification_bias_from_magnification,
                       compute_rdelta, compute_profile_mass_in_radius,
                       convert_profile_mass_concentration)
-from ..utils import validate_argument, _integ_pzfuncs, compute_beta_s_mean, compute_beta_s_square_mean
+from ..utils import validate_argument, _integ_pzfuncs, compute_beta_s_mean, compute_beta_s_square_mean, compute_beta_s_func
 
 
 class CLMModeling:
@@ -414,7 +414,7 @@ class CLMModeling:
         z_src : array_like, float
             Background source galaxy redshift(s)
         use_pdz : bool
-            Flag to use the photoz pdf. If `False` (default), `sigma_c` is computed using the source redshift point estimates `z_source`.
+            Flag to use the photoz pdf. If `False` (default), `sigma_c` is computed using the source redshift point estimates `z_src`.
             If `True`, `sigma_c` is computed as 1/<1/Sigma_crit>, where the average is performed using
             the individual galaxy redshift pdf. In that case, the `pzbins` and `pzpdf` should be specified.
 
@@ -584,8 +584,8 @@ class CLMModeling:
         else:
             return self._eval_surface_density_2h(r_proj, z_cl, halobias=halobias, lsteps=lsteps)
 
-    def eval_tangential_shear(self, r_proj, z_cl, z_src, z_src_info='discrete', beta_kwargs=None,
-                              verbose=False):
+    def eval_tangential_shear(self, r_proj, z_cl, z_src, z_src_info='discrete',
+                              beta_kwargs=None, verbose=False):
         r"""Computes the tangential shear
 
         Parameters
@@ -602,8 +602,8 @@ class CLMModeling:
             The following supported options are:
 
                 * 'discrete' (default) : The redshift of sources is provided by `z_src`.
-                  It can be individual redshifts for each source galaxy when `z_source` is an
-                  arrayor all sources are at the same redshift when `z_source` is a float.
+                  It can be individual redshifts for each source galaxy when `z_src` is an
+                  arrayor all sources are at the same redshift when `z_src` is a float.
 
                 * 'distribution' : A redshift distribution function is provided by `z_src`.
                   `z_src` must be a one dimentional function.
@@ -633,6 +633,9 @@ class CLMModeling:
                 * 'delta_z_cut' (float) : Redshift interval to be summed with $z_cl$ to return
                   $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
 
+        verbose : bool, optional
+            If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
+            CCL backends.
 
         Returns
         -------
@@ -670,7 +673,8 @@ class CLMModeling:
 
         return gammat
 
-    def eval_convergence(self, r_proj, z_cl, z_src, z_src_info='discrete', beta_kwargs=None, verbose=False):
+    def eval_convergence(self, r_proj, z_cl, z_src, z_src_info='discrete',
+                         beta_kwargs=None, verbose=False):
 
         r"""Computes the mass convergence
 
@@ -696,8 +700,8 @@ class CLMModeling:
             The following supported options are:
 
                 * 'discrete' (default) : The redshift of sources is provided by `z_src`.
-                  It can be individual redshifts for each source galaxy when `z_source` is an
-                  array or all sources are at the same redshift when `z_source` is a float.
+                  It can be individual redshifts for each source galaxy when `z_src` is an
+                  array or all sources are at the same redshift when `z_src` is a float.
 
                 * 'distribution' : A redshift distribution function is provided by `z_src`.
                   `z_src` must be a one dimentional function.
@@ -727,6 +731,9 @@ class CLMModeling:
                 * 'delta_z_cut' (float) : Redshift interval to be summed with $z_cl$ to return
                   $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
 
+        verbose : bool, optional
+            If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
+            CCL backends.
 
         Returns
         -------
@@ -768,7 +775,10 @@ class CLMModeling:
 
     def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src, z_src_info='discrete',
                                       approx=None, beta_kwargs=None, verbose=False):
-        r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
+        r"""Computes the reduced tangential shear
+
+        .. math::
+            g_t = \frac{\gamma_t}{1-\kappa}
 
         Parameters
         ----------
@@ -784,8 +794,8 @@ class CLMModeling:
             The following supported options are:
 
                 * 'discrete' (default) : The redshift of sources is provided by `z_src`.
-                  It can be individual redshifts for each source galaxy when `z_source` is an
-                  array or all sources are at the same redshift when `z_source` is a float.
+                  It can be individual redshifts for each source galaxy when `z_src` is an
+                  array or all sources are at the same redshift when `z_src` is a float.
 
                 * 'distribution' : A redshift distribution function is provided by `z_src`.
                   `z_src` must be a one dimentional function.
@@ -808,17 +818,17 @@ class CLMModeling:
             Type of computation to be made for reduced shears, options are:
 
                 * None (default): Full computation is made for each `r_proj, z_src` pair
-                  individually. It requires `z_src_info` to be `discrete`.
+                  individually. It requires `z_src_info` to be 'discrete' or 'distribution'.
 
                 * 'applegate14' : Uses the approach from Weighing the Giants - III (equation 6 in
                   Applegate et al. 2014; https://arxiv.org/abs/1208.0605). `z_src_info` must be
-                  either `beta`, or `distribution` (that will be used to compute
+                  either 'beta', or 'distribution' (that will be used to compute
                   :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`)
 
                 * 'schrabback18' : Uses the approach from Cluster Mass Calibration at High
                   Redshift (equation 12 in Schrabback et al. 2017;
                   https://arxiv.org/abs/1611.03866).
-                  `z_src_info` must be either `beta`, or `distribution` (that will be used
+                  `z_src_info` must be either 'beta', or 'distribution' (that will be used
                   to compute :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`)
 
         beta_kwargs: None, dict
@@ -832,6 +842,9 @@ class CLMModeling:
                 * 'delta_z_cut' (float) : Redshift interval to be summed with $z_cl$ to return
                   $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
 
+        verbose : bool, optional
+            If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
+            CCL backends.
 
         Returns
         -------
@@ -853,13 +866,34 @@ class CLMModeling:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
         if approx is None:
-            # z_src (float or array) is redshift
-            # Can add options with distribution here later
-            if z_src_info!='discrete':
+            if z_src_info=='distribution':
+                z_inf = 1000. #np.inf # INF or a very large number
+
+                def integrand(z_i, r_i):
+                    return z_src(z_i)*compute_beta_s_func(z_i, z_cl, z_inf, self.cosmo,
+                                                           self._eval_tangential_shear,
+                                                           r_i, z_cl, z_inf)\
+                    /(1-compute_beta_s_func(z_i, z_cl, z_inf, self.cosmo,
+                                            self._eval_convergence,
+                                            r_i, z_cl, z_inf))
+                kwargs = {'zmax': 10.0, 'delta_z_cut': 0.1, 'zmin': None} if beta_kwargs is None\
+                else beta_kwargs
+                zmax = kwargs['zmax']
+                delta_z_cut = kwargs['delta_z_cut']
+                zmin = z_cl+delta_z_cut if kwargs['zmin'] is None else kwargs['zmin']
+
+                gt = np.zeros_like(r_proj)
+                for i, r in enumerate(r_proj):
+                    gt[i] = quad(integrand, zmin, zmax, r)[0]
+                # Normalize
+                gt /= quad(z_src, zmin, zmax)[0]
+            elif z_src_info=='discrete':
+                gt = self._eval_reduced_tangential_shear_sp(r_proj, z_cl, z_src)
+            else:
                 raise ValueError(
-                    "approx=None requires z_src_info='discrete', "
+                    "approx=None requires z_src_info='discrete' or 'distribution',"
                     f"z_src_info='{z_src_info}' was provided.")
-            gt = self._eval_reduced_tangential_shear_sp(r_proj, z_cl, z_src)
+
         elif approx in ('applegate14', 'schrabback18'):
             z_inf = 1000. #np.inf # INF or a very large number
             if z_src_info=='beta':
@@ -912,8 +946,8 @@ class CLMModeling:
             The following supported options are:
 
                 * 'discrete' (default) : The redshift of sources is provided by `z_src`.
-                  It can be individual redshifts for each source galaxy when `z_source` is an
-                  arrayor all sources are at the same redshift when `z_source` is a float.
+                  It can be individual redshifts for each source galaxy when `z_src` is an
+                  arrayor all sources are at the same redshift when `z_src` is a float.
 
                 * 'distribution' : A redshift distribution function is provided by `z_src`.
                   `z_src` must be a one dimentional function.
@@ -936,11 +970,11 @@ class CLMModeling:
             Type of computation to be made for reduced shears, options are:
 
                 * None (default): Full computation is made for each `r_proj, z_src` pair
-                  individually. It requires `z_src_info` to be `discrete`.
+                  individually. It requires `z_src_info` to be 'discrete' or 'distribution'.
 
                 * 'weak lensing' : Uses the weak lensing approximation of the magnification
-                  :math:`\mu \approx 1 + 2 \kappa`. `z_src_info` must be either `beta`, or
-                  `distribution` (that will be used to compute :math:`\langle \beta_s \rangle`)
+                  :math:`\mu \approx 1 + 2 \kappa`. `z_src_info` must be either 'beta', or
+                  'distribution' (that will be used to compute :math:`\langle \beta_s \rangle`)
 
         beta_kwargs: None, dict
             Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
@@ -952,6 +986,10 @@ class CLMModeling:
                   when performing the sum. (default=10.0)
                 * 'delta_z_cut' (float) : Redshift interval to be summed with $z_cl$ to return
                   $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
+
+        verbose : bool, optional
+            If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
+            CCL backends.
 
         Returns
         -------
@@ -970,17 +1008,39 @@ class CLMModeling:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
         if approx is None:
-            # z_src (float or array) is redshift
-            # Can add options with distribution here later
-            if z_src_info!='discrete':
+            if z_src_info=='distribution':
+                z_inf = 1000. #np.inf # INF or a very large number
+
+                def integrand(z_i, r_i):
+                    return z_src(z_i)/((1-compute_beta_s_func(z_i, z_cl, z_inf, self.cosmo,
+                                                              self._eval_convergence,
+                                                              r_i, z_cl, z_inf))**2\
+                                       -(compute_beta_s_func(z_i, z_cl, z_inf, self.cosmo,
+                                                             self._eval_tangential_shear,
+                                                             r_i, z_cl, z_inf))**2)
+
+                kwargs = {'zmax': 10.0, 'delta_z_cut': 0.1, 'zmin': None} if beta_kwargs is None\
+                else beta_kwargs
+                zmax = kwargs['zmax']
+                delta_z_cut = kwargs['delta_z_cut']
+                zmin = z_cl+delta_z_cut if kwargs['zmin'] is None else kwargs['zmin']
+
+                mu = np.zeros_like(r_proj)
+                for i, r in enumerate(r_proj):
+                    mu[i] = quad(integrand, zmin, zmax, (r))[0]
+                # Normalize
+                mu /= quad(z_src, zmin, zmax)[0]
+            elif z_src_info=='discrete':
+                mu = self._eval_magnification(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
+            else:
                 raise ValueError(
-                    "approx=None requires z_src_info='discrete', "
+                    "approx=None requires z_src_info='discrete' or 'distribution',"
                     f"z_src_info='{z_src_info}' was provided.")
-            mu = self._eval_magnification(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
 
         elif approx == 'weak lensing':
             z_inf = 1000. #np.inf # INF or a very large number
             kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=z_inf)
+            gamma_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=z_inf)
             if z_src_info=='beta':
                 # z_src (tuple) is (beta_s_mean, beta_s_square_mean)
                 beta_s_mean, beta_s_square_mean = z_src
@@ -996,7 +1056,13 @@ class CLMModeling:
                     f"approx='{approx}' requires z_src_info='distribution' or 'beta', "
                     f"z_src_info='{z_src_info}' was provided.")
 
-            mu = 1 + 2*beta_s_mean*kappa_inf
+            #mu = 1 + 2*beta_s_mean*kappa_inf
+
+            # Taylor expansion with up to second-order terms
+            mu = 1+2*beta_s_mean*kappa_inf\
+                   +beta_s_square_mean*gamma_inf**2\
+                   +3*beta_s_square_mean*kappa_inf**2
+
         else:
             raise ValueError(f"Unsupported approx (='{approx}')")
         return mu
@@ -1024,8 +1090,8 @@ class CLMModeling:
             The following supported options are:
 
                 * 'discrete' (default) : The redshift of sources is provided by `z_src`.
-                  It can be individual redshifts for each source galaxy when `z_source` is an
-                  array or all sources are at the same redshift when `z_source` is a float.
+                  It can be individual redshifts for each source galaxy when `z_src` is an
+                  array or all sources are at the same redshift when `z_src` is a float.
 
                 * 'distribution' : A redshift distribution function is provided by `z_src`.
                   `z_src` must be a one dimentional function.
@@ -1048,11 +1114,11 @@ class CLMModeling:
             Type of computation to be made for reduced shears, options are:
 
                 * None (default): Full computation is made for each `r_proj, z_src` pair
-                  individually. It requires `z_src_info` to be `discrete`.
+                  individually. It requires `z_src_info` to be 'discrete' or 'distribution'.
 
                 * 'weak lensing' : Uses the weak lensing approximation of the magnification bias
                   :math:`\mu \approx 1 + 2 \kappa \left(\alpha - 1 \right)`. `z_src_info` must be
-                  either `beta`, or `distribution` (that will be used to compute
+                  either 'beta', or 'distribution' (that will be used to compute
                   :math:`\langle \beta_s \rangle`)
 
         beta_kwargs: None, dict
@@ -1066,6 +1132,9 @@ class CLMModeling:
                 * 'delta_z_cut' (float) : Redshift interval to be summed with $z_cl$ to return
                   $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
 
+        verbose : bool, optional
+            If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
+            CCL backends.
 
         Returns
         -------
@@ -1086,15 +1155,40 @@ class CLMModeling:
 
         if approx is None:
             # z_src (float or array) is redshift
-            if z_src_info!='discrete':
+            if z_src_info=='distribution':
+                z_inf = 1000. #np.inf # INF or a very large number
+
+                def integrand(z_i, r_i):
+                    return z_src(z_i)/((1-compute_beta_s_func(z_i, z_cl, z_inf, self.cosmo,
+                                                              self._eval_convergence,
+                                                              r_i, z_cl, z_inf))**2\
+                                       -(compute_beta_s_func(z_i, z_cl, z_inf, self.cosmo,
+                                                             self._eval_tangential_shear,
+                                                             r_i, z_cl, z_inf))**2)**(alpha-1)
+
+                kwargs = {'zmax': 10.0, 'delta_z_cut': 0.1, 'zmin': None} if beta_kwargs is None\
+                else beta_kwargs
+                zmax = kwargs['zmax']
+                delta_z_cut = kwargs['delta_z_cut']
+                zmin = z_cl+delta_z_cut if kwargs['zmin'] is None else kwargs['zmin']
+
+                mu_bias = np.zeros_like(r_proj)
+                for i, r in enumerate(r_proj):
+                    mu_bias[i] = quad(integrand, zmin, zmax, (r))[0]
+                # Normalize
+                mu_bias /= quad(z_src, zmin, zmax)[0]
+            elif z_src_info=='discrete':
+                mu_bias = self._eval_magnification_bias(
+                    r_proj=r_proj, z_cl=z_cl, z_src=z_src, alpha=alpha)
+            else:
                 raise ValueError(
-                    "approx=None requires z_src_info='discrete', "
+                    "approx=None requires z_src_info='discrete' or 'distribution',"
                     f"z_src_info='{z_src_info}' was provided.")
-            mu_bias = self._eval_magnification_bias(r_proj=r_proj, z_cl=z_cl, z_src=z_src, alpha=alpha)
 
         elif approx == 'weak lensing':
             z_inf = 1000. #np.inf # INF or a very large number
             kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=z_inf)
+            gamma_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=z_inf)
             if z_src_info=='beta':
                 # z_src (tuple) is (beta_s_mean, beta_s_square_mean)
                 beta_s_mean, beta_s_square_mean = z_src
@@ -1110,7 +1204,12 @@ class CLMModeling:
                     f"approx='{approx}' requires z_src_info='distribution' or 'beta', "
                     f"z_src_info='{z_src_info}' was provided.")
 
-            mu_bias = 1 + 2*beta_s_mean*kappa_inf*(alpha-1)
+            #mu_bias = 1 + 2*beta_s_mean*kappa_inf*(alpha-1)
+
+            # Taylor expansion with up to second-order terms
+            mu_bias = 1+(alpha-1)*(2*beta_s_mean*kappa_inf+beta_s_square_mean*gamma_inf**2)\
+                        +(2*alpha-1)*(alpha-1)*beta_s_square_mean*kappa_inf**2
+
         else:
             raise ValueError(f"Unsupported approx (='{approx}')")
 
