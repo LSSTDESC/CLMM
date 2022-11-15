@@ -4,8 +4,6 @@ import numpy as np
 from numpy.testing import assert_raises, assert_allclose, assert_equal
 import clmm.theory as theo
 from clmm.theory.parent_class import CLMModeling
-from clmm.utils import compute_beta_s_square_mean, compute_beta_s_mean
-from clmm.z_distributions import chang2013, desc_srd
 
 def test_unimplemented(modeling_data):
     """ Unit tests abstract class unimplemented methdods """
