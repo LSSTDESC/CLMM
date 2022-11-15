@@ -806,8 +806,7 @@ class CLMModeling:
             z, z_cl, z_inf, self.cosmo, self._eval_tangential_shear, r, z_cl, z_inf)
         kfunc = lambda z, r: compute_beta_s_func(
             z, z_cl, z_inf, self.cosmo, self._eval_convergence, r, z_cl, z_inf)
-
-        integrand = lambda (z, r): zdist(z)*core(tfunc(z, r), kfunc(z, r))
+        __integrand__ = lambda z, r: zdist(z)*core(tfunc(z, r), kfunc(z, r))
 
         _integ_kwargs = {'zmax': 10.0, 'delta_z_cut': 0.1}
         _integ_kwargs.update({} if integ_kwargs is None else integ_kwargs)
@@ -816,7 +815,7 @@ class CLMModeling:
         delta_z_cut = _integ_kwargs['delta_z_cut']
         zmin = z_integ_kwarg.get('zmin', z_cl+delta_z_cut)
 
-        out = np.array([quad(integrand, zmin, zmax, (r))[0] for r in r_proj])
+        out = np.array([quad(__integrand__, zmin, zmax, (r))[0] for r in r_proj])
         return out/quad(zdist, zmin, zmax)[0]
 
     def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src, z_src_info='discrete',
