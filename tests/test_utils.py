@@ -441,9 +441,21 @@ def test_beta_functions():
     beta_test = np.heaviside(z_s-z_cl, 0) * cosmo.eval_da_z1z2(z_cl, z_s) / cosmo.eval_da(z_s)
     beta_s_test = utils.compute_beta(z_s, z_cl, cosmo) / utils.compute_beta(z_inf, z_cl, cosmo)
 
-    # None defaults to chang2013 for compute_beta* functions
+    assert_allclose(utils.compute_beta(z_s, z_cl, cosmo), beta_test, **TOLERANCE)
+    assert_allclose(utils.compute_beta_s(z_s, z_cl, z_inf, cosmo), beta_s_test, **TOLERANCE)
 
-    for model in (zdist.chang2013, zdist.desc_srd):
+
+    for model in (None, zdist.chang2013, zdist.desc_srd):
+
+        # None defaults to chang2013 for compute_beta* functions
+
+        test1 = utils.compute_beta_mean(z_cl, cosmo, zmax, z_distrib_func=model)
+        test2 = utils.compute_beta_s_mean(z_cl, z_inf, cosmo, zmax, z_distrib_func=model)
+        test3 = utils.compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax,
+                                                 z_distrib_func=model)
+
+        if model is None:
+            model = zdist.chang2013
 
         def integrand1(z_i, z_cl=z_cl, cosmo=cosmo):
             return utils.compute_beta(z_i, z_cl, cosmo) * model(z_i)
@@ -454,19 +466,9 @@ def test_beta_functions():
         def integrand3(z_i, z_inf=z_inf, z_cl=z_cl, cosmo=cosmo):
             return utils.compute_beta_s(z_i, z_cl, z_inf, cosmo)**2 * model(z_i)
 
-
-        test1 = utils.compute_beta(z_s, z_cl, cosmo)
-        test2 = utils.compute_beta_s(z_s, z_cl, z_inf, cosmo)
-        test3 = utils.compute_beta_mean(z_cl, cosmo, zmax, z_distrib_func=model)
-        test4 = utils.compute_beta_s_mean(z_cl, z_inf, cosmo, zmax, z_distrib_func=model)
-        test5 = utils.compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax,
-                                                 z_distrib_func=model)
-
-        assert_allclose(test1, beta_test, **TOLERANCE)
-        assert_allclose(test2, beta_s_test, **TOLERANCE)
-        assert_allclose(test3, quad(integrand1, zmin, zmax)[0] / quad(model, zmin, zmax)[0],
+        assert_allclose(test1, quad(integrand1, zmin, zmax)[0] / quad(model, zmin, zmax)[0],
                         **TOLERANCE)
-        assert_allclose(test4, quad(integrand2, zmin, zmax)[0] / quad(model, zmin, zmax)[0],
+        assert_allclose(test2, quad(integrand2, zmin, zmax)[0] / quad(model, zmin, zmax)[0],
                         **TOLERANCE)
-        assert_allclose(test5, quad(integrand3, zmin, zmax)[0] / quad(model, zmin, zmax)[0],
+        assert_allclose(test3, quad(integrand3, zmin, zmax)[0] / quad(model, zmin, zmax)[0],
                         **TOLERANCE)
