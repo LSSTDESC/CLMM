@@ -772,6 +772,52 @@ class CLMModeling:
 
         return kappa
 
+    def _zdist_weighted_avg(core, zdist, r_proj, z_cl, z_inf-10., integ_kwargs=None):
+        r"""Computes function averaged by zdistribution
+
+        Parameters
+        ----------
+        core : function
+            Function to be averaged, must take tangential shear and convergence as input.
+        zdist : function
+            Redshift distribution function. Must be a one dimentional function.
+        r_proj : array_like
+            The projected radial positions in :math:`M\!pc`.
+        z_cl : float
+            Galaxy cluster redshift
+        z_inf : float
+            Redshift at infinity
+        integ_kwargs: None, dict
+            Extra arguments for the redshift integration. Possible keys are:
+
+                * 'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
+                  when performing the sum. (default=None)
+                * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
+                  when performing the sum. (default=10.0)
+                * 'delta_z_cut' (float) : Redshift interval to be summed with $z_cl$ to return
+                  $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
+
+        Returns
+        -------
+        array_like
+            Function averaged by zdist, with r_proj dimention.
+        """
+        tfunc = lambda z, r: compute_beta_s_func(
+            z, z_cl, z_inf, self.cosmo, self._eval_tangential_shear, r, z_cl, z_inf)
+        kfunc = lambda z, r: compute_beta_s_func(
+            z, z_cl, z_inf, self.cosmo, self._eval_convergence, r, z_cl, z_inf)
+
+        integrand = lambda (z, r): zdist(z)*core(tfunc(z, r), kfunc(z, r))
+
+        _integ_kwargs = {'zmax': 10.0, 'delta_z_cut': 0.1}
+        _integ_kwargs.update({} if integ_kwargs is None else integ_kwargs)
+
+        zmax = _integ_kwargs['zmax']
+        delta_z_cut = _integ_kwargs['delta_z_cut']
+        zmin = z_integ_kwarg.get('zmin', z_cl+delta_z_cut)
+
+        out = np.array([quad(integrand, zmin, zmax, (r))[0] for r in r_proj])
+        return out/quad(zdist, zmin, zmax)[0]
 
     def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src, z_src_info='discrete',
                                       approx=None, beta_kwargs=None, verbose=False):
@@ -868,25 +914,9 @@ class CLMModeling:
         if approx is None:
             if z_src_info=='distribution':
                 z_inf = 1000. #np.inf # INF or a very large number
-
-                def integrand(z_i, r_i):
-                    return z_src(z_i)*compute_beta_s_func(z_i, z_cl, z_inf, self.cosmo,
-                                                           self._eval_tangential_shear,
-                                                           r_i, z_cl, z_inf)\
-                    /(1-compute_beta_s_func(z_i, z_cl, z_inf, self.cosmo,
-                                            self._eval_convergence,
-                                            r_i, z_cl, z_inf))
-                kwargs = {'zmax': 10.0, 'delta_z_cut': 0.1, 'zmin': None} if beta_kwargs is None\
-                else beta_kwargs
-                zmax = kwargs['zmax']
-                delta_z_cut = kwargs['delta_z_cut']
-                zmin = z_cl+delta_z_cut if kwargs['zmin'] is None else kwargs['zmin']
-
-                gt = np.zeros_like(r_proj)
-                for i, r in enumerate(r_proj):
-                    gt[i] = quad(integrand, zmin, zmax, r)[0]
-                # Normalize
-                gt /= quad(z_src, zmin, zmax)[0]
+                core = lambda gt, kappa: gt/(1-kappa)
+                gt = _zdist_weighted_avg(core, z_src, r_proj, z_cl,
+                                         z_inf=z_inf, integ_kwargs=beta_kwargs)
             elif z_src_info=='discrete':
                 gt = self._eval_reduced_tangential_shear_sp(r_proj, z_cl, z_src)
             else:
