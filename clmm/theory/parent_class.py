@@ -1040,7 +1040,7 @@ class CLMModeling:
         if approx is None:
             if z_src_info=='distribution':
                 z_inf = 1000. #np.inf # INF or a very large number
-                core = lambda gammat, kappa: -gammat**2/(1-kappa)**2
+                core = lambda gammat, kappa: 1/((1-kappa)**2-gammat**2)
                 mu = self._zdist_weighted_avg(core, z_src, r_proj, z_cl,
                                               z_inf=z_inf, integ_kwargs=beta_kwargs)
             elif z_src_info=='discrete':
