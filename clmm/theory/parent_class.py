@@ -714,7 +714,7 @@ class CLMModeling:
 
         zmax = _integ_kwargs['zmax']
         delta_z_cut = _integ_kwargs['delta_z_cut']
-        zmin = z_integ_kwarg.get('zmin', z_cl+delta_z_cut)
+        zmin = _integ_kwargs.get('zmin', z_cl+delta_z_cut)
 
         out = np.array([quad(__integrand__, zmin, zmax, (r))[0] for r in r_proj])
         return out/quad(zdist, zmin, zmax)[0]
