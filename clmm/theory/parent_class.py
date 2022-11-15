@@ -772,7 +772,7 @@ class CLMModeling:
 
         return kappa
 
-    def _zdist_weighted_avg(core, zdist, r_proj, z_cl, z_inf-10., integ_kwargs=None):
+    def _zdist_weighted_avg(core, zdist, r_proj, z_cl, z_inf=1000., integ_kwargs=None):
         r"""Computes function averaged by zdistribution
 
         Parameters
@@ -914,7 +914,7 @@ class CLMModeling:
         if approx is None:
             if z_src_info=='distribution':
                 z_inf = 1000. #np.inf # INF or a very large number
-                core = lambda gt, kappa: gt/(1-kappa)
+                core = lambda gammat, kappa: gammat/(1-kappa)
                 gt = _zdist_weighted_avg(core, z_src, r_proj, z_cl,
                                          z_inf=z_inf, integ_kwargs=beta_kwargs)
             elif z_src_info=='discrete':
