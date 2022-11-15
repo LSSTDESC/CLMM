@@ -584,6 +584,130 @@ class CLMModeling:
         else:
             return self._eval_surface_density_2h(r_proj, z_cl, halobias=halobias, lsteps=lsteps)
 
+    def _get_beta_s_mean(self, z_cl, z_src, z_inf=1000.,  z_src_info='discrete', beta_kwargs=None):
+        r"""Get mean value of the geometric lensing efficicency ratio from typical class function.
+
+        Parameters
+        ----------
+        z_cl : float
+            Galaxy cluster redshift
+        z_src : array_like, float, function
+            Information on the background source galaxy redshift(s). Value required depends on
+            `z_src_info` (see below).
+        z_src_info : str, optional
+            Type of redshift information provided, it describes z_src.
+            The following supported options are:
+
+                * 'discrete' (default) : The redshift of sources is provided by `z_src`.
+                  It can be individual redshifts for each source galaxy when `z_src` is an
+                  arrayor all sources are at the same redshift when `z_src` is a float.
+
+                * 'distribution' : A redshift distribution function is provided by `z_src`.
+                  `z_src` must be a one dimentional function.
+
+                * 'beta' : The averaged lensing efficiency is provided by `z_src`.
+                  `z_src` must be a tuple containing
+                  ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
+                  the lensing efficiency and square of the lensing efficiency averaged over
+                  the galaxy redshift distribution repectively.
+
+                    .. math::
+                        \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}
+                        {D_{L,\infty}}\right\rangle
+
+                    .. math::
+                        \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}
+                        {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
+
+        beta_kwargs: None, dict
+            Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
+            Only used if `z_src_info='distribution'`. Possible keys are:
+
+                * 'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
+                  when performing the sum. (default=None)
+                * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
+                  when performing the sum. (default=10.0)
+                * 'delta_z_cut' (float) : Redshift interval to be summed with $z_cl$ to return
+                  $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
+
+        Returns
+        -------
+        array_like, float
+            The averaged lensing efficiency.
+        """
+        if z_src_info=='beta':
+            # z_src (tuple) is (beta_s_mean, beta_s_square_mean)
+            beta_s_mean = z_src[0]
+        elif z_src_info=='distribution':
+            # z_src (function) if PDZ
+            beta_kwargs = {} if beta_kwargs is None else beta_kwargs
+            beta_s_mean = compute_beta_s_mean(
+                z_cl, z_inf, self.cosmo, z_distrib_func=z_src, **beta_kwargs)
+        return beta_s_mean
+
+    def _get_beta_s_square_mean(self, z_cl, z_src, z_inf=1000., z_src_info='discrete',
+                                beta_kwargs=None):
+        r"""Get mean value of the square geometric lensing efficicency ratio from typical class
+        function.
+
+        Parameters
+        ----------
+        z_cl : float
+            Galaxy cluster redshift
+        z_src : array_like, float, function
+            Information on the background source galaxy redshift(s). Value required depends on
+            `z_src_info` (see below).
+        z_src_info : str, optional
+            Type of redshift information provided, it describes z_src.
+            The following supported options are:
+
+                * 'discrete' (default) : The redshift of sources is provided by `z_src`.
+                  It can be individual redshifts for each source galaxy when `z_src` is an
+                  arrayor all sources are at the same redshift when `z_src` is a float.
+
+                * 'distribution' : A redshift distribution function is provided by `z_src`.
+                  `z_src` must be a one dimentional function.
+
+                * 'beta' : The averaged lensing efficiency is provided by `z_src`.
+                  `z_src` must be a tuple containing
+                  ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
+                  the lensing efficiency and square of the lensing efficiency averaged over
+                  the galaxy redshift distribution repectively.
+
+                    .. math::
+                        \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}
+                        {D_{L,\infty}}\right\rangle
+
+                    .. math::
+                        \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}
+                        {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
+
+        beta_kwargs: None, dict
+            Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
+            Only used if `z_src_info='distribution'`. Possible keys are:
+
+                * 'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
+                  when performing the sum. (default=None)
+                * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
+                  when performing the sum. (default=10.0)
+                * 'delta_z_cut' (float) : Redshift interval to be summed with $z_cl$ to return
+                  $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
+
+        Returns
+        -------
+        array_like, float
+            The square averaged lensing efficiency.
+        """
+        if z_src_info=='beta':
+            # z_src (tuple) is (beta_s_mean, beta_s_square_mean)
+            beta_s_square_mean = z_src[1]
+        elif z_src_info=='distribution':
+            # z_src (function) if PDZ
+            beta_kwargs = {} if beta_kwargs is None else beta_kwargs
+            beta_s_square_mean = compute_beta_s_square_mean(
+                z_cl, z_inf, self.cosmo, z_distrib_func=z_src, **beta_kwargs)
+        return beta_s_square_mean
+
     def eval_tangential_shear(self, r_proj, z_cl, z_src, z_src_info='discrete',
                               beta_kwargs=None, verbose=False):
         r"""Computes the tangential shear
@@ -655,18 +779,12 @@ class CLMModeling:
             gammat = self._eval_tangential_shear(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
         elif z_src_info in ('distribution', 'beta'):
             z_inf = 1000. #np.inf # INF or a very large number
+
+            beta_s_mean = self._get_beta_s_mean(
+                z_cl, z_src, z_inf, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
+
             gammat_inf = self._eval_tangential_shear(r_proj=r_proj, z_cl=z_cl, z_src=z_inf)
-            if z_src_info=='beta':
-                # z_src (tuple) is (beta_s_mean, beta_s_square_mean)
-                beta_s_mean, beta_s_square_mean = z_src
-            elif z_src_info=='distribution':
-                # z_src (function) if PDZ
-                beta_kwargs = {} if beta_kwargs is None else beta_kwargs
-                beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, z_distrib_func=z_src,
-                                                  **beta_kwargs)
-                beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo,
-                                                                z_distrib_func=z_src,
-                                                                **beta_kwargs)
+
             gammat = beta_s_mean * gammat_inf
         else:
             raise ValueError(f"Unsupported z_src_info (='{z_src_info}')")
@@ -800,18 +918,11 @@ class CLMModeling:
             kappa = self._eval_convergence(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
         elif z_src_info in ('distribution', 'beta'):
             z_inf = 1000. #np.inf # INF or a very large number
+
+            beta_s_mean = self._get_beta_s_mean(
+                z_cl, z_src, z_inf, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
+
             kappa_inf = self._eval_convergence(r_proj=r_proj, z_cl=z_cl, z_src=z_inf)
-            if z_src_info=='beta':
-                # z_src (tuple) is (beta_s_mean, beta_s_square_mean)
-                beta_s_mean, beta_s_square_mean = z_src
-            elif z_src_info=='distribution':
-                # z_src (function) if PDZ
-                beta_kwargs = {} if beta_kwargs is None else beta_kwargs
-                beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, z_distrib_func=z_src,
-                                                  **beta_kwargs)
-                beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo,
-                                                                z_distrib_func=z_src,
-                                                                **beta_kwargs)
 
             kappa = beta_s_mean * kappa_inf
         else:
@@ -926,20 +1037,11 @@ class CLMModeling:
 
         elif approx in ('applegate14', 'schrabback18'):
             z_inf = 1000. #np.inf # INF or a very large number
-            if z_src_info=='beta':
-                # z_src (tuple) is (beta_s_mean, beta_s_square_mean)
-                beta_s_mean, beta_s_square_mean = z_src
-            elif z_src_info=='distribution':
-                beta_kwargs = {} if beta_kwargs is None else beta_kwargs
-                beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, z_distrib_func=z_src,
-                                                  **beta_kwargs)
-                beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo,
-                                                                z_distrib_func=z_src,
-                                                                **beta_kwargs)
-            else:
-                raise ValueError(
-                    f"approx='{approx}' requires z_src_info='distribution' or 'beta', "
-                    f"z_src_info='{z_src_info}' was provided.")
+
+            beta_s_mean = self._get_beta_s_mean(
+                z_cl, z_src, z_inf, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
+            beta_s_square_mean = self._get_beta_s_square_mean(
+                z_cl, z_src, z_inf, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
 
             gammat_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=z_inf)
             kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=z_inf)
@@ -1052,28 +1154,20 @@ class CLMModeling:
 
         elif approx == 'weak lensing':
             z_inf = 1000. #np.inf # INF or a very large number
+
+            beta_s_mean = self._get_beta_s_mean(
+                z_cl, z_src, z_inf, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
+            beta_s_square_mean = self._get_beta_s_square_mean(
+                z_cl, z_src, z_inf, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
+
             kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=z_inf)
-            gamma_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=z_inf)
-            if z_src_info=='beta':
-                # z_src (tuple) is (beta_s_mean, beta_s_square_mean)
-                beta_s_mean, beta_s_square_mean = z_src
-            elif z_src_info=='distribution':
-                beta_kwargs = {} if beta_kwargs is None else beta_kwargs
-                beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, z_distrib_func=z_src,
-                                                  **beta_kwargs)
-                beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo,
-                                                                z_distrib_func=z_src,
-                                                                **beta_kwargs)
-            else:
-                raise ValueError(
-                    f"approx='{approx}' requires z_src_info='distribution' or 'beta', "
-                    f"z_src_info='{z_src_info}' was provided.")
+            gammat_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=z_inf)
 
             #mu = 1 + 2*beta_s_mean*kappa_inf
 
             # Taylor expansion with up to second-order terms
             mu = 1+2*beta_s_mean*kappa_inf\
-                   +beta_s_square_mean*gamma_inf**2\
+                   +beta_s_square_mean*gammat_inf**2\
                    +3*beta_s_square_mean*kappa_inf**2
 
         else:
@@ -1183,27 +1277,19 @@ class CLMModeling:
 
         elif approx == 'weak lensing':
             z_inf = 1000. #np.inf # INF or a very large number
+
+            beta_s_mean = self._get_beta_s_mean(
+                z_cl, z_src, z_inf, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
+            beta_s_square_mean = self._get_beta_s_square_mean(
+                z_cl, z_src, z_inf, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
+
             kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=z_inf)
-            gamma_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=z_inf)
-            if z_src_info=='beta':
-                # z_src (tuple) is (beta_s_mean, beta_s_square_mean)
-                beta_s_mean, beta_s_square_mean = z_src
-            elif z_src_info=='distribution':
-                beta_kwargs = {} if beta_kwargs is None else beta_kwargs
-                beta_s_mean = compute_beta_s_mean(z_cl, z_inf, self.cosmo, z_distrib_func=z_src,
-                                                  **beta_kwargs)
-                beta_s_square_mean = compute_beta_s_square_mean(z_cl, z_inf, self.cosmo,
-                                                                z_distrib_func=z_src,
-                                                                **beta_kwargs)
-            else:
-                raise ValueError(
-                    f"approx='{approx}' requires z_src_info='distribution' or 'beta', "
-                    f"z_src_info='{z_src_info}' was provided.")
+            gammat_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=z_inf)
 
             #mu_bias = 1 + 2*beta_s_mean*kappa_inf*(alpha-1)
 
             # Taylor expansion with up to second-order terms
-            mu_bias = 1+(alpha-1)*(2*beta_s_mean*kappa_inf+beta_s_square_mean*gamma_inf**2)\
+            mu_bias = 1+(alpha-1)*(2*beta_s_mean*kappa_inf+beta_s_square_mean*gammat_inf**2)\
                         +(2*alpha-1)*(alpha-1)*beta_s_square_mean*kappa_inf**2
 
         else:
@@ -1324,7 +1410,14 @@ class CLMModeling:
                                                 halo_profile_model, alpha)
 
     def _validate_z_src(self, loc_dict):
-        r"""Validation for z_src
+        r"""Validation for z_src according to z_src_info. The conditions are:
+
+            * z_src_info='discrete' : z_src must be array or float.
+            * z_src_info='distribution' : z_src must be a one dimentional function.
+            * z_src_info='beta' : z_src must be a tuple containing
+              ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`).
+
+        Also, if approx is provided and not None, z_src_info must be 'distribution' or 'beta'.
 
         Parameters
         ----------
@@ -1346,3 +1439,8 @@ class CLMModeling:
                          'beta_s_square_mean':loc_dict['z_src'][1]}
             validate_argument(beta_info, 'beta_s_mean', 'float_array')
             validate_argument(beta_info, 'beta_s_square_mean', 'float_array')
+        if loc_dict.get('approx') and loc_dict['z_src_info'] not in ('distribution', 'beta'):
+            approx, z_src_info = loc_dict['approx'], loc_dict['z_src_info']
+            raise ValueError(
+                f"approx='{approx}' requires z_src_info='distribution' or 'beta', "
+                f"z_src_info='{z_src_info}' was provided.")
