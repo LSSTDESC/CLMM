@@ -1040,26 +1040,9 @@ class CLMModeling:
         if approx is None:
             if z_src_info=='distribution':
                 z_inf = 1000. #np.inf # INF or a very large number
-
-                def integrand(z_i, r_i):
-                    return z_src(z_i)/((1-compute_beta_s_func(z_i, z_cl, z_inf, self.cosmo,
-                                                              self._eval_convergence,
-                                                              r_i, z_cl, z_inf))**2\
-                                       -(compute_beta_s_func(z_i, z_cl, z_inf, self.cosmo,
-                                                             self._eval_tangential_shear,
-                                                             r_i, z_cl, z_inf))**2)
-
-                kwargs = {'zmax': 10.0, 'delta_z_cut': 0.1, 'zmin': None} if beta_kwargs is None\
-                else beta_kwargs
-                zmax = kwargs['zmax']
-                delta_z_cut = kwargs['delta_z_cut']
-                zmin = z_cl+delta_z_cut if kwargs['zmin'] is None else kwargs['zmin']
-
-                mu = np.zeros_like(r_proj)
-                for i, r in enumerate(r_proj):
-                    mu[i] = quad(integrand, zmin, zmax, (r))[0]
-                # Normalize
-                mu /= quad(z_src, zmin, zmax)[0]
+                core = lambda gammat, kappa: -gammat**2/(1-kappa)**2
+                mu = self._zdist_weighted_avg(core, z_src, r_proj, z_cl,
+                                              z_inf=z_inf, integ_kwargs=beta_kwargs)
             elif z_src_info=='discrete':
                 mu = self._eval_magnification(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
             else:
