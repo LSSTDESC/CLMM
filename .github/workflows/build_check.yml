@@ -19,8 +19,7 @@ jobs:
       run: |
         conda install -c conda-forge gobject-introspection pygobject python_abi=3.9=2_cp39 -y
         echo "$CONDA/bin" >> $GITHUB_PATH
-        find $CONDA/lib -name "libffi.so*"
-        ln -s $CONDA/lib/libffi.so.6* $CONDA/lib/libffi.so.7
+        ln -s $CONDA/lib/libffi.so $CONDA/lib/libffi.so.7
     - name: Install prereq using pip
       run: |
         pip install -r requirements.txt
