@@ -791,14 +791,14 @@ class CLMModeling:
 
         return gammat
 
-    def _zdist_weighted_avg(self, core, zdist, r_proj, z_cl, z_inf=1000., integ_kwargs=None):
-        r"""Computes function averaged by zdistribution
+    def _pdz_weighted_avg(self, core, pdz_func, r_proj, z_cl, z_inf=1000., integ_kwargs=None):
+        r"""Computes function averaged over PDZ
 
         Parameters
         ----------
         core : function
             Function to be averaged, must take tangential shear and convergence as input.
-        zdist : function
+        pdz_func : function
             Redshift distribution function. Must be a one dimentional function.
         r_proj : array_like
             The projected radial positions in :math:`M\!pc`.
@@ -819,13 +819,13 @@ class CLMModeling:
         Returns
         -------
         array_like
-            Function averaged by zdist, with r_proj dimention.
+            Function averaged by pdz, with r_proj dimention.
         """
         tfunc = lambda z, r: compute_beta_s_func(
             z, z_cl, z_inf, self.cosmo, self._eval_tangential_shear, r, z_cl, z_inf)
         kfunc = lambda z, r: compute_beta_s_func(
             z, z_cl, z_inf, self.cosmo, self._eval_convergence, r, z_cl, z_inf)
-        __integrand__ = lambda z, r: zdist(z)*core(tfunc(z, r), kfunc(z, r))
+        __integrand__ = lambda z, r: pdz_func(z)*core(tfunc(z, r), kfunc(z, r))
 
         _integ_kwargs = {'zmax': 10.0, 'delta_z_cut': 0.1}
         _integ_kwargs.update({} if integ_kwargs is None else integ_kwargs)
@@ -835,7 +835,7 @@ class CLMModeling:
         zmin = _integ_kwargs.get('zmin', z_cl+delta_z_cut)
 
         out = np.array([quad(__integrand__, zmin, zmax, (r))[0] for r in r_proj])
-        return out/quad(zdist, zmin, zmax)[0]
+        return out/quad(pdz_func, zmin, zmax)[0]
 
 
     def eval_convergence(self, r_proj, z_cl, z_src, z_src_info='discrete',
@@ -1026,7 +1026,7 @@ class CLMModeling:
             if z_src_info=='distribution':
                 z_inf = 1000. #np.inf # INF or a very large number
                 core = lambda gammat, kappa: gammat/(1-kappa)
-                gt = self._zdist_weighted_avg(core, z_src, r_proj, z_cl,
+                gt = self._pdz_weighted_avg(core, z_src, r_proj, z_cl,
                                               z_inf=z_inf, integ_kwargs=beta_kwargs)
             elif z_src_info=='discrete':
                 gt = self._eval_reduced_tangential_shear_sp(r_proj, z_cl, z_src)
@@ -1143,7 +1143,7 @@ class CLMModeling:
             if z_src_info=='distribution':
                 z_inf = 1000. #np.inf # INF or a very large number
                 core = lambda gammat, kappa: 1/((1-kappa)**2-gammat**2)
-                mu = self._zdist_weighted_avg(core, z_src, r_proj, z_cl,
+                mu = self._pdz_weighted_avg(core, z_src, r_proj, z_cl,
                                               z_inf=z_inf, integ_kwargs=beta_kwargs)
             elif z_src_info=='discrete':
                 mu = self._eval_magnification(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
@@ -1265,7 +1265,7 @@ class CLMModeling:
             if z_src_info=='distribution':
                 z_inf = 1000. #np.inf # INF or a very large number
                 core = lambda gammat, kappa: 1/((1-kappa)**2-gammat**2)**(alpha-1)
-                mu_bias = self._zdist_weighted_avg(core, z_src, r_proj, z_cl,
+                mu_bias = self._pdz_weighted_avg(core, z_src, r_proj, z_cl,
                                                    z_inf=z_inf, integ_kwargs=beta_kwargs)
             elif z_src_info=='discrete':
                 mu_bias = self._eval_magnification_bias(
