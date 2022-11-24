@@ -15,11 +15,12 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: conda-incubator/setup-miniconda@v2
+      with:
+        python-version: '3.10'
     - name: Install prereq using conda
       run: |
-        conda install -c conda-forge gobject-introspection pygobject python_abi=3.9=2_cp39 -y
+        conda install -c conda-forge gobject-introspection pygobject libffi=3.3 -y
         echo "$CONDA/bin" >> $GITHUB_PATH
-        ln -s $CONDA/lib/libffi.so $CONDA/lib/libffi.so.7
     - name: Install prereq using pip
       run: |
         pip install -r requirements.txt
