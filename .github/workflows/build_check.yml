@@ -14,17 +14,19 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - uses: conda-incubator/setup-miniconda@v2
+    - uses: conda-incubator/setup-miniconda@v3
     - name: Install prereq using conda
       run: |
-        conda install -c conda-forge gobject-introspection pygobject libffi python_abi=3.9=2_cp39 -y
+        conda install -c conda-forge gobject-introspection pygobject python_abi=3.9=2_cp39 -y
         echo "$CONDA/bin" >> $GITHUB_PATH
+        find $CONDA/lib -name "libffi.so*"
+        ln -s $CONDA/lib/libffi.so.6* $CONDA/lib/libffi.so.7
     - name: Install prereq using pip
       run: |
         pip install -r requirements.txt
     - name: Install the package
       run: |
-        python setup.py install
+        pip install .
     - name: Install NumCosmo from conda-forge
       run: |
         conda install -c conda-forge numcosmo -y
@@ -32,13 +34,13 @@ jobs:
       run: |
         git clone https://github.com/tmcclintock/cluster_toolkit.git
         cd cluster_toolkit
-        python setup.py install
+        pip install .
     - name: Install CCL from source
       run: |
         conda install -c conda-forge cmake swig -y
         git clone https://github.com/LSSTDESC/CCL
         cd CCL
-        python setup.py install
+        pip install .
     - name: Run the unit tests
       run: |
         pip install pytest pytest-cov
