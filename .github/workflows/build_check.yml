@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-gcc-ubuntu:
-
+    # cluster-toolkit cannot find libffi.so.8 in the latest Ubuntu, so stay on Ubuntu 20.04 for now
     runs-on: ubuntu-20.04
 
     steps:
