@@ -8,15 +8,14 @@ on:
 
 jobs:
   build-gcc-ubuntu:
-    # cluster-toolkit cannot find libffi.so.8 in the latest Ubuntu, so stay on Ubuntu 20.04 for now
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
     - uses: conda-incubator/setup-miniconda@v2
     - name: Install prereq using conda
       run: |
-        conda install -c conda-forge gobject-introspection pygobject python_abi=3.9=3_cp39
+        conda install -c conda-forge gobject-introspection pygobject python_abi=3.9=3_cp39 cffi=1.15.1
         echo "$CONDA/bin" >> $GITHUB_PATH
     - name: Install prereq using pip
       run: |
