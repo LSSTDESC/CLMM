@@ -627,8 +627,8 @@ class CLMModeling:
                   when performing the sum. (default=None)
                 * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
                   when performing the sum. (default=10.0)
-                * 'delta_z_cut' (float) : Redshift interval to be summed with $z_cl$ to return
-                  $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
+                * 'delta_z_cut' (float) : Redshift interval to be summed with `z_cl` to return
+                  `zmin`. This feature is not used if `zmin` is provided. (default=0.1)
 
         Returns
         -------
@@ -690,8 +690,8 @@ class CLMModeling:
                   when performing the sum. (default=None)
                 * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
                   when performing the sum. (default=10.0)
-                * 'delta_z_cut' (float) : Redshift interval to be summed with $z_cl$ to return
-                  $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
+                * 'delta_z_cut' (float) : Redshift interval to be summed with `z_cl` to return
+                  `zmin`. This feature is not used if `zmin` is provided. (default=0.1)
 
         Returns
         -------
@@ -754,8 +754,8 @@ class CLMModeling:
                   when performing the sum. (default=None)
                 * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
                   when performing the sum. (default=10.0)
-                * 'delta_z_cut' (float) : Redshift interval to be summed with $z_cl$ to return
-                  $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
+                * 'delta_z_cut' (float) : Redshift interval to be summed with `z_cl` to return
+                  `zmin`. This feature is not used if `zmin` is provided. (default=0.1)
 
         verbose : bool, optional
             If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
@@ -790,53 +790,6 @@ class CLMModeling:
             raise ValueError(f"Unsupported z_src_info (='{z_src_info}')")
 
         return gammat
-
-    def _pdz_weighted_avg(self, core, pdz_func, r_proj, z_cl, z_inf=1000., integ_kwargs=None):
-        r"""Computes function averaged over PDZ
-
-        Parameters
-        ----------
-        core : function
-            Function to be averaged, must take tangential shear and convergence as input.
-        pdz_func : function
-            Redshift distribution function. Must be a one dimentional function.
-        r_proj : array_like
-            The projected radial positions in :math:`M\!pc`.
-        z_cl : float
-            Galaxy cluster redshift
-        z_inf : float
-            Redshift at infinity
-        integ_kwargs: None, dict
-            Extra arguments for the redshift integration. Possible keys are:
-
-                * 'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
-                  when performing the sum. (default=None)
-                * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
-                  when performing the sum. (default=10.0)
-                * 'delta_z_cut' (float) : Redshift interval to be summed with $z_cl$ to return
-                  $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
-
-        Returns
-        -------
-        array_like
-            Function averaged by pdz, with r_proj dimention.
-        """
-        tfunc = lambda z, r: compute_beta_s_func(
-            z, z_cl, z_inf, self.cosmo, self._eval_tangential_shear, r, z_cl, z_inf)
-        kfunc = lambda z, r: compute_beta_s_func(
-            z, z_cl, z_inf, self.cosmo, self._eval_convergence, r, z_cl, z_inf)
-        __integrand__ = lambda z, r: pdz_func(z)*core(tfunc(z, r), kfunc(z, r))
-
-        _integ_kwargs = {'zmax': 10.0, 'delta_z_cut': 0.1}
-        _integ_kwargs.update({} if integ_kwargs is None else integ_kwargs)
-
-        zmax = _integ_kwargs['zmax']
-        delta_z_cut = _integ_kwargs['delta_z_cut']
-        zmin = _integ_kwargs.get('zmin', z_cl+delta_z_cut)
-
-        out = np.array([quad(__integrand__, zmin, zmax, (r))[0] for r in r_proj])
-        return out/quad(pdz_func, zmin, zmax)[0]
-
 
     def eval_convergence(self, r_proj, z_cl, z_src, z_src_info='discrete',
                          beta_kwargs=None, verbose=False):
@@ -893,8 +846,8 @@ class CLMModeling:
                   when performing the sum. (default=None)
                 * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
                   when performing the sum. (default=10.0)
-                * 'delta_z_cut' (float) : Redshift interval to be summed with $z_cl$ to return
-                  $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
+                * 'delta_z_cut' (float) : Redshift interval to be summed with `z_cl` to return
+                  `zmin`. This feature is not used if `zmin` is provided. (default=0.1)
 
         verbose : bool, optional
             If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
@@ -929,6 +882,52 @@ class CLMModeling:
             raise ValueError(f"Unsupported z_src_info (='{z_src_info}')")
 
         return kappa
+
+    def _pdz_weighted_avg(self, core, pdz_func, r_proj, z_cl, z_inf=1000., integ_kwargs=None):
+        r"""Computes function averaged over PDZ
+
+        Parameters
+        ----------
+        core : function
+            Function to be averaged, must take tangential shear and convergence as input.
+        pdz_func : function
+            Redshift distribution function. Must be a one dimentional function.
+        r_proj : array_like
+            The projected radial positions in :math:`M\!pc`.
+        z_cl : float
+            Galaxy cluster redshift
+        z_inf : float
+            Redshift at infinity
+        integ_kwargs: None, dict
+            Extra arguments for the redshift integration. Possible keys are:
+
+                * 'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
+                  when performing the sum. (default=None)
+                * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
+                  when performing the sum. (default=10.0)
+                * 'delta_z_cut' (float) : Redshift interval to be summed with `z_cl` to return
+                  `zmin`. This feature is not used if `zmin` is provided. (default=0.1)
+
+        Returns
+        -------
+        array_like
+            Function averaged by pdz, with r_proj dimention.
+        """
+        tfunc = lambda z, r: compute_beta_s_func(
+            z, z_cl, z_inf, self.cosmo, self._eval_tangential_shear, r, z_cl, z_inf)
+        kfunc = lambda z, r: compute_beta_s_func(
+            z, z_cl, z_inf, self.cosmo, self._eval_convergence, r, z_cl, z_inf)
+        __integrand__ = lambda z, r: pdz_func(z)*core(tfunc(z, r), kfunc(z, r))
+
+        _integ_kwargs = {'zmax': 10.0, 'delta_z_cut': 0.1}
+        _integ_kwargs.update({} if integ_kwargs is None else integ_kwargs)
+
+        zmax = _integ_kwargs['zmax']
+        delta_z_cut = _integ_kwargs['delta_z_cut']
+        zmin = _integ_kwargs.get('zmin', z_cl+delta_z_cut)
+
+        out = np.array([quad(__integrand__, zmin, zmax, (r))[0] for r in r_proj])
+        return out/quad(pdz_func, zmin, zmax)[0]
 
     def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src, z_src_info='discrete',
                                       approx=None, beta_kwargs=None, verbose=False):
@@ -972,21 +971,40 @@ class CLMModeling:
                         {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
 
         approx : str, optional
-            Type of computation to be made for reduced shears, options are:
+            Type of computation to be made for reduced tangential shears, options are:
 
-                * None (default): Full computation is made for each `r_proj, z_src` pair
-                  individually. It requires `z_src_info` to be 'discrete' or 'distribution'.
+                * None (default): Requires `z_src_info` to be 'discrete' or 'distribution'.
+                  If `z_src_info='discrete'`, full computation is made for each
+                  `r_proj, z_src` pair individually. If `z_src_info='distribution'`, reduced
+                  tangential shear at each value of `r_proj` is calculated as
 
-                * 'applegate14' : Uses the approach from Weighing the Giants - III (equation 6 in
+                  .. math::
+                      g_t
+                      =\left<\frac{\beta_s\gamma_{\infty}}{1-\beta_s\kappa_{\infty}}\right>
+                      =\frac{\int_{z_{min}}^{z_{max}}\frac{\beta_s(z)\gamma_{\infty}}
+                      {1-\beta_s(z)\kappa_{\infty}}N(z)\text{d}z}
+                      {\int_{z_{min}}^{z_{max}} N(z)\text{d}z}
+
+                * 'order1' : Same as the approach from Weighing the Giants - III (equation 6 in
                   Applegate et al. 2014; https://arxiv.org/abs/1208.0605). `z_src_info` must be
                   either 'beta', or 'distribution' (that will be used to compute
-                  :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`)
+                  :math:`\langle \beta_s \rangle`)
 
-                * 'schrabback18' : Uses the approach from Cluster Mass Calibration at High
+                  .. math::
+                      g_t\approx\frac{\left<\beta_s\right>\gamma_{\infty}}
+                      {1-\left<\beta_s\right>\kappa_{\infty}}
+
+                * 'order2' : Same as the approach from Cluster Mass Calibration at High
                   Redshift (equation 12 in Schrabback et al. 2017;
                   https://arxiv.org/abs/1611.03866).
                   `z_src_info` must be either 'beta', or 'distribution' (that will be used
                   to compute :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`)
+
+                  .. math::
+                      g_t\approx\frac{\left<\beta_s\right>\gamma_{\infty}}
+                      {1-\left<\beta_s\right>\kappa_{\infty}}
+                      \left(1+\left(\frac{\left<\beta_s^2\right>}
+                      {\left<\beta_s\right>^2}-1\right)\left<\beta_s\right>\kappa_{\infty}\right)
 
         beta_kwargs: None, dict
             Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
@@ -996,8 +1014,8 @@ class CLMModeling:
                   when performing the sum. (default=None)
                 * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
                   when performing the sum. (default=10.0)
-                * 'delta_z_cut' (float) : Redshift interval to be summed with $z_cl$ to return
-                  $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
+                * 'delta_z_cut' (float) : Redshift interval to be summed with `z_cl` to return
+                  `zmin`. This feature is not used if `zmin` is provided. (default=0.1)
 
         verbose : bool, optional
             If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
@@ -1035,7 +1053,7 @@ class CLMModeling:
                     "approx=None requires z_src_info='discrete' or 'distribution',"
                     f"z_src_info='{z_src_info}' was provided.")
 
-        elif approx in ('applegate14', 'schrabback18'):
+        elif approx in ('order1', 'order2'):
             z_inf = 1000. #np.inf # INF or a very large number
 
             beta_s_mean = self._get_beta_s_mean(
@@ -1046,12 +1064,11 @@ class CLMModeling:
             gammat_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=z_inf)
             kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=z_inf)
 
-            if approx == 'applegate14':
-                gt = beta_s_mean * gammat_inf / (1. - beta_s_square_mean / beta_s_mean * kappa_inf)
-            elif approx == 'schrabback18':
-                gt = (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) \
-                           * beta_s_mean * kappa_inf ) \
-                      * (beta_s_mean * gammat_inf / (1. - beta_s_mean * kappa_inf))
+            gt = beta_s_mean * gammat_inf / (1. - beta_s_mean * kappa_inf)
+
+            if approx == 'order2':
+                gt *= (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) \
+                           * beta_s_mean * kappa_inf )
         else:
             raise ValueError(f"Unsupported approx (='{approx}')")
 
@@ -1079,7 +1096,7 @@ class CLMModeling:
 
                 * 'discrete' (default) : The redshift of sources is provided by `z_src`.
                   It can be individual redshifts for each source galaxy when `z_src` is an
-                  arrayor all sources are at the same redshift when `z_src` is a float.
+                  array or all sources are at the same redshift when `z_src` is a float.
 
                 * 'distribution' : A redshift distribution function is provided by `z_src`.
                   `z_src` must be a one dimentional function.
@@ -1099,14 +1116,39 @@ class CLMModeling:
                         {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
 
         approx : str, optional
-            Type of computation to be made for reduced shears, options are:
+            Type of computation to be made for magnifications, options are:
 
-                * None (default): Full computation is made for each `r_proj, z_src` pair
-                  individually. It requires `z_src_info` to be 'discrete' or 'distribution'.
+                * None (default): Requires `z_src_info` to be 'discrete' or 'distribution'.
+                  If `z_src_info='discrete'`, full computation is made for each
+                  `r_proj, z_src` pair individually. If `z_src_info='distribution'`, magnification
+                  at each value of `r_proj` is calculated as
 
-                * 'weak lensing' : Uses the weak lensing approximation of the magnification
-                  :math:`\mu \approx 1 + 2 \kappa`. `z_src_info` must be either 'beta', or
-                  'distribution' (that will be used to compute :math:`\langle \beta_s \rangle`)
+                  .. math::
+                      \mu
+                      =\left<\frac{1}{\left(1-\beta_s\kappa_{\infty}\right)^2
+                      -\left(\beta_s\gamma_{\infty}\right)^2}\right>
+                      =\frac{\int_{z_{min}}^{z_{max}}\frac{N(z)\text{d}z}
+                      {\left(1-\beta_s(z)\kappa_{\infty}\right)^2
+                      -\left(\beta_s(z)\gamma_{\infty}\right)^2}}
+                      {\int_{z_{min}}^{z_{max}} N(z)\text{d}z}
+
+                * 'order1' : Uses the weak lensing approximation of the magnification with up to
+                  first-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`.
+                  `z_src_info` must be either 'beta', or 'distribution' (that will be used to
+                  compute :math:`\langle \beta_s \rangle`)
+
+                  .. math::
+                      \mu \approx 1 + 2 \left<\beta_s\right>\kappa_{\infty}
+
+                * 'order2' : Uses the weak lensing approximation of the magnification with up to
+                  second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`.
+                  `z_src_info` must be either 'beta', or 'distribution' (that will be used to
+                  compute :math:`\langle \beta_s \rangle`)
+
+                  .. math::
+                      \mu \approx 1 + 2 \left<\beta_s\right>\kappa_{\infty}
+                      + 3 \left<\beta_s^2\right>\kappa_{\infty}^2
+                      + \left<\beta_s^2\right>\gamma_{\infty}^2
 
         beta_kwargs: None, dict
             Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
@@ -1116,8 +1158,8 @@ class CLMModeling:
                   when performing the sum. (default=None)
                 * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
                   when performing the sum. (default=10.0)
-                * 'delta_z_cut' (float) : Redshift interval to be summed with $z_cl$ to return
-                  $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
+                * 'delta_z_cut' (float) : Redshift interval to be summed with `z_cl` to return
+                  `zmin`. This feature is not used if `zmin` is provided. (default=0.1)
 
         verbose : bool, optional
             If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
@@ -1152,7 +1194,7 @@ class CLMModeling:
                     "approx=None requires z_src_info='discrete' or 'distribution',"
                     f"z_src_info='{z_src_info}' was provided.")
 
-        elif approx == 'weak lensing':
+        elif approx in ('order0', 'order1'):
             z_inf = 1000. #np.inf # INF or a very large number
 
             beta_s_mean = self._get_beta_s_mean(
@@ -1163,12 +1205,11 @@ class CLMModeling:
             kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=z_inf)
             gammat_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=z_inf)
 
-            #mu = 1 + 2*beta_s_mean*kappa_inf
+            mu = 1 + 2*beta_s_mean*kappa_inf
 
-            # Taylor expansion with up to second-order terms
-            mu = 1+2*beta_s_mean*kappa_inf\
-                   +beta_s_square_mean*gammat_inf**2\
-                   +3*beta_s_square_mean*kappa_inf**2
+            if approx == 'order2':
+                # Taylor expansion with up to second-order terms
+                mu += 3*beta_s_square_mean*kappa_inf**2 + beta_s_square_mean*gammat_inf**2
 
         else:
             raise ValueError(f"Unsupported approx (='{approx}')")
@@ -1218,15 +1259,45 @@ class CLMModeling:
                         {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
 
         approx : str, optional
-            Type of computation to be made for reduced shears, options are:
+            Type of computation to be made for magnification biases, options are:
 
-                * None (default): Full computation is made for each `r_proj, z_src` pair
-                  individually. It requires `z_src_info` to be 'discrete' or 'distribution'.
+                * None (default): Requires `z_src_info` to be 'discrete' or 'distribution'.
+                  If `z_src_info='discrete'`, full computation is made for each
+                  `r_proj, z_src` pair individually. If `z_src_info='distribution'`, magnification
+                  bias at each value of `r_proj` is calculated as
 
-                * 'weak lensing' : Uses the weak lensing approximation of the magnification bias
-                  :math:`\mu \approx 1 + 2 \kappa \left(\alpha - 1 \right)`. `z_src_info` must be
-                  either 'beta', or 'distribution' (that will be used to compute
-                  :math:`\langle \beta_s \rangle`)
+                  .. math::
+                      \mu^{\alpha-1}
+                      &=\left(\left<\frac{1}{\left(1-\beta_s\kappa_{\infty}\right)^2
+                      -\left(\beta_s\gamma_{\infty}\right)^2}\right>\right)^{\alpha-1}
+                      \\\\
+                      &=\frac{\int_{z_{min}}^{z_{max}}\frac{N(z)\text{d}z}
+                      {\left(\left(1-\beta_s(z)\kappa_{\infty}\right)^2
+                      -\left(\beta_s(z)\gamma_{\infty}\right)^2\right)^{\alpha-1}}}
+                      {\int_{z_{min}}^{z_{max}} N(z)\text{d}z}
+
+                * 'order1' : Uses the weak lensing approximation of the magnification bias with up
+                  to first-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`.
+                  `z_src_info` must be either 'beta', or 'distribution' (that will be used to
+                  compute :math:`\langle \beta_s \rangle`)
+
+                  .. math::
+                      \mu^{\alpha-1} \approx
+                      1 + \left(\alpha-1\right)\left(2 \left<\beta_s\right>\kappa_{\infty}\right)
+
+                * 'order2' : Uses the weak lensing approximation of the magnification bias with up
+                  to second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`.
+                  `z_src_info` must be either 'beta', or 'distribution' (that will be used to
+                  compute :math:`\langle \beta_s \rangle`)
+
+                  .. math::
+                      \mu^{\alpha-1} \approx
+                      1 &+ \left(\alpha-1\right)\left(2 \left<\beta_s\right>\kappa_{\infty}\right)
+                      \\\\
+                      &+ \left(\alpha-1\right)\left(\left<\beta_s^2\right>\gamma_{\infty}^2\right)
+                      \\\\
+                      &+ \left(2\alpha-1\right)\left(\alpha-1\right)
+                      \left(\left<\beta_s^2\right>\kappa_{\infty}^2\right)
 
         beta_kwargs: None, dict
             Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
@@ -1236,8 +1307,8 @@ class CLMModeling:
                   when performing the sum. (default=None)
                 * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
                   when performing the sum. (default=10.0)
-                * 'delta_z_cut' (float) : Redshift interval to be summed with $z_cl$ to return
-                  $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
+                * 'delta_z_cut' (float) : Redshift interval to be summed with `z_cl` to return
+                  `zmin`. This feature is not used if `zmin` is provided. (default=0.1)
 
         verbose : bool, optional
             If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
@@ -1275,7 +1346,7 @@ class CLMModeling:
                     "approx=None requires z_src_info='discrete' or 'distribution',"
                     f"z_src_info='{z_src_info}' was provided.")
 
-        elif approx == 'weak lensing':
+        elif approx in ('order0', 'order1'):
             z_inf = 1000. #np.inf # INF or a very large number
 
             beta_s_mean = self._get_beta_s_mean(
@@ -1286,11 +1357,12 @@ class CLMModeling:
             kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=z_inf)
             gammat_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=z_inf)
 
-            #mu_bias = 1 + 2*beta_s_mean*kappa_inf*(alpha-1)
+            mu_bias = 1 + (alpha-1)*(2*beta_s_mean*kappa_inf)
 
-            # Taylor expansion with up to second-order terms
-            mu_bias = 1+(alpha-1)*(2*beta_s_mean*kappa_inf+beta_s_square_mean*gammat_inf**2)\
-                        +(2*alpha-1)*(alpha-1)*beta_s_square_mean*kappa_inf**2
+            if approx == 'order2':
+                # Taylor expansion with up to second-order terms
+                mu_bias += (alpha-1)*(beta_s_square_mean*gammat_inf**2)\
+                           +(2*alpha-1)*(alpha-1)*beta_s_square_mean*kappa_inf**2
 
         else:
             raise ValueError(f"Unsupported approx (='{approx}')")
