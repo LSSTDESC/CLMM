@@ -1194,7 +1194,7 @@ class CLMModeling:
                     "approx=None requires z_src_info='discrete' or 'distribution',"
                     f"z_src_info='{z_src_info}' was provided.")
 
-        elif approx in ('order0', 'order1'):
+        elif approx in ('order1', 'order2'):
             z_inf = 1000. #np.inf # INF or a very large number
 
             beta_s_mean = self._get_beta_s_mean(
@@ -1346,7 +1346,7 @@ class CLMModeling:
                     "approx=None requires z_src_info='discrete' or 'distribution',"
                     f"z_src_info='{z_src_info}' was provided.")
 
-        elif approx in ('order0', 'order1'):
+        elif approx in ('order1', 'order2'):
             z_inf = 1000. #np.inf # INF or a very large number
 
             beta_s_mean = self._get_beta_s_mean(
