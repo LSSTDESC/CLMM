@@ -741,8 +741,8 @@ def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_dist
     r"""Mean value of the geometric lensing efficicency
 
     .. math::
-       \left<\beta\right> = \frac{\sum_{z = z_{min}}^{z_{max}}\beta(z)p(z)}
-       {\sum_{z = z_{min}}^{z_{max}}p(z)}
+       \left<\beta\right> = \frac{\int_{z = z_{min}}^{z_{max}}\beta(z)N(z)}
+       {\int_{z = z_{min}}^{z_{max}}N(z)}
 
     Parameters
     ----------
@@ -782,8 +782,8 @@ def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=Non
     r"""Mean value of the geometric lensing efficicency ratio
 
     .. math::
-       \left<\beta_s\right> =\frac{\sum_{z = z_{min}}^{z_{max}}\beta_s(z)p(z)}
-       {\sum_{z = z_{min}}^{z_{max}}p(z)}
+       \left<\beta_s\right> =\frac{\int_{z = z_{min}}^{z_{max}}\beta_s(z)N(z)}
+       {\int_{z = z_{min}}^{z_{max}}N(z)}
 
     Parameters
     ----------
@@ -825,8 +825,8 @@ def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, z
     r"""Mean square value of the geometric lensing efficiency ratio
 
     .. math::
-       \left<\beta_s^2\right> =\frac{\sum_{z = z_{min}}^{z_{max}}\beta_s^2(z)p(z)}
-       {\sum_{z = z_{min}}^{z_{max}}p(z)}
+       \left<\beta_s^2\right> =\frac{\int_{z = z_{min}}^{z_{max}}\beta_s^2(z)N(z)}
+       {\int_{z = z_{min}}^{z_{max}}N(z)}
 
     Parameters
     ----------
