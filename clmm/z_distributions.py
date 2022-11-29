@@ -4,7 +4,8 @@ from scipy.special import gamma, gammainc
 
 def _functional_form(redshift, alpha, beta, redshift0, is_cdf=False):
     """
-    A private function that returns the functionnal form of the redshift distribution used in Chang et al (2013):
+    A private function that returns the functionnal form of the redshift distribution used in
+    Chang et al (2013):
 
     .. math::
        P(z) = z^{\\alpha}\times\exp^{\left(-\frac{z}{z0}^\beta\right)}
@@ -23,7 +24,8 @@ def _functional_form(redshift, alpha, beta, redshift0, is_cdf=False):
     The value of the function at z
     """
     if is_cdf:
-        return redshift0**(alpha+1)*gammainc((alpha+1)/beta, (redshift/redshift0)**beta)/beta*gamma((alpha+1)/beta)
+        return redshift0**(alpha+1)*gammainc((alpha+1)/beta, (redshift/redshift0)**beta)\
+    /beta*gamma((alpha+1)/beta)
     else:
         return (redshift**alpha)*np.exp(-(redshift/redshift0)**beta)
 
