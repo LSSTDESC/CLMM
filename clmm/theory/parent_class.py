@@ -44,10 +44,12 @@ class CLMModeling:
         Validade each input argument
     cosmo_class: type
         Type of used cosmology objects
+    z_inf : float
+        The value used as infinite redshift
     """
     # pylint: disable=too-many-instance-attributes
 
-    def __init__(self, validate_input=True):
+    def __init__(self, validate_input=True, z_inf=1000):
 
         self.backend = None
 
@@ -64,6 +66,7 @@ class CLMModeling:
         self.validate_input = validate_input
         self.cosmo_class = None
 
+        self.z_inf = z_inf
 
     # 1. Object properties
 
@@ -584,7 +587,7 @@ class CLMModeling:
         else:
             return self._eval_surface_density_2h(r_proj, z_cl, halobias=halobias, lsteps=lsteps)
 
-    def _get_beta_s_mean(self, z_cl, z_src, z_inf=1000.,  z_src_info='discrete', beta_kwargs=None):
+    def _get_beta_s_mean(self, z_cl, z_src, z_src_info='discrete', beta_kwargs=None):
         r"""Get mean value of the geometric lensing efficicency ratio from typical class function.
 
         Parameters
@@ -642,10 +645,10 @@ class CLMModeling:
             # z_src (function) if PDZ
             beta_kwargs = {} if beta_kwargs is None else beta_kwargs
             beta_s_mean = compute_beta_s_mean(
-                z_cl, z_inf, self.cosmo, z_distrib_func=z_src, **beta_kwargs)
+                z_cl, self.z_inf, self.cosmo, z_distrib_func=z_src, **beta_kwargs)
         return beta_s_mean
 
-    def _get_beta_s_square_mean(self, z_cl, z_src, z_inf=1000., z_src_info='discrete',
+    def _get_beta_s_square_mean(self, z_cl, z_src, z_src_info='discrete',
                                 beta_kwargs=None):
         r"""Get mean value of the square geometric lensing efficicency ratio from typical class
         function.
@@ -705,7 +708,7 @@ class CLMModeling:
             # z_src (function) if PDZ
             beta_kwargs = {} if beta_kwargs is None else beta_kwargs
             beta_s_square_mean = compute_beta_s_square_mean(
-                z_cl, z_inf, self.cosmo, z_distrib_func=z_src, **beta_kwargs)
+                z_cl, self.z_inf, self.cosmo, z_distrib_func=z_src, **beta_kwargs)
         return beta_s_square_mean
 
     def eval_tangential_shear(self, r_proj, z_cl, z_src, z_src_info='discrete',
@@ -778,12 +781,10 @@ class CLMModeling:
         if z_src_info=='discrete':
             gammat = self._eval_tangential_shear(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
         elif z_src_info in ('distribution', 'beta'):
-            z_inf = 1000. #np.inf # INF or a very large number
-
             beta_s_mean = self._get_beta_s_mean(
-                z_cl, z_src, z_inf, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
+                z_cl, z_src, self.z_inf, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
 
-            gammat_inf = self._eval_tangential_shear(r_proj=r_proj, z_cl=z_cl, z_src=z_inf)
+            gammat_inf = self._eval_tangential_shear(r_proj=r_proj, z_cl=z_cl, z_src=self.z_inf)
 
             gammat = beta_s_mean * gammat_inf
         else:
@@ -870,12 +871,10 @@ class CLMModeling:
         if z_src_info=='discrete':
             kappa = self._eval_convergence(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
         elif z_src_info in ('distribution', 'beta'):
-            z_inf = 1000. #np.inf # INF or a very large number
-
             beta_s_mean = self._get_beta_s_mean(
-                z_cl, z_src, z_inf, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
+                z_cl, z_src, self.z_inf, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
 
-            kappa_inf = self._eval_convergence(r_proj=r_proj, z_cl=z_cl, z_src=z_inf)
+            kappa_inf = self._eval_convergence(r_proj=r_proj, z_cl=z_cl, z_src=self.z_inf)
 
             kappa = beta_s_mean * kappa_inf
         else:
@@ -883,7 +882,7 @@ class CLMModeling:
 
         return kappa
 
-    def _pdz_weighted_avg(self, core, pdz_func, r_proj, z_cl, z_inf=1000., integ_kwargs=None):
+    def _pdz_weighted_avg(self, core, pdz_func, r_proj, z_cl, integ_kwargs=None):
         r"""Computes function averaged over PDZ
 
         Parameters
@@ -896,8 +895,6 @@ class CLMModeling:
             The projected radial positions in :math:`M\!pc`.
         z_cl : float
             Galaxy cluster redshift
-        z_inf : float
-            Redshift at infinity
         integ_kwargs: None, dict
             Extra arguments for the redshift integration. Possible keys are:
 
@@ -914,9 +911,9 @@ class CLMModeling:
             Function averaged by pdz, with r_proj dimention.
         """
         tfunc = lambda z, r: compute_beta_s_func(
-            z, z_cl, z_inf, self.cosmo, self._eval_tangential_shear, r, z_cl, z_inf)
+            z, z_cl, self.z_inf, self.cosmo, self._eval_tangential_shear, r, z_cl, self.z_inf)
         kfunc = lambda z, r: compute_beta_s_func(
-            z, z_cl, z_inf, self.cosmo, self._eval_convergence, r, z_cl, z_inf)
+            z, z_cl, self.z_inf, self.cosmo, self._eval_convergence, r, z_cl, self.z_inf)
         __integrand__ = lambda z, r: pdz_func(z)*core(tfunc(z, r), kfunc(z, r))
 
         _integ_kwargs = {'zmax': 10.0, 'delta_z_cut': 0.1}
@@ -1042,10 +1039,9 @@ class CLMModeling:
 
         if approx is None:
             if z_src_info=='distribution':
-                z_inf = 1000. #np.inf # INF or a very large number
                 core = lambda gammat, kappa: gammat/(1-kappa)
                 gt = self._pdz_weighted_avg(core, z_src, r_proj, z_cl,
-                                              z_inf=z_inf, integ_kwargs=beta_kwargs)
+                                            z_inf=self.z_inf, integ_kwargs=beta_kwargs)
             elif z_src_info=='discrete':
                 gt = self._eval_reduced_tangential_shear_sp(r_proj, z_cl, z_src)
             else:
@@ -1054,19 +1050,17 @@ class CLMModeling:
                     f"z_src_info='{z_src_info}' was provided.")
 
         elif approx in ('order1', 'order2'):
-            z_inf = 1000. #np.inf # INF or a very large number
-
             beta_s_mean = self._get_beta_s_mean(
-                z_cl, z_src, z_inf, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
+                z_cl, z_src, self.z_inf, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
 
-            gammat_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=z_inf)
-            kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=z_inf)
+            gammat_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=self.z_inf)
+            kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=self.z_inf)
 
             gt = beta_s_mean * gammat_inf / (1. - beta_s_mean * kappa_inf)
 
             if approx == 'order2':
                 beta_s_square_mean = self._get_beta_s_square_mean(
-                    z_cl, z_src, z_inf, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
+                    z_cl, z_src, self.z_inf, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
 
                 gt *= (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) \
                            * beta_s_mean * kappa_inf )
@@ -1184,10 +1178,9 @@ class CLMModeling:
 
         if approx is None:
             if z_src_info=='distribution':
-                z_inf = 1000. #np.inf # INF or a very large number
                 core = lambda gammat, kappa: 1/((1-kappa)**2-gammat**2)
                 mu = self._pdz_weighted_avg(core, z_src, r_proj, z_cl,
-                                              z_inf=z_inf, integ_kwargs=beta_kwargs)
+                                            z_inf=self.z_inf, integ_kwargs=beta_kwargs)
             elif z_src_info=='discrete':
                 mu = self._eval_magnification(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
             else:
@@ -1196,19 +1189,17 @@ class CLMModeling:
                     f"z_src_info='{z_src_info}' was provided.")
 
         elif approx in ('order1', 'order2'):
-            z_inf = 1000. #np.inf # INF or a very large number
-
             beta_s_mean = self._get_beta_s_mean(
-                z_cl, z_src, z_inf, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
+                z_cl, z_src, self.z_inf, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
 
-            kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=z_inf)
-            gammat_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=z_inf)
+            kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=self.z_inf)
+            gammat_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=self.z_inf)
 
             mu = 1 + 2*beta_s_mean*kappa_inf
 
             if approx == 'order2':
                 beta_s_square_mean = self._get_beta_s_square_mean(
-                    z_cl, z_src, z_inf, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
+                    z_cl, z_src, self.z_inf, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
                 # Taylor expansion with up to second-order terms
                 mu += 3*beta_s_square_mean*kappa_inf**2 + beta_s_square_mean*gammat_inf**2
 
@@ -1335,10 +1326,9 @@ class CLMModeling:
         if approx is None:
             # z_src (float or array) is redshift
             if z_src_info=='distribution':
-                z_inf = 1000. #np.inf # INF or a very large number
                 core = lambda gammat, kappa: 1/((1-kappa)**2-gammat**2)**(alpha-1)
                 mu_bias = self._pdz_weighted_avg(core, z_src, r_proj, z_cl,
-                                                   z_inf=z_inf, integ_kwargs=beta_kwargs)
+                                                 z_inf=self.z_inf, integ_kwargs=beta_kwargs)
             elif z_src_info=='discrete':
                 mu_bias = self._eval_magnification_bias(
                     r_proj=r_proj, z_cl=z_cl, z_src=z_src, alpha=alpha)
@@ -1348,19 +1338,17 @@ class CLMModeling:
                     f"z_src_info='{z_src_info}' was provided.")
 
         elif approx in ('order1', 'order2'):
-            z_inf = 1000. #np.inf # INF or a very large number
-
             beta_s_mean = self._get_beta_s_mean(
-                z_cl, z_src, z_inf, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
+                z_cl, z_src, self.z_inf, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
 
-            kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=z_inf)
-            gammat_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=z_inf)
+            kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=self.z_inf)
+            gammat_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=self.z_inf)
 
             mu_bias = 1 + (alpha-1)*(2*beta_s_mean*kappa_inf)
 
             if approx == 'order2':
                 beta_s_square_mean = self._get_beta_s_square_mean(
-                    z_cl, z_src, z_inf, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
+                    z_cl, z_src, self.z_inf, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
                 # Taylor expansion with up to second-order terms
                 mu_bias += (alpha-1)*(beta_s_square_mean*gammat_inf**2)\
                            +(2*alpha-1)*(alpha-1)*beta_s_square_mean*kappa_inf**2
