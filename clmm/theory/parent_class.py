@@ -782,7 +782,7 @@ class CLMModeling:
             gammat = self._eval_tangential_shear(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
         elif z_src_info in ('distribution', 'beta'):
             beta_s_mean = self._get_beta_s_mean(
-                z_cl, z_src, self.z_inf, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
+                z_cl, z_src, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
 
             gammat_inf = self._eval_tangential_shear(r_proj=r_proj, z_cl=z_cl, z_src=self.z_inf)
 
@@ -872,7 +872,7 @@ class CLMModeling:
             kappa = self._eval_convergence(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
         elif z_src_info in ('distribution', 'beta'):
             beta_s_mean = self._get_beta_s_mean(
-                z_cl, z_src, self.z_inf, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
+                z_cl, z_src, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
 
             kappa_inf = self._eval_convergence(r_proj=r_proj, z_cl=z_cl, z_src=self.z_inf)
 
@@ -1051,7 +1051,7 @@ class CLMModeling:
 
         elif approx in ('order1', 'order2'):
             beta_s_mean = self._get_beta_s_mean(
-                z_cl, z_src, self.z_inf, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
+                z_cl, z_src, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
 
             gammat_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=self.z_inf)
             kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=self.z_inf)
@@ -1060,7 +1060,7 @@ class CLMModeling:
 
             if approx == 'order2':
                 beta_s_square_mean = self._get_beta_s_square_mean(
-                    z_cl, z_src, self.z_inf, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
+                    z_cl, z_src, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
 
                 gt *= (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) \
                            * beta_s_mean * kappa_inf )
@@ -1190,7 +1190,7 @@ class CLMModeling:
 
         elif approx in ('order1', 'order2'):
             beta_s_mean = self._get_beta_s_mean(
-                z_cl, z_src, self.z_inf, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
+                z_cl, z_src, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
 
             kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=self.z_inf)
             gammat_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=self.z_inf)
@@ -1199,7 +1199,7 @@ class CLMModeling:
 
             if approx == 'order2':
                 beta_s_square_mean = self._get_beta_s_square_mean(
-                    z_cl, z_src, self.z_inf, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
+                    z_cl, z_src, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
                 # Taylor expansion with up to second-order terms
                 mu += 3*beta_s_square_mean*kappa_inf**2 + beta_s_square_mean*gammat_inf**2
 
@@ -1339,7 +1339,7 @@ class CLMModeling:
 
         elif approx in ('order1', 'order2'):
             beta_s_mean = self._get_beta_s_mean(
-                z_cl, z_src, self.z_inf, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
+                z_cl, z_src, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
 
             kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=self.z_inf)
             gammat_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=self.z_inf)
@@ -1348,7 +1348,7 @@ class CLMModeling:
 
             if approx == 'order2':
                 beta_s_square_mean = self._get_beta_s_square_mean(
-                    z_cl, z_src, self.z_inf, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
+                    z_cl, z_src, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
                 # Taylor expansion with up to second-order terms
                 mu_bias += (alpha-1)*(beta_s_square_mean*gammat_inf**2)\
                            +(2*alpha-1)*(alpha-1)*beta_s_square_mean*kappa_inf**2
