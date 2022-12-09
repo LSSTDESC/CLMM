@@ -119,7 +119,7 @@ Here's a list of additional resources which you may find helpful in navigating g
 * [The Github Help Pages](https://help.github.com/)
 
 ## Contact (alphabetical order) <a name="contact"></a>
-* [Michel Aguena](https://github.com/m-aguena) (LAPP / LIneA)
+* [Michel Aguena](https://github.com/m-aguena) (APC / LIneA)
 * [Doug Applegate](https://github.com/deapplegate) (Novartis)
 * [Camille Avestruz](https://github.com/cavestruz) (University of Michigan)
 * [Lucie Baumont](https://github.com/lbaumo) (SBU)
@@ -132,12 +132,12 @@ Here's a list of additional resources which you may find helpful in navigating g
 * [Brandyn Lee](https://github.com/brandynlee) (UTD)
 * [Anja von der Linden](https://github.com/anjavdl) (SBU)
 * [Binyang Liu](https://github.com/rbliu) (Brown)
-* [Alex Malz](https://github.com/aimalz) (NYU --> RUB)
+* [Alex Malz](https://github.com/aimalz) (CMU)
 * [Tom McClintock](https://github.com/tmcclintock) (BNL)
 * [Hironao Miyatake](https://github.com/HironaoMiyatake) (Nagoya)
 * [Constantin Payerne](https://github.com/payerne) (LPSC)
 * [Mariana Penna-Lima](https://github.com/pennalima) (UnB - Brasilia / LIneA)
-* [Marina Ricci](https://github.com/marina-ricci) (LAPP)
+* [Marina Ricci](https://github.com/marina-ricci) (LMU)
 * [Cristobal Sifon](https://github.com/cristobal-sifon) (Princeton)
 * [Melanie Simet](https://github.com/msimet) (JPL)
 * [Martin Sommer](https://github.com/sipplund) (Bonn)

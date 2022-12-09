@@ -28,11 +28,13 @@ def test_unimplemented(modeling_data):
     assert_raises(NotImplementedError, mod.eval_convergence, [0.3], 0.3, 0.5)
     assert_raises(NotImplementedError, mod.eval_reduced_tangential_shear, [0.3], 0.3, 0.5)
     assert_raises(NotImplementedError, mod.eval_reduced_tangential_shear, [0.3], 0.3, (0.6, 0.4),
-                  'beta', 'applegate14')
-    assert_raises(NotImplementedError, mod.eval_reduced_tangential_shear, [0.3], 0.3, (0.6, 0.4),
-                  'beta', 'schrabback18')
+                  'beta', 'order1')
     assert_raises(NotImplementedError, mod.eval_magnification, [0.3], 0.3, 0.5)
-    assert_raises(NotImplementedError, mod.eval_magnification_bias, [0.3], 0.3, 0.5, 2)
+    assert_raises(NotImplementedError, mod.eval_magnification, [0.3], 0.3, (0.6, 0.4),
+                  'beta', 'order1')
+    assert_raises(NotImplementedError, mod.eval_magnification_bias, [0.3], 0.3, 0.5, 3.)
+    assert_raises(NotImplementedError, mod.eval_magnification_bias, [0.3], 0.3, (0.6, 0.4), 3.,
+                  'beta', 'order1')
 
 
 def test_instantiate(modeling_data):

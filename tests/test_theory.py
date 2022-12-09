@@ -553,16 +553,16 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
             beta_s_mean * kappa_inf, 1.0e-10)
 
         # reduced tangential shear
-        cfg_inf['GAMMA_PARAMS']['approx'] = 'applegate14'
+        cfg_inf['GAMMA_PARAMS']['approx'] = 'order1'
         assert_allclose(
             theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS']),
-            beta_s_mean * gammat_inf/(1.0 - beta_s_square_mean / beta_s_mean * kappa_inf),
+            beta_s_mean * gammat_inf/(1.0 - beta_s_mean * kappa_inf),
             1.0e-10)
         assert_allclose(
             theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'])[-5:],
-            gt, 2.0e-6)
+            gt, 3.0e-6)
 
-        cfg_inf['GAMMA_PARAMS']['approx'] = 'schrabback18'
+        cfg_inf['GAMMA_PARAMS']['approx'] = 'order2'
         assert_allclose(
             theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS']),
             (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean *
@@ -573,7 +573,14 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
             gt, 2.0e-6)
 
         # magnification
-        cfg_inf['GAMMA_PARAMS']['approx'] = 'weak lensing'
+        cfg_inf['GAMMA_PARAMS']['approx'] = 'order1'
+        assert_allclose(
+            theo.compute_magnification(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS']),
+            1+2*beta_s_mean*kappa_inf, 1.0e-10)
+        assert_allclose(
+            theo.compute_magnification(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'])[-5:],
+            mu, 2.0e-8)
+        cfg_inf['GAMMA_PARAMS']['approx'] = 'order2'
         assert_allclose(
             theo.compute_magnification(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS']),
             1+2*beta_s_mean*kappa_inf+beta_s_square_mean*gammat_inf**2\
@@ -583,7 +590,15 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
             mu, 1.0e-10)
 
         # magnification bias
-        cfg_inf['GAMMA_PARAMS']['approx'] = 'weak lensing'
+        cfg_inf['GAMMA_PARAMS']['approx'] = 'order1'
+        assert_allclose(
+            theo.compute_magnification_bias(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'], alpha=alpha),
+            1+(alpha-1)*(2*beta_s_mean*kappa_inf), 1.0e-10)
+        assert_allclose(
+            theo.compute_magnification_bias(
+                cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'], alpha=alpha)[-5:],
+            mu_bias, 4.0e-8)
+        cfg_inf['GAMMA_PARAMS']['approx'] = 'order2'
         assert_allclose(
             theo.compute_magnification_bias(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'], alpha=alpha),
             1+(alpha-1)*(2*beta_s_mean*kappa_inf+beta_s_square_mean*gammat_inf**2)\
@@ -634,14 +649,14 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         assert_raises(ValueError,
                       theo.compute_reduced_tangential_shear, cosmo=cosmo,
                       **cfg_inf['GAMMA_PARAMS'],
-                      approx='applegate14')
+                      approx='order1')
         assert_raises(ValueError,
                       theo.compute_magnification, cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'],
-                      approx='weak lensing')
+                      approx='order1')
         assert_raises(ValueError,
                       theo.compute_magnification_bias, cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'],
                       alpha=2,
-                      approx='weak lensing')
+                      approx='order1')
 
         #test z_src_info = 'beta'
         beta_s_mean, beta_s_square_mean = 0.9, 0.6
@@ -651,30 +666,42 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         assert_allclose(
             theo.compute_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS']),
             beta_s_mean * gammat_inf, 1.0e-10)
+
         # convergence
         assert_allclose(
             theo.compute_convergence(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS']),
             beta_s_mean * kappa_inf, 1.0e-10)
+
         # reduced tangential shear
-        cfg_inf['GAMMA_PARAMS']['approx'] = 'applegate14'
+        cfg_inf['GAMMA_PARAMS']['approx'] = 'order1'
         assert_allclose(
             theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS']),
-            beta_s_mean * gammat_inf/(1.0 - beta_s_square_mean / beta_s_mean * kappa_inf),
+            beta_s_mean * gammat_inf/(1.0 - beta_s_mean * kappa_inf),
             1.0e-10)
-
-        cfg_inf['GAMMA_PARAMS']['approx'] = 'schrabback18'
+        cfg_inf['GAMMA_PARAMS']['approx'] = 'order2'
         assert_allclose(
             theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS']),
             (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean *
              kappa_inf) * (beta_s_mean * gammat_inf / (1. - beta_s_mean * kappa_inf)),
             1.0e-10)
+
         # magnification
-        cfg_inf['GAMMA_PARAMS']['approx'] = 'weak lensing'
+        cfg_inf['GAMMA_PARAMS']['approx'] = 'order1'
+        assert_allclose(
+            theo.compute_magnification(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS']),
+            1+2*beta_s_mean*kappa_inf, 1.0e-10)
+        cfg_inf['GAMMA_PARAMS']['approx'] = 'order2'
         assert_allclose(
             theo.compute_magnification(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS']),
             1+2*beta_s_mean*kappa_inf+beta_s_square_mean*gammat_inf**2\
             +3*beta_s_square_mean*kappa_inf**2, 1.0e-10)
+
         # magnification bias
+        cfg_inf['GAMMA_PARAMS']['approx'] = 'order1'
+        assert_allclose(
+            theo.compute_magnification_bias(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'], alpha=alpha),
+            1+(alpha-1)*(2*beta_s_mean*kappa_inf), 1.0e-10)
+        cfg_inf['GAMMA_PARAMS']['approx'] = 'order2'
         assert_allclose(
             theo.compute_magnification_bias(cosmo=cosmo, **cfg_inf['GAMMA_PARAMS'], alpha=alpha),
             1+(alpha-1)*(2*beta_s_mean*kappa_inf+beta_s_square_mean*gammat_inf**2)\
@@ -756,9 +783,9 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         if profile_init=='einasto' and theo.be_nick=='nc':
             mod.set_einasto_alpha(cfg['TEST_CASE']['alpha_einasto'])
 
-        # Validate tangential shear
         profile_pars = [cfg['GAMMA_PARAMS']['r_proj'], cfg['GAMMA_PARAMS']['z_cluster'],
                         cfg['GAMMA_PARAMS']['z_source']]
+        # Validate tangential shear
         gammat = mod.eval_tangential_shear(*profile_pars)
         assert_allclose(gammat,
                         cfg['numcosmo_profiles']['gammat'], reltol)
@@ -774,26 +801,6 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         assert_allclose(mod.eval_reduced_tangential_shear(*profile_pars),
                         cfg['numcosmo_profiles']['gt'], 1.e2*reltol)
 
-        beta_s_mean = 0.6
-        beta_s_square_mean = 0.4
-        source_redshift_inf = 1000.
-        gammat_inf = mod.eval_tangential_shear(
-            profile_pars[0], profile_pars[1], source_redshift_inf)
-        kappa_inf = mod.eval_convergence(profile_pars[0], profile_pars[1], source_redshift_inf)
-        assert_allclose(
-            mod.eval_reduced_tangential_shear(*profile_pars[:2],
-                                              (beta_s_mean, beta_s_square_mean),
-                                              'beta', 'applegate14'),
-            beta_s_mean * gammat_inf/(1.0 - beta_s_square_mean / beta_s_mean * kappa_inf),
-            1.0e-10)
-        assert_allclose(
-            mod.eval_reduced_tangential_shear(*profile_pars[:2],
-                                              (beta_s_mean, beta_s_square_mean),
-                                              'beta', 'schrabback18'),
-            (1.+(beta_s_square_mean/(beta_s_mean*beta_s_mean)-1.)*beta_s_mean*kappa_inf) \
-            *(beta_s_mean*gammat_inf/(1.-beta_s_mean*kappa_inf)),
-            1.0e-10)
-
         # Validate magnification
         assert_allclose(mod.eval_magnification(*profile_pars),
                         1./((1-kappa)**2-abs(gammat)**2), 1.0e-10)
@@ -806,6 +813,64 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
                         1./((1-kappa)**2-abs(gammat)**2)**(alpha-1), 1.0e-10)
         assert_allclose(mod.eval_magnification_bias(*profile_pars, alpha=alpha),
                         cfg['numcosmo_profiles']['mu']**(alpha-1), 1.e3*reltol)
+
+        beta_s_mean = 0.6
+        beta_s_square_mean = 0.4
+        source_redshift_inf = 1000.
+        gammat_inf = mod.eval_tangential_shear(
+            profile_pars[0], profile_pars[1], source_redshift_inf)
+        kappa_inf = mod.eval_convergence(profile_pars[0], profile_pars[1], source_redshift_inf)
+
+        # Validate reduced tangential shear
+        assert_allclose(
+            mod.eval_reduced_tangential_shear(*profile_pars[:2],
+                                              (beta_s_mean, beta_s_square_mean),
+                                              'beta', 'order1'),
+            beta_s_mean * gammat_inf/(1.0 - beta_s_mean * kappa_inf),
+            1.0e-10)
+        assert_allclose(
+            mod.eval_reduced_tangential_shear(*profile_pars[:2],
+                                              (beta_s_mean, beta_s_square_mean),
+                                              'beta', 'order2'),
+            (1.+(beta_s_square_mean/(beta_s_mean*beta_s_mean)-1.)*beta_s_mean*kappa_inf) \
+            *(beta_s_mean*gammat_inf/(1.-beta_s_mean*kappa_inf)),
+            1.0e-10)
+
+        # Validate magnification
+        alpha = -1.78
+        assert_allclose(
+            mod.eval_magnification(*profile_pars[:2],
+                                   (beta_s_mean, beta_s_square_mean),
+                                   'beta', 'order1'),
+            1 + 2*beta_s_mean*kappa_inf,
+            1.0e-10)
+        assert_allclose(
+            mod.eval_magnification(*profile_pars[:2],
+                                   (beta_s_mean, beta_s_square_mean),
+                                   'beta', 'order2'),
+            1 + 2*beta_s_mean*kappa_inf\
+              + 3*beta_s_square_mean*kappa_inf**2 + beta_s_square_mean*gammat_inf**2,
+            1.0e-10)
+
+        # Validate magnification bias
+        assert_allclose(
+            mod.eval_magnification_bias(*profile_pars[:2],
+                                        (beta_s_mean, beta_s_square_mean),
+                                        alpha,
+                                        'beta', 'order1'),
+            1 + (alpha-1)*(2*beta_s_mean*kappa_inf),
+            1.0e-10)
+        assert_allclose(
+            mod.eval_magnification_bias(*profile_pars[:2],
+                                        (beta_s_mean, beta_s_square_mean),
+                                        alpha,
+                                        'beta', 'order2'),
+            1 + (alpha-1)*(2*beta_s_mean*kappa_inf)\
+              + (alpha-1)*(beta_s_square_mean*gammat_inf**2)\
+              +(2*alpha-1)*(alpha-1)*beta_s_square_mean*kappa_inf**2,
+            1.0e-10)
+
+
 
         # Check that shear, reduced shear and convergence return zero
         # and magnification and magnification_bias return one
