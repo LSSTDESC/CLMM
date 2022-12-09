@@ -168,9 +168,6 @@ class CLMModeling:
     # 3. Functions that can be used by all subclasses
 
 
-    def _eval_critical_surface_density(self, z_len, z_src):
-        return self.cosmo.eval_sigma_crit(z_len, z_src)
-
     def _set_cosmo(self, cosmo):
         r""" Sets the cosmology to the internal cosmology object"""
         self.cosmo = cosmo if cosmo is not None else self.cosmo_class()
@@ -213,30 +210,6 @@ class CLMModeling:
         val = np.array( [ simps( __integrand__( ll , t ) , ll ) for t in theta ] )
         return halobias * val * rho_m / ( 2 * np.pi  * ( 1 + z_cl )**3 * da**2 )
 
-    def _eval_tangential_shear(self, r_proj, z_cl, z_src):
-        delta_sigma = self.eval_excess_surface_density(r_proj, z_cl)
-        sigma_c = self.eval_critical_surface_density(z_cl, z_src)
-        return delta_sigma/sigma_c
-
-    def _eval_convergence(self, r_proj, z_cl, z_src, verbose=False):
-        sigma = self.eval_surface_density(r_proj, z_cl, verbose=verbose)
-        sigma_c = self.eval_critical_surface_density(z_cl, z_src)
-        return sigma/sigma_c
-
-    def _eval_reduced_tangential_shear_sp(self, r_proj, z_cl, z_src):
-        kappa = self.eval_convergence(r_proj, z_cl, z_src)
-        gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
-        return compute_reduced_shear_from_convergence(gamma_t, kappa)
-
-    def _eval_magnification(self, r_proj, z_cl, z_src):
-        kappa = self.eval_convergence(r_proj, z_cl, z_src)
-        gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
-        return 1./((1-kappa)**2-abs(gamma_t)**2)
-
-    def _eval_magnification_bias(self, r_proj, z_cl, z_src, alpha):
-        magnification = self.eval_magnification(r_proj, z_cl, z_src)
-        return compute_magnification_bias_from_magnification(magnification, alpha)
-
     def _eval_rdelta(self, z_cl):
         return compute_rdelta(self.mdelta, z_cl, self.cosmo, self.massdef, self.delta_mdef)
 
@@ -255,6 +228,37 @@ class CLMModeling:
             halo_profile_model=self.halo_profile_model, alpha=alpha1,
             massdef2=massdef, delta_mdef2=delta_mdef,
             halo_profile_model2=halo_profile_model, alpha2=alpha)
+
+
+    # 3.1. All these functions are for the single plane case
+
+
+    def _eval_critical_surface_density(self, z_len, z_src):
+        return self.cosmo.eval_sigma_crit(z_len, z_src)
+
+    def _eval_tangential_shear(self, r_proj, z_cl, z_src):
+        delta_sigma = self.eval_excess_surface_density(r_proj, z_cl)
+        sigma_c = self.eval_critical_surface_density(z_cl, z_src)
+        return delta_sigma/sigma_c
+
+    def _eval_convergence(self, r_proj, z_cl, z_src, verbose=False):
+        sigma = self.eval_surface_density(r_proj, z_cl, verbose=verbose)
+        sigma_c = self.eval_critical_surface_density(z_cl, z_src)
+        return sigma/sigma_c
+
+    def _eval_reduced_tangential_shear(self, r_proj, z_cl, z_src):
+        kappa = self.eval_convergence(r_proj, z_cl, z_src)
+        gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
+        return compute_reduced_shear_from_convergence(gamma_t, kappa)
+
+    def _eval_magnification(self, r_proj, z_cl, z_src):
+        kappa = self.eval_convergence(r_proj, z_cl, z_src)
+        gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
+        return 1./((1-kappa)**2-abs(gamma_t)**2)
+
+    def _eval_magnification_bias(self, r_proj, z_cl, z_src, alpha):
+        magnification = self.eval_magnification(r_proj, z_cl, z_src)
+        return compute_magnification_bias_from_magnification(magnification, alpha)
 
 
     # 4. Wrapper functions for input validation
@@ -1043,7 +1047,7 @@ class CLMModeling:
                 gt = self._pdz_weighted_avg(core, z_src, r_proj, z_cl,
                                             integ_kwargs=beta_kwargs)
             elif z_src_info=='discrete':
-                gt = self._eval_reduced_tangential_shear_sp(r_proj, z_cl, z_src)
+                gt = self._eval_reduced_tangential_shear(r_proj, z_cl, z_src)
             else:
                 raise ValueError(
                     "approx=None requires z_src_info='discrete' or 'distribution',"
