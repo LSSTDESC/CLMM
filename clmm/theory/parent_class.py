@@ -1041,7 +1041,7 @@ class CLMModeling:
             if z_src_info=='distribution':
                 core = lambda gammat, kappa: gammat/(1-kappa)
                 gt = self._pdz_weighted_avg(core, z_src, r_proj, z_cl,
-                                            z_inf=self.z_inf, integ_kwargs=beta_kwargs)
+                                            integ_kwargs=beta_kwargs)
             elif z_src_info=='discrete':
                 gt = self._eval_reduced_tangential_shear_sp(r_proj, z_cl, z_src)
             else:
@@ -1180,7 +1180,7 @@ class CLMModeling:
             if z_src_info=='distribution':
                 core = lambda gammat, kappa: 1/((1-kappa)**2-gammat**2)
                 mu = self._pdz_weighted_avg(core, z_src, r_proj, z_cl,
-                                            z_inf=self.z_inf, integ_kwargs=beta_kwargs)
+                                            integ_kwargs=beta_kwargs)
             elif z_src_info=='discrete':
                 mu = self._eval_magnification(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
             else:
@@ -1328,7 +1328,7 @@ class CLMModeling:
             if z_src_info=='distribution':
                 core = lambda gammat, kappa: 1/((1-kappa)**2-gammat**2)**(alpha-1)
                 mu_bias = self._pdz_weighted_avg(core, z_src, r_proj, z_cl,
-                                                 z_inf=self.z_inf, integ_kwargs=beta_kwargs)
+                                                 integ_kwargs=beta_kwargs)
             elif z_src_info=='discrete':
                 mu_bias = self._eval_magnification_bias(
                     r_proj=r_proj, z_cl=z_cl, z_src=z_src, alpha=alpha)
