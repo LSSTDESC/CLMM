@@ -119,7 +119,7 @@ class CCLCosmology(CLMMCosmology):
         if np.iterable(a_src):
             a_len = np.full_like(a_src, a_len)
 
-        return self.be_cosmo.sigma_critical(a_len, a_src)
+        return self.be_cosmo.sigma_critical(a_len, a_src)*self.cor_factor
 
     def _eval_linear_matter_powerspectrum(self, k_vals, redshift):
         return ccl.linear_matter_power(

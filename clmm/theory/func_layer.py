@@ -95,7 +95,8 @@ def compute_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
 
 
 def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
-                            halo_profile_model='nfw', massdef='mean', alpha_ein=None, verbose=False, validate_input=True):
+                            halo_profile_model='nfw', massdef='mean', alpha_ein=None,
+                            verbose=False, validate_input=True, force_old_ccl=None):
     r""" Computes the surface mass density
 
     .. math::
@@ -159,6 +160,8 @@ def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     gcm.set_mass(mdelta)
     if alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
+    if force_old_ccl is not None and gcm.backend=='ccl' and gcm._new_version:
+        gcm._new_version = False
 
     sigma = gcm.eval_surface_density(r_proj, z_cl, verbose=verbose)
 
@@ -166,7 +169,8 @@ def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     return sigma
 
 def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
-                                   halo_profile_model='nfw', massdef='mean', alpha_ein=None, verbose=False, validate_input=True):
+                                   halo_profile_model='nfw', massdef='mean', alpha_ein=None,
+                                   verbose=False, validate_input=True, force_old_ccl=None):
     r""" Computes the excess surface density
 
     .. math::
@@ -228,13 +232,16 @@ def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
     gcm.set_mass(mdelta)
     if alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
+    if force_old_ccl is not None and gcm.backend=='ccl' and gcm._new_version:
+        gcm._new_version = False
 
     deltasigma = gcm.eval_excess_surface_density(r_proj, z_cl, verbose=verbose)
 
     gcm.validate_input = True
     return deltasigma
 
-def compute_excess_surface_density_2h(r_proj, z_cl, cosmo, halobias=1., lsteps=500, validate_input=True):
+def compute_excess_surface_density_2h(r_proj, z_cl, cosmo, halobias=1., lsteps=500,
+                                      validate_input=True):
     r""" Computes the 2-halo term excess surface density from eq.(13) of Oguri & Hamana (2011)
 
     .. math::
@@ -375,8 +382,9 @@ def compute_critical_surface_density(cosmo, z_cluster, z_source=None,
     return sigma_c
 
 def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
-                             halo_profile_model='nfw', massdef='mean', alpha_ein=None, z_src_model='single_plane', 
-                             verbose=False, validate_input=True):
+                             halo_profile_model='nfw', massdef='mean', alpha_ein=None,
+                             z_src_model='single_plane',
+                             verbose=False, validate_input=True, force_old_ccl=None):
     r"""Computes the tangential shear
 
     .. math::
@@ -454,6 +462,8 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
         gcm.set_mass(mdelta)
         if alpha_ein is not None:
             gcm.set_einasto_alpha(alpha_ein)
+        if force_old_ccl is not None and gcm.backend=='ccl' and gcm._new_version:
+            gcm._new_version = False
         if np.min(r_proj) < 1.e-11:
             raise ValueError(
                 f"Rmin = {np.min(r_proj):.2e} Mpc/h! This value is too small "
@@ -468,8 +478,9 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
 
 
 def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
-                        halo_profile_model='nfw', massdef='mean', alpha_ein=None, z_src_model='single_plane',
-                        verbose=False, validate_input=True):
+                        halo_profile_model='nfw', massdef='mean', alpha_ein=None,
+                        z_src_model='single_plane',
+                        verbose=False, validate_input=True, force_old_ccl=None):
     r"""Computes the mass convergence
 
     .. math::
@@ -549,6 +560,8 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
         gcm.set_mass(mdelta)
         if alpha_ein is not None:
             gcm.set_einasto_alpha(alpha_ein)
+        if force_old_ccl is not None and gcm.backend=='ccl' and gcm._new_version:
+            gcm._new_version = False
 
         kappa = gcm.eval_convergence(r_proj, z_cluster, z_source, verbose=verbose)
 
@@ -569,7 +582,7 @@ def compute_reduced_tangential_shear(
         r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
         delta_mdef=200, halo_profile_model='nfw', massdef='mean', alpha_ein=None,
         z_src_model='single_plane', beta_s_mean=None, beta_s_square_mean=None,
-        z_distrib_func=None, validate_input=True, verbose=False):
+        z_distrib_func=None, validate_input=True, verbose=False, force_old_ccl=None):
     r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
 
     Parameters
@@ -663,6 +676,8 @@ def compute_reduced_tangential_shear(
     gcm.set_mass(mdelta)
     if alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
+    if force_old_ccl is not None and gcm.backend=='ccl' and gcm._new_version:
+        gcm._new_version = False
 
     red_tangential_shear = gcm.eval_reduced_tangential_shear(
         r_proj, z_cluster, z_source, z_src_model,
@@ -677,7 +692,8 @@ def compute_reduced_tangential_shear(
 
 def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
                           halo_profile_model='nfw', massdef='mean', alpha_ein=None,
-                          z_src_model='single_plane', verbose=False, validate_input=True):
+                          z_src_model='single_plane', verbose=False, validate_input=True,
+                          force_old_ccl=None):
     r"""Computes the magnification
 
     .. math::
@@ -751,6 +767,8 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
         gcm.set_mass(mdelta)
         if alpha_ein is not None:
             gcm.set_einasto_alpha(alpha_ein)
+        if force_old_ccl is not None and gcm.backend=='ccl' and gcm._new_version:
+            gcm._new_version = False
 
         magnification = gcm.eval_magnification(r_proj, z_cluster, z_source, verbose=verbose)
 
@@ -770,7 +788,8 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
 
 def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_source, cosmo,
                                delta_mdef=200, halo_profile_model='nfw', massdef='mean',
-                               z_src_model='single_plane', validate_input=True):
+                               z_src_model='single_plane', validate_input=True,
+                               force_old_ccl=None):
 
     r""" Computes magnification bias from magnification :math:`\mu`
     and slope parameter :math:`\alpha` as :
@@ -843,6 +862,8 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
             halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
         gcm.set_concentration(cdelta)
         gcm.set_mass(mdelta)
+    if force_old_ccl is not None and gcm.backend=='ccl' and gcm._new_version:
+        gcm._new_version = False
 
         magnification_bias = gcm.eval_magnification_bias(r_proj, z_cluster, z_source, alpha)
 
