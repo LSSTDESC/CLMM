@@ -25,10 +25,6 @@ do
         fi
     fi
 done
-echo $NO_DC2 $NO_HSC
-exit
-
-
     # funcs to turn on/off args in conf
 function turn_on(){
 sed -i -e 's/'"$1"' = False/'"$1"' = True/g'  conf.py
