@@ -8,19 +8,27 @@ python setup.py install --user > /dev/null
 
     # get kwargs
 NO_DC2=false
+NO_HSC=false
 for ARGUMENT in "$@"
 do
     if [ "${ARGUMENT::1}" = "-" ]
     then
-        if [ "$ARGUMENT" = "--no-dc2" ] || [ "$ARGUMENT" = "-n" ]
+        if [ "$ARGUMENT" = "--no-dc2" ]
             then
             NO_DC2=true
+        elif [ "$ARGUMENT" = "--no-hsc" ]
+            then
+            NO_HSC=true
         else
             echo "ERROR! Unknown '$ARGUMENT' argument"
             exit
         fi
     fi
 done
+echo $NO_DC2 $NO_HSC
+exit
+
+
     # funcs to turn on/off args in conf
 function turn_on(){
 sed -i -e 's/'"$1"' = False/'"$1"' = True/g'  conf.py
@@ -33,10 +41,12 @@ cd docs/
 make clean
 #turn_on 'run_nb'
 if [ $NO_DC2 = true ];then turn_on 'dc2_fix'; fi
+if [ $NO_HSC = true ];then turn_on 'hsc_fix'; fi
 make html
 turn_off 'run_nb'
 sed -i -e 's/run_nb = True/run_nb = False/g' conf.py
 if [ $NO_DC2 = true ];then turn_off 'dc2_fix'; fi
+if [ $NO_HSC = true ];then turn_off 'hsc_fix'; fi
 cd ..
 
 # Add and commit changes

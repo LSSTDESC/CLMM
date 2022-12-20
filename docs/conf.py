@@ -145,6 +145,7 @@ for entry in config:
 
 # -- Compile the examples into rst----------------------------------------
 dc2_fix = False
+hsc_fix = False
 run_nb = False
 
 outdir = 'compiled-examples/'
@@ -167,6 +168,11 @@ for demo in [*demofiles, *examplefiles]:
 if dc2_fix:
     com = 'cp -rf .precompiled-fixed-examples/data_and_model_demo_DC2* compiled-examples/'
     print('* Fix for publication (use precompiled version of DC2 NB from older version)')
+    subprocess.run(com, shell=True)
+
+if hsc_fix:
+    com = 'cp -rf .precompiled-fixed-examples/Example4_Fit_Halo_mass_to_HSC_data* compiled-examples/'
+    print('* Fix for publication (use precompiled version of HSC NB from older version)')
     subprocess.run(com, shell=True)
 
 # -- Build index.html ----------------------------------------------------
