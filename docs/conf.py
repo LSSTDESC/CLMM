@@ -153,9 +153,9 @@ nbconvert_opts = ['--to rst',
                   '--ExecutePreprocessor.kernel_name=python3',
                    '--execute',
                   f'--output-dir {outdir}']
-nb_skip_run = [
-    '../examples/Example4_Fit_Halo_mass_to_HSC_data.ipynb',]
-
+nb_skip_run = []
+if hsc_fix:
+    nb_skip_run.append('../examples/Example4_Fit_Halo_mass_to_HSC_data.ipynb')
 if dc2_fix:
     nb_skip_run.append('../examples/DC2_examples/data_and_model_demo_DC2.ipynb')
 

@@ -39,7 +39,7 @@ sed -i -e 's/'"$1"' = True/'"$1"' = False/g'  conf.py
 
 cd docs/
 make clean
-#turn_on 'run_nb'
+turn_on 'run_nb'
 if [ $NO_DC2 = true ];then turn_on 'dc2_fix'; fi
 if [ $NO_HSC = true ];then turn_on 'hsc_fix'; fi
 make html
