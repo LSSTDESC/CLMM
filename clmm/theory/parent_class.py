@@ -48,10 +48,12 @@ class CLMModeling:
         Validade each input argument
     cosmo_class: type
         Type of used cosmology objects
+    z_inf : float
+        The value used as infinite redshift
     """
     # pylint: disable=too-many-instance-attributes
 
-    def __init__(self, validate_input=True):
+    def __init__(self, validate_input=True, z_inf=1000):
 
         self.backend = None
 
@@ -68,6 +70,7 @@ class CLMModeling:
         self.validate_input = validate_input
         self.cosmo_class = None
 
+        self.z_inf = z_inf
 
     # 1. Object properties
 
@@ -740,24 +743,20 @@ class CLMModeling:
                                             'z_cl', 'z_src', r_proj)
 
         elif z_src_model == 'applegate14':
-            z_source = 1000. #np.inf # INF or a very large number
-            z_inf = z_source
             if beta_s_mean is None or beta_s_square_mean is None:
-                beta_s_mean = compute_beta_s_mean (z_cl, z_inf, self.cosmo, z_distrib_func=z_distrib_func)
-                beta_s_square_mean = compute_beta_s_square_mean (z_cl, z_inf, self.cosmo, z_distrib_func=z_distrib_func)
-            gammat = self._eval_tangential_shear(r_proj, z_cl, z_source)
-            kappa = self._eval_convergence(r_proj, z_cl, z_source)
-            gt = beta_s_mean * gammat / (1. - beta_s_square_mean / beta_s_mean * kappa)
+                beta_s_mean = compute_beta_s_mean (z_cl, self.z_inf, self.cosmo, z_distrib_func=z_distrib_func)
+                beta_s_square_mean = compute_beta_s_square_mean (z_cl, self.z_inf, self.cosmo, z_distrib_func=z_distrib_func)
+            gammat_inf = self._eval_tangential_shear(r_proj, z_cl, self.z_inf)
+            kappa_inf = self._eval_convergence(r_proj, z_cl, self.z_inf)
+            gt = beta_s_mean * gammat_inf / (1. - beta_s_square_mean / beta_s_mean * kappa_inf)
 
         elif z_src_model == 'schrabback18':
-            z_source = 1000. #np.inf # INF or a very large number
-            z_inf = z_source
             if beta_s_mean is None or beta_s_square_mean is None:
-                beta_s_mean = compute_beta_s_mean (z_cl, z_inf, self.cosmo, z_distrib_func=z_distrib_func)
-                beta_s_square_mean = compute_beta_s_square_mean (z_cl, z_inf, self.cosmo, z_distrib_func=z_distrib_func)
-            gammat = self._eval_tangential_shear(r_proj, z_cl, z_source)
-            kappa = self._eval_convergence(r_proj, z_cl, z_source)
-            gt = (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean * kappa) * (beta_s_mean * gammat / (1. - beta_s_mean * kappa))
+                beta_s_mean = compute_beta_s_mean (z_cl, self.z_inf, self.cosmo, z_distrib_func=z_distrib_func)
+                beta_s_square_mean = compute_beta_s_square_mean (z_cl, self.z_inf, self.cosmo, z_distrib_func=z_distrib_func)
+            gammat_inf = self._eval_tangential_shear(r_proj, z_cl, self.z_inf)
+            kappa_inf = self._eval_convergence(r_proj, z_cl, self.z_inf)
+            gt = (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) * beta_s_mean * kappa_inf) * (beta_s_mean * gammat_inf / (1. - beta_s_mean * kappa_inf))
 
         else:
             raise ValueError("Unsupported z_src_model")
