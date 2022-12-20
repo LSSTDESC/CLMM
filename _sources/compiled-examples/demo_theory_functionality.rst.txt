@@ -40,7 +40,7 @@ Make sure we know which version we’re using
 
 .. parsed-literal::
 
-    '1.4.0'
+    '1.4.4'
 
 
 
@@ -141,8 +141,8 @@ Quick test of all theory functionality
 
 .. parsed-literal::
 
-    /home/aguena/.local/lib/python3.9/site-packages/clmm-1.4.0-py3.9.egg/clmm/theory/generic.py:72: UserWarning: Magnification is negative for certain radii,                     returning nan for magnification bias in this case.
-    /home/aguena/.local/lib/python3.9/site-packages/clmm-1.4.0-py3.9.egg/clmm/theory/generic.py:74: RuntimeWarning: invalid value encountered in power
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.8/site-packages/clmm-1.4.4-py3.8.egg/clmm/theory/generic.py:72: UserWarning: Magnification is negative for certain radii,                     returning nan for magnification bias in this case.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.8/site-packages/clmm-1.4.4-py3.8.egg/clmm/theory/generic.py:74: RuntimeWarning: invalid value encountered in power
 
 
 Lensing quantities assuming sources follow a given redshift
@@ -223,7 +223,7 @@ Plot the predicted profiles
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fed3a1b4e80>
+    <matplotlib.legend.Legend at 0x15551901dfd0>
 
 
 

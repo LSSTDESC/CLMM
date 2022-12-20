@@ -4,18 +4,15 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Rapid overview &mdash; CLMM 1.4.0 documentation</title>
+  <title>Rapid overview &mdash; CLMM 1.4.4 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,10 +26,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -64,7 +62,7 @@
             
             
               <div class="version">
-                1.4.0
+                1.4.4
               </div>
             
           
@@ -89,13 +87,13 @@
               
             
             
-              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Rapid overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="citing.html">Using and citing CLMM</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Usage Demos</span></p>
+<p class="caption"><span class="caption-text">Usage Demos</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
@@ -104,14 +102,15 @@
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_mass_conversion.html">Mass conversion between spherical overdensity mass definitions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_boost_factors.html">Compute boost factors</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Mass Fitting Examples</span></p>
+<p class="caption"><span class="caption-text">Mass Fitting Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_shear_profile_with_miscentering.html">Investigate the impact of miscentering on shear profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example4_Fit_Halo_mass_to_HSC_data.html">Using CLMM on Real Datasets</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<p class="caption"><span class="caption-text">Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">API Documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.clusterensemble.html">clmm.clusterensemble module</a></li>
@@ -210,7 +209,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="rapid-overview">
+  <div class="section" id="rapid-overview">
 <h1>Rapid overview<a class="headerlink" href="#rapid-overview" title="Permalink to this headline">¶</a></h1>
 <p>CLMM is a tool to estimate cluster masses from weak lensing data.
 CLMM provides the initial building blocks for an end-to-end cluster weak
@@ -222,7 +221,7 @@ includes ways to generate mock catalogs of various complexity levels.
 A set of examples is also provided, ranging from demos of base functionalities
 to end-to-end WL mass estimations. All are available in the <cite>examples</cite> folder of the project and some have been included in
 this documentation (see below).</p>
-<section id="the-galaxycluster-object">
+<div class="section" id="the-galaxycluster-object">
 <h2>The <cite>GalaxyCluster</cite> object<a class="headerlink" href="#the-galaxycluster-object" title="Permalink to this headline">¶</a></h2>
 <dl class="simple">
 <dt>The Galaxy cluster object is the core data structure in CLMM. It contains at least</dt><dd><ul class="simple">
@@ -232,8 +231,8 @@ this documentation (see below).</p>
 </ul>
 </dd>
 </dl>
-</section>
-<section id="weak-lensing-signal-measurement-with-the-dataops-package">
+</div>
+<div class="section" id="weak-lensing-signal-measurement-with-the-dataops-package">
 <h2>Weak lensing signal measurement with the <cite>dataops</cite> package<a class="headerlink" href="#weak-lensing-signal-measurement-with-the-dataops-package" title="Permalink to this headline">¶</a></h2>
 <dl class="simple">
 <dt>All the functions of the <cite>dataops</cite> package are also methods of the <cite>GalaxyCluster</cite> object. In a nutshell, the main functions are:</dt><dd><ul class="simple">
@@ -243,24 +242,24 @@ this documentation (see below).</p>
 </dd>
 </dl>
 <p>See <cite>demo_dataops_functionality.ipynb</cite> to see all functionalities and possible options.</p>
-</section>
-<section id="profile-models-and-cosmology-with-theory-and-cosmology-packages">
+</div>
+<div class="section" id="profile-models-and-cosmology-with-theory-and-cosmology-packages">
 <h2>Profile models and cosmology with <cite>theory</cite> and <cite>cosmology</cite> packages<a class="headerlink" href="#profile-models-and-cosmology-with-theory-and-cosmology-packages" title="Permalink to this headline">¶</a></h2>
 <p>The <cite>theory</cite> package holds modules for evaluating theoretical models, whatever backend (cluster-toolkit, CCL or NumCosmo) the user has chosen to use. All is transparent to the user, but some backend will support more functionality than others. The default, that all backends support, is to use an NFW density profile for the cluster, with a M200,m mass definition.</p>
 <p>Each theory backend relies on a cosmology object, of a different type, depending on the backend. The CLMM cosmology superclass wraps these various types of object to make it transparent for the user.</p>
 <p>Finally, the theory package has both a functional and object-oriented interface and these may be used whatever the selected theory backend.</p>
 <p>See <cite>examples/demo_theory_functionality.ipynb</cite> and <cite>examples/demo_theory_functionality_oo.ipynb</cite> for detailed examples of the functional and object-oriented interfaces respectively.</p>
-</section>
-<section id="mock-data-generation">
+</div>
+<div class="section" id="mock-data-generation">
 <h2>Mock data generation<a class="headerlink" href="#mock-data-generation" title="Permalink to this headline">¶</a></h2>
 <p>In order to test/develop the code but also help new users or scientists new to the field to explore some of the effects affecting cluster WL mass reconstruction, a CLMM module allows us to generate mock datasets from a variety of ingredients (w/wo shape noise, w/wo photoz errors, etc.).</p>
 <p>See <cite>examples/demo_generate_mock_cluster.ipynb</cite> for all possible use cases.</p>
-</section>
-<section id="galaxy-cluster-mass-estimation">
+</div>
+<div class="section" id="galaxy-cluster-mass-estimation">
 <h2>Galaxy cluster mass estimation<a class="headerlink" href="#galaxy-cluster-mass-estimation" title="Permalink to this headline">¶</a></h2>
-<p>CLMM was not designed to provide an end-to-end mass estimation pipeline, but to provide the building blocks to do so. How to use these blocks to make a mass estimation is exemplified in a series of notebooks using either simple scipy tools for the minimization or Numcosmo’s more sophisticated statistical framework. Look for the notebooks called <cite>ExampleXX_Fit_Halo_Mass_to_Shear_Catalog*</cite> in the examples folder, e.g, <cite>examples/Example3_Fit_Halo_Mass_to_Shear_Catalog.ipynb</cite>.</p>
-</section>
-</section>
+<p>CLMM was not designed to provide an end-to-end mass estimation pipeline, but to provide the building blocks to do so. How to use these blocks to make a mass estimation is exemplified in a series of notebooks using either simple scipy tools for the minimization or Numcosmo's more sophisticated statistical framework. Look for the notebooks called <cite>ExampleXX_Fit_Halo_Mass_to_Shear_Catalog*</cite> in the examples folder, e.g, <cite>examples/Example3_Fit_Halo_Mass_to_Shear_Catalog.ipynb</cite>.</p>
+</div>
+</div>
 
 
            </div>

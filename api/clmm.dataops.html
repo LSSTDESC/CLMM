@@ -4,18 +4,15 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>clmm.dataops package &mdash; CLMM 1.4.0 documentation</title>
+  <title>clmm.dataops package &mdash; CLMM 1.4.4 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,11 +26,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -65,7 +62,7 @@
             
             
               <div class="version">
-                1.4.0
+                1.4.4
               </div>
             
           
@@ -90,13 +87,13 @@
               
             
             
-              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../source/overview.html">Rapid overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../source/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../source/citing.html">Using and citing CLMM</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Usage Demos</span></p>
+<p class="caption"><span class="caption-text">Usage Demos</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
@@ -105,14 +102,15 @@
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_mass_conversion.html">Mass conversion between spherical overdensity mass definitions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_boost_factors.html">Compute boost factors</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Mass Fitting Examples</span></p>
+<p class="caption"><span class="caption-text">Mass Fitting Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_shear_profile_with_miscentering.html">Investigate the impact of miscentering on shear profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example4_Fit_Halo_mass_to_HSC_data.html">Using CLMM on Real Datasets</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<p class="caption"><span class="caption-text">Reference</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="clmm.clusterensemble.html">clmm.clusterensemble module</a></li>
@@ -213,25 +211,25 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="module-clmm.dataops">
+  <div class="section" id="module-clmm.dataops">
 <span id="clmm-dataops-package"></span><h1>clmm.dataops package<a class="headerlink" href="#module-clmm.dataops" title="Permalink to this headline">¶</a></h1>
 <p>Functions to compute polar/azimuthal averages in radial bins</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="clmm.dataops.compute_background_probability">
-<span class="sig-prename descclassname"><span class="pre">clmm.dataops.</span></span><span class="sig-name descname"><span class="pre">compute_background_probability</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_lens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_pdz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pzpdf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pzbins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_input</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/dataops.html#compute_background_probability"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.dataops.compute_background_probability" title="Permalink to this definition">¶</a></dt>
+<dt id="clmm.dataops.compute_background_probability">
+<code class="sig-prename descclassname">clmm.dataops.</code><code class="sig-name descname">compute_background_probability</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">z_lens</span></em>, <em class="sig-param"><span class="n">z_source</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">use_pdz</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">pzpdf</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pzbins</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">validate_input</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/dataops.html#compute_background_probability"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.dataops.compute_background_probability" title="Permalink to this definition">¶</a></dt>
 <dd><p>Probability for being a background galaxy</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>z_lens</strong> (<em>float</em>) – Redshift of the lens.</p></li>
-<li><p><strong>z_source</strong> (<em>array</em><em>, </em><em>optional</em>) – Redshift of the source. Used only if pzpdf=pzbins=None.</p></li>
-<li><p><strong>pzpdf</strong> (<em>array</em><em>, </em><em>optional</em>) – Photometric probablility density functions of the source galaxies.
+<li><p><strong>z_lens</strong> (<em>float</em>) -- Redshift of the lens.</p></li>
+<li><p><strong>z_source</strong> (<em>array</em><em>, </em><em>optional</em>) -- Redshift of the source. Used only if pzpdf=pzbins=None.</p></li>
+<li><p><strong>pzpdf</strong> (<em>array</em><em>, </em><em>optional</em>) -- Photometric probablility density functions of the source galaxies.
 Used instead of z_source if provided.</p></li>
-<li><p><strong>pzbins</strong> (<em>array</em><em>, </em><em>optional</em>) – Redshift axis on which the individual photoz pdf is tabulated.</p></li>
+<li><p><strong>pzbins</strong> (<em>array</em><em>, </em><em>optional</em>) -- Redshift axis on which the individual photoz pdf is tabulated.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>p_background</strong> – Probability for being a background galaxy</p>
+<dd class="field-even"><p><strong>p_background</strong> -- Probability for being a background galaxy</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>array</p>
@@ -240,8 +238,8 @@ Used instead of z_source if provided.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="clmm.dataops.compute_galaxy_weights">
-<span class="sig-prename descclassname"><span class="pre">clmm.dataops.</span></span><span class="sig-name descname"><span class="pre">compute_galaxy_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_lens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_pdz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pzpdf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pzbins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_shape_noise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape_component1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape_component2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_shape_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape_component1_err</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape_component2_err</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_deltasigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_input</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/dataops.html#compute_galaxy_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.dataops.compute_galaxy_weights" title="Permalink to this definition">¶</a></dt>
+<dt id="clmm.dataops.compute_galaxy_weights">
+<code class="sig-prename descclassname">clmm.dataops.</code><code class="sig-name descname">compute_galaxy_weights</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">z_lens</span></em>, <em class="sig-param"><span class="n">cosmo</span></em>, <em class="sig-param"><span class="n">z_source</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">use_pdz</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">pzpdf</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pzbins</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">use_shape_noise</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">shape_component1</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">shape_component2</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">use_shape_error</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">shape_component1_err</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">shape_component2_err</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">is_deltasigma</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">sigma_c</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">validate_input</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/dataops.html#compute_galaxy_weights"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.dataops.compute_galaxy_weights" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the individual lens-source pair weights</p>
 <p>The weights <span class="math notranslate nohighlight">\(w_{ls}\)</span> express as : <span class="math notranslate nohighlight">\(w_{ls} = w_{ls, \text{geo}} \times w_{ls,
 \text{shape}}\)</span>, following E. S. Sheldon et al. (2003), arXiv:astro-ph/0312036:</p>
@@ -255,7 +253,7 @@ computed instead as</p>
 <div class="math notranslate nohighlight">
 \[w_{ls, \text{geo}} = \left[\int_{\delta + z_l} dz_s p_{\text{photoz}}(z_s)
 \Sigma_c(\text{cosmo}, z_l, z_s)^{-1}\right]^2\]</div>
-<p>for the tangential shear, the weights ‘w_{ls, text{geo}}` are 1.</p>
+<p>for the tangential shear, the weights 'w_{ls, text{geo}}` are 1.</p>
 </div></blockquote>
 <p>2. The shape weight <span class="math notranslate nohighlight">\(w_{ls,{\text{shape}}}\)</span> depends on shapenoise and/or shape
 measurement errors</p>
@@ -278,32 +276,32 @@ integral. In the case of true redshifts, it returns 1 if <span class="math notra
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>z_lens</strong> (<em>float</em>) – Redshift of the lens.</p></li>
-<li><p><strong>z_source</strong> (<em>array_like</em><em>, </em><em>optional</em>) – Redshift of the source (point estimate). Used only if <cite>use_pdz=False</cite>.</p></li>
-<li><p><strong>cosmo</strong> (<em>clmm.Comology object</em><em>, </em><em>None</em>) – CLMM Cosmology object.</p></li>
-<li><p><strong>use_pdz</strong> (<em>bool</em>) – Flag to use or not the source redshift p(z). If <cite>False</cite> (default) the point estimate
+<li><p><strong>z_lens</strong> (<em>float</em>) -- Redshift of the lens.</p></li>
+<li><p><strong>z_source</strong> (<em>array_like</em><em>, </em><em>optional</em>) -- Redshift of the source (point estimate). Used only if <cite>use_pdz=False</cite>.</p></li>
+<li><p><strong>cosmo</strong> (<em>clmm.Comology object</em><em>, </em><em>None</em>) -- CLMM Cosmology object.</p></li>
+<li><p><strong>use_pdz</strong> (<em>bool</em>) -- Flag to use or not the source redshift p(z). If <cite>False</cite> (default) the point estimate
 provided by <cite>z_source</cite> is used.</p></li>
-<li><p><strong>pzpdf</strong> (<em>array_like</em><em>, </em><em>optional</em>) – Photometric probablility density functions of the source galaxies.
+<li><p><strong>pzpdf</strong> (<em>array_like</em><em>, </em><em>optional</em>) -- Photometric probablility density functions of the source galaxies.
 Used instead of z_source if <cite>use_pdz=True</cite></p></li>
-<li><p><strong>pzbins</strong> (<em>array_like</em><em>, </em><em>optional</em>) – Redshift axis on which the individual photoz pdf is tabulated. Required if <cite>use_pdz=True</cite></p></li>
-<li><p><strong>use_shape_noise</strong> (<em>bool</em>) – If <cite>True</cite> shape noise is included in the weight computation. It then requires
+<li><p><strong>pzbins</strong> (<em>array_like</em><em>, </em><em>optional</em>) -- Redshift axis on which the individual photoz pdf is tabulated. Required if <cite>use_pdz=True</cite></p></li>
+<li><p><strong>use_shape_noise</strong> (<em>bool</em>) -- If <cite>True</cite> shape noise is included in the weight computation. It then requires
 <cite>shape_componenet{1,2}</cite> to be provided. Default: False.</p></li>
-<li><p><strong>shape_component1</strong> (<em>array_like</em>) – The measured shear (or reduced shear or ellipticity) of the source galaxies,
+<li><p><strong>shape_component1</strong> (<em>array_like</em>) -- The measured shear (or reduced shear or ellipticity) of the source galaxies,
 used if <cite>use_shapenoise=True</cite></p></li>
-<li><p><strong>shape_component2</strong> (<em>array_like</em>) – The measured shear (or reduced shear or ellipticity) of the source galaxies,
+<li><p><strong>shape_component2</strong> (<em>array_like</em>) -- The measured shear (or reduced shear or ellipticity) of the source galaxies,
 used if <cite>use_shapenoise=True</cite></p></li>
-<li><p><strong>use_shape_error</strong> (<em>bool</em>) – If <cite>True</cite> shape errors are included in the weight computation. It then requires
+<li><p><strong>use_shape_error</strong> (<em>bool</em>) -- If <cite>True</cite> shape errors are included in the weight computation. It then requires
 shape_component{1,2}_err` to be provided. Default: False.</p></li>
-<li><p><strong>shape_component1_err</strong> (<em>array_like</em>) – The measurement error on the 1st-component of ellipticity of the source galaxies,
+<li><p><strong>shape_component1_err</strong> (<em>array_like</em>) -- The measurement error on the 1st-component of ellipticity of the source galaxies,
 used if <cite>use_shape_error=True</cite></p></li>
-<li><p><strong>shape_component2_err</strong> (<em>array_like</em>) – The measurement error on the 2nd-component of ellipticity of the source galaxies,
+<li><p><strong>shape_component2_err</strong> (<em>array_like</em>) -- The measurement error on the 2nd-component of ellipticity of the source galaxies,
 used if <cite>use_shape_error=True</cite></p></li>
-<li><p><strong>is_deltasigma</strong> (<em>bool</em>) – Indicates whether it is the excess surface density or the tangential shear</p></li>
-<li><p><strong>validate_input</strong> (<em>bool</em>) – Validade each input argument</p></li>
+<li><p><strong>is_deltasigma</strong> (<em>bool</em>) -- Indicates whether it is the excess surface density or the tangential shear</p></li>
+<li><p><strong>validate_input</strong> (<em>bool</em>) -- Validade each input argument</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>w_ls</strong> – Individual lens source pair weights</p>
+<dd class="field-even"><p><strong>w_ls</strong> -- Individual lens source pair weights</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>array_like</p>
@@ -312,8 +310,8 @@ used if <cite>use_shape_error=True</cite></p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="clmm.dataops.compute_tangential_and_cross_components">
-<span class="sig-prename descclassname"><span class="pre">clmm.dataops.</span></span><span class="sig-name descname"><span class="pre">compute_tangential_and_cross_components</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ra_lens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dec_lens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ra_source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dec_source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shear1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shear2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'curve'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_deltasigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_lens</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_pdz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pzbins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pzpdf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_input</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/dataops.html#compute_tangential_and_cross_components"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.dataops.compute_tangential_and_cross_components" title="Permalink to this definition">¶</a></dt>
+<dt id="clmm.dataops.compute_tangential_and_cross_components">
+<code class="sig-prename descclassname">clmm.dataops.</code><code class="sig-name descname">compute_tangential_and_cross_components</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ra_lens</span></em>, <em class="sig-param"><span class="n">dec_lens</span></em>, <em class="sig-param"><span class="n">ra_source</span></em>, <em class="sig-param"><span class="n">dec_source</span></em>, <em class="sig-param"><span class="n">shear1</span></em>, <em class="sig-param"><span class="n">shear2</span></em>, <em class="sig-param"><span class="n">geometry</span><span class="o">=</span><span class="default_value">'curve'</span></em>, <em class="sig-param"><span class="n">is_deltasigma</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">cosmo</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">z_lens</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">z_source</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">sigma_c</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">use_pdz</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">pzbins</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pzpdf</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">validate_input</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/dataops.html#compute_tangential_and_cross_components"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.dataops.compute_tangential_and_cross_components" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes tangential- and cross- components for shear or ellipticity</p>
 <p>To do so, we need the right ascension and declination of the lens and of all of the sources.
 We also need the two shape components of all of the sources.</p>
@@ -359,32 +357,32 @@ in the weak lensing regime.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ra_lens</strong> (<em>float</em>) – Right ascension of the lensing cluster in degrees</p></li>
-<li><p><strong>dec_lens</strong> (<em>float</em>) – Declination of the lensing cluster in degrees</p></li>
-<li><p><strong>ra_source</strong> (<em>array</em>) – Right ascensions of each source galaxy in degrees</p></li>
-<li><p><strong>dec_source</strong> (<em>array</em>) – Declinations of each source galaxy in degrees</p></li>
-<li><p><strong>shear1</strong> (<em>array</em>) – The measured shear (or reduced shear or ellipticity) of the source galaxies</p></li>
-<li><p><strong>shear2</strong> (<em>array</em>) – The measured shear (or reduced shear or ellipticity) of the source galaxies</p></li>
-<li><p><strong>geometry</strong> (<em>str</em><em>, </em><em>optional</em>) – Sky geometry to compute angular separation.
+<li><p><strong>ra_lens</strong> (<em>float</em>) -- Right ascension of the lensing cluster in degrees</p></li>
+<li><p><strong>dec_lens</strong> (<em>float</em>) -- Declination of the lensing cluster in degrees</p></li>
+<li><p><strong>ra_source</strong> (<em>array</em>) -- Right ascensions of each source galaxy in degrees</p></li>
+<li><p><strong>dec_source</strong> (<em>array</em>) -- Declinations of each source galaxy in degrees</p></li>
+<li><p><strong>shear1</strong> (<em>array</em>) -- The measured shear (or reduced shear or ellipticity) of the source galaxies</p></li>
+<li><p><strong>shear2</strong> (<em>array</em>) -- The measured shear (or reduced shear or ellipticity) of the source galaxies</p></li>
+<li><p><strong>geometry</strong> (<em>str</em><em>, </em><em>optional</em>) -- Sky geometry to compute angular separation.
 Options are curve (uses astropy) or flat.</p></li>
-<li><p><strong>is_deltasigma</strong> (<em>bool</em>) – If <cite>True</cite>, the tangential and cross components returned are multiplied by Sigma_crit.
+<li><p><strong>is_deltasigma</strong> (<em>bool</em>) -- If <cite>True</cite>, the tangential and cross components returned are multiplied by Sigma_crit.
 Results in units of <span class="math notranslate nohighlight">\(M_\odot\ Mpc^{-2}\)</span></p></li>
-<li><p><strong>cosmo</strong> (<em>clmm.Cosmology</em><em>, </em><em>optional</em>) – Required if <cite>is_deltasigma</cite> is True and <cite>sigma_c</cite> not provided.
+<li><p><strong>cosmo</strong> (<em>clmm.Cosmology</em><em>, </em><em>optional</em>) -- Required if <cite>is_deltasigma</cite> is True and <cite>sigma_c</cite> not provided.
 Not used if <cite>sigma_c</cite> is provided.</p></li>
-<li><p><strong>z_lens</strong> (<em>float</em><em>, </em><em>optional</em>) – Redshift of the lens, required if <cite>is_deltasigma</cite> is True and <cite>sigma_c</cite> not provided.
+<li><p><strong>z_lens</strong> (<em>float</em><em>, </em><em>optional</em>) -- Redshift of the lens, required if <cite>is_deltasigma</cite> is True and <cite>sigma_c</cite> not provided.
 Not used if <cite>sigma_c</cite> is provided.</p></li>
-<li><p><strong>z_source</strong> (<em>array</em><em>, </em><em>optional</em>) – Redshift of the source, required if <cite>is_deltasigma</cite> is True and <cite>sigma_c</cite> not provided.
+<li><p><strong>z_source</strong> (<em>array</em><em>, </em><em>optional</em>) -- Redshift of the source, required if <cite>is_deltasigma</cite> is True and <cite>sigma_c</cite> not provided.
 Not used if <cite>sigma_c</cite> is provided.</p></li>
-<li><p><strong>sigma_c</strong> (<em>float</em><em>, </em><em>optional</em>) – Critical surface density in units of <span class="math notranslate nohighlight">\(M_\odot\ Mpc^{-2}\)</span>,
+<li><p><strong>sigma_c</strong> (<em>float</em><em>, </em><em>optional</em>) -- Critical surface density in units of <span class="math notranslate nohighlight">\(M_\odot\ Mpc^{-2}\)</span>,
 if provided, <cite>cosmo</cite>, <cite>z_lens</cite> and <cite>z_source</cite> are not used.</p></li>
-<li><p><strong>validate_input</strong> (<em>bool</em>) – Validade each input argument</p></li>
+<li><p><strong>validate_input</strong> (<em>bool</em>) -- Validade each input argument</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>angsep</strong> (<em>array_like</em>) – Angular separation between lens and each source galaxy in radians</p></li>
-<li><p><strong>tangential_component</strong> (<em>array_like</em>) – Tangential shear (or assimilated quantity) for each source galaxy</p></li>
-<li><p><strong>cross_component</strong> (<em>array_like</em>) – Cross shear (or assimilated quantity) for each source galaxy</p></li>
+<li><p><strong>angsep</strong> (<em>array_like</em>) -- Angular separation between lens and each source galaxy in radians</p></li>
+<li><p><strong>tangential_component</strong> (<em>array_like</em>) -- Tangential shear (or assimilated quantity) for each source galaxy</p></li>
+<li><p><strong>cross_component</strong> (<em>array_like</em>) -- Cross shear (or assimilated quantity) for each source galaxy</p></li>
 </ul>
 </p>
 </dd>
@@ -392,8 +390,8 @@ if provided, <cite>cosmo</cite>, <cite>z_lens</cite> and <cite>z_source</cite> a
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="clmm.dataops.make_radial_profile">
-<span class="sig-prename descclassname"><span class="pre">clmm.dataops.</span></span><span class="sig-name descname"><span class="pre">make_radial_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">components</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angsep</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angsep_units</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_units</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">components_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ste'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_empty_bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_binnumber</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_lens</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_input</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/dataops.html#make_radial_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.dataops.make_radial_profile" title="Permalink to this definition">¶</a></dt>
+<dt id="clmm.dataops.make_radial_profile">
+<code class="sig-prename descclassname">clmm.dataops.</code><code class="sig-name descname">make_radial_profile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">components</span></em>, <em class="sig-param"><span class="n">angsep</span></em>, <em class="sig-param"><span class="n">angsep_units</span></em>, <em class="sig-param"><span class="n">bin_units</span></em>, <em class="sig-param"><span class="n">bins</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">components_error</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">error_model</span><span class="o">=</span><span class="default_value">'ste'</span></em>, <em class="sig-param"><span class="n">include_empty_bins</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">return_binnumber</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">cosmo</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">z_lens</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">validate_input</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">weights</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/dataops.html#make_radial_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.dataops.make_radial_profile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the angular profile of given components</p>
 <p>We assume that the cluster object contains information on the cross and
 tangential shears or ellipticities and angular separation of the source galaxies</p>
@@ -406,46 +404,46 @@ tangential shears or ellipticities and angular separation of the source galaxies
 </li>
 <li><p>Call it as a method of a GalaxyCluster instance and specify <cite>bin_units</cite>:</p>
 <blockquote>
-<div><p>cluster.make_radial_profile(‘Mpc’)</p>
+<div><p>cluster.make_radial_profile('Mpc')</p>
 </div></blockquote>
 </li>
 </ol>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>components</strong> (<em>list of arrays</em>) – List of arrays to be binned in the radial profile</p></li>
-<li><p><strong>angsep</strong> (<em>array</em>) – Transvesal distances between the sources and the lens</p></li>
-<li><p><strong>angsep_units</strong> (<em>str</em>) – Units of the calculated separation of the source galaxies
-Allowed Options = [“radians”]</p></li>
-<li><p><strong>bin_units</strong> (<em>str</em>) – Units to use for the radial bins of the radial profile
-Allowed Options = [“radians”, deg”, “arcmin”, “arcsec”, kpc”, “Mpc”]
+<li><p><strong>components</strong> (<em>list of arrays</em>) -- List of arrays to be binned in the radial profile</p></li>
+<li><p><strong>angsep</strong> (<em>array</em>) -- Transvesal distances between the sources and the lens</p></li>
+<li><p><strong>angsep_units</strong> (<em>str</em>) -- Units of the calculated separation of the source galaxies
+Allowed Options = [&quot;radians&quot;]</p></li>
+<li><p><strong>bin_units</strong> (<em>str</em>) -- Units to use for the radial bins of the radial profile
+Allowed Options = [&quot;radians&quot;, deg&quot;, &quot;arcmin&quot;, &quot;arcsec&quot;, kpc&quot;, &quot;Mpc&quot;]
 (letter case independent)</p></li>
-<li><p><strong>bins</strong> (<em>array_like</em><em>, </em><em>optional</em>) – User defined bins to use for the shear profile. If a list is provided, use that as
+<li><p><strong>bins</strong> (<em>array_like</em><em>, </em><em>optional</em>) -- User defined bins to use for the shear profile. If a list is provided, use that as
 the bin edges. If a scalar is provided, create that many equally spaced bins between
 the minimum and maximum angular separations in bin_units. If nothing is provided,
 default to 10 equally spaced bins.</p></li>
-<li><p><strong>components_error</strong> (<em>list of arrays</em><em>, </em><em>None</em>) – List of errors for input arrays</p></li>
-<li><p><strong>error_model</strong> (<em>str</em><em>, </em><em>optional</em>) – <dl class="simple">
+<li><p><strong>components_error</strong> (<em>list of arrays</em><em>, </em><em>None</em>) -- List of errors for input arrays</p></li>
+<li><p><strong>error_model</strong> (<em>str</em><em>, </em><em>optional</em>) -- <dl class="simple">
 <dt>Statistical error model to use for y uncertainties. (letter case independent)</dt><dd><p><cite>ste</cite> - Standard error [=std/sqrt(n) in unweighted computation] (Default).
 <cite>std</cite> - Standard deviation.</p>
 </dd>
 </dl>
 </p></li>
-<li><p><strong>include_empty_bins</strong> (<em>bool</em><em>, </em><em>optional</em>) – Also include empty bins in the returned table</p></li>
-<li><p><strong>return_binnumber</strong> (<em>bool</em><em>, </em><em>optional</em>) – Also returns the indices of the bins for each object</p></li>
-<li><p><strong>cosmo</strong> (<em>CLMM.Cosmology</em>) – CLMM Cosmology object to convert angular separations to physical distances</p></li>
-<li><p><strong>z_lens</strong> (<em>array</em><em>, </em><em>optional</em>) – Redshift of the lens</p></li>
-<li><p><strong>validate_input</strong> (<em>bool</em>) – Validade each input argument</p></li>
-<li><p><strong>weights</strong> (<em>array-like</em><em>, </em><em>optional</em>) – Array of individual galaxy weights. If specified, the radial binned profile is
+<li><p><strong>include_empty_bins</strong> (<em>bool</em><em>, </em><em>optional</em>) -- Also include empty bins in the returned table</p></li>
+<li><p><strong>return_binnumber</strong> (<em>bool</em><em>, </em><em>optional</em>) -- Also returns the indices of the bins for each object</p></li>
+<li><p><strong>cosmo</strong> (<em>CLMM.Cosmology</em>) -- CLMM Cosmology object to convert angular separations to physical distances</p></li>
+<li><p><strong>z_lens</strong> (<em>array</em><em>, </em><em>optional</em>) -- Redshift of the lens</p></li>
+<li><p><strong>validate_input</strong> (<em>bool</em>) -- Validade each input argument</p></li>
+<li><p><strong>weights</strong> (<em>array-like</em><em>, </em><em>optional</em>) -- Array of individual galaxy weights. If specified, the radial binned profile is
 computed using a weighted average</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>profile</strong> (<em>GCData</em>) – Output table containing the radius grid points, the profile of the components <cite>p_i</cite>,
+<li><p><strong>profile</strong> (<em>GCData</em>) -- Output table containing the radius grid points, the profile of the components <cite>p_i</cite>,
 errors <cite>p_i_err</cite> and number of sources.  The errors are defined as the standard errors in
 each bin.</p></li>
-<li><p><strong>binnumber</strong> (<em>1-D ndarray of ints, optional</em>) – Indices of the bins (corresponding to <cite>xbins</cite>) in which each value
+<li><p><strong>binnumber</strong> (<em>1-D ndarray of ints, optional</em>) -- Indices of the bins (corresponding to <cite>xbins</cite>) in which each value
 of <cite>xvals</cite> belongs.  Same length as <cite>yvals</cite>.  A binnumber of <cite>i</cite> means the
 corresponding value is between (xbins[i-1], xbins[i]).</p></li>
 </ul>
@@ -458,29 +456,29 @@ module.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="clmm.dataops.make_stacked_radial_profile">
-<span class="sig-prename descclassname"><span class="pre">clmm.dataops.</span></span><span class="sig-name descname"><span class="pre">make_stacked_radial_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angsep</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">components</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/dataops.html#make_stacked_radial_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.dataops.make_stacked_radial_profile" title="Permalink to this definition">¶</a></dt>
+<dt id="clmm.dataops.make_stacked_radial_profile">
+<code class="sig-prename descclassname">clmm.dataops.</code><code class="sig-name descname">make_stacked_radial_profile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">angsep</span></em>, <em class="sig-param"><span class="n">weights</span></em>, <em class="sig-param"><span class="n">components</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/dataops.html#make_stacked_radial_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.dataops.make_stacked_radial_profile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute stacked profile, and mean separation distances.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>angsep</strong> (<em>2d array</em>) – Transvesal distances corresponding to each object with shape <cite>n_obj, n_rad_bins</cite>.</p></li>
-<li><p><strong>weights</strong> (<em>2d array</em>) – Weights corresponding to each objects with shape <cite>n_obj, n_rad_bins</cite>.</p></li>
-<li><p><strong>components</strong> (<em>list of 2d arrays</em>) – List of 2d properties of each array to be stacked with shape
+<li><p><strong>angsep</strong> (<em>2d array</em>) -- Transvesal distances corresponding to each object with shape <cite>n_obj, n_rad_bins</cite>.</p></li>
+<li><p><strong>weights</strong> (<em>2d array</em>) -- Weights corresponding to each objects with shape <cite>n_obj, n_rad_bins</cite>.</p></li>
+<li><p><strong>components</strong> (<em>list of 2d arrays</em>) -- List of 2d properties of each array to be stacked with shape
 <cite>n_components, n_obj, n_rad_bins</cite>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>staked_angsep</strong> (<em>array</em>) – Mean transversal distance in each radial bin.</p></li>
-<li><p><strong>stacked_components</strong> (<em>list of arrays</em>) – List of stacked components.</p></li>
+<li><p><strong>staked_angsep</strong> (<em>array</em>) -- Mean transversal distance in each radial bin.</p></li>
+<li><p><strong>stacked_components</strong> (<em>list of arrays</em>) -- List of stacked components.</p></li>
 </ul>
 </p>
 </dd>
 </dl>
 </dd></dl>
 
-</section>
+</div>
 
 
            </div>
