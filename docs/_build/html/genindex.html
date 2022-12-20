@@ -7,14 +7,12 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Index &mdash; CLMM 1.4.0 documentation</title>
+  <title>Index &mdash; CLMM 1.4.4 documentation</title>
   
 
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
 
   
   
@@ -28,10 +26,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -61,7 +60,7 @@
             
             
               <div class="version">
-                1.4.0
+                1.4.4
               </div>
             
           
@@ -86,13 +85,13 @@
               
             
             
-              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="source/overview.html">Rapid overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="source/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="source/citing.html">Using and citing CLMM</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Usage Demos</span></p>
+<p class="caption"><span class="caption-text">Usage Demos</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
@@ -101,14 +100,15 @@
 <li class="toctree-l1"><a class="reference internal" href="compiled-examples/demo_mass_conversion.html">Mass conversion between spherical overdensity mass definitions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiled-examples/demo_boost_factors.html">Compute boost factors</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Mass Fitting Examples</span></p>
+<p class="caption"><span class="caption-text">Mass Fitting Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiled-examples/Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiled-examples/Example1_Fit_shear_profile_with_miscentering.html">Investigate the impact of miscentering on shear profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compiled-examples/Example4_Fit_Halo_mass_to_HSC_data.html">Using CLMM on Real Datasets</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<p class="caption"><span class="caption-text">Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/clmm.clusterensemble.html">clmm.clusterensemble module</a></li>
@@ -236,6 +236,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/clmm.utils.html#clmm.utils.arguments_consistency">arguments_consistency() (in module clmm.utils)</a>
 </li>
+      <li><a href="api/clmm.cosmology.cluster_toolkit.html#clmm.cosmology.cluster_toolkit.AstroPyCosmology">AstroPyCosmology (class in clmm.cosmology.cluster_toolkit)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -260,7 +262,9 @@
         <li><a href="api/clmm.theory.ccl.html#clmm.theory.ccl.CCLCLMModeling">(class in clmm.theory.ccl)</a>
 </li>
       </ul></li>
-      <li><a href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.cdelta">cdelta (clmm.theory.parent_class.CLMModeling property)</a>
+      <li><a href="api/clmm.cosmology.ccl.html#clmm.cosmology.ccl.CCLCosmology">CCLCosmology (class in clmm.cosmology.ccl)</a>
+</li>
+      <li><a href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.cdelta">cdelta() (clmm.theory.parent_class.CLMModeling property)</a>
 </li>
       <li><a href="api/clmm.constants.html#clmm.constants.Constants.CLIGHT">CLIGHT (clmm.constants.Constants attribute)</a>
 </li>
@@ -711,7 +715,7 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.delta_mdef">delta_mdef (clmm.theory.parent_class.CLMModeling property)</a>
+      <li><a href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.delta_mdef">delta_mdef() (clmm.theory.parent_class.CLMModeling property)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -809,7 +813,7 @@
 <h2 id="H">H</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.halo_profile_model">halo_profile_model (clmm.theory.parent_class.CLMModeling property)</a>
+      <li><a href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.halo_profile_model">halo_profile_model() (clmm.theory.parent_class.CLMModeling property)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -849,9 +853,9 @@
         <li><a href="api/clmm.dataops.html#clmm.dataops.make_stacked_radial_profile">(in module clmm.dataops)</a>
 </li>
       </ul></li>
-      <li><a href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.massdef">massdef (clmm.theory.parent_class.CLMModeling property)</a>
+      <li><a href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.massdef">massdef() (clmm.theory.parent_class.CLMModeling property)</a>
 </li>
-      <li><a href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.mdelta">mdelta (clmm.theory.parent_class.CLMModeling property)</a>
+      <li><a href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.mdelta">mdelta() (clmm.theory.parent_class.CLMModeling property)</a>
 </li>
       <li><a href="api/clmm.theory.html#clmm.theory.Modeling">Modeling (in module clmm.theory)</a>
 
@@ -927,6 +931,10 @@
       <li><a href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.NumCosmoCLMModeling">NumCosmoCLMModeling (class in clmm.theory.numcosmo)</a>
 </li>
   </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/clmm.cosmology.numcosmo.html#clmm.cosmology.numcosmo.NumCosmoCosmology">NumCosmoCosmology (class in clmm.cosmology.numcosmo)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="P">P</h2>
@@ -970,6 +978,8 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/clmm.cosmology.numcosmo.html#clmm.cosmology.numcosmo.NumCosmoCosmology.set_dist">set_dist() (clmm.cosmology.numcosmo.NumCosmoCosmology method)</a>
+</li>
       <li><a href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.set_einasto_alpha">set_einasto_alpha() (clmm.theory.parent_class.CLMModeling method)</a>
 </li>
       <li><a href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.set_halo_density_profile">set_halo_density_profile() (clmm.theory.parent_class.CLMModeling method)</a>

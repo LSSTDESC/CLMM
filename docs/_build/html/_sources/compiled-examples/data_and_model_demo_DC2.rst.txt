@@ -1,6 +1,8 @@
 Basic usage of the cosmoDC2 extragalactic catalog with CLMM
 ===========================================================
 
+``(Note: this page was not generated using the latest CLMM version!)``
+
 This notebook can be run at NERSC or CC-IN2P3 where the DESC DC2
 products are stored. You need to be a DESC member to be able to access
 those.
