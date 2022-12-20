@@ -148,6 +148,7 @@ nbconvert_opts = ['--to rst',
                    '--execute',
                   f'--output-dir {outdir}']
 nb_skip_run = [
+    '../examples/DC2_examples/data_and_model_demo_DC2.ipynb',
     '../examples/Example4_Fit_Halo_mass_to_HSC_data.ipynb',
     ]
 
