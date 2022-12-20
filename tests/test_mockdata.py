@@ -6,18 +6,17 @@ import clmm
 import clmm.dataops as da
 from clmm.support import mock_data as mock
 from clmm.support.sampler import fitters
-from clmm import Cosmology
 from clmm.utils import _chang_z_distrib, _srd_z_distrib
 
 TOLERANCE = {'rtol': 5.0e-4, 'atol': 1.e-4}
-cosmo = Cosmology(H0=70.0, Omega_dm0=0.27 - 0.045,
-                  Omega_b0=0.045, Omega_k0=0.0)
 
 
 def test_mock_data():
     """ Run generate_galaxy_catalog 1000 times and assert that retrieved mass is always consistent
     with input
     """
+    cosmo = clmm.Cosmology(H0=70.0, Omega_dm0=0.27 - 0.045,
+                      Omega_b0=0.045, Omega_k0=0.0)
     # Basic raise tests
     assert_raises(ValueError, mock.generate_galaxy_catalog,
                   1e15, 0.3, 4, cosmo, 0.8, ngals=None)
@@ -41,23 +40,23 @@ def test_mock_data():
     # A proper test should be implemented
     mock.generate_galaxy_catalog(
         1e15, 0.3, 4, cosmo, 0.8, ngals=None, ngal_density=1)
-    
+
     # Simple test to check if option with zsrc=chang13 is working
     # A proper test should be implemented
     mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 'chang13', ngals=100)
     mock.generate_galaxy_catalog(
         1e15, 0.3, 4, cosmo, 'chang13', ngal_density=1)
-    
+
     # Simple test to check if option with zsrc=desc_src is working
     # A proper test should be implemented
     mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 'desc_srd', ngals=100)
     mock.generate_galaxy_catalog(
         1e15, 0.3, 4, cosmo, 'desc_srd', ngal_density=1)
-    
+
     # Simple test to check if option with pdz is working
     # A proper test should be implemented
     mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.8, ngals=100, photoz_sigma_unscaled=.1)
-    
+
     # Simple test to check if option with mean_e_err is working
     # A proper test should be implemented
     mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.8, ngals=100, mean_e_err=0.01)
@@ -116,6 +115,8 @@ def test_z_distr():
     """
     Test the redshift distribution options: single plan, uniform, Chang13, DESC SRD
     """
+    cosmo = clmm.Cosmology(H0=70.0, Omega_dm0=0.27 - 0.045,
+                      Omega_b0=0.045, Omega_k0=0.0)
 
     np.random.seed(256429)
 
@@ -171,6 +172,8 @@ def test_shapenoise():
     Test that the shape noise distribution is Gaussian around the shear and does not produce
     unphysical ellipticities.
     """
+    cosmo = clmm.Cosmology(H0=70.0, Omega_dm0=0.27 - 0.045,
+                      Omega_b0=0.045, Omega_k0=0.0)
 
     np.random.seed(285713)
 

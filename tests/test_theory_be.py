@@ -24,6 +24,11 @@ def test_base(monkeypatch):
     assert_raises(ImportError, importlib.reload, clmm.theory)
     # broken backend
     clmm.theory.be_setup.__backends['notabackend']['available'] = True
+
+    monkeypatch.setenv("CLMM_MODELING_BACKEND", "notabackend2")
+    importlib.reload(clmm.theory)
+
+    monkeypatch.setenv("CLMM_MODELING_BACKEND", "notabackend")
     def nie():
         raise NotImplementedError
     clmm.theory.Modeling = nie
