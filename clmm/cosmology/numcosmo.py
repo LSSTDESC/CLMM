@@ -147,7 +147,9 @@ class NumCosmoCosmology(CLMMCosmology):
 
         # Using the EH transfer function as this is the 
         # default for the CCL backend as well
-        ps = Nc.PowspecMLTransfer.new (Nc.TransferFuncEH.new()) 
+        ps = Nc.PowspecMLTransfer.new (Nc.TransferFuncEH.new())
+        ps.set_kmin(1.0e-5)
+        ps.set_kmax(1.0)
 
         # Instead, computing the PS from the CLASS backend of Numcosmo
         # ps  = Nc.PowspecMLCBE.new ()
