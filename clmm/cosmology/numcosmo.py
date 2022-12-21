@@ -64,7 +64,7 @@ class NumCosmoCosmology(CLMMCosmology):
         cosmo = self.be_cosmo
         ENnu = 3.046 - 3.0 * \
             cosmo.E2Press_mnu(1.0e10) / (cosmo.E2Omega_g(1.0e10)
-                                         * (7.0/8.0*(4.0/11.0)**(4.0/3.0)))
+                                         * (7.0 / 8.0 * (4.0/11.0)**(4.0/3.0)))
 
         self.be_cosmo.param_set_by_name("ENnu", ENnu)
 
@@ -108,7 +108,7 @@ class NumCosmoCosmology(CLMMCosmology):
 
     def _get_Omega_m(self, z):
 
-        return self._get_E2Omega_m(z)/self._get_E2(z)
+        return self._get_E2Omega_m(z) / self._get_E2(z)
 
     def _get_E2(self, z):
 
@@ -120,8 +120,8 @@ class NumCosmoCosmology(CLMMCosmology):
 
     def _get_rho_c(self, z):
 
-        return Ncm.C.crit_mass_density_h2_solar_mass_Mpc3()*\
-    self._get_param('h')**2*self._get_E2(z)
+        return Ncm.C.crit_mass_density_h2_solar_mass_Mpc3() * \
+    self._get_param('h')**2 * self._get_E2(z)
 
     def _get_rho_m(self, z):
         # total matter density in physical units [Msun/Mpc3]
@@ -133,7 +133,7 @@ class NumCosmoCosmology(CLMMCosmology):
     def _eval_da_z1z2_core(self, z1, z2):
 
         return np.vectorize(self.dist.angular_diameter_z1_z2)(
-            self.be_cosmo, z1, z2)*self.be_cosmo.RH_Mpc()
+            self.be_cosmo, z1, z2) * self.be_cosmo.RH_Mpc()
 
     def _eval_sigma_crit_core(self, z_len, z_src):
 
@@ -147,7 +147,7 @@ class NumCosmoCosmology(CLMMCosmology):
 
         # Using the EH transfer function as this is the 
         # default for the CCL backend as well
-        ps = Nc.PowspecMLTransfer.new (Nc.TransferFuncEH.new())
+        ps = Nc.PowspecMLTransfer.new(Nc.TransferFuncEH.new())
         ps.set_kmin(1.0e-5)
         ps.set_kmax(1.0)
 
@@ -156,21 +156,21 @@ class NumCosmoCosmology(CLMMCosmology):
         # ps.peek_cbe().props.use_ppf = True
 
         if self.be_cosmo.reion is None:
-            reion = Nc.HIReionCamb.new ()
-            self.be_cosmo.add_submodel (reion)
+            reion = Nc.HIReionCamb.new()
+            self.be_cosmo.add_submodel(reion)
         if self.be_cosmo.prim is None:
-            prim  = Nc.HIPrimPowerLaw.new ()
-            self.be_cosmo.add_submodel (prim)
+            prim  = Nc.HIPrimPowerLaw.new()
+            self.be_cosmo.add_submodel(prim)
             # The default CLMM cosmology has ns=0.96 and sigma8=0.8
             # Need to adapt the NC cosmology accordingly
             self.be_cosmo.prim.props.n_SA = 0.96
             sigma8 = ps.sigma_tophat_R(self.be_cosmo, 1.0e-11, 0.0, 8.0/self.be_cosmo.h())
-            old_amplitude = np.exp (self.be_cosmo.prim.props.ln10e10ASA)
-            self.be_cosmo.prim.props.ln10e10ASA = np.log ((0.8 / sigma8)**2 * old_amplitude)
+            old_amplitude = np.exp(self.be_cosmo.prim.props.ln10e10ASA)
+            self.be_cosmo.prim.props.ln10e10ASA = np.log((0.8 / sigma8)**2 * old_amplitude)
 
-        ps.prepare (self.be_cosmo)
+        ps.prepare(self.be_cosmo)
 
         res = []
         for k in k_vals:
-            res.append(ps.eval (self.be_cosmo, redshift, k))
+            res.append(ps.eval(self.be_cosmo, redshift, k))
         return res
