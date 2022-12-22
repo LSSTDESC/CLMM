@@ -38,6 +38,9 @@ class NumCosmoCosmology(CLMMCosmology):
         # set kmin/kmax for powerspectrum computations
         self.additional_config['pk_kmin'] = 1.0e-5
         self.additional_config['pk_kmax'] = 1.0
+        self.additional_config['ns'] = 0.96
+        self.additional_config['sigma8'] = 0.8
+        self.additional_config['sigma8_eps'] = 1e-8
 
         if dist:
             self.set_dist(dist)
@@ -167,14 +170,14 @@ class NumCosmoCosmology(CLMMCosmology):
             self.be_cosmo.add_submodel(prim)
             # The default CLMM cosmology has ns=0.96 and sigma8=0.8
             # Need to adapt the NC cosmology accordingly
-            self.be_cosmo.prim.props.n_SA = 0.96
-            sigma8 = ps.sigma_tophat_R(self.be_cosmo, 1.0e-8, 0.0, 8.0/self.be_cosmo.h())
+            self.be_cosmo.prim.props.n_SA = self.additional_config['ns']
+            sigma8 = ps.sigma_tophat_R( # computes sigma8 at z=0
+                self.be_cosmo, self.additional_config['sigma8_eps'],
+                0.0, 8.0/self.be_cosmo.h())
             old_amplitude = np.exp(self.be_cosmo.prim.props.ln10e10ASA)
-            self.be_cosmo.prim.props.ln10e10ASA = np.log((0.8 / sigma8)**2 * old_amplitude)
+            self.be_cosmo.prim.props.ln10e10ASA = np.log(
+                (self.additional_config['sigma8']/sigma8)**2*old_amplitude)
 
         ps.prepare(self.be_cosmo)
 
-        res = []
-        for k in k_vals:
-            res.append(ps.eval(self.be_cosmo, redshift, k))
-        return res
+        return [ps.eval(self.be_cosmo, redshift, k) for k in k_vals]
