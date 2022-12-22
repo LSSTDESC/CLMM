@@ -164,7 +164,7 @@ class NumCosmoCosmology(CLMMCosmology):
             # The default CLMM cosmology has ns=0.96 and sigma8=0.8
             # Need to adapt the NC cosmology accordingly
             self.be_cosmo.prim.props.n_SA = 0.96
-            sigma8 = ps.sigma_tophat_R(self.be_cosmo, 1.0e-11, 0.0, 8.0/self.be_cosmo.h())
+            sigma8 = ps.sigma_tophat_R(self.be_cosmo, 1.0e-8, 0.0, 8.0/self.be_cosmo.h())
             old_amplitude = np.exp(self.be_cosmo.prim.props.ln10e10ASA)
             self.be_cosmo.prim.props.ln10e10ASA = np.log((0.8 / sigma8)**2 * old_amplitude)
 
