@@ -35,6 +35,10 @@ class NumCosmoCosmology(CLMMCosmology):
         # this tag will be used to check if the cosmology object is accepted by the modeling
         self.backend = 'nc'
 
+        # set kmin/kmax for powerspectrum computations
+        self.additional_config['pk_kmin'] = 1.0e-5
+        self.additional_config['pk_kmax'] = 1.0
+
         if dist:
             self.set_dist(dist)
         else:
@@ -148,8 +152,8 @@ class NumCosmoCosmology(CLMMCosmology):
         # Using the EH transfer function as this is the 
         # default for the CCL backend as well
         ps = Nc.PowspecMLTransfer.new(Nc.TransferFuncEH.new())
-        ps.set_kmin(1.0e-5)
-        ps.set_kmax(1.0)
+        ps.set_kmin(self.additional_config['pk_kmin'])
+        ps.set_kmax(self.additional_config['pk_kmax'])
 
         # Instead, computing the PS from the CLASS backend of Numcosmo
         # ps  = Nc.PowspecMLCBE.new ()
