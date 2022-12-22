@@ -62,8 +62,8 @@ def compute_3d_density(
             * `virial`;
 
     alpha_ein : float, optional
-        If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only available
-        for the NumCosmo backend
+        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        Option only available for the NumCosmo and CCL backends
     verbose : boolean, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL backends.
     validate_input : bool, optional
@@ -132,8 +132,8 @@ def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
             * `virial` ;
 
     alpha_ein : float, optional
-        If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only available
-        for the NumCosmo backend
+        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        Option only available for the NumCosmo and CCL backends
     verbose : boolean, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL backends.
     validate_input : bool, optional
@@ -205,8 +205,8 @@ def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
             * `virial` - not in cluster_toolkit;
 
     alpha_ein : float, optional
-        If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only available
-        for the NumCosmo backend
+        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        Option only available for the NumCosmo and CCL backends
     verbose : boolean, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL backends.
     validate_input : bool, optional
@@ -409,8 +409,8 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
             * `virial` - not in cluster_toolkit;
 
     alpha_ein : float, optional
-        If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only available
-        for the NumCosmo backend
+        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        Option only available for the NumCosmo and CCL backends
     z_src_model : str, optional
         Source redshift model, with the following supported options:
             `single_plane` (default) - all sources at one redshift (if
@@ -500,8 +500,8 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
             * `virial` - not in cluster_toolkit;
 
     alpha_ein : float, optional
-        If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only available
-        for the NumCosmo backend
+        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        Option only available for the NumCosmo and CCL backends
     z_src_model : str, optional
         Source redshift model, with the following supported options:
             `single_plane` (default) - all sources at one redshift (if
@@ -595,9 +595,8 @@ def compute_reduced_tangential_shear(
             * `virial` - not in cluster_toolkit;
 
     alpha_ein : float, optional
-        If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only available
-        for the NumCosmo backend
-
+        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        Option only available for the NumCosmo and CCL backends
     z_src_model : str, optional
         Source redshift model, with the following supported options:
 
@@ -696,8 +695,8 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
             * `virial` - not in cluster_toolkit;
 
     alpha_ein : float, optional
-        If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only available
-        for the NumCosmo backend
+        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        Option only available for the NumCosmo and CCL backends
     z_src_model : str, optional
         Source redshift model, with the following supported options:
             `single_plane` (default) - all sources at one redshift (if
