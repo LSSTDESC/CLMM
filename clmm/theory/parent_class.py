@@ -347,10 +347,12 @@ class CLMModeling:
         ----------
         alpha : float, 'cosmo'(CCL backend only)
             Set to 'cosmo' to use the cosmology-dependent :math:`\alpha` parameter given by the
-            CCL beckend for the Einasto profile.
+            CCL backend for the Einasto profile.
         """
         if self.halo_profile_model!='einasto':
-            raise NotImplementedError("The Einasto slope cannot be set for your combination of profile choice or modeling backend.")
+            raise NotImplementedError(
+                "The Einasto slope cannot be set for your combination "
+                "of profile choice or modeling backend.")
         else:
             if self.validate_input:
                 if alpha != 'cosmo' or self.backend!='ccl':
@@ -653,7 +655,8 @@ class CLMModeling:
         return self._eval_convergence(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
 
     def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src, z_src_model='single_plane',
-                                      beta_s_mean=None, beta_s_square_mean=None, z_distrib_func=None, verbose=False):
+                                      beta_s_mean=None, beta_s_square_mean=None,
+                                      z_distrib_func=None, verbose=False):
         r"""Computes the reduced tangential shear :math:`g_t = \frac{\gamma_t}{1-\kappa}`.
 
         Parameters
