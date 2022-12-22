@@ -41,7 +41,7 @@ Make sure we know which version we’re using
 
 .. parsed-literal::
 
-    '1.4.4'
+    '1.4.5'
 
 
 
@@ -147,13 +147,6 @@ Generate the mock catalog with different source galaxy options
                                                   'chang13', zsrc_min=zsrc_min, photoz_sigma_unscaled=0.05, 
                                                   ngals=ngals, cluster_ra=cluster_ra, cluster_dec=cluster_dec)
 
-
-.. parsed-literal::
-
-    /global/homes/a/aguena/.conda/envs/clmmenv/lib/python3.8/site-packages/numpy/ma/core.py:2826: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray.
-      _data = np.array(data, dtype=dtype, copy=copy,
-
-
 .. code:: ipython3
 
     allsystematics2 = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration, cosmo, 
@@ -203,11 +196,11 @@ Inspect the catalog data
 .. raw:: html
 
     <i>GCData length=3</i>
-    <table id="table23455236918144-771235" class="table-striped table-bordered table-condensed">
+    <table id="table23446735342736-74568" class="table-striped table-bordered table-condensed">
     <thead><tr><th>idx</th><th>ra</th><th>dec</th><th>e1</th><th>e2</th><th>z</th><th>ztrue</th><th>id</th></tr></thead>
-    <tr><td>0</td><td>5.294e+01</td><td>8.683e+01</td><td>2.223e-04</td><td>-8.581e-03</td><td>8.000e-01</td><td>8.000e-01</td><td>0</td></tr>
-    <tr><td>1</td><td>5.128e+01</td><td>8.685e+01</td><td>8.310e-03</td><td>-1.060e-02</td><td>8.000e-01</td><td>8.000e-01</td><td>1</td></tr>
-    <tr><td>2</td><td>5.236e+01</td><td>8.689e+01</td><td>-2.105e-03</td><td>-1.264e-02</td><td>8.000e-01</td><td>8.000e-01</td><td>2</td></tr>
+    <tr><td>0</td><td>5.199e+01</td><td>8.723e+01</td><td>5.483e-03</td><td>5.458e-03</td><td>8.000e-01</td><td>8.000e-01</td><td>0</td></tr>
+    <tr><td>1</td><td>5.325e+01</td><td>8.716e+01</td><td>2.927e-04</td><td>8.649e-03</td><td>8.000e-01</td><td>8.000e-01</td><td>1</td></tr>
+    <tr><td>2</td><td>5.252e+01</td><td>8.719e+01</td><td>3.758e-03</td><td>7.715e-03</td><td>8.000e-01</td><td>8.000e-01</td><td>2</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -231,14 +224,14 @@ Inspect the catalog data
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table23455236918144-771235').dataTable()");
+        console.log("$('#table23446735342736-74568').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table23455236918144-771235').dataTable({
+        $('#table23446735342736-74568').dataTable({
             order: [],
             pageLength: 50,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -266,11 +259,11 @@ Inspect the catalog data
 .. raw:: html
 
     <i>GCData length=3</i>
-    <table id="table23455236518624-348313" class="table-striped table-bordered table-condensed">
-    <thead><tr><th>idx</th><th>ra</th><th>dec</th><th>e1</th><th>e2</th><th>z</th><th>ztrue</th><th>pzbins [61]</th><th>pzpdf [61]</th><th>id</th></tr></thead>
-    <tr><td>0</td><td>4.534e+01</td><td>8.707e+01</td><td>-7.325e-03</td><td>-4.577e-03</td><td>9.299e-01</td><td>8.000e-01</td><td>2.994e-02 .. 1.830e+00</td><td>8.550e-22 .. 8.550e-22</td><td>0</td></tr>
-    <tr><td>1</td><td>5.139e+01</td><td>8.686e+01</td><td>2.262e-02</td><td>3.713e-02</td><td>1.001e+00</td><td>8.000e-01</td><td>1.012e-01 .. 1.901e+00</td><td>8.550e-22 .. 8.550e-22</td><td>1</td></tr>
-    <tr><td>2</td><td>4.774e+01</td><td>8.696e+01</td><td>-4.824e-02</td><td>-7.122e-02</td><td>8.217e-01</td><td>8.000e-01</td><td>-7.830e-02 .. 1.722e+00</td><td>8.550e-22 .. 8.550e-22</td><td>2</td></tr>
+    <table id="table23446737489936-634626" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>idx</th><th>ra</th><th>dec</th><th>e1</th><th>e2</th><th>z</th><th>ztrue</th><th>pzbins</th><th>pzpdf</th><th>id</th></tr></thead>
+    <tr><td>0</td><td>4.930e+01</td><td>8.687e+01</td><td>-1.802e-02</td><td>3.962e-02</td><td>9.597e-01</td><td>8.000e-01</td><td>5.970e-02 .. 1.860e+00</td><td>8.550e-22 .. 8.550e-22</td><td>0</td></tr>
+    <tr><td>1</td><td>5.242e+01</td><td>8.683e+01</td><td>3.275e-02</td><td>1.070e-02</td><td>8.100e-01</td><td>8.000e-01</td><td>-8.999e-02 .. 1.710e+00</td><td>8.550e-22 .. 8.550e-22</td><td>1</td></tr>
+    <tr><td>2</td><td>5.103e+01</td><td>8.678e+01</td><td>-2.775e-02</td><td>8.163e-02</td><td>6.908e-01</td><td>8.000e-01</td><td>-2.092e-01 .. 1.591e+00</td><td>8.550e-22 .. 8.550e-22</td><td>2</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -294,14 +287,14 @@ Inspect the catalog data
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table23455236518624-348313').dataTable()");
+        console.log("$('#table23446737489936-634626').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table23455236518624-348313').dataTable({
+        $('#table23446737489936-634626').dataTable({
             order: [],
             pageLength: 50,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -333,7 +326,7 @@ Inspect the catalog data
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x15551900e6a0>
+    <matplotlib.legend.Legend at 0x15531d6fd390>
 
 
 
@@ -349,30 +342,7 @@ Inspect the catalog data
 
 
 
-
-.. parsed-literal::
-
-    (array([68., 72., 66., 63., 74., 45., 47., 79., 47., 59., 59., 24., 37.,
-            34., 28., 30., 23., 24., 14., 13., 21., 13.,  9.,  7.,  6.,  5.,
-             2.,  4.,  5.,  4.,  4.,  0.,  1.,  1.,  2.,  1.,  2.,  1.,  2.,
-             1.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  2.,  1.]),
-     array([0.40073812, 0.48938946, 0.57804079, 0.66669213, 0.75534347,
-            0.84399481, 0.93264615, 1.02129748, 1.10994882, 1.19860016,
-            1.2872515 , 1.37590284, 1.46455417, 1.55320551, 1.64185685,
-            1.73050819, 1.81915953, 1.90781087, 1.9964622 , 2.08511354,
-            2.17376488, 2.26241622, 2.35106756, 2.43971889, 2.52837023,
-            2.61702157, 2.70567291, 2.79432425, 2.88297559, 2.97162692,
-            3.06027826, 3.1489296 , 3.23758094, 3.32623228, 3.41488361,
-            3.50353495, 3.59218629, 3.68083763, 3.76948897, 3.8581403 ,
-            3.94679164, 4.03544298, 4.12409432, 4.21274566, 4.301397  ,
-            4.39004833, 4.47869967, 4.56735101, 4.65600235, 4.74465369,
-            4.83330502]),
-     <BarContainer object of 50 artists>)
-
-
-
-
-.. image:: demo_generate_mock_cluster_files/demo_generate_mock_cluster_37_1.png
+.. image:: demo_generate_mock_cluster_files/demo_generate_mock_cluster_37_0.png
 
 
 Populate a galaxy cluster object
@@ -413,7 +383,7 @@ computed (green) and a random redshift (orange) computed from the pdf
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x155518cccf10>
+    <matplotlib.legend.Legend at 0x15531d671a50>
 
 
 
@@ -466,13 +436,6 @@ example.
                                                    field_size=4, ngals=ngals, 
                                                    cluster_ra=cluster_ra, cluster_dec=cluster_dec)
 
-
-.. parsed-literal::
-
-    /global/homes/a/aguena/.conda/envs/clmmenv/lib/python3.8/site-packages/numpy/ma/core.py:2826: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray.
-      _data = np.array(data, dtype=dtype, copy=copy,
-
-
 .. code:: ipython3
 
     plt.scatter(allsystematics['ra'],allsystematics['dec'], marker='.', label = 'default 8 x 8 Mpc FoV')
@@ -484,7 +447,7 @@ example.
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x155518d4cb50>
+    <matplotlib.legend.Legend at 0x15531d31a150>
 
 
 
@@ -538,7 +501,7 @@ example.
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x155518ad4f70>
+    <matplotlib.legend.Legend at 0x15531d275090>
 
 
 

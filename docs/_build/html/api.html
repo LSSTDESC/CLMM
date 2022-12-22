@@ -1,73 +1,39 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>API Documentation &mdash; CLMM 1.4.4 documentation</title>
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API Documentation &mdash; CLMM 1.4.5 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="clmm.clusterensemble module" href="api/clmm.clusterensemble.html" />
-    <link rel="prev" title="Using CLMM on Real Datasets" href="compiled-examples/Example4_Fit_Halo_mass_to_HSC_data.html" /> 
+    <link rel="prev" title="Generate cluster ensemble with “realistic” mass and redshift distribution" href="compiled-examples/Example_realistic_cluster_ensemble.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> CLMM
-          
-
-          
+            <a href="index.html" class="icon icon-home"> CLMM
           </a>
-
-          
-            
-            
               <div class="version">
-                1.4.4
+                1.4.5
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -75,42 +41,43 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Getting Started</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="source/overview.html">Rapid overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="source/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="source/citing.html">Using and citing CLMM</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Usage Demos</span></p>
+<p class="caption" role="heading"><span class="caption-text">Usage Demos</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiled-examples/demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compiled-examples/Compare_NFW_critical_massdef.html">Compare NFW profile for the CLMM backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compiled-examples/Compare_NFW_critical_massdef.html#comparison-of-nfw-with-mass-definition-based-on-the-critical-density-of-the-universe-for-the-various-backends">Comparison of NFW with mass definition based on the critical density of the universe for the various backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compiled-examples/Compare_NFW_critical_massdef.html#compare-all-to-colossus">Compare all to Colossus</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiled-examples/demo_mass_conversion.html">Mass conversion between spherical overdensity mass definitions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiled-examples/demo_boost_factors.html">Compute boost factors</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Mass Fitting Examples</span></p>
+<p class="caption" role="heading"><span class="caption-text">Mass Fitting Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiled-examples/Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiled-examples/Example1_Fit_shear_profile_with_miscentering.html">Investigate the impact of miscentering on shear profiles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compiled-examples/Example4_Fit_Halo_mass_to_HSC_data.html">Using CLMM on Real Datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compiled-examples/Compare_NFW_critical_massdef.html">Compare NFW profile for the CLMM backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compiled-examples/Compare_NFW_critical_massdef.html#comparison-of-nfw-with-mass-definition-based-on-the-critical-density-of-the-universe-for-the-various-backends">Comparison of NFW with mass definition based on the critical density of the universe for the various backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compiled-examples/Compare_NFW_critical_massdef.html#compare-all-to-colossus">Compare all to Colossus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compiled-examples/Example_cluster_ensemble.html">Generating a cluster catalog and associated source catalogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compiled-examples/Example_cluster_ensemble.html#creating-clusterensemble-object-and-estimation-of-individual-excess-surface-density-profiles">Creating ClusterEnsemble object and estimation of individual excess surface density profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compiled-examples/Example_cluster_ensemble.html#stacked-profile-of-the-cluster-ensemble">Stacked profile of the cluster ensemble</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compiled-examples/Example_cluster_ensemble.html#covariance-bootstrap-sample-jackknife-of-the-stack-between-radial-bins">Covariance (Bootstrap, sample, Jackknife) of the stack between radial bins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compiled-examples/Example_cluster_ensemble.html#visualizing-the-stacked-profiles-and-corresponding-model">Visualizing the stacked profiles and corresponding model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compiled-examples/Example_realistic_cluster_ensemble.html">Generate cluster ensemble with “realistic” mass and redshift distribution</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Reference</span></p>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API Documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/clmm.clusterensemble.html">clmm.clusterensemble module</a></li>
@@ -146,161 +113,349 @@
 </li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">CLMM</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
-      <li>API Documentation</li>
-    
-    
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">API Documentation</li>
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="_sources/api.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="api-documentation">
-<h1>API Documentation<a class="headerlink" href="#api-documentation" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="api-documentation">
+<h1>API Documentation<a class="headerlink" href="#api-documentation" title="Permalink to this heading"></a></h1>
 <p>Information on specific functions, classes, and methods.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="api/clmm.clusterensemble.html">clmm.clusterensemble module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api/clmm.constants.html">clmm.constants module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/clmm.clusterensemble.html">clmm.clusterensemble module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.clusterensemble.html#clmm.clusterensemble.ClusterEnsemble"><code class="docutils literal notranslate"><span class="pre">ClusterEnsemble</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.clusterensemble.html#clmm.clusterensemble.ClusterEnsemble.compute_bootstrap_covariance"><code class="docutils literal notranslate"><span class="pre">ClusterEnsemble.compute_bootstrap_covariance()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.clusterensemble.html#clmm.clusterensemble.ClusterEnsemble.compute_jackknife_covariance"><code class="docutils literal notranslate"><span class="pre">ClusterEnsemble.compute_jackknife_covariance()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.clusterensemble.html#clmm.clusterensemble.ClusterEnsemble.compute_sample_covariance"><code class="docutils literal notranslate"><span class="pre">ClusterEnsemble.compute_sample_covariance()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.clusterensemble.html#clmm.clusterensemble.ClusterEnsemble.make_individual_radial_profile"><code class="docutils literal notranslate"><span class="pre">ClusterEnsemble.make_individual_radial_profile()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.clusterensemble.html#clmm.clusterensemble.ClusterEnsemble.make_stacked_radial_profile"><code class="docutils literal notranslate"><span class="pre">ClusterEnsemble.make_stacked_radial_profile()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/clmm.constants.html">clmm.constants module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.constants.html#clmm.constants.Constants"><code class="docutils literal notranslate"><span class="pre">Constants</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.constants.html#clmm.constants.Constants.CLIGHT"><code class="docutils literal notranslate"><span class="pre">Constants.CLIGHT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.constants.html#clmm.constants.Constants.CLIGHT_KMS"><code class="docutils literal notranslate"><span class="pre">Constants.CLIGHT_KMS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.constants.html#clmm.constants.Constants.GNEWT"><code class="docutils literal notranslate"><span class="pre">Constants.GNEWT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.constants.html#clmm.constants.Constants.GNEWT_SOLAR_MASS"><code class="docutils literal notranslate"><span class="pre">Constants.GNEWT_SOLAR_MASS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.constants.html#clmm.constants.Constants.PC_TO_METER"><code class="docutils literal notranslate"><span class="pre">Constants.PC_TO_METER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.constants.html#clmm.constants.Constants.SOLAR_MASS"><code class="docutils literal notranslate"><span class="pre">Constants.SOLAR_MASS</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="api/clmm.cosmology.html">clmm.cosmology package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/clmm.cosmology.html#submodules">Submodules</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="api/clmm.cosmology.ccl.html">clmm.cosmology.ccl module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/clmm.cosmology.cluster_toolkit.html">clmm.cosmology.cluster_toolkit module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/clmm.cosmology.numcosmo.html">clmm.cosmology.numcosmo module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/clmm.cosmology.parent_class.html">clmm.cosmology.parent_class module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.cosmology.parent_class.html">clmm.cosmology.parent_class module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology"><code class="docutils literal notranslate"><span class="pre">CLMMCosmology</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.eval_da"><code class="docutils literal notranslate"><span class="pre">CLMMCosmology.eval_da()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.eval_da_a1a2"><code class="docutils literal notranslate"><span class="pre">CLMMCosmology.eval_da_a1a2()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.eval_da_z1z2"><code class="docutils literal notranslate"><span class="pre">CLMMCosmology.eval_da_z1z2()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.eval_linear_matter_powerspectrum"><code class="docutils literal notranslate"><span class="pre">CLMMCosmology.eval_linear_matter_powerspectrum()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.eval_sigma_crit"><code class="docutils literal notranslate"><span class="pre">CLMMCosmology.eval_sigma_crit()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.get_E2"><code class="docutils literal notranslate"><span class="pre">CLMMCosmology.get_E2()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.get_E2Omega_m"><code class="docutils literal notranslate"><span class="pre">CLMMCosmology.get_E2Omega_m()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.get_Omega_m"><code class="docutils literal notranslate"><span class="pre">CLMMCosmology.get_Omega_m()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.get_a_from_z"><code class="docutils literal notranslate"><span class="pre">CLMMCosmology.get_a_from_z()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.get_desc"><code class="docutils literal notranslate"><span class="pre">CLMMCosmology.get_desc()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.get_rho_c"><code class="docutils literal notranslate"><span class="pre">CLMMCosmology.get_rho_c()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.get_rho_m"><code class="docutils literal notranslate"><span class="pre">CLMMCosmology.get_rho_m()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.get_z_from_a"><code class="docutils literal notranslate"><span class="pre">CLMMCosmology.get_z_from_a()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.init_from_params"><code class="docutils literal notranslate"><span class="pre">CLMMCosmology.init_from_params()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.mpc2rad"><code class="docutils literal notranslate"><span class="pre">CLMMCosmology.mpc2rad()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.rad2mpc"><code class="docutils literal notranslate"><span class="pre">CLMMCosmology.rad2mpc()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.cosmology.parent_class.html#clmm.cosmology.parent_class.CLMMCosmology.set_be_cosmo"><code class="docutils literal notranslate"><span class="pre">CLMMCosmology.set_be_cosmo()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="api/clmm.dataops.html">clmm.dataops package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api/clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api/clmm.gcdata.html">clmm.gcdata module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/clmm.dataops.html">clmm.dataops package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.dataops.html#clmm.dataops.compute_background_probability"><code class="docutils literal notranslate"><span class="pre">compute_background_probability()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.dataops.html#clmm.dataops.compute_galaxy_weights"><code class="docutils literal notranslate"><span class="pre">compute_galaxy_weights()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.dataops.html#clmm.dataops.compute_tangential_and_cross_components"><code class="docutils literal notranslate"><span class="pre">compute_tangential_and_cross_components()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.dataops.html#clmm.dataops.make_radial_profile"><code class="docutils literal notranslate"><span class="pre">make_radial_profile()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.dataops.html#clmm.dataops.make_stacked_radial_profile"><code class="docutils literal notranslate"><span class="pre">make_stacked_radial_profile()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/clmm.galaxycluster.html">clmm.galaxycluster module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster"><code class="docutils literal notranslate"><span class="pre">GalaxyCluster</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster.add_critical_surface_density"><code class="docutils literal notranslate"><span class="pre">GalaxyCluster.add_critical_surface_density()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster.compute_background_probability"><code class="docutils literal notranslate"><span class="pre">GalaxyCluster.compute_background_probability()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster.compute_galaxy_weights"><code class="docutils literal notranslate"><span class="pre">GalaxyCluster.compute_galaxy_weights()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster.compute_tangential_and_cross_components"><code class="docutils literal notranslate"><span class="pre">GalaxyCluster.compute_tangential_and_cross_components()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster.draw_gal_z_from_pdz"><code class="docutils literal notranslate"><span class="pre">GalaxyCluster.draw_gal_z_from_pdz()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster.load"><code class="docutils literal notranslate"><span class="pre">GalaxyCluster.load()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster.make_radial_profile"><code class="docutils literal notranslate"><span class="pre">GalaxyCluster.make_radial_profile()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster.plot_profiles"><code class="docutils literal notranslate"><span class="pre">GalaxyCluster.plot_profiles()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster.save"><code class="docutils literal notranslate"><span class="pre">GalaxyCluster.save()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster.set_ra_lower"><code class="docutils literal notranslate"><span class="pre">GalaxyCluster.set_ra_lower()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/clmm.gcdata.html">clmm.gcdata module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.gcdata.html#clmm.gcdata.GCData"><code class="docutils literal notranslate"><span class="pre">GCData</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.gcdata.html#clmm.gcdata.GCData.update_cosmo"><code class="docutils literal notranslate"><span class="pre">GCData.update_cosmo()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.gcdata.html#clmm.gcdata.GCData.update_cosmo_ext_valid"><code class="docutils literal notranslate"><span class="pre">GCData.update_cosmo_ext_valid()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.gcdata.html#clmm.gcdata.GCMetaData"><code class="docutils literal notranslate"><span class="pre">GCMetaData</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="api/clmm.theory.html">clmm.theory package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.theory.html#clmm.theory.CCLCLMModeling"><code class="docutils literal notranslate"><span class="pre">CCLCLMModeling</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.theory.html#clmm.theory.Cosmology"><code class="docutils literal notranslate"><span class="pre">Cosmology</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.theory.html#clmm.theory.Modeling"><code class="docutils literal notranslate"><span class="pre">Modeling</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.theory.html#clmm.theory.compute_3d_density"><code class="docutils literal notranslate"><span class="pre">compute_3d_density()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.theory.html#clmm.theory.compute_convergence"><code class="docutils literal notranslate"><span class="pre">compute_convergence()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.theory.html#clmm.theory.compute_critical_surface_density"><code class="docutils literal notranslate"><span class="pre">compute_critical_surface_density()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.theory.html#clmm.theory.compute_excess_surface_density"><code class="docutils literal notranslate"><span class="pre">compute_excess_surface_density()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.theory.html#clmm.theory.compute_excess_surface_density_2h"><code class="docutils literal notranslate"><span class="pre">compute_excess_surface_density_2h()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.theory.html#clmm.theory.compute_magnification"><code class="docutils literal notranslate"><span class="pre">compute_magnification()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.theory.html#clmm.theory.compute_magnification_bias"><code class="docutils literal notranslate"><span class="pre">compute_magnification_bias()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.theory.html#clmm.theory.compute_magnification_bias_from_magnification"><code class="docutils literal notranslate"><span class="pre">compute_magnification_bias_from_magnification()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.theory.html#clmm.theory.compute_profile_mass_in_radius"><code class="docutils literal notranslate"><span class="pre">compute_profile_mass_in_radius()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.theory.html#clmm.theory.compute_rdelta"><code class="docutils literal notranslate"><span class="pre">compute_rdelta()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.theory.html#clmm.theory.compute_reduced_shear_from_convergence"><code class="docutils literal notranslate"><span class="pre">compute_reduced_shear_from_convergence()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.theory.html#clmm.theory.compute_reduced_tangential_shear"><code class="docutils literal notranslate"><span class="pre">compute_reduced_tangential_shear()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.theory.html#clmm.theory.compute_surface_density"><code class="docutils literal notranslate"><span class="pre">compute_surface_density()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.theory.html#clmm.theory.compute_surface_density_2h"><code class="docutils literal notranslate"><span class="pre">compute_surface_density_2h()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.theory.html#clmm.theory.compute_tangential_shear"><code class="docutils literal notranslate"><span class="pre">compute_tangential_shear()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.theory.html#clmm.theory.convert_profile_mass_concentration"><code class="docutils literal notranslate"><span class="pre">convert_profile_mass_concentration()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/clmm.theory.html#submodules">Submodules</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="api/clmm.theory.be_setup.html">clmm.theory.be_setup module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/clmm.theory.ccl.html">clmm.theory.ccl module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/clmm.theory.cluster_toolkit.html">clmm.theory.cluster_toolkit module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/clmm.theory.func_layer.html">clmm.theory.func_layer module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/clmm.theory.generic.html">clmm.theory.generic module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/clmm.theory.numcosmo.html">clmm.theory.numcosmo module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/clmm.theory.parent_class.html">clmm.theory.parent_class module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.theory.ccl.html">clmm.theory.ccl module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.ccl.html#clmm.theory.ccl.CCLCLMModeling"><code class="docutils literal notranslate"><span class="pre">CCLCLMModeling</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.ccl.html#clmm.theory.ccl.Cosmology"><code class="docutils literal notranslate"><span class="pre">Cosmology</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.ccl.html#clmm.theory.ccl.Modeling"><code class="docutils literal notranslate"><span class="pre">Modeling</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.ccl.html#clmm.theory.ccl.compute_3d_density"><code class="docutils literal notranslate"><span class="pre">compute_3d_density()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.ccl.html#clmm.theory.ccl.compute_convergence"><code class="docutils literal notranslate"><span class="pre">compute_convergence()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.ccl.html#clmm.theory.ccl.compute_critical_surface_density"><code class="docutils literal notranslate"><span class="pre">compute_critical_surface_density()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.ccl.html#clmm.theory.ccl.compute_excess_surface_density"><code class="docutils literal notranslate"><span class="pre">compute_excess_surface_density()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.ccl.html#clmm.theory.ccl.compute_excess_surface_density_2h"><code class="docutils literal notranslate"><span class="pre">compute_excess_surface_density_2h()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.ccl.html#clmm.theory.ccl.compute_magnification"><code class="docutils literal notranslate"><span class="pre">compute_magnification()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.ccl.html#clmm.theory.ccl.compute_magnification_bias"><code class="docutils literal notranslate"><span class="pre">compute_magnification_bias()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.ccl.html#clmm.theory.ccl.compute_magnification_bias_from_magnification"><code class="docutils literal notranslate"><span class="pre">compute_magnification_bias_from_magnification()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.ccl.html#clmm.theory.ccl.compute_profile_mass_in_radius"><code class="docutils literal notranslate"><span class="pre">compute_profile_mass_in_radius()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.ccl.html#clmm.theory.ccl.compute_rdelta"><code class="docutils literal notranslate"><span class="pre">compute_rdelta()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.ccl.html#clmm.theory.ccl.compute_reduced_shear_from_convergence"><code class="docutils literal notranslate"><span class="pre">compute_reduced_shear_from_convergence()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.ccl.html#clmm.theory.ccl.compute_reduced_tangential_shear"><code class="docutils literal notranslate"><span class="pre">compute_reduced_tangential_shear()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.ccl.html#clmm.theory.ccl.compute_surface_density"><code class="docutils literal notranslate"><span class="pre">compute_surface_density()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.ccl.html#clmm.theory.ccl.compute_surface_density_2h"><code class="docutils literal notranslate"><span class="pre">compute_surface_density_2h()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.ccl.html#clmm.theory.ccl.compute_tangential_shear"><code class="docutils literal notranslate"><span class="pre">compute_tangential_shear()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.ccl.html#clmm.theory.ccl.convert_profile_mass_concentration"><code class="docutils literal notranslate"><span class="pre">convert_profile_mass_concentration()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.theory.cluster_toolkit.html">clmm.theory.cluster_toolkit module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.CTModeling"><code class="docutils literal notranslate"><span class="pre">CTModeling</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.Cosmology"><code class="docutils literal notranslate"><span class="pre">Cosmology</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.Modeling"><code class="docutils literal notranslate"><span class="pre">Modeling</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.compute_3d_density"><code class="docutils literal notranslate"><span class="pre">compute_3d_density()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.compute_convergence"><code class="docutils literal notranslate"><span class="pre">compute_convergence()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.compute_critical_surface_density"><code class="docutils literal notranslate"><span class="pre">compute_critical_surface_density()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.compute_excess_surface_density"><code class="docutils literal notranslate"><span class="pre">compute_excess_surface_density()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.compute_excess_surface_density_2h"><code class="docutils literal notranslate"><span class="pre">compute_excess_surface_density_2h()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.compute_magnification"><code class="docutils literal notranslate"><span class="pre">compute_magnification()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.compute_magnification_bias"><code class="docutils literal notranslate"><span class="pre">compute_magnification_bias()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.compute_magnification_bias_from_magnification"><code class="docutils literal notranslate"><span class="pre">compute_magnification_bias_from_magnification()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.compute_profile_mass_in_radius"><code class="docutils literal notranslate"><span class="pre">compute_profile_mass_in_radius()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.compute_rdelta"><code class="docutils literal notranslate"><span class="pre">compute_rdelta()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.compute_reduced_shear_from_convergence"><code class="docutils literal notranslate"><span class="pre">compute_reduced_shear_from_convergence()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.compute_reduced_tangential_shear"><code class="docutils literal notranslate"><span class="pre">compute_reduced_tangential_shear()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.compute_surface_density"><code class="docutils literal notranslate"><span class="pre">compute_surface_density()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.compute_surface_density_2h"><code class="docutils literal notranslate"><span class="pre">compute_surface_density_2h()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.compute_tangential_shear"><code class="docutils literal notranslate"><span class="pre">compute_tangential_shear()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.cluster_toolkit.html#clmm.theory.cluster_toolkit.convert_profile_mass_concentration"><code class="docutils literal notranslate"><span class="pre">convert_profile_mass_concentration()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.theory.func_layer.html">clmm.theory.func_layer module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.func_layer.html#clmm.theory.func_layer.compute_3d_density"><code class="docutils literal notranslate"><span class="pre">compute_3d_density()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.func_layer.html#clmm.theory.func_layer.compute_convergence"><code class="docutils literal notranslate"><span class="pre">compute_convergence()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.func_layer.html#clmm.theory.func_layer.compute_critical_surface_density"><code class="docutils literal notranslate"><span class="pre">compute_critical_surface_density()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.func_layer.html#clmm.theory.func_layer.compute_excess_surface_density"><code class="docutils literal notranslate"><span class="pre">compute_excess_surface_density()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.func_layer.html#clmm.theory.func_layer.compute_excess_surface_density_2h"><code class="docutils literal notranslate"><span class="pre">compute_excess_surface_density_2h()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.func_layer.html#clmm.theory.func_layer.compute_magnification"><code class="docutils literal notranslate"><span class="pre">compute_magnification()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.func_layer.html#clmm.theory.func_layer.compute_magnification_bias"><code class="docutils literal notranslate"><span class="pre">compute_magnification_bias()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.func_layer.html#clmm.theory.func_layer.compute_magnification_bias_from_magnification"><code class="docutils literal notranslate"><span class="pre">compute_magnification_bias_from_magnification()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.func_layer.html#clmm.theory.func_layer.compute_profile_mass_in_radius"><code class="docutils literal notranslate"><span class="pre">compute_profile_mass_in_radius()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.func_layer.html#clmm.theory.func_layer.compute_rdelta"><code class="docutils literal notranslate"><span class="pre">compute_rdelta()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.func_layer.html#clmm.theory.func_layer.compute_reduced_shear_from_convergence"><code class="docutils literal notranslate"><span class="pre">compute_reduced_shear_from_convergence()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.func_layer.html#clmm.theory.func_layer.compute_reduced_tangential_shear"><code class="docutils literal notranslate"><span class="pre">compute_reduced_tangential_shear()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.func_layer.html#clmm.theory.func_layer.compute_surface_density"><code class="docutils literal notranslate"><span class="pre">compute_surface_density()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.func_layer.html#clmm.theory.func_layer.compute_surface_density_2h"><code class="docutils literal notranslate"><span class="pre">compute_surface_density_2h()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.func_layer.html#clmm.theory.func_layer.compute_tangential_shear"><code class="docutils literal notranslate"><span class="pre">compute_tangential_shear()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.func_layer.html#clmm.theory.func_layer.convert_profile_mass_concentration"><code class="docutils literal notranslate"><span class="pre">convert_profile_mass_concentration()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.theory.generic.html">clmm.theory.generic module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.generic.html#clmm.theory.generic.compute_magnification_bias_from_magnification"><code class="docutils literal notranslate"><span class="pre">compute_magnification_bias_from_magnification()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.generic.html#clmm.theory.generic.compute_profile_mass_in_radius"><code class="docutils literal notranslate"><span class="pre">compute_profile_mass_in_radius()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.generic.html#clmm.theory.generic.compute_rdelta"><code class="docutils literal notranslate"><span class="pre">compute_rdelta()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.generic.html#clmm.theory.generic.compute_reduced_shear_from_convergence"><code class="docutils literal notranslate"><span class="pre">compute_reduced_shear_from_convergence()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.generic.html#clmm.theory.generic.convert_profile_mass_concentration"><code class="docutils literal notranslate"><span class="pre">convert_profile_mass_concentration()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.theory.numcosmo.html">clmm.theory.numcosmo module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.Cosmology"><code class="docutils literal notranslate"><span class="pre">Cosmology</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.Modeling"><code class="docutils literal notranslate"><span class="pre">Modeling</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.NumCosmoCLMModeling"><code class="docutils literal notranslate"><span class="pre">NumCosmoCLMModeling</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.NumCosmoCLMModeling.get_mset"><code class="docutils literal notranslate"><span class="pre">NumCosmoCLMModeling.get_mset()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.NumCosmoCLMModeling.set_mset"><code class="docutils literal notranslate"><span class="pre">NumCosmoCLMModeling.set_mset()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.compute_3d_density"><code class="docutils literal notranslate"><span class="pre">compute_3d_density()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.compute_convergence"><code class="docutils literal notranslate"><span class="pre">compute_convergence()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.compute_critical_surface_density"><code class="docutils literal notranslate"><span class="pre">compute_critical_surface_density()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.compute_excess_surface_density"><code class="docutils literal notranslate"><span class="pre">compute_excess_surface_density()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.compute_excess_surface_density_2h"><code class="docutils literal notranslate"><span class="pre">compute_excess_surface_density_2h()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.compute_magnification"><code class="docutils literal notranslate"><span class="pre">compute_magnification()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.compute_magnification_bias"><code class="docutils literal notranslate"><span class="pre">compute_magnification_bias()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.compute_magnification_bias_from_magnification"><code class="docutils literal notranslate"><span class="pre">compute_magnification_bias_from_magnification()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.compute_profile_mass_in_radius"><code class="docutils literal notranslate"><span class="pre">compute_profile_mass_in_radius()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.compute_rdelta"><code class="docutils literal notranslate"><span class="pre">compute_rdelta()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.compute_reduced_shear_from_convergence"><code class="docutils literal notranslate"><span class="pre">compute_reduced_shear_from_convergence()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.compute_reduced_tangential_shear"><code class="docutils literal notranslate"><span class="pre">compute_reduced_tangential_shear()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.compute_surface_density"><code class="docutils literal notranslate"><span class="pre">compute_surface_density()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.compute_surface_density_2h"><code class="docutils literal notranslate"><span class="pre">compute_surface_density_2h()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.compute_tangential_shear"><code class="docutils literal notranslate"><span class="pre">compute_tangential_shear()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.numcosmo.html#clmm.theory.numcosmo.convert_profile_mass_concentration"><code class="docutils literal notranslate"><span class="pre">convert_profile_mass_concentration()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.theory.parent_class.html">clmm.theory.parent_class module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling"><code class="docutils literal notranslate"><span class="pre">CLMModeling</span></code></a><ul>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.cdelta"><code class="docutils literal notranslate"><span class="pre">CLMModeling.cdelta</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.convert_mass_concentration"><code class="docutils literal notranslate"><span class="pre">CLMModeling.convert_mass_concentration()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.delta_mdef"><code class="docutils literal notranslate"><span class="pre">CLMModeling.delta_mdef</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_3d_density"><code class="docutils literal notranslate"><span class="pre">CLMModeling.eval_3d_density()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_convergence"><code class="docutils literal notranslate"><span class="pre">CLMModeling.eval_convergence()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_critical_surface_density"><code class="docutils literal notranslate"><span class="pre">CLMModeling.eval_critical_surface_density()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_excess_surface_density"><code class="docutils literal notranslate"><span class="pre">CLMModeling.eval_excess_surface_density()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_excess_surface_density_2h"><code class="docutils literal notranslate"><span class="pre">CLMModeling.eval_excess_surface_density_2h()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_magnification"><code class="docutils literal notranslate"><span class="pre">CLMModeling.eval_magnification()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_magnification_bias"><code class="docutils literal notranslate"><span class="pre">CLMModeling.eval_magnification_bias()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_mass_in_radius"><code class="docutils literal notranslate"><span class="pre">CLMModeling.eval_mass_in_radius()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_mean_surface_density"><code class="docutils literal notranslate"><span class="pre">CLMModeling.eval_mean_surface_density()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_rdelta"><code class="docutils literal notranslate"><span class="pre">CLMModeling.eval_rdelta()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_reduced_tangential_shear"><code class="docutils literal notranslate"><span class="pre">CLMModeling.eval_reduced_tangential_shear()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_surface_density"><code class="docutils literal notranslate"><span class="pre">CLMModeling.eval_surface_density()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_surface_density_2h"><code class="docutils literal notranslate"><span class="pre">CLMModeling.eval_surface_density_2h()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_tangential_shear"><code class="docutils literal notranslate"><span class="pre">CLMModeling.eval_tangential_shear()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.get_einasto_alpha"><code class="docutils literal notranslate"><span class="pre">CLMModeling.get_einasto_alpha()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.halo_profile_model"><code class="docutils literal notranslate"><span class="pre">CLMModeling.halo_profile_model</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.massdef"><code class="docutils literal notranslate"><span class="pre">CLMModeling.massdef</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.mdelta"><code class="docutils literal notranslate"><span class="pre">CLMModeling.mdelta</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.set_concentration"><code class="docutils literal notranslate"><span class="pre">CLMModeling.set_concentration()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.set_cosmo"><code class="docutils literal notranslate"><span class="pre">CLMModeling.set_cosmo()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.set_einasto_alpha"><code class="docutils literal notranslate"><span class="pre">CLMModeling.set_einasto_alpha()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.set_halo_density_profile"><code class="docutils literal notranslate"><span class="pre">CLMModeling.set_halo_density_profile()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.set_mass"><code class="docutils literal notranslate"><span class="pre">CLMModeling.set_mass()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="api/clmm.plotting.html">clmm.plotting package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api/clmm.utils.html">clmm.utils module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/clmm.plotting.html">clmm.plotting package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.plotting.html#clmm.plotting.plot_profiles"><code class="docutils literal notranslate"><span class="pre">plot_profiles()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/clmm.utils.html">clmm.utils module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.utils.html#clmm.utils.arguments_consistency"><code class="docutils literal notranslate"><span class="pre">arguments_consistency()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.utils.html#clmm.utils.build_ellipticities"><code class="docutils literal notranslate"><span class="pre">build_ellipticities()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.utils.html#clmm.utils.compute_beta"><code class="docutils literal notranslate"><span class="pre">compute_beta()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.utils.html#clmm.utils.compute_beta_mean"><code class="docutils literal notranslate"><span class="pre">compute_beta_mean()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.utils.html#clmm.utils.compute_beta_s"><code class="docutils literal notranslate"><span class="pre">compute_beta_s()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.utils.html#clmm.utils.compute_beta_s_mean"><code class="docutils literal notranslate"><span class="pre">compute_beta_s_mean()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.utils.html#clmm.utils.compute_beta_s_square_mean"><code class="docutils literal notranslate"><span class="pre">compute_beta_s_square_mean()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.utils.html#clmm.utils.compute_for_good_redshifts"><code class="docutils literal notranslate"><span class="pre">compute_for_good_redshifts()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.utils.html#clmm.utils.compute_lensed_ellipticity"><code class="docutils literal notranslate"><span class="pre">compute_lensed_ellipticity()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.utils.html#clmm.utils.compute_nfw_boost"><code class="docutils literal notranslate"><span class="pre">compute_nfw_boost()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.utils.html#clmm.utils.compute_powerlaw_boost"><code class="docutils literal notranslate"><span class="pre">compute_powerlaw_boost()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.utils.html#clmm.utils.compute_radial_averages"><code class="docutils literal notranslate"><span class="pre">compute_radial_averages()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.utils.html#clmm.utils.convert_shapes_to_epsilon"><code class="docutils literal notranslate"><span class="pre">convert_shapes_to_epsilon()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.utils.html#clmm.utils.convert_units"><code class="docutils literal notranslate"><span class="pre">convert_units()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.utils.html#clmm.utils.correct_sigma_with_boost_model"><code class="docutils literal notranslate"><span class="pre">correct_sigma_with_boost_model()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.utils.html#clmm.utils.correct_sigma_with_boost_values"><code class="docutils literal notranslate"><span class="pre">correct_sigma_with_boost_values()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.utils.html#clmm.utils.make_bins"><code class="docutils literal notranslate"><span class="pre">make_bins()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/clmm.utils.html#clmm.utils.validate_argument"><code class="docutils literal notranslate"><span class="pre">validate_argument()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="api/clmm.support.html">clmm.support package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/clmm.support.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/clmm.support.mock_data.html">clmm.support.mock_data module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/clmm.support.sampler.html">clmm.support.sampler module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.support.mock_data.html">clmm.support.mock_data module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.support.mock_data.html#clmm.support.mock_data.generate_galaxy_catalog"><code class="docutils literal notranslate"><span class="pre">generate_galaxy_catalog()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/clmm.support.sampler.html">clmm.support.sampler module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.support.sampler.html#clmm.support.sampler.basinhopping"><code class="docutils literal notranslate"><span class="pre">basinhopping()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.support.sampler.html#clmm.support.sampler.scicurve_fit"><code class="docutils literal notranslate"><span class="pre">scicurve_fit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/clmm.support.sampler.html#clmm.support.sampler.sciopt"><code class="docutils literal notranslate"><span class="pre">sciopt()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
 </div>
-</div>
+</section>
 
 
            </div>
-           
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
-
-    </p>
+    <p>&#169; Copyright 2018-2021, LSST DESC CLMM Contributors.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

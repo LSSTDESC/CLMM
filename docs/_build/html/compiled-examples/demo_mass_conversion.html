@@ -1,73 +1,40 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>Mass conversion between spherical overdensity mass definitions &mdash; CLMM 1.4.4 documentation</title>
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mass conversion between spherical overdensity mass definitions &mdash; CLMM 1.4.5 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-    
+        <script src="../_static/sphinx_highlight.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Compute boost factors" href="demo_boost_factors.html" />
-    <link rel="prev" title="Basic usage of the cosmoDC2 extragalactic catalog with CLMM" href="data_and_model_demo_DC2.html" /> 
+    <link rel="prev" title="Compare NFW profile for the CLMM backends" href="Compare_NFW_critical_massdef.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> CLMM
-          
-
-          
+            <a href="../index.html" class="icon icon-home"> CLMM
           </a>
-
-          
-            
-            
               <div class="version">
-                1.4.4
+                1.4.5
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -75,42 +42,43 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Getting Started</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../source/overview.html">Rapid overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../source/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../source/citing.html">Using and citing CLMM</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Usage Demos</span></p>
+<p class="caption" role="heading"><span class="caption-text">Usage Demos</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="demo_generate_mock_cluster.html">Generate Mock Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demo_dataops_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Compare_NFW_critical_massdef.html">Compare NFW profile for the CLMM backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Compare_NFW_critical_massdef.html#comparison-of-nfw-with-mass-definition-based-on-the-critical-density-of-the-universe-for-the-various-backends">Comparison of NFW with mass definition based on the critical density of the universe for the various backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Compare_NFW_critical_massdef.html#compare-all-to-colossus">Compare all to Colossus</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Mass conversion between spherical overdensity mass definitions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demo_boost_factors.html">Compute boost factors</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Mass Fitting Examples</span></p>
+<p class="caption" role="heading"><span class="caption-text">Mass Fitting Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Example1_Fit_shear_profile_with_miscentering.html">Investigate the impact of miscentering on shear profiles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Example4_Fit_Halo_mass_to_HSC_data.html">Using CLMM on Real Datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Compare_NFW_critical_massdef.html">Compare NFW profile for the CLMM backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Compare_NFW_critical_massdef.html#comparison-of-nfw-with-mass-definition-based-on-the-critical-density-of-the-universe-for-the-various-backends">Comparison of NFW with mass definition based on the critical density of the universe for the various backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Compare_NFW_critical_massdef.html#compare-all-to-colossus">Compare all to Colossus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_cluster_ensemble.html">Generating a cluster catalog and associated source catalogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_cluster_ensemble.html#creating-clusterensemble-object-and-estimation-of-individual-excess-surface-density-profiles">Creating ClusterEnsemble object and estimation of individual excess surface density profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_cluster_ensemble.html#stacked-profile-of-the-cluster-ensemble">Stacked profile of the cluster ensemble</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_cluster_ensemble.html#covariance-bootstrap-sample-jackknife-of-the-stack-between-radial-bins">Covariance (Bootstrap, sample, Jackknife) of the stack between radial bins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_cluster_ensemble.html#visualizing-the-stacked-profiles-and-corresponding-model">Visualizing the stacked profiles and corresponding model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_realistic_cluster_ensemble.html">Generate cluster ensemble with “realistic” mass and redshift distribution</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Reference</span></p>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">API Documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.clusterensemble.html">clmm.clusterensemble module</a></li>
@@ -146,71 +114,32 @@
 </li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">CLMM</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-      <li>Mass conversion between spherical overdensity mass definitions</li>
-    
-    
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Mass conversion between spherical overdensity mass definitions</li>
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="../_sources/compiled-examples/demo_mass_conversion.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="mass-conversion-between-spherical-overdensity-mass-definitions">
-<h1>Mass conversion between spherical overdensity mass definitions<a class="headerlink" href="#mass-conversion-between-spherical-overdensity-mass-definitions" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="mass-conversion-between-spherical-overdensity-mass-definitions">
+<h1>Mass conversion between spherical overdensity mass definitions<a class="headerlink" href="#mass-conversion-between-spherical-overdensity-mass-definitions" title="Permalink to this heading"></a></h1>
 <p>In this notebook, we demonstrates how to convert the mass and
 concentration between various mass definitions (going from <span class="math notranslate nohighlight">\(200m\)</span>
 to <span class="math notranslate nohighlight">\(500c\)</span> in this example), and related functionalities, using
@@ -228,10 +157,10 @@ both the object-oriented and functional interfaces of the code.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cosmo</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">Cosmology</span><span class="p">(</span><span class="n">H0</span> <span class="o">=</span> <span class="mf">70.0</span><span class="p">,</span> <span class="n">Omega_dm0</span> <span class="o">=</span> <span class="mf">0.27</span> <span class="o">-</span> <span class="mf">0.045</span><span class="p">,</span> <span class="n">Omega_b0</span> <span class="o">=</span> <span class="mf">0.045</span><span class="p">,</span> <span class="n">Omega_k0</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="section" id="create-a-clmm-modeling-object">
-<h2>Create a <code class="docutils literal notranslate"><span class="pre">CLMM</span></code> Modeling object<a class="headerlink" href="#create-a-clmm-modeling-object" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="define-a-mass-profile-for-a-given-sod-definition">
-<h3>Define a mass profile for a given SOD definition<a class="headerlink" href="#define-a-mass-profile-for-a-given-sod-definition" title="Permalink to this headline">¶</a></h3>
+<section id="create-a-clmm-modeling-object">
+<h2>Create a <code class="docutils literal notranslate"><span class="pre">CLMM</span></code> Modeling object<a class="headerlink" href="#create-a-clmm-modeling-object" title="Permalink to this heading"></a></h2>
+<section id="define-a-mass-profile-for-a-given-sod-definition">
+<h3>Define a mass profile for a given SOD definition<a class="headerlink" href="#define-a-mass-profile-for-a-given-sod-definition" title="Permalink to this heading"></a></h3>
 <p>We define halo parameters following the <span class="math notranslate nohighlight">\(200m\)</span> overdensity
 definition: 1. the mass <span class="math notranslate nohighlight">\(M_{200m}\)</span> 2. the concentration
 <span class="math notranslate nohighlight">\(c_{200m}\)</span></p>
@@ -263,10 +192,10 @@ definition: 1. the mass <span class="math notranslate nohighlight">\(M_{200m}\)<
 <span class="n">ein_def1</span><span class="o">.</span><span class="n">set_cosmo</span><span class="p">(</span><span class="n">cosmo</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-</div>
-<div class="section" id="compute-the-enclosed-mass-in-a-given-radius">
-<h2>Compute the enclosed mass in a given radius<a class="headerlink" href="#compute-the-enclosed-mass-in-a-given-radius" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+<section id="compute-the-enclosed-mass-in-a-given-radius">
+<h2>Compute the enclosed mass in a given radius<a class="headerlink" href="#compute-the-enclosed-mass-in-a-given-radius" title="Permalink to this heading"></a></h2>
 <p>Calculate the enclosed masses within r with the class method
 <code class="docutils literal notranslate"><span class="pre">eval_mass_in_radius</span></code>. The calculation can also be done in the
 functional interface with <code class="docutils literal notranslate"><span class="pre">compute_profile_mass_in_radius</span></code>.</p>
@@ -316,9 +245,9 @@ functional interface</p>
 </pre></div>
 </div>
 <img alt="../_images/demo_mass_conversion_12_0.png" src="../_images/demo_mass_conversion_12_0.png" />
-</div>
-<div class="section" id="compute-the-spherical-overdensity-radius">
-<h2>Compute the spherical overdensity radius<a class="headerlink" href="#compute-the-spherical-overdensity-radius" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="compute-the-spherical-overdensity-radius">
+<h2>Compute the spherical overdensity radius<a class="headerlink" href="#compute-the-spherical-overdensity-radius" title="Permalink to this heading"></a></h2>
 <p>We can also compute the spherical overdensity radius, <span class="math notranslate nohighlight">\(r_{200m}\)</span>
 with <code class="docutils literal notranslate"><span class="pre">eval_rdelta</span></code> (resp. <code class="docutils literal notranslate"><span class="pre">compute_rdelta</span></code>) in the object oriented
 (resp. functional) interface as follows:</p>
@@ -337,9 +266,9 @@ with <code class="docutils literal notranslate"><span class="pre">eval_rdelta</s
 <span class="n">r200m</span> <span class="o">=</span> <span class="mf">1.056418142453307</span> <span class="n">Mpc</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="conversion-to-another-sod-definition-here-we-choose-500c">
-<h2>Conversion to another SOD definition (here we choose 500c)<a class="headerlink" href="#conversion-to-another-sod-definition-here-we-choose-500c" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="conversion-to-another-sod-definition-here-we-choose-500c">
+<h2>Conversion to another SOD definition (here we choose 500c)<a class="headerlink" href="#conversion-to-another-sod-definition-here-we-choose-500c" title="Permalink to this heading"></a></h2>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># New SOD definition</span>
 <span class="n">massdef2</span> <span class="o">=</span> <span class="s1">&#39;critical&#39;</span>
 <span class="n">delta_mdef2</span> <span class="o">=</span> <span class="mi">500</span>
@@ -388,9 +317,9 @@ showing it for NFW below)</p>
 <div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">NFW</span><span class="p">:</span> <span class="n">M2</span> <span class="o">=</span> <span class="mf">4.33e+13</span> <span class="n">M_sun</span><span class="p">,</span> <span class="n">c2</span> <span class="o">=</span> <span class="mf">1.33</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="check-conversion-by-looking-at-the-enclosed-mass">
-<h2>Check conversion by looking at the enclosed mass<a class="headerlink" href="#check-conversion-by-looking-at-the-enclosed-mass" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="check-conversion-by-looking-at-the-enclosed-mass">
+<h2>Check conversion by looking at the enclosed mass<a class="headerlink" href="#check-conversion-by-looking-at-the-enclosed-mass" title="Permalink to this heading"></a></h2>
 <p>To test the conversion method, we plot the relative difference for the
 enclosed mass between the two mass definitions.</p>
 <div class="math notranslate nohighlight">
@@ -420,54 +349,35 @@ enclosed mass between the two mass definitions.</p>
 </pre></div>
 </div>
 <img alt="../_images/demo_mass_conversion_23_0.png" src="../_images/demo_mass_conversion_23_0.png" />
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
-
-    </p>
+    <p>&#169; Copyright 2018-2021, LSST DESC CLMM Contributors.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

@@ -1,73 +1,39 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>Investigate the impact of miscentering on shear profiles &mdash; CLMM 1.4.4 documentation</title>
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Investigate the impact of miscentering on shear profiles &mdash; CLMM 1.4.5 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-    
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Using CLMM on Real Datasets" href="Example4_Fit_Halo_mass_to_HSC_data.html" />
     <link rel="prev" title="Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies" href="Example3_Fit_Halo_Mass_to_Shear_Catalog.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> CLMM
-          
-
-          
+            <a href="../index.html" class="icon icon-home"> CLMM
           </a>
-
-          
-            
-            
               <div class="version">
-                1.4.4
+                1.4.5
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -75,42 +41,43 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Getting Started</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../source/overview.html">Rapid overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../source/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../source/citing.html">Using and citing CLMM</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Usage Demos</span></p>
+<p class="caption" role="heading"><span class="caption-text">Usage Demos</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="demo_generate_mock_cluster.html">Generate Mock Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demo_dataops_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Compare_NFW_critical_massdef.html">Compare NFW profile for the CLMM backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Compare_NFW_critical_massdef.html#comparison-of-nfw-with-mass-definition-based-on-the-critical-density-of-the-universe-for-the-various-backends">Comparison of NFW with mass definition based on the critical density of the universe for the various backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Compare_NFW_critical_massdef.html#compare-all-to-colossus">Compare all to Colossus</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demo_mass_conversion.html">Mass conversion between spherical overdensity mass definitions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demo_boost_factors.html">Compute boost factors</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Mass Fitting Examples</span></p>
+<p class="caption" role="heading"><span class="caption-text">Mass Fitting Examples</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Investigate the impact of miscentering on shear profiles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Example4_Fit_Halo_mass_to_HSC_data.html">Using CLMM on Real Datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Compare_NFW_critical_massdef.html">Compare NFW profile for the CLMM backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Compare_NFW_critical_massdef.html#comparison-of-nfw-with-mass-definition-based-on-the-critical-density-of-the-universe-for-the-various-backends">Comparison of NFW with mass definition based on the critical density of the universe for the various backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Compare_NFW_critical_massdef.html#compare-all-to-colossus">Compare all to Colossus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_cluster_ensemble.html">Generating a cluster catalog and associated source catalogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_cluster_ensemble.html#creating-clusterensemble-object-and-estimation-of-individual-excess-surface-density-profiles">Creating ClusterEnsemble object and estimation of individual excess surface density profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_cluster_ensemble.html#stacked-profile-of-the-cluster-ensemble">Stacked profile of the cluster ensemble</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_cluster_ensemble.html#covariance-bootstrap-sample-jackknife-of-the-stack-between-radial-bins">Covariance (Bootstrap, sample, Jackknife) of the stack between radial bins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_cluster_ensemble.html#visualizing-the-stacked-profiles-and-corresponding-model">Visualizing the stacked profiles and corresponding model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_realistic_cluster_ensemble.html">Generate cluster ensemble with “realistic” mass and redshift distribution</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Reference</span></p>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">API Documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.clusterensemble.html">clmm.clusterensemble module</a></li>
@@ -146,71 +113,32 @@
 </li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">CLMM</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-      <li>Investigate the impact of miscentering on shear profiles</li>
-    
-    
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Investigate the impact of miscentering on shear profiles</li>
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="../_sources/compiled-examples/Example1_Fit_shear_profile_with_miscentering.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="investigate-the-impact-of-miscentering-on-shear-profiles">
-<h1>Investigate the impact of miscentering on shear profiles<a class="headerlink" href="#investigate-the-impact-of-miscentering-on-shear-profiles" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="investigate-the-impact-of-miscentering-on-shear-profiles">
+<h1>Investigate the impact of miscentering on shear profiles<a class="headerlink" href="#investigate-the-impact-of-miscentering-on-shear-profiles" title="Permalink to this heading"></a></h1>
 <p><em>the LSST-DESC CLMM team</em></p>
 <p>This notebook demonstrates the impact of taking wrong cluster centers to
 construct and derive the mass from reduced shear profiles
@@ -238,17 +166,17 @@ with<code class="docutils literal notranslate"><span class="pre">CLMM</span></co
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clmm</span><span class="o">.</span><span class="n">__version__</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.4.4&#39;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.4.5&#39;</span>
 </pre></div>
 </div>
-<div class="section" id="define-cosmology-object">
-<h2>Define cosmology object<a class="headerlink" href="#define-cosmology-object" title="Permalink to this headline">¶</a></h2>
+<section id="define-cosmology-object">
+<h2>Define cosmology object<a class="headerlink" href="#define-cosmology-object" title="Permalink to this heading"></a></h2>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mock_cosmo</span> <span class="o">=</span> <span class="n">Cosmology</span><span class="p">(</span><span class="n">H0</span> <span class="o">=</span> <span class="mf">70.0</span><span class="p">,</span> <span class="n">Omega_dm0</span> <span class="o">=</span> <span class="mf">0.27</span> <span class="o">-</span> <span class="mf">0.045</span><span class="p">,</span> <span class="n">Omega_b0</span> <span class="o">=</span> <span class="mf">0.045</span><span class="p">,</span> <span class="n">Omega_k0</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">)</span>
 <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="section" id="generate-cluster-objects-from-mock-data">
-<h3>1. Generate cluster objects from mock data<a class="headerlink" href="#generate-cluster-objects-from-mock-data" title="Permalink to this headline">¶</a></h3>
+<section id="generate-cluster-objects-from-mock-data">
+<h3>1. Generate cluster objects from mock data<a class="headerlink" href="#generate-cluster-objects-from-mock-data" title="Permalink to this heading"></a></h3>
 <p>In this example, the mock data only include galaxies drawn from redshift
 distribution.</p>
 <p>Define toy cluster parameters for mock data generation</p>
@@ -320,9 +248,9 @@ corresponds to a == 0 in the cell below.</p>
 <span class="n">offset</span> <span class="o">=</span> <span class="p">[</span><span class="n">coord</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">separation</span><span class="p">(</span><span class="n">coord</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)]</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="basic-checks-and-plots">
-<h3>2. Basic checks and plots<a class="headerlink" href="#basic-checks-and-plots" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="basic-checks-and-plots">
+<h3>2. Basic checks and plots<a class="headerlink" href="#basic-checks-and-plots" title="Permalink to this heading"></a></h3>
 <ul class="simple">
 <li><p>galaxy positions</p></li>
 <li><p>redshift distribution</p></li>
@@ -353,9 +281,9 @@ represented by the red dots.</p>
 </pre></div>
 </div>
 <img alt="../_images/Example1_Fit_shear_profile_with_miscentering_13_0.png" src="../_images/Example1_Fit_shear_profile_with_miscentering_13_0.png" />
-</div>
-<div class="section" id="compute-the-center-effect-on-the-shear-profiles">
-<h3>3. Compute the center effect on the shear profiles<a class="headerlink" href="#compute-the-center-effect-on-the-shear-profiles" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="compute-the-center-effect-on-the-shear-profiles">
+<h3>3. Compute the center effect on the shear profiles<a class="headerlink" href="#compute-the-center-effect-on-the-shear-profiles" title="Permalink to this heading"></a></h3>
 <p>Next, we generate the profiles for all the Cluster objects and save the
 profiles into a list. We also save the <code class="docutils literal notranslate"><span class="pre">gt</span></code>, <code class="docutils literal notranslate"><span class="pre">gx</span></code>, and <code class="docutils literal notranslate"><span class="pre">radius</span></code>
 columns of each <code class="docutils literal notranslate"><span class="pre">profile</span></code> into lists, so we can make a plot of these
@@ -406,9 +334,9 @@ components.</p>
 errors, the center (0,0) gives the expected result <code class="docutils literal notranslate"><span class="pre">gx</span> <span class="pre">=</span> <span class="pre">0</span></code>, by
 construction. For the other cluster centers, we can see that the cross
 shear term average to zero as expected, but the profiles are noisier.</p>
-</div>
-<div class="section" id="compute-the-center-effect-by-fitting-the-halo-mass">
-<h3>4. Compute the center effect by fitting the Halo mass<a class="headerlink" href="#compute-the-center-effect-by-fitting-the-halo-mass" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="compute-the-center-effect-by-fitting-the-halo-mass">
+<h3>4. Compute the center effect by fitting the Halo mass<a class="headerlink" href="#compute-the-center-effect-by-fitting-the-halo-mass" title="Permalink to this heading"></a></h3>
 <p>In this last step, we compute the fitting Halo mass with the <code class="docutils literal notranslate"><span class="pre">nfw</span></code>
 model and, using a plot, compare the impact of the Cluster centers on
 the weak lensing mass.</p>
@@ -460,55 +388,36 @@ check the notebook “Example2_Fit_Halo_Mass_to_Shear_Catalog.ipynb”</p>
 <p>We can see that for cluster centers differing from (0,0), we have a
 negative effect on the lensing mass, which increases with the offset
 distance.</p>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
            </div>
-           
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
-
-    </p>
+    <p>&#169; Copyright 2018-2021, LSST DESC CLMM Contributors.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

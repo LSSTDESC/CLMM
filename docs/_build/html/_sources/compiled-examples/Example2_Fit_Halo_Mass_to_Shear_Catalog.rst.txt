@@ -50,7 +50,7 @@ First, we import some standard packages.
 
 .. parsed-literal::
 
-    '1.4.4'
+    '1.4.5'
 
 
 
@@ -115,13 +115,6 @@ Chang et al. (2013) redshift distribution. - ``noisy_data_z``:
                                                 shapenoise=0.05, 
                                                 photoz_sigma_unscaled=0.05, ngals=ngals,
                                                 cluster_ra=cluster_ra, cluster_dec=cluster_dec)
-
-
-.. parsed-literal::
-
-    /global/homes/a/aguena/.conda/envs/clmmenv/lib/python3.8/site-packages/numpy/ma/core.py:2826: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray.
-      _data = np.array(data, dtype=dtype, copy=copy,
-
 
 The galaxy catalogs are converted to a ``clmm.GalaxyCluster`` object and
 may be saved for later use.
@@ -204,7 +197,7 @@ galaxy catalog in bins of radius.
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.8/site-packages/clmm-1.4.4-py3.8.egg/clmm/utils.py:178: RuntimeWarning: invalid value encountered in sqrt
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.4.5-py3.11.egg/clmm/utils.py:178: RuntimeWarning: invalid value encountered in sqrt
 
 
 After running ``clmm.dataops.make_radial_profile`` on a
@@ -221,21 +214,21 @@ After running ``clmm.dataops.make_radial_profile`` on a
 
     radius_min   radius  radius_max     gt      gt_err      gx       gx_err      z       z_err     n_src  
     ---------- --------- ---------- --------- --------- ---------- --------- --------- --------- ---------
-     7.000e-01 7.446e-01  7.863e-01 4.359e-02 1.313e-04 -1.809e-17 1.105e-18 8.000e-01       nan 5.800e+01
-     7.863e-01 8.403e-01  8.831e-01 3.990e-02 1.101e-04 -1.575e-17 8.820e-19 8.000e-01 6.427e-09 8.600e+01
-     8.831e-01 9.395e-01  9.920e-01 3.659e-02 1.003e-04 -1.294e-17 8.759e-19 8.000e-01       nan 9.500e+01
-     9.920e-01 1.052e+00  1.114e+00 3.337e-02 8.507e-05 -1.249e-17 6.218e-19 8.000e-01       nan 1.320e+02
-     1.114e+00 1.187e+00  1.251e+00 3.007e-02 7.161e-05 -1.028e-17 5.780e-19 8.000e-01 3.321e-09 1.510e+02
-     1.251e+00 1.331e+00  1.406e+00 2.711e-02 6.612e-05 -1.034e-17 4.437e-19 8.000e-01       nan 1.670e+02
-     1.406e+00 1.495e+00  1.579e+00 2.428e-02 5.252e-05 -9.134e-18 3.329e-19 8.000e-01 3.367e-09 2.350e+02
-     1.579e+00 1.677e+00  1.773e+00 2.167e-02 3.915e-05 -8.614e-18 2.287e-19 8.000e-01       nan 3.430e+02
-     1.773e+00 1.887e+00  1.992e+00 1.918e-02 3.437e-05 -6.858e-18 2.150e-19 8.000e-01       nan 4.010e+02
-     1.992e+00 2.119e+00  2.237e+00 1.694e-02 2.755e-05 -6.160e-18 1.667e-19 8.000e-01 4.245e-09 4.990e+02
-     2.237e+00 2.377e+00  2.513e+00 1.490e-02 2.161e-05 -5.495e-18 1.251e-19 8.000e-01 4.009e-09 6.630e+02
-     2.513e+00 2.672e+00  2.823e+00 1.302e-02 1.846e-05 -4.734e-18 1.020e-19 8.000e-01       nan 7.800e+02
-     2.823e+00 2.999e+00  3.171e+00 1.136e-02 1.422e-05 -4.098e-18 7.788e-20 8.000e-01       nan 1.042e+03
-     3.171e+00 3.369e+00  3.561e+00 9.847e-03 1.131e-05 -3.662e-18 5.906e-20 8.000e-01 6.299e-09 1.301e+03
-     3.561e+00 3.781e+00  4.000e+00 8.514e-03 8.968e-06 -3.049e-18 4.658e-20 8.000e-01 4.246e-09 1.644e+03
+     7.000e-01 7.446e-01  7.863e-01 4.359e-02 1.313e-04 -1.797e-17 1.024e-18 8.000e-01       nan 5.800e+01
+     7.863e-01 8.403e-01  8.831e-01 3.990e-02 1.101e-04 -1.567e-17 9.017e-19 8.000e-01 6.427e-09 8.600e+01
+     8.831e-01 9.395e-01  9.920e-01 3.659e-02 1.003e-04 -1.238e-17 8.459e-19 8.000e-01       nan 9.500e+01
+     9.920e-01 1.052e+00  1.114e+00 3.337e-02 8.507e-05 -1.258e-17 6.175e-19 8.000e-01       nan 1.320e+02
+     1.114e+00 1.187e+00  1.251e+00 3.007e-02 7.161e-05 -1.012e-17 5.652e-19 8.000e-01 3.321e-09 1.510e+02
+     1.251e+00 1.331e+00  1.406e+00 2.711e-02 6.612e-05 -1.008e-17 4.292e-19 8.000e-01       nan 1.670e+02
+     1.406e+00 1.495e+00  1.579e+00 2.428e-02 5.252e-05 -8.961e-18 3.263e-19 8.000e-01 3.367e-09 2.350e+02
+     1.579e+00 1.677e+00  1.773e+00 2.167e-02 3.915e-05 -8.716e-18 2.312e-19 8.000e-01       nan 3.430e+02
+     1.773e+00 1.887e+00  1.992e+00 1.918e-02 3.437e-05 -6.767e-18 2.156e-19 8.000e-01       nan 4.010e+02
+     1.992e+00 2.119e+00  2.237e+00 1.694e-02 2.755e-05 -6.157e-18 1.639e-19 8.000e-01 4.245e-09 4.990e+02
+     2.237e+00 2.377e+00  2.513e+00 1.490e-02 2.161e-05 -5.468e-18 1.261e-19 8.000e-01 4.009e-09 6.630e+02
+     2.513e+00 2.672e+00  2.823e+00 1.302e-02 1.846e-05 -4.757e-18 1.023e-19 8.000e-01       nan 7.800e+02
+     2.823e+00 2.999e+00  3.171e+00 1.136e-02 1.422e-05 -4.114e-18 7.791e-20 8.000e-01       nan 1.042e+03
+     3.171e+00 3.369e+00  3.561e+00 9.847e-03 1.131e-05 -3.662e-18 5.933e-20 8.000e-01 6.299e-09 1.301e+03
+     3.561e+00 3.781e+00  4.000e+00 8.514e-03 8.968e-06 -3.055e-18 4.719e-20 8.000e-01 4.246e-09 1.644e+03
 
 
 We visualize the radially binned shear for the 3 configurations
@@ -262,7 +255,7 @@ We visualize the radially binned shear for the 3 configurations
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x155518bc7c10>
+    <matplotlib.legend.Legend at 0x15531d09dbd0>
 
 
 

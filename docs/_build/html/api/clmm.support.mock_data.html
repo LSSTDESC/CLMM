@@ -1,73 +1,40 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>clmm.support.mock_data module &mdash; CLMM 1.4.4 documentation</title>
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>clmm.support.mock_data module &mdash; CLMM 1.4.5 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-    
+        <script src="../_static/sphinx_highlight.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="clmm.support.sampler module" href="clmm.support.sampler.html" />
     <link rel="prev" title="clmm.support package" href="clmm.support.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> CLMM
-          
-
-          
+            <a href="../index.html" class="icon icon-home"> CLMM
           </a>
-
-          
-            
-            
               <div class="version">
-                1.4.4
+                1.4.5
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -75,42 +42,43 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Getting Started</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../source/overview.html">Rapid overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../source/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../source/citing.html">Using and citing CLMM</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Usage Demos</span></p>
+<p class="caption" role="heading"><span class="caption-text">Usage Demos</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Compare_NFW_critical_massdef.html">Compare NFW profile for the CLMM backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Compare_NFW_critical_massdef.html#comparison-of-nfw-with-mass-definition-based-on-the-critical-density-of-the-universe-for-the-various-backends">Comparison of NFW with mass definition based on the critical density of the universe for the various backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Compare_NFW_critical_massdef.html#compare-all-to-colossus">Compare all to Colossus</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_mass_conversion.html">Mass conversion between spherical overdensity mass definitions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_boost_factors.html">Compute boost factors</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Mass Fitting Examples</span></p>
+<p class="caption" role="heading"><span class="caption-text">Mass Fitting Examples</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_shear_profile_with_miscentering.html">Investigate the impact of miscentering on shear profiles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example4_Fit_Halo_mass_to_HSC_data.html">Using CLMM on Real Datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Compare_NFW_critical_massdef.html">Compare NFW profile for the CLMM backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Compare_NFW_critical_massdef.html#comparison-of-nfw-with-mass-definition-based-on-the-critical-density-of-the-universe-for-the-various-backends">Comparison of NFW with mass definition based on the critical density of the universe for the various backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Compare_NFW_critical_massdef.html#compare-all-to-colossus">Compare all to Colossus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example_cluster_ensemble.html">Generating a cluster catalog and associated source catalogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example_cluster_ensemble.html#creating-clusterensemble-object-and-estimation-of-individual-excess-surface-density-profiles">Creating ClusterEnsemble object and estimation of individual excess surface density profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example_cluster_ensemble.html#stacked-profile-of-the-cluster-ensemble">Stacked profile of the cluster ensemble</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example_cluster_ensemble.html#covariance-bootstrap-sample-jackknife-of-the-stack-between-radial-bins">Covariance (Bootstrap, sample, Jackknife) of the stack between radial bins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example_cluster_ensemble.html#visualizing-the-stacked-profiles-and-corresponding-model">Visualizing the stacked profiles and corresponding model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example_realistic_cluster_ensemble.html">Generate cluster ensemble with “realistic” mass and redshift distribution</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Reference</span></p>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="clmm.clusterensemble.html">clmm.clusterensemble module</a></li>
@@ -146,79 +114,38 @@
 </li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">CLMM</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../api.html">API Documentation</a> &raquo;</li>
-        
-          <li><a href="clmm.support.html">clmm.support package</a> &raquo;</li>
-        
-      <li>clmm.support.mock_data module</li>
-    
-    
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../api.html">API Documentation</a></li>
+          <li class="breadcrumb-item"><a href="clmm.support.html">clmm.support package</a></li>
+      <li class="breadcrumb-item active">clmm.support.mock_data module</li>
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="../_sources/api/clmm.support.mock_data.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="module-clmm.support.mock_data">
-<span id="clmm-support-mock-data-module"></span><h1>clmm.support.mock_data module<a class="headerlink" href="#module-clmm.support.mock_data" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="module-clmm.support.mock_data">
+<span id="clmm-support-mock-data-module"></span><h1>clmm.support.mock_data module<a class="headerlink" href="#module-clmm.support.mock_data" title="Permalink to this heading"></a></h1>
 <p>Functions to generate mock source galaxy distributions to demo lensing code</p>
 <dl class="py function">
-<dt id="clmm.support.mock_data.generate_galaxy_catalog">
-<code class="sig-prename descclassname">clmm.support.mock_data.</code><code class="sig-name descname">generate_galaxy_catalog</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cluster_m</span></em>, <em class="sig-param"><span class="n">cluster_z</span></em>, <em class="sig-param"><span class="n">cluster_c</span></em>, <em class="sig-param"><span class="n">cosmo</span></em>, <em class="sig-param"><span class="n">zsrc</span></em>, <em class="sig-param"><span class="n">cluster_ra</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">cluster_dec</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">delta_so</span><span class="o">=</span><span class="default_value">200</span></em>, <em class="sig-param"><span class="n">massdef</span><span class="o">=</span><span class="default_value">'mean'</span></em>, <em class="sig-param"><span class="n">halo_profile_model</span><span class="o">=</span><span class="default_value">'nfw'</span></em>, <em class="sig-param"><span class="n">zsrc_min</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">zsrc_max</span><span class="o">=</span><span class="default_value">7.0</span></em>, <em class="sig-param"><span class="n">field_size</span><span class="o">=</span><span class="default_value">8.0</span></em>, <em class="sig-param"><span class="n">shapenoise</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mean_e_err</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">nretry</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">ngals</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ngal_density</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">validate_input</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/support/mock_data.html#generate_galaxy_catalog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#clmm.support.mock_data.generate_galaxy_catalog" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="clmm.support.mock_data.generate_galaxy_catalog">
+<span class="sig-prename descclassname"><span class="pre">clmm.support.mock_data.</span></span><span class="sig-name descname"><span class="pre">generate_galaxy_catalog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cluster_m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cluster_z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cluster_c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zsrc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cluster_ra</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cluster_dec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_so</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">massdef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halo_profile_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'nfw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zsrc_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zsrc_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">7.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shapenoise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean_e_err</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">photoz_sigma_unscaled</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nretry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ngals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ngal_density</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_input</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/support/mock_data.html#generate_galaxy_catalog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.support.mock_data.generate_galaxy_catalog" title="Permalink to this definition"></a></dt>
 <dd><p>Generates a mock dataset of sheared background galaxies.</p>
 <p>We build galaxy catalogs following a series of steps.</p>
 <p>1. Draw true redshifts of the source galaxy population. This step is described by the
@@ -317,53 +244,34 @@ user-defined redshift range.  If specified, the ngals argument will be ignored.<
 <p>Much of this code in this function was adapted from the Dallas group</p>
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>
-           
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2018-2021, LSST DESC CLMM Contributors
-
-    </p>
+    <p>&#169; Copyright 2018-2021, LSST DESC CLMM Contributors.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>
