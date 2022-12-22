@@ -1,8 +1,6 @@
 Basic usage of the cosmoDC2 extragalactic catalog with CLMM
 ===========================================================
 
-``(Note: this page was not generated using the latest CLMM version!)``
-
 This notebook can be run at NERSC or CC-IN2P3 where the DESC DC2
 products are stored. You need to be a DESC member to be able to access
 those.
@@ -30,7 +28,7 @@ Check what version we’re using
 
 .. parsed-literal::
 
-    '1.2.0'
+    '1.4.5'
 
 
 
@@ -56,7 +54,7 @@ Read in the extragalactic catalog cosmoDC2
 
 .. parsed-literal::
 
-    <clmm.cosmology.ccl.CCLCosmology at 0x15532148a250>
+    <clmm.cosmology.ccl.CCLCosmology at 0x15531c441b10>
 
 
 
@@ -233,7 +231,7 @@ available options of the functions below.
 .. raw:: html
 
     <b>GCData</b><br> <b>defined by:</b> cosmo='CCLCosmology(H0=71.0, Omega_dm0=0.21999999999999997, Omega_b0=0.0448, Omega_k0=0.0)', bin_units='Mpc'<br> <b>with columns:</b> radius_min, radius, radius_max, gt, gt_err, gx, gx_err, z, z_err, n_src<br> 14 objects<br> 
-    <table id="table23446783685632" class="table-striped table-bordered table-condensed">
+    <table id="table23446614228496" class="table-striped table-bordered table-condensed">
     <thead><tr><th>radius_min</th><th>radius</th><th>radius_max</th><th>gt</th><th>gt_err</th><th>gx</th><th>gx_err</th><th>z</th><th>z_err</th><th>n_src</th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>int64</th></tr></thead>
     <tr><td>0.15</td><td>0.1763113582717511</td><td>0.19846556968648293</td><td>0.02037417866393367</td><td>0.003528427751069608</td><td>0.006753624804594845</td><td>0.0036875324065002747</td><td>0.971778890840735</td><td>0.05041615834029072</td><td>34</td></tr>
@@ -250,7 +248,7 @@ available options of the functions below.
     <tr><td>3.263054561997864</td><td>3.8078574097321094</td><td>4.317359883766556</td><td>0.009310564479903662</td><td>9.765887990236463e-05</td><td>-0.0005546602197688972</td><td>0.00011963442736483391</td><td>0.9923129147500154</td><td>0.003684104410564973</td><td>10860</td></tr>
     <tr><td>4.317359883766556</td><td>4.869885709290059</td><td>5.7123152591553135</td><td>0.004851708424542458</td><td>0.00010753043628393734</td><td>-0.0011034580754977676</td><td>0.00011530961849061012</td><td>0.9844667693302255</td><td>0.0038877964336626212</td><td>9743</td></tr>
     <tr><td>5.7123152591553135</td><td>5.958743529527653</td><td>7.557986014246993</td><td>0.001556568432104305</td><td>0.0003219125950674201</td><td>-0.0036876170325483744</td><td>0.00028155429723345535</td><td>1.0032329033132281</td><td>0.012230303156691607</td><td>1049</td></tr>
-    </table>
+    </table></div>
 
 
 
