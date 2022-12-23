@@ -39,7 +39,7 @@ jobs:
         pip install .
     - name: Run the unit tests
       run: |
-        conda install -c conda-forge numpy=1.23.5
+        conda install -c conda-forge
         pip install pytest pytest-cov
         pytest tests/ --ignore=cluster_toolkit/tests --cov=clmm/
       env:
