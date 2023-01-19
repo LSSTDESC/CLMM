@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-gcc-ubuntu:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-
 
     steps:
     - uses: actions/checkout@v3
