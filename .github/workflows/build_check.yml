@@ -14,6 +14,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: conda-incubator/setup-miniconda@v2
+      with:
+        mamba-version: "*"
     - name: Install prereq using conda
       run: |
         conda install -c conda-forge gobject-introspection pygobject python_abi=3.9=3_cp39 cffi=1.15.1 glib=2.74.1
