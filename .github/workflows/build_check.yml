@@ -14,9 +14,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: conda-incubator/setup-miniconda@v2
-      with:
-        channels: conda-forge, defaults
-        auto-update-conda: 'true'
     - name: Install prereq using conda
       run: |
         conda install -c conda-forge gobject-introspection pygobject python_abi=3.9=3_cp39 cffi=1.15
