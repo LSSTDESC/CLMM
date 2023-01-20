@@ -16,6 +16,8 @@ jobs:
     - uses: conda-incubator/setup-miniconda@v2
     - name: Install prereq using conda
       run: |
+        sudo apt update
+        sudo apt install glibc-source -y
         conda install -c conda-forge gobject-introspection pygobject cffi=1.15.1
         echo "$CONDA/bin" >> $GITHUB_PATH
     - name: Install prereq using pip
