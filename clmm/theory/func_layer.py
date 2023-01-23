@@ -430,7 +430,7 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
         If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only
         availablefor the NumCosmo backend
     z_src_info : str, optional
-        Type of redshift information provided, it describes z_source.
+        Type of redshift information provided by the `z_source` argument.
         The following supported options are:
 
             * 'discrete' (default) : The redshift of sources is provided by `z_source`.
@@ -438,7 +438,7 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
               or all sources are at the same redshift when `z_source` is a float.
 
             * 'distribution' : A redshift distribution function is provided by `z_source`.
-              `z_source` must be a one dimentional function.
+              `z_source` must be a one dimensional function.
 
             * 'beta' : The averaged lensing efficiency is provided by `z_source`.
               `z_source` must be a tuple containing
@@ -462,8 +462,8 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
               when performing the sum. (default=None)
             * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
               when performing the sum. (default=10.0)
-            * 'delta_z_cut' (float) : Redshift interval to be summed with $z_cl$ to return
-              $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
+            * 'delta_z_cut' (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.
+              `delta_z_cut` is ignored if `z_min` is already provided. (default=0.1)
 
     verbose : bool, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL
@@ -547,7 +547,7 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
         If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only
         available for the NumCosmo backend
     z_src_info : str, optional
-        Type of redshift information provided, it describes z_source.
+        Type of redshift information provided by the `z_source` argument.
         The following supported options are:
 
             * 'discrete' (default) : The redshift of sources is provided by `z_source`.
@@ -555,7 +555,7 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
               or all sources are at the same redshift when `z_source` is a float.
 
             * 'distribution' : A redshift distribution function is provided by `z_source`.
-              `z_source` must be a one dimentional function.
+              `z_source` must be a one dimensional function.
 
             * 'beta' : The averaged lensing efficiency is provided by `z_source`.
               `z_source` must be a tuple containing
@@ -658,7 +658,7 @@ def compute_reduced_tangential_shear(
             * 'virial'
 
     z_src_info : str, optional
-        Type of redshift information provided, it describes z_source.
+        Type of redshift information provided by the `z_source` argument.
         The following supported options are:
 
             * 'discrete' (default) : The redshift of sources is provided by `z_source`.
@@ -666,7 +666,7 @@ def compute_reduced_tangential_shear(
               or all sources are at the same redshift when `z_source` is a float.
 
             * 'distribution' : A redshift distribution function is provided by `z_source`.
-              `z_source` must be a one dimentional function.
+              `z_source` must be a one dimensional function.
 
             * 'beta' : The averaged lensing efficiency is provided by `z_source`.
               `z_source` must be a tuple containing
@@ -706,8 +706,8 @@ def compute_reduced_tangential_shear(
               when performing the sum. (default=None)
             * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
               when performing the sum. (default=10.0)
-            * 'delta_z_cut' (float) : Redshift interval to be summed with $z_cl$ to return
-              $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
+            * 'delta_z_cut' (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.
+              `delta_z_cut` is ignored if `z_min` is already provided. (default=0.1)
 
     alpha_ein : float, optional
         If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only
@@ -786,7 +786,7 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
         If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only
         available for the NumCosmo backend
     z_src_info : str, optional
-        Type of redshift information provided, it describes z_source.
+        Type of redshift information provided by the `z_source` argument.
         The following supported options are:
 
         * 'discrete' (default) : The redshift of sources is provided by `z_source`.
@@ -794,7 +794,7 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
             or all sources are at the same redshift when `z_source` is a float.
 
         * 'distribution' : A redshift distribution function is provided by `z_source`.
-            `z_source` must be a one dimentional function.
+            `z_source` must be a one dimensional function.
 
         * 'beta' : The averaged lensing efficiency is provided by `z_source`.
             `z_source` must be a tuple containing
@@ -816,7 +816,7 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
             * None (default): Full computation is made for each `r_proj, z_source` pair
               individually. It requires `z_src_info` to be 'discrete' or 'distribution'.
             * 'weak_lensing' : Uses the weak lensing approximation of the magnification
-              :math:`\my \approx 1 + 2 \kappa`. `z_src_info` must be either 'beta', or
+              :math:`\mu \approx 1 + 2 \kappa`. `z_src_info` must be either 'beta', or
               'distribution' (that will be used to compute :math:`\langle \beta_s \rangle`)
 
     beta_kwargs: None, dict
@@ -827,8 +827,8 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
               when performing the sum. (default=None)
             * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
               when performing the sum. (default=10.0)
-            * 'delta_z_cut' (float) : Redshift interval to be summed with $z_cl$ to return
-              $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
+            * 'delta_z_cut' (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.
+              `delta_z_cut` is ignored if `z_min` is already provided. (default=0.1)
 
     verbose : bool, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL
@@ -926,14 +926,14 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
             * 'virial'
 
     z_src_info : str, optional
-        Type of redshift information provided, it describes z_source.
+        Type of redshift information provided by the `z_source` argument.
         The following supported options are:
 
         * 'discrete' (default) : The redshift of sources is provided by `z_source`.
             It can be individual redshifts for each source galaxy when `z_source` is an array
             or all sources are at the same redshift when `z_source` is a float.
         * 'distribution' : A redshift distribution function is provided by `z_source`.
-            `z_source` must be a one dimentional function.
+            `z_source` must be a one dimensional function.
         * 'beta' : The averaged lensing efficiency is provided by `z_source`.
             `z_source` must be a tuple containing
             ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
@@ -955,8 +955,8 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
               individually. It requires `z_src_info` to be 'discrete' or 'distribution'.
 
             * 'weak lensing' : Uses the weak lensing approximation of the magnification bias
-              :math:`\mu \approx 1 + 2 \kappa \left(\alpha - 1 \right)`. `z_src_info` must be
-              either 'beta', or 'distribution' (that will be used to compute
+              :math:`\mu^{\alpha - 1} \approx 1 + 2 \kappa \left(\alpha - 1 \right)`.
+              `z_src_info` must be either 'beta', or 'distribution' (that will be used to compute
               :math:`\langle \beta_s \rangle`)
 
     beta_kwargs: None, dict
@@ -967,8 +967,8 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
               when performing the sum. (default=None)
             * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
               when performing the sum. (default=10.0)
-            * 'delta_z_cut' (float) : Redshift interval to be summed with $z_cl$ to return
-              $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
+            * 'delta_z_cut' (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.
+              `delta_z_cut` is ignored if `z_min` is already provided. (default=0.1)
 
     validate_input : bool, optional
         If True (default), the types of the arguments are checked before proceeding.
