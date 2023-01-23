@@ -687,7 +687,7 @@ def compute_reduced_tangential_shear(
 
             * None (default): Requires `z_src_info` to be 'discrete' or 'distribution'.
               If `z_src_info='discrete'`, full computation is made for each
-              `r_proj, z_src` pair individually. If `z_src_info='distribution'`, reduced
+              `r_proj, z_source` pair individually. If `z_src_info='distribution'`, reduced
               tangential shear at each value of `r_proj` is calculated as
 
               .. math::
@@ -835,7 +835,7 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
 
             * None (default): Requires `z_src_info` to be 'discrete' or 'distribution'.
               If `z_src_info='discrete'`, full computation is made for each
-              `r_proj, z_src` pair individually. If `z_src_info='distribution'`, magnification
+              `r_proj, z_source` pair individually. If `z_src_info='distribution'`, magnification
               at each value of `r_proj` is calculated as
 
               .. math::
@@ -999,7 +999,7 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
 
             * None (default): Requires `z_src_info` to be 'discrete' or 'distribution'.
               If `z_src_info='discrete'`, full computation is made for each
-              `r_proj, z_src` pair individually. If `z_src_info='distribution'`, magnification
+              `r_proj, z_source` pair individually. If `z_src_info='distribution'`, magnification
               bias at each value of `r_proj` is calculated as
 
               .. math::
