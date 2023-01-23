@@ -18,12 +18,15 @@ class CLMMCosmology:
         Cosmology library used in the back-end
     validate_input: bool
         Validade each input argument
+    additional_config: dict
+        Dictionary with additional (implicit) config that will be used by the class.
     """
 
     def __init__(self, validate_input=True, **kwargs):
         self.backend = None
         self.be_cosmo = None
         self.validate_input = validate_input
+        self.additional_config = {}
         self.set_be_cosmo(**kwargs)
 
     def __getitem__(self, key):
