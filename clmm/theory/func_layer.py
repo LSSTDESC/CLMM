@@ -683,20 +683,40 @@ def compute_reduced_tangential_shear(
                     {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
 
     approx : str, optional
-        Type of computation to be made for reduced shears, options are:
+        Type of computation to be made for reduced tangential shears, options are:
 
-            * None (default): Full computation is made for each `r_proj, z_source` pair
-              individually. It requires `z_src_info` to be 'discrete' or 'distribution'.
+            * None (default): Requires `z_src_info` to be 'discrete' or 'distribution'.
+              If `z_src_info='discrete'`, full computation is made for each
+              `r_proj, z_src` pair individually. If `z_src_info='distribution'`, reduced
+              tangential shear at each value of `r_proj` is calculated as
 
-            * 'applegate14' : Uses the approach from Weighing the Giants - III (equation 6 in
+              .. math::
+                  g_t
+                  =\left<\frac{\beta_s\gamma_{\infty}}{1-\beta_s\kappa_{\infty}}\right>
+                  =\frac{\int_{z_{min}}^{z_{max}}\frac{\beta_s(z)\gamma_{\infty}}
+                  {1-\beta_s(z)\kappa_{\infty}}N(z)\text{d}z}
+                  {\int_{z_{min}}^{z_{max}} N(z)\text{d}z}
+
+            * 'order1' : Same approach as in Weighing the Giants - III (equation 6 in
               Applegate et al. 2014; https://arxiv.org/abs/1208.0605). `z_src_info` must be
               either 'beta', or 'distribution' (that will be used to compute
-              :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`)
+              :math:`\langle \beta_s \rangle`)
 
-            * 'schrabback18' : Uses the approach from Cluster Mass Calibration at High Redshift
-              (equation 12 in Schrabback et al. 2017; https://arxiv.org/abs/1611.03866).
+              .. math::
+                  g_t\approx\frac{\left<\beta_s\right>\gamma_{\infty}}
+                  {1-\left<\beta_s\right>\kappa_{\infty}}
+
+            * 'order2' : Same approach as in Cluster Mass Calibration at High
+              Redshift (equation 12 in Schrabback et al. 2017;
+              https://arxiv.org/abs/1611.03866).
               `z_src_info` must be either 'beta', or 'distribution' (that will be used
               to compute :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`)
+
+              .. math::
+                  g_t\approx\frac{\left<\beta_s\right>\gamma_{\infty}}
+                  {1-\left<\beta_s\right>\kappa_{\infty}}
+                  \left(1+\left(\frac{\left<\beta_s^2\right>}
+                  {\left<\beta_s\right>^2}-1\right)\left<\beta_s\right>\kappa_{\infty}\right)
 
     beta_kwargs: None, dict
         Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
@@ -811,13 +831,39 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
                 {D_{L,\infty}}\right)^2 \right\rangle
 
     approx : str, optional
-        Type of computation to be made for reduced shears, options are:
+        Type of computation to be made for magnifications, options are:
 
-            * None (default): Full computation is made for each `r_proj, z_source` pair
-              individually. It requires `z_src_info` to be 'discrete' or 'distribution'.
-            * 'weak_lensing' : Uses the weak lensing approximation of the magnification
-              :math:`\mu \approx 1 + 2 \kappa`. `z_src_info` must be either 'beta', or
-              'distribution' (that will be used to compute :math:`\langle \beta_s \rangle`)
+            * None (default): Requires `z_src_info` to be 'discrete' or 'distribution'.
+              If `z_src_info='discrete'`, full computation is made for each
+              `r_proj, z_src` pair individually. If `z_src_info='distribution'`, magnification
+              at each value of `r_proj` is calculated as
+
+              .. math::
+                  \mu
+                  =\left<\frac{1}{\left(1-\beta_s\kappa_{\infty}\right)^2
+                  -\left(\beta_s\gamma_{\infty}\right)^2}\right>
+                  =\frac{\int_{z_{min}}^{z_{max}}\frac{N(z)\text{d}z}
+                  {\left(1-\beta_s(z)\kappa_{\infty}\right)^2
+                  -\left(\beta_s(z)\gamma_{\infty}\right)^2}}
+                  {\int_{z_{min}}^{z_{max}} N(z)\text{d}z}
+
+            * 'order1' : Uses the weak lensing approximation of the magnification with up to
+              first-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`.
+              `z_src_info` must be either 'beta', or 'distribution' (that will be used to
+              compute :math:`\langle \beta_s \rangle`)
+
+              .. math::
+                  \mu \approx 1 + 2 \left<\beta_s\right>\kappa_{\infty}
+
+            * 'order2' : Uses the weak lensing approximation of the magnification with up to
+              second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`.
+              `z_src_info` must be either 'beta', or 'distribution' (that will be used to
+              compute :math:`\langle \beta_s \rangle`)
+
+              .. math::
+                  \mu \approx 1 + 2 \left<\beta_s\right>\kappa_{\infty}
+                  + 3 \left<\beta_s^2\right>\kappa_{\infty}^2
+                  + \left<\beta_s^2\right>\gamma_{\infty}^2
 
     beta_kwargs: None, dict
         Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
@@ -949,15 +995,45 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
                 {D_{L,\infty}}\right)^2 \right\rangle
 
     approx : str, optional
-        Type of computation to be made for reduced shears, options are:
+        Type of computation to be made for magnification biases, options are:
 
-            * None (default): Full computation is made for each `r_proj, z_source` pair
-              individually. It requires `z_src_info` to be 'discrete' or 'distribution'.
+            * None (default): Requires `z_src_info` to be 'discrete' or 'distribution'.
+              If `z_src_info='discrete'`, full computation is made for each
+              `r_proj, z_src` pair individually. If `z_src_info='distribution'`, magnification
+              bias at each value of `r_proj` is calculated as
 
-            * 'weak lensing' : Uses the weak lensing approximation of the magnification bias
-              :math:`\mu^{\alpha - 1} \approx 1 + 2 \kappa \left(\alpha - 1 \right)`.
-              `z_src_info` must be either 'beta', or 'distribution' (that will be used to compute
-              :math:`\langle \beta_s \rangle`)
+              .. math::
+                  \mu^{\alpha-1}
+                  &=\left(\left<\frac{1}{\left(1-\beta_s\kappa_{\infty}\right)^2
+                  -\left(\beta_s\gamma_{\infty}\right)^2}\right>\right)^{\alpha-1}
+                  \\\\
+                  &=\frac{\int_{z_{min}}^{z_{max}}\frac{N(z)\text{d}z}
+                  {\left(\left(1-\beta_s(z)\kappa_{\infty}\right)^2
+                  -\left(\beta_s(z)\gamma_{\infty}\right)^2\right)^{\alpha-1}}}
+                  {\int_{z_{min}}^{z_{max}} N(z)\text{d}z}
+
+            * 'order1' : Uses the weak lensing approximation of the magnification bias with up
+              to first-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`.
+              `z_src_info` must be either 'beta', or 'distribution' (that will be used to
+              compute :math:`\langle \beta_s \rangle`)
+
+              .. math::
+                  \mu^{\alpha-1} \approx
+                  1 + \left(\alpha-1\right)\left(2 \left<\beta_s\right>\kappa_{\infty}\right)
+
+            * 'order2' : Uses the weak lensing approximation of the magnification bias with up
+              to second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`.
+              `z_src_info` must be either 'beta', or 'distribution' (that will be used to
+              compute :math:`\langle \beta_s \rangle`)
+
+              .. math::
+                  \mu^{\alpha-1} \approx
+                  1 &+ \left(\alpha-1\right)\left(2 \left<\beta_s\right>\kappa_{\infty}\right)
+                  \\\\
+                  &+ \left(\alpha-1\right)\left(\left<\beta_s^2\right>\gamma_{\infty}^2\right)
+                  \\\\
+                  &+ \left(2\alpha-1\right)\left(\alpha-1\right)
+                  \left(\left<\beta_s^2\right>\kappa_{\infty}^2\right)
 
     beta_kwargs: None, dict
         Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
