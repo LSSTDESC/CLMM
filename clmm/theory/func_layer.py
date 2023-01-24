@@ -858,7 +858,7 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
             * 'order2' : Uses the weak lensing approximation of the magnification with up to
               second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`.
               `z_src_info` must be either 'beta', or 'distribution' (that will be used to
-              compute :math:`\langle \beta_s \rangle`)
+              compute :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`)
 
               .. math::
                   \mu \approx 1 + 2 \left<\beta_s\right>\kappa_{\infty}
@@ -1024,7 +1024,7 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
             * 'order2' : Uses the weak lensing approximation of the magnification bias with up
               to second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`.
               `z_src_info` must be either 'beta', or 'distribution' (that will be used to
-              compute :math:`\langle \beta_s \rangle`)
+              compute :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`)
 
               .. math::
                   \mu^{\alpha-1} \approx
