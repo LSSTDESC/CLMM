@@ -575,12 +575,12 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
         Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
         Only used if `z_src_info='distribution'`. Possible keys are:
 
-            * `zmin` (None, float) : Minimum redshift to be set as the source of the galaxy
+            * 'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
               when performing the sum. (default=None)
-            * `zmax` (float) : Maximum redshift to be set as the source of the galaxy
+            * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
               when performing the sum. (default=10.0)
-            * `delta_z_cut` (float) : Redshift interval to be summed with $z_cl$ to return
-              $zmin$. This feature is not used if $z_min$ is provided. (default=0.1)
+            * 'delta_z_cut' (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.
+              `delta_z_cut` is ignored if `z_min` is already provided. (default=0.1)
 
     verbose : bool, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL
