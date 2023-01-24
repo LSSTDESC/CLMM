@@ -809,26 +809,26 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
         Type of redshift information provided by the `z_source` argument.
         The following supported options are:
 
-        * 'discrete' (default) : The redshift of sources is provided by `z_source`.
-            It can be individual redshifts for each source galaxy when `z_source` is an array
-            or all sources are at the same redshift when `z_source` is a float.
+            * 'discrete' (default) : The redshift of sources is provided by `z_source`.
+              It can be individual redshifts for each source galaxy when `z_source` is an array
+              or all sources are at the same redshift when `z_source` is a float.
 
-        * 'distribution' : A redshift distribution function is provided by `z_source`.
-            `z_source` must be a one dimensional function.
+            * 'distribution' : A redshift distribution function is provided by `z_source`.
+              `z_source` must be a one dimensional function.
 
-        * 'beta' : The averaged lensing efficiency is provided by `z_source`.
-            `z_source` must be a tuple containing
-            ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
-            the lensing efficiency and square of the lensing efficiency averaged over
-            the galaxy redshift distribution repectively.
+            * 'beta' : The averaged lensing efficiency is provided by `z_source`.
+              `z_source` must be a tuple containing
+              ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
+              the lensing efficiency and square of the lensing efficiency averaged over
+              the galaxy redshift distribution repectively.
 
-            .. math::
-                \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}
-                {D_{L,\infty}}\right\rangle
+                .. math::
+                    \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}
+                    {D_{L,\infty}}\right\rangle
 
-            .. math::
-                \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}
-                {D_{L,\infty}}\right)^2 \right\rangle
+                .. math::
+                    \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}
+                    {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
 
     approx : str, optional
         Type of computation to be made for magnifications, options are:
@@ -975,24 +975,26 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
         Type of redshift information provided by the `z_source` argument.
         The following supported options are:
 
-        * 'discrete' (default) : The redshift of sources is provided by `z_source`.
-            It can be individual redshifts for each source galaxy when `z_source` is an array
-            or all sources are at the same redshift when `z_source` is a float.
-        * 'distribution' : A redshift distribution function is provided by `z_source`.
-            `z_source` must be a one dimensional function.
-        * 'beta' : The averaged lensing efficiency is provided by `z_source`.
-            `z_source` must be a tuple containing
-            ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
-            the lensing efficiency and square of the lensing efficiency averaged over
-            the galaxy redshift distribution repectively.
+            * 'discrete' (default) : The redshift of sources is provided by `z_source`.
+              It can be individual redshifts for each source galaxy when `z_source` is an array
+              or all sources are at the same redshift when `z_source` is a float.
 
-            .. math::
-                \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}
-                {D_{L,\infty}}\right\rangle
+            * 'distribution' : A redshift distribution function is provided by `z_source`.
+              `z_source` must be a one dimensional function.
 
-            .. math::
-                \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}
-                {D_{L,\infty}}\right)^2 \right\rangle
+            * 'beta' : The averaged lensing efficiency is provided by `z_source`.
+              `z_source` must be a tuple containing
+              ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
+              the lensing efficiency and square of the lensing efficiency averaged over
+              the galaxy redshift distribution repectively.
+
+                .. math::
+                    \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}
+                    {D_{L,\infty}}\right\rangle
+
+                .. math::
+                    \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}
+                    {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
 
     approx : str, optional
         Type of computation to be made for magnification biases, options are:
