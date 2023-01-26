@@ -656,7 +656,7 @@ def compute_for_good_redshifts(function, z1, z2, bad_value, warning_message,
     Return type of `function`
         Output of `function` with value for `z1` >= `z2` replaced by `bad_value`
     """
-    kwargs = {z1_arg_name:locals()['z1'], z2_arg_name:locals()['z2']}
+    kwargs = {z1_arg_name:locals()['z1'], z2_arg_name:locals()['z2'], **kwargs}
 
     z_good = np.less(z1, z2)
     if r_proj is not None:

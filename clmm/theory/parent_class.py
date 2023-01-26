@@ -804,7 +804,8 @@ class CLMModeling:
             beta_s_mean = self._get_beta_s_mean(
                 z_cl, z_src, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
 
-            gammat_inf = self._eval_tangential_shear(r_proj=r_proj, z_cl=z_cl, z_src=self.z_inf)
+            gammat_inf = self._eval_tangential_shear_core(r_proj=r_proj,
+                                                          z_cl=z_cl, z_src=self.z_inf)
 
             gammat = beta_s_mean * gammat_inf
         else:
@@ -898,7 +899,7 @@ class CLMModeling:
             beta_s_mean = self._get_beta_s_mean(
                 z_cl, z_src, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
 
-            kappa_inf = self._eval_convergence(r_proj=r_proj, z_cl=z_cl, z_src=self.z_inf)
+            kappa_inf = self._eval_convergence_core(r_proj=r_proj, z_cl=z_cl, z_src=self.z_inf)
 
             kappa = beta_s_mean * kappa_inf
         else:
@@ -935,9 +936,10 @@ class CLMModeling:
             Function averaged by pdz, with r_proj dimention.
         """
         tfunc = lambda z, r: compute_beta_s_func(
-            z, z_cl, self.z_inf, self.cosmo, self._eval_tangential_shear, r, z_cl, self.z_inf)
+            z, z_cl, self.z_inf, self.cosmo,
+            self._eval_tangential_shear_core, r, z_cl, self.z_inf)
         kfunc = lambda z, r: compute_beta_s_func(
-            z, z_cl, self.z_inf, self.cosmo, self._eval_convergence, r, z_cl, self.z_inf)
+            z, z_cl, self.z_inf, self.cosmo, self._eval_convergence_core, r, z_cl, self.z_inf)
         __integrand__ = lambda z, r: pdz_func(z)*core(tfunc(z, r), kfunc(z, r))
 
         _integ_kwargs = {'zmax': 10.0, 'delta_z_cut': 0.1}
@@ -1081,8 +1083,8 @@ class CLMModeling:
             beta_s_mean = self._get_beta_s_mean(
                 z_cl, z_src, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
 
-            gammat_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=self.z_inf)
-            kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=self.z_inf)
+            gammat_inf = self._eval_tangential_shear_core(r_proj, z_cl, z_src=self.z_inf)
+            kappa_inf = self._eval_convergence_core(r_proj, z_cl, z_src=self.z_inf)
 
             gt = beta_s_mean * gammat_inf / (1. - beta_s_mean * kappa_inf)
 
@@ -1207,13 +1209,14 @@ class CLMModeling:
         if approx is None:
             if z_src_info=='distribution':
                 core = lambda gammat, kappa: 1/((1-kappa)**2-gammat**2)
-                mu = compute_for_good_redshifts(self._eval_magnification_core,
-                                                z_cl, z_src, 1., warning_msg,
-                                                'z_cl', 'z_src', r_proj)
+                mu = self._pdz_weighted_avg(core, z_src, r_proj, z_cl,
+                                            integ_kwargs=beta_kwargs)
             elif z_src_info=='discrete':
                 warning_msg = '\nSome source redshifts are lower than the cluster redshift.'+\
                 '\nMagnification = 1 for those galaxies.'
-                mu = self._eval_magnification(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
+                mu = compute_for_good_redshifts(self._eval_magnification_core,
+                                                z_cl, z_src, 1., warning_msg,
+                                                'z_cl', 'z_src', r_proj)
             else:
                 raise ValueError(
                     "approx=None requires z_src_info='discrete' or 'distribution',"
@@ -1223,8 +1226,8 @@ class CLMModeling:
             beta_s_mean = self._get_beta_s_mean(
                 z_cl, z_src, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
 
-            kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=self.z_inf)
-            gammat_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=self.z_inf)
+            kappa_inf = self._eval_convergence_core(r_proj, z_cl, z_src=self.z_inf)
+            gammat_inf = self.eval_tangential_shear_core(r_proj, z_cl, z_src=self.z_inf)
 
             mu = 1 + 2*beta_s_mean*kappa_inf
 
@@ -1375,8 +1378,8 @@ class CLMModeling:
             beta_s_mean = self._get_beta_s_mean(
                 z_cl, z_src, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
 
-            kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=self.z_inf)
-            gammat_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=self.z_inf)
+            kappa_inf = self._eval_convergence_core(r_proj, z_cl, z_src=self.z_inf)
+            gammat_inf = self._eval_tangential_shear_core(r_proj, z_cl, z_src=self.z_inf)
 
             mu_bias = 1 + (alpha-1)*(2*beta_s_mean*kappa_inf)
 

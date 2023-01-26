@@ -195,7 +195,7 @@ class CCLCLMModeling(CLMModeling):
 
         return res
 
-    def _eval_reduced_tangential_shear_sp_core(self, r_proj, z_cl, z_src):
+    def _eval_reduced_tangential_shear_core(self, r_proj, z_cl, z_src):
         """eval reduced tangential shear with all background sources at the same plane"""
         if not self._new_version:
             warnings.warn('\nOlder version of CCL detected')
