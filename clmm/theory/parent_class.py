@@ -602,7 +602,7 @@ class CLMModeling:
             Information on the background source galaxy redshift(s). Value required depends on
             `z_src_info` (see below).
         z_src_info : str, optional
-            Type of redshift information provided, it describes z_src.
+            Type of redshift information provided by the `z_src` argument.
             The following supported options are:
 
                 * 'discrete' (default) : The redshift of sources is provided by `z_src`.
@@ -634,8 +634,8 @@ class CLMModeling:
                   when performing the sum. (default=None)
                 * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
                   when performing the sum. (default=10.0)
-                * 'delta_z_cut' (float) : Redshift interval to be summed with `z_cl` to return
-                  `zmin`. This feature is not used if `zmin` is provided. (default=0.1)
+                * 'delta_z_cut' (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.
+                  `delta_z_cut` is ignored if `z_min` is already provided. (default=0.1)
 
         Returns
         -------
@@ -665,7 +665,7 @@ class CLMModeling:
             Information on the background source galaxy redshift(s). Value required depends on
             `z_src_info` (see below).
         z_src_info : str, optional
-            Type of redshift information provided, it describes z_src.
+            Type of redshift information provided by the `z_src` argument.
             The following supported options are:
 
                 * 'discrete' (default) : The redshift of sources is provided by `z_src`.
@@ -697,8 +697,8 @@ class CLMModeling:
                   when performing the sum. (default=None)
                 * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
                   when performing the sum. (default=10.0)
-                * 'delta_z_cut' (float) : Redshift interval to be summed with `z_cl` to return
-                  `zmin`. This feature is not used if `zmin` is provided. (default=0.1)
+                * 'delta_z_cut' (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.
+                  `delta_z_cut` is ignored if `z_min` is already provided. (default=0.1)
 
         Returns
         -------
@@ -729,7 +729,7 @@ class CLMModeling:
             Information on the background source galaxy redshift(s). Value required depends on
             `z_src_info` (see below).
         z_src_info : str, optional
-            Type of redshift information provided, it describes z_src.
+            Type of redshift information provided by the `z_src` argument.
             The following supported options are:
 
                 * 'discrete' (default) : The redshift of sources is provided by `z_src`.
@@ -761,8 +761,8 @@ class CLMModeling:
                   when performing the sum. (default=None)
                 * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
                   when performing the sum. (default=10.0)
-                * 'delta_z_cut' (float) : Redshift interval to be summed with `z_cl` to return
-                  `zmin`. This feature is not used if `zmin` is provided. (default=0.1)
+                * 'delta_z_cut' (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.
+                  `delta_z_cut` is ignored if `z_min` is already provided. (default=0.1)
 
         verbose : bool, optional
             If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
@@ -819,7 +819,7 @@ class CLMModeling:
             Information on the background source galaxy redshift(s). Value required depends on
             `z_src_info` (see below).
         z_src_info : str, optional
-            Type of redshift information provided, it describes z_src.
+            Type of redshift information provided by the `z_src` argument.
             The following supported options are:
 
                 * 'discrete' (default) : The redshift of sources is provided by `z_src`.
@@ -851,8 +851,8 @@ class CLMModeling:
                   when performing the sum. (default=None)
                 * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
                   when performing the sum. (default=10.0)
-                * 'delta_z_cut' (float) : Redshift interval to be summed with `z_cl` to return
-                  `zmin`. This feature is not used if `zmin` is provided. (default=0.1)
+                * 'delta_z_cut' (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.
+                  `delta_z_cut` is ignored if `z_min` is already provided. (default=0.1)
 
         verbose : bool, optional
             If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
@@ -906,8 +906,8 @@ class CLMModeling:
                   when performing the sum. (default=None)
                 * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
                   when performing the sum. (default=10.0)
-                * 'delta_z_cut' (float) : Redshift interval to be summed with `z_cl` to return
-                  `zmin`. This feature is not used if `zmin` is provided. (default=0.1)
+                * 'delta_z_cut' (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.
+                  `delta_z_cut` is ignored if `z_min` is already provided. (default=0.1)
 
         Returns
         -------
@@ -947,7 +947,7 @@ class CLMModeling:
             Information on the background source galaxy redshift(s). Value required depends on
             `z_src_info` (see below).
         z_src_info : str, optional
-            Type of redshift information provided, it describes z_src.
+            Type of redshift information provided by the `z_src` argument.
             The following supported options are:
 
                 * 'discrete' (default) : The redshift of sources is provided by `z_src`.
@@ -986,7 +986,7 @@ class CLMModeling:
                       {1-\beta_s(z)\kappa_{\infty}}N(z)\text{d}z}
                       {\int_{z_{min}}^{z_{max}} N(z)\text{d}z}
 
-                * 'order1' : Same as the approach from Weighing the Giants - III (equation 6 in
+                * 'order1' : Same approach as in Weighing the Giants - III (equation 6 in
                   Applegate et al. 2014; https://arxiv.org/abs/1208.0605). `z_src_info` must be
                   either 'beta', or 'distribution' (that will be used to compute
                   :math:`\langle \beta_s \rangle`)
@@ -995,7 +995,7 @@ class CLMModeling:
                       g_t\approx\frac{\left<\beta_s\right>\gamma_{\infty}}
                       {1-\left<\beta_s\right>\kappa_{\infty}}
 
-                * 'order2' : Same as the approach from Cluster Mass Calibration at High
+                * 'order2' : Same approach as in Cluster Mass Calibration at High
                   Redshift (equation 12 in Schrabback et al. 2017;
                   https://arxiv.org/abs/1611.03866).
                   `z_src_info` must be either 'beta', or 'distribution' (that will be used
@@ -1015,8 +1015,8 @@ class CLMModeling:
                   when performing the sum. (default=None)
                 * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
                   when performing the sum. (default=10.0)
-                * 'delta_z_cut' (float) : Redshift interval to be summed with `z_cl` to return
-                  `zmin`. This feature is not used if `zmin` is provided. (default=0.1)
+                * 'delta_z_cut' (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.
+                  `delta_z_cut` is ignored if `z_min` is already provided. (default=0.1)
 
         verbose : bool, optional
             If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
@@ -1090,7 +1090,7 @@ class CLMModeling:
             Information on the background source galaxy redshift(s). Value required depends on
             `z_src_info` (see below).
         z_src_info : str, optional
-            Type of redshift information provided, it describes z_src.
+            Type of redshift information provided by the `z_src` argument.
             The following supported options are:
 
                 * 'discrete' (default) : The redshift of sources is provided by `z_src`.
@@ -1157,8 +1157,8 @@ class CLMModeling:
                   when performing the sum. (default=None)
                 * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
                   when performing the sum. (default=10.0)
-                * 'delta_z_cut' (float) : Redshift interval to be summed with `z_cl` to return
-                  `zmin`. This feature is not used if `zmin` is provided. (default=0.1)
+                * 'delta_z_cut' (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.
+                  `delta_z_cut` is ignored if `z_min` is already provided. (default=0.1)
 
         verbose : bool, optional
             If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
@@ -1230,7 +1230,7 @@ class CLMModeling:
         alpha : float
             Slope of the cummulative number count of background sources at a given magnitude
         z_src_info : str, optional
-            Type of redshift information provided, it describes z_src.
+            Type of redshift information provided by the `z_src` argument.
             The following supported options are:
 
                 * 'discrete' (default) : The redshift of sources is provided by `z_src`.
@@ -1303,8 +1303,8 @@ class CLMModeling:
                   when performing the sum. (default=None)
                 * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
                   when performing the sum. (default=10.0)
-                * 'delta_z_cut' (float) : Redshift interval to be summed with `z_cl` to return
-                  `zmin`. This feature is not used if `zmin` is provided. (default=0.1)
+                * 'delta_z_cut' (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.
+                  `delta_z_cut` is ignored if `z_min` is already provided. (default=0.1)
 
         verbose : bool, optional
             If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and

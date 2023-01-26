@@ -429,7 +429,6 @@ def helper_physics_functions(func, additional_kwargs={}):
     kwargs.update(additional_kwargs)
 
     # Test defaults
-    kwargs2 = {}
     defaulttruth = func(**kwargs, delta_mdef=200, halo_profile_model='nfw',
                         z_src_info='discrete')
     assert_allclose(func(**kwargs, delta_mdef=200), defaulttruth, **TOLERANCE)
