@@ -6,18 +6,17 @@ import clmm
 import clmm.dataops as da
 from clmm.support import mock_data as mock
 from clmm.support.sampler import fitters
-from clmm import Cosmology
-from clmm.utils import _chang_z_distrib, _srd_z_distrib
+from clmm import z_distributions as zdist
 
 TOLERANCE = {'rtol': 5.0e-4, 'atol': 1.e-4}
-cosmo = Cosmology(H0=70.0, Omega_dm0=0.27 - 0.045,
-                  Omega_b0=0.045, Omega_k0=0.0)
 
 
 def test_mock_data():
     """ Run generate_galaxy_catalog 1000 times and assert that retrieved mass is always consistent
     with input
     """
+    cosmo = clmm.Cosmology(H0=70.0, Omega_dm0=0.27 - 0.045,
+                      Omega_b0=0.045, Omega_k0=0.0)
     # Basic raise tests
     assert_raises(ValueError, mock.generate_galaxy_catalog,
                   1e15, 0.3, 4, cosmo, 0.8, ngals=None)
@@ -41,23 +40,23 @@ def test_mock_data():
     # A proper test should be implemented
     mock.generate_galaxy_catalog(
         1e15, 0.3, 4, cosmo, 0.8, ngals=None, ngal_density=1)
-    
+
     # Simple test to check if option with zsrc=chang13 is working
     # A proper test should be implemented
     mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 'chang13', ngals=100)
     mock.generate_galaxy_catalog(
         1e15, 0.3, 4, cosmo, 'chang13', ngal_density=1)
-    
+
     # Simple test to check if option with zsrc=desc_src is working
     # A proper test should be implemented
     mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 'desc_srd', ngals=100)
     mock.generate_galaxy_catalog(
         1e15, 0.3, 4, cosmo, 'desc_srd', ngal_density=1)
-    
+
     # Simple test to check if option with pdz is working
     # A proper test should be implemented
     mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.8, ngals=100, photoz_sigma_unscaled=.1)
-    
+
     # Simple test to check if option with mean_e_err is working
     # A proper test should be implemented
     mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.8, ngals=100, mean_e_err=0.01)
@@ -116,6 +115,8 @@ def test_z_distr():
     """
     Test the redshift distribution options: single plan, uniform, Chang13, DESC SRD
     """
+    cosmo = clmm.Cosmology(H0=70.0, Omega_dm0=0.27 - 0.045,
+                      Omega_b0=0.045, Omega_k0=0.0)
 
     np.random.seed(256429)
 
@@ -147,9 +148,9 @@ def test_z_distr():
     assert_equal(np.count_nonzero((data['z'] < zmin) | (data['z'] > zmax)), 0)
     # Check that the z distribution follows Chang13 distribution
     hist = np.histogram(data['z'], bins=bins)
-    norm = _chang_z_distrib(zmax, is_cdf=True)-_chang_z_distrib(zmin, is_cdf=True)
+    norm = zdist.chang2013(zmax, is_cdf=True)-zdist.chang2013(zmin, is_cdf=True)
     # Expected number of galaxies in bin i = Ntot*distrib(z_{bin center})*binsize/norm
-    chang = np.array([mock._chang_z_distrib(z)*ngals *
+    chang = np.array([zdist.chang2013(z)*ngals *
                      0.1/norm for z in bins[:-1]+0.05])
     assert_allclose(hist[0], chang, atol=100, rtol=0.1)
 
@@ -160,9 +161,9 @@ def test_z_distr():
     assert_equal(np.count_nonzero((data['z'] < zmin) | (data['z'] > zmax)), 0)
     # Check that the z distribution follows Chang13 distribution
     hist = np.histogram(data['z'], bins=bins)
-    norm = _srd_z_distrib(zmax, is_cdf=True)-_srd_z_distrib(zmin, is_cdf=True)
+    norm = zdist.desc_srd(zmax, is_cdf=True)-zdist.desc_srd(zmin, is_cdf=True)
     # Expected number of galaxies in bin i = Ntot*distrib(z_{bin center})*binsize/norm
-    srd = np.array([mock._srd_z_distrib(z)*ngals*0.1/norm for z in bins[:-1]+0.05])
+    srd = np.array([zdist.desc_srd(z)*ngals*0.1/norm for z in bins[:-1]+0.05])
     assert_allclose(hist[0],srd,atol=100,rtol=0.1)
 
 
@@ -171,6 +172,8 @@ def test_shapenoise():
     Test that the shape noise distribution is Gaussian around the shear and does not produce
     unphysical ellipticities.
     """
+    cosmo = clmm.Cosmology(H0=70.0, Omega_dm0=0.27 - 0.045,
+                      Omega_b0=0.045, Omega_k0=0.0)
 
     np.random.seed(285713)
 

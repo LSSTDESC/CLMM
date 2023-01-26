@@ -71,7 +71,9 @@ language = 'en'
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store',
                     'api/clmm.rst', 'source/index_body.rst',
                     'api/clmm.cluster_toolkit_patches.rst',
-                    'api/clmm.modbackend.*']
+                    'api/clmm.modbackend.*',
+                    '.precompiled-fixed-examples/*',
+]
 
 # Some style options
 highlight_language = 'python3'
@@ -79,6 +81,7 @@ pygments_style = 'sphinx'
 todo_include_todos = True
 add_function_parentheses = True
 add_module_names = True
+smartquotes = False
 
 
 # -- Options for HTML output ----------------------------------------------
@@ -142,22 +145,36 @@ for entry in config:
 
 
 # -- Compile the examples into rst----------------------------------------
+dc2_fix = False
+hsc_fix = False
+run_nb = False
+
 outdir = 'compiled-examples/'
 nbconvert_opts = ['--to rst',
                   '--ExecutePreprocessor.kernel_name=python3',
                    '--execute',
                   f'--output-dir {outdir}']
-nb_skip_run = [
-    '../examples/Example4_Fit_Halo_mass_to_HSC_data.ipynb',
-    ]
+nb_skip_run = []
+if hsc_fix:
+    nb_skip_run.append('../examples/Example4_Fit_Halo_mass_to_HSC_data.ipynb')
+if dc2_fix:
+    nb_skip_run.append('../examples/DC2_examples/data_and_model_demo_DC2.ipynb')
 
-run_nb = False
 for demo in [*demofiles, *examplefiles]:
     com = ' '.join(['jupyter nbconvert']+nbconvert_opts+[demo])
     if demo in nb_skip_run or not run_nb:
         com = com.replace(' --execute ', ' ')
     subprocess.run(com, shell=True)
 
+if dc2_fix:
+    com = 'cp -rf .precompiled-fixed-examples/data_and_model_demo_DC2* compiled-examples/'
+    print('* Fix for publication (use precompiled version of DC2 NB from older version)')
+    subprocess.run(com, shell=True)
+
+if hsc_fix:
+    com = 'cp -rf .precompiled-fixed-examples/Example4_Fit_Halo_mass_to_HSC_data* compiled-examples/'
+    print('* Fix for publication (use precompiled version of HSC NB from older version)')
+    subprocess.run(com, shell=True)
 
 # -- Build index.html ----------------------------------------------------
 index_examples_toc = \
