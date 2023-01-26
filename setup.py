@@ -24,7 +24,6 @@ setup(
       name='clmm',
       version=get_version('clmm/__init__.py'),
       author='The LSST DESC CLMM Contributors',
-      author_email='avestruz@uchicago.edu',
       license='BSD 3-Clause License',
       url='https://github.com/LSSTDESC/CLMM',
       packages=find_packages(),
