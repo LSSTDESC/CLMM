@@ -627,7 +627,7 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1., is_uniqu
 
 def compute_for_good_redshifts(function, z1, z2, bad_value, warning_message,
                                z1_arg_name='z1', z2_arg_name='z2', r_proj=None,
-                               show_warning=True):
+                               show_warning=True, **kwargs):
     """Computes function only for `z1` < `z2`, the rest is filled with `bad_value`
 
     Parameters

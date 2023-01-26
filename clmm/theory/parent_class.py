@@ -170,9 +170,6 @@ class CLMModeling:
     # 3. Functions that can be used by all subclasses
 
 
-    def _eval_critical_surface_density(self, z_len, z_src, show_warning=False):
-        return self.cosmo.eval_sigma_crit(z_len, z_src, show_warning=show_warning)
-
     def _set_cosmo(self, cosmo):
         r""" Sets the cosmology to the internal cosmology object"""
         self.cosmo = cosmo if cosmo is not None else self.cosmo_class()
@@ -215,30 +212,6 @@ class CLMModeling:
         val = np.array( [ simps( __integrand__( ll , t ) , ll ) for t in theta ] )
         return halobias * val * rho_m / ( 2 * np.pi  * ( 1 + z_cl )**3 * da**2 )
 
-    def _eval_tangential_shear_core(self, r_proj, z_cl, z_src):
-        delta_sigma = self.eval_excess_surface_density(r_proj, z_cl)
-        sigma_c = self.eval_critical_surface_density(z_cl, z_src)
-        return delta_sigma/sigma_c
-
-    def _eval_convergence_core(self, r_proj, z_cl, z_src, verbose=False):
-        sigma = self.eval_surface_density(r_proj, z_cl, verbose=verbose)
-        sigma_c = self.eval_critical_surface_density(z_cl, z_src)
-        return sigma/sigma_c
-
-    def _eval_reduced_tangential_shear_core(self, r_proj, z_cl, z_src):
-        kappa = self.eval_convergence(r_proj, z_cl, z_src)
-        gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
-        return compute_reduced_shear_from_convergence(gamma_t, kappa)
-
-    def _eval_magnification_core(self, r_proj, z_cl, z_src):
-        kappa = self.eval_convergence(r_proj, z_cl, z_src)
-        gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
-        return 1./((1-kappa)**2-abs(gamma_t)**2)
-
-    def _eval_magnification_bias(self, r_proj, z_cl, z_src, alpha):
-        magnification = self.eval_magnification(r_proj, z_cl, z_src)
-        return compute_magnification_bias_from_magnification(magnification, alpha)
-
     def _eval_rdelta(self, z_cl):
         return compute_rdelta(self.mdelta, z_cl, self.cosmo, self.massdef, self.delta_mdef)
 
@@ -262,30 +235,30 @@ class CLMModeling:
     # 3.1. All these functions are for the single plane case
 
 
-    def _eval_critical_surface_density(self, z_len, z_src):
-        return self.cosmo.eval_sigma_crit(z_len, z_src)
+    def _eval_critical_surface_density(self, z_len, z_src, show_warning=False):
+        return self.cosmo.eval_sigma_crit(z_len, z_src, show_warning=show_warning)
 
-    def _eval_tangential_shear(self, r_proj, z_cl, z_src):
+    def _eval_tangential_shear_core(self, r_proj, z_cl, z_src):
         delta_sigma = self.eval_excess_surface_density(r_proj, z_cl)
         sigma_c = self.eval_critical_surface_density(z_cl, z_src)
         return delta_sigma/sigma_c
 
-    def _eval_convergence(self, r_proj, z_cl, z_src, verbose=False):
+    def _eval_convergence_core(self, r_proj, z_cl, z_src, verbose=False):
         sigma = self.eval_surface_density(r_proj, z_cl, verbose=verbose)
         sigma_c = self.eval_critical_surface_density(z_cl, z_src)
         return sigma/sigma_c
 
-    def _eval_reduced_tangential_shear(self, r_proj, z_cl, z_src):
+    def _eval_reduced_tangential_shear_core(self, r_proj, z_cl, z_src):
         kappa = self.eval_convergence(r_proj, z_cl, z_src)
         gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
         return compute_reduced_shear_from_convergence(gamma_t, kappa)
 
-    def _eval_magnification(self, r_proj, z_cl, z_src):
+    def _eval_magnification_core(self, r_proj, z_cl, z_src):
         kappa = self.eval_convergence(r_proj, z_cl, z_src)
         gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
         return 1./((1-kappa)**2-abs(gamma_t)**2)
 
-    def _eval_magnification_bias(self, r_proj, z_cl, z_src, alpha):
+    def _eval_magnification_bias_core(self, r_proj, z_cl, z_src, alpha):
         magnification = self.eval_magnification(r_proj, z_cl, z_src)
         return compute_magnification_bias_from_magnification(magnification, alpha)
 
@@ -1388,8 +1361,11 @@ class CLMModeling:
                 mu_bias = self._pdz_weighted_avg(core, z_src, r_proj, z_cl,
                                                  integ_kwargs=beta_kwargs)
             elif z_src_info=='discrete':
-                mu_bias = self._eval_magnification_bias(
-                    r_proj=r_proj, z_cl=z_cl, z_src=z_src, alpha=alpha)
+                warning_msg = '\nSome source redshifts are lower than the cluster redshift.'+\
+                '\nMagnification bias = 1 for those galaxies.'
+                mu_bias = compute_for_good_redshifts(self._eval_magnification_bias_core,
+                                                     z_cl, z_src, 1., warning_msg,
+                                                     'z_cl', 'z_src', r_proj, alpha=alpha)
             else:
                 raise ValueError(
                     "approx=None requires z_src_info='discrete' or 'distribution',"
