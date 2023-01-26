@@ -3,11 +3,12 @@
 import numpy as np
 from numpy.testing import assert_raises, assert_allclose, assert_equal
 from scipy.integrate import quad
+import clmm
 import clmm.utils as utils
-import clmm.theory as md
 from clmm.utils import (
     compute_radial_averages, make_bins, convert_shapes_to_epsilon, arguments_consistency,
     validate_argument)
+from clmm import z_distributions as zdist
 
 
 TOLERANCE = {'rtol': 1.0e-6, 'atol': 0}
@@ -223,7 +224,7 @@ def test_convert_units():
     """
     # Make an astropy cosmology object for testing
     # cosmo = FlatLambdaCDM(H0=70., Om0=0.3)
-    cosmo = md.Cosmology(H0=70.0, Omega_dm0=0.3-0.045, Omega_b0=0.045)
+    cosmo = clmm.Cosmology(H0=70.0, Omega_dm0=0.3-0.045, Omega_b0=0.045)
 
     # Test that each unit is supported
     utils.convert_units(1.0, 'radians', 'degrees')
@@ -429,37 +430,45 @@ def test_validate_argument():
 
 def test_beta_functions():
     z_cl = 1.0
-    z_s = 2.4 
+    z_s = 2.4
     z_inf =1000.
     zmax = 15.0
     nsteps = 1000
     zmin = z_cl + 0.1
-    z_int = np.linspace(zmin, zmax, nsteps)    
-    cosmo = md.Cosmology(H0=70.0, Omega_dm0=0.27 - 0.045,
+    z_int = np.linspace(zmin, zmax, nsteps)
+    cosmo = clmm.Cosmology(H0=70.0, Omega_dm0=0.27 - 0.045,
                   Omega_b0=0.045, Omega_k0=0.0)
-    beta_test = np.heaviside(z_s-z_cl, 0) * cosmo.eval_da_z1z2(z_cl, z_s) / cosmo.eval_da(z_s) 
+    beta_test = np.heaviside(z_s-z_cl, 0) * cosmo.eval_da_z1z2(z_cl, z_s) / cosmo.eval_da(z_s)
     beta_s_test = utils.compute_beta(z_s, z_cl, cosmo) / utils.compute_beta(z_inf, z_cl, cosmo)
 
-    def pdz(z):
-        return (z**1.24)*np.exp(-(z/0.51)**1.01)
-    
-    def integrand1(z_i, z_cl=z_cl, cosmo=cosmo):
-        return utils.compute_beta(z_i, z_cl, cosmo) * pdz(z_i)
-    
-    def integrand2(z_i, z_inf=z_inf, z_cl=z_cl, cosmo=cosmo):
-        return utils.compute_beta_s(z_i, z_cl, z_inf, cosmo) * pdz(z_i)
-    
-    def integrand3(z_i, z_inf=z_inf, z_cl=z_cl, cosmo=cosmo):
-        return utils.compute_beta_s(z_i, z_cl, z_inf, cosmo)**2 * pdz(z_i)
+    assert_allclose(utils.compute_beta(z_s, z_cl, cosmo), beta_test, **TOLERANCE)
+    assert_allclose(utils.compute_beta_s(z_s, z_cl, z_inf, cosmo), beta_s_test, **TOLERANCE)
 
-    test1 = utils.compute_beta(z_s, z_cl, cosmo)
-    test2 = utils.compute_beta_s(z_s, z_cl, z_inf, cosmo)
-    test3 = utils.compute_beta_mean(z_cl, cosmo, zmax)
-    test4 = utils.compute_beta_s_mean(z_cl, z_inf,cosmo, zmax)
-    test5 = utils.compute_beta_s_square_mean(z_cl, z_inf,cosmo, zmax)
-    
-    assert_allclose(test1, beta_test, **TOLERANCE)
-    assert_allclose(test2, beta_s_test, **TOLERANCE)
-    assert_allclose(test3, quad(integrand1, zmin, zmax)[0] / quad(pdz, zmin, zmax)[0], **TOLERANCE)
-    assert_allclose(test4, quad(integrand2, zmin, zmax)[0] / quad(pdz, zmin, zmax)[0], **TOLERANCE)
-    assert_allclose(test5, quad(integrand3, zmin, zmax)[0] / quad(pdz, zmin, zmax)[0], **TOLERANCE)
+
+    for model in (None, zdist.chang2013, zdist.desc_srd):
+
+        # None defaults to chang2013 for compute_beta* functions
+
+        test1 = utils.compute_beta_mean(z_cl, cosmo, zmax, z_distrib_func=model)
+        test2 = utils.compute_beta_s_mean(z_cl, z_inf, cosmo, zmax, z_distrib_func=model)
+        test3 = utils.compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax,
+                                                 z_distrib_func=model)
+
+        if model is None:
+            model = zdist.chang2013
+
+        def integrand1(z_i, z_cl=z_cl, cosmo=cosmo):
+            return utils.compute_beta(z_i, z_cl, cosmo) * model(z_i)
+
+        def integrand2(z_i, z_inf=z_inf, z_cl=z_cl, cosmo=cosmo):
+            return utils.compute_beta_s(z_i, z_cl, z_inf, cosmo) * model(z_i)
+
+        def integrand3(z_i, z_inf=z_inf, z_cl=z_cl, cosmo=cosmo):
+            return utils.compute_beta_s(z_i, z_cl, z_inf, cosmo)**2 * model(z_i)
+
+        assert_allclose(test1, quad(integrand1, zmin, zmax)[0] / quad(model, zmin, zmax)[0],
+                        **TOLERANCE)
+        assert_allclose(test2, quad(integrand2, zmin, zmax)[0] / quad(model, zmin, zmax)[0],
+                        **TOLERANCE)
+        assert_allclose(test3, quad(integrand3, zmin, zmax)[0] / quad(model, zmin, zmax)[0],
+                        **TOLERANCE)
