@@ -914,9 +914,10 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
 
 
 
-def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
-                               halo_profile_model='nfw', massdef='mean', alpha_ein=None,
-                               z_src_info='discrete', approx=None, beta_kwargs=None,
+def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_source, cosmo,
+                               delta_mdef=200, halo_profile_model='nfw', massdef='mean',
+                               alpha_ein=None, z_src_info='discrete',
+                               approx=None, beta_kwargs=None,
                                verbose=False, validate_input=True):
 
     r""" Computes magnification bias from magnification :math:`\mu`
