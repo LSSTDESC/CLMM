@@ -119,8 +119,9 @@ def test_einasto(modeling_data):
 
     if theo.be_nick in ['ccl','nc']:
         mod.set_halo_density_profile('einasto')
-        mod.eval_mean_surface_density(0.1,0.1, verbose=True)
-        mod.eval_tangential_shear(0.1,0.1,0.5, verbose=True)
-        mod.eval_convergence(0.1,0.1,0.5, verbose=True)
-        mod.eval_reduced_tangential_shear(0.1,0.1,0.5, verbose=True)
-        mod.eval_magnification(0.1,0.1,0.5, verbose=True)
+        mod.eval_mean_surface_density(0.1, 0.1, verbose=True)
+        mod.eval_tangential_shear(0.1, 0.1, 0.5, verbose=True)
+        mod.eval_convergence(0.1, 0.1, 0.5, verbose=True)
+        mod.eval_reduced_tangential_shear(0.1, 0.1, 0.5, verbose=True)
+        mod.eval_magnification(0.1, 0.1, 0.5, verbose=True)
+        mod.eval_magnification_bias(0.1, 2, 0.1, 0.5, verbose=True)

@@ -507,13 +507,9 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
 
         # Validate magnification bias - discrete case
         alpha = 3.78
-
-        assert_allclose(
-            theo.compute_magnification_bias(cosmo=cosmo, **cfg['GAMMA_PARAMS'], alpha=alpha),
-            (1./((1-kappa)**2-abs(gammat)**2))**(alpha - 1), 1.0e-10)
-        assert_allclose(
-            theo.compute_magnification_bias(cosmo=cosmo, **cfg['GAMMA_PARAMS'], alpha=alpha),
-            cfg['numcosmo_profiles']['mu']**(alpha - 1), 1.e3*reltol)
+        mu_bias = theo.compute_magnification_bias(cosmo=cosmo, **cfg['GAMMA_PARAMS'], alpha=alpha)
+        assert_allclose(mu_bias, (1./((1-kappa)**2-abs(gammat)**2))**(alpha - 1), 1.0e-10)
+        assert_allclose(mu_bias, cfg['numcosmo_profiles']['mu']**(alpha - 1), 1.e3*reltol)
 
         cfg_inf = load_validation_config()
 
