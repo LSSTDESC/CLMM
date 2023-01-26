@@ -238,13 +238,11 @@ class CLMModeling:
 
     def _eval_tangential_shear(self, r_proj, z_cl, z_src):
         delta_sigma = self.eval_excess_surface_density(r_proj, z_cl)
-#        sigma_c = self.eval_critical_surface_density(z_cl, z_src)
         sigma_c = self.cosmo.eval_sigma_crit(z_cl, z_src)
         return delta_sigma/sigma_c
 
     def _eval_convergence(self, r_proj, z_cl, z_src, verbose=False):
         sigma = self.eval_surface_density(r_proj, z_cl, verbose=verbose)
-#        sigma_c = self.eval_critical_surface_density(z_cl, z_src)
         sigma_c = self.cosmo.eval_sigma_crit(z_cl, z_src)
         return sigma/sigma_c
 
@@ -427,7 +425,7 @@ class CLMModeling:
         return self.cosmo.eval_sigma_crit(z_len, z_src)
 
 
-    def eval_critical_surface_density_eff(self, z_len, pzbins=None, pzpdf=None):
+    def eval_critical_surface_density_eff(self, z_len, pzbins, pzpdf):
         r"""Computes the 'effective critical surface density
 
         .. math::
@@ -457,13 +455,10 @@ class CLMModeling:
         if self.validate_input:
             validate_argument(locals(), 'z_len', float, argmin=0)
  
-        if pzbins is None or pzpdf is None:
-            raise ValueError('Redshift bins and source redshift pdf must be provided to compute the effective critical density')
-        else:
-            def inv_sigmac(redshift):
-                return 1./self._eval_critical_surface_density(z_len=z_len, z_src=redshift)        
- 
-            return 1./_integ_pzfuncs(pzpdf, pzbins, kernel=inv_sigmac, is_unique_pzbins=np.all(pzbins==pzbins[0]))
+        def inv_sigmac(redshift):
+            return 1./self._eval_critical_surface_density(z_len=z_len, z_src=redshift)        
+
+        return 1./_integ_pzfuncs(pzpdf, pzbins, kernel=inv_sigmac, is_unique_pzbins=np.all(pzbins==pzbins[0]))
 
     def eval_surface_density(self, r_proj, z_cl, verbose=False):
         r""" Computes the surface mass density

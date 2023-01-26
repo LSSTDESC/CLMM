@@ -109,7 +109,6 @@ def test_instantiate(modeling_data):
     assert_allclose(reduced_shear, shear/(1.0-convergence), rtol=1.0e-12)
 
     assert_raises(TypeError, mod.eval_critical_surface_density, z_cl)
-    assert_raises(ValueError, mod.eval_critical_surface_density_eff, z_cl)
 
 def test_einasto(modeling_data):
     """ Basic checks that verbose option for the Einasto profile runs """

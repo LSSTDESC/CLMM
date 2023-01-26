@@ -354,7 +354,7 @@ def compute_critical_surface_density(cosmo, z_cluster, z_source, validate_input=
     gcm.validate_input = True
     return sigma_c
 
-def compute_critical_surface_density_eff(cosmo, z_cluster, pzbins=None, pzpdf=None, validate_input=True):
+def compute_critical_surface_density_eff(cosmo, z_cluster, pzbins, pzpdf, validate_input=True):
     r"""Computes the 'effective critical surface density'
      
     .. math::
@@ -389,7 +389,7 @@ def compute_critical_surface_density_eff(cosmo, z_cluster, pzbins=None, pzpdf=No
 
     gcm.validate_input = validate_input
     gcm.set_cosmo(cosmo)
-    sigma_c = gcm.eval_critical_surface_density_eff(z_cluster, pzbins=pzbins, pzpdf=pzpdf)
+    sigma_c = gcm.eval_critical_surface_density_eff(z_cluster, pzbins, pzpdf)
 
     gcm.validate_input = True
     return sigma_c
