@@ -504,21 +504,10 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         mu = theo.compute_magnification(cosmo=cosmo, **cfg['GAMMA_PARAMS'])
         assert_allclose(mu, 1./((1-kappa)**2-abs(gammat)**2), 1.0e-10)
         assert_allclose(mu, cfg['numcosmo_profiles']['mu'], 1.e2*reltol)
-<<<<<<< HEAD
 
         # Validate magnification bias - discrete case
         alpha = 3.78
 
-=======
-
-        # Validate magnification bias - discrete case
-        # this if will be removed once compute_magnification_bias takes alpha_ein
-        if profile_init=='einasto' and theo.be_nick=='nc':
-            del cfg['GAMMA_PARAMS']['alpha_ein']
-            cfg['GAMMA_PARAMS']['verbose'] = True
-
-        alpha = 3.78
->>>>>>> main
         assert_allclose(
             theo.compute_magnification_bias(cosmo=cosmo, **cfg['GAMMA_PARAMS'], alpha=alpha),
             (1./((1-kappa)**2-abs(gammat)**2))**(alpha - 1), 1.0e-10)
