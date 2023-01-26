@@ -429,7 +429,7 @@ def _test_profile_table_output(profile, expected_rmin, expected_radius, expected
                             err_msg="Cross shear in bin not expected")
     assert_array_equal(profile['n_src'], expected_nsrc)
     if expected_gal_id is not None:
-        assert_array_equal(profile['gal_id'], expected_gal_id)
+        assert_array_equal(profile['gal_id'], np.array(expected_gal_id, dtype=object))
 
 
 def test_make_radial_profiles():
