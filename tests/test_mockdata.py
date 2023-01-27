@@ -30,7 +30,7 @@ def test_mock_data():
     with warnings.catch_warnings(record=True) as warn:
         # Cause all warnings to always be triggered.
         warnings.simplefilter("always")
-        # Supress wanrnings for CCL older than 2.5.0
+        # Supress wanrnings for CCL older than 2.6
         warnings.filterwarnings("ignore", module='.*(ccl).*')
         # Trigger a warning.
         np.random.seed(314)
