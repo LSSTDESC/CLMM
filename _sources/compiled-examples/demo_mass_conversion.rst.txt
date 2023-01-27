@@ -1,5 +1,8 @@
+Mass conversion between different mass definitions
+==================================================
+
 Mass conversion between spherical overdensity mass definitions
-==============================================================
+--------------------------------------------------------------
 
 In this notebook, we demonstrates how to convert the mass and
 concentration between various mass definitions (going from :math:`200m`

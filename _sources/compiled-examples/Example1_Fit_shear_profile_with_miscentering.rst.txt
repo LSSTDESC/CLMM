@@ -1,5 +1,8 @@
-Investigate the impact of miscentering on shear profiles
-========================================================
+Example 1b: Impact of miscentering
+==================================
+
+Fit halo mass to shear profile ivestigating the impact of miscentering on shear profiles
+----------------------------------------------------------------------------------------
 
 *the LSST-DESC CLMM team*
 
@@ -38,7 +41,7 @@ Make sure we know which version we’re using
 
 .. parsed-literal::
 
-    '1.4.5'
+    '1.5.1'
 
 
 

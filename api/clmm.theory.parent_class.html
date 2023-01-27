@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>clmm.theory.parent_class module &mdash; CLMM 1.4.5 documentation</title>
+  <title>clmm.theory.parent_class module &mdash; CLMM 1.5.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -33,7 +33,7 @@
             <a href="../index.html" class="icon icon-home"> CLMM
           </a>
               <div class="version">
-                1.4.5
+                1.5.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -51,32 +51,28 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Usage Demos</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Compare_NFW_critical_massdef.html">Compare NFW profile for the CLMM backends</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Compare_NFW_critical_massdef.html#comparison-of-nfw-with-mass-definition-based-on-the-critical-density-of-the-universe-for-the-various-backends">Comparison of NFW with mass definition based on the critical density of the universe for the various backends</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Compare_NFW_critical_massdef.html#compare-all-to-colossus">Compare all to Colossus</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_mass_conversion.html">Mass conversion between spherical overdensity mass definitions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_boost_factors.html">Compute boost factors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_mock_cluster.html">Generate mock data for a cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_dataops_functionality.html">Measure WL Profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_theory_functionality.html">Model WL Profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_mock_ensemble.html">Generate mock data for a cluster ensemble</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/data_and_model_demo_DC2.html">Using the cosmoDC2 catalog</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Mass Fitting Examples</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_shear_profile_with_miscentering.html">Investigate the impact of miscentering on shear profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Example 1: Ideal data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_shear_profile_with_miscentering.html">Example 1b: Impact of miscentering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Example 2: Realistic data and wrong model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Example 3: Account for the n(z) of sources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example4_Fit_Halo_mass_to_HSC_data.html">Using CLMM on Real Datasets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Compare_NFW_critical_massdef.html">Compare NFW profile for the CLMM backends</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Compare_NFW_critical_massdef.html#comparison-of-nfw-with-mass-definition-based-on-the-critical-density-of-the-universe-for-the-various-backends">Comparison of NFW with mass definition based on the critical density of the universe for the various backends</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Compare_NFW_critical_massdef.html#compare-all-to-colossus">Compare all to Colossus</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example_cluster_ensemble.html">Generating a cluster catalog and associated source catalogs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example_cluster_ensemble.html#creating-clusterensemble-object-and-estimation-of-individual-excess-surface-density-profiles">Creating ClusterEnsemble object and estimation of individual excess surface density profiles</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example_cluster_ensemble.html#stacked-profile-of-the-cluster-ensemble">Stacked profile of the cluster ensemble</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example_cluster_ensemble.html#covariance-bootstrap-sample-jackknife-of-the-stack-between-radial-bins">Covariance (Bootstrap, sample, Jackknife) of the stack between radial bins</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example_cluster_ensemble.html#visualizing-the-stacked-profiles-and-corresponding-model">Visualizing the stacked profiles and corresponding model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example_realistic_cluster_ensemble.html">Generate cluster ensemble with “realistic” mass and redshift distribution</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Other</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_theory_functionality_diff_z_types.html">Model WL Profiles (different redshift inputs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_theory_functionality_oo.html">Model WL Profiles (Object Oriented)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_boost_factors.html">Boost factors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_compute_deltasigma_weights.html">Weak lensing weights</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_mass_conversion.html">Mass conversion between different mass definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_mock_ensemble_realistic.html">Generate “realistic” mock data for a cluster ensemble</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="current">
@@ -105,6 +101,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.plotting.html">clmm.plotting package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.utils.html">clmm.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.z_distributions.html">clmm.z_distributions module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.support.html">clmm.support package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="clmm.support.mock_data.html">clmm.support.mock_data module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="clmm.support.sampler.html">clmm.support.sampler module</a></li>
@@ -228,19 +225,61 @@ If None, same value of current model is used.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.eval_convergence">
-<span class="sig-name descname"><span class="pre">eval_convergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_convergence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_convergence" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">eval_convergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'discrete'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_convergence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_convergence" title="Permalink to this definition"></a></dt>
 <dd><p>Computes the mass convergence</p>
 <div class="math notranslate nohighlight">
 \[\kappa = \frac{\Sigma}{\Sigma_{crit}}\]</div>
 <p>or</p>
 <div class="math notranslate nohighlight">
-\[\kappa = \kappa_\infty \times \beta_s\]</div>
+\[\kappa = \kappa_\infty \times &lt;\beta_s&gt;\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>r_proj</strong> (<em>array_like</em>) -- The projected radial positions in <span class="math notranslate nohighlight">\(M\!pc\)</span>.</p></li>
 <li><p><strong>z_cl</strong> (<em>float</em>) -- Galaxy cluster redshift</p></li>
-<li><p><strong>z_src</strong> (<em>array_like</em><em>, </em><em>float</em>) -- Background source galaxy redshift(s)</p></li>
+<li><p><strong>z_src</strong> (<em>array_like</em><em>, </em><em>float</em><em>, </em><em>function</em>) -- Information on the background source galaxy redshift(s). Value required depends on
+<cite>z_src_info</cite> (see below).</p></li>
+<li><p><strong>z_src_info</strong> (<em>str</em><em>, </em><em>optional</em>) -- <p>Type of redshift information provided by the <cite>z_src</cite> argument.
+The following supported options are:</p>
+<blockquote>
+<div><ul>
+<li><p>'discrete' (default) : The redshift of sources is provided by <cite>z_src</cite>.
+It can be individual redshifts for each source galaxy when <cite>z_src</cite> is an
+array or all sources are at the same redshift when <cite>z_src</cite> is a float.</p></li>
+<li><p>'distribution' : A redshift distribution function is provided by <cite>z_src</cite>.
+<cite>z_src</cite> must be a one dimentional function.</p></li>
+<li><p>'beta' : The averaged lensing efficiency is provided by <cite>z_src</cite>.
+<cite>z_src</cite> must be a tuple containing
+( <span class="math notranslate nohighlight">\(\langle \beta_s \rangle, \langle \beta_s^2 \rangle\)</span>),
+the lensing efficiency and square of the lensing efficiency averaged over
+the galaxy redshift distribution repectively.</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\[\langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}
+{D_{L,\infty}}\right\rangle\]</div>
+<div class="math notranslate nohighlight">
+\[\langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}
+{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle\]</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</p></li>
+<li><p><strong>beta_kwargs</strong> (<em>None</em><em>, </em><em>dict</em>) -- <p>Extra arguments for the <cite>compute_beta_s_mean, compute_beta_s_square_mean</cite> functions.
+Only used if <cite>z_src_info='distribution'</cite>. Possible keys are:</p>
+<blockquote>
+<div><ul>
+<li><p>'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
+when performing the sum. (default=None)</p></li>
+<li><p>'zmax' (float) : Maximum redshift to be set as the source of the galaxy
+when performing the sum. (default=10.0)</p></li>
+<li><p>'delta_z_cut' (float) : Redshift cut so that <cite>zmin</cite> = <cite>z_cl</cite> + <cite>delta_z_cut</cite>.
+<cite>delta_z_cut</cite> is ignored if <cite>z_min</cite> is already provided. (default=0.1)</p></li>
+</ul>
+</div></blockquote>
+</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) -- If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
+CCL backends.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -270,7 +309,7 @@ This comes from the maximum likelihood estimator for evaluating a <span class="m
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>z_len</strong> (<em>float</em>) -- Galaxy cluster redshift</p></li>
 <li><p><strong>z_src</strong> (<em>array_like</em><em>, </em><em>float</em>) -- Background source galaxy redshift(s)</p></li>
-<li><p><strong>use_pdz</strong> (<em>bool</em>) -- Flag to use the photoz pdf. If <cite>False</cite> (default), <cite>sigma_c</cite> is computed using the source redshift point estimates <cite>z_source</cite>.
+<li><p><strong>use_pdz</strong> (<em>bool</em>) -- Flag to use the photoz pdf. If <cite>False</cite> (default), <cite>sigma_c</cite> is computed using the source redshift point estimates <cite>z_src</cite>.
 If <cite>True</cite>, <cite>sigma_c</cite> is computed as 1/&lt;1/Sigma_crit&gt;, where the average is performed using
 the individual galaxy redshift pdf. In that case, the <cite>pzbins</cite> and <cite>pzpdf</cite> should be specified.</p></li>
 <li><p><strong>pzbins</strong> (<em>array-like</em>) -- Bins where the source redshift pdf is defined</p></li>
@@ -331,7 +370,7 @@ the individual galaxy redshift pdf. In that case, the <cite>pzbins</cite> and <c
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.eval_magnification">
-<span class="sig-name descname"><span class="pre">eval_magnification</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_magnification"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_magnification" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">eval_magnification</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'discrete'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">approx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_magnification"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_magnification" title="Permalink to this definition"></a></dt>
 <dd><p>Computes the magnification</p>
 <div class="math notranslate nohighlight">
 \[\mu = \frac{1}{(1-\kappa)^2-|\gamma_t|^2}\]</div>
@@ -340,7 +379,84 @@ the individual galaxy redshift pdf. In that case, the <cite>pzbins</cite> and <c
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>r_proj</strong> (<em>array_like</em>) -- The projected radial positions in <span class="math notranslate nohighlight">\(M\!pc\)</span>.</p></li>
 <li><p><strong>z_cl</strong> (<em>float</em>) -- Galaxy cluster redshift</p></li>
-<li><p><strong>z_src</strong> (<em>array_like</em><em>, </em><em>float</em>) -- Background source galaxy redshift(s)</p></li>
+<li><p><strong>z_src</strong> (<em>array_like</em><em>, </em><em>float</em><em>, </em><em>function</em>) -- Information on the background source galaxy redshift(s). Value required depends on
+<cite>z_src_info</cite> (see below).</p></li>
+<li><p><strong>z_src_info</strong> (<em>str</em><em>, </em><em>optional</em>) -- <p>Type of redshift information provided by the <cite>z_src</cite> argument.
+The following supported options are:</p>
+<blockquote>
+<div><ul>
+<li><p>'discrete' (default) : The redshift of sources is provided by <cite>z_src</cite>.
+It can be individual redshifts for each source galaxy when <cite>z_src</cite> is an
+array or all sources are at the same redshift when <cite>z_src</cite> is a float.</p></li>
+<li><p>'distribution' : A redshift distribution function is provided by <cite>z_src</cite>.
+<cite>z_src</cite> must be a one dimentional function.</p></li>
+<li><p>'beta' : The averaged lensing efficiency is provided by <cite>z_src</cite>.
+<cite>z_src</cite> must be a tuple containing
+( <span class="math notranslate nohighlight">\(\langle \beta_s \rangle, \langle \beta_s^2 \rangle\)</span>),
+the lensing efficiency and square of the lensing efficiency averaged over
+the galaxy redshift distribution repectively.</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\[\langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}
+{D_{L,\infty}}\right\rangle\]</div>
+<div class="math notranslate nohighlight">
+\[\langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}
+{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle\]</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</p></li>
+<li><p><strong>approx</strong> (<em>str</em><em>, </em><em>optional</em>) -- <p>Type of computation to be made for magnifications, options are:</p>
+<blockquote>
+<div><ul>
+<li><p>None (default): Requires <cite>z_src_info</cite> to be 'discrete' or 'distribution'.
+If <cite>z_src_info='discrete'</cite>, full computation is made for each
+<cite>r_proj, z_src</cite> pair individually. If <cite>z_src_info='distribution'</cite>, magnification
+at each value of <cite>r_proj</cite> is calculated as</p>
+<div class="math notranslate nohighlight">
+\[\mu
+=\left&lt;\frac{1}{\left(1-\beta_s\kappa_{\infty}\right)^2
+-\left(\beta_s\gamma_{\infty}\right)^2}\right&gt;
+=\frac{\int_{z_{min}}^{z_{max}}\frac{N(z)\text{d}z}
+{\left(1-\beta_s(z)\kappa_{\infty}\right)^2
+-\left(\beta_s(z)\gamma_{\infty}\right)^2}}
+{\int_{z_{min}}^{z_{max}} N(z)\text{d}z}\]</div>
+</li>
+<li><p>'order1' : Uses the weak lensing approximation of the magnification with up to
+first-order terms in <span class="math notranslate nohighlight">\(\kappa_{\infty}\)</span> or <span class="math notranslate nohighlight">\(\gamma_{\infty}\)</span>.
+<cite>z_src_info</cite> must be either 'beta', or 'distribution' (that will be used to
+compute <span class="math notranslate nohighlight">\(\langle \beta_s \rangle\)</span>)</p>
+<div class="math notranslate nohighlight">
+\[\mu \approx 1 + 2 \left&lt;\beta_s\right&gt;\kappa_{\infty}\]</div>
+</li>
+<li><p>'order2' : Uses the weak lensing approximation of the magnification with up to
+second-order terms in <span class="math notranslate nohighlight">\(\kappa_{\infty}\)</span> or <span class="math notranslate nohighlight">\(\gamma_{\infty}\)</span>.
+<cite>z_src_info</cite> must be either 'beta', or 'distribution' (that will be used to
+compute <span class="math notranslate nohighlight">\(\langle \beta_s \rangle\)</span>)</p>
+<div class="math notranslate nohighlight">
+\[\mu \approx 1 + 2 \left&lt;\beta_s\right&gt;\kappa_{\infty}
++ 3 \left&lt;\beta_s^2\right&gt;\kappa_{\infty}^2
++ \left&lt;\beta_s^2\right&gt;\gamma_{\infty}^2\]</div>
+</li>
+</ul>
+</div></blockquote>
+</p></li>
+<li><p><strong>beta_kwargs</strong> (<em>None</em><em>, </em><em>dict</em>) -- <p>Extra arguments for the <cite>compute_beta_s_mean, compute_beta_s_square_mean</cite> functions.
+Only used if <cite>z_src_info='distribution'</cite>. Possible keys are:</p>
+<blockquote>
+<div><ul>
+<li><p>'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
+when performing the sum. (default=None)</p></li>
+<li><p>'zmax' (float) : Maximum redshift to be set as the source of the galaxy
+when performing the sum. (default=10.0)</p></li>
+<li><p>'delta_z_cut' (float) : Redshift cut so that <cite>zmin</cite> = <cite>z_cl</cite> + <cite>delta_z_cut</cite>.
+<cite>delta_z_cut</cite> is ignored if <cite>z_min</cite> is already provided. (default=0.1)</p></li>
+</ul>
+</div></blockquote>
+</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) -- If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
+CCL backends.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -350,15 +466,11 @@ the individual galaxy redshift pdf. In that case, the <cite>pzbins</cite> and <c
 <dd class="field-odd"><p>array_like, float</p>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
-<p>The magnification is computed taking into account just the tangential
-shear. This is valid for spherically averaged profiles, e.g., NFW and
-Einasto (by construction the cross shear is zero).</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.eval_magnification_bias">
-<span class="sig-name descname"><span class="pre">eval_magnification_bias</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_magnification_bias"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_magnification_bias" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">eval_magnification_bias</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'discrete'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">approx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_magnification_bias"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_magnification_bias" title="Permalink to this definition"></a></dt>
 <dd><p>Computes the magnification bias</p>
 <div class="math notranslate nohighlight">
 \[\mu^{\alpha - 1}\]</div>
@@ -367,8 +479,91 @@ Einasto (by construction the cross shear is zero).</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>r_proj</strong> (<em>array_like</em>) -- The projected radial positions in <span class="math notranslate nohighlight">\(M\!pc\)</span>.</p></li>
 <li><p><strong>z_cl</strong> (<em>float</em>) -- Galaxy cluster redshift</p></li>
-<li><p><strong>z_src</strong> (<em>array_like</em><em>, </em><em>float</em>) -- Background source galaxy redshift(s)</p></li>
+<li><p><strong>z_src</strong> (<em>array_like</em><em>, </em><em>float</em><em>, </em><em>function</em>) -- Information on the background source galaxy redshift(s). Value required depends on
+<cite>z_src_info</cite> (see below).</p></li>
 <li><p><strong>alpha</strong> (<em>float</em>) -- Slope of the cummulative number count of background sources at a given magnitude</p></li>
+<li><p><strong>z_src_info</strong> (<em>str</em><em>, </em><em>optional</em>) -- <p>Type of redshift information provided by the <cite>z_src</cite> argument.
+The following supported options are:</p>
+<blockquote>
+<div><ul>
+<li><p>'discrete' (default) : The redshift of sources is provided by <cite>z_src</cite>.
+It can be individual redshifts for each source galaxy when <cite>z_src</cite> is an
+array or all sources are at the same redshift when <cite>z_src</cite> is a float.</p></li>
+<li><p>'distribution' : A redshift distribution function is provided by <cite>z_src</cite>.
+<cite>z_src</cite> must be a one dimentional function.</p></li>
+<li><p>'beta' : The averaged lensing efficiency is provided by <cite>z_src</cite>.
+<cite>z_src</cite> must be a tuple containing
+( <span class="math notranslate nohighlight">\(\langle \beta_s \rangle, \langle \beta_s^2 \rangle\)</span>),
+the lensing efficiency and square of the lensing efficiency averaged over
+the galaxy redshift distribution repectively.</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\[\langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}
+{D_{L,\infty}}\right\rangle\]</div>
+<div class="math notranslate nohighlight">
+\[\langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}
+{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle\]</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</p></li>
+<li><p><strong>approx</strong> (<em>str</em><em>, </em><em>optional</em>) -- <p>Type of computation to be made for magnification biases, options are:</p>
+<blockquote>
+<div><ul>
+<li><p>None (default): Requires <cite>z_src_info</cite> to be 'discrete' or 'distribution'.
+If <cite>z_src_info='discrete'</cite>, full computation is made for each
+<cite>r_proj, z_src</cite> pair individually. If <cite>z_src_info='distribution'</cite>, magnification
+bias at each value of <cite>r_proj</cite> is calculated as</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mu^{\alpha-1}
+&amp;=\left(\left&lt;\frac{1}{\left(1-\beta_s\kappa_{\infty}\right)^2
+-\left(\beta_s\gamma_{\infty}\right)^2}\right&gt;\right)^{\alpha-1}
+\\\\
+&amp;=\frac{\int_{z_{min}}^{z_{max}}\frac{N(z)\text{d}z}
+{\left(\left(1-\beta_s(z)\kappa_{\infty}\right)^2
+-\left(\beta_s(z)\gamma_{\infty}\right)^2\right)^{\alpha-1}}}
+{\int_{z_{min}}^{z_{max}} N(z)\text{d}z}\end{split}\]</div>
+</li>
+<li><p>'order1' : Uses the weak lensing approximation of the magnification bias with up
+to first-order terms in <span class="math notranslate nohighlight">\(\kappa_{\infty}\)</span> or <span class="math notranslate nohighlight">\(\gamma_{\infty}\)</span>.
+<cite>z_src_info</cite> must be either 'beta', or 'distribution' (that will be used to
+compute <span class="math notranslate nohighlight">\(\langle \beta_s \rangle\)</span>)</p>
+<div class="math notranslate nohighlight">
+\[\mu^{\alpha-1} \approx
+1 + \left(\alpha-1\right)\left(2 \left&lt;\beta_s\right&gt;\kappa_{\infty}\right)\]</div>
+</li>
+<li><p>'order2' : Uses the weak lensing approximation of the magnification bias with up
+to second-order terms in <span class="math notranslate nohighlight">\(\kappa_{\infty}\)</span> or <span class="math notranslate nohighlight">\(\gamma_{\infty}\)</span>.
+<cite>z_src_info</cite> must be either 'beta', or 'distribution' (that will be used to
+compute <span class="math notranslate nohighlight">\(\langle \beta_s \rangle\)</span>)</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mu^{\alpha-1} \approx
+1 &amp;+ \left(\alpha-1\right)\left(2 \left&lt;\beta_s\right&gt;\kappa_{\infty}\right)
+\\\\
+&amp;+ \left(\alpha-1\right)\left(\left&lt;\beta_s^2\right&gt;\gamma_{\infty}^2\right)
+\\\\
+&amp;+ \left(2\alpha-1\right)\left(\alpha-1\right)
+\left(\left&lt;\beta_s^2\right&gt;\kappa_{\infty}^2\right)\end{split}\]</div>
+</li>
+</ul>
+</div></blockquote>
+</p></li>
+<li><p><strong>beta_kwargs</strong> (<em>None</em><em>, </em><em>dict</em>) -- <p>Extra arguments for the <cite>compute_beta_s_mean, compute_beta_s_square_mean</cite> functions.
+Only used if <cite>z_src_info='distribution'</cite>. Possible keys are:</p>
+<blockquote>
+<div><ul>
+<li><p>'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
+when performing the sum. (default=None)</p></li>
+<li><p>'zmax' (float) : Maximum redshift to be set as the source of the galaxy
+when performing the sum. (default=10.0)</p></li>
+<li><p>'delta_z_cut' (float) : Redshift cut so that <cite>zmin</cite> = <cite>z_cl</cite> + <cite>delta_z_cut</cite>.
+<cite>delta_z_cut</cite> is ignored if <cite>z_min</cite> is already provided. (default=0.1)</p></li>
+</ul>
+</div></blockquote>
+</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) -- If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
+CCL backends.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -378,10 +573,6 @@ Einasto (by construction the cross shear is zero).</p>
 <dd class="field-odd"><p>array_like, float</p>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
-<p>The magnification is computed taking into account just the tangential
-shear. This is valid for spherically averaged profiles, e.g., NFW and
-Einasto (by construction the cross shear is zero).</p>
 </dd></dl>
 
 <dl class="py method">
@@ -458,36 +649,94 @@ The mass is calculated as</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.eval_reduced_tangential_shear">
-<span class="sig-name descname"><span class="pre">eval_reduced_tangential_shear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'single_plane'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta_s_mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta_s_square_mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_distrib_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_reduced_tangential_shear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_reduced_tangential_shear" title="Permalink to this definition"></a></dt>
-<dd><p>Computes the reduced tangential shear <span class="math notranslate nohighlight">\(g_t = \frac{\gamma_t}{1-\kappa}\)</span>.</p>
+<span class="sig-name descname"><span class="pre">eval_reduced_tangential_shear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'discrete'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">approx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_reduced_tangential_shear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_reduced_tangential_shear" title="Permalink to this definition"></a></dt>
+<dd><p>Computes the reduced tangential shear</p>
+<div class="math notranslate nohighlight">
+\[g_t = \frac{\gamma_t}{1-\kappa}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>r_proj</strong> (<em>array_like</em>) -- The projected radial positions in <span class="math notranslate nohighlight">\(M\!pc\)</span>.</p></li>
 <li><p><strong>z_cl</strong> (<em>float</em>) -- Galaxy cluster redshift</p></li>
-<li><p><strong>z_src</strong> (<em>array_like</em><em>, </em><em>float</em>) -- Background source galaxy redshift(s)</p></li>
-<li><p><strong>z_src_model</strong> (<em>str</em><em>, </em><em>optional</em>) -- <p>Source redshift model, with the following supported options:</p>
+<li><p><strong>z_src</strong> (<em>array_like</em><em>, </em><em>float</em><em>, </em><em>function</em>) -- Information on the background source galaxy redshift(s). Value required depends on
+<cite>z_src_info</cite> (see below).</p></li>
+<li><p><strong>z_src_info</strong> (<em>str</em><em>, </em><em>optional</em>) -- <p>Type of redshift information provided by the <cite>z_src</cite> argument.
+The following supported options are:</p>
 <blockquote>
 <div><ul>
-<li><p><cite>single_plane</cite> (default): all sources at one redshift (if <cite>z_source</cite> is a float)    or known individual source galaxy redshifts (if <cite>z_source</cite> is an array and <cite>r_proj</cite> is a float).</p></li>
-<li><p><cite>applegate14</cite>: use the equation (6) in Weighing the Giants - III (Applegate et al. 2014; <a class="reference external" href="https://arxiv.org/abs/1208.0605">https://arxiv.org/abs/1208.0605</a>) to evaluate tangential reduced shear.</p></li>
-<li><p><cite>schrabback18</cite>: use the equation (12) in Cluster Mass Calibration at High Redshift (Schrabback et al. 2017; <a class="reference external" href="https://arxiv.org/abs/1611.03866">https://arxiv.org/abs/1611.03866</a>) to evaluate tangential reduced shear.</p></li>
+<li><p>'discrete' (default) : The redshift of sources is provided by <cite>z_src</cite>.
+It can be individual redshifts for each source galaxy when <cite>z_src</cite> is an
+array or all sources are at the same redshift when <cite>z_src</cite> is a float.</p></li>
+<li><p>'distribution' : A redshift distribution function is provided by <cite>z_src</cite>.
+<cite>z_src</cite> must be a one dimentional function.</p></li>
+<li><p>'beta' : The averaged lensing efficiency is provided by <cite>z_src</cite>.
+<cite>z_src</cite> must be a tuple containing
+( <span class="math notranslate nohighlight">\(\langle \beta_s \rangle, \langle \beta_s^2 \rangle\)</span>),
+the lensing efficiency and square of the lensing efficiency averaged over
+the galaxy redshift distribution repectively.</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\[\langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}
+{D_{L,\infty}}\right\rangle\]</div>
+<div class="math notranslate nohighlight">
+\[\langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}
+{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle\]</div>
+</div></blockquote>
+</li>
 </ul>
 </div></blockquote>
 </p></li>
-<li><p><strong>z_distrib_func</strong> (<em>one-parameter function</em>) -- Redshift distribution function. This function is used to compute the beta values if they are not provided. The default is the Chang et al (2013) distribution function.</p></li>
-<li><p><strong>beta_s_mean</strong> (<em>array_like</em><em>, </em><em>float</em><em>, </em><em>optional</em>) -- <p>Lensing efficiency averaged over the galaxy redshift distribution. If not provided, it will be computed using the default redshift distribution or the one given by the user.</p>
+<li><p><strong>approx</strong> (<em>str</em><em>, </em><em>optional</em>) -- <p>Type of computation to be made for reduced tangential shears, options are:</p>
 <blockquote>
-<div><div class="math notranslate nohighlight">
-\[\langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right\rangle\]</div>
+<div><ul>
+<li><p>None (default): Requires <cite>z_src_info</cite> to be 'discrete' or 'distribution'.
+If <cite>z_src_info='discrete'</cite>, full computation is made for each
+<cite>r_proj, z_src</cite> pair individually. If <cite>z_src_info='distribution'</cite>, reduced
+tangential shear at each value of <cite>r_proj</cite> is calculated as</p>
+<div class="math notranslate nohighlight">
+\[g_t
+=\left&lt;\frac{\beta_s\gamma_{\infty}}{1-\beta_s\kappa_{\infty}}\right&gt;
+=\frac{\int_{z_{min}}^{z_{max}}\frac{\beta_s(z)\gamma_{\infty}}
+{1-\beta_s(z)\kappa_{\infty}}N(z)\text{d}z}
+{\int_{z_{min}}^{z_{max}} N(z)\text{d}z}\]</div>
+</li>
+<li><p>'order1' : Same approach as in Weighing the Giants - III (equation 6 in
+Applegate et al. 2014; <a class="reference external" href="https://arxiv.org/abs/1208.0605">https://arxiv.org/abs/1208.0605</a>). <cite>z_src_info</cite> must be
+either 'beta', or 'distribution' (that will be used to compute
+<span class="math notranslate nohighlight">\(\langle \beta_s \rangle\)</span>)</p>
+<div class="math notranslate nohighlight">
+\[g_t\approx\frac{\left&lt;\beta_s\right&gt;\gamma_{\infty}}
+{1-\left&lt;\beta_s\right&gt;\kappa_{\infty}}\]</div>
+</li>
+<li><p>'order2' : Same approach as in Cluster Mass Calibration at High
+Redshift (equation 12 in Schrabback et al. 2017;
+<a class="reference external" href="https://arxiv.org/abs/1611.03866">https://arxiv.org/abs/1611.03866</a>).
+<cite>z_src_info</cite> must be either 'beta', or 'distribution' (that will be used
+to compute <span class="math notranslate nohighlight">\(\langle \beta_s \rangle, \langle \beta_s^2 \rangle\)</span>)</p>
+<div class="math notranslate nohighlight">
+\[g_t\approx\frac{\left&lt;\beta_s\right&gt;\gamma_{\infty}}
+{1-\left&lt;\beta_s\right&gt;\kappa_{\infty}}
+\left(1+\left(\frac{\left&lt;\beta_s^2\right&gt;}
+{\left&lt;\beta_s\right&gt;^2}-1\right)\left&lt;\beta_s\right&gt;\kappa_{\infty}\right)\]</div>
+</li>
+</ul>
 </div></blockquote>
 </p></li>
-<li><p><strong>beta_s_square_mean</strong> (<em>array_like</em><em>, </em><em>float</em><em>, </em><em>optional</em>) -- <p>Square of the lensing efficiency averaged over the galaxy redshift distribution. If not provided, it will be computed using the default redshift distribution or the one given by the user.</p>
+<li><p><strong>beta_kwargs</strong> (<em>None</em><em>, </em><em>dict</em>) -- <p>Extra arguments for the <cite>compute_beta_s_mean, compute_beta_s_square_mean</cite> functions.
+Only used if <cite>z_src_info='distribution'</cite>. Possible keys are:</p>
 <blockquote>
-<div><div class="math notranslate nohighlight">
-\[\langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle\]</div>
+<div><ul>
+<li><p>'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
+when performing the sum. (default=None)</p></li>
+<li><p>'zmax' (float) : Maximum redshift to be set as the source of the galaxy
+when performing the sum. (default=10.0)</p></li>
+<li><p>'delta_z_cut' (float) : Redshift cut so that <cite>zmin</cite> = <cite>z_cl</cite> + <cite>delta_z_cut</cite>.
+<cite>delta_z_cut</cite> is ignored if <cite>z_min</cite> is already provided. (default=0.1)</p></li>
+</ul>
 </div></blockquote>
 </p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) -- If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
+CCL backends.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -545,14 +794,56 @@ The mass is calculated as</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.eval_tangential_shear">
-<span class="sig-name descname"><span class="pre">eval_tangential_shear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_tangential_shear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_tangential_shear" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">eval_tangential_shear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'discrete'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_tangential_shear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_tangential_shear" title="Permalink to this definition"></a></dt>
 <dd><p>Computes the tangential shear</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>r_proj</strong> (<em>array_like</em>) -- The projected radial positions in <span class="math notranslate nohighlight">\(M\!pc\)</span>.</p></li>
 <li><p><strong>z_cl</strong> (<em>float</em>) -- Galaxy cluster redshift</p></li>
-<li><p><strong>z_src</strong> (<em>array_like</em><em>, </em><em>float</em>) -- Background source galaxy redshift(s)</p></li>
+<li><p><strong>z_src</strong> (<em>array_like</em><em>, </em><em>float</em><em>, </em><em>function</em>) -- Information on the background source galaxy redshift(s). Value required depends on
+<cite>z_src_info</cite> (see below).</p></li>
+<li><p><strong>z_src_info</strong> (<em>str</em><em>, </em><em>optional</em>) -- <p>Type of redshift information provided by the <cite>z_src</cite> argument.
+The following supported options are:</p>
+<blockquote>
+<div><ul>
+<li><p>'discrete' (default) : The redshift of sources is provided by <cite>z_src</cite>.
+It can be individual redshifts for each source galaxy when <cite>z_src</cite> is an
+arrayor all sources are at the same redshift when <cite>z_src</cite> is a float.</p></li>
+<li><p>'distribution' : A redshift distribution function is provided by <cite>z_src</cite>.
+<cite>z_src</cite> must be a one dimentional function.</p></li>
+<li><p>'beta' : The averaged lensing efficiency is provided by <cite>z_src</cite>.
+<cite>z_src</cite> must be a tuple containing
+( <span class="math notranslate nohighlight">\(\langle \beta_s \rangle, \langle \beta_s^2 \rangle\)</span>),
+the lensing efficiency and square of the lensing efficiency averaged over
+the galaxy redshift distribution repectively.</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\[\langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}
+{D_{L,\infty}}\right\rangle\]</div>
+<div class="math notranslate nohighlight">
+\[\langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}
+{D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle\]</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</p></li>
+<li><p><strong>beta_kwargs</strong> (<em>None</em><em>, </em><em>dict</em>) -- <p>Extra arguments for the <cite>compute_beta_s_mean, compute_beta_s_square_mean</cite> functions.
+Only used if <cite>z_src_info='distribution'</cite>. Possible keys are:</p>
+<blockquote>
+<div><ul>
+<li><p>'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
+when performing the sum. (default=None)</p></li>
+<li><p>'zmax' (float) : Maximum redshift to be set as the source of the galaxy
+when performing the sum. (default=10.0)</p></li>
+<li><p>'delta_z_cut' (float) : Redshift cut so that <cite>zmin</cite> = <cite>z_cl</cite> + <cite>delta_z_cut</cite>.
+<cite>delta_z_cut</cite> is ignored if <cite>z_min</cite> is already provided. (default=0.1)</p></li>
+</ul>
+</div></blockquote>
+</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) -- If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
+CCL backends.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>

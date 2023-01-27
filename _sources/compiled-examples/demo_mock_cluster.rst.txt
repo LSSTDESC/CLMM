@@ -1,5 +1,5 @@
-Generate Mock Data
-==================
+Generate mock data for a cluster
+================================
 
 In this example we generate mock data with a variety of systematic
 effects including photometric redshifts, source galaxy distributions,
@@ -41,7 +41,7 @@ Make sure we know which version we’re using
 
 .. parsed-literal::
 
-    '1.4.5'
+    '1.5.1'
 
 
 
@@ -196,11 +196,11 @@ Inspect the catalog data
 .. raw:: html
 
     <i>GCData length=3</i>
-    <table id="table23446735342736-74568" class="table-striped table-bordered table-condensed">
+    <table id="table23446733294096-991511" class="table-striped table-bordered table-condensed">
     <thead><tr><th>idx</th><th>ra</th><th>dec</th><th>e1</th><th>e2</th><th>z</th><th>ztrue</th><th>id</th></tr></thead>
-    <tr><td>0</td><td>5.199e+01</td><td>8.723e+01</td><td>5.483e-03</td><td>5.458e-03</td><td>8.000e-01</td><td>8.000e-01</td><td>0</td></tr>
-    <tr><td>1</td><td>5.325e+01</td><td>8.716e+01</td><td>2.927e-04</td><td>8.649e-03</td><td>8.000e-01</td><td>8.000e-01</td><td>1</td></tr>
-    <tr><td>2</td><td>5.252e+01</td><td>8.719e+01</td><td>3.758e-03</td><td>7.715e-03</td><td>8.000e-01</td><td>8.000e-01</td><td>2</td></tr>
+    <tr><td>0</td><td>4.876e+01</td><td>8.713e+01</td><td>9.569e-03</td><td>-1.154e-02</td><td>8.000e-01</td><td>8.000e-01</td><td>0</td></tr>
+    <tr><td>1</td><td>4.769e+01</td><td>8.686e+01</td><td>1.141e-03</td><td>1.107e-02</td><td>8.000e-01</td><td>8.000e-01</td><td>1</td></tr>
+    <tr><td>2</td><td>4.774e+01</td><td>8.690e+01</td><td>-3.599e-03</td><td>1.370e-02</td><td>8.000e-01</td><td>8.000e-01</td><td>2</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -224,14 +224,14 @@ Inspect the catalog data
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table23446735342736-74568').dataTable()");
+        console.log("$('#table23446733294096-991511').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table23446735342736-74568').dataTable({
+        $('#table23446733294096-991511').dataTable({
             order: [],
             pageLength: 50,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -259,11 +259,11 @@ Inspect the catalog data
 .. raw:: html
 
     <i>GCData length=3</i>
-    <table id="table23446737489936-634626" class="table-striped table-bordered table-condensed">
+    <table id="table23446733294096-615411" class="table-striped table-bordered table-condensed">
     <thead><tr><th>idx</th><th>ra</th><th>dec</th><th>e1</th><th>e2</th><th>z</th><th>ztrue</th><th>pzbins</th><th>pzpdf</th><th>id</th></tr></thead>
-    <tr><td>0</td><td>4.930e+01</td><td>8.687e+01</td><td>-1.802e-02</td><td>3.962e-02</td><td>9.597e-01</td><td>8.000e-01</td><td>5.970e-02 .. 1.860e+00</td><td>8.550e-22 .. 8.550e-22</td><td>0</td></tr>
-    <tr><td>1</td><td>5.242e+01</td><td>8.683e+01</td><td>3.275e-02</td><td>1.070e-02</td><td>8.100e-01</td><td>8.000e-01</td><td>-8.999e-02 .. 1.710e+00</td><td>8.550e-22 .. 8.550e-22</td><td>1</td></tr>
-    <tr><td>2</td><td>5.103e+01</td><td>8.678e+01</td><td>-2.775e-02</td><td>8.163e-02</td><td>6.908e-01</td><td>8.000e-01</td><td>-2.092e-01 .. 1.591e+00</td><td>8.550e-22 .. 8.550e-22</td><td>2</td></tr>
+    <tr><td>0</td><td>5.245e+01</td><td>8.695e+01</td><td>-4.214e-03</td><td>3.194e-02</td><td>8.767e-01</td><td>8.000e-01</td><td>-2.332e-02 .. 1.777e+00</td><td>8.550e-22 .. 8.550e-22</td><td>0</td></tr>
+    <tr><td>1</td><td>4.677e+01</td><td>8.704e+01</td><td>-6.408e-02</td><td>2.482e-02</td><td>7.497e-01</td><td>8.000e-01</td><td>-1.503e-01 .. 1.650e+00</td><td>8.550e-22 .. 8.550e-22</td><td>1</td></tr>
+    <tr><td>2</td><td>4.748e+01</td><td>8.707e+01</td><td>-8.658e-02</td><td>1.296e-02</td><td>8.115e-01</td><td>8.000e-01</td><td>-8.853e-02 .. 1.711e+00</td><td>8.550e-22 .. 8.550e-22</td><td>2</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -287,14 +287,14 @@ Inspect the catalog data
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table23446737489936-634626').dataTable()");
+        console.log("$('#table23446733294096-615411').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table23446737489936-634626').dataTable({
+        $('#table23446733294096-615411').dataTable({
             order: [],
             pageLength: 50,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -326,12 +326,12 @@ Inspect the catalog data
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x15531d6fd390>
+    <matplotlib.legend.Legend at 0x15531d741290>
 
 
 
 
-.. image:: demo_generate_mock_cluster_files/demo_generate_mock_cluster_36_1.png
+.. image:: demo_mock_cluster_files/demo_mock_cluster_36_1.png
 
 
 .. code:: ipython3
@@ -342,7 +342,7 @@ Inspect the catalog data
 
 
 
-.. image:: demo_generate_mock_cluster_files/demo_generate_mock_cluster_37_0.png
+.. image:: demo_mock_cluster_files/demo_mock_cluster_37_0.png
 
 
 Populate a galaxy cluster object
@@ -383,12 +383,12 @@ computed (green) and a random redshift (orange) computed from the pdf
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x15531d671a50>
+    <matplotlib.legend.Legend at 0x15531d655690>
 
 
 
 
-.. image:: demo_generate_mock_cluster_files/demo_generate_mock_cluster_43_1.png
+.. image:: demo_mock_cluster_files/demo_mock_cluster_43_1.png
 
 
 Plot source galaxy ellipticities
@@ -412,7 +412,7 @@ Plot source galaxy ellipticities
 
 
 
-.. image:: demo_generate_mock_cluster_files/demo_generate_mock_cluster_45_1.png
+.. image:: demo_mock_cluster_files/demo_mock_cluster_45_1.png
 
 
 Generate the mock data catalog with different field-of-view options
@@ -447,12 +447,12 @@ example.
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x15531d31a150>
+    <matplotlib.legend.Legend at 0x15531d3f2b90>
 
 
 
 
-.. image:: demo_generate_mock_cluster_files/demo_generate_mock_cluster_50_1.png
+.. image:: demo_mock_cluster_files/demo_mock_cluster_50_1.png
 
 
 -  Alternatively, the user may provide a galaxy density (here ~1
@@ -501,12 +501,12 @@ example.
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x15531d275090>
+    <matplotlib.legend.Legend at 0x15531d32e1d0>
 
 
 
 
-.. image:: demo_generate_mock_cluster_files/demo_generate_mock_cluster_54_1.png
+.. image:: demo_mock_cluster_files/demo_mock_cluster_54_1.png
 
 
 Generate mock data with different galaxy cluster options

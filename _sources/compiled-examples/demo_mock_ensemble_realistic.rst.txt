@@ -1,5 +1,8 @@
+Generate “realistic” mock data for a cluster ensemble
+=====================================================
+
 Generate cluster ensemble with “realistic” mass and redshift distribution
-=========================================================================
+-------------------------------------------------------------------------
 
 In this notebook, we generate a ‘realistic’ mock cluster ensemble,
 i.e. given a halo mass function, and mass-concentration relation (more
@@ -187,7 +190,7 @@ Volume element
 
 
 
-.. image:: Example_realistic_cluster_ensemble_files/Example_realistic_cluster_ensemble_13_0.png
+.. image:: demo_mock_ensemble_realistic_files/demo_mock_ensemble_realistic_13_0.png
 
 
 Mass function
@@ -220,7 +223,7 @@ cosmologies defined above are not actually the same (neutrinos?).
 
 
 
-.. image:: Example_realistic_cluster_ensemble_files/Example_realistic_cluster_ensemble_15_0.png
+.. image:: demo_mock_ensemble_realistic_files/demo_mock_ensemble_realistic_15_0.png
 
 
 .. code:: ipython3
@@ -237,7 +240,7 @@ cosmologies defined above are not actually the same (neutrinos?).
 
 
 
-.. image:: Example_realistic_cluster_ensemble_files/Example_realistic_cluster_ensemble_16_0.png
+.. image:: demo_mock_ensemble_realistic_files/demo_mock_ensemble_realistic_16_0.png
 
 
 Acceptance-rejection method to sample (M,z) from the mass function
@@ -354,7 +357,7 @@ Draw :math:`10^4` (M,z) pairs and check consistency with mass function
 
 
 
-.. image:: Example_realistic_cluster_ensemble_files/Example_realistic_cluster_ensemble_23_0.png
+.. image:: demo_mock_ensemble_realistic_files/demo_mock_ensemble_realistic_23_0.png
 
 
 Check distribution in mass bins (integrate over the full redshift range)
@@ -399,7 +402,7 @@ Check distribution in mass bins (integrate over the full redshift range)
 
 
 
-.. image:: Example_realistic_cluster_ensemble_files/Example_realistic_cluster_ensemble_27_0.png
+.. image:: demo_mock_ensemble_realistic_files/demo_mock_ensemble_realistic_27_0.png
 
 
 Check distribution in redshift bins (integrate over the full mass range)
@@ -442,7 +445,7 @@ Check distribution in redshift bins (integrate over the full mass range)
 
 
 
-.. image:: Example_realistic_cluster_ensemble_files/Example_realistic_cluster_ensemble_30_0.png
+.. image:: demo_mock_ensemble_realistic_files/demo_mock_ensemble_realistic_30_0.png
 
 
 Generating a cluster catalog and associated source catalogs
@@ -565,8 +568,8 @@ The cluster objects are then stored in ``gclist``.
 
 .. parsed-literal::
 
-    CPU times: user 27.5 s, sys: 6.44 s, total: 33.9 s
-    Wall time: 33.9 s
+    CPU times: user 27.5 s, sys: 6.77 s, total: 34.3 s
+    Wall time: 34.1 s
 
 
 .. code:: ipython3
@@ -671,7 +674,7 @@ but these are not (yet) available in ``CLMM``
 
 
 
-.. image:: Example_realistic_cluster_ensemble_files/Example_realistic_cluster_ensemble_45_0.png
+.. image:: demo_mock_ensemble_realistic_files/demo_mock_ensemble_realistic_45_0.png
 
 
 .. code:: ipython3
@@ -694,7 +697,7 @@ but these are not (yet) available in ``CLMM``
 
 
 
-.. image:: Example_realistic_cluster_ensemble_files/Example_realistic_cluster_ensemble_46_0.png
+.. image:: demo_mock_ensemble_realistic_files/demo_mock_ensemble_realistic_46_0.png
 
 
 Visualizing the stacked profiles and corresponding model
@@ -753,6 +756,6 @@ mass, concentration and redshift in the stack (dashed black)
 
 
 
-.. image:: Example_realistic_cluster_ensemble_files/Example_realistic_cluster_ensemble_49_0.png
+.. image:: demo_mock_ensemble_realistic_files/demo_mock_ensemble_realistic_49_0.png
 
 

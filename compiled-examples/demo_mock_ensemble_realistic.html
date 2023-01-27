@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Generate cluster ensemble with “realistic” mass and redshift distribution &mdash; CLMM 1.4.5 documentation</title>
+  <title>Generate “realistic” mock data for a cluster ensemble &mdash; CLMM 1.5.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -22,7 +22,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="API Documentation" href="../api.html" />
-    <link rel="prev" title="Generating a cluster catalog and associated source catalogs" href="Example_cluster_ensemble.html" /> 
+    <link rel="prev" title="Mass conversion between different mass definitions" href="demo_mass_conversion.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -33,7 +33,7 @@
             <a href="../index.html" class="icon icon-home"> CLMM
           </a>
               <div class="version">
-                1.4.5
+                1.5.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -51,32 +51,28 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Usage Demos</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="demo_generate_mock_cluster.html">Generate Mock Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demo_dataops_functionality.html">Measure a Profile</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
-<li class="toctree-l1"><a class="reference internal" href="data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Compare_NFW_critical_massdef.html">Compare NFW profile for the CLMM backends</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Compare_NFW_critical_massdef.html#comparison-of-nfw-with-mass-definition-based-on-the-critical-density-of-the-universe-for-the-various-backends">Comparison of NFW with mass definition based on the critical density of the universe for the various backends</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Compare_NFW_critical_massdef.html#compare-all-to-colossus">Compare all to Colossus</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demo_mass_conversion.html">Mass conversion between spherical overdensity mass definitions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demo_boost_factors.html">Compute boost factors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_mock_cluster.html">Generate mock data for a cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_dataops_functionality.html">Measure WL Profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_theory_functionality.html">Model WL Profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_mock_ensemble.html">Generate mock data for a cluster ensemble</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_and_model_demo_DC2.html">Using the cosmoDC2 catalog</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Mass Fitting Examples</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Example1_Fit_shear_profile_with_miscentering.html">Investigate the impact of miscentering on shear profiles</a></li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Example 1: Ideal data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example1_Fit_shear_profile_with_miscentering.html">Example 1b: Impact of miscentering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Example 2: Realistic data and wrong model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Example 3: Account for the n(z) of sources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Example4_Fit_Halo_mass_to_HSC_data.html">Using CLMM on Real Datasets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Compare_NFW_critical_massdef.html">Compare NFW profile for the CLMM backends</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Compare_NFW_critical_massdef.html#comparison-of-nfw-with-mass-definition-based-on-the-critical-density-of-the-universe-for-the-various-backends">Comparison of NFW with mass definition based on the critical density of the universe for the various backends</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Compare_NFW_critical_massdef.html#compare-all-to-colossus">Compare all to Colossus</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Example_cluster_ensemble.html">Generating a cluster catalog and associated source catalogs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Example_cluster_ensemble.html#creating-clusterensemble-object-and-estimation-of-individual-excess-surface-density-profiles">Creating ClusterEnsemble object and estimation of individual excess surface density profiles</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Example_cluster_ensemble.html#stacked-profile-of-the-cluster-ensemble">Stacked profile of the cluster ensemble</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Example_cluster_ensemble.html#covariance-bootstrap-sample-jackknife-of-the-stack-between-radial-bins">Covariance (Bootstrap, sample, Jackknife) of the stack between radial bins</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Example_cluster_ensemble.html#visualizing-the-stacked-profiles-and-corresponding-model">Visualizing the stacked profiles and corresponding model</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Generate cluster ensemble with “realistic” mass and redshift distribution</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Other</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="demo_theory_functionality_diff_z_types.html">Model WL Profiles (different redshift inputs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_theory_functionality_oo.html">Model WL Profiles (Object Oriented)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_boost_factors.html">Boost factors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_compute_deltasigma_weights.html">Weak lensing weights</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_mass_conversion.html">Mass conversion between different mass definitions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Generate “realistic” mock data for a cluster ensemble</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
@@ -105,6 +101,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.plotting.html">clmm.plotting package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.utils.html">clmm.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.z_distributions.html">clmm.z_distributions module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.support.html">clmm.support package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/clmm.support.mock_data.html">clmm.support.mock_data module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/clmm.support.sampler.html">clmm.support.sampler module</a></li>
@@ -128,9 +125,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a></li>
-      <li class="breadcrumb-item active">Generate cluster ensemble with “realistic” mass and redshift distribution</li>
+      <li class="breadcrumb-item active">Generate “realistic” mock data for a cluster ensemble</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/compiled-examples/Example_realistic_cluster_ensemble.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/compiled-examples/demo_mock_ensemble_realistic.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -138,8 +135,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="generate-cluster-ensemble-with-realistic-mass-and-redshift-distribution">
-<h1>Generate cluster ensemble with “realistic” mass and redshift distribution<a class="headerlink" href="#generate-cluster-ensemble-with-realistic-mass-and-redshift-distribution" title="Permalink to this heading"></a></h1>
+  <section id="generate-realistic-mock-data-for-a-cluster-ensemble">
+<h1>Generate “realistic” mock data for a cluster ensemble<a class="headerlink" href="#generate-realistic-mock-data-for-a-cluster-ensemble" title="Permalink to this heading"></a></h1>
+<section id="generate-cluster-ensemble-with-realistic-mass-and-redshift-distribution">
+<h2>Generate cluster ensemble with “realistic” mass and redshift distribution<a class="headerlink" href="#generate-cluster-ensemble-with-realistic-mass-and-redshift-distribution" title="Permalink to this heading"></a></h2>
 <p>In this notebook, we generate a ‘realistic’ mock cluster ensemble,
 i.e. given a halo mass function, and mass-concentration relation (more
 complexity, such as miscentering, could also be added but it’s not done
@@ -154,6 +153,7 @@ the theoretical prediction</p>
 each cluster - Creating ClusterEnsemble object and estimation of
 individual excess surface density profiles - An analysis of the
 covariance of the stack between radial bins</p>
+</section>
 <section id="draw-pairs-of-mass-and-redshift-according-to-a-mass-function-computed-with-either-ccl-or-numcosmo">
 <h2>Draw pairs of mass and redshift according to a mass function (computed with either CCL or NumCosmo)<a class="headerlink" href="#draw-pairs-of-mass-and-redshift-according-to-a-mass-function-computed-with-either-ccl-or-numcosmo" title="Permalink to this heading"></a></h2>
 <!-- The halo mass function is given by
@@ -303,7 +303,7 @@ the implementation via CCL or NumCosmo.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;minor&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/Example_realistic_cluster_ensemble_13_0.png" src="../_images/Example_realistic_cluster_ensemble_13_0.png" />
+<img alt="../_images/demo_mock_ensemble_realistic_13_0.png" src="../_images/demo_mock_ensemble_realistic_13_0.png" />
 </section>
 <section id="mass-function">
 <h4>Mass function<a class="headerlink" href="#mass-function" title="Permalink to this heading"></a></h4>
@@ -330,7 +330,7 @@ cosmologies defined above are not actually the same (neutrinos?).</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;minor&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/Example_realistic_cluster_ensemble_15_0.png" src="../_images/Example_realistic_cluster_ensemble_15_0.png" />
+<img alt="../_images/demo_mock_ensemble_realistic_15_0.png" src="../_images/demo_mock_ensemble_realistic_15_0.png" />
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">z_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">1.7</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
 <span class="n">logm</span> <span class="o">=</span> <span class="mf">15.</span>
 <span class="n">res_ccl</span> <span class="o">=</span> <span class="n">t08_vec_ccl</span><span class="p">(</span><span class="n">logm</span><span class="p">,</span><span class="n">z_arr</span><span class="p">)</span>
@@ -342,7 +342,7 @@ cosmologies defined above are not actually the same (neutrinos?).</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;minor&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/Example_realistic_cluster_ensemble_16_0.png" src="../_images/Example_realistic_cluster_ensemble_16_0.png" />
+<img alt="../_images/demo_mock_ensemble_realistic_16_0.png" src="../_images/demo_mock_ensemble_realistic_16_0.png" />
 </section>
 </section>
 <section id="acceptance-rejection-method-to-sample-m-z-from-the-mass-function">
@@ -448,7 +448,7 @@ cosmologies defined above are not actually the same (neutrinos?).</p>
 <span class="k">pass</span>
 </pre></div>
 </div>
-<img alt="../_images/Example_realistic_cluster_ensemble_23_0.png" src="../_images/Example_realistic_cluster_ensemble_23_0.png" />
+<img alt="../_images/demo_mock_ensemble_realistic_23_0.png" src="../_images/demo_mock_ensemble_realistic_23_0.png" />
 </section>
 <section id="check-distribution-in-mass-bins-integrate-over-the-full-redshift-range">
 <h3>Check distribution in mass bins (integrate over the full redshift range)<a class="headerlink" href="#check-distribution-in-mass-bins-integrate-over-the-full-redshift-range" title="Permalink to this heading"></a></h3>
@@ -483,7 +483,7 @@ cosmologies defined above are not actually the same (neutrinos?).</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;minor&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/Example_realistic_cluster_ensemble_27_0.png" src="../_images/Example_realistic_cluster_ensemble_27_0.png" />
+<img alt="../_images/demo_mock_ensemble_realistic_27_0.png" src="../_images/demo_mock_ensemble_realistic_27_0.png" />
 </section>
 <section id="check-distribution-in-redshift-bins-integrate-over-the-full-mass-range">
 <h3>Check distribution in redshift bins (integrate over the full mass range)<a class="headerlink" href="#check-distribution-in-redshift-bins-integrate-over-the-full-mass-range" title="Permalink to this heading"></a></h3>
@@ -517,7 +517,7 @@ cosmologies defined above are not actually the same (neutrinos?).</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;minor&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/Example_realistic_cluster_ensemble_30_0.png" src="../_images/Example_realistic_cluster_ensemble_30_0.png" />
+<img alt="../_images/demo_mock_ensemble_realistic_30_0.png" src="../_images/demo_mock_ensemble_realistic_30_0.png" />
 </section>
 </section>
 <section id="generating-a-cluster-catalog-and-associated-source-catalogs">
@@ -624,8 +624,8 @@ details)</p>
     <span class="n">gclist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cl</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">27.5</span> <span class="n">s</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mf">6.44</span> <span class="n">s</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">33.9</span> <span class="n">s</span>
-<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mf">33.9</span> <span class="n">s</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">27.5</span> <span class="n">s</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mf">6.77</span> <span class="n">s</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">34.3</span> <span class="n">s</span>
+<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mf">34.1</span> <span class="n">s</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">columns</span>
@@ -713,7 +713,7 @@ but these are not (yet) available in <code class="docutils literal notranslate">
 <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;minor&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/Example_realistic_cluster_ensemble_45_0.png" src="../_images/Example_realistic_cluster_ensemble_45_0.png" />
+<img alt="../_images/demo_mock_ensemble_realistic_45_0.png" src="../_images/demo_mock_ensemble_realistic_45_0.png" />
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span> <span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;axes.linewidth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">wspace</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
@@ -731,7 +731,7 @@ but these are not (yet) available in <code class="docutils literal notranslate">
     <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 </pre></div>
 </div>
-<img alt="../_images/Example_realistic_cluster_ensemble_46_0.png" src="../_images/Example_realistic_cluster_ensemble_46_0.png" />
+<img alt="../_images/demo_mock_ensemble_realistic_46_0.png" src="../_images/demo_mock_ensemble_realistic_46_0.png" />
 </section>
 <section id="visualizing-the-stacked-profiles-and-corresponding-model">
 <h3>Visualizing the stacked profiles and corresponding model<a class="headerlink" href="#visualizing-the-stacked-profiles-and-corresponding-model" title="Permalink to this heading"></a></h3>
@@ -782,7 +782,7 @@ mass, concentration and redshift in the stack (dashed black)</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<img alt="../_images/Example_realistic_cluster_ensemble_49_0.png" src="../_images/Example_realistic_cluster_ensemble_49_0.png" />
+<img alt="../_images/demo_mock_ensemble_realistic_49_0.png" src="../_images/demo_mock_ensemble_realistic_49_0.png" />
 </section>
 </section>
 </section>

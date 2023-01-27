@@ -15,4 +15,5 @@ Information on specific functions, classes, and methods.
    api/clmm.theory.rst
    api/clmm.plotting.rst
    api/clmm.utils.rst
+   api/clmm.z_distributions.rst
    api/clmm.support.rst
