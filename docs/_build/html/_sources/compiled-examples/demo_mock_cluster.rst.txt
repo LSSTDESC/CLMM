@@ -1,0 +1,557 @@
+Generate mock data for a cluster
+================================
+
+In this example we generate mock data with a variety of systematic
+effects including photometric redshifts, source galaxy distributions,
+and shape noise. We then populate a galaxy cluster object. This
+notebooks is organised as follows: - Imports and configuration setup -
+Generate mock data with different source galaxy options - Generate mock
+data with different field-of-view options - Generate mock data with
+different galaxy cluster options (only available with the Numcosmo
+and/or CCL backends). Use the ``os.environ['CLMM_MODELING_BACKEND']``
+line below to select your backend.
+
+.. code:: ipython3
+
+    import warnings
+    warnings.filterwarnings("ignore", message='.*(!).*')
+    import os
+    ## Uncomment the following line if you want to use a specific modeling backend among 'ct' (cluster-toolkit), 'ccl' (CCL) or 'nc' (Numcosmo). Default is 'ccl'
+    #os.environ['CLMM_MODELING_BACKEND'] = 'nc'
+
+.. code:: ipython3
+
+    try: import clmm
+    except:
+        import notebook_install
+        notebook_install.install_clmm_pipeline(upgrade=False)
+        import clmm
+    import numpy as np
+    import matplotlib.pyplot as plt
+    %matplotlib inline
+
+Make sure we know which version we’re using
+
+.. code:: ipython3
+
+    clmm.__version__
+
+
+
+
+.. parsed-literal::
+
+    '1.5.1'
+
+
+
+Import mock data module and setup the configuration
+---------------------------------------------------
+
+.. code:: ipython3
+
+    from clmm.support import mock_data as mock
+    from clmm import Cosmology
+
+Mock data generation requires a defined cosmology
+
+.. code:: ipython3
+
+    mock_cosmo = Cosmology(H0 = 70.0, Omega_dm0 = 0.27 - 0.045, Omega_b0 = 0.045, Omega_k0 = 0.0)
+
+Mock data generation requires some cluster information. The default is
+to work with the NFW profile, using the “200,mean” mass definition. The
+Numcosmo and CCL backends allow for more flexibility (see last section
+of this notebook)
+
+.. code:: ipython3
+
+    cosmo = mock_cosmo
+    cluster_id = "Awesome_cluster"
+    cluster_m = 1.e15 # M200,m
+    cluster_z = 0.3
+    src_z = 0.8
+    concentration = 4 
+    ngals = 1000 # number of source galaxies
+    
+    # Cluster centre coordinates
+    cluster_ra = 50.
+    cluster_dec = 87.
+
+Generate the mock catalog with different source galaxy options
+--------------------------------------------------------------
+
+-  Clean data: no noise, all galaxies at the same redshift
+
+.. code:: ipython3
+
+    zsrc_min = cluster_z + 0.1 
+
+.. code:: ipython3
+
+    ideal_data = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration, cosmo, src_z, ngals=ngals,
+                                              cluster_ra=cluster_ra, cluster_dec=cluster_dec)
+
+-  Noisy data: shape noise, all galaxies at the same redshift
+
+.. code:: ipython3
+
+    noisy_data_src_z = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration, cosmo, 
+                                                    src_z, shapenoise=0.05, ngals=ngals, 
+                                                    cluster_ra=cluster_ra, cluster_dec=cluster_dec)
+
+-  Noisy data: shape noise plus measurement error, all galaxies at the
+   same redshift
+
+.. code:: ipython3
+
+    noisy_data_src_z_e_err = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration, cosmo, 
+                                                          src_z, shapenoise=0.05, mean_e_err=0.05, ngals=ngals, 
+                                                          cluster_ra=cluster_ra, cluster_dec=cluster_dec)
+
+.. container:: alert alert-warning
+
+   **WARNING:** Experimental feature. Uncertainties are created by
+   simply drawing random numbers near the value specified by
+   ``mean_e_err``. Use at your own risk. This will be improved in future
+   releases.
+
+-  Noisy data: photo-z errors (and pdfs!), all galaxies at the same
+   redshift
+
+.. code:: ipython3
+
+    noisy_data_photoz = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration, cosmo, 
+                                                     src_z, shapenoise=0.05, photoz_sigma_unscaled=0.05, ngals=ngals, 
+                                                     cluster_ra=cluster_ra, cluster_dec=cluster_dec)
+
+-  Clean data: source galaxy redshifts drawn from a redshift
+   distribution instead of fixed ``src_z`` value. Options are
+   ``chang13`` for Chang et al. 2013 or ``desc_srd`` for the
+   distribution given in the DESC Science Requirement Document. No shape
+   noise or photoz errors.
+
+.. code:: ipython3
+
+    ideal_with_src_dist = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration, cosmo, 
+                                                       'chang13', zsrc_min=zsrc_min, zsrc_max=7.0, ngals=ngals, 
+                                                       cluster_ra=cluster_ra, cluster_dec=cluster_dec)
+
+
+-  Noisy data: galaxies following redshift distribution, redshift error,
+   shape noise
+
+.. code:: ipython3
+
+    allsystematics = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration, cosmo, 
+                                                  'chang13', zsrc_min=zsrc_min, photoz_sigma_unscaled=0.05, 
+                                                  ngals=ngals, cluster_ra=cluster_ra, cluster_dec=cluster_dec)
+
+.. code:: ipython3
+
+    allsystematics2 = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration, cosmo, 
+                                                   'desc_srd', zsrc_min=zsrc_min, zsrc_max=7.0, shapenoise=0.05, 
+                                                   photoz_sigma_unscaled=0.05, ngals=ngals, 
+                                                   cluster_ra=cluster_ra, cluster_dec=cluster_dec)
+
+Sanity check: checking that no galaxies were originally drawn below
+zsrc_min, before photoz errors are applied (when relevant)
+
+.. code:: ipython3
+
+    print('Number of galaxies below zsrc_min:')
+    print('ideal_data:',np.sum(ideal_data['ztrue']<zsrc_min))
+    print('noisy_data_src_z:',np.sum(noisy_data_src_z['ztrue']<zsrc_min))
+    print('noisy_data_photoz:',np.sum(noisy_data_photoz['ztrue']<zsrc_min))
+    print('ideal_with_src_dist:',np.sum(ideal_with_src_dist['ztrue']<zsrc_min))
+    print('allsystematics:',np.sum(allsystematics['ztrue']<zsrc_min))
+
+
+.. parsed-literal::
+
+    Number of galaxies below zsrc_min:
+    ideal_data: 0
+    noisy_data_src_z: 0
+    noisy_data_photoz: 0
+    ideal_with_src_dist: 0
+    allsystematics: 0
+
+
+Inspect the catalog data
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  Ideal catalog first entries: no noise on the shape measurement, all
+   galaxies at z=0.8, no redshift errors (z = ztrue)
+
+.. code:: ipython3
+
+    for n in ideal_data.colnames: 
+        if n!='id':
+            ideal_data[n].format = "%6.3e" 
+    ideal_data[0:3].show_in_notebook()
+
+
+
+
+.. raw:: html
+
+    <i>GCData length=3</i>
+    <table id="table23446733294096-991511" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>idx</th><th>ra</th><th>dec</th><th>e1</th><th>e2</th><th>z</th><th>ztrue</th><th>id</th></tr></thead>
+    <tr><td>0</td><td>4.876e+01</td><td>8.713e+01</td><td>9.569e-03</td><td>-1.154e-02</td><td>8.000e-01</td><td>8.000e-01</td><td>0</td></tr>
+    <tr><td>1</td><td>4.769e+01</td><td>8.686e+01</td><td>1.141e-03</td><td>1.107e-02</td><td>8.000e-01</td><td>8.000e-01</td><td>1</td></tr>
+    <tr><td>2</td><td>4.774e+01</td><td>8.690e+01</td><td>-3.599e-03</td><td>1.370e-02</td><td>8.000e-01</td><td>8.000e-01</td><td>2</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table23446733294096-991511').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table23446733294096-991511').dataTable({
+            order: [],
+            pageLength: 50,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [0, 1, 2, 3, 4, 5, 6, 7], type: "optionalnum"}]
+        });
+    });
+    </script>
+
+
+
+
+-  With photo-z errors
+
+.. code:: ipython3
+
+    for n in noisy_data_photoz.colnames: 
+        if n!='id':
+            noisy_data_photoz[n].format = "%6.3e"
+    noisy_data_photoz[0:3].show_in_notebook()
+
+
+
+
+.. raw:: html
+
+    <i>GCData length=3</i>
+    <table id="table23446733294096-615411" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>idx</th><th>ra</th><th>dec</th><th>e1</th><th>e2</th><th>z</th><th>ztrue</th><th>pzbins</th><th>pzpdf</th><th>id</th></tr></thead>
+    <tr><td>0</td><td>5.245e+01</td><td>8.695e+01</td><td>-4.214e-03</td><td>3.194e-02</td><td>8.767e-01</td><td>8.000e-01</td><td>-2.332e-02 .. 1.777e+00</td><td>8.550e-22 .. 8.550e-22</td><td>0</td></tr>
+    <tr><td>1</td><td>4.677e+01</td><td>8.704e+01</td><td>-6.408e-02</td><td>2.482e-02</td><td>7.497e-01</td><td>8.000e-01</td><td>-1.503e-01 .. 1.650e+00</td><td>8.550e-22 .. 8.550e-22</td><td>1</td></tr>
+    <tr><td>2</td><td>4.748e+01</td><td>8.707e+01</td><td>-8.658e-02</td><td>1.296e-02</td><td>8.115e-01</td><td>8.000e-01</td><td>-8.853e-02 .. 1.711e+00</td><td>8.550e-22 .. 8.550e-22</td><td>2</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table23446733294096-615411').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table23446733294096-615411').dataTable({
+            order: [],
+            pageLength: 50,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], type: "optionalnum"}]
+        });
+    });
+    </script>
+
+
+
+
+-  Histogram of the redshift distribution of background galaxies, for
+   the true (originally drawn) redshift and the redshift once photoz
+   errors have been added. By construction no true redshift occurs below
+   zsrc_min, but some ‘observed’ redshifts (i.e. including photoz
+   errors) might be.
+
+.. code:: ipython3
+
+    plt.hist(allsystematics['z'], bins=50, alpha=0.3, label='measured z (i.e. including photoz error)');
+    plt.hist(allsystematics['ztrue'], bins=50, alpha=0.3, label='true z');
+    plt.axvline(zsrc_min, color='red', label='requested zmin')
+    plt.xlabel('Source Redshift')
+    plt.legend()
+
+
+
+
+.. parsed-literal::
+
+    <matplotlib.legend.Legend at 0x15531d741290>
+
+
+
+
+.. image:: demo_mock_cluster_files/demo_mock_cluster_36_1.png
+
+
+.. code:: ipython3
+
+    plt.hist(allsystematics['ztrue'], bins=50, alpha=0.3, label='true z');
+    plt.hist(allsystematics2['ztrue'], bins=50, alpha=0.3, label='true z');
+
+
+
+
+.. image:: demo_mock_cluster_files/demo_mock_cluster_37_0.png
+
+
+Populate a galaxy cluster object
+--------------------------------
+
+.. code:: ipython3
+
+    gc_object = clmm.GalaxyCluster(cluster_id, cluster_ra, cluster_dec, 
+                                   cluster_z, allsystematics)
+
+From a ``GalaxyCluster`` object that has photoz information,
+``draw_gal_z_from_pdz`` allows to generate ``nobj`` random redshifts of
+each galaxy in ``galcat``, from its photoz pdf, and store the result in
+a new ``zcol_out`` column.
+
+.. code:: ipython3
+
+    z_random = gc_object.draw_gal_z_from_pdz(zcol_out='z_random', overwrite=False, nobj=1)
+
+The plot below shows the “observed photoz pdf” (blue), centered on the
+“observed z” (red), the true redshift from which the shear where
+computed (green) and a random redshift (orange) computed from the pdf
+
+.. code:: ipython3
+
+    # pdz for one of the galaxy in the catalog, 
+    galid = 0
+    plt.plot(gc_object.galcat['pzbins'][galid], gc_object.galcat['pzpdf'][galid], label='Photoz pdf')
+    plt.axvline(gc_object.galcat['z'][galid], label='Observed z', color='red')
+    plt.axvline(gc_object.galcat['ztrue'][galid], label='True z', color='g')
+    plt.axvline(gc_object.galcat['z_random'][galid], label='Random z from pdf', color='orange')
+    plt.xlabel('Redshift')
+    plt.ylabel('Photo-z Probability Distribution')
+    plt.legend(loc=1)
+
+
+
+
+.. parsed-literal::
+
+    <matplotlib.legend.Legend at 0x15531d655690>
+
+
+
+
+.. image:: demo_mock_cluster_files/demo_mock_cluster_43_1.png
+
+
+Plot source galaxy ellipticities
+
+.. code:: ipython3
+
+    plt.scatter(gc_object.galcat['e1'],gc_object.galcat['e2'])
+    
+    plt.xlim(-0.2, 0.2)
+    plt.ylim(-0.2, 0.2)
+    plt.xlabel('Ellipticity 1',fontsize='x-large')
+    plt.ylabel('Ellipticity 2',fontsize='x-large')
+
+
+
+
+.. parsed-literal::
+
+    Text(0, 0.5, 'Ellipticity 2')
+
+
+
+
+.. image:: demo_mock_cluster_files/demo_mock_cluster_45_1.png
+
+
+Generate the mock data catalog with different field-of-view options
+-------------------------------------------------------------------
+
+In the examples above, ``ngals=1000`` galaxies were simulated in a field
+corresponding to a 8 Mpc x 8 Mpc (proper distance) square box at the
+cluster redshift (this is the default). The user may however vary the
+field size and/or provide a galaxy density (instead of a number of
+galaxies). This is examplified below, using the ``allsystematics``
+example.
+
+-  ``ngals = 1000`` in a 4 x 4 Mpc box. Asking for the same number of
+   galaxies in a smaller field of view yields high galaxy density
+
+.. code:: ipython3
+
+    allsystematics2 = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration, cosmo, 
+                                                   'chang13', zsrc_min=zsrc_min, zsrc_max=7.0, 
+                                                   shapenoise=0.05, photoz_sigma_unscaled=0.05,
+                                                   field_size=4, ngals=ngals, 
+                                                   cluster_ra=cluster_ra, cluster_dec=cluster_dec)
+
+.. code:: ipython3
+
+    plt.scatter(allsystematics['ra'],allsystematics['dec'], marker='.', label = 'default 8 x 8 Mpc FoV')
+    plt.scatter(allsystematics2['ra'],allsystematics2['dec'],marker='.', label = 'user-defined FoV')
+    plt.legend()
+
+
+
+
+.. parsed-literal::
+
+    <matplotlib.legend.Legend at 0x15531d3f2b90>
+
+
+
+
+.. image:: demo_mock_cluster_files/demo_mock_cluster_50_1.png
+
+
+-  Alternatively, the user may provide a galaxy density (here ~1
+   gal/arcmin2 to roughly match 1000 galaxies, given the configuration)
+   and the number of galaxies to draw will automatically be adjusted to
+   the box size.
+
+.. code:: ipython3
+
+    allsystematics3 = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration, cosmo, 
+                                                   'chang13', zsrc_min=zsrc_min, zsrc_max=7.0, 
+                                                  shapenoise=0.05, photoz_sigma_unscaled=0.05, 
+                                                  ngal_density=1.3,
+                                                  cluster_ra=cluster_ra, cluster_dec=cluster_dec)
+    print(f'Number of drawn galaxies = {len(allsystematics3)}')
+
+
+.. parsed-literal::
+
+    Number of drawn galaxies = 989
+
+
+.. code:: ipython3
+
+    allsystematics4 = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration, cosmo, 
+                                                   'desc_srd', zsrc_min=zsrc_min, zsrc_max=7.0, 
+                                                  shapenoise=0.05, photoz_sigma_unscaled=0.05, 
+                                                  ngal_density=1.3,
+                                                  cluster_ra=cluster_ra, cluster_dec=cluster_dec)
+    print(f'Number of drawn galaxies = {len(allsystematics4)}')
+
+
+.. parsed-literal::
+
+    Number of drawn galaxies = 1020
+
+
+.. code:: ipython3
+
+    plt.scatter(allsystematics['ra'],allsystematics['dec'], marker='.', label = 'ngals = 1000')
+    plt.scatter(allsystematics3['ra'],allsystematics3['dec'],marker='.', label = 'ngal_density = 1 gal / arcmin2')
+    plt.legend()
+
+
+
+
+.. parsed-literal::
+
+    <matplotlib.legend.Legend at 0x15531d32e1d0>
+
+
+
+
+.. image:: demo_mock_cluster_files/demo_mock_cluster_54_1.png
+
+
+Generate mock data with different galaxy cluster options
+--------------------------------------------------------
+
+WARNING: Available options depend on the modeling backend: -
+Cluster-toolkit allows for other values of the overdensity parameter,
+but is retricted to working with the mean mass definition - Both CCL and
+Numcosmo allow for different values of the overdensity parameter, but
+work with both the mean and critical mass definition - Numcosmo further
+allows for the Einasto or Burkert density profiles to be used instead of
+the NFW profile
+
+Changing the overdensity parameter (all backend) - ``delta_so`` keyword (default = 200)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code:: ipython3
+
+    allsystematics_500mean = mock.generate_galaxy_catalog(
+        cluster_m, cluster_z, concentration, cosmo, 'chang13', delta_so=500,
+        zsrc_min=zsrc_min,
+        zsrc_max=7.0, shapenoise=0.05, photoz_sigma_unscaled=0.05, ngals=ngals,
+        cluster_ra=cluster_ra, cluster_dec=cluster_dec)
+
+Using the critical mass definition (Numcosmo and CCL only) - ``massdef`` keyword (default = ‘mean’)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+WARNING: error will be raised if using the cluster-toolkit backend
+
+.. code:: ipython3
+
+    allsystematics_200critical = mock.generate_galaxy_catalog(
+        cluster_m, cluster_z, concentration, cosmo,'chang13',  massdef='critical', zsrc_min=zsrc_min,
+        zsrc_max=7.0, shapenoise=0.05, photoz_sigma_unscaled=0.05, ngals=ngals,
+        cluster_ra=cluster_ra, cluster_dec=cluster_dec)
+
+Changing the halo density profile (Numcosmo and CCL only) - ``halo_profile_model`` keyword (default = ‘nfw’)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+WARNING: error will be raised if using the cluster-toolkit or CCL
+backends
+
+.. code:: ipython3
+
+    allsystematics_200m_einasto = mock.generate_galaxy_catalog(
+        cluster_m, cluster_z, concentration, cosmo,'chang13', halo_profile_model='einasto', zsrc_min=zsrc_min,
+        zsrc_max=7.0, shapenoise=0.05, photoz_sigma_unscaled=0.05, ngals=ngals,
+        cluster_ra=cluster_ra, cluster_dec=cluster_dec)

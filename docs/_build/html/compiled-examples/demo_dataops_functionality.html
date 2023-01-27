@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Measure a Profile &mdash; CLMM 1.4.5 documentation</title>
+  <title>Measure WL Profiles &mdash; CLMM 1.5.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -21,8 +21,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Model a Galaxy Cluster" href="demo_theory_functionality.html" />
-    <link rel="prev" title="Generate Mock Data" href="demo_generate_mock_cluster.html" /> 
+    <link rel="next" title="Model WL Profiles" href="demo_theory_functionality.html" />
+    <link rel="prev" title="Generate mock data for a cluster" href="demo_mock_cluster.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -33,7 +33,7 @@
             <a href="../index.html" class="icon icon-home"> CLMM
           </a>
               <div class="version">
-                1.4.5
+                1.5.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -51,32 +51,28 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Usage Demos</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="demo_generate_mock_cluster.html">Generate Mock Data</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Measure a Profile</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
-<li class="toctree-l1"><a class="reference internal" href="data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Compare_NFW_critical_massdef.html">Compare NFW profile for the CLMM backends</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Compare_NFW_critical_massdef.html#comparison-of-nfw-with-mass-definition-based-on-the-critical-density-of-the-universe-for-the-various-backends">Comparison of NFW with mass definition based on the critical density of the universe for the various backends</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Compare_NFW_critical_massdef.html#compare-all-to-colossus">Compare all to Colossus</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demo_mass_conversion.html">Mass conversion between spherical overdensity mass definitions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="demo_boost_factors.html">Compute boost factors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_mock_cluster.html">Generate mock data for a cluster</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Measure WL Profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_theory_functionality.html">Model WL Profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_mock_ensemble.html">Generate mock data for a cluster ensemble</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_and_model_demo_DC2.html">Using the cosmoDC2 catalog</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Mass Fitting Examples</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Example1_Fit_shear_profile_with_miscentering.html">Investigate the impact of miscentering on shear profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Example 1: Ideal data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example1_Fit_shear_profile_with_miscentering.html">Example 1b: Impact of miscentering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Example 2: Realistic data and wrong model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Example 3: Account for the n(z) of sources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Example4_Fit_Halo_mass_to_HSC_data.html">Using CLMM on Real Datasets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Compare_NFW_critical_massdef.html">Compare NFW profile for the CLMM backends</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Compare_NFW_critical_massdef.html#comparison-of-nfw-with-mass-definition-based-on-the-critical-density-of-the-universe-for-the-various-backends">Comparison of NFW with mass definition based on the critical density of the universe for the various backends</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Compare_NFW_critical_massdef.html#compare-all-to-colossus">Compare all to Colossus</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Example_cluster_ensemble.html">Generating a cluster catalog and associated source catalogs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Example_cluster_ensemble.html#creating-clusterensemble-object-and-estimation-of-individual-excess-surface-density-profiles">Creating ClusterEnsemble object and estimation of individual excess surface density profiles</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Example_cluster_ensemble.html#stacked-profile-of-the-cluster-ensemble">Stacked profile of the cluster ensemble</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Example_cluster_ensemble.html#covariance-bootstrap-sample-jackknife-of-the-stack-between-radial-bins">Covariance (Bootstrap, sample, Jackknife) of the stack between radial bins</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Example_cluster_ensemble.html#visualizing-the-stacked-profiles-and-corresponding-model">Visualizing the stacked profiles and corresponding model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Example_realistic_cluster_ensemble.html">Generate cluster ensemble with “realistic” mass and redshift distribution</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Other</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="demo_theory_functionality_diff_z_types.html">Model WL Profiles (different redshift inputs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_theory_functionality_oo.html">Model WL Profiles (Object Oriented)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_boost_factors.html">Boost factors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_compute_deltasigma_weights.html">Weak lensing weights</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_mass_conversion.html">Mass conversion between different mass definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo_mock_ensemble_realistic.html">Generate “realistic” mock data for a cluster ensemble</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
@@ -105,6 +101,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.plotting.html">clmm.plotting package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.utils.html">clmm.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.z_distributions.html">clmm.z_distributions module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.support.html">clmm.support package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/clmm.support.mock_data.html">clmm.support.mock_data module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/clmm.support.sampler.html">clmm.support.sampler module</a></li>
@@ -128,7 +125,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a></li>
-      <li class="breadcrumb-item active">Measure a Profile</li>
+      <li class="breadcrumb-item active">Measure WL Profiles</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/compiled-examples/demo_dataops_functionality.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -138,8 +135,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="measure-a-profile">
-<h1>Measure a Profile<a class="headerlink" href="#measure-a-profile" title="Permalink to this heading"></a></h1>
+  <section id="measure-wl-profiles">
+<h1>Measure WL Profiles<a class="headerlink" href="#measure-wl-profiles" title="Permalink to this heading"></a></h1>
 <section id="note">
 <h2>Note<a class="headerlink" href="#note" title="Permalink to this heading"></a></h2>
 <p>All functions in this section can be used passing the explicit arguments
@@ -169,7 +166,7 @@ used as such. They are just explicitely used here for clarity.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clmm</span><span class="o">.</span><span class="n">__version__</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.4.5&#39;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.5.1&#39;</span>
 </pre></div>
 </div>
 <p>Define random seed for reproducibility</p>
@@ -276,7 +273,7 @@ mock data, use: cl = gc.GalaxyCluster.load(“GC_from_mock_data.pkl”)</p>
 <span class="n">ax1</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;dotted&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">lines</span><span class="o">.</span><span class="n">Line2D</span> <span class="n">at</span> <span class="mh">0x15531d514450</span><span class="o">&gt;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">lines</span><span class="o">.</span><span class="n">Line2D</span> <span class="n">at</span> <span class="mh">0x15531d23b010</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="../_images/demo_dataops_functionality_19_1.png" src="../_images/demo_dataops_functionality_19_1.png" />
@@ -305,29 +302,58 @@ named <code class="docutils literal notranslate"><span class="pre">e1</span></co
 <span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;et&#39;</span><span class="p">,</span> <span class="s1">&#39;ex&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">max_width</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>          <span class="n">et</span>                    <span class="n">ex</span>
-<span class="o">---------------------</span> <span class="o">----------------------</span>
-<span class="o">-</span><span class="mf">0.014193669604212844</span>   <span class="mf">0.024770292812117598</span>
- <span class="mf">0.027593288682813785</span>  <span class="o">-</span><span class="mf">0.031444795110656676</span>
-<span class="o">-</span><span class="mf">0.005206908899369735</span>  <span class="o">-</span><span class="mf">0.030510857504521028</span>
-  <span class="mf">0.11232631436380149</span>    <span class="mf">0.07290036434929753</span>
-  <span class="o">-</span><span class="mf">0.1256142518002091</span>   <span class="mf">0.018802231820255564</span>
- <span class="mf">0.019055204201741657</span>    <span class="mf">0.06050406041741734</span>
- <span class="mf">0.038412781291329155</span>     <span class="mf">0.0267416481414113</span>
-<span class="o">-</span><span class="mf">0.006667399455776422</span>  <span class="o">-</span><span class="mf">0.016761083213181857</span>
- <span class="mf">0.046021962786637574</span>    <span class="mf">0.11070669922848506</span>
-  <span class="mf">0.12516514028251374</span>   <span class="o">-</span><span class="mf">0.06644865696663554</span>
-                  <span class="o">...</span>                    <span class="o">...</span>
-  <span class="mf">0.13235030069330608</span>   <span class="mf">0.010849217743934977</span>
- <span class="o">-</span><span class="mf">0.04648427585274571</span>   <span class="o">-</span><span class="mf">0.05268394123309532</span>
- <span class="o">-</span><span class="mf">0.03498815031434638</span> <span class="o">-</span><span class="mf">0.0015608398752305032</span>
- <span class="mf">0.031872667245326065</span>   <span class="o">-</span><span class="mf">0.07335010293675895</span>
-  <span class="mf">0.06922795072503296</span>   <span class="o">-</span><span class="mf">0.03909067857437158</span>
-  <span class="mf">0.02647499908192836</span>    <span class="mf">0.04501156446867458</span>
-  <span class="mf">0.06794774688091935</span>    <span class="o">-</span><span class="mf">0.0870781268087891</span>
-   <span class="mf">0.1165859639077283</span>  <span class="o">-</span><span class="mf">0.007006942480985608</span>
-  <span class="o">-</span><span class="mf">0.0582783624179269</span>   <span class="o">-</span><span class="mf">0.01879387705087386</span>
-  <span class="mf">0.06611775764202141</span>   <span class="o">-</span><span class="mf">0.01725669970366957</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>          <span class="n">et</span>                     <span class="n">ex</span>
+<span class="o">---------------------</span> <span class="o">-----------------------</span>
+<span class="o">-</span><span class="mf">0.014193669604212844</span>    <span class="mf">0.024770292812117598</span>
+ <span class="mf">0.027593288682813785</span>   <span class="o">-</span><span class="mf">0.031444795110656676</span>
+<span class="o">-</span><span class="mf">0.005206908899369735</span>   <span class="o">-</span><span class="mf">0.030510857504521028</span>
+  <span class="mf">0.11232631436380149</span>     <span class="mf">0.07290036434929753</span>
+  <span class="o">-</span><span class="mf">0.1256142518002091</span>    <span class="mf">0.018802231820255564</span>
+ <span class="mf">0.019055204201741657</span>     <span class="mf">0.06050406041741734</span>
+ <span class="mf">0.038412781291329155</span>      <span class="mf">0.0267416481414113</span>
+<span class="o">-</span><span class="mf">0.006667399455776422</span>   <span class="o">-</span><span class="mf">0.016761083213181857</span>
+ <span class="mf">0.046021962786637574</span>     <span class="mf">0.11070669922848506</span>
+  <span class="mf">0.12516514028251374</span>    <span class="o">-</span><span class="mf">0.06644865696663554</span>
+ <span class="o">-</span><span class="mf">0.03582158053386026</span>     <span class="mf">0.06837657195958714</span>
+  <span class="mf">0.05059636201629557</span>   <span class="o">-</span><span class="mf">0.009951128297566938</span>
+  <span class="mf">0.09421646798534064</span>    <span class="mf">0.015587818027871042</span>
+  <span class="mf">0.07975549313994046</span>    <span class="o">-</span><span class="mf">0.07102831279362881</span>
+<span class="mf">0.0007749626574570633</span>      <span class="mf">0.0478204490885428</span>
+<span class="o">-</span><span class="mf">0.028015540528346393</span>     <span class="mf">0.04659801344896773</span>
+  <span class="o">-</span><span class="mf">0.0529858412338219</span>    <span class="mf">0.034872242016200955</span>
+ <span class="mf">0.038405259482106824</span>    <span class="mf">0.026001762081430766</span>
+   <span class="mf">0.1197017887991115</span> <span class="o">-</span><span class="mf">0.00017594425025361377</span>
+<span class="o">-</span><span class="mf">0.022159728710095222</span>  <span class="o">-</span><span class="mf">0.0005741244288848292</span>
+   <span class="mf">0.2010969697875847</span>     <span class="mf">0.07058694279618334</span>
+<span class="o">-</span><span class="mf">0.045265327123574194</span>    <span class="mf">0.005864801263309683</span>
+ <span class="mf">0.017705557405416968</span>    <span class="mf">0.012991566435240617</span>
+  <span class="mf">0.04927593389984489</span>    <span class="mf">0.004167416030716034</span>
+                  <span class="o">...</span>                     <span class="o">...</span>
+ <span class="mf">0.033176022362829974</span>    <span class="mf">0.027549190153278745</span>
+<span class="o">-</span><span class="mf">0.046609374938223994</span>    <span class="o">-</span><span class="mf">0.05067850161842877</span>
+  <span class="mf">0.01071933255256919</span>     <span class="o">-</span><span class="mf">0.1364035168431893</span>
+ <span class="mf">0.009928255198615999</span>    <span class="o">-</span><span class="mf">0.05882170840311077</span>
+<span class="o">-</span><span class="mf">0.015791006414372845</span>   <span class="o">-</span><span class="mf">0.011393464604573307</span>
+ <span class="mf">0.012215965508645624</span>      <span class="mf">0.0049623423240184</span>
+ <span class="mf">0.004540992199877877</span>    <span class="mf">0.017415718137861653</span>
+  <span class="mf">0.01545541830928578</span>    <span class="o">-</span><span class="mf">0.06012100352723429</span>
+  <span class="mf">0.02400758201785442</span>      <span class="o">-</span><span class="mf">0.062922003987883</span>
+ <span class="mf">0.006353797774013831</span>   <span class="o">-</span><span class="mf">0.009676100200072797</span>
+<span class="o">-</span><span class="mf">0.025534199554034503</span>   <span class="o">-</span><span class="mf">0.007604721209673803</span>
+  <span class="mf">0.03654154213395539</span>    <span class="o">-</span><span class="mf">0.13237962978298412</span>
+  <span class="mf">0.04922842883460248</span>    <span class="mf">0.006502573562270769</span>
+ <span class="mf">0.043062951211047196</span>    <span class="mf">0.009928395972140016</span>
+ <span class="o">-</span><span class="mf">0.04534396117336687</span>     <span class="mf">0.04809864798978794</span>
+  <span class="mf">0.13235030069330608</span>    <span class="mf">0.010849217743934977</span>
+ <span class="o">-</span><span class="mf">0.04648427585274571</span>    <span class="o">-</span><span class="mf">0.05268394123309532</span>
+ <span class="o">-</span><span class="mf">0.03498815031434638</span>  <span class="o">-</span><span class="mf">0.0015608398752305032</span>
+ <span class="mf">0.031872667245326065</span>    <span class="o">-</span><span class="mf">0.07335010293675895</span>
+  <span class="mf">0.06922795072503296</span>    <span class="o">-</span><span class="mf">0.03909067857437158</span>
+  <span class="mf">0.02647499908192836</span>     <span class="mf">0.04501156446867458</span>
+  <span class="mf">0.06794774688091935</span>     <span class="o">-</span><span class="mf">0.0870781268087891</span>
+   <span class="mf">0.1165859639077283</span>   <span class="o">-</span><span class="mf">0.007006942480985608</span>
+  <span class="o">-</span><span class="mf">0.0582783624179269</span>    <span class="o">-</span><span class="mf">0.01879387705087386</span>
+  <span class="mf">0.06611775764202141</span>    <span class="o">-</span><span class="mf">0.01725669970366957</span>
 <span class="n">Length</span> <span class="o">=</span> <span class="mi">10000</span> <span class="n">rows</span>
 </pre></div>
 </div>
@@ -342,29 +368,58 @@ output, e.g. Below we’re storing the results in <code class="docutils literal
 <span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;e_tan&#39;</span><span class="p">,</span> <span class="s1">&#39;e_cross&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">max_width</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>        <span class="n">e_tan</span>                <span class="n">e_cross</span>
-<span class="o">---------------------</span> <span class="o">----------------------</span>
-<span class="o">-</span><span class="mf">0.014193669604212844</span>   <span class="mf">0.024770292812117598</span>
- <span class="mf">0.027593288682813785</span>  <span class="o">-</span><span class="mf">0.031444795110656676</span>
-<span class="o">-</span><span class="mf">0.005206908899369735</span>  <span class="o">-</span><span class="mf">0.030510857504521028</span>
-  <span class="mf">0.11232631436380149</span>    <span class="mf">0.07290036434929753</span>
-  <span class="o">-</span><span class="mf">0.1256142518002091</span>   <span class="mf">0.018802231820255564</span>
- <span class="mf">0.019055204201741657</span>    <span class="mf">0.06050406041741734</span>
- <span class="mf">0.038412781291329155</span>     <span class="mf">0.0267416481414113</span>
-<span class="o">-</span><span class="mf">0.006667399455776422</span>  <span class="o">-</span><span class="mf">0.016761083213181857</span>
- <span class="mf">0.046021962786637574</span>    <span class="mf">0.11070669922848506</span>
-  <span class="mf">0.12516514028251374</span>   <span class="o">-</span><span class="mf">0.06644865696663554</span>
-                  <span class="o">...</span>                    <span class="o">...</span>
-  <span class="mf">0.13235030069330608</span>   <span class="mf">0.010849217743934977</span>
- <span class="o">-</span><span class="mf">0.04648427585274571</span>   <span class="o">-</span><span class="mf">0.05268394123309532</span>
- <span class="o">-</span><span class="mf">0.03498815031434638</span> <span class="o">-</span><span class="mf">0.0015608398752305032</span>
- <span class="mf">0.031872667245326065</span>   <span class="o">-</span><span class="mf">0.07335010293675895</span>
-  <span class="mf">0.06922795072503296</span>   <span class="o">-</span><span class="mf">0.03909067857437158</span>
-  <span class="mf">0.02647499908192836</span>    <span class="mf">0.04501156446867458</span>
-  <span class="mf">0.06794774688091935</span>    <span class="o">-</span><span class="mf">0.0870781268087891</span>
-   <span class="mf">0.1165859639077283</span>  <span class="o">-</span><span class="mf">0.007006942480985608</span>
-  <span class="o">-</span><span class="mf">0.0582783624179269</span>   <span class="o">-</span><span class="mf">0.01879387705087386</span>
-  <span class="mf">0.06611775764202141</span>   <span class="o">-</span><span class="mf">0.01725669970366957</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>        <span class="n">e_tan</span>                 <span class="n">e_cross</span>
+<span class="o">---------------------</span> <span class="o">-----------------------</span>
+<span class="o">-</span><span class="mf">0.014193669604212844</span>    <span class="mf">0.024770292812117598</span>
+ <span class="mf">0.027593288682813785</span>   <span class="o">-</span><span class="mf">0.031444795110656676</span>
+<span class="o">-</span><span class="mf">0.005206908899369735</span>   <span class="o">-</span><span class="mf">0.030510857504521028</span>
+  <span class="mf">0.11232631436380149</span>     <span class="mf">0.07290036434929753</span>
+  <span class="o">-</span><span class="mf">0.1256142518002091</span>    <span class="mf">0.018802231820255564</span>
+ <span class="mf">0.019055204201741657</span>     <span class="mf">0.06050406041741734</span>
+ <span class="mf">0.038412781291329155</span>      <span class="mf">0.0267416481414113</span>
+<span class="o">-</span><span class="mf">0.006667399455776422</span>   <span class="o">-</span><span class="mf">0.016761083213181857</span>
+ <span class="mf">0.046021962786637574</span>     <span class="mf">0.11070669922848506</span>
+  <span class="mf">0.12516514028251374</span>    <span class="o">-</span><span class="mf">0.06644865696663554</span>
+ <span class="o">-</span><span class="mf">0.03582158053386026</span>     <span class="mf">0.06837657195958714</span>
+  <span class="mf">0.05059636201629557</span>   <span class="o">-</span><span class="mf">0.009951128297566938</span>
+  <span class="mf">0.09421646798534064</span>    <span class="mf">0.015587818027871042</span>
+  <span class="mf">0.07975549313994046</span>    <span class="o">-</span><span class="mf">0.07102831279362881</span>
+<span class="mf">0.0007749626574570633</span>      <span class="mf">0.0478204490885428</span>
+<span class="o">-</span><span class="mf">0.028015540528346393</span>     <span class="mf">0.04659801344896773</span>
+  <span class="o">-</span><span class="mf">0.0529858412338219</span>    <span class="mf">0.034872242016200955</span>
+ <span class="mf">0.038405259482106824</span>    <span class="mf">0.026001762081430766</span>
+   <span class="mf">0.1197017887991115</span> <span class="o">-</span><span class="mf">0.00017594425025361377</span>
+<span class="o">-</span><span class="mf">0.022159728710095222</span>  <span class="o">-</span><span class="mf">0.0005741244288848292</span>
+   <span class="mf">0.2010969697875847</span>     <span class="mf">0.07058694279618334</span>
+<span class="o">-</span><span class="mf">0.045265327123574194</span>    <span class="mf">0.005864801263309683</span>
+ <span class="mf">0.017705557405416968</span>    <span class="mf">0.012991566435240617</span>
+  <span class="mf">0.04927593389984489</span>    <span class="mf">0.004167416030716034</span>
+                  <span class="o">...</span>                     <span class="o">...</span>
+ <span class="mf">0.033176022362829974</span>    <span class="mf">0.027549190153278745</span>
+<span class="o">-</span><span class="mf">0.046609374938223994</span>    <span class="o">-</span><span class="mf">0.05067850161842877</span>
+  <span class="mf">0.01071933255256919</span>     <span class="o">-</span><span class="mf">0.1364035168431893</span>
+ <span class="mf">0.009928255198615999</span>    <span class="o">-</span><span class="mf">0.05882170840311077</span>
+<span class="o">-</span><span class="mf">0.015791006414372845</span>   <span class="o">-</span><span class="mf">0.011393464604573307</span>
+ <span class="mf">0.012215965508645624</span>      <span class="mf">0.0049623423240184</span>
+ <span class="mf">0.004540992199877877</span>    <span class="mf">0.017415718137861653</span>
+  <span class="mf">0.01545541830928578</span>    <span class="o">-</span><span class="mf">0.06012100352723429</span>
+  <span class="mf">0.02400758201785442</span>      <span class="o">-</span><span class="mf">0.062922003987883</span>
+ <span class="mf">0.006353797774013831</span>   <span class="o">-</span><span class="mf">0.009676100200072797</span>
+<span class="o">-</span><span class="mf">0.025534199554034503</span>   <span class="o">-</span><span class="mf">0.007604721209673803</span>
+  <span class="mf">0.03654154213395539</span>    <span class="o">-</span><span class="mf">0.13237962978298412</span>
+  <span class="mf">0.04922842883460248</span>    <span class="mf">0.006502573562270769</span>
+ <span class="mf">0.043062951211047196</span>    <span class="mf">0.009928395972140016</span>
+ <span class="o">-</span><span class="mf">0.04534396117336687</span>     <span class="mf">0.04809864798978794</span>
+  <span class="mf">0.13235030069330608</span>    <span class="mf">0.010849217743934977</span>
+ <span class="o">-</span><span class="mf">0.04648427585274571</span>    <span class="o">-</span><span class="mf">0.05268394123309532</span>
+ <span class="o">-</span><span class="mf">0.03498815031434638</span>  <span class="o">-</span><span class="mf">0.0015608398752305032</span>
+ <span class="mf">0.031872667245326065</span>    <span class="o">-</span><span class="mf">0.07335010293675895</span>
+  <span class="mf">0.06922795072503296</span>    <span class="o">-</span><span class="mf">0.03909067857437158</span>
+  <span class="mf">0.02647499908192836</span>     <span class="mf">0.04501156446867458</span>
+  <span class="mf">0.06794774688091935</span>     <span class="o">-</span><span class="mf">0.0870781268087891</span>
+   <span class="mf">0.1165859639077283</span>   <span class="o">-</span><span class="mf">0.007006942480985608</span>
+  <span class="o">-</span><span class="mf">0.0582783624179269</span>    <span class="o">-</span><span class="mf">0.01879387705087386</span>
+  <span class="mf">0.06611775764202141</span>    <span class="o">-</span><span class="mf">0.01725669970366957</span>
 <span class="n">Length</span> <span class="o">=</span> <span class="mi">10000</span> <span class="n">rows</span>
 </pre></div>
 </div>
@@ -398,7 +453,7 @@ user may ask for a binned profile in various projected distance units.
 </pre></div>
 </div>
 <i>GCData length=10</i>
-<table id="table23446720038288-994773" class="table-striped table-bordered table-condensed">
+<table id="table23446705727376-994773" class="table-striped table-bordered table-condensed">
 <thead><tr><th>idx</th><th>radius_min</th><th>radius</th><th>radius_max</th><th>p_0</th><th>p_0_err</th><th>p_1</th><th>p_1_err</th><th>p_2</th><th>p_2_err</th><th>n_src</th></tr></thead>
 <tr><td>0</td><td>49.89926186693261</td><td>400.9726230192822</td><td>607.3017710391922</td><td>0.07369228018322305</td><td>0.004447742307624305</td><td>0.006080026121867749</td><td>0.003603728713525909</td><td>1.2297028108389079</td><td>0.051127320754086575</td><td>166</td></tr>
 <tr><td>1</td><td>607.3017710391922</td><td>923.2018463923688</td><td>1164.7042802114518</td><td>0.036146516837825035</td><td>0.0022793578568861806</td><td>0.0018176846014553525</td><td>0.002206990305431073</td><td>1.229806743651577</td><td>0.0306826464937024</td><td>489</td></tr>
@@ -433,14 +488,14 @@ require.config({paths: {
     datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
 }});
 require(["datatables"], function(){
-    console.log("$('#table23446720038288-994773').dataTable()");
+    console.log("$('#table23446705727376-994773').dataTable()");
 
 jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     "optionalnum-asc": astropy_sort_num,
     "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
 });
 
-    $('#table23446720038288-994773').dataTable({
+    $('#table23446705727376-994773').dataTable({
         order: [],
         pageLength: 50,
         lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -461,7 +516,7 @@ as a new attribute of the galaxy cluster object.</p>
 </pre></div>
 </div>
 <i>GCData length=10</i>
-<table id="table23446702759056-685971" class="table-striped table-bordered table-condensed">
+<table id="table23446702602448-685971" class="table-striped table-bordered table-condensed">
 <thead><tr><th>idx</th><th>radius_min</th><th>radius</th><th>radius_max</th><th>gt</th><th>gt_err</th><th>gx</th><th>gx_err</th><th>z</th><th>z_err</th><th>n_src</th></tr></thead>
 <tr><td>0</td><td>49.89926186693261</td><td>400.9726230192822</td><td>607.3017710391922</td><td>0.07369228018322305</td><td>0.004447742307624305</td><td>0.006080026121867749</td><td>0.003603728713525909</td><td>1.2297028108389079</td><td>0.051127320754086575</td><td>166</td></tr>
 <tr><td>1</td><td>607.3017710391922</td><td>923.2018463923688</td><td>1164.7042802114518</td><td>0.036146516837825035</td><td>0.0022793578568861806</td><td>0.0018176846014553525</td><td>0.002206990305431073</td><td>1.229806743651577</td><td>0.0306826464937024</td><td>489</td></tr>
@@ -496,14 +551,14 @@ require.config({paths: {
     datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
 }});
 require(["datatables"], function(){
-    console.log("$('#table23446702759056-685971').dataTable()");
+    console.log("$('#table23446702602448-685971').dataTable()");
 
 jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     "optionalnum-asc": astropy_sort_num,
     "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
 });
 
-    $('#table23446702759056-685971').dataTable({
+    $('#table23446702602448-685971').dataTable({
         order: [],
         pageLength: 50,
         lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -533,7 +588,7 @@ comology and bin units</p>
 <span class="n">fig1</span><span class="p">,</span> <span class="n">ax1</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">plot_profiles</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="n">cori</span><span class="o">/</span><span class="mf">3.9</span><span class="o">-</span><span class="n">anaconda</span><span class="o">-</span><span class="mf">2021.11</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.11</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">1.4.5</span><span class="o">-</span><span class="n">py3</span><span class="mf">.11</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">galaxycluster</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">520</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">overwriting</span> <span class="n">profile</span> <span class="n">table</span><span class="o">.</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="n">cori</span><span class="o">/</span><span class="mf">3.9</span><span class="o">-</span><span class="n">anaconda</span><span class="o">-</span><span class="mf">2021.11</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.11</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">1.5.1</span><span class="o">-</span><span class="n">py3</span><span class="mf">.11</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">galaxycluster</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">520</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">overwriting</span> <span class="n">profile</span> <span class="n">table</span><span class="o">.</span>
 </pre></div>
 </div>
 <img alt="../_images/demo_dataops_functionality_40_1.png" src="../_images/demo_dataops_functionality_40_1.png" />
@@ -614,7 +669,7 @@ that have fallen in that bin.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cl</span><span class="o">.</span><span class="n">make_radial_profile</span><span class="p">(</span><span class="s2">&quot;Mpc&quot;</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">gal_ids_in_bins</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="n">cori</span><span class="o">/</span><span class="mf">3.9</span><span class="o">-</span><span class="n">anaconda</span><span class="o">-</span><span class="mf">2021.11</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.11</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">1.4.5</span><span class="o">-</span><span class="n">py3</span><span class="mf">.11</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">galaxycluster</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">520</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">overwriting</span> <span class="n">profile</span> <span class="n">table</span><span class="o">.</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="n">cori</span><span class="o">/</span><span class="mf">3.9</span><span class="o">-</span><span class="n">anaconda</span><span class="o">-</span><span class="mf">2021.11</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.11</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">1.5.1</span><span class="o">-</span><span class="n">py3</span><span class="mf">.11</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">galaxycluster</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">520</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">overwriting</span> <span class="n">profile</span> <span class="n">table</span><span class="o">.</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Here the list of galaxy IDs that are in the first bin of the tangential shear profile</span>
@@ -642,7 +697,7 @@ cluster object.</p>
 </pre></div>
 </div>
 <i>GCData length=10</i>
-<table id="table23446720171792-511334" class="table-striped table-bordered table-condensed">
+<table id="table23446702069328-511334" class="table-striped table-bordered table-condensed">
 <thead><tr><th>idx</th><th>radius_min</th><th>radius</th><th>radius_max</th><th>g_tan</th><th>g_tan_err</th><th>g_cross</th><th>g_cross_err</th><th>z</th><th>z_err</th><th>n_src</th></tr></thead>
 <tr><td>0</td><td>49.89926186693261</td><td>400.9726230192822</td><td>607.3017710391922</td><td>0.07369228018322305</td><td>0.004447742307624305</td><td>0.006080026121867749</td><td>0.003603728713525909</td><td>1.2297028108389079</td><td>0.051127320754086575</td><td>166</td></tr>
 <tr><td>1</td><td>607.3017710391922</td><td>923.2018463923688</td><td>1164.7042802114518</td><td>0.036146516837825035</td><td>0.0022793578568861806</td><td>0.0018176846014553525</td><td>0.002206990305431073</td><td>1.229806743651577</td><td>0.0306826464937024</td><td>489</td></tr>
@@ -677,14 +732,14 @@ require.config({paths: {
     datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
 }});
 require(["datatables"], function(){
-    console.log("$('#table23446720171792-511334').dataTable()");
+    console.log("$('#table23446702069328-511334').dataTable()");
 
 jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     "optionalnum-asc": astropy_sort_num,
     "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
 });
 
-    $('#table23446720171792-511334').dataTable({
+    $('#table23446702069328-511334').dataTable({
         order: [],
         pageLength: 50,
         lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -704,7 +759,7 @@ we asked the binned profile to be saved into the
 </pre></div>
 </div>
 <i>GCData length=10</i>
-<table id="table23446701478096-436963" class="table-striped table-bordered table-condensed">
+<table id="table23446701692880-436963" class="table-striped table-bordered table-condensed">
 <thead><tr><th>idx</th><th>radius_min</th><th>radius</th><th>radius_max</th><th>g_tan</th><th>g_tan_err</th><th>g_cross</th><th>g_cross_err</th><th>z</th><th>z_err</th><th>n_src</th></tr></thead>
 <tr><td>0</td><td>49.89926186693261</td><td>400.9726230192822</td><td>607.3017710391922</td><td>0.07369228018322305</td><td>0.004447742307624305</td><td>0.006080026121867749</td><td>0.003603728713525909</td><td>1.2297028108389079</td><td>0.051127320754086575</td><td>166</td></tr>
 <tr><td>1</td><td>607.3017710391922</td><td>923.2018463923688</td><td>1164.7042802114518</td><td>0.036146516837825035</td><td>0.0022793578568861806</td><td>0.0018176846014553525</td><td>0.002206990305431073</td><td>1.229806743651577</td><td>0.0306826464937024</td><td>489</td></tr>
@@ -739,14 +794,14 @@ require.config({paths: {
     datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
 }});
 require(["datatables"], function(){
-    console.log("$('#table23446701478096-436963').dataTable()");
+    console.log("$('#table23446701692880-436963').dataTable()");
 
 jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     "optionalnum-asc": astropy_sort_num,
     "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
 });
 
-    $('#table23446701478096-436963').dataTable({
+    $('#table23446701692880-436963').dataTable({
         order: [],
         pageLength: 50,
         lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -769,7 +824,7 @@ table.</p>
 <span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">columns</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="n">cori</span><span class="o">/</span><span class="mf">3.9</span><span class="o">-</span><span class="n">anaconda</span><span class="o">-</span><span class="mf">2021.11</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.11</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">1.4.5</span><span class="o">-</span><span class="n">py3</span><span class="mf">.11</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">utils</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">641</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">Some</span> <span class="n">source</span> <span class="n">redshifts</span> <span class="n">are</span> <span class="n">lower</span> <span class="n">than</span> <span class="n">the</span> <span class="n">cluster</span> <span class="n">redshift</span><span class="o">.</span> <span class="n">Returning</span> <span class="n">Sigma_crit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span> <span class="k">for</span> <span class="n">those</span> <span class="n">galaxies</span><span class="o">.</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="n">cori</span><span class="o">/</span><span class="mf">3.9</span><span class="o">-</span><span class="n">anaconda</span><span class="o">-</span><span class="mf">2021.11</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.11</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">1.5.1</span><span class="o">-</span><span class="n">py3</span><span class="mf">.11</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">utils</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">644</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">Some</span> <span class="n">source</span> <span class="n">redshifts</span> <span class="n">are</span> <span class="n">lower</span> <span class="n">than</span> <span class="n">the</span> <span class="n">cluster</span> <span class="n">redshift</span><span class="o">.</span> <span class="n">Returning</span> <span class="n">Sigma_crit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span> <span class="k">for</span> <span class="n">those</span> <span class="n">galaxies</span><span class="o">.</span>
 </pre></div>
 </div>
 <div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">TableColumns</span> <span class="n">names</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;ra&#39;</span><span class="p">,</span><span class="s1">&#39;dec&#39;</span><span class="p">,</span><span class="s1">&#39;e1&#39;</span><span class="p">,</span><span class="s1">&#39;e2&#39;</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">,</span><span class="s1">&#39;ztrue&#39;</span><span class="p">,</span><span class="s1">&#39;pzbins&#39;</span><span class="p">,</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">,</span><span class="s1">&#39;id&#39;</span><span class="p">,</span><span class="s1">&#39;theta&#39;</span><span class="p">,</span><span class="s1">&#39;et&#39;</span><span class="p">,</span><span class="s1">&#39;ex&#39;</span><span class="p">,</span><span class="s1">&#39;e_tan&#39;</span><span class="p">,</span><span class="s1">&#39;e_cross&#39;</span><span class="p">,</span><span class="s1">&#39;sigma_c&#39;</span><span class="p">,</span><span class="s1">&#39;DeltaSigma_tan&#39;</span><span class="p">,</span><span class="s1">&#39;DeltaSigma_cross&#39;</span><span class="p">)</span><span class="o">&gt;</span>
@@ -820,7 +875,7 @@ performed using the weights stored in <code class="docutils literal notranslate"
 </pre></div>
 </div>
 <i>GCData length=10</i>
-<table id="table23446720277904-504512" class="table-striped table-bordered table-condensed">
+<table id="table23446700539600-504512" class="table-striped table-bordered table-condensed">
 <thead><tr><th>idx</th><th>radius_min</th><th>radius</th><th>radius_max</th><th>DeltaSigma_tan</th><th>DeltaSigma_tan_err</th><th>DeltaSigma_cross</th><th>DeltaSigma_cross_err</th><th>z</th><th>z_err</th><th>n_src</th></tr></thead>
 <tr><td>0</td><td>0.04989926186693261</td><td>0.40166751885366225</td><td>0.6073017710391921</td><td>212849432564271.9</td><td>12568408070240.92</td><td>16535770817286.94</td><td>10817125213409.643</td><td>1.4573373336564153</td><td>0.05753845086718409</td><td>166</td></tr>
 <tr><td>1</td><td>0.6073017710391921</td><td>0.9201089345771568</td><td>1.1647042802114518</td><td>106977396439976.48</td><td>6773672338775.922</td><td>8115568605966.633</td><td>6739747601994.514</td><td>1.4881979166491797</td><td>0.034221341138279925</td><td>489</td></tr>
@@ -855,14 +910,14 @@ require.config({paths: {
     datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
 }});
 require(["datatables"], function(){
-    console.log("$('#table23446720277904-504512').dataTable()");
+    console.log("$('#table23446700539600-504512').dataTable()");
 
 jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     "optionalnum-asc": astropy_sort_num,
     "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
 });
 
-    $('#table23446720277904-504512').dataTable({
+    $('#table23446700539600-504512').dataTable({
         order: [],
         pageLength: 50,
         lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],

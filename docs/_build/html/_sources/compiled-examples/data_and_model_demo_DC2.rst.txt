@@ -1,5 +1,8 @@
+Using the cosmoDC2 catalog
+==========================
+
 Basic usage of the cosmoDC2 extragalactic catalog with CLMM
-===========================================================
+-----------------------------------------------------------
 
 This notebook can be run at NERSC or CC-IN2P3 where the DESC DC2
 products are stored. You need to be a DESC member to be able to access
@@ -28,7 +31,7 @@ Check what version we’re using
 
 .. parsed-literal::
 
-    '1.4.5'
+    '1.5.1'
 
 
 
@@ -54,7 +57,7 @@ Read in the extragalactic catalog cosmoDC2
 
 .. parsed-literal::
 
-    <clmm.cosmology.ccl.CCLCosmology at 0x15531c441b10>
+    <clmm.cosmology.ccl.CCLCosmology at 0x15531cf108d0>
 
 
 
@@ -231,7 +234,7 @@ available options of the functions below.
 .. raw:: html
 
     <b>GCData</b><br> <b>defined by:</b> cosmo='CCLCosmology(H0=71.0, Omega_dm0=0.21999999999999997, Omega_b0=0.0448, Omega_k0=0.0)', bin_units='Mpc'<br> <b>with columns:</b> radius_min, radius, radius_max, gt, gt_err, gx, gx_err, z, z_err, n_src<br> 14 objects<br> 
-    <table id="table23446614228496" class="table-striped table-bordered table-condensed">
+    <table id="table23446678992016" class="table-striped table-bordered table-condensed">
     <thead><tr><th>radius_min</th><th>radius</th><th>radius_max</th><th>gt</th><th>gt_err</th><th>gx</th><th>gx_err</th><th>z</th><th>z_err</th><th>n_src</th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>int64</th></tr></thead>
     <tr><td>0.15</td><td>0.1763113582717511</td><td>0.19846556968648293</td><td>0.02037417866393367</td><td>0.003528427751069608</td><td>0.006753624804594845</td><td>0.0036875324065002747</td><td>0.971778890840735</td><td>0.05041615834029072</td><td>34</td></tr>

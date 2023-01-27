@@ -1,5 +1,5 @@
-Model a Galaxy Cluster
-======================
+Model WL Profiles
+=================
 
 Notebook for generating an example galaxy cluster model.
 --------------------------------------------------------
@@ -10,6 +10,17 @@ cluster model that follows and NFW distribution and generate various
 profiles for the model (mass density, convergence, shear, etc.), which
 we plot. Note, a full pipeline to measure a galaxy cluster weak lensing
 mass requires fitting the observed (or mock) data to a model.
+
+--------------
+
+**Note 1:** This notebook shows how to make this modeling using
+functions, it is simpler than using an object oriented approach but can
+also be slower. For the object oriented approach, see
+`demo_theory_functionality_oo.ipynb <https://lsstdesc.org/CLMM/compiled-examples/demo_theory_functionality_oo.html>`__.
+
+**Note 2:** There are many different approaches on using the redshift
+information of the source. For a detailed description on it, see
+`demo_theory_functionality_diff_z_types.ipynb <https://lsstdesc.org/CLMM/compiled-examples/demo_theory_functionality_diff_z_types.html>`__.
 
 .. code:: ipython3
 
@@ -40,7 +51,7 @@ Make sure we know which version we’re using
 
 .. parsed-literal::
 
-    '1.4.5'
+    '1.5.1'
 
 
 
@@ -66,7 +77,7 @@ choose a distribution that follows an NFW profile.
     
     #source properties
     z_source = 2. #all sources in the same plan
-    z_distrib_func = clmm.utils._chang_z_distrib #sources redshift following a distribution
+    z_distrib_func = clmm.z_distributions.chang2013 #sources redshift following a distribution
     alpha = [2, -0.5] 
 
 Quick test of all theory functionality
@@ -101,7 +112,7 @@ Quick test of all theory functionality
     gammat = m.compute_tangential_shear(r3d, mdelta=cluster_mass, cdelta=cluster_concentration, z_cluster=z_cl, 
                                         z_source=z_source, cosmo=cosmo, delta_mdef=mass_Delta, 
                                         halo_profile_model=density_profile_parametrization, 
-                                        z_src_model='single_plane')
+                                        z_src_info='discrete')
 
 .. code:: ipython3
 
@@ -109,7 +120,7 @@ Quick test of all theory functionality
                                    z_cluster=z_cl, z_source=z_source,
                                    cosmo=cosmo, delta_mdef=mass_Delta, 
                                    halo_profile_model=density_profile_parametrization, 
-                                   z_src_model='single_plane')
+                                   z_src_info='discrete')
 
 .. code:: ipython3
 
@@ -117,8 +128,7 @@ Quick test of all theory functionality
                                             z_cluster=z_cl, z_source=z_source, cosmo=cosmo, 
                                             delta_mdef=mass_Delta, 
                                             halo_profile_model=density_profile_parametrization, 
-                                            z_src_model='single_plane')
-            
+                                            z_src_info='discrete')
 
 .. code:: ipython3
 
@@ -126,8 +136,7 @@ Quick test of all theory functionality
                                             z_cluster=z_cl, z_source=z_source, cosmo=cosmo, 
                                             delta_mdef=mass_Delta, 
                                             halo_profile_model=density_profile_parametrization, 
-                                            z_src_model='single_plane')
-
+                                            z_src_info='discrete')
 
 .. code:: ipython3
 
@@ -135,14 +144,14 @@ Quick test of all theory functionality
                                             z_cluster=z_cl, z_source=z_source, cosmo=cosmo, 
                                             delta_mdef=mass_Delta, 
                                             halo_profile_model=density_profile_parametrization, 
-                                            z_src_model='single_plane')
+                                            z_src_info='discrete')
 
 
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.4.5-py3.11.egg/clmm/theory/generic.py:72: UserWarning: Magnification is negative for certain radii,                     returning nan for magnification bias in this case.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.4.5-py3.11.egg/clmm/theory/generic.py:74: RuntimeWarning: invalid value encountered in power
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.1-py3.11.egg/clmm/theory/generic.py:72: UserWarning: Magnification is negative for certain radii,                     returning nan for magnification bias in this case.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.1-py3.11.egg/clmm/theory/generic.py:74: RuntimeWarning: invalid value encountered in power
 
 
 Lensing quantities assuming sources follow a given redshift
@@ -151,11 +160,11 @@ distribution.
 .. code:: ipython3
 
     gt_z = m.compute_reduced_tangential_shear(r3d, mdelta=cluster_mass, cdelta=cluster_concentration, 
-                                            z_cluster=z_cl, z_source=z_source, cosmo=cosmo, 
+                                            z_cluster=z_cl, z_source=z_distrib_func, cosmo=cosmo, 
                                             delta_mdef=mass_Delta, 
                                             halo_profile_model=density_profile_parametrization,
-                                            z_src_model='schrabback18',
-                                            z_distrib_func = z_distrib_func)
+                                            z_src_info='distribution',
+                                            approx='order2')
 
 Plot the predicted profiles
 
@@ -223,7 +232,7 @@ Plot the predicted profiles
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x15531d4ebc10>
+    <matplotlib.legend.Legend at 0x15531d17d150>
 
 
 

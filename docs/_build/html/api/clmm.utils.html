@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>clmm.utils module &mdash; CLMM 1.4.5 documentation</title>
+  <title>clmm.utils module &mdash; CLMM 1.5.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -21,7 +21,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="clmm.support package" href="clmm.support.html" />
+    <link rel="next" title="clmm.z_distributions module" href="clmm.z_distributions.html" />
     <link rel="prev" title="clmm.plotting package" href="clmm.plotting.html" /> 
 </head>
 
@@ -33,7 +33,7 @@
             <a href="../index.html" class="icon icon-home"> CLMM
           </a>
               <div class="version">
-                1.4.5
+                1.5.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -51,32 +51,28 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Usage Demos</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_generate_mock_cluster.html">Generate Mock Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_dataops_functionality.html">Measure a Profile</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_theory_functionality.html">Model a Galaxy Cluster</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/data_and_model_demo_DC2.html">Basic usage of the cosmoDC2 extragalactic catalog with CLMM</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Compare_NFW_critical_massdef.html">Compare NFW profile for the CLMM backends</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Compare_NFW_critical_massdef.html#comparison-of-nfw-with-mass-definition-based-on-the-critical-density-of-the-universe-for-the-various-backends">Comparison of NFW with mass definition based on the critical density of the universe for the various backends</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Compare_NFW_critical_massdef.html#compare-all-to-colossus">Compare all to Colossus</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_mass_conversion.html">Mass conversion between spherical overdensity mass definitions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_boost_factors.html">Compute boost factors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_mock_cluster.html">Generate mock data for a cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_dataops_functionality.html">Measure WL Profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_theory_functionality.html">Model WL Profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_mock_ensemble.html">Generate mock data for a cluster ensemble</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/data_and_model_demo_DC2.html">Using the cosmoDC2 catalog</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Mass Fitting Examples</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 1. ideal data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 2. realistic data and wrong model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Fit halo mass to shear profile: 3. accounting for the redshift distribution of source galaxies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_shear_profile_with_miscentering.html">Investigate the impact of miscentering on shear profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Example 1: Ideal data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_shear_profile_with_miscentering.html">Example 1b: Impact of miscentering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Example 2: Realistic data and wrong model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Example 3: Account for the n(z) of sources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example4_Fit_Halo_mass_to_HSC_data.html">Using CLMM on Real Datasets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Compare_NFW_critical_massdef.html">Compare NFW profile for the CLMM backends</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Compare_NFW_critical_massdef.html#comparison-of-nfw-with-mass-definition-based-on-the-critical-density-of-the-universe-for-the-various-backends">Comparison of NFW with mass definition based on the critical density of the universe for the various backends</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Compare_NFW_critical_massdef.html#compare-all-to-colossus">Compare all to Colossus</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example_cluster_ensemble.html">Generating a cluster catalog and associated source catalogs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example_cluster_ensemble.html#creating-clusterensemble-object-and-estimation-of-individual-excess-surface-density-profiles">Creating ClusterEnsemble object and estimation of individual excess surface density profiles</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example_cluster_ensemble.html#stacked-profile-of-the-cluster-ensemble">Stacked profile of the cluster ensemble</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example_cluster_ensemble.html#covariance-bootstrap-sample-jackknife-of-the-stack-between-radial-bins">Covariance (Bootstrap, sample, Jackknife) of the stack between radial bins</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example_cluster_ensemble.html#visualizing-the-stacked-profiles-and-corresponding-model">Visualizing the stacked profiles and corresponding model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example_realistic_cluster_ensemble.html">Generate cluster ensemble with “realistic” mass and redshift distribution</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Other</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_theory_functionality_diff_z_types.html">Model WL Profiles (different redshift inputs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_theory_functionality_oo.html">Model WL Profiles (Object Oriented)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_boost_factors.html">Boost factors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_compute_deltasigma_weights.html">Weak lensing weights</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_mass_conversion.html">Mass conversion between different mass definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/demo_mock_ensemble_realistic.html">Generate “realistic” mock data for a cluster ensemble</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="current">
@@ -105,6 +101,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.plotting.html">clmm.plotting package</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">clmm.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.z_distributions.html">clmm.z_distributions module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.support.html">clmm.support package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="clmm.support.mock_data.html">clmm.support.mock_data module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="clmm.support.sampler.html">clmm.support.sampler module</a></li>
@@ -187,7 +184,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="clmm.utils.compute_beta">
-<span class="sig-prename descclassname"><span class="pre">clmm.utils.</span></span><span class="sig-name descname"><span class="pre">compute_beta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#compute_beta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.compute_beta" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">clmm.utils.</span></span><span class="sig-name descname"><span class="pre">compute_beta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#compute_beta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.compute_beta" title="Permalink to this definition"></a></dt>
 <dd><p>Geometric lensing efficicency</p>
 <div class="math notranslate nohighlight">
 \[\beta = max(0, D_{a,\ ls}/D_{a,\ s})\]</div>
@@ -195,8 +192,8 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>z_src</strong> (<em>float</em>) -- Source galaxy redshift</p></li>
 <li><p><strong>z_cl</strong> (<em>float</em>) -- Galaxy cluster redshift</p></li>
-<li><p><strong>z_s</strong> (<em>float</em>) -- Source galaxy  redshift</p></li>
 <li><p><strong>cosmo</strong> (<em>clmm.Cosmology</em>) -- CLMM Cosmology object</p></li>
 </ul>
 </dd>
@@ -214,8 +211,8 @@
 <span class="sig-prename descclassname"><span class="pre">clmm.utils.</span></span><span class="sig-name descname"><span class="pre">compute_beta_mean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_z_cut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_distrib_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#compute_beta_mean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.compute_beta_mean" title="Permalink to this definition"></a></dt>
 <dd><p>Mean value of the geometric lensing efficicency</p>
 <div class="math notranslate nohighlight">
-\[\left&lt;\beta\right&gt; = \frac{\sum_{z = z_{min}}^{z_{max}}\beta(z)p(z)}
-{\sum_{z = z_{min}}^{z_{max}}p(z)}\]</div>
+\[\left&lt;\beta\right&gt; = \frac{\int_{z = z_{min}}^{z_{max}}\beta(z)N(z)}
+{\int_{z = z_{min}}^{z_{max}}N(z)}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -241,17 +238,45 @@ Default: None</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="clmm.utils.compute_beta_s">
-<span class="sig-prename descclassname"><span class="pre">clmm.utils.</span></span><span class="sig-name descname"><span class="pre">compute_beta_s</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#compute_beta_s"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.compute_beta_s" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">clmm.utils.</span></span><span class="sig-name descname"><span class="pre">compute_beta_s</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#compute_beta_s"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.compute_beta_s" title="Permalink to this definition"></a></dt>
 <dd><p>Geometric lensing efficicency ratio</p>
 <div class="math notranslate nohighlight">
-\[\beta_s = \beta(z_s)/\beta(z_{inf})\]</div>
+\[\beta_s = \beta(z_{src})/\beta(z_{inf})\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>z_src</strong> (<em>float</em>) -- Source galaxy redshift</p></li>
 <li><p><strong>z_cl</strong> (<em>float</em>) -- Galaxy cluster redshift</p></li>
-<li><p><strong>z_s</strong> (<em>float</em>) -- Source galaxy redshift</p></li>
 <li><p><strong>z_inf</strong> (<em>float</em>) -- Redshift at infinity</p></li>
 <li><p><strong>cosmo</strong> (<em>clmm.Cosmology</em>) -- CLMM Cosmology object</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Geometric lensing efficicency ratio</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clmm.utils.compute_beta_s_func">
+<span class="sig-prename descclassname"><span class="pre">clmm.utils.</span></span><span class="sig-name descname"><span class="pre">compute_beta_s_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#compute_beta_s_func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.compute_beta_s_func" title="Permalink to this definition"></a></dt>
+<dd><p>Geometric lensing efficicency ratio times a value of a function</p>
+<div class="math notranslate nohighlight">
+\[\beta_{s}\times \text{func} = \beta_s(z_{src}, z_{cl}, z_{inf})
+\times\text{func}(*args,\ **kwargs)\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>z_src</strong> (<em>float</em>) -- Source galaxy redshift</p></li>
+<li><p><strong>z_cl</strong> (<em>float</em>) -- Galaxy cluster redshift</p></li>
+<li><p><strong>z_inf</strong> (<em>float</em>) -- Redshift at infinity</p></li>
+<li><p><strong>cosmo</strong> (<em>clmm.Cosmology</em>) -- CLMM Cosmology object</p></li>
+<li><p><strong>func</strong> (<em>callable</em>) -- A scalar function</p></li>
+<li><p><strong>*args</strong> (<em>positional arguments</em>) -- args to be passed to <cite>func</cite></p></li>
+<li><p><strong>**kwargs</strong> (<em>keyword arguments</em>) -- kwargs to be passed to <cite>func</cite></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -268,8 +293,8 @@ Default: None</p></li>
 <span class="sig-prename descclassname"><span class="pre">clmm.utils.</span></span><span class="sig-name descname"><span class="pre">compute_beta_s_mean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_z_cut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_distrib_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#compute_beta_s_mean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.compute_beta_s_mean" title="Permalink to this definition"></a></dt>
 <dd><p>Mean value of the geometric lensing efficicency ratio</p>
 <div class="math notranslate nohighlight">
-\[\left&lt;\beta_s\right&gt; =\frac{\sum_{z = z_{min}}^{z_{max}}\beta_s(z)p(z)}
-{\sum_{z = z_{min}}^{z_{max}}p(z)}\]</div>
+\[\left&lt;\beta_s\right&gt; =\frac{\int_{z = z_{min}}^{z_{max}}\beta_s(z)N(z)}
+{\int_{z = z_{min}}^{z_{max}}N(z)}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -280,10 +305,9 @@ Default: None</p></li>
 Default: 10</p></li>
 <li><p><strong>delta_z_cut</strong> (<em>float</em><em>, </em><em>optional</em>) -- Redshift interval to be summed with <span class="math notranslate nohighlight">\(z_{cl}\)</span> to return <span class="math notranslate nohighlight">\(z_{min}\)</span>.
 This feature is not used if <span class="math notranslate nohighlight">\(z_{min}\)</span> is provided by the user. Default: 0.1</p></li>
-<li><p><strong>z_distrib_func</strong> (<em>one-parameter function</em><em>, </em><em>optional</em>) -- Redshift distribution function. Default is Chang et al (2013) distribution function.</p></li>
 <li><p><strong>zmin</strong> (<em>float</em><em>, </em><em>None</em><em>, </em><em>optional</em>) -- Minimum redshift to be set as the source of the galaxy when performing the sum.
 Default: None</p></li>
-<li><p><strong>z_distrib_func</strong> -- Redshift distribution function. Default is Chang et al (2013) distribution function.</p></li>
+<li><p><strong>z_distrib_func</strong> (<em>one-parameter function</em><em>, </em><em>optional</em>) -- Redshift distribution function. Default is Chang et al (2013) distribution function.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -300,8 +324,8 @@ Default: None</p></li>
 <span class="sig-prename descclassname"><span class="pre">clmm.utils.</span></span><span class="sig-name descname"><span class="pre">compute_beta_s_square_mean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_z_cut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_distrib_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#compute_beta_s_square_mean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.compute_beta_s_square_mean" title="Permalink to this definition"></a></dt>
 <dd><p>Mean square value of the geometric lensing efficiency ratio</p>
 <div class="math notranslate nohighlight">
-\[\left&lt;\beta_s^2\right&gt; =\frac{\sum_{z = z_{min}}^{z_{max}}\beta_s^2(z)p(z)}
-{\sum_{z = z_{min}}^{z_{max}}p(z)}\]</div>
+\[\left&lt;\beta_s^2\right&gt; =\frac{\int_{z = z_{min}}^{z_{max}}\beta_s^2(z)N(z)}
+{\int_{z = z_{min}}^{z_{max}}N(z)}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
