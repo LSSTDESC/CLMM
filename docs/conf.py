@@ -146,9 +146,9 @@ nbconvert_opts = ['--to rst',
                   f'--output-dir {outdir}']
 nb_skip_run = []
 if hsc_fix:
-    nb_skip_run.append('../examples/Example4_Fit_Halo_mass_to_HSC_data.ipynb')
+    nb_skip_run.append('../examples/mass_fitting/Example4_Fit_Halo_mass_to_HSC_data.ipynb')
 if dc2_fix:
-    nb_skip_run.append('../examples/DC2_examples/data_and_model_demo_DC2.ipynb')
+    nb_skip_run.append('../examples/DC2/data_and_model_demo_DC2.ipynb')
 
 for lists in [v for k, v in doc_files.items() if k!='APIDOC']:
     for demo in lists:
