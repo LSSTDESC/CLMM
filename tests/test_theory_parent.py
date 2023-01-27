@@ -125,8 +125,18 @@ def test_warnings(modeling_data):
     assert_warns(UserWarning, mod.eval_tangential_shear, [0.3], 0.3, [0.2, 0.3, 0.4])
     assert_warns(UserWarning, mod.eval_reduced_tangential_shear, [0.3], 0.3, [0.2, 0.3, 0.4])
     assert_warns(UserWarning, mod.eval_magnification, [0.3], 0.3, [0.2, 0.3, 0.4])
+    assert_warns(UserWarning, mod.eval_magnification_bias, [0.3], 0.3, [0.2, 0.3, 0.4], 2)
 
     if theo.be_nick == 'ccl':
+        mod.force_old_ccl = True
+        #test warnings from using CCL<2.6
+        assert_warns(UserWarning, mod.eval_convergence, [0.3], 0.3, [0.4])
+        assert_warns(UserWarning, mod.eval_tangential_shear, [0.3], 0.3, [0.4])
+        assert_warns(UserWarning, mod.eval_reduced_tangential_shear,
+                     [0.3], 0.3, [0.4])
+        assert_warns(UserWarning, mod.eval_magnification, [0.3], 0.3, [0.4])
+        mod.force_old_ccl = False
+
         mod._new_version = False
         #test warnings from using CCL<2.6
         assert_warns(UserWarning, mod.eval_convergence, [0.3], 0.3, [0.4])

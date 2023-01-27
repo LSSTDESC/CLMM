@@ -71,8 +71,9 @@ class CCLCLMModeling(CLMModeling):
         self._new_version = bool(parse(ccl.__version__) >= parse('2.6'))
         self.force_old_ccl = False
         if self._new_version:
-            self.hdpm_opts['hernquist'].update({'projected_analytic': self._new_version,
-                                                'cumul2d_analytic': self._new_version})
+            self.hdpm_opts['hernquist'].update({
+                'projected_analytic': (not self.force_old_ccl),
+                'cumul2d_analytic': (not self.force_old_ccl)})
 
         # Set halo profile and cosmology
         self.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
