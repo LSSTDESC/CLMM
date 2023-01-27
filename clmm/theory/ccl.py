@@ -132,7 +132,7 @@ class CCLCLMModeling(CLMModeling):
 
     def _eval_surface_density(self, r_proj, z_cl):
         a_cl = self.cosmo.get_a_from_z(z_cl)
-        if self.halo_profile_model == 'nfw' or self._new_version:
+        if self.halo_profile_model == 'nfw' or (self._new_version and not self.force_old_ccl):
             return self.hdpm.projected(self.cosmo.be_cosmo, r_proj/a_cl, self.__mdelta_cor,
                                        a_cl, self.mdef)*self.cor_factor/a_cl**2
         else:
@@ -145,7 +145,7 @@ class CCLCLMModeling(CLMModeling):
     def _eval_mean_surface_density(self, r_proj, z_cl):
         """"eval mean surface density"""
         a_cl = self.cosmo.get_a_from_z(z_cl)
-        if self.halo_profile_model == 'nfw' or self._new_version:
+        if self.halo_profile_model == 'nfw' or (self._new_version and not self.force_old_ccl):
             return self.hdpm.cumul2d(
                 self.cosmo.be_cosmo, r_proj/a_cl, self.__mdelta_cor,
                 self.cosmo.get_a_from_z(z_cl), self.mdef)*self.cor_factor/a_cl**2
@@ -161,7 +161,7 @@ class CCLCLMModeling(CLMModeling):
         a_cl = self.cosmo.get_a_from_z(z_cl)
         r_cor = r_proj/a_cl
 
-        if self.halo_profile_model == 'nfw' or self._new_version:
+        if self.halo_profile_model == 'nfw' or (self._new_version and not self.force_old_ccl):
             return (self.hdpm.cumul2d(self.cosmo.be_cosmo, r_cor, self.__mdelta_cor, a_cl, self.mdef)-
                     self.hdpm.projected(self.cosmo.be_cosmo, r_cor, self.__mdelta_cor,
                                         a_cl, self.mdef))*self.cor_factor/a_cl**2
