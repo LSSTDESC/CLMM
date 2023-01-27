@@ -96,7 +96,7 @@ def compute_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
 
 def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
                             halo_profile_model='nfw', massdef='mean', alpha_ein=None,
-                            verbose=False, validate_input=True):
+                            verbose=False, validate_input=True, force_old_ccl=False):
     r""" Computes the surface mass density
 
     .. math::
@@ -160,17 +160,18 @@ def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     gcm.set_mass(mdelta)
     if alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
-    if force_old_ccl is not None and gcm.backend=='ccl' and gcm._new_version:
-        gcm._new_version = False
+    if gcm.backend=='ccl' and force_old_ccl:
+        gcm.force_old_ccl = True
 
     sigma = gcm.eval_surface_density(r_proj, z_cl, verbose=verbose)
 
     gcm.validate_input = True
+    gcm.force_old_ccl = False
     return sigma
 
 def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
                                    halo_profile_model='nfw', massdef='mean', alpha_ein=None,
-                                   verbose=False, validate_input=True):
+                                   verbose=False, validate_input=True, force_old_ccl=False):
     r""" Computes the excess surface density
 
     .. math::
@@ -231,12 +232,13 @@ def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
     gcm.set_mass(mdelta)
     if alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
-    if force_old_ccl is not None and gcm.backend=='ccl' and gcm._new_version:
-        gcm._new_version = False
+    if gcm.backend=='ccl' and force_old_ccl:
+        gcm.force_old_ccl = True
 
     deltasigma = gcm.eval_excess_surface_density(r_proj, z_cl, verbose=verbose)
 
     gcm.validate_input = True
+    gcm.force_old_ccl = False
     return deltasigma
 
 def compute_excess_surface_density_2h(r_proj, z_cl, cosmo, halobias=1., lsteps=500,
@@ -244,8 +246,8 @@ def compute_excess_surface_density_2h(r_proj, z_cl, cosmo, halobias=1., lsteps=5
     r""" Computes the 2-halo term excess surface density from eq.(13) of Oguri & Hamana (2011)
 
     .. math::
-        \Delta\Sigma_{\rm 2h}(R) = \frac{\rho_m(z)b(M)}{(1 + z)^3D_A(z)^2} \int\frac{ldl}{(2\pi)}
-        P_{\rm mm}(k_l, z)J_2(l\theta)
+        \Delta\Sigma_{\text{2h}}(R) = \frac{\rho_m(z)b(M)}{(1 + z)^3D_A(z)^2}
+        \int\frac{ldl}{(2\pi)} P_{\rm mm}(k_l, z)J_2(l\theta)
 
     where
 
@@ -387,7 +389,7 @@ def compute_critical_surface_density(cosmo, z_cluster, z_source=None,
 def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
                              halo_profile_model='nfw', massdef='mean', alpha_ein=None,
                              z_src_info='discrete', beta_kwargs=None,
-                             verbose=False, validate_input=True):
+                             verbose=False, validate_input=True, force_old_ccl=False):
     r"""Computes the tangential shear
 
     .. math::
@@ -488,6 +490,8 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     gcm.set_mass(mdelta)
     if alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
+    if gcm.backend=='ccl' and force_old_ccl:
+        gcm.force_old_ccl = True
     if np.min(r_proj) < 1.e-11:
         raise ValueError(
             f"Rmin = {np.min(r_proj):.2e} Mpc/h! This value is too small "
@@ -498,13 +502,14 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
                                                  verbose=verbose)
 
     gcm.validate_input = True
+    gcm.force_old_ccl = False
     return tangential_shear
 
 
 def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
                         halo_profile_model='nfw', massdef='mean', alpha_ein=None,
                         z_src_info='discrete', beta_kwargs=None,
-                        verbose=False, validate_input=True):
+                        verbose=False, validate_input=True, force_old_ccl=False):
     r"""Computes the mass convergence
 
     .. math::
@@ -606,24 +611,22 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     gcm.set_mass(mdelta)
     if alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
+    if gcm.backend=='ccl' and force_old_ccl:
+        gcm.force_old_ccl = True
 
     convergence = gcm.eval_convergence(r_proj, z_cluster, z_source, z_src_info=z_src_info,
                                        beta_kwargs=beta_kwargs, verbose=verbose)
 
-    if z_src_info=='discrete':
-        if np.any(np.array(z_source) <= z_cluster):
-            warnings.warn(
-                'Some source redshifts are lower than the cluster redshift.'
-                ' kappa = 0 for those galaxies.')
-
     gcm.validate_input = True
+    gcm.force_old_ccl = False
     return convergence
 
 
 def compute_reduced_tangential_shear(
         r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
         delta_mdef=200, halo_profile_model='nfw', massdef='mean', z_src_info='discrete',
-        approx=None, beta_kwargs=None, alpha_ein=None, validate_input=True, verbose=False):
+        approx=None, beta_kwargs=None, alpha_ein=None,
+        validate_input=True, verbose=False, force_old_ccl=False):
     r"""Computes the reduced tangential shear
 
     .. math::
@@ -755,14 +758,15 @@ def compute_reduced_tangential_shear(
     gcm.set_mass(mdelta)
     if alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
-    if force_old_ccl is not None and gcm.backend=='ccl' and gcm._new_version:
-        gcm._new_version = False
+    if gcm.backend=='ccl' and force_old_ccl:
+        gcm.force_old_ccl = True
 
     red_tangential_shear = gcm.eval_reduced_tangential_shear(
         r_proj, z_cluster, z_source, z_src_info=z_src_info, approx=approx,
         beta_kwargs=beta_kwargs, verbose=verbose)
 
     gcm.validate_input = True
+    gcm.force_old_ccl = False
     return red_tangential_shear
 
 
@@ -770,7 +774,7 @@ def compute_reduced_tangential_shear(
 def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
                           halo_profile_model='nfw', massdef='mean', alpha_ein=None,
                           z_src_info='discrete', approx=None, beta_kwargs=None,
-                          verbose=False, validate_input=True):
+                          verbose=False, validate_input=True, force_old_ccl=False):
     r"""Computes the magnification
 
     .. math::
@@ -903,18 +907,15 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
     gcm.set_mass(mdelta)
     if alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
+    if gcm.backend=='ccl' and force_old_ccl:
+        gcm.force_old_ccl = True
 
     magnification = gcm.eval_magnification(r_proj, z_cluster, z_source, z_src_info=z_src_info,
                                            approx=approx, beta_kwargs=beta_kwargs,
                                            verbose=verbose)
 
-    if z_src_info=='discrete':
-        if np.any(np.array(z_source) <= z_cluster):
-            warnings.warn(
-                'Some source redshifts are lower than the cluster redshift.'
-                ' magnification = 1 for those galaxies.')
-
     gcm.validate_input = True
+    gcm.force_old_ccl = False
     return magnification
 
 
@@ -1072,12 +1073,6 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
     magnification_bias = gcm.eval_magnification_bias(r_proj, z_cluster, z_source, alpha,
                                                      z_src_info=z_src_info, approx=approx,
                                                      beta_kwargs=beta_kwargs, verbose=verbose)
-
-    if z_src_info=='discrete':
-        if np.any(np.array(z_source) <= z_cluster):
-            warnings.warn(
-                'Some source redshifts are lower than the cluster redshift.'
-                ' magnification bias = 1 for those galaxies.')
 
     gcm.validate_input = True
     return magnification_bias

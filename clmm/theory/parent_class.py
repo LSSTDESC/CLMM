@@ -1227,7 +1227,7 @@ class CLMModeling:
                 z_cl, z_src, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
 
             kappa_inf = self._eval_convergence_core(r_proj, z_cl, z_src=self.z_inf)
-            gammat_inf = self.eval_tangential_shear_core(r_proj, z_cl, z_src=self.z_inf)
+            gammat_inf = self._eval_tangential_shear_core(r_proj, z_cl, z_src=self.z_inf)
 
             mu = 1 + 2*beta_s_mean*kappa_inf
 

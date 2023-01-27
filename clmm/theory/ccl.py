@@ -69,6 +69,7 @@ class CCLCLMModeling(CLMModeling):
         self.cor_factor = _patch_rho_crit_to_cd2018(ccl.physical_constants.RHO_CRITICAL)
         self.__mdelta_cor = 0.0 ## mass with corretion for input
         self._new_version = bool(parse(ccl.__version__) >= parse('2.6'))
+        self.force_old_ccl = False
         if self._new_version:
             self.hdpm_opts['hernquist'].update({'projected_analytic': self._new_version,
                                                 'cumul2d_analytic': self._new_version})
@@ -170,7 +171,7 @@ class CCLCLMModeling(CLMModeling):
 
     def _eval_convergence_core(self, r_proj, z_cl, z_src):
         """eval convergence"""
-        if not self._new_version:
+        if not self._new_version or self.force_old_ccl:
             warnings.warn('\nOlder version of CCL detected')
             return super()._eval_convergence_core(r_proj, z_cl, z_src)
 
@@ -183,7 +184,7 @@ class CCLCLMModeling(CLMModeling):
         return res
 
     def _eval_tangential_shear_core(self, r_proj, z_cl, z_src):
-        if not self._new_version:
+        if not self._new_version or self.force_old_ccl:
             warnings.warn('\nOlder version of CCL detected')
             return super()._eval_tangential_shear_core(r_proj, z_cl, z_src)
 
@@ -197,7 +198,7 @@ class CCLCLMModeling(CLMModeling):
 
     def _eval_reduced_tangential_shear_core(self, r_proj, z_cl, z_src):
         """eval reduced tangential shear with all background sources at the same plane"""
-        if not self._new_version:
+        if not self._new_version or self.force_old_ccl:
             warnings.warn('\nOlder version of CCL detected')
             return super()._eval_reduced_tangential_shear_core(r_proj, z_cl, z_src)
 
@@ -211,7 +212,7 @@ class CCLCLMModeling(CLMModeling):
 
     def _eval_magnification_core(self, r_proj, z_cl, z_src):
         """eval magnification"""
-        if not self._new_version:
+        if not self._new_version or self.force_old_ccl:
             warnings.warn('\nOlder version of CCL detected')
             return super()._eval_magnification_core(r_proj, z_cl, z_src)
 
