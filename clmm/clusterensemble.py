@@ -24,7 +24,7 @@ class ClusterEnsemble():
     id_dict: dict
         Dictionary of indices given the cluster id
     """
-    def __init__(self, unique_id, gclist, *args, **kwargs):
+    def __init__(self, unique_id, gc_list=None, *args, **kwargs):
         """Initializes a ClusterEnsemble object
         Parameters
         ----------
@@ -37,9 +37,12 @@ class ClusterEnsemble():
             raise TypeError('unique_id incorrect type: %s'%type(unique_id))
         self.unique_id = unique_id
         self.data = GCData(meta={'bin_units': None})
-        if len(args)>0 or len(kwargs)>0:
-            self._add_values(gclist, **kwargs)
-
+        self.use_cluster_list = False 
+        if gc_list != None:
+            self.use_cluster_list = True
+            if len(args)>0 or len(kwargs)>0: 	
+                self._add_values(gc_list, **kwargs)
+	   
     def _add_values(self, gc_list, **kwargs):
         """Add values for all attributes
 
@@ -160,6 +163,10 @@ class ClusterEnsemble():
         weights : str
             Name of the weights column in `data`.
         """
+        if len(self.data) == 0:
+            if self.use_cluster_list == False:
+                raise ValueError("There is no single cluster profile data. Please run" + 
+                             "'make_individual_radial_profile' for each cluster in your catalog")
         radius, components = make_stacked_radial_profile(
             self.data['radius'], self.data[weights],
             [self.data[tan_component], self.data[cross_component]])
@@ -177,6 +184,10 @@ class ClusterEnsemble():
         sample_cross_covariance : ndarray
             The sample covariance matrix for the stacked cross profile
         """
+        if len(self.data) == 0:
+            if self.use_cluster_list == False:
+                raise ValueError("There is no single cluster profile data. Please run" +
+                             "'make_individual_radial_profile' for each cluster in your catalog")
         n_catalogs = len(self.data)
         self.sample_tangential_covariance = np.cov(self.data[tan_component].T, bias = False)/n_catalogs
         self.sample_cross_covariance = np.cov(self.data[cross_component].T, bias = False)/n_catalogs
@@ -190,6 +201,10 @@ class ClusterEnsemble():
         n_bootstrap : int
             number of bootstrap resamplings
         """
+        if len(self.data) == 0:
+            if self.use_cluster_list == False:
+                raise ValueError("There is no single cluster profile data. Please run" +
+                             "'make_individual_radial_profile' for each cluster in your catalog")
         cluster_index = np.arange(len(self.data))
         gt_boot, gx_boot = [], []
         for n_boot in range(n_bootstrap):
@@ -216,6 +231,10 @@ class ClusterEnsemble():
         """
         #may induce artificial noise if there are some healpix pixels
         #not covering entirely the 2D map of clusters
+        if len(self.data) == 0:
+            if self.use_cluster_list == False:
+                raise ValueError("There is no single cluster profile data. Please run" +
+                             "'make_individual_radial_profile' for each cluster in your catalog")
         index = np.arange(len(self.data))
         pixels = healpy.ang2pix(n_side, self.data['ra'], self.data['dec'],
                                 nest=True, lonlat=True)
