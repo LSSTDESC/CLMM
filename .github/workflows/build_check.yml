@@ -13,6 +13,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: conda-incubator/setup-miniconda@v2
+      with:
+        installer-url: 'https://repo.anaconda.com/miniconda/Miniconda3-py39_4.12.0-Linux-x86_64.sh'
     - name: Install prereq using conda
       run: |
         conda install -c conda-forge gobject-introspection pygobject python_abi=3.9=3_cp39 cffi=1.15.1
