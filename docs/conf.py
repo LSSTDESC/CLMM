@@ -135,7 +135,7 @@ for entry in config:
     else:
         doc_files[key].append(entry)
 # -- Compile the examples into rst----------------------------------------
-run_nb = True
+run_nb = False
 
 outdir = 'compiled-examples/'
 nbconvert_opts = ['--to rst',
