@@ -9,6 +9,7 @@ python setup.py install --user > /dev/null
     # get kwargs
 NO_DC2=false
 NO_HSC=false
+NO_DES=false
 for ARGUMENT in "$@"
 do
     if [ "${ARGUMENT::1}" = "-" ]
@@ -19,6 +20,14 @@ do
         elif [ "$ARGUMENT" = "--no-hsc" ]
             then
             NO_HSC=true
+        elif [ "$ARGUMENT" = "--no-des" ]
+            then
+            NO_DES=true
+        elif [ "$ARGUMENT" = "--no-data" ]
+            then
+            NO_DC2=true
+            NO_HSC=true
+            NO_DES=true
         else
             echo "ERROR! Unknown '$ARGUMENT' argument"
             exit
@@ -32,17 +41,24 @@ sed -i -e 's/'"$1"' = False/'"$1"' = True/g'  conf.py
 function turn_off(){
 sed -i -e 's/'"$1"' = True/'"$1"' = False/g'  conf.py
 }
+function comment(){
+sed -i -e '/'"$1"'/s/^/#/' conf.py
+}
+function uncomment(){
+sed -i -e '/'"$1"'/s/^#//' conf.py
+}
 
 cd docs/
 make clean
 turn_on 'run_nb'
-if [ $NO_DC2 = true ];then turn_on 'dc2_fix'; fi
-if [ $NO_HSC = true ];then turn_on 'hsc_fix'; fi
+if [ $NO_DC2 = true ];then uncomment '_DC2'; fi
+if [ $NO_HSC = true ];then uncomment '_HSC'; fi
+if [ $NO_DES = true ];then uncomment '_DES'; fi
 make html
 turn_off 'run_nb'
-sed -i -e 's/run_nb = True/run_nb = False/g' conf.py
-if [ $NO_DC2 = true ];then turn_off 'dc2_fix'; fi
-if [ $NO_HSC = true ];then turn_off 'hsc_fix'; fi
+if [ $NO_DC2 = true ];then comment '_DC2'; fi
+if [ $NO_HSC = true ];then comment '_HSC'; fi
+if [ $NO_DES = true ];then comment '_DES'; fi
 cd ..
 
 # Add and commit changes
