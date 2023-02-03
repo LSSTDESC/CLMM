@@ -143,9 +143,9 @@ nbconvert_opts = ['--to rst',
                    '--execute',
                   f'--output-dir {outdir}']
 nb_skip_run = [
-    '../examples/DC2/data_and_model_demo_DC2.ipynb',
-    '../examples/mass_fitting/Example4_Fit_Halo_mass_to_HSC_data.ipynb',
-    '../examples/mass_fitting/Example5_Fit_Halo_mass_to_DES_data.ipynb',
+#    '../examples/DC2/data_and_model_demo_DC2.ipynb',
+#    '../examples/mass_fitting/Example4_Fit_Halo_mass_to_HSC_data.ipynb',
+#    '../examples/mass_fitting/Example5_Fit_Halo_mass_to_DES_data.ipynb',
 ]
 
 for lists in [v for k, v in doc_files.items() if k!='APIDOC']:
