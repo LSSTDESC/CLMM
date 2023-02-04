@@ -67,7 +67,7 @@ the background probability :math:`P(z > z_l)` for each galaxy
 
 .. parsed-literal::
 
-    '1.5.1'
+    '1.5.3'
 
 
 
@@ -116,8 +116,8 @@ the background probability :math:`P(z > z_l)` for each galaxy
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.1-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.1-py3.11.egg/clmm/theory/func_layer.py:612: UserWarning: Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/theory/func_layer.py:612: UserWarning: Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.
 
 
 Compute the WL weights
@@ -356,8 +356,8 @@ background of the cluster is given by
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.1-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.1-py3.11.egg/clmm/theory/func_layer.py:612: UserWarning: Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/theory/func_layer.py:612: UserWarning: Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.
 
 
 .. code:: ipython3

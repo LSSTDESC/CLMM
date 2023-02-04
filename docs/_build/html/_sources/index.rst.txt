@@ -41,6 +41,7 @@ The source code is publically available at https://github.com/LSSTDESC/CLMM
    compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.rst
    compiled-examples/Example3_Fit_Halo_Mass_to_Shear_Catalog.rst
    compiled-examples/Example4_Fit_Halo_mass_to_HSC_data.rst
+   compiled-examples/Example5_Fit_Halo_mass_to_DES_data.rst
 
 .. toctree::
    :maxdepth: 1
