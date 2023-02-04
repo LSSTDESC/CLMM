@@ -568,8 +568,8 @@ The cluster objects are then stored in ``gclist``.
 
 .. parsed-literal::
 
-    CPU times: user 27.5 s, sys: 6.77 s, total: 34.3 s
-    Wall time: 34.1 s
+    CPU times: user 28.9 s, sys: 7.22 s, total: 36.2 s
+    Wall time: 36.1 s
 
 
 .. code:: ipython3

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Boost factors &mdash; CLMM 1.5.1 documentation</title>
+  <title>Boost factors &mdash; CLMM 1.5.3 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -33,7 +33,7 @@
             <a href="../index.html" class="icon icon-home"> CLMM
           </a>
               <div class="version">
-                1.5.1
+                1.5.3
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -63,7 +63,8 @@
 <li class="toctree-l1"><a class="reference internal" href="Example1_Fit_shear_profile_with_miscentering.html">Example 1b: Impact of miscentering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Example 2: Realistic data and wrong model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Example 3: Account for the n(z) of sources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Example4_Fit_Halo_mass_to_HSC_data.html">Using CLMM on Real Datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example4_Fit_Halo_mass_to_HSC_data.html">Example 4: Using a real dataset (HSC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example5_Fit_Halo_mass_to_DES_data.html">Example 5: Using a real datasets (DES)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Other</span></p>
 <ul class="current">
@@ -150,7 +151,7 @@
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clmm</span><span class="o">.</span><span class="n">__version__</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.5.1&#39;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.5.3&#39;</span>
 </pre></div>
 </div>
 <section id="define-cosmology-object">
@@ -196,7 +197,7 @@ galaxy</p>
     <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">is_deltasigma</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="n">cori</span><span class="o">/</span><span class="mf">3.9</span><span class="o">-</span><span class="n">anaconda</span><span class="o">-</span><span class="mf">2021.11</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.11</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">1.5.1</span><span class="o">-</span><span class="n">py3</span><span class="mf">.11</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">utils</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">644</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">Some</span> <span class="n">source</span> <span class="n">redshifts</span> <span class="n">are</span> <span class="n">lower</span> <span class="n">than</span> <span class="n">the</span> <span class="n">cluster</span> <span class="n">redshift</span><span class="o">.</span> <span class="n">Returning</span> <span class="n">Sigma_crit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span> <span class="k">for</span> <span class="n">those</span> <span class="n">galaxies</span><span class="o">.</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="n">cori</span><span class="o">/</span><span class="mf">3.9</span><span class="o">-</span><span class="n">anaconda</span><span class="o">-</span><span class="mf">2021.11</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.11</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">1.5.3</span><span class="o">-</span><span class="n">py3</span><span class="mf">.11</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">utils</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">644</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">Some</span> <span class="n">source</span> <span class="n">redshifts</span> <span class="n">are</span> <span class="n">lower</span> <span class="n">than</span> <span class="n">the</span> <span class="n">cluster</span> <span class="n">redshift</span><span class="o">.</span> <span class="n">Returning</span> <span class="n">Sigma_crit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span> <span class="k">for</span> <span class="n">those</span> <span class="n">galaxies</span><span class="o">.</span>
 </pre></div>
 </div>
 <p>Calculate the binned profile</p>
@@ -217,18 +218,18 @@ galaxy</p>
 </pre></div>
 </div>
 <i>GCData length=10</i>
-<table id="table23446733195280-853131" class="table-striped table-bordered table-condensed">
+<table id="table23455187308880-768250" class="table-striped table-bordered table-condensed">
 <thead><tr><th>idx</th><th>radius_min</th><th>radius</th><th>radius_max</th><th>DeltaSigma_tan</th><th>DeltaSigma_tan_err</th><th>DeltaSigma_cross</th><th>DeltaSigma_cross_err</th><th>z</th><th>z_err</th><th>n_src</th></tr></thead>
-<tr><td>0</td><td>69.78</td><td>447.33</td><td>618.14</td><td>2.16e+14</td><td>1.68e+13</td><td>1.99e+12</td><td>3.01e+12</td><td>1.27</td><td>0.13</td><td>20</td></tr>
-<tr><td>1</td><td>618.14</td><td>935.19</td><td>1166.49</td><td>1.23e+14</td><td>4.33e+12</td><td>1.51e+12</td><td>2.58e+12</td><td>1.06</td><td>0.08</td><td>42</td></tr>
-<tr><td>2</td><td>1166.49</td><td>1452.81</td><td>1714.84</td><td>7.70e+13</td><td>2.15e+12</td><td>-1.35e+12</td><td>1.82e+12</td><td>1.17</td><td>0.07</td><td>69</td></tr>
-<tr><td>3</td><td>1714.84</td><td>1989.95</td><td>2263.20</td><td>5.91e+13</td><td>2.58e+12</td><td>6.76e+12</td><td>7.22e+12</td><td>1.28</td><td>0.07</td><td>111</td></tr>
-<tr><td>4</td><td>2263.20</td><td>2539.38</td><td>2811.55</td><td>4.28e+13</td><td>1.62e+12</td><td>9.84e+11</td><td>1.31e+12</td><td>1.28</td><td>0.06</td><td>151</td></tr>
-<tr><td>5</td><td>2811.55</td><td>3099.13</td><td>3359.91</td><td>3.38e+13</td><td>1.90e+12</td><td>3.09e+12</td><td>1.32e+12</td><td>1.21</td><td>0.05</td><td>169</td></tr>
-<tr><td>6</td><td>3359.91</td><td>3633.03</td><td>3908.26</td><td>2.58e+13</td><td>2.08e+12</td><td>-2.07e+12</td><td>2.57e+12</td><td>1.28</td><td>0.05</td><td>187</td></tr>
-<tr><td>7</td><td>3908.26</td><td>4149.85</td><td>4456.61</td><td>2.31e+13</td><td>1.51e+12</td><td>2.16e+12</td><td>1.56e+12</td><td>1.23</td><td>0.05</td><td>153</td></tr>
-<tr><td>8</td><td>4456.61</td><td>4674.99</td><td>5004.97</td><td>2.12e+13</td><td>3.25e+12</td><td>2.95e+12</td><td>1.91e+12</td><td>1.19</td><td>0.09</td><td>68</td></tr>
-<tr><td>9</td><td>5004.97</td><td>5187.76</td><td>5553.32</td><td>1.46e+13</td><td>2.28e+12</td><td>1.03e+12</td><td>2.52e+12</td><td>1.34</td><td>0.15</td><td>30</td></tr>
+<tr><td>0</td><td>165.90</td><td>433.71</td><td>706.20</td><td>2.12e+14</td><td>1.18e+13</td><td>-7.94e+12</td><td>6.84e+12</td><td>1.16</td><td>0.12</td><td>29</td></tr>
+<tr><td>1</td><td>706.20</td><td>986.55</td><td>1246.50</td><td>1.17e+14</td><td>4.36e+12</td><td>7.04e+12</td><td>2.84e+12</td><td>0.99</td><td>0.07</td><td>49</td></tr>
+<tr><td>2</td><td>1246.50</td><td>1502.85</td><td>1786.80</td><td>8.38e+13</td><td>5.12e+12</td><td>2.27e+12</td><td>1.86e+12</td><td>1.25</td><td>0.09</td><td>83</td></tr>
+<tr><td>3</td><td>1786.80</td><td>2053.48</td><td>2327.10</td><td>5.72e+13</td><td>2.11e+12</td><td>-4.15e+12</td><td>1.61e+12</td><td>1.28</td><td>0.08</td><td>111</td></tr>
+<tr><td>4</td><td>2327.10</td><td>2583.08</td><td>2867.40</td><td>4.72e+13</td><td>2.35e+12</td><td>-1.55e+12</td><td>1.79e+12</td><td>1.26</td><td>0.06</td><td>134</td></tr>
+<tr><td>5</td><td>2867.40</td><td>3140.85</td><td>3407.70</td><td>3.63e+13</td><td>1.61e+12</td><td>-2.64e+11</td><td>1.53e+12</td><td>1.29</td><td>0.06</td><td>176</td></tr>
+<tr><td>6</td><td>3407.70</td><td>3685.32</td><td>3948.00</td><td>3.04e+13</td><td>2.20e+12</td><td>3.03e+11</td><td>1.40e+12</td><td>1.27</td><td>0.06</td><td>200</td></tr>
+<tr><td>7</td><td>3948.00</td><td>4186.48</td><td>4488.30</td><td>2.60e+13</td><td>1.74e+12</td><td>7.40e+11</td><td>1.95e+12</td><td>1.32</td><td>0.07</td><td>131</td></tr>
+<tr><td>8</td><td>4488.30</td><td>4720.37</td><td>5028.59</td><td>2.11e+13</td><td>3.07e+12</td><td>-1.12e+12</td><td>2.32e+12</td><td>1.11</td><td>0.08</td><td>63</td></tr>
+<tr><td>9</td><td>5028.59</td><td>5272.53</td><td>5568.89</td><td>2.06e+13</td><td>5.00e+12</td><td>-3.73e+12</td><td>2.96e+12</td><td>1.30</td><td>0.18</td><td>24</td></tr>
 </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
 .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
 display: inline-block; margin-right: 1em; }
@@ -252,14 +253,14 @@ require.config({paths: {
     datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
 }});
 require(["datatables"], function(){
-    console.log("$('#table23446733195280-853131').dataTable()");
+    console.log("$('#table23455187308880-768250').dataTable()");
 
 jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     "optionalnum-asc": astropy_sort_num,
     "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
 });
 
-    $('#table23446733195280-853131').dataTable({
+    $('#table23455187308880-768250').dataTable({
         order: [],
         pageLength: 50,
         lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],

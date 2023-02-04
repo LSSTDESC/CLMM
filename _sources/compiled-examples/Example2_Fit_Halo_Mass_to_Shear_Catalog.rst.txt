@@ -53,7 +53,7 @@ First, we import some standard packages.
 
 .. parsed-literal::
 
-    '1.5.1'
+    '1.5.3'
 
 
 
@@ -200,7 +200,7 @@ galaxy catalog in bins of radius.
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.1-py3.11.egg/clmm/utils.py:178: RuntimeWarning: invalid value encountered in sqrt
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:178: RuntimeWarning: invalid value encountered in sqrt
 
 
 After running ``clmm.dataops.make_radial_profile`` on a
@@ -258,7 +258,7 @@ We visualize the radially binned shear for the 3 configurations
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x15531e34e7d0>
+    <matplotlib.legend.Legend at 0x155514e051d0>
 
 
 

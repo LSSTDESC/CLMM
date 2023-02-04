@@ -47,7 +47,7 @@ Make sure we know which version we’re using
 
 .. parsed-literal::
 
-    '1.5.1'
+    '1.5.3'
 
 
 
@@ -174,7 +174,7 @@ Visualisation
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x15531e3025d0>
+    <matplotlib.legend.Legend at 0x155515492350>
 
 
 
@@ -257,8 +257,8 @@ catalog and number of radius points.
 
 .. parsed-literal::
 
-    CPU times: user 1.79 s, sys: 13.5 ms, total: 1.8 s
-    Wall time: 1.8 s
+    CPU times: user 1.91 s, sys: 10.8 ms, total: 1.93 s
+    Wall time: 1.92 s
 
 
 Case 2 : Redshift distribution and exact formula
@@ -282,8 +282,8 @@ may be quite slow.
 
 .. parsed-literal::
 
-    CPU times: user 312 ms, sys: 8.57 ms, total: 321 ms
-    Wall time: 317 ms
+    CPU times: user 335 ms, sys: 17.9 ms, total: 353 ms
+    Wall time: 343 ms
 
 
 Cases 3 : Redshift distribution and approximation
@@ -305,8 +305,8 @@ reduced shear.
 
 .. parsed-literal::
 
-    CPU times: user 8.25 ms, sys: 0 ns, total: 8.25 ms
-    Wall time: 7.77 ms
+    CPU times: user 8.31 ms, sys: 47 µs, total: 8.35 ms
+    Wall time: 7.94 ms
 
 
 .. code:: ipython3
@@ -321,8 +321,8 @@ reduced shear.
 
 .. parsed-literal::
 
-    CPU times: user 14.1 ms, sys: 0 ns, total: 14.1 ms
-    Wall time: 13.5 ms
+    CPU times: user 14.4 ms, sys: 0 ns, total: 14.4 ms
+    Wall time: 14 ms
 
 
 Cases 4 : Mean lensing efficiencies and approximation
@@ -347,8 +347,8 @@ Cases 4 : Mean lensing efficiencies and approximation
 
 .. parsed-literal::
 
-    CPU times: user 1.26 ms, sys: 603 µs, total: 1.87 ms
-    Wall time: 1.64 ms
+    CPU times: user 1.72 ms, sys: 0 ns, total: 1.72 ms
+    Wall time: 1.51 ms
 
 
 .. code:: ipython3
@@ -363,8 +363,8 @@ Cases 4 : Mean lensing efficiencies and approximation
 
 .. parsed-literal::
 
-    CPU times: user 2.14 ms, sys: 0 ns, total: 2.14 ms
-    Wall time: 1.74 ms
+    CPU times: user 1.85 ms, sys: 0 ns, total: 1.85 ms
+    Wall time: 1.65 ms
 
 
 3 - Comparison of the four cases for the reduced tangnetial shear

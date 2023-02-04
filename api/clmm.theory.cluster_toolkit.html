@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>clmm.theory.cluster_toolkit module &mdash; CLMM 1.5.1 documentation</title>
+  <title>clmm.theory.cluster_toolkit module &mdash; CLMM 1.5.3 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -33,7 +33,7 @@
             <a href="../index.html" class="icon icon-home"> CLMM
           </a>
               <div class="version">
-                1.5.1
+                1.5.3
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -63,7 +63,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example1_Fit_shear_profile_with_miscentering.html">Example 1b: Impact of miscentering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Example 2: Realistic data and wrong model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Example 3: Account for the n(z) of sources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example4_Fit_Halo_mass_to_HSC_data.html">Using CLMM on Real Datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example4_Fit_Halo_mass_to_HSC_data.html">Example 4: Using a real dataset (HSC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compiled-examples/Example5_Fit_Halo_mass_to_DES_data.html">Example 5: Using a real datasets (DES)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Other</span></p>
 <ul>
@@ -576,7 +577,7 @@ backends.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="clmm.theory.cluster_toolkit.compute_magnification_bias">
-<span class="sig-prename descclassname"><span class="pre">clmm.theory.cluster_toolkit.</span></span><span class="sig-name descname"><span class="pre">compute_magnification_bias</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mdelta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cdelta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cluster</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_mdef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halo_profile_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'nfw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">massdef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'discrete'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">approx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_input</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/func_layer.html#compute_magnification_bias"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.cluster_toolkit.compute_magnification_bias" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">clmm.theory.cluster_toolkit.</span></span><span class="sig-name descname"><span class="pre">compute_magnification_bias</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mdelta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cdelta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cluster</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_mdef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halo_profile_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'nfw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">massdef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha_ein</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'discrete'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">approx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_input</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/func_layer.html#compute_magnification_bias"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.cluster_toolkit.compute_magnification_bias" title="Permalink to this definition"></a></dt>
 <dd><p>Computes magnification bias from magnification <span class="math notranslate nohighlight">\(\mu\)</span>
 and slope parameter <span class="math notranslate nohighlight">\(\alpha\)</span> as :</p>
 <div class="math notranslate nohighlight">
@@ -601,6 +602,8 @@ cummulative numer counts at a given magnitude :</p>
 <cite>z_src_info</cite> (see below).</p></li>
 <li><p><strong>cosmo</strong> (<em>clmm.cosmology.Cosmology object</em>) -- CLMM Cosmology object</p></li>
 <li><p><strong>delta_mdef</strong> (<em>int</em><em>, </em><em>optional</em>) -- Mass overdensity definition.  Defaults to 200.</p></li>
+<li><p><strong>alpha_ein</strong> (<em>float</em><em>, </em><em>optional</em>) -- If <cite>halo_profile_model=='einasto'</cite>, set the value of the Einasto slope. Option only
+available for the NumCosmo backend</p></li>
 <li><p><strong>halo_profile_model</strong> (<em>str</em><em>, </em><em>optional</em>) -- <p>Profile model parameterization (letter case independent):</p>
 <blockquote>
 <div><ul>

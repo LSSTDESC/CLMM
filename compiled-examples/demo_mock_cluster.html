@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Generate mock data for a cluster &mdash; CLMM 1.5.1 documentation</title>
+  <title>Generate mock data for a cluster &mdash; CLMM 1.5.3 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -32,7 +32,7 @@
             <a href="../index.html" class="icon icon-home"> CLMM
           </a>
               <div class="version">
-                1.5.1
+                1.5.3
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -62,7 +62,8 @@
 <li class="toctree-l1"><a class="reference internal" href="Example1_Fit_shear_profile_with_miscentering.html">Example 1b: Impact of miscentering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Example 2: Realistic data and wrong model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Example 3: Account for the n(z) of sources</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Example4_Fit_Halo_mass_to_HSC_data.html">Using CLMM on Real Datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example4_Fit_Halo_mass_to_HSC_data.html">Example 4: Using a real dataset (HSC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example5_Fit_Halo_mass_to_DES_data.html">Example 5: Using a real datasets (DES)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Other</span></p>
 <ul>
@@ -166,7 +167,7 @@ line below to select your backend.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clmm</span><span class="o">.</span><span class="n">__version__</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.5.1&#39;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.5.3&#39;</span>
 </pre></div>
 </div>
 <section id="import-mock-data-module-and-setup-the-configuration">
@@ -299,11 +300,11 @@ galaxies at z=0.8, no redshift errors (z = ztrue)</p></li>
 </pre></div>
 </div>
 <i>GCData length=3</i>
-<table id="table23446733294096-991511" class="table-striped table-bordered table-condensed">
+<table id="table23455184079056-718078" class="table-striped table-bordered table-condensed">
 <thead><tr><th>idx</th><th>ra</th><th>dec</th><th>e1</th><th>e2</th><th>z</th><th>ztrue</th><th>id</th></tr></thead>
-<tr><td>0</td><td>4.876e+01</td><td>8.713e+01</td><td>9.569e-03</td><td>-1.154e-02</td><td>8.000e-01</td><td>8.000e-01</td><td>0</td></tr>
-<tr><td>1</td><td>4.769e+01</td><td>8.686e+01</td><td>1.141e-03</td><td>1.107e-02</td><td>8.000e-01</td><td>8.000e-01</td><td>1</td></tr>
-<tr><td>2</td><td>4.774e+01</td><td>8.690e+01</td><td>-3.599e-03</td><td>1.370e-02</td><td>8.000e-01</td><td>8.000e-01</td><td>2</td></tr>
+<tr><td>0</td><td>5.023e+01</td><td>8.690e+01</td><td>2.223e-02</td><td>-5.646e-03</td><td>8.000e-01</td><td>8.000e-01</td><td>0</td></tr>
+<tr><td>1</td><td>4.972e+01</td><td>8.702e+01</td><td>2.852e-02</td><td>-5.157e-02</td><td>8.000e-01</td><td>8.000e-01</td><td>1</td></tr>
+<tr><td>2</td><td>5.152e+01</td><td>8.702e+01</td><td>-2.505e-02</td><td>1.156e-02</td><td>8.000e-01</td><td>8.000e-01</td><td>2</td></tr>
 </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
 .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
 display: inline-block; margin-right: 1em; }
@@ -327,14 +328,14 @@ require.config({paths: {
     datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
 }});
 require(["datatables"], function(){
-    console.log("$('#table23446733294096-991511').dataTable()");
+    console.log("$('#table23455184079056-718078').dataTable()");
 
 jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     "optionalnum-asc": astropy_sort_num,
     "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
 });
 
-    $('#table23446733294096-991511').dataTable({
+    $('#table23455184079056-718078').dataTable({
         order: [],
         pageLength: 50,
         lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -352,11 +353,11 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
 </pre></div>
 </div>
 <i>GCData length=3</i>
-<table id="table23446733294096-615411" class="table-striped table-bordered table-condensed">
+<table id="table23455173621008-87039" class="table-striped table-bordered table-condensed">
 <thead><tr><th>idx</th><th>ra</th><th>dec</th><th>e1</th><th>e2</th><th>z</th><th>ztrue</th><th>pzbins</th><th>pzpdf</th><th>id</th></tr></thead>
-<tr><td>0</td><td>5.245e+01</td><td>8.695e+01</td><td>-4.214e-03</td><td>3.194e-02</td><td>8.767e-01</td><td>8.000e-01</td><td>-2.332e-02 .. 1.777e+00</td><td>8.550e-22 .. 8.550e-22</td><td>0</td></tr>
-<tr><td>1</td><td>4.677e+01</td><td>8.704e+01</td><td>-6.408e-02</td><td>2.482e-02</td><td>7.497e-01</td><td>8.000e-01</td><td>-1.503e-01 .. 1.650e+00</td><td>8.550e-22 .. 8.550e-22</td><td>1</td></tr>
-<tr><td>2</td><td>4.748e+01</td><td>8.707e+01</td><td>-8.658e-02</td><td>1.296e-02</td><td>8.115e-01</td><td>8.000e-01</td><td>-8.853e-02 .. 1.711e+00</td><td>8.550e-22 .. 8.550e-22</td><td>2</td></tr>
+<tr><td>0</td><td>5.391e+01</td><td>8.720e+01</td><td>8.315e-03</td><td>-2.272e-02</td><td>7.111e-01</td><td>8.000e-01</td><td>-1.889e-01 .. 1.611e+00</td><td>8.550e-22 .. 8.550e-22</td><td>0</td></tr>
+<tr><td>1</td><td>5.176e+01</td><td>8.686e+01</td><td>3.095e-02</td><td>-9.718e-02</td><td>7.232e-01</td><td>8.000e-01</td><td>-1.768e-01 .. 1.623e+00</td><td>8.550e-22 .. 8.550e-22</td><td>1</td></tr>
+<tr><td>2</td><td>5.203e+01</td><td>8.684e+01</td><td>1.555e-02</td><td>-9.326e-03</td><td>7.901e-01</td><td>8.000e-01</td><td>-1.099e-01 .. 1.690e+00</td><td>8.550e-22 .. 8.550e-22</td><td>2</td></tr>
 </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
 .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
 display: inline-block; margin-right: 1em; }
@@ -380,14 +381,14 @@ require.config({paths: {
     datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
 }});
 require(["datatables"], function(){
-    console.log("$('#table23446733294096-615411').dataTable()");
+    console.log("$('#table23455173621008-87039').dataTable()");
 
 jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     "optionalnum-asc": astropy_sort_num,
     "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
 });
 
-    $('#table23446733294096-615411').dataTable({
+    $('#table23455173621008-87039').dataTable({
         order: [],
         pageLength: 50,
         lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -409,7 +410,7 @@ errors) might be.</p></li>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x15531d741290</span><span class="o">&gt;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x1555153797d0</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="../_images/demo_mock_cluster_36_1.png" src="../_images/demo_mock_cluster_36_1.png" />
@@ -447,7 +448,7 @@ computed (green) and a random redshift (orange) computed from the pdf</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x15531d655690</span><span class="o">&gt;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x1555153bad90</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="../_images/demo_mock_cluster_43_1.png" src="../_images/demo_mock_cluster_43_1.png" />
@@ -489,7 +490,7 @@ galaxies in a smaller field of view yields high galaxy density</p></li>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x15531d3f2b90</span><span class="o">&gt;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x1555150aae90</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="../_images/demo_mock_cluster_50_1.png" src="../_images/demo_mock_cluster_50_1.png" />
@@ -526,7 +527,7 @@ the box size.</p></li>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x15531d32e1d0</span><span class="o">&gt;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x155514f52cd0</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="../_images/demo_mock_cluster_54_1.png" src="../_images/demo_mock_cluster_54_1.png" />

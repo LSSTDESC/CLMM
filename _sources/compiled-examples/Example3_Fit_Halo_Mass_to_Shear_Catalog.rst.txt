@@ -53,7 +53,7 @@ First, we import some standard packages.
 
 .. parsed-literal::
 
-    '1.5.1'
+    '1.5.3'
 
 
 
@@ -353,7 +353,7 @@ Before fitting, let’s first vizualise these models using the known true mass
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.1-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
 
 
 .. code:: ipython3
@@ -397,7 +397,7 @@ Before fitting, let’s first vizualise these models using the known true mass
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x15531d39f990>
+    <matplotlib.legend.Legend at 0x155514c2c990>
 
 
 
@@ -630,7 +630,7 @@ the naive approach, with respective best-fit masses.
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x15531d47fe50>
+    <matplotlib.legend.Legend at 0x155514d25590>
 
 
 

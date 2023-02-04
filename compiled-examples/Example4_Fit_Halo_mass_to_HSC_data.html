@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Using CLMM on Real Datasets &mdash; CLMM 1.5.1 documentation</title>
+  <title>Example 4: Using a real dataset (HSC) &mdash; CLMM 1.5.3 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -20,7 +20,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Model WL Profiles (different redshift inputs)" href="demo_theory_functionality_diff_z_types.html" />
+    <link rel="next" title="Example 5: Using a real datasets (DES)" href="Example5_Fit_Halo_mass_to_DES_data.html" />
     <link rel="prev" title="Example 3: Account for the n(z) of sources" href="Example3_Fit_Halo_Mass_to_Shear_Catalog.html" /> 
 </head>
 
@@ -32,7 +32,7 @@
             <a href="../index.html" class="icon icon-home"> CLMM
           </a>
               <div class="version">
-                1.5.1
+                1.5.3
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -62,7 +62,8 @@
 <li class="toctree-l1"><a class="reference internal" href="Example1_Fit_shear_profile_with_miscentering.html">Example 1b: Impact of miscentering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Example 2: Realistic data and wrong model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Example 3: Account for the n(z) of sources</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Using CLMM on Real Datasets</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Example 4: Using a real dataset (HSC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example5_Fit_Halo_mass_to_DES_data.html">Example 5: Using a real datasets (DES)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Other</span></p>
 <ul>
@@ -124,7 +125,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a></li>
-      <li class="breadcrumb-item active">Using CLMM on Real Datasets</li>
+      <li class="breadcrumb-item active">Example 4: Using a real dataset (HSC)</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/compiled-examples/Example4_Fit_Halo_mass_to_HSC_data.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -134,10 +135,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="using-clmm-on-real-datasets">
-<h1>Using CLMM on Real Datasets<a class="headerlink" href="#using-clmm-on-real-datasets" title="Permalink to this heading"></a></h1>
+  <section id="example-4-using-a-real-dataset-hsc">
+<h1>Example 4: Using a real dataset (HSC)<a class="headerlink" href="#example-4-using-a-real-dataset-hsc" title="Permalink to this heading"></a></h1>
+<section id="fit-halo-mass-to-shear-profile-using-hsc-data">
+<h2>Fit halo mass to shear profile using HSC data<a class="headerlink" href="#fit-halo-mass-to-shear-profile-using-hsc-data" title="Permalink to this heading"></a></h2>
 <p><em>the LSST-DESC CLMM team</em></p>
-<p><code class="docutils literal notranslate"><span class="pre">(Note:</span> <span class="pre">this</span> <span class="pre">page</span> <span class="pre">was</span> <span class="pre">not</span> <span class="pre">generated</span> <span class="pre">using</span> <span class="pre">the</span> <span class="pre">latest</span> <span class="pre">CLMM</span> <span class="pre">version!)</span></code></p>
 <p>This notebook can be run on NERSC.</p>
 <p>Here we demonstrate how to run CLMM on real observational datasets. As
 an example, we use the data from the Hyper Suprime-Cam Subaru Strategic
@@ -396,7 +398,7 @@ webpage. To unpress the file “.gz”, use “gunzip” or “gzip -d”.</p>
 catalog, and adjust column names to prepare for the analysis in CLMM.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>
 <span class="c1"># Assume the downloaded catalog is at this path:</span>
-<span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;../../../197376_GAMMA09H.csv&quot;</span>
+<span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;197376_GAMMA09H.csv&quot;</span>
 <span class="n">catalog</span> <span class="o">=</span> <span class="n">filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;.pkl&#39;</span><span class="p">)</span>
 <span class="k">if</span> <span class="ow">not</span> <span class="n">Path</span><span class="p">(</span><span class="n">catalog</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
     <span class="n">data_0</span> <span class="o">=</span> <span class="n">Table</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;ascii.csv&quot;</span><span class="p">)</span>
@@ -405,8 +407,8 @@ catalog, and adjust column names to prepare for the analysis in CLMM.</p>
     <span class="n">data_0</span> <span class="o">=</span> <span class="n">pkl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">catalog</span><span class="p">,</span><span class="s2">&quot;rb&quot;</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">8.06</span> <span class="n">s</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mf">13.8</span> <span class="n">s</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">21.9</span> <span class="n">s</span>
-<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mf">25.5</span> <span class="n">s</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mi">191</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mf">1.02</span> <span class="n">s</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">1.21</span> <span class="n">s</span>
+<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mf">1.94</span> <span class="n">s</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">data_0</span><span class="o">.</span><span class="n">colnames</span><span class="p">)</span>
@@ -557,37 +559,10 @@ catalog, and adjust column names to prepare for the analysis in CLMM.</p>
 <span class="n">gal_id</span> <span class="o">=</span> <span class="n">obs_galaxies</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="c1"># Galaxies ID</span>
 </pre></div>
 </div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Shear profile</span>
-<span class="c1"># Using/testing clmm.dataops functions (details are in the notebook for Paper V1.0).</span>
-<span class="c1"># This step is for testing the CLMM functionalities; we will not use the result in later steps.</span>
-
-<span class="kn">import</span> <span class="nn">clmm.dataops</span> <span class="k">as</span> <span class="nn">da</span>
-<span class="c1"># Convert elipticities into shears.</span>
-<span class="n">gal_ang_dist</span><span class="p">,</span> <span class="n">gal_gt</span><span class="p">,</span> <span class="n">gal_gx</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">compute_tangential_and_cross_components</span><span class="p">(</span><span class="n">cluster_ra</span><span class="p">,</span> <span class="n">cluster_dec</span><span class="p">,</span>
-                                                                          <span class="n">gal_ra</span><span class="p">,</span> <span class="n">gal_dec</span><span class="p">,</span>
-                                                                          <span class="n">gal_e1</span><span class="p">,</span> <span class="n">gal_e2</span><span class="p">,</span>
-                                                                          <span class="p">)</span>
-
-<span class="c1"># Measure profile.</span>
-<span class="n">field_size</span> <span class="o">=</span> <span class="mi">6</span> <span class="c1"># Mpc box size</span>
-
-<span class="n">profile</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">make_radial_profile</span><span class="p">([</span><span class="n">gal_gt</span><span class="p">,</span> <span class="n">gal_gx</span><span class="p">,</span> <span class="n">gal_z</span><span class="p">],</span>
-                                 <span class="n">gal_ang_dist</span><span class="p">,</span> <span class="s2">&quot;radians&quot;</span><span class="p">,</span> <span class="s2">&quot;Mpc&quot;</span><span class="p">,</span>
-                                 <span class="n">bins</span><span class="o">=</span><span class="n">da</span><span class="o">.</span><span class="n">make_bins</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">field_size</span><span class="o">/</span><span class="mf">2.</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span>
-                                 <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
-                                 <span class="n">z_lens</span><span class="o">=</span><span class="n">cluster_z</span><span class="p">,</span>
-                                 <span class="n">include_empty_bins</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Profile table has columns: </span><span class="si">{</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">profile</span><span class="o">.</span><span class="n">colnames</span><span class="p">)</span><span class="si">}</span><span class="s1">,&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;where p_(0, 1, 2) = (gt, gx, z)&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Profile</span> <span class="n">table</span> <span class="n">has</span> <span class="n">columns</span><span class="p">:</span> <span class="n">radius_min</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">radius_max</span><span class="p">,</span> <span class="n">p_0</span><span class="p">,</span> <span class="n">p_0_err</span><span class="p">,</span> <span class="n">p_1</span><span class="p">,</span> <span class="n">p_1_err</span><span class="p">,</span> <span class="n">p_2</span><span class="p">,</span> <span class="n">p_2_err</span><span class="p">,</span> <span class="n">n_src</span><span class="p">,</span>
-<span class="n">where</span> <span class="n">p_</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="n">gt</span><span class="p">,</span> <span class="n">gx</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
-</pre></div>
-</div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Using the GalaxyCluster object.</span>
 
 <span class="kn">import</span> <span class="nn">clmm</span>
+<span class="kn">import</span> <span class="nn">clmm.dataops</span> <span class="k">as</span> <span class="nn">da</span>
 <span class="kn">from</span> <span class="nn">clmm.utils</span> <span class="kn">import</span> <span class="n">convert_units</span>
 
 <span class="c1"># Create a GCData with the galaxies.</span>
@@ -605,7 +580,7 @@ catalog, and adjust column names to prepare for the analysis in CLMM.</p>
 <span class="c1"># Measure profile and add profile table to the cluster.</span>
 <span class="n">seps</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span><span class="n">cluster</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;theta&#39;</span><span class="p">],</span> <span class="s1">&#39;radians&#39;</span><span class="p">,</span> <span class="s1">&#39;Mpc&#39;</span><span class="p">,</span> <span class="n">cluster</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">)</span>
 
-<span class="n">cluster</span><span class="o">.</span><span class="n">make_radial_profile</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="n">da</span><span class="o">.</span><span class="n">make_bins</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">field_size</span><span class="o">/</span><span class="mf">2.</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;evenlog10width&#39;</span><span class="p">),</span>
+<span class="n">cluster</span><span class="o">.</span><span class="n">make_radial_profile</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="n">da</span><span class="o">.</span><span class="n">make_bins</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">3.</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;evenlog10width&#39;</span><span class="p">),</span>
                             <span class="n">bin_units</span><span class="o">=</span><span class="s2">&quot;Mpc&quot;</span><span class="p">,</span>
                             <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
                             <span class="n">include_empty_bins</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -618,27 +593,21 @@ catalog, and adjust column names to prepare for the analysis in CLMM.</p>
 <span class="p">[</span><span class="s1">&#39;radius_min&#39;</span><span class="p">,</span> <span class="s1">&#39;radius&#39;</span><span class="p">,</span> <span class="s1">&#39;radius_max&#39;</span><span class="p">,</span> <span class="s1">&#39;gt&#39;</span><span class="p">,</span> <span class="s1">&#39;gt_err&#39;</span><span class="p">,</span> <span class="s1">&#39;gx&#39;</span><span class="p">,</span> <span class="s1">&#39;gx_err&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;z_err&#39;</span><span class="p">,</span> <span class="s1">&#39;n_src&#39;</span><span class="p">,</span> <span class="s1">&#39;gal_id&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
-<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Paper_v1.0&#39;</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">paper_formating</span> <span class="kn">import</span> <span class="n">prep_plot</span>
-<span class="n">fig</span> <span class="o">=</span> <span class="n">prep_plot</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 <span class="n">errorbar_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span>
-    <span class="n">markersize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">elinewidth</span><span class="o">=</span><span class="mf">.5</span><span class="p">,</span> <span class="n">capthick</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span>
+                       <span class="n">markersize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">elinewidth</span><span class="o">=</span><span class="mf">.5</span><span class="p">,</span> <span class="n">capthick</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">cluster</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="n">cluster</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;gt&#39;</span><span class="p">],</span>
-             <span class="n">cluster</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;gt_err&#39;</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">errorbar_kwargs</span><span class="p">)</span>
+            <span class="n">cluster</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;gt_err&#39;</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">errorbar_kwargs</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;r [Mpc]&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$g_t$&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">lw</span><span class="o">=</span><span class="mf">.3</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">minorticks_on</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;minor&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">.1</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">3.543307086614173</span><span class="p">,</span> <span class="mf">3.543307086614173</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">Figure</span> <span class="n">size</span> <span class="mi">432</span><span class="n">x288</span> <span class="k">with</span> <span class="mi">0</span> <span class="n">Axes</span><span class="o">&gt;</span>
-</pre></div>
-</div>
-<img alt="../_images/Example4_Fit_Halo_mass_to_HSC_data_17_2.png" src="../_images/Example4_Fit_Halo_mass_to_HSC_data_17_2.png" />
+<img alt="../_images/Example4_Fit_Halo_mass_to_HSC_data_16_0.png" src="../_images/Example4_Fit_Halo_mass_to_HSC_data_16_0.png" />
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Theoretical predictions</span>
 
 <span class="c1"># Model relying on the overall redshift distribution of the sources (WtG III Applegate et al. 2014).</span>
@@ -647,42 +616,26 @@ catalog, and adjust column names to prepare for the analysis in CLMM.</p>
 <span class="c1"># For the mass scale, a typical c-M relation (e.g. Child et al. 2018) would give c~3 though.</span>
 <span class="c1"># And we have not considered a c-M relation in the fitting.</span>
 <span class="n">z_inf</span> <span class="o">=</span> <span class="mi">1000</span>
-<span class="n">dl_inf</span> <span class="o">=</span> <span class="n">cosmo</span><span class="o">.</span><span class="n">eval_da_z1z2</span><span class="p">(</span><span class="n">cluster_z</span><span class="p">,</span> <span class="n">z_inf</span><span class="p">)</span>
-<span class="n">d_inf</span> <span class="o">=</span> <span class="n">cosmo</span><span class="o">.</span><span class="n">eval_da</span><span class="p">(</span><span class="n">z_inf</span><span class="p">)</span>
 <span class="n">concentration</span> <span class="o">=</span> <span class="mf">4.</span>
 
-<span class="k">def</span> <span class="nf">betas</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
-    <span class="n">dls</span> <span class="o">=</span> <span class="n">cosmo</span><span class="o">.</span><span class="n">eval_da_z1z2</span><span class="p">(</span><span class="n">cluster_z</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
-    <span class="n">ds</span> <span class="o">=</span> <span class="n">cosmo</span><span class="o">.</span><span class="n">eval_da</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">dls</span> <span class="o">*</span> <span class="n">d_inf</span> <span class="o">/</span> <span class="p">(</span><span class="n">ds</span> <span class="o">*</span> <span class="n">dl_inf</span><span class="p">)</span>
+<span class="n">bs_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">clmm</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">compute_beta_s</span><span class="p">(</span><span class="n">cluster</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">],</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">z_inf</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">))</span>
+<span class="n">bs2_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">clmm</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">compute_beta_s</span><span class="p">(</span><span class="n">cluster</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">],</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">z_inf</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
 
 <span class="k">def</span> <span class="nf">predict_reduced_tangential_shear_redshift_distribution</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">logm</span><span class="p">):</span>
 
-    <span class="n">bs_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">betas</span><span class="p">(</span><span class="n">cluster</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]))</span>
-    <span class="n">bs2_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">betas</span><span class="p">(</span><span class="n">cluster</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-
-    <span class="n">gamma_t_inf</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">compute_tangential_shear</span><span class="p">(</span>
-            <span class="n">r_proj</span><span class="o">=</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="c1"># Radial component of the profile</span>
-            <span class="n">mdelta</span><span class="o">=</span><span class="mi">10</span><span class="o">**</span><span class="n">logm</span><span class="p">,</span> <span class="c1"># Mass of the cluster [M_sun]</span>
-            <span class="n">cdelta</span><span class="o">=</span><span class="n">concentration</span><span class="p">,</span> <span class="c1"># Concentration of the cluster</span>
-            <span class="n">z_cluster</span><span class="o">=</span><span class="n">cluster_z</span><span class="p">,</span> <span class="c1"># Redshift of the cluster</span>
-            <span class="n">z_source</span><span class="o">=</span><span class="n">z_inf</span><span class="p">,</span> <span class="c1"># Redshift value at infinity</span>
-            <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
-            <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
-            <span class="n">massdef</span><span class="o">=</span><span class="s1">&#39;critical&#39;</span><span class="p">,</span> <span class="c1"># For M200c</span>
-            <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">)</span>
-    <span class="n">convergence_inf</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">compute_convergence</span><span class="p">(</span>
-            <span class="n">r_proj</span><span class="o">=</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="c1"># Radial component of the profile</span>
-            <span class="n">mdelta</span><span class="o">=</span><span class="mi">10</span><span class="o">**</span><span class="n">logm</span><span class="p">,</span> <span class="c1"># Mass of the cluster [M_sun]</span>
-            <span class="n">cdelta</span><span class="o">=</span><span class="n">concentration</span><span class="p">,</span> <span class="c1"># Concentration of the cluster</span>
-            <span class="n">z_cluster</span><span class="o">=</span><span class="n">cluster_z</span><span class="p">,</span> <span class="c1"># Redshift of the cluster</span>
-            <span class="n">z_source</span><span class="o">=</span><span class="n">z_inf</span><span class="p">,</span> <span class="c1"># Redshift value at infinity</span>
-            <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
-            <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
-            <span class="n">massdef</span><span class="o">=</span><span class="s1">&#39;critical&#39;</span><span class="p">,</span>
-            <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">bs_mean</span><span class="o">*</span><span class="n">gamma_t_inf</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="p">(</span><span class="n">bs2_mean</span><span class="o">/</span><span class="n">bs_mean</span><span class="p">)</span><span class="o">*</span><span class="n">convergence_inf</span><span class="p">)</span>
+    <span class="n">gt</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">compute_reduced_tangential_shear</span><span class="p">(</span>
+        <span class="n">r_proj</span><span class="o">=</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="c1"># Radial component of the profile</span>
+        <span class="n">mdelta</span><span class="o">=</span><span class="mi">10</span><span class="o">**</span><span class="n">logm</span><span class="p">,</span> <span class="c1"># Mass of the cluster [M_sun]</span>
+        <span class="n">cdelta</span><span class="o">=</span><span class="n">concentration</span><span class="p">,</span> <span class="c1"># Concentration of the cluster</span>
+        <span class="n">z_cluster</span><span class="o">=</span><span class="n">cluster_z</span><span class="p">,</span> <span class="c1"># Redshift of the cluster</span>
+        <span class="n">z_source</span><span class="o">=</span><span class="p">(</span><span class="n">bs_mean</span><span class="p">,</span> <span class="n">bs2_mean</span><span class="p">),</span> <span class="c1"># tuple of (bs_mean, bs2_mean)</span>
+        <span class="n">z_src_info</span><span class="o">=</span><span class="s1">&#39;beta&#39;</span><span class="p">,</span>
+        <span class="n">approx</span><span class="o">=</span><span class="s1">&#39;order1&#39;</span><span class="p">,</span>
+        <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
+        <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+        <span class="n">massdef</span><span class="o">=</span><span class="s1">&#39;critical&#39;</span><span class="p">,</span>
+        <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">gt</span>
 
 
 <span class="c1"># Model using individual redshift and radial information, to compute the averaged shear in each radial bin, based on the galaxies actually present in that bin.</span>
@@ -737,15 +690,15 @@ catalog, and adjust column names to prepare for the analysis in CLMM.</p>
 <span class="n">fit_individual_redshift</span> <span class="o">=</span> <span class="n">fit_mass</span><span class="p">(</span><span class="n">predict_reduced_tangential_shear_individual_redshift</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mi">960</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mf">15.4</span> <span class="n">ms</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mi">976</span> <span class="n">ms</span>
-<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mi">957</span> <span class="n">ms</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mi">797</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mi">0</span> <span class="n">ns</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mi">797</span> <span class="n">ms</span>
+<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mi">796</span> <span class="n">ms</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Best fit mass for N(z) model                     = </span><span class="si">{</span><span class="n">fit_redshift_distribution</span><span class="p">[</span><span class="s2">&quot;m&quot;</span><span class="p">]</span><span class="si">:</span><span class="s1">.3e</span><span class="si">}</span><span class="s1"> +/- </span><span class="si">{</span><span class="n">fit_redshift_distribution</span><span class="p">[</span><span class="s2">&quot;m_err&quot;</span><span class="p">]</span><span class="si">:</span><span class="s1">.3e</span><span class="si">}</span><span class="s1"> Msun&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Best fit mass for individual redshift and radius = </span><span class="si">{</span><span class="n">fit_individual_redshift</span><span class="p">[</span><span class="s2">&quot;m&quot;</span><span class="p">]</span><span class="si">:</span><span class="s1">.3e</span><span class="si">}</span><span class="s1"> +/- </span><span class="si">{</span><span class="n">fit_individual_redshift</span><span class="p">[</span><span class="s2">&quot;m_err&quot;</span><span class="p">]</span><span class="si">:</span><span class="s1">.3e</span><span class="si">}</span><span class="s1"> Msun&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Best</span> <span class="n">fit</span> <span class="n">mass</span> <span class="k">for</span> <span class="n">N</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="n">model</span>                     <span class="o">=</span> <span class="mf">2.110e+15</span> <span class="o">+/-</span> <span class="mf">4.237e+14</span> <span class="n">Msun</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Best</span> <span class="n">fit</span> <span class="n">mass</span> <span class="k">for</span> <span class="n">N</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="n">model</span>                     <span class="o">=</span> <span class="mf">2.137e+15</span> <span class="o">+/-</span> <span class="mf">4.397e+14</span> <span class="n">Msun</span>
 <span class="n">Best</span> <span class="n">fit</span> <span class="n">mass</span> <span class="k">for</span> <span class="n">individual</span> <span class="n">redshift</span> <span class="ow">and</span> <span class="n">radius</span> <span class="o">=</span> <span class="mf">2.358e+15</span> <span class="o">+/-</span> <span class="mf">4.764e+14</span> <span class="n">Msun</span>
 </pre></div>
 </div>
@@ -770,16 +723,17 @@ catalog, and adjust column names to prepare for the analysis in CLMM.</p>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Reduced chi2 (individual (R,z) model) = </span><span class="si">{</span><span class="n">chi2_individual_redshift_dof</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Reduced</span> <span class="n">chi2</span> <span class="p">(</span><span class="n">N</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="n">model</span><span class="p">)</span> <span class="o">=</span> <span class="mf">2.4530026509176</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Reduced</span> <span class="n">chi2</span> <span class="p">(</span><span class="n">N</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="n">model</span><span class="p">)</span> <span class="o">=</span> <span class="mf">2.4805403526932137</span>
 <span class="n">Reduced</span> <span class="n">chi2</span> <span class="p">(</span><span class="n">individual</span> <span class="p">(</span><span class="n">R</span><span class="p">,</span><span class="n">z</span><span class="p">)</span> <span class="n">model</span><span class="p">)</span> <span class="o">=</span> <span class="mf">2.6209850216326234</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">matplotlib.ticker</span> <span class="kn">import</span> <span class="n">MultipleLocator</span>
-<span class="n">fig</span> <span class="o">=</span> <span class="n">prep_plot</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span> <span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 <span class="n">gt_ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">((</span><span class="mf">.25</span><span class="p">,</span> <span class="mf">.42</span><span class="p">,</span> <span class="mf">.7</span><span class="p">,</span> <span class="mf">.55</span><span class="p">))</span>
-<span class="n">gt_ax</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">data_for_fit</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span><span class="n">data_for_fit</span><span class="p">[</span><span class="s1">&#39;gt&#39;</span><span class="p">],</span> <span class="n">data_for_fit</span><span class="p">[</span><span class="s1">&#39;gt_err&#39;</span><span class="p">],</span>
-             <span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span>
-            <span class="o">**</span><span class="n">errorbar_kwargs</span><span class="p">)</span>
+<span class="n">gt_ax</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">data_for_fit</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span>
+               <span class="n">data_for_fit</span><span class="p">[</span><span class="s1">&#39;gt&#39;</span><span class="p">],</span>
+               <span class="n">data_for_fit</span><span class="p">[</span><span class="s1">&#39;gt_err&#39;</span><span class="p">],</span>
+               <span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">errorbar_kwargs</span><span class="p">)</span>
 
 <span class="c1"># Points in grey have not been used for the fit.</span>
 <span class="n">gt_ax</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">cluster</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">][</span><span class="o">~</span><span class="n">mask_for_fit</span><span class="p">],</span> <span class="n">cluster</span><span class="o">.</span><span class="n">profile</span><span class="p">[</span><span class="s1">&#39;gt&#39;</span><span class="p">][</span><span class="o">~</span><span class="n">mask_for_fit</span><span class="p">],</span>
@@ -787,30 +741,36 @@ catalog, and adjust column names to prepare for the analysis in CLMM.</p>
                <span class="n">c</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">,</span><span class="o">**</span><span class="n">errorbar_kwargs</span><span class="p">)</span>
 
 <span class="n">pow10</span> <span class="o">=</span> <span class="mi">15</span>
-<span class="n">mlabel</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">name</span><span class="p">,</span> <span class="n">fits</span><span class="p">:</span> <span class="sa">fr</span><span class="s1">&#39;$M_</span><span class="se">{{</span><span class="s1">fit</span><span class="se">}}</span><span class="s1">^</span><span class="se">{{</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="se">}}</span><span class="s1"> = </span><span class="si">{</span><span class="n">fits</span><span class="p">[</span><span class="s2">&quot;m&quot;</span><span class="p">]</span><span class="o">/</span><span class="mi">10</span><span class="o">**</span><span class="n">pow10</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">\pm</span><span class="si">{</span><span class="n">fits</span><span class="p">[</span><span class="s2">&quot;m_err&quot;</span><span class="p">]</span><span class="o">/</span><span class="mi">10</span><span class="o">**</span><span class="n">pow10</span><span class="si">:</span><span class="s1">.3f</span><span class="si">}</span><span class="s1">\times 10^</span><span class="se">{{</span><span class="si">{</span><span class="n">pow10</span><span class="si">}</span><span class="se">}}</span><span class="s1"> M_\odot$&#39;</span>
+<span class="n">mlabel</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">name</span><span class="p">,</span> <span class="n">fits</span><span class="p">:</span> <span class="p">(</span>
+    <span class="sa">fr</span><span class="s1">&#39;$M_</span><span class="se">{{</span><span class="s1">fit</span><span class="se">}}</span><span class="s1">^</span><span class="se">{{</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="se">}}</span><span class="s1"> = &#39;</span>
+    <span class="sa">fr</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">fits</span><span class="p">[</span><span class="s2">&quot;m&quot;</span><span class="p">]</span><span class="o">/</span><span class="mi">10</span><span class="o">**</span><span class="n">pow10</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">\pm&#39;</span>
+    <span class="sa">fr</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">fits</span><span class="p">[</span><span class="s2">&quot;m_err&quot;</span><span class="p">]</span><span class="o">/</span><span class="mi">10</span><span class="o">**</span><span class="n">pow10</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="sa">fr</span><span class="s1">&#39;\times 10^</span><span class="se">{{</span><span class="si">{</span><span class="n">pow10</span><span class="si">}</span><span class="se">}}</span><span class="s1"> M_\odot$&#39;</span><span class="p">)</span>
 
 <span class="c1"># The model for the 1st method.</span>
 <span class="n">gt_ax</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">data_for_fit</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="n">gt_redshift_distribution</span><span class="p">,</span><span class="s1">&#39;-C1&#39;</span><span class="p">,</span>
-           <span class="n">label</span><span class="o">=</span><span class="n">mlabel</span><span class="p">(</span><span class="s1">&#39;N(z)&#39;</span><span class="p">,</span> <span class="n">fit_redshift_distribution</span><span class="p">),</span>
-             <span class="n">lw</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span>
-<span class="n">gt_ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">data_for_fit</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="o">*</span><span class="n">gt_err_redshift_distribution</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.2</span><span class="p">)</span>
+             <span class="n">label</span><span class="o">=</span><span class="n">mlabel</span><span class="p">(</span><span class="s1">&#39;N(z)&#39;</span><span class="p">,</span> <span class="n">fit_redshift_distribution</span><span class="p">),</span> <span class="n">lw</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span>
+<span class="n">gt_ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">data_for_fit</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="o">*</span><span class="n">gt_err_redshift_distribution</span><span class="p">,</span>
+                   <span class="n">lw</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.2</span><span class="p">)</span>
 
 <span class="c1"># The model for the 2nd method.</span>
 <span class="n">gt_ax</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">data_for_fit</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="n">gt_individual_redshift</span><span class="p">,</span><span class="s1">&#39;-C2&#39;</span><span class="p">,</span>
            <span class="n">label</span><span class="o">=</span><span class="n">mlabel</span><span class="p">(</span><span class="s1">&#39;z,R&#39;</span><span class="p">,</span> <span class="n">fit_individual_redshift</span><span class="p">),</span>
              <span class="n">lw</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span>
-<span class="n">gt_ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">data_for_fit</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="o">*</span><span class="n">gt_err_individual_redshift</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C2&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.2</span><span class="p">)</span>
+<span class="n">gt_ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">data_for_fit</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="o">*</span><span class="n">gt_err_individual_redshift</span><span class="p">,</span>
+                   <span class="n">lw</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C2&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.2</span><span class="p">)</span>
 
 <span class="c1"># The value in the reference paper.</span>
 <span class="n">gt_ax</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">data_for_fit</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="n">gt_paper1</span><span class="p">,</span><span class="s1">&#39;-C3&#39;</span><span class="p">,</span>
-           <span class="n">label</span><span class="o">=</span><span class="n">mlabel</span><span class="p">(</span><span class="s1">&#39;paper; N(z)&#39;</span><span class="p">,</span> <span class="n">paper_value</span><span class="p">),</span>
-             <span class="n">lw</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span>
-<span class="n">gt_ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">data_for_fit</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="o">*</span><span class="n">gt_err_paper1</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C3&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.2</span><span class="p">)</span>
+             <span class="n">label</span><span class="o">=</span><span class="n">mlabel</span><span class="p">(</span><span class="s1">&#39;paper; N(z)&#39;</span><span class="p">,</span> <span class="n">paper_value</span><span class="p">),</span> <span class="n">lw</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span>
+<span class="n">gt_ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">data_for_fit</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="o">*</span><span class="n">gt_err_paper1</span><span class="p">,</span>
+                   <span class="n">lw</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C3&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.2</span><span class="p">)</span>
 
 <span class="n">gt_ax</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">data_for_fit</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="n">gt_paper2</span><span class="p">,</span><span class="s1">&#39;-C4&#39;</span><span class="p">,</span>
            <span class="n">label</span><span class="o">=</span><span class="n">mlabel</span><span class="p">(</span><span class="s1">&#39;paper; Z,R&#39;</span><span class="p">,</span> <span class="n">paper_value</span><span class="p">),</span>
              <span class="n">lw</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span>
-<span class="n">gt_ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">data_for_fit</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="o">*</span><span class="n">gt_err_paper2</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.2</span><span class="p">)</span>
+<span class="n">gt_ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">data_for_fit</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="o">*</span><span class="n">gt_err_paper2</span><span class="p">,</span>
+                   <span class="n">lw</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C4&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.2</span><span class="p">)</span>
 
 <span class="n">gt_ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$g_t$&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">8</span><span class="p">)</span>
 <span class="n">gt_ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
@@ -827,12 +787,14 @@ catalog, and adjust column names to prepare for the analysis in CLMM.</p>
 
 
 <span class="n">res_ax</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">data_for_fit</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="n">data_for_fit</span><span class="p">[</span><span class="s1">&#39;gt&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">gt_redshift_distribution</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span>
-                <span class="n">yerr</span><span class="o">=</span><span class="n">data_for_fit</span><span class="p">[</span><span class="s1">&#39;gt_err&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">gt_redshift_distribution</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">errorbar_kwargs2</span><span class="p">)</span>
+                <span class="n">yerr</span><span class="o">=</span><span class="n">data_for_fit</span><span class="p">[</span><span class="s1">&#39;gt_err&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">gt_redshift_distribution</span><span class="p">,</span>
+                <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">errorbar_kwargs2</span><span class="p">)</span>
 <span class="n">errorbar_kwargs2</span><span class="p">[</span><span class="s1">&#39;markersize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span>
 <span class="n">errorbar_kwargs2</span><span class="p">[</span><span class="s1">&#39;markeredgewidth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">.5</span>
 
 <span class="n">res_ax</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">data_for_fit</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">delta</span><span class="p">,</span> <span class="n">data_for_fit</span><span class="p">[</span><span class="s1">&#39;gt&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">gt_individual_redshift</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span>
-                <span class="n">yerr</span><span class="o">=</span><span class="n">data_for_fit</span><span class="p">[</span><span class="s1">&#39;gt_err&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">gt_individual_redshift</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;C2&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">errorbar_kwargs2</span><span class="p">)</span>
+                <span class="n">yerr</span><span class="o">=</span><span class="n">data_for_fit</span><span class="p">[</span><span class="s1">&#39;gt_err&#39;</span><span class="p">]</span><span class="o">/</span><span class="n">gt_individual_redshift</span><span class="p">,</span>
+                <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;C2&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">errorbar_kwargs2</span><span class="p">)</span>
 <span class="n">res_ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$R$ [Mpc]&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">8</span><span class="p">)</span>
 
 <span class="n">res_ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$g_t^</span><span class="si">{data}</span><span class="s1">/g_t^{mod.}-1$&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">8</span><span class="p">)</span>
@@ -843,18 +805,17 @@ catalog, and adjust column names to prepare for the analysis in CLMM.</p>
 
 <span class="n">res_ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 <span class="n">res_ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="p">(</span><span class="n">gt_ax</span><span class="p">,</span> <span class="n">res_ax</span><span class="p">):</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">lw</span><span class="o">=</span><span class="mf">.3</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">minorticks_on</span><span class="p">()</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;minor&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">.1</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">3.543307086614173</span><span class="p">,</span> <span class="mf">3.543307086614173</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">Figure</span> <span class="n">size</span> <span class="mi">1800</span><span class="n">x1200</span> <span class="k">with</span> <span class="mi">0</span> <span class="n">Axes</span><span class="o">&gt;</span>
-</pre></div>
-</div>
-<img alt="../_images/Example4_Fit_Halo_mass_to_HSC_data_25_2.png" src="../_images/Example4_Fit_Halo_mass_to_HSC_data_25_2.png" />
+<img alt="../_images/Example4_Fit_Halo_mass_to_HSC_data_24_0.png" src="../_images/Example4_Fit_Halo_mass_to_HSC_data_24_0.png" />
 <section id="reference">
-<h2>Reference<a class="headerlink" href="#reference" title="Permalink to this heading"></a></h2>
+<h3>Reference<a class="headerlink" href="#reference" title="Permalink to this heading"></a></h3>
 <p>Aihara, H., Arimoto, N., Armstrong, R., et al. 2018, Publications of the
 Astronomical Society of Japan, 70, S4</p>
 <p>Aihara, H., Armstrong, R., Bickerton, S., et al. 2018, Publications of
@@ -873,6 +834,7 @@ the Astronomical Society of Japan, 70, S28</p>
 Astronomical Society of Japan, 70, S27</p>
 <p>Umetsu, K., Sereno, M., Lieu, M., et al., 2020, Astrophysical Journal,
 890, 148</p>
+</section>
 </section>
 </section>
 

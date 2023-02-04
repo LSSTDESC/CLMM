@@ -46,7 +46,7 @@ Make sure we know which version we’re using
 
 .. parsed-literal::
 
-    '1.5.1'
+    '1.5.3'
 
 
 
@@ -99,8 +99,8 @@ Quick test of all theory functionality
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.1-py3.11.egg/clmm/theory/generic.py:72: UserWarning: Magnification is negative for certain radii,                     returning nan for magnification bias in this case.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.1-py3.11.egg/clmm/theory/generic.py:74: RuntimeWarning: invalid value encountered in power
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/theory/generic.py:72: UserWarning: Magnification is negative for certain radii,                     returning nan for magnification bias in this case.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/theory/generic.py:74: RuntimeWarning: invalid value encountered in power
 
 
 Plot the predicted profiles
