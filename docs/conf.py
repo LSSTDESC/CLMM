@@ -72,7 +72,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store',
                     'api/clmm.rst', 'source/index_body.rst',
                     'api/clmm.cluster_toolkit_patches.rst',
                     'api/clmm.modbackend.*',
-                    '.precompiled-fixed-examples/*',
+                    '.*/*',
 ]
 
 # Some style options
