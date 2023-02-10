@@ -946,3 +946,22 @@ def _draw_random_points_from_tab_distribution(x_tab, pdf_tab, nobj=1, xmin=None,
     # get the corresponding samples
     samples = inv_cdf(np.random.random(nobj)*(cdf_xmax-cdf_xmin)+cdf_xmin)
     return samples
+
+def gaussian(value, mean, scatter):
+    """Normal distribution.
+
+    Parameters
+    ----------
+    value : array-like
+        Values for which to evaluate gaussian.
+    mean : float
+        Mean value of normal distribution
+    scatter : float
+        Scatter of normal distribution
+
+    Returns
+    -------
+    numpy.ndarray
+        Gaussian values at `value`
+    """
+    return np.exp(-0.5*(value-mean)**2/scatter**2)/np.sqrt(2*np.pi*scatter**2)
