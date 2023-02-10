@@ -1,48 +1,53 @@
 name: Build and Check
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
 
 jobs:
   build-gcc-ubuntu:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Install prereq using apt
-      run: sudo apt-get update; sudo apt-get install libgsl0-dev swig3.0 libfftw3-dev gobject-introspection python-gobject gfortran libmpfr-dev libhdf5-dev liblapack-dev libnlopt-dev libcfitsio-dev gir1.2-glib-2.0 libgirepository1.0-dev python3-gi python3-numpy python3-matplotlib python3-setuptools python3-pytest-cov python3-sphinx python3-sphinx-rtd-theme python3-nbconvert python3-jupyter-client jupyter-client jupyter-nbconvert sphinx-common pandoc -y
+    - uses: actions/checkout@v3
+    - uses: conda-incubator/setup-miniconda@v2
+      with:
+        installer-url: 'https://repo.anaconda.com/miniconda/Miniconda3-py39_4.12.0-Linux-x86_64.sh'
+    - name: Install prereq using conda
+      run: |
+        conda install -c conda-forge gobject-introspection pygobject python_abi=3.9=3_cp39 cffi=1.15.1
+        echo "$CONDA/bin" >> $GITHUB_PATH
+    - name: Install prereq using pip
+      run: |
+        pip install -r requirements.txt
+    - name: Install the package
+      run: |
+        pip install .
+    - name: Install NumCosmo from conda-forge
+      run: |
+        conda install -c conda-forge numcosmo
     - name: Install cluster_toolkit from source
       run: |
         git clone https://github.com/tmcclintock/cluster_toolkit.git
         cd cluster_toolkit
-        sudo python3 setup.py install
+        pip install .
     - name: Install CCL from source
       run: |
+        conda install -c conda-forge cmake swig
         git clone https://github.com/LSSTDESC/CCL
         cd CCL
-        sudo python3 setup.py install
-    - name: Install NumCosmo from source
-      run: |
-        wget https://github.com/NumCosmo/NumCosmo/releases/download/v0.15.2/numcosmo-0.15.2.tar.gz
-        tar xf numcosmo-0.15.2.tar.gz
-        cd numcosmo-0.15.2
-        ./configure --prefix=/usr
-        make -j4
-        sudo make install
-    - name: Install prereq using pip
-      run: |        
-        python3 numcosmo-0.15.2/examples/example_simple.py
-        sudo pip3 install -r requirements.txt
-    - name: Install the package
-      run: sudo python3 setup.py install
+        pip install .
     - name: Run the unit tests
       run: |
-        pytest-3 tests/ --ignore=cluster_toolkit/tests --cov=clmm/
+        pip install pytest pytest-cov
+        pytest tests/ --ignore=cluster_toolkit/tests --cov=clmm/
       env:
         DISPLAY: test
     - name: Install Sphinx prereq
       run: |
-        sudo pip3 install sphinx_rtd_theme -U
+        conda install sphinx sphinx_rtd_theme nbconvert pandoc ipython ipython_genutils
     - name: Run the docs
       run: |
         make -C docs/ html
@@ -50,5 +55,5 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        sudo pip3 install coveralls
+        pip install coveralls
         coveralls --service=github

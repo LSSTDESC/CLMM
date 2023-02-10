@@ -71,7 +71,9 @@ language = 'en'
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store',
                     'api/clmm.rst', 'source/index_body.rst',
                     'api/clmm.cluster_toolkit_patches.rst',
-                    'api/clmm.modbackend.*']
+                    'api/clmm.modbackend.*',
+                    '.precompiled-fixed-examples/*',
+]
 
 # Some style options
 highlight_language = 'python3'
@@ -79,6 +81,7 @@ pygments_style = 'sphinx'
 todo_include_todos = True
 add_function_parentheses = True
 add_module_names = True
+smartquotes = False
 
 
 # -- Options for HTML output ----------------------------------------------
@@ -119,78 +122,75 @@ napoleon_use_ivar = True
 
 # -- Load from the config file -------------------------------------------
 config = open('doc-config.ini').read().strip().split('\n')
-apilist, demofiles, examplefiles = [], [], []
-apion, demoon, exon = False, False, False
+doc_files = {
+    'APIDOC': [], 'DEMO': [],
+    'EXAMPLE': [], 'OTHER': [],
+    }
+key = None
 for entry in config:
     if not entry or entry[0] == '#':
         continue
-    if entry == 'APIDOC':
-        apion, demoon, exon = True, False, False
-        continue
-    elif entry == 'DEMO':
-        apion, demoon, exon = False, True, False
-        continue
-    elif entry == 'EXAMPLE':
-        apion, demoon, exon = False, False, True
-        continue
-    if apion:
-        apilist+= [entry]
-    elif demoon:
-        demofiles+= [entry]
-    elif exon:
-        examplefiles+= [entry]
-
-
+    elif entry in doc_files:
+        key = entry
+    else:
+        doc_files[key].append(entry)
 # -- Compile the examples into rst----------------------------------------
+run_nb = False
+
 outdir = 'compiled-examples/'
 nbconvert_opts = ['--to rst',
                   '--ExecutePreprocessor.kernel_name=python3',
-                  # '--execute',
+                   '--execute',
                   f'--output-dir {outdir}']
+nb_skip_run = [
+#    '../examples/DC2/data_and_model_demo_DC2.ipynb',
+#    '../examples/mass_fitting/Example4_Fit_Halo_mass_to_HSC_data.ipynb',
+#    '../examples/mass_fitting/Example5_Fit_Halo_mass_to_DES_data.ipynb',
+]
 
-for demo in [*demofiles, *examplefiles]:
-    com = ' '.join(['jupyter nbconvert']+nbconvert_opts+[demo])
+for lists in [v for k, v in doc_files.items() if k!='APIDOC']:
+    for demo in lists:
+        com = ' '.join(['jupyter nbconvert']+nbconvert_opts+[demo])
+        if demo in nb_skip_run or not run_nb:
+            com = com.replace(' --execute ', ' ')
+        subprocess.run(com, shell=True)
+
+for nb in nb_skip_run:
+    pref = nb.split('/')[-1].replace('.ipynb', '')
+    com = f'cp -rf .precompiled-fixed-examples/{pref}* compiled-examples/'
+    print(f'* Fix for publication (use precompiled version of {pref} from older version)')
     subprocess.run(com, shell=True)
 
 
 # -- Build index.html ----------------------------------------------------
-index_examples_toc = \
-""".. toctree::
-   :maxdepth: 1
-   :caption: Mass Fitting Examples
-
-"""
-for example in examplefiles:
-    fname = ''.join(example.split('.')[:-1]).split('/')[-1]+'.rst'
-    index_examples_toc+= f"   {outdir}{fname}\n"
-
-# This is automatic
-index_demo_toc = \
-"""
+doc_captions = {
+    'DEMO': 'Usage Demos',
+    'EXAMPLE': 'Mass Fitting Examples',
+    'OTHER': 'Other',
+    }
+index_toc = ""
+for CASE in ('DEMO', 'EXAMPLE', 'OTHER'):
+    index_toc += f"""
 .. toctree::
    :maxdepth: 1
-   :caption: Usage Demos
+   :caption: {doc_captions[CASE]}
 
 """
-for demo in demofiles:
-    fname = ''.join(demo.split('.')[:-1]).split('/')[-1]+'.rst'
-    index_demo_toc+= f"   {outdir}{fname}\n"
+    for example in doc_files[CASE]:
+        fname = ''.join(example.split('.')[:-1]).split('/')[-1]+'.rst'
+        index_toc+= f"   {outdir}{fname}\n"
 
-index_api_toc = \
+subprocess.run('cp source/index_body.rst index.rst', shell=True)
+with open('index.rst', 'a') as indexfile:
+    indexfile.write(index_toc)
+    indexfile.write(
 """
 .. toctree::
    :maxdepth: 1
    :caption: Reference
 
    api
-"""
-
-subprocess.run('cp source/index_body.rst index.rst', shell=True)
-with open('index.rst', 'a') as indexfile:
-    indexfile.write(index_demo_toc)
-    indexfile.write(index_examples_toc)
-    indexfile.write(index_api_toc)
-
+""")
 
 # -- Set up the API table of contents ------------------------------------
 apitoc = \
@@ -203,7 +203,7 @@ Information on specific functions, classes, and methods.
    :glob:
 
 """
-for onemodule in apilist:
+for onemodule in doc_files['APIDOC']:
     apitoc+= f"   api/clmm.{onemodule}.rst\n"
 with open('api.rst', 'w') as apitocfile:
     apitocfile.write(apitoc)

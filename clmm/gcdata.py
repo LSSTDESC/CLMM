@@ -1,11 +1,9 @@
 """
 Define the custom data type
 """
-from astropy.table import Table as APtable
 import warnings
-import pickle
-
 from collections import OrderedDict
+from astropy.table import Table as APtable
 
 
 class GCMetaData(OrderedDict):
@@ -26,10 +24,10 @@ class GCMetaData(OrderedDict):
     def __setitem__(self, item, value, force=False):
         if item == 'cosmo' and not force and \
             (self['cosmo'] is not None if 'cosmo' in self else False):
-            raise ValueError('cosmo must be changed via update_cosmo or update_cosmo_ext_valid method')
-        else:
-            OrderedDict.__setitem__(self, item, value)
-        return
+            raise ValueError(
+                'cosmo must be changed via update_cosmo or update_cosmo_ext_valid method')
+        OrderedDict.__setitem__(self, item, value)
+
     def __getitem__(self, item):
         """
         Make class accept all letter casings
@@ -42,10 +40,10 @@ class GCMetaData(OrderedDict):
 
 class GCData(APtable):
     """
-    GCData: A data objetc for gcdata. Right now it behaves as an astropy table,
-    with the following modifications: `__getitem__` is case independent;
-    The attribute .meta['cosmo'] is protected and can only be changed via
-    update_cosmo or update_cosmo_ext_valid methods;
+    GCData: A data objetc for gcdata. Right now it behaves as an astropy table, with the following
+    modifications: `__getitem__` is case independent;
+    The attribute .meta['cosmo'] is protected and
+    can only be changed via update_cosmo or update_cosmo_ext_valid methods;
 
     Parameters
     ----------
@@ -63,28 +61,48 @@ class GCData(APtable):
         """
         APtable.__init__(self, *args, **kwargs)
         metakwargs = kwargs['meta'] if 'meta' in kwargs else {}
-        metawkargs = {} if metakwargs is None else metakwargs
+        metakwargs = {} if metakwargs is None else metakwargs
         self.meta = GCMetaData(**metakwargs)
         # this attribute is set when source galaxies have p(z)
         self.pzpdf_info = {'type': None}
 
+    def _str_colnames(self):
+        """Colnames in comma separated str"""
+        return ', '.join(self.colnames)
+
+    def _str_meta_(self):
+        """Metadata in comma separated str"""
+        return ', '.join([f'{key}={value!r}'
+            for key, value in self.meta.items()])
+
     def __repr__(self):
         """Generates string for repr(GCData)"""
-        output = f'{self.__class__.__name__}('
-        output+= ', '.join([f'{key}={value!r}'
-            for key, value in self.meta.items()]
-                +['columns: '+', '.join(self.colnames)])
-        output+= ')'
-        return output
+        description = [self._str_meta_(), 'columns: '+self._str_colnames()]
+        return f'{self.__class__.__name__}({", ".join(description)})'
 
     def __str__(self):
         """Generates string for print(GCData)"""
-        output = f'self.__class__.__name__\n> defined by:'
-        output+= ', '.join([f'{key}={str(value)}'
-            for key, value in self.meta.items()])
-        output+= f'\n> with columns: '
-        output+= ', '.join(self.colnames)
-        return output
+        return (
+            f'{self.__class__.__name__}'
+            f'\n> defined by: {self._str_meta_()}'
+            f'\n> with columns: {self._str_colnames()}'
+            f'\n> {len(self)} objects'
+            f'\n{APtable.__str__(self)}'
+            )
+
+    def _html_table(self):
+        """Get html table for display"""
+        return '</i>'.join(APtable._repr_html_(self).split('</i>')[1:])
+
+    def _repr_html_(self):
+        """Generates string for display(GCData)"""
+        return (
+            f'<b>{self.__class__.__name__}</b>'
+            f'<br> <b>defined by:</b> {self._str_meta_()}'
+            f'<br> <b>with columns:</b> {self._str_colnames()}'
+            f'<br> {len(self)} objects'
+            f'<br> {self._html_table()}'
+            )
 
     def __getitem__(self, item):
         """
@@ -113,7 +131,8 @@ class GCData(APtable):
         cosmo: clmm.Cosmology
             Cosmology
         overwrite: bool
-            Overwrites the current cosmo metadata. If false raises Error when cosmologies are different.
+            Overwrites the current cosmo metadata. If false raises Error when cosmologies are
+            different.
 
         Returns
         -------
@@ -124,11 +143,12 @@ class GCData(APtable):
             cosmo_gcdata = gcdata.meta['cosmo']
             if cosmo_gcdata and cosmo_gcdata != cosmo_desc:
                 if overwrite:
-                    warnings.warn(f'input cosmo ({cosmo_desc}) overwriting gcdata cosmo ({cosmo_gcdata})')
+                    warnings.warn(
+                        f'input cosmo ({cosmo_desc}) overwriting gcdata cosmo ({cosmo_gcdata})')
                 else:
-                    raise TypeError(f'input cosmo ({cosmo_desc}) differs from gcdata cosmo ({cosmo_gcdata})')
+                    raise TypeError(
+                        f'input cosmo ({cosmo_desc}) differs from gcdata cosmo ({cosmo_gcdata})')
             self.meta.__setitem__('cosmo', cosmo_desc, force=True)
-        return
 
     def update_cosmo(self, cosmo, overwrite=False):
         r"""Updates cosmo metadata if not present
@@ -138,87 +158,11 @@ class GCData(APtable):
         cosmo: clmm.Cosmology
             Cosmology
         overwrite: bool
-            Overwrites the current cosmo metadata. If false raises Error when cosmologies are different.
+            Overwrites the current cosmo metadata. If false raises Error when cosmologies are
+            different.
 
         Returns
         -------
         None
         """
         self.update_cosmo_ext_valid(self, cosmo, overwrite=overwrite)
-        return
-
-"""
-Additional functions specific to clmm.GCData
-Note: Not being used anymore
-"""
-#
-#def confirm_GCData(data):
-#    """
-#    Typechecks GCData elements
-#    """
-#    # if not (type(data.creator) == str and type(data.specs) == dict and type(data.values) == astropy.Table):
-#    #     raise TypeError('GCData creator should be string, specs should be dict, values should be astropy table')
-#    pass
-#
-#
-#def read_GCData(filename):
-#    """
-#    Reads GCData from file
-#    """
-#    pass
-#
-#
-#def write_GCData(data, filename):
-#    """
-#    Writes GCData to file
-#    """
-#    pass
-#
-#
-#def check_subdict(lookup_dict, reference_dict):
-#    '''
-#    Checks if a dictionary is a subset of another dictionary, with the same keys and values
-#
-#    Parameters
-#    ----------
-#    lookup_dict: dict
-#        Subset dictionary
-#    reference_dict: dict
-#        Main dictionary
-#
-#    Returns
-#    -------
-#    bool
-#        If a lookup_dict is a subset of reference_dict
-#    '''
-#    return lookup_dict.items() <= reference_dict.items()
-#
-#
-#def find_in_datalist(lookup_specs, datalist, exact=False):
-#    '''
-#    Finds data with given specs in a datalist, allows for partial match
-#
-#    Parameters
-#    ----------
-#    datalist: list
-#        List of clmm.GCData objects to search for lookup_specs
-#    lookup_specs: dict
-#        Specs required
-#    exact: boolean, optional
-#        Does the match have to be symmetric?
-#
-#    Returns
-#    -------
-#    found: list
-#        List of clmm.GCData object data with required creator and set of specs
-#    '''
-#    found = []
-#    for data in datalist:
-#        if check_subdict(lookup_specs, data.specs) :
-#            found.append(data)
-#    if exact:
-#        for match in found:
-#            if check_subdict(match.specs, lookup_specs):
-#                return [match]
-#        found = []
-#    return found

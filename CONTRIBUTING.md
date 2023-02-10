@@ -24,7 +24,7 @@ Issues marked with the label `good first issue` are well-suited for new contribu
 Once you've [created a local copy of CLMM](INSTALL.md) on your machine, you can begin making changes to the code and submitting them for review.
 To do this, follow the following steps from within your local copy of CLMM (forked or base).
 
-1. Checkout a new branch to contain your code changes independently from the master repository.
+1. Checkout a new branch to contain your code changes independently from the `main` repository.
     [Branches](https://help.github.com/articles/about-branches/) allow you to isolate temporary development work without permanently affecting code in the repository.
     ```bash
     git checkout -b branchname
@@ -36,14 +36,14 @@ To do this, follow the following steps from within your local copy of CLMM (fork
     ```bash
     git add NAMES-OF-CHANGED-FILES
     git commit -m "Insert a descriptive commit message here"
-    git pull origin master
+    git pull origin main
     git push origin branchname
     ```
 4. You can continue to edit your code and push changes to the `branchname` remote branch.
-    Once you are satisfied with your changes, you can submit a [pull request](https://help.github.com/articles/about-pull-requests/) to merge your changes from `branchname` into the master branch.
+    Once you are satisfied with your changes, you can submit a [pull request](https://help.github.com/articles/about-pull-requests/) to merge your changes from `branchname` into the `main` branch.
     Navigate to the [CLMM Pull Requests](https://github.com/LSSTDESC/CLMM/pulls) and click 'New pull request.'
     Select `branchname`, fill out a title and description for the pull request, and, optionally, request review by a CLMM team member.
-    Once the pull request is approved, it will be merged into the CLMM master branch.
+    Once the pull request is approved, it will be merged into the CLMM `main` branch.
 
 NOTE: Code is not complete without unit tests and documentation. Please ensure that unit tests (both new and old) all pass and that docs compile successfully.
 
@@ -62,31 +62,38 @@ Once it has been added to the config file, simply run `./update_docs` from the t
 
 To review an open pull request submitted by another developer, there are several steps that you should take.
 
-1. For each new or changed file, ensure that the changes are correct, well-documented, and easy to follow. If you notice anything that can be improved, leave an inline comment (click the line of code in the review interface on Github).
-2. For any new or changed code, ensure that there are new tests in the appropriate directory. Try to come up with additional tests that either do or can break the code. If you can think of any such tests, suggest adding them in your review.
-3. Double check any relevant documentation. For any new or changed code, ensure that the documentation is accurate (i.e. references, equations, parameter descriptions).
-4. Next, checkout the branch to a location that you can run `CLMM`. From the top level package directory (the directory that has `setup.py`) install the code via `python setup.py install --user`. Then, run `pytest` to run the full testing suite.
-5. Now that tests are passing, the code likely works (assuming we have sufficient tests!) so we want to finalize the new code. We can do this by running a linter on any new or changed files `pylint {filename}`. This will take a look at the file and identify any style problems. If there are only a couple, feel free to resolve them yourself, otherwise leave a comment in your review that the author should perform this step.
-6. We can now check that the documentation looks as it should. We provide a convenient bash script to compile the documentation. To completely rebuild the documentation, AFTER INSTALLING (if you made any changes, even to docstrings), run `./update_docs`. This will delete any compiled documentation that may already exist and rebuild it. If this runs without error, you can then take a look by `open docs/_build/html/index.html`. Make sure any docstrings that were changed compile correctly.
-7. Finally, install (`python setup.py install --user`), run tests (`pytest`), and compile documentation (`./update_docs`) one file time and if everything passes, accept the review!
+1. **Code changes:** For each new or changed file, ensure that the changes are correct, well-documented, and easy to follow. If you notice anything that can be improved, leave an inline comment (click the line of code in the review interface on Github).
+2. **Documentation:** Double check any relevant documentation. For any new or changed code, ensure that the documentation is accurate (i.e. references, equations, parameter descriptions).
+3. **Code formatting:** Make sure the code formatting is up to standards, you can do this by running a linter on any new or changed files `pylint {filename}`. This will take a look at the file and identify any style problems. If there are only a couple, feel free to resolve them yourself, otherwise leave a comment in your review that the author should perform this step.
+4. **Check unittests:** For any new or changed code, ensure that there are new tests in the appropriate directory. Try to come up with additional tests that either do or can break the code. If you can think of any such tests, suggest adding them in your review.
+
+Now, make sure everything is ok with unit tests, notebooks and documentation. These steps (except running the notebooks) are run automatically on each pull request on github (check `details` on `Build and Check / build-gcc-ubuntu (pull_request)` section at the end of the PR and `coverage` under the `coveralls` comment in the middle of the PR), but you can also run them manually on your local machine:
+
+5. **Run unittests:** Next, checkout the branch to a location that you can run `CLMM`. From the top level package directory (the directory that has `setup.py`) install the code via `python setup.py install --user`. Then, run `pytest` to run the full testing suite.
+6. **Check coverage:** Check the coverage of the code, i. e. how many lines of the code are being tested in our unittests. To do it locally, you need the `pytest-cov` library (it can be insatalled with `pip`). Then run the command `pytest tests/ --cov=clmm --cov-report term-missing`, it will tell you what fraction of the code is being tested and which lines are not being tested.
+7. **Notebooks:** Make sure all notebooks can run correctly. We provide a convenient bash script to compile the documentation, run `./run_notebooks` in the main `CLMM` directory. It will create an executed version of all notebooks in the `_executed_nbs/` directory. By default it uses a `python3` kernel, if you want to choose another one, just pass it to the command: `./run_notebooks MY_KERNEL`. (Note that depending on your theory backend, some cells in some notebooks will give an error. This expected behaviour is explicitely mentioned before the cells and should not be a cause of worry.)
+8. **Documentation:** We can now check that the documentation looks as it should. We provide a convenient bash script to compile the documentation. To completely rebuild the documentation, AFTER INSTALLING (if you made any changes, even to docstrings), run `./update_docs`. This will delete any compiled documentation that may already exist and rebuild it. If this runs without error, you can then take a look by `open docs/_build/html/index.html`. Make sure any docstrings that were changed compile correctly.
+9. **Install:** Finally, install (`python setup.py install --user`), run tests (`pytest`) and notebooks (`./run_notebooks`), and compile documentation (`./update_docs`). If everything passes, accept the review!
+
+(Developer tip: you can install `CLMM` in a editable mode, where the latest files on the repo will always be used, with the command `pip install . -e`)
 
 NOTE: We have had several branches that have exploded in commit number. If you are merging a branch and it has more than ~20 commits, strongly recommend using the "Squash and Merge" option for merging a branch.
 
 ## Steps to merging a pull request <a name="steps_to_merging_a_pull_request"></a>
 
-To ensure consistency between our code and documentation, we need to take care of a couple of more things after accepting a review on a PR into master.
+To ensure consistency between our code and documentation, we need to take care of a couple of more things after accepting a review on a PR into `main`.
 
 1. In the branch of the pull request, change the version number of the code located in `clmm/__init__.py`, commit and push. If you are unsure of how you should change the version number, don't hesitate to ask!
 
 We use [semantic versioning](https://semver.org/), X.Y.Z. If the PR makes a small change, such as a bug fix, documentation updates, style changes, etc., increment Z. If the PR adds a new feature, such as adding support for a new profile, increment Y (and reset Z to 0). If a PR adds a feature or makes a change that breaks the old API, increment X (and reset Y and Z to 0). After the first tagged release of CLMM, anything that is a candidate to increment X should be extensively discussed beforehand. 
 
-2. "Squash and Merge" the pull request into master. It asks for a squashed commit message. This should be descriptive of the feature or bug resolved in the PR and should be pre-prended by a [conventional commit scope](https://www.conventionalcommits.org/).
+2. "Squash and Merge" the pull request into `main`. It asks for a squashed commit message. This should be descriptive of the feature or bug resolved in the PR and should be pre-prended by a [conventional commit scope](https://www.conventionalcommits.org/).
 
 Please choose from `fix:`, `feat:`, `build:`, `chore:`, `ci:`, `docs:`, `style:`, `refactor:`, `perf:`, `test:`. If this commit breaks the previous API, add an explanation mark (for example, `fix!:`). Definitions of each scope can be found at the above link.
 
 Note: `fix:` should correspond to version changes to Y. The rest of the scopes above should be version changes to Z.
 
-3. Tag and push this new version of the code. In the `master` branch use the following commands:
+3. Tag and push this new version of the code. In the `main` branch use the following commands:
 
     ```bash
     git tag X.Y.Z
@@ -97,11 +104,11 @@ of course replacing `X.Y.Z` by the new version.
 
 ## Updating Public Documentation on lsstdesc.org <a name="updating_public_docs"></a>
 
-This is easy! Once you have merged all approved changes into master, you will want to update the public documentation.
+This is easy! Once you have merged all approved changes into `main`, you will want to update the public documentation.
 All these steps should be done on the `publish-docs` branch (just `git checkout publish-docs` on your local computer):
-1. Merge all of the latest changes from master `git merge master`.
+1. Merge all of the latest changes from main `git merge main`.
 2. If you have figures in notebooks that you would like rendered on the website, you will want to execute all cells of demo notebooks.
-3. From the main CLMM directory (the one that contains `setup.py`) run `./publish_docs` (note, this is different from `./update_docs` that you did in your development branch) and it does all of the work for you (including automatically pushing changes to Github)!
+3. From the `main` CLMM directory (the one that contains `setup.py`) run `./publish_docs` (note, this is different from `./update_docs` that you did in your development branch) and it does all of the work for you (including automatically pushing changes to Github)!
 
 ## Additional resources <a name="additional_resources"></a>
 
@@ -112,7 +119,7 @@ Here's a list of additional resources which you may find helpful in navigating g
 * [The Github Help Pages](https://help.github.com/)
 
 ## Contact (alphabetical order) <a name="contact"></a>
-* [Michel Aguena](https://github.com/m-aguena) (LAPP / LIneA)
+* [Michel Aguena](https://github.com/m-aguena) (APC / LIneA)
 * [Doug Applegate](https://github.com/deapplegate) (Novartis)
 * [Camille Avestruz](https://github.com/cavestruz) (University of Michigan)
 * [Lucie Baumont](https://github.com/lbaumo) (SBU)
@@ -125,12 +132,12 @@ Here's a list of additional resources which you may find helpful in navigating g
 * [Brandyn Lee](https://github.com/brandynlee) (UTD)
 * [Anja von der Linden](https://github.com/anjavdl) (SBU)
 * [Binyang Liu](https://github.com/rbliu) (Brown)
-* [Alex Malz](https://github.com/aimalz) (NYU --> RUB)
+* [Alex Malz](https://github.com/aimalz) (CMU)
 * [Tom McClintock](https://github.com/tmcclintock) (BNL)
 * [Hironao Miyatake](https://github.com/HironaoMiyatake) (Nagoya)
 * [Constantin Payerne](https://github.com/payerne) (LPSC)
 * [Mariana Penna-Lima](https://github.com/pennalima) (UnB - Brasilia / LIneA)
-* [Marina Ricci](https://github.com/marina-ricci) (LAPP)
+* [Marina Ricci](https://github.com/marina-ricci) (LMU)
 * [Cristobal Sifon](https://github.com/cristobal-sifon) (Princeton)
 * [Melanie Simet](https://github.com/msimet) (JPL)
 * [Martin Sommer](https://github.com/sipplund) (Bonn)
