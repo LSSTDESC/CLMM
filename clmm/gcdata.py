@@ -4,6 +4,7 @@ Define the custom data type
 import warnings
 from collections import OrderedDict
 from astropy.table import Table as APtable
+import numpy as np
 
 
 class GCMetaData(OrderedDict):
@@ -119,6 +120,9 @@ class GCData(APtable):
             item = item.lower()
             item = ','.join([name_dict[i] for i in item.split(',')])
         out = APtable.__getitem__(self, item)
+        # sub cols or sub rows
+        if not isinstance(item, (str, int, np.int64)):
+            out.pzpdf_info = self.pzpdf_info
         return out
 
     def update_cosmo_ext_valid(self, gcdata, cosmo, overwrite=False):

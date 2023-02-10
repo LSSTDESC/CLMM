@@ -330,10 +330,12 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals,
             galaxy_catalog['e1'], galaxy_catalog['e_err'])
         galaxy_catalog['e2'] = np.random.normal(
             galaxy_catalog['e2'], galaxy_catalog['e_err'])
-        cols = cols + ['e_err']
-    cols = cols + ['z', 'ztrue']
-    if photoz_sigma_unscaled is not None:
-        cols = cols + ['pzbins', 'pzpdf']
+        cols += ['e_err']
+    cols += ['z', 'ztrue']
+    if all(c is not None for c in (photoz_sigma_unscaled, pzpdf_type)):
+        if galaxy_catalog.pzpdf_info['type'] is None:
+            cols += ['pzbins']
+        cols += ['pzpdf']
 
     return galaxy_catalog[cols]
 
@@ -434,7 +436,7 @@ def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled,
                                  row['z']+row['pzsigma']*10.,
                                  pz_bin_width)
                         for row in galaxy_catalog]
-        pzpdf_grid = [gaussian(zbins, row['z'], row['sigma'])
+        pzpdf_grid = [gaussian(zbins, row['z'], row['pzsigma'])
                         for zbins, row in zip(pzbins_grid, galaxy_catalog)]
         galaxy_catalog['pzbins'] = pzbins_grid
         galaxy_catalog['pzpdf'] = pzpdf_grid
