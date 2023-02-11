@@ -14,6 +14,7 @@ from . generic import (compute_reduced_shear_from_convergence,
                        convert_profile_mass_concentration)
 
 __all__ = generic.__all__+['compute_3d_density', 'compute_surface_density',
+                           'compute_mean_surface_density',
                            'compute_excess_surface_density','compute_excess_surface_density_2h',
                            'compute_surface_density_2h',
                            'compute_critical_surface_density',
@@ -169,6 +170,79 @@ def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     gcm.force_old_ccl = False
     return sigma
 
+def compute_mean_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
+                            halo_profile_model='nfw', massdef='mean', alpha_ein=None,
+                            verbose=False, validate_input=True, force_old_ccl=False):
+    r""" Computes the mean value of surface density inside radius `r_proj`
+
+    .. math::
+        \bar{\Sigma}(<R) = \frac{2}{R^2} \int^R_0 dR' R' \Sigma(R'),
+
+    Parameters
+    ----------
+    r_proj : array_like
+        Projected radial position from the cluster center in :math:`M\!pc`.
+    mdelta : float
+        Galaxy cluster mass in :math:`M_\odot`.
+    cdelta : float
+        Galaxy cluster concentration
+    z_cl: float
+        Redshift of the cluster
+    cosmo : clmm.cosmology.Cosmology object
+        CLMM Cosmology object
+    delta_mdef : int, optional
+        Mass overdensity definition; defaults to 200.
+    halo_profile_model : str, optional
+        Profile model parameterization (letter case independent):
+
+            * 'nfw' (default)
+            * 'einasto' - not in cluster_toolkit
+            * 'hernquist' - not in cluster_toolkit
+
+    massdef : str, optional
+        Profile mass definition, with the following supported options (letter case independent):
+
+            * 'mean' (default)
+            * 'critical'
+            * 'virial'
+
+    alpha_ein : float, optional
+        If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only
+        available for the NumCosmo backend
+    verbose : boolean, optional
+        If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
+        backends.
+    validate_input : bool, optional
+        If True (default), the types of the arguments are checked before proceeding.
+
+
+    Returns
+    -------
+    sigma : numpy.ndarray, float
+        2D projected surface density in units of :math:`M_\odot\ Mpc^{-2}`
+
+    Notes
+    -----
+    Need to refactory so we only require arguments that are necessary for all models and use
+    another structure to take the arguments necessary for specific models.
+    """
+    gcm.validate_input = validate_input
+    gcm.set_cosmo(cosmo)
+    gcm.set_halo_density_profile(
+        halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
+    gcm.set_concentration(cdelta)
+    gcm.set_mass(mdelta)
+    if alpha_ein is not None:
+        gcm.set_einasto_alpha(alpha_ein)
+    if gcm.backend=='ccl' and force_old_ccl:
+        gcm.force_old_ccl = True
+
+    sigma_bar = gcm.eval_mean_surface_density(r_proj, z_cl, verbose=verbose)
+
+    gcm.validate_input = True
+    gcm.force_old_ccl = False
+    return sigma_bar
+
 def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
                                    halo_profile_model='nfw', massdef='mean', alpha_ein=None,
                                    verbose=False, validate_input=True, force_old_ccl=False):
@@ -176,11 +250,6 @@ def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
 
     .. math::
         \Delta\Sigma(R) = \bar{\Sigma}(<R)-\Sigma(R),
-
-    where
-
-    .. math::
-        \bar{\Sigma}(<R) = \frac{2}{R^2} \int^R_0 dR' R' \Sigma(R')
 
     Parameters
     ----------

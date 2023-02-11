@@ -257,6 +257,7 @@ def test_profiles(modeling_data, profile_init):
 
         helper_profiles(theo.compute_3d_density)
         helper_profiles(theo.compute_surface_density)
+        helper_profiles(theo.compute_mean_surface_density)
         helper_profiles(theo.compute_excess_surface_density)
 
         if profile_init == 'nfw':
@@ -296,6 +297,9 @@ def test_profiles(modeling_data, profile_init):
             mod.eval_surface_density(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl'], verbose=True),
             cfg['numcosmo_profiles']['Sigma'], reltol)
         assert_allclose(
+            mod.eval_mean_surface_density(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl'], verbose=True),
+            cfg['numcosmo_profiles']['Sigma']+cfg['numcosmo_profiles']['DeltaSigma'], reltol)
+        assert_allclose(
             mod.eval_excess_surface_density(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl'], verbose=True),
             cfg['numcosmo_profiles']['DeltaSigma'], reltol)
         if mod.backend == 'ct':
@@ -312,6 +316,11 @@ def test_profiles(modeling_data, profile_init):
             theo.compute_surface_density(
                 cosmo=cosmo, **cfg['SIGMA_PARAMS'], alpha_ein=alpha_ein, verbose=True),
             cfg['numcosmo_profiles']['Sigma'], reltol)
+        assert_allclose(
+            theo.compute_mean_surface_density(
+                cosmo=cosmo, **cfg['SIGMA_PARAMS'], alpha_ein=alpha_ein, verbose=True,
+                force_old_ccl = True),
+            cfg['numcosmo_profiles']['Sigma']+cfg['numcosmo_profiles']['DeltaSigma'], reltol)
         assert_allclose(
             theo.compute_excess_surface_density(
                 cosmo=cosmo, **cfg['SIGMA_PARAMS'], alpha_ein=alpha_ein, verbose=True),
