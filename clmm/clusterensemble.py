@@ -3,13 +3,10 @@ The Cluster Ensemble class
 """
 import numpy as np
 from scipy.stats import binned_statistic
-from astropy.table import Table
-from .plotting import mpl
 import healpy
 
 from .gcdata import GCData
-from .galaxycluster import GalaxyCluster
-from .utils import compute_radial_averages, convert_units
+from .utils import convert_units
 from .dataops import make_radial_profile, make_stacked_radial_profile
 
 class ClusterEnsemble():
@@ -34,15 +31,15 @@ class ClusterEnsemble():
         if isinstance(unique_id, (int, str)):
             unique_id = str(unique_id)
         else:
-            raise TypeError('unique_id incorrect type: %s'%type(unique_id))
+            raise TypeError(f'unique_id incorrect type: {unique_id}')
         self.unique_id = unique_id
         self.data = GCData(meta={'bin_units': None})
-        self.use_cluster_list = False 
-        if gc_list != None:
+        self.use_cluster_list = False
+        if gc_list is not None:
             self.use_cluster_list = True
-            if len(args)>0 or len(kwargs)>0: 	
+            if len(args)>0 or len(kwargs)>0:
                 self._add_values(gc_list, **kwargs)
-	   
+
     def _add_values(self, gc_list, **kwargs):
         """Add values for all attributes
 
@@ -133,12 +130,12 @@ class ClusterEnsemble():
         #profile_table[weights_out] = 1 #rm this line
         if bin_units != 'radians':
             bins = convert_units(bins, bin_units, 'radians', redshift=galaxycluster.z, cosmo=cosmo)
-        profile_table[weights_out] = binned_statistic(galaxycluster.galcat['theta'], 
-                                                       galaxycluster.galcat[weights_in], 
-                                                       statistic='sum', 
+        profile_table[weights_out] = binned_statistic(galaxycluster.galcat['theta'],
+                                                       galaxycluster.galcat[weights_in],
+                                                       statistic='sum',
                                                        bins = bins)[0]
-        data_to_save = [galaxycluster.unique_id, galaxycluster.ra, galaxycluster.dec, galaxycluster.z,
-                        *[np.array(profile_table[col]) for col in
+        data_to_save = [galaxycluster.unique_id, galaxycluster.ra, galaxycluster.dec,
+                        galaxycluster.z, *[np.array(profile_table[col]) for col in
                             ('radius', 'p_0', 'p_1', weights_out)]]
         # to be fixed down to here after issue 443 is merged
         if len(self.data)==0:
@@ -164,8 +161,8 @@ class ClusterEnsemble():
             Name of the weights column in `data`.
         """
         if len(self.data) == 0:
-            if self.use_cluster_list == False:
-                raise ValueError("There is no single cluster profile data. Please run" + 
+            if self.use_cluster_list is False:
+                raise ValueError("There is no single cluster profile data. Please run" +
                              "'make_individual_radial_profile' for each cluster in your catalog")
         radius, components = make_stacked_radial_profile(
             self.data['radius'], self.data[weights],
@@ -185,14 +182,17 @@ class ClusterEnsemble():
             The sample covariance matrix for the stacked cross profile
         """
         if len(self.data) == 0:
-            if self.use_cluster_list == False:
+            if self.use_cluster_list is False:
                 raise ValueError("There is no single cluster profile data. Please run" +
                              "'make_individual_radial_profile' for each cluster in your catalog")
         n_catalogs = len(self.data)
-        self.sample_tangential_covariance = np.cov(self.data[tan_component].T, bias = False)/n_catalogs
-        self.sample_cross_covariance = np.cov(self.data[cross_component].T, bias = False)/n_catalogs
+        self.sample_tangential_covariance = np.cov(self.data[tan_component].T,
+                                                   bias = False)/n_catalogs
+        self.sample_cross_covariance = np.cov(self.data[cross_component].T,
+                                              bias = False)/n_catalogs
 
-    def compute_bootstrap_covariance(self, tan_component='gt', cross_component='gx', n_bootstrap=10):
+    def compute_bootstrap_covariance(self, tan_component='gt', cross_component='gx',
+                                     n_bootstrap=10):
         """Compute the bootstrap covariance matrix, add boostrap covariance matrix for
         tangential and cross profiles as attributes.
 
@@ -202,7 +202,7 @@ class ClusterEnsemble():
             number of bootstrap resamplings
         """
         if len(self.data) == 0:
-            if self.use_cluster_list == False:
+            if self.use_cluster_list is False:
                 raise ValueError("There is no single cluster profile data. Please run" +
                              "'make_individual_radial_profile' for each cluster in your catalog")
         cluster_index = np.arange(len(self.data))
@@ -210,13 +210,14 @@ class ClusterEnsemble():
         for n_boot in range(n_bootstrap):
             cluster_index_bootstrap = np.random.choice(cluster_index, len(cluster_index))
             data_bootstrap = self.data[cluster_index_bootstrap]
-            r, (gt, gx) = make_stacked_radial_profile(
+            _, (gt, gx) = make_stacked_radial_profile(
                             data_bootstrap['radius'], data_bootstrap['W_l'],
                             [data_bootstrap[tan_component], data_bootstrap[cross_component]])
             gt_boot.append(gt), gx_boot.append(gx)
         n_catalogs = len(self.data)
         coeff = (n_catalogs/(n_catalogs-1))**2
-        self.bootstrap_tangential_covariance = coeff*np.cov(np.array(gt_boot).T, bias = False,ddof=0)
+        self.bootstrap_tangential_covariance = coeff*np.cov(np.array(gt_boot).T,
+                                                            bias = False, ddof=0)
         self.bootstrap_cross_covariance = coeff*np.cov(np.array(gx_boot).T, bias = False)
 
     def compute_jackknife_covariance(self, tan_component='gt', cross_component='gx', n_side=16):
@@ -232,20 +233,20 @@ class ClusterEnsemble():
         #may induce artificial noise if there are some healpix pixels
         #not covering entirely the 2D map of clusters
         if len(self.data) == 0:
-            if self.use_cluster_list == False:
+            if self.use_cluster_list is False:
                 raise ValueError("There is no single cluster profile data. Please run" +
                              "'make_individual_radial_profile' for each cluster in your catalog")
-        index = np.arange(len(self.data))
         pixels = healpy.ang2pix(n_side, self.data['ra'], self.data['dec'],
                                 nest=True, lonlat=True)
         pixels_list_unique = np.unique(pixels)
         n_jack = len(pixels_list_unique)
         gt_jack, gx_jack = [], []
-        for i, hp_list_delete in enumerate(pixels_list_unique):
+        for hp_list_delete in pixels_list_unique:
             mask_in_area = np.isin(pixels, hp_list_delete)
             data_jk = self.data[~mask_in_area]
-            r, (gt, gx) = make_stacked_radial_profile(data_jk['radius'], data_jk['W_l'],
-                                                      [data_jk[tan_component], data_jk[cross_component]])
+            _, (gt, gx) = make_stacked_radial_profile(data_jk['radius'], data_jk['W_l'],
+                                                      [data_jk[tan_component],
+                                                       data_jk[cross_component]])
             gt_jack.append(gt), gx_jack.append(gx)
         coeff = (n_jack - 1)**2/(n_jack)
         self.jackknife_tangential_covariance = coeff*np.cov(np.array(gt_jack).T,
