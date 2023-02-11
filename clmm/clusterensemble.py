@@ -31,7 +31,7 @@ class ClusterEnsemble():
         if isinstance(unique_id, (int, str)):
             unique_id = str(unique_id)
         else:
-            raise TypeError(f'unique_id incorrect type: {unique_id}')
+            raise TypeError(f'unique_id incorrect type: {type(unique_id)}')
         self.unique_id = unique_id
         self.data = GCData(meta={'bin_units': None})
         self.use_cluster_list = False
