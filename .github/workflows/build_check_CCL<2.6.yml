@@ -38,7 +38,7 @@ jobs:
         conda install -c conda-forge cmake swig
         git clone https://github.com/LSSTDESC/CCL
         cd CCL
-        git check v2.5.1
+        git checkout v2.5.1
         pip install .
     - name: Run the unit tests
       run: |
