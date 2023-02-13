@@ -34,11 +34,9 @@ class ClusterEnsemble():
             raise TypeError(f'unique_id incorrect type: {type(unique_id)}')
         self.unique_id = unique_id
         self.data = GCData(meta={'bin_units': None})
-        self.use_cluster_list = False
+        self.cosmo_desc = None
         if gc_list is not None:
-            self.use_cluster_list = True
-            if len(args)>0 or len(kwargs)>0:
-                self._add_values(gc_list, **kwargs)
+            self._add_values(gc_list, **kwargs)
 
     def _add_values(self, gc_list, **kwargs):
         """Add values for all attributes
@@ -123,6 +121,13 @@ class ClusterEnsemble():
         elif self.data.meta['bin_units'] != bin_units:
             raise ValueError('inconsistent units')
 
+        c_cosmo = galaxycluster.galcat.meta.get('cosmo', None)
+        if self.cosmo_desc is None:
+            self.cosmo_desc = c_cosmo
+        if self.cosmo_desc is not None and self.cosmo_desc!=c_cosmo:
+            raise ValueError(f'Cosmology of gcdata (={c_cosmo}) is inconsistent with '
+                             f'ensenble cosmology (={self.cosmo_desc})')
+
         profile_table = galaxycluster.make_radial_profile(
             include_empty_bins=True, gal_ids_in_bins=False, add=False,
             **tb_kwargs)
@@ -154,7 +159,6 @@ class ClusterEnsemble():
             Name of the weights column in `data`.
         """
         if len(self.data) == 0:
-            if self.use_cluster_list is False:
                 raise ValueError("There is no single cluster profile data. Please run" +
                              "'make_individual_radial_profile' for each cluster in your catalog")
         radius, components = make_stacked_radial_profile(
@@ -175,7 +179,6 @@ class ClusterEnsemble():
             The sample covariance matrix for the stacked cross profile
         """
         if len(self.data) == 0:
-            if self.use_cluster_list is False:
                 raise ValueError("There is no single cluster profile data. Please run" +
                              "'make_individual_radial_profile' for each cluster in your catalog")
         n_catalogs = len(self.data)
@@ -195,7 +198,6 @@ class ClusterEnsemble():
             number of bootstrap resamplings
         """
         if len(self.data) == 0:
-            if self.use_cluster_list is False:
                 raise ValueError("There is no single cluster profile data. Please run" +
                              "'make_individual_radial_profile' for each cluster in your catalog")
         cluster_index = np.arange(len(self.data))
@@ -226,7 +228,6 @@ class ClusterEnsemble():
         #may induce artificial noise if there are some healpix pixels
         #not covering entirely the 2D map of clusters
         if len(self.data) == 0:
-            if self.use_cluster_list is False:
                 raise ValueError("There is no single cluster profile data. Please run" +
                              "'make_individual_radial_profile' for each cluster in your catalog")
         pixels = healpy.ang2pix(n_side, self.data['ra'], self.data['dec'],

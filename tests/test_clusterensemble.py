@@ -105,8 +105,8 @@ def test_covariance():
     names = ['id', 'ra', 'dec', 'z', 'radius', 'gt', 'gx', 'W_l']
 
     #test without args, kwargs
-    ce = clusterensemble.ClusterEnsemble(ensemble_id, gclist)
-    assert_raises(KeyError, ce.make_stacked_radial_profile)
+    ce = clusterensemble.ClusterEnsemble(ensemble_id)
+    assert_raises(ValueError, ce.make_stacked_radial_profile)
 
     #test with args, kwargs
     ce = clusterensemble.ClusterEnsemble(ensemble_id, gclist, tan_component_in='et',
