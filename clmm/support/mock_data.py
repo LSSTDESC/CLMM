@@ -333,7 +333,7 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals,
         cols += ['e_err']
     cols += ['z', 'ztrue']
     if all(c is not None for c in (photoz_sigma_unscaled, pzpdf_type)):
-        if galaxy_catalog.pzpdf_info['type'] is None:
+        if galaxy_catalog.pzpdf_info['type']=='individual_bins':
             cols += ['pzbins']
         cols += ['pzpdf']
 
