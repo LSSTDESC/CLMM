@@ -47,15 +47,36 @@ def test_mock_data():
     mock.generate_galaxy_catalog(
         1e15, 0.3, 4, cosmo, 'chang13', ngal_density=1)
 
+
     # Simple test to check if option with zsrc=desc_src is working
     # A proper test should be implemented
     mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 'desc_srd', ngals=100)
     mock.generate_galaxy_catalog(
         1e15, 0.3, 4, cosmo, 'desc_srd', ngal_density=1)
 
+    # Test to check unknown pdz
+    assert_raises(ValueError, mock.generate_galaxy_catalog, 1e15, 0.3, 4,
+                  cosmo, 0.8, ngals=100, photoz_sigma_unscaled=.1, pzpdf_type='xxx')
+    assert_raises(NotImplementedError, mock.generate_galaxy_catalog, 1e15, 0.3, 4,
+                  cosmo, 0.8, ngals=100, photoz_sigma_unscaled=.1, pzpdf_type='quantiles')
+    #assert_raises(NotImplementedError, mock.generate_galaxy_catalog, 1e15, 0.3, 4,
+
     # Simple test to check if option with pdz is working
     # A proper test should be implemented
-    mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.8, ngals=100, photoz_sigma_unscaled=.1)
+    cat = mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.8, ngals=100,
+                                       photoz_sigma_unscaled=.1, pzpdf_type=None)
+    hasattr(cat.pzpdf_info, 'zbins')
+
+    # Simple test to check if option with pdz is working
+    # A proper test should be implemented
+    cat = mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.8, ngals=100,
+                                       photoz_sigma_unscaled=.1)
+    hasattr(cat.pzpdf_info, 'zbins')
+
+    # Simple test to check if option with pdz individual bins is working
+    # A proper test should be implemented
+    mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.8, ngals=100, photoz_sigma_unscaled=.1,
+                                 pzpdf_type='individual_bins')
 
     # Simple test to check if option with mean_e_err is working
     # A proper test should be implemented

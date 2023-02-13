@@ -286,12 +286,37 @@ def test_pzpdf_random_draw():
     # also test overwrite=True
     np.random.seed(0)
     cluster.draw_gal_z_from_pdz(zcol_out='z_random', overwrite=True, nobj=2,
-                                      xmin=pzbin[50], xmax=pzbin[51])
+                                xmin=pzbin[50], xmax=pzbin[51])
     assert_allclose(cluster.galcat['z_random'].data,
                     [[2.553019, 2.561422],
                      [2.555744, 2.552821],
                      [2.546698, 2.557922]],
                     rtol=1e-6, atol=1e-6)
+
+    # test with shared bins
+    # add pzbins back to galcat
+    del cluster.galcat['pzbins']
+    cluster.galcat.remove_column('z_test')
+    cluster.galcat.remove_column('z_random')
+    cluster.galcat.pzpdf_info['zbins'] = pzbin
+    cluster.galcat.pzpdf_info['type'] = 'shared_bins'
+    # test raising TypeError when the name of the new column is already in cluster.galcat
+    # also test default overwrite=False and zcol_out='z'
+    assert_raises(TypeError, cluster.draw_gal_z_from_pdz)
+    # Test raising warnings when xmin<min(pzbin) and xmax>max(pzbin)
+    assert_warns(UserWarning, cluster.draw_gal_z_from_pdz, zcol_out='z_test', xmin=pzbin.min()/10)
+    cluster.galcat.remove_column('z_test')
+    assert_warns(UserWarning, cluster.draw_gal_z_from_pdz, zcol_out='z_test', xmax=pzbin.max()*10)
+    # test drawing 1 object from the whole range of pzpdf
+    np.random.seed(0)
+    cluster.draw_gal_z_from_pdz(zcol_out='z_random')
+    assert_allclose(cluster.galcat['z_random'].data, [[0.514074], [0.791846], [1.843482]],
+                    rtol=1e-6, atol=1e-6)
+
+    # test raise errors with unkown pdf type
+    cluster.galcat.pzpdf_info['type'] = None
+    cluster.galcat.remove_column('z_random')
+    assert_raises(NotImplementedError, cluster.draw_gal_z_from_pdz, zcol_out='z_random', nobj=2)
 
 def test_plot_profiles():
     """test plot profiles"""
