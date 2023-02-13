@@ -376,18 +376,23 @@ class GalaxyCluster():
             Random points following the pdf_tab distribution
         """
 
-        if 'pzpdf' not in self.galcat.columns or 'pzbins' not in self.galcat.columns:
+        if 'pzpdf' not in self.galcat.columns:
             raise TypeError('Missing galaxy photoz distributions')
 
         if zcol_out in self.galcat.columns and overwrite is False:
             raise TypeError(f'Column {zcol_out} already exists in galcat. \
                             Set overwrite=True to overwrite or use other column name')
 
-        res = []
-        for pzbins, pzpdf in zip(self.galcat['pzbins'], self.galcat['pzpdf']):
-            res.append(_draw_random_points_from_tab_distribution(pzbins, pzpdf, nobj=nobj,
-                                                                 xmin=xmin, xmax=xmax))
-
+        pzpdf_type = self.galcat.pzpdf_info['type']
+        if pzpdf_type=='shared_bins':
+            pzbins = (self.galcat.pzpdf_info['zbins'] for i in range(len(self.galcat)))
+        elif pzpdf_type=='individual_bins':
+            pzbins = self.galcat['pzbins']
+        else:
+            raise NotImplementedError(f"PDF use '{pzpdf_type}' not implemented.")
+        res = [_draw_random_points_from_tab_distribution(pzbin, pzpdf, nobj=nobj,
+                                                         xmin=xmin, xmax=xmax)
+                    for pzbin, pzpdf in zip(pzbins, self.galcat['pzpdf'])]
         self.galcat[zcol_out] = res
         return res
 
