@@ -59,7 +59,6 @@ def test_mock_data():
                   cosmo, 0.8, ngals=100, photoz_sigma_unscaled=.1, pzpdf_type='xxx')
     assert_raises(NotImplementedError, mock.generate_galaxy_catalog, 1e15, 0.3, 4,
                   cosmo, 0.8, ngals=100, photoz_sigma_unscaled=.1, pzpdf_type='quantiles')
-    #assert_raises(NotImplementedError, mock.generate_galaxy_catalog, 1e15, 0.3, 4,
 
     # Simple test to check if option with pdz is working
     # A proper test should be implemented
