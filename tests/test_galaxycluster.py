@@ -171,9 +171,10 @@ def test_integrity_of_lensfuncs():
     pzpdf = pzbins
     pzbin = np.linspace(.0001, 5, 100)
     cluster = clmm.GalaxyCluster(unique_id='1', ra=161.3,
-                            dec=34., z=0.3, galcat=galcat)
+                                 dec=34., z=0.3, galcat=galcat)
     cluster.galcat['pzbins'] = [pzbin for i in range(len(z_source))]
     cluster.galcat['pzpdf'] = [multivariate_normal.pdf(pzbin, mean=z, cov=.3) for z in z_source]
+    cluster.galcat.pzpdf_info['type'] = 'individual_bins'
 
     cluster.compute_tangential_and_cross_components(is_deltasigma=True, use_pdz=True,
                                                     cosmo=cosmo, add=True)
@@ -268,6 +269,7 @@ def test_pzpdf_random_draw():
 
     # add pzbins back to galcat
     cluster.galcat['pzbins'] = [pzbin for i in range(len(z_source))]
+    cluster.galcat.pzpdf_info['type'] = 'individual_bins'
     # test raising TypeError when the name of the new column is already in cluster.galcat
     # also test default overwrite=False and zcol_out='z'
     assert_raises(TypeError, cluster.draw_gal_z_from_pdz)
