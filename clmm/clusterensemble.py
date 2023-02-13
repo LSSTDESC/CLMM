@@ -34,7 +34,6 @@ class ClusterEnsemble():
             raise TypeError(f'unique_id incorrect type: {type(unique_id)}')
         self.unique_id = unique_id
         self.data = GCData(meta={'bin_units': None})
-        self.cosmo_desc = None
         if gc_list is not None:
             self._add_values(gc_list, **kwargs)
 
@@ -121,16 +120,13 @@ class ClusterEnsemble():
         elif self.data.meta['bin_units'] != bin_units:
             raise ValueError('inconsistent units')
 
-        c_cosmo = galaxycluster.galcat.meta.get('cosmo', None)
-        if self.cosmo_desc is None:
-            self.cosmo_desc = c_cosmo
-        if self.cosmo_desc is not None and self.cosmo_desc!=c_cosmo:
-            raise ValueError(f'Cosmology of gcdata (={c_cosmo}) is inconsistent with '
-                             f'ensenble cosmology (={self.cosmo_desc})')
+        cl_cosmo = galaxycluster.galcat.meta.get('cosmo', None)
+        self.data.update_cosmodesc_ext_valid(self, cl_cosmo, overwrite=False)
 
         profile_table = galaxycluster.make_radial_profile(
             include_empty_bins=True, gal_ids_in_bins=False, add=False,
             **tb_kwargs)
+
         self.add_individual_radial_profile(
             galaxycluster, profile_table,
             tan_component_out, cross_component_out, weights_out)
@@ -159,18 +155,13 @@ class ClusterEnsemble():
         elif self.data.meta['bin_units'] != profile_table.meta['bin_units']:
             raise ValueError('inconsistent units')
 
-        c_cosmo = profile_table.meta.get('cosmo', None)
-        if self.cosmo_desc is None:
-            self.cosmo_desc = c_cosmo
-        if self.cosmo_desc is not None and self.cosmo_desc!=c_cosmo:
-            raise ValueError(f'Cosmology of gcdata (={c_cosmo}) is inconsistent with '
-                             f'ensenble cosmology (={self.cosmo_desc})')
+        cl_cosmo = profile_table.meta.get('cosmo', None)
+        self.data.update_cosmodesc_ext_valid(self, cl_cosmo, overwrite=False)
 
         tbcols = ('radius', tan_component, cross_component, weights)
         data_to_save = [galaxycluster.unique_id, galaxycluster.ra,
                         galaxycluster.dec, galaxycluster.z,
                         *(np.array(profile_table[col]) for col in tbcols)]
-        # to be fixed down to here after issue 443 is merged
         if len(self.data)==0:
             for col, data in zip(['cluster_id', 'ra', 'dec', 'z', *tbcols],
                                  data_to_save):
