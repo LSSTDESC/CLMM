@@ -316,6 +316,8 @@ def test_pzpdf_random_draw():
     # test raise errors with unkown pdf type
     cluster.galcat.pzpdf_info['type'] = None
     cluster.galcat.remove_column('z_random')
+    assert_raises(ValueError, cluster.draw_gal_z_from_pdz, zcol_out='z_random', nobj=2)
+    cluster.galcat.pzpdf_info['type'] = 'quantile'
     assert_raises(NotImplementedError, cluster.draw_gal_z_from_pdz, zcol_out='z_random', nobj=2)
 
 def test_plot_profiles():

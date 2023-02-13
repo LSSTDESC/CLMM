@@ -384,6 +384,8 @@ class GalaxyCluster():
                             Set overwrite=True to overwrite or use other column name')
 
         pzpdf_type = self.galcat.pzpdf_info['type']
+        if pzpdf_type is None:
+            raise ValueError('No PDF information stored!')
         if pzpdf_type=='shared_bins':
             pzbins = (self.galcat.pzpdf_info['zbins'] for i in range(len(self.galcat)))
         elif pzpdf_type=='individual_bins':
