@@ -570,13 +570,15 @@ def make_radial_profile(components, angsep, angsep_units, bin_units,
                            )
     # Compute the binned averages and associated errors
     for i, component in enumerate(components):
-        r_avg, comp_avg, comp_err, nsrc, binnumber = compute_radial_averages(
+        r_avg, comp_avg, comp_err, nsrc, binnumber, wts_sum = compute_radial_averages(
             source_seps, component, xbins=bins,
-            yerr=None if components_error is None else components_error[i], weights=weights)
+            yerr=None if components_error is None else components_error[i],
+            weights=weights)
         profile_table[f'p_{i}'] = comp_avg
         profile_table[f'p_{i}_err'] = comp_err
     profile_table['radius'] = r_avg
     profile_table['n_src'] = nsrc
+    profile_table['weights'] = wts_sum
     # return empty bins?
     if not include_empty_bins:
         profile_table = profile_table[nsrc > 1]

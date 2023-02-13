@@ -65,7 +65,7 @@ class ClusterEnsemble():
                                        cosmo=None, tan_component_in='et', cross_component_in='ex',
                                        tan_component_out='gt', cross_component_out='gx',
                                        tan_component_in_err=None, cross_component_in_err=None,
-                                       weights_in='w_ls', weights_out='W_l'):
+                                       use_weights=True, weights_in='w_ls', weights_out='W_l'):
         """Compute the individual shear profile from a single GalaxyCluster object
         and adds the averaged data in the data attribute.
 
@@ -113,30 +113,23 @@ class ClusterEnsemble():
         weights_out : str, None
             Name of the weight column to be used in the added to the profile table.
         """
+        tb_kwargs = {}
+        tb_kwargs.update(locals())
+        tb_kwargs.pop('self')
+        tb_kwargs.pop('tb_kwargs')
+        tb_kwargs.pop('galaxycluster')
         if self.data.meta['bin_units'] is None:
             self.data.meta['bin_units'] = bin_units
         elif self.data.meta['bin_units'] != bin_units:
             raise ValueError('inconsistent units')
-        # This will be replaced when gc has weights on make_radial_profile
-        profile_table = make_radial_profile(
-            [galaxycluster.galcat[n].data for n in (tan_component_in, cross_component_in, 'z')],
-            angsep=galaxycluster.galcat['theta'], angsep_units='radians',
-            bin_units=bin_units, bins=bins, error_model=error_model,
-            include_empty_bins=True, return_binnumber=False,
-            cosmo=cosmo, z_lens=galaxycluster.z, weights=galaxycluster.galcat[weights_in],
-            components_error=[None if n is None else galaxycluster.galcat[n].data
-                              for n in (tan_component_in_err, cross_component_in_err, None)],
-            )
-        #profile_table[weights_out] = 1 #rm this line
-        if bin_units != 'radians':
-            bins = convert_units(bins, bin_units, 'radians', redshift=galaxycluster.z, cosmo=cosmo)
-        profile_table[weights_out] = binned_statistic(galaxycluster.galcat['theta'],
-                                                       galaxycluster.galcat[weights_in],
-                                                       statistic='sum',
-                                                       bins = bins)[0]
-        data_to_save = [galaxycluster.unique_id, galaxycluster.ra, galaxycluster.dec,
-                        galaxycluster.z, *[np.array(profile_table[col]) for col in
-                            ('radius', 'p_0', 'p_1', weights_out)]]
+
+        profile_table = galaxycluster.make_radial_profile(
+            include_empty_bins=True, gal_ids_in_bins=False, add=False,
+            **tb_kwargs)
+
+        data_to_save = [galaxycluster.unique_id, galaxycluster.ra, galaxycluster.dec, galaxycluster.z,
+                        *[np.array(profile_table[col]) for col in
+                            ('radius', tan_component_out, cross_component_out, weights_out)]]
         # to be fixed down to here after issue 443 is merged
         if len(self.data)==0:
             for col, data in zip(['cluster_id', 'ra', 'dec', 'z', 'radius', tan_component_out,
