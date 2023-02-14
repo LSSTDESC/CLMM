@@ -119,33 +119,34 @@ class GCData(APtable):
         out = APtable.__getitem__(self, item)
         return out
 
-    def update_cosmodesc_ext_valid(self, gcdata, cosmo_desc, overwrite=False):
+    def update_info_ext_valid(self, key, gcdata, ext_value, overwrite=False):
         r"""Updates cosmo metadata if the same as in gcdata
 
         Parameters
         ----------
+        key: str
+            Name of key to compare and update.
         gcdata: GCData
-            Table to check if same cosmology
-        cosmo_desc: str, None
-            Descriptor of cosmology
+            Table to check if same cosmology.
+        ext_value:
+            Value to be compared to.
         overwrite: bool
-            Overwrites the current cosmo metadata. If false raises Error when cosmologies are
-            different.
+            Overwrites the current metadata. If false raises Error when values are different.
 
         Returns
         -------
         None
         """
-        if cosmo_desc:
-            cosmo_gcdata = gcdata.meta['cosmo']
-            if cosmo_gcdata and cosmo_gcdata != cosmo_desc:
+        if ext_value:
+            in_value = gcdata.meta[key]
+            if in_value and in_value != ext_value:
                 if overwrite:
                     warnings.warn(
-                        f'input cosmo ({cosmo_desc}) overwriting gcdata cosmo ({cosmo_gcdata})')
+                        f"input '{key}' ({ext_value}) overwriting gcdata '{key}' ({in_value})")
                 else:
-                    raise TypeError(
-                        f'input cosmo ({cosmo_desc}) differs from gcdata cosmo ({cosmo_gcdata})')
-            self.meta.__setitem__('cosmo', cosmo_desc, force=True)
+                    raise ValueError(
+                        f"input '{key}' ({ext_value}) differs from gcdata '{key}' ({in_value})")
+            self.meta.__setitem__(key, ext_value, force=True)
 
     def update_cosmo_ext_valid(self, gcdata, cosmo, overwrite=False):
         r"""Updates cosmo metadata if the same as in gcdata
@@ -165,7 +166,7 @@ class GCData(APtable):
         None
         """
         cosmo_desc = cosmo.get_desc() if cosmo else None
-        self.update_cosmodesc_ext_valid(gcdata, cosmo_desc, overwrite=overwrite)
+        self.update_info_ext_valid('cosmo', gcdata, cosmo_desc, overwrite=overwrite)
 
     def update_cosmo(self, cosmo, overwrite=False):
         r"""Updates cosmo metadata if not present

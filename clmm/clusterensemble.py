@@ -115,13 +115,12 @@ class ClusterEnsemble():
         tb_kwargs.pop('self')
         tb_kwargs.pop('tb_kwargs')
         tb_kwargs.pop('galaxycluster')
-        if self.data.meta['bin_units'] is None:
-            self.data.meta['bin_units'] = bin_units
-        elif self.data.meta['bin_units'] != bin_units:
-            raise ValueError('inconsistent units')
+
+        cl_bin_units = galaxycluster.galcat.meta.get('bin_units', None)
+        self.data.update_info_ext_valid('bin_units', self, cl_bin_units, overwrite=False)
 
         cl_cosmo = galaxycluster.galcat.meta.get('cosmo', None)
-        self.data.update_cosmodesc_ext_valid(self, cl_cosmo, overwrite=False)
+        self.data.update_info_ext_valid('cosmo', self, cl_cosmo, overwrite=False)
 
         profile_table = galaxycluster.make_radial_profile(
             include_empty_bins=True, gal_ids_in_bins=False, add=False,
@@ -150,13 +149,11 @@ class ClusterEnsemble():
         weights : str, None
             Name of the weight column to be used in the added to the profile table.
         """
-        if self.data.meta['bin_units'] is None:
-            self.data.meta['bin_units'] = profile_table.meta['bin_units']
-        elif self.data.meta['bin_units'] != profile_table.meta['bin_units']:
-            raise ValueError('inconsistent units')
+        cl_bin_units = profile_table.meta.get('bin_units', None)
+        self.data.update_info_ext_valid('bin_units', self.data, cl_bin_units, overwrite=False)
 
         cl_cosmo = profile_table.meta.get('cosmo', None)
-        self.data.update_cosmodesc_ext_valid(self, cl_cosmo, overwrite=False)
+        self.data.update_info_ext_valid('cosmo', self.data, cl_cosmo, overwrite=False)
 
         tbcols = ('radius', tan_component, cross_component, weights)
         data_to_save = [galaxycluster.unique_id, galaxycluster.ra,
