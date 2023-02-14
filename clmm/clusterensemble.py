@@ -166,6 +166,13 @@ class ClusterEnsemble():
         else:
             self.data.add_row(data_to_save)
 
+    def _check_empty_data(self):
+        if len(self.data) == 0:
+            raise ValueError("There is no single cluster profile data. Please run" +
+                             "'make_individual_radial_profile' or "
+                             "'add_individual_radial_profile' "
+                             "for each cluster in your catalog")
+
     def make_stacked_radial_profile(self, tan_component='gt', cross_component='gx',
                                     weights='W_l'):
         """Computes stacked profile and mean separation distances and add it internally.
@@ -181,9 +188,8 @@ class ClusterEnsemble():
         weights : str
             Name of the weights column in `data`.
         """
-        if len(self.data) == 0:
-                raise ValueError("There is no single cluster profile data. Please run" +
-                             "'make_individual_radial_profile' for each cluster in your catalog")
+        self._check_empty_data()
+
         radius, components = make_stacked_radial_profile(
             self.data['radius'], self.data[weights],
             [self.data[tan_component], self.data[cross_component]])
@@ -201,9 +207,8 @@ class ClusterEnsemble():
         sample_cross_covariance : ndarray
             The sample covariance matrix for the stacked cross profile
         """
-        if len(self.data) == 0:
-                raise ValueError("There is no single cluster profile data. Please run" +
-                             "'make_individual_radial_profile' for each cluster in your catalog")
+        self._check_empty_data()
+
         n_catalogs = len(self.data)
         self.sample_tangential_covariance = np.cov(self.data[tan_component].T,
                                                    bias = False)/n_catalogs
@@ -220,9 +225,8 @@ class ClusterEnsemble():
         n_bootstrap : int
             number of bootstrap resamplings
         """
-        if len(self.data) == 0:
-                raise ValueError("There is no single cluster profile data. Please run" +
-                             "'make_individual_radial_profile' for each cluster in your catalog")
+        self._check_empty_data()
+
         cluster_index = np.arange(len(self.data))
         gt_boot, gx_boot = [], []
         for n_boot in range(n_bootstrap):
@@ -250,9 +254,8 @@ class ClusterEnsemble():
         """
         #may induce artificial noise if there are some healpix pixels
         #not covering entirely the 2D map of clusters
-        if len(self.data) == 0:
-                raise ValueError("There is no single cluster profile data. Please run" +
-                             "'make_individual_radial_profile' for each cluster in your catalog")
+        self._check_empty_data()
+
         pixels = healpy.ang2pix(n_side, self.data['ra'], self.data['dec'],
                                 nest=True, lonlat=True)
         pixels_list_unique = np.unique(pixels)
