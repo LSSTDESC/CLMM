@@ -117,10 +117,10 @@ class ClusterEnsemble():
         tb_kwargs.pop('galaxycluster')
 
         cl_bin_units = galaxycluster.galcat.meta.get('bin_units', None)
-        self.data.update_info_ext_valid('bin_units', self, cl_bin_units, overwrite=False)
+        self.data.update_info_ext_valid('bin_units', self.data, cl_bin_units, overwrite=False)
 
         cl_cosmo = galaxycluster.galcat.meta.get('cosmo', None)
-        self.data.update_info_ext_valid('cosmo', self, cl_cosmo, overwrite=False)
+        self.data.update_info_ext_valid('cosmo', self.data, cl_cosmo, overwrite=False)
 
         profile_table = galaxycluster.make_radial_profile(
             include_empty_bins=True, gal_ids_in_bins=False, add=False,
