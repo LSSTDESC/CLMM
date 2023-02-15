@@ -135,8 +135,6 @@ for entry in config:
     else:
         doc_files[key].append(entry)
 # -- Compile the examples into rst----------------------------------------
-dc2_fix = False
-hsc_fix = False
 run_nb = False
 
 outdir = 'compiled-examples/'
@@ -144,11 +142,11 @@ nbconvert_opts = ['--to rst',
                   '--ExecutePreprocessor.kernel_name=python3',
                    '--execute',
                   f'--output-dir {outdir}']
-nb_skip_run = []
-if hsc_fix:
-    nb_skip_run.append('../examples/mass_fitting/Example4_Fit_Halo_mass_to_HSC_data.ipynb')
-if dc2_fix:
-    nb_skip_run.append('../examples/DC2/data_and_model_demo_DC2.ipynb')
+nb_skip_run = [
+#    '../examples/DC2/data_and_model_demo_DC2.ipynb',
+#    '../examples/mass_fitting/Example4_Fit_Halo_mass_to_HSC_data.ipynb',
+#    '../examples/mass_fitting/Example5_Fit_Halo_mass_to_DES_data.ipynb',
+]
 
 for lists in [v for k, v in doc_files.items() if k!='APIDOC']:
     for demo in lists:
@@ -157,15 +155,12 @@ for lists in [v for k, v in doc_files.items() if k!='APIDOC']:
             com = com.replace(' --execute ', ' ')
         subprocess.run(com, shell=True)
 
-if dc2_fix:
-    com = 'cp -rf .precompiled-fixed-examples/data_and_model_demo_DC2* compiled-examples/'
-    print('* Fix for publication (use precompiled version of DC2 NB from older version)')
+for nb in nb_skip_run:
+    pref = nb.split('/')[-1].replace('.ipynb', '')
+    com = f'cp -rf .precompiled-fixed-examples/{pref}* compiled-examples/'
+    print(f'* Fix for publication (use precompiled version of {pref} from older version)')
     subprocess.run(com, shell=True)
 
-if hsc_fix:
-    com = 'cp -rf .precompiled-fixed-examples/Example4_Fit_Halo_mass_to_HSC_data* compiled-examples/'
-    print('* Fix for publication (use precompiled version of HSC NB from older version)')
-    subprocess.run(com, shell=True)
 
 # -- Build index.html ----------------------------------------------------
 doc_captions = {
