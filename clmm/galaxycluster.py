@@ -504,7 +504,7 @@ class GalaxyCluster():
             profile_table.rename_column(f'p_{i}', name)
             profile_table.rename_column(f'p_{i}_err', f'{name}_err')
         # Reaname weights columns
-        profile_table.rename_column('weights', weights_out)
+        profile_table.rename_column('weights_sum', weights_out)
         # add galaxy IDs
         if gal_ids_in_bins:
             if 'id' not in self.galcat.columns:
