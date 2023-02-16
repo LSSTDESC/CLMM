@@ -425,8 +425,12 @@ def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled,
     if galaxy_catalog.pzpdf_info['type'] is None:
         pass
     elif galaxy_catalog.pzpdf_info['type']=='shared_bins':
-        # start at zero to incorporate photoz errors
-        pzbins = np.arange(0, zsrc_max+pz_bin_width, pz_bin_width)
+        # sigma to make sure range covers all PDZs
+        n_sigma =10.*photoz_sigma_unscaled*(1+zsrc_max)
+        pzbins = np.arange(
+            max(galaxy_catalog['z'].min()-n_sigma, 0.0),
+            galaxy_catalog['z'].max()+n_sigma+pz_bin_width,
+            pz_bin_width)
         pzpdf_grid = gaussian(pzbins, galaxy_catalog['z'][:,None],
                               galaxy_catalog['pzsigma'][:,None])
         galaxy_catalog.pzpdf_info['zbins'] = pzbins
