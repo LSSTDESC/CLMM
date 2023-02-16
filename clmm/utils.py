@@ -154,7 +154,7 @@ def compute_radial_averages(xvals, yvals, xbins, yerr=None, error_model='ste', w
         of `xvals` belongs.  Same length as `yvals`.  A binnumber of `i` means the
         corresponding value is between (xbins[i-1], xbins[i]).
     wts_sum: bumpy.array
-        Sums of weights in each bin
+        Sum of individual weights in each bin.
     """
     # make case independent
     error_model = error_model.lower()
