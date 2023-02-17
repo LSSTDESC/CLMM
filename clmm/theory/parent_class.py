@@ -425,7 +425,7 @@ class CLMModeling:
         return self.cosmo.eval_sigma_crit(z_len, z_src)
 
 
-    def eval_critical_surface_density_eff(self, z_len, pzbins, pzpdf):
+    def eval_critical_surface_density_eff(self, z_len, pzbins, pzpdf, validate_input=True):
         r"""Computes the 'effective critical surface density
 
         .. math::
