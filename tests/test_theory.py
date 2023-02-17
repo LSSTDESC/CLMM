@@ -276,12 +276,8 @@ def test_profiles(modeling_data, profile_init):
         # Need to set the alpha value for the NC backend to the one used for the benchmarks,
         # which is the CCL default value
         if profile_init=='einasto':
-            # for old CCL compatibility
-            if (theo.be_nick=='ccl' and not theo.Modeling()._new_version):
-                alpha_ein = None
-            else:
-                alpha_ein = cfg['TEST_CASE']['alpha_einasto']
-                mod.set_einasto_alpha(alpha_ein)
+            alpha_ein = cfg['TEST_CASE']['alpha_einasto']
+            mod.set_einasto_alpha(alpha_ein)
 
         if profile_init!='einasto':
             alpha_ein = None
@@ -767,27 +763,21 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         if profile_init=='einasto':
             alpha_ein = cfg['TEST_CASE']['alpha_einasto']
 
-            # for old CCL compatibility
-            if theo.be_nick=='ccl' and not theo.Modeling()._new_version:
+            mod.set_einasto_alpha(0.25)
+            assert_allclose(mod.get_einasto_alpha(), 0.25, reltol)
+
+            # test default value
+            mod.set_einasto_alpha(None)
+            if theo.be_nick=='ccl':
+                mod._new_version = False
                 assert_raises(NotImplementedError, mod.set_einasto_alpha, alpha_ein)
-                assert_allclose(
-                        mod.get_einasto_alpha(cfg['GAMMA_PARAMS']['z_cluster']), alpha_ein,
-                        reltol)
-            else:
-                # test default alpha_ein=0.25
-                #assert_allclose(mod.get_einasto_alpha(), 0.25)
+                mod._new_version = True
+                assert_allclose(mod.get_einasto_alpha(cfg['GAMMA_PARAMS']['z_cluster']),
+                                alpha_ein, reltol)
+            if theo.be_nick=='nc':
+                assert_allclose(mod.get_einasto_alpha(), 0.25, reltol)
 
-                if theo.be_nick=='ccl':
-                    mod._new_version = False
-                    assert_raises(NotImplementedError, mod.set_einasto_alpha, alpha_ein)
-                    mod._new_version = True
-                    mod.set_einasto_alpha('cosmo')
-                    assert_allclose(
-                        mod.get_einasto_alpha(cfg['GAMMA_PARAMS']['z_cluster']), alpha_ein,
-                        reltol)
-
-                mod.set_einasto_alpha(alpha_ein)
-                assert_allclose(mod.get_einasto_alpha(), alpha_ein, reltol)
+            mod.set_einasto_alpha(alpha_ein)
 
         if profile_init!='einasto':
             assert_raises(ValueError, mod.get_einasto_alpha)
