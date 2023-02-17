@@ -177,7 +177,8 @@ class CCLCLMModeling(CLMModeling):
                                         self.cosmo.get_a_from_z(z_cl), self.mdef)
                     )*self.cor_factor/a_cl**2
         else:
-            return self.eval_mean_surface_density(r_proj, z_cl) - self.eval_surface_density(r_proj, z_cl)
+            return self.eval_mean_surface_density(r_proj, z_cl) \
+                    - self.eval_surface_density(r_proj, z_cl)
 
 
 Modeling = CCLCLMModeling
