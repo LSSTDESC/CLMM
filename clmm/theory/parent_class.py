@@ -349,9 +349,9 @@ class CLMModeling:
 
         Parameters
         ----------
-        alpha : float, 'cosmo'(CCL backend only)
-            Set to 'cosmo' to use the cosmology-dependent :math:`\alpha` parameter given by the
-            CCL backend for the Einasto profile.
+        alpha : float, None
+            If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
+            cosmology-dependent value for the CCL backend.)
         """
         if self.halo_profile_model!='einasto':
             raise NotImplementedError(
@@ -359,8 +359,7 @@ class CLMModeling:
                 "of profile choice or modeling backend.")
         else:
             if self.validate_input:
-                if alpha != 'cosmo' or self.backend!='ccl':
-                    validate_argument(locals(), 'alpha', float)
+                validate_argument(locals(), 'alpha', float, none_ok=True)
             self._set_einasto_alpha(alpha)
 
     def get_einasto_alpha(self, z_cl=None):

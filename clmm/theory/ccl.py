@@ -116,7 +116,10 @@ class CCLCLMModeling(CLMModeling):
 
     def _set_einasto_alpha(self, alpha):
         if self._new_version:
-            self.hdpm.update_parameters(alpha=alpha)
+            if alpha is None:
+                self.hdpm.update_parameters(alpha='cosmo')
+            else:
+                self.hdpm.update_parameters(alpha=alpha)
         else:
             raise NotImplementedError
 

@@ -112,7 +112,10 @@ class NumCosmoCLMModeling(CLMModeling):
         self.hdpm.props.log10MDelta = math.log10(mdelta)
 
     def _set_einasto_alpha(self, alpha):
-        self.hdpm.props.alpha = alpha
+        if alpha is None:
+            self.hdpm.props.alpha = 0.25
+        else:
+            self.hdpm.props.alpha = alpha
 
     def _get_einasto_alpha(self, z_cl=None):
         """"get the value of the Einasto slope"""
