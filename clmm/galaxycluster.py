@@ -146,9 +146,9 @@ class GalaxyCluster():
                 self.galcat.meta['sigmac_type']= 'standard'
             else:
                 self.galcat['sigma_c'] = compute_critical_surface_density_eff(
-                    cosmo=cosmo,  z_cluster=self.z, pzbins=self.galcat['pzbins'], pzpdf=self.galcat['pzpdf'],
-                    validate_input=self.validate_input)
-                self.galcat.meta['sigmac_type']= 'effective'
+                    cosmo=cosmo,  z_cluster=self.z, pzbins=self.galcat['pzbins'],
+                    pzpdf=self.galcat['pzpdf'], validate_input=self.validate_input)
+                self.galcat.meta['sigmac_type'] = 'effective'
 
 
 

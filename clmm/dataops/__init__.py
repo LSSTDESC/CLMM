@@ -6,7 +6,8 @@ import scipy
 from astropy.coordinates import SkyCoord
 from astropy import units as u
 from .. gcdata import GCData
-from .. utils import compute_radial_averages, make_bins, convert_units, arguments_consistency, validate_argument, _integ_pzfuncs
+from .. utils import (compute_radial_averages, make_bins, convert_units,
+                      arguments_consistency, validate_argument, _integ_pzfuncs)
 from .. theory import compute_critical_surface_density, compute_critical_surface_density_eff
 
 
@@ -14,7 +15,8 @@ def compute_tangential_and_cross_components(
         ra_lens, dec_lens, ra_source, dec_source,
         shear1, shear2, geometry='curve',
         is_deltasigma=False, cosmo=None,
-        z_lens=None, z_source=None, sigma_c=None, use_pdz=False, pzbins=None, pzpdf=None, 
+        z_lens=None, z_source=None, sigma_c=None,
+        use_pdz=False, pzbins=None, pzpdf=None,
         validate_input=True):
     r"""Computes tangential- and cross- components for shear or ellipticity
 
@@ -172,13 +174,15 @@ def compute_tangential_and_cross_components(
                     'i) cosmology, ii) lens redshift, iii) source redshift bins and'
                     'iv) source redshift pdf')
 
-            sigma_c = compute_critical_surface_density_eff(cosmo, z_lens, pzbins=pzbins, pzpdf=pzpdf)
+            sigma_c = compute_critical_surface_density_eff(cosmo, z_lens,
+                                                           pzbins=pzbins, pzpdf=pzpdf)
 
         tangential_comp *= sigma_c
         cross_comp *= sigma_c
     return angsep, tangential_comp, cross_comp
 
-def compute_background_probability(z_lens, z_source=None, use_pdz=False, pzpdf=None, pzbins=None, validate_input=True):
+def compute_background_probability(z_lens, z_source=None, use_pdz=False, pzpdf=None, pzbins=None,
+                                   validate_input=True):
     r"""Probability for being a background galaxy
 
     Parameters
@@ -229,8 +233,8 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, use_pdz=False, pzpdf=No
         .. math::
             w_{ls, \text{geo}} = \Sigma_c(\text{cosmo}, z_l, z_{\text{src}})^{-2}\;.
 
-        If the redshift pdf of each source, :math:`p_{\text{photoz}}(z_s)`, is known, the weights are
-        computed instead as
+        If the redshift pdf of each source, :math:`p_{\text{photoz}}(z_s)`, is known,
+        the weights are computed instead as
 
         .. math::
             w_{ls, \text{geo}} = \left[\int_{\delta + z_l} dz_s p_{\text{photoz}}(z_s)
@@ -338,7 +342,9 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, use_pdz=False, pzpdf=No
                     'please provide a '
                     'i) cosmology, ii) lens redshift, iii) source redshift bins and'
                     'iv) source redshift pdf')
-            sigma_c = compute_critical_surface_density_eff(cosmo, z_lens, pzbins=pzbins, pzpdf=pzpdf)
+            sigma_c = compute_critical_surface_density_eff(cosmo, z_lens,
+                                                           pzbins=pzbins,
+                                                           pzpdf=pzpdf)
         w_ls_geo = 1./sigma_c**2
 
     #computing w_ls_shape

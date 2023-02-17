@@ -272,7 +272,8 @@ def test_compute_tangential_and_cross_components(modeling_data):
     da.compute_tangential_and_cross_components(ra_lens=ra_lens, dec_lens=dec_lens,
                                                ra_source=gals['ra'][0], dec_source=gals['dec'][0], 
                                                shear1=gals['e1'][0], shear2=gals['e2'][0],
-                                               is_deltasigma=True, use_pdz=True, cosmo=cosmo, z_lens=z_lens,
+                                               is_deltasigma=True, use_pdz=True,
+                                               cosmo=cosmo, z_lens=z_lens,
                                                z_source=None, pzbins=[[0.55,0.6,0.65,0.7,0.75]], 
                                                pzpdf=[[0.01,1,0.01, 0.001, 0.0001]])
 
@@ -345,11 +346,12 @@ def test_compute_galaxy_weights():
     shape_component2_err = np.array([.14, .16, .21])
 
     #true redshift + deltasigma
-    weights = da.compute_galaxy_weights(z_lens, cosmo, z_source=z_source, use_pdz=False, pzpdf=None, pzbins=None,
-                           use_shape_noise=False, shape_component1=shape_component1, shape_component2=shape_component2,
-                           use_shape_error=False, shape_component1_err=shape_component1_err, shape_component2_err=shape_component2_err,
-                           is_deltasigma=True,
-                           validate_input=True)
+    weights = da.compute_galaxy_weights(
+        z_lens, cosmo, z_source=z_source, use_pdz=False, pzpdf=None, pzbins=None,
+        use_shape_noise=False, shape_component1=shape_component1, shape_component2=shape_component2,
+        use_shape_error=False, shape_component1_err=shape_component1_err,
+        shape_component2_err=shape_component2_err, is_deltasigma=True,
+        validate_input=True)
     expected = np.array([4.58644320e-31, 9.68145632e-31, 5.07260777e-31])
     assert_allclose(weights*1e20, expected*1e20,**TOLERANCE)
 
@@ -357,48 +359,52 @@ def test_compute_galaxy_weights():
     pzbin = np.linspace(.0001, 5, 100)
     pzbins = [pzbin for i in range(len(z_source))]
     pzpdf = [multivariate_normal.pdf(pzbin, mean=z, cov=.3) for z in z_source]
-    weights = da.compute_galaxy_weights(z_lens, cosmo, z_source=None, use_pdz=True, pzpdf=pzpdf, pzbins=pzbins,
-                           use_shape_noise=False, shape_component1=shape_component1, shape_component2=shape_component2,
-                           use_shape_error=False, shape_component1_err=None, shape_component2_err=None,
-                           is_deltasigma=True,
-                           validate_input=True)
+    weights = da.compute_galaxy_weights(
+        z_lens, cosmo, z_source=None, use_pdz=True, pzpdf=pzpdf, pzbins=pzbins,
+        use_shape_noise=False, shape_component1=shape_component1, shape_component2=shape_component2,
+        use_shape_error=False, shape_component1_err=None, shape_component2_err=None,
+        is_deltasigma=True,
+        validate_input=True)
 
     expected = np.array([9.07709345e-33, 1.28167582e-32, 4.16870389e-32])
     assert_allclose(weights*1e20, expected*1e20,**TOLERANCE)
 
     # test with noise
-    weights = da.compute_galaxy_weights(z_lens, cosmo, z_source=None, use_pdz=True, pzpdf=pzpdf, pzbins=pzbins,
-                           use_shape_noise=True, shape_component1=shape_component1, shape_component2=shape_component2,
-                           use_shape_error=False, shape_component1_err=None, shape_component2_err=None,
-                           is_deltasigma=True,
-                           validate_input=True)
+    weights = da.compute_galaxy_weights(
+        z_lens, cosmo, z_source=None, use_pdz=True, pzpdf=pzpdf, pzbins=pzbins,
+        use_shape_noise=True, shape_component1=shape_component1,
+        shape_component2=shape_component2, use_shape_error=False,
+        shape_component1_err=None, shape_component2_err=None,
+        is_deltasigma=True, validate_input=True)
 
     expected = np.array([9.07709345e-33, 1.28167582e-32, 4.16870389e-32])
     assert_allclose(weights*1e20, expected*1e20,**TOLERANCE)
 
     # test with is_deltasigma=False and geometric weights only
-    weights = da.compute_galaxy_weights(z_lens, cosmo, z_source=None, use_pdz=True, pzpdf=pzpdf, pzbins=pzbins,
-                           use_shape_noise=False, shape_component1=shape_component1, shape_component2=shape_component2,
-                           use_shape_error=False, shape_component1_err=None, shape_component2_err=None,
-                           is_deltasigma=False,
-                           validate_input=True)
+    weights = da.compute_galaxy_weights(
+        z_lens, cosmo, z_source=None, use_pdz=True, pzpdf=pzpdf, pzbins=pzbins,
+        use_shape_noise=False, shape_component1=shape_component1,
+        shape_component2=shape_component2, use_shape_error=False,
+        shape_component1_err=None, shape_component2_err=None,
+        is_deltasigma=False, validate_input=True)
 
     expected = np.array([1., 1.,1.])
     assert_allclose(weights, expected,**TOLERANCE)
 
     # # test error when missing information
-    assert_raises(ValueError, da.compute_galaxy_weights, z_lens, cosmo, z_source=None, use_pdz=True, pzpdf=pzpdf, pzbins=pzbins,
-                           use_shape_noise=True, shape_component1=None, shape_component2=None,
-                           use_shape_error=False, shape_component1_err=None, shape_component2_err=None,
-                           is_deltasigma=False,
-                           validate_input=True)
+    assert_raises(ValueError, da.compute_galaxy_weights, z_lens, cosmo,
+                  z_source=None, use_pdz=True, pzpdf=pzpdf, pzbins=pzbins,
+                  use_shape_noise=True, shape_component1=None,
+                  shape_component2=None, use_shape_error=False,
+                  shape_component1_err=None, shape_component2_err=None,
+                  is_deltasigma=False, validate_input=True)
 
     # test error when missing information
-    assert_raises(ValueError, da.compute_galaxy_weights, z_lens, cosmo, z_source=None, use_pdz=True, pzpdf=pzpdf, pzbins=pzbins,
-                           use_shape_noise=False,
-                           use_shape_error=True, shape_component1_err=None, shape_component2_err=None,
-                           is_deltasigma=False,
-                           validate_input=True)
+    assert_raises(ValueError, da.compute_galaxy_weights, z_lens, cosmo,
+                  z_source=None, use_pdz=True, pzpdf=pzpdf, pzbins=pzbins,
+                  use_shape_noise=False, use_shape_error=True,
+                  shape_component1_err=None, shape_component2_err=None,
+                  is_deltasigma=False, validate_input=True)
 
     assert_raises(TypeError, da.compute_galaxy_weights, z_lens, cosmo=None, z_source=None,
                   use_pdz=False, pzpdf=pzpdf, pzbins=pzbins,
@@ -455,9 +461,12 @@ def test_make_radial_profiles():
         'tan_shear': np.array([-0.22956126563459447, -0.02354769805831558, -0.02354769805831558]),
     }
     expected_curve = {  
-        'angsep': np.array([0.002175111279323424171, 0.003723129781247932167, 0.003723129781247932167]),
-        'cross_shear': np.array([0.277590689496438781, 0.639929479722048944, 0.639929479722048944]),
-        'tan_shear': np.array([-0.23009434826803484841, -0.02214183783401518779, -0.02214183783401518779]),
+        'angsep': np.array([0.002175111279323424171, 0.003723129781247932167,
+                            0.003723129781247932167]),
+        'cross_shear': np.array([0.277590689496438781, 0.639929479722048944,
+                                 0.639929479722048944]),
+        'tan_shear': np.array([-0.23009434826803484841, -0.02214183783401518779,
+                               -0.02214183783401518779]),
     }
     # Geometries to test
     geo_tests = [('flat', expected_flat), ('curve', expected_curve)]
@@ -556,12 +565,13 @@ def test_make_radial_profiles():
         # Test it runs with galaxy id's and int bins and no empty bins
         cluster.make_radial_profile(bin_units, bins=bins_radians, include_empty_bins=False,
                                     gal_ids_in_bins=True, table_name='profile3')
-        _test_profile_table_output(cluster.profile3, bins_radians[1], expected_radius[1], bins_radians[2],
-                                   expected['tan_shear'][1], expected['cross_shear'][1], [2],
-                                   p0='gt', p1='gx')
+        _test_profile_table_output(cluster.profile3, bins_radians[1], expected_radius[1],
+                                   bins_radians[2], expected['tan_shear'][1],
+                                   expected['cross_shear'][1], [2], p0='gt',
+                                   p1='gx')
         # Test passing zeror errors
         cluster_err = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
-                                     galcat=gals['ra', 'dec', 'e1', 'e2', 'z', 'id'])
+                                         galcat=gals['ra', 'dec', 'e1', 'e2', 'z', 'id'])
         cluster_err.compute_tangential_and_cross_components(geometry=geometry)
         cluster_err.galcat['et_err'] = 0
         cluster_err.galcat['ex_err'] = 0
