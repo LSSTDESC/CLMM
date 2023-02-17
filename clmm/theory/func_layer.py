@@ -930,7 +930,8 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
 
 def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_source, cosmo,
                                delta_mdef=200, halo_profile_model='nfw', massdef='mean',
-                               z_src_info='discrete', approx=None, beta_kwargs=None,
+                               alpha_ein=None, z_src_info='discrete',
+                               approx=None, beta_kwargs=None,
                                verbose=False, validate_input=True):
 
     r""" Computes magnification bias from magnification :math:`\mu`
@@ -971,6 +972,9 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
         CLMM Cosmology object
     delta_mdef : int, optional
         Mass overdensity definition.  Defaults to 200.
+    alpha_ein : float, optional
+        If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only
+        available for the NumCosmo backend
     halo_profile_model : str, optional
         Profile model parameterization (letter case independent):
 
@@ -1077,6 +1081,8 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
         halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
     gcm.set_concentration(cdelta)
     gcm.set_mass(mdelta)
+    if alpha_ein is not None:
+        gcm.set_einasto_alpha(alpha_ein)
 
     magnification_bias = gcm.eval_magnification_bias(r_proj, z_cluster, z_source, alpha,
                                                      z_src_info=z_src_info, approx=approx,
