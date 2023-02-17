@@ -6,8 +6,8 @@ Requirements
 ============
 CLMM requires Python version 3.6 or later.  CLMM has the following dependencies:
 
-- `NumPy <http://www.numpy.org/>`_: 1.17 or later
-- `sciPy <http://www.scipy.org/>`_: 1.3 or later
+- `NumPy <https://www.numpy.org/>`_: 1.17 or later
+- `sciPy <https://www.scipy.org/>`_: 1.3 or later
 - `Astropy <https://www.astropy.org/>`_: 4.x or later
 - `Matplotlib <https://matplotlib.org/>`_
 
