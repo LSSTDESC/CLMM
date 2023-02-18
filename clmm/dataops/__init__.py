@@ -6,15 +6,17 @@ import scipy
 from astropy.coordinates import SkyCoord
 from astropy import units as u
 from .. gcdata import GCData
-from .. utils import compute_radial_averages, make_bins, convert_units, arguments_consistency, validate_argument, _integ_pzfuncs
-from .. theory import compute_critical_surface_density
+from .. utils import (compute_radial_averages, make_bins, convert_units,
+                      arguments_consistency, validate_argument, _integ_pzfuncs)
+from .. theory import compute_critical_surface_density, compute_critical_surface_density_eff
 
 
 def compute_tangential_and_cross_components(
         ra_lens, dec_lens, ra_source, dec_source,
         shear1, shear2, geometry='curve',
         is_deltasigma=False, cosmo=None,
-        z_lens=None, z_source=None, sigma_c=None, use_pdz=False, pzbins=None, pzpdf=None, 
+        z_lens=None, z_source=None, sigma_c=None,
+        use_pdz=False, pzbins=None, pzpdf=None,
         validate_input=True):
     r"""Computes tangential- and cross- components for shear or ellipticity
 
@@ -93,10 +95,19 @@ def compute_tangential_and_cross_components(
         Not used if `sigma_c` is provided.
     z_source: array, optional
         Redshift of the source, required if `is_deltasigma` is True and `sigma_c` not provided.
-        Not used if `sigma_c` is provided.
+        Not used if `sigma_c` is provided or `use_pdz=True`.
     sigma_c : float, optional
         Critical surface density in units of :math:`M_\odot\ Mpc^{-2}`,
         if provided, `cosmo`, `z_lens` and `z_source` are not used.
+    use_pdz: bool
+        Flag to use or not the source redshift p(z), required if `is_deltasigma` is True
+        and `sigma_c` not provided. If `False`, the point estimate provided by `z_source` is used.
+    pzpdf : array, optional
+        Photometric probablility density functions of the source galaxies, required if
+        `is_deltasigma=True` and `use_pdz=True` and `sigma_c` not provided.
+    pzbins : array, optional
+        Redshift axis on which the individual photoz pdf is tabulated, required if
+        `is_deltasigma=True` and `use_pdz=True` and `sigma_c` not provided.
     validate_input: bool
         Validade each input argument
 
@@ -159,9 +170,11 @@ def compute_tangential_and_cross_components(
                 raise TypeError(
                     'To compute DeltaSigma, please provide a '
                     'i) cosmology, ii) redshift of lens and sources')
+
             sigma_c = compute_critical_surface_density(cosmo, z_lens, z_source=z_source)
+
         elif sigma_c is None:
-            # Need to verify that cosmology, lens redshift, source redshift bins and 
+            # Need to verify that cosmology, lens redshift, source redshift bins and
             # source redshift pdf are provided
             if any(t_ is None for t_ in (z_lens, cosmo, pzbins, pzpdf)):
                 raise TypeError(
@@ -169,13 +182,16 @@ def compute_tangential_and_cross_components(
                     'please provide a '
                     'i) cosmology, ii) lens redshift, iii) source redshift bins and'
                     'iv) source redshift pdf')
-            sigma_c = compute_critical_surface_density(cosmo, z_lens, use_pdz=use_pdz,
-                                                       pzbins=pzbins, pzpdf=pzpdf)
+
+            sigma_c = compute_critical_surface_density_eff(cosmo, z_lens,
+                                                           pzbins=pzbins, pzpdf=pzpdf)
+
         tangential_comp *= sigma_c
         cross_comp *= sigma_c
     return angsep, tangential_comp, cross_comp
 
-def compute_background_probability(z_lens, z_source=None, use_pdz=False, pzpdf=None, pzbins=None, validate_input=True):
+def compute_background_probability(z_lens, z_source=None, use_pdz=False, pzpdf=None, pzbins=None,
+                                   validate_input=True):
     r"""Probability for being a background galaxy
 
     Parameters
@@ -184,6 +200,9 @@ def compute_background_probability(z_lens, z_source=None, use_pdz=False, pzpdf=N
         Redshift of the lens.
     z_source: array, optional
         Redshift of the source. Used only if pzpdf=pzbins=None.
+    use_pdz: bool
+        Flag to use or not the source redshif. If `False`,
+        the point estimate provided by `z_source` is used.
     pzpdf : array, optional
         Photometric probablility density functions of the source galaxies.
         Used instead of z_source if provided.
@@ -201,7 +220,7 @@ def compute_background_probability(z_lens, z_source=None, use_pdz=False, pzpdf=N
 
     if use_pdz is False:
         if z_source is None:
-            raise ValueError('z_source must be provided.')  
+            raise ValueError('z_source must be provided.')
         p_background = np.array(z_source>z_lens, dtype=float)
     else:
         if (pzpdf is None or pzbins is None):
@@ -319,10 +338,25 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, use_pdz=False, pzpdf=No
     if is_deltasigma is False:
         w_ls_geo = 1.
     else:
-        if sigma_c is None:
-            sigma_c = compute_critical_surface_density(cosmo, z_lens, z_source=z_source,
-                                                       use_pdz=use_pdz,
-                                                       pzbins=pzbins, pzpdf=pzpdf)
+        if sigma_c is None and use_pdz is False:
+            # Need to verify that cosmology and redshifts are provided
+            if any(t_ is None for t_ in (z_lens, z_source, cosmo)):
+                raise TypeError(
+                    'To compute DeltaSigma, please provide a '
+                    'i) cosmology, ii) redshift of lens and sources')
+            sigma_c = compute_critical_surface_density(cosmo, z_lens, z_source=z_source)
+        elif sigma_c is None:
+            # Need to verify that cosmology, lens redshift, source redshift bins and
+            # source redshift pdf are provided
+            if any(t_ is None for t_ in (z_lens, cosmo, pzbins, pzpdf)):
+                raise TypeError(
+                    'To compute DeltaSigma using the redshift pdz of the sources, '
+                    'please provide a '
+                    'i) cosmology, ii) lens redshift, iii) source redshift bins and'
+                    'iv) source redshift pdf')
+            sigma_c = compute_critical_surface_density_eff(cosmo, z_lens,
+                                                           pzbins=pzbins,
+                                                           pzpdf=pzpdf)
         w_ls_geo = 1./sigma_c**2
 
     #computing w_ls_shape

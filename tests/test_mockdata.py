@@ -79,9 +79,8 @@ def test_mock_data():
         cluster_dec = -23.2
         cluster_z = 0.3
 
-        data = mock.generate_galaxy_catalog(10**mass, cluster_z, 4, cosmo, 0.8,
-                                            ngals=ngals, cluster_ra=cluster_ra,
-                                            cluster_dec=cluster_dec)
+        data = mock.generate_galaxy_catalog(10**mass, cluster_z, 4, cosmo, 0.8, ngals=ngals,
+                                            cluster_ra=cluster_ra, cluster_dec=cluster_dec)
 
         # Check whether the given ngals is the retrieved ngals
         assert_equal(len(data['ra']), ngals)

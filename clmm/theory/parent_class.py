@@ -14,7 +14,8 @@ from .generic import (compute_reduced_shear_from_convergence,
                       compute_magnification_bias_from_magnification,
                       compute_rdelta, compute_profile_mass_in_radius,
                       convert_profile_mass_concentration)
-from ..utils import validate_argument, _integ_pzfuncs, compute_beta_s_mean, compute_beta_s_square_mean, compute_beta_s_func, compute_for_good_redshifts
+from ..utils import (validate_argument, _integ_pzfuncs, compute_beta_s_mean,
+                     compute_beta_s_square_mean, compute_beta_s_func, compute_for_good_redshifts)
 
 
 class CLMModeling:
@@ -151,7 +152,8 @@ class CLMModeling:
         raise NotImplementedError
 
     def _get_einasto_alpha(self, z_cl=None):
-        r""" Returns the value of the :math:`\alpha` parameter for the Einasto profile, if defined"""
+        r""" Returns the value of the :math:`\alpha` parameter for the Einasto profile,
+        if defined"""
         raise NotImplementedError
 
     def _eval_3d_density(self, r3d, z_cl):
@@ -240,12 +242,12 @@ class CLMModeling:
 
     def _eval_tangential_shear_core(self, r_proj, z_cl, z_src):
         delta_sigma = self.eval_excess_surface_density(r_proj, z_cl)
-        sigma_c = self.eval_critical_surface_density(z_cl, z_src)
+        sigma_c = self.cosmo.eval_sigma_crit(z_cl, z_src)
         return delta_sigma/sigma_c
 
     def _eval_convergence_core(self, r_proj, z_cl, z_src, verbose=False):
         sigma = self.eval_surface_density(r_proj, z_cl, verbose=verbose)
-        sigma_c = self.eval_critical_surface_density(z_cl, z_src)
+        sigma_c = self.cosmo.eval_sigma_crit(z_cl, z_src)
         return sigma/sigma_c
 
     def _eval_reduced_tangential_shear_core(self, r_proj, z_cl, z_src):
@@ -354,8 +356,10 @@ class CLMModeling:
         alpha: float
         """
         if self.halo_profile_model!='einasto' or self.backend!='nc':
-            raise NotImplementedError("The Einasto slope cannot be set for your combination of "
-                                      "profile choice or modeling backend.")
+            raise NotImplementedError(
+                "The Einasto slope cannot be set "
+                "for your combination of profile choice "
+                "or modeling backend.")
         else:
             if self.validate_input:
                 validate_argument(locals(), 'alpha', float)
@@ -398,28 +402,11 @@ class CLMModeling:
 
         return self._eval_3d_density(r3d=r3d, z_cl=z_cl)
 
-    def eval_critical_surface_density(self, z_len, z_src=None,
-                                      use_pdz=False, pzbins=None, pzpdf=None,
-                                      show_warning=True):
-        r"""Computes either
-
-        the critical surface density if `use_pdz=False`
+    def eval_critical_surface_density(self, z_len, z_src, validate_input=True):
+        r"""Computes the critical surface density
 
         .. math::
             \Sigma_{\text{crit}} = \frac{c^2}{4\pi G} \frac{D_s}{D_LD_{LS}}
-
-        or
-
-        the 'effective critical surface density' if `use_pdz=True`
-
-        .. math::
-            \langle \Sigma_{\text{crit}}^{-1}\rangle^{-1} =
-            \left(\int \frac{1}{\Sigma_{\text{crit}}(z)} p(z) dz\right)^{-1}
-
-        where :math:`p(z)` is the source photoz probability density function.
-        This comes from the maximum likelihood estimator for evaluating a :math:`\Delta\Sigma`
-        profile.
-
 
         Parameters
         ----------
@@ -427,12 +414,39 @@ class CLMModeling:
             Galaxy cluster redshift
         z_src : array_like, float
             Background source galaxy redshift(s)
-        use_pdz : bool
-            Flag to use the photoz pdf. If `False` (default), `sigma_c` is computed using the
-            source redshift point estimates `z_source`. If `True`, `sigma_c` is computed as
-            1/<1/Sigma_crit>, where the average is performed using the individual galaxy redshift
-            pdf. In that case, the `pzbins` and `pzpdf` should be specified.
+        validate_input: bool
+            Validade each input argument
 
+
+        Returns
+        -------
+        sigma_c : array_like, float
+            Cosmology-dependent critical surface density in units of :math:`M_\odot\ Mpc^{-2}`
+    """
+
+        if self.validate_input:
+            validate_argument(locals(), 'z_len', float, argmin=0)
+            validate_argument(locals(), 'z_src', 'float_array', argmin=0, none_ok=False)
+
+#            return self._eval_critical_surface_density(z_len=z_len, z_src=z_src)
+        return self.cosmo.eval_sigma_crit(z_len, z_src)
+
+
+    def eval_critical_surface_density_eff(self, z_len, pzbins, pzpdf, validate_input=True):
+        r"""Computes the 'effective critical surface density
+
+        .. math::
+            \langle \Sigma_{\rm crit}^{-1}\rangle^{-1} =
+            \left(\int \frac{1}{\Sigma_{\rm crit}(z)} p(z) dz\right)^{-1}
+
+        where :math:`p(z)` is the source photoz probability density function.
+        This comes from the maximum likelihood estimator for evaluating a
+        :math:`\Delta\Sigma` profile.
+
+        Parameters
+        ----------
+        z_len : float
+            Galaxy cluster redshift
         pzbins : array-like
             Bins where the source redshift pdf is defined
         pzpdf : array-like
@@ -444,25 +458,18 @@ class CLMModeling:
         Returns
         -------
         sigma_c : numpy.ndarray, float
-            Cosmology-dependent (effective) critical surface density in units of
+            Cosmology-dependent effective critical surface density in units of
             :math:`M_\odot\ Mpc^{-2}`
         """
 
         if self.validate_input:
             validate_argument(locals(), 'z_len', float, argmin=0)
-            validate_argument(locals(), 'z_src', 'float_array', argmin=0, none_ok=True)
+ 
+        def inv_sigmac(redshift):
+            return 1./self._eval_critical_surface_density(z_len=z_len, z_src=redshift)        
 
-        if use_pdz is False:
-            return self._eval_critical_surface_density(z_len=z_len, z_src=z_src,
-                                                       show_warning=show_warning)
-        else:
-            if pzbins is None or pzpdf is None:
-                raise ValueError('Redshift bins and source redshift pdf must be '
-                                 'provided when use_pdz is True')
-            else:
-                def inv_sigmac(redshift):
-                    return 1./self._eval_critical_surface_density(z_len=z_len, z_src=redshift)
-                return 1./_integ_pzfuncs(pzpdf, pzbins, kernel=inv_sigmac, is_unique_pzbins=np.all(pzbins==pzbins[0]))
+        return 1./_integ_pzfuncs(pzpdf, pzbins, kernel=inv_sigmac,
+                                 is_unique_pzbins=np.all(pzbins==pzbins[0]))
 
     def eval_surface_density(self, r_proj, z_cl, verbose=False):
         r""" Computes the surface mass density
@@ -567,8 +574,8 @@ class CLMModeling:
                 f"2-halo term not currently supported with the {self.backend} backend. "
                 "Use the CCL or NumCosmo backend instead")
         else:
-            return self._eval_excess_surface_density_2h(r_proj, z_cl,
-                                                        halobias=halobias, lsteps=lsteps)
+            return self._eval_excess_surface_density_2h(
+                r_proj, z_cl, halobias=halobias, lsteps=lsteps)
 
     def eval_surface_density_2h(self, r_proj, z_cl, halobias=1., lsteps=500):
         r""" Computes the 2-halo term surface density (CCL and NC backends only)
@@ -1420,8 +1427,8 @@ class CLMModeling:
         The mass is calculated as
 
         .. math::
-            M(<\text{r3d}) = M_{\Delta}\;\frac{f\left(\frac{\text{r3d}}
-            {r_{\Delta}/c_{\Delta}}\right)}{f(c_{\Delta})},
+            M(<\text{r3d}) = M_{\Delta}\;
+            \frac{f\left(\frac{\text{r3d}}{r_{\Delta}/c_{\Delta}}\right)}{f(c_{\Delta})},
 
         where :math:`f(x)` for the different models are
 

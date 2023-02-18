@@ -112,7 +112,7 @@ def test_instantiate(modeling_data):
     reduced_shear = mod.eval_reduced_tangential_shear(r_proj, z_cl, np.full_like(r_proj, z_src))
     assert_allclose(reduced_shear, shear/(1.0-convergence), rtol=1.0e-12)
 
-    assert_raises(ValueError, mod.eval_critical_surface_density, z_cl, use_pdz=True)
+    assert_raises(TypeError, mod.eval_critical_surface_density, z_cl)
 
 def test_warnings(modeling_data):
     """Test if warnings are issued"""
