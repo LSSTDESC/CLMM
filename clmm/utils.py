@@ -153,7 +153,7 @@ def compute_radial_averages(xvals, yvals, xbins, yerr=None, error_model='ste', w
         Indices of the bins (corresponding to `xbins`) in which each value
         of `xvals` belongs.  Same length as `yvals`.  A binnumber of `i` means the
         corresponding value is between (xbins[i-1], xbins[i]).
-    wts_sum: bumpy.array
+    wts_sum: numpy.ndarray
         Sum of individual weights in each bin.
     """
     # make case independent
