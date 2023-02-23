@@ -15,11 +15,12 @@ from . generic import (compute_reduced_shear_from_convergence,
                        convert_profile_mass_concentration)
 
 __all__ = generic.__all__+['compute_3d_density', 'compute_surface_density',
-                           'compute_excess_surface_density','compute_excess_surface_density_2h',
+                           'compute_excess_surface_density', 'compute_excess_surface_density_2h',
                            'compute_surface_density_2h',
                            'compute_critical_surface_density',
+                           'compute_critical_surface_density_eff',
                            'compute_tangential_shear', 'compute_convergence',
-                           'compute_reduced_tangential_shear','compute_magnification',
+                           'compute_reduced_tangential_shear', 'compute_magnification',
                            'compute_magnification_bias']
 
 
@@ -322,19 +323,40 @@ def compute_surface_density_2h(r_proj, z_cl, cosmo, halobias=1, lsteps=500, vali
     gcm.validate_input = True
     return sigma_2h
 
-def compute_critical_surface_density(cosmo, z_cluster, z_source=None,
-                                     use_pdz=False, pzbins=None, pzpdf=None,
-                                     validate_input=True):
-    r"""Computes either
-
-    - the critical surface density if `use_pdz=False`
+def compute_critical_surface_density(cosmo, z_cluster, z_source, validate_input=True):
+    r"""Computes the critical surface density
 
     .. math::
         \Sigma_{\rm crit} = \frac{c^2}{4\pi G} \frac{D_s}{D_LD_{LS}}
 
-    or
 
-    - the 'effective critical surface density' if `use_pdz=True`
+    Parameters
+    ----------
+    cosmo : clmm.cosmology.Cosmology object
+        CLMM Cosmology object
+    z_cluster : float
+        Galaxy cluster redshift
+    z_source : array_like, float
+        Background source galaxy redshift(s)
+    validate_input: bool
+        Validade each input argument
+
+
+    Returns
+    -------
+    sigma_c : array_like, float
+        Cosmology-dependent critical surface density in units of :math:`M_\odot\ Mpc^{-2}`
+    """
+
+    gcm.validate_input = validate_input
+    gcm.set_cosmo(cosmo)
+    sigma_c = gcm.eval_critical_surface_density(z_cluster, z_src=z_source)
+
+    gcm.validate_input = True
+    return sigma_c
+
+def compute_critical_surface_density_eff(cosmo, z_cluster, pzbins, pzpdf, validate_input=True):
+    r"""Computes the 'effective critical surface density'
 
     .. math::
         \langle \Sigma_{\rm crit}^{-1}\rangle^{-1} = \left(\int \frac{1}{\Sigma_{\rm crit}(z)}
@@ -351,13 +373,6 @@ def compute_critical_surface_density(cosmo, z_cluster, z_source=None,
         CLMM Cosmology object
     z_cluster : float
         Galaxy cluster redshift
-    z_source : array_like, float
-        Background source galaxy redshift(s)
-    use_pdz : bool
-        Flag to use the photoz pdf. If `False` (default), `sigma_c` is computed using the source
-        redshift point estimates `z_source`. If `True`, `sigma_c` is computed as 1/<1/Sigma_crit>,
-        where the average is performed using the individual galaxy redshift pdf.
-        In that case, the `pzbins` and `pzpdf` should be specified.
     pzbins : array-like
         Bins where the source redshift pdf is defined
     pzpdf : array-like
@@ -375,8 +390,7 @@ def compute_critical_surface_density(cosmo, z_cluster, z_source=None,
 
     gcm.validate_input = validate_input
     gcm.set_cosmo(cosmo)
-    sigma_c = gcm.eval_critical_surface_density(z_cluster, z_src=z_source,
-                                                use_pdz=use_pdz, pzbins=pzbins, pzpdf=pzpdf)
+    sigma_c = gcm.eval_critical_surface_density_eff(z_cluster, pzbins, pzpdf)
 
     gcm.validate_input = True
     return sigma_c

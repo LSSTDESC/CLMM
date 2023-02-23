@@ -186,7 +186,8 @@ def test_matter_power_spectrum(modeling_data):
     if cosmo_ps.backend in ('ccl', 'nc'):
         reltol = modeling_data['ps_reltol']
         kvals = ps['k']
-        assert_allclose(cosmo_ps.eval_linear_matter_powerspectrum(kvals, testcase['z_cluster']), ps['P_of_k'], reltol)
+        assert_allclose(cosmo_ps.eval_linear_matter_powerspectrum(kvals, testcase['z_cluster']),
+                        ps['P_of_k'], reltol)
 
 
 def _rad2mpc_helper(dist, redshift, cosmo, do_inverse):

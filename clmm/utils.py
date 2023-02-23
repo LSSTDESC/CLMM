@@ -33,11 +33,13 @@ def compute_nfw_boost(rvals, rs=1000, b0=0.1) :
 
         radicand = x**2-1
 
-        finternal = -1j *  np.log( (1 + np.lib.scimath.sqrt(radicand)*1j) / (1 - np.lib.scimath.sqrt(radicand)*1j) ) / ( 2 * np.lib.scimath.sqrt(radicand) )
+        finternal = (-1j*np.log((1+np.lib.scimath.sqrt(radicand)*1j)
+                                /(1-np.lib.scimath.sqrt(radicand)*1j))
+                     /(2*np.lib.scimath.sqrt(radicand)))
 
         return np.nan_to_num(finternal, copy=False, nan=1.0).real
 
-    return 1. + b0 * (1 - _calc_finternal(x)) / (x**2 - 1)
+    return 1.+b0 * (1-_calc_finternal(x)) / (x**2-1)
 
 
 def compute_powerlaw_boost(rvals, rs=1000, b0=0.1, alpha=-1.0) :
@@ -575,7 +577,8 @@ def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argm
                       f' received max({argname}): {var_array.max()}'
                 raise ValueError(err)
 
-def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1., is_unique_pzbins=False, ngrid=1000):
+def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1.,
+                   is_unique_pzbins=False, ngrid=1000):
     r"""
     Integrates the product of a photo-z pdf with a given kernel. 
     This function was created to allow for data with different photo-z binnings.
@@ -614,7 +617,8 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1., is_uniqu
     if is_unique_pzbins==False:
         # First need to interpolate on a fixed grid
         z_grid = np.linspace(zmin, zmax, ngrid)
-        pdf_interp_list = [interp1d(pzbin, pdf, bounds_error=False, fill_value=0.) for pzbin,pdf in zip(pzbins, pzpdf)]
+        pdf_interp_list = [interp1d(pzbin, pdf, bounds_error=False, fill_value=0.)
+                           for pzbin,pdf in zip(pzbins, pzpdf)]
         pz_matrix = np.array([pdf_interp(z_grid) for pdf_interp in pdf_interp_list])
         kernel_matrix = kernel(z_grid)
     else:
@@ -780,7 +784,8 @@ def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_dist
     B_mean = quad(integrand, zmin, zmax)[0] / quad(z_distrib_func, zmin, zmax)[0]
     return B_mean
 
-def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_distrib_func=None):
+def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None,
+                        z_distrib_func=None):
     r"""Mean value of the geometric lensing efficicency ratio
 
     .. math::
@@ -823,7 +828,8 @@ def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=Non
     Bs_mean = quad(integrand, zmin, zmax)[0] / quad(z_distrib_func, zmin, zmax)[0]
     return Bs_mean
 
-def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_distrib_func=None):
+def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None,
+                               z_distrib_func=None):
     r"""Mean square value of the geometric lensing efficiency ratio
 
     .. math::
