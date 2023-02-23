@@ -140,14 +140,17 @@ class ClusterEnsemble():
         ----------
         galaxycluster : GalaxyCluster
             GalaxyCluster object with cluster metadata and background galaxy data
+        profile_table : GCData
+            Table containing the radius grid points, the tangential, cross shear and weights
+            profiles on that grid.
         tan_component: string, optional
-            Name of the tangetial component binned column to be added in profile table.
+            Name of the tangetial component binned column in the profile table.
             Default: 'gt'
         cross_component: string, optional
-            Name of the cross component binned profile column to be added in profile table.
+            Name of the cross component binned profile column in the profile table.
             Default: 'gx'
         weights : str, None
-            Name of the weight column to be used in the added to the profile table.
+            Name of the weight binned column in the profile table.
         """
         cl_bin_units = profile_table.meta.get('bin_units', None)
         self.data.update_info_ext_valid('bin_units', self.data, cl_bin_units, overwrite=False)
@@ -175,7 +178,8 @@ class ClusterEnsemble():
 
     def make_stacked_radial_profile(self, tan_component='gt', cross_component='gx',
                                     weights='W_l'):
-        """Computes stacked profile and mean separation distances and add it internally.
+        """Computes stacked profile and mean separation distances and add it internally
+        to `stacked_data`.
 
         Parameters
         ----------
@@ -198,14 +202,17 @@ class ClusterEnsemble():
 
     def compute_sample_covariance(self, tan_component='gt', cross_component='gx'):
         """Compute Sample covariance matrix for cross and tangential and cross
-        stacked profiles adds as attributes.
+        stacked profiles adds as attributes: `sample_tangential_covariance`,
+        `sample_cross_covariance`.
 
-        Returns
-        -------
-        sample_tangential_covariance : ndarray
-            The sample covariance matrix for the stacked tangential profile
-        sample_cross_covariance : ndarray
-            The sample covariance matrix for the stacked cross profile
+        Parameters
+        ----------
+        tan_component : string, optional
+            Name of the tangential component column in `data`.
+            Default: 'gt'
+        cross_component : string, optional
+            Name of the cross component column in `data`.
+            Default: 'gx'
         """
         self._check_empty_data()
 
@@ -218,10 +225,17 @@ class ClusterEnsemble():
     def compute_bootstrap_covariance(self, tan_component='gt', cross_component='gx',
                                      n_bootstrap=10):
         """Compute the bootstrap covariance matrix, add boostrap covariance matrix for
-        tangential and cross profiles as attributes.
+        tangential and cross profiles as attributes: `bootstrap_tangential_covariance`,
+        `bootstrap_cross_covariance`.
 
         Parameters
         ----------
+        tan_component : string, optional
+            Name of the tangential component column in `data`.
+            Default: 'gt'
+        cross_component : string, optional
+            Name of the cross component column in `data`.
+            Default: 'gx'
         n_bootstrap : int
             number of bootstrap resamplings
         """
@@ -244,11 +258,18 @@ class ClusterEnsemble():
 
     def compute_jackknife_covariance(self, tan_component='gt', cross_component='gx', n_side=16):
         """Compute the jackknife covariance matrix, add boostrap covariance matrix for
-        tangential and cross profiles as attributes.
+        tangential and cross profiles as attributes: `jackknife_tangential_covariance`,
+        `jackknife_cross_covariance`.
         Uses healpix sky area sub-division : https://healpix.sourceforge.io
 
         Parameters
         ----------
+        tan_component : string, optional
+            Name of the tangential component column in `data`.
+            Default: 'gt'
+        cross_component : string, optional
+            Name of the cross component column in `data`.
+            Default: 'gx'
         n_side : int
             healpix sky area division parameter (number of sky area : 12*n_side^2)
         """
