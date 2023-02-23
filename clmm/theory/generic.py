@@ -113,7 +113,8 @@ def compute_profile_mass_in_radius(r3d, redshift, cosmo, mdelta, cdelta,
     The mass is calculated as
 
     .. math::
-        M(<\text{r3d}) = M_{\Delta}\;\frac{f\left(\frac{\text{r3d}}{r_{\Delta}/c_{\Delta}}\right)}{f(c_{\Delta})},
+        M(<\text{r3d}) = M_{\Delta}\;
+        \frac{f\left(\frac{\text{r3d}}{r_{\Delta}/c_{\Delta}}\right)}{f(c_{\Delta})},
 
     where :math:`f(x)` for the different models are
 
