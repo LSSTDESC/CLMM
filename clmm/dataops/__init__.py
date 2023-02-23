@@ -361,9 +361,10 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, use_pdz=False, pzpdf=No
 
     #computing w_ls_shape
     if not use_pdz:
-        err_e2 = np.zeros(len(z_source))
+        ngals = len(z_source)
     else:
-        err_e2 = np.zeros(len(pzpdf))
+        ngals = len(pzpdf)
+    err_e2 = np.zeros(ngals)
 
     if use_shape_noise:
         if shape_component1 is None or shape_component2 is None:
@@ -376,7 +377,7 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, use_pdz=False, pzpdf=No
                              '`shape_component_err{1,2}` must be specified')
         err_e2 += shape_component1_err**2
         err_e2 += shape_component2_err**2
-    w_ls_shape = np.ones(len(shape_component1))
+    w_ls_shape = np.ones(ngals)
     w_ls_shape[err_e2>0] = 1./err_e2[err_e2>0]
 
     w_ls = w_ls_shape * w_ls_geo

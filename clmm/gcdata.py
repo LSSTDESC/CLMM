@@ -170,3 +170,46 @@ class GCData(APtable):
         None
         """
         self.update_cosmo_ext_valid(self, cosmo, overwrite=overwrite)
+
+    def has_pzpdfs(self):
+        """Get pzbins and pzpdfs of galaxies
+
+
+        Returns
+        -------
+        pzbins : array
+            zbins of each object in data
+        pzpdfs : array
+            PDF of each object in data
+        """
+        pzpdf_type = self.pzpdf_info['type']
+        if pzpdf_type is None:
+            return False
+        elif pzpdf_type=='shared_bins':
+            return ('zbins' in self.pzpdf_info) and ('pzpdf' in self.columns)
+        elif pzpdf_type=='individual_bins':
+            return ('pzbins' in self.columns) and ('pzpdf' in self.columns)
+        else:
+            raise NotImplementedError(f"PDF use '{pzpdf_type}' not implemented.")
+
+    def get_pzpdfs(self):
+        """Get pzbins and pzpdfs of galaxies
+
+
+        Returns
+        -------
+        pzbins : array
+            zbins of each object in data
+        pzpdfs : array
+            PDF of each object in data
+        """
+        pzpdf_type = self.pzpdf_info['type']
+        if pzpdf_type is None:
+            raise ValueError('No PDF information stored!')
+        elif pzpdf_type=='shared_bins':
+            pzbins = (self.pzpdf_info['zbins'] for i in range(len(self)))
+        elif pzpdf_type=='individual_bins':
+            pzbins = self['pzbins']
+        else:
+            raise NotImplementedError(f"PDF use '{pzpdf_type}' not implemented.")
+        return pzbins, self['pzpdf']

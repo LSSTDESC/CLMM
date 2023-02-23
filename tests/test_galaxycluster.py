@@ -198,6 +198,7 @@ def test_integrity_of_probfuncs():
     pzbin = np.linspace(.0001, 5, 1000)
     cluster.galcat['pzbins'] = [pzbin for i in range(len(z_sources))]
     cluster.galcat['pzpdf'] = [multivariate_normal.pdf(pzbin, mean=z, cov=.01) for z in z_sources]
+    cluster.galcat.pzpdf_info['type'] = 'individual_bins'
     cluster.compute_background_probability(use_pdz=True, p_background_name='p_bkg_pz')
     assert_allclose(cluster.galcat['p_bkg_pz'], expected, **TOLERANCE)
 
@@ -229,6 +230,7 @@ def test_integrity_of_weightfuncs():
     pzpdf = pzbins
     cluster.galcat['pzbins'] = [pzbin for i in range(len(z_source))]
     cluster.galcat['pzpdf'] = [multivariate_normal.pdf(pzbin, mean=z, cov=.3) for z in z_source]
+    cluster.galcat.pzpdf_info['type'] = 'individual_bins'
     cluster.compute_galaxy_weights(cosmo=cosmo, use_shape_noise=False, use_pdz=True,
                                    is_deltasigma=True)
     expected = np.array([9.07709345e-33, 1.28167582e-32, 4.16870389e-32])
@@ -316,7 +318,7 @@ def test_pzpdf_random_draw():
     # test raise errors with unkown pdf type
     cluster.galcat.pzpdf_info['type'] = None
     cluster.galcat.remove_column('z_random')
-    assert_raises(ValueError, cluster.draw_gal_z_from_pdz, zcol_out='z_random', nobj=2)
+    assert_raises(TypeError, cluster.draw_gal_z_from_pdz, zcol_out='z_random', nobj=2)
     cluster.galcat.pzpdf_info['type'] = 'quantile'
     assert_raises(NotImplementedError, cluster.draw_gal_z_from_pdz, zcol_out='z_random', nobj=2)
 

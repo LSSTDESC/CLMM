@@ -129,13 +129,11 @@ class GalaxyCluster():
         if cosmo.get_desc() != self.galcat.meta['cosmo'] or 'sigma_c' not in self.galcat.columns:
             if self.z is None:
                 raise TypeError('Cluster\'s redshift is None. Cannot compute Sigma_crit')
-            if use_pdz is False and 'z' not in self.galcat.columns:
+            elif use_pdz is False and 'z' not in self.galcat.columns:
                 raise TypeError("Galaxy catalog missing the redshift column (which should be"
                                 "called 'z'). Cannot compute Sigma_crit.")
-            if use_pdz and ('pzbins' not in self.galcat.columns
-                            or 'pzpdf' not in self.galcat.columns):
-                raise TypeError("Galaxy catalog missing the redshift distribution information. "
-                                "Need to have both a 'pzbins' and 'pzpdf' columns."
+            elif use_pdz and not self.galcat.has_pzpdfs():
+                raise TypeError("Galaxy catalog missing the pzpdfs. "
                                 "Cannot compute 1/<1/Sigma_crit>.")
 
             self.galcat.update_cosmo(cosmo, overwrite=True)
@@ -145,9 +143,10 @@ class GalaxyCluster():
                     validate_input=self.validate_input)
                 self.galcat.meta['sigmac_type']= 'standard'
             else:
+                zdata = self._get_input_galdata({'pzpdf':'pzpdf', 'pzbins':'pzbins'})
                 self.galcat['sigma_c'] = compute_critical_surface_density_eff(
-                    cosmo=cosmo,  z_cluster=self.z, pzbins=self.galcat['pzbins'],
-                    pzpdf=self.galcat['pzpdf'], validate_input=self.validate_input)
+                    cosmo=cosmo,  z_cluster=self.z, pzbins=zdata['pzbins'],
+                    pzpdf=zdata['pzpdf'], validate_input=self.validate_input)
                 self.galcat.meta['sigmac_type'] = 'effective'
 
     def _get_input_galdata(self, col_dict):
@@ -157,20 +156,30 @@ class GalaxyCluster():
 
         Parametters
         -----------
-        col_dict: dict
+        col_dict : dict
             Dictionary with the names of the dataops arguments as keys and galcat columns
             as values, made to usually pass locals() here.
 
         Returns
         -------
-        dict
+        kwarg_data : dict
             Dictionary with the data to be passed to functions by **kwargs method.
         """
-        missing_cols = ', '.join([f"'{t_}'" for t_ in col_dict.values()
+        use_cols = {k:v for k, v in col_dict.items()}
+        kwarg_data = {}
+        if 'pzbins' in col_dict:
+            if not self.galcat.has_pzpdfs():
+                raise TypeError('Missing galaxy photoz distributions')
+            use_cols.pop('pzbins')
+            use_cols.pop('pzpdf')
+            pzbins, pzpdfs = self.galcat.get_pzpdfs()
+            kwarg_data.update({'pzbins': pzbins, 'pzpdf':pzpdfs})
+        missing_cols = ', '.join([f"'{t_}'" for t_ in use_cols.values()
                                     if t_ not in self.galcat.columns])
         if len(missing_cols)>0:
             raise TypeError(f'Galaxy catalog missing required columns: {missing_cols}')
-        return {key: self.galcat[colname] for key, colname in col_dict.items()}
+        kwarg_data.update({key: self.galcat[colname] for key, colname in use_cols.items()})
+        return kwarg_data
 
     def compute_tangential_and_cross_components(
         self, shape_component1='e1', shape_component2='e2', tan_component='et',
@@ -264,8 +273,9 @@ class GalaxyCluster():
         p_background : array
             Probability for being a background galaxy
         """
-        col_dict = {'pzpdf':'pzpdf', 'pzbins':'pzbins'} if use_pdz else {'z_source':'z'}
-        cols = self._get_input_galdata(col_dict)
+        cols = self._get_input_galdata(
+            {'pzpdf':'pzpdf', 'pzbins':'pzbins'}
+            if use_pdz else {'z_source':'z'})
         p_background = compute_background_probability(
             self.z, use_pdz=use_pdz, validate_input=self.validate_input, **cols)
         if add:
@@ -365,25 +375,16 @@ class GalaxyCluster():
             Random points following the pdf_tab distribution
         """
 
-        if 'pzpdf' not in self.galcat.columns:
-            raise TypeError('Missing galaxy photoz distributions')
 
         if zcol_out in self.galcat.columns and overwrite is False:
             raise TypeError(f'Column {zcol_out} already exists in galcat. \
                             Set overwrite=True to overwrite or use other column name')
 
-        pzpdf_type = self.galcat.pzpdf_info['type']
-        if pzpdf_type is None:
-            raise ValueError('No PDF information stored!')
-        if pzpdf_type=='shared_bins':
-            pzbins = (self.galcat.pzpdf_info['zbins'] for i in range(len(self.galcat)))
-        elif pzpdf_type=='individual_bins':
-            pzbins = self.galcat['pzbins']
-        else:
-            raise NotImplementedError(f"PDF use '{pzpdf_type}' not implemented.")
+        zdata = self._get_input_galdata({'pzpdf':'pzpdf', 'pzbins':'pzbins'})
         res = [_draw_random_points_from_tab_distribution(pzbin, pzpdf, nobj=nobj,
                                                          xmin=xmin, xmax=xmax)
-                    for pzbin, pzpdf in zip(pzbins, self.galcat['pzpdf'])]
+                    for pzbin, pzpdf in zip(zdata['pzbins'], zdata['pzpdf'])]
+
         self.galcat[zcol_out] = res
         return res
 
