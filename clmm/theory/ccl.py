@@ -67,9 +67,7 @@ class CCLCLMModeling(CLMModeling):
                           'hernquist': {'truncated': False}}
         self.cor_factor = _patch_rho_crit_to_cd2018(ccl.physical_constants.RHO_CRITICAL)
         self.__mdelta_cor = 0.0 ## mass with corretion for input
-        self._new_version = bool(parse(ccl.__version__) >= parse('2.6'))
-        #if self._new_version:
-        #    self.hdpm_opts['einasto'].update({'alpha': 0.25}) # same as NC default
+        #self.hdpm_opts['einasto'].update({'alpha': 0.25}) # same as NC default
 
         # Set halo profile and cosmology
         self.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
@@ -115,17 +113,14 @@ class CCLCLMModeling(CLMModeling):
         self.__mdelta_cor = mdelta/self.cor_factor
 
     def _set_einasto_alpha(self, alpha):
-        if self._new_version:
-            if alpha is None:
-                self.hdpm.update_parameters(alpha='cosmo')
-            else:
-                self.hdpm.update_parameters(alpha=alpha)
+        if alpha is None:
+            self.hdpm.update_parameters(alpha='cosmo')
         else:
-            raise NotImplementedError
+            self.hdpm.update_parameters(alpha=alpha)
 
     def _get_einasto_alpha(self, z_cl=None):
         """"get the value of the Einasto slope"""
-        if self._new_version and self.hdpm.alpha!='cosmo':
+        if self.hdpm.alpha!='cosmo':
             a_cl = 1 # a_cl does not matter in this case
         else:
             a_cl = self.cosmo.get_a_from_z(z_cl)

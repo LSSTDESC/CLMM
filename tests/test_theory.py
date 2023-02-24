@@ -465,20 +465,6 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         if profile_init=='einasto':
             cfg['GAMMA_PARAMS']['alpha_ein'] = cfg['TEST_CASE']['alpha_einasto']
 
-            # Einasto-specific tests for old CCL
-            if (theo.be_nick=='ccl' and not theo.Modeling()._new_version):
-
-                assert_raises(NotImplementedError,
-                              theo.compute_convergence, cosmo=cosmo, **cfg['GAMMA_PARAMS'])
-                assert_raises(NotImplementedError,
-                              theo.compute_tangential_shear, cosmo=cosmo, **cfg['GAMMA_PARAMS'])
-                assert_raises(NotImplementedError,
-                              theo.compute_reduced_tangential_shear,
-                                  cosmo=cosmo, **cfg['GAMMA_PARAMS'])
-                assert_raises(NotImplementedError,
-                              theo.compute_magnification, cosmo=cosmo, **cfg['GAMMA_PARAMS'])
-                del cfg['GAMMA_PARAMS']['alpha_ein']
-
         # Validate tangential shear - discrete case
         gammat = theo.compute_tangential_shear(cosmo=cosmo, **cfg['GAMMA_PARAMS'])
         assert_allclose(gammat, cfg['numcosmo_profiles']['gammat'], reltol)
@@ -775,9 +761,6 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
             # test default value
             mod.set_einasto_alpha(None)
             if theo.be_nick=='ccl':
-                mod._new_version = False
-                assert_raises(NotImplementedError, mod.set_einasto_alpha, alpha_ein)
-                mod._new_version = True
                 assert_allclose(mod.get_einasto_alpha(cfg['GAMMA_PARAMS']['z_cluster']),
                                 alpha_ein, reltol)
             if theo.be_nick=='nc':
@@ -958,10 +941,7 @@ def test_mass_conversion(modeling_data, profile_init):
         profile.set_concentration(cdelta)
         profile.set_mass(mdelta)
         if halo_profile_model=='einasto':
-            if theo.be_nick=='ccl' and not theo.Modeling()._new_version:
-                pass
-            else:
-                profile.set_einasto_alpha(0.3)
+            profile.set_einasto_alpha(0.3)
 
         assert_allclose(profile.eval_mass_in_radius(profile.eval_rdelta(z_cl), z_cl, True),
                         mdelta, 1e-15)
@@ -979,8 +959,7 @@ def test_mass_conversion(modeling_data, profile_init):
             'nfw': {'mdelta': 617693839984902.6, 'cdelta': 2.3143737357611425},
             'einasto': {'mdelta': 654444421625520.1, 'cdelta': 2.3593914002446486},
             }
-        if halo_profile_model!='hernquist' and\
-        not (theo.be_nick=='ccl' and not theo.Modeling()._new_version):
+        if halo_profile_model!='hernquist':
             mdelta2, cdelta2 = profile.convert_mass_concentration(
                                     z_cl, massdef='critical', delta_mdef=500, verbose=True)
             assert_allclose(mdelta2, truth[halo_profile_model]['mdelta'], reltol)
