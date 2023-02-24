@@ -466,8 +466,7 @@ class CLMModeling:
         def inv_sigmac(redshift):
             return 1./self._eval_critical_surface_density(z_len=z_len, z_src=redshift)        
 
-        return 1./_integ_pzfuncs(pzpdf, pzbins, kernel=inv_sigmac,
-                                 is_unique_pzbins=np.all(pzbins==pzbins[0]))
+        return 1./_integ_pzfuncs(pzpdf, pzbins, kernel=inv_sigmac)
 
     def eval_surface_density(self, r_proj, z_cl, verbose=False):
         r""" Computes the surface mass density
