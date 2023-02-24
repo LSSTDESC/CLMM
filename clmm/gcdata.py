@@ -195,11 +195,11 @@ class GCData(APtable):
     def get_pzpdfs(self):
         """Get pzbins and pzpdfs of galaxies
 
-
         Returns
         -------
         pzbins : array
-            zbins of each object in data
+            zbins of PDF. 1D if `shared_bins`,
+            zbins of each object in data if `individual_bins`.
         pzpdfs : array
             PDF of each object in data
         """
@@ -207,7 +207,7 @@ class GCData(APtable):
         if pzpdf_type is None:
             raise ValueError('No PDF information stored!')
         elif pzpdf_type=='shared_bins':
-            pzbins = (self.pzpdf_info['zbins'] for i in range(len(self)))
+            pzbins = self.pzpdf_info['zbins']
         elif pzpdf_type=='individual_bins':
             pzbins = self['pzbins']
         else:

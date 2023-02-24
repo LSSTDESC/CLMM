@@ -381,8 +381,13 @@ class GalaxyCluster():
                             Set overwrite=True to overwrite or use other column name')
 
         zdata = self._get_input_galdata({'pzpdf':'pzpdf', 'pzbins':'pzbins'})
-        res = [_draw_random_points_from_tab_distribution(pzbin, pzpdf, nobj=nobj,
-                                                         xmin=xmin, xmax=xmax)
+        if self.galcat.pzpdf_info['type']=='shared_bins':
+            res = [_draw_random_points_from_tab_distribution(
+                       zdata['pzbins'], pzpdf, nobj=nobj, xmin=xmin, xmax=xmax)
+                    for pzpdf in zdata['pzpdf']]
+        else:
+            res = [_draw_random_points_from_tab_distribution(
+                       pzbin, pzpdf, nobj=nobj, xmin=xmin, xmax=xmax)
                     for pzbin, pzpdf in zip(zdata['pzbins'], zdata['pzpdf'])]
 
         self.galcat[zcol_out] = res
