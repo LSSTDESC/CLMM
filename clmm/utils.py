@@ -11,8 +11,6 @@ import matplotlib.pyplot as plt
 
 from astropy.cosmology import LambdaCDM #update
 
-def hello_world():
-    print('hello world')
 
 class profiles:
     """A class to generate 2D covnergence profiles on a regular grid
@@ -142,7 +140,6 @@ class profiles:
         delta_c = (200./3.) * ( self.c**3 / ( np.log(1+self.c) - ( self.c/(1+self.c) ) ) )
         
         x = r_vals/r_s
-        print(x)
 
         Sigma_crit_coeff = c**2 / (4. * np.pi * G)
 
