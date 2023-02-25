@@ -174,7 +174,6 @@ class GCData(APtable):
     def has_pzpdfs(self):
         """Get pzbins and pzpdfs of galaxies
 
-
         Returns
         -------
         pzbins : array

@@ -64,13 +64,12 @@ def test_mock_data():
     # A proper test should be implemented
     cat = mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.8, ngals=100,
                                        photoz_sigma_unscaled=.1, pzpdf_type=None)
-    hasattr(cat.pzpdf_info, 'zbins')
 
     # Simple test to check if option with pdz is working
     # A proper test should be implemented
     cat = mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.8, ngals=100,
                                        photoz_sigma_unscaled=.1)
-    hasattr(cat.pzpdf_info, 'zbins')
+    assert 'zbins' in cat.pzpdf_info
 
     # Simple test to check if option with pdz individual bins is working
     # A proper test should be implemented
