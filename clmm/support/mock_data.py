@@ -469,10 +469,11 @@ def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled,
             galaxy_catalog['ztrue'][:,None],
             galaxy_catalog['pzsigma'][:,None])
     elif galaxy_catalog.pzpdf_info['type']=='individual_bins':
-        zmin = galaxy_catalog['ztrue']-10.*galaxy_catalog['pzsigma']
-        zmax = galaxy_catalog['ztrue']+10.*galaxy_catalog['pzsigma']
-        galaxy_catalog['pzbins'] = [np.arange(zmin_, zmax_, pz_bin_width)
-                                    for zmin_, zmax_ in zip(zmin, zmax)]
+        galaxy_catalog['pzbins'] = [
+            np.arange(zmin, zmax, pz_bin_width)
+            for zmin, zmax in zip(
+                galaxy_catalog['ztrue']-10.*galaxy_catalog['pzsigma'],
+                galaxy_catalog['ztrue']+10.*galaxy_catalog['pzsigma'])]
         galaxy_catalog['pzpdf'] = [gaussian(row['pzbins'], row['ztrue'], row['pzsigma'])
                                    for row in galaxy_catalog]
     elif galaxy_catalog.pzpdf_info['type']=='quantiles':
