@@ -428,21 +428,21 @@ def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled,
         pass
     elif galaxy_catalog.pzpdf_info['type']=='shared_bins':
         # sigma to make sure range covers all PDZs
-        n_sigma =10.*photoz_sigma_unscaled*(1+zsrc_max)
+        n_sigma = 10.*photoz_sigma_unscaled*(1+galaxy_catalog['ztrue'])
         pzbins = np.arange(
-            max(galaxy_catalog['z'].min()-n_sigma, 0.0),
-            galaxy_catalog['z'].max()+n_sigma+pz_bin_width,
+            max((galaxy_catalog['ztrue']-n_sigma).min(), 0.0),
+            (galaxy_catalog['ztrue']+n_sigma).max()+pz_bin_width,
             pz_bin_width)
-        pzpdf_grid = gaussian(pzbins, galaxy_catalog['z'][:,None],
+        pzpdf_grid = gaussian(pzbins, galaxy_catalog['ztrue'][:,None],
                               galaxy_catalog['pzsigma'][:,None])
         galaxy_catalog.pzpdf_info['zbins'] = pzbins
         galaxy_catalog['pzpdf'] = pzpdf_grid
     elif galaxy_catalog.pzpdf_info['type']=='individual_bins':
-        pzbins_grid = [np.arange(row['z']-row['pzsigma']*10.,
-                                 row['z']+row['pzsigma']*10.,
+        pzbins_grid = [np.arange(row['ztrue']-row['pzsigma']*10.,
+                                 row['ztrue']+row['pzsigma']*10.,
                                  pz_bin_width)
                         for row in galaxy_catalog]
-        pzpdf_grid = [gaussian(zbins, row['z'], row['pzsigma'])
+        pzpdf_grid = [gaussian(zbins, row['ztrue'], row['pzsigma'])
                         for zbins, row in zip(pzbins_grid, galaxy_catalog)]
         galaxy_catalog['pzbins'] = pzbins_grid
         galaxy_catalog['pzpdf'] = pzpdf_grid
