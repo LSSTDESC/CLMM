@@ -272,7 +272,7 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals,
     if photoz_sigma_unscaled is not None:
         galaxy_catalog.pzpdf_info['type'] = pzpdf_type
         galaxy_catalog = _compute_photoz_pdfs(
-            galaxy_catalog, photoz_sigma_unscaled, zsrc_max,
+            galaxy_catalog, photoz_sigma_unscaled,
             pz_bin_width=pz_bin_width)
 
     # Draw galaxy positions
@@ -400,7 +400,7 @@ def _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals):
 
 
 def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled,
-                         zsrc_max, pz_bin_width=0.02):
+                         pz_bin_width=0.02):
     """Private function to add photo-z errors and PDFs to the mock catalog.
 
     Parameters
@@ -409,6 +409,8 @@ def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled,
         Input galaxy catalog to which photoz PDF will be added
     photoz_sigma_unscaled : float
         Width of the Gaussian PDF, without the (1+z) factor
+    pz_bin_width: float
+        Width of photo-z bins
 
     Returns
     -------
