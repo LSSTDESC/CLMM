@@ -227,8 +227,41 @@ def _compute_ngals(ngal_density, field_size, cosmo, cluster_z, zsrc, zsrc_min=No
     A private function that computes the number of galaxies to draw given the user-defined
     field size, galaxy density, cosmology, cluster redshift, galaxy redshift distribution
     and requested redshift range.
-    For a more detailed description of each of the parameters, see the documentation of
-    `generate_galaxy_catalog`.
+
+    Parameters
+    ----------
+    ngal_density : float, optional
+        The number density of galaxies (in galaxies per square arcminute, from z=0 to z=infty).
+        The number of galaxies to be drawn will then depend on the redshift distribution and
+        user-defined redshift range.  If specified, the ngals argument will be ignored.
+    field_size : float, optional
+        The size of the field (field_size x field_size) to be simulated.
+        Proper distance in Mpc  at the cluster redshift.
+    cosmo: clmm.Cosmology, optional
+        Cosmology object.
+    cluster_z : float
+        Cluster redshift
+    zsrc : float or str
+        Choose the source galaxy distribution to be fixed or drawn from a predefined distribution.
+
+        * `float` : All sources galaxies at this fixed redshift;
+        * `str` : Draws individual source gal redshifts from predefined distribution. Options are:
+
+            * `chang13` - Chang et al. 2013 (arXiv:1305.0793);
+            * `desc_srd` - LSST/DESC Science Requirement Document (arxiv:1809.01669);
+
+    zsrc_min : float, optional
+        The minimum true redshift of the sources. If photoz errors are included, the observed
+        redshift may be smaller than zsrc_min.
+    zsrc_max : float, optional
+        The maximum true redshift of the sources, apllied when galaxy redshifts are drawn from a
+        redshift distribution. If photoz errors are included, the observed redshift may be larger
+        than zsrc_max.
+
+    Returns
+    -------
+    ngals : int
+        Number of galaxies to be generated.
     """
     field_size_arcmin = convert_units(
         field_size, 'Mpc', 'arcmin', redshift=cluster_z, cosmo=cosmo)
@@ -348,8 +381,6 @@ def _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals):
 
     Parameters
     ----------
-    ngals : float
-        Number of galaxies to generate
     zsrc : float or str
         Choose the source galaxy distribution to be fixed or drawn from a predefined distribution.
         float : All sources galaxies at this fixed redshift
@@ -362,6 +393,8 @@ def _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals):
         The minimum source redshift allowed.
     zsrc_max : float, optional
         If source redshifts are drawn, the maximum source redshift
+    ngals : float
+        Number of galaxies to generate
 
     Returns
     -------
@@ -427,25 +460,21 @@ def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled,
     if galaxy_catalog.pzpdf_info['type'] is None:
         pass
     elif galaxy_catalog.pzpdf_info['type']=='shared_bins':
-        # sigma to make sure range covers all PDZs
-        n_sigma = 10.*photoz_sigma_unscaled*(1+galaxy_catalog['ztrue'])
-        pzbins = np.arange(
-            max((galaxy_catalog['ztrue']-n_sigma).min(), 0.0),
-            (galaxy_catalog['ztrue']+n_sigma).max()+pz_bin_width,
-            pz_bin_width)
-        pzpdf_grid = gaussian(pzbins, galaxy_catalog['ztrue'][:,None],
-                              galaxy_catalog['pzsigma'][:,None])
-        galaxy_catalog.pzpdf_info['zbins'] = pzbins
-        galaxy_catalog['pzpdf'] = pzpdf_grid
+        galaxy_catalog.pzpdf_info['zbins'] = np.arange(
+            max((galaxy_catalog['ztrue']-10.*galaxy_catalog['pzsigma']).min(), 0.),
+            (galaxy_catalog['ztrue']+10.*galaxy_catalog['pzsigma']).max()+pz_bin_width,
+             pz_bin_width)
+        galaxy_catalog['pzpdf'] = gaussian(
+            galaxy_catalog.pzpdf_info['zbins'],
+            galaxy_catalog['ztrue'][:,None],
+            galaxy_catalog['pzsigma'][:,None])
     elif galaxy_catalog.pzpdf_info['type']=='individual_bins':
-        pzbins_grid = [np.arange(row['ztrue']-row['pzsigma']*10.,
-                                 row['ztrue']+row['pzsigma']*10.,
-                                 pz_bin_width)
-                        for row in galaxy_catalog]
-        pzpdf_grid = [gaussian(zbins, row['ztrue'], row['pzsigma'])
-                        for zbins, row in zip(pzbins_grid, galaxy_catalog)]
-        galaxy_catalog['pzbins'] = pzbins_grid
-        galaxy_catalog['pzpdf'] = pzpdf_grid
+        zmin = galaxy_catalog['ztrue']-10.*galaxy_catalog['pzsigma']
+        zmax = galaxy_catalog['ztrue']+10.*galaxy_catalog['pzsigma']
+        galaxy_catalog['pzbins'] = [np.arange(zmin_, zmax_, pz_bin_width)
+                                    for zmin_, zmax_ in zip(zmin, zmax)]
+        galaxy_catalog['pzpdf'] = [gaussian(row['pzbins'], row['ztrue'], row['pzsigma'])
+                                   for row in galaxy_catalog]
     elif galaxy_catalog.pzpdf_info['type']=='quantiles':
         raise NotImplementedError("PDF storing in quantiles not implemented.")
     else:
