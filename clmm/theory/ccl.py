@@ -7,8 +7,6 @@ import pyccl as ccl
 
 import numpy as np
 from scipy.interpolate import interp1d
-import warnings
-from packaging.version import parse
 
 from . import func_layer
 from . func_layer import *
@@ -144,7 +142,7 @@ class CCLCLMModeling(CLMModeling):
             tmp = self.hdpm.projected(self.cosmo.be_cosmo, rtmp/a_cl, self.__mdelta_cor,
                                       a_cl, self.mdef)*self.cor_factor/a_cl**2
             ptf = interp1d(np.log(rtmp), np.log(tmp), bounds_error=False, fill_value=-100)
-            return np.exp(ptf(np.log(r_proj)))  
+            return np.exp(ptf(np.log(r_proj)))
 
     def _eval_mean_surface_density(self, r_proj, z_cl):
         """"eval mean surface density"""
