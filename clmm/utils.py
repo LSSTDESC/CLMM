@@ -620,7 +620,7 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1., ngrid=10
         # OK perform the integration directly from the pdf binning common to all galaxies
         mask = (pzbins>=zmin)*(pzbins<=zmax)
         z_grid = pzbins[mask]
-        pz_matrix = pzpdf[:,mask]
+        pz_matrix = np.array(pzpdf)[:,mask]
         kernel_matrix = kernel(z_grid)
 
     return simps(pz_matrix*kernel_matrix, x=z_grid, axis=1)
