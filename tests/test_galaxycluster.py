@@ -279,7 +279,6 @@ def test_pzpdf_random_draw():
         # add pzbins back to galcat
         cluster.galcat.pzpdf_info['zbins'] = pzbins
         cluster.galcat['pzbins'] = [pzbins for i in range(len(z_source))]
-        cluster.galcat.pzpdf_info['type'] = 'individual_bins'
         # test raising TypeError when the name of the new column is already in cluster.galcat
         # also test default overwrite=False and zcol_out='z'
         assert_raises(TypeError, cluster.draw_gal_z_from_pdz)
