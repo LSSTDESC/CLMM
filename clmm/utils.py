@@ -797,14 +797,12 @@ def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=Non
         Redshift at infinity
     cosmo: clmm.Cosmology
         CLMM Cosmology object
-    zmin: float
+    zmax: float
             Minimum redshift to be set as the source of the galaxy\
             when performing the sum.
     delta_z_cut: float
             Redshift interval to be summed with $z_cl$ to return\
             $zmin$. This feature is not used if $z_min$ is provided by the user.
-    cosmo: Cosmology
-            Cosmology object
     weights_option: boolean
             If set to true, the function uses Eq.(13) from\
             https://arxiv.org/pdf/1611.03866.pdf with evenly distributed\
@@ -819,7 +817,7 @@ def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=Non
     """
     if weights_option == False:
         if z_distrib_func == None:
-            z_distrib_func = _chang_z_distrib
+            z_distrib_func = zdist.chang2013
 
         def integrand(z_i, z_cl=z_cl, z_inf=z_inf, cosmo=cosmo):
             return compute_beta_s(z_i, z_cl, z_inf, cosmo) * z_distrib_func(z_i)
@@ -837,7 +835,6 @@ def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=Non
             Bs_mean = np.sum(Bsw_i)
     return Bs_mean
 
-<<<<<<< HEAD
 def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_distrib_func=None, weights_option=False, z_src = None):
     r"""Mean square value of the geometric lensing efficicency ratio
 
@@ -853,14 +850,12 @@ def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, z
         Redshift at infinity
     cosmo: clmm.Cosmology
         CLMM Cosmology object
-    zmin: float
+    zmax: float
             Minimum redshift to be set as the source of the galaxy\
             when performing the sum.
     delta_z_cut: float
             Redshift interval to be summed with $z_cl$ to return\
             $zmin$. This feature is not used if $z_min$ is provided by the user.
-    cosmo: Cosmology
-            Cosmology object
     weights_option: boolean
             If set to true, the function uses Eq.(13) from\
             https://arxiv.org/pdf/1611.03866.pdf with evenly distributed\
@@ -874,7 +869,7 @@ def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, z
     """
     if weights_option == False:
         if z_distrib_func == None:
-            z_distrib_func = _chang_z_distrib
+            z_distrib_func = zdist.chang2013
 
         def integrand(z_i, z_cl=z_cl, z_inf=z_inf, cosmo=cosmo):
             return compute_beta_s(z_i, z_cl, z_inf, cosmo)**2 * z_distrib_func(z_i)

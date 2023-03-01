@@ -452,18 +452,36 @@ def test_beta_functions():
     assert_allclose(utils.compute_beta(z_s, z_cl, cosmo), beta_test, **TOLERANCE)
     assert_allclose(utils.compute_beta_s(z_s, z_cl, z_inf, cosmo), beta_s_test, **TOLERANCE)
 
-    test1 = utils.compute_beta(z_s, z_cl, cosmo)
-    test2 = utils.compute_beta_s(z_s, z_cl, z_inf, cosmo)
-    test3 = utils.compute_beta_mean(z_cl, cosmo, zmax)
-    test4 = utils.compute_beta_s_mean(z_cl, z_inf,cosmo, zmax)
-    test5 = utils.compute_beta_s_square_mean(z_cl, z_inf,cosmo, zmax)
-    test6 = utils.compute_beta_s_mean(z_cl, z_inf,cosmo, zmax, weights_option=True, z_src=[2.1,2.3])
-    test7 = utils.compute_beta_s_square_mean(z_cl, z_inf,cosmo, zmax, weights_option=True, z_src=[2.1, 2.3])
     
-    assert_allclose(test1, beta_test, **TOLERANCE)
-    assert_allclose(test2, beta_s_test, **TOLERANCE)
-    assert_allclose(test3, quad(integrand1, zmin, zmax)[0] / quad(pdz, zmin, zmax)[0], **TOLERANCE)
-    assert_allclose(test4, quad(integrand2, zmin, zmax)[0] / quad(pdz, zmin, zmax)[0], **TOLERANCE)
-    assert_allclose(test5, quad(integrand3, zmin, zmax)[0] / quad(pdz, zmin, zmax)[0], **TOLERANCE)
-    assert_allclose(test6, 0.5*utils.compute_beta_s(2.1, z_cl, z_inf, cosmo) + 0.5*utils.compute_beta_s(2.3, z_cl, z_inf, cosmo), **TOLERANCE)
-    assert_allclose(test7, 0.5*utils.compute_beta_s(2.1, z_cl, z_inf, cosmo)**2 + 0.5*utils.compute_beta_s(2.3, z_cl, z_inf, cosmo)**2, **TOLERANCE)
+    for model in (None, zdist.chang2013, zdist.desc_srd):
+
+        # None defaults to chang2013 for compute_beta* functions
+
+        test1 = utils.compute_beta_mean(z_cl, cosmo, zmax, z_distrib_func=model)
+        test2 = utils.compute_beta_s_mean(z_cl, z_inf, cosmo, zmax, z_distrib_func=model)
+        test3 = utils.compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax,
+                                                 z_distrib_func=model)
+
+        if model is None:
+            model = zdist.chang2013
+
+        def integrand1(z_i, z_cl=z_cl, cosmo=cosmo):
+            return utils.compute_beta(z_i, z_cl, cosmo) * model(z_i)
+
+        def integrand2(z_i, z_inf=z_inf, z_cl=z_cl, cosmo=cosmo):
+            return utils.compute_beta_s(z_i, z_cl, z_inf, cosmo) * model(z_i)
+
+        def integrand3(z_i, z_inf=z_inf, z_cl=z_cl, cosmo=cosmo):
+            return utils.compute_beta_s(z_i, z_cl, z_inf, cosmo)**2 * model(z_i)
+
+        assert_allclose(test1, quad(integrand1, zmin, zmax)[0] / quad(model, zmin, zmax)[0],
+                        **TOLERANCE)
+        assert_allclose(test2, quad(integrand2, zmin, zmax)[0] / quad(model, zmin, zmax)[0],
+                        **TOLERANCE)
+        assert_allclose(test3, quad(integrand3, zmin, zmax)[0] / quad(model, zmin, zmax)[0],
+                        **TOLERANCE)
+        test4 = utils.compute_beta_s_mean(z_cl, z_inf,cosmo, zmax, weights_option=True, z_src=[2.1,2.3])
+        test5 = utils.compute_beta_s_square_mean(z_cl, z_inf,cosmo, zmax, weights_option=True, z_src=[2.1, 2.3])
+    
+        assert_allclose(test4, 0.5*utils.compute_beta_s(2.1, z_cl, z_inf, cosmo) + 0.5*utils.compute_beta_s(2.3, z_cl, z_inf, cosmo), **TOLERANCE)
+        assert_allclose(test5, 0.5*utils.compute_beta_s(2.1, z_cl, z_inf, cosmo)**2 + 0.5*utils.compute_beta_s(2.3, z_cl, z_inf, cosmo)**2, **TOLERANCE)
