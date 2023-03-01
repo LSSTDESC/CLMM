@@ -18,12 +18,15 @@ class CLMMCosmology:
         Cosmology library used in the back-end
     validate_input: bool
         Validade each input argument
+    additional_config: dict
+        Dictionary with additional (implicit) config that will be used by the class.
     """
 
     def __init__(self, validate_input=True, **kwargs):
         self.backend = None
         self.be_cosmo = None
         self.validate_input = validate_input
+        self.additional_config = {}
         self.set_be_cosmo(**kwargs)
 
     def __getitem__(self, key):
@@ -422,7 +425,7 @@ class CLMMCosmology:
         """
         if self.validate_input:
             validate_argument(locals(), 'z_len', float, argmin=0, eqmin=True)
-            validate_argument(locals(), 'z_src', 'float_array', argmin=0)
+            validate_argument(locals(), 'z_src', 'float_array', argmin=0, eqmin=True)
         return self._eval_sigma_crit(z_len=z_len, z_src=z_src)
 
     def _eval_sigma_crit(self, z_len, z_src):

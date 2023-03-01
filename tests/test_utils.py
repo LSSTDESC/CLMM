@@ -1,13 +1,14 @@
 # pylint: disable=no-member, protected-access
 """ Tests for utils.py """
 import numpy as np
-from numpy.testing import assert_raises, assert_allclose
+from numpy.testing import assert_raises, assert_allclose, assert_equal
 from scipy.integrate import quad
+import clmm
 import clmm.utils as utils
-import clmm.theory as md
 from clmm.utils import (
     compute_radial_averages, make_bins, convert_shapes_to_epsilon, arguments_consistency,
     validate_argument)
+from clmm import z_distributions as zdist
 
 
 TOLERANCE = {'rtol': 1.0e-6, 'atol': 0}
@@ -15,53 +16,52 @@ TOLERANCE = {'rtol': 1.0e-6, 'atol': 0}
 def test_compute_nfw_boost() :
     """Test the nfw model for boost factor"""
     # Test data
-    rvals = np.arange(1,11)
+    rvals = np.arange(1,11).tolist()
 
     boost_factors = utils.compute_nfw_boost(rvals)
 
     test_boost_factors = np.array([1.66009126, 1.59077917, 1.55023667, 
                                    1.52147373, 1.4991658, 1.48094117,
                                    1.46553467, 1.4521911, 1.44042332, 1.42989872])
-    
+
    #  Test model
     assert_allclose(boost_factors, test_boost_factors)
 
 def test_compute_powerlaw_boost() :
     """Test the powerlaw model for boost factor"""
     # Test data
-    rvals = np.arange(1,11) # Cannot contain 0 due to reciprocal term
+    rvals = np.arange(1,11).tolist() # Cannot contain 0 due to reciprocal term
 
     boost_factors = utils.compute_powerlaw_boost(rvals)
 
     test_boost_factors = np.array([101., 51., 34.33333333,
                                    26., 21., 17.66666667, 15.28571429,
                                    13.5, 12.11111111, 11. ])
-    
+
     # Test model
     assert_allclose(boost_factors, test_boost_factors)
-
 
 def test_correct_sigma_with_boost_values() :
     """ """
     # Make test data
     rvals = np.arange(1,11)
-    sigma_vals = 2**np.arange(10)
+    sigma_vals = (2**np.arange(10)).tolist()
 
-    test_unit_boost_factors = np.ones(rvals.shape)
+    test_unit_boost_factors = np.ones(rvals.shape).tolist()
 
-    corrected_sigma = utils.correct_sigma_with_boost_values(rvals, sigma_vals, test_unit_boost_factors)
+    corrected_sigma = utils.correct_sigma_with_boost_values(sigma_vals, test_unit_boost_factors)
     assert_allclose(sigma_vals, corrected_sigma)
-    
-    
+
 def test_correct_sigma_with_boost_model() :
     """ """
     # Make test data
-    rvals = np.arange(1,11)
-    sigma_vals = 2**np.arange(10)
+    rvals = np.arange(1,11).tolist()
+    sigma_vals = (2**np.arange(10)).tolist()
 
     for boost_model in utils.boost_models.keys() :
         # Check for no nans or inf with positive-definite rvals and sigma vals
-        assert(np.all(np.isfinite(utils.correct_sigma_with_boost_model(rvals, sigma_vals, boost_model=boost_model))))
+        assert(np.all(np.isfinite(utils.correct_sigma_with_boost_model(rvals, sigma_vals,
+                                                                       boost_model=boost_model))))
 
 
     # Test requesting unsupported boost model
@@ -69,8 +69,6 @@ def test_correct_sigma_with_boost_model() :
                   utils.correct_sigma_with_boost_model,
                   rvals, sigma_vals, 'glue')
 
-
-                   
 def test_compute_radial_averages():
     """ Tests compute_radial_averages, a function that computes several binned statistics """
     # Make some test data
@@ -79,12 +77,13 @@ def test_compute_radial_averages():
     xbins2 = [0., 5., 10.]
 
     # Test requesting an unsupported error model
-    assert_raises(ValueError, compute_radial_averages, binvals, binvals, [0., 10.], error_model='glue')
+    assert_raises(ValueError, compute_radial_averages, binvals, binvals,
+                  [0., 10.], error_model='glue')
 
     # Check the default error model
     assert_allclose(compute_radial_averages(binvals, binvals, xbins1)[:4],
-                    [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)/np.sqrt(len(binvals))],
-                    [6]],
+                    [[np.mean(binvals)], [np.mean(binvals)],
+                    [np.std(binvals)/np.sqrt(len(binvals))], [6]],
                     **TOLERANCE)
     # Test weights
         # Normalized
@@ -96,25 +95,30 @@ def test_compute_radial_averages():
                     ([1], [2.5], [1/np.sqrt(8)]),
                     **TOLERANCE)
         # Values outside bins
-    assert_allclose(compute_radial_averages([1, 1, 3], [2, 3, 1000], [1, 2], weights=[.5, .5, 100])[:3],
+    assert_allclose(compute_radial_averages([1, 1, 3], [2, 3, 1000], [1, 2],
+                                            weights=[.5, .5, 100])[:3],
                     ([1], [2.5], [1/np.sqrt(8)]),
                     **TOLERANCE)
         # Weighted values == Repeated values (std only)
-    assert_allclose(compute_radial_averages([1, 1], [2, 3], [1, 2], weights=[1, 2], error_model='std')[:3],
-                   compute_radial_averages([1, 1, 1], [2, 3, 3], [1, 2], error_model='std')[:3],
+    assert_allclose(compute_radial_averages([1, 1], [2, 3], [1, 2],
+                                            weights=[1, 2], error_model='std')[:3],
+                    compute_radial_averages([1, 1, 1], [2, 3, 3], [1, 2], error_model='std')[:3],
                     **TOLERANCE)
         # Zero yerr
-    assert_allclose(compute_radial_averages([1, 1], [2, 3], [1, 2], weights=[.5, .5], yerr=[0, 0])[:3],
+    assert_allclose(compute_radial_averages([1, 1], [2, 3], [1, 2],
+                                            weights=[.5, .5], yerr=[0, 0])[:3],
                     ([1], [2.5], [1/np.sqrt(8)]),
                     **TOLERANCE)
         # With yerr
-    assert_allclose(compute_radial_averages([1, 1], [2, 3], [1, 2], weights=[.5, .5], yerr=[1, 1])[:3],
+    assert_allclose(compute_radial_averages([1, 1], [2, 3], [1, 2],
+                                            weights=[.5, .5], yerr=[1, 1])[:3],
                     ([1], [2.5], [np.sqrt(5/8)]),
                     **TOLERANCE)
 
     # Test 3 objects in one bin with various error models
     assert_allclose(compute_radial_averages(binvals, binvals, xbins1, error_model='ste')[:4],
-                    [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)/np.sqrt(len(binvals))], [6]],
+                    [[np.mean(binvals)], [np.mean(binvals)],
+                     [np.std(binvals)/np.sqrt(len(binvals))], [6]],
                     **TOLERANCE)
     assert_allclose(compute_radial_averages(binvals, binvals, xbins1, error_model='std')[:4],
                     [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)],
@@ -122,7 +126,8 @@ def test_compute_radial_averages():
 
     # Repeat test with different error_model case
     assert_allclose(compute_radial_averages(binvals, binvals, xbins1, error_model='STE')[:4],
-                    [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)/np.sqrt(len(binvals))], [6]],
+                    [[np.mean(binvals)], [np.mean(binvals)],
+                     [np.std(binvals)/np.sqrt(len(binvals))], [6]],
                     **TOLERANCE)
     assert_allclose(compute_radial_averages(binvals, binvals, xbins1, error_model='STD')[:4],
                     [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)],
@@ -211,6 +216,10 @@ def test_make_bins():
                           method='equaloccupation', source_seps=test_array)
     assert_allclose(np.diff(np.histogram(test_array, bins=test_bins)[0]),
                     np.zeros(22), atol=2)
+    assert_equal(
+        make_bins(0, 15, nbins=23, method='equaloccupation', source_seps=test_array),
+        make_bins(None, None, nbins=23, method='equaloccupation', source_seps=test_array)
+                )
     assert_raises(ValueError, make_bins, 0, 10, 10, 'equaloccupation', None)
     assert_raises(ValueError, make_bins, 0, 10, 10, 'undefinedmethod')
 
@@ -222,7 +231,7 @@ def test_convert_units():
     """
     # Make an astropy cosmology object for testing
     # cosmo = FlatLambdaCDM(H0=70., Om0=0.3)
-    cosmo = md.Cosmology(H0=70.0, Omega_dm0=0.3-0.045, Omega_b0=0.045)
+    cosmo = clmm.Cosmology(H0=70.0, Omega_dm0=0.3-0.045, Omega_b0=0.045)
 
     # Test that each unit is supported
     utils.convert_units(1.0, 'radians', 'degrees')
@@ -424,32 +433,24 @@ def test_validate_argument():
         assert validate_argument(loc, argname, ('float_array', str), argmin=1.1, eqmin=True) is None
         assert_raises(ValueError, validate_argument, loc, argname, ('float_array', str), argmax=1.1)
 
-    assert validate_argument(loc, 'float_array', ('float_array', str), argmax=1.2, eqmax=True) is None
+    assert validate_argument(loc, 'float_array', ('float_array', str),
+                             argmax=1.2, eqmax=True) is None
 
 def test_beta_functions():
     z_cl = 1.0
-    z_s = 2.4 
+    z_s = 2.4
     z_inf =1000.
     zmax = 15.0
     nsteps = 1000
     zmin = z_cl + 0.1
-    z_int = np.linspace(zmin, zmax, nsteps)    
-    cosmo = md.Cosmology(H0=70.0, Omega_dm0=0.27 - 0.045,
+    z_int = np.linspace(zmin, zmax, nsteps)
+    cosmo = clmm.Cosmology(H0=70.0, Omega_dm0=0.27 - 0.045,
                   Omega_b0=0.045, Omega_k0=0.0)
-    beta_test = np.heaviside(z_s-z_cl, 0) * cosmo.eval_da_z1z2(z_cl, z_s) / cosmo.eval_da(z_s) 
+    beta_test = np.heaviside(z_s-z_cl, 0) * cosmo.eval_da_z1z2(z_cl, z_s) / cosmo.eval_da(z_s)
     beta_s_test = utils.compute_beta(z_s, z_cl, cosmo) / utils.compute_beta(z_inf, z_cl, cosmo)
 
-    def pdz(z):
-        return (z**1.24)*np.exp(-(z/0.51)**1.01)
-    
-    def integrand1(z_i, z_cl=z_cl, cosmo=cosmo):
-        return utils.compute_beta(z_i, z_cl, cosmo) * pdz(z_i)
-    
-    def integrand2(z_i, z_inf=z_inf, z_cl=z_cl, cosmo=cosmo):
-        return utils.compute_beta_s(z_i, z_cl, z_inf, cosmo) * pdz(z_i)
-    
-    def integrand3(z_i, z_inf=z_inf, z_cl=z_cl, cosmo=cosmo):
-        return utils.compute_beta_s(z_i, z_cl, z_inf, cosmo)**2 * pdz(z_i)
+    assert_allclose(utils.compute_beta(z_s, z_cl, cosmo), beta_test, **TOLERANCE)
+    assert_allclose(utils.compute_beta_s(z_s, z_cl, z_inf, cosmo), beta_s_test, **TOLERANCE)
 
     test1 = utils.compute_beta(z_s, z_cl, cosmo)
     test2 = utils.compute_beta_s(z_s, z_cl, z_inf, cosmo)
