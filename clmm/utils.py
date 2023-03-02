@@ -782,7 +782,7 @@ def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_dist
     B_mean = quad(integrand, zmin, zmax)[0] / quad(z_distrib_func, zmin, zmax)[0]
     return B_mean
 
-def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_distrib_func=None, weights_option=False, z_src = None):
+def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_distrib_func=None, weights_option=False, z_src = None, shape_weights = None):
     r"""Mean value of the geometric lensing efficicency ratio
 
     .. math::
@@ -798,18 +798,20 @@ def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=Non
     cosmo: clmm.Cosmology
         CLMM Cosmology object
     zmax: float
-            Minimum redshift to be set as the source of the galaxy\
-            when performing the sum.
+        Minimum redshift to be set as the source of the galaxy\
+        when performing the sum.
     delta_z_cut: float
-            Redshift interval to be summed with $z_cl$ to return\
-            $zmin$. This feature is not used if $z_min$ is provided by the user.
+        Redshift interval to be summed with $z_cl$ to return\
+        $zmin$. This feature is not used if $z_min$ is provided by the user.
     weights_option: boolean
-            If set to true, the function uses Eq.(13) from\
-            https://arxiv.org/pdf/1611.03866.pdf with evenly distributed\
-            weights summing to one.
+        If set to true, the function uses Eq.(13) from\
+        https://arxiv.org/pdf/1611.03866.pdf with evenly distributed\
+        weights summing to one.
     z_src: array_like, float
-            Invididual source galaxies redshift.
-    
+        Individual source galaxies redshift.
+    shape_weights: array-life, float,
+        Individual source galaxies shape weights.
+        Defalut: None
     Returns
     -------
     float
@@ -827,15 +829,17 @@ def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=Non
         Bs_mean = quad(integrand, zmin, zmax)[0] / quad(z_distrib_func, zmin, zmax)[0]
     elif weights_option == True:
         if z_src == None:
-            raise ValueError(f"Inividual source galaxies redshift needed")
+            raise ValueError(f"Individual source galaxies redshift needed")
+        elif shape_weights == None:
+            raise ValueError(f"Individual source galaxies shape weights needed")
         else:
             n_galaxies = len(z_src)
             weight = 1/n_galaxies
-            Bsw_i = [weight * compute_beta_s(z, z_cl, z_inf, cosmo) for z in z_src]
+            Bsw_i = [shape_weights[i] * compute_beta_s(z_src[i], z_cl, z_inf, cosmo) for i in range(0,len(z_src))]
             Bs_mean = np.sum(Bsw_i)
     return Bs_mean
 
-def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_distrib_func=None, weights_option=False, z_src = None):
+def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_distrib_func=None, weights_option=False, z_src = None, shape_weights = None):
     r"""Mean square value of the geometric lensing efficicency ratio
 
     .. math::
@@ -851,17 +855,20 @@ def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, z
     cosmo: clmm.Cosmology
         CLMM Cosmology object
     zmax: float
-            Minimum redshift to be set as the source of the galaxy\
-            when performing the sum.
+        Minimum redshift to be set as the source of the galaxy\
+        when performing the sum.
     delta_z_cut: float
-            Redshift interval to be summed with $z_cl$ to return\
-            $zmin$. This feature is not used if $z_min$ is provided by the user.
+        Redshift interval to be summed with $z_cl$ to return\
+        $zmin$. This feature is not used if $z_min$ is provided by the user.
     weights_option: boolean
-            If set to true, the function uses Eq.(13) from\
-            https://arxiv.org/pdf/1611.03866.pdf with evenly distributed\
-            weights summing to one.
+        If set to true, the function uses Eq.(13) from\
+        https://arxiv.org/pdf/1611.03866.pdf with evenly distributed\
+        weights summing to one.
     z_src: array_like, float
-            Invididual source galaxies redshift.
+        Invididual source galaxies redshift.
+    shape_weights: array-life, float,
+        Individual source galaxies shape weights.
+        Defalut: None
     Returns
     -------
     float
@@ -881,10 +888,10 @@ def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, z
     elif weights_option == True:
         if z_src == None:
             raise ValueError(f"Inividual source galaxies redshift needed")
+        elif shape_weights == None:
+            raise ValueError(f"Individual source galaxies shape weights needed")
         else:
-            n_galaxies = len(z_src)
-            weight = 1/n_galaxies
-            Bsw_i = [weight * compute_beta_s(z, z_cl, z_inf, cosmo)**2 for z in z_src]
+            Bsw_i = [shape_weights[i] * compute_beta_s(z_src[i], z_cl, z_inf, cosmo)**2 for i in range(0,len(z_src))]
             Bs_square_mean = np.sum(Bsw_i)
     
     return Bs_square_mean
