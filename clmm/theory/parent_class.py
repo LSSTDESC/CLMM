@@ -353,7 +353,7 @@ class CLMModeling:
 
         Parameters
         ----------
-        alpha: float
+        alpha : float
         """
         if self.halo_profile_model!='einasto' or self.backend!='nc':
             raise NotImplementedError(
@@ -370,7 +370,7 @@ class CLMModeling:
 
         Parameters
         ----------
-        z_cl: float
+        z_cl : float
             Cluster redshift (required for Einasto with the CCL backend, will be ignored for NC)
         """
         if self.halo_profile_model!='einasto':
