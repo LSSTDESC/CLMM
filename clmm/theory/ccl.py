@@ -2,9 +2,6 @@
 Modeling using CCL
 """
 # Functions to model halo profiles
-import warnings
-warnings.filterwarnings("always", module='(clmm).*')
-from packaging.version import parse
 
 import pyccl as ccl
 
@@ -65,15 +62,11 @@ class CCLCLMModeling(CLMModeling):
                                   'projected_analytic': True,
                                   'cumul2d_analytic': True},
                           'einasto': {'truncated': False},
-                          'hernquist': {'truncated': False}}
+                          'hernquist': {'truncated': False,
+                                        'projected_analytic': True,
+                                        'cumul2d_analytic': True}}
         self.cor_factor = _patch_rho_crit_to_cd2018(ccl.physical_constants.RHO_CRITICAL)
         self.__mdelta_cor = 0.0 ## mass with corretion for input
-        self._new_version = bool(parse(ccl.__version__) >= parse('2.6'))
-        self.force_old_ccl = False
-        if self._new_version:
-            self.hdpm_opts['hernquist'].update({
-                'projected_analytic': (not self.force_old_ccl),
-                'cumul2d_analytic': (not self.force_old_ccl)})
 
         # Set halo profile and cosmology
         self.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
@@ -133,48 +126,29 @@ class CCLCLMModeling(CLMModeling):
 
     def _eval_surface_density(self, r_proj, z_cl):
         a_cl = self.cosmo.get_a_from_z(z_cl)
-        if self.halo_profile_model == 'nfw' or (self._new_version and not self.force_old_ccl):
-            return self.hdpm.projected(self.cosmo.be_cosmo, r_proj/a_cl, self.__mdelta_cor,
+
+        return self.hdpm.projected(self.cosmo.be_cosmo, r_proj/a_cl, self.__mdelta_cor,
                                        a_cl, self.mdef)*self.cor_factor/a_cl**2
-        else:
-            rtmp = np.geomspace(np.min(r_proj)/10., np.max(r_proj)*10., 1000)
-            tmp = self.hdpm.projected(self.cosmo.be_cosmo, rtmp/a_cl, self.__mdelta_cor,
-                                      a_cl, self.mdef)*self.cor_factor/a_cl**2
-            ptf = interp1d(np.log(rtmp), np.log(tmp), bounds_error=False, fill_value=-100)
-            return np.exp(ptf(np.log(r_proj)))  
 
     def _eval_mean_surface_density(self, r_proj, z_cl):
         """"eval mean surface density"""
         a_cl = self.cosmo.get_a_from_z(z_cl)
-        if self.halo_profile_model == 'nfw' or (self._new_version and not self.force_old_ccl):
-            return self.hdpm.cumul2d(
+
+        return self.hdpm.cumul2d(
                 self.cosmo.be_cosmo, r_proj/a_cl, self.__mdelta_cor,
                 self.cosmo.get_a_from_z(z_cl), self.mdef)*self.cor_factor/a_cl**2
-        else:
-            rtmp = np.geomspace(np.min(r_proj)/10., np.max(r_proj)*10., 1000)
-            tmp = self.hdpm.cumul2d(self.cosmo.be_cosmo, rtmp/a_cl, self.__mdelta_cor,
-                                    a_cl, self.mdef)*self.cor_factor/a_cl**2
-            ptf = interp1d(np.log(rtmp), np.log(tmp), bounds_error=False, fill_value=-100)
-            return np.exp(ptf(np.log(r_proj)))
 
     def _eval_excess_surface_density(self, r_proj, z_cl):
         """"eval excess surface density"""
         a_cl = self.cosmo.get_a_from_z(z_cl)
         r_cor = r_proj/a_cl
 
-        if self.halo_profile_model == 'nfw' or (self._new_version and not self.force_old_ccl):
-            return (self.hdpm.cumul2d(self.cosmo.be_cosmo, r_cor, self.__mdelta_cor, a_cl, self.mdef)-
+        return (self.hdpm.cumul2d(self.cosmo.be_cosmo, r_cor, self.__mdelta_cor, a_cl, self.mdef)-
                     self.hdpm.projected(self.cosmo.be_cosmo, r_cor, self.__mdelta_cor,
                                         a_cl, self.mdef))*self.cor_factor/a_cl**2
-        else:
-            return self.eval_mean_surface_density(r_proj, z_cl) \
-                    - self.eval_surface_density(r_proj, z_cl)
 
     def _eval_convergence_core(self, r_proj, z_cl, z_src):
         """eval convergence"""
-        if not self._new_version or self.force_old_ccl:
-            warnings.warn('\nOlder version of CCL detected')
-            return super()._eval_convergence_core(r_proj, z_cl, z_src)
 
         a_cl = self.cosmo.get_a_from_z(z_cl)
         a_src = self.cosmo.get_a_from_z(z_src)
@@ -185,9 +159,6 @@ class CCLCLMModeling(CLMModeling):
         return res
 
     def _eval_tangential_shear_core(self, r_proj, z_cl, z_src):
-        if not self._new_version or self.force_old_ccl:
-            warnings.warn('\nOlder version of CCL detected')
-            return super()._eval_tangential_shear_core(r_proj, z_cl, z_src)
 
         a_cl = self.cosmo.get_a_from_z(z_cl)
         a_src = self.cosmo.get_a_from_z(z_src)
@@ -199,9 +170,6 @@ class CCLCLMModeling(CLMModeling):
 
     def _eval_reduced_tangential_shear_core(self, r_proj, z_cl, z_src):
         """eval reduced tangential shear with all background sources at the same plane"""
-        if not self._new_version or self.force_old_ccl:
-            warnings.warn('\nOlder version of CCL detected')
-            return super()._eval_reduced_tangential_shear_core(r_proj, z_cl, z_src)
 
         a_cl = self.cosmo.get_a_from_z(z_cl)
         a_src = self.cosmo.get_a_from_z(z_src)
@@ -213,9 +181,6 @@ class CCLCLMModeling(CLMModeling):
 
     def _eval_magnification_core(self, r_proj, z_cl, z_src):
         """eval magnification"""
-        if not self._new_version or self.force_old_ccl:
-            warnings.warn('\nOlder version of CCL detected')
-            return super()._eval_magnification_core(r_proj, z_cl, z_src)
 
         a_cl = self.cosmo.get_a_from_z(z_cl)
         a_src = self.cosmo.get_a_from_z(z_src)

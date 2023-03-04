@@ -328,22 +328,6 @@ def test_profiles(modeling_data, profile_init):
             theo.compute_excess_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS'],
                                                 alpha_ein=alpha_ein, verbose=True),
             cfg['numcosmo_profiles']['DeltaSigma'], reltol)
-        assert_allclose(
-            theo.compute_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS'],
-                                         alpha_ein=alpha_ein, verbose=True,
-                                         force_old_ccl = True),
-            cfg['numcosmo_profiles']['Sigma'], reltol)
-        assert_allclose(
-            theo.compute_mean_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS'],
-                                              alpha_ein=alpha_ein, verbose=True,
-                                              force_old_ccl = True),
-            cfg['numcosmo_profiles']['Sigma']+cfg['numcosmo_profiles']['DeltaSigma'], reltol)
-        assert_allclose(
-            theo.compute_excess_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS'],
-                                                alpha_ein=alpha_ein, verbose=True,
-                                                force_old_ccl = True),
-            cfg['numcosmo_profiles']['DeltaSigma'], reltol)
-
 
     else:
         print('Need to test for error')
@@ -524,33 +508,20 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         # Validate tangential shear - discrete case
         gammat = theo.compute_tangential_shear(cosmo=cosmo, **cfg['GAMMA_PARAMS'])
         assert_allclose(gammat, cfg['numcosmo_profiles']['gammat'], reltol)
-        assert_allclose(
-            theo.compute_tangential_shear(cosmo=cosmo, **cfg['GAMMA_PARAMS'], force_old_ccl=True),
-            cfg['numcosmo_profiles']['gammat'], reltol)
 
         # Validate convergence - discrete case
         kappa = theo.compute_convergence(cosmo=cosmo, **cfg['GAMMA_PARAMS'])
         assert_allclose(kappa, cfg['numcosmo_profiles']['kappa'], reltol)
-        assert_allclose(
-            theo.compute_convergence(cosmo=cosmo, **cfg['GAMMA_PARAMS'], force_old_ccl=True),
-            cfg['numcosmo_profiles']['kappa'], reltol)
 
         # Validate reduced tangential shear - discrete case
         gt = theo.compute_reduced_tangential_shear(cosmo=cosmo, **cfg['GAMMA_PARAMS'])
         assert_allclose(gt, gammat/(1.0-kappa), 1.0e-10)
         assert_allclose(gt, cfg['numcosmo_profiles']['gt'], 1.e2*reltol)
-        assert_allclose(
-            theo.compute_reduced_tangential_shear(
-                cosmo=cosmo, **cfg['GAMMA_PARAMS'], force_old_ccl=True),
-            cfg['numcosmo_profiles']['gt'], 1.e2*reltol)
 
         # Validate magnification - discrete case
         mu = theo.compute_magnification(cosmo=cosmo, **cfg['GAMMA_PARAMS'])
         assert_allclose(mu, 1./((1-kappa)**2-abs(gammat)**2), 1.0e-10)
         assert_allclose(mu, cfg['numcosmo_profiles']['mu'], 1.e2*reltol)
-        assert_allclose(
-            theo.compute_magnification(cosmo=cosmo, **cfg['GAMMA_PARAMS'], force_old_ccl=True),
-            cfg['numcosmo_profiles']['mu'], 1.e2*reltol)
 
         # Validate magnification bias - discrete case
         alpha = 3.78

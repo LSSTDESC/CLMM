@@ -1,6 +1,6 @@
 """Tests for modeling.py"""
 import numpy as np
-from numpy.testing import assert_raises, assert_allclose, assert_equal, assert_warns
+from numpy.testing import assert_raises, assert_allclose, assert_equal
 import clmm.theory as theo
 from clmm.theory.parent_class import CLMModeling
 
@@ -113,37 +113,6 @@ def test_instantiate(modeling_data):
     assert_allclose(reduced_shear, shear/(1.0-convergence), rtol=1.0e-12)
 
     assert_raises(TypeError, mod.eval_critical_surface_density, z_cl)
-
-def test_warnings(modeling_data):
-    """Test if warnings are issued"""
-
-    mod = theo.Modeling()
-    mod.set_concentration(4.0)
-    mod.set_mass(1.0e15)
-
-    assert_warns(UserWarning, mod.eval_convergence, [0.3], 0.3, [0.2, 0.3, 0.4])
-    assert_warns(UserWarning, mod.eval_tangential_shear, [0.3], 0.3, [0.2, 0.3, 0.4])
-    assert_warns(UserWarning, mod.eval_reduced_tangential_shear, [0.3], 0.3, [0.2, 0.3, 0.4])
-    assert_warns(UserWarning, mod.eval_magnification, [0.3], 0.3, [0.2, 0.3, 0.4])
-    assert_warns(UserWarning, mod.eval_magnification_bias, [0.3], 0.3, [0.2, 0.3, 0.4], 2)
-
-    if theo.be_nick == 'ccl':
-        mod.force_old_ccl = True
-        #test warnings from using CCL<2.6
-        assert_warns(UserWarning, mod.eval_convergence, [0.3], 0.3, [0.4])
-        assert_warns(UserWarning, mod.eval_tangential_shear, [0.3], 0.3, [0.4])
-        assert_warns(UserWarning, mod.eval_reduced_tangential_shear,
-                     [0.3], 0.3, [0.4])
-        assert_warns(UserWarning, mod.eval_magnification, [0.3], 0.3, [0.4])
-        mod.force_old_ccl = False
-
-        mod._new_version = False
-        #test warnings from using CCL<2.6
-        assert_warns(UserWarning, mod.eval_convergence, [0.3], 0.3, [0.4])
-        assert_warns(UserWarning, mod.eval_tangential_shear, [0.3], 0.3, [0.4])
-        assert_warns(UserWarning, mod.eval_reduced_tangential_shear,
-                     [0.3], 0.3, [0.4])
-        assert_warns(UserWarning, mod.eval_magnification, [0.3], 0.3, [0.4])
 
 def test_einasto(modeling_data):
     """ Basic checks that verbose option for the Einasto profile runs """

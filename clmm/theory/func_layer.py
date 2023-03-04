@@ -98,7 +98,7 @@ def compute_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
 
 def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
                             halo_profile_model='nfw', massdef='mean', alpha_ein=None,
-                            verbose=False, validate_input=True, force_old_ccl=False):
+                            verbose=False, validate_input=True):
     r""" Computes the surface mass density
 
     .. math::
@@ -143,7 +143,6 @@ def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     validate_input : bool, optional
         If True (default), the types of the arguments are checked before proceeding.
 
-
     Returns
     -------
     sigma : numpy.ndarray, float
@@ -162,18 +161,15 @@ def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     gcm.set_mass(mdelta)
     if alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
-    if gcm.backend=='ccl' and force_old_ccl:
-        gcm.force_old_ccl = True
 
     sigma = gcm.eval_surface_density(r_proj, z_cl, verbose=verbose)
 
     gcm.validate_input = True
-    gcm.force_old_ccl = False
     return sigma
 
 def compute_mean_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
                             halo_profile_model='nfw', massdef='mean', alpha_ein=None,
-                            verbose=False, validate_input=True, force_old_ccl=False):
+                            verbose=False, validate_input=True):
     r""" Computes the mean value of surface density inside radius `r_proj`
 
     .. math::
@@ -235,18 +231,15 @@ def compute_mean_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef
     gcm.set_mass(mdelta)
     if alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
-    if gcm.backend=='ccl' and force_old_ccl:
-        gcm.force_old_ccl = True
 
     sigma_bar = gcm.eval_mean_surface_density(r_proj, z_cl, verbose=verbose)
 
     gcm.validate_input = True
-    gcm.force_old_ccl = False
     return sigma_bar
 
 def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
                                    halo_profile_model='nfw', massdef='mean', alpha_ein=None,
-                                   verbose=False, validate_input=True, force_old_ccl=False):
+                                   verbose=False, validate_input=True):
     r""" Computes the excess surface density
 
     .. math::
@@ -302,13 +295,10 @@ def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
     gcm.set_mass(mdelta)
     if alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
-    if gcm.backend=='ccl' and force_old_ccl:
-        gcm.force_old_ccl = True
 
     deltasigma = gcm.eval_excess_surface_density(r_proj, z_cl, verbose=verbose)
 
     gcm.validate_input = True
-    gcm.force_old_ccl = False
     return deltasigma
 
 def compute_excess_surface_density_2h(r_proj, z_cl, cosmo, halobias=1., lsteps=500,
@@ -472,7 +462,7 @@ def compute_critical_surface_density_eff(cosmo, z_cluster, pzbins, pzpdf, valida
 def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
                              halo_profile_model='nfw', massdef='mean', alpha_ein=None,
                              z_src_info='discrete', beta_kwargs=None,
-                             verbose=False, validate_input=True, force_old_ccl=False):
+                             verbose=False, validate_input=True):
     r"""Computes the tangential shear
 
     .. math::
@@ -573,8 +563,6 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
     gcm.set_mass(mdelta)
     if alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
-    if gcm.backend=='ccl' and force_old_ccl:
-        gcm.force_old_ccl = True
     if np.min(r_proj) < 1.e-11:
         raise ValueError(
             f"Rmin = {np.min(r_proj):.2e} Mpc/h! This value is too small "
@@ -585,14 +573,13 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
                                                  verbose=verbose)
 
     gcm.validate_input = True
-    gcm.force_old_ccl = False
     return tangential_shear
 
 
 def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
                         halo_profile_model='nfw', massdef='mean', alpha_ein=None,
                         z_src_info='discrete', beta_kwargs=None,
-                        verbose=False, validate_input=True, force_old_ccl=False):
+                        verbose=False, validate_input=True):
     r"""Computes the mass convergence
 
     .. math::
@@ -694,14 +681,11 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
     gcm.set_mass(mdelta)
     if alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
-    if gcm.backend=='ccl' and force_old_ccl:
-        gcm.force_old_ccl = True
 
     convergence = gcm.eval_convergence(r_proj, z_cluster, z_source, z_src_info=z_src_info,
                                        beta_kwargs=beta_kwargs, verbose=verbose)
 
     gcm.validate_input = True
-    gcm.force_old_ccl = False
     return convergence
 
 
@@ -709,7 +693,7 @@ def compute_reduced_tangential_shear(
         r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
         delta_mdef=200, halo_profile_model='nfw', massdef='mean', z_src_info='discrete',
         approx=None, beta_kwargs=None, alpha_ein=None,
-        validate_input=True, verbose=False, force_old_ccl=False):
+        validate_input=True, verbose=False):
     r"""Computes the reduced tangential shear
 
     .. math::
@@ -841,15 +825,12 @@ def compute_reduced_tangential_shear(
     gcm.set_mass(mdelta)
     if alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
-    if gcm.backend=='ccl' and force_old_ccl:
-        gcm.force_old_ccl = True
 
     red_tangential_shear = gcm.eval_reduced_tangential_shear(
         r_proj, z_cluster, z_source, z_src_info=z_src_info, approx=approx,
         beta_kwargs=beta_kwargs, verbose=verbose)
 
     gcm.validate_input = True
-    gcm.force_old_ccl = False
     return red_tangential_shear
 
 
@@ -857,7 +838,7 @@ def compute_reduced_tangential_shear(
 def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delta_mdef=200,
                           halo_profile_model='nfw', massdef='mean', alpha_ein=None,
                           z_src_info='discrete', approx=None, beta_kwargs=None,
-                          verbose=False, validate_input=True, force_old_ccl=False):
+                          verbose=False, validate_input=True):
     r"""Computes the magnification
 
     .. math::
@@ -990,15 +971,12 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
     gcm.set_mass(mdelta)
     if alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
-    if gcm.backend=='ccl' and force_old_ccl:
-        gcm.force_old_ccl = True
 
     magnification = gcm.eval_magnification(r_proj, z_cluster, z_source, z_src_info=z_src_info,
                                            approx=approx, beta_kwargs=beta_kwargs,
                                            verbose=verbose)
 
     gcm.validate_input = True
-    gcm.force_old_ccl = False
     return magnification
 
 
