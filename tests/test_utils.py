@@ -121,8 +121,8 @@ def test_compute_radial_averages():
                      [np.std(binvals)/np.sqrt(len(binvals))], [6]],
                     **TOLERANCE)
     assert_allclose(compute_radial_averages(binvals, binvals, xbins1, error_model='std')[:4],
-                    [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)], [6]],
-                    **TOLERANCE)
+                    [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)],
+                    [6]], **TOLERANCE)
 
     # Repeat test with different error_model case
     assert_allclose(compute_radial_averages(binvals, binvals, xbins1, error_model='STE')[:4],
@@ -130,8 +130,8 @@ def test_compute_radial_averages():
                      [np.std(binvals)/np.sqrt(len(binvals))], [6]],
                     **TOLERANCE)
     assert_allclose(compute_radial_averages(binvals, binvals, xbins1, error_model='STD')[:4],
-                    [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)], [6]],
-                    **TOLERANCE)
+                    [[np.mean(binvals)], [np.mean(binvals)], [np.std(binvals)],
+                    [6]], **TOLERANCE)
 
 
     # A slightly more complicated case with two bins
@@ -278,7 +278,7 @@ def test_convert_units():
     # Using astropy, circular now but this will be fine since we are going to be
     # swapping to CCL soon and then its kosher
     r_kpc, redshift = 20.0, 0.5
-    # d_a = cosmo.angular_diameter_distance(redshift).to('kpc').value
+#    d_a = cosmo.angular_diameter_distance(redshift).to('kpc').value
     d_a = cosmo.eval_da(redshift)*1.e3  # kpc
     truth = r_kpc*(1.0/d_a)*(180./np.pi)*60.
     assert_allclose(utils.convert_units(r_kpc, 'kpc', 'arcmin', redshift, cosmo),
@@ -429,12 +429,9 @@ def test_validate_argument():
 
 
     for argname in ('float', 'float_array', 'float_str'):
-        assert_raises(ValueError, validate_argument, loc, argname, ('float_array', str),
-                      argmin=1.1)
-        assert validate_argument(loc, argname, ('float_array', str),
-                                 argmin=1.1, eqmin=True) is None
-        assert_raises(ValueError, validate_argument, loc, argname, ('float_array', str),
-                      argmax=1.1)
+        assert_raises(ValueError, validate_argument, loc, argname, ('float_array', str), argmin=1.1)
+        assert validate_argument(loc, argname, ('float_array', str), argmin=1.1, eqmin=True) is None
+        assert_raises(ValueError, validate_argument, loc, argname, ('float_array', str), argmax=1.1)
 
     assert validate_argument(loc, 'float_array', ('float_array', str),
                              argmax=1.2, eqmax=True) is None
