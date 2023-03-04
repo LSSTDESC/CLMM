@@ -690,10 +690,9 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
 
 
 def compute_reduced_tangential_shear(
-        r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
-        delta_mdef=200, halo_profile_model='nfw', massdef='mean', z_src_info='discrete',
-        approx=None, beta_kwargs=None, alpha_ein=None,
-        validate_input=True, verbose=False):
+    r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
+    delta_mdef=200, halo_profile_model='nfw', massdef='mean', z_src_info='discrete',
+    approx=None, beta_kwargs=None, alpha_ein=None, validate_input=True, verbose=False):
     r"""Computes the reduced tangential shear
 
     .. math::

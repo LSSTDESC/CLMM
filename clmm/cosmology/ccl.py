@@ -116,8 +116,6 @@ class CCLCosmology(CLMMCosmology):
         # Use CCL function
         a_len = self.get_a_from_z(z_len)
         a_src = self.get_a_from_z(z_src)
-        if np.iterable(a_src):
-            a_len = np.full_like(a_src, a_len)
 
         return self.be_cosmo.sigma_critical(a_len, a_src)*self.cor_factor
 
