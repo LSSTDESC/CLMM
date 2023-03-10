@@ -540,10 +540,12 @@ def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argm
         Minimum value allowed. Default: None
     argmax : int, float, None, optional
         Maximum value allowed. Default: None
-    eqmin: bool, optional
+    eqmin : bool, optional
         If True, accepts min(arg)==argmin. Default: False
-    eqmax: bool, optional
+    eqmax : bool, optional
         If True, accepts max(arg)==argmax. Default: False
+    shape : tuple of ints, None, optional
+        Shape of object allowed. Default: None
     """
     var = loc[argname]
     # Check for None
