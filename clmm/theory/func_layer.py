@@ -62,9 +62,11 @@ def compute_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
             * 'critical'
             * 'virial'
 
-    alpha_ein : float, optional
-        If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only
-        available for the NumCosmo backend
+    alpha_ein : float, None, optional
+        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        Option only available for the NumCosmo and CCL backends.
+        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
+        cosmology-dependent value for the CCL backend.)
     verbose : boolean, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
         backends.
@@ -87,7 +89,7 @@ def compute_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
         halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
     gcm.set_concentration(cdelta)
     gcm.set_mass(mdelta)
-    if alpha_ein is not None:
+    if halo_profile_model=='einasto' or alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
 
     rho = gcm.eval_3d_density(r3d, z_cl, verbose=verbose)
@@ -134,9 +136,11 @@ def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
             * 'critical'
             * 'virial'
 
-    alpha_ein : float, optional
-        If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only
-        available for the NumCosmo backend
+    alpha_ein : float, None, optional
+        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        Option only available for the NumCosmo and CCL backends.
+        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
+        cosmology-dependent value for the CCL backend.)
     verbose : boolean, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
         backends.
@@ -160,7 +164,7 @@ def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
         halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
     gcm.set_concentration(cdelta)
     gcm.set_mass(mdelta)
-    if alpha_ein is not None:
+    if halo_profile_model=='einasto' or alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
 
     sigma = gcm.eval_surface_density(r_proj, z_cl, verbose=verbose)
@@ -209,9 +213,11 @@ def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
             * 'critical'
             * 'virial'
 
-    alpha_ein : float, optional
-        If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only
-        available for the NumCosmo backend
+    alpha_ein : float, None, optional
+        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        Option only available for the NumCosmo and CCL backends.
+        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
+        cosmology-dependent value for the CCL backend.)
     verbose : boolean, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
         backends.
@@ -229,7 +235,7 @@ def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
         halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
     gcm.set_concentration(cdelta)
     gcm.set_mass(mdelta)
-    if alpha_ein is not None:
+    if halo_profile_model=='einasto' or alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
 
     deltasigma = gcm.eval_excess_surface_density(r_proj, z_cl, verbose=verbose)
@@ -440,9 +446,11 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
             * 'critical'
             * 'virial'
 
-    alpha_ein : float, optional
-        If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only
-        availablefor the NumCosmo backend
+    alpha_ein : float, None, optional
+        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        Option only available for the NumCosmo and CCL backends.
+        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
+        cosmology-dependent value for the CCL backend.)
     z_src_info : str, optional
         Type of redshift information provided by the `z_source` argument.
         The following supported options are:
@@ -497,7 +505,7 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
         halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
     gcm.set_concentration(cdelta)
     gcm.set_mass(mdelta)
-    if alpha_ein is not None:
+    if halo_profile_model=='einasto' or alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
     if np.min(r_proj) < 1.e-11:
         raise ValueError(
@@ -557,9 +565,11 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
             * 'critical'
             * 'virial'
 
-    alpha_ein : float, optional
-        If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only
-        available for the NumCosmo backend
+    alpha_ein : float, None, optional
+        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        Option only available for the NumCosmo and CCL backends.
+        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
+        cosmology-dependent value for the CCL backend.)
     z_src_info : str, optional
         Type of redshift information provided by the `z_source` argument.
         The following supported options are:
@@ -615,7 +625,7 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
         halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
     gcm.set_concentration(cdelta)
     gcm.set_mass(mdelta)
-    if alpha_ein is not None:
+    if halo_profile_model=='einasto' or alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
 
     convergence = gcm.eval_convergence(r_proj, z_cluster, z_source, z_src_info=z_src_info,
@@ -667,10 +677,15 @@ def compute_reduced_tangential_shear(
     massdef : str, optional
         Profile mass definition, with the following supported options (letter case independent):
 
-            * 'mean' (default)
-            * 'critical'
-            * 'virial'
+            * `mean` (default);
+            * `critical` - not in cluster_toolkit;
+            * `virial` - not in cluster_toolkit;
 
+    alpha_ein : float, None, optional
+        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        Option only available for the NumCosmo and CCL backends.
+        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
+        cosmology-dependent value for the CCL backend.)
     z_src_info : str, optional
         Type of redshift information provided by the `z_source` argument.
         The following supported options are:
@@ -743,9 +758,11 @@ def compute_reduced_tangential_shear(
             * 'delta_z_cut' (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.
               `delta_z_cut` is ignored if `z_min` is already provided. (default=0.1)
 
-    alpha_ein : float, optional
-        If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only
-        available for the NumCosmo backend
+    alpha_ein : float, None, optional
+        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        Option only available for the NumCosmo and CCL backends.
+        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
+        cosmology-dependent value for the CCL backend.)
     verbose : bool, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL
         backends.
@@ -764,7 +781,7 @@ def compute_reduced_tangential_shear(
         halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
     gcm.set_concentration(cdelta)
     gcm.set_mass(mdelta)
-    if alpha_ein is not None:
+    if halo_profile_model=='einasto' or alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
 
     red_tangential_shear = gcm.eval_reduced_tangential_shear(
@@ -816,9 +833,11 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
             * 'critical'
             * 'virial'
 
-    alpha_ein : float, optional
-        If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only
-        available for the NumCosmo backend
+    alpha_ein : float, None, optional
+        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        Option only available for the NumCosmo and CCL backends.
+        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
+        cosmology-dependent value for the CCL backend.)
     z_src_info : str, optional
         Type of redshift information provided by the `z_source` argument.
         The following supported options are:
@@ -910,7 +929,7 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
         halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
     gcm.set_concentration(cdelta)
     gcm.set_mass(mdelta)
-    if alpha_ein is not None:
+    if halo_profile_model=='einasto' or alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
 
     magnification = gcm.eval_magnification(r_proj, z_cluster, z_source, z_src_info=z_src_info,
@@ -972,9 +991,11 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
         CLMM Cosmology object
     delta_mdef : int, optional
         Mass overdensity definition.  Defaults to 200.
-    alpha_ein : float, optional
-        If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only
-        available for the NumCosmo backend
+    alpha_ein : float, None, optional
+        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        Option only available for the NumCosmo and CCL backends.
+        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
+        cosmology-dependent value for the CCL backend.)
     halo_profile_model : str, optional
         Profile model parameterization (letter case independent):
 
@@ -1081,7 +1102,7 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
         halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
     gcm.set_concentration(cdelta)
     gcm.set_mass(mdelta)
-    if alpha_ein is not None:
+    if halo_profile_model=='einasto' or alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
 
     magnification_bias = gcm.eval_magnification_bias(r_proj, z_cluster, z_source, alpha,

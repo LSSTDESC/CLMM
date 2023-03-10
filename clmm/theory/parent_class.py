@@ -351,16 +351,18 @@ class CLMModeling:
 
         Parameters
         ----------
-        alpha : float
+        alpha : float, None
+            If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
+            cosmology-dependent value for the CCL backend.)
         """
-        if self.halo_profile_model!='einasto' or self.backend!='nc':
+        if self.halo_profile_model!='einasto':
             raise NotImplementedError(
                 "The Einasto slope cannot be set "
                 "for your combination of profile choice "
                 "or modeling backend.")
         else:
             if self.validate_input:
-                validate_argument(locals(), 'alpha', float)
+                validate_argument(locals(), 'alpha', float, none_ok=True)
             self._set_einasto_alpha(alpha)
 
     def get_einasto_alpha(self, z_cl=None):
