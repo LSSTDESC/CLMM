@@ -22,8 +22,8 @@ link to this repository: https://github.com/LSSTDESC/CLMM. Please follow the gui
 
 CLMM requires Python version 3.6 or later.  CLMM has the following dependencies:
 
-- [NumPy](http://www.numpy.org/) (v1.17 or later)
-- [SciPy](http://www.numpy.org/) (v1.3 or later)
+- [NumPy](https://www.numpy.org/) (v1.17 or later)
+- [SciPy](https://scipy.org/) (v1.3 or later)
 - [Astropy](https://www.astropy.org/) (v4.0 or later for units and cosmology dependence)  
 (Please avoid Astropy v5.0 since there is bug breaking CCL backend. It has been fixed in Astropy v5.0.1.)
 - [Matplotlib](https://matplotlib.org/) (for plotting and going through tutorials)
@@ -35,7 +35,7 @@ CLMM requires Python version 3.6 or later.  CLMM has the following dependencies:
 For the theoretical predictions of the signal, CLMM relies on existing libraries and **at least one of the following must be installed as well**:
 
 - [cluster-toolkit](https://cluster-toolkit.readthedocs.io/en/latest/)
-- [CCL](https://ccl.readthedocs.io/en/v2.0.0/) (v2.1.0 or later)
+- [CCL](https://ccl.readthedocs.io/en/latest/) (v2.6 or later)
 - [NumCosmo](https://numcosmo.github.io/) (v0.15 or later)
 
 (See the [INSTALL documentation](INSTALL.md) for more detailed installation instructions.)

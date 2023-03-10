@@ -47,7 +47,7 @@ jobs:
         DISPLAY: test
     - name: Install Sphinx prereq
       run: |
-        conda install sphinx sphinx_rtd_theme nbconvert pandoc ipython ipython_genutils
+        conda install sphinx sphinx_rtd_theme nbconvert==6.4.4 pandoc ipython ipython_genutils
     - name: Run the docs
       run: |
         make -C docs/ html
