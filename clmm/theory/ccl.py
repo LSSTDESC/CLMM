@@ -67,6 +67,7 @@ class CCLCLMModeling(CLMModeling):
                                         'cumul2d_analytic': True}}
         self.cor_factor = _patch_rho_crit_to_cd2018(ccl.physical_constants.RHO_CRITICAL)
         self.__mdelta_cor = 0.0 ## mass with corretion for input
+        #self.hdpm_opts['einasto'].update({'alpha': 0.25}) # same as NC default
 
         # Set halo profile and cosmology
         self.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
@@ -111,10 +112,19 @@ class CCLCLMModeling(CLMModeling):
         """" set mass"""
         self.__mdelta_cor = mdelta/self.cor_factor
 
-    def _get_einasto_alpha(self, z_cl): 
+    def _set_einasto_alpha(self, alpha):
+        if alpha is None:
+            self.hdpm.update_parameters(alpha='cosmo')
+        else:
+            self.hdpm.update_parameters(alpha=alpha)
+
+    def _get_einasto_alpha(self, z_cl=None):
         """"get the value of the Einasto slope"""
-        a_cl = self.cosmo.get_a_from_z(z_cl)
-        return self.hdpm._get_alpha (self.cosmo.be_cosmo, self.__mdelta_cor, a_cl, self.mdef)
+        if self.hdpm.alpha!='cosmo':
+            a_cl = 1 # a_cl does not matter in this case
+        else:
+            a_cl = self.cosmo.get_a_from_z(z_cl)
+        return self.hdpm._get_alpha(self.cosmo.be_cosmo, self.__mdelta_cor, a_cl, self.mdef)
 
     def _eval_3d_density(self, r3d, z_cl):
         """"eval 3d density"""
