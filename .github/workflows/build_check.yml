@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - 'Fix_GH_Actions'
   pull_request:
 
 jobs:
