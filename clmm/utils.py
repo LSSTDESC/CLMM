@@ -3,10 +3,10 @@ import warnings
 import numpy as np
 from astropy import units as u
 from scipy.stats import binned_statistic
-from scipy.special import gamma, gammainc
 from scipy.integrate import quad, cumulative_trapezoid, simps
 from scipy.interpolate import interp1d
 from .constants import Constants as const
+from . import z_distributions as zdist
 
 
 def compute_nfw_boost(rvals, rs=1000, b0=0.1) :
@@ -33,11 +33,13 @@ def compute_nfw_boost(rvals, rs=1000, b0=0.1) :
 
         radicand = x**2-1
 
-        finternal = -1j *  np.log( (1 + np.lib.scimath.sqrt(radicand)*1j) / (1 - np.lib.scimath.sqrt(radicand)*1j) ) / ( 2 * np.lib.scimath.sqrt(radicand) )
+        finternal = (-1j*np.log((1+np.lib.scimath.sqrt(radicand)*1j)
+                                /(1-np.lib.scimath.sqrt(radicand)*1j))
+                     /(2*np.lib.scimath.sqrt(radicand)))
 
         return np.nan_to_num(finternal, copy=False, nan=1.0).real
 
-    return 1. + b0 * (1 - _calc_finternal(x)) / (x**2 - 1)
+    return 1.+b0 * (1-_calc_finternal(x)) / (x**2-1)
 
 
 def compute_powerlaw_boost(rvals, rs=1000, b0=0.1, alpha=-1.0) :
@@ -487,7 +489,8 @@ _valid_types = {
     float: (float, int, np.floating, np.integer),
     int: (int, np.integer),
     'float_array': (float, int, np.floating, np.integer),
-    'int_array': (int, np.integer)
+    'int_array': (int, np.integer),
+    'array': (list, tuple, np.ndarray),
     }
 
 def _is_valid(arg, valid_type):
@@ -508,6 +511,8 @@ def _is_valid(arg, valid_type):
     valid: bool
         Is argument valid
     """
+    if valid_type=='function':
+        return callable(arg)
     return (isinstance(arg[0], _valid_types[valid_type])
                 if (valid_type in ('int_array', 'float_array') and np.iterable(arg))
                 else isinstance(arg, _valid_types.get(valid_type, valid_type)))
@@ -576,9 +581,10 @@ def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argm
                   f'received shape({argname}): {np.shape(var)}'
             raise ValueError(err)
 
-def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1., is_unique_pzbins=False, ngrid=1000):
+def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1.,
+                   is_unique_pzbins=False, ngrid=1000):
     r"""
-    Integrates the product of a photo-z pdf with a given kernel.
+    Integrates the product of a photo-z pdf with a given kernel. 
     This function was created to allow for data with different photo-z binnings.
 
     Parameters
@@ -615,7 +621,8 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1., is_uniqu
     if is_unique_pzbins==False:
         # First need to interpolate on a fixed grid
         z_grid = np.linspace(zmin, zmax, ngrid)
-        pdf_interp_list = [interp1d(pzbin, pdf, bounds_error=False, fill_value=0.) for pzbin,pdf in zip(pzbins, pzpdf)]
+        pdf_interp_list = [interp1d(pzbin, pdf, bounds_error=False, fill_value=0.)
+                           for pzbin,pdf in zip(pzbins, pzpdf)]
         pz_matrix = np.array([pdf_interp(z_grid) for pdf_interp in pdf_interp_list])
         kernel_matrix = kernel(z_grid)
     else:
@@ -657,7 +664,7 @@ def compute_for_good_redshifts(function, z1, z2, bad_value, error_message):
         res = function(z1, z2)
     return res
 
-def compute_beta(z_s, z_cl, cosmo):
+def compute_beta(z_src, z_cl, cosmo):
     r"""Geometric lensing efficicency
 
     .. math::
@@ -667,10 +674,10 @@ def compute_beta(z_s, z_cl, cosmo):
 
     Parameters
     ----------
+    z_src:  float
+        Source galaxy redshift
     z_cl: float
-            Galaxy cluster redshift
-    z_s:  float
-            Source galaxy  redshift
+        Galaxy cluster redshift
     cosmo: clmm.Cosmology
         CLMM Cosmology object
 
@@ -679,23 +686,23 @@ def compute_beta(z_s, z_cl, cosmo):
     float
         Geometric lensing efficicency
     """
-    beta = np.heaviside(z_s-z_cl, 0) * cosmo.eval_da_z1z2(z_cl, z_s) / cosmo.eval_da(z_s)
+    beta = np.heaviside(z_src-z_cl, 0) * cosmo.eval_da_z1z2(z_cl, z_src) / cosmo.eval_da(z_src)
     return beta
 
-def compute_beta_s(z_s, z_cl, z_inf, cosmo):
+def compute_beta_s(z_src, z_cl, z_inf, cosmo):
     r"""Geometric lensing efficicency ratio
 
     .. math::
-        \beta_s = \beta(z_s)/\beta(z_{inf})
+        \beta_s = \beta(z_{src})/\beta(z_{inf})
 
     Parameters
     ----------
+    z_src: float
+        Source galaxy redshift
     z_cl: float
-            Galaxy cluster redshift
-    z_s: float
-            Source galaxy redshift
+        Galaxy cluster redshift
     z_inf: float
-            Redshift at infinity
+        Redshift at infinity
     cosmo: clmm.Cosmology
         CLMM Cosmology object
 
@@ -704,15 +711,48 @@ def compute_beta_s(z_s, z_cl, z_inf, cosmo):
     float
         Geometric lensing efficicency ratio
     """
-    beta_s = compute_beta(z_s, z_cl, cosmo) / compute_beta(z_inf, z_cl, cosmo)
+    beta_s = compute_beta(z_src, z_cl, cosmo) / compute_beta(z_inf, z_cl, cosmo)
     return beta_s
+
+def compute_beta_s_func(z_src, z_cl, z_inf, cosmo, func, *args, **kwargs):
+    r"""Geometric lensing efficicency ratio times a value of a function
+
+    .. math::
+        \beta_{s}\times \text{func} = \beta_s(z_{src}, z_{cl}, z_{inf})
+        \times\text{func}(*args,\ **kwargs)
+
+    Parameters
+    ----------
+    z_src: float
+        Source galaxy redshift
+    z_cl: float
+        Galaxy cluster redshift
+    z_inf: float
+        Redshift at infinity
+    cosmo: clmm.Cosmology
+        CLMM Cosmology object
+    func: callable
+        A scalar function
+    *args: positional arguments
+        args to be passed to `func`
+    **kwargs: keyword arguments
+        kwargs to be passed to `func`
+
+    Returns
+    -------
+    float
+        Geometric lensing efficicency ratio
+    """
+    beta_s = compute_beta(z_src, z_cl, cosmo) / compute_beta(z_inf, z_cl, cosmo)
+    beta_s_func = beta_s * func(*args, **kwargs)
+    return beta_s_func
 
 def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_distrib_func=None):
     r"""Mean value of the geometric lensing efficicency
 
     .. math::
-       \left<\beta\right> = \frac{\sum_{z = z_{min}}^{z_{max}}\beta(z)p(z)}
-       {\sum_{z = z_{min}}^{z_{max}}p(z)}
+       \left<\beta\right> = \frac{\int_{z = z_{min}}^{z_{max}}\beta(z)N(z)}
+       {\int_{z = z_{min}}^{z_{max}}N(z)}
 
     Parameters
     ----------
@@ -737,8 +777,8 @@ def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_dist
     float
         Mean value of the geometric lensing efficicency
     """
-    if z_distrib_func == None:
-        z_distrib_func = _chang_z_distrib
+    if z_distrib_func is None:
+        z_distrib_func = zdist.chang2013
     def integrand(z_i, z_cl=z_cl, cosmo=cosmo):
         return compute_beta(z_i, z_cl, cosmo) * z_distrib_func(z_i)
 
@@ -748,12 +788,13 @@ def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_dist
     B_mean = quad(integrand, zmin, zmax)[0] / quad(z_distrib_func, zmin, zmax)[0]
     return B_mean
 
-def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_distrib_func=None):
+def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None,
+                        z_distrib_func=None):
     r"""Mean value of the geometric lensing efficicency ratio
 
     .. math::
-       \left<\beta_s\right> =\frac{\sum_{z = z_{min}}^{z_{max}}\beta_s(z)p(z)}
-       {\sum_{z = z_{min}}^{z_{max}}p(z)}
+       \left<\beta_s\right> =\frac{\int_{z = z_{min}}^{z_{max}}\beta_s(z)N(z)}
+       {\int_{z = z_{min}}^{z_{max}}N(z)}
 
     Parameters
     ----------
@@ -769,22 +810,19 @@ def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=Non
     delta_z_cut: float, optional
         Redshift interval to be summed with :math:`z_{cl}` to return :math:`z_{min}`.
         This feature is not used if :math:`z_{min}` is provided by the user. Default: 0.1
-    z_distrib_func: one-parameter function
-        Redshift distribution function. Default is Chang et al (2013) distribution function.
     zmin: float, None, optional
         Minimum redshift to be set as the source of the galaxy when performing the sum.
         Default: None
     z_distrib_func: one-parameter function, optional
         Redshift distribution function. Default is Chang et al (2013) distribution function.
 
-
     Returns
     -------
     float
         Mean value of the geometric lensing efficicency ratio
     """
-    if z_distrib_func == None:
-        z_distrib_func = _chang_z_distrib
+    if z_distrib_func is None:
+        z_distrib_func = zdist.chang2013
 
     def integrand(z_i, z_cl=z_cl, z_inf=z_inf, cosmo=cosmo):
         return compute_beta_s(z_i, z_cl, z_inf, cosmo) * z_distrib_func(z_i)
@@ -794,19 +832,20 @@ def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=Non
     Bs_mean = quad(integrand, zmin, zmax)[0] / quad(z_distrib_func, zmin, zmax)[0]
     return Bs_mean
 
-def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_distrib_func=None):
+def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None,
+                               z_distrib_func=None):
     r"""Mean square value of the geometric lensing efficiency ratio
 
     .. math::
-       \left<\beta_s^2\right> =\frac{\sum_{z = z_{min}}^{z_{max}}\beta_s^2(z)p(z)}
-       {\sum_{z = z_{min}}^{z_{max}}p(z)}
+       \left<\beta_s^2\right> =\frac{\int_{z = z_{min}}^{z_{max}}\beta_s^2(z)N(z)}
+       {\int_{z = z_{min}}^{z_{max}}N(z)}
 
     Parameters
     ----------
     z_cl: float
-            Galaxy cluster redshift
+        Galaxy cluster redshift
     z_inf: float
-            Redshift at infinity
+        Redshift at infinity
     cosmo: clmm.Cosmology
         CLMM Cosmology object
     zmax: float
@@ -826,8 +865,8 @@ def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, z
     float
         Mean square value of the geometric lensing efficicency ratio.
     """
-    if z_distrib_func == None:
-        z_distrib_func = _chang_z_distrib
+    if z_distrib_func is None:
+        z_distrib_func = zdist.chang2013
 
     def integrand(z_i, z_cl=z_cl, z_inf=z_inf, cosmo=cosmo):
         return compute_beta_s(z_i, z_cl, z_inf, cosmo)**2 * z_distrib_func(z_i)
@@ -837,49 +876,6 @@ def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, z
     Bs_square_mean = quad(integrand, zmin, zmax)[0] / quad(z_distrib_func, zmin, zmax)[0]
     return Bs_square_mean
 
-def _chang_z_distrib(redshift, is_cdf=False):
-    """
-    A private function that returns the Chang et al (2013) unnormalized galaxy redshift
-    distribution function, with the fiducial set of parameters.
-
-    Parameters
-    ----------
-    redshift : float
-        Galaxy redshift
-    is_cdf : bool, optional
-        If True, returns cumulative distribution function. Default: False
-
-    Returns
-    -------
-    The value of the distribution at z
-    """
-    alpha, beta, redshift0 = 1.24, 1.01, 0.51
-    if is_cdf:
-        return redshift0**(alpha+1)*gammainc((alpha+1)/beta, (redshift/redshift0)**beta)/beta*gamma((alpha+1)/beta)
-    else:
-        return (redshift**alpha)*np.exp(-(redshift/redshift0)**beta)
-
-def _srd_z_distrib(redshift, is_cdf=False):
-    """
-    A private function that returns the unnormalized galaxy redshift distribution function used in
-    the LSST/DESC Science Requirement Document (arxiv:1809.01669).
-
-    Parameters
-    ----------
-    redshift : float
-        Galaxy redshift
-    is_cdf : bool, optional
-        If True, returns cumulative distribution function. Default: False
-
-    Returns
-    -------
-    The value of the distribution at z
-    """
-    alpha, beta, redshift0 = 2., 0.9, 0.28
-    if is_cdf:
-        return redshift0**(alpha+1)*gammainc((alpha+1)/beta, (redshift/redshift0)**beta)/beta*gamma((alpha+1)/beta)
-    else:
-        return (redshift**alpha)*np.exp(-(redshift/redshift0)**beta)
 
 def _draw_random_points_from_distribution(xmin, xmax, nobj, dist_func, xstep=0.001):
     """Draw random points with a given distribution.
