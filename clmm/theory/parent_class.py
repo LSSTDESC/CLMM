@@ -237,17 +237,17 @@ class CLMModeling:
     # 3.1. All these functions are for the single plane case
 
 
-    def _eval_critical_surface_density(self, z_len, z_src, show_warning=False):
-        return self.cosmo.eval_sigma_crit(z_len, z_src, show_warning=show_warning)
+    def _eval_critical_surface_density(self, z_len, z_src):
+        return self.cosmo.eval_sigma_crit(z_len, z_src)
 
     def _eval_tangential_shear_core(self, r_proj, z_cl, z_src):
         delta_sigma = self.eval_excess_surface_density(r_proj, z_cl)
-        sigma_c = self.cosmo.eval_sigma_crit(z_cl, z_src)
+        sigma_c = self.cosmo._eval_sigma_crit_core(z_cl, z_src)
         return delta_sigma/sigma_c
 
-    def _eval_convergence_core(self, r_proj, z_cl, z_src, verbose=False):
-        sigma = self.eval_surface_density(r_proj, z_cl, verbose=verbose)
-        sigma_c = self.cosmo.eval_sigma_crit(z_cl, z_src)
+    def _eval_convergence_core(self, r_proj, z_cl, z_src):
+        sigma = self.eval_surface_density(r_proj, z_cl)
+        sigma_c = self.cosmo._eval_sigma_crit_core(z_cl, z_src)
         return sigma/sigma_c
 
     def _eval_reduced_tangential_shear_core(self, r_proj, z_cl, z_src):

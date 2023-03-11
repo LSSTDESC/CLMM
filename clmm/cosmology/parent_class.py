@@ -405,7 +405,7 @@ class CLMMCosmology:
             validate_argument(locals(), 'redshift', float, argmin=0, eqmin=True)
         return dist1/self.eval_da(redshift)
 
-    def eval_sigma_crit(self, z_len, z_src, show_warning=True):
+    def eval_sigma_crit(self, z_len, z_src):
         r"""Computes the critical surface density
 
         Parameters
@@ -427,15 +427,15 @@ class CLMMCosmology:
         if self.validate_input:
             validate_argument(locals(), 'z_len', float, argmin=0, eqmin=True)
             validate_argument(locals(), 'z_src', 'float_array', argmin=0, eqmin=True)
-        return self._eval_sigma_crit(z_len=z_len, z_src=z_src, show_warning=show_warning)
+        return self._eval_sigma_crit(z_len=z_len, z_src=z_src)
 
-    def _eval_sigma_crit(self, z_len, z_src, show_warning=False):
+    def _eval_sigma_crit(self, z_len, z_src):
         warning_msg = '\nSome source redshifts are lower than the cluster redshift.'+\
         '\nSigma_crit = np.inf for those galaxies.'
         return compute_for_good_redshifts(
             self._eval_sigma_crit_core, z_len, z_src, np.inf,
             z1_arg_name='z_len', z2_arg_name='z_src',
-            warning_message=warning_msg, show_warning=show_warning)
+            warning_message=warning_msg)
 
     def _eval_sigma_crit_core(self, z_len, z_src):
         raise NotImplementedError
