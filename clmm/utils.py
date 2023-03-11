@@ -629,7 +629,7 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1.,
 
 def compute_for_good_redshifts(function, z1, z2, bad_value, warning_message,
                                z1_arg_name='z1', z2_arg_name='z2', r_proj=None,
-                               show_warning=True, **kwargs):
+                               **kwargs):
     """Computes function only for `z1` < `z2`, the rest is filled with `bad_value`
 
     Parameters
@@ -650,8 +650,6 @@ def compute_for_good_redshifts(function, z1, z2, bad_value, warning_message,
         Name of the keyword argument that `z2` is passed to. Default: 'z2'
     r_proj: float, array_like, optional
         Value to be passed to keyword argument `r_proj` of `function`. Default: None
-    show_warning: bool, optional
-        When set to False, `warning_message` is not displayed. Default: True
 
     Returns
     -------
@@ -667,8 +665,7 @@ def compute_for_good_redshifts(function, z1, z2, bad_value, warning_message,
         kwargs.update({'r_proj': r_proj[z_good] if np.iterable(r_proj) else r_proj})
 
     if not np.all(z_good):
-        if show_warning:
-            warnings.warn(warning_message, stacklevel=2)
+        warnings.warn(warning_message, stacklevel=2)
         if np.iterable(z_good):
             res = np.full(z_good.shape, bad_value)
             if np.any(z_good):
