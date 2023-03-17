@@ -461,20 +461,20 @@ def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled,
         pass
     elif galaxy_catalog.pzpdf_info['type']=='shared_bins':
         galaxy_catalog.pzpdf_info['zbins'] = np.arange(
-            max((galaxy_catalog['ztrue']-10.*galaxy_catalog['pzsigma']).min(), 0.),
-            (galaxy_catalog['ztrue']+10.*galaxy_catalog['pzsigma']).max()+pz_bin_width,
+            max((galaxy_catalog['z']-10.*galaxy_catalog['pzsigma']).min(), 0.),
+            (galaxy_catalog['z']+10.*galaxy_catalog['pzsigma']).max()+pz_bin_width,
              pz_bin_width)
         galaxy_catalog['pzpdf'] = gaussian(
             galaxy_catalog.pzpdf_info['zbins'],
-            galaxy_catalog['ztrue'][:,None],
+            galaxy_catalog['z'][:,None],
             galaxy_catalog['pzsigma'][:,None])
     elif galaxy_catalog.pzpdf_info['type']=='individual_bins':
         galaxy_catalog['pzbins'] = [
             np.arange(zmin, zmax, pz_bin_width)
             for zmin, zmax in zip(
-                galaxy_catalog['ztrue']-10.*galaxy_catalog['pzsigma'],
-                galaxy_catalog['ztrue']+10.*galaxy_catalog['pzsigma'])]
-        galaxy_catalog['pzpdf'] = [gaussian(row['pzbins'], row['ztrue'], row['pzsigma'])
+                galaxy_catalog['z']-10.*galaxy_catalog['pzsigma'],
+                galaxy_catalog['z']+10.*galaxy_catalog['pzsigma'])]
+        galaxy_catalog['pzpdf'] = [gaussian(row['pzbins'], row['z'], row['pzsigma'])
                                    for row in galaxy_catalog]
     elif galaxy_catalog.pzpdf_info['type']=='quantiles':
         raise NotImplementedError("PDF storing in quantiles not implemented.")
