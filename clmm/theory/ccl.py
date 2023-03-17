@@ -87,7 +87,8 @@ class CCLCLMModeling(CLMModeling):
 
             self.mdef = ccl.halos.MassDef(delta_mdef, self.mdef_dict[massdef])
             self.conc = ccl.halos.ConcentrationConstant(c=cdelta, mdef=self.mdef)
-            self.mdef.concentration = self.conc
+            with ccl.UnlockInstance(self.mdef):
+                self.mdef.concentration = self.conc
             self.hdpm = self.hdpm_dict[halo_profile_model](
                 self.conc, **self.hdpm_opts[halo_profile_model])
             self.hdpm.update_precision_fftlog(padding_lo_fftlog=1e-4,
@@ -104,7 +105,8 @@ class CCLCLMModeling(CLMModeling):
 
     def _set_concentration(self, cdelta):
         """" set concentration"""
-        self.conc.c = cdelta
+        with ccl.UnlockInstance(self.conc):
+            self.conc.c = cdelta
 
     def _set_mass(self, mdelta):
         """" set mass"""
