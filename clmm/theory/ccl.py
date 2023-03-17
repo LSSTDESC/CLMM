@@ -7,6 +7,7 @@ import pyccl as ccl
 
 import numpy as np
 from scipy.interpolate import interp1d
+from packaging.version import parse
 
 from . import func_layer
 from . func_layer import *
@@ -87,7 +88,10 @@ class CCLCLMModeling(CLMModeling):
 
             self.mdef = ccl.halos.MassDef(delta_mdef, self.mdef_dict[massdef])
             self.conc = ccl.halos.ConcentrationConstant(c=cdelta, mdef=self.mdef)
-            with ccl.UnlockInstance(self.mdef):
+            if parse(ccl.__version__) >= parse('2.6.2dev7'):
+                with ccl.UnlockInstance(self.mdef):
+                    self.mdef.concentration = self.conc
+            else:
                 self.mdef.concentration = self.conc
             self.hdpm = self.hdpm_dict[halo_profile_model](
                 self.conc, **self.hdpm_opts[halo_profile_model])
@@ -105,7 +109,10 @@ class CCLCLMModeling(CLMModeling):
 
     def _set_concentration(self, cdelta):
         """" set concentration"""
-        with ccl.UnlockInstance(self.conc):
+        if parse(ccl.__version__) >= parse('2.6.2dev7'):
+            with ccl.UnlockInstance(self.conc):
+                self.conc.c = cdelta
+        else:
             self.conc.c = cdelta
 
     def _set_mass(self, mdelta):
