@@ -82,21 +82,15 @@ class CCLCLMModeling(CLMModeling):
     # Functions implemented by child class
 
 
-    def _set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
-        """"set halo density profile"""
-        # Check if we have already an instance of the required object, if not create one
-        if not ((halo_profile_model==self.halo_profile_model)
-                and (massdef == self.massdef)
-                and (delta_mdef == self.delta_mdef)):
-
-            # ccl always needs an input concentration
-            cdelta = self.cdelta if self.hdpm else 4.0
-
-            self.mdef = ccl.halos.MassDef(delta_mdef, self.mdef_dict[massdef])
-            if parse(ccl.__version__) >= parse('2.6.2dev7'):
-                ccl.UnlockInstance.Funlock(type(self.mdef), "_concentration_init", True)
-            # setting concentration also updates hdpm
-            self.cdelta = cdelta
+    def _update_halo_density_profile(self):
+        """"updates halo density profile with set internal properties"""
+        # prepare mdef object
+        self.mdef = ccl.halos.MassDef(self.delta_mdef, self.mdef_dict[self.massdef])
+        # adjust it for ccl version > 2.6.1
+        if parse(ccl.__version__) >= parse('2.6.2dev7'):
+            ccl.UnlockInstance.Funlock(type(self.mdef), "_concentration_init", True)
+        # setting concentration (also updates hdpm)
+        self.cdelta = self.cdelta if self.hdpm else 4.0 # ccl always needs an input concentration
 
     def _get_concentration(self):
         """"get concentration"""
@@ -110,8 +104,8 @@ class CCLCLMModeling(CLMModeling):
         """"set concentration. Also sets/updates hdpm"""
         self.conc = ccl.halos.ConcentrationConstant(c=cdelta, mdef=self.mdef)
         self.mdef._concentration_init(self.conc)
-        self.hdpm = self.hdpm_dict[halo_profile_model](
-            self.conc, **self.hdpm_opts[halo_profile_model])
+        self.hdpm = self.hdpm_dict[self.halo_profile_model](
+            self.conc, **self.hdpm_opts[self.halo_profile_model])
         self.hdpm.update_precision_fftlog(
             padding_lo_fftlog=1e-4, padding_hi_fftlog=1e3)
 
