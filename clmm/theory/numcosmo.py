@@ -72,25 +72,20 @@ class NumCosmoCLMModeling(CLMModeling):
         """"set cosmo"""
         CLMModeling._set_cosmo(self, cosmo)
 
-    def _set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
-        """"set halo density profile"""
-        # Check if we have already an instance of the required object, if not create one
-        if not((halo_profile_model==self.halo_profile_model)
-                and (massdef==self.massdef)
-                and (delta_mdef==self.delta_mdef)):
+    def _update_halo_density_profile(self):
+        """"updates halo density profile with set internal properties"""
+        # Makes sure current cdelta/mdelta values are kept
+        has_cm_vals = self.hdpm is not None
+        if has_cm_vals:
+            cdelta = self.cdelta
+            log10_mdelta = self.hdpm.props.log10MDelta
 
-            # Makes sure current cdelta/mdelta values are kept
-            has_cm_vals = self.hdpm is not None
-            if has_cm_vals:
-                cdelta = self.cdelta
-                log10_mdelta = self.hdpm.props.log10MDelta
+        self.hdpm = self.hdpm_dict[self.halo_profile_model](
+            self.mdef_dict[self.massdef], self.delta_mdef)
 
-            self.hdpm = self.hdpm_dict[halo_profile_model](
-                self.mdef_dict[massdef], delta_mdef)
-
-            if has_cm_vals:
-                self.cdelta = cdelta
-                self.hdpm.props.log10MDelta = log10_mdelta
+        if has_cm_vals:
+            self.cdelta = cdelta
+            self.hdpm.props.log10MDelta = log10_mdelta
 
     def _get_concentration(self):
         """"get concentration"""
