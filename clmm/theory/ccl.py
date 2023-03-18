@@ -43,6 +43,10 @@ class CCLCLMModeling(CLMModeling):
         Dictionary with the definitions for mass
     hdpm_dict: dict
         Dictionary with the definitions for profile
+    mdef: ccl.halos.MassDef, None
+        Internal MassDef object
+    conc: ccl.halos.ConcentrationConstant, None
+        Internal ConcentrationConstant object
     """
     # pylint: disable=too-many-instance-attributes
 
@@ -69,6 +73,8 @@ class CCLCLMModeling(CLMModeling):
         #self.hdpm_opts['einasto'].update({'alpha': 0.25}) # same as NC default
 
         # Set halo profile and cosmology
+        self.mdef = None
+        self.conc = None
         self.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
         self.set_cosmo(None)
 
@@ -89,12 +95,8 @@ class CCLCLMModeling(CLMModeling):
             self.mdef = ccl.halos.MassDef(delta_mdef, self.mdef_dict[massdef])
             if parse(ccl.__version__) >= parse('2.6.2dev7'):
                 ccl.UnlockInstance.Funlock(type(self.mdef), "_concentration_init", True)
-            self._set_concentration(cdelta)
-            self.hdpm = self.hdpm_dict[halo_profile_model](
-                self.conc, **self.hdpm_opts[halo_profile_model])
-            self.hdpm.update_precision_fftlog(padding_lo_fftlog=1e-4,
-                                              padding_hi_fftlog=1e3
-                                             )
+            # setting concentration also updates hdpm
+            self.cdelta = cdelta
 
     def _get_concentration(self):
         """"get concentration"""
@@ -105,9 +107,13 @@ class CCLCLMModeling(CLMModeling):
         return self.__mdelta_cor*self.cor_factor
 
     def _set_concentration(self, cdelta):
-        """" set concentration"""
+        """"set concentration. Also sets/updates hdpm"""
         self.conc = ccl.halos.ConcentrationConstant(c=cdelta, mdef=self.mdef)
         self.mdef._concentration_init(self.conc)
+        self.hdpm = self.hdpm_dict[halo_profile_model](
+            self.conc, **self.hdpm_opts[halo_profile_model])
+        self.hdpm.update_precision_fftlog(
+            padding_lo_fftlog=1e-4, padding_hi_fftlog=1e3)
 
     def _set_mass(self, mdelta):
         """" set mass"""
