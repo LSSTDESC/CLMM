@@ -87,12 +87,9 @@ class CCLCLMModeling(CLMModeling):
             cdelta = self.cdelta if self.hdpm else 4.0
 
             self.mdef = ccl.halos.MassDef(delta_mdef, self.mdef_dict[massdef])
-            self.conc = ccl.halos.ConcentrationConstant(c=cdelta, mdef=self.mdef)
             if parse(ccl.__version__) >= parse('2.6.2dev7'):
-                with ccl.UnlockInstance(self.mdef):
-                    self.mdef.concentration = self.conc
-            else:
-                self.mdef.concentration = self.conc
+                ccl.UnlockInstance.Funlock(type(self.mdef), "_concentration_init", True)
+            self._set_concentration(cdelta)
             self.hdpm = self.hdpm_dict[halo_profile_model](
                 self.conc, **self.hdpm_opts[halo_profile_model])
             self.hdpm.update_precision_fftlog(padding_lo_fftlog=1e-4,
@@ -109,11 +106,8 @@ class CCLCLMModeling(CLMModeling):
 
     def _set_concentration(self, cdelta):
         """" set concentration"""
-        if parse(ccl.__version__) >= parse('2.6.2dev7'):
-            with ccl.UnlockInstance(self.conc):
-                self.conc.c = cdelta
-        else:
-            self.conc.c = cdelta
+        self.conc = ccl.halos.ConcentrationConstant(c=cdelta, mdef=self.mdef)
+        self.mdef._concentration_init(self.conc)
 
     def _set_mass(self, mdelta):
         """" set mass"""
