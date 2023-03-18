@@ -17,7 +17,7 @@ def test_unimplemented(modeling_data):
     assert_raises(NotImplementedError, mod._set_mass, 1.0e15)
     assert_raises(NotImplementedError, mod.set_concentration, 4.0)
     assert_raises(NotImplementedError, mod._set_concentration, 4.0)
-    assert_raises(NotImplementedError, mod._set_halo_density_profile)
+    assert_raises(NotImplementedError, mod._update_halo_density_profile)
     assert_raises(NotImplementedError, mod._set_einasto_alpha, 0.5)
     assert_raises(NotImplementedError, mod._get_einasto_alpha)
     assert_raises(NotImplementedError, mod.eval_3d_density, [0.3], 0.3)
