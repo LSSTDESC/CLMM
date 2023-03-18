@@ -7,6 +7,7 @@ import pyccl as ccl
 
 import numpy as np
 from scipy.interpolate import interp1d
+from packaging.version import parse
 
 from . import func_layer
 from . func_layer import *
@@ -42,6 +43,10 @@ class CCLCLMModeling(CLMModeling):
         Dictionary with the definitions for mass
     hdpm_dict: dict
         Dictionary with the definitions for profile
+    mdef: ccl.halos.MassDef, None
+        Internal MassDef object
+    conc: ccl.halos.ConcentrationConstant, None
+        Internal ConcentrationConstant object
     """
     # pylint: disable=too-many-instance-attributes
 
@@ -68,6 +73,8 @@ class CCLCLMModeling(CLMModeling):
         #self.hdpm_opts['einasto'].update({'alpha': 0.25}) # same as NC default
 
         # Set halo profile and cosmology
+        self.mdef = None
+        self.conc = None
         self.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
         self.set_cosmo(None)
 
@@ -75,24 +82,15 @@ class CCLCLMModeling(CLMModeling):
     # Functions implemented by child class
 
 
-    def _set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
-        """"set halo density profile"""
-        # Check if we have already an instance of the required object, if not create one
-        if not ((halo_profile_model==self.halo_profile_model)
-                and (massdef == self.massdef)
-                and (delta_mdef == self.delta_mdef)):
-
-            # ccl always needs an input concentration
-            cdelta = self.cdelta if self.hdpm else 4.0
-
-            self.mdef = ccl.halos.MassDef(delta_mdef, self.mdef_dict[massdef])
-            self.conc = ccl.halos.ConcentrationConstant(c=cdelta, mdef=self.mdef)
-            self.mdef.concentration = self.conc
-            self.hdpm = self.hdpm_dict[halo_profile_model](
-                self.conc, **self.hdpm_opts[halo_profile_model])
-            self.hdpm.update_precision_fftlog(padding_lo_fftlog=1e-4,
-                                              padding_hi_fftlog=1e3
-                                             )
+    def _update_halo_density_profile(self):
+        """"updates halo density profile with set internal properties"""
+        # prepare mdef object
+        self.mdef = ccl.halos.MassDef(self.delta_mdef, self.mdef_dict[self.massdef])
+        # adjust it for ccl version > 2.6.1
+        if parse(ccl.__version__) >= parse('2.6.2dev7'):
+            ccl.UnlockInstance.Funlock(type(self.mdef), "_concentration_init", True)
+        # setting concentration (also updates hdpm)
+        self.cdelta = self.cdelta if self.hdpm else 4.0 # ccl always needs an input concentration
 
     def _get_concentration(self):
         """"get concentration"""
@@ -103,8 +101,13 @@ class CCLCLMModeling(CLMModeling):
         return self.__mdelta_cor*self.cor_factor
 
     def _set_concentration(self, cdelta):
-        """" set concentration"""
-        self.conc.c = cdelta
+        """"set concentration. Also sets/updates hdpm"""
+        self.conc = ccl.halos.ConcentrationConstant(c=cdelta, mdef=self.mdef)
+        self.mdef._concentration_init(self.conc)
+        self.hdpm = self.hdpm_dict[self.halo_profile_model](
+            self.conc, **self.hdpm_opts[self.halo_profile_model])
+        self.hdpm.update_precision_fftlog(
+            padding_lo_fftlog=1e-4, padding_hi_fftlog=1e3)
 
     def _set_mass(self, mdelta):
         """" set mass"""
