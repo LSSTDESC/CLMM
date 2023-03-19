@@ -142,7 +142,7 @@ class CLMModeling:
         r""" Actuall sets the value of the concentration (without value check)"""
         raise NotImplementedError
 
-    def _set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
+    def _update_halo_density_profile(self):
         raise NotImplementedError
 
     def _set_einasto_alpha(self, alpha):
@@ -337,30 +337,38 @@ class CLMModeling:
             if not halo_profile_model in self.hdpm_dict:
                 raise ValueError(
                     f"Halo density profile model {halo_profile_model} not currently supported")
-        # set the profile
-        self._set_halo_density_profile(halo_profile_model=halo_profile_model,
-                                       massdef=massdef, delta_mdef=delta_mdef)
+        # Check if we have already an instance of the required object, if not create one
+        if (
+                (self.hdpm is None)
+                or (self.halo_profile_model!=halo_profile_model)
+                or (self.massdef!=massdef)
+                or (self.delta_mdef!=delta_mdef)
+        ):
+            # set internal quantities
+            self.__halo_profile_model = halo_profile_model
+            self.__massdef = massdef
+            self.__delta_mdef = delta_mdef
+            # set the profile
+            self._update_halo_density_profile()
 
-        # set internal quantities
-        self.__halo_profile_model = halo_profile_model
-        self.__massdef = massdef
-        self.__delta_mdef = delta_mdef
 
     def set_einasto_alpha(self, alpha):
         r""" Sets the value of the :math:`\alpha` parameter for the Einasto profile
 
         Parameters
         ----------
-        alpha : float
+        alpha : float, None
+            If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
+            cosmology-dependent value for the CCL backend.)
         """
-        if self.halo_profile_model!='einasto' or self.backend!='nc':
+        if self.halo_profile_model!='einasto':
             raise NotImplementedError(
                 "The Einasto slope cannot be set "
                 "for your combination of profile choice "
                 "or modeling backend.")
         else:
             if self.validate_input:
-                validate_argument(locals(), 'alpha', float)
+                validate_argument(locals(), 'alpha', float, none_ok=True)
             self._set_einasto_alpha(alpha)
 
     def get_einasto_alpha(self, z_cl=None):

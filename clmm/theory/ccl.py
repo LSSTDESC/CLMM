@@ -7,8 +7,7 @@ import pyccl as ccl
 
 import numpy as np
 from scipy.interpolate import interp1d
-import warnings
-from packaging import version
+from packaging.version import parse
 
 from . import func_layer
 from . func_layer import *
@@ -44,6 +43,10 @@ class CCLCLMModeling(CLMModeling):
         Dictionary with the definitions for mass
     hdpm_dict: dict
         Dictionary with the definitions for profile
+    mdef: ccl.halos.MassDef, None
+        Internal MassDef object
+    conc: ccl.halos.ConcentrationConstant, None
+        Internal ConcentrationConstant object
     """
     # pylint: disable=too-many-instance-attributes
 
@@ -67,8 +70,11 @@ class CCLCLMModeling(CLMModeling):
                           'hernquist': {'truncated': False}}
         self.cor_factor = _patch_rho_crit_to_cd2018(ccl.physical_constants.RHO_CRITICAL)
         self.__mdelta_cor = 0.0 ## mass with corretion for input
+        #self.hdpm_opts['einasto'].update({'alpha': 0.25}) # same as NC default
 
         # Set halo profile and cosmology
+        self.mdef = None
+        self.conc = None
         self.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
         self.set_cosmo(None)
 
@@ -76,24 +82,15 @@ class CCLCLMModeling(CLMModeling):
     # Functions implemented by child class
 
 
-    def _set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
-        """"set halo density profile"""
-        # Check if we have already an instance of the required object, if not create one
-        if not ((halo_profile_model==self.halo_profile_model)
-                and (massdef == self.massdef)
-                and (delta_mdef == self.delta_mdef)):
-
-            # ccl always needs an input concentration
-            cdelta = self.cdelta if self.hdpm else 4.0
-
-            self.mdef = ccl.halos.MassDef(delta_mdef, self.mdef_dict[massdef])
-            self.conc = ccl.halos.ConcentrationConstant(c=cdelta, mdef=self.mdef)
-            self.mdef.concentration = self.conc
-            self.hdpm = self.hdpm_dict[halo_profile_model](
-                self.conc, **self.hdpm_opts[halo_profile_model])
-            self.hdpm.update_precision_fftlog(padding_lo_fftlog=1e-4,
-                                              padding_hi_fftlog=1e3
-                                             )
+    def _update_halo_density_profile(self):
+        """"updates halo density profile with set internal properties"""
+        # prepare mdef object
+        self.mdef = ccl.halos.MassDef(self.delta_mdef, self.mdef_dict[self.massdef])
+        # adjust it for ccl version > 2.6.1
+        if parse(ccl.__version__) >= parse('2.6.2dev7'):
+            ccl.UnlockInstance.Funlock(type(self.mdef), "_concentration_init", True)
+        # setting concentration (also updates hdpm)
+        self.cdelta = self.cdelta if self.hdpm else 4.0 # ccl always needs an input concentration
 
     def _get_concentration(self):
         """"get concentration"""
@@ -102,26 +99,40 @@ class CCLCLMModeling(CLMModeling):
     def _get_mass(self):
         """"get mass"""
         return self.__mdelta_cor*self.cor_factor
-        
+
     def _set_concentration(self, cdelta):
-        """" set concentration"""
-        self.conc.c = cdelta
+        """"set concentration. Also sets/updates hdpm"""
+        self.conc = ccl.halos.ConcentrationConstant(c=cdelta, mdef=self.mdef)
+        self.mdef._concentration_init(self.conc)
+        self.hdpm = self.hdpm_dict[self.halo_profile_model](
+            self.conc, **self.hdpm_opts[self.halo_profile_model])
+        self.hdpm.update_precision_fftlog(
+            padding_lo_fftlog=1e-4, padding_hi_fftlog=1e3)
 
     def _set_mass(self, mdelta):
         """" set mass"""
         self.__mdelta_cor = mdelta/self.cor_factor
 
-    def _get_einasto_alpha(self, z_cl): 
+    def _set_einasto_alpha(self, alpha):
+        if alpha is None:
+            self.hdpm.update_parameters(alpha='cosmo')
+        else:
+            self.hdpm.update_parameters(alpha=alpha)
+
+    def _get_einasto_alpha(self, z_cl=None):
         """"get the value of the Einasto slope"""
-        a_cl = self.cosmo.get_a_from_z(z_cl)
-        return self.hdpm._get_alpha (self.cosmo.be_cosmo, self.__mdelta_cor, a_cl, self.mdef)
+        if self.hdpm.alpha!='cosmo':
+            a_cl = 1 # a_cl does not matter in this case
+        else:
+            a_cl = self.cosmo.get_a_from_z(z_cl)
+        return self.hdpm._get_alpha(self.cosmo.be_cosmo, self.__mdelta_cor, a_cl, self.mdef)
 
     def _eval_3d_density(self, r3d, z_cl):
         """"eval 3d density"""
         a_cl = self.cosmo.get_a_from_z(z_cl)
         dens = self.hdpm.real(
             self.cosmo.be_cosmo, r3d/a_cl, self.__mdelta_cor, a_cl, self.mdef)
-            
+
         return dens*self.cor_factor/a_cl**3
 
     def _eval_surface_density(self, r_proj, z_cl):
@@ -134,7 +145,7 @@ class CCLCLMModeling(CLMModeling):
             tmp = self.hdpm.projected(self.cosmo.be_cosmo, rtmp/a_cl, self.__mdelta_cor,
                                       a_cl, self.mdef)*self.cor_factor/a_cl**2
             ptf = interp1d(np.log(rtmp), np.log(tmp), bounds_error=False, fill_value=-100)
-            return np.exp(ptf(np.log(r_proj)))  
+            return np.exp(ptf(np.log(r_proj)))
 
     def _eval_mean_surface_density(self, r_proj, z_cl):
         """"eval mean surface density"""
