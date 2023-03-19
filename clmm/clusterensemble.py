@@ -4,6 +4,7 @@ The Cluster Ensemble class
 import numpy as np
 from scipy.stats import binned_statistic
 import healpy
+import pickle
 
 from .gcdata import GCData
 from .utils import convert_units
@@ -294,3 +295,15 @@ class ClusterEnsemble():
                                                             bias=False, ddof=0)
         self.jackknife_cross_covariance = coeff*np.cov(np.array(gx_jack).T,
                                                        bias=False, ddof=0)
+
+    def save(self, filename, **kwargs):
+        """Saves GalaxyCluster object to filename using Pickle"""
+        with open(filename, 'wb') as fin:
+            pickle.dump(self, fin, **kwargs)
+
+    @classmethod
+    def load(cls, filename, **kwargs):
+        """Loads GalaxyCluster object to filename using Pickle"""
+        with open(filename, 'rb') as fin:
+            self = pickle.load(fin, **kwargs)
+        return self
