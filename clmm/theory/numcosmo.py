@@ -75,25 +75,20 @@ class NumCosmoCLMModeling(CLMModeling):
         self.cosmo.smd = Nc.WLSurfaceMassDensity.new(self.cosmo.dist)
         self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
 
-    def _set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
-        """"set halo density profile"""
-        # Check if we have already an instance of the required object, if not create one
-        if not((halo_profile_model==self.halo_profile_model)
-                and (massdef==self.massdef)
-                and (delta_mdef==self.delta_mdef)):
+    def _update_halo_density_profile(self):
+        """"updates halo density profile with set internal properties"""
+        # Makes sure current cdelta/mdelta values are kept
+        has_cm_vals = self.hdpm is not None
+        if has_cm_vals:
+            cdelta = self.cdelta
+            log10_mdelta = self.hdpm.props.log10MDelta
 
-            # Makes sure current cdelta/mdelta values are kept
-            has_cm_vals = self.hdpm is not None
-            if has_cm_vals:
-                cdelta = self.cdelta
-                log10_mdelta = self.hdpm.props.log10MDelta
+        self.hdpm = self.hdpm_dict[self.halo_profile_model](
+            self.mdef_dict[self.massdef], self.delta_mdef)
 
-            self.hdpm = self.hdpm_dict[halo_profile_model](
-                self.mdef_dict[massdef], delta_mdef)
-
-            if has_cm_vals:
-                self.cdelta = cdelta
-                self.hdpm.props.log10MDelta = log10_mdelta
+        if has_cm_vals:
+            self.cdelta = cdelta
+            self.hdpm.props.log10MDelta = log10_mdelta
 
     def _get_concentration(self):
         """"get concentration"""
@@ -112,12 +107,14 @@ class NumCosmoCLMModeling(CLMModeling):
         self.hdpm.props.log10MDelta = math.log10(mdelta)
 
     def _set_einasto_alpha(self, alpha):
-        self.hdpm.props.alpha = alpha
+        if alpha is None:
+            self.hdpm.props.alpha = 0.25
+        else:
+            self.hdpm.props.alpha = alpha
 
     def _get_einasto_alpha(self, z_cl=None):
         """"get the value of the Einasto slope"""
-        # Note that z_cl is needed for the CCL backend only
-        # 
+        # Note that z_cl is needed for CCL<2.6 only
         return self.hdpm.props.alpha
 
     def _eval_3d_density(self, r3d, z_cl):
@@ -166,7 +163,8 @@ class NumCosmoCLMModeling(CLMModeling):
         return np.vectorize(func)(r_proj, z_src, z_cl)
 
     def _eval_reduced_tangential_shear(self, r_proj, z_cl, z_src):
-        """"eval reduced tangential shear considering a single redshift plane for background sources"""
+        """"eval reduced tangential shear considering a single redshift plane
+        for background sources"""
 
         self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
         if (isinstance(r_proj, (list, np.ndarray))

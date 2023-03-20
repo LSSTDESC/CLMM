@@ -253,7 +253,8 @@ def test_profiles(modeling_data, profile_init):
     cfg = load_validation_config(halo_profile_model=profile_init)
     cosmo = cfg['cosmo']
 
-    if (profile_init=='nfw' or theo.be_nick in ['nc','ccl']) and modeling_data['nick'] not in ['notabackend','testnotabackend']:
+    if (profile_init=='nfw' or theo.be_nick in ['nc','ccl']) and \
+            modeling_data['nick'] not in ['notabackend','testnotabackend']:
 
         helper_profiles(theo.compute_3d_density)
         helper_profiles(theo.compute_surface_density)
@@ -277,26 +278,21 @@ def test_profiles(modeling_data, profile_init):
         # which is the CCL default value
         if profile_init=='einasto':
             alpha_ein = cfg['TEST_CASE']['alpha_einasto']
-            if theo.be_nick=='nc':
-                mod.set_einasto_alpha(alpha_ein)
-                assert_allclose(mod.get_einasto_alpha(), alpha_ein, reltol)
+            mod.set_einasto_alpha(alpha_ein)
 
-            # will be removed once CCL allows setting alpha_ein
-            else:
-                assert_raises(NotImplementedError, mod.set_einasto_alpha, alpha_ein)
-                alpha_ein = None
-        else:
-            assert_raises(ValueError, mod.get_einasto_alpha)
+        if profile_init!='einasto':
             alpha_ein = None
 
         assert_allclose(
             mod.eval_3d_density(cfg['RHO_PARAMS']['r3d'], cfg['RHO_PARAMS']['z_cl'], verbose=True),
             cfg['numcosmo_profiles']['rho'], reltol)
         assert_allclose(
-            mod.eval_surface_density(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl'], verbose=True),
+            mod.eval_surface_density(cfg['SIGMA_PARAMS']['r_proj'],
+                                     cfg['SIGMA_PARAMS']['z_cl'], verbose=True),
             cfg['numcosmo_profiles']['Sigma'], reltol)
         assert_allclose(
-            mod.eval_excess_surface_density(cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl'], verbose=True),
+            mod.eval_excess_surface_density(cfg['SIGMA_PARAMS']['r_proj'],
+                                            cfg['SIGMA_PARAMS']['z_cl'], verbose=True),
             cfg['numcosmo_profiles']['DeltaSigma'], reltol)
         if mod.backend == 'ct':
             assert_raises(ValueError, mod.eval_excess_surface_density,
@@ -304,15 +300,15 @@ def test_profiles(modeling_data, profile_init):
 
         # Functional interface tests
         # alpha_ein is None unless testing Einasto with the NC backend
-        assert_allclose(theo.compute_3d_density(cosmo=cosmo, **cfg['RHO_PARAMS'], alpha_ein=alpha_ein, verbose=True),
+        assert_allclose(theo.compute_3d_density(cosmo=cosmo, **cfg['RHO_PARAMS'],
+                                                alpha_ein=alpha_ein, verbose=True),
                         cfg['numcosmo_profiles']['rho'], reltol)
-        assert_allclose(theo.compute_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS'], alpha_ein=alpha_ein, verbose=True),
+        assert_allclose(theo.compute_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS'],
+                                                     alpha_ein=alpha_ein, verbose=True),
                         cfg['numcosmo_profiles']['Sigma'], reltol)
-        assert_allclose(theo.compute_excess_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS'], alpha_ein=alpha_ein, verbose=True),
+        assert_allclose(theo.compute_excess_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS'],
+                                                            alpha_ein=alpha_ein, verbose=True),
                         cfg['numcosmo_profiles']['DeltaSigma'], reltol)
-
-    else:
-        print('Need to test for error')
 
 def test_2halo_term(modeling_data):
 
@@ -455,8 +451,7 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
     cfg = load_validation_config(halo_profile_model=profile_init)
     cosmo = cfg['cosmo']
 
-    if (profile_init=='nfw' or theo.be_nick in ['nc','ccl']) and\
-    (modeling_data['nick'] not in ['notabackend','testnotabackend']):
+    if (profile_init=='nfw' or modeling_data['nick'] in ['nc','ccl']):
 
         if profile_init == 'nfw':
             reltol = modeling_data['theory_reltol']
@@ -469,23 +464,6 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
 
         if profile_init=='einasto':
             cfg['GAMMA_PARAMS']['alpha_ein'] = cfg['TEST_CASE']['alpha_einasto']
-
-            # Einasto-specific tests - checks errors are raised appropriately
-            # will be removed once CCL allows setting alpha_ein
-            if theo.be_nick=='ccl':
-                alpha_ein = cfg['TEST_CASE']['alpha_einasto']
-                mod = theo.Modeling()
-                assert_raises(NotImplementedError, mod.set_einasto_alpha, alpha_ein)
-                assert_raises(NotImplementedError,
-                              theo.compute_convergence, cosmo=cosmo, **cfg['GAMMA_PARAMS'])
-                assert_raises(NotImplementedError,
-                              theo.compute_tangential_shear, cosmo=cosmo, **cfg['GAMMA_PARAMS'])
-                assert_raises(NotImplementedError,
-                              theo.compute_reduced_tangential_shear,
-                                  cosmo=cosmo, **cfg['GAMMA_PARAMS'])
-                assert_raises(NotImplementedError,
-                              theo.compute_magnification, cosmo=cosmo, **cfg['GAMMA_PARAMS'])
-                del cfg['GAMMA_PARAMS']['alpha_ein']
 
         # Validate tangential shear - discrete case
         gammat = theo.compute_tangential_shear(cosmo=cosmo, **cfg['GAMMA_PARAMS'])
@@ -506,18 +484,10 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         assert_allclose(mu, cfg['numcosmo_profiles']['mu'], 1.e2*reltol)
 
         # Validate magnification bias - discrete case
-        # this if will be removed once compute_magnification_bias takes alpha_ein
-        if profile_init=='einasto' and theo.be_nick=='nc':
-            del cfg['GAMMA_PARAMS']['alpha_ein']
-            cfg['GAMMA_PARAMS']['verbose'] = True
-
         alpha = 3.78
-        assert_allclose(
-            theo.compute_magnification_bias(cosmo=cosmo, **cfg['GAMMA_PARAMS'], alpha=alpha),
-            (1./((1-kappa)**2-abs(gammat)**2))**(alpha - 1), 1.0e-10)
-        assert_allclose(
-            theo.compute_magnification_bias(cosmo=cosmo, **cfg['GAMMA_PARAMS'], alpha=alpha),
-            cfg['numcosmo_profiles']['mu']**(alpha - 1), 1.e3*reltol)
+        mu_bias = theo.compute_magnification_bias(cosmo=cosmo, **cfg['GAMMA_PARAMS'], alpha=alpha)
+        assert_allclose(mu_bias, (1./((1-kappa)**2-abs(gammat)**2))**(alpha - 1), 1.0e-10)
+        assert_allclose(mu_bias, cfg['numcosmo_profiles']['mu']**(alpha - 1), 1.e3*reltol)
 
         cfg_inf = load_validation_config()
 
@@ -782,9 +752,25 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         mod.set_concentration(cfg['GAMMA_PARAMS']['cdelta'])
         mod.set_mass(cfg['GAMMA_PARAMS']['mdelta'])
 
-        # will remove theo.be_nick=='nc' when CCL allows setting alpha_ein
-        if profile_init=='einasto' and theo.be_nick=='nc':
-            mod.set_einasto_alpha(cfg['TEST_CASE']['alpha_einasto'])
+        if profile_init=='einasto':
+            alpha_ein = cfg['TEST_CASE']['alpha_einasto']
+
+            mod.set_einasto_alpha(0.25)
+            assert_allclose(mod.get_einasto_alpha(), 0.25, reltol)
+
+            # test default value
+            mod.set_einasto_alpha(None)
+            if theo.be_nick=='ccl':
+                assert_allclose(mod.get_einasto_alpha(cfg['GAMMA_PARAMS']['z_cluster']),
+                                alpha_ein, reltol)
+            if theo.be_nick=='nc':
+                assert_allclose(mod.get_einasto_alpha(), 0.25, reltol)
+
+            mod.set_einasto_alpha(alpha_ein)
+
+        if profile_init!='einasto':
+            assert_raises(ValueError, mod.get_einasto_alpha)
+            assert_raises(NotImplementedError, mod.set_einasto_alpha, 0.25)
 
         profile_pars = [cfg['GAMMA_PARAMS']['r_proj'], cfg['GAMMA_PARAMS']['z_cluster'],
                         cfg['GAMMA_PARAMS']['z_source']]
@@ -931,8 +917,7 @@ def test_compute_magnification_bias(modeling_data):
 
 def test_mass_conversion(modeling_data, profile_init):
     """ Unit tests for HaloProfile objects' instantiation """
-    if (profile_init=='nfw' or theo.be_nick in ['nc','ccl']) and\
-                modeling_data['nick'] not in ['notabackend','testnotabackend']:
+    if (profile_init=='nfw' or modeling_data['nick'] in ['nc','ccl']):
         reltol = modeling_data['theory_reltol']
 
         ### Loads values precomputed by numcosmo for comparison
@@ -955,23 +940,26 @@ def test_mass_conversion(modeling_data, profile_init):
             halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
         profile.set_concentration(cdelta)
         profile.set_mass(mdelta)
-        if halo_profile_model=='einasto' and theo.be_nick=='nc':
+        if halo_profile_model=='einasto':
             profile.set_einasto_alpha(0.3)
 
-        assert_allclose(profile.eval_mass_in_radius(profile.eval_rdelta(z_cl), z_cl, True), mdelta, 1e-15)
+        assert_allclose(profile.eval_mass_in_radius(profile.eval_rdelta(z_cl), z_cl, True),
+                        mdelta, 1e-15)
 
         if halo_profile_model=='nfw':
             assert_allclose(profile.eval_rdelta(z_cl), 1.5548751530053142, reltol)
             assert_allclose(profile.eval_mass_in_radius(1., z_cl), 683427961195829.4, reltol)
 
-        assert_raises(ValueError, profile.convert_mass_concentration, z_cl, massdef='blu')
-        assert_raises(ValueError, profile.convert_mass_concentration, z_cl, halo_profile_model='bla')
+        assert_raises(ValueError, profile.convert_mass_concentration, z_cl,
+                      massdef='blu')
+        assert_raises(ValueError, profile.convert_mass_concentration, z_cl,
+                      halo_profile_model='bla')
 
         truth = {
             'nfw': {'mdelta': 617693839984902.6, 'cdelta': 2.3143737357611425},
             'einasto': {'mdelta': 654444421625520.1, 'cdelta': 2.3593914002446486},
             }
-        if halo_profile_model=='nfw' or (halo_profile_model=='einasto' and theo.be_nick=='nc'):
+        if halo_profile_model!='hernquist':
             mdelta2, cdelta2 = profile.convert_mass_concentration(
                                     z_cl, massdef='critical', delta_mdef=500, verbose=True)
             assert_allclose(mdelta2, truth[halo_profile_model]['mdelta'], reltol)
