@@ -480,7 +480,7 @@ def test_beta_functions():
                         **TOLERANCE)
         assert_allclose(test3, quad(integrand3, zmin, zmax)[0] / quad(model, zmin, zmax)[0],
                         **TOLERANCE)
-        test4 = utils.compute_beta_s_mean(z_cl, z_inf,cosmo, zmax, weights_option=True, z_src=[2.1,2.3], shape_weights = [3.3,5.1])
-        test5 = utils.compute_beta_s_square_mean(z_cl, z_inf,cosmo, zmax, weights_option=True, z_src=[2.1, 2.3], shape_weights = [3.3,5.1])
+        test4 = utils.compute_beta_s_mean(z_cl, z_inf,cosmo, zmax, z_src=[2.1,2.3], shape_weights = [3.3,5.1])
+        test5 = utils.compute_beta_s_square_mean(z_cl, z_inf,cosmo, zmax, z_src=[2.1, 2.3], shape_weights = [3.3,5.1])
         assert_allclose(test4, 3.3*utils.compute_beta_s(2.1, z_cl, z_inf, cosmo) + 5.1*utils.compute_beta_s(2.3, z_cl, z_inf, cosmo), **TOLERANCE)
         assert_allclose(test5, 3.3*utils.compute_beta_s(2.1, z_cl, z_inf, cosmo)**2 + 5.1*utils.compute_beta_s(2.3, z_cl, z_inf, cosmo)**2, **TOLERANCE)

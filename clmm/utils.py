@@ -668,8 +668,8 @@ def compute_beta(z_src, z_cl, cosmo):
 
     Parameters
     ----------
-    z_src:  float
-        Source galaxy redshift
+    z_src:  float, array_like
+        Source galaxies redshift
     z_cl: float
         Galaxy cluster redshift
     cosmo: clmm.Cosmology
@@ -677,11 +677,13 @@ def compute_beta(z_src, z_cl, cosmo):
 
     Returns
     -------
-    float
-        Geometric lensing efficicency
+    numpy array
+        Geometric lensing efficicency for each source
     """
-    beta = np.heaviside(z_src-z_cl, 0) * cosmo.eval_da_z1z2(z_cl, z_src) / cosmo.eval_da(z_src)
-    return beta
+    if type(z_src) is not list:
+        z_src = [z_src]
+    beta = [np.heaviside(z_src_i-z_cl, 0) * cosmo.eval_da_z1z2(z_cl, z_src_i) / cosmo.eval_da(z_src_i) for z_src_i in z_src]
+    return np.array(beta)
 
 def compute_beta_s(z_src, z_cl, z_inf, cosmo):
     r"""Geometric lensing efficicency ratio
@@ -691,8 +693,8 @@ def compute_beta_s(z_src, z_cl, z_inf, cosmo):
 
     Parameters
     ----------
-    z_src: float
-        Source galaxy redshift
+    z_src: float, array_like
+        Source galaxies redshift
     z_cl: float
         Galaxy cluster redshift
     z_inf: float
@@ -702,8 +704,8 @@ def compute_beta_s(z_src, z_cl, z_inf, cosmo):
 
     Returns
     -------
-    float
-        Geometric lensing efficicency ratio
+    numpy array
+        Geometric lensing efficicency ratio for each source
     """
     beta_s = compute_beta(z_src, z_cl, cosmo) / compute_beta(z_inf, z_cl, cosmo)
     return beta_s
@@ -717,8 +719,8 @@ def compute_beta_s_func(z_src, z_cl, z_inf, cosmo, func, *args, **kwargs):
 
     Parameters
     ----------
-    z_src: float
-        Source galaxy redshift
+    z_src: float, array_like
+        Source galaxies redshift
     z_cl: float
         Galaxy cluster redshift
     z_inf: float
@@ -734,8 +736,8 @@ def compute_beta_s_func(z_src, z_cl, z_inf, cosmo, func, *args, **kwargs):
 
     Returns
     -------
-    float
-        Geometric lensing efficicency ratio
+    numpy array
+        Geometric lensing efficicency ratio for each source
     """
     beta_s = compute_beta(z_src, z_cl, cosmo) / compute_beta(z_inf, z_cl, cosmo)
     beta_s_func = beta_s * func(*args, **kwargs)
@@ -776,13 +778,13 @@ def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_dist
     def integrand(z_i, z_cl=z_cl, cosmo=cosmo):
         return compute_beta(z_i, z_cl, cosmo) * z_distrib_func(z_i)
 
-    if zmin==None:
+    if zmin is None:
         zmin = z_cl + delta_z_cut
 
     B_mean = quad(integrand, zmin, zmax)[0] / quad(z_distrib_func, zmin, zmax)[0]
     return B_mean
 
-def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_distrib_func=None, weights_option=False, z_src = None, shape_weights = None):
+def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_distrib_func=None, z_src = None, shape_weights = None):
     r"""Mean value of the geometric lensing efficicency ratio
 
     .. math::
@@ -803,43 +805,40 @@ def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=Non
     delta_z_cut: float
         Redshift interval to be summed with $z_cl$ to return\
         $zmin$. This feature is not used if $z_min$ is provided by the user.
-    weights_option: boolean
-        If set to true, the function uses Eq.(13) from\
+    z_src: float, array_like
+        Individual source galaxies redshift.
+    shape_weights: float, array_like
+        Individual source galaxies shape weights.\
+        If not None, the function uses Eq.(13) from\
         https://arxiv.org/pdf/1611.03866.pdf with evenly distributed\
         weights summing to one.
-    z_src: array_like, float
-        Individual source galaxies redshift.
-    shape_weights: array-life, float,
-        Individual source galaxies shape weights.
         Defalut: None
     Returns
     -------
     float
         Mean value of the geometric lensing efficicency ratio
     """
-    if weights_option == False:
-        if z_distrib_func == None:
+    if shape_weights is None:
+        if z_distrib_func is None:
             z_distrib_func = zdist.chang2013
 
         def integrand(z_i, z_cl=z_cl, z_inf=z_inf, cosmo=cosmo):
             return compute_beta_s(z_i, z_cl, z_inf, cosmo) * z_distrib_func(z_i)
 
-        if zmin==None:
+        if zmin is None:
             zmin = z_cl + delta_z_cut
         Bs_mean = quad(integrand, zmin, zmax)[0] / quad(z_distrib_func, zmin, zmax)[0]
-    elif weights_option == True:
-        if z_src == None:
+    else:
+        if z_src is None:
             raise ValueError(f"Individual source galaxies redshift needed")
-        elif shape_weights == None:
-            raise ValueError(f"Individual source galaxies shape weights needed")
+
         else:
             n_galaxies = len(z_src)
-            weight = 1/n_galaxies
-            Bsw_i = [shape_weights[i] * compute_beta_s(z_src[i], z_cl, z_inf, cosmo) for i in range(0,len(z_src))]
-            Bs_mean = np.sum(Bsw_i)
+            Bsw = shape_weights * compute_beta_s(z_src, z_cl, z_inf, cosmo)
+            Bs_mean = np.sum(Bsw)
     return Bs_mean
 
-def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_distrib_func=None, weights_option=False, z_src = None, shape_weights = None):
+def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_distrib_func=None, z_src = None, shape_weights = None):
     r"""Mean square value of the geometric lensing efficicency ratio
 
     .. math::
@@ -860,39 +859,36 @@ def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, z
     delta_z_cut: float
         Redshift interval to be summed with $z_cl$ to return\
         $zmin$. This feature is not used if $z_min$ is provided by the user.
-    weights_option: boolean
-        If set to true, the function uses Eq.(13) from\
+    z_src: float, array_like
+        Invididual source galaxies redshift.
+    shape_weights: float, array_like
+        Individual source galaxies shape weights.\
+        If not None, the function uses Eq.(13) from\
         https://arxiv.org/pdf/1611.03866.pdf with evenly distributed\
         weights summing to one.
-    z_src: array_like, float
-        Invididual source galaxies redshift.
-    shape_weights: array-life, float,
-        Individual source galaxies shape weights.
         Defalut: None
     Returns
     -------
     float
         Mean square value of the geometric lensing efficicency ratio.
     """
-    if weights_option == False:
-        if z_distrib_func == None:
+    if shape_weights is None:
+        if z_distrib_func is None:
             z_distrib_func = zdist.chang2013
 
         def integrand(z_i, z_cl=z_cl, z_inf=z_inf, cosmo=cosmo):
             return compute_beta_s(z_i, z_cl, z_inf, cosmo)**2 * z_distrib_func(z_i)
 
-        if zmin==None:
+        if zmin is None:
             zmin = z_cl + delta_z_cut
         Bs_square_mean = quad(integrand, zmin, zmax)[0] / quad(z_distrib_func, zmin, zmax)[0]
     
-    elif weights_option == True:
-        if z_src == None:
+    else:
+        if z_src is None:
             raise ValueError(f"Inividual source galaxies redshift needed")
-        elif shape_weights == None:
-            raise ValueError(f"Individual source galaxies shape weights needed")
         else:
-            Bsw_i = [shape_weights[i] * compute_beta_s(z_src[i], z_cl, z_inf, cosmo)**2 for i in range(0,len(z_src))]
-            Bs_square_mean = np.sum(Bsw_i)
+            Bsw = shape_weights * np.square(compute_beta_s(z_src, z_cl, z_inf, cosmo)) 
+            Bs_square_mean = np.sum(Bsw)
     
     return Bs_square_mean
 
