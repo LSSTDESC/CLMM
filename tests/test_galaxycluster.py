@@ -166,18 +166,19 @@ def test_integrity_of_lensfuncs():
                             dec=34., z=0.3, galcat=galcat_noz)
     assert_raises(TypeError, cluster.add_critical_surface_density, cosmo, use_pdz=True)
     # Check metadata addition
-    pzbin = np.linspace(.0001, 5, 100)
-    pzbins = np.zeros([len(z_source), len(pzbin)])
-    pzpdf = pzbins
-    pzbin = np.linspace(.0001, 5, 100)
+    pzbins = np.linspace(.0001, 5, 100)
     cluster = clmm.GalaxyCluster(unique_id='1', ra=161.3,
-                            dec=34., z=0.3, galcat=galcat)
-    cluster.galcat['pzbins'] = [pzbin for i in range(len(z_source))]
-    cluster.galcat['pzpdf'] = [multivariate_normal.pdf(pzbin, mean=z, cov=.3) for z in z_source]
+                                 dec=34., z=0.3, galcat=galcat)
+    cluster.galcat.pzpdf_info['zbins'] = pzbins
+    cluster.galcat['pzbins'] = [pzbins for i in range(len(z_source))]
+    cluster.galcat['pzpdf'] = [multivariate_normal.pdf(pzbins, mean=z, cov=.3) for z in z_source]
 
-    cluster.compute_tangential_and_cross_components(is_deltasigma=True, use_pdz=True,
-                                                    cosmo=cosmo, add=True)
-    assert_equal(cluster.galcat.meta['sigmac_type'], 'effective')
+    for pztype in ('individual_bins', 'shared_bins'):
+        cluster.galcat.pzpdf_info['type'] = pztype
+
+        cluster.compute_tangential_and_cross_components(
+            is_deltasigma=True, use_pdz=True, cosmo=cosmo, add=True)
+        assert_equal(cluster.galcat.meta['sigmac_type'], 'effective')
 
 def test_integrity_of_probfuncs():
     """test integrity of prob funcs"""
@@ -194,11 +195,14 @@ def test_integrity_of_probfuncs():
 
     #photoz + deltasigma
     assert_raises(TypeError, cluster.compute_background_probability, use_photoz=True)
-    pzbin = np.linspace(.0001, 5, 1000)
-    cluster.galcat['pzbins'] = [pzbin for i in range(len(z_sources))]
-    cluster.galcat['pzpdf'] = [multivariate_normal.pdf(pzbin, mean=z, cov=.01) for z in z_sources]
-    cluster.compute_background_probability(use_pdz=True, p_background_name='p_bkg_pz')
-    assert_allclose(cluster.galcat['p_bkg_pz'], expected, **TOLERANCE)
+    pzbins = np.linspace(.0001, 5, 1000)
+    cluster.galcat.pzpdf_info['zbins'] = pzbins
+    cluster.galcat['pzbins'] = [pzbins for i in range(len(z_sources))]
+    cluster.galcat['pzpdf'] = [multivariate_normal.pdf(pzbins, mean=z, cov=.01) for z in z_sources]
+    for pztype in ('individual_bins', 'shared_bins'):
+        cluster.galcat.pzpdf_info['type'] = pztype
+        cluster.compute_background_probability(use_pdz=True, p_background_name='p_bkg_pz')
+        assert_allclose(cluster.galcat['p_bkg_pz'], expected, **TOLERANCE)
 
 def test_integrity_of_weightfuncs():
     """test integrity of weight funcs"""
@@ -216,6 +220,7 @@ def test_integrity_of_weightfuncs():
             [shape_component1, shape_component2,
              shape_component1_err, shape_component2_err, z_source],
             names=('e1', 'e2', 'e1_err', 'e2_err', 'z')))
+
     #true redshift + deltasigma
     cluster.compute_galaxy_weights(cosmo=cosmo, use_shape_noise=False,
                                    is_deltasigma=True)
@@ -223,22 +228,23 @@ def test_integrity_of_weightfuncs():
     assert_allclose(cluster.galcat['w_ls']*1e20, expected*1e20, **TOLERANCE)
 
     #photoz + deltasigma
-    pzbin = np.linspace(.0001, 5, 100)
-    pzbins = np.zeros([len(z_source), len(pzbin)])
-    pzpdf = pzbins
-    cluster.galcat['pzbins'] = [pzbin for i in range(len(z_source))]
-    cluster.galcat['pzpdf'] = [multivariate_normal.pdf(pzbin, mean=z, cov=.3) for z in z_source]
-    cluster.compute_galaxy_weights(cosmo=cosmo, use_shape_noise=False, use_pdz=True,
-                                   is_deltasigma=True)
-    expected = np.array([9.07709345e-33, 1.28167582e-32, 4.16870389e-32])
-    assert_allclose(cluster.galcat['w_ls']*1e20, expected*1e20, **TOLERANCE)
+    pzbins = np.linspace(.0001, 5, 100)
+    cluster.galcat.pzpdf_info['zbins'] = pzbins
+    cluster.galcat['pzbins'] = [pzbins for i in range(len(z_source))]
+    cluster.galcat['pzpdf'] = [multivariate_normal.pdf(pzbins, mean=z, cov=.3) for z in z_source]
+    for pztype in ('individual_bins', 'shared_bins'):
+        cluster.galcat.pzpdf_info['type'] = pztype
+        cluster.compute_galaxy_weights(cosmo=cosmo, use_shape_noise=False, use_pdz=True,
+                                       is_deltasigma=True)
+        expected = np.array([9.07709345e-33, 1.28167582e-32, 4.16870389e-32])
+        assert_allclose(cluster.galcat['w_ls']*1e20, expected*1e20, **TOLERANCE)
 
-    # test with noise
-    cluster.compute_galaxy_weights(cosmo=cosmo, use_shape_noise=True, use_pdz=True,
-                                   use_shape_error=True, is_deltasigma=True)
+        # test with noise
+        cluster.compute_galaxy_weights(cosmo=cosmo, use_shape_noise=True, use_pdz=True,
+                                       use_shape_error=True, is_deltasigma=True)
 
-    expected = np.array([9.07709345e-33, 1.28167582e-32, 4.16870389e-32])
-    assert_allclose(cluster.galcat['w_ls']*1e20, expected*1e20, **TOLERANCE)
+        expected = np.array([9.07709345e-33, 1.28167582e-32, 4.16870389e-32])
+        assert_allclose(cluster.galcat['w_ls']*1e20, expected*1e20, **TOLERANCE)
 
 def test_pzpdf_random_draw():
     """test draw_gal_z_from_pdz"""
@@ -246,50 +252,65 @@ def test_pzpdf_random_draw():
     z_source = [.22, .35, 1.7]
     shape_component1 = np.array([.143, .063, -.171])
     shape_component2 = np.array([-.011, .012,-.250])
-    cluster = clmm.GalaxyCluster(
-        unique_id='1', ra=161.3, dec=34., z=z_lens,
-        galcat=GCData(
-            [shape_component1, shape_component2, z_source],
-            names=('e1', 'e2', 'z')))
+    cluster_kwargs = dict(
+        unique_id='1', ra=161.3, dec=34., z=z_lens)
+    gcat_args = [shape_component1, shape_component2, z_source]
+    gcat_kwargs = {'names':('e1', 'e2', 'z')}
 
     # set up photoz
-    pzbin = np.linspace(.0001, 5, 100)
-    pzbins = np.zeros([len(z_source), len(pzbin)])
-    pzpdf = pzbins
+    pzbins = np.linspace(.0001, 5, 100)
     # test raising TypeError when required column is no available
-    assert_raises(TypeError, cluster.draw_gal_z_from_pdz)
+    for pztype in ('individual_bins', 'shared_bins'):
+        cluster = clmm.GalaxyCluster(
+            **cluster_kwargs, galcat=GCData(gcat_args, **gcat_kwargs))
+        cluster.galcat.pzpdf_info['type'] = pztype
 
-    cluster.galcat['pzbins'] = [pzbin for i in range(len(z_source))]
-    assert_raises(TypeError, cluster.draw_gal_z_from_pdz)
+        assert_raises(TypeError, cluster.draw_gal_z_from_pdz)
 
-    cluster.galcat.remove_column('pzbins')
-    cluster.galcat['pzpdf'] = [multivariate_normal.pdf(pzbin, mean=z, cov=.3) for z in z_source]
-    assert_raises(TypeError, cluster.draw_gal_z_from_pdz)
+        cluster.galcat.pzpdf_info['zbins'] = pzbins
+        cluster.galcat['pzbins'] = [pzbins for i in range(len(z_source))]
+        assert_raises(TypeError, cluster.draw_gal_z_from_pdz)
 
-    # add pzbins back to galcat
-    cluster.galcat['pzbins'] = [pzbin for i in range(len(z_source))]
-    # test raising TypeError when the name of the new column is already in cluster.galcat
-    # also test default overwrite=False and zcol_out='z'
-    assert_raises(TypeError, cluster.draw_gal_z_from_pdz)
-    # Test raising warnings when xmin<min(pzbin) and xmax>max(pzbin)
-    assert_warns(UserWarning, cluster.draw_gal_z_from_pdz, zcol_out='z_test', xmin=pzbin.min()/10)
-    cluster.galcat.remove_column('z_test')
-    assert_warns(UserWarning, cluster.draw_gal_z_from_pdz, zcol_out='z_test', xmax=pzbin.max()*10)
-    # test drawing 1 object from the whole range of pzpdf
-    np.random.seed(0)
-    cluster.draw_gal_z_from_pdz(zcol_out='z_random')
-    assert_allclose(cluster.galcat['z_random'].data, [[0.514074], [0.791846], [1.843482]],
-                    rtol=1e-6, atol=1e-6)
-    # test drawing nobj objects and specifying xmin and xmax
-    # also test overwrite=True
-    np.random.seed(0)
-    cluster.draw_gal_z_from_pdz(zcol_out='z_random', overwrite=True, nobj=2,
-                                      xmin=pzbin[50], xmax=pzbin[51])
-    assert_allclose(cluster.galcat['z_random'].data,
-                    [[2.553019, 2.561422],
-                     [2.555744, 2.552821],
-                     [2.546698, 2.557922]],
-                    rtol=1e-6, atol=1e-6)
+        cluster.galcat.pzpdf_info.pop('zbins')
+        cluster.galcat.remove_column('pzbins')
+        cluster.galcat['pzpdf'] = [multivariate_normal.pdf(pzbins, mean=z, cov=.3) for z in z_source]
+        assert_raises(TypeError, cluster.draw_gal_z_from_pdz)
+
+        # add pzbins back to galcat
+        cluster.galcat.pzpdf_info['zbins'] = pzbins
+        cluster.galcat['pzbins'] = [pzbins for i in range(len(z_source))]
+        # test raising TypeError when the name of the new column is already in cluster.galcat
+        # also test default overwrite=False and zcol_out='z'
+        assert_raises(TypeError, cluster.draw_gal_z_from_pdz)
+        # Test raising warnings when xmin<min(pzbins) and xmax>max(pzbins)
+        assert_warns(UserWarning, cluster.draw_gal_z_from_pdz,
+                     zcol_out='z_test', xmin=pzbins.min()/10)
+        cluster.galcat.remove_column('z_test')
+        assert_warns(UserWarning, cluster.draw_gal_z_from_pdz,
+                     zcol_out='z_test', xmax=pzbins.max()*10)
+        # test drawing 1 object from the whole range of pzpdf
+        np.random.seed(0)
+        cluster.draw_gal_z_from_pdz(zcol_out='z_random')
+        assert_allclose(cluster.galcat['z_random'].data, [[0.514074], [0.791846], [1.843482]],
+                        rtol=1e-6, atol=1e-6)
+
+        # test drawing nobj objects and specifying xmin and xmax
+        # also test overwrite=True
+        np.random.seed(0)
+        cluster.draw_gal_z_from_pdz(zcol_out='z_random', overwrite=True, nobj=2,
+                                    xmin=pzbins[50], xmax=pzbins[51])
+        assert_allclose(cluster.galcat['z_random'].data,
+                        [[2.553019, 2.561422],
+                         [2.555744, 2.552821],
+                         [2.546698, 2.557922]],
+                        rtol=1e-6, atol=1e-6)
+
+    # test raise errors with unkown pdf type
+    cluster.galcat.pzpdf_info['type'] = None
+    cluster.galcat.remove_column('z_random')
+    assert_raises(TypeError, cluster.draw_gal_z_from_pdz, zcol_out='z_random', nobj=2)
+    cluster.galcat.pzpdf_info['type'] = 'quantile'
+    assert_raises(NotImplementedError, cluster.draw_gal_z_from_pdz, zcol_out='z_random', nobj=2)
 
 def test_plot_profiles():
     """test plot profiles"""
