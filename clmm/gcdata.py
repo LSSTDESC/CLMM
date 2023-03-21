@@ -76,34 +76,51 @@ class GCData(APtable):
         return ', '.join([f'{key}={value!r}'
             for key, value in self.meta.items()])
 
+    def _str_pzpdf_info(self):
+        out = self.pzpdf_info['type']
+        if out is not None:
+            if out=='shared_bins':
+                default_cfg = np.get_printoptions() # keep default values
+                np.set_printoptions(edgeitems=5, threshold=10)
+                out += ' '+str(np.round(self.pzpdf_info.get('zbins'), 2))
+                np.set_printoptions(**default_cfg)
+        return out
+
     def __repr__(self):
         """Generates string for repr(GCData)"""
         description = [self._str_meta_(), 'columns: '+self._str_colnames()]
+        if self.pzpdf_info['type']:
+            description.append(f"pzpdf: {self.pzpdf_info['type']}")
         return f'{self.__class__.__name__}({", ".join(description)})'
 
     def __str__(self):
         """Generates string for print(GCData)"""
-        return (
-            f'{self.__class__.__name__}'
-            f'\n> defined by: {self._str_meta_()}'
-            f'\n> with columns: {self._str_colnames()}'
-            f'\n> {len(self)} objects'
-            f'\n{APtable.__str__(self)}'
-            )
-
+        out = [
+            f'{self.__class__.__name__}',
+            f'> defined by: {self._str_meta_()}',
+            f'> with columns: {self._str_colnames()}',
+            f'> {len(self)} objects',
+            f'{APtable.__str__(self)}',
+        ]
+        if self.pzpdf_info['type']:
+            out.insert(3, f'> and pzpdf: {self._str_pzpdf_info()}')
+        return '\n'.join(out)
     def _html_table(self):
         """Get html table for display"""
         return '</i>'.join(APtable._repr_html_(self).split('</i>')[1:])
 
     def _repr_html_(self):
         """Generates string for display(GCData)"""
-        return (
-            f'<b>{self.__class__.__name__}</b>'
-            f'<br> <b>defined by:</b> {self._str_meta_()}'
-            f'<br> <b>with columns:</b> {self._str_colnames()}'
-            f'<br> {len(self)} objects'
-            f'<br> {self._html_table()}'
-            )
+        out = [
+            f'<b>{self.__class__.__name__}</b>',
+            f'<br> <b>defined by:</b> {self._str_meta_()}',
+            f'<br> <b>with columns:</b> {self._str_colnames()}',
+            f'<br> {len(self)} objects',
+            f'<br> {self._html_table()}',
+        ]
+        if self.pzpdf_info['type']:
+            out.insert(3, f'<br> <b>and pzpdf:</b> {self._str_pzpdf_info()}')
+        return '\n'.join(out)
 
     def __getitem__(self, item):
         """
