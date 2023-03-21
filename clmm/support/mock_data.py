@@ -172,6 +172,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc,
         validate_argument(locals(), 'nretry', int)
         validate_argument(locals(), 'ngals', float, none_ok=True)
         validate_argument(locals(), 'ngal_density', float, none_ok=True)
+        validate_argument(locals(), 'pz_bins', (int, 'array'))
 
 
     if zsrc_min is None: zsrc_min = cluster_z+0.1

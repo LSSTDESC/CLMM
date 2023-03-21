@@ -60,6 +60,12 @@ def test_mock_data():
     assert_raises(NotImplementedError, mock.generate_galaxy_catalog, 1e15, 0.3, 4,
                   cosmo, 0.8, ngals=100, photoz_sigma_unscaled=.1, pzpdf_type='quantiles')
 
+    # Test pdz with bad arguments
+    assert_raises(TypeError, mock.generate_galaxy_catalog, 1e15, 0.3, 4,
+                  cosmo, 0.8, ngals=100, photoz_sigma_unscaled='xxx')
+    assert_raises(TypeError, mock.generate_galaxy_catalog, 1e15, 0.3, 4,
+                  cosmo, 0.8, ngals=100, photoz_sigma_unscaled=.1, pz_bins='xxx')
+
     # Simple test to check if option with pdz is working
     # A proper test should be implemented
     for kwargs in (
