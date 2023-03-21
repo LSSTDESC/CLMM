@@ -203,8 +203,7 @@ class ClusterEnsemble():
 
     def compute_sample_covariance(self, tan_component='gt', cross_component='gx'):
         """Compute Sample covariance matrix for cross and tangential and cross
-        stacked profiles adds as attributes: `sample_tangential_covariance`,
-        `sample_cross_covariance`.
+        stacked profiles adds as attributes: `cov_tan_sv`, `cov_cross_sv`.
 
         Parameters
         ----------
@@ -218,16 +217,16 @@ class ClusterEnsemble():
         self._check_empty_data()
 
         n_catalogs = len(self.data)
-        self.sample_tangential_covariance = np.cov(self.data[tan_component].T,
-                                                   bias = False)/n_catalogs
-        self.sample_cross_covariance = np.cov(self.data[cross_component].T,
-                                              bias = False)/n_catalogs
+        self.cov_tan_sv = np.cov(self.data[tan_component].T,
+                                 bias=False)/n_catalogs
+        self.cov_cross_sv = np.cov(self.data[cross_component].T,
+                                   bias=False)/n_catalogs
 
     def compute_bootstrap_covariance(self, tan_component='gt', cross_component='gx',
                                      n_bootstrap=10):
         """Compute the bootstrap covariance matrix, add boostrap covariance matrix for
-        tangential and cross profiles as attributes: `bootstrap_tangential_covariance`,
-        `bootstrap_cross_covariance`.
+        tangential and cross profiles as attributes: `cov_tan_bs`,
+        `cov_cross_bs`.
 
         Parameters
         ----------
@@ -253,14 +252,13 @@ class ClusterEnsemble():
             gt_boot.append(gt), gx_boot.append(gx)
         n_catalogs = len(self.data)
         coeff = (n_catalogs/(n_catalogs-1))**2
-        self.bootstrap_tangential_covariance = coeff*np.cov(np.array(gt_boot).T,
-                                                            bias = False, ddof=0)
-        self.bootstrap_cross_covariance = coeff*np.cov(np.array(gx_boot).T, bias = False)
+        self.cov_tan_bs = coeff*np.cov(np.array(gt_boot).T, bias=False, ddof=0)
+        self.cov_cross_bs = coeff*np.cov(np.array(gx_boot).T, bias=False)
 
     def compute_jackknife_covariance(self, tan_component='gt', cross_component='gx', n_side=16):
         """Compute the jackknife covariance matrix, add boostrap covariance matrix for
-        tangential and cross profiles as attributes: `jackknife_tangential_covariance`,
-        `jackknife_cross_covariance`.
+        tangential and cross profiles as attributes: `cov_tan_jk`,
+        `cov_cross_jk`.
         Uses healpix sky area sub-division : https://healpix.sourceforge.io
 
         Parameters
@@ -291,10 +289,8 @@ class ClusterEnsemble():
                                                        data_jk[cross_component]])
             gt_jack.append(gt), gx_jack.append(gx)
         coeff = (n_jack - 1)**2/(n_jack)
-        self.jackknife_tangential_covariance = coeff*np.cov(np.array(gt_jack).T,
-                                                            bias=False, ddof=0)
-        self.jackknife_cross_covariance = coeff*np.cov(np.array(gx_jack).T,
-                                                       bias=False, ddof=0)
+        self.cov_tan_jk = coeff*np.cov(np.array(gt_jack).T, bias=False, ddof=0)
+        self.cov_cross_jk = coeff*np.cov(np.array(gx_jack).T, bias=False, ddof=0)
 
     def save(self, filename, **kwargs):
         """Saves GalaxyCluster object to filename using Pickle"""
