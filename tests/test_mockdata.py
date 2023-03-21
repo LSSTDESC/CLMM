@@ -62,31 +62,30 @@ def test_mock_data():
 
     # Simple test to check if option with pdz is working
     # A proper test should be implemented
-    cat = mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.8, ngals=100,
-                                       photoz_sigma_unscaled=.1, pzpdf_type=None)
-
-    # Simple test to check if option with pdz is working
-    # A proper test should be implemented
-    cat = mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.8, ngals=100,
-                                       photoz_sigma_unscaled=.1)
-    assert 'zbins' in cat.pzpdf_info
-
-    # Simple test to check if option with pdz individual bins is working
-    # A proper test should be implemented
-    mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.8, ngals=100, photoz_sigma_unscaled=.1,
-                                 pzpdf_type='individual_bins')
-
-    # Simple test to check if option with mean_e_err is working
-    # A proper test should be implemented
-    mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.8, ngals=100, mean_e_err=0.01)
+    for kwargs in (
+        {'pzpdf_type': None},
+        {'pzpdf_type': 'individual_bins'},
+        {'pzpdf_type': 'shared_bins'},
+        {},
+    ):
+        for shapenoise in (None, 0.5):
+            for pz_bins in (21, np.linspace(0, 2, 21)):
+                cat = mock.generate_galaxy_catalog(
+                    1e15, 0.3, 4, cosmo, 0.8, ngals=20, mean_e_err=0.01, pz_bins=pz_bins,
+                    photoz_sigma_unscaled=.1, shapenoise=shapenoise, **kwargs)
+                if kwargs.get('pzpdf_type', 'shared_bins')=='shared_bins':
+                    assert 'zbins' in cat.pzpdf_info
+                elif kwargs.get('pzpdf_type', 'shared_bins')=='individual_bins':
+                    assert 'pzbins' in cat.colnames
+                    assert 'pzpdf' in cat.colnames
+                elif kwargs.get('pzpdf_type', 'shared_bins') is None:
+                    assert 'zbins' not in cat.pzpdf_info
+                    assert 'pzbins' not in cat.colnames
+                    assert 'pzpdf' not in cat.colnames
 
     def nfw_shear_profile(r, logm, z_src):
-        m = 10.**logm
-        gt_model = clmm.compute_reduced_tangential_shear(r,
-                                                         m, 4, 0.3, z_src, cosmo,
-                                                         delta_mdef=200,
-                                                         halo_profile_model='nfw')
-        return gt_model
+        return clmm.compute_reduced_tangential_shear(
+            r, 10.**logm, 4, 0.3, z_src, cosmo, delta_mdef=200, halo_profile_model='nfw')
 
     def mass_mock_cluster(mass=15., guess=15.):
 
