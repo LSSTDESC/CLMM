@@ -17,7 +17,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc,
                             zsrc_max=7., field_size=8., shapenoise=None,
                             mean_e_err=None, photoz_sigma_unscaled=None,
                             nretry=5, ngals=None, ngal_density=None,
-                            pz_bins=21, pzpdf_type='shared_bins',
+                            pz_bins=101, pzpdf_type='shared_bins',
                             validate_input=True):
     r"""Generates a mock dataset of sheared background galaxies.
 
@@ -296,7 +296,7 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals,
                              zsrc_min=None, zsrc_max=None,
                              shapenoise=None, mean_e_err=None,
                              photoz_sigma_unscaled=None,
-                             pz_bins=21, pzpdf_type='shared_bins',
+                             pz_bins=101, pzpdf_type='shared_bins',
                              field_size=None):
     """A private function that skips the sanity checks on derived properties. This
     function should only be used when called directly from `generate_galaxy_catalog`.
@@ -440,7 +440,7 @@ def _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals):
     return GCData([zsrc_list, zsrc_list], names=('ztrue', 'z'))
 
 
-def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled, pz_bins=21):
+def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled, pz_bins=101):
     """Private function to add photo-z errors and PDFs to the mock catalog.
 
     Parameters
@@ -469,7 +469,7 @@ def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled, pz_bins=21):
         return galaxy_catalog
 
     zmin = galaxy_catalog['z']-10.*galaxy_catalog['pzsigma']
-    zmax = galaxy_catalog['z']-10.*galaxy_catalog['pzsigma']
+    zmax = galaxy_catalog['z']+10.*galaxy_catalog['pzsigma']
     zmin[zmin<0] = 0.0
 
     if galaxy_catalog.pzpdf_info['type']=='shared_bins':
