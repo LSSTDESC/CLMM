@@ -4,6 +4,7 @@ Define the custom data type
 import warnings
 from collections import OrderedDict
 from astropy.table import Table as APtable
+import numpy as np
 
 
 class GCMetaData(OrderedDict):
@@ -63,6 +64,8 @@ class GCData(APtable):
         metakwargs = kwargs['meta'] if 'meta' in kwargs else {}
         metakwargs = {} if metakwargs is None else metakwargs
         self.meta = GCMetaData(**metakwargs)
+        # this attribute is set when source galaxies have p(z)
+        self.pzpdf_info = {'type': None}
 
     def _str_colnames(self):
         """Colnames in comma separated str"""
@@ -117,6 +120,9 @@ class GCData(APtable):
             item = item.lower()
             item = ','.join([name_dict[i] for i in item.split(',')])
         out = APtable.__getitem__(self, item)
+        # sub cols or sub rows
+        if not isinstance(item, (str, int, np.int64)):
+            out.pzpdf_info = self.pzpdf_info
         return out
 
     def update_info_ext_valid(self, key, gcdata, ext_value, overwrite=False):
@@ -184,3 +190,45 @@ class GCData(APtable):
         None
         """
         self.update_cosmo_ext_valid(self, cosmo, overwrite=overwrite)
+
+    def has_pzpdfs(self):
+        """Get pzbins and pzpdfs of galaxies
+
+        Returns
+        -------
+        pzbins : array
+            zbins of each object in data
+        pzpdfs : array
+            PDF of each object in data
+        """
+        pzpdf_type = self.pzpdf_info['type']
+        if pzpdf_type is None:
+            return False
+        elif pzpdf_type=='shared_bins':
+            return ('zbins' in self.pzpdf_info) and ('pzpdf' in self.columns)
+        elif pzpdf_type=='individual_bins':
+            return ('pzbins' in self.columns) and ('pzpdf' in self.columns)
+        else:
+            raise NotImplementedError(f"PDF use '{pzpdf_type}' not implemented.")
+
+    def get_pzpdfs(self):
+        """Get pzbins and pzpdfs of galaxies
+
+        Returns
+        -------
+        pzbins : array
+            zbins of PDF. 1D if `shared_bins`,
+            zbins of each object in data if `individual_bins`.
+        pzpdfs : array
+            PDF of each object in data
+        """
+        pzpdf_type = self.pzpdf_info['type']
+        if pzpdf_type is None:
+            raise ValueError('No PDF information stored!')
+        elif pzpdf_type=='shared_bins':
+            pzbins = self.pzpdf_info['zbins']
+        elif pzpdf_type=='individual_bins':
+            pzbins = self['pzbins']
+        else:
+            raise NotImplementedError(f"PDF use '{pzpdf_type}' not implemented.")
+        return pzbins, self['pzpdf']
