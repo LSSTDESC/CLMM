@@ -150,6 +150,7 @@ def test_covariance():
     ce.save('ce.test.pkl')
 
     ce2 = ClusterEnsemble.load('ce.test.pkl')
+    os.system('rm ce.test.pkl')
     assert_array_equal(ce.stacked_data, ce2.stacked_data)
     assert_equal(ce.sample_tangential_covariance.shape, ce2.sample_tangential_covariance.shape)
     assert_equal(ce.bootstrap_tangential_covariance.shape, ce2.bootstrap_tangential_covariance.shape)
