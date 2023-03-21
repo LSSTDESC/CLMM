@@ -5,7 +5,7 @@ import os
 from numpy.testing import assert_raises, assert_equal, assert_allclose, assert_array_equal
 import clmm
 import numpy as np
-from clmm import clusterensemble
+from clmm import ClusterEnsemble
 from clmm import Cosmology
 from clmm import GCData
 from clmm.support import mock_data as mock
@@ -31,7 +31,7 @@ def test_cluster_ensemble():
     bin_units = 'radians'
     names = ('ra', 'dec', 'theta', 'w_ls', 'e1', 'e2', 'z')
 
-    galcat = clmm.GCData([ra_source, dec_source, theta_source, w_ls, 
+    galcat = clmm.GCData([ra_source, dec_source, theta_source, w_ls,
                          shear1, shear2, z_source],
                          names=names)
     # create cluster
@@ -41,24 +41,24 @@ def test_cluster_ensemble():
     bins = bins_radians
     gc_list = [cluster]
     #check empty cluster list
-    ce_empty = clusterensemble.ClusterEnsemble('cluster_ensemble', tan_component_in='et',
+    ce_empty = ClusterEnsemble('cluster_ensemble', tan_component_in='et',
     cross_component_in='ex', weights_in = 'w_ls', bins=bins, bin_units='radians', cosmo=cosmo)
     assert_raises(ValueError, ce_empty.make_stacked_radial_profile)
     ce_empty.make_individual_radial_profile(cluster,tan_component_in='et',
     cross_component_in='ex', weights_in = 'w_ls', bins=bins, bin_units='radians', cosmo=cosmo)
 
     #check bad id
-    assert_raises(TypeError, clusterensemble.ClusterEnsemble, 1.3, gc_list)
+    assert_raises(TypeError, ClusterEnsemble, 1.3, gc_list)
 
     #test without kwargs, args
-    ce = clusterensemble.ClusterEnsemble('cluster_ensemble', gc_list, tan_component_in='et',
+    ce = ClusterEnsemble('cluster_ensemble', gc_list, tan_component_in='et',
     cross_component_in='ex', weights_in = 'w_ls', bins=bins, bin_units='radians', cosmo=cosmo)
 
     #test the lenght of the clusterensemble data attribute
     assert_equal(ce.__len__(), 1)
 
     #test the lenght of the clusterensemble data attribute (after doubling the number of individual cluster)
-    ce._add_values([cluster], tan_component_in='et',cross_component_in='ex', 
+    ce._add_values([cluster], tan_component_in='et',cross_component_in='ex',
                    weights_in = 'w_ls', bins=bins, bin_units='radians', cosmo=cosmo)
     assert_equal(ce.__len__(), 2)
     #test if the len of averaged profile has the lenght of binning axis
@@ -79,7 +79,7 @@ def test_covariance():
     thetamin, thetamax = Rmin/dz, Rmax/dz # radians
     phi = np.pi
     bins = np.logspace(np.log10(0.3),np.log10(5), 10)
-    ce_empty = clusterensemble.ClusterEnsemble('2', tan_component_in='et',
+    ce_empty = ClusterEnsemble('2', tan_component_in='et',
     cross_component_in='ex', weights_in = 'w_ls', bins=bins, bin_units='radians', cosmo=cosmo)
 
     #check empty cluster list
@@ -105,11 +105,11 @@ def test_covariance():
     names = ['id', 'ra', 'dec', 'z', 'radius', 'gt', 'gx', 'W_l']
 
     #test without args, kwargs
-    ce = clusterensemble.ClusterEnsemble(ensemble_id)
+    ce = ClusterEnsemble(ensemble_id)
     assert_raises(ValueError, ce.make_stacked_radial_profile)
 
     #test with args, kwargs
-    ce = clusterensemble.ClusterEnsemble(ensemble_id, gclist, tan_component_in='et',
+    ce = ClusterEnsemble(ensemble_id, gclist, tan_component_in='et',
     cross_component_in='ex', weights_in = 'w_ls', bins=bins, bin_units='Mpc', cosmo=cosmo)
 
     ce.make_stacked_radial_profile()
@@ -145,3 +145,12 @@ def test_covariance():
     #comparing brut force calculation for sample variance
     std_gt_stack = np.std(gt_individual, axis = 0)/np.sqrt(n_catalogs-1)
     assert_allclose(ce.sample_tangential_covariance.diagonal()**.5, std_gt_stack, 1e-6)
+
+    #test save/load
+    ce.save('ce.test.pkl')
+
+    ce2 = ClusterEnsemble.load('ce.test.pkl')
+    assert_array_equal(ce.stacked_data, ce2.stacked_data)
+    assert_equal(ce.sample_tangential_covariance.shape, ce2.sample_tangential_covariance.shape)
+    assert_equal(ce.bootstrap_tangential_covariance.shape, ce2.bootstrap_tangential_covariance.shape)
+    assert_equal(ce.jackknife_tangential_covariance.shape, ce2.jackknife_tangential_covariance.shape)
