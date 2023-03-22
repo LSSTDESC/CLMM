@@ -6,7 +6,6 @@ import warnings
 from .gcdata import GCData
 from .dataops import (compute_tangential_and_cross_components, make_radial_profile,
                       compute_galaxy_weights, compute_background_probability)
-#from .theory import compute_critical_surface_density, compute_critical_surface_density_eff
 from .theory import compute_critical_surface_density_eff
 from .plotting import plot_profiles
 from .utils import validate_argument, _draw_random_points_from_tab_distribution
@@ -139,9 +138,7 @@ class GalaxyCluster():
 
             self.galcat.update_cosmo(cosmo, overwrite=True)
             if use_pdz is False:
-                self.galcat['sigma_c'] = compute_critical_surface_density(
-                    cosmo=cosmo, z_cluster=self.z, z_source=self.galcat['z'],
-                    validate_input=self.validate_input)
+                self.galcat['sigma_c'] = cosmo.eval_sigma_crit(self.z, galcat['z'], validate_input=self.validate_input)
                 self.galcat.meta['sigmac_type']= 'standard'
             else:
                 zdata = self._get_input_galdata({'pzpdf':'pzpdf', 'pzbins':'pzbins'})
