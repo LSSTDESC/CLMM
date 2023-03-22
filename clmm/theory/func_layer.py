@@ -17,7 +17,7 @@ from . generic import (compute_reduced_shear_from_convergence,
 __all__ = generic.__all__+['compute_3d_density', 'compute_surface_density',
                            'compute_excess_surface_density', 'compute_excess_surface_density_2h',
                            'compute_surface_density_2h',
-                           'compute_critical_surface_density',
+#                           'compute_critical_surface_density',
                            'compute_critical_surface_density_eff',
                            'compute_tangential_shear', 'compute_convergence',
                            'compute_reduced_tangential_shear', 'compute_magnification',
@@ -329,37 +329,37 @@ def compute_surface_density_2h(r_proj, z_cl, cosmo, halobias=1, lsteps=500, vali
     gcm.validate_input = True
     return sigma_2h
 
-def compute_critical_surface_density(cosmo, z_cluster, z_source, validate_input=True):
-    r"""Computes the critical surface density
+# def compute_critical_surface_density(cosmo, z_cluster, z_source, validate_input=True):
+#     r"""Computes the critical surface density
 
-    .. math::
-        \Sigma_{\rm crit} = \frac{c^2}{4\pi G} \frac{D_s}{D_LD_{LS}}
-
-
-    Parameters
-    ----------
-    cosmo : clmm.cosmology.Cosmology object
-        CLMM Cosmology object
-    z_cluster : float
-        Galaxy cluster redshift
-    z_source : array_like, float
-        Background source galaxy redshift(s)
-    validate_input: bool
-        Validade each input argument
+#     .. math::
+#         \Sigma_{\rm crit} = \frac{c^2}{4\pi G} \frac{D_s}{D_LD_{LS}}
 
 
-    Returns
-    -------
-    sigma_c : array_like, float
-        Cosmology-dependent critical surface density in units of :math:`M_\odot\ Mpc^{-2}`
-    """
+#     Parameters
+#     ----------
+#     cosmo : clmm.cosmology.Cosmology object
+#         CLMM Cosmology object
+#     z_cluster : float
+#         Galaxy cluster redshift
+#     z_source : array_like, float
+#         Background source galaxy redshift(s)
+#     validate_input: bool
+#         Validade each input argument
 
-    gcm.validate_input = validate_input
-    gcm.set_cosmo(cosmo)
-    sigma_c = gcm.eval_critical_surface_density(z_cluster, z_src=z_source)
 
-    gcm.validate_input = True
-    return sigma_c
+#     Returns
+#     -------
+#     sigma_c : array_like, float
+#         Cosmology-dependent critical surface density in units of :math:`M_\odot\ Mpc^{-2}`
+#     """
+
+#     gcm.validate_input = validate_input
+#     gcm.set_cosmo(cosmo)
+#     sigma_c = gcm.eval_critical_surface_density(z_cluster, z_src=z_source)
+
+#     gcm.validate_input = True
+#     return sigma_c
 
 def compute_critical_surface_density_eff(cosmo, z_cluster, pzbins, pzpdf, validate_input=True):
     r"""Computes the 'effective critical surface density'

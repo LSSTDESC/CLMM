@@ -8,7 +8,8 @@ from astropy import units as u
 from .. gcdata import GCData
 from .. utils import (compute_radial_averages, make_bins, convert_units,
                       arguments_consistency, validate_argument, _integ_pzfuncs)
-from .. theory import compute_critical_surface_density, compute_critical_surface_density_eff
+#from .. theory import compute_critical_surface_density, compute_critical_surface_density_eff
+from .. theory import compute_critical_surface_density_eff
 
 
 def compute_tangential_and_cross_components(
@@ -171,7 +172,8 @@ def compute_tangential_and_cross_components(
                     'To compute DeltaSigma, please provide a '
                     'i) cosmology, ii) redshift of lens and sources')
 
-            sigma_c = compute_critical_surface_density(cosmo, z_lens, z_source=z_source)
+#            sigma_c = compute_critical_surface_density(cosmo, z_lens, z_source=z_source)
+            sigma_c = cosmo.eval_sigma_crit(z_lens, z_source)  
 
         elif sigma_c is None:
             # Need to verify that cosmology, lens redshift, source redshift bins and
@@ -344,7 +346,8 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, use_pdz=False, pzpdf=No
                 raise TypeError(
                     'To compute DeltaSigma, please provide a '
                     'i) cosmology, ii) redshift of lens and sources')
-            sigma_c = compute_critical_surface_density(cosmo, z_lens, z_source=z_source)
+#            sigma_c = compute_critical_surface_density(cosmo, z_lens, z_source=z_source)
+            sigma_c = cosmo.eval_sigma_crit(z_lens, z_source)
         elif sigma_c is None:
             # Need to verify that cosmology, lens redshift, source redshift bins and
             # source redshift pdf are provided
