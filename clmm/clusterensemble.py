@@ -240,20 +240,22 @@ class ClusterEnsemble():
             number of bootstrap resamplings
         """
         self._check_empty_data()
+        n_catalogs = len(self)
 
-        cluster_index = np.arange(len(self.data))
-        gt_boot, gx_boot = [], []
-        for n_boot in range(n_bootstrap):
-            cluster_index_bootstrap = np.random.choice(cluster_index, len(cluster_index))
-            data_bootstrap = self.data[cluster_index_bootstrap]
-            _, (gt, gx) = make_stacked_radial_profile(
-                            data_bootstrap['radius'], data_bootstrap['W_l'],
-                            [data_bootstrap[tan_component], data_bootstrap[cross_component]])
-            gt_boot.append(gt), gx_boot.append(gx)
-        n_catalogs = len(self.data)
+        cluster_index = np.arange(n_catalogs)
+        cluster_index_bootstrap = [
+            np.random.choice(cluster_index, n_catalogs)
+            for n_boot in range(n_bootstrap)]
+
+        _, (gt_boot, gx_boot) = make_stacked_radial_profile(
+            self['radius'][None, cluster_index_bootstrap][0].transpose(1,2,0),
+            self['W_l'][None, cluster_index_bootstrap][0].transpose(1,2,0),
+            [self[tan_component][None, cluster_index_bootstrap][0].transpose(1,2,0),
+             self[cross_component][None, cluster_index_bootstrap][0].transpose(1,2,0)])
+
         coeff = (n_catalogs/(n_catalogs-1))**2
-        self.cov_tan_bs = coeff*np.cov(np.array(gt_boot).T, bias=False, ddof=0)
-        self.cov_cross_bs = coeff*np.cov(np.array(gx_boot).T, bias=False)
+        self.cov_tan_bs = coeff*np.cov(np.array(gt_boot), bias=False, ddof=0)
+        self.cov_cross_bs = coeff*np.cov(np.array(gx_boot), bias=False)
 
     def compute_jackknife_covariance(self, tan_component='gt', cross_component='gx', n_side=16):
         """Compute the jackknife covariance matrix, add boostrap covariance matrix for
