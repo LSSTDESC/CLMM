@@ -138,7 +138,7 @@ class GalaxyCluster():
 
             self.galcat.update_cosmo(cosmo, overwrite=True)
             if use_pdz is False:
-                self.galcat['sigma_c'] = cosmo.eval_sigma_crit(self.z, galcat['z'], validate_input=self.validate_input)
+                self.galcat['sigma_c'] = cosmo.eval_sigma_crit(self.z, self.galcat['z'])
                 self.galcat.meta['sigmac_type']= 'standard'
             else:
                 zdata = self._get_input_galdata({'pzpdf':'pzpdf', 'pzbins':'pzbins'})
