@@ -243,15 +243,14 @@ class ClusterEnsemble():
         n_catalogs = len(self)
 
         cluster_index = np.arange(n_catalogs)
-        cluster_index_bootstrap = [
-            np.random.choice(cluster_index, n_catalogs)
-            for n_boot in range(n_bootstrap)]
+        cluster_index_bootstrap = [np.random.choice(cluster_index, n_catalogs)
+                                   for n_boot in range(n_bootstrap)]
 
-        _, (gt_boot, gx_boot) = make_stacked_radial_profile(
+        gt_boot, gx_boot = make_stacked_radial_profile(
             self['radius'][None, cluster_index_bootstrap][0].transpose(1,2,0),
             self['W_l'][None, cluster_index_bootstrap][0].transpose(1,2,0),
             [self[tan_component][None, cluster_index_bootstrap][0].transpose(1,2,0),
-             self[cross_component][None, cluster_index_bootstrap][0].transpose(1,2,0)])
+             self[cross_component][None, cluster_index_bootstrap][0].transpose(1,2,0)])[1]
 
         coeff = (n_catalogs/(n_catalogs-1))**2
         self.cov_tan_bs = coeff*np.cov(np.array(gt_boot), bias=False, ddof=0)
@@ -281,18 +280,17 @@ class ClusterEnsemble():
         pixels = healpy.ang2pix(n_side, self.data['ra'], self.data['dec'],
                                 nest=True, lonlat=True)
         pixels_list_unique = np.unique(pixels)
-        n_jack = len(pixels_list_unique)
         gt_jack, gx_jack = [], []
         for hp_list_delete in pixels_list_unique:
-            mask_in_area = np.isin(pixels, hp_list_delete)
-            data_jk = self.data[~mask_in_area]
-            _, (gt, gx) = make_stacked_radial_profile(data_jk['radius'], data_jk['W_l'],
-                                                      [data_jk[tan_component],
-                                                       data_jk[cross_component]])
+            mask = ~np.isin(pixels, hp_list_delete)
+            gt, gx = make_stacked_radial_profile(
+                self['radius'][mask], self['W_l'][mask],
+                [self[tan_component][mask], self[cross_component][mask]])[1]
             gt_jack.append(gt), gx_jack.append(gx)
+        n_jack = pixels_list_unique.size
         coeff = (n_jack - 1)**2/(n_jack)
-        self.cov_tan_jk = coeff*np.cov(np.array(gt_jack).T, bias=False, ddof=0)
-        self.cov_cross_jk = coeff*np.cov(np.array(gx_jack).T, bias=False, ddof=0)
+        self.cov_tan_jk = coeff*np.cov(np.transpose(gt_jack), bias=False, ddof=0)
+        self.cov_cross_jk = coeff*np.cov(np.transpose(gx_jack), bias=False, ddof=0)
 
     def save(self, filename, **kwargs):
         """Saves GalaxyCluster object to filename using Pickle"""
