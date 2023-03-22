@@ -68,13 +68,6 @@ class NumCosmoCLMModeling(CLMModeling):
     # Functions implemented by child class
 
 
-    def _set_cosmo(self, cosmo):
-        """"set cosmo"""
-        CLMModeling._set_cosmo(self, cosmo)
-
-        self.cosmo.smd = Nc.WLSurfaceMassDensity.new(self.cosmo.dist)
-        self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
-
     def _update_halo_density_profile(self):
         """"updates halo density profile with set internal properties"""
         # Makes sure current cdelta/mdelta values are kept
