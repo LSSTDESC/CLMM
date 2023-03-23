@@ -118,7 +118,6 @@ class NumCosmoCLMModeling(CLMModeling):
 
     def _eval_surface_density(self, r_proj, z_cl):
         """"eval surface density"""
-        self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
         func = lambda r_proj, z_cl: self.cosmo.smd.sigma(
             self.hdpm, self.cosmo.be_cosmo, r_proj, z_cl)
         return np.vectorize(func)(r_proj, z_cl)
@@ -126,7 +125,6 @@ class NumCosmoCLMModeling(CLMModeling):
     def _eval_mean_surface_density(self, r_proj, z_cl):
         """"eval mean surface density"""
 
-        self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
         func = lambda r_proj, z_cl: self.cosmo.smd.sigma_mean(
             self.hdpm, self.cosmo.be_cosmo, r_proj, z_cl)
         return np.vectorize(func)(r_proj, z_cl)
@@ -134,7 +132,6 @@ class NumCosmoCLMModeling(CLMModeling):
     def _eval_excess_surface_density(self, r_proj, z_cl):
         """"eval excess surface density"""
 
-        self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
         func = lambda r_proj, z_cl: self.cosmo.smd.sigma_excess(
             self.hdpm, self.cosmo.be_cosmo, r_proj, z_cl)
         return np.vectorize(func)(r_proj, z_cl)
@@ -142,7 +139,6 @@ class NumCosmoCLMModeling(CLMModeling):
     def _eval_tangential_shear(self, r_proj, z_cl, z_src):
         """"eval tangential shear"""
 
-        self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
         func = lambda r_proj, z_src, z_cl: self.cosmo.smd.shear(
             self.hdpm, self.cosmo.be_cosmo, r_proj, z_src, z_cl, z_cl)
         return np.vectorize(func)(r_proj, z_src, z_cl)
@@ -150,7 +146,6 @@ class NumCosmoCLMModeling(CLMModeling):
     def _eval_convergence(self, r_proj, z_cl, z_src):
         """"eval convergence"""
 
-        self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
         func = lambda r_proj, z_src, z_cl: self.cosmo.smd.convergence(
             self.hdpm, self.cosmo.be_cosmo, r_proj, z_src, z_cl, z_cl)
         return np.vectorize(func)(r_proj, z_src, z_cl)
@@ -159,7 +154,6 @@ class NumCosmoCLMModeling(CLMModeling):
         """"eval reduced tangential shear considering a single redshift plane
         for background sources"""
 
-        self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
         if (isinstance(r_proj, (list, np.ndarray))
                 and isinstance(z_src, (list, np.ndarray))
                 and len(r_proj) == len(z_src)):
@@ -172,7 +166,6 @@ class NumCosmoCLMModeling(CLMModeling):
     def _eval_magnification(self, r_proj, z_cl, z_src):
         """"eval magnification"""
 
-        self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
 
         func = lambda r_proj, z_src, z_cl: self.cosmo.smd.magnification(
             self.hdpm, self.cosmo.be_cosmo, r_proj, z_src, z_cl, z_cl)
@@ -199,6 +192,5 @@ class NumCosmoCLMModeling(CLMModeling):
         self.hdpm = mset.get(Nc.HaloDensityProfile.id())
         self.cosmo.smd = mset.get(Nc.WLSurfaceMassDensity.id())
 
-        self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
 
 Modeling = NumCosmoCLMModeling
