@@ -235,9 +235,6 @@ class CLMModeling:
     # 3.1. All these functions are for the single plane case
 
 
-    def _eval_critical_surface_density(self, z_len, z_src):
-        return self.cosmo.eval_sigma_crit(z_len, z_src)
-
     def _eval_tangential_shear(self, r_proj, z_cl, z_src):
         delta_sigma = self.eval_excess_surface_density(r_proj, z_cl)
         sigma_c = self.cosmo.eval_sigma_crit(z_cl, z_src)
@@ -408,38 +405,9 @@ class CLMModeling:
 
         return self._eval_3d_density(r3d=r3d, z_cl=z_cl)
 
-    def eval_critical_surface_density(self, z_len, z_src, validate_input=True):
-        r"""Computes the critical surface density
-
-        .. math::
-            \Sigma_{\rm crit} = \frac{c^2}{4\pi G} \frac{D_s}{D_LD_{LS}}
-
-        Parameters
-        ----------
-        z_len : float
-            Galaxy cluster redshift
-        z_src : array_like, float
-            Background source galaxy redshift(s)
-        validate_input: bool
-            Validade each input argument
-
-
-        Returns
-        -------
-        sigma_c : array_like, float
-            Cosmology-dependent critical surface density in units of :math:`M_\odot\ Mpc^{-2}`
-    """
-
-        if self.validate_input:
-            validate_argument(locals(), 'z_len', float, argmin=0)
-            validate_argument(locals(), 'z_src', 'float_array', argmin=0, none_ok=False)
-
-#            return self._eval_critical_surface_density(z_len=z_len, z_src=z_src)
-        return self.cosmo.eval_sigma_crit(z_len, z_src)
-
 
     def eval_critical_surface_density_eff(self, z_len, pzbins, pzpdf, validate_input=True):
-        r"""Computes the 'effective critical surface density
+        r"""Computes the 'effective critical surface density'
 
         .. math::
             \langle \Sigma_{\rm crit}^{-1}\rangle^{-1} =
@@ -448,6 +416,9 @@ class CLMModeling:
         where :math:`p(z)` is the source photoz probability density function.
         This comes from the maximum likelihood estimator for evaluating a
         :math:`\Delta\Sigma` profile.
+
+        For the standard :math:`\Sigma_{\rm crit}(z)` definition, use the `eval_sigma_crit` method of 
+        the CLMM cosmology object.
 
         Parameters
         ----------
@@ -472,7 +443,7 @@ class CLMModeling:
             validate_argument(locals(), 'z_len', float, argmin=0)
  
         def inv_sigmac(redshift):
-            return 1./self._eval_critical_surface_density(z_len=z_len, z_src=redshift)        
+            return 1./self.cosmo.eval_sigma_crit(z_len, redshift)
 
         return 1./_integ_pzfuncs(pzpdf, pzbins, kernel=inv_sigmac)
 
