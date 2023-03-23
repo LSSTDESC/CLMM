@@ -15,4 +15,4 @@ from .theory import (
 )
 from . import support
 
-__version__ = '1.5.8'
+__version__ = '1.6.0'
