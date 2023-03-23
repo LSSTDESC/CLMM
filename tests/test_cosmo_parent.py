@@ -236,6 +236,7 @@ def test_eval_sigma_crit(modeling_data):
     reltol = modeling_data['cosmo_reltol']
 
     cosmo, testcase, _ = load_validation_config()
+
     assert_allclose(cosmo.eval_sigma_crit(testcase['z_cluster'], testcase['z_source']),
                     testcase['nc_Sigmac'], reltol)
     # Check errors for z<0
