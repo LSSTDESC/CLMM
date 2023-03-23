@@ -339,6 +339,8 @@ def compute_critical_surface_density_eff(cosmo, z_cluster, pzbins, pzpdf, valida
     This comes from the maximum likelihood estimator for evaluating a :math:`\Delta\Sigma`
     profile.
 
+    For the standard :math:`\Sigma_{\rm crit}(z)` definition, use the `eval_sigma_crit` method of 
+    the CLMM cosmology object.
 
     Parameters
     ----------
