@@ -407,7 +407,7 @@ class CLMModeling:
 
 
     def eval_critical_surface_density_eff(self, z_len, pzbins, pzpdf, validate_input=True):
-        r"""Computes the 'effective critical surface density
+        r"""Computes the 'effective critical surface density'
 
         .. math::
             \langle \Sigma_{\rm crit}^{-1}\rangle^{-1} =
