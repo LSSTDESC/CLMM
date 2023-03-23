@@ -119,7 +119,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc,
     photoz_sigma_unscaled : float, optional
         If set, applies photo-z errors to source redshifts
     pz_bins: int, array
-        Pz pdf bins in the given range. If int, the limits are set automatically.
+        Photo-z pdf bins in the given range. If int, the limits are set automatically.
         If is array, must be the bin edges.
     pzpdf_type: str, None
         Type of photo-z pdf to be stored, options are:
@@ -451,7 +451,7 @@ def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled, pz_bins=101):
     photoz_sigma_unscaled : float
         Width of the Gaussian PDF, without the (1+z) factor
     pz_bins: int, sequence of scalars or str
-        Pz pdf bins in the given range. If int, the limits are set automatically.
+        Photo-z pdf bins in the given range. If int, the limits are set automatically.
         If is array, must be the bin edges.
 
     Returns
