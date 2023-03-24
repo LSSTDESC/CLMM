@@ -425,6 +425,12 @@ def test_validate_argument():
         assert validate_argument(loc, argname, ('float_array', str), argmin=0, argmax=4,
                                  eqmin=True, eqmax=True) is None
 
+    # Test shape
+    for argname in ('int', 'float', 'str') :
+        assert validate_argument(loc, argname, (str, 'float_array'), shape=()) is None
+    for argname in ('int_array', 'float_array') :
+        assert validate_argument(loc, argname, 'float_array', shape=(2,)) is None
+
     assert_raises(TypeError, validate_argument, loc, 'str', ('float_array', str), argmin=0)
 
 
