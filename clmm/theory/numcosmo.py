@@ -83,6 +83,29 @@ class NumCosmoCLMModeling(CLMModeling):
             self.cdelta = cdelta
             self.hdpm.props.log10MDelta = log10_mdelta
 
+        # Set/update all functions that are vectorized
+        self._eval_3d_density = np.vectorize(
+            lambda r3d, z_cl: self.hdpm.eval_density(
+                self.cosmo.be_cosmo, r3d, z_cl))
+        self._eval_surface_density = np.vectorize(
+            lambda r_proj, z_cl: self.cosmo.smd.sigma(
+                self.hdpm, self.cosmo.be_cosmo, r_proj, z_cl))
+        self._eval_mean_surface_density = np.vectorize(
+            lambda r_proj, z_cl: self.cosmo.smd.sigma_mean(
+                self.hdpm, self.cosmo.be_cosmo, r_proj, z_cl))
+        self._eval_excess_surface_density = np.vectorize(
+            lambda r_proj, z_cl: self.cosmo.smd.sigma_excess(
+                self.hdpm, self.cosmo.be_cosmo, r_proj, z_cl))
+        self._eval_tangential_shear = np.vectorize(
+            lambda r_proj, z_cl, z_src: self.cosmo.smd.shear(
+                self.hdpm, self.cosmo.be_cosmo, r_proj, z_src, z_cl, z_cl))
+        self._eval_convergence = np.vectorize(
+            lambda r_proj, z_cl, z_src: self.cosmo.smd.convergence(
+                self.hdpm, self.cosmo.be_cosmo, r_proj, z_src, z_cl, z_cl))
+        self._eval_magnification = np.vectorize(
+            lambda r_proj, z_cl, z_src: self.cosmo.smd.magnification(
+                self.hdpm, self.cosmo.be_cosmo, r_proj, z_src, z_cl, z_cl))
+
     def _get_concentration(self):
         """"get concentration"""
         return self.hdpm.props.cDelta
@@ -110,46 +133,6 @@ class NumCosmoCLMModeling(CLMModeling):
         # Note that z_cl is needed for CCL<2.6 only
         return self.hdpm.props.alpha
 
-    def _eval_3d_density(self, r3d, z_cl):
-        """"eval 3d density"""
-        func = lambda r3d, z_cl: self.hdpm.eval_density(
-            self.cosmo.be_cosmo, r3d, z_cl)
-        return np.vectorize(func)(r3d, z_cl)
-
-    def _eval_surface_density(self, r_proj, z_cl):
-        """"eval surface density"""
-        func = lambda r_proj, z_cl: self.cosmo.smd.sigma(
-            self.hdpm, self.cosmo.be_cosmo, r_proj, z_cl)
-        return np.vectorize(func)(r_proj, z_cl)
-
-    def _eval_mean_surface_density(self, r_proj, z_cl):
-        """"eval mean surface density"""
-
-        func = lambda r_proj, z_cl: self.cosmo.smd.sigma_mean(
-            self.hdpm, self.cosmo.be_cosmo, r_proj, z_cl)
-        return np.vectorize(func)(r_proj, z_cl)
-
-    def _eval_excess_surface_density(self, r_proj, z_cl):
-        """"eval excess surface density"""
-
-        func = lambda r_proj, z_cl: self.cosmo.smd.sigma_excess(
-            self.hdpm, self.cosmo.be_cosmo, r_proj, z_cl)
-        return np.vectorize(func)(r_proj, z_cl)
-
-    def _eval_tangential_shear(self, r_proj, z_cl, z_src):
-        """"eval tangential shear"""
-
-        func = lambda r_proj, z_src, z_cl: self.cosmo.smd.shear(
-            self.hdpm, self.cosmo.be_cosmo, r_proj, z_src, z_cl, z_cl)
-        return np.vectorize(func)(r_proj, z_src, z_cl)
-
-    def _eval_convergence(self, r_proj, z_cl, z_src):
-        """"eval convergence"""
-
-        func = lambda r_proj, z_src, z_cl: self.cosmo.smd.convergence(
-            self.hdpm, self.cosmo.be_cosmo, r_proj, z_src, z_cl, z_cl)
-        return np.vectorize(func)(r_proj, z_src, z_cl)
-
     def _eval_reduced_tangential_shear(self, r_proj, z_cl, z_src):
         """"eval reduced tangential shear considering a single redshift plane
         for background sources"""
@@ -162,14 +145,6 @@ class NumCosmoCLMModeling(CLMModeling):
             func = self.cosmo.smd.reduced_shear_array
         return func(self.hdpm, self.cosmo.be_cosmo, np.atleast_1d(r_proj), 1.0,
                     1.0, np.atleast_1d(z_src), z_cl, z_cl)
-
-    def _eval_magnification(self, r_proj, z_cl, z_src):
-        """"eval magnification"""
-
-
-        func = lambda r_proj, z_src, z_cl: self.cosmo.smd.magnification(
-            self.hdpm, self.cosmo.be_cosmo, r_proj, z_src, z_cl, z_cl)
-        return np.vectorize(func)(r_proj, z_src, z_cl)
 
     # Functions unique to this class
 
