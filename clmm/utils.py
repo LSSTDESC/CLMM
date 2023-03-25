@@ -575,8 +575,7 @@ def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argm
                       f' received max({argname}): {var_array.max()}'
                 raise ValueError(err)
 
-def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1.,
-                   is_unique_pzbins=False, ngrid=1000):
+def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1., ngrid=1000):
     r"""
     Integrates the product of a photo-z pdf with a given kernel. 
     This function was created to allow for data with different photo-z binnings.
@@ -594,8 +593,6 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1.,
     kernel : function, optional
         Function to be integrated with the pdf, must be f(z_array) format.
         Default: kernel(z)=1
-    is_unique_pzbins: bool, optional
-        Default: False
     ngrid : int, optional
         Number of points for the interpolation of the redshift pdf.
 
@@ -612,7 +609,7 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1.,
     # to a constant redshift grid for all galaxies. If there is a constant grid for all galaxies
     # these lines are not necessary and z_grid, pz_matrix = pzbins, pzpdf
 
-    if is_unique_pzbins==False:
+    if hasattr(pzbins[0], '__len__'):
         # First need to interpolate on a fixed grid
         z_grid = np.linspace(zmin, zmax, ngrid)
         pdf_interp_list = [interp1d(pzbin, pdf, bounds_error=False, fill_value=0.)
@@ -621,8 +618,9 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1.,
         kernel_matrix = kernel(z_grid)
     else:
         # OK perform the integration directly from the pdf binning common to all galaxies
-        z_grid = pzbins[0][(pzbins[0]>=zmin)*(pzbins[0]<=zmax)]
-        pz_matrix = pzpdf
+        mask = (pzbins>=zmin)*(pzbins<=zmax)
+        z_grid = pzbins[mask]
+        pz_matrix = np.array(pzpdf)[:,mask]
         kernel_matrix = kernel(z_grid)
 
     return simps(pz_matrix*kernel_matrix, x=z_grid, axis=1)
@@ -971,3 +969,22 @@ def _draw_random_points_from_tab_distribution(x_tab, pdf_tab, nobj=1, xmin=None,
     # get the corresponding samples
     samples = inv_cdf(np.random.random(nobj)*(cdf_xmax-cdf_xmin)+cdf_xmin)
     return samples
+
+def gaussian(value, mean, scatter):
+    """Normal distribution.
+
+    Parameters
+    ----------
+    value : array-like
+        Values for which to evaluate gaussian.
+    mean : float
+        Mean value of normal distribution
+    scatter : float
+        Scatter of normal distribution
+
+    Returns
+    -------
+    numpy.ndarray
+        Gaussian values at `value`
+    """
+    return np.exp(-0.5*(value-mean)**2/scatter**2)/np.sqrt(2*np.pi*scatter**2)

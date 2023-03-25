@@ -47,15 +47,34 @@ def test_mock_data():
     mock.generate_galaxy_catalog(
         1e15, 0.3, 4, cosmo, 'chang13', ngal_density=1)
 
+
     # Simple test to check if option with zsrc=desc_src is working
     # A proper test should be implemented
     mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 'desc_srd', ngals=100)
     mock.generate_galaxy_catalog(
         1e15, 0.3, 4, cosmo, 'desc_srd', ngal_density=1)
 
+    # Test to check unknown pdz
+    assert_raises(ValueError, mock.generate_galaxy_catalog, 1e15, 0.3, 4,
+                  cosmo, 0.8, ngals=100, photoz_sigma_unscaled=.1, pzpdf_type='xxx')
+    assert_raises(NotImplementedError, mock.generate_galaxy_catalog, 1e15, 0.3, 4,
+                  cosmo, 0.8, ngals=100, photoz_sigma_unscaled=.1, pzpdf_type='quantiles')
+
     # Simple test to check if option with pdz is working
     # A proper test should be implemented
-    mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.8, ngals=100, photoz_sigma_unscaled=.1)
+    cat = mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.8, ngals=100,
+                                       photoz_sigma_unscaled=.1, pzpdf_type=None)
+
+    # Simple test to check if option with pdz is working
+    # A proper test should be implemented
+    cat = mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.8, ngals=100,
+                                       photoz_sigma_unscaled=.1)
+    assert 'zbins' in cat.pzpdf_info
+
+    # Simple test to check if option with pdz individual bins is working
+    # A proper test should be implemented
+    mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.8, ngals=100, photoz_sigma_unscaled=.1,
+                                 pzpdf_type='individual_bins')
 
     # Simple test to check if option with mean_e_err is working
     # A proper test should be implemented
@@ -77,8 +96,9 @@ def test_mock_data():
         cluster_dec = -23.2
         cluster_z = 0.3
 
-        data = mock.generate_galaxy_catalog(10**mass, cluster_z, 4, cosmo, 0.8, ngals=ngals,
-                                            cluster_ra=cluster_ra, cluster_dec=cluster_dec)
+        data = mock.generate_galaxy_catalog(
+            10**mass, cluster_z, 4, cosmo, 0.8, ngals=ngals,
+            cluster_ra=cluster_ra, cluster_dec=cluster_dec)
 
         # Check whether the given ngals is the retrieved ngals
         assert_equal(len(data['ra']), ngals)
@@ -182,9 +202,8 @@ def test_shapenoise():
     data = mock.generate_galaxy_catalog(
         10**15., 0.3, 4, cosmo, 0.8, ngals=50000, shapenoise=0.5)
     # Check that there are no galaxies with |e|>1
-
-    assert_equal(np.count_nonzero((data['e1'] > 1) | (data['e1'] < -1)), 0)
-    assert_equal(np.count_nonzero((data['e2'] > 1) | (data['e2'] < -1)), 0)
+    assert_equal(np.count_nonzero((data['e1']>1) | (data['e1']<-1)),0)
+    assert_equal(np.count_nonzero((data['e2']>1) | (data['e2']<-1)),0)
 
     # Verify that the shape noise is Gaussian around 0 (for the very small shear here)
     sigma = 0.25
