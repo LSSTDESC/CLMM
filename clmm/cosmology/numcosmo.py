@@ -46,8 +46,6 @@ class NumCosmoCosmology(CLMMCosmology):
             self.set_dist(dist)
         else:
             self.set_dist(Nc.Distance.new(dist_zmax))
-        self.smd = Nc.WLSurfaceMassDensity.new(self.dist)
-        self.smd.prepare_if_needed(self.be_cosmo)
 
         self.smd = Nc.WLSurfaceMassDensity.new(self.dist)
         self.smd.prepare_if_needed(self.be_cosmo)
