@@ -129,67 +129,52 @@ class CCLCLMModeling(CLMModeling):
             a_cl = self.cosmo.get_a_from_z(z_cl)
         return self.hdpm._get_alpha(self.cosmo.be_cosmo, self.__mdelta_cor, a_cl, self.mdef)
 
+    def _call_ccl_profile_lens(self, ccl_hdpm_func, radius, z_lens, ndim=2):
+        """"call ccl profile functions that depend on the lens only"""
+        a_lens = self.cosmo.get_a_from_z(z_lens)
+
+        return ccl_hdpm_func(self.cosmo.be_cosmo, radius/a_lens, self.__mdelta_cor,
+                             a_lens, self.mdef)*self.cor_factor/a_lens**ndim
+
     def _eval_3d_density(self, r3d, z_cl):
         """"eval 3d density"""
-        a_cl = self.cosmo.get_a_from_z(z_cl)
-
-        return self.hdpm.real(self.cosmo.be_cosmo, r3d/a_cl, self.__mdelta_cor,
-                              a_cl, self.mdef)*self.cor_factor/a_cl**3
+        return self._call_ccl_profile_lens(self.hdpm.real, r3d, z_cl, ndim=3)
 
     def _eval_surface_density(self, r_proj, z_cl):
-        a_cl = self.cosmo.get_a_from_z(z_cl)
-
-        return self.hdpm.projected(self.cosmo.be_cosmo, r_proj/a_cl, self.__mdelta_cor,
-                                   a_cl, self.mdef)*self.cor_factor/a_cl**2
+        """eval surface density"""
+        return self._call_ccl_profile_lens(self.hdpm.projected, r_proj, z_cl)
 
     def _eval_mean_surface_density(self, r_proj, z_cl):
         """"eval mean surface density"""
-        a_cl = self.cosmo.get_a_from_z(z_cl)
-
-        return self.hdpm.cumul2d(self.cosmo.be_cosmo, r_proj/a_cl, self.__mdelta_cor,
-                                 a_cl, self.mdef)*self.cor_factor/a_cl**2
+        return self._call_ccl_profile_lens(self.hdpm.cumul2d, r_proj, z_cl)
 
     def _eval_excess_surface_density(self, r_proj, z_cl):
         """"eval excess surface density"""
-        a_cl = self.cosmo.get_a_from_z(z_cl)
+        return self._eval_mean_surface_density(r_proj, z_cl) \
+               - self._eval_surface_density(r_proj, z_cl)
 
-        return (self.hdpm.cumul2d(self.cosmo.be_cosmo, r_proj/a_cl, self.__mdelta_cor,
-                                  a_cl, self.mdef) -
-                    self.hdpm.projected(self.cosmo.be_cosmo, r_proj/a_cl, self.__mdelta_cor,
-                                        a_cl, self.mdef))*self.cor_factor/a_cl**2
+    def _call_ccl_profile_lens_src(self, ccl_hdpm_func, radius, z_lens, z_src):
+        """"call ccl profile functions that depend on the lens and the sources"""
+        a_lens = self.cosmo.get_a_from_z(z_lens)
+        a_src = self.cosmo.get_a_from_z(z_src)
+
+        return ccl_hdpm_func(self.cosmo.be_cosmo, radius/a_lens, self.__mdelta_cor,
+                             a_lens, a_src, self.mdef)
 
     def _eval_convergence_core(self, r_proj, z_cl, z_src):
         """eval convergence"""
-
-        a_cl = self.cosmo.get_a_from_z(z_cl)
-        a_src = self.cosmo.get_a_from_z(z_src)
-
-        return self.hdpm.convergence(
-            self.cosmo.be_cosmo, r_proj/a_cl, self.mdelta, a_cl, a_src, self.mdef)
+        return self._call_ccl_profile_lens_src(self.hdpm.convergence, r_proj, z_cl, z_src)
 
     def _eval_tangential_shear_core(self, r_proj, z_cl, z_src):
+        """eval tangential shear"""
+        return self._call_ccl_profile_lens_src(self.hdpm.shear, r_proj, z_cl, z_src)
 
-        a_cl = self.cosmo.get_a_from_z(z_cl)
-        a_src = self.cosmo.get_a_from_z(z_src)
-
-        return self.hdpm.shear(
-            self.cosmo.be_cosmo, r_proj/a_cl, self.mdelta, a_cl, a_src, self.mdef)
     def _eval_reduced_tangential_shear_core(self, r_proj, z_cl, z_src):
         """eval reduced tangential shear with all background sources at the same plane"""
-
-        a_cl = self.cosmo.get_a_from_z(z_cl)
-        a_src = self.cosmo.get_a_from_z(z_src)
-
-        return self.hdpm.reduced_shear(
-            self.cosmo.be_cosmo, r_proj/a_cl, self.mdelta, a_cl, a_src, self.mdef)
+        return self._call_ccl_profile_lens_src(self.hdpm.reduced_shear, r_proj, z_cl, z_src)
 
     def _eval_magnification_core(self, r_proj, z_cl, z_src):
         """eval magnification"""
-
-        a_cl = self.cosmo.get_a_from_z(z_cl)
-        a_src = self.cosmo.get_a_from_z(z_src)
-
-        return self.hdpm.magnification(
-            self.cosmo.be_cosmo, r_proj/a_cl, self.mdelta, a_cl, a_src, self.mdef)
+        return self._call_ccl_profile_lens_src(self.hdpm.magnification, r_proj, z_cl, z_src)
 
 Modeling = CCLCLMModeling
