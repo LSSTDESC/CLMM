@@ -83,7 +83,55 @@ class NumCosmoCLMModeling(CLMModeling):
             self.cdelta = cdelta
             self.hdpm.props.log10MDelta = log10_mdelta
 
-        # Set/update all functions that are vectorized
+        self._update_vectorized_functions()
+
+    def _get_concentration(self):
+        """"get concentration"""
+        return self.hdpm.props.cDelta
+
+    def _get_mass(self):
+        """"get mass"""
+        return 10**self.hdpm.props.log10MDelta
+
+    def _set_concentration(self, cdelta):
+        """"set concentration"""
+        self.hdpm.props.cDelta = cdelta
+        self._update_vectorized_functions()
+
+    def _set_mass(self, mdelta):
+        """"set mass"""
+        self.hdpm.props.log10MDelta = math.log10(mdelta)
+        self._update_vectorized_functions()
+
+    def _set_einasto_alpha(self, alpha):
+        if alpha is None:
+            self.hdpm.props.alpha = 0.25
+        else:
+            self.hdpm.props.alpha = alpha
+        self._update_vectorized_functions()
+
+    def _get_einasto_alpha(self, z_cl=None):
+        """"get the value of the Einasto slope"""
+        # Note that z_cl is needed for CCL<2.6 only
+        return self.hdpm.props.alpha
+
+    def _eval_reduced_tangential_shear(self, r_proj, z_cl, z_src):
+        """"eval reduced tangential shear considering a single redshift plane
+        for background sources"""
+
+        if (isinstance(r_proj, (list, np.ndarray))
+                and isinstance(z_src, (list, np.ndarray))
+                and len(r_proj) == len(z_src)):
+            func = self.cosmo.smd.reduced_shear_array_equal
+        else:
+            func = self.cosmo.smd.reduced_shear_array
+        return func(self.hdpm, self.cosmo.be_cosmo, np.atleast_1d(r_proj), 1.0,
+                    1.0, np.atleast_1d(z_src), z_cl, z_cl)
+
+    # Functions unique to this class
+
+    def _update_vectorized_functions(self):
+        """Set/update all functions that are vectorized"""
         self._eval_3d_density = np.vectorize(
             lambda r3d, z_cl: self.hdpm.eval_density(
                 self.cosmo.be_cosmo, r3d, z_cl))
@@ -105,48 +153,6 @@ class NumCosmoCLMModeling(CLMModeling):
         self._eval_magnification = np.vectorize(
             lambda r_proj, z_cl, z_src: self.cosmo.smd.magnification(
                 self.hdpm, self.cosmo.be_cosmo, r_proj, z_src, z_cl, z_cl))
-
-    def _get_concentration(self):
-        """"get concentration"""
-        return self.hdpm.props.cDelta
-
-    def _get_mass(self):
-        """"get mass"""
-        return 10**self.hdpm.props.log10MDelta
-
-    def _set_concentration(self, cdelta):
-        """"set concentration"""
-        self.hdpm.props.cDelta = cdelta
-
-    def _set_mass(self, mdelta):
-        """"set mass"""
-        self.hdpm.props.log10MDelta = math.log10(mdelta)
-
-    def _set_einasto_alpha(self, alpha):
-        if alpha is None:
-            self.hdpm.props.alpha = 0.25
-        else:
-            self.hdpm.props.alpha = alpha
-
-    def _get_einasto_alpha(self, z_cl=None):
-        """"get the value of the Einasto slope"""
-        # Note that z_cl is needed for CCL<2.6 only
-        return self.hdpm.props.alpha
-
-    def _eval_reduced_tangential_shear(self, r_proj, z_cl, z_src):
-        """"eval reduced tangential shear considering a single redshift plane
-        for background sources"""
-
-        if (isinstance(r_proj, (list, np.ndarray))
-                and isinstance(z_src, (list, np.ndarray))
-                and len(r_proj) == len(z_src)):
-            func = self.cosmo.smd.reduced_shear_array_equal
-        else:
-            func = self.cosmo.smd.reduced_shear_array
-        return func(self.hdpm, self.cosmo.be_cosmo, np.atleast_1d(r_proj), 1.0,
-                    1.0, np.atleast_1d(z_src), z_cl, z_cl)
-
-    # Functions unique to this class
 
     def get_mset(self):
         r"""
