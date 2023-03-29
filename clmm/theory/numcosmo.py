@@ -83,7 +83,7 @@ class NumCosmoCLMModeling(CLMModeling):
             self.cdelta = cdelta
             self.hdpm.props.log10MDelta = log10_mdelta
 
-        self._update_vectorized_functions()
+        self._update_vec_funcs()
 
     def _get_concentration(self):
         """"get concentration"""
@@ -96,19 +96,19 @@ class NumCosmoCLMModeling(CLMModeling):
     def _set_concentration(self, cdelta):
         """"set concentration"""
         self.hdpm.props.cDelta = cdelta
-        self._update_vectorized_functions()
+        self._update_vec_funcs()
 
     def _set_mass(self, mdelta):
         """"set mass"""
         self.hdpm.props.log10MDelta = math.log10(mdelta)
-        self._update_vectorized_functions()
+        self._update_vec_funcs()
 
     def _set_einasto_alpha(self, alpha):
         if alpha is None:
             self.hdpm.props.alpha = 0.25
         else:
             self.hdpm.props.alpha = alpha
-        self._update_vectorized_functions()
+        self._update_vec_funcs()
 
     def _get_einasto_alpha(self, z_cl=None):
         """"get the value of the Einasto slope"""
@@ -130,7 +130,7 @@ class NumCosmoCLMModeling(CLMModeling):
 
     # Functions unique to this class
 
-    def _update_vectorized_functions(self):
+    def _update_vec_funcs(self):
         """Set/update all functions that are vectorized"""
         self._eval_3d_density = np.vectorize(
             lambda r3d, z_cl: self.hdpm.eval_density(
