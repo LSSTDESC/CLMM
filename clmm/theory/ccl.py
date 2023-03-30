@@ -161,6 +161,7 @@ class CCLCLMModeling(CLMModeling):
     def _eval_magnification_core(self, r_proj, z_cl, z_src):
         """eval magnification"""
         return self._call_ccl_profile_lens_src(self.hdpm.magnification, r_proj, z_cl, z_src)
+
     # Helper functions unique to this class
 
     def _call_ccl_profile_lens(self, ccl_hdpm_func, radius, z_lens, ndim=2):
