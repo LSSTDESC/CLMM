@@ -165,7 +165,7 @@ class CCLCLMModeling(CLMModeling):
         a_src = self.cosmo.get_a_from_z(z_src)
 
         return self.hdpm.convergence(
-            self.cosmo.be_cosmo, r_proj/a_cl, self.mdelta, a_cl, a_src, self.mdef)
+            self.cosmo.be_cosmo, r_proj/a_cl, self.__mdelta_cor, a_cl, a_src, self.mdef)
 
     def _eval_tangential_shear_core(self, r_proj, z_cl, z_src):
 
@@ -173,7 +173,7 @@ class CCLCLMModeling(CLMModeling):
         a_src = self.cosmo.get_a_from_z(z_src)
 
         return self.hdpm.shear(
-            self.cosmo.be_cosmo, r_proj/a_cl, self.mdelta, a_cl, a_src, self.mdef)
+            self.cosmo.be_cosmo, r_proj/a_cl, self.__mdelta_cor, a_cl, a_src, self.mdef)
     def _eval_reduced_tangential_shear_core(self, r_proj, z_cl, z_src):
         """eval reduced tangential shear with all background sources at the same plane"""
 
@@ -181,7 +181,7 @@ class CCLCLMModeling(CLMModeling):
         a_src = self.cosmo.get_a_from_z(z_src)
 
         return self.hdpm.reduced_shear(
-            self.cosmo.be_cosmo, r_proj/a_cl, self.mdelta, a_cl, a_src, self.mdef)
+            self.cosmo.be_cosmo, r_proj/a_cl, self.__mdelta_cor, a_cl, a_src, self.mdef)
 
     def _eval_magnification_core(self, r_proj, z_cl, z_src):
         """eval magnification"""
@@ -190,6 +190,6 @@ class CCLCLMModeling(CLMModeling):
         a_src = self.cosmo.get_a_from_z(z_src)
 
         return self.hdpm.magnification(
-            self.cosmo.be_cosmo, r_proj/a_cl, self.mdelta, a_cl, a_src, self.mdef)
+            self.cosmo.be_cosmo, r_proj/a_cl, self.__mdelta_cor, a_cl, a_src, self.mdef)
 
 Modeling = CCLCLMModeling
