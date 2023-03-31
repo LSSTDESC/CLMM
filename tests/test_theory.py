@@ -258,6 +258,7 @@ def test_profiles(modeling_data, profile_init):
 
         helper_profiles(theo.compute_3d_density)
         helper_profiles(theo.compute_surface_density)
+        helper_profiles(theo.compute_mean_surface_density)
         helper_profiles(theo.compute_excess_surface_density)
 
         if profile_init == 'nfw':
@@ -291,6 +292,10 @@ def test_profiles(modeling_data, profile_init):
                                      cfg['SIGMA_PARAMS']['z_cl'], verbose=True),
             cfg['numcosmo_profiles']['Sigma'], reltol)
         assert_allclose(
+            mod.eval_mean_surface_density(cfg['SIGMA_PARAMS']['r_proj'],
+                                          cfg['SIGMA_PARAMS']['z_cl'], verbose=True),
+            cfg['numcosmo_profiles']['Sigma']+cfg['numcosmo_profiles']['DeltaSigma'], reltol)
+        assert_allclose(
             mod.eval_excess_surface_density(cfg['SIGMA_PARAMS']['r_proj'],
                                             cfg['SIGMA_PARAMS']['z_cl'], verbose=True),
             cfg['numcosmo_profiles']['DeltaSigma'], reltol)
@@ -299,16 +304,23 @@ def test_profiles(modeling_data, profile_init):
                           1e-12, cfg['SIGMA_PARAMS']['z_cl'])
 
         # Functional interface tests
-        # alpha_ein is None unless testing Einasto with the NC backend
-        assert_allclose(theo.compute_3d_density(cosmo=cosmo, **cfg['RHO_PARAMS'],
+        # alpha_ein is None unless testing Einasto with the NC and CCL backend
+        assert_allclose(
+            theo.compute_3d_density(cosmo=cosmo, **cfg['RHO_PARAMS'],
+                                    alpha_ein=alpha_ein, verbose=True),
+            cfg['numcosmo_profiles']['rho'], reltol)
+        assert_allclose(
+            theo.compute_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS'],
+                                         alpha_ein=alpha_ein, verbose=True),
+            cfg['numcosmo_profiles']['Sigma'], reltol)
+        assert_allclose(
+            theo.compute_mean_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS'],
+                                              alpha_ein=alpha_ein, verbose=True),
+            cfg['numcosmo_profiles']['Sigma']+cfg['numcosmo_profiles']['DeltaSigma'], reltol)
+        assert_allclose(
+            theo.compute_excess_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS'],
                                                 alpha_ein=alpha_ein, verbose=True),
-                        cfg['numcosmo_profiles']['rho'], reltol)
-        assert_allclose(theo.compute_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS'],
-                                                     alpha_ein=alpha_ein, verbose=True),
-                        cfg['numcosmo_profiles']['Sigma'], reltol)
-        assert_allclose(theo.compute_excess_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS'],
-                                                            alpha_ein=alpha_ein, verbose=True),
-                        cfg['numcosmo_profiles']['DeltaSigma'], reltol)
+            cfg['numcosmo_profiles']['DeltaSigma'], reltol)
 
 def test_2halo_term(modeling_data):
 
@@ -348,57 +360,6 @@ def test_2halo_term(modeling_data):
             mod.eval_surface_density_2h(
                 cfg['SIGMA_PARAMS']['r_proj'], cfg['SIGMA_PARAMS']['z_cl']),
             1.0e-10)
-
-def test_compute_critical_surface_density(modeling_data):
-    """ Validation test for critical surface density """
-
-    reltol = modeling_data['theory_reltol']
-
-    cfg = load_validation_config()
-    assert_allclose(theo.compute_critical_surface_density(cfg['cosmo'],
-                                                          z_cluster=cfg['TEST_CASE']['z_cluster'],
-                                                          z_source=cfg['TEST_CASE']['z_source']),
-                    cfg['TEST_CASE']['nc_Sigmac'], reltol)
-    # Check errors for z<0
-    assert_raises(ValueError, theo.compute_critical_surface_density,
-                  cfg['cosmo'], z_cluster=-0.2, z_source=0.3)
-    assert_raises(ValueError, theo.compute_critical_surface_density,
-                  cfg['cosmo'], z_cluster=0.2, z_source=-0.3)
-    # Check behaviour when sources are in front of the lens
-    z_cluster = 0.3
-    z_source = 0.2
-    assert_allclose(
-        theo.compute_critical_surface_density(
-            cfg['cosmo'], z_cluster=z_cluster, z_source=z_source),
-        np.inf, 1.0e-10)
-    z_source = [0.2, 0.12, 0.25]
-    assert_allclose(
-        theo.compute_critical_surface_density(
-        cfg['cosmo'], z_cluster=z_cluster, z_source=z_source),
-        [np.inf, np.inf, np.inf], 1.0e-10)
-    # Check usage with cluster object function
-    z_src = np.array([cfg['TEST_CASE']['z_source']])
-    cluster = GalaxyCluster(unique_id='blah', ra=0, dec=0, z=cfg['TEST_CASE']['z_cluster'],
-                            galcat=GCData([0*z_src, 0*z_src, z_src],
-                                          names=('ra', 'dec', 'z')))
-    cluster.add_critical_surface_density(cfg['cosmo'])
-    assert_allclose(cluster.galcat['sigma_c'],
-                    cfg['TEST_CASE']['nc_Sigmac'], reltol)
-
-    # Object Oriented tests
-    mod = theo.Modeling()
-    mod.set_cosmo(cfg['cosmo'])
-    assert_allclose(mod.eval_critical_surface_density(cfg['TEST_CASE']['z_cluster'],
-                                                    cfg['TEST_CASE']['z_source']),
-                    cfg['TEST_CASE']['nc_Sigmac'], reltol)
-    # Check behaviour when sources are in front of the lens
-    z_cluster = 0.3
-    z_source = 0.2
-    assert_allclose(mod.eval_critical_surface_density(z_cluster, z_source),
-                    np.inf, 1.0e-10)
-    z_source = [0.2, 0.12, 0.25]
-    assert_allclose(mod.eval_critical_surface_density(z_cluster, z_source),
-                    [np.inf, np.inf, np.inf], 1.0e-10)
 
 
 def helper_physics_functions(func, additional_kwargs={}):
