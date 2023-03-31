@@ -155,6 +155,8 @@ def compute_radial_averages(xvals, yvals, xbins, yerr=None, error_model='ste', w
         Indices of the bins (corresponding to `xbins`) in which each value
         of `xvals` belongs.  Same length as `yvals`.  A binnumber of `i` means the
         corresponding value is between (xbins[i-1], xbins[i]).
+    wts_sum: numpy.ndarray
+        Sum of individual weights in each bin.
     """
     # make case independent
     error_model = error_model.lower()
@@ -180,7 +182,7 @@ def compute_radial_averages(xvals, yvals, xbins, yerr=None, error_model='ste', w
     err_y = np.sqrt(stat_yerr2+data_yerr2)
     # number of objects
     num_objects = np.histogram(x, xbins)[0]
-    return mean_x, mean_y, err_y, num_objects, binnumber
+    return mean_x, mean_y, err_y, num_objects, binnumber, wts_sum
 
 
 def make_bins(rmin, rmax, nbins=10, method='evenwidth', source_seps=None):
