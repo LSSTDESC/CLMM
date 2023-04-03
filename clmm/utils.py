@@ -9,28 +9,29 @@ from .constants import Constants as const
 from . import z_distributions as zdist
 
 
-def compute_nfw_boost(rvals, rs=1000, b0=0.1):
-    """Given a list of `rvals`, and optional `rs` and `b0`, return the corresponding boost factor
+def compute_nfw_boost(rvals, rscale=1000, boost0=0.1):
+    """Given a list of `rvals`, and optional `rscale` and `boost0`, return the corresponding boost factor
     at each rval
 
-    Parameters
+    Parameterscale
     ----------
     rvals : array_like
-        radii
-    rs : float, optional
+        Radii
+    rscale : float, optional
         scale radius for NFW in same units as rvals (default 2000 kpc)
-    b0 : float, optional
+    boost0 : float, optional
+        Boost factor at each value of rvals
 
     Returns
     -------
-    boost_factors : numpy.ndarray
-
+    array
+        Boost factor
     """
 
-    x = np.array(rvals) / rs
+    r_norm = np.array(rvals) / rscale
 
-    def _calc_finternal(x):
-        radicand = x**2 - 1
+    def _calc_finternal(r_norm):
+        radicand = r_norm**2 - 1
 
         finternal = (
             -1j
@@ -42,33 +43,33 @@ def compute_nfw_boost(rvals, rs=1000, b0=0.1):
 
         return np.nan_to_num(finternal, copy=False, nan=1.0).real
 
-    return 1.0 + b0 * (1 - _calc_finternal(x)) / (x**2 - 1)
+    return 1.0 + boost0 * (1 - _calc_finternal(r_norm)) / (r_norm**2 - 1)
 
 
-def compute_powerlaw_boost(rvals, rs=1000, b0=0.1, alpha=-1.0):
-    """Given a list of `rvals`, and optional `rs` and `b0`, and `alpha`,
+def compute_powerlaw_boost(rvals, rscale=1000, boost0=0.1, alpha=-1.0):
+    """Given a list of `rvals`, and optional `rscale` and `boost0`, and `alpha`,
     return the corresponding boost factor at each `rval`
 
-    Parameters
+    Parameterscale
     ----------
     rvals : array_like
-        radii
-    rs : float, optional
-        scale radius for NFW in same units as rvals (default 2000 kpc)
-    b0 : float, optional
-        Default: 0.1
+        Radii
+    rscale : float, optional
+        Scale radius for NFW in same units as rvals (default 2000 kpc)
+    boost0 : float, optional
+        Boost factor at each value of rvals
     alpha : float, optional
-        exponent from Melchior+16. Default: -1.0
+        Exponent from Melchior+16. Default: -1.0
 
     Returns
     -------
-    boost_factors : numpy.ndarray
-
+    array
+        Boost factor
     """
 
-    x = np.array(rvals) / rs
+    r_norm = np.array(rvals) / rscale
 
-    return 1.0 + b0 * (x) ** alpha
+    return 1.0 + boost0 * (r_norm) ** alpha
 
 
 boost_models = {
@@ -124,6 +125,28 @@ def correct_sigma_with_boost_model(rvals, sigma_vals, boost_model="nfw_boost", *
     return sigma_corrected
 
 
+def compute_weighted_bin_sum(xvals, yvals, xbins, weights):
+    """Add `yvals * weights` in `xbins`.
+
+    Parameters
+    ----------
+    xvals : array_like
+        Values to be binned
+    yvals : array_like
+        Values to compute statistics on
+    xbins: array_like
+        Bin edges to sort into
+    weights: array_like, None, optional
+        Weights for sum.
+
+    Returns
+    -------
+    numpy.ndarray
+        Sum of `yvals * weights` in `xbins`.
+    """
+    return binned_statistic(xvals, yvals * weights, statistic="sum", bins=xbins)[0]
+
+
 def compute_radial_averages(xvals, yvals, xbins, yerr=None, error_model="ste", weights=None):
     """Given a list of `xvals`, `yvals` and `xbins`, sort into bins. If `xvals` or `yvals`
     contain non-finite values, these are filtered.
@@ -169,26 +192,32 @@ def compute_radial_averages(xvals, yvals, xbins, yerr=None, error_model="ste", w
     error_model = error_model.lower()
     # binned_statics throus an error in case of non-finite values, so filtering those out
     filt = np.isfinite(xvals) * np.isfinite(yvals)
-    x, y = np.array(xvals)[filt], np.array(yvals)[filt]
+    xfilt, yfilt = np.array(xvals)[filt], np.array(yvals)[filt]
     # normalize weights (and computers binnumber)
-    wts = np.ones(x.size) if weights is None else np.array(weights, dtype=float)[filt]
-    wts_sum, binnumber = binned_statistic(x, wts, statistic="sum", bins=xbins)[:3:2]
+    wts = np.ones(xfilt.size) if weights is None else np.array(weights, dtype=float)[filt]
+    wts_sum, binnumber = binned_statistic(xfilt, wts, statistic="sum", bins=xbins)[:3:2]
     objs_in_bins = (binnumber > 0) * (binnumber <= wts_sum.size)  # mask for binnumber in range
     wts[objs_in_bins] *= 1.0 / wts_sum[binnumber[objs_in_bins] - 1]  # norm weights in each bin
-    weighted_bin_stat = lambda vals: binned_statistic(x, vals * wts, statistic="sum", bins=xbins)[0]
     # means
-    mean_x = weighted_bin_stat(x)
-    mean_y = weighted_bin_stat(y)
+    mean_x = compute_weighted_bin_sum(xfilt, xfilt, xbins, wts)
+    mean_y = compute_weighted_bin_sum(xfilt, yfilt, xbins, wts)
     # errors
-    data_yerr2 = 0 if yerr is None else weighted_bin_stat(np.array(yerr)[filt] ** 2 * wts)
-    stat_yerr2 = weighted_bin_stat(y**2) - mean_y**2
+    data_yerr2 = (
+        0
+        if yerr is None
+        else compute_weighted_bin_sum(xfilt, np.array(yerr)[filt] ** 2, xbins, wts**2)
+    )
+    weighted_bin_stat = lambda vals: binned_statistic(
+        xfilt, vals * wts, statistic="sum", bins=xbins
+    )[0]
+    stat_yerr2 = weighted_bin_stat(yfilt**2) - mean_y**2
     if error_model == "ste":
         stat_yerr2 *= weighted_bin_stat(wts)  # sum(wts^2)=1/n for not weighted
     elif error_model != "std":
         raise ValueError(f"{error_model} not supported err model for binned stats")
     err_y = np.sqrt(stat_yerr2 + data_yerr2)
     # number of objects
-    num_objects = np.histogram(x, xbins)[0]
+    num_objects = np.histogram(xfilt, xbins)[0]
     return mean_x, mean_y, err_y, num_objects, binnumber, wts_sum
 
 
