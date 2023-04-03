@@ -12,8 +12,12 @@ from .dataops import (
 )
 from .theory import compute_critical_surface_density_eff
 from .plotting import plot_profiles
-from .utils import validate_argument, _draw_random_points_from_tab_distribution
-
+from .utils import (
+    validate_argument,
+    _validate_ra,
+    _validate_dec,
+    _draw_random_points_from_tab_distribution
+)
 
 class GalaxyCluster:
     """Object that contains the galaxy cluster metadata and background galaxy data
@@ -57,24 +61,8 @@ class GalaxyCluster:
     def _check_types(self):
         """Check types of all attributes"""
         validate_argument(vars(self), "unique_id", (int, str))
-        validate_argument(
-            vars(self),
-            "ra",
-            (float, str),
-            argmin=-360,
-            eqmin=True,
-            argmax=360,
-            eqmax=True,
-        )
-        validate_argument(
-            vars(self),
-            "dec",
-            (float, str),
-            argmin=-90,
-            eqmin=True,
-            argmax=90,
-            eqmax=True,
-        )
+        _validate_ra(vars(self), "ra", False)
+        _validate_dec(vars(self), "dec", False)
         validate_argument(vars(self), "z", (float, str), argmin=0, eqmin=True)
         validate_argument(vars(self), "galcat", GCData)
         self.unique_id = str(self.unique_id)

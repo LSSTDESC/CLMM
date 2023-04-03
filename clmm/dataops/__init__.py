@@ -11,6 +11,8 @@ from ..utils import (
     convert_units,
     arguments_consistency,
     validate_argument,
+    _validate_ra,
+    _validate_dec,
     _integ_pzfuncs,
 )
 from ..theory import compute_critical_surface_density_eff
@@ -140,42 +142,10 @@ def compute_tangential_and_cross_components(
     # Note: we make these quantities to be np.array so that a name is not passed from astropy
     # columns
     if validate_input:
-        validate_argument(
-            locals(),
-            "ra_source",
-            "float_array",
-            argmin=-360,
-            eqmin=True,
-            argmax=360,
-            eqmax=True,
-        )
-        validate_argument(
-            locals(),
-            "dec_source",
-            "float_array",
-            argmin=-90,
-            eqmin=True,
-            argmax=90,
-            eqmax=True,
-        )
-        validate_argument(
-            locals(),
-            "ra_lens",
-            "float_array",
-            argmin=-360,
-            eqmin=True,
-            argmax=360,
-            eqmax=True,
-        )
-        validate_argument(
-            locals(),
-            "dec_lens",
-            "float_array",
-            argmin=-90,
-            eqmin=True,
-            argmax=90,
-            eqmax=True,
-        )
+        _validate_ra(locals(), "ra_source", True)
+        _validate_dec(locals(), "dec_source", True)
+        _validate_ra(locals(), "ra_lens", True)
+        _validate_dec(locals(), "dec_lens", True)
         validate_argument(locals(), "shear1", "float_array")
         validate_argument(locals(), "shear2", "float_array")
         validate_argument(locals(), "geometry", str)

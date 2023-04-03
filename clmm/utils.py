@@ -1078,3 +1078,34 @@ def gaussian(value, mean, scatter):
         Gaussian values at `value`
     """
     return np.exp(-0.5 * (value - mean) ** 2 / scatter**2) / np.sqrt(2 * np.pi * scatter**2)
+
+
+def _validate_ra(loc, ra_name, is_array):
+    r"""Validate RA type and raise errors.
+
+    Parameters
+    ----------
+    loc: dict
+        Dictionary with all input arguments. Should be locals().
+    ra_name: str
+        Name of RA in args.
+    is_array: bool
+        Accepts array as input.
+    """
+    v_type = "float_array" if is_array else (float, str)
+    validate_argument(loc, ra_name, v_type, argmin=-360, eqmin=True, argmax=360, eqmax=True)
+
+def _validate_dec(loc, dec_name, is_array):
+    r"""Validate DEC type and raise errors.
+
+    Parameters
+    ----------
+    loc: dict
+        Dictionary with all input arguments. Should be locals().
+    dec_name: str
+        Name of DEC in args.
+    is_array: bool
+        Accepts array as input.
+    """
+    v_type = "float_array" if is_array else (float, str)
+    validate_argument(loc, dec_name, v_type, argmin=-90, eqmin=True, argmax=90, eqmax=True)
