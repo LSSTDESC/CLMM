@@ -2,20 +2,17 @@
 Modeling using CCL
 """
 # Functions to model halo profiles
+import numpy as np
 
 import pyccl as ccl
 
-import numpy as np
 from scipy.interpolate import interp1d
 from packaging.version import parse
 
 from . import func_layer
 from .func_layer import *
-
 from .parent_class import CLMModeling
-
 from ..utils import _patch_rho_crit_to_cd2018
-
 from ..cosmology.ccl import CCLCosmology
 
 Cosmology = CCLCosmology

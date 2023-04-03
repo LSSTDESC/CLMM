@@ -8,11 +8,8 @@ import cluster_toolkit as ct
 
 from . import func_layer
 from .func_layer import *
-
 from .parent_class import CLMModeling
-
 from ..utils import _patch_rho_crit_to_cd2018
-
 from ..cosmology.cluster_toolkit import AstroPyCosmology
 
 Cosmology = AstroPyCosmology
@@ -65,6 +62,7 @@ class CTModeling(CLMModeling):
         Dictionary with the definitions for profile
     """
     # pylint: disable=too-many-instance-attributes
+    # pylint: disable=abstract-method
 
     def __init__(
         self,

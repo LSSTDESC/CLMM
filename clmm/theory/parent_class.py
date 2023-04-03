@@ -1,9 +1,9 @@
 """@file parent_class.py
 CLMModeling abstract class
 """
+# pylint: disable=too-many-lines
 import warnings
 
-warnings.filterwarnings("always", module="(clmm).*")
 import numpy as np
 
 # functions for the 2h term
@@ -27,6 +27,8 @@ from ..utils import (
     compute_for_good_redshifts,
 )
 
+
+warnings.filterwarnings("always", module="(clmm).*")
 
 class CLMModeling:
     r"""Object with functions for halo mass modeling
@@ -76,7 +78,7 @@ class CLMModeling:
         self.hdpm_dict = {}
 
         self.validate_input = validate_input
-        self.cosmo_class = None
+        self.cosmo_class = lambda *args: None
 
         self.z_inf = z_inf
 
@@ -84,36 +86,44 @@ class CLMModeling:
 
     @property
     def mdelta(self):
+        """Mass of cluster"""
         return self._get_mass()
 
     @property
     def cdelta(self):
+        """Concentration of cluster"""
         return self._get_concentration()
 
     @property
     def massdef(self):
+        """Definition for the mass of cluster"""
         return self.__massdef
 
     @property
     def delta_mdef(self):
+        """Number of deltas in mass definition of cluster"""
         return self.__delta_mdef
 
     @property
     def halo_profile_model(self):
+        """Halo profile model"""
         return self.__halo_profile_model
 
     # 1.a Object properties setter
 
     @mdelta.setter
     def mdelta(self, mdelta):
+        """Set mass of cluster"""
         self.set_mass(mdelta)
 
     @cdelta.setter
     def cdelta(self, cdelta):
+        """Set concentration of cluster"""
         self.set_concentration(cdelta)
 
     @massdef.setter
     def massdef(self, massdef):
+        """Set definition for the mass of cluster"""
         self.set_halo_density_profile(
             halo_profile_model=self.halo_profile_model,
             massdef=massdef,
@@ -122,6 +132,7 @@ class CLMModeling:
 
     @delta_mdef.setter
     def delta_mdef(self, delta_mdef):
+        """Set number of deltas in mass definition of cluster"""
         self.set_halo_density_profile(
             halo_profile_model=self.halo_profile_model,
             massdef=self.massdef,
@@ -130,6 +141,7 @@ class CLMModeling:
 
     @halo_profile_model.setter
     def halo_profile_model(self, halo_profile_model):
+        """Set halo profile model"""
         self.set_halo_density_profile(
             halo_profile_model=halo_profile_model,
             massdef=self.massdef,
@@ -327,7 +339,7 @@ class CLMModeling:
             CLMM Cosmology object. If is None, creates a new instance of self.cosmo_class().
         """
         if self.validate_input:
-            if self.cosmo_class is None:
+            if self.cosmo_class() is None:
                 raise NotImplementedError
             validate_argument(locals(), "cosmo", self.cosmo_class, none_ok=True)
         self._set_cosmo(cosmo)
@@ -441,8 +453,8 @@ class CLMModeling:
         This comes from the maximum likelihood estimator for evaluating a
         :math:`\Delta\Sigma` profile.
 
-        For the standard :math:`\Sigma_{\rm crit}(z)` definition, use the `eval_sigma_crit` method of
-        the CLMM cosmology object.
+        For the standard :math:`\Sigma_{\rm crit}(z)` definition, use the `eval_sigma_crit` method
+        of the CLMM cosmology object.
 
         Parameters
         ----------
@@ -980,27 +992,33 @@ class CLMModeling:
         array_like
             Function averaged by pdz, with r_proj dimention.
         """
-        tfunc = lambda z, r: compute_beta_s_func(
-            z,
-            z_cl,
-            self.z_inf,
-            self.cosmo,
-            self._eval_tangential_shear_core,
-            r,
-            z_cl,
-            self.z_inf,
-        )
-        kfunc = lambda z, r: compute_beta_s_func(
-            z,
-            z_cl,
-            self.z_inf,
-            self.cosmo,
-            self._eval_convergence_core,
-            r,
-            z_cl,
-            self.z_inf,
-        )
-        __integrand__ = lambda z, r: pdz_func(z) * core(tfunc(z, r), kfunc(z, r))
+
+        def tfunc(z, r):
+            return compute_beta_s_func(
+                z,
+                z_cl,
+                self.z_inf,
+                self.cosmo,
+                self._eval_tangential_shear_core,
+                r,
+                z_cl,
+                self.z_inf,
+            )
+
+        def kfunc(z, r):
+            return compute_beta_s_func(
+                z,
+                z_cl,
+                self.z_inf,
+                self.cosmo,
+                self._eval_convergence_core,
+                r,
+                z_cl,
+                self.z_inf,
+            )
+
+        def __integrand__(z, r):
+            return pdz_func(z) * core(tfunc(z, r), kfunc(z, r))
 
         _integ_kwargs = {"zmax": 10.0, "delta_z_cut": 0.1}
         _integ_kwargs.update({} if integ_kwargs is None else integ_kwargs)
@@ -1133,8 +1151,13 @@ class CLMModeling:
 
         if approx is None:
             if z_src_info == "distribution":
-                core = lambda gammat, kappa: gammat / (1 - kappa)
-                gt = self._pdz_weighted_avg(core, z_src, r_proj, z_cl, integ_kwargs=beta_kwargs)
+                gt = self._pdz_weighted_avg(
+                    lambda gammat, kappa: gammat / (1 - kappa),
+                    z_src,
+                    r_proj,
+                    z_cl,
+                    integ_kwargs=beta_kwargs,
+                )
             elif z_src_info == "discrete":
                 warning_msg = (
                     "\nSome source redshifts are lower than the cluster redshift."
@@ -1299,8 +1322,13 @@ class CLMModeling:
 
         if approx is None:
             if z_src_info == "distribution":
-                core = lambda gammat, kappa: 1 / ((1 - kappa) ** 2 - gammat**2)
-                mu = self._pdz_weighted_avg(core, z_src, r_proj, z_cl, integ_kwargs=beta_kwargs)
+                mu = self._pdz_weighted_avg(
+                    lambda gammat, kappa: 1 / ((1 - kappa) ** 2 - gammat**2),
+                    z_src,
+                    r_proj,
+                    z_cl,
+                    integ_kwargs=beta_kwargs,
+                )
             elif z_src_info == "discrete":
                 warning_msg = (
                     "\nSome source redshifts are lower than the cluster redshift."
@@ -1471,9 +1499,12 @@ class CLMModeling:
         if approx is None:
             # z_src (float or array) is redshift
             if z_src_info == "distribution":
-                core = lambda gammat, kappa: 1 / ((1 - kappa) ** 2 - gammat**2) ** (alpha - 1)
                 mu_bias = self._pdz_weighted_avg(
-                    core, z_src, r_proj, z_cl, integ_kwargs=beta_kwargs
+                    lambda gammat, kappa: 1 / ((1 - kappa) ** 2 - gammat**2) ** (alpha - 1),
+                    z_src,
+                    r_proj,
+                    z_cl,
+                    integ_kwargs=beta_kwargs,
                 )
             elif z_src_info == "discrete":
                 warning_msg = (

@@ -172,6 +172,7 @@ def compute_profile_mass_in_radius(
     array_like, float
         Mass in units of :math:`M_\odot`
     """
+    # pylint: disable=unnecessary-lambda-assignment
     rdelta = compute_rdelta(mdelta, redshift, cosmo, massdef, delta_mdef)
     # Check halo_profile_model
     if halo_profile_model == "nfw":
@@ -186,8 +187,8 @@ def compute_profile_mass_in_radius(
         raise ValueError(
             f"halo_profile_model=(={halo_profile_model=}) must be " "nfw, einasto, or hernquist!"
         )
-    x = np.array(r3d) / (rdelta / cdelta)
-    return mdelta * prof_integ(x) / prof_integ(cdelta)
+    r3d_norm = np.array(r3d) / (rdelta / cdelta)
+    return mdelta * prof_integ(r3d_norm) / prof_integ(cdelta)
 
 
 def convert_profile_mass_concentration(
@@ -241,6 +242,7 @@ def convert_profile_mass_concentration(
     HaloProfile:
         HaloProfile object
     """
+    # pylint: disable=unused-argument
     rdelta = compute_rdelta(mdelta, redshift, cosmo, massdef, delta_mdef)
     # Prep other args
     loc, keys = locals(), ("massdef", "delta_mdef", "halo_profile_model", "alpha")
@@ -248,7 +250,7 @@ def convert_profile_mass_concentration(
     kwargs2 = {key: (loc[key] if loc[f"{key}2"] is None else loc[f"{key}2"]) for key in keys}
 
     # Eq. to solve
-    def f(params):
+    def delta_mass(params):
         mdelta2, cdelta2 = params
         rdelta2 = compute_rdelta(
             mdelta2, redshift, cosmo, kwargs2["massdef"], kwargs2["delta_mdef"]
@@ -262,7 +264,7 @@ def convert_profile_mass_concentration(
         return mdelta - mdelta2_rad1, mdelta2 - mdelta1_rad2
 
     # Iterate 2 times:
-    mdelta2, cdelta2 = fsolve(func=f, x0=[mdelta, cdelta])
-    mdelta2, cdelta2 = fsolve(func=f, x0=[mdelta2, cdelta2])
+    mdelta2, cdelta2 = fsolve(func=delta_mass, x0=[mdelta, cdelta])
+    mdelta2, cdelta2 = fsolve(func=delta_mass, x0=[mdelta2, cdelta2])
 
     return mdelta2, cdelta2

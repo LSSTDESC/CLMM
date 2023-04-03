@@ -13,9 +13,7 @@ gi.require_version("NumCosmoMath", "1.0")
 
 from .func_layer import *
 from . import func_layer
-
 from .parent_class import CLMModeling
-
 from ..cosmology.numcosmo import NumCosmoCosmology
 
 Cosmology = NumCosmoCosmology
