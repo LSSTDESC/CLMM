@@ -13,7 +13,7 @@ def compute_nfw_boost(rvals, rscale=1000, boost0=0.1):
     """Given a list of `rvals`, and optional `rscale` and `boost0`, return the corresponding boost factor
     at each rval
 
-    Parameterscale
+    Parameters
     ----------
     rvals : array_like
         Radii
@@ -50,7 +50,7 @@ def compute_powerlaw_boost(rvals, rscale=1000, boost0=0.1, alpha=-1.0):
     """Given a list of `rvals`, and optional `rscale` and `boost0`, and `alpha`,
     return the corresponding boost factor at each `rval`
 
-    Parameterscale
+    Parameters
     ----------
     rvals : array_like
         Radii
