@@ -31,8 +31,7 @@ def _functional_form(redshift, alpha, beta, redshift0, is_cdf=False):
             / beta
             * gamma((alpha + 1) / beta)
         )
-    else:
-        return (redshift**alpha) * np.exp(-((redshift / redshift0) ** beta))
+    return (redshift**alpha) * np.exp(-((redshift / redshift0) ** beta))
 
 
 def chang2013(redshift, is_cdf=False):
