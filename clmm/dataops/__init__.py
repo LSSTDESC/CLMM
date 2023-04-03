@@ -8,7 +8,7 @@ from astropy import units as u
 from .. gcdata import GCData
 from .. utils import (compute_radial_averages, make_bins, convert_units,
                       arguments_consistency, validate_argument, _integ_pzfuncs)
-from .. theory import compute_critical_surface_density, compute_critical_surface_density_eff
+from .. theory import compute_critical_surface_density_eff
 
 
 def compute_tangential_and_cross_components(
@@ -59,7 +59,7 @@ def compute_tangential_and_cross_components(
     excess surface density :math:`\widehat{\Delta\Sigma}` is obtained from
 
     .. math::
-        \widehat{\Delta\Sigma_{t,x}} = g_{t,x} \times \Sigma_c(cosmo, z_L, z_{\text{src}})
+        \widehat{\Delta\Sigma_{t,x}} = g_{t,x} \times \Sigma_c(cosmo, z_l, z_{\text{src}})
 
     where :math:`\Sigma_c` is the critical surface density that depends on the cosmology and on
     the lens and source redshifts. If :math:`g_{t,x}` correspond to the shear, the above
@@ -171,7 +171,7 @@ def compute_tangential_and_cross_components(
                     'To compute DeltaSigma, please provide a '
                     'i) cosmology, ii) redshift of lens and sources')
 
-            sigma_c = compute_critical_surface_density(cosmo, z_lens, z_source=z_source)
+            sigma_c = cosmo.eval_sigma_crit(z_lens, z_source)  
 
         elif sigma_c is None:
             # Need to verify that cosmology, lens redshift, source redshift bins and
@@ -252,7 +252,7 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, use_pdz=False, pzpdf=No
             w_{ls, \text{geo}} = \left[\int_{\delta + z_l} dz_s p_{\text{photoz}}(z_s)
             \Sigma_c(\text{cosmo}, z_l, z_s)^{-1}\right]^2
 
-        for the tangential shear, the weights 'w_{ls, \text{geo}}` are 1.
+        for the tangential shear, the weights :math:`w_{ls, \text{geo}}` are 1.
 
     2. The shape weight :math:`w_{ls,{\text{shape}}}` depends on shapenoise and/or shape
     measurement errors
@@ -344,7 +344,7 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, use_pdz=False, pzpdf=No
                 raise TypeError(
                     'To compute DeltaSigma, please provide a '
                     'i) cosmology, ii) redshift of lens and sources')
-            sigma_c = compute_critical_surface_density(cosmo, z_lens, z_source=z_source)
+            sigma_c = cosmo.eval_sigma_crit(z_lens, z_source)
         elif sigma_c is None:
             # Need to verify that cosmology, lens redshift, source redshift bins and
             # source redshift pdf are provided
@@ -361,13 +361,14 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, use_pdz=False, pzpdf=No
 
     #computing w_ls_shape
     if not use_pdz:
-        err_e2 = np.zeros(len(z_source))
+        ngals = len(z_source)
     else:
-        err_e2 = np.zeros(len(pzpdf))
+        ngals = len(pzpdf)
+    err_e2 = np.zeros(ngals)
 
     if use_shape_noise:
         if shape_component1 is None or shape_component2 is None:
-            raise ValueError('With the shape noise option, the source shapes'
+            raise ValueError('With the shape noise option, the source shapes '
                              '`shape_component_{1,2}` must be specified')
         err_e2 += np.std(shape_component1)**2 + np.std(shape_component2)**2
     if use_shape_error:
@@ -376,7 +377,7 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, use_pdz=False, pzpdf=No
                              '`shape_component_err{1,2}` must be specified')
         err_e2 += shape_component1_err**2
         err_e2 += shape_component2_err**2
-    w_ls_shape = np.ones(len(shape_component1))
+    w_ls_shape = np.ones(ngals)
     w_ls_shape[err_e2>0] = 1./err_e2[err_e2>0]
 
     w_ls = w_ls_shape * w_ls_geo
@@ -564,7 +565,7 @@ def make_radial_profile(components, angsep, angsep_units, bin_units,
     -------
     profile : GCData
         Output table containing the radius grid points, the profile of the components `p_i`,
-        errors `p_i_err` and number of sources.  The errors are defined as the standard errors in
+        errors `p_i_err` and number of sources. The errors are defined as the standard errors in
         each bin.
     binnumber: 1-D ndarray of ints, optional
         Indices of the bins (corresponding to `xbins`) in which each value
@@ -604,13 +605,15 @@ def make_radial_profile(components, angsep, angsep_units, bin_units,
                            )
     # Compute the binned averages and associated errors
     for i, component in enumerate(components):
-        r_avg, comp_avg, comp_err, nsrc, binnumber = compute_radial_averages(
+        r_avg, comp_avg, comp_err, nsrc, binnumber, wts_sum = compute_radial_averages(
             source_seps, component, xbins=bins,
-            yerr=None if components_error is None else components_error[i], weights=weights)
+            yerr=None if components_error is None else components_error[i],
+            weights=weights)
         profile_table[f'p_{i}'] = comp_avg
         profile_table[f'p_{i}_err'] = comp_err
     profile_table['radius'] = r_avg
     profile_table['n_src'] = nsrc
+    profile_table['weights_sum'] = wts_sum
     # return empty bins?
     if not include_empty_bins:
         profile_table = profile_table[nsrc > 1]
