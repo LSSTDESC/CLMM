@@ -129,8 +129,8 @@ class NumCosmoCosmology(CLMMCosmology):
         self._get_E2 = np.vectorize(self.be_cosmo.E2)
         self._get_E2Omega_m = np.vectorize(self.be_cosmo.E2Omega_m)
         self._eval_da_z1z2_core = np.vectorize(
-            lambda *args: (
-                self.dist.angular_diameter_z1_z2(self.be_cosmo, *args)
+            lambda z1, z2: (
+                self.dist.angular_diameter_z1_z2(self.be_cosmo, z1, z2)
                 *self.be_cosmo.RH_Mpc()))
         self._eval_sigma_crit_core = np.vectorize(
             lambda z_len, z_src: (self.smd.sigma_critical(
