@@ -76,9 +76,9 @@ def test_update_cosmo():
 
     gcdata = GCData()
     gcdata.update_cosmo(cosmo1)
-    assert_raises(TypeError, gcdata.update_cosmo_ext_valid,
+    assert_raises(ValueError, gcdata.update_cosmo_ext_valid,
                   gcdata, cosmo2, overwrite=False)
-    assert_raises(TypeError, gcdata.update_cosmo_ext_valid, gcdata, cosmo2)
+    assert_raises(ValueError, gcdata.update_cosmo_ext_valid, gcdata, cosmo2)
 
     gcdata = GCData()
     gcdata.update_cosmo(cosmo1)
@@ -92,8 +92,8 @@ def test_update_cosmo():
 
     gcdata = GCData()
     gcdata.update_cosmo(cosmo1)
-    assert_raises(TypeError, gcdata.update_cosmo, cosmo2, overwrite=False)
-    assert_raises(TypeError, gcdata.update_cosmo, cosmo2)
+    assert_raises(ValueError, gcdata.update_cosmo, cosmo2, overwrite=False)
+    assert_raises(ValueError, gcdata.update_cosmo, cosmo2)
 
     # Test casing for colnames and meta
     gcdata = GCData()

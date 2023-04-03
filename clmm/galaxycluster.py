@@ -6,7 +6,7 @@ import warnings
 from .gcdata import GCData
 from .dataops import (compute_tangential_and_cross_components, make_radial_profile,
                       compute_galaxy_weights, compute_background_probability)
-from .theory import compute_critical_surface_density, compute_critical_surface_density_eff
+from .theory import compute_critical_surface_density_eff
 from .plotting import plot_profiles
 from .utils import validate_argument, _draw_random_points_from_tab_distribution
 
@@ -138,9 +138,7 @@ class GalaxyCluster():
 
             self.galcat.update_cosmo(cosmo, overwrite=True)
             if use_pdz is False:
-                self.galcat['sigma_c'] = compute_critical_surface_density(
-                    cosmo=cosmo, z_cluster=self.z, z_source=self.galcat['z'],
-                    validate_input=self.validate_input)
+                self.galcat['sigma_c'] = cosmo.eval_sigma_crit(self.z, self.galcat['z'])
                 self.galcat.meta['sigmac_type']= 'standard'
             else:
                 zdata = self._get_input_galdata({'pzpdf':'pzpdf', 'pzbins':'pzbins'})
@@ -400,7 +398,7 @@ class GalaxyCluster():
                             tan_component_in_err=None, cross_component_in_err=None,
                             include_empty_bins=False, gal_ids_in_bins=False,
                             add=True, table_name='profile', overwrite=True,
-                            use_weights=False, weights_name='w_ls'):
+                            use_weights=False, weights_in='w_ls', weights_out='W_l'):
         r"""Compute the shear or ellipticity profile of the cluster
 
         We assume that the cluster object contains information on the cross and
@@ -466,9 +464,9 @@ class GalaxyCluster():
             Overwrite profile table.
             Default True
         use_weights: bool, optional
-            If True, use the column `weights_name` in `galcat` as the weights
+            If True, use the column `weights_in` in `galcat` as the weights
             Default: False
-        weights_name: str, optional
+        weights_in: str, optional
             Name of the weights column in `galcat`
             Default: 'w_ls'
 
@@ -499,12 +497,14 @@ class GalaxyCluster():
             cosmo=cosmo, z_lens=self.z, validate_input=self.validate_input,
             components_error=[None if n is None else self.galcat[n].data
                               for n in (tan_component_in_err, cross_component_in_err, None)],
-            weights=self.galcat[weights_name].data if use_weights else None
+            weights=self.galcat[weights_in].data if use_weights else None
             )
         # Reaname table columns
         for i, name in enumerate([tan_component_out, cross_component_out, 'z']):
             profile_table.rename_column(f'p_{i}', name)
             profile_table.rename_column(f'p_{i}_err', f'{name}_err')
+        # Reaname weights columns
+        profile_table.rename_column('weights_sum', weights_out)
         # add galaxy IDs
         if gal_ids_in_bins:
             if 'id' not in self.galcat.columns:
