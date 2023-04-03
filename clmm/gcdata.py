@@ -227,12 +227,11 @@ class GCData(APtable):
         pzpdf_type = self.pzpdf_info["type"]
         if pzpdf_type is None:
             return False
-        elif pzpdf_type == "shared_bins":
+        if pzpdf_type == "shared_bins":
             return ("zbins" in self.pzpdf_info) and ("pzpdf" in self.columns)
-        elif pzpdf_type == "individual_bins":
+        if pzpdf_type == "individual_bins":
             return ("pzbins" in self.columns) and ("pzpdf" in self.columns)
-        else:
-            raise NotImplementedError(f"PDF use '{pzpdf_type}' not implemented.")
+        raise NotImplementedError(f"PDF use '{pzpdf_type}' not implemented.")
 
     def get_pzpdfs(self):
         """Get pzbins and pzpdfs of galaxies
@@ -248,7 +247,7 @@ class GCData(APtable):
         pzpdf_type = self.pzpdf_info["type"]
         if pzpdf_type is None:
             raise ValueError("No PDF information stored!")
-        elif pzpdf_type == "shared_bins":
+        if pzpdf_type == "shared_bins":
             pzbins = self.pzpdf_info["zbins"]
         elif pzpdf_type == "individual_bins":
             pzbins = self["pzbins"]
