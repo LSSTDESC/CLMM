@@ -258,6 +258,7 @@ def test_profiles(modeling_data, profile_init):
 
         helper_profiles(theo.compute_3d_density)
         helper_profiles(theo.compute_surface_density)
+        helper_profiles(theo.compute_mean_surface_density)
         helper_profiles(theo.compute_excess_surface_density)
 
         if profile_init == 'nfw':
@@ -291,6 +292,10 @@ def test_profiles(modeling_data, profile_init):
                                      cfg['SIGMA_PARAMS']['z_cl'], verbose=True),
             cfg['numcosmo_profiles']['Sigma'], reltol)
         assert_allclose(
+            mod.eval_mean_surface_density(cfg['SIGMA_PARAMS']['r_proj'],
+                                          cfg['SIGMA_PARAMS']['z_cl'], verbose=True),
+            cfg['numcosmo_profiles']['Sigma']+cfg['numcosmo_profiles']['DeltaSigma'], reltol)
+        assert_allclose(
             mod.eval_excess_surface_density(cfg['SIGMA_PARAMS']['r_proj'],
                                             cfg['SIGMA_PARAMS']['z_cl'], verbose=True),
             cfg['numcosmo_profiles']['DeltaSigma'], reltol)
@@ -299,16 +304,23 @@ def test_profiles(modeling_data, profile_init):
                           1e-12, cfg['SIGMA_PARAMS']['z_cl'])
 
         # Functional interface tests
-        # alpha_ein is None unless testing Einasto with the NC backend
-        assert_allclose(theo.compute_3d_density(cosmo=cosmo, **cfg['RHO_PARAMS'],
+        # alpha_ein is None unless testing Einasto with the NC and CCL backend
+        assert_allclose(
+            theo.compute_3d_density(cosmo=cosmo, **cfg['RHO_PARAMS'],
+                                    alpha_ein=alpha_ein, verbose=True),
+            cfg['numcosmo_profiles']['rho'], reltol)
+        assert_allclose(
+            theo.compute_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS'],
+                                         alpha_ein=alpha_ein, verbose=True),
+            cfg['numcosmo_profiles']['Sigma'], reltol)
+        assert_allclose(
+            theo.compute_mean_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS'],
+                                              alpha_ein=alpha_ein, verbose=True),
+            cfg['numcosmo_profiles']['Sigma']+cfg['numcosmo_profiles']['DeltaSigma'], reltol)
+        assert_allclose(
+            theo.compute_excess_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS'],
                                                 alpha_ein=alpha_ein, verbose=True),
-                        cfg['numcosmo_profiles']['rho'], reltol)
-        assert_allclose(theo.compute_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS'],
-                                                     alpha_ein=alpha_ein, verbose=True),
-                        cfg['numcosmo_profiles']['Sigma'], reltol)
-        assert_allclose(theo.compute_excess_surface_density(cosmo=cosmo, **cfg['SIGMA_PARAMS'],
-                                                            alpha_ein=alpha_ein, verbose=True),
-                        cfg['numcosmo_profiles']['DeltaSigma'], reltol)
+            cfg['numcosmo_profiles']['DeltaSigma'], reltol)
 
 def test_2halo_term(modeling_data):
 

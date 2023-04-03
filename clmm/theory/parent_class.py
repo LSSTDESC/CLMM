@@ -1,6 +1,8 @@
 """@file parent_class.py
 CLMModeling abstract class
 """
+import warnings
+warnings.filterwarnings("always", module='(clmm).*')
 import numpy as np
 
 # functions for the 2h term
@@ -13,7 +15,7 @@ from .generic import (compute_reduced_shear_from_convergence,
                       compute_rdelta, compute_profile_mass_in_radius,
                       convert_profile_mass_concentration)
 from ..utils import (validate_argument, _integ_pzfuncs, compute_beta_s_mean,
-                     compute_beta_s_square_mean, compute_beta_s_func)
+                     compute_beta_s_square_mean, compute_beta_s_func, compute_for_good_redshifts)
 
 
 class CLMModeling:
@@ -235,27 +237,27 @@ class CLMModeling:
     # 3.1. All these functions are for the single plane case
 
 
-    def _eval_tangential_shear(self, r_proj, z_cl, z_src):
+    def _eval_tangential_shear_core(self, r_proj, z_cl, z_src):
         delta_sigma = self.eval_excess_surface_density(r_proj, z_cl)
         sigma_c = self.cosmo.eval_sigma_crit(z_cl, z_src)
         return delta_sigma/sigma_c
 
-    def _eval_convergence(self, r_proj, z_cl, z_src, verbose=False):
-        sigma = self.eval_surface_density(r_proj, z_cl, verbose=verbose)
+    def _eval_convergence_core(self, r_proj, z_cl, z_src):
+        sigma = self.eval_surface_density(r_proj, z_cl)
         sigma_c = self.cosmo.eval_sigma_crit(z_cl, z_src)
         return sigma/sigma_c
 
-    def _eval_reduced_tangential_shear(self, r_proj, z_cl, z_src):
+    def _eval_reduced_tangential_shear_core(self, r_proj, z_cl, z_src):
         kappa = self.eval_convergence(r_proj, z_cl, z_src)
         gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
         return compute_reduced_shear_from_convergence(gamma_t, kappa)
 
-    def _eval_magnification(self, r_proj, z_cl, z_src):
+    def _eval_magnification_core(self, r_proj, z_cl, z_src):
         kappa = self.eval_convergence(r_proj, z_cl, z_src)
         gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
         return 1./((1-kappa)**2-abs(gamma_t)**2)
 
-    def _eval_magnification_bias(self, r_proj, z_cl, z_src, alpha):
+    def _eval_magnification_bias_core(self, r_proj, z_cl, z_src, alpha):
         magnification = self.eval_magnification(r_proj, z_cl, z_src)
         return compute_magnification_bias_from_magnification(magnification, alpha)
 
@@ -393,7 +395,7 @@ class CLMModeling:
 
         Returns
         -------
-        array_like, float
+        numpy.ndarray, float
             3-dimensional mass density in units of :math:`M_\odot\ Mpc^{-3}`
         """
         if self.validate_input:
@@ -434,10 +436,10 @@ class CLMModeling:
 
         Returns
         -------
-        sigma_c : array_like, float
+        sigma_c : numpy.ndarray, float
             Cosmology-dependent effective critical surface density in units of
             :math:`M_\odot\ Mpc^{-2}`
-    """
+        """
 
         if self.validate_input:
             validate_argument(locals(), 'z_len', float, argmin=0)
@@ -459,7 +461,7 @@ class CLMModeling:
 
         Returns
         -------
-        array_like, float
+        numpy.ndarray, float
             2D projected surface density in units of :math:`M_\odot\ Mpc^{-2}`
         """
         if self.validate_input:
@@ -472,7 +474,7 @@ class CLMModeling:
         return self._eval_surface_density(r_proj=r_proj, z_cl=z_cl)
 
     def eval_mean_surface_density(self, r_proj, z_cl, verbose=False):
-        r""" Computes the mean value of surface density inside radius r_proj
+        r""" Computes the mean value of surface density inside radius `r_proj`
 
         Parameters
         ----------
@@ -483,7 +485,7 @@ class CLMModeling:
 
         Returns
         -------
-        array_like, float
+        numpy.ndarray, float
             Excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
         """
         if self.validate_input:
@@ -507,7 +509,7 @@ class CLMModeling:
 
         Returns
         -------
-        array_like, float
+        numpy.ndarray, float
             Excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
         """
         if self.validate_input:
@@ -520,7 +522,7 @@ class CLMModeling:
         return self._eval_excess_surface_density(r_proj=r_proj, z_cl=z_cl)
 
     def eval_excess_surface_density_2h(self, r_proj, z_cl, halobias=1., lsteps=500):
-        r""" Computes the 2-halo term excess surface density (CCL backend only)
+        r""" Computes the 2-halo term excess surface density (CCL and NC backends only)
 
         Parameters
         ----------
@@ -535,7 +537,7 @@ class CLMModeling:
 
         Returns
         -------
-        array_like, float
+        numpy.ndarray, float
             Excess surface density from the 2-halo term in units of :math:`M_\odot\ Mpc^{-2}`.
         """
 
@@ -554,7 +556,7 @@ class CLMModeling:
                 r_proj, z_cl, halobias=halobias, lsteps=lsteps)
 
     def eval_surface_density_2h(self, r_proj, z_cl, halobias=1., lsteps=500):
-        r""" Computes the 2-halo term surface density (CCL backend only)
+        r""" Computes the 2-halo term surface density (CCL and NC backends only)
 
         Parameters
         ----------
@@ -569,7 +571,7 @@ class CLMModeling:
 
         Returns
         -------
-        array_like, float
+        numpy.ndarray, float
             Excess surface density from the 2-halo term in units of :math:`M_\odot\ Mpc^{-2}`.
         """
 
@@ -765,7 +767,7 @@ class CLMModeling:
 
         Returns
         -------
-        array_like, float
+        numpy.ndarray, float
             tangential shear
         """
         if self.validate_input:
@@ -778,12 +780,17 @@ class CLMModeling:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
         if z_src_info=='discrete':
-            gammat = self._eval_tangential_shear(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
+            warning_msg = '\nSome source redshifts are lower than the cluster redshift.'+\
+            '\nShear = 0 for those galaxies.'
+            gammat = compute_for_good_redshifts(self._eval_tangential_shear_core,
+                                                z_cl, z_src, 0., warning_msg,
+                                                'z_cl', 'z_src', r_proj)
         elif z_src_info in ('distribution', 'beta'):
             beta_s_mean = self._get_beta_s_mean(
                 z_cl, z_src, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
 
-            gammat_inf = self._eval_tangential_shear(r_proj=r_proj, z_cl=z_cl, z_src=self.z_inf)
+            gammat_inf = self._eval_tangential_shear_core(r_proj=r_proj,
+                                                          z_cl=z_cl, z_src=self.z_inf)
 
             gammat = beta_s_mean * gammat_inf
         else:
@@ -855,7 +862,7 @@ class CLMModeling:
 
         Returns
         -------
-        array_like, float
+        numpy.ndarray, float
             Mass convergence, kappa.
         """
         if self.validate_input:
@@ -868,12 +875,16 @@ class CLMModeling:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
         if z_src_info=='discrete':
-            kappa = self._eval_convergence(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
+            warning_msg = '\nSome source redshifts are lower than the cluster redshift.'+\
+            '\nConvergence = 0 for those galaxies.'
+            kappa = compute_for_good_redshifts(self._eval_convergence_core,
+                                               z_cl, z_src, 0., warning_msg,
+                                               'z_cl', 'z_src', r_proj)
         elif z_src_info in ('distribution', 'beta'):
             beta_s_mean = self._get_beta_s_mean(
                 z_cl, z_src, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
 
-            kappa_inf = self._eval_convergence(r_proj=r_proj, z_cl=z_cl, z_src=self.z_inf)
+            kappa_inf = self._eval_convergence_core(r_proj=r_proj, z_cl=z_cl, z_src=self.z_inf)
 
             kappa = beta_s_mean * kappa_inf
         else:
@@ -910,9 +921,10 @@ class CLMModeling:
             Function averaged by pdz, with r_proj dimention.
         """
         tfunc = lambda z, r: compute_beta_s_func(
-            z, z_cl, self.z_inf, self.cosmo, self._eval_tangential_shear, r, z_cl, self.z_inf)
+            z, z_cl, self.z_inf, self.cosmo,
+            self._eval_tangential_shear_core, r, z_cl, self.z_inf)
         kfunc = lambda z, r: compute_beta_s_func(
-            z, z_cl, self.z_inf, self.cosmo, self._eval_convergence, r, z_cl, self.z_inf)
+            z, z_cl, self.z_inf, self.cosmo, self._eval_convergence_core, r, z_cl, self.z_inf)
         __integrand__ = lambda z, r: pdz_func(z)*core(tfunc(z, r), kfunc(z, r))
 
         _integ_kwargs = {'zmax': 10.0, 'delta_z_cut': 0.1}
@@ -1019,7 +1031,7 @@ class CLMModeling:
 
         Returns
         -------
-        gt : array_like, float
+        gt : numpy.ndarray, float
             Reduced tangential shear
 
         Notes
@@ -1042,7 +1054,11 @@ class CLMModeling:
                 gt = self._pdz_weighted_avg(core, z_src, r_proj, z_cl,
                                             integ_kwargs=beta_kwargs)
             elif z_src_info=='discrete':
-                gt = self._eval_reduced_tangential_shear(r_proj, z_cl, z_src)
+                warning_msg = '\nSome source redshifts are lower than the cluster redshift.'+\
+                '\nReduced_shear = 0 for those galaxies.'
+                gt = compute_for_good_redshifts(self._eval_reduced_tangential_shear_core,
+                                                z_cl, z_src, 0., warning_msg,
+                                                'z_cl', 'z_src', r_proj)
             else:
                 raise ValueError(
                     "approx=None requires z_src_info='discrete' or 'distribution',"
@@ -1052,8 +1068,8 @@ class CLMModeling:
             beta_s_mean = self._get_beta_s_mean(
                 z_cl, z_src, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
 
-            gammat_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=self.z_inf)
-            kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=self.z_inf)
+            gammat_inf = self._eval_tangential_shear_core(r_proj, z_cl, z_src=self.z_inf)
+            kappa_inf = self._eval_convergence_core(r_proj, z_cl, z_src=self.z_inf)
 
             gt = beta_s_mean * gammat_inf / (1. - beta_s_mean * kappa_inf)
 
@@ -1161,7 +1177,7 @@ class CLMModeling:
 
         Returns
         -------
-        mu : array_like, float
+        mu : numpy.ndarray, float
             magnification, mu.
 
         """
@@ -1181,7 +1197,11 @@ class CLMModeling:
                 mu = self._pdz_weighted_avg(core, z_src, r_proj, z_cl,
                                             integ_kwargs=beta_kwargs)
             elif z_src_info=='discrete':
-                mu = self._eval_magnification(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
+                warning_msg = '\nSome source redshifts are lower than the cluster redshift.'+\
+                '\nMagnification = 1 for those galaxies.'
+                mu = compute_for_good_redshifts(self._eval_magnification_core,
+                                                z_cl, z_src, 1., warning_msg,
+                                                'z_cl', 'z_src', r_proj)
             else:
                 raise ValueError(
                     "approx=None requires z_src_info='discrete' or 'distribution',"
@@ -1191,8 +1211,8 @@ class CLMModeling:
             beta_s_mean = self._get_beta_s_mean(
                 z_cl, z_src, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
 
-            kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=self.z_inf)
-            gammat_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=self.z_inf)
+            kappa_inf = self._eval_convergence_core(r_proj, z_cl, z_src=self.z_inf)
+            gammat_inf = self._eval_tangential_shear_core(r_proj, z_cl, z_src=self.z_inf)
 
             mu = 1 + 2*beta_s_mean*kappa_inf
 
@@ -1307,7 +1327,7 @@ class CLMModeling:
 
         Returns
         -------
-        mu_bias : array_like, float
+        mu_bias : numpy.ndarray, float
             magnification bias.
 
         """
@@ -1329,8 +1349,11 @@ class CLMModeling:
                 mu_bias = self._pdz_weighted_avg(core, z_src, r_proj, z_cl,
                                                  integ_kwargs=beta_kwargs)
             elif z_src_info=='discrete':
-                mu_bias = self._eval_magnification_bias(
-                    r_proj=r_proj, z_cl=z_cl, z_src=z_src, alpha=alpha)
+                warning_msg = '\nSome source redshifts are lower than the cluster redshift.'+\
+                '\nMagnification bias = 1 for those galaxies.'
+                mu_bias = compute_for_good_redshifts(self._eval_magnification_bias_core,
+                                                     z_cl, z_src, 1., warning_msg,
+                                                     'z_cl', 'z_src', r_proj, alpha=alpha)
             else:
                 raise ValueError(
                     "approx=None requires z_src_info='discrete' or 'distribution',"
@@ -1340,8 +1363,8 @@ class CLMModeling:
             beta_s_mean = self._get_beta_s_mean(
                 z_cl, z_src, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
 
-            kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=self.z_inf)
-            gammat_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=self.z_inf)
+            kappa_inf = self._eval_convergence_core(r_proj, z_cl, z_src=self.z_inf)
+            gammat_inf = self._eval_tangential_shear_core(r_proj, z_cl, z_src=self.z_inf)
 
             mu_bias = 1 + (alpha-1)*(2*beta_s_mean*kappa_inf)
 
@@ -1411,7 +1434,7 @@ class CLMModeling:
 
         Returns
         -------
-        array_like, float
+        numpy.ndarray, float
             Mass in units of :math:`M_\odot`
         """
         if self.validate_input:

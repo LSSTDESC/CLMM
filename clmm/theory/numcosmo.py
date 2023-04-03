@@ -115,7 +115,7 @@ class NumCosmoCLMModeling(CLMModeling):
         # Note that z_cl is needed for CCL<2.6 only
         return self.hdpm.props.alpha
 
-    def _eval_reduced_tangential_shear(self, r_proj, z_cl, z_src):
+    def _eval_reduced_tangential_shear_core(self, r_proj, z_cl, z_src):
         """"eval reduced tangential shear considering a single redshift plane
         for background sources"""
 
@@ -150,7 +150,7 @@ class NumCosmoCLMModeling(CLMModeling):
         self._eval_convergence = np.vectorize(
             lambda r_proj, z_cl, z_src: self.cosmo.smd.convergence(
                 self.hdpm, self.cosmo.be_cosmo, r_proj, z_src, z_cl, z_cl))
-        self._eval_magnification = np.vectorize(
+        self._eval_magnification_core = np.vectorize(
             lambda r_proj, z_cl, z_src: self.cosmo.smd.magnification(
                 self.hdpm, self.cosmo.be_cosmo, r_proj, z_src, z_cl, z_cl))
 

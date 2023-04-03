@@ -125,6 +125,35 @@ class GCData(APtable):
             out.pzpdf_info = self.pzpdf_info
         return out
 
+    def update_info_ext_valid(self, key, gcdata, ext_value, overwrite=False):
+        r"""Updates cosmo metadata if the same as in gcdata
+
+        Parameters
+        ----------
+        key: str
+            Name of key to compare and update.
+        gcdata: GCData
+            Table to check if same cosmology.
+        ext_value:
+            Value to be compared to.
+        overwrite: bool
+            Overwrites the current metadata. If false raises Error when values are different.
+
+        Returns
+        -------
+        None
+        """
+        if ext_value:
+            in_value = gcdata.meta[key]
+            if in_value and in_value != ext_value:
+                if overwrite:
+                    warnings.warn(
+                        f"input '{key}' ({ext_value}) overwriting gcdata '{key}' ({in_value})")
+                else:
+                    raise ValueError(
+                        f"input '{key}' ({ext_value}) differs from gcdata '{key}' ({in_value})")
+            self.meta.__setitem__(key, ext_value, force=True)
+
     def update_cosmo_ext_valid(self, gcdata, cosmo, overwrite=False):
         r"""Updates cosmo metadata if the same as in gcdata
 
@@ -143,16 +172,7 @@ class GCData(APtable):
         None
         """
         cosmo_desc = cosmo.get_desc() if cosmo else None
-        if cosmo_desc:
-            cosmo_gcdata = gcdata.meta['cosmo']
-            if cosmo_gcdata and cosmo_gcdata != cosmo_desc:
-                if overwrite:
-                    warnings.warn(
-                        f'input cosmo ({cosmo_desc}) overwriting gcdata cosmo ({cosmo_gcdata})')
-                else:
-                    raise TypeError(
-                        f'input cosmo ({cosmo_desc}) differs from gcdata cosmo ({cosmo_gcdata})')
-            self.meta.__setitem__('cosmo', cosmo_desc, force=True)
+        self.update_info_ext_valid('cosmo', gcdata, cosmo_desc, overwrite=overwrite)
 
     def update_cosmo(self, cosmo, overwrite=False):
         r"""Updates cosmo metadata if not present
