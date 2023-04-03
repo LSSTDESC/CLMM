@@ -1,14 +1,12 @@
 """@file clusterensemble.py
 The Cluster Ensemble class
 """
-import numpy as np
-from scipy.stats import binned_statistic
-import healpy
 import pickle
+import numpy as np
+import healpy
 
 from .gcdata import GCData
-from .utils import convert_units
-from .dataops import make_radial_profile, make_stacked_radial_profile
+from .dataops import make_stacked_radial_profile
 
 
 class ClusterEnsemble:
@@ -22,9 +20,22 @@ class ClusterEnsemble:
         Table with galaxy clusters data (i. e. ids, profiles, redshifts).
     id_dict: dict
         Dictionary of indices given the cluster id
+    stacked_data : GCData, None
+        Stacked cluster profiles
+    cov_tan_sv : array, None
+        Covariance matrix of the tangential component computed with sample covariance
+    cov_cross_sv : array, None
+        Covariance matrix of the cross component computed with sample covariance
+    cov_tan_bs : array, None
+        Covariance matrix of the tangential component computed with bootstrap
+    cov_cross_bs : array, None
+        Covariance matrix of the cross component computed with bootstrap
+    cov_tan_jk : array, None
+        Covariance matrix of the tangential component computed with jackknife
+    cov_cross_jk : array, None
+        Covariance matrix of the cross component computed with jackknife
     """
-
-    def __init__(self, unique_id, gc_list=None, *args, **kwargs):
+    def __init__(self, unique_id, gc_list=None, **kwargs):
         """Initializes a ClusterEnsemble object
         Parameters
         ----------
@@ -39,6 +50,13 @@ class ClusterEnsemble:
         self.data = GCData(meta={"bin_units": None})
         if gc_list is not None:
             self._add_values(gc_list, **kwargs)
+        self.stacked_data = None
+        self.cov_tan_sv = None
+        self.cov_cross_sv = None
+        self.cov_tan_bs = None
+        self.cov_cross_bs = None
+        self.cov_tan_jk = None
+        self.cov_cross_jk = None
 
     def _add_values(self, gc_list, **kwargs):
         """Add values for all attributes
@@ -50,8 +68,8 @@ class ClusterEnsemble:
         gc_cols : list, tuple
             List of GalaxyCluster objects.
         """
-        for gc in gc_list:
-            self.make_individual_radial_profile(gc, **kwargs)
+        for cluster in gc_list:
+            self.make_individual_radial_profile(cluster, **kwargs)
 
     def __getitem__(self, item):
         """Returns self.data[item]"""
@@ -125,6 +143,7 @@ class ClusterEnsemble:
         weights_out : str, None
             Name of the weight column to be used in the added to the profile table.
         """
+        # pylint: disable=unused-argument
         tb_kwargs = {}
         tb_kwargs.update(locals())
         tb_kwargs.pop("self")
@@ -322,7 +341,8 @@ class ClusterEnsemble:
                 self["W_l"][mask],
                 [self[tan_component][mask], self[cross_component][mask]],
             )[1]
-            gt_jack.append(gt), gx_jack.append(gx)
+            gt_jack.append(gt)
+            gx_jack.append(gx)
         n_jack = pixels_list_unique.size
         coeff = (n_jack - 1) ** 2 / (n_jack)
         self.cov_tan_jk = coeff * np.cov(np.transpose(gt_jack), bias=False, ddof=0)

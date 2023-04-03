@@ -40,6 +40,7 @@ class CCLCosmology(CLMMCosmology):
         self.be_cosmo = be_cosmo
 
     def _init_from_params(self, H0, Omega_b0, Omega_dm0, Omega_k0):
+        # pylint: disable=arguments-differ
         self.be_cosmo = ccl.Cosmology(
             Omega_c=Omega_dm0,
             Omega_b=Omega_b0,
