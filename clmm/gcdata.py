@@ -4,6 +4,7 @@ Define the custom data type
 import warnings
 from collections import OrderedDict
 from astropy.table import Table as APtable
+import numpy as np
 
 
 class GCMetaData(OrderedDict):
@@ -63,6 +64,8 @@ class GCData(APtable):
         metakwargs = kwargs['meta'] if 'meta' in kwargs else {}
         metakwargs = {} if metakwargs is None else metakwargs
         self.meta = GCMetaData(**metakwargs)
+        # this attribute is set when source galaxies have p(z)
+        self.pzpdf_info = {'type': None}
 
     def _str_colnames(self):
         """Colnames in comma separated str"""
@@ -117,7 +120,39 @@ class GCData(APtable):
             item = item.lower()
             item = ','.join([name_dict[i] for i in item.split(',')])
         out = APtable.__getitem__(self, item)
+        # sub cols or sub rows
+        if not isinstance(item, (str, int, np.int64)):
+            out.pzpdf_info = self.pzpdf_info
         return out
+
+    def update_info_ext_valid(self, key, gcdata, ext_value, overwrite=False):
+        r"""Updates cosmo metadata if the same as in gcdata
+
+        Parameters
+        ----------
+        key: str
+            Name of key to compare and update.
+        gcdata: GCData
+            Table to check if same cosmology.
+        ext_value:
+            Value to be compared to.
+        overwrite: bool
+            Overwrites the current metadata. If false raises Error when values are different.
+
+        Returns
+        -------
+        None
+        """
+        if ext_value:
+            in_value = gcdata.meta[key]
+            if in_value and in_value != ext_value:
+                if overwrite:
+                    warnings.warn(
+                        f"input '{key}' ({ext_value}) overwriting gcdata '{key}' ({in_value})")
+                else:
+                    raise ValueError(
+                        f"input '{key}' ({ext_value}) differs from gcdata '{key}' ({in_value})")
+            self.meta.__setitem__(key, ext_value, force=True)
 
     def update_cosmo_ext_valid(self, gcdata, cosmo, overwrite=False):
         r"""Updates cosmo metadata if the same as in gcdata
@@ -137,16 +172,7 @@ class GCData(APtable):
         None
         """
         cosmo_desc = cosmo.get_desc() if cosmo else None
-        if cosmo_desc:
-            cosmo_gcdata = gcdata.meta['cosmo']
-            if cosmo_gcdata and cosmo_gcdata != cosmo_desc:
-                if overwrite:
-                    warnings.warn(
-                        f'input cosmo ({cosmo_desc}) overwriting gcdata cosmo ({cosmo_gcdata})')
-                else:
-                    raise TypeError(
-                        f'input cosmo ({cosmo_desc}) differs from gcdata cosmo ({cosmo_gcdata})')
-            self.meta.__setitem__('cosmo', cosmo_desc, force=True)
+        self.update_info_ext_valid('cosmo', gcdata, cosmo_desc, overwrite=overwrite)
 
     def update_cosmo(self, cosmo, overwrite=False):
         r"""Updates cosmo metadata if not present
@@ -164,3 +190,45 @@ class GCData(APtable):
         None
         """
         self.update_cosmo_ext_valid(self, cosmo, overwrite=overwrite)
+
+    def has_pzpdfs(self):
+        """Get pzbins and pzpdfs of galaxies
+
+        Returns
+        -------
+        pzbins : array
+            zbins of each object in data
+        pzpdfs : array
+            PDF of each object in data
+        """
+        pzpdf_type = self.pzpdf_info['type']
+        if pzpdf_type is None:
+            return False
+        elif pzpdf_type=='shared_bins':
+            return ('zbins' in self.pzpdf_info) and ('pzpdf' in self.columns)
+        elif pzpdf_type=='individual_bins':
+            return ('pzbins' in self.columns) and ('pzpdf' in self.columns)
+        else:
+            raise NotImplementedError(f"PDF use '{pzpdf_type}' not implemented.")
+
+    def get_pzpdfs(self):
+        """Get pzbins and pzpdfs of galaxies
+
+        Returns
+        -------
+        pzbins : array
+            zbins of PDF. 1D if `shared_bins`,
+            zbins of each object in data if `individual_bins`.
+        pzpdfs : array
+            PDF of each object in data
+        """
+        pzpdf_type = self.pzpdf_info['type']
+        if pzpdf_type is None:
+            raise ValueError('No PDF information stored!')
+        elif pzpdf_type=='shared_bins':
+            pzbins = self.pzpdf_info['zbins']
+        elif pzpdf_type=='individual_bins':
+            pzbins = self['pzbins']
+        else:
+            raise NotImplementedError(f"PDF use '{pzpdf_type}' not implemented.")
+        return pzbins, self['pzpdf']

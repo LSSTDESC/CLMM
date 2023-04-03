@@ -75,9 +75,9 @@ def test_update_cosmo():
 
     gcdata = GCData()
     gcdata.update_cosmo(cosmo1)
-    assert_raises(TypeError, gcdata.update_cosmo_ext_valid,
+    assert_raises(ValueError, gcdata.update_cosmo_ext_valid,
                   gcdata, cosmo2, overwrite=False)
-    assert_raises(TypeError, gcdata.update_cosmo_ext_valid, gcdata, cosmo2)
+    assert_raises(ValueError, gcdata.update_cosmo_ext_valid, gcdata, cosmo2)
 
     gcdata = GCData()
     gcdata.update_cosmo(cosmo1)
@@ -91,8 +91,8 @@ def test_update_cosmo():
 
     gcdata = GCData()
     gcdata.update_cosmo(cosmo1)
-    assert_raises(TypeError, gcdata.update_cosmo, cosmo2, overwrite=False)
-    assert_raises(TypeError, gcdata.update_cosmo, cosmo2)
+    assert_raises(ValueError, gcdata.update_cosmo, cosmo2, overwrite=False)
+    assert_raises(ValueError, gcdata.update_cosmo, cosmo2)
 
     # Test casing for colnames and meta
     gcdata = GCData()
@@ -103,6 +103,39 @@ def test_update_cosmo():
     gcdata['Ra'] = [1]
     for key in ('Ra', 'ra', 'RA',):
         assert_equal(1, gcdata[key][0])
+
+def test_pzfuncs():
+
+    ngals = 5
+    zbins = [.3, .5, .8]
+    pzpdf = [[.1, .5, .1]]*ngals
+
+    # no pdf
+    gcdata = GCData()
+    assert not gcdata.has_pzpdfs()
+    assert_raises(ValueError, gcdata.get_pzpdfs)
+
+    # shared bins
+    gcdata = GCData()
+    gcdata.pzpdf_info['type'] = 'shared_bins'
+    assert not gcdata.has_pzpdfs()
+    gcdata.pzpdf_info['zbins'] = zbins
+    gcdata['pzpdf'] = pzpdf
+    assert gcdata.has_pzpdfs()
+
+    # unique bins
+    gcdata = GCData()
+    gcdata.pzpdf_info['type'] = 'individual_bins'
+    assert not gcdata.has_pzpdfs()
+    gcdata['pzbins'] = [zbins]*ngals
+    gcdata['pzpdf'] = pzpdf
+    assert gcdata.has_pzpdfs()
+
+    # not implemented
+    gcdata = GCData()
+    gcdata.pzpdf_info['type'] = 'other'
+    assert_raises(NotImplementedError, gcdata.has_pzpdfs)
+    assert_raises(NotImplementedError, gcdata.get_pzpdfs)
 
 # test_creator = 'Mitch'
 # test_creator_diff = 'Witch'
@@ -150,8 +183,8 @@ def test_update_cosmo():
 # def test_add_data():
 
     # gc = GalaxyCluster('test_cluster')
-    # tst.assert_raises(TypeError, gc.add_data, '')
-    # tst.assert_raises(TypeError, gc.add_data, '', force=True)
+    # tst.assert_raises(ValueError, gc.add_data, '')
+    # tst.assert_raises(ValueError, gc.add_data, '', force=True)
     # tst.assert_equal(None, gc.add_data(test_data, force=True))
 
     # gc = GalaxyCluster('test_cluster')

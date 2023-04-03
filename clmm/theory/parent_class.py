@@ -1,6 +1,8 @@
 """@file parent_class.py
 CLMModeling abstract class
 """
+import warnings
+warnings.filterwarnings("always", module='(clmm).*')
 import numpy as np
 
 # functions for the 2h term
@@ -12,7 +14,8 @@ from .generic import (compute_reduced_shear_from_convergence,
                       compute_magnification_bias_from_magnification,
                       compute_rdelta, compute_profile_mass_in_radius,
                       convert_profile_mass_concentration)
-from ..utils import validate_argument, _integ_pzfuncs, compute_beta_s_mean, compute_beta_s_square_mean, compute_beta_s_func
+from ..utils import (validate_argument, _integ_pzfuncs, compute_beta_s_mean,
+                     compute_beta_s_square_mean, compute_beta_s_func, compute_for_good_redshifts)
 
 
 class CLMModeling:
@@ -141,7 +144,7 @@ class CLMModeling:
         r""" Actuall sets the value of the concentration (without value check)"""
         raise NotImplementedError
 
-    def _set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
+    def _update_halo_density_profile(self):
         raise NotImplementedError
 
     def _set_einasto_alpha(self, alpha):
@@ -149,7 +152,8 @@ class CLMModeling:
         raise NotImplementedError
 
     def _get_einasto_alpha(self, z_cl=None):
-        r""" Returns the value of the :math:`\alpha` parameter for the Einasto profile, if defined"""
+        r""" Returns the value of the :math:`\alpha` parameter for the Einasto profile,
+        if defined"""
         raise NotImplementedError
 
     def _eval_3d_density(self, r3d, z_cl):
@@ -233,30 +237,27 @@ class CLMModeling:
     # 3.1. All these functions are for the single plane case
 
 
-    def _eval_critical_surface_density(self, z_len, z_src):
-        return self.cosmo.eval_sigma_crit(z_len, z_src)
-
-    def _eval_tangential_shear(self, r_proj, z_cl, z_src):
+    def _eval_tangential_shear_core(self, r_proj, z_cl, z_src):
         delta_sigma = self.eval_excess_surface_density(r_proj, z_cl)
-        sigma_c = self.eval_critical_surface_density(z_cl, z_src)
+        sigma_c = self.cosmo.eval_sigma_crit(z_cl, z_src)
         return delta_sigma/sigma_c
 
-    def _eval_convergence(self, r_proj, z_cl, z_src, verbose=False):
-        sigma = self.eval_surface_density(r_proj, z_cl, verbose=verbose)
-        sigma_c = self.eval_critical_surface_density(z_cl, z_src)
+    def _eval_convergence_core(self, r_proj, z_cl, z_src):
+        sigma = self.eval_surface_density(r_proj, z_cl)
+        sigma_c = self.cosmo.eval_sigma_crit(z_cl, z_src)
         return sigma/sigma_c
 
-    def _eval_reduced_tangential_shear(self, r_proj, z_cl, z_src):
+    def _eval_reduced_tangential_shear_core(self, r_proj, z_cl, z_src):
         kappa = self.eval_convergence(r_proj, z_cl, z_src)
         gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
         return compute_reduced_shear_from_convergence(gamma_t, kappa)
 
-    def _eval_magnification(self, r_proj, z_cl, z_src):
+    def _eval_magnification_core(self, r_proj, z_cl, z_src):
         kappa = self.eval_convergence(r_proj, z_cl, z_src)
         gamma_t = self.eval_tangential_shear(r_proj, z_cl, z_src)
         return 1./((1-kappa)**2-abs(gamma_t)**2)
 
-    def _eval_magnification_bias(self, r_proj, z_cl, z_src, alpha):
+    def _eval_magnification_bias_core(self, r_proj, z_cl, z_src, alpha):
         magnification = self.eval_magnification(r_proj, z_cl, z_src)
         return compute_magnification_bias_from_magnification(magnification, alpha)
 
@@ -335,27 +336,38 @@ class CLMModeling:
             if not halo_profile_model in self.hdpm_dict:
                 raise ValueError(
                     f"Halo density profile model {halo_profile_model} not currently supported")
-        # set the profile
-        self._set_halo_density_profile(halo_profile_model=halo_profile_model,
-                                       massdef=massdef, delta_mdef=delta_mdef)
+        # Check if we have already an instance of the required object, if not create one
+        if (
+                (self.hdpm is None)
+                or (self.halo_profile_model!=halo_profile_model)
+                or (self.massdef!=massdef)
+                or (self.delta_mdef!=delta_mdef)
+        ):
+            # set internal quantities
+            self.__halo_profile_model = halo_profile_model
+            self.__massdef = massdef
+            self.__delta_mdef = delta_mdef
+            # set the profile
+            self._update_halo_density_profile()
 
-        # set internal quantities
-        self.__halo_profile_model = halo_profile_model
-        self.__massdef = massdef
-        self.__delta_mdef = delta_mdef
 
     def set_einasto_alpha(self, alpha):
         r""" Sets the value of the :math:`\alpha` parameter for the Einasto profile
 
         Parameters
         ----------
-        alpha : float
+        alpha : float, None
+            If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
+            cosmology-dependent value for the CCL backend.)
         """
-        if self.halo_profile_model!='einasto' or self.backend!='nc':
-            raise NotImplementedError("The Einasto slope cannot be set for your combination of profile choice or modeling backend.")
+        if self.halo_profile_model!='einasto':
+            raise NotImplementedError(
+                "The Einasto slope cannot be set "
+                "for your combination of profile choice "
+                "or modeling backend.")
         else:
             if self.validate_input:
-                validate_argument(locals(), 'alpha', float)
+                validate_argument(locals(), 'alpha', float, none_ok=True)
             self._set_einasto_alpha(alpha)
 
     def get_einasto_alpha(self, z_cl=None):
@@ -383,7 +395,7 @@ class CLMModeling:
 
         Returns
         -------
-        array_like, float
+        numpy.ndarray, float
             3-dimensional mass density in units of :math:`M_\odot\ Mpc^{-3}`
         """
         if self.validate_input:
@@ -395,36 +407,25 @@ class CLMModeling:
 
         return self._eval_3d_density(r3d=r3d, z_cl=z_cl)
 
-    def eval_critical_surface_density(self, z_len, z_src=None, use_pdz=False, pzbins=None, pzpdf=None):
-        r"""Computes either
 
-        the critical surface density if `use_pdz=False`
-
-        .. math::
-            \Sigma_{\rm crit} = \frac{c^2}{4\pi G} \frac{D_s}{D_LD_{LS}}
-
-        or
-
-        the 'effective critical surface density' if `use_pdz=True`
+    def eval_critical_surface_density_eff(self, z_len, pzbins, pzpdf, validate_input=True):
+        r"""Computes the 'effective critical surface density'
 
         .. math::
-            \langle \Sigma_{\rm crit}^{-1}\rangle^{-1} = \left(\int \frac{1}{\Sigma_{\rm crit}(z)} p(z) dz\right)^{-1}
+            \langle \Sigma_{\rm crit}^{-1}\rangle^{-1} =
+            \left(\int \frac{1}{\Sigma_{\rm crit}(z)} p(z) dz\right)^{-1}
 
         where :math:`p(z)` is the source photoz probability density function.
-        This comes from the maximum likelihood estimator for evaluating a :math:`\Delta\Sigma` profile.
+        This comes from the maximum likelihood estimator for evaluating a
+        :math:`\Delta\Sigma` profile.
 
+        For the standard :math:`\Sigma_{\rm crit}(z)` definition, use the `eval_sigma_crit` method of 
+        the CLMM cosmology object.
 
         Parameters
         ----------
         z_len : float
             Galaxy cluster redshift
-        z_src : array_like, float
-            Background source galaxy redshift(s)
-        use_pdz : bool
-            Flag to use the photoz pdf. If `False` (default), `sigma_c` is computed using the source redshift point estimates `z_src`.
-            If `True`, `sigma_c` is computed as 1/<1/Sigma_crit>, where the average is performed using
-            the individual galaxy redshift pdf. In that case, the `pzbins` and `pzpdf` should be specified.
-
         pzbins : array-like
             Bins where the source redshift pdf is defined
         pzpdf : array-like
@@ -435,23 +436,18 @@ class CLMModeling:
 
         Returns
         -------
-        sigma_c : array_like, float
-            Cosmology-dependent (effective) critical surface density in units of :math:`M_\odot\ Mpc^{-2}`
-    """
+        sigma_c : numpy.ndarray, float
+            Cosmology-dependent effective critical surface density in units of
+            :math:`M_\odot\ Mpc^{-2}`
+        """
 
         if self.validate_input:
             validate_argument(locals(), 'z_len', float, argmin=0)
-            validate_argument(locals(), 'z_src', 'float_array', argmin=0, none_ok=True)
+ 
+        def inv_sigmac(redshift):
+            return 1./self.cosmo.eval_sigma_crit(z_len, redshift)
 
-        if use_pdz is False:
-            return self._eval_critical_surface_density(z_len=z_len, z_src=z_src)
-        else:
-            if pzbins is None or pzpdf is None:
-                raise ValueError('Redshift bins and source redshift pdf must be provided when use_pdz is True')
-            else:
-                def inv_sigmac(redshift):
-                    return 1./self._eval_critical_surface_density(z_len=z_len, z_src=redshift)
-                return 1./_integ_pzfuncs(pzpdf, pzbins, kernel=inv_sigmac, is_unique_pzbins=np.all(pzbins==pzbins[0]))
+        return 1./_integ_pzfuncs(pzpdf, pzbins, kernel=inv_sigmac)
 
     def eval_surface_density(self, r_proj, z_cl, verbose=False):
         r""" Computes the surface mass density
@@ -465,7 +461,7 @@ class CLMModeling:
 
         Returns
         -------
-        array_like, float
+        numpy.ndarray, float
             2D projected surface density in units of :math:`M_\odot\ Mpc^{-2}`
         """
         if self.validate_input:
@@ -478,7 +474,7 @@ class CLMModeling:
         return self._eval_surface_density(r_proj=r_proj, z_cl=z_cl)
 
     def eval_mean_surface_density(self, r_proj, z_cl, verbose=False):
-        r""" Computes the mean value of surface density inside radius r_proj
+        r""" Computes the mean value of surface density inside radius `r_proj`
 
         Parameters
         ----------
@@ -489,7 +485,7 @@ class CLMModeling:
 
         Returns
         -------
-        array_like, float
+        numpy.ndarray, float
             Excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
         """
         if self.validate_input:
@@ -513,7 +509,7 @@ class CLMModeling:
 
         Returns
         -------
-        array_like, float
+        numpy.ndarray, float
             Excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
         """
         if self.validate_input:
@@ -526,7 +522,7 @@ class CLMModeling:
         return self._eval_excess_surface_density(r_proj=r_proj, z_cl=z_cl)
 
     def eval_excess_surface_density_2h(self, r_proj, z_cl, halobias=1., lsteps=500):
-        r""" Computes the 2-halo term excess surface density (CCL backend only)
+        r""" Computes the 2-halo term excess surface density (CCL and NC backends only)
 
         Parameters
         ----------
@@ -541,7 +537,7 @@ class CLMModeling:
 
         Returns
         -------
-        array_like, float
+        numpy.ndarray, float
             Excess surface density from the 2-halo term in units of :math:`M_\odot\ Mpc^{-2}`.
         """
 
@@ -556,10 +552,11 @@ class CLMModeling:
                 f"2-halo term not currently supported with the {self.backend} backend. "
                 "Use the CCL or NumCosmo backend instead")
         else:
-            return self._eval_excess_surface_density_2h(r_proj, z_cl, halobias=halobias, lsteps=lsteps)
+            return self._eval_excess_surface_density_2h(
+                r_proj, z_cl, halobias=halobias, lsteps=lsteps)
 
     def eval_surface_density_2h(self, r_proj, z_cl, halobias=1., lsteps=500):
-        r""" Computes the 2-halo term surface density (CCL backend only)
+        r""" Computes the 2-halo term surface density (CCL and NC backends only)
 
         Parameters
         ----------
@@ -574,7 +571,7 @@ class CLMModeling:
 
         Returns
         -------
-        array_like, float
+        numpy.ndarray, float
             Excess surface density from the 2-halo term in units of :math:`M_\odot\ Mpc^{-2}`.
         """
 
@@ -770,7 +767,7 @@ class CLMModeling:
 
         Returns
         -------
-        array_like, float
+        numpy.ndarray, float
             tangential shear
         """
         if self.validate_input:
@@ -783,12 +780,17 @@ class CLMModeling:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
         if z_src_info=='discrete':
-            gammat = self._eval_tangential_shear(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
+            warning_msg = '\nSome source redshifts are lower than the cluster redshift.'+\
+            '\nShear = 0 for those galaxies.'
+            gammat = compute_for_good_redshifts(self._eval_tangential_shear_core,
+                                                z_cl, z_src, 0., warning_msg,
+                                                'z_cl', 'z_src', r_proj)
         elif z_src_info in ('distribution', 'beta'):
             beta_s_mean = self._get_beta_s_mean(
                 z_cl, z_src, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
 
-            gammat_inf = self._eval_tangential_shear(r_proj=r_proj, z_cl=z_cl, z_src=self.z_inf)
+            gammat_inf = self._eval_tangential_shear_core(r_proj=r_proj,
+                                                          z_cl=z_cl, z_src=self.z_inf)
 
             gammat = beta_s_mean * gammat_inf
         else:
@@ -860,7 +862,7 @@ class CLMModeling:
 
         Returns
         -------
-        array_like, float
+        numpy.ndarray, float
             Mass convergence, kappa.
         """
         if self.validate_input:
@@ -873,12 +875,16 @@ class CLMModeling:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
 
         if z_src_info=='discrete':
-            kappa = self._eval_convergence(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
+            warning_msg = '\nSome source redshifts are lower than the cluster redshift.'+\
+            '\nConvergence = 0 for those galaxies.'
+            kappa = compute_for_good_redshifts(self._eval_convergence_core,
+                                               z_cl, z_src, 0., warning_msg,
+                                               'z_cl', 'z_src', r_proj)
         elif z_src_info in ('distribution', 'beta'):
             beta_s_mean = self._get_beta_s_mean(
                 z_cl, z_src, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
 
-            kappa_inf = self._eval_convergence(r_proj=r_proj, z_cl=z_cl, z_src=self.z_inf)
+            kappa_inf = self._eval_convergence_core(r_proj=r_proj, z_cl=z_cl, z_src=self.z_inf)
 
             kappa = beta_s_mean * kappa_inf
         else:
@@ -915,9 +921,10 @@ class CLMModeling:
             Function averaged by pdz, with r_proj dimention.
         """
         tfunc = lambda z, r: compute_beta_s_func(
-            z, z_cl, self.z_inf, self.cosmo, self._eval_tangential_shear, r, z_cl, self.z_inf)
+            z, z_cl, self.z_inf, self.cosmo,
+            self._eval_tangential_shear_core, r, z_cl, self.z_inf)
         kfunc = lambda z, r: compute_beta_s_func(
-            z, z_cl, self.z_inf, self.cosmo, self._eval_convergence, r, z_cl, self.z_inf)
+            z, z_cl, self.z_inf, self.cosmo, self._eval_convergence_core, r, z_cl, self.z_inf)
         __integrand__ = lambda z, r: pdz_func(z)*core(tfunc(z, r), kfunc(z, r))
 
         _integ_kwargs = {'zmax': 10.0, 'delta_z_cut': 0.1}
@@ -1024,7 +1031,7 @@ class CLMModeling:
 
         Returns
         -------
-        gt : array_like, float
+        gt : numpy.ndarray, float
             Reduced tangential shear
 
         Notes
@@ -1047,7 +1054,11 @@ class CLMModeling:
                 gt = self._pdz_weighted_avg(core, z_src, r_proj, z_cl,
                                             integ_kwargs=beta_kwargs)
             elif z_src_info=='discrete':
-                gt = self._eval_reduced_tangential_shear(r_proj, z_cl, z_src)
+                warning_msg = '\nSome source redshifts are lower than the cluster redshift.'+\
+                '\nReduced_shear = 0 for those galaxies.'
+                gt = compute_for_good_redshifts(self._eval_reduced_tangential_shear_core,
+                                                z_cl, z_src, 0., warning_msg,
+                                                'z_cl', 'z_src', r_proj)
             else:
                 raise ValueError(
                     "approx=None requires z_src_info='discrete' or 'distribution',"
@@ -1057,8 +1068,8 @@ class CLMModeling:
             beta_s_mean = self._get_beta_s_mean(
                 z_cl, z_src, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
 
-            gammat_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=self.z_inf)
-            kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=self.z_inf)
+            gammat_inf = self._eval_tangential_shear_core(r_proj, z_cl, z_src=self.z_inf)
+            kappa_inf = self._eval_convergence_core(r_proj, z_cl, z_src=self.z_inf)
 
             gt = beta_s_mean * gammat_inf / (1. - beta_s_mean * kappa_inf)
 
@@ -1166,7 +1177,7 @@ class CLMModeling:
 
         Returns
         -------
-        mu : array_like, float
+        mu : numpy.ndarray, float
             magnification, mu.
 
         """
@@ -1186,7 +1197,11 @@ class CLMModeling:
                 mu = self._pdz_weighted_avg(core, z_src, r_proj, z_cl,
                                             integ_kwargs=beta_kwargs)
             elif z_src_info=='discrete':
-                mu = self._eval_magnification(r_proj=r_proj, z_cl=z_cl, z_src=z_src)
+                warning_msg = '\nSome source redshifts are lower than the cluster redshift.'+\
+                '\nMagnification = 1 for those galaxies.'
+                mu = compute_for_good_redshifts(self._eval_magnification_core,
+                                                z_cl, z_src, 1., warning_msg,
+                                                'z_cl', 'z_src', r_proj)
             else:
                 raise ValueError(
                     "approx=None requires z_src_info='discrete' or 'distribution',"
@@ -1196,8 +1211,8 @@ class CLMModeling:
             beta_s_mean = self._get_beta_s_mean(
                 z_cl, z_src, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
 
-            kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=self.z_inf)
-            gammat_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=self.z_inf)
+            kappa_inf = self._eval_convergence_core(r_proj, z_cl, z_src=self.z_inf)
+            gammat_inf = self._eval_tangential_shear_core(r_proj, z_cl, z_src=self.z_inf)
 
             mu = 1 + 2*beta_s_mean*kappa_inf
 
@@ -1312,7 +1327,7 @@ class CLMModeling:
 
         Returns
         -------
-        mu_bias : array_like, float
+        mu_bias : numpy.ndarray, float
             magnification bias.
 
         """
@@ -1334,8 +1349,11 @@ class CLMModeling:
                 mu_bias = self._pdz_weighted_avg(core, z_src, r_proj, z_cl,
                                                  integ_kwargs=beta_kwargs)
             elif z_src_info=='discrete':
-                mu_bias = self._eval_magnification_bias(
-                    r_proj=r_proj, z_cl=z_cl, z_src=z_src, alpha=alpha)
+                warning_msg = '\nSome source redshifts are lower than the cluster redshift.'+\
+                '\nMagnification bias = 1 for those galaxies.'
+                mu_bias = compute_for_good_redshifts(self._eval_magnification_bias_core,
+                                                     z_cl, z_src, 1., warning_msg,
+                                                     'z_cl', 'z_src', r_proj, alpha=alpha)
             else:
                 raise ValueError(
                     "approx=None requires z_src_info='discrete' or 'distribution',"
@@ -1345,8 +1363,8 @@ class CLMModeling:
             beta_s_mean = self._get_beta_s_mean(
                 z_cl, z_src, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
 
-            kappa_inf = self._eval_convergence(r_proj, z_cl, z_src=self.z_inf)
-            gammat_inf = self._eval_tangential_shear(r_proj, z_cl, z_src=self.z_inf)
+            kappa_inf = self._eval_convergence_core(r_proj, z_cl, z_src=self.z_inf)
+            gammat_inf = self._eval_tangential_shear_core(r_proj, z_cl, z_src=self.z_inf)
 
             mu_bias = 1 + (alpha-1)*(2*beta_s_mean*kappa_inf)
 
@@ -1387,7 +1405,8 @@ class CLMModeling:
         The mass is calculated as
 
         .. math::
-            M(<\text{r3d}) = M_{\Delta}\;\frac{f\left(\frac{\text{r3d}}{r_{\Delta}/c_{\Delta}}\right)}{f(c_{\Delta})},
+            M(<\text{r3d}) = M_{\Delta}\;
+            \frac{f\left(\frac{\text{r3d}}{r_{\Delta}/c_{\Delta}}\right)}{f(c_{\Delta})},
 
         where :math:`f(x)` for the different models are
 
@@ -1415,7 +1434,7 @@ class CLMModeling:
 
         Returns
         -------
-        array_like, float
+        numpy.ndarray, float
             Mass in units of :math:`M_\odot`
         """
         if self.validate_input:

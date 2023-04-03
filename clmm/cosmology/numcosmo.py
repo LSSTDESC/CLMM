@@ -47,6 +47,9 @@ class NumCosmoCosmology(CLMMCosmology):
         else:
             self.set_dist(Nc.Distance.new(dist_zmax))
 
+        self.smd = Nc.WLSurfaceMassDensity.new(self.dist)
+        self.smd.prepare_if_needed(self.be_cosmo)
+
     def _init_from_cosmo(self, be_cosmo):
 
         assert isinstance(be_cosmo, Nc.HICosmo)

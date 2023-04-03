@@ -186,7 +186,8 @@ def test_matter_power_spectrum(modeling_data):
     if cosmo_ps.backend in ('ccl', 'nc'):
         reltol = modeling_data['ps_reltol']
         kvals = ps['k']
-        assert_allclose(cosmo_ps.eval_linear_matter_powerspectrum(kvals, testcase['z_cluster']), ps['P_of_k'], reltol)
+        assert_allclose(cosmo_ps.eval_linear_matter_powerspectrum(kvals, testcase['z_cluster']),
+                        ps['P_of_k'], reltol)
 
 
 def _rad2mpc_helper(dist, redshift, cosmo, do_inverse):
@@ -229,3 +230,25 @@ def test_convert_rad_to_mpc():
         _rad2mpc_helper(1.0, 0.5, theo.Cosmology(
             H0=70.0, Omega_dm0=oneomm-0.045, Omega_b0=0.045), do_inverse=True)
 
+def test_eval_sigma_crit(modeling_data):
+    """ Validation test for critical surface density """
+
+    reltol = modeling_data['cosmo_reltol']
+
+    cosmo, testcase, _ = load_validation_config()
+
+    assert_allclose(cosmo.eval_sigma_crit(testcase['z_cluster'], testcase['z_source']),
+                    testcase['nc_Sigmac'], reltol)
+    # Check errors for z<0
+    assert_raises(ValueError, cosmo.eval_sigma_crit, -0.2, 0.3)
+    assert_raises(ValueError, cosmo.eval_sigma_crit, 0.2, -0.3)
+    # Check behaviour when sources are in front of the lens
+    z_cluster = 0.3
+    z_source = 0.2
+    assert_allclose(
+        cosmo.eval_sigma_crit(z_cluster, z_source),
+        np.inf, 1.0e-10)
+    z_source = [0.2, 0.12, 0.25]
+    assert_allclose(
+        cosmo.eval_sigma_crit(z_cluster, z_source),
+        [np.inf, np.inf, np.inf], 1.0e-10)

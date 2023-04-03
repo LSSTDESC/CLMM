@@ -5,7 +5,6 @@ Main functions to encapsule oo calls
 # The functions expect a global instance of the actual CLMModeling named
 # `gcm'.
 
-import warnings
 import numpy as np
 
 from . import generic
@@ -15,11 +14,12 @@ from . generic import (compute_reduced_shear_from_convergence,
                        convert_profile_mass_concentration)
 
 __all__ = generic.__all__+['compute_3d_density', 'compute_surface_density',
-                           'compute_excess_surface_density','compute_excess_surface_density_2h',
+                           'compute_mean_surface_density',
+                           'compute_excess_surface_density', 'compute_excess_surface_density_2h',
                            'compute_surface_density_2h',
-                           'compute_critical_surface_density',
+                           'compute_critical_surface_density_eff',
                            'compute_tangential_shear', 'compute_convergence',
-                           'compute_reduced_tangential_shear','compute_magnification',
+                           'compute_reduced_tangential_shear', 'compute_magnification',
                            'compute_magnification_bias']
 
 
@@ -31,7 +31,7 @@ def compute_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     Profiles implemented so far are:
 
         `nfw`: :math:`\rho(r) = \frac{\rho_0}{\frac{c}{(r/R_{vir})}
-        \left(1+\frac{c}{(r/R_{vir})}\right)^2}` [insert citation here]
+        \left(1+\frac{c}{(r/R_{vir})}\right)^2}` (Navarro et al. 1996)
 
     Parameters
     ----------
@@ -61,9 +61,11 @@ def compute_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
             * 'critical'
             * 'virial'
 
-    alpha_ein : float, optional
-        If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only
-        available for the NumCosmo backend
+    alpha_ein : float, None, optional
+        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        Option only available for the NumCosmo and CCL backends.
+        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
+        cosmology-dependent value for the CCL backend.)
     verbose : boolean, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
         backends.
@@ -86,7 +88,7 @@ def compute_3d_density(r3d, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
         halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
     gcm.set_concentration(cdelta)
     gcm.set_mass(mdelta)
-    if alpha_ein is not None:
+    if halo_profile_model=='einasto' or alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
 
     rho = gcm.eval_3d_density(r3d, z_cl, verbose=verbose)
@@ -104,6 +106,77 @@ def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
         \Sigma(R) = \int^\infty_{-\infty} dx\; \rho \left(\sqrt{R^2+x^2}\right),
 
     where :math:`\rho(r)` is the 3d density profile.
+
+    Parameters
+    ----------
+    r_proj : array_like
+        Projected radial position from the cluster center in :math:`M\!pc`.
+    mdelta : float
+        Galaxy cluster mass in :math:`M_\odot`.
+    cdelta : float
+        Galaxy cluster concentration
+    z_cl: float
+        Redshift of the cluster
+    cosmo : clmm.cosmology.Cosmology object
+        CLMM Cosmology object
+    delta_mdef : int, optional
+        Mass overdensity definition; defaults to 200.
+    halo_profile_model : str, optional
+        Profile model parameterization (letter case independent):
+
+            * 'nfw' (default)
+            * 'einasto' - not in cluster_toolkit
+            * 'hernquist' - not in cluster_toolkit
+
+    massdef : str, optional
+        Profile mass definition, with the following supported options (letter case independent):
+
+            * 'mean' (default)
+            * 'critical'
+            * 'virial'
+
+    alpha_ein : float, None, optional
+        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        Option only available for the NumCosmo and CCL backends.
+        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
+        cosmology-dependent value for the CCL backend.)
+    verbose : boolean, optional
+        If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
+        backends.
+    validate_input : bool, optional
+        If True (default), the types of the arguments are checked before proceeding.
+
+    Returns
+    -------
+    sigma : numpy.ndarray, float
+        2D projected surface density in units of :math:`M_\odot\ Mpc^{-2}`
+
+    Notes
+    -----
+    Need to refactory so we only require arguments that are necessary for all models and use
+    another structure to take the arguments necessary for specific models.
+    """
+    gcm.validate_input = validate_input
+    gcm.set_cosmo(cosmo)
+    gcm.set_halo_density_profile(
+        halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
+    gcm.set_concentration(cdelta)
+    gcm.set_mass(mdelta)
+    if halo_profile_model=='einasto' or alpha_ein is not None:
+        gcm.set_einasto_alpha(alpha_ein)
+
+    sigma = gcm.eval_surface_density(r_proj, z_cl, verbose=verbose)
+
+    gcm.validate_input = True
+    return sigma
+
+def compute_mean_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
+                            halo_profile_model='nfw', massdef='mean', alpha_ein=None,
+                            verbose=False, validate_input=True):
+    r""" Computes the mean value of surface density inside radius `r_proj`
+
+    .. math::
+        \bar{\Sigma}(<R) = \frac{2}{R^2} \int^R_0 dR' R' \Sigma(R'),
 
     Parameters
     ----------
@@ -162,10 +235,10 @@ def compute_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
     if alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
 
-    sigma = gcm.eval_surface_density(r_proj, z_cl, verbose=verbose)
+    sigma_bar = gcm.eval_mean_surface_density(r_proj, z_cl, verbose=verbose)
 
     gcm.validate_input = True
-    return sigma
+    return sigma_bar
 
 def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
                                    halo_profile_model='nfw', massdef='mean', alpha_ein=None,
@@ -174,11 +247,6 @@ def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
 
     .. math::
         \Delta\Sigma(R) = \bar{\Sigma}(<R)-\Sigma(R),
-
-    where
-
-    .. math::
-        \bar{\Sigma}(<R) = \frac{2}{R^2} \int^R_0 dR' R' \Sigma(R')
 
     Parameters
     ----------
@@ -208,9 +276,11 @@ def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
             * 'critical'
             * 'virial'
 
-    alpha_ein : float, optional
-        If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only
-        available for the NumCosmo backend
+    alpha_ein : float, None, optional
+        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        Option only available for the NumCosmo and CCL backends.
+        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
+        cosmology-dependent value for the CCL backend.)
     verbose : boolean, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
         backends.
@@ -228,7 +298,7 @@ def compute_excess_surface_density(r_proj, mdelta, cdelta, z_cl, cosmo, delta_md
         halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
     gcm.set_concentration(cdelta)
     gcm.set_mass(mdelta)
-    if alpha_ein is not None:
+    if halo_profile_model=='einasto' or alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
 
     deltasigma = gcm.eval_excess_surface_density(r_proj, z_cl, verbose=verbose)
@@ -241,8 +311,8 @@ def compute_excess_surface_density_2h(r_proj, z_cl, cosmo, halobias=1., lsteps=5
     r""" Computes the 2-halo term excess surface density from eq.(13) of Oguri & Hamana (2011)
 
     .. math::
-        \Delta\Sigma_{\rm 2h}(R) = \frac{\rho_m(z)b(M)}{(1 + z)^3D_A(z)^2} \int\frac{ldl}{(2\pi)}
-        P_{\rm mm}(k_l, z)J_2(l\theta)
+        \Delta\Sigma_{\text{2h}}(R) = \frac{\rho_m(z)b(M)}{(1 + z)^3D_A(z)^2}
+        \int\frac{ldl}{(2\pi)} P_{\rm mm}(k_l, z)J_2(l\theta)
 
     where
 
@@ -322,19 +392,8 @@ def compute_surface_density_2h(r_proj, z_cl, cosmo, halobias=1, lsteps=500, vali
     gcm.validate_input = True
     return sigma_2h
 
-def compute_critical_surface_density(cosmo, z_cluster, z_source=None,
-                                     use_pdz=False, pzbins=None, pzpdf=None,
-                                     validate_input=True):
-    r"""Computes either
-
-    - the critical surface density if `use_pdz=False`
-
-    .. math::
-        \Sigma_{\rm crit} = \frac{c^2}{4\pi G} \frac{D_s}{D_LD_{LS}}
-
-    or
-
-    - the 'effective critical surface density' if `use_pdz=True`
+def compute_critical_surface_density_eff(cosmo, z_cluster, pzbins, pzpdf, validate_input=True):
+    r"""Computes the 'effective critical surface density'
 
     .. math::
         \langle \Sigma_{\rm crit}^{-1}\rangle^{-1} = \left(\int \frac{1}{\Sigma_{\rm crit}(z)}
@@ -344,6 +403,8 @@ def compute_critical_surface_density(cosmo, z_cluster, z_source=None,
     This comes from the maximum likelihood estimator for evaluating a :math:`\Delta\Sigma`
     profile.
 
+    For the standard :math:`\Sigma_{\rm crit}(z)` definition, use the `eval_sigma_crit` method of 
+    the CLMM cosmology object.
 
     Parameters
     ----------
@@ -351,13 +412,6 @@ def compute_critical_surface_density(cosmo, z_cluster, z_source=None,
         CLMM Cosmology object
     z_cluster : float
         Galaxy cluster redshift
-    z_source : array_like, float
-        Background source galaxy redshift(s)
-    use_pdz : bool
-        Flag to use the photoz pdf. If `False` (default), `sigma_c` is computed using the source
-        redshift point estimates `z_source`. If `True`, `sigma_c` is computed as 1/<1/Sigma_crit>,
-        where the average is performed using the individual galaxy redshift pdf.
-        In that case, the `pzbins` and `pzpdf` should be specified.
     pzbins : array-like
         Bins where the source redshift pdf is defined
     pzpdf : array-like
@@ -375,8 +429,7 @@ def compute_critical_surface_density(cosmo, z_cluster, z_source=None,
 
     gcm.validate_input = validate_input
     gcm.set_cosmo(cosmo)
-    sigma_c = gcm.eval_critical_surface_density(z_cluster, z_src=z_source,
-                                                use_pdz=use_pdz, pzbins=pzbins, pzpdf=pzpdf)
+    sigma_c = gcm.eval_critical_surface_density_eff(z_cluster, pzbins, pzpdf)
 
     gcm.validate_input = True
     return sigma_c
@@ -426,9 +479,11 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
             * 'critical'
             * 'virial'
 
-    alpha_ein : float, optional
-        If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only
-        availablefor the NumCosmo backend
+    alpha_ein : float, None, optional
+        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        Option only available for the NumCosmo and CCL backends.
+        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
+        cosmology-dependent value for the CCL backend.)
     z_src_info : str, optional
         Type of redshift information provided by the `z_source` argument.
         The following supported options are:
@@ -483,7 +538,7 @@ def compute_tangential_shear(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
         halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
     gcm.set_concentration(cdelta)
     gcm.set_mass(mdelta)
-    if alpha_ein is not None:
+    if halo_profile_model=='einasto' or alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
     if np.min(r_proj) < 1.e-11:
         raise ValueError(
@@ -543,9 +598,11 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
             * 'critical'
             * 'virial'
 
-    alpha_ein : float, optional
-        If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only
-        available for the NumCosmo backend
+    alpha_ein : float, None, optional
+        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        Option only available for the NumCosmo and CCL backends.
+        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
+        cosmology-dependent value for the CCL backend.)
     z_src_info : str, optional
         Type of redshift information provided by the `z_source` argument.
         The following supported options are:
@@ -601,26 +658,20 @@ def compute_convergence(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, delt
         halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
     gcm.set_concentration(cdelta)
     gcm.set_mass(mdelta)
-    if alpha_ein is not None:
+    if halo_profile_model=='einasto' or alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
 
     convergence = gcm.eval_convergence(r_proj, z_cluster, z_source, z_src_info=z_src_info,
                                        beta_kwargs=beta_kwargs, verbose=verbose)
-
-    if z_src_info=='discrete':
-        if np.any(np.array(z_source) <= z_cluster):
-            warnings.warn(
-                'Some source redshifts are lower than the cluster redshift.'
-                ' kappa = 0 for those galaxies.')
 
     gcm.validate_input = True
     return convergence
 
 
 def compute_reduced_tangential_shear(
-        r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
-        delta_mdef=200, halo_profile_model='nfw', massdef='mean', z_src_info='discrete',
-        approx=None, beta_kwargs=None, alpha_ein=None, validate_input=True, verbose=False):
+    r_proj, mdelta, cdelta, z_cluster, z_source, cosmo,
+    delta_mdef=200, halo_profile_model='nfw', massdef='mean', z_src_info='discrete',
+    approx=None, beta_kwargs=None, alpha_ein=None, validate_input=True, verbose=False):
     r"""Computes the reduced tangential shear
 
     .. math::
@@ -653,10 +704,15 @@ def compute_reduced_tangential_shear(
     massdef : str, optional
         Profile mass definition, with the following supported options (letter case independent):
 
-            * 'mean' (default)
-            * 'critical'
-            * 'virial'
+            * `mean` (default);
+            * `critical` - not in cluster_toolkit;
+            * `virial` - not in cluster_toolkit;
 
+    alpha_ein : float, None, optional
+        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        Option only available for the NumCosmo and CCL backends.
+        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
+        cosmology-dependent value for the CCL backend.)
     z_src_info : str, optional
         Type of redshift information provided by the `z_source` argument.
         The following supported options are:
@@ -729,9 +785,11 @@ def compute_reduced_tangential_shear(
             * 'delta_z_cut' (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.
               `delta_z_cut` is ignored if `z_min` is already provided. (default=0.1)
 
-    alpha_ein : float, optional
-        If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only
-        available for the NumCosmo backend
+    alpha_ein : float, None, optional
+        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        Option only available for the NumCosmo and CCL backends.
+        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
+        cosmology-dependent value for the CCL backend.)
     verbose : bool, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL
         backends.
@@ -750,7 +808,7 @@ def compute_reduced_tangential_shear(
         halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
     gcm.set_concentration(cdelta)
     gcm.set_mass(mdelta)
-    if alpha_ein is not None:
+    if halo_profile_model=='einasto' or alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
 
     red_tangential_shear = gcm.eval_reduced_tangential_shear(
@@ -802,9 +860,11 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
             * 'critical'
             * 'virial'
 
-    alpha_ein : float, optional
-        If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only
-        available for the NumCosmo backend
+    alpha_ein : float, None, optional
+        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        Option only available for the NumCosmo and CCL backends.
+        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
+        cosmology-dependent value for the CCL backend.)
     z_src_info : str, optional
         Type of redshift information provided by the `z_source` argument.
         The following supported options are:
@@ -896,18 +956,12 @@ def compute_magnification(r_proj, mdelta, cdelta, z_cluster, z_source, cosmo, de
         halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
     gcm.set_concentration(cdelta)
     gcm.set_mass(mdelta)
-    if alpha_ein is not None:
+    if halo_profile_model=='einasto' or alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
 
     magnification = gcm.eval_magnification(r_proj, z_cluster, z_source, z_src_info=z_src_info,
                                            approx=approx, beta_kwargs=beta_kwargs,
                                            verbose=verbose)
-
-    if z_src_info=='discrete':
-        if np.any(np.array(z_source) <= z_cluster):
-            warnings.warn(
-                'Some source redshifts are lower than the cluster redshift.'
-                ' magnification = 1 for those galaxies.')
 
     gcm.validate_input = True
     return magnification
@@ -958,9 +1012,11 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
         CLMM Cosmology object
     delta_mdef : int, optional
         Mass overdensity definition.  Defaults to 200.
-    alpha_ein : float, optional
-        If `halo_profile_model=='einasto'`, set the value of the Einasto slope. Option only
-        available for the NumCosmo backend
+    alpha_ein : float, None, optional
+        If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
+        Option only available for the NumCosmo and CCL backends.
+        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
+        cosmology-dependent value for the CCL backend.)
     halo_profile_model : str, optional
         Profile model parameterization (letter case independent):
 
@@ -1067,18 +1123,12 @@ def compute_magnification_bias(r_proj, alpha, mdelta, cdelta, z_cluster, z_sourc
         halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef)
     gcm.set_concentration(cdelta)
     gcm.set_mass(mdelta)
-    if alpha_ein is not None:
+    if halo_profile_model=='einasto' or alpha_ein is not None:
         gcm.set_einasto_alpha(alpha_ein)
 
     magnification_bias = gcm.eval_magnification_bias(r_proj, z_cluster, z_source, alpha,
                                                      z_src_info=z_src_info, approx=approx,
                                                      beta_kwargs=beta_kwargs, verbose=verbose)
-
-    if z_src_info=='discrete':
-        if np.any(np.array(z_source) <= z_cluster):
-            warnings.warn(
-                'Some source redshifts are lower than the cluster redshift.'
-                ' magnification bias = 1 for those galaxies.')
 
     gcm.validate_input = True
     return magnification_bias
