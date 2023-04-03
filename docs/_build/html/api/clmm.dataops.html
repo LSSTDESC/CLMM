@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>clmm.dataops package &mdash; CLMM 1.5.3 documentation</title>
+  <title>clmm.dataops package &mdash; CLMM 1.7.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -33,7 +33,7 @@
             <a href="../index.html" class="icon icon-home"> CLMM
           </a>
               <div class="version">
-                1.5.3
+                1.7.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -149,6 +149,8 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>z_lens</strong> (<em>float</em>) -- Redshift of the lens.</p></li>
 <li><p><strong>z_source</strong> (<em>array</em><em>, </em><em>optional</em>) -- Redshift of the source. Used only if pzpdf=pzbins=None.</p></li>
+<li><p><strong>use_pdz</strong> (<em>bool</em>) -- Flag to use or not the source redshif. If <cite>False</cite>,
+the point estimate provided by <cite>z_source</cite> is used.</p></li>
 <li><p><strong>pzpdf</strong> (<em>array</em><em>, </em><em>optional</em>) -- Photometric probablility density functions of the source galaxies.
 Used instead of z_source if provided.</p></li>
 <li><p><strong>pzbins</strong> (<em>array</em><em>, </em><em>optional</em>) -- Redshift axis on which the individual photoz pdf is tabulated.</p></li>
@@ -174,12 +176,12 @@ information. When considering only redshift point estimates, the weights read</p
 <blockquote>
 <div><div class="math notranslate nohighlight">
 \[w_{ls, \text{geo}} = \Sigma_c(\text{cosmo}, z_l, z_{\text{src}})^{-2}\;.\]</div>
-<p>If the redshift pdf of each source, <span class="math notranslate nohighlight">\(p_{\text{photoz}}(z_s)\)</span>, is known, the weights are
-computed instead as</p>
+<p>If the redshift pdf of each source, <span class="math notranslate nohighlight">\(p_{\text{photoz}}(z_s)\)</span>, is known,
+the weights are computed instead as</p>
 <div class="math notranslate nohighlight">
 \[w_{ls, \text{geo}} = \left[\int_{\delta + z_l} dz_s p_{\text{photoz}}(z_s)
 \Sigma_c(\text{cosmo}, z_l, z_s)^{-1}\right]^2\]</div>
-<p>for the tangential shear, the weights 'w_{ls, text{geo}}` are 1.</p>
+<p>for the tangential shear, the weights <span class="math notranslate nohighlight">\(w_{ls, \text{geo}}\)</span> are 1.</p>
 </div></blockquote>
 <p>2. The shape weight <span class="math notranslate nohighlight">\(w_{ls,{\text{shape}}}\)</span> depends on shapenoise and/or shape
 measurement errors</p>
@@ -274,7 +276,7 @@ g_x =&amp; g_1 \sin\left(2\phi\right)-g_2\cos\left(2\phi\right)\end{split}\]</di
 <p>Finally, and if requested by the user throught the <cite>is_deltasigma</cite> flag, an estimate of the
 excess surface density <span class="math notranslate nohighlight">\(\widehat{\Delta\Sigma}\)</span> is obtained from</p>
 <div class="math notranslate nohighlight">
-\[\widehat{\Delta\Sigma_{t,x}} = g_{t,x} \times \Sigma_c(cosmo, z_L, z_{\text{src}})\]</div>
+\[\widehat{\Delta\Sigma_{t,x}} = g_{t,x} \times \Sigma_c(cosmo, z_l, z_{\text{src}})\]</div>
 <p>where <span class="math notranslate nohighlight">\(\Sigma_c\)</span> is the critical surface density that depends on the cosmology and on
 the lens and source redshifts. If <span class="math notranslate nohighlight">\(g_{t,x}\)</span> correspond to the shear, the above
 expression is an accurate. However, if <span class="math notranslate nohighlight">\(g_{t,x}\)</span> correspond to ellipticities or reduced
@@ -298,9 +300,15 @@ Not used if <cite>sigma_c</cite> is provided.</p></li>
 <li><p><strong>z_lens</strong> (<em>float</em><em>, </em><em>optional</em>) -- Redshift of the lens, required if <cite>is_deltasigma</cite> is True and <cite>sigma_c</cite> not provided.
 Not used if <cite>sigma_c</cite> is provided.</p></li>
 <li><p><strong>z_source</strong> (<em>array</em><em>, </em><em>optional</em>) -- Redshift of the source, required if <cite>is_deltasigma</cite> is True and <cite>sigma_c</cite> not provided.
-Not used if <cite>sigma_c</cite> is provided.</p></li>
+Not used if <cite>sigma_c</cite> is provided or <cite>use_pdz=True</cite>.</p></li>
 <li><p><strong>sigma_c</strong> (<em>float</em><em>, </em><em>optional</em>) -- Critical surface density in units of <span class="math notranslate nohighlight">\(M_\odot\ Mpc^{-2}\)</span>,
 if provided, <cite>cosmo</cite>, <cite>z_lens</cite> and <cite>z_source</cite> are not used.</p></li>
+<li><p><strong>use_pdz</strong> (<em>bool</em>) -- Flag to use or not the source redshift p(z), required if <cite>is_deltasigma</cite> is True
+and <cite>sigma_c</cite> not provided. If <cite>False</cite>, the point estimate provided by <cite>z_source</cite> is used.</p></li>
+<li><p><strong>pzpdf</strong> (<em>array</em><em>, </em><em>optional</em>) -- Photometric probablility density functions of the source galaxies, required if
+<cite>is_deltasigma=True</cite> and <cite>use_pdz=True</cite> and <cite>sigma_c</cite> not provided.</p></li>
+<li><p><strong>pzbins</strong> (<em>array</em><em>, </em><em>optional</em>) -- Redshift axis on which the individual photoz pdf is tabulated, required if
+<cite>is_deltasigma=True</cite> and <cite>use_pdz=True</cite> and <cite>sigma_c</cite> not provided.</p></li>
 <li><p><strong>validate_input</strong> (<em>bool</em>) -- Validade each input argument</p></li>
 </ul>
 </dd>
@@ -367,7 +375,7 @@ computed using a weighted average</p></li>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>profile</strong> (<em>GCData</em>) -- Output table containing the radius grid points, the profile of the components <cite>p_i</cite>,
-errors <cite>p_i_err</cite> and number of sources.  The errors are defined as the standard errors in
+errors <cite>p_i_err</cite> and number of sources. The errors are defined as the standard errors in
 each bin.</p></li>
 <li><p><strong>binnumber</strong> (<em>1-D ndarray of ints, optional</em>) -- Indices of the bins (corresponding to <cite>xbins</cite>) in which each value
 of <cite>xvals</cite> belongs.  Same length as <cite>yvals</cite>.  A binnumber of <cite>i</cite> means the

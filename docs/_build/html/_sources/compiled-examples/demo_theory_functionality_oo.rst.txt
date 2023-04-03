@@ -46,7 +46,7 @@ Make sure we know which version we’re using
 
 .. parsed-literal::
 
-    '1.5.3'
+    '1.7.1'
 
 
 
@@ -84,7 +84,6 @@ Quick test of all theory functionality
     rho = moo.eval_3d_density(r3d, z_cl)
     Sigma = moo.eval_surface_density(r3d, z_cl)
     DeltaSigma = moo.eval_excess_surface_density(r3d, z_cl)
-    Sigmac = moo.eval_critical_surface_density(z_cl, z_source)
     gammat = moo.eval_tangential_shear(r3d, z_cl, z_source)
     kappa = moo.eval_convergence(r3d, z_cl, z_source)
     
@@ -99,8 +98,8 @@ Quick test of all theory functionality
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/theory/generic.py:72: UserWarning: Magnification is negative for certain radii,                     returning nan for magnification bias in this case.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/theory/generic.py:74: RuntimeWarning: invalid value encountered in power
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/generic.py:72: UserWarning: Magnification is negative for certain radii,                     returning nan for magnification bias in this case.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/generic.py:74: RuntimeWarning: invalid value encountered in power
 
 
 Plot the predicted profiles
@@ -230,12 +229,19 @@ Side note regarding the Einasto profile (CCL and NC backends only)
 ------------------------------------------------------------------
 
 The Einasto profile is supported by both the CCL and NumCosmo backends.
-In CCL, the value of the Einasto slope is not a free parameter and
-depends on cosmology, redshift and halo mass. In NumCosmo, the default
-value is :math:`\alpha=0.25` but can be set to any other value. This is
-a source of confusion that needs to be handled. In the meantime, the
-verbose option allows to print the value of :math:`\alpha` that is being
-used, as follows:
+The value of the slope of the Einasto profile :math:`\alpha_{\rm ein}`
+can be defined by the user, using the ``set_einasto_alpha`` method. If
+:math:`\alpha_{\rm ein}` is not provided, both backend revert to a
+default value for the Einasto slope: - In CCL, the default Einasto slope
+depends on cosmology, redshift and halo mass. - In NumCosmo, the default
+value is :math:`\alpha=0.25`.
+
+**NB: for CCL, setting a user-defined value for the Einasto slope is
+only available for CCL version >= 2.6.** Earlier versions only allow the
+default option.
+
+The verbose option allows to print the value of :math:`\alpha` that is
+being used, as follows:
 
 .. code:: ipython3
 
@@ -243,8 +249,10 @@ used, as follows:
     moo_ein.set_cosmo(cosmo)
     moo_ein.set_concentration(4)
     moo_ein.set_mass(1.e15)
-    # With the NC backend, you may set the slope to the value of your choosing 
-    # moo_ein.set_einasto_alpha(0.1)
+    
+    # With the NC backend or CCL >=2.6 you may set the slope to the value of your choosing. 
+    # Otherwise, the backend default value will be used
+    moo_ein.set_einasto_alpha(0.17)
     
     r3d = np.logspace(-2, 2, 100)
     rho = moo_ein.eval_3d_density(r3d, z_cl, verbose=True)
@@ -253,9 +261,10 @@ used, as follows:
 
 .. parsed-literal::
 
-    Einasto alpha = 0.3713561546989172
+    Einasto alpha = 0.17
 
 
 
 .. image:: demo_theory_functionality_oo_files/demo_theory_functionality_oo_27_1.png
+
 

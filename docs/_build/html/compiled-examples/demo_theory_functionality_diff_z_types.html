@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Model WL Profiles (different redshift inputs) &mdash; CLMM 1.5.3 documentation</title>
+  <title>Model WL Profiles (different redshift inputs) &mdash; CLMM 1.7.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -33,7 +33,7 @@
             <a href="../index.html" class="icon icon-home"> CLMM
           </a>
               <div class="version">
-                1.5.3
+                1.7.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -172,7 +172,7 @@ value of the mean beta parameters :
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clmm</span><span class="o">.</span><span class="n">__version__</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.5.3&#39;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.7.1&#39;</span>
 </pre></div>
 </div>
 </section>
@@ -271,7 +271,7 @@ average <span class="math notranslate nohighlight">\(\langle\beta_s\rangle\)</sp
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x155515492350</span><span class="o">&gt;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x155515fe9250</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <img alt="../_images/demo_theory_functionality_diff_z_types_21_1.png" src="../_images/demo_theory_functionality_diff_z_types_21_1.png" />
@@ -298,7 +298,7 @@ produced in the previous section.</p>
         <span class="mf">0.00032859</span><span class="p">]),</span>
  <span class="n">array</span><span class="p">([</span><span class="mf">0.00898515</span><span class="p">,</span> <span class="mf">0.01455188</span><span class="p">,</span> <span class="mf">0.086497</span>  <span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mf">0.00915508</span><span class="p">,</span> <span class="mf">0.0164856</span> <span class="p">,</span>
         <span class="mf">0.13692621</span><span class="p">]),</span>
- <span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">4.33680869e-18</span><span class="p">,</span> <span class="o">-</span><span class="mf">8.67361738e-18</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.16333634e-17</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span>
+ <span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">4.33680869e-18</span><span class="p">,</span> <span class="o">-</span><span class="mf">7.80625564e-18</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.16333634e-17</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span>
         <span class="o">-</span><span class="mf">5.20417043e-18</span><span class="p">,</span> <span class="o">-</span><span class="mf">7.80625564e-18</span><span class="p">,</span> <span class="o">-</span><span class="mf">6.93889390e-17</span><span class="p">]))</span>
 </pre></div>
 </div>
@@ -330,8 +330,8 @@ catalog and number of radius points.</p>
     <span class="k">for</span> <span class="n">_r</span> <span class="ow">in</span> <span class="n">rr</span><span class="p">])</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">1.91</span> <span class="n">s</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mf">10.8</span> <span class="n">ms</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">1.93</span> <span class="n">s</span>
-<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mf">1.92</span> <span class="n">s</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">3.09</span> <span class="n">s</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mi">415</span> <span class="n">ms</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">3.5</span> <span class="n">s</span>
+<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mf">3.5</span> <span class="n">s</span>
 </pre></div>
 </div>
 </section>
@@ -349,8 +349,8 @@ may be quite slow.</p>
     <span class="n">beta_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;zmax&#39;</span><span class="p">:</span><span class="n">zsrc_max</span><span class="p">},</span> <span class="n">approx</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mi">335</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mf">17.9</span> <span class="n">ms</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mi">353</span> <span class="n">ms</span>
-<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mi">343</span> <span class="n">ms</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mi">268</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mf">4.78</span> <span class="n">ms</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mi">273</span> <span class="n">ms</span>
+<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mi">268</span> <span class="n">ms</span>
 </pre></div>
 </div>
 </section>
@@ -367,8 +367,8 @@ reduced shear.</p>
     <span class="n">beta_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;zmax&#39;</span><span class="p">:</span><span class="n">zsrc_max</span><span class="p">},</span>  <span class="n">approx</span><span class="o">=</span><span class="s2">&quot;order1&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">8.31</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mi">47</span> <span class="n">µs</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">8.35</span> <span class="n">ms</span>
-<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mf">7.94</span> <span class="n">ms</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">8.45</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mi">0</span> <span class="n">ns</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">8.45</span> <span class="n">ms</span>
+<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mf">7.86</span> <span class="n">ms</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>
@@ -379,8 +379,8 @@ reduced shear.</p>
     <span class="n">beta_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;zmax&#39;</span><span class="p">:</span><span class="n">zsrc_max</span><span class="p">},</span>  <span class="n">approx</span><span class="o">=</span><span class="s2">&quot;order2&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">14.4</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mi">0</span> <span class="n">ns</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">14.4</span> <span class="n">ms</span>
-<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mi">14</span> <span class="n">ms</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">14.7</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mi">0</span> <span class="n">ns</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">14.7</span> <span class="n">ms</span>
+<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mf">14.3</span> <span class="n">ms</span>
 </pre></div>
 </div>
 </section>
@@ -402,8 +402,8 @@ the fastest approach.</div>
     <span class="n">beta_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;zmax&#39;</span><span class="p">:</span><span class="n">zsrc_max</span><span class="p">},</span> <span class="n">approx</span><span class="o">=</span><span class="s2">&quot;order1&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">1.72</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mi">0</span> <span class="n">ns</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">1.72</span> <span class="n">ms</span>
-<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mf">1.51</span> <span class="n">ms</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">1.67</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mi">0</span> <span class="n">ns</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">1.67</span> <span class="n">ms</span>
+<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mf">1.34</span> <span class="n">ms</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>
@@ -414,8 +414,8 @@ the fastest approach.</div>
     <span class="n">beta_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;zmax&#39;</span><span class="p">:</span><span class="n">zsrc_max</span><span class="p">},</span> <span class="n">approx</span><span class="o">=</span><span class="s2">&quot;order2&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">1.85</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mi">0</span> <span class="n">ns</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">1.85</span> <span class="n">ms</span>
-<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mf">1.65</span> <span class="n">ms</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mi">109</span> <span class="n">µs</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mf">1.81</span> <span class="n">ms</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">1.92</span> <span class="n">ms</span>
+<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mf">1.49</span> <span class="n">ms</span>
 </pre></div>
 </div>
 </section>

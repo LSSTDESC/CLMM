@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>clmm.gcdata &mdash; CLMM 1.5.3 documentation</title>
+  <title>clmm.gcdata &mdash; CLMM 1.7.1 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -29,7 +29,7 @@
             <a href="../../index.html" class="icon icon-home"> CLMM
           </a>
               <div class="version">
-                1.5.3
+                1.7.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -139,6 +139,7 @@
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
 <span class="kn">from</span> <span class="nn">astropy.table</span> <span class="kn">import</span> <span class="n">Table</span> <span class="k">as</span> <span class="n">APtable</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 
 <div class="viewcode-block" id="GCMetaData"><a class="viewcode-back" href="../../api/clmm.gcdata.html#clmm.gcdata.GCMetaData">[docs]</a><span class="k">class</span> <span class="nc">GCMetaData</span><span class="p">(</span><span class="n">OrderedDict</span><span class="p">):</span>
@@ -198,6 +199,8 @@
         <span class="n">metakwargs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;meta&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;meta&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="k">else</span> <span class="p">{}</span>
         <span class="n">metakwargs</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">metakwargs</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">metakwargs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">meta</span> <span class="o">=</span> <span class="n">GCMetaData</span><span class="p">(</span><span class="o">**</span><span class="n">metakwargs</span><span class="p">)</span>
+        <span class="c1"># this attribute is set when source galaxies have p(z)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pzpdf_info</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">_str_colnames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Colnames in comma separated str&quot;&quot;&quot;</span>
@@ -208,34 +211,51 @@
         <span class="k">return</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s1">&#39;</span>
             <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
 
+    <span class="k">def</span> <span class="nf">_str_pzpdf_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pzpdf_info</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">out</span><span class="o">==</span><span class="s1">&#39;shared_bins&#39;</span><span class="p">:</span>
+                <span class="n">default_cfg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">get_printoptions</span><span class="p">()</span> <span class="c1"># keep default values</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">edgeitems</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+                <span class="n">out</span> <span class="o">+=</span> <span class="s1">&#39; &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pzpdf_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;zbins&#39;</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="o">**</span><span class="n">default_cfg</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">out</span>
+
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Generates string for repr(GCData)&quot;&quot;&quot;</span>
         <span class="n">description</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_str_meta_</span><span class="p">(),</span> <span class="s1">&#39;columns: &#39;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_str_colnames</span><span class="p">()]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pzpdf_info</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]:</span>
+            <span class="n">description</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;pzpdf: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pzpdf_info</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">description</span><span class="p">)</span><span class="si">}</span><span class="s1">)&#39;</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Generates string for print(GCData)&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&gt; defined by: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_str_meta_</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&gt; with columns: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_str_colnames</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&gt; </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s1"> objects&#39;</span>
-            <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="si">{</span><span class="n">APtable</span><span class="o">.</span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="p">)</span>
-
+        <span class="n">out</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;&gt; defined by: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_str_meta_</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;&gt; with columns: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_str_colnames</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;&gt; </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s1"> objects&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">APtable</span><span class="o">.</span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pzpdf_info</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;&gt; and pzpdf: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_str_pzpdf_info</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_html_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get html table for display&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s1">&#39;&lt;/i&gt;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">APtable</span><span class="o">.</span><span class="n">_repr_html_</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;&lt;/i&gt;&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:])</span>
 
     <span class="k">def</span> <span class="nf">_repr_html_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Generates string for display(GCData)&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;&lt;b&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&lt;/b&gt;&#39;</span>
-            <span class="sa">f</span><span class="s1">&#39;&lt;br&gt; &lt;b&gt;defined by:&lt;/b&gt; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_str_meta_</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="sa">f</span><span class="s1">&#39;&lt;br&gt; &lt;b&gt;with columns:&lt;/b&gt; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_str_colnames</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="sa">f</span><span class="s1">&#39;&lt;br&gt; </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s1"> objects&#39;</span>
-            <span class="sa">f</span><span class="s1">&#39;&lt;br&gt; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_html_table</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="p">)</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="sa">f</span><span class="s1">&#39;&lt;b&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&lt;/b&gt;&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;&lt;br&gt; &lt;b&gt;defined by:&lt;/b&gt; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_str_meta_</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;&lt;br&gt; &lt;b&gt;with columns:&lt;/b&gt; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_str_colnames</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;&lt;br&gt; </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s1"> objects&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;&lt;br&gt; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_html_table</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pzpdf_info</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;&lt;br&gt; &lt;b&gt;and pzpdf:&lt;/b&gt; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_str_pzpdf_info</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -252,7 +272,39 @@
             <span class="n">item</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
             <span class="n">item</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">name_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)])</span>
         <span class="n">out</span> <span class="o">=</span> <span class="n">APtable</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+        <span class="c1"># sub cols or sub rows</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)):</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">pzpdf_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pzpdf_info</span>
         <span class="k">return</span> <span class="n">out</span>
+
+<div class="viewcode-block" id="GCData.update_info_ext_valid"><a class="viewcode-back" href="../../api/clmm.gcdata.html#clmm.gcdata.GCData.update_info_ext_valid">[docs]</a>    <span class="k">def</span> <span class="nf">update_info_ext_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">gcdata</span><span class="p">,</span> <span class="n">ext_value</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Updates cosmo metadata if the same as in gcdata</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        key: str</span>
+<span class="sd">            Name of key to compare and update.</span>
+<span class="sd">        gcdata: GCData</span>
+<span class="sd">            Table to check if same cosmology.</span>
+<span class="sd">        ext_value:</span>
+<span class="sd">            Value to be compared to.</span>
+<span class="sd">        overwrite: bool</span>
+<span class="sd">            Overwrites the current metadata. If false raises Error when values are different.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">ext_value</span><span class="p">:</span>
+            <span class="n">in_value</span> <span class="o">=</span> <span class="n">gcdata</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">in_value</span> <span class="ow">and</span> <span class="n">in_value</span> <span class="o">!=</span> <span class="n">ext_value</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;input &#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39; (</span><span class="si">{</span><span class="n">ext_value</span><span class="si">}</span><span class="s2">) overwriting gcdata &#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39; (</span><span class="si">{</span><span class="n">in_value</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;input &#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39; (</span><span class="si">{</span><span class="n">ext_value</span><span class="si">}</span><span class="s2">) differs from gcdata &#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39; (</span><span class="si">{</span><span class="n">in_value</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">ext_value</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="GCData.update_cosmo_ext_valid"><a class="viewcode-back" href="../../api/clmm.gcdata.html#clmm.gcdata.GCData.update_cosmo_ext_valid">[docs]</a>    <span class="k">def</span> <span class="nf">update_cosmo_ext_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gcdata</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Updates cosmo metadata if the same as in gcdata</span>
@@ -272,16 +324,7 @@
 <span class="sd">        None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">cosmo_desc</span> <span class="o">=</span> <span class="n">cosmo</span><span class="o">.</span><span class="n">get_desc</span><span class="p">()</span> <span class="k">if</span> <span class="n">cosmo</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">cosmo_desc</span><span class="p">:</span>
-            <span class="n">cosmo_gcdata</span> <span class="o">=</span> <span class="n">gcdata</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;cosmo&#39;</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">cosmo_gcdata</span> <span class="ow">and</span> <span class="n">cosmo_gcdata</span> <span class="o">!=</span> <span class="n">cosmo_desc</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
-                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s1">&#39;input cosmo (</span><span class="si">{</span><span class="n">cosmo_desc</span><span class="si">}</span><span class="s1">) overwriting gcdata cosmo (</span><span class="si">{</span><span class="n">cosmo_gcdata</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s1">&#39;input cosmo (</span><span class="si">{</span><span class="n">cosmo_desc</span><span class="si">}</span><span class="s1">) differs from gcdata cosmo (</span><span class="si">{</span><span class="n">cosmo_gcdata</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="s1">&#39;cosmo&#39;</span><span class="p">,</span> <span class="n">cosmo_desc</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_info_ext_valid</span><span class="p">(</span><span class="s1">&#39;cosmo&#39;</span><span class="p">,</span> <span class="n">gcdata</span><span class="p">,</span> <span class="n">cosmo_desc</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="GCData.update_cosmo"><a class="viewcode-back" href="../../api/clmm.gcdata.html#clmm.gcdata.GCData.update_cosmo">[docs]</a>    <span class="k">def</span> <span class="nf">update_cosmo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Updates cosmo metadata if not present</span>
@@ -298,7 +341,49 @@
 <span class="sd">        -------</span>
 <span class="sd">        None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update_cosmo_ext_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_cosmo_ext_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GCData.has_pzpdfs"><a class="viewcode-back" href="../../api/clmm.gcdata.html#clmm.gcdata.GCData.has_pzpdfs">[docs]</a>    <span class="k">def</span> <span class="nf">has_pzpdfs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get pzbins and pzpdfs of galaxies</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pzbins : array</span>
+<span class="sd">            zbins of each object in data</span>
+<span class="sd">        pzpdfs : array</span>
+<span class="sd">            PDF of each object in data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pzpdf_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pzpdf_info</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">pzpdf_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">elif</span> <span class="n">pzpdf_type</span><span class="o">==</span><span class="s1">&#39;shared_bins&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;zbins&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pzpdf_info</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="s1">&#39;pzpdf&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">pzpdf_type</span><span class="o">==</span><span class="s1">&#39;individual_bins&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;pzbins&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="s1">&#39;pzpdf&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PDF use &#39;</span><span class="si">{</span><span class="n">pzpdf_type</span><span class="si">}</span><span class="s2">&#39; not implemented.&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GCData.get_pzpdfs"><a class="viewcode-back" href="../../api/clmm.gcdata.html#clmm.gcdata.GCData.get_pzpdfs">[docs]</a>    <span class="k">def</span> <span class="nf">get_pzpdfs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get pzbins and pzpdfs of galaxies</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pzbins : array</span>
+<span class="sd">            zbins of PDF. 1D if `shared_bins`,</span>
+<span class="sd">            zbins of each object in data if `individual_bins`.</span>
+<span class="sd">        pzpdfs : array</span>
+<span class="sd">            PDF of each object in data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pzpdf_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pzpdf_info</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">pzpdf_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No PDF information stored!&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">pzpdf_type</span><span class="o">==</span><span class="s1">&#39;shared_bins&#39;</span><span class="p">:</span>
+            <span class="n">pzbins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pzpdf_info</span><span class="p">[</span><span class="s1">&#39;zbins&#39;</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">pzpdf_type</span><span class="o">==</span><span class="s1">&#39;individual_bins&#39;</span><span class="p">:</span>
+            <span class="n">pzbins</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;pzbins&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PDF use &#39;</span><span class="si">{</span><span class="n">pzpdf_type</span><span class="si">}</span><span class="s2">&#39; not implemented.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pzbins</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">]</span></div></div>
 </pre></div>
 
            </div>

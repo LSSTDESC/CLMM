@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>clmm.theory.func_layer &mdash; CLMM 1.5.3 documentation</title>
+  <title>clmm.theory.func_layer &mdash; CLMM 1.7.1 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -29,7 +29,7 @@
             <a href="../../../index.html" class="icon icon-home"> CLMM
           </a>
               <div class="version">
-                1.5.3
+                1.7.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -140,7 +140,6 @@
 <span class="c1"># The functions expect a global instance of the actual CLMModeling named</span>
 <span class="c1"># `gcm&#39;.</span>
 
-<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">generic</span>
@@ -150,11 +149,12 @@
                        <span class="n">convert_profile_mass_concentration</span><span class="p">)</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="n">generic</span><span class="o">.</span><span class="n">__all__</span><span class="o">+</span><span class="p">[</span><span class="s1">&#39;compute_3d_density&#39;</span><span class="p">,</span> <span class="s1">&#39;compute_surface_density&#39;</span><span class="p">,</span>
-                           <span class="s1">&#39;compute_excess_surface_density&#39;</span><span class="p">,</span><span class="s1">&#39;compute_excess_surface_density_2h&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;compute_mean_surface_density&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;compute_excess_surface_density&#39;</span><span class="p">,</span> <span class="s1">&#39;compute_excess_surface_density_2h&#39;</span><span class="p">,</span>
                            <span class="s1">&#39;compute_surface_density_2h&#39;</span><span class="p">,</span>
-                           <span class="s1">&#39;compute_critical_surface_density&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;compute_critical_surface_density_eff&#39;</span><span class="p">,</span>
                            <span class="s1">&#39;compute_tangential_shear&#39;</span><span class="p">,</span> <span class="s1">&#39;compute_convergence&#39;</span><span class="p">,</span>
-                           <span class="s1">&#39;compute_reduced_tangential_shear&#39;</span><span class="p">,</span><span class="s1">&#39;compute_magnification&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;compute_reduced_tangential_shear&#39;</span><span class="p">,</span> <span class="s1">&#39;compute_magnification&#39;</span><span class="p">,</span>
                            <span class="s1">&#39;compute_magnification_bias&#39;</span><span class="p">]</span>
 
 
@@ -166,7 +166,7 @@
 <span class="sd">    Profiles implemented so far are:</span>
 
 <span class="sd">        `nfw`: :math:`\rho(r) = \frac{\rho_0}{\frac{c}{(r/R_{vir})}</span>
-<span class="sd">        \left(1+\frac{c}{(r/R_{vir})}\right)^2}` [insert citation here]</span>
+<span class="sd">        \left(1+\frac{c}{(r/R_{vir})}\right)^2}` (Navarro et al. 1996)</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -196,9 +196,11 @@
 <span class="sd">            * &#39;critical&#39;</span>
 <span class="sd">            * &#39;virial&#39;</span>
 
-<span class="sd">    alpha_ein : float, optional</span>
-<span class="sd">        If `halo_profile_model==&#39;einasto&#39;`, set the value of the Einasto slope. Option only</span>
-<span class="sd">        available for the NumCosmo backend</span>
+<span class="sd">    alpha_ein : float, None, optional</span>
+<span class="sd">        If `halo_profile_model==&#39;einasto&#39;`, set the value of the Einasto slope.</span>
+<span class="sd">        Option only available for the NumCosmo and CCL backends.</span>
+<span class="sd">        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a</span>
+<span class="sd">        cosmology-dependent value for the CCL backend.)</span>
 <span class="sd">    verbose : boolean, optional</span>
 <span class="sd">        If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL</span>
 <span class="sd">        backends.</span>
@@ -221,7 +223,7 @@
         <span class="n">halo_profile_model</span><span class="o">=</span><span class="n">halo_profile_model</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="n">massdef</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef</span><span class="p">)</span>
     <span class="n">gcm</span><span class="o">.</span><span class="n">set_concentration</span><span class="p">(</span><span class="n">cdelta</span><span class="p">)</span>
     <span class="n">gcm</span><span class="o">.</span><span class="n">set_mass</span><span class="p">(</span><span class="n">mdelta</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">alpha_ein</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">halo_profile_model</span><span class="o">==</span><span class="s1">&#39;einasto&#39;</span> <span class="ow">or</span> <span class="n">alpha_ein</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">gcm</span><span class="o">.</span><span class="n">set_einasto_alpha</span><span class="p">(</span><span class="n">alpha_ein</span><span class="p">)</span>
 
     <span class="n">rho</span> <span class="o">=</span> <span class="n">gcm</span><span class="o">.</span><span class="n">eval_3d_density</span><span class="p">(</span><span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
@@ -239,6 +241,77 @@
 <span class="sd">        \Sigma(R) = \int^\infty_{-\infty} dx\; \rho \left(\sqrt{R^2+x^2}\right),</span>
 
 <span class="sd">    where :math:`\rho(r)` is the 3d density profile.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    r_proj : array_like</span>
+<span class="sd">        Projected radial position from the cluster center in :math:`M\!pc`.</span>
+<span class="sd">    mdelta : float</span>
+<span class="sd">        Galaxy cluster mass in :math:`M_\odot`.</span>
+<span class="sd">    cdelta : float</span>
+<span class="sd">        Galaxy cluster concentration</span>
+<span class="sd">    z_cl: float</span>
+<span class="sd">        Redshift of the cluster</span>
+<span class="sd">    cosmo : clmm.cosmology.Cosmology object</span>
+<span class="sd">        CLMM Cosmology object</span>
+<span class="sd">    delta_mdef : int, optional</span>
+<span class="sd">        Mass overdensity definition; defaults to 200.</span>
+<span class="sd">    halo_profile_model : str, optional</span>
+<span class="sd">        Profile model parameterization (letter case independent):</span>
+
+<span class="sd">            * &#39;nfw&#39; (default)</span>
+<span class="sd">            * &#39;einasto&#39; - not in cluster_toolkit</span>
+<span class="sd">            * &#39;hernquist&#39; - not in cluster_toolkit</span>
+
+<span class="sd">    massdef : str, optional</span>
+<span class="sd">        Profile mass definition, with the following supported options (letter case independent):</span>
+
+<span class="sd">            * &#39;mean&#39; (default)</span>
+<span class="sd">            * &#39;critical&#39;</span>
+<span class="sd">            * &#39;virial&#39;</span>
+
+<span class="sd">    alpha_ein : float, None, optional</span>
+<span class="sd">        If `halo_profile_model==&#39;einasto&#39;`, set the value of the Einasto slope.</span>
+<span class="sd">        Option only available for the NumCosmo and CCL backends.</span>
+<span class="sd">        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a</span>
+<span class="sd">        cosmology-dependent value for the CCL backend.)</span>
+<span class="sd">    verbose : boolean, optional</span>
+<span class="sd">        If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL</span>
+<span class="sd">        backends.</span>
+<span class="sd">    validate_input : bool, optional</span>
+<span class="sd">        If True (default), the types of the arguments are checked before proceeding.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    sigma : numpy.ndarray, float</span>
+<span class="sd">        2D projected surface density in units of :math:`M_\odot\ Mpc^{-2}`</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Need to refactory so we only require arguments that are necessary for all models and use</span>
+<span class="sd">    another structure to take the arguments necessary for specific models.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">gcm</span><span class="o">.</span><span class="n">validate_input</span> <span class="o">=</span> <span class="n">validate_input</span>
+    <span class="n">gcm</span><span class="o">.</span><span class="n">set_cosmo</span><span class="p">(</span><span class="n">cosmo</span><span class="p">)</span>
+    <span class="n">gcm</span><span class="o">.</span><span class="n">set_halo_density_profile</span><span class="p">(</span>
+        <span class="n">halo_profile_model</span><span class="o">=</span><span class="n">halo_profile_model</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="n">massdef</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef</span><span class="p">)</span>
+    <span class="n">gcm</span><span class="o">.</span><span class="n">set_concentration</span><span class="p">(</span><span class="n">cdelta</span><span class="p">)</span>
+    <span class="n">gcm</span><span class="o">.</span><span class="n">set_mass</span><span class="p">(</span><span class="n">mdelta</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">halo_profile_model</span><span class="o">==</span><span class="s1">&#39;einasto&#39;</span> <span class="ow">or</span> <span class="n">alpha_ein</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">gcm</span><span class="o">.</span><span class="n">set_einasto_alpha</span><span class="p">(</span><span class="n">alpha_ein</span><span class="p">)</span>
+
+    <span class="n">sigma</span> <span class="o">=</span> <span class="n">gcm</span><span class="o">.</span><span class="n">eval_surface_density</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+
+    <span class="n">gcm</span><span class="o">.</span><span class="n">validate_input</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="n">sigma</span></div>
+
+<div class="viewcode-block" id="compute_mean_surface_density"><a class="viewcode-back" href="../../../api/clmm.theory.numcosmo.html#clmm.theory.compute_mean_surface_density">[docs]</a><span class="k">def</span> <span class="nf">compute_mean_surface_density</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">mdelta</span><span class="p">,</span> <span class="n">cdelta</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+                            <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">alpha_ein</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                            <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">validate_input</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Computes the mean value of surface density inside radius `r_proj`</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        \bar{\Sigma}(&lt;R) = \frac{2}{R^2} \int^R_0 dR&#39; R&#39; \Sigma(R&#39;),</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -297,10 +370,10 @@
     <span class="k">if</span> <span class="n">alpha_ein</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">gcm</span><span class="o">.</span><span class="n">set_einasto_alpha</span><span class="p">(</span><span class="n">alpha_ein</span><span class="p">)</span>
 
-    <span class="n">sigma</span> <span class="o">=</span> <span class="n">gcm</span><span class="o">.</span><span class="n">eval_surface_density</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+    <span class="n">sigma_bar</span> <span class="o">=</span> <span class="n">gcm</span><span class="o">.</span><span class="n">eval_mean_surface_density</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
 
     <span class="n">gcm</span><span class="o">.</span><span class="n">validate_input</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="k">return</span> <span class="n">sigma</span></div>
+    <span class="k">return</span> <span class="n">sigma_bar</span></div>
 
 <div class="viewcode-block" id="compute_excess_surface_density"><a class="viewcode-back" href="../../../api/clmm.theory.numcosmo.html#clmm.theory.compute_excess_surface_density">[docs]</a><span class="k">def</span> <span class="nf">compute_excess_surface_density</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">mdelta</span><span class="p">,</span> <span class="n">cdelta</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
                                    <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">alpha_ein</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -309,11 +382,6 @@
 
 <span class="sd">    .. math::</span>
 <span class="sd">        \Delta\Sigma(R) = \bar{\Sigma}(&lt;R)-\Sigma(R),</span>
-
-<span class="sd">    where</span>
-
-<span class="sd">    .. math::</span>
-<span class="sd">        \bar{\Sigma}(&lt;R) = \frac{2}{R^2} \int^R_0 dR&#39; R&#39; \Sigma(R&#39;)</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -343,9 +411,11 @@
 <span class="sd">            * &#39;critical&#39;</span>
 <span class="sd">            * &#39;virial&#39;</span>
 
-<span class="sd">    alpha_ein : float, optional</span>
-<span class="sd">        If `halo_profile_model==&#39;einasto&#39;`, set the value of the Einasto slope. Option only</span>
-<span class="sd">        available for the NumCosmo backend</span>
+<span class="sd">    alpha_ein : float, None, optional</span>
+<span class="sd">        If `halo_profile_model==&#39;einasto&#39;`, set the value of the Einasto slope.</span>
+<span class="sd">        Option only available for the NumCosmo and CCL backends.</span>
+<span class="sd">        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a</span>
+<span class="sd">        cosmology-dependent value for the CCL backend.)</span>
 <span class="sd">    verbose : boolean, optional</span>
 <span class="sd">        If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL</span>
 <span class="sd">        backends.</span>
@@ -363,7 +433,7 @@
         <span class="n">halo_profile_model</span><span class="o">=</span><span class="n">halo_profile_model</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="n">massdef</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef</span><span class="p">)</span>
     <span class="n">gcm</span><span class="o">.</span><span class="n">set_concentration</span><span class="p">(</span><span class="n">cdelta</span><span class="p">)</span>
     <span class="n">gcm</span><span class="o">.</span><span class="n">set_mass</span><span class="p">(</span><span class="n">mdelta</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">alpha_ein</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">halo_profile_model</span><span class="o">==</span><span class="s1">&#39;einasto&#39;</span> <span class="ow">or</span> <span class="n">alpha_ein</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">gcm</span><span class="o">.</span><span class="n">set_einasto_alpha</span><span class="p">(</span><span class="n">alpha_ein</span><span class="p">)</span>
 
     <span class="n">deltasigma</span> <span class="o">=</span> <span class="n">gcm</span><span class="o">.</span><span class="n">eval_excess_surface_density</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
@@ -376,8 +446,8 @@
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Computes the 2-halo term excess surface density from eq.(13) of Oguri &amp; Hamana (2011)</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">        \Delta\Sigma_{\rm 2h}(R) = \frac{\rho_m(z)b(M)}{(1 + z)^3D_A(z)^2} \int\frac{ldl}{(2\pi)}</span>
-<span class="sd">        P_{\rm mm}(k_l, z)J_2(l\theta)</span>
+<span class="sd">        \Delta\Sigma_{\text{2h}}(R) = \frac{\rho_m(z)b(M)}{(1 + z)^3D_A(z)^2}</span>
+<span class="sd">        \int\frac{ldl}{(2\pi)} P_{\rm mm}(k_l, z)J_2(l\theta)</span>
 
 <span class="sd">    where</span>
 
@@ -457,19 +527,8 @@
     <span class="n">gcm</span><span class="o">.</span><span class="n">validate_input</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="n">sigma_2h</span></div>
 
-<div class="viewcode-block" id="compute_critical_surface_density"><a class="viewcode-back" href="../../../api/clmm.theory.numcosmo.html#clmm.theory.compute_critical_surface_density">[docs]</a><span class="k">def</span> <span class="nf">compute_critical_surface_density</span><span class="p">(</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">z_cluster</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                                     <span class="n">use_pdz</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pzbins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pzpdf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                                     <span class="n">validate_input</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes either</span>
-
-<span class="sd">    - the critical surface density if `use_pdz=False`</span>
-
-<span class="sd">    .. math::</span>
-<span class="sd">        \Sigma_{\rm crit} = \frac{c^2}{4\pi G} \frac{D_s}{D_LD_{LS}}</span>
-
-<span class="sd">    or</span>
-
-<span class="sd">    - the &#39;effective critical surface density&#39; if `use_pdz=True`</span>
+<div class="viewcode-block" id="compute_critical_surface_density_eff"><a class="viewcode-back" href="../../../api/clmm.theory.numcosmo.html#clmm.theory.compute_critical_surface_density_eff">[docs]</a><span class="k">def</span> <span class="nf">compute_critical_surface_density_eff</span><span class="p">(</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">z_cluster</span><span class="p">,</span> <span class="n">pzbins</span><span class="p">,</span> <span class="n">pzpdf</span><span class="p">,</span> <span class="n">validate_input</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes the &#39;effective critical surface density&#39;</span>
 
 <span class="sd">    .. math::</span>
 <span class="sd">        \langle \Sigma_{\rm crit}^{-1}\rangle^{-1} = \left(\int \frac{1}{\Sigma_{\rm crit}(z)}</span>
@@ -479,6 +538,8 @@
 <span class="sd">    This comes from the maximum likelihood estimator for evaluating a :math:`\Delta\Sigma`</span>
 <span class="sd">    profile.</span>
 
+<span class="sd">    For the standard :math:`\Sigma_{\rm crit}(z)` definition, use the `eval_sigma_crit` method of </span>
+<span class="sd">    the CLMM cosmology object.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -486,13 +547,6 @@
 <span class="sd">        CLMM Cosmology object</span>
 <span class="sd">    z_cluster : float</span>
 <span class="sd">        Galaxy cluster redshift</span>
-<span class="sd">    z_source : array_like, float</span>
-<span class="sd">        Background source galaxy redshift(s)</span>
-<span class="sd">    use_pdz : bool</span>
-<span class="sd">        Flag to use the photoz pdf. If `False` (default), `sigma_c` is computed using the source</span>
-<span class="sd">        redshift point estimates `z_source`. If `True`, `sigma_c` is computed as 1/&lt;1/Sigma_crit&gt;,</span>
-<span class="sd">        where the average is performed using the individual galaxy redshift pdf.</span>
-<span class="sd">        In that case, the `pzbins` and `pzpdf` should be specified.</span>
 <span class="sd">    pzbins : array-like</span>
 <span class="sd">        Bins where the source redshift pdf is defined</span>
 <span class="sd">    pzpdf : array-like</span>
@@ -510,8 +564,7 @@
 
     <span class="n">gcm</span><span class="o">.</span><span class="n">validate_input</span> <span class="o">=</span> <span class="n">validate_input</span>
     <span class="n">gcm</span><span class="o">.</span><span class="n">set_cosmo</span><span class="p">(</span><span class="n">cosmo</span><span class="p">)</span>
-    <span class="n">sigma_c</span> <span class="o">=</span> <span class="n">gcm</span><span class="o">.</span><span class="n">eval_critical_surface_density</span><span class="p">(</span><span class="n">z_cluster</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="n">z_source</span><span class="p">,</span>
-                                                <span class="n">use_pdz</span><span class="o">=</span><span class="n">use_pdz</span><span class="p">,</span> <span class="n">pzbins</span><span class="o">=</span><span class="n">pzbins</span><span class="p">,</span> <span class="n">pzpdf</span><span class="o">=</span><span class="n">pzpdf</span><span class="p">)</span>
+    <span class="n">sigma_c</span> <span class="o">=</span> <span class="n">gcm</span><span class="o">.</span><span class="n">eval_critical_surface_density_eff</span><span class="p">(</span><span class="n">z_cluster</span><span class="p">,</span> <span class="n">pzbins</span><span class="p">,</span> <span class="n">pzpdf</span><span class="p">)</span>
 
     <span class="n">gcm</span><span class="o">.</span><span class="n">validate_input</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="n">sigma_c</span></div>
@@ -561,9 +614,11 @@
 <span class="sd">            * &#39;critical&#39;</span>
 <span class="sd">            * &#39;virial&#39;</span>
 
-<span class="sd">    alpha_ein : float, optional</span>
-<span class="sd">        If `halo_profile_model==&#39;einasto&#39;`, set the value of the Einasto slope. Option only</span>
-<span class="sd">        availablefor the NumCosmo backend</span>
+<span class="sd">    alpha_ein : float, None, optional</span>
+<span class="sd">        If `halo_profile_model==&#39;einasto&#39;`, set the value of the Einasto slope.</span>
+<span class="sd">        Option only available for the NumCosmo and CCL backends.</span>
+<span class="sd">        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a</span>
+<span class="sd">        cosmology-dependent value for the CCL backend.)</span>
 <span class="sd">    z_src_info : str, optional</span>
 <span class="sd">        Type of redshift information provided by the `z_source` argument.</span>
 <span class="sd">        The following supported options are:</span>
@@ -618,7 +673,7 @@
         <span class="n">halo_profile_model</span><span class="o">=</span><span class="n">halo_profile_model</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="n">massdef</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef</span><span class="p">)</span>
     <span class="n">gcm</span><span class="o">.</span><span class="n">set_concentration</span><span class="p">(</span><span class="n">cdelta</span><span class="p">)</span>
     <span class="n">gcm</span><span class="o">.</span><span class="n">set_mass</span><span class="p">(</span><span class="n">mdelta</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">alpha_ein</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">halo_profile_model</span><span class="o">==</span><span class="s1">&#39;einasto&#39;</span> <span class="ow">or</span> <span class="n">alpha_ein</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">gcm</span><span class="o">.</span><span class="n">set_einasto_alpha</span><span class="p">(</span><span class="n">alpha_ein</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">r_proj</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1.e-11</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -678,9 +733,11 @@
 <span class="sd">            * &#39;critical&#39;</span>
 <span class="sd">            * &#39;virial&#39;</span>
 
-<span class="sd">    alpha_ein : float, optional</span>
-<span class="sd">        If `halo_profile_model==&#39;einasto&#39;`, set the value of the Einasto slope. Option only</span>
-<span class="sd">        available for the NumCosmo backend</span>
+<span class="sd">    alpha_ein : float, None, optional</span>
+<span class="sd">        If `halo_profile_model==&#39;einasto&#39;`, set the value of the Einasto slope.</span>
+<span class="sd">        Option only available for the NumCosmo and CCL backends.</span>
+<span class="sd">        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a</span>
+<span class="sd">        cosmology-dependent value for the CCL backend.)</span>
 <span class="sd">    z_src_info : str, optional</span>
 <span class="sd">        Type of redshift information provided by the `z_source` argument.</span>
 <span class="sd">        The following supported options are:</span>
@@ -736,26 +793,20 @@
         <span class="n">halo_profile_model</span><span class="o">=</span><span class="n">halo_profile_model</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="n">massdef</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef</span><span class="p">)</span>
     <span class="n">gcm</span><span class="o">.</span><span class="n">set_concentration</span><span class="p">(</span><span class="n">cdelta</span><span class="p">)</span>
     <span class="n">gcm</span><span class="o">.</span><span class="n">set_mass</span><span class="p">(</span><span class="n">mdelta</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">alpha_ein</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">halo_profile_model</span><span class="o">==</span><span class="s1">&#39;einasto&#39;</span> <span class="ow">or</span> <span class="n">alpha_ein</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">gcm</span><span class="o">.</span><span class="n">set_einasto_alpha</span><span class="p">(</span><span class="n">alpha_ein</span><span class="p">)</span>
 
     <span class="n">convergence</span> <span class="o">=</span> <span class="n">gcm</span><span class="o">.</span><span class="n">eval_convergence</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cluster</span><span class="p">,</span> <span class="n">z_source</span><span class="p">,</span> <span class="n">z_src_info</span><span class="o">=</span><span class="n">z_src_info</span><span class="p">,</span>
                                        <span class="n">beta_kwargs</span><span class="o">=</span><span class="n">beta_kwargs</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">z_src_info</span><span class="o">==</span><span class="s1">&#39;discrete&#39;</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">z_source</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">z_cluster</span><span class="p">):</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s1">&#39;Some source redshifts are lower than the cluster redshift.&#39;</span>
-                <span class="s1">&#39; kappa = 0 for those galaxies.&#39;</span><span class="p">)</span>
 
     <span class="n">gcm</span><span class="o">.</span><span class="n">validate_input</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="n">convergence</span></div>
 
 
 <div class="viewcode-block" id="compute_reduced_tangential_shear"><a class="viewcode-back" href="../../../api/clmm.theory.numcosmo.html#clmm.theory.compute_reduced_tangential_shear">[docs]</a><span class="k">def</span> <span class="nf">compute_reduced_tangential_shear</span><span class="p">(</span>
-        <span class="n">r_proj</span><span class="p">,</span> <span class="n">mdelta</span><span class="p">,</span> <span class="n">cdelta</span><span class="p">,</span> <span class="n">z_cluster</span><span class="p">,</span> <span class="n">z_source</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span>
-        <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">z_src_info</span><span class="o">=</span><span class="s1">&#39;discrete&#39;</span><span class="p">,</span>
-        <span class="n">approx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">beta_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alpha_ein</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">validate_input</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">r_proj</span><span class="p">,</span> <span class="n">mdelta</span><span class="p">,</span> <span class="n">cdelta</span><span class="p">,</span> <span class="n">z_cluster</span><span class="p">,</span> <span class="n">z_source</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span>
+    <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">z_src_info</span><span class="o">=</span><span class="s1">&#39;discrete&#39;</span><span class="p">,</span>
+    <span class="n">approx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">beta_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alpha_ein</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">validate_input</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes the reduced tangential shear</span>
 
 <span class="sd">    .. math::</span>
@@ -788,10 +839,15 @@
 <span class="sd">    massdef : str, optional</span>
 <span class="sd">        Profile mass definition, with the following supported options (letter case independent):</span>
 
-<span class="sd">            * &#39;mean&#39; (default)</span>
-<span class="sd">            * &#39;critical&#39;</span>
-<span class="sd">            * &#39;virial&#39;</span>
+<span class="sd">            * `mean` (default);</span>
+<span class="sd">            * `critical` - not in cluster_toolkit;</span>
+<span class="sd">            * `virial` - not in cluster_toolkit;</span>
 
+<span class="sd">    alpha_ein : float, None, optional</span>
+<span class="sd">        If `halo_profile_model==&#39;einasto&#39;`, set the value of the Einasto slope.</span>
+<span class="sd">        Option only available for the NumCosmo and CCL backends.</span>
+<span class="sd">        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a</span>
+<span class="sd">        cosmology-dependent value for the CCL backend.)</span>
 <span class="sd">    z_src_info : str, optional</span>
 <span class="sd">        Type of redshift information provided by the `z_source` argument.</span>
 <span class="sd">        The following supported options are:</span>
@@ -864,9 +920,11 @@
 <span class="sd">            * &#39;delta_z_cut&#39; (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.</span>
 <span class="sd">              `delta_z_cut` is ignored if `z_min` is already provided. (default=0.1)</span>
 
-<span class="sd">    alpha_ein : float, optional</span>
-<span class="sd">        If `halo_profile_model==&#39;einasto&#39;`, set the value of the Einasto slope. Option only</span>
-<span class="sd">        available for the NumCosmo backend</span>
+<span class="sd">    alpha_ein : float, None, optional</span>
+<span class="sd">        If `halo_profile_model==&#39;einasto&#39;`, set the value of the Einasto slope.</span>
+<span class="sd">        Option only available for the NumCosmo and CCL backends.</span>
+<span class="sd">        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a</span>
+<span class="sd">        cosmology-dependent value for the CCL backend.)</span>
 <span class="sd">    verbose : bool, optional</span>
 <span class="sd">        If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL</span>
 <span class="sd">        backends.</span>
@@ -885,7 +943,7 @@
         <span class="n">halo_profile_model</span><span class="o">=</span><span class="n">halo_profile_model</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="n">massdef</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef</span><span class="p">)</span>
     <span class="n">gcm</span><span class="o">.</span><span class="n">set_concentration</span><span class="p">(</span><span class="n">cdelta</span><span class="p">)</span>
     <span class="n">gcm</span><span class="o">.</span><span class="n">set_mass</span><span class="p">(</span><span class="n">mdelta</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">alpha_ein</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">halo_profile_model</span><span class="o">==</span><span class="s1">&#39;einasto&#39;</span> <span class="ow">or</span> <span class="n">alpha_ein</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">gcm</span><span class="o">.</span><span class="n">set_einasto_alpha</span><span class="p">(</span><span class="n">alpha_ein</span><span class="p">)</span>
 
     <span class="n">red_tangential_shear</span> <span class="o">=</span> <span class="n">gcm</span><span class="o">.</span><span class="n">eval_reduced_tangential_shear</span><span class="p">(</span>
@@ -937,9 +995,11 @@
 <span class="sd">            * &#39;critical&#39;</span>
 <span class="sd">            * &#39;virial&#39;</span>
 
-<span class="sd">    alpha_ein : float, optional</span>
-<span class="sd">        If `halo_profile_model==&#39;einasto&#39;`, set the value of the Einasto slope. Option only</span>
-<span class="sd">        available for the NumCosmo backend</span>
+<span class="sd">    alpha_ein : float, None, optional</span>
+<span class="sd">        If `halo_profile_model==&#39;einasto&#39;`, set the value of the Einasto slope.</span>
+<span class="sd">        Option only available for the NumCosmo and CCL backends.</span>
+<span class="sd">        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a</span>
+<span class="sd">        cosmology-dependent value for the CCL backend.)</span>
 <span class="sd">    z_src_info : str, optional</span>
 <span class="sd">        Type of redshift information provided by the `z_source` argument.</span>
 <span class="sd">        The following supported options are:</span>
@@ -1031,18 +1091,12 @@
         <span class="n">halo_profile_model</span><span class="o">=</span><span class="n">halo_profile_model</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="n">massdef</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef</span><span class="p">)</span>
     <span class="n">gcm</span><span class="o">.</span><span class="n">set_concentration</span><span class="p">(</span><span class="n">cdelta</span><span class="p">)</span>
     <span class="n">gcm</span><span class="o">.</span><span class="n">set_mass</span><span class="p">(</span><span class="n">mdelta</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">alpha_ein</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">halo_profile_model</span><span class="o">==</span><span class="s1">&#39;einasto&#39;</span> <span class="ow">or</span> <span class="n">alpha_ein</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">gcm</span><span class="o">.</span><span class="n">set_einasto_alpha</span><span class="p">(</span><span class="n">alpha_ein</span><span class="p">)</span>
 
     <span class="n">magnification</span> <span class="o">=</span> <span class="n">gcm</span><span class="o">.</span><span class="n">eval_magnification</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cluster</span><span class="p">,</span> <span class="n">z_source</span><span class="p">,</span> <span class="n">z_src_info</span><span class="o">=</span><span class="n">z_src_info</span><span class="p">,</span>
                                            <span class="n">approx</span><span class="o">=</span><span class="n">approx</span><span class="p">,</span> <span class="n">beta_kwargs</span><span class="o">=</span><span class="n">beta_kwargs</span><span class="p">,</span>
                                            <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">z_src_info</span><span class="o">==</span><span class="s1">&#39;discrete&#39;</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">z_source</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">z_cluster</span><span class="p">):</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s1">&#39;Some source redshifts are lower than the cluster redshift.&#39;</span>
-                <span class="s1">&#39; magnification = 1 for those galaxies.&#39;</span><span class="p">)</span>
 
     <span class="n">gcm</span><span class="o">.</span><span class="n">validate_input</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="n">magnification</span></div>
@@ -1093,9 +1147,11 @@
 <span class="sd">        CLMM Cosmology object</span>
 <span class="sd">    delta_mdef : int, optional</span>
 <span class="sd">        Mass overdensity definition.  Defaults to 200.</span>
-<span class="sd">    alpha_ein : float, optional</span>
-<span class="sd">        If `halo_profile_model==&#39;einasto&#39;`, set the value of the Einasto slope. Option only</span>
-<span class="sd">        available for the NumCosmo backend</span>
+<span class="sd">    alpha_ein : float, None, optional</span>
+<span class="sd">        If `halo_profile_model==&#39;einasto&#39;`, set the value of the Einasto slope.</span>
+<span class="sd">        Option only available for the NumCosmo and CCL backends.</span>
+<span class="sd">        If None, use the default value of the backend. (0.25 for the NumCosmo backend and a</span>
+<span class="sd">        cosmology-dependent value for the CCL backend.)</span>
 <span class="sd">    halo_profile_model : str, optional</span>
 <span class="sd">        Profile model parameterization (letter case independent):</span>
 
@@ -1202,18 +1258,12 @@
         <span class="n">halo_profile_model</span><span class="o">=</span><span class="n">halo_profile_model</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="n">massdef</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef</span><span class="p">)</span>
     <span class="n">gcm</span><span class="o">.</span><span class="n">set_concentration</span><span class="p">(</span><span class="n">cdelta</span><span class="p">)</span>
     <span class="n">gcm</span><span class="o">.</span><span class="n">set_mass</span><span class="p">(</span><span class="n">mdelta</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">alpha_ein</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">halo_profile_model</span><span class="o">==</span><span class="s1">&#39;einasto&#39;</span> <span class="ow">or</span> <span class="n">alpha_ein</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">gcm</span><span class="o">.</span><span class="n">set_einasto_alpha</span><span class="p">(</span><span class="n">alpha_ein</span><span class="p">)</span>
 
     <span class="n">magnification_bias</span> <span class="o">=</span> <span class="n">gcm</span><span class="o">.</span><span class="n">eval_magnification_bias</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cluster</span><span class="p">,</span> <span class="n">z_source</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span>
                                                      <span class="n">z_src_info</span><span class="o">=</span><span class="n">z_src_info</span><span class="p">,</span> <span class="n">approx</span><span class="o">=</span><span class="n">approx</span><span class="p">,</span>
                                                      <span class="n">beta_kwargs</span><span class="o">=</span><span class="n">beta_kwargs</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">z_src_info</span><span class="o">==</span><span class="s1">&#39;discrete&#39;</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">z_source</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">z_cluster</span><span class="p">):</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s1">&#39;Some source redshifts are lower than the cluster redshift.&#39;</span>
-                <span class="s1">&#39; magnification bias = 1 for those galaxies.&#39;</span><span class="p">)</span>
 
     <span class="n">gcm</span><span class="o">.</span><span class="n">validate_input</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="n">magnification_bias</span></div>

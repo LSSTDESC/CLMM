@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>clmm.theory.parent_class module &mdash; CLMM 1.5.3 documentation</title>
+  <title>clmm.theory.parent_class module &mdash; CLMM 1.7.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -33,7 +33,7 @@
             <a href="../index.html" class="icon icon-home"> CLMM
           </a>
               <div class="version">
-                1.5.3
+                1.7.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -219,7 +219,7 @@ If None, same value of current model is used.</p></li>
 <dd class="field-even"><p>3-dimensional mass density in units of <span class="math notranslate nohighlight">\(M_\odot\ Mpc^{-3}\)</span></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>array_like, float</p>
+<dd class="field-odd"><p>numpy.ndarray, float</p>
 </dd>
 </dl>
 </dd></dl>
@@ -287,42 +287,38 @@ CCL backends.</p></li>
 <dd class="field-even"><p>Mass convergence, kappa.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>array_like, float</p>
+<dd class="field-odd"><p>numpy.ndarray, float</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.eval_critical_surface_density">
-<span class="sig-name descname"><span class="pre">eval_critical_surface_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_len</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_pdz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pzbins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pzpdf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_critical_surface_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_critical_surface_density" title="Permalink to this definition"></a></dt>
-<dd><p>Computes either</p>
-<p>the critical surface density if <cite>use_pdz=False</cite></p>
+<dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.eval_critical_surface_density_eff">
+<span class="sig-name descname"><span class="pre">eval_critical_surface_density_eff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_len</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pzbins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pzpdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_input</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_critical_surface_density_eff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_critical_surface_density_eff" title="Permalink to this definition"></a></dt>
+<dd><p>Computes the 'effective critical surface density'</p>
 <div class="math notranslate nohighlight">
-\[\Sigma_{\rm crit} = \frac{c^2}{4\pi G} \frac{D_s}{D_LD_{LS}}\]</div>
-<p>or</p>
-<p>the 'effective critical surface density' if <cite>use_pdz=True</cite></p>
-<div class="math notranslate nohighlight">
-\[\langle \Sigma_{\rm crit}^{-1}\rangle^{-1} = \left(\int \frac{1}{\Sigma_{\rm crit}(z)} p(z) dz\right)^{-1}\]</div>
+\[\langle \Sigma_{\rm crit}^{-1}\rangle^{-1} =
+\left(\int \frac{1}{\Sigma_{\rm crit}(z)} p(z) dz\right)^{-1}\]</div>
 <p>where <span class="math notranslate nohighlight">\(p(z)\)</span> is the source photoz probability density function.
-This comes from the maximum likelihood estimator for evaluating a <span class="math notranslate nohighlight">\(\Delta\Sigma\)</span> profile.</p>
+This comes from the maximum likelihood estimator for evaluating a
+<span class="math notranslate nohighlight">\(\Delta\Sigma\)</span> profile.</p>
+<p>For the standard <span class="math notranslate nohighlight">\(\Sigma_{\rm crit}(z)\)</span> definition, use the <cite>eval_sigma_crit</cite> method of
+the CLMM cosmology object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>z_len</strong> (<em>float</em>) -- Galaxy cluster redshift</p></li>
-<li><p><strong>z_src</strong> (<em>array_like</em><em>, </em><em>float</em>) -- Background source galaxy redshift(s)</p></li>
-<li><p><strong>use_pdz</strong> (<em>bool</em>) -- Flag to use the photoz pdf. If <cite>False</cite> (default), <cite>sigma_c</cite> is computed using the source redshift point estimates <cite>z_src</cite>.
-If <cite>True</cite>, <cite>sigma_c</cite> is computed as 1/&lt;1/Sigma_crit&gt;, where the average is performed using
-the individual galaxy redshift pdf. In that case, the <cite>pzbins</cite> and <cite>pzpdf</cite> should be specified.</p></li>
 <li><p><strong>pzbins</strong> (<em>array-like</em>) -- Bins where the source redshift pdf is defined</p></li>
 <li><p><strong>pzpdf</strong> (<em>array-like</em>) -- Values of the source redshift pdf</p></li>
 <li><p><strong>validate_input</strong> (<em>bool</em>) -- Validade each input argument</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>sigma_c</strong> -- Cosmology-dependent (effective) critical surface density in units of <span class="math notranslate nohighlight">\(M_\odot\ Mpc^{-2}\)</span></p>
+<dd class="field-even"><p><strong>sigma_c</strong> -- Cosmology-dependent effective critical surface density in units of
+<span class="math notranslate nohighlight">\(M_\odot\ Mpc^{-2}\)</span></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>array_like, float</p>
+<dd class="field-odd"><p>numpy.ndarray, float</p>
 </dd>
 </dl>
 </dd></dl>
@@ -342,7 +338,7 @@ the individual galaxy redshift pdf. In that case, the <cite>pzbins</cite> and <c
 <dd class="field-even"><p>Excess surface density in units of <span class="math notranslate nohighlight">\(M_\odot\ Mpc^{-2}\)</span>.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>array_like, float</p>
+<dd class="field-odd"><p>numpy.ndarray, float</p>
 </dd>
 </dl>
 </dd></dl>
@@ -350,7 +346,7 @@ the individual galaxy redshift pdf. In that case, the <cite>pzbins</cite> and <c
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.eval_excess_surface_density_2h">
 <span class="sig-name descname"><span class="pre">eval_excess_surface_density_2h</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halobias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lsteps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_excess_surface_density_2h"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_excess_surface_density_2h" title="Permalink to this definition"></a></dt>
-<dd><p>Computes the 2-halo term excess surface density (CCL backend only)</p>
+<dd><p>Computes the 2-halo term excess surface density (CCL and NC backends only)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -364,7 +360,7 @@ the individual galaxy redshift pdf. In that case, the <cite>pzbins</cite> and <c
 <dd class="field-even"><p>Excess surface density from the 2-halo term in units of <span class="math notranslate nohighlight">\(M_\odot\ Mpc^{-2}\)</span>.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>array_like, float</p>
+<dd class="field-odd"><p>numpy.ndarray, float</p>
 </dd>
 </dl>
 </dd></dl>
@@ -464,7 +460,7 @@ CCL backends.</p></li>
 <dd class="field-even"><p><strong>mu</strong> -- magnification, mu.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>array_like, float</p>
+<dd class="field-odd"><p>numpy.ndarray, float</p>
 </dd>
 </dl>
 </dd></dl>
@@ -571,7 +567,7 @@ CCL backends.</p></li>
 <dd class="field-even"><p><strong>mu_bias</strong> -- magnification bias.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>array_like, float</p>
+<dd class="field-odd"><p>numpy.ndarray, float</p>
 </dd>
 </dl>
 </dd></dl>
@@ -582,7 +578,8 @@ CCL backends.</p></li>
 <dd><p>Computes the mass inside a given radius of the profile.
 The mass is calculated as</p>
 <div class="math notranslate nohighlight">
-\[M(&lt;\text{r3d}) = M_{\Delta}\;\frac{f\left(\frac{\text{r3d}}{r_{\Delta}/c_{\Delta}}\right)}{f(c_{\Delta})},\]</div>
+\[M(&lt;\text{r3d}) = M_{\Delta}\;
+\frac{f\left(\frac{\text{r3d}}{r_{\Delta}/c_{\Delta}}\right)}{f(c_{\Delta})},\]</div>
 <p>where <span class="math notranslate nohighlight">\(f(x)\)</span> for the different models are</p>
 <p>NFW:</p>
 <div class="math notranslate nohighlight">
@@ -604,7 +601,7 @@ The mass is calculated as</p>
 <dd class="field-even"><p>Mass in units of <span class="math notranslate nohighlight">\(M_\odot\)</span></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>array_like, float</p>
+<dd class="field-odd"><p>numpy.ndarray, float</p>
 </dd>
 </dl>
 </dd></dl>
@@ -612,7 +609,7 @@ The mass is calculated as</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.eval_mean_surface_density">
 <span class="sig-name descname"><span class="pre">eval_mean_surface_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_mean_surface_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_mean_surface_density" title="Permalink to this definition"></a></dt>
-<dd><p>Computes the mean value of surface density inside radius r_proj</p>
+<dd><p>Computes the mean value of surface density inside radius <cite>r_proj</cite></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -624,7 +621,7 @@ The mass is calculated as</p>
 <dd class="field-even"><p>Excess surface density in units of <span class="math notranslate nohighlight">\(M_\odot\ Mpc^{-2}\)</span>.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>array_like, float</p>
+<dd class="field-odd"><p>numpy.ndarray, float</p>
 </dd>
 </dl>
 </dd></dl>
@@ -744,7 +741,7 @@ CCL backends.</p></li>
 <dd class="field-even"><p><strong>gt</strong> -- Reduced tangential shear</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>array_like, float</p>
+<dd class="field-odd"><p>numpy.ndarray, float</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
@@ -766,7 +763,7 @@ CCL backends.</p></li>
 <dd class="field-even"><p>2D projected surface density in units of <span class="math notranslate nohighlight">\(M_\odot\ Mpc^{-2}\)</span></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>array_like, float</p>
+<dd class="field-odd"><p>numpy.ndarray, float</p>
 </dd>
 </dl>
 </dd></dl>
@@ -774,7 +771,7 @@ CCL backends.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.theory.parent_class.CLMModeling.eval_surface_density_2h">
 <span class="sig-name descname"><span class="pre">eval_surface_density_2h</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_proj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_cl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halobias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lsteps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/theory/parent_class.html#CLMModeling.eval_surface_density_2h"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.theory.parent_class.CLMModeling.eval_surface_density_2h" title="Permalink to this definition"></a></dt>
-<dd><p>Computes the 2-halo term surface density (CCL backend only)</p>
+<dd><p>Computes the 2-halo term surface density (CCL and NC backends only)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -788,7 +785,7 @@ CCL backends.</p></li>
 <dd class="field-even"><p>Excess surface density from the 2-halo term in units of <span class="math notranslate nohighlight">\(M_\odot\ Mpc^{-2}\)</span>.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>array_like, float</p>
+<dd class="field-odd"><p>numpy.ndarray, float</p>
 </dd>
 </dl>
 </dd></dl>
@@ -851,7 +848,7 @@ CCL backends.</p></li>
 <dd class="field-even"><p>tangential shear</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>array_like, float</p>
+<dd class="field-odd"><p>numpy.ndarray, float</p>
 </dd>
 </dl>
 </dd></dl>
@@ -912,7 +909,8 @@ CCL backends.</p></li>
 <dd><p>Sets the value of the <span class="math notranslate nohighlight">\(\alpha\)</span> parameter for the Einasto profile</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>alpha</strong> (<em>float</em>) -- </p>
+<dd class="field-odd"><p><strong>alpha</strong> (<em>float</em><em>, </em><em>None</em>) -- If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
+cosmology-dependent value for the CCL backend.)</p>
 </dd>
 </dl>
 </dd></dl>

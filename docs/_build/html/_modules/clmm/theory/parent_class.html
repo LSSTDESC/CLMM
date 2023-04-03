@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>clmm.theory.parent_class &mdash; CLMM 1.5.3 documentation</title>
+  <title>clmm.theory.parent_class &mdash; CLMM 1.7.1 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -29,7 +29,7 @@
             <a href="../../../index.html" class="icon icon-home"> CLMM
           </a>
               <div class="version">
-                1.5.3
+                1.7.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -136,6 +136,8 @@
 <span></span><span class="sd">&quot;&quot;&quot;@file parent_class.py</span>
 <span class="sd">CLMModeling abstract class</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;always&quot;</span><span class="p">,</span> <span class="n">module</span><span class="o">=</span><span class="s1">&#39;(clmm).*&#39;</span><span class="p">)</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="c1"># functions for the 2h term</span>
@@ -147,7 +149,8 @@
                       <span class="n">compute_magnification_bias_from_magnification</span><span class="p">,</span>
                       <span class="n">compute_rdelta</span><span class="p">,</span> <span class="n">compute_profile_mass_in_radius</span><span class="p">,</span>
                       <span class="n">convert_profile_mass_concentration</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">validate_argument</span><span class="p">,</span> <span class="n">_integ_pzfuncs</span><span class="p">,</span> <span class="n">compute_beta_s_mean</span><span class="p">,</span> <span class="n">compute_beta_s_square_mean</span><span class="p">,</span> <span class="n">compute_beta_s_func</span>
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="p">(</span><span class="n">validate_argument</span><span class="p">,</span> <span class="n">_integ_pzfuncs</span><span class="p">,</span> <span class="n">compute_beta_s_mean</span><span class="p">,</span>
+                     <span class="n">compute_beta_s_square_mean</span><span class="p">,</span> <span class="n">compute_beta_s_func</span><span class="p">,</span> <span class="n">compute_for_good_redshifts</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="CLMModeling"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling">[docs]</a><span class="k">class</span> <span class="nc">CLMModeling</span><span class="p">:</span>
@@ -276,7 +279,7 @@
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Actuall sets the value of the concentration (without value check)&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
-    <span class="k">def</span> <span class="nf">_set_halo_density_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_update_halo_density_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="k">def</span> <span class="nf">_set_einasto_alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
@@ -284,7 +287,8 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="k">def</span> <span class="nf">_get_einasto_alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Returns the value of the :math:`\alpha` parameter for the Einasto profile, if defined&quot;&quot;&quot;</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Returns the value of the :math:`\alpha` parameter for the Einasto profile,</span>
+<span class="sd">        if defined&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="k">def</span> <span class="nf">_eval_3d_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
@@ -368,30 +372,27 @@
     <span class="c1"># 3.1. All these functions are for the single plane case</span>
 
 
-    <span class="k">def</span> <span class="nf">_eval_critical_surface_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_len</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">eval_sigma_crit</span><span class="p">(</span><span class="n">z_len</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_eval_tangential_shear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_eval_tangential_shear_core</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
         <span class="n">delta_sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_excess_surface_density</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
-        <span class="n">sigma_c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_critical_surface_density</span><span class="p">(</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
+        <span class="n">sigma_c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">eval_sigma_crit</span><span class="p">(</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">delta_sigma</span><span class="o">/</span><span class="n">sigma_c</span>
 
-    <span class="k">def</span> <span class="nf">_eval_convergence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="n">sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_surface_density</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
-        <span class="n">sigma_c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_critical_surface_density</span><span class="p">(</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_eval_convergence_core</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_surface_density</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
+        <span class="n">sigma_c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">eval_sigma_crit</span><span class="p">(</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">sigma</span><span class="o">/</span><span class="n">sigma_c</span>
 
-    <span class="k">def</span> <span class="nf">_eval_reduced_tangential_shear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_eval_reduced_tangential_shear_core</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
         <span class="n">kappa</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_convergence</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
         <span class="n">gamma_t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_tangential_shear</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">compute_reduced_shear_from_convergence</span><span class="p">(</span><span class="n">gamma_t</span><span class="p">,</span> <span class="n">kappa</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_eval_magnification</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_eval_magnification_core</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
         <span class="n">kappa</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_convergence</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
         <span class="n">gamma_t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_tangential_shear</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
         <span class="k">return</span> <span class="mf">1.</span><span class="o">/</span><span class="p">((</span><span class="mi">1</span><span class="o">-</span><span class="n">kappa</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">-</span><span class="nb">abs</span><span class="p">(</span><span class="n">gamma_t</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_eval_magnification_bias</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_eval_magnification_bias_core</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
         <span class="n">magnification</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_magnification</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">compute_magnification_bias_from_magnification</span><span class="p">(</span><span class="n">magnification</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
 
@@ -470,27 +471,38 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="n">halo_profile_model</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdpm_dict</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;Halo density profile model </span><span class="si">{</span><span class="n">halo_profile_model</span><span class="si">}</span><span class="s2"> not currently supported&quot;</span><span class="p">)</span>
-        <span class="c1"># set the profile</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set_halo_density_profile</span><span class="p">(</span><span class="n">halo_profile_model</span><span class="o">=</span><span class="n">halo_profile_model</span><span class="p">,</span>
-                                       <span class="n">massdef</span><span class="o">=</span><span class="n">massdef</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="n">delta_mdef</span><span class="p">)</span>
+        <span class="c1"># Check if we have already an instance of the required object, if not create one</span>
+        <span class="k">if</span> <span class="p">(</span>
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">halo_profile_model</span><span class="o">!=</span><span class="n">halo_profile_model</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">massdef</span><span class="o">!=</span><span class="n">massdef</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">delta_mdef</span><span class="o">!=</span><span class="n">delta_mdef</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="c1"># set internal quantities</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__halo_profile_model</span> <span class="o">=</span> <span class="n">halo_profile_model</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__massdef</span> <span class="o">=</span> <span class="n">massdef</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__delta_mdef</span> <span class="o">=</span> <span class="n">delta_mdef</span>
+            <span class="c1"># set the profile</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_halo_density_profile</span><span class="p">()</span></div>
 
-        <span class="c1"># set internal quantities</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__halo_profile_model</span> <span class="o">=</span> <span class="n">halo_profile_model</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__massdef</span> <span class="o">=</span> <span class="n">massdef</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__delta_mdef</span> <span class="o">=</span> <span class="n">delta_mdef</span></div>
 
 <div class="viewcode-block" id="CLMModeling.set_einasto_alpha"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.set_einasto_alpha">[docs]</a>    <span class="k">def</span> <span class="nf">set_einasto_alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Sets the value of the :math:`\alpha` parameter for the Einasto profile</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        alpha : float</span>
+<span class="sd">        alpha : float, None</span>
+<span class="sd">            If None, use the default value of the backend. (0.25 for the NumCosmo backend and a</span>
+<span class="sd">            cosmology-dependent value for the CCL backend.)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">halo_profile_model</span><span class="o">!=</span><span class="s1">&#39;einasto&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">!=</span><span class="s1">&#39;nc&#39;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;The Einasto slope cannot be set for your combination of profile choice or modeling backend.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">halo_profile_model</span><span class="o">!=</span><span class="s1">&#39;einasto&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="s2">&quot;The Einasto slope cannot be set &quot;</span>
+                <span class="s2">&quot;for your combination of profile choice &quot;</span>
+                <span class="s2">&quot;or modeling backend.&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">:</span>
-                <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
+                <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">none_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_einasto_alpha</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CLMModeling.get_einasto_alpha"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.get_einasto_alpha">[docs]</a>    <span class="k">def</span> <span class="nf">get_einasto_alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -518,7 +530,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        array_like, float</span>
+<span class="sd">        numpy.ndarray, float</span>
 <span class="sd">            3-dimensional mass density in units of :math:`M_\odot\ Mpc^{-3}`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">:</span>
@@ -530,36 +542,25 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_3d_density</span><span class="p">(</span><span class="n">r3d</span><span class="o">=</span><span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CLMModeling.eval_critical_surface_density"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_critical_surface_density">[docs]</a>    <span class="k">def</span> <span class="nf">eval_critical_surface_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_len</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_pdz</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pzbins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pzpdf</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes either</span>
 
-<span class="sd">        the critical surface density if `use_pdz=False`</span>
-
-<span class="sd">        .. math::</span>
-<span class="sd">            \Sigma_{\rm crit} = \frac{c^2}{4\pi G} \frac{D_s}{D_LD_{LS}}</span>
-
-<span class="sd">        or</span>
-
-<span class="sd">        the &#39;effective critical surface density&#39; if `use_pdz=True`</span>
+<div class="viewcode-block" id="CLMModeling.eval_critical_surface_density_eff"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_critical_surface_density_eff">[docs]</a>    <span class="k">def</span> <span class="nf">eval_critical_surface_density_eff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_len</span><span class="p">,</span> <span class="n">pzbins</span><span class="p">,</span> <span class="n">pzpdf</span><span class="p">,</span> <span class="n">validate_input</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes the &#39;effective critical surface density&#39;</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">            \langle \Sigma_{\rm crit}^{-1}\rangle^{-1} = \left(\int \frac{1}{\Sigma_{\rm crit}(z)} p(z) dz\right)^{-1}</span>
+<span class="sd">            \langle \Sigma_{\rm crit}^{-1}\rangle^{-1} =</span>
+<span class="sd">            \left(\int \frac{1}{\Sigma_{\rm crit}(z)} p(z) dz\right)^{-1}</span>
 
 <span class="sd">        where :math:`p(z)` is the source photoz probability density function.</span>
-<span class="sd">        This comes from the maximum likelihood estimator for evaluating a :math:`\Delta\Sigma` profile.</span>
+<span class="sd">        This comes from the maximum likelihood estimator for evaluating a</span>
+<span class="sd">        :math:`\Delta\Sigma` profile.</span>
 
+<span class="sd">        For the standard :math:`\Sigma_{\rm crit}(z)` definition, use the `eval_sigma_crit` method of </span>
+<span class="sd">        the CLMM cosmology object.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        z_len : float</span>
 <span class="sd">            Galaxy cluster redshift</span>
-<span class="sd">        z_src : array_like, float</span>
-<span class="sd">            Background source galaxy redshift(s)</span>
-<span class="sd">        use_pdz : bool</span>
-<span class="sd">            Flag to use the photoz pdf. If `False` (default), `sigma_c` is computed using the source redshift point estimates `z_src`.</span>
-<span class="sd">            If `True`, `sigma_c` is computed as 1/&lt;1/Sigma_crit&gt;, where the average is performed using</span>
-<span class="sd">            the individual galaxy redshift pdf. In that case, the `pzbins` and `pzpdf` should be specified.</span>
-
 <span class="sd">        pzbins : array-like</span>
 <span class="sd">            Bins where the source redshift pdf is defined</span>
 <span class="sd">        pzpdf : array-like</span>
@@ -570,23 +571,18 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        sigma_c : array_like, float</span>
-<span class="sd">            Cosmology-dependent (effective) critical surface density in units of :math:`M_\odot\ Mpc^{-2}`</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        sigma_c : numpy.ndarray, float</span>
+<span class="sd">            Cosmology-dependent effective critical surface density in units of</span>
+<span class="sd">            :math:`M_\odot\ Mpc^{-2}`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">:</span>
             <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;z_len&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-            <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;z_src&#39;</span><span class="p">,</span> <span class="s1">&#39;float_array&#39;</span><span class="p">,</span> <span class="n">argmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">none_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+ 
+        <span class="k">def</span> <span class="nf">inv_sigmac</span><span class="p">(</span><span class="n">redshift</span><span class="p">):</span>
+            <span class="k">return</span> <span class="mf">1.</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">eval_sigma_crit</span><span class="p">(</span><span class="n">z_len</span><span class="p">,</span> <span class="n">redshift</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">use_pdz</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_critical_surface_density</span><span class="p">(</span><span class="n">z_len</span><span class="o">=</span><span class="n">z_len</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="n">z_src</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">pzbins</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">pzpdf</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Redshift bins and source redshift pdf must be provided when use_pdz is True&#39;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">def</span> <span class="nf">inv_sigmac</span><span class="p">(</span><span class="n">redshift</span><span class="p">):</span>
-                    <span class="k">return</span> <span class="mf">1.</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_eval_critical_surface_density</span><span class="p">(</span><span class="n">z_len</span><span class="o">=</span><span class="n">z_len</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="n">redshift</span><span class="p">)</span>
-                <span class="k">return</span> <span class="mf">1.</span><span class="o">/</span><span class="n">_integ_pzfuncs</span><span class="p">(</span><span class="n">pzpdf</span><span class="p">,</span> <span class="n">pzbins</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="n">inv_sigmac</span><span class="p">,</span> <span class="n">is_unique_pzbins</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">pzbins</span><span class="o">==</span><span class="n">pzbins</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span></div>
+        <span class="k">return</span> <span class="mf">1.</span><span class="o">/</span><span class="n">_integ_pzfuncs</span><span class="p">(</span><span class="n">pzpdf</span><span class="p">,</span> <span class="n">pzbins</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="n">inv_sigmac</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CLMModeling.eval_surface_density"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_surface_density">[docs]</a>    <span class="k">def</span> <span class="nf">eval_surface_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Computes the surface mass density</span>
@@ -600,7 +596,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        array_like, float</span>
+<span class="sd">        numpy.ndarray, float</span>
 <span class="sd">            2D projected surface density in units of :math:`M_\odot\ Mpc^{-2}`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">:</span>
@@ -613,7 +609,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_surface_density</span><span class="p">(</span><span class="n">r_proj</span><span class="o">=</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CLMModeling.eval_mean_surface_density"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_mean_surface_density">[docs]</a>    <span class="k">def</span> <span class="nf">eval_mean_surface_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Computes the mean value of surface density inside radius r_proj</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Computes the mean value of surface density inside radius `r_proj`</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -624,7 +620,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        array_like, float</span>
+<span class="sd">        numpy.ndarray, float</span>
 <span class="sd">            Excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">:</span>
@@ -648,7 +644,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        array_like, float</span>
+<span class="sd">        numpy.ndarray, float</span>
 <span class="sd">            Excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">:</span>
@@ -661,7 +657,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_excess_surface_density</span><span class="p">(</span><span class="n">r_proj</span><span class="o">=</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CLMModeling.eval_excess_surface_density_2h"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_excess_surface_density_2h">[docs]</a>    <span class="k">def</span> <span class="nf">eval_excess_surface_density_2h</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">halobias</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">lsteps</span><span class="o">=</span><span class="mi">500</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Computes the 2-halo term excess surface density (CCL backend only)</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Computes the 2-halo term excess surface density (CCL and NC backends only)</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -676,7 +672,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        array_like, float</span>
+<span class="sd">        numpy.ndarray, float</span>
 <span class="sd">            Excess surface density from the 2-halo term in units of :math:`M_\odot\ Mpc^{-2}`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -691,10 +687,11 @@
                 <span class="sa">f</span><span class="s2">&quot;2-halo term not currently supported with the </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="si">}</span><span class="s2"> backend. &quot;</span>
                 <span class="s2">&quot;Use the CCL or NumCosmo backend instead&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_excess_surface_density_2h</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">halobias</span><span class="o">=</span><span class="n">halobias</span><span class="p">,</span> <span class="n">lsteps</span><span class="o">=</span><span class="n">lsteps</span><span class="p">)</span></div>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_excess_surface_density_2h</span><span class="p">(</span>
+                <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">halobias</span><span class="o">=</span><span class="n">halobias</span><span class="p">,</span> <span class="n">lsteps</span><span class="o">=</span><span class="n">lsteps</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CLMModeling.eval_surface_density_2h"><a class="viewcode-back" href="../../../api/clmm.theory.parent_class.html#clmm.theory.parent_class.CLMModeling.eval_surface_density_2h">[docs]</a>    <span class="k">def</span> <span class="nf">eval_surface_density_2h</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">halobias</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">lsteps</span><span class="o">=</span><span class="mi">500</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Computes the 2-halo term surface density (CCL backend only)</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Computes the 2-halo term surface density (CCL and NC backends only)</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -709,7 +706,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        array_like, float</span>
+<span class="sd">        numpy.ndarray, float</span>
 <span class="sd">            Excess surface density from the 2-halo term in units of :math:`M_\odot\ Mpc^{-2}`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -905,7 +902,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        array_like, float</span>
+<span class="sd">        numpy.ndarray, float</span>
 <span class="sd">            tangential shear</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">:</span>
@@ -918,12 +915,17 @@
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Einasto alpha = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_einasto_alpha</span><span class="p">(</span><span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">z_src_info</span><span class="o">==</span><span class="s1">&#39;discrete&#39;</span><span class="p">:</span>
-            <span class="n">gammat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_tangential_shear</span><span class="p">(</span><span class="n">r_proj</span><span class="o">=</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="n">z_src</span><span class="p">)</span>
+            <span class="n">warning_msg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Some source redshifts are lower than the cluster redshift.&#39;</span><span class="o">+</span>\
+            <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Shear = 0 for those galaxies.&#39;</span>
+            <span class="n">gammat</span> <span class="o">=</span> <span class="n">compute_for_good_redshifts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eval_tangential_shear_core</span><span class="p">,</span>
+                                                <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">warning_msg</span><span class="p">,</span>
+                                                <span class="s1">&#39;z_cl&#39;</span><span class="p">,</span> <span class="s1">&#39;z_src&#39;</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">z_src_info</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;distribution&#39;</span><span class="p">,</span> <span class="s1">&#39;beta&#39;</span><span class="p">):</span>
             <span class="n">beta_s_mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_beta_s_mean</span><span class="p">(</span>
                 <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_src_info</span><span class="o">=</span><span class="n">z_src_info</span><span class="p">,</span> <span class="n">beta_kwargs</span><span class="o">=</span><span class="n">beta_kwargs</span><span class="p">)</span>
 
-            <span class="n">gammat_inf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_tangential_shear</span><span class="p">(</span><span class="n">r_proj</span><span class="o">=</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_inf</span><span class="p">)</span>
+            <span class="n">gammat_inf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_tangential_shear_core</span><span class="p">(</span><span class="n">r_proj</span><span class="o">=</span><span class="n">r_proj</span><span class="p">,</span>
+                                                          <span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_inf</span><span class="p">)</span>
 
             <span class="n">gammat</span> <span class="o">=</span> <span class="n">beta_s_mean</span> <span class="o">*</span> <span class="n">gammat_inf</span>
         <span class="k">else</span><span class="p">:</span>
@@ -995,7 +997,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        array_like, float</span>
+<span class="sd">        numpy.ndarray, float</span>
 <span class="sd">            Mass convergence, kappa.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">:</span>
@@ -1008,12 +1010,16 @@
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Einasto alpha = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_einasto_alpha</span><span class="p">(</span><span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">z_src_info</span><span class="o">==</span><span class="s1">&#39;discrete&#39;</span><span class="p">:</span>
-            <span class="n">kappa</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_convergence</span><span class="p">(</span><span class="n">r_proj</span><span class="o">=</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="n">z_src</span><span class="p">)</span>
+            <span class="n">warning_msg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Some source redshifts are lower than the cluster redshift.&#39;</span><span class="o">+</span>\
+            <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Convergence = 0 for those galaxies.&#39;</span>
+            <span class="n">kappa</span> <span class="o">=</span> <span class="n">compute_for_good_redshifts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eval_convergence_core</span><span class="p">,</span>
+                                               <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">warning_msg</span><span class="p">,</span>
+                                               <span class="s1">&#39;z_cl&#39;</span><span class="p">,</span> <span class="s1">&#39;z_src&#39;</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">z_src_info</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;distribution&#39;</span><span class="p">,</span> <span class="s1">&#39;beta&#39;</span><span class="p">):</span>
             <span class="n">beta_s_mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_beta_s_mean</span><span class="p">(</span>
                 <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_src_info</span><span class="o">=</span><span class="n">z_src_info</span><span class="p">,</span> <span class="n">beta_kwargs</span><span class="o">=</span><span class="n">beta_kwargs</span><span class="p">)</span>
 
-            <span class="n">kappa_inf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_convergence</span><span class="p">(</span><span class="n">r_proj</span><span class="o">=</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_inf</span><span class="p">)</span>
+            <span class="n">kappa_inf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_convergence_core</span><span class="p">(</span><span class="n">r_proj</span><span class="o">=</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_inf</span><span class="p">)</span>
 
             <span class="n">kappa</span> <span class="o">=</span> <span class="n">beta_s_mean</span> <span class="o">*</span> <span class="n">kappa_inf</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1050,9 +1056,10 @@
 <span class="sd">            Function averaged by pdz, with r_proj dimention.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">tfunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">z</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span> <span class="n">compute_beta_s_func</span><span class="p">(</span>
-            <span class="n">z</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_inf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_tangential_shear</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_inf</span><span class="p">)</span>
+            <span class="n">z</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_inf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_eval_tangential_shear_core</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_inf</span><span class="p">)</span>
         <span class="n">kfunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">z</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span> <span class="n">compute_beta_s_func</span><span class="p">(</span>
-            <span class="n">z</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_inf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_convergence</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_inf</span><span class="p">)</span>
+            <span class="n">z</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_inf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_convergence_core</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_inf</span><span class="p">)</span>
         <span class="n">__integrand__</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">z</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span> <span class="n">pdz_func</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">*</span><span class="n">core</span><span class="p">(</span><span class="n">tfunc</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">r</span><span class="p">),</span> <span class="n">kfunc</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">r</span><span class="p">))</span>
 
         <span class="n">_integ_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;zmax&#39;</span><span class="p">:</span> <span class="mf">10.0</span><span class="p">,</span> <span class="s1">&#39;delta_z_cut&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">}</span>
@@ -1159,7 +1166,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        gt : array_like, float</span>
+<span class="sd">        gt : numpy.ndarray, float</span>
 <span class="sd">            Reduced tangential shear</span>
 
 <span class="sd">        Notes</span>
@@ -1182,7 +1189,11 @@
                 <span class="n">gt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pdz_weighted_avg</span><span class="p">(</span><span class="n">core</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span>
                                             <span class="n">integ_kwargs</span><span class="o">=</span><span class="n">beta_kwargs</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">z_src_info</span><span class="o">==</span><span class="s1">&#39;discrete&#39;</span><span class="p">:</span>
-                <span class="n">gt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_reduced_tangential_shear</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">)</span>
+                <span class="n">warning_msg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Some source redshifts are lower than the cluster redshift.&#39;</span><span class="o">+</span>\
+                <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Reduced_shear = 0 for those galaxies.&#39;</span>
+                <span class="n">gt</span> <span class="o">=</span> <span class="n">compute_for_good_redshifts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eval_reduced_tangential_shear_core</span><span class="p">,</span>
+                                                <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">warning_msg</span><span class="p">,</span>
+                                                <span class="s1">&#39;z_cl&#39;</span><span class="p">,</span> <span class="s1">&#39;z_src&#39;</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="s2">&quot;approx=None requires z_src_info=&#39;discrete&#39; or &#39;distribution&#39;,&quot;</span>
@@ -1192,8 +1203,8 @@
             <span class="n">beta_s_mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_beta_s_mean</span><span class="p">(</span>
                 <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_src_info</span><span class="o">=</span><span class="n">z_src_info</span><span class="p">,</span> <span class="n">beta_kwargs</span><span class="o">=</span><span class="n">beta_kwargs</span><span class="p">)</span>
 
-            <span class="n">gammat_inf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_tangential_shear</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_inf</span><span class="p">)</span>
-            <span class="n">kappa_inf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_convergence</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_inf</span><span class="p">)</span>
+            <span class="n">gammat_inf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_tangential_shear_core</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_inf</span><span class="p">)</span>
+            <span class="n">kappa_inf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_convergence_core</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_inf</span><span class="p">)</span>
 
             <span class="n">gt</span> <span class="o">=</span> <span class="n">beta_s_mean</span> <span class="o">*</span> <span class="n">gammat_inf</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">beta_s_mean</span> <span class="o">*</span> <span class="n">kappa_inf</span><span class="p">)</span>
 
@@ -1301,7 +1312,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        mu : array_like, float</span>
+<span class="sd">        mu : numpy.ndarray, float</span>
 <span class="sd">            magnification, mu.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1321,7 +1332,11 @@
                 <span class="n">mu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pdz_weighted_avg</span><span class="p">(</span><span class="n">core</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span>
                                             <span class="n">integ_kwargs</span><span class="o">=</span><span class="n">beta_kwargs</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">z_src_info</span><span class="o">==</span><span class="s1">&#39;discrete&#39;</span><span class="p">:</span>
-                <span class="n">mu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_magnification</span><span class="p">(</span><span class="n">r_proj</span><span class="o">=</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="n">z_src</span><span class="p">)</span>
+                <span class="n">warning_msg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Some source redshifts are lower than the cluster redshift.&#39;</span><span class="o">+</span>\
+                <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Magnification = 1 for those galaxies.&#39;</span>
+                <span class="n">mu</span> <span class="o">=</span> <span class="n">compute_for_good_redshifts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eval_magnification_core</span><span class="p">,</span>
+                                                <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="n">warning_msg</span><span class="p">,</span>
+                                                <span class="s1">&#39;z_cl&#39;</span><span class="p">,</span> <span class="s1">&#39;z_src&#39;</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="s2">&quot;approx=None requires z_src_info=&#39;discrete&#39; or &#39;distribution&#39;,&quot;</span>
@@ -1331,8 +1346,8 @@
             <span class="n">beta_s_mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_beta_s_mean</span><span class="p">(</span>
                 <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_src_info</span><span class="o">=</span><span class="n">z_src_info</span><span class="p">,</span> <span class="n">beta_kwargs</span><span class="o">=</span><span class="n">beta_kwargs</span><span class="p">)</span>
 
-            <span class="n">kappa_inf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_convergence</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_inf</span><span class="p">)</span>
-            <span class="n">gammat_inf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_tangential_shear</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_inf</span><span class="p">)</span>
+            <span class="n">kappa_inf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_convergence_core</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_inf</span><span class="p">)</span>
+            <span class="n">gammat_inf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_tangential_shear_core</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_inf</span><span class="p">)</span>
 
             <span class="n">mu</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">beta_s_mean</span><span class="o">*</span><span class="n">kappa_inf</span>
 
@@ -1447,7 +1462,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        mu_bias : array_like, float</span>
+<span class="sd">        mu_bias : numpy.ndarray, float</span>
 <span class="sd">            magnification bias.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1469,8 +1484,11 @@
                 <span class="n">mu_bias</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pdz_weighted_avg</span><span class="p">(</span><span class="n">core</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span>
                                                  <span class="n">integ_kwargs</span><span class="o">=</span><span class="n">beta_kwargs</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">z_src_info</span><span class="o">==</span><span class="s1">&#39;discrete&#39;</span><span class="p">:</span>
-                <span class="n">mu_bias</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_magnification_bias</span><span class="p">(</span>
-                    <span class="n">r_proj</span><span class="o">=</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="n">z_src</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">)</span>
+                <span class="n">warning_msg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Some source redshifts are lower than the cluster redshift.&#39;</span><span class="o">+</span>\
+                <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Magnification bias = 1 for those galaxies.&#39;</span>
+                <span class="n">mu_bias</span> <span class="o">=</span> <span class="n">compute_for_good_redshifts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eval_magnification_bias_core</span><span class="p">,</span>
+                                                     <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="n">warning_msg</span><span class="p">,</span>
+                                                     <span class="s1">&#39;z_cl&#39;</span><span class="p">,</span> <span class="s1">&#39;z_src&#39;</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="s2">&quot;approx=None requires z_src_info=&#39;discrete&#39; or &#39;distribution&#39;,&quot;</span>
@@ -1480,8 +1498,8 @@
             <span class="n">beta_s_mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_beta_s_mean</span><span class="p">(</span>
                 <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_src_info</span><span class="o">=</span><span class="n">z_src_info</span><span class="p">,</span> <span class="n">beta_kwargs</span><span class="o">=</span><span class="n">beta_kwargs</span><span class="p">)</span>
 
-            <span class="n">kappa_inf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_convergence</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_inf</span><span class="p">)</span>
-            <span class="n">gammat_inf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_tangential_shear</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_inf</span><span class="p">)</span>
+            <span class="n">kappa_inf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_convergence_core</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_inf</span><span class="p">)</span>
+            <span class="n">gammat_inf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_tangential_shear_core</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_inf</span><span class="p">)</span>
 
             <span class="n">mu_bias</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">alpha</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">beta_s_mean</span><span class="o">*</span><span class="n">kappa_inf</span><span class="p">)</span>
 
@@ -1522,7 +1540,8 @@
 <span class="sd">        The mass is calculated as</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">            M(&lt;\text{r3d}) = M_{\Delta}\;\frac{f\left(\frac{\text{r3d}}{r_{\Delta}/c_{\Delta}}\right)}{f(c_{\Delta})},</span>
+<span class="sd">            M(&lt;\text{r3d}) = M_{\Delta}\;</span>
+<span class="sd">            \frac{f\left(\frac{\text{r3d}}{r_{\Delta}/c_{\Delta}}\right)}{f(c_{\Delta})},</span>
 
 <span class="sd">        where :math:`f(x)` for the different models are</span>
 
@@ -1550,7 +1569,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        array_like, float</span>
+<span class="sd">        numpy.ndarray, float</span>
 <span class="sd">            Mass in units of :math:`M_\odot`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">:</span>

@@ -53,7 +53,7 @@ First, we import some standard packages.
 
 .. parsed-literal::
 
-    '1.5.3'
+    '1.7.1'
 
 
 
@@ -353,7 +353,27 @@ Before fitting, let’s first vizualise these models using the known true mass
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
 
 
 .. code:: ipython3
@@ -397,7 +417,7 @@ Before fitting, let’s first vizualise these models using the known true mass
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x155514c2c990>
+    <matplotlib.legend.Legend at 0x155515f81dd0>
 
 
 
@@ -509,6 +529,305 @@ order of magnitude for the mass to unity. From the associated error
     m_est_err_noisy_singlez =  m_est_noisy_singlez * np.sqrt(pcov[0][0]) * np.log(10) 
 
 
+
+.. parsed-literal::
+
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+
+
 .. code:: ipython3
 
     print(f'The input mass = {cluster_m:.2e} Msun\n')
@@ -580,6 +899,32 @@ predicted by the models with estimated masses for noisy and ideal data.
     gt_est_ideal_singlez = model_reduced_tangential_shear_singlez(r,np.log(m_est_ideal_singlez)/np.log(10),  cl_ideal.profile['z'])
     gt_est_noisy_singlez = model_reduced_tangential_shear_singlez(r,np.log(m_est_noisy_singlez)/np.log(10),  cl_noisy.profile['z'])
 
+
+.. parsed-literal::
+
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:1059: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Reduced_shear = 0 for those galaxies.
+
+
 We compare to tangential shear obtained with theoretical mass. We plot
 the reduced tangential shear models first when redshift distribution is
 accounted for in the model (and the ones using :math:`\beta_s`) then for
@@ -630,7 +975,7 @@ the naive approach, with respective best-fit masses.
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x155514d25590>
+    <matplotlib.legend.Legend at 0x155514dca310>
 
 
 

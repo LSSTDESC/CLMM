@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Generate “realistic” mock data for a cluster ensemble &mdash; CLMM 1.5.3 documentation</title>
+  <title>Generate “realistic” mock data for a cluster ensemble &mdash; CLMM 1.7.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -33,7 +33,7 @@
             <a href="../index.html" class="icon icon-home"> CLMM
           </a>
               <div class="version">
-                1.5.3
+                1.7.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -625,14 +625,14 @@ details)</p>
     <span class="n">gclist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cl</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">28.9</span> <span class="n">s</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mf">7.22</span> <span class="n">s</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">36.2</span> <span class="n">s</span>
-<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mf">36.1</span> <span class="n">s</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">3.03</span> <span class="n">s</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mi">352</span> <span class="n">ms</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">3.38</span> <span class="n">s</span>
+<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mf">3.38</span> <span class="n">s</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">columns</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">TableColumns</span> <span class="n">names</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;ra&#39;</span><span class="p">,</span><span class="s1">&#39;dec&#39;</span><span class="p">,</span><span class="s1">&#39;e1&#39;</span><span class="p">,</span><span class="s1">&#39;e2&#39;</span><span class="p">,</span><span class="s1">&#39;e_err&#39;</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">,</span><span class="s1">&#39;ztrue&#39;</span><span class="p">,</span><span class="s1">&#39;pzbins&#39;</span><span class="p">,</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">,</span><span class="s1">&#39;id&#39;</span><span class="p">,</span><span class="s1">&#39;sigma_c&#39;</span><span class="p">,</span><span class="s1">&#39;theta&#39;</span><span class="p">,</span><span class="s1">&#39;DS_t&#39;</span><span class="p">,</span><span class="s1">&#39;DS_x&#39;</span><span class="p">,</span><span class="s1">&#39;w_ls&#39;</span><span class="p">)</span><span class="o">&gt;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">TableColumns</span> <span class="n">names</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;ra&#39;</span><span class="p">,</span><span class="s1">&#39;dec&#39;</span><span class="p">,</span><span class="s1">&#39;e1&#39;</span><span class="p">,</span><span class="s1">&#39;e2&#39;</span><span class="p">,</span><span class="s1">&#39;e_err&#39;</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">,</span><span class="s1">&#39;ztrue&#39;</span><span class="p">,</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">,</span><span class="s1">&#39;id&#39;</span><span class="p">,</span><span class="s1">&#39;sigma_c&#39;</span><span class="p">,</span><span class="s1">&#39;theta&#39;</span><span class="p">,</span><span class="s1">&#39;DS_t&#39;</span><span class="p">,</span><span class="s1">&#39;DS_x&#39;</span><span class="p">,</span><span class="s1">&#39;w_ls&#39;</span><span class="p">)</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 </section>
@@ -652,13 +652,54 @@ profiles (where the binning is controlled by <code class="docutils literal notra
 <li><p>the associated profile weights <code class="docutils literal notranslate"><span class="pre">W_l</span></code> (that will be used to compute
 the stacked profile)</p></li>
 </ul>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ensemble_id</span> <span class="o">=</span> <span class="mi">1</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>
+<span class="n">ensemble_id</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mf">0.3</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">clusterensemble</span> <span class="o">=</span> <span class="n">ClusterEnsemble</span><span class="p">(</span><span class="n">ensemble_id</span><span class="p">,</span> <span class="n">gclist</span><span class="p">,</span>
                                   <span class="n">tan_component_in</span><span class="o">=</span><span class="s1">&#39;DS_t&#39;</span><span class="p">,</span> <span class="n">cross_component_in</span><span class="o">=</span><span class="s1">&#39;DS_x&#39;</span><span class="p">,</span>
                                   <span class="n">tan_component_out</span><span class="o">=</span><span class="s1">&#39;DS_t&#39;</span><span class="p">,</span> <span class="n">cross_component_out</span><span class="o">=</span><span class="s1">&#39;DS_x&#39;</span><span class="p">,</span>
-                                  <span class="n">weights_in</span> <span class="o">=</span> <span class="s1">&#39;w_ls&#39;</span><span class="p">,</span> <span class="n">weights_out</span> <span class="o">=</span> <span class="s1">&#39;W_l&#39;</span><span class="p">,</span>
+                                  <span class="n">weights_in</span><span class="o">=</span><span class="s1">&#39;w_ls&#39;</span><span class="p">,</span> <span class="n">weights_out</span><span class="o">=</span><span class="s1">&#39;W_l&#39;</span><span class="p">,</span>
                                   <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">bin_units</span><span class="o">=</span><span class="s1">&#39;Mpc&#39;</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo_clmm</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mi">402</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mf">4.11</span> <span class="n">ms</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mi">406</span> <span class="n">ms</span>
+<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mi">405</span> <span class="n">ms</span>
+</pre></div>
+</div>
+<p>There is also the option to create an <code class="docutils literal notranslate"><span class="pre">ClusterEnsemble</span></code> object without
+the clusters list. Then, the user may compute the individual profile for
+each wanted cluster and compute the radial profile once all the
+indvidual profiles have been computed. This method may be reccomended if
+there a large number of clusters to avoid excess of memory allocation,
+since the user can generate each cluster separately, compute its
+individual profile and then delete the cluster object.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ensemble_id2</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">empty_cluster_ensemble</span> <span class="o">=</span> <span class="n">ClusterEnsemble</span><span class="p">(</span><span class="n">ensemble_id2</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">cluster</span> <span class="ow">in</span> <span class="n">gclist</span><span class="p">:</span>
+    <span class="n">empty_cluster_ensemble</span><span class="o">.</span><span class="n">make_individual_radial_profile</span><span class="p">(</span>
+        <span class="n">galaxycluster</span><span class="o">=</span><span class="n">cluster</span><span class="p">,</span> <span class="n">tan_component_in</span><span class="o">=</span><span class="s1">&#39;DS_t&#39;</span><span class="p">,</span> <span class="n">cross_component_in</span><span class="o">=</span><span class="s1">&#39;DS_x&#39;</span><span class="p">,</span>
+        <span class="n">tan_component_out</span><span class="o">=</span><span class="s1">&#39;DS_t&#39;</span><span class="p">,</span> <span class="n">cross_component_out</span><span class="o">=</span><span class="s1">&#39;DS_x&#39;</span><span class="p">,</span>
+        <span class="n">weights_in</span> <span class="o">=</span> <span class="s1">&#39;w_ls&#39;</span><span class="p">,</span> <span class="n">weights_out</span><span class="o">=</span><span class="s1">&#39;W_l&#39;</span><span class="p">,</span>
+        <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">bin_units</span><span class="o">=</span><span class="s1">&#39;Mpc&#39;</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo_clmm</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>A third option is where all clusters already have the profile computed,
+and we just add those to the <code class="docutils literal notranslate"><span class="pre">ClusterEnsemble</span></code> object:</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># add profiles to gclist</span>
+<span class="k">for</span> <span class="n">cluster</span> <span class="ow">in</span> <span class="n">gclist</span><span class="p">:</span>
+    <span class="n">cluster</span><span class="o">.</span><span class="n">make_radial_profile</span><span class="p">(</span>
+        <span class="n">tan_component_in</span><span class="o">=</span><span class="s1">&#39;DS_t&#39;</span><span class="p">,</span> <span class="n">cross_component_in</span><span class="o">=</span><span class="s1">&#39;DS_x&#39;</span><span class="p">,</span>
+        <span class="n">tan_component_out</span><span class="o">=</span><span class="s1">&#39;DS_t&#39;</span><span class="p">,</span> <span class="n">cross_component_out</span><span class="o">=</span><span class="s1">&#39;DS_x&#39;</span><span class="p">,</span>
+        <span class="n">weights_in</span> <span class="o">=</span> <span class="s1">&#39;w_ls&#39;</span><span class="p">,</span> <span class="n">weights_out</span> <span class="o">=</span> <span class="s1">&#39;W_l&#39;</span><span class="p">,</span>
+        <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">bin_units</span><span class="o">=</span><span class="s1">&#39;Mpc&#39;</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo_clmm</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ensemble_id3</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">empty_cluster_ensemble</span> <span class="o">=</span> <span class="n">ClusterEnsemble</span><span class="p">(</span><span class="n">ensemble_id3</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">cluster</span> <span class="ow">in</span> <span class="n">gclist</span><span class="p">:</span>
+    <span class="n">empty_cluster_ensemble</span><span class="o">.</span><span class="n">add_individual_radial_profile</span><span class="p">(</span>
+        <span class="n">galaxycluster</span><span class="o">=</span><span class="n">cluster</span><span class="p">,</span> <span class="n">profile_table</span><span class="o">=</span><span class="n">cluster</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span>
+        <span class="n">tan_component</span><span class="o">=</span><span class="s1">&#39;DS_t&#39;</span><span class="p">,</span> <span class="n">cross_component</span><span class="o">=</span><span class="s1">&#39;DS_x&#39;</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="s1">&#39;W_l&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <section id="stacked-profile-of-the-cluster-ensemble">
@@ -697,13 +738,13 @@ but these are not (yet) available in <code class="docutils literal notranslate">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="mi">7</span><span class="p">))</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;axes.linewidth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">clusterensemble</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
-         <span class="n">clusterensemble</span><span class="o">.</span><span class="n">sample_tangential_covariance</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span><span class="o">**</span><span class="mf">0.5</span><span class="o">/</span><span class="mf">1e13</span><span class="p">,</span>
+         <span class="n">clusterensemble</span><span class="o">.</span><span class="n">cov_tan_sv</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span><span class="o">**</span><span class="mf">0.5</span><span class="o">/</span><span class="mf">1e13</span><span class="p">,</span>
          <span class="s1">&#39;--&#39;</span><span class="p">,</span><span class="n">c</span> <span class="o">=</span> <span class="s1">&#39;royalblue&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Sample&#39;</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">clusterensemble</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
-         <span class="n">clusterensemble</span><span class="o">.</span><span class="n">bootstrap_tangential_covariance</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span><span class="o">**</span><span class="mf">0.5</span><span class="o">/</span><span class="mf">1e13</span><span class="p">,</span>
+         <span class="n">clusterensemble</span><span class="o">.</span><span class="n">cov_tan_bs</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span><span class="o">**</span><span class="mf">0.5</span><span class="o">/</span><span class="mf">1e13</span><span class="p">,</span>
          <span class="s1">&#39;-s&#39;</span><span class="p">,</span><span class="n">c</span> <span class="o">=</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Bootstrap&#39;</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">markersize</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">clusterensemble</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
-         <span class="n">clusterensemble</span><span class="o">.</span><span class="n">jackknife_tangential_covariance</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span><span class="o">**</span><span class="mf">0.5</span><span class="o">/</span><span class="mf">1e13</span><span class="p">,</span>
+         <span class="n">clusterensemble</span><span class="o">.</span><span class="n">cov_tan_jk</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span><span class="o">**</span><span class="mf">0.5</span><span class="o">/</span><span class="mf">1e13</span><span class="p">,</span>
          <span class="n">c</span> <span class="o">=</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Jackknife&#39;</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;R [Mpc]&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$\sigma_{\Delta\Sigma}\ (\times 10^</span><span class="si">{13}</span><span class="s1"> M_\odot /Mpc^2)$&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span><span class="mi">25</span><span class="p">)</span>
@@ -714,25 +755,28 @@ but these are not (yet) available in <code class="docutils literal notranslate">
 <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;minor&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/demo_mock_ensemble_realistic_45_0.png" src="../_images/demo_mock_ensemble_realistic_45_0.png" />
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span> <span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<img alt="../_images/demo_mock_ensemble_realistic_50_0.png" src="../_images/demo_mock_ensemble_realistic_50_0.png" />
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span> <span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;axes.linewidth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">wspace</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">cov</span> <span class="o">=</span> <span class="p">[</span><span class="n">clusterensemble</span><span class="o">.</span><span class="n">sample_tangential_covariance</span><span class="p">,</span>
-       <span class="n">clusterensemble</span><span class="o">.</span><span class="n">bootstrap_tangential_covariance</span><span class="p">,</span>
-       <span class="n">clusterensemble</span><span class="o">.</span><span class="n">jackknife_tangential_covariance</span><span class="p">]</span>
-<span class="n">maximum</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">clusterensemble</span><span class="o">.</span><span class="n">sample_tangential_covariance</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
-<span class="n">label</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Stack : Sample&#39;</span><span class="p">,</span> <span class="s1">&#39;Stack : Bootstrap&#39;</span><span class="p">,</span> <span class="s1">&#39;Stack : Jackknife&#39;</span><span class="p">]</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
-    <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">label</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;radial bin index&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">18</span><span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;radial bin index&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">18</span><span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">which</span> <span class="o">=</span> <span class="s1">&#39;major&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span> <span class="mi">12</span><span class="p">)</span>
-    <span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">cov</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;Reds&#39;</span><span class="p">,</span><span class="n">vmin</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">maximum</span><span class="p">,</span> <span class="n">origin</span> <span class="o">=</span> <span class="s1">&#39;lower&#39;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+<span class="n">maximum</span> <span class="o">=</span> <span class="n">clusterensemble</span><span class="o">.</span><span class="n">cov_tan_sv</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">cov</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+    <span class="n">axes</span><span class="p">,</span>
+    <span class="p">[</span><span class="n">clusterensemble</span><span class="o">.</span><span class="n">cov_tan_sv</span><span class="p">,</span>
+     <span class="n">clusterensemble</span><span class="o">.</span><span class="n">cov_tan_bs</span><span class="p">,</span>
+     <span class="n">clusterensemble</span><span class="o">.</span><span class="n">cov_tan_jk</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Stack : Sample&#39;</span><span class="p">,</span> <span class="s1">&#39;Stack : Bootstrap&#39;</span><span class="p">,</span> <span class="s1">&#39;Stack : Jackknife&#39;</span><span class="p">],</span>
+<span class="p">):</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;radial bin index&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;radial bin index&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+    <span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">cov</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;Reds&#39;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">maximum</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/demo_mock_ensemble_realistic_46_0.png" src="../_images/demo_mock_ensemble_realistic_46_0.png" />
+<img alt="../_images/demo_mock_ensemble_realistic_51_0.png" src="../_images/demo_mock_ensemble_realistic_51_0.png" />
 </section>
 <section id="visualizing-the-stacked-profiles-and-corresponding-model">
 <h3>Visualizing the stacked profiles and corresponding model<a class="headerlink" href="#visualizing-the-stacked-profiles-and-corresponding-model" title="Permalink to this heading"></a></h3>
@@ -742,7 +786,8 @@ profiles of the clusters (light blue) - the stacked signal (red symbols)
 mass, concentration and redshift in the stack (dashed black)</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">moo</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">Modeling</span><span class="p">(</span><span class="n">massdef</span> <span class="o">=</span> <span class="s1">&#39;critical&#39;</span><span class="p">,</span> <span class="n">delta_mdef</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span> <span class="n">halo_profile_model</span> <span class="o">=</span> <span class="s1">&#39;nfw&#39;</span><span class="p">)</span>
 <span class="n">moo</span><span class="o">.</span><span class="n">set_cosmo</span><span class="p">(</span><span class="n">cosmo_clmm</span><span class="p">)</span>
-<span class="c1"># Average values of mass and concentration of the ensemble to be used below to overplot the model on the stacked profile</span>
+<span class="c1"># Average values of mass and concentration of the ensemble to be used below</span>
+<span class="c1"># to overplot the model on the stacked profile</span>
 <span class="n">moo</span><span class="o">.</span><span class="n">set_concentration</span><span class="p">(</span><span class="n">conc_list</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
 <span class="n">moo</span><span class="o">.</span><span class="n">set_mass</span><span class="p">(</span><span class="n">cluster_m</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
 </pre></div>
@@ -751,8 +796,8 @@ mass, concentration and redshift in the stack (dashed black)</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;axes.linewidth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">17</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
 
-<span class="n">err_gt</span> <span class="o">=</span> <span class="n">clusterensemble</span><span class="o">.</span><span class="n">sample_tangential_covariance</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span><span class="o">**</span><span class="mf">0.5</span><span class="o">/</span><span class="mf">1e13</span>
-<span class="n">err_gx</span> <span class="o">=</span> <span class="n">clusterensemble</span><span class="o">.</span><span class="n">sample_cross_covariance</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span><span class="o">**</span><span class="mf">0.5</span><span class="o">/</span><span class="mf">1e13</span>
+<span class="n">err_gt</span> <span class="o">=</span> <span class="n">clusterensemble</span><span class="o">.</span><span class="n">cov_tan_sv</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span><span class="o">**</span><span class="mf">0.5</span><span class="o">/</span><span class="mf">1e13</span>
+<span class="n">err_gx</span> <span class="o">=</span> <span class="n">clusterensemble</span><span class="o">.</span><span class="n">cov_cross_sv</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span><span class="o">**</span><span class="mf">0.5</span><span class="o">/</span><span class="mf">1e13</span>
 
 <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">r_stack</span><span class="p">,</span><span class="n">gt_stack</span><span class="o">/</span><span class="mf">1e13</span><span class="p">,</span> <span class="n">err_gt</span><span class="p">,</span><span class="n">markersize</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">fmt</span> <span class="o">=</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">capsize</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">elinewidth</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">zorder</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Stack&#39;</span><span class="p">)</span>
 <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">r_stack</span><span class="p">,</span><span class="n">gx_stack</span><span class="o">/</span><span class="mf">1e13</span><span class="p">,</span> <span class="n">err_gx</span><span class="p">,</span><span class="n">markersize</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">fmt</span> <span class="o">=</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">capsize</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">elinewidth</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">zorder</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Stack&#39;</span><span class="p">)</span>
@@ -780,11 +825,25 @@ mass, concentration and redshift in the stack (dashed black)</p>
 <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Tangential&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
 <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Cross&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
 
+<span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axs</span><span class="p">:</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">minorticks_on</span><span class="p">()</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">lw</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;minor&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">.1</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<img alt="../_images/demo_mock_ensemble_realistic_49_0.png" src="../_images/demo_mock_ensemble_realistic_49_0.png" />
+<img alt="../_images/demo_mock_ensemble_realistic_54_0.png" src="../_images/demo_mock_ensemble_realistic_54_0.png" />
 </section>
+</section>
+<section id="saving-loading-clusterensemble">
+<h2>Saving/Loading ClusterEnsemble<a class="headerlink" href="#saving-loading-clusterensemble" title="Permalink to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">ClusterEnsemble</span></code> object also have an option for saving/loading:</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clusterensemble</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;ce.pkl&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clusterensemble2</span> <span class="o">=</span> <span class="n">ClusterEnsemble</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;ce.pkl&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
 </section>
 </section>
 

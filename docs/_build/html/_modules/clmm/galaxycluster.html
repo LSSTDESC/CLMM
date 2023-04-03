@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>clmm.galaxycluster &mdash; CLMM 1.5.3 documentation</title>
+  <title>clmm.galaxycluster &mdash; CLMM 1.7.1 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -29,7 +29,7 @@
             <a href="../../index.html" class="icon icon-home"> CLMM
           </a>
               <div class="version">
-                1.5.3
+                1.7.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -141,7 +141,7 @@
 <span class="kn">from</span> <span class="nn">.gcdata</span> <span class="kn">import</span> <span class="n">GCData</span>
 <span class="kn">from</span> <span class="nn">.dataops</span> <span class="kn">import</span> <span class="p">(</span><span class="n">compute_tangential_and_cross_components</span><span class="p">,</span> <span class="n">make_radial_profile</span><span class="p">,</span>
                       <span class="n">compute_galaxy_weights</span><span class="p">,</span> <span class="n">compute_background_probability</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.theory</span> <span class="kn">import</span> <span class="n">compute_critical_surface_density</span>
+<span class="kn">from</span> <span class="nn">.theory</span> <span class="kn">import</span> <span class="n">compute_critical_surface_density_eff</span>
 <span class="kn">from</span> <span class="nn">.plotting</span> <span class="kn">import</span> <span class="n">plot_profiles</span>
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">validate_argument</span><span class="p">,</span> <span class="n">_draw_random_points_from_tab_distribution</span>
 
@@ -264,56 +264,55 @@
         <span class="k">if</span> <span class="n">cosmo</span><span class="o">.</span><span class="n">get_desc</span><span class="p">()</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;cosmo&#39;</span><span class="p">]</span> <span class="ow">or</span> <span class="s1">&#39;sigma_c&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Cluster</span><span class="se">\&#39;</span><span class="s1">s redshift is None. Cannot compute Sigma_crit&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">use_pdz</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="s1">&#39;z&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">use_pdz</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="s1">&#39;z&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Galaxy catalog missing the redshift column (which should be&quot;</span>
                                 <span class="s2">&quot;called &#39;z&#39;). Cannot compute Sigma_crit.&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">use_pdz</span> <span class="ow">and</span> <span class="p">(</span><span class="s1">&#39;pzbins&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">columns</span>
-                            <span class="ow">or</span> <span class="s1">&#39;pzpdf&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">columns</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Galaxy catalog missing the redshift distribution information. &quot;</span>
-                                <span class="s2">&quot;Need to have both a &#39;pzbins&#39; and &#39;pzpdf&#39; columns.&quot;</span>
+            <span class="k">elif</span> <span class="n">use_pdz</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">has_pzpdfs</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Galaxy catalog missing the pzpdfs. &quot;</span>
                                 <span class="s2">&quot;Cannot compute 1/&lt;1/Sigma_crit&gt;.&quot;</span><span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">update_cosmo</span><span class="p">(</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">use_pdz</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;sigma_c&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">compute_critical_surface_density</span><span class="p">(</span>
-                    <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">z_cluster</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">],</span>
-                    <span class="n">validate_input</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;sigma_c&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cosmo</span><span class="o">.</span><span class="n">eval_sigma_crit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">])</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;sigmac_type&#39;</span><span class="p">]</span><span class="o">=</span> <span class="s1">&#39;standard&#39;</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;sigma_c&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">compute_critical_surface_density</span><span class="p">(</span>
-                    <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">z_cluster</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">use_pdz</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                    <span class="n">pzbins</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;pzbins&#39;</span><span class="p">],</span> <span class="n">pzpdf</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">],</span>
-                    <span class="n">validate_input</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;sigmac_type&#39;</span><span class="p">]</span><span class="o">=</span> <span class="s1">&#39;effective&#39;</span></div>
+                <span class="n">zdata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_input_galdata</span><span class="p">({</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">:</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">,</span> <span class="s1">&#39;pzbins&#39;</span><span class="p">:</span><span class="s1">&#39;pzbins&#39;</span><span class="p">})</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;sigma_c&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">compute_critical_surface_density_eff</span><span class="p">(</span>
+                    <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>  <span class="n">z_cluster</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">pzbins</span><span class="o">=</span><span class="n">zdata</span><span class="p">[</span><span class="s1">&#39;pzbins&#39;</span><span class="p">],</span>
+                    <span class="n">pzpdf</span><span class="o">=</span><span class="n">zdata</span><span class="p">[</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">],</span> <span class="n">validate_input</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;sigmac_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;effective&#39;</span></div>
 
-
-
-    <span class="k">def</span> <span class="nf">_get_input_galdata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">col_dict</span><span class="p">,</span> <span class="n">required_cols</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_get_input_galdata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">col_dict</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Checks required columns exist in galcat and returns kwargs dictionary</span>
 <span class="sd">        to be passed to dataops functions.</span>
 
 <span class="sd">        Parametters</span>
 <span class="sd">        -----------</span>
-<span class="sd">        col_dict: dict</span>
+<span class="sd">        col_dict : dict</span>
 <span class="sd">            Dictionary with the names of the dataops arguments as keys and galcat columns</span>
 <span class="sd">            as values, made to usually pass locals() here.</span>
-<span class="sd">        required_cols: list, None</span>
-<span class="sd">            List of column names required. If None, checks all columns.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        dict</span>
+<span class="sd">        kwarg_data : dict</span>
 <span class="sd">            Dictionary with the data to be passed to functions by **kwargs method.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">use_cols</span> <span class="o">=</span> <span class="n">col_dict</span> <span class="k">if</span> <span class="n">required_cols</span> <span class="ow">is</span> <span class="kc">None</span> \
-                    <span class="k">else</span> <span class="p">{</span><span class="n">col</span><span class="p">:</span><span class="n">col_dict</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">required_cols</span><span class="p">}</span>
+        <span class="n">use_cols</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">col_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="n">kwarg_data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="s1">&#39;pzbins&#39;</span> <span class="ow">in</span> <span class="n">col_dict</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">has_pzpdfs</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Missing galaxy photoz distributions&#39;</span><span class="p">)</span>
+            <span class="n">use_cols</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;pzbins&#39;</span><span class="p">)</span>
+            <span class="n">use_cols</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">)</span>
+            <span class="n">pzbins</span><span class="p">,</span> <span class="n">pzpdfs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">get_pzpdfs</span><span class="p">()</span>
+            <span class="n">kwarg_data</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;pzbins&#39;</span><span class="p">:</span> <span class="n">pzbins</span><span class="p">,</span> <span class="s1">&#39;pzpdf&#39;</span><span class="p">:</span><span class="n">pzpdfs</span><span class="p">})</span>
         <span class="n">missing_cols</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">t_</span><span class="si">}</span><span class="s2">&#39;&quot;</span> <span class="k">for</span> <span class="n">t_</span> <span class="ow">in</span> <span class="n">use_cols</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
                                     <span class="k">if</span> <span class="n">t_</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">columns</span><span class="p">])</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing_cols</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Galaxy catalog missing required columns: </span><span class="si">{</span><span class="n">missing_cols</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="n">colname</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">colname</span> <span class="ow">in</span> <span class="n">use_cols</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-
+        <span class="n">kwarg_data</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="n">colname</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">colname</span> <span class="ow">in</span> <span class="n">use_cols</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span>
+        <span class="k">return</span> <span class="n">kwarg_data</span>
 
 <div class="viewcode-block" id="GalaxyCluster.compute_tangential_and_cross_components"><a class="viewcode-back" href="../../api/clmm.galaxycluster.html#clmm.galaxycluster.GalaxyCluster.compute_tangential_and_cross_components">[docs]</a>    <span class="k">def</span> <span class="nf">compute_tangential_and_cross_components</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">shape_component1</span><span class="o">=</span><span class="s1">&#39;e1&#39;</span><span class="p">,</span> <span class="n">shape_component2</span><span class="o">=</span><span class="s1">&#39;e2&#39;</span><span class="p">,</span> <span class="n">tan_component</span><span class="o">=</span><span class="s1">&#39;et&#39;</span><span class="p">,</span>
@@ -407,9 +406,9 @@
 <span class="sd">        p_background : array</span>
 <span class="sd">            Probability for being a background galaxy</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">col_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">:</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">,</span> <span class="s1">&#39;pzbins&#39;</span><span class="p">:</span><span class="s1">&#39;pzbins&#39;</span><span class="p">,</span> <span class="s1">&#39;z_source&#39;</span><span class="p">:</span><span class="s1">&#39;z&#39;</span><span class="p">}</span>
-        <span class="n">required_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">,</span> <span class="s1">&#39;pzbins&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">use_pdz</span> <span class="k">else</span> <span class="p">[</span><span class="s1">&#39;z_source&#39;</span><span class="p">]</span>
-        <span class="n">cols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_input_galdata</span><span class="p">(</span><span class="n">col_dict</span><span class="p">,</span> <span class="n">required_cols</span><span class="p">)</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_input_galdata</span><span class="p">(</span>
+            <span class="p">{</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">:</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">,</span> <span class="s1">&#39;pzbins&#39;</span><span class="p">:</span><span class="s1">&#39;pzbins&#39;</span><span class="p">}</span>
+            <span class="k">if</span> <span class="n">use_pdz</span> <span class="k">else</span> <span class="p">{</span><span class="s1">&#39;z_source&#39;</span><span class="p">:</span><span class="s1">&#39;z&#39;</span><span class="p">})</span>
         <span class="n">p_background</span> <span class="o">=</span> <span class="n">compute_background_probability</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">use_pdz</span><span class="o">=</span><span class="n">use_pdz</span><span class="p">,</span> <span class="n">validate_input</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">,</span> <span class="o">**</span><span class="n">cols</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">add</span><span class="p">:</span>
@@ -459,22 +458,20 @@
 <span class="sd">            the individual lens source pair weights</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># input cols</span>
-        <span class="n">col_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">:</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">,</span> <span class="s1">&#39;pzbins&#39;</span><span class="p">:</span><span class="s1">&#39;pzbins&#39;</span><span class="p">,</span> <span class="s1">&#39;z_source&#39;</span><span class="p">:</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma_c&#39;</span><span class="p">:</span><span class="s1">&#39;sigma_c&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;shape_component1&#39;</span><span class="p">:</span><span class="n">shape_component1</span><span class="p">,</span> <span class="s1">&#39;shape_component2&#39;</span><span class="p">:</span><span class="n">shape_component2</span><span class="p">,</span>
-        <span class="s1">&#39;shape_component1_err&#39;</span><span class="p">:</span><span class="n">shape_component1_err</span><span class="p">,</span> <span class="s1">&#39;shape_component2_err&#39;</span><span class="p">:</span><span class="n">shape_component2_err</span><span class="p">}</span>
-        <span class="n">col_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">locals</span><span class="p">())</span>
-        <span class="n">required_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;shape_component1&#39;</span><span class="p">,</span> <span class="s1">&#39;shape_component2&#39;</span><span class="p">]</span>
+        <span class="n">col_dict</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="n">use_pdz</span><span class="p">:</span>
-            <span class="n">required_cols</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">,</span> <span class="s1">&#39;pzbins&#39;</span><span class="p">]</span>
+            <span class="n">col_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">:</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">,</span> <span class="s1">&#39;pzbins&#39;</span><span class="p">:</span><span class="s1">&#39;pzbins&#39;</span><span class="p">})</span>
         <span class="k">if</span> <span class="n">is_deltasigma</span><span class="p">:</span>
             <span class="k">if</span> <span class="s1">&#39;sigma_c&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">add_critical_surface_density</span><span class="p">(</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">use_pdz</span><span class="o">=</span><span class="n">use_pdz</span><span class="p">)</span>
-            <span class="n">required_cols</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;z_source&#39;</span><span class="p">,</span><span class="s1">&#39;sigma_c&#39;</span><span class="p">]</span>
+            <span class="n">col_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;z_source&#39;</span><span class="p">:</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma_c&#39;</span><span class="p">:</span><span class="s1">&#39;sigma_c&#39;</span><span class="p">})</span>
         <span class="k">if</span> <span class="n">use_shape_noise</span><span class="p">:</span>
-            <span class="n">required_cols</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;shape_component1&#39;</span><span class="p">,</span> <span class="s1">&#39;shape_component2&#39;</span><span class="p">]</span>
+            <span class="n">col_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;shape_component1&#39;</span><span class="p">:</span><span class="n">shape_component1</span><span class="p">,</span>
+                             <span class="s1">&#39;shape_component2&#39;</span><span class="p">:</span><span class="n">shape_component2</span><span class="p">})</span>
         <span class="k">if</span> <span class="n">use_shape_error</span><span class="p">:</span>
-            <span class="n">required_cols</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;shape_component1_err&#39;</span><span class="p">,</span> <span class="s1">&#39;shape_component2_err&#39;</span><span class="p">]</span>
-        <span class="n">cols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_input_galdata</span><span class="p">(</span><span class="n">col_dict</span><span class="p">,</span> <span class="n">required_cols</span><span class="p">)</span>
+            <span class="n">col_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;shape_component1_err&#39;</span><span class="p">:</span><span class="n">shape_component1_err</span><span class="p">,</span>
+                             <span class="s1">&#39;shape_component2_err&#39;</span><span class="p">:</span><span class="n">shape_component2_err</span><span class="p">})</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_input_galdata</span><span class="p">(</span><span class="n">col_dict</span><span class="p">)</span>
 
         <span class="c1"># computes weights</span>
         <span class="n">w_ls</span> <span class="o">=</span> <span class="n">compute_galaxy_weights</span><span class="p">(</span>
@@ -511,17 +508,20 @@
 <span class="sd">            Random points following the pdf_tab distribution</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">if</span> <span class="s1">&#39;pzpdf&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">columns</span> <span class="ow">or</span> <span class="s1">&#39;pzbins&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Missing galaxy photoz distributions&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">zcol_out</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="n">overwrite</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Column </span><span class="si">{</span><span class="n">zcol_out</span><span class="si">}</span><span class="s1"> already exists in galcat. </span><span class="se">\</span>
 <span class="s1">                            Set overwrite=True to overwrite or use other column name&#39;</span><span class="p">)</span>
 
-        <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">pzbins</span><span class="p">,</span> <span class="n">pzpdf</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;pzbins&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">]):</span>
-            <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_draw_random_points_from_tab_distribution</span><span class="p">(</span><span class="n">pzbins</span><span class="p">,</span> <span class="n">pzpdf</span><span class="p">,</span> <span class="n">nobj</span><span class="o">=</span><span class="n">nobj</span><span class="p">,</span>
-                                                                 <span class="n">xmin</span><span class="o">=</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="n">xmax</span><span class="p">))</span>
+        <span class="n">zdata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_input_galdata</span><span class="p">({</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">:</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">,</span> <span class="s1">&#39;pzbins&#39;</span><span class="p">:</span><span class="s1">&#39;pzbins&#39;</span><span class="p">})</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">pzpdf_info</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;shared_bins&#39;</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="n">_draw_random_points_from_tab_distribution</span><span class="p">(</span>
+                       <span class="n">zdata</span><span class="p">[</span><span class="s1">&#39;pzbins&#39;</span><span class="p">],</span> <span class="n">pzpdf</span><span class="p">,</span> <span class="n">nobj</span><span class="o">=</span><span class="n">nobj</span><span class="p">,</span> <span class="n">xmin</span><span class="o">=</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="n">xmax</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">pzpdf</span> <span class="ow">in</span> <span class="n">zdata</span><span class="p">[</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">]]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="n">_draw_random_points_from_tab_distribution</span><span class="p">(</span>
+                       <span class="n">pzbin</span><span class="p">,</span> <span class="n">pzpdf</span><span class="p">,</span> <span class="n">nobj</span><span class="o">=</span><span class="n">nobj</span><span class="p">,</span> <span class="n">xmin</span><span class="o">=</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="n">xmax</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">pzbin</span><span class="p">,</span> <span class="n">pzpdf</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">zdata</span><span class="p">[</span><span class="s1">&#39;pzbins&#39;</span><span class="p">],</span> <span class="n">zdata</span><span class="p">[</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">])]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="n">zcol_out</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span>
         <span class="k">return</span> <span class="n">res</span></div>
@@ -533,7 +533,7 @@
                             <span class="n">tan_component_in_err</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cross_component_in_err</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                             <span class="n">include_empty_bins</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gal_ids_in_bins</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                             <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">table_name</span><span class="o">=</span><span class="s1">&#39;profile&#39;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                            <span class="n">use_weights</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">weights_name</span><span class="o">=</span><span class="s1">&#39;w_ls&#39;</span><span class="p">):</span>
+                            <span class="n">use_weights</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">weights_in</span><span class="o">=</span><span class="s1">&#39;w_ls&#39;</span><span class="p">,</span> <span class="n">weights_out</span><span class="o">=</span><span class="s1">&#39;W_l&#39;</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compute the shear or ellipticity profile of the cluster</span>
 
 <span class="sd">        We assume that the cluster object contains information on the cross and</span>
@@ -599,9 +599,9 @@
 <span class="sd">            Overwrite profile table.</span>
 <span class="sd">            Default True</span>
 <span class="sd">        use_weights: bool, optional</span>
-<span class="sd">            If True, use the column `weights_name` in `galcat` as the weights</span>
+<span class="sd">            If True, use the column `weights_in` in `galcat` as the weights</span>
 <span class="sd">            Default: False</span>
-<span class="sd">        weights_name: str, optional</span>
+<span class="sd">        weights_in: str, optional</span>
 <span class="sd">            Name of the weights column in `galcat`</span>
 <span class="sd">            Default: &#39;w_ls&#39;</span>
 
@@ -632,12 +632,14 @@
             <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">z_lens</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">validate_input</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">validate_input</span><span class="p">,</span>
             <span class="n">components_error</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span> <span class="k">if</span> <span class="n">n</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
                               <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="p">(</span><span class="n">tan_component_in_err</span><span class="p">,</span> <span class="n">cross_component_in_err</span><span class="p">,</span> <span class="kc">None</span><span class="p">)],</span>
-            <span class="n">weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="n">weights_name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="k">if</span> <span class="n">use_weights</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="n">weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="p">[</span><span class="n">weights_in</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="k">if</span> <span class="n">use_weights</span> <span class="k">else</span> <span class="kc">None</span>
             <span class="p">)</span>
         <span class="c1"># Reaname table columns</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="n">tan_component_out</span><span class="p">,</span> <span class="n">cross_component_out</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">]):</span>
             <span class="n">profile_table</span><span class="o">.</span><span class="n">rename_column</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;p_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
             <span class="n">profile_table</span><span class="o">.</span><span class="n">rename_column</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;p_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">_err&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">_err&#39;</span><span class="p">)</span>
+        <span class="c1"># Reaname weights columns</span>
+        <span class="n">profile_table</span><span class="o">.</span><span class="n">rename_column</span><span class="p">(</span><span class="s1">&#39;weights_sum&#39;</span><span class="p">,</span> <span class="n">weights_out</span><span class="p">)</span>
         <span class="c1"># add galaxy IDs</span>
         <span class="k">if</span> <span class="n">gal_ids_in_bins</span><span class="p">:</span>
             <span class="k">if</span> <span class="s1">&#39;id&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>

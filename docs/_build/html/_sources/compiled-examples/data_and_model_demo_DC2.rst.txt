@@ -31,7 +31,7 @@ Check what version we’re using
 
 .. parsed-literal::
 
-    '1.5.3'
+    '1.7.1'
 
 
 
@@ -57,7 +57,7 @@ Read in the extragalactic catalog cosmoDC2
 
 .. parsed-literal::
 
-    <clmm.cosmology.ccl.CCLCosmology at 0x15551391bc50>
+    <clmm.cosmology.ccl.CCLCosmology at 0x155514cc31d0>
 
 
 
@@ -83,8 +83,8 @@ Get the list of halos with ``M > mmin`` in the redshift range ``[zmin, zmax]``
 .. parsed-literal::
 
     There are 4 clusters in this mass and redshift range
-    CPU times: user 2.01 s, sys: 8.35 s, total: 10.4 s
-    Wall time: 51.5 s
+    CPU times: user 1.92 s, sys: 8.25 s, total: 10.2 s
+    Wall time: 58.5 s
 
 
 Check the units of halo masses in the catalog
@@ -177,8 +177,8 @@ including intrinsic and shear components.
 
 .. parsed-literal::
 
-    CPU times: user 21.1 s, sys: 22.5 s, total: 43.6 s
-    Wall time: 1min 15s
+    CPU times: user 20.5 s, sys: 18.9 s, total: 39.4 s
+    Wall time: 1min 26s
 
 
 To compute a reduced tangential shear profile using CLMM, we first need to transform the shear into ellipticities.

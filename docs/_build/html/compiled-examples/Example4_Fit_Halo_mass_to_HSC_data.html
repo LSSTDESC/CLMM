@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Example 4: Using a real dataset (HSC) &mdash; CLMM 1.5.3 documentation</title>
+  <title>Example 4: Using a real dataset (HSC) &mdash; CLMM 1.7.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -32,7 +32,7 @@
             <a href="../index.html" class="icon icon-home"> CLMM
           </a>
               <div class="version">
-                1.5.3
+                1.7.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -407,8 +407,8 @@ catalog, and adjust column names to prepare for the analysis in CLMM.</p>
     <span class="n">data_0</span> <span class="o">=</span> <span class="n">pkl</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">catalog</span><span class="p">,</span><span class="s2">&quot;rb&quot;</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mi">191</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mf">1.02</span> <span class="n">s</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">1.21</span> <span class="n">s</span>
-<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mf">1.94</span> <span class="n">s</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mi">214</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mi">983</span> <span class="n">ms</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">1.2</span> <span class="n">s</span>
+<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mf">1.72</span> <span class="n">s</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">data_0</span><span class="o">.</span><span class="n">colnames</span><span class="p">)</span>
@@ -590,7 +590,7 @@ catalog, and adjust column names to prepare for the analysis in CLMM.</p>
 </pre></div>
 </div>
 <div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s1">&#39;ra&#39;</span><span class="p">,</span> <span class="s1">&#39;dec&#39;</span><span class="p">,</span> <span class="s1">&#39;e1&#39;</span><span class="p">,</span> <span class="s1">&#39;e2&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;theta&#39;</span><span class="p">,</span> <span class="s1">&#39;et&#39;</span><span class="p">,</span> <span class="s1">&#39;ex&#39;</span><span class="p">]</span>
-<span class="p">[</span><span class="s1">&#39;radius_min&#39;</span><span class="p">,</span> <span class="s1">&#39;radius&#39;</span><span class="p">,</span> <span class="s1">&#39;radius_max&#39;</span><span class="p">,</span> <span class="s1">&#39;gt&#39;</span><span class="p">,</span> <span class="s1">&#39;gt_err&#39;</span><span class="p">,</span> <span class="s1">&#39;gx&#39;</span><span class="p">,</span> <span class="s1">&#39;gx_err&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;z_err&#39;</span><span class="p">,</span> <span class="s1">&#39;n_src&#39;</span><span class="p">,</span> <span class="s1">&#39;gal_id&#39;</span><span class="p">]</span>
+<span class="p">[</span><span class="s1">&#39;radius_min&#39;</span><span class="p">,</span> <span class="s1">&#39;radius&#39;</span><span class="p">,</span> <span class="s1">&#39;radius_max&#39;</span><span class="p">,</span> <span class="s1">&#39;gt&#39;</span><span class="p">,</span> <span class="s1">&#39;gt_err&#39;</span><span class="p">,</span> <span class="s1">&#39;gx&#39;</span><span class="p">,</span> <span class="s1">&#39;gx_err&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;z_err&#39;</span><span class="p">,</span> <span class="s1">&#39;n_src&#39;</span><span class="p">,</span> <span class="s1">&#39;W_l&#39;</span><span class="p">,</span> <span class="s1">&#39;gal_id&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
@@ -690,8 +690,8 @@ catalog, and adjust column names to prepare for the analysis in CLMM.</p>
 <span class="n">fit_individual_redshift</span> <span class="o">=</span> <span class="n">fit_mass</span><span class="p">(</span><span class="n">predict_reduced_tangential_shear_individual_redshift</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mi">797</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mi">0</span> <span class="n">ns</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mi">797</span> <span class="n">ms</span>
-<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mi">796</span> <span class="n">ms</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mi">356</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mi">0</span> <span class="n">ns</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mi">356</span> <span class="n">ms</span>
+<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mi">355</span> <span class="n">ms</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Best fit mass for N(z) model                     = </span><span class="si">{</span><span class="n">fit_redshift_distribution</span><span class="p">[</span><span class="s2">&quot;m&quot;</span><span class="p">]</span><span class="si">:</span><span class="s1">.3e</span><span class="si">}</span><span class="s1"> +/- </span><span class="si">{</span><span class="n">fit_redshift_distribution</span><span class="p">[</span><span class="s2">&quot;m_err&quot;</span><span class="p">]</span><span class="si">:</span><span class="s1">.3e</span><span class="si">}</span><span class="s1"> Msun&#39;</span><span class="p">)</span>
@@ -723,8 +723,8 @@ catalog, and adjust column names to prepare for the analysis in CLMM.</p>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Reduced chi2 (individual (R,z) model) = </span><span class="si">{</span><span class="n">chi2_individual_redshift_dof</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Reduced</span> <span class="n">chi2</span> <span class="p">(</span><span class="n">N</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="n">model</span><span class="p">)</span> <span class="o">=</span> <span class="mf">2.4805403526932137</span>
-<span class="n">Reduced</span> <span class="n">chi2</span> <span class="p">(</span><span class="n">individual</span> <span class="p">(</span><span class="n">R</span><span class="p">,</span><span class="n">z</span><span class="p">)</span> <span class="n">model</span><span class="p">)</span> <span class="o">=</span> <span class="mf">2.6209850216326234</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Reduced</span> <span class="n">chi2</span> <span class="p">(</span><span class="n">N</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="n">model</span><span class="p">)</span> <span class="o">=</span> <span class="mf">2.4805403526947982</span>
+<span class="n">Reduced</span> <span class="n">chi2</span> <span class="p">(</span><span class="n">individual</span> <span class="p">(</span><span class="n">R</span><span class="p">,</span><span class="n">z</span><span class="p">)</span> <span class="n">model</span><span class="p">)</span> <span class="o">=</span> <span class="mf">2.6209850216324067</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">matplotlib.ticker</span> <span class="kn">import</span> <span class="n">MultipleLocator</span>

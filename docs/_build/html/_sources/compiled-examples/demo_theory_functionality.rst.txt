@@ -51,7 +51,7 @@ Make sure we know which version we’re using
 
 .. parsed-literal::
 
-    '1.5.3'
+    '1.7.1'
 
 
 
@@ -105,10 +105,6 @@ Quick test of all theory functionality
 
 .. code:: ipython3
 
-    Sigmac = m.compute_critical_surface_density(cosmo, z_cluster=z_cl, z_source=z_source)
-
-.. code:: ipython3
-
     gammat = m.compute_tangential_shear(r3d, mdelta=cluster_mass, cdelta=cluster_concentration, z_cluster=z_cl, 
                                         z_source=z_source, cosmo=cosmo, delta_mdef=mass_Delta, 
                                         halo_profile_model=density_profile_parametrization, 
@@ -150,8 +146,8 @@ Quick test of all theory functionality
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/theory/generic.py:72: UserWarning: Magnification is negative for certain radii,                     returning nan for magnification bias in this case.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/theory/generic.py:74: RuntimeWarning: invalid value encountered in power
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/generic.py:72: UserWarning: Magnification is negative for certain radii,                     returning nan for magnification bias in this case.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/generic.py:74: RuntimeWarning: invalid value encountered in power
 
 
 Lensing quantities assuming sources follow a given redshift
@@ -181,7 +177,7 @@ Plot the predicted profiles
 
 
 
-.. image:: demo_theory_functionality_files/demo_theory_functionality_26_0.png
+.. image:: demo_theory_functionality_files/demo_theory_functionality_25_0.png
 
 
 .. code:: ipython3
@@ -190,7 +186,7 @@ Plot the predicted profiles
 
 
 
-.. image:: demo_theory_functionality_files/demo_theory_functionality_27_0.png
+.. image:: demo_theory_functionality_files/demo_theory_functionality_26_0.png
 
 
 .. code:: ipython3
@@ -199,7 +195,7 @@ Plot the predicted profiles
 
 
 
-.. image:: demo_theory_functionality_files/demo_theory_functionality_28_0.png
+.. image:: demo_theory_functionality_files/demo_theory_functionality_27_0.png
 
 
 .. code:: ipython3
@@ -208,7 +204,7 @@ Plot the predicted profiles
 
 
 
-.. image:: demo_theory_functionality_files/demo_theory_functionality_29_0.png
+.. image:: demo_theory_functionality_files/demo_theory_functionality_28_0.png
 
 
 .. code:: ipython3
@@ -217,7 +213,7 @@ Plot the predicted profiles
 
 
 
-.. image:: demo_theory_functionality_files/demo_theory_functionality_30_0.png
+.. image:: demo_theory_functionality_files/demo_theory_functionality_29_0.png
 
 
 .. code:: ipython3
@@ -232,12 +228,12 @@ Plot the predicted profiles
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x155514d3d150>
+    <matplotlib.legend.Legend at 0x1555153429d0>
 
 
 
 
-.. image:: demo_theory_functionality_files/demo_theory_functionality_31_1.png
+.. image:: demo_theory_functionality_files/demo_theory_functionality_30_1.png
 
 
 .. code:: ipython3
@@ -246,7 +242,7 @@ Plot the predicted profiles
 
 
 
-.. image:: demo_theory_functionality_files/demo_theory_functionality_32_0.png
+.. image:: demo_theory_functionality_files/demo_theory_functionality_31_0.png
 
 
 .. code:: ipython3
@@ -270,7 +266,7 @@ Plot the predicted profiles
 
 
 
-.. image:: demo_theory_functionality_files/demo_theory_functionality_33_1.png
+.. image:: demo_theory_functionality_files/demo_theory_functionality_32_1.png
 
 
 .. code:: ipython3
@@ -283,7 +279,7 @@ Plot the predicted profiles
 
 
 
-.. image:: demo_theory_functionality_files/demo_theory_functionality_34_0.png
+.. image:: demo_theory_functionality_files/demo_theory_functionality_33_0.png
 
 
 .. code:: ipython3
@@ -296,41 +292,48 @@ Plot the predicted profiles
 
 
 
-.. image:: demo_theory_functionality_files/demo_theory_functionality_35_0.png
+.. image:: demo_theory_functionality_files/demo_theory_functionality_34_0.png
 
 
 Side note regarding the Einasto profile (CCL and NC backends only)
 ------------------------------------------------------------------
 
 The Einasto profile is supported by both the CCL and NumCosmo backends.
-In CCL, the value of the Einasto slope is not a free parameter and
-depends on cosmology, redshift and halo mass. In NumCosmo, the default
-value is :math:`\alpha=0.25` but can be set to any other value. This is
-a source of confusion that needs to be handled. In the meantime, the
-verbose option allows to print the value of :math:`\alpha` that is being
-used, as follows:
+The value of the slope of the Einasto profile can be defined by the
+user, using the ``alpha_ein`` keyword. If ``alpha_ein`` is not provided,
+both backend revert to a default value for the Einasto slope: - In CCL,
+the default Einasto slope depends on cosmology, redshift and halo mass.
+- In NumCosmo, the default value is :math:`\alpha_{\rm ein}=0.25`.
+
+**NB: for CCL, setting a user-defined value for the Einasto slope is
+only available for CCL version >= 2.6.** Earlier versions only allow the
+default option.
+
+The verbose option allows to print the value of :math:`\alpha` that is
+being used, as follows:
 
 .. code:: ipython3
 
     rho = m.compute_3d_density(r3d, mdelta=cluster_mass, cdelta=cluster_concentration, 
-                               z_cl=z_cl, cosmo=cosmo, halo_profile_model='einasto', 
+                               z_cl=z_cl, cosmo=cosmo, halo_profile_model='einasto', alpha_ein=0.17,
                                verbose=True)
     
-    # With the NC backend, you may set the slope of the Einasto profile to the value of your choosing 
+    # For CCL < 2.6, the above call will return an error, as alpha_ein could not be set. The call below, not specifying alpha_ein, 
+    # will use the default value (for both backend)
+    
     # rho = m.compute_3d_density(r3d, mdelta=cluster_mass, cdelta=cluster_concentration, 
-    #                            z_cl=z_cl, cosmo=cosmo, halo_profile_model='einasto', alpha_ein=0.1, 
+    #                            z_cl=z_cl, cosmo=cosmo, halo_profile_model='einasto', 
     #                            verbose=True)
     
     
     plot_profile(r3d, rho, '$\\rho_{\\rm 3d}$')
 
 
-
 .. parsed-literal::
 
-    Einasto alpha = 0.3713561546989172
+    Einasto alpha = 0.17
 
 
 
-.. image:: demo_theory_functionality_files/demo_theory_functionality_37_1.png
+.. image:: demo_theory_functionality_files/demo_theory_functionality_36_1.png
 

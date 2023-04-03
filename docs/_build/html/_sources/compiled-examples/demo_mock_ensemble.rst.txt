@@ -28,7 +28,7 @@ Generate cluster ensemble with random masses and redshifts
 
 .. parsed-literal::
 
-    '1.5.3'
+    '1.7.1'
 
 
 
@@ -91,6 +91,11 @@ The cluster objects are then stored in ``gclist``.
 
 .. code:: ipython3
 
+    import warnings 
+    warnings.simplefilter('ignore') # just to prevent warning print out when looping over the cluster ensemble below
+
+.. code:: ipython3
+
     gclist = []
     # number of galaxies in each cluster field (alternatively, can use the galaxy density instead)
     n_gals = 10000
@@ -128,41 +133,6 @@ The cluster objects are then stored in ``gclist``.
         # append the cluster in the list
         gclist.append(cl)
 
-
-.. parsed-literal::
-
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-
-
 .. code:: ipython3
 
     cl.galcat.columns
@@ -172,7 +142,7 @@ The cluster objects are then stored in ``gclist``.
 
 .. parsed-literal::
 
-    <TableColumns names=('ra','dec','e1','e2','e_err','z','ztrue','pzbins','pzpdf','id','sigma_c','theta','DS_t','DS_x','w_ls')>
+    <TableColumns names=('ra','dec','e1','e2','e_err','z','ztrue','pzpdf','id','sigma_c','theta','DS_t','DS_x','w_ls')>
 
 
 
@@ -201,8 +171,49 @@ to compute
     clusterensemble = ClusterEnsemble(ensemble_id, gclist, 
                                       tan_component_in='DS_t', cross_component_in='DS_x', 
                                       tan_component_out='DS_t', cross_component_out='DS_x', 
-                                      weights_in = 'w_ls', weights_out = 'W_l', 
+                                      weights_in='w_ls', weights_out='W_l', 
                                       bins=bins, bin_units='Mpc', cosmo=cosmo)
+
+There is also the option to create an ``ClusterEnsemble`` object without
+the clusters list. Then, the user may compute the individual profile for
+each wanted cluster and compute the radial profile once all the
+indvidual profiles have been computed. This method may be reccomended if
+there a large number of clusters to avoid excess of memory allocation,
+since the user can generate each cluster separately, compute its
+individual profile and then delete the cluster object.
+
+.. code:: ipython3
+
+    ensemble_id2 = 2
+    empty_cluster_ensemble = ClusterEnsemble(ensemble_id2)
+    for cluster in gclist:
+        empty_cluster_ensemble.make_individual_radial_profile(
+            galaxycluster=cluster, tan_component_in='DS_t', cross_component_in='DS_x', 
+            tan_component_out='DS_t', cross_component_out='DS_x', 
+            weights_in='w_ls', weights_out='W_l', 
+            bins=bins, bin_units='Mpc', cosmo=cosmo)
+
+A third option is where all clusters already have the profile computed,
+and we just add those to the ``ClusterEnsemble`` object:
+
+.. code:: ipython3
+
+    # add profiles to gclist
+    for cluster in gclist:
+        cluster.make_radial_profile(
+            tan_component_in='DS_t', cross_component_in='DS_x', 
+            tan_component_out='DS_t', cross_component_out='DS_x', 
+            weights_in = 'w_ls', weights_out = 'W_l', 
+            bins=bins, bin_units='Mpc', cosmo=cosmo)
+
+.. code:: ipython3
+
+    ensemble_id3 = 3
+    empty_cluster_ensemble = ClusterEnsemble(ensemble_id3)
+    for cluster in gclist:
+        empty_cluster_ensemble.add_individual_radial_profile(
+            galaxycluster=cluster, profile_table=cluster.profile,
+            tan_component='DS_t', cross_component='DS_x', weights='W_l')
 
 Stacked profile of the cluster ensemble
 ---------------------------------------
@@ -247,13 +258,16 @@ but these are not (yet) available in ``CLMM``
 
     plt.figure(figsize = (7,7))
     plt.rcParams['axes.linewidth'] = 2
-    plt.plot(clusterensemble.data['radius'][0], clusterensemble.sample_tangential_covariance.diagonal()**0.5/1e13,'--',c = 'royalblue', label = 'Sample', linewidth = 3)
-    plt.plot(clusterensemble.data['radius'][0], clusterensemble.bootstrap_tangential_covariance.diagonal()**0.5/1e13,'-s',c = 'g', label = 'Bootstrap', linewidth = 3, markersize = 10)
-    plt.plot(clusterensemble.data['radius'][0], clusterensemble.jackknife_tangential_covariance.diagonal()**0.5/1e13,c = 'r', label = 'Jackknife', linewidth = 3)
+    plt.plot(clusterensemble.data['radius'][0], clusterensemble.cov_tan_sv.diagonal()**0.5/1e13,'--',c = 'royalblue', label = 'Sample', linewidth = 3)
+    plt.plot(clusterensemble.data['radius'][0], clusterensemble.cov_tan_bs.diagonal()**0.5/1e13,'-s',c = 'g', label = 'Bootstrap', linewidth = 3, markersize = 10)
+    plt.plot(clusterensemble.data['radius'][0], clusterensemble.cov_tan_jk.diagonal()**0.5/1e13,c = 'r', label = 'Jackknife', linewidth = 3)
     plt.xlabel('R [Mpc]', fontsize =20)
     plt.ylabel(r'$\sigma_{\Delta\Sigma}\ (\times 10^{13} M_\odot /Mpc^2)$', fontsize =25)
     plt.tick_params(axis='both', which = 'major', labelsize= 18)
     plt.legend(frameon = False, fontsize = 20)
+    plt.minorticks_on()
+    plt.grid(lw=.5)
+    plt.grid(which='minor', lw=.1)
     plt.loglog()
 
 
@@ -266,30 +280,33 @@ but these are not (yet) available in ``CLMM``
 
 
 
-.. image:: demo_mock_ensemble_files/demo_mock_ensemble_15_1.png
+.. image:: demo_mock_ensemble_files/demo_mock_ensemble_21_1.png
 
 
 .. code:: ipython3
 
-    fig, ax = plt.subplots(1,3, figsize =(20, 5))
+    fig, axes = plt.subplots(1,3, figsize =(20, 5))
     plt.rcParams['axes.linewidth'] = 2
     fig.subplots_adjust(wspace=0.15, hspace=0)
-    cov = [clusterensemble.sample_tangential_covariance, 
-           clusterensemble.bootstrap_tangential_covariance,
-           clusterensemble.jackknife_tangential_covariance]
-    maximum = max(clusterensemble.sample_tangential_covariance.flatten())
-    label = ['Stack : Sample', 'Stack : Bootstrap', 'Stack : Jackknife']
-    for i in range(3):
-        ax[i].set_title(label[i], fontsize = 20)
-        ax[i].set_xlabel('radial bin index', fontsize = 18)
-        ax[i].set_ylabel('radial bin index', fontsize = 18)
-        ax[i].tick_params(axis='both', which = 'major', labelsize= 12)
-        im = ax[i].imshow(cov[i], cmap = 'Reds',vmin = 0, vmax = maximum, origin = 'lower')
-        plt.colorbar(im, ax=ax[i])
+    
+    maximum = clusterensemble.cov_tan_sv.max()
+    for ax, cov, label in zip(
+        axes,
+        [clusterensemble.cov_tan_sv, 
+         clusterensemble.cov_tan_bs,
+         clusterensemble.cov_tan_jk],
+        ['Stack : Sample', 'Stack : Bootstrap', 'Stack : Jackknife'],
+    ):
+        ax.set_title(label, fontsize = 20)
+        ax.set_xlabel('radial bin index', fontsize=18)
+        ax.set_ylabel('radial bin index', fontsize=18)
+        ax.tick_params(axis='both', which='major', labelsize=12)
+        im = ax.imshow(cov, cmap = 'Reds', vmin=0, vmax=maximum, origin='lower')
+        plt.colorbar(im, ax=ax)
 
 
 
-.. image:: demo_mock_ensemble_files/demo_mock_ensemble_16_0.png
+.. image:: demo_mock_ensemble_files/demo_mock_ensemble_22_0.png
 
 
 Visualizing the stacked profiles and corresponding model
@@ -314,8 +331,8 @@ mass, concentration and redshift in the stack (dashed black)
     plt.rcParams['axes.linewidth'] = 2
     fig, axs = plt.subplots(1,2, figsize = (17,6))
     
-    err_gt = clusterensemble.sample_tangential_covariance.diagonal()**0.5/1e13
-    err_gx = clusterensemble.sample_cross_covariance.diagonal()**0.5/1e13
+    err_gt = clusterensemble.cov_tan_sv.diagonal()**0.5/1e13
+    err_gx = clusterensemble.cov_cross_sv.diagonal()**0.5/1e13
     
     axs[0].errorbar(r_stack,gt_stack/1e13, err_gt,markersize = 5, c = 'r', fmt = 'o', capsize = 10, elinewidth = 1, zorder = 1000, alpha = 1, label = 'Stack')
     axs[1].errorbar(r_stack,gx_stack/1e13, err_gx,markersize = 5, c = 'r', fmt = 'o', capsize = 10, elinewidth = 1, zorder = 1000, alpha = 1, label = 'Stack')
@@ -343,10 +360,28 @@ mass, concentration and redshift in the stack (dashed black)
     axs[0].set_title(r'Tangential', fontsize= 20)
     axs[1].set_title(r'Cross', fontsize= 20)
     
+    for ax in axs:
+        ax.minorticks_on()
+        ax.grid(lw=.5)
+        ax.grid(which='minor', lw=.1)
+    
     plt.show()
 
 
 
 
-.. image:: demo_mock_ensemble_files/demo_mock_ensemble_20_0.png
+.. image:: demo_mock_ensemble_files/demo_mock_ensemble_26_0.png
 
+
+Saving/Loading ClusterEnsemble
+------------------------------
+
+The ``ClusterEnsemble`` object also have an option for saving/loading:
+
+.. code:: ipython3
+
+    clusterensemble.save('ce.pkl')
+
+.. code:: ipython3
+
+    clusterensemble2 = ClusterEnsemble.load('ce.pkl')
