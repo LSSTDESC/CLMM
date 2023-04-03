@@ -1,5 +1,4 @@
 """Functions to compute polar/azimuthal averages in radial bins"""
-import math
 import warnings
 import numpy as np
 import scipy
@@ -430,10 +429,7 @@ def compute_galaxy_weights(
         w_ls_geo = 1.0 / sigma_c**2
 
     # computing w_ls_shape
-    if not use_pdz:
-        ngals = len(z_source)
-    else:
-        ngals = len(pzpdf)
+    ngals = len(pzpdf) if use_pdz else len(z_source)
     err_e2 = np.zeros(ngals)
 
     if use_shape_noise:
@@ -491,9 +487,10 @@ def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_sourc
     phi: array
         Azimuthal angle from the lens to the source in radians
     """
+    delta_ra = np.radians(ra_source_list - ra_lens)
     # Put angles between -pi and pi
-    r2pi = lambda x: x - np.round(x / (2.0 * math.pi)) * 2.0 * math.pi
-    deltax = r2pi(np.radians(ra_source_list - ra_lens)) * math.cos(math.radians(dec_lens))
+    delta_ra -= np.round(delta_ra / (2.0 * np.pi)) * 2.0 * np.pi
+    deltax = delta_ra * np.cos(np.radians(dec_lens))
     deltay = np.radians(dec_source_list - dec_lens)
     # Ensure that abs(delta ra) < pi
     # deltax[deltax >= np.pi] = deltax[deltax >= np.pi]-2.*np.pi
