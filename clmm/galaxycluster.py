@@ -147,14 +147,14 @@ class GalaxyCluster:
         if cosmo.get_desc() != self.galcat.meta["cosmo"] or "sigma_c" not in self.galcat.columns:
             if self.z is None:
                 raise TypeError("Cluster's redshift is None. Cannot compute Sigma_crit")
-            elif use_pdz is False and "z" not in self.galcat.columns:
+            if not use_pdz and "z" not in self.galcat.columns:
                 raise TypeError(
                     "Galaxy catalog missing the redshift column (which should be"
                     "called 'z'). Cannot compute Sigma_crit."
                 )
-            elif use_pdz and not self.galcat.has_pzpdfs():
+            if use_pdz and not self.galcat.has_pzpdfs():
                 raise TypeError(
-                    "Galaxy catalog missing the pzpdfs. " "Cannot compute 1/<1/Sigma_crit>."
+                    "Galaxy catalog missing the pzpdfs. Cannot compute 1/<1/Sigma_crit>."
                 )
 
             self.galcat.update_cosmo(cosmo, overwrite=True)
@@ -188,7 +188,7 @@ class GalaxyCluster:
         kwarg_data : dict
             Dictionary with the data to be passed to functions by **kwargs method.
         """
-        use_cols = {k: v for k, v in col_dict.items()}
+        use_cols = {**col_dict}
         kwarg_data = {}
         if "pzbins" in col_dict:
             if not self.galcat.has_pzpdfs():
@@ -568,7 +568,7 @@ class GalaxyCluster:
         # pylint: disable=R0914
 
         if not all(
-            [t_ in self.galcat.columns for t_ in (tan_component_in, cross_component_in, "theta")]
+            t_ in self.galcat.columns for t_ in (tan_component_in, cross_component_in, "theta")
         ):
             raise TypeError(
                 "Shear or ellipticity information is missing. Galaxy catalog must have tangential"
