@@ -9,8 +9,8 @@ from .constants import Constants as const
 from . import z_distributions as zdist
 
 
-def compute_nfw_boost(rvals, rs=1000, b0=0.1) :
-    """ Given a list of `rvals`, and optional `rs` and `b0`, return the corresponding boost factor
+def compute_nfw_boost(rvals, rs=1000, b0=0.1):
+    """Given a list of `rvals`, and optional `rs` and `b0`, return the corresponding boost factor
     at each rval
 
     Parameters
@@ -27,23 +27,26 @@ def compute_nfw_boost(rvals, rs=1000, b0=0.1) :
 
     """
 
-    x = np.array(rvals)/rs
+    x = np.array(rvals) / rs
 
-    def _calc_finternal(x) :
+    def _calc_finternal(x):
+        radicand = x**2 - 1
 
-        radicand = x**2-1
-
-        finternal = (-1j*np.log((1+np.lib.scimath.sqrt(radicand)*1j)
-                                /(1-np.lib.scimath.sqrt(radicand)*1j))
-                     /(2*np.lib.scimath.sqrt(radicand)))
+        finternal = (
+            -1j
+            * np.log(
+                (1 + np.lib.scimath.sqrt(radicand) * 1j) / (1 - np.lib.scimath.sqrt(radicand) * 1j)
+            )
+            / (2 * np.lib.scimath.sqrt(radicand))
+        )
 
         return np.nan_to_num(finternal, copy=False, nan=1.0).real
 
-    return 1.+b0 * (1-_calc_finternal(x)) / (x**2-1)
+    return 1.0 + b0 * (1 - _calc_finternal(x)) / (x**2 - 1)
 
 
-def compute_powerlaw_boost(rvals, rs=1000, b0=0.1, alpha=-1.0) :
-    """  Given a list of `rvals`, and optional `rs` and `b0`, and `alpha`,
+def compute_powerlaw_boost(rvals, rs=1000, b0=0.1, alpha=-1.0):
+    """Given a list of `rvals`, and optional `rs` and `b0`, and `alpha`,
     return the corresponding boost factor at each `rval`
 
     Parameters
@@ -63,16 +66,19 @@ def compute_powerlaw_boost(rvals, rs=1000, b0=0.1, alpha=-1.0) :
 
     """
 
-    x = np.array(rvals)/rs
+    x = np.array(rvals) / rs
 
-    return 1. + b0 * (x)**alpha
+    return 1.0 + b0 * (x) ** alpha
 
 
-boost_models = {'nfw_boost': compute_nfw_boost,
-                'powerlaw_boost': compute_powerlaw_boost}
+boost_models = {
+    "nfw_boost": compute_nfw_boost,
+    "powerlaw_boost": compute_powerlaw_boost,
+}
+
 
 def correct_sigma_with_boost_values(sigma_vals, boost_factors):
-    """ Given a list of boost values and sigma profile, compute corrected sigma
+    """Given a list of boost values and sigma profile, compute corrected sigma
 
     Parameters
     ----------
@@ -91,8 +97,8 @@ def correct_sigma_with_boost_values(sigma_vals, boost_factors):
     return sigma_corrected
 
 
-def correct_sigma_with_boost_model(rvals, sigma_vals, boost_model='nfw_boost', **boost_model_kw):
-    """ Given a boost model and sigma profile, compute corrected sigma
+def correct_sigma_with_boost_model(rvals, sigma_vals, boost_model="nfw_boost", **boost_model_kw):
+    """Given a boost model and sigma profile, compute corrected sigma
 
     Parameters
     ----------
@@ -117,8 +123,9 @@ def correct_sigma_with_boost_model(rvals, sigma_vals, boost_model='nfw_boost', *
     sigma_corrected = np.array(sigma_vals) / boost_factors
     return sigma_corrected
 
-def compute_radial_averages(xvals, yvals, xbins, yerr=None, error_model='ste', weights=None):
-    """ Given a list of `xvals`, `yvals` and `xbins`, sort into bins. If `xvals` or `yvals`
+
+def compute_radial_averages(xvals, yvals, xbins, yerr=None, error_model="ste", weights=None):
+    """Given a list of `xvals`, `yvals` and `xbins`, sort into bins. If `xvals` or `yvals`
     contain non-finite values, these are filtered.
 
     Parameters
@@ -161,32 +168,32 @@ def compute_radial_averages(xvals, yvals, xbins, yerr=None, error_model='ste', w
     # make case independent
     error_model = error_model.lower()
     # binned_statics throus an error in case of non-finite values, so filtering those out
-    filt = np.isfinite(xvals)*np.isfinite(yvals)
+    filt = np.isfinite(xvals) * np.isfinite(yvals)
     x, y = np.array(xvals)[filt], np.array(yvals)[filt]
     # normalize weights (and computers binnumber)
     wts = np.ones(x.size) if weights is None else np.array(weights, dtype=float)[filt]
-    wts_sum, binnumber = binned_statistic(x, wts, statistic='sum', bins=xbins)[:3:2]
-    objs_in_bins = (binnumber>0)*(binnumber<=wts_sum.size) # mask for binnumber in range
-    wts[objs_in_bins] *= 1./wts_sum[binnumber[objs_in_bins]-1] # norm weights in each bin
-    weighted_bin_stat = lambda vals: binned_statistic(x, vals*wts, statistic='sum', bins=xbins)[0]
+    wts_sum, binnumber = binned_statistic(x, wts, statistic="sum", bins=xbins)[:3:2]
+    objs_in_bins = (binnumber > 0) * (binnumber <= wts_sum.size)  # mask for binnumber in range
+    wts[objs_in_bins] *= 1.0 / wts_sum[binnumber[objs_in_bins] - 1]  # norm weights in each bin
+    weighted_bin_stat = lambda vals: binned_statistic(x, vals * wts, statistic="sum", bins=xbins)[0]
     # means
     mean_x = weighted_bin_stat(x)
     mean_y = weighted_bin_stat(y)
     # errors
-    data_yerr2 = 0 if yerr is None else weighted_bin_stat(np.array(yerr)[filt]**2*wts)
-    stat_yerr2 = weighted_bin_stat(y**2)-mean_y**2
-    if error_model == 'ste':
-        stat_yerr2 *= weighted_bin_stat(wts) # sum(wts^2)=1/n for not weighted
-    elif error_model != 'std':
+    data_yerr2 = 0 if yerr is None else weighted_bin_stat(np.array(yerr)[filt] ** 2 * wts)
+    stat_yerr2 = weighted_bin_stat(y**2) - mean_y**2
+    if error_model == "ste":
+        stat_yerr2 *= weighted_bin_stat(wts)  # sum(wts^2)=1/n for not weighted
+    elif error_model != "std":
         raise ValueError(f"{error_model} not supported err model for binned stats")
-    err_y = np.sqrt(stat_yerr2+data_yerr2)
+    err_y = np.sqrt(stat_yerr2 + data_yerr2)
     # number of objects
     num_objects = np.histogram(x, xbins)[0]
     return mean_x, mean_y, err_y, num_objects, binnumber, wts_sum
 
 
-def make_bins(rmin, rmax, nbins=10, method='evenwidth', source_seps=None):
-    """ Define bin edges
+def make_bins(rmin, rmax, nbins=10, method="evenwidth", source_seps=None):
+    """Define bin edges
 
     Parameters
     ----------
@@ -213,39 +220,34 @@ def make_bins(rmin, rmax, nbins=10, method='evenwidth', source_seps=None):
     """
     # make case independent
     method = method.lower()
-    if method == 'equaloccupation':
+    if method == "equaloccupation":
         if source_seps is None:
-            raise ValueError(
-                f"Binning method '{method}' requires source separations array")
+            raise ValueError(f"Binning method '{method}' requires source separations array")
         seps = np.array(source_seps)
         rmin = seps.min() if rmin is None else rmin
         rmax = seps.max() if rmax is None else rmax
         # Need to filter source_seps to only keep galaxies in the [rmin, rmax] with a mask
-        mask = (seps >= rmin)*(seps <= rmax)
-        binedges = np.percentile(seps[mask], tuple(
-        np.linspace(0, 100, nbins+1, endpoint=True)))
+        mask = (seps >= rmin) * (seps <= rmax)
+        binedges = np.percentile(seps[mask], tuple(np.linspace(0, 100, nbins + 1, endpoint=True)))
     else:
         # Check consistency
         if (rmin > rmax) or (rmin < 0.0) or (rmax < 0.0):
             raise ValueError(f"Invalid bin endpoints in make_bins, {rmin} {rmax}")
         if (nbins <= 0) or not isinstance(nbins, int):
-            raise ValueError(
-                f"Invalid nbins={nbins}. Must be integer greater than 0.")
+            raise ValueError(f"Invalid nbins={nbins}. Must be integer greater than 0.")
 
-        if method == 'evenwidth':
-            binedges = np.linspace(rmin, rmax, nbins+1, endpoint=True)
-        elif method == 'evenlog10width':
-            binedges = np.logspace(np.log10(rmin), np.log10(
-                rmax), nbins+1, endpoint=True)
+        if method == "evenwidth":
+            binedges = np.linspace(rmin, rmax, nbins + 1, endpoint=True)
+        elif method == "evenlog10width":
+            binedges = np.logspace(np.log10(rmin), np.log10(rmax), nbins + 1, endpoint=True)
         else:
-            raise ValueError(
-                f"Binning method '{method}' is not currently supported")
+            raise ValueError(f"Binning method '{method}' is not currently supported")
 
     return binedges
 
 
 def convert_units(dist1, unit1, unit2, redshift=None, cosmo=None):
-    """ Convenience wrapper to convert between a combination of angular and physical units.
+    """Convenience wrapper to convert between a combination of angular and physical units.
 
     Supported units: radians, degrees, arcmin, arcsec, Mpc, kpc, pc
     (letter case independent)
@@ -275,8 +277,12 @@ def convert_units(dist1, unit1, unit2, redshift=None, cosmo=None):
     # make case independent
     unit1, unit2 = unit1.lower(), unit2.lower()
     # Available units
-    angular_bank = {"radians": u.rad, "degrees": u.deg,
-                    "arcmin": u.arcmin, "arcsec": u.arcsec}
+    angular_bank = {
+        "radians": u.rad,
+        "degrees": u.deg,
+        "arcmin": u.arcmin,
+        "arcsec": u.arcsec,
+    }
     physical_bank = {"pc": u.pc, "kpc": u.kpc, "mpc": u.Mpc}
     units_bank = {**angular_bank, **physical_bank}
     # Some error checking
@@ -286,32 +292,32 @@ def convert_units(dist1, unit1, unit2, redshift=None, cosmo=None):
         raise ValueError(f"Output units ({unit2}) not supported")
     # Try automated astropy unit conversion
     try:
-        dist2 = (dist1*units_bank[unit1]).to(units_bank[unit2]).value
+        dist2 = (dist1 * units_bank[unit1]).to(units_bank[unit2]).value
     # Otherwise do manual conversion
     except u.UnitConversionError:
         # Make sure that we were passed a redshift and cosmology
         if redshift is None or cosmo is None:
             raise TypeError(
-                "Redshift and cosmology must be specified to convert units") \
-                from u.UnitConversionError
+                "Redshift and cosmology must be specified to convert units"
+            ) from u.UnitConversionError
         # Redshift must be greater than zero for this approx
         if not redshift > 0.0:
             raise ValueError("Redshift must be greater than 0.") from u.UnitConversionError
         # Convert angular to physical
         if (unit1 in angular_bank) and (unit2 in physical_bank):
-            dist1_rad = (dist1*units_bank[unit1]).to(u.rad).value
+            dist1_rad = (dist1 * units_bank[unit1]).to(u.rad).value
             dist1_mpc = cosmo.rad2mpc(dist1_rad, redshift)
-            dist2 = (dist1_mpc*u.Mpc).to(units_bank[unit2]).value
+            dist2 = (dist1_mpc * u.Mpc).to(units_bank[unit2]).value
         # Otherwise physical to angular
         else:
-            dist1_mpc = (dist1*units_bank[unit1]).to(u.Mpc).value
+            dist1_mpc = (dist1 * units_bank[unit1]).to(u.Mpc).value
             dist1_rad = cosmo.mpc2rad(dist1_mpc, redshift)
-            dist2 = (dist1_rad*u.rad).to(units_bank[unit2]).value
+            dist2 = (dist1_rad * u.rad).to(units_bank[unit2]).value
     return dist2
 
 
-def convert_shapes_to_epsilon(shape_1, shape_2, shape_definition='epsilon', kappa=0):
-    r""" Convert shape components 1 and 2 appropriately to make them estimators of the
+def convert_shapes_to_epsilon(shape_1, shape_2, shape_definition="epsilon", kappa=0):
+    r"""Convert shape components 1 and 2 appropriately to make them estimators of the
     reduced shear once averaged.  The shape 1 and 2 components may correspond to ellipticities
     according the :math:`\epsilon`- or :math:`\chi`-definition, but also to the 1 and 2 components
     of the shear. See Bartelmann & Schneider 2001 for details
@@ -356,20 +362,23 @@ def convert_shapes_to_epsilon(shape_1, shape_2, shape_definition='epsilon', kapp
         Epsilon ellipticity (or reduced shear) along secondary axis (epsilon2)
     """
 
-    if shape_definition in ('epsilon', 'reduced_shear'):
+    if shape_definition in ("epsilon", "reduced_shear"):
         epsilon_1, epsilon_2 = shape_1, shape_2
-    elif shape_definition == 'chi':
-        chi_to_eps_conversion = 1./(1.+(1-(shape_1**2+shape_2**2))**0.5)
-        epsilon_1, epsilon_2 = shape_1*chi_to_eps_conversion, shape_2*chi_to_eps_conversion
-    elif shape_definition == 'shear':
-        epsilon_1, epsilon_2 = shape_1/(1.-kappa), shape_2/(1.-kappa)
+    elif shape_definition == "chi":
+        chi_to_eps_conversion = 1.0 / (1.0 + (1 - (shape_1**2 + shape_2**2)) ** 0.5)
+        epsilon_1, epsilon_2 = (
+            shape_1 * chi_to_eps_conversion,
+            shape_2 * chi_to_eps_conversion,
+        )
+    elif shape_definition == "shear":
+        epsilon_1, epsilon_2 = shape_1 / (1.0 - kappa), shape_2 / (1.0 - kappa)
     else:
         raise TypeError("Please choose epsilon, chi, shear, reduced_shear")
     return epsilon_1, epsilon_2
 
 
 def build_ellipticities(q11, q22, q12):
-    """ Build ellipticties from second moments. See, e.g., Schneider et al. (2006)
+    """Build ellipticties from second moments. See, e.g., Schneider et al. (2006)
 
     Parameters
     ----------
@@ -387,14 +396,14 @@ def build_ellipticities(q11, q22, q12):
     epsilon1, epsilon2 : float, numpy.ndarray
         Ellipticities using the "epsilon definition"
     """
-    norm_x, norm_e = q11+q22, q11+q22+2*np.sqrt(q11*q22-q12*q12)
-    chi1, chi2 = (q11-q22)/norm_x, 2*q12/norm_x
-    epsilon1, epsilon2 = (q11-q22)/norm_e, 2*q12/norm_e
+    norm_x, norm_e = q11 + q22, q11 + q22 + 2 * np.sqrt(q11 * q22 - q12 * q12)
+    chi1, chi2 = (q11 - q22) / norm_x, 2 * q12 / norm_x
+    epsilon1, epsilon2 = (q11 - q22) / norm_e, 2 * q12 / norm_e
     return chi1, chi2, epsilon1, epsilon2
 
 
 def compute_lensed_ellipticity(ellipticity1_true, ellipticity2_true, shear1, shear2, convergence):
-    r""" Compute lensed ellipticities from the intrinsic ellipticities, shear and convergence.
+    r"""Compute lensed ellipticities from the intrinsic ellipticities, shear and convergence.
     Following Schneider et al. (2006)
 
     .. math::
@@ -424,18 +433,19 @@ def compute_lensed_ellipticity(ellipticity1_true, ellipticity2_true, shear1, she
         Lensed ellipicity along both reference axes.
     """
     # shear (as a complex number)
-    shear = shear1+shear2*1j
+    shear = shear1 + shear2 * 1j
     # intrinsic ellipticity (as a complex number)
-    ellipticity_true = ellipticity1_true+ellipticity2_true*1j
+    ellipticity_true = ellipticity1_true + ellipticity2_true * 1j
     # reduced shear
-    reduced_shear = shear/(1.0-convergence)
+    reduced_shear = shear / (1.0 - convergence)
     # lensed ellipticity
-    lensed_ellipticity = (ellipticity_true+reduced_shear) / \
-        (1.0+reduced_shear.conjugate()*ellipticity_true)
+    lensed_ellipticity = (ellipticity_true + reduced_shear) / (
+        1.0 + reduced_shear.conjugate() * ellipticity_true
+    )
     return np.real(lensed_ellipticity), np.imag(lensed_ellipticity)
 
 
-def arguments_consistency(arguments, names=None, prefix=''):
+def arguments_consistency(arguments, names=None, prefix=""):
     r"""Make sure all arguments have the same length (or are scalars)
 
     Parameters
@@ -452,48 +462,51 @@ def arguments_consistency(arguments, names=None, prefix=''):
     list, arrays, tuple
         Group of arguments, converted to numpy arrays if they have length
     """
-    sizes = [len(arg) if hasattr(arg, '__len__')
-             else None for arg in arguments]
+    sizes = [len(arg) if hasattr(arg, "__len__") else None for arg in arguments]
     # check there is a name for each argument
     if names:
         if len(names) != len(arguments):
             raise TypeError(
-                f'names (len={len(names)}) must have same length '
-                f'as arguments (len={len(arguments)})')
-        msg = ', '.join([f'{n}({s})' for n, s in zip(names, sizes)])
+                f"names (len={len(names)}) must have same length "
+                f"as arguments (len={len(arguments)})"
+            )
+        msg = ", ".join([f"{n}({s})" for n, s in zip(names, sizes)])
     else:
-        msg = ', '.join([f'{s}' for s in sizes])
+        msg = ", ".join([f"{s}" for s in sizes])
     # check consistency
     if any(sizes):
         # Check that all of the inputs have length and they match
         if not all(sizes) or any([s != sizes[0] for s in sizes[1:]]):
             # make error message
-            raise TypeError(f'{prefix} inconsistent sizes: {msg}')
+            raise TypeError(f"{prefix} inconsistent sizes: {msg}")
         return tuple(np.array(arg) for arg in arguments)
     return arguments
 
 
 def _patch_rho_crit_to_cd2018(rho_crit_external):
-    r""" Convertion factor for rho_crit of any external modult to
+    r"""Convertion factor for rho_crit of any external modult to
     CODATA 2018+IAU 2015
 
     rho_crit_external: float
         Critical density of the Universe in units of :math:`M_\odot\ Mpc^{-3}`
     """
 
-    rhocrit_mks = 3.0*100.0*100.0/(8.0*np.pi*const.GNEWT.value)
-    rhocrit_cd2018 = (rhocrit_mks*1000.0*1000.0*
-        const.PC_TO_METER.value*1.0e6/const.SOLAR_MASS.value)
+    rhocrit_mks = 3.0 * 100.0 * 100.0 / (8.0 * np.pi * const.GNEWT.value)
+    rhocrit_cd2018 = (
+        rhocrit_mks * 1000.0 * 1000.0 * const.PC_TO_METER.value * 1.0e6 / const.SOLAR_MASS.value
+    )
 
-    return rhocrit_cd2018/rho_crit_external
+    return rhocrit_cd2018 / rho_crit_external
+
 
 _valid_types = {
     float: (float, int, np.floating, np.integer),
     int: (int, np.integer),
-    'float_array': (float, int, np.floating, np.integer),
-    'int_array': (int, np.integer),
-    'array': (list, tuple, np.ndarray),
-    }
+    "float_array": (float, int, np.floating, np.integer),
+    "int_array": (int, np.integer),
+    "array": (list, tuple, np.ndarray),
+}
+
 
 def _is_valid(arg, valid_type):
     r"""Check if argument is of valid type, supports arrays.
@@ -513,15 +526,25 @@ def _is_valid(arg, valid_type):
     valid: bool
         Is argument valid
     """
-    if valid_type=='function':
+    if valid_type == "function":
         return callable(arg)
-    return (isinstance(arg[0], _valid_types[valid_type])
-                if (valid_type in ('int_array', 'float_array') and np.iterable(arg))
-                else isinstance(arg, _valid_types.get(valid_type, valid_type)))
+    return (
+        isinstance(arg[0], _valid_types[valid_type])
+        if (valid_type in ("int_array", "float_array") and np.iterable(arg))
+        else isinstance(arg, _valid_types.get(valid_type, valid_type))
+    )
 
 
-def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argmax=None,
-                      eqmin=False, eqmax=False):
+def validate_argument(
+    loc,
+    argname,
+    valid_type,
+    none_ok=False,
+    argmin=None,
+    argmax=None,
+    eqmin=False,
+    eqmax=False,
+):
     r"""Validate argument type and raise errors.
 
     Parameters
@@ -552,34 +575,43 @@ def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argm
     if none_ok and (var is None):
         return
     # Check for type
-    valid = (any(_is_valid(var, types) for types in valid_type)
-                if isinstance(valid_type, (list, tuple))
-                else _is_valid(var, valid_type))
+    valid = (
+        any(_is_valid(var, types) for types in valid_type)
+        if isinstance(valid_type, (list, tuple))
+        else _is_valid(var, valid_type)
+    )
     if not valid:
-        err = f'{argname} must be {valid_type}, received {type(var).__name__}'
+        err = f"{argname} must be {valid_type}, received {type(var).__name__}"
         raise TypeError(err)
     # Check min/max
     if any(t is not None for t in (argmin, argmax)):
         try:
             var_array = np.array(var, dtype=float)
         except:
-            err = f'{argname} ({type(var).__name__}) cannot be converted to number' \
-                  ' for min/max validation.'
+            err = (
+                f"{argname} ({type(var).__name__}) cannot be converted to number"
+                " for min/max validation."
+            )
             raise TypeError(err)
         if argmin is not None:
-            if (var_array.min()<argmin if eqmin else var_array.min()<=argmin):
-                err = f'{argname} must be greater than {argmin},' \
-                      f' received min({argname}): {var_array.min()}'
+            if var_array.min() < argmin if eqmin else var_array.min() <= argmin:
+                err = (
+                    f"{argname} must be greater than {argmin},"
+                    f" received min({argname}): {var_array.min()}"
+                )
                 raise ValueError(err)
         if argmax is not None:
-            if (var_array.max()>argmax if eqmax else var_array.max()>=argmax):
-                err = f'{argname} must be lesser than {argmax},' \
-                      f' received max({argname}): {var_array.max()}'
+            if var_array.max() > argmax if eqmax else var_array.max() >= argmax:
+                err = (
+                    f"{argname} must be lesser than {argmax},"
+                    f" received max({argname}): {var_array.max()}"
+                )
                 raise ValueError(err)
 
-def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1., ngrid=1000):
+
+def _integ_pzfuncs(pzpdf, pzbins, zmin=0.0, zmax=5, kernel=lambda z: 1.0, ngrid=1000):
     r"""
-    Integrates the product of a photo-z pdf with a given kernel. 
+    Integrates the product of a photo-z pdf with a given kernel.
     This function was created to allow for data with different photo-z binnings.
 
     Parameters
@@ -611,25 +643,36 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1., ngrid=10
     # to a constant redshift grid for all galaxies. If there is a constant grid for all galaxies
     # these lines are not necessary and z_grid, pz_matrix = pzbins, pzpdf
 
-    if hasattr(pzbins[0], '__len__'):
+    if hasattr(pzbins[0], "__len__"):
         # First need to interpolate on a fixed grid
         z_grid = np.linspace(zmin, zmax, ngrid)
-        pdf_interp_list = [interp1d(pzbin, pdf, bounds_error=False, fill_value=0.)
-                           for pzbin,pdf in zip(pzbins, pzpdf)]
+        pdf_interp_list = [
+            interp1d(pzbin, pdf, bounds_error=False, fill_value=0.0)
+            for pzbin, pdf in zip(pzbins, pzpdf)
+        ]
         pz_matrix = np.array([pdf_interp(z_grid) for pdf_interp in pdf_interp_list])
         kernel_matrix = kernel(z_grid)
     else:
         # OK perform the integration directly from the pdf binning common to all galaxies
-        mask = (pzbins>=zmin)*(pzbins<=zmax)
+        mask = (pzbins >= zmin) * (pzbins <= zmax)
         z_grid = pzbins[mask]
-        pz_matrix = np.array(pzpdf)[:,mask]
+        pz_matrix = np.array(pzpdf)[:, mask]
         kernel_matrix = kernel(z_grid)
 
-    return simps(pz_matrix*kernel_matrix, x=z_grid, axis=1)
+    return simps(pz_matrix * kernel_matrix, x=z_grid, axis=1)
 
-def compute_for_good_redshifts(function, z1, z2, bad_value, warning_message,
-                               z1_arg_name='z1', z2_arg_name='z2', r_proj=None,
-                               **kwargs):
+
+def compute_for_good_redshifts(
+    function,
+    z1,
+    z2,
+    bad_value,
+    warning_message,
+    z1_arg_name="z1",
+    z2_arg_name="z2",
+    r_proj=None,
+    **kwargs,
+):
     """Computes function only for `z1` < `z2`, the rest is filled with `bad_value`
 
     Parameters
@@ -656,13 +699,13 @@ def compute_for_good_redshifts(function, z1, z2, bad_value, warning_message,
     Return type of `function`
         Output of `function` with value for `z1` >= `z2` replaced by `bad_value`
     """
-    kwargs = {z1_arg_name:locals()['z1'], z2_arg_name:locals()['z2'], **kwargs}
+    kwargs = {z1_arg_name: locals()["z1"], z2_arg_name: locals()["z2"], **kwargs}
 
     z_good = np.less(z1, z2)
     if r_proj is not None:
-        r_proj = np.array(r_proj)*np.full_like(z_good, True)
-        z_good = z_good*r_proj.astype(bool)
-        kwargs.update({'r_proj': r_proj[z_good] if np.iterable(r_proj) else r_proj})
+        r_proj = np.array(r_proj) * np.full_like(z_good, True)
+        z_good = z_good * r_proj.astype(bool)
+        kwargs.update({"r_proj": r_proj[z_good] if np.iterable(r_proj) else r_proj})
 
     if not np.all(z_good):
         warnings.warn(warning_message, stacklevel=2)
@@ -677,6 +720,7 @@ def compute_for_good_redshifts(function, z1, z2, bad_value, warning_message,
     else:
         res = function(**kwargs)
     return res
+
 
 def compute_beta(z_src, z_cl, cosmo):
     r"""Geometric lensing efficicency
@@ -700,8 +744,9 @@ def compute_beta(z_src, z_cl, cosmo):
     float
         Geometric lensing efficicency
     """
-    beta = np.heaviside(z_src-z_cl, 0) * cosmo.eval_da_z1z2(z_cl, z_src) / cosmo.eval_da(z_src)
+    beta = np.heaviside(z_src - z_cl, 0) * cosmo.eval_da_z1z2(z_cl, z_src) / cosmo.eval_da(z_src)
     return beta
+
 
 def compute_beta_s(z_src, z_cl, z_inf, cosmo):
     r"""Geometric lensing efficicency ratio
@@ -727,6 +772,7 @@ def compute_beta_s(z_src, z_cl, z_inf, cosmo):
     """
     beta_s = compute_beta(z_src, z_cl, cosmo) / compute_beta(z_inf, z_cl, cosmo)
     return beta_s
+
 
 def compute_beta_s_func(z_src, z_cl, z_inf, cosmo, func, *args, **kwargs):
     r"""Geometric lensing efficicency ratio times a value of a function
@@ -761,6 +807,7 @@ def compute_beta_s_func(z_src, z_cl, z_inf, cosmo, func, *args, **kwargs):
     beta_s_func = beta_s * func(*args, **kwargs)
     return beta_s_func
 
+
 def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_distrib_func=None):
     r"""Mean value of the geometric lensing efficicency
 
@@ -793,17 +840,20 @@ def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_dist
     """
     if z_distrib_func is None:
         z_distrib_func = zdist.chang2013
+
     def integrand(z_i, z_cl=z_cl, cosmo=cosmo):
         return compute_beta(z_i, z_cl, cosmo) * z_distrib_func(z_i)
 
-    if zmin==None:
+    if zmin == None:
         zmin = z_cl + delta_z_cut
 
     B_mean = quad(integrand, zmin, zmax)[0] / quad(z_distrib_func, zmin, zmax)[0]
     return B_mean
 
-def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None,
-                        z_distrib_func=None):
+
+def compute_beta_s_mean(
+    z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_distrib_func=None
+):
     r"""Mean value of the geometric lensing efficicency ratio
 
     .. math::
@@ -841,13 +891,15 @@ def compute_beta_s_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=Non
     def integrand(z_i, z_cl=z_cl, z_inf=z_inf, cosmo=cosmo):
         return compute_beta_s(z_i, z_cl, z_inf, cosmo) * z_distrib_func(z_i)
 
-    if zmin==None:
+    if zmin == None:
         zmin = z_cl + delta_z_cut
     Bs_mean = quad(integrand, zmin, zmax)[0] / quad(z_distrib_func, zmin, zmax)[0]
     return Bs_mean
 
-def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None,
-                               z_distrib_func=None):
+
+def compute_beta_s_square_mean(
+    z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_distrib_func=None
+):
     r"""Mean square value of the geometric lensing efficiency ratio
 
     .. math::
@@ -883,12 +935,13 @@ def compute_beta_s_square_mean(z_cl, z_inf, cosmo, zmax=10.0, delta_z_cut=0.1, z
         z_distrib_func = zdist.chang2013
 
     def integrand(z_i, z_cl=z_cl, z_inf=z_inf, cosmo=cosmo):
-        return compute_beta_s(z_i, z_cl, z_inf, cosmo)**2 * z_distrib_func(z_i)
+        return compute_beta_s(z_i, z_cl, z_inf, cosmo) ** 2 * z_distrib_func(z_i)
 
-    if zmin==None:
+    if zmin == None:
         zmin = z_cl + delta_z_cut
     Bs_square_mean = quad(integrand, zmin, zmax)[0] / quad(z_distrib_func, zmin, zmax)[0]
     return Bs_square_mean
+
 
 def _draw_random_points_from_distribution(xmin, xmax, nobj, dist_func, xstep=0.001):
     """Draw random points with a given distribution.
@@ -913,14 +966,15 @@ def _draw_random_points_from_distribution(xmin, xmax, nobj, dist_func, xstep=0.0
     numpy.ndarray
         Random points with dist_func distribution
     """
-    steps = int((xmax-xmin)/xstep)+1
+    steps = int((xmax - xmin) / xstep) + 1
     xdomain = np.linspace(xmin, xmax, steps)
     # Cumulative probability function of the redshift distribution
-    #probdist = np.vectorize(lambda zmax: integrate.quad(dist_func, xmin, zmax)[0])(xdomain)
-    probdist = dist_func(xdomain, is_cdf=True)-dist_func(xmin, is_cdf=True)
+    # probdist = np.vectorize(lambda zmax: integrate.quad(dist_func, xmin, zmax)[0])(xdomain)
+    probdist = dist_func(xdomain, is_cdf=True) - dist_func(xmin, is_cdf=True)
     # Get random values for probdist
     uniform_deviate = np.random.uniform(probdist.min(), probdist.max(), nobj)
-    return interp1d(probdist, xdomain, kind='linear')(uniform_deviate)
+    return interp1d(probdist, xdomain, kind="linear")(uniform_deviate)
+
 
 def _draw_random_points_from_tab_distribution(x_tab, pdf_tab, nobj=1, xmin=None, xmax=None):
     """Draw random points from a tabulated distribution.
@@ -945,32 +999,37 @@ def _draw_random_points_from_tab_distribution(x_tab, pdf_tab, nobj=1, xmin=None,
     """
     x_tab = np.array(x_tab)
     pdf_tab = np.array(pdf_tab)
-    #cdf = np.array([simps(pdf_tab[:j], x_tab[:j]) for j in range(1, len(x_tab)+1)])
+    # cdf = np.array([simps(pdf_tab[:j], x_tab[:j]) for j in range(1, len(x_tab)+1)])
     cdf = cumulative_trapezoid(pdf_tab, x_tab, initial=0)
     # Normalise it
     cdf /= cdf.max()
     cdf_xmin, cdf_xmax = 0.0, 1.0
     # Interpolate cdf at xmin and xmax
     if xmin or xmax:
-        cdf_interp = interp1d(x_tab, cdf, kind='linear')
+        cdf_interp = interp1d(x_tab, cdf, kind="linear")
         if xmin is not None:
-            if xmin<x_tab.min():
-                warnings.warn('`xmin` is less than the minimum value of `x_tab`. '+\
-                              f'Using min(x_tab)={x_tab.min()} instead.')
+            if xmin < x_tab.min():
+                warnings.warn(
+                    "`xmin` is less than the minimum value of `x_tab`. "
+                    + f"Using min(x_tab)={x_tab.min()} instead."
+                )
             else:
                 cdf_xmin = cdf_interp(xmin)
         if xmax is not None:
-            if xmax>x_tab.max():
-                warnings.warn('`xmax` is greater than the maximum value of `x_tab`. '+\
-                              f'Using max(x_tab)={x_tab.max()} instead.')
+            if xmax > x_tab.max():
+                warnings.warn(
+                    "`xmax` is greater than the maximum value of `x_tab`. "
+                    + f"Using max(x_tab)={x_tab.max()} instead."
+                )
             else:
                 cdf_xmax = cdf_interp(xmax)
     # Interpolate the inverse CDF
-    inv_cdf = interp1d(cdf, x_tab, kind='linear', bounds_error=False, fill_value=0.)
+    inv_cdf = interp1d(cdf, x_tab, kind="linear", bounds_error=False, fill_value=0.0)
     # Finally generate sample from uniform distribution and
     # get the corresponding samples
-    samples = inv_cdf(np.random.random(nobj)*(cdf_xmax-cdf_xmin)+cdf_xmin)
+    samples = inv_cdf(np.random.random(nobj) * (cdf_xmax - cdf_xmin) + cdf_xmin)
     return samples
+
 
 def gaussian(value, mean, scatter):
     """Normal distribution.
@@ -989,4 +1048,4 @@ def gaussian(value, mean, scatter):
     numpy.ndarray
         Gaussian values at `value`
     """
-    return np.exp(-0.5*(value-mean)**2/scatter**2)/np.sqrt(2*np.pi*scatter**2)
+    return np.exp(-0.5 * (value - mean) ** 2 / scatter**2) / np.sqrt(2 * np.pi * scatter**2)

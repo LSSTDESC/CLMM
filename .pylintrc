@@ -1,5 +1,0 @@
-[MESSAGES CONTROL]
-disable=R0913
-
-[TYPECHECK]
-ignored-classes=astropy.units, astropy.constants
