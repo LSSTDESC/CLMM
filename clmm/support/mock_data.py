@@ -235,13 +235,13 @@ def generate_galaxy_catalog(
 
     if ngals is None and ngal_density is None:
         err = (
-            'Either the number of galaxies "ngals" or the galaxy density'
-            ' "ngal_density" keyword must be specified'
+            "Either the number of galaxies 'ngals' or the galaxy density"
+            " 'ngal_density' keyword must be specified"
         )
         raise ValueError(err)
 
     if ngals is not None and ngal_density is not None:
-        err = 'The "ngals" and "ngal_density" keywords cannot both be set.' " Please use one only"
+        err = "The 'ngals' and 'ngal_density' keywords cannot both be set. Please use only one."
         raise ValueError(err)
 
     if ngal_density is not None:
@@ -419,7 +419,7 @@ def _generate_galaxy_catalog(
     c_gal = SkyCoord(galaxy_catalog["ra"] * u.deg, galaxy_catalog["dec"] * u.deg, frame="icrs")
 
     # position angle of drawn galaxies w.r.t cluster center
-    angsep, posangle = c_cl.separation(c_gal).rad, c_cl.position_angle(c_gal).rad
+    _, posangle = c_cl.separation(c_gal).rad, c_cl.position_angle(c_gal).rad
     posangle += 0.5 * np.pi  # for right convention
 
     # corresponding shear1,2 components
@@ -618,14 +618,14 @@ def _draw_galaxy_positions(
     # ra and dec for a cluster in (0,0)
     ra = -np.rad2deg(galaxy_catalog["x_mpc"] / lens_distance)
     dec = np.rad2deg(galaxy_catalog["y_mpc"] / lens_distance)
-    c1 = SkyCoord(ra * u.deg, dec * u.deg, frame="icrs")
-    c1_cl = SkyCoord(0.0 * u.deg, 0.0 * u.deg, frame="icrs")
+    coord_gals = SkyCoord(ra * u.deg, dec * u.deg, frame="icrs")
+    coord_cl = SkyCoord(0.0 * u.deg, 0.0 * u.deg, frame="icrs")
 
-    # position angle of drawn galaxies w.r.t cluster center in original position c1_cl = (0,0)
-    position_angle = c1_cl.position_angle(c1).to(u.deg)
+    # position angle of drawn galaxies w.r.t cluster center in original position coord_cl = (0,0)
+    position_angle = coord_cl.position_angle(coord_gals).to(u.deg)
 
-    # separation of drawn galaxies w.r.t cluster center in original position c1_cl = (0,0)
-    sep = c1_cl.separation(c1)
+    # separation of drawn galaxies w.r.t cluster center in original position coord_cl = (0,0)
+    sep = coord_cl.separation(coord_gals)
 
     # cluster actual position
     c2_cl = SkyCoord(cluster_ra * u.deg, cluster_dec * u.deg, frame="icrs")
