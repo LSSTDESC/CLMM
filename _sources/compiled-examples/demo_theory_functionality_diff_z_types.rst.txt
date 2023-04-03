@@ -47,7 +47,7 @@ Make sure we know which version we’re using
 
 .. parsed-literal::
 
-    '1.5.3'
+    '1.7.1'
 
 
 
@@ -174,7 +174,7 @@ Visualisation
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x155515492350>
+    <matplotlib.legend.Legend at 0x155515fe9250>
 
 
 
@@ -215,7 +215,7 @@ produced in the previous section.
             0.00032859]),
      array([0.00898515, 0.01455188, 0.086497  , ..., 0.00915508, 0.0164856 ,
             0.13692621]),
-     array([-4.33680869e-18, -8.67361738e-18, -4.16333634e-17, ...,
+     array([-4.33680869e-18, -7.80625564e-18, -4.16333634e-17, ...,
             -5.20417043e-18, -7.80625564e-18, -6.93889390e-17]))
 
 
@@ -257,8 +257,8 @@ catalog and number of radius points.
 
 .. parsed-literal::
 
-    CPU times: user 1.91 s, sys: 10.8 ms, total: 1.93 s
-    Wall time: 1.92 s
+    CPU times: user 3.09 s, sys: 415 ms, total: 3.5 s
+    Wall time: 3.5 s
 
 
 Case 2 : Redshift distribution and exact formula
@@ -282,8 +282,8 @@ may be quite slow.
 
 .. parsed-literal::
 
-    CPU times: user 335 ms, sys: 17.9 ms, total: 353 ms
-    Wall time: 343 ms
+    CPU times: user 268 ms, sys: 4.78 ms, total: 273 ms
+    Wall time: 268 ms
 
 
 Cases 3 : Redshift distribution and approximation
@@ -305,8 +305,8 @@ reduced shear.
 
 .. parsed-literal::
 
-    CPU times: user 8.31 ms, sys: 47 µs, total: 8.35 ms
-    Wall time: 7.94 ms
+    CPU times: user 8.45 ms, sys: 0 ns, total: 8.45 ms
+    Wall time: 7.86 ms
 
 
 .. code:: ipython3
@@ -321,8 +321,8 @@ reduced shear.
 
 .. parsed-literal::
 
-    CPU times: user 14.4 ms, sys: 0 ns, total: 14.4 ms
-    Wall time: 14 ms
+    CPU times: user 14.7 ms, sys: 0 ns, total: 14.7 ms
+    Wall time: 14.3 ms
 
 
 Cases 4 : Mean lensing efficiencies and approximation
@@ -347,8 +347,8 @@ Cases 4 : Mean lensing efficiencies and approximation
 
 .. parsed-literal::
 
-    CPU times: user 1.72 ms, sys: 0 ns, total: 1.72 ms
-    Wall time: 1.51 ms
+    CPU times: user 1.67 ms, sys: 0 ns, total: 1.67 ms
+    Wall time: 1.34 ms
 
 
 .. code:: ipython3
@@ -363,8 +363,8 @@ Cases 4 : Mean lensing efficiencies and approximation
 
 .. parsed-literal::
 
-    CPU times: user 1.85 ms, sys: 0 ns, total: 1.85 ms
-    Wall time: 1.65 ms
+    CPU times: user 109 µs, sys: 1.81 ms, total: 1.92 ms
+    Wall time: 1.49 ms
 
 
 3 - Comparison of the four cases for the reduced tangnetial shear

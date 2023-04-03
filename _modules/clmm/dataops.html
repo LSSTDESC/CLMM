@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>clmm.dataops &mdash; CLMM 1.5.3 documentation</title>
+  <title>clmm.dataops &mdash; CLMM 1.7.1 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -29,7 +29,7 @@
             <a href="../../index.html" class="icon icon-home"> CLMM
           </a>
               <div class="version">
-                1.5.3
+                1.7.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -141,15 +141,17 @@
 <span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">SkyCoord</span>
 <span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">u</span>
 <span class="kn">from</span> <span class="nn">..</span> <span class="n">gcdata</span> <span class="kn">import</span> <span class="nn">GCData</span>
-<span class="kn">from</span> <span class="nn">..</span> <span class="n">utils</span> <span class="kn">import</span> <span class="nn">compute_radial_averages</span><span class="o">,</span> <span class="nn">make_bins</span><span class="o">,</span> <span class="nn">convert_units</span><span class="o">,</span> <span class="nn">arguments_consistency</span><span class="o">,</span> <span class="nn">validate_argument</span><span class="o">,</span> <span class="nn">_integ_pzfuncs</span>
-<span class="kn">from</span> <span class="nn">..</span> <span class="n">theory</span> <span class="kn">import</span> <span class="nn">compute_critical_surface_density</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="n">utils</span> <span class="kn">import</span> <span class="p">(</span><span class="n">compute_radial_averages</span><span class="p">,</span> <span class="n">make_bins</span><span class="p">,</span> <span class="n">convert_units</span><span class="p">,</span>
+                      <span class="n">arguments_consistency</span><span class="p">,</span> <span class="n">validate_argument</span><span class="p">,</span> <span class="n">_integ_pzfuncs</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="n">theory</span> <span class="kn">import</span> <span class="nn">compute_critical_surface_density_eff</span>
 
 
 <div class="viewcode-block" id="compute_tangential_and_cross_components"><a class="viewcode-back" href="../../api/clmm.dataops.html#clmm.dataops.compute_tangential_and_cross_components">[docs]</a><span class="k">def</span> <span class="nf">compute_tangential_and_cross_components</span><span class="p">(</span>
         <span class="n">ra_lens</span><span class="p">,</span> <span class="n">dec_lens</span><span class="p">,</span> <span class="n">ra_source</span><span class="p">,</span> <span class="n">dec_source</span><span class="p">,</span>
         <span class="n">shear1</span><span class="p">,</span> <span class="n">shear2</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="s1">&#39;curve&#39;</span><span class="p">,</span>
         <span class="n">is_deltasigma</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">z_lens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sigma_c</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_pdz</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pzbins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pzpdf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+        <span class="n">z_lens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sigma_c</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">use_pdz</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pzbins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pzpdf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">validate_input</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes tangential- and cross- components for shear or ellipticity</span>
 
@@ -192,7 +194,7 @@
 <span class="sd">    excess surface density :math:`\widehat{\Delta\Sigma}` is obtained from</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">        \widehat{\Delta\Sigma_{t,x}} = g_{t,x} \times \Sigma_c(cosmo, z_L, z_{\text{src}})</span>
+<span class="sd">        \widehat{\Delta\Sigma_{t,x}} = g_{t,x} \times \Sigma_c(cosmo, z_l, z_{\text{src}})</span>
 
 <span class="sd">    where :math:`\Sigma_c` is the critical surface density that depends on the cosmology and on</span>
 <span class="sd">    the lens and source redshifts. If :math:`g_{t,x}` correspond to the shear, the above</span>
@@ -228,10 +230,19 @@
 <span class="sd">        Not used if `sigma_c` is provided.</span>
 <span class="sd">    z_source: array, optional</span>
 <span class="sd">        Redshift of the source, required if `is_deltasigma` is True and `sigma_c` not provided.</span>
-<span class="sd">        Not used if `sigma_c` is provided.</span>
+<span class="sd">        Not used if `sigma_c` is provided or `use_pdz=True`.</span>
 <span class="sd">    sigma_c : float, optional</span>
 <span class="sd">        Critical surface density in units of :math:`M_\odot\ Mpc^{-2}`,</span>
 <span class="sd">        if provided, `cosmo`, `z_lens` and `z_source` are not used.</span>
+<span class="sd">    use_pdz: bool</span>
+<span class="sd">        Flag to use or not the source redshift p(z), required if `is_deltasigma` is True</span>
+<span class="sd">        and `sigma_c` not provided. If `False`, the point estimate provided by `z_source` is used.</span>
+<span class="sd">    pzpdf : array, optional</span>
+<span class="sd">        Photometric probablility density functions of the source galaxies, required if</span>
+<span class="sd">        `is_deltasigma=True` and `use_pdz=True` and `sigma_c` not provided.</span>
+<span class="sd">    pzbins : array, optional</span>
+<span class="sd">        Redshift axis on which the individual photoz pdf is tabulated, required if</span>
+<span class="sd">        `is_deltasigma=True` and `use_pdz=True` and `sigma_c` not provided.</span>
 <span class="sd">    validate_input: bool</span>
 <span class="sd">        Validade each input argument</span>
 
@@ -294,9 +305,11 @@
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
                     <span class="s1">&#39;To compute DeltaSigma, please provide a &#39;</span>
                     <span class="s1">&#39;i) cosmology, ii) redshift of lens and sources&#39;</span><span class="p">)</span>
-            <span class="n">sigma_c</span> <span class="o">=</span> <span class="n">compute_critical_surface_density</span><span class="p">(</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="n">z_source</span><span class="p">)</span>
+
+            <span class="n">sigma_c</span> <span class="o">=</span> <span class="n">cosmo</span><span class="o">.</span><span class="n">eval_sigma_crit</span><span class="p">(</span><span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="p">)</span>  
+
         <span class="k">elif</span> <span class="n">sigma_c</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># Need to verify that cosmology, lens redshift, source redshift bins and </span>
+            <span class="c1"># Need to verify that cosmology, lens redshift, source redshift bins and</span>
             <span class="c1"># source redshift pdf are provided</span>
             <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">t_</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">t_</span> <span class="ow">in</span> <span class="p">(</span><span class="n">z_lens</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">pzbins</span><span class="p">,</span> <span class="n">pzpdf</span><span class="p">)):</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
@@ -304,13 +317,16 @@
                     <span class="s1">&#39;please provide a &#39;</span>
                     <span class="s1">&#39;i) cosmology, ii) lens redshift, iii) source redshift bins and&#39;</span>
                     <span class="s1">&#39;iv) source redshift pdf&#39;</span><span class="p">)</span>
-            <span class="n">sigma_c</span> <span class="o">=</span> <span class="n">compute_critical_surface_density</span><span class="p">(</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">z_lens</span><span class="p">,</span> <span class="n">use_pdz</span><span class="o">=</span><span class="n">use_pdz</span><span class="p">,</span>
-                                                       <span class="n">pzbins</span><span class="o">=</span><span class="n">pzbins</span><span class="p">,</span> <span class="n">pzpdf</span><span class="o">=</span><span class="n">pzpdf</span><span class="p">)</span>
+
+            <span class="n">sigma_c</span> <span class="o">=</span> <span class="n">compute_critical_surface_density_eff</span><span class="p">(</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">z_lens</span><span class="p">,</span>
+                                                           <span class="n">pzbins</span><span class="o">=</span><span class="n">pzbins</span><span class="p">,</span> <span class="n">pzpdf</span><span class="o">=</span><span class="n">pzpdf</span><span class="p">)</span>
+
         <span class="n">tangential_comp</span> <span class="o">*=</span> <span class="n">sigma_c</span>
         <span class="n">cross_comp</span> <span class="o">*=</span> <span class="n">sigma_c</span>
     <span class="k">return</span> <span class="n">angsep</span><span class="p">,</span> <span class="n">tangential_comp</span><span class="p">,</span> <span class="n">cross_comp</span></div>
 
-<div class="viewcode-block" id="compute_background_probability"><a class="viewcode-back" href="../../api/clmm.dataops.html#clmm.dataops.compute_background_probability">[docs]</a><span class="k">def</span> <span class="nf">compute_background_probability</span><span class="p">(</span><span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_pdz</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pzpdf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pzbins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">validate_input</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="compute_background_probability"><a class="viewcode-back" href="../../api/clmm.dataops.html#clmm.dataops.compute_background_probability">[docs]</a><span class="k">def</span> <span class="nf">compute_background_probability</span><span class="p">(</span><span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_pdz</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pzpdf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pzbins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                   <span class="n">validate_input</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Probability for being a background galaxy</span>
 
 <span class="sd">    Parameters</span>
@@ -319,6 +335,9 @@
 <span class="sd">        Redshift of the lens.</span>
 <span class="sd">    z_source: array, optional</span>
 <span class="sd">        Redshift of the source. Used only if pzpdf=pzbins=None.</span>
+<span class="sd">    use_pdz: bool</span>
+<span class="sd">        Flag to use or not the source redshif. If `False`,</span>
+<span class="sd">        the point estimate provided by `z_source` is used.</span>
 <span class="sd">    pzpdf : array, optional</span>
 <span class="sd">        Photometric probablility density functions of the source galaxies.</span>
 <span class="sd">        Used instead of z_source if provided.</span>
@@ -336,7 +355,7 @@
 
     <span class="k">if</span> <span class="n">use_pdz</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">z_source</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;z_source must be provided.&#39;</span><span class="p">)</span>  
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;z_source must be provided.&#39;</span><span class="p">)</span>
         <span class="n">p_background</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">z_source</span><span class="o">&gt;</span><span class="n">z_lens</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">pzpdf</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">pzbins</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
@@ -361,14 +380,14 @@
 <span class="sd">        .. math::</span>
 <span class="sd">            w_{ls, \text{geo}} = \Sigma_c(\text{cosmo}, z_l, z_{\text{src}})^{-2}\;.</span>
 
-<span class="sd">        If the redshift pdf of each source, :math:`p_{\text{photoz}}(z_s)`, is known, the weights are</span>
-<span class="sd">        computed instead as</span>
+<span class="sd">        If the redshift pdf of each source, :math:`p_{\text{photoz}}(z_s)`, is known,</span>
+<span class="sd">        the weights are computed instead as</span>
 
 <span class="sd">        .. math::</span>
 <span class="sd">            w_{ls, \text{geo}} = \left[\int_{\delta + z_l} dz_s p_{\text{photoz}}(z_s)</span>
 <span class="sd">            \Sigma_c(\text{cosmo}, z_l, z_s)^{-1}\right]^2</span>
 
-<span class="sd">        for the tangential shear, the weights &#39;w_{ls, \text{geo}}` are 1.</span>
+<span class="sd">        for the tangential shear, the weights :math:`w_{ls, \text{geo}}` are 1.</span>
 
 <span class="sd">    2. The shape weight :math:`w_{ls,{\text{shape}}}` depends on shapenoise and/or shape</span>
 <span class="sd">    measurement errors</span>
@@ -454,21 +473,37 @@
     <span class="k">if</span> <span class="n">is_deltasigma</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
         <span class="n">w_ls_geo</span> <span class="o">=</span> <span class="mf">1.</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">sigma_c</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">sigma_c</span> <span class="o">=</span> <span class="n">compute_critical_surface_density</span><span class="p">(</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="n">z_source</span><span class="p">,</span>
-                                                       <span class="n">use_pdz</span><span class="o">=</span><span class="n">use_pdz</span><span class="p">,</span>
-                                                       <span class="n">pzbins</span><span class="o">=</span><span class="n">pzbins</span><span class="p">,</span> <span class="n">pzpdf</span><span class="o">=</span><span class="n">pzpdf</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sigma_c</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">use_pdz</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="c1"># Need to verify that cosmology and redshifts are provided</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">t_</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">t_</span> <span class="ow">in</span> <span class="p">(</span><span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                    <span class="s1">&#39;To compute DeltaSigma, please provide a &#39;</span>
+                    <span class="s1">&#39;i) cosmology, ii) redshift of lens and sources&#39;</span><span class="p">)</span>
+            <span class="n">sigma_c</span> <span class="o">=</span> <span class="n">cosmo</span><span class="o">.</span><span class="n">eval_sigma_crit</span><span class="p">(</span><span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">sigma_c</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Need to verify that cosmology, lens redshift, source redshift bins and</span>
+            <span class="c1"># source redshift pdf are provided</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">t_</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">t_</span> <span class="ow">in</span> <span class="p">(</span><span class="n">z_lens</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">pzbins</span><span class="p">,</span> <span class="n">pzpdf</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                    <span class="s1">&#39;To compute DeltaSigma using the redshift pdz of the sources, &#39;</span>
+                    <span class="s1">&#39;please provide a &#39;</span>
+                    <span class="s1">&#39;i) cosmology, ii) lens redshift, iii) source redshift bins and&#39;</span>
+                    <span class="s1">&#39;iv) source redshift pdf&#39;</span><span class="p">)</span>
+            <span class="n">sigma_c</span> <span class="o">=</span> <span class="n">compute_critical_surface_density_eff</span><span class="p">(</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">z_lens</span><span class="p">,</span>
+                                                           <span class="n">pzbins</span><span class="o">=</span><span class="n">pzbins</span><span class="p">,</span>
+                                                           <span class="n">pzpdf</span><span class="o">=</span><span class="n">pzpdf</span><span class="p">)</span>
         <span class="n">w_ls_geo</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">sigma_c</span><span class="o">**</span><span class="mi">2</span>
 
     <span class="c1">#computing w_ls_shape</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">use_pdz</span><span class="p">:</span>
-        <span class="n">err_e2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">z_source</span><span class="p">))</span>
+        <span class="n">ngals</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">z_source</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">err_e2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pzpdf</span><span class="p">))</span>
+        <span class="n">ngals</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pzpdf</span><span class="p">)</span>
+    <span class="n">err_e2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">ngals</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">use_shape_noise</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">shape_component1</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">shape_component2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;With the shape noise option, the source shapes&#39;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;With the shape noise option, the source shapes &#39;</span>
                              <span class="s1">&#39;`shape_component_{1,2}` must be specified&#39;</span><span class="p">)</span>
         <span class="n">err_e2</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">shape_component1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">shape_component2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
     <span class="k">if</span> <span class="n">use_shape_error</span><span class="p">:</span>
@@ -477,7 +512,7 @@
                              <span class="s1">&#39;`shape_component_err{1,2}` must be specified&#39;</span><span class="p">)</span>
         <span class="n">err_e2</span> <span class="o">+=</span> <span class="n">shape_component1_err</span><span class="o">**</span><span class="mi">2</span>
         <span class="n">err_e2</span> <span class="o">+=</span> <span class="n">shape_component2_err</span><span class="o">**</span><span class="mi">2</span>
-    <span class="n">w_ls_shape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">shape_component1</span><span class="p">))</span>
+    <span class="n">w_ls_shape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">ngals</span><span class="p">)</span>
     <span class="n">w_ls_shape</span><span class="p">[</span><span class="n">err_e2</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">err_e2</span><span class="p">[</span><span class="n">err_e2</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="n">w_ls</span> <span class="o">=</span> <span class="n">w_ls_shape</span> <span class="o">*</span> <span class="n">w_ls_geo</span>
@@ -665,7 +700,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    profile : GCData</span>
 <span class="sd">        Output table containing the radius grid points, the profile of the components `p_i`,</span>
-<span class="sd">        errors `p_i_err` and number of sources.  The errors are defined as the standard errors in</span>
+<span class="sd">        errors `p_i_err` and number of sources. The errors are defined as the standard errors in</span>
 <span class="sd">        each bin.</span>
 <span class="sd">    binnumber: 1-D ndarray of ints, optional</span>
 <span class="sd">        Indices of the bins (corresponding to `xbins`) in which each value</span>
@@ -705,13 +740,15 @@
                            <span class="p">)</span>
     <span class="c1"># Compute the binned averages and associated errors</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">component</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">components</span><span class="p">):</span>
-        <span class="n">r_avg</span><span class="p">,</span> <span class="n">comp_avg</span><span class="p">,</span> <span class="n">comp_err</span><span class="p">,</span> <span class="n">nsrc</span><span class="p">,</span> <span class="n">binnumber</span> <span class="o">=</span> <span class="n">compute_radial_averages</span><span class="p">(</span>
+        <span class="n">r_avg</span><span class="p">,</span> <span class="n">comp_avg</span><span class="p">,</span> <span class="n">comp_err</span><span class="p">,</span> <span class="n">nsrc</span><span class="p">,</span> <span class="n">binnumber</span><span class="p">,</span> <span class="n">wts_sum</span> <span class="o">=</span> <span class="n">compute_radial_averages</span><span class="p">(</span>
             <span class="n">source_seps</span><span class="p">,</span> <span class="n">component</span><span class="p">,</span> <span class="n">xbins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span>
-            <span class="n">yerr</span><span class="o">=</span><span class="kc">None</span> <span class="k">if</span> <span class="n">components_error</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">components_error</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
+            <span class="n">yerr</span><span class="o">=</span><span class="kc">None</span> <span class="k">if</span> <span class="n">components_error</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">components_error</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+            <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
         <span class="n">profile_table</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;p_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">comp_avg</span>
         <span class="n">profile_table</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;p_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">_err&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">comp_err</span>
     <span class="n">profile_table</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">r_avg</span>
     <span class="n">profile_table</span><span class="p">[</span><span class="s1">&#39;n_src&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nsrc</span>
+    <span class="n">profile_table</span><span class="p">[</span><span class="s1">&#39;weights_sum&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">wts_sum</span>
     <span class="c1"># return empty bins?</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">include_empty_bins</span><span class="p">:</span>
         <span class="n">profile_table</span> <span class="o">=</span> <span class="n">profile_table</span><span class="p">[</span><span class="n">nsrc</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">]</span>

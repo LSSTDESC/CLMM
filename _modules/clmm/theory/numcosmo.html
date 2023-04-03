@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>clmm.theory.numcosmo &mdash; CLMM 1.5.3 documentation</title>
+  <title>clmm.theory.numcosmo &mdash; CLMM 1.7.1 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -29,7 +29,7 @@
             <a href="../../../index.html" class="icon icon-home"> CLMM
           </a>
               <div class="version">
-                1.5.3
+                1.7.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -203,32 +203,20 @@
     <span class="c1"># Functions implemented by child class</span>
 
 
-    <span class="k">def</span> <span class="nf">_set_cosmo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;&quot;set cosmo&quot;&quot;&quot;</span>
-        <span class="n">CLMModeling</span><span class="o">.</span><span class="n">_set_cosmo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_update_halo_density_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;&quot;updates halo density profile with set internal properties&quot;&quot;&quot;</span>
+        <span class="c1"># Makes sure current cdelta/mdelta values are kept</span>
+        <span class="n">has_cm_vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">has_cm_vals</span><span class="p">:</span>
+            <span class="n">cdelta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cdelta</span>
+            <span class="n">log10_mdelta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">log10MDelta</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span> <span class="o">=</span> <span class="n">Nc</span><span class="o">.</span><span class="n">WLSurfaceMassDensity</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">dist</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">prepare_if_needed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdpm_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">halo_profile_model</span><span class="p">](</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mdef_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">massdef</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta_mdef</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_set_halo_density_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;&quot;set halo density profile&quot;&quot;&quot;</span>
-        <span class="c1"># Check if we have already an instance of the required object, if not create one</span>
-        <span class="k">if</span> <span class="ow">not</span><span class="p">((</span><span class="n">halo_profile_model</span><span class="o">==</span><span class="bp">self</span><span class="o">.</span><span class="n">halo_profile_model</span><span class="p">)</span>
-                <span class="ow">and</span> <span class="p">(</span><span class="n">massdef</span><span class="o">==</span><span class="bp">self</span><span class="o">.</span><span class="n">massdef</span><span class="p">)</span>
-                <span class="ow">and</span> <span class="p">(</span><span class="n">delta_mdef</span><span class="o">==</span><span class="bp">self</span><span class="o">.</span><span class="n">delta_mdef</span><span class="p">)):</span>
-
-            <span class="c1"># Makes sure current cdelta/mdelta values are kept</span>
-            <span class="n">has_cm_vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-            <span class="k">if</span> <span class="n">has_cm_vals</span><span class="p">:</span>
-                <span class="n">cdelta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cdelta</span>
-                <span class="n">log10_mdelta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">log10MDelta</span>
-
-            <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdpm_dict</span><span class="p">[</span><span class="n">halo_profile_model</span><span class="p">](</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">mdef_dict</span><span class="p">[</span><span class="n">massdef</span><span class="p">],</span> <span class="n">delta_mdef</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">has_cm_vals</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">cdelta</span> <span class="o">=</span> <span class="n">cdelta</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">log10MDelta</span> <span class="o">=</span> <span class="n">log10_mdelta</span>
+        <span class="k">if</span> <span class="n">has_cm_vals</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cdelta</span> <span class="o">=</span> <span class="n">cdelta</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">log10MDelta</span> <span class="o">=</span> <span class="n">log10_mdelta</span>
 
     <span class="k">def</span> <span class="nf">_get_concentration</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;&quot;get concentration&quot;&quot;&quot;</span>
@@ -247,12 +235,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">log10MDelta</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">mdelta</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_set_einasto_alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span>
+        <span class="k">if</span> <span class="n">alpha</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.25</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span>
 
     <span class="k">def</span> <span class="nf">_get_einasto_alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_cl</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;&quot;get the value of the Einasto slope&quot;&quot;&quot;</span>
-        <span class="c1"># Note that z_cl is needed for the CCL backend only</span>
-        <span class="c1"># </span>
+        <span class="c1"># Note that z_cl is needed for CCL&lt;2.6 only</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">alpha</span>
 
     <span class="k">def</span> <span class="nf">_eval_3d_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r3d</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
@@ -263,7 +253,6 @@
 
     <span class="k">def</span> <span class="nf">_eval_surface_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;&quot;eval surface density&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">prepare_if_needed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">)</span>
         <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">sigma</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">func</span><span class="p">)(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
@@ -271,7 +260,6 @@
     <span class="k">def</span> <span class="nf">_eval_mean_surface_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;&quot;eval mean surface density&quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">prepare_if_needed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">)</span>
         <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">sigma_mean</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">func</span><span class="p">)(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
@@ -279,31 +267,28 @@
     <span class="k">def</span> <span class="nf">_eval_excess_surface_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;&quot;eval excess surface density&quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">prepare_if_needed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">)</span>
         <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">sigma_excess</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">func</span><span class="p">)(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_eval_tangential_shear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_eval_tangential_shear_core</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;&quot;eval tangential shear&quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">prepare_if_needed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">)</span>
         <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">shear</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">func</span><span class="p">)(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_eval_convergence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_eval_convergence_core</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;&quot;eval convergence&quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">prepare_if_needed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">)</span>
         <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">convergence</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">func</span><span class="p">)(</span><span class="n">r_proj</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_eval_reduced_tangential_shear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;&quot;eval reduced tangential shear considering a single redshift plane for background sources&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_eval_reduced_tangential_shear_core</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;&quot;eval reduced tangential shear considering a single redshift plane</span>
+<span class="sd">        for background sources&quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">prepare_if_needed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">)</span>
         <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">r_proj</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span>
                 <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">z_src</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span>
                 <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">r_proj</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">z_src</span><span class="p">)):</span>
@@ -313,10 +298,9 @@
         <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">r_proj</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">,</span>
                     <span class="mf">1.0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">z_src</span><span class="p">),</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_eval_magnification</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_eval_magnification_core</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_src</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;&quot;eval magnification&quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">prepare_if_needed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">)</span>
 
         <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">magnification</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">,</span> <span class="n">r_proj</span><span class="p">,</span> <span class="n">z_src</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">,</span> <span class="n">z_cl</span><span class="p">)</span>
@@ -341,9 +325,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">set_be_cosmo</span><span class="p">(</span><span class="n">mset</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Nc</span><span class="o">.</span><span class="n">HICosmo</span><span class="o">.</span><span class="n">id</span><span class="p">()))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">hdpm</span> <span class="o">=</span> <span class="n">mset</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Nc</span><span class="o">.</span><span class="n">HaloDensityProfile</span><span class="o">.</span><span class="n">id</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span> <span class="o">=</span> <span class="n">mset</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Nc</span><span class="o">.</span><span class="n">WLSurfaceMassDensity</span><span class="o">.</span><span class="n">id</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span> <span class="o">=</span> <span class="n">mset</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Nc</span><span class="o">.</span><span class="n">WLSurfaceMassDensity</span><span class="o">.</span><span class="n">id</span><span class="p">())</span></div></div>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">smd</span><span class="o">.</span><span class="n">prepare_if_needed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">be_cosmo</span><span class="p">)</span></div></div>
 
 <span class="n">Modeling</span> <span class="o">=</span> <span class="n">NumCosmoCLMModeling</span>
 </pre></div>

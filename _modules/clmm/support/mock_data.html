@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>clmm.support.mock_data &mdash; CLMM 1.5.3 documentation</title>
+  <title>clmm.support.mock_data &mdash; CLMM 1.7.1 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -29,7 +29,7 @@
             <a href="../../../index.html" class="icon icon-home"> CLMM
           </a>
               <div class="version">
-                1.5.3
+                1.7.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -142,7 +142,7 @@
 <span class="kn">from</span> <span class="nn">..gcdata</span> <span class="kn">import</span> <span class="n">GCData</span>
 <span class="kn">from</span> <span class="nn">..theory</span> <span class="kn">import</span> <span class="n">compute_tangential_shear</span><span class="p">,</span> <span class="n">compute_convergence</span>
 <span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="p">(</span><span class="n">convert_units</span><span class="p">,</span> <span class="n">compute_lensed_ellipticity</span><span class="p">,</span> <span class="n">validate_argument</span><span class="p">,</span>
-                     <span class="n">_draw_random_points_from_distribution</span><span class="p">)</span>
+                     <span class="n">_draw_random_points_from_distribution</span><span class="p">,</span> <span class="n">gaussian</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">z_distributions</span> <span class="k">as</span> <span class="n">zdist</span>
 
 <div class="viewcode-block" id="generate_galaxy_catalog"><a class="viewcode-back" href="../../../api/clmm.support.mock_data.html#clmm.support.mock_data.generate_galaxy_catalog">[docs]</a><span class="k">def</span> <span class="nf">generate_galaxy_catalog</span><span class="p">(</span><span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">cluster_c</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">zsrc</span><span class="p">,</span>
@@ -152,8 +152,8 @@
                             <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">7.</span><span class="p">,</span> <span class="n">field_size</span><span class="o">=</span><span class="mf">8.</span><span class="p">,</span> <span class="n">shapenoise</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                             <span class="n">mean_e_err</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                             <span class="n">nretry</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ngal_density</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                            <span class="n">pz_bins</span><span class="o">=</span><span class="mi">101</span><span class="p">,</span> <span class="n">pzpdf_type</span><span class="o">=</span><span class="s1">&#39;shared_bins&#39;</span><span class="p">,</span>
                             <span class="n">validate_input</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Generates a mock dataset of sheared background galaxies.</span>
 
 <span class="sd">    We build galaxy catalogs following a series of steps.</span>
@@ -253,6 +253,15 @@
 <span class="sd">        table will not include this column.</span>
 <span class="sd">    photoz_sigma_unscaled : float, optional</span>
 <span class="sd">        If set, applies photo-z errors to source redshifts</span>
+<span class="sd">    pz_bins: int, array</span>
+<span class="sd">        Photo-z pdf bins in the given range. If int, the limits are set automatically.</span>
+<span class="sd">        If is array, must be the bin edges.</span>
+<span class="sd">    pzpdf_type: str, None</span>
+<span class="sd">        Type of photo-z pdf to be stored, options are:</span>
+<span class="sd">            `None` - does not store PDFs;</span>
+<span class="sd">            `&#39;shared_bins&#39;` - single binning for all galaxies</span>
+<span class="sd">            `&#39;individual_bins&#39;` - individual binning for each galaxy</span>
+<span class="sd">            `&#39;quantiles&#39;` - quantiles of PDF (not implemented yet)</span>
 <span class="sd">    nretry : int, optional</span>
 <span class="sd">        The number of times that we re-draw each galaxy with non-sensical derived properties</span>
 <span class="sd">    ngals : float, optional</span>
@@ -298,6 +307,7 @@
         <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;nretry&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
         <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;ngals&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">none_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;ngal_density&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">none_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">validate_argument</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="s1">&#39;pz_bins&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="s1">&#39;array&#39;</span><span class="p">))</span>
 
 
     <span class="k">if</span> <span class="n">zsrc_min</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">zsrc_min</span> <span class="o">=</span> <span class="n">cluster_z</span><span class="o">+</span><span class="mf">0.1</span>
@@ -309,7 +319,8 @@
               <span class="s1">&#39;zsrc_min&#39;</span> <span class="p">:</span> <span class="n">zsrc_min</span><span class="p">,</span> <span class="s1">&#39;zsrc_max&#39;</span> <span class="p">:</span> <span class="n">zsrc_max</span><span class="p">,</span>
               <span class="s1">&#39;shapenoise&#39;</span> <span class="p">:</span> <span class="n">shapenoise</span><span class="p">,</span> <span class="s1">&#39;mean_e_err&#39;</span><span class="p">:</span> <span class="n">mean_e_err</span><span class="p">,</span>
               <span class="s1">&#39;photoz_sigma_unscaled&#39;</span> <span class="p">:</span> <span class="n">photoz_sigma_unscaled</span><span class="p">,</span>
-              <span class="s1">&#39;field_size&#39;</span> <span class="p">:</span> <span class="n">field_size</span><span class="p">}</span>
+              <span class="s1">&#39;pz_bins&#39;</span><span class="p">:</span> <span class="n">pz_bins</span><span class="p">,</span> <span class="s1">&#39;field_size&#39;</span> <span class="p">:</span> <span class="n">field_size</span><span class="p">,</span>
+              <span class="s1">&#39;pzpdf_type&#39;</span><span class="p">:</span> <span class="n">pzpdf_type</span><span class="p">}</span>
 
     <span class="k">if</span> <span class="n">ngals</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ngal_density</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;Either the number of galaxies &quot;ngals&quot; or the galaxy density&#39;</span> \
@@ -330,6 +341,13 @@
     <span class="c1"># Check for bad galaxies and replace them</span>
     <span class="n">nbad</span><span class="p">,</span> <span class="n">badids</span> <span class="o">=</span> <span class="n">_find_aphysical_galaxies</span><span class="p">(</span><span class="n">galaxy_catalog</span><span class="p">,</span> <span class="n">zsrc_min</span><span class="p">)</span>
     <span class="n">ntry</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="c1"># Prep bins for replacement</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="n">photoz_sigma_unscaled</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="ow">and</span> <span class="n">pzpdf_type</span><span class="o">==</span><span class="s1">&#39;shared_bins&#39;</span>
+        <span class="ow">and</span> <span class="n">nbad</span><span class="o">&gt;</span><span class="mi">0</span>
+    <span class="p">):</span>
+        <span class="n">params</span><span class="p">[</span><span class="s1">&#39;pz_bins&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">galaxy_catalog</span><span class="o">.</span><span class="n">pzpdf_info</span><span class="p">[</span><span class="s1">&#39;zbins&#39;</span><span class="p">]</span>
     <span class="k">while</span> <span class="p">(</span><span class="n">nbad</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">ntry</span> <span class="o">&lt;</span> <span class="n">nretry</span><span class="p">):</span>
         <span class="n">replacements</span> <span class="o">=</span> <span class="n">_generate_galaxy_catalog</span><span class="p">(</span><span class="n">ngals</span><span class="o">=</span><span class="n">nbad</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
         <span class="c1">#galaxy_catalog[badids] = replacements</span>
@@ -353,8 +371,41 @@
 <span class="sd">    A private function that computes the number of galaxies to draw given the user-defined</span>
 <span class="sd">    field size, galaxy density, cosmology, cluster redshift, galaxy redshift distribution</span>
 <span class="sd">    and requested redshift range.</span>
-<span class="sd">    For a more detailed description of each of the parameters, see the documentation of</span>
-<span class="sd">    `generate_galaxy_catalog`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ngal_density : float, optional</span>
+<span class="sd">        The number density of galaxies (in galaxies per square arcminute, from z=0 to z=infty).</span>
+<span class="sd">        The number of galaxies to be drawn will then depend on the redshift distribution and</span>
+<span class="sd">        user-defined redshift range.  If specified, the ngals argument will be ignored.</span>
+<span class="sd">    field_size : float, optional</span>
+<span class="sd">        The size of the field (field_size x field_size) to be simulated.</span>
+<span class="sd">        Proper distance in Mpc  at the cluster redshift.</span>
+<span class="sd">    cosmo: clmm.Cosmology, optional</span>
+<span class="sd">        Cosmology object.</span>
+<span class="sd">    cluster_z : float</span>
+<span class="sd">        Cluster redshift</span>
+<span class="sd">    zsrc : float or str</span>
+<span class="sd">        Choose the source galaxy distribution to be fixed or drawn from a predefined distribution.</span>
+
+<span class="sd">        * `float` : All sources galaxies at this fixed redshift;</span>
+<span class="sd">        * `str` : Draws individual source gal redshifts from predefined distribution. Options are:</span>
+
+<span class="sd">            * `chang13` - Chang et al. 2013 (arXiv:1305.0793);</span>
+<span class="sd">            * `desc_srd` - LSST/DESC Science Requirement Document (arxiv:1809.01669);</span>
+
+<span class="sd">    zsrc_min : float, optional</span>
+<span class="sd">        The minimum true redshift of the sources. If photoz errors are included, the observed</span>
+<span class="sd">        redshift may be smaller than zsrc_min.</span>
+<span class="sd">    zsrc_max : float, optional</span>
+<span class="sd">        The maximum true redshift of the sources, apllied when galaxy redshifts are drawn from a</span>
+<span class="sd">        redshift distribution. If photoz errors are included, the observed redshift may be larger</span>
+<span class="sd">        than zsrc_max.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ngals : int</span>
+<span class="sd">        Number of galaxies to be generated.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">field_size_arcmin</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span>
         <span class="n">field_size</span><span class="p">,</span> <span class="s1">&#39;Mpc&#39;</span><span class="p">,</span> <span class="s1">&#39;arcmin&#39;</span><span class="p">,</span> <span class="n">redshift</span><span class="o">=</span><span class="n">cluster_z</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
@@ -376,11 +427,13 @@
 
 
 <span class="k">def</span> <span class="nf">_generate_galaxy_catalog</span><span class="p">(</span><span class="n">cluster_m</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">cluster_c</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">ngals</span><span class="p">,</span>
-                             <span class="n">zsrc</span><span class="p">,</span> <span class="n">cluster_ra</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cluster_dec</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">delta_so</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                             <span class="n">halo_profile_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zsrc_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                             <span class="n">zsrc_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shapenoise</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                             <span class="n">mean_e_err</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                             <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field_size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                             <span class="n">zsrc</span><span class="p">,</span> <span class="n">cluster_ra</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cluster_dec</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">delta_so</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">zsrc_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zsrc_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">shapenoise</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mean_e_err</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">pz_bins</span><span class="o">=</span><span class="mi">101</span><span class="p">,</span> <span class="n">pzpdf_type</span><span class="o">=</span><span class="s1">&#39;shared_bins&#39;</span><span class="p">,</span>
+                             <span class="n">field_size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A private function that skips the sanity checks on derived properties. This</span>
 <span class="sd">    function should only be used when called directly from `generate_galaxy_catalog`.</span>
 <span class="sd">    For a detailed description of each of the parameters, see the documentation of</span>
@@ -394,11 +447,15 @@
 
     <span class="c1"># Add photo-z errors and pdfs to source galaxy redshifts</span>
     <span class="k">if</span> <span class="n">photoz_sigma_unscaled</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">galaxy_catalog</span><span class="o">.</span><span class="n">pzpdf_info</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pzpdf_type</span>
         <span class="n">galaxy_catalog</span> <span class="o">=</span> <span class="n">_compute_photoz_pdfs</span><span class="p">(</span>
-            <span class="n">galaxy_catalog</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="p">)</span>
+            <span class="n">galaxy_catalog</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="p">,</span>
+            <span class="n">pz_bins</span><span class="o">=</span><span class="n">pz_bins</span><span class="p">)</span>
+
     <span class="c1"># Draw galaxy positions</span>
     <span class="n">galaxy_catalog</span> <span class="o">=</span> <span class="n">_draw_galaxy_positions</span><span class="p">(</span>
         <span class="n">galaxy_catalog</span><span class="p">,</span> <span class="n">ngals</span><span class="p">,</span> <span class="n">cluster_ra</span><span class="p">,</span> <span class="n">cluster_dec</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">field_size</span><span class="p">)</span>
+
     <span class="c1"># Compute the shear on each source galaxy</span>
     <span class="n">gamt</span> <span class="o">=</span> <span class="n">compute_tangential_shear</span><span class="p">(</span><span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;r_mpc&#39;</span><span class="p">],</span> <span class="n">mdelta</span><span class="o">=</span><span class="n">cluster_m</span><span class="p">,</span>
                                     <span class="n">cdelta</span><span class="o">=</span><span class="n">cluster_c</span><span class="p">,</span> <span class="n">z_cluster</span><span class="o">=</span><span class="n">cluster_z</span><span class="p">,</span>
@@ -450,10 +507,12 @@
             <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;e1&#39;</span><span class="p">],</span> <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;e_err&#39;</span><span class="p">])</span>
         <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;e2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span>
             <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;e2&#39;</span><span class="p">],</span> <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;e_err&#39;</span><span class="p">])</span>
-        <span class="n">cols</span> <span class="o">=</span> <span class="n">cols</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;e_err&#39;</span><span class="p">]</span>
-    <span class="n">cols</span> <span class="o">=</span> <span class="n">cols</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;ztrue&#39;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">photoz_sigma_unscaled</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">cols</span> <span class="o">=</span> <span class="n">cols</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;pzbins&#39;</span><span class="p">,</span> <span class="s1">&#39;pzpdf&#39;</span><span class="p">]</span>
+        <span class="n">cols</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;e_err&#39;</span><span class="p">]</span>
+    <span class="n">cols</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;ztrue&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">c</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">(</span><span class="n">photoz_sigma_unscaled</span><span class="p">,</span> <span class="n">pzpdf_type</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">galaxy_catalog</span><span class="o">.</span><span class="n">pzpdf_info</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;individual_bins&#39;</span><span class="p">:</span>
+            <span class="n">cols</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;pzbins&#39;</span><span class="p">]</span>
+        <span class="n">cols</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="n">galaxy_catalog</span><span class="p">[</span><span class="n">cols</span><span class="p">]</span>
 
@@ -466,11 +525,9 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    ngals : float</span>
-<span class="sd">        Number of galaxies to generate</span>
 <span class="sd">    zsrc : float or str</span>
 <span class="sd">        Choose the source galaxy distribution to be fixed or drawn from a predefined distribution.</span>
-<span class="sd">        float : All sources galaxies at this fixed redshift</span>
+<span class="sd">        float : All sources galaxies at this fixed redshift.</span>
 <span class="sd">        str : Draws individual source gal redshifts from predefined distribution. Options are:</span>
 
 <span class="sd">            * `chang13` - Chang et al. 2013 (arXiv:1305.0793);</span>
@@ -480,6 +537,8 @@
 <span class="sd">        The minimum source redshift allowed.</span>
 <span class="sd">    zsrc_max : float, optional</span>
 <span class="sd">        If source redshifts are drawn, the maximum source redshift</span>
+<span class="sd">    ngals : float</span>
+<span class="sd">        Number of galaxies to generate</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -517,7 +576,7 @@
     <span class="k">return</span> <span class="n">GCData</span><span class="p">([</span><span class="n">zsrc_list</span><span class="p">,</span> <span class="n">zsrc_list</span><span class="p">],</span> <span class="n">names</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;ztrue&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">))</span>
 
 
-<span class="k">def</span> <span class="nf">_compute_photoz_pdfs</span><span class="p">(</span><span class="n">galaxy_catalog</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_compute_photoz_pdfs</span><span class="p">(</span><span class="n">galaxy_catalog</span><span class="p">,</span> <span class="n">photoz_sigma_unscaled</span><span class="p">,</span> <span class="n">pz_bins</span><span class="o">=</span><span class="mi">101</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Private function to add photo-z errors and PDFs to the mock catalog.</span>
 
 <span class="sd">    Parameters</span>
@@ -526,6 +585,9 @@
 <span class="sd">        Input galaxy catalog to which photoz PDF will be added</span>
 <span class="sd">    photoz_sigma_unscaled : float</span>
 <span class="sd">        Width of the Gaussian PDF, without the (1+z) factor</span>
+<span class="sd">    pz_bins: int, sequence of scalars or str</span>
+<span class="sd">        Photo-z pdf bins in the given range. If int, the limits are set automatically.</span>
+<span class="sd">        If is array, must be the bin edges.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -539,17 +601,39 @@
         <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;pzsigma&#39;</span><span class="p">]</span> <span class="o">*</span> \
         <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">galaxy_catalog</span><span class="p">))</span>
 
-    <span class="n">pzbins_grid</span><span class="p">,</span> <span class="n">pzpdf_grid</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">galaxy_catalog</span><span class="p">:</span>
-        <span class="n">pdf_range</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;pzsigma&#39;</span><span class="p">]</span><span class="o">*</span><span class="mf">10.</span>
-        <span class="n">zmin</span><span class="p">,</span> <span class="n">zmax</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span><span class="o">-</span><span class="n">pdf_range</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">pdf_range</span>
-        <span class="n">zbins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">zmin</span><span class="p">,</span> <span class="n">zmax</span><span class="p">,</span> <span class="mf">0.03</span><span class="p">)</span>
-        <span class="n">pzbins_grid</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">zbins</span><span class="p">)</span>
-        <span class="n">pzpdf_grid</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="p">((</span><span class="n">zbins</span><span class="o">-</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">])</span><span class="o">/</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;pzsigma&#39;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;pzsigma&#39;</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
-    <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;pzbins&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pzbins_grid</span>
-    <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pzpdf_grid</span>
+    <span class="k">if</span> <span class="n">galaxy_catalog</span><span class="o">.</span><span class="n">pzpdf_info</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">galaxy_catalog</span>
 
+    <span class="n">zmin</span> <span class="o">=</span> <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span><span class="o">-</span><span class="mf">10.</span><span class="o">*</span><span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;pzsigma&#39;</span><span class="p">]</span>
+    <span class="n">zmax</span> <span class="o">=</span> <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span><span class="o">+</span><span class="mf">10.</span><span class="o">*</span><span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;pzsigma&#39;</span><span class="p">]</span>
+    <span class="n">zmin</span><span class="p">[</span><span class="n">zmin</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+    <span class="k">if</span> <span class="n">galaxy_catalog</span><span class="o">.</span><span class="n">pzpdf_info</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;shared_bins&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pz_bins</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">galaxy_catalog</span><span class="o">.</span><span class="n">pzpdf_info</span><span class="p">[</span><span class="s1">&#39;zbins&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span>
+                <span class="n">zmin</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">zmax</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">pz_bins</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">galaxy_catalog</span><span class="o">.</span><span class="n">pzpdf_info</span><span class="p">[</span><span class="s1">&#39;zbins&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pz_bins</span><span class="p">)</span>
+        <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gaussian</span><span class="p">(</span>
+            <span class="n">galaxy_catalog</span><span class="o">.</span><span class="n">pzpdf_info</span><span class="p">[</span><span class="s1">&#39;zbins&#39;</span><span class="p">],</span>
+            <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">][:,</span><span class="kc">None</span><span class="p">],</span>
+            <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;pzsigma&#39;</span><span class="p">][:,</span><span class="kc">None</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="n">galaxy_catalog</span><span class="o">.</span><span class="n">pzpdf_info</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;individual_bins&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pz_bins</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;pzbins&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">zmin</span><span class="p">,</span> <span class="n">zmax</span><span class="p">,</span> <span class="n">pz_bins</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;pzbins&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">pz_bins</span><span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">digitize</span><span class="p">(</span><span class="n">z1</span><span class="p">,</span> <span class="n">pz_bins</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">):</span><span class="n">np</span><span class="o">.</span><span class="n">digitize</span><span class="p">(</span><span class="n">z2</span><span class="p">,</span> <span class="n">pz_bins</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">z1</span><span class="p">,</span> <span class="n">z2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">zmin</span><span class="p">,</span> <span class="n">zmax</span><span class="p">)]</span>
+        <span class="n">galaxy_catalog</span><span class="p">[</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">gaussian</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;pzbins&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;pzsigma&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">galaxy_catalog</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">galaxy_catalog</span><span class="o">.</span><span class="n">pzpdf_info</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;quantiles&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;PDF storing in quantiles not implemented.&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Value of pzpdf_info[&#39;type&#39;] &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;(=</span><span class="si">{</span><span class="n">galaxy_catalog</span><span class="o">.</span><span class="n">pzpdf_info</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">) &quot;</span>
+            <span class="s2">&quot;not valid.&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">galaxy_catalog</span>
 
 

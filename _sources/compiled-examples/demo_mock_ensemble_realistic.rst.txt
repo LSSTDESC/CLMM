@@ -568,8 +568,8 @@ The cluster objects are then stored in ``gclist``.
 
 .. parsed-literal::
 
-    CPU times: user 28.9 s, sys: 7.22 s, total: 36.2 s
-    Wall time: 36.1 s
+    CPU times: user 3.03 s, sys: 352 ms, total: 3.38 s
+    Wall time: 3.38 s
 
 
 .. code:: ipython3
@@ -581,7 +581,7 @@ The cluster objects are then stored in ``gclist``.
 
 .. parsed-literal::
 
-    <TableColumns names=('ra','dec','e1','e2','e_err','z','ztrue','pzbins','pzpdf','id','sigma_c','theta','DS_t','DS_x','w_ls')>
+    <TableColumns names=('ra','dec','e1','e2','e_err','z','ztrue','pzpdf','id','sigma_c','theta','DS_t','DS_x','w_ls')>
 
 
 
@@ -604,13 +604,62 @@ to compute
 
 .. code:: ipython3
 
+    %%time
     ensemble_id = 1
     bins = np.logspace(np.log10(0.3),np.log10(5),10)
     clusterensemble = ClusterEnsemble(ensemble_id, gclist, 
                                       tan_component_in='DS_t', cross_component_in='DS_x', 
                                       tan_component_out='DS_t', cross_component_out='DS_x', 
-                                      weights_in = 'w_ls', weights_out = 'W_l', 
+                                      weights_in='w_ls', weights_out='W_l', 
                                       bins=bins, bin_units='Mpc', cosmo=cosmo_clmm)
+
+
+.. parsed-literal::
+
+    CPU times: user 402 ms, sys: 4.11 ms, total: 406 ms
+    Wall time: 405 ms
+
+
+There is also the option to create an ``ClusterEnsemble`` object without
+the clusters list. Then, the user may compute the individual profile for
+each wanted cluster and compute the radial profile once all the
+indvidual profiles have been computed. This method may be reccomended if
+there a large number of clusters to avoid excess of memory allocation,
+since the user can generate each cluster separately, compute its
+individual profile and then delete the cluster object.
+
+.. code:: ipython3
+
+    ensemble_id2 = 2
+    empty_cluster_ensemble = ClusterEnsemble(ensemble_id2)
+    for cluster in gclist:
+        empty_cluster_ensemble.make_individual_radial_profile(
+            galaxycluster=cluster, tan_component_in='DS_t', cross_component_in='DS_x', 
+            tan_component_out='DS_t', cross_component_out='DS_x', 
+            weights_in = 'w_ls', weights_out='W_l', 
+            bins=bins, bin_units='Mpc', cosmo=cosmo_clmm)
+
+A third option is where all clusters already have the profile computed,
+and we just add those to the ``ClusterEnsemble`` object:
+
+.. code:: ipython3
+
+    # add profiles to gclist
+    for cluster in gclist:
+        cluster.make_radial_profile(
+            tan_component_in='DS_t', cross_component_in='DS_x', 
+            tan_component_out='DS_t', cross_component_out='DS_x', 
+            weights_in = 'w_ls', weights_out = 'W_l', 
+            bins=bins, bin_units='Mpc', cosmo=cosmo_clmm)
+
+.. code:: ipython3
+
+    ensemble_id3 = 3
+    empty_cluster_ensemble = ClusterEnsemble(ensemble_id3)
+    for cluster in gclist:
+        empty_cluster_ensemble.add_individual_radial_profile(
+            galaxycluster=cluster, profile_table=cluster.profile,
+            tan_component='DS_t', cross_component='DS_x', weights='W_l')
 
 Stacked profile of the cluster ensemble
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -656,13 +705,13 @@ but these are not (yet) available in ``CLMM``
     plt.figure(figsize = (7,7))
     plt.rcParams['axes.linewidth'] = 2
     plt.plot(clusterensemble.data['radius'][0],
-             clusterensemble.sample_tangential_covariance.diagonal()**0.5/1e13,
+             clusterensemble.cov_tan_sv.diagonal()**0.5/1e13,
              '--',c = 'royalblue', label = 'Sample', linewidth = 3)
     plt.plot(clusterensemble.data['radius'][0],
-             clusterensemble.bootstrap_tangential_covariance.diagonal()**0.5/1e13,
+             clusterensemble.cov_tan_bs.diagonal()**0.5/1e13,
              '-s',c = 'g', label = 'Bootstrap', linewidth = 3, markersize = 10)
     plt.plot(clusterensemble.data['radius'][0],
-             clusterensemble.jackknife_tangential_covariance.diagonal()**0.5/1e13,
+             clusterensemble.cov_tan_jk.diagonal()**0.5/1e13,
              c = 'r', label = 'Jackknife', linewidth = 3)
     plt.xlabel('R [Mpc]', fontsize =20)
     plt.ylabel(r'$\sigma_{\Delta\Sigma}\ (\times 10^{13} M_\odot /Mpc^2)$', fontsize =25)
@@ -674,30 +723,33 @@ but these are not (yet) available in ``CLMM``
 
 
 
-.. image:: demo_mock_ensemble_realistic_files/demo_mock_ensemble_realistic_45_0.png
+.. image:: demo_mock_ensemble_realistic_files/demo_mock_ensemble_realistic_50_0.png
 
 
 .. code:: ipython3
 
-    fig, ax = plt.subplots(1,3, figsize =(20, 5))
+    fig, axes = plt.subplots(1,3, figsize =(20, 5))
     plt.rcParams['axes.linewidth'] = 2
     fig.subplots_adjust(wspace=0.15, hspace=0)
-    cov = [clusterensemble.sample_tangential_covariance, 
-           clusterensemble.bootstrap_tangential_covariance,
-           clusterensemble.jackknife_tangential_covariance]
-    maximum = max(clusterensemble.sample_tangential_covariance.flatten())
-    label = ['Stack : Sample', 'Stack : Bootstrap', 'Stack : Jackknife']
-    for i in range(3):
-        ax[i].set_title(label[i], fontsize = 20)
-        ax[i].set_xlabel('radial bin index', fontsize = 18)
-        ax[i].set_ylabel('radial bin index', fontsize = 18)
-        ax[i].tick_params(axis='both', which = 'major', labelsize= 12)
-        im = ax[i].imshow(cov[i], cmap = 'Reds',vmin = 0, vmax = maximum, origin = 'lower')
-        plt.colorbar(im, ax=ax[i])
+    
+    maximum = clusterensemble.cov_tan_sv.max()
+    for ax, cov, label in zip(
+        axes,
+        [clusterensemble.cov_tan_sv, 
+         clusterensemble.cov_tan_bs,
+         clusterensemble.cov_tan_jk],
+        ['Stack : Sample', 'Stack : Bootstrap', 'Stack : Jackknife'],
+    ):
+        ax.set_title(label, fontsize = 20)
+        ax.set_xlabel('radial bin index', fontsize=18)
+        ax.set_ylabel('radial bin index', fontsize=18)
+        ax.tick_params(axis='both', which='major', labelsize=12)
+        im = ax.imshow(cov, cmap = 'Reds', vmin=0, vmax=maximum, origin='lower')
+        plt.colorbar(im, ax=ax)
 
 
 
-.. image:: demo_mock_ensemble_realistic_files/demo_mock_ensemble_realistic_46_0.png
+.. image:: demo_mock_ensemble_realistic_files/demo_mock_ensemble_realistic_51_0.png
 
 
 Visualizing the stacked profiles and corresponding model
@@ -712,7 +764,8 @@ mass, concentration and redshift in the stack (dashed black)
 
     moo = clmm.Modeling(massdef = 'critical', delta_mdef = 200, halo_profile_model = 'nfw')
     moo.set_cosmo(cosmo_clmm)
-    # Average values of mass and concentration of the ensemble to be used below to overplot the model on the stacked profile
+    # Average values of mass and concentration of the ensemble to be used below
+    # to overplot the model on the stacked profile
     moo.set_concentration(conc_list.mean())
     moo.set_mass(cluster_m.mean())
 
@@ -722,8 +775,8 @@ mass, concentration and redshift in the stack (dashed black)
     plt.rcParams['axes.linewidth'] = 2
     fig, axs = plt.subplots(1,2, figsize = (17,6))
     
-    err_gt = clusterensemble.sample_tangential_covariance.diagonal()**0.5/1e13
-    err_gx = clusterensemble.sample_cross_covariance.diagonal()**0.5/1e13
+    err_gt = clusterensemble.cov_tan_sv.diagonal()**0.5/1e13
+    err_gx = clusterensemble.cov_cross_sv.diagonal()**0.5/1e13
     
     axs[0].errorbar(r_stack,gt_stack/1e13, err_gt,markersize = 5, c = 'r', fmt = 'o', capsize = 10, elinewidth = 1, zorder = 1000, alpha = 1, label = 'Stack')
     axs[1].errorbar(r_stack,gx_stack/1e13, err_gx,markersize = 5, c = 'r', fmt = 'o', capsize = 10, elinewidth = 1, zorder = 1000, alpha = 1, label = 'Stack')
@@ -751,11 +804,26 @@ mass, concentration and redshift in the stack (dashed black)
     axs[0].set_title(r'Tangential', fontsize= 20)
     axs[1].set_title(r'Cross', fontsize= 20)
     
+    for ax in axs:
+        ax.minorticks_on()
+        ax.grid(lw=.5)
+        ax.grid(which='minor', lw=.1)
     plt.show()
 
 
 
+.. image:: demo_mock_ensemble_realistic_files/demo_mock_ensemble_realistic_54_0.png
 
-.. image:: demo_mock_ensemble_realistic_files/demo_mock_ensemble_realistic_49_0.png
 
+Saving/Loading ClusterEnsemble
+------------------------------
 
+The ``ClusterEnsemble`` object also have an option for saving/loading:
+
+.. code:: ipython3
+
+    clusterensemble.save('ce.pkl')
+
+.. code:: ipython3
+
+    clusterensemble2 = ClusterEnsemble.load('ce.pkl')

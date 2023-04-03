@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Using the cosmoDC2 catalog &mdash; CLMM 1.5.3 documentation</title>
+  <title>Using the cosmoDC2 catalog &mdash; CLMM 1.7.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -33,7 +33,7 @@
             <a href="../index.html" class="icon icon-home"> CLMM
           </a>
               <div class="version">
-                1.5.3
+                1.7.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -158,7 +158,7 @@ those.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clmm</span><span class="o">.</span><span class="n">__version__</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.5.3&#39;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.7.1&#39;</span>
 </pre></div>
 </div>
 <section id="prepare-a-clmm-galaxycluster-object-from-cosmodc2">
@@ -174,7 +174,7 @@ those.</p>
 <span class="n">cosmo</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">clmm</span><span class="o">.</span><span class="n">cosmology</span><span class="o">.</span><span class="n">ccl</span><span class="o">.</span><span class="n">CCLCosmology</span> <span class="n">at</span> <span class="mh">0x15551391bc50</span><span class="o">&gt;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">clmm</span><span class="o">.</span><span class="n">cosmology</span><span class="o">.</span><span class="n">ccl</span><span class="o">.</span><span class="n">CCLCosmology</span> <span class="n">at</span> <span class="mh">0x155514cc31d0</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 </section>
@@ -195,8 +195,8 @@ those.</p>
 </pre></div>
 </div>
 <div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">There</span> <span class="n">are</span> <span class="mi">4</span> <span class="n">clusters</span> <span class="ow">in</span> <span class="n">this</span> <span class="n">mass</span> <span class="ow">and</span> <span class="n">redshift</span> <span class="nb">range</span>
-<span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">2.01</span> <span class="n">s</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mf">8.35</span> <span class="n">s</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">10.4</span> <span class="n">s</span>
-<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mf">51.5</span> <span class="n">s</span>
+<span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">1.92</span> <span class="n">s</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mf">8.25</span> <span class="n">s</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">10.2</span> <span class="n">s</span>
+<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mf">58.5</span> <span class="n">s</span>
 </pre></div>
 </div>
 </section>
@@ -275,8 +275,8 @@ including intrinsic and shear components.</p>
     <span class="n">filters</span><span class="o">=</span><span class="p">(</span><span class="n">coord_filters</span> <span class="o">+</span> <span class="n">z_filters</span> <span class="o">+</span> <span class="n">mag_filters</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">21.1</span> <span class="n">s</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mf">22.5</span> <span class="n">s</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">43.6</span> <span class="n">s</span>
-<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mi">1</span><span class="nb">min</span> <span class="mi">15</span><span class="n">s</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">20.5</span> <span class="n">s</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mf">18.9</span> <span class="n">s</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">39.4</span> <span class="n">s</span>
+<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mi">1</span><span class="nb">min</span> <span class="mi">26</span><span class="n">s</span>
 </pre></div>
 </div>
 </section>

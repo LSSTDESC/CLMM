@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>clmm.gcdata module &mdash; CLMM 1.5.3 documentation</title>
+  <title>clmm.gcdata module &mdash; CLMM 1.7.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -32,7 +32,7 @@
             <a href="../index.html" class="icon icon-home"> CLMM
           </a>
               <div class="version">
-                1.5.3
+                1.7.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -156,6 +156,37 @@ can only be changed via update_cosmo or update_cosmo_ext_valid methods;</p>
 </dd>
 </dl>
 <dl class="py method">
+<dt class="sig sig-object py" id="clmm.gcdata.GCData.get_pzpdfs">
+<span class="sig-name descname"><span class="pre">get_pzpdfs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/gcdata.html#GCData.get_pzpdfs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.gcdata.GCData.get_pzpdfs" title="Permalink to this definition"></a></dt>
+<dd><p>Get pzbins and pzpdfs of galaxies</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>pzbins</strong> (<em>array</em>) -- zbins of PDF. 1D if <cite>shared_bins</cite>,
+zbins of each object in data if <cite>individual_bins</cite>.</p></li>
+<li><p><strong>pzpdfs</strong> (<em>array</em>) -- PDF of each object in data</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clmm.gcdata.GCData.has_pzpdfs">
+<span class="sig-name descname"><span class="pre">has_pzpdfs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/gcdata.html#GCData.has_pzpdfs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.gcdata.GCData.has_pzpdfs" title="Permalink to this definition"></a></dt>
+<dd><p>Get pzbins and pzpdfs of galaxies</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>pzbins</strong> (<em>array</em>) -- zbins of each object in data</p></li>
+<li><p><strong>pzpdfs</strong> (<em>array</em>) -- PDF of each object in data</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="clmm.gcdata.GCData.update_cosmo">
 <span class="sig-name descname"><span class="pre">update_cosmo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/gcdata.html#GCData.update_cosmo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.gcdata.GCData.update_cosmo" title="Permalink to this definition"></a></dt>
 <dd><p>Updates cosmo metadata if not present</p>
@@ -184,6 +215,25 @@ different.</p></li>
 <li><p><strong>cosmo</strong> (<em>clmm.Cosmology</em>) -- Cosmology</p></li>
 <li><p><strong>overwrite</strong> (<em>bool</em>) -- Overwrites the current cosmo metadata. If false raises Error when cosmologies are
 different.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="clmm.gcdata.GCData.update_info_ext_valid">
+<span class="sig-name descname"><span class="pre">update_info_ext_valid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gcdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ext_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/gcdata.html#GCData.update_info_ext_valid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.gcdata.GCData.update_info_ext_valid" title="Permalink to this definition"></a></dt>
+<dd><p>Updates cosmo metadata if the same as in gcdata</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>str</em>) -- Name of key to compare and update.</p></li>
+<li><p><strong>gcdata</strong> (<a class="reference internal" href="#clmm.gcdata.GCData" title="clmm.gcdata.GCData"><em>GCData</em></a>) -- Table to check if same cosmology.</p></li>
+<li><p><strong>ext_value</strong> -- Value to be compared to.</p></li>
+<li><p><strong>overwrite</strong> (<em>bool</em>) -- Overwrites the current metadata. If false raises Error when values are different.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>

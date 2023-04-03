@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>clmm.theory.cluster_toolkit &mdash; CLMM 1.5.3 documentation</title>
+  <title>clmm.theory.cluster_toolkit &mdash; CLMM 1.7.1 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -29,7 +29,7 @@
             <a href="../../../index.html" class="icon icon-home"> CLMM
           </a>
               <div class="version">
-                1.5.3
+                1.7.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -230,8 +230,8 @@
     <span class="c1"># Functions implemented by child class</span>
 
 
-    <span class="k">def</span> <span class="nf">_set_halo_density_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">,</span> <span class="n">massdef</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;&quot;set halo density profile&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_update_halo_density_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;&quot;updates halo density profile with set internal properties&quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
     <span class="k">def</span> <span class="nf">_get_concentration</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

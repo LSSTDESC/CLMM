@@ -67,7 +67,7 @@ the background probability :math:`P(z > z_l)` for each galaxy
 
 .. parsed-literal::
 
-    '1.5.3'
+    '1.7.1'
 
 
 
@@ -77,7 +77,7 @@ the background probability :math:`P(z > z_l)` for each galaxy
 
 .. code:: ipython3
 
-    cosmo = Cosmology(H0 = 71.0, Omega_dm0 = 0.265 - 0.0448, Omega_b0 = 0.0448, Omega_k0 = 0.0)
+    cosmo = Cosmology(H0=71.0, Omega_dm0=0.265 - 0.0448, Omega_b0=0.0448, Omega_k0=0.0)
 
 .. code:: ipython3
 
@@ -89,36 +89,36 @@ the background probability :math:`P(z > z_l)` for each galaxy
 
 .. code:: ipython3
 
-    noisy_data_z = mock.generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, 
-                                                cosmo, cluster_ra=cluster_ra, cluster_dec=cluster_dec,
-                                                zsrc = 'chang13', 
-                                                delta_so=200, 
-                                                massdef='critical',
-                                                halo_profile_model='nfw', 
-                                                zsrc_min=0.15,
-                                                zsrc_max=3., 
-                                                field_size=10., 
-                                                shapenoise=0.05, 
-                                                photoz_sigma_unscaled=0.05,
-                                                mean_e_err=0.1,
-                                                ngals=3000)
+    noisy_data_z = mock.generate_galaxy_catalog(
+        cluster_m, cluster_z, cluster_c, cosmo,
+        cluster_ra=cluster_ra, cluster_dec=cluster_dec,
+        delta_so=200, massdef='critical', halo_profile_model='nfw', 
+        zsrc='chang13', zsrc_min=0.15, zsrc_max=3., 
+        photoz_sigma_unscaled=0.05,
+        shapenoise=0.05, mean_e_err=0.1,
+        field_size=10., ngals=3000)
     z_gal = noisy_data_z['ztrue']
-    z_gal_photoz = noisy_data_z['pzbins']
-    photoz_pdf_gal = noisy_data_z['pzpdf']
     #add redshift dependency on shape measurement error
     noisy_data_z['e_err'] = noisy_data_z['e_err'] * (1 + 0.4 * noisy_data_z['ztrue'])
     cl0 = GalaxyCluster('mock_cluster', cluster_ra, cluster_dec, cluster_z, noisy_data_z)
-    cl1 = copy.deepcopy(cl0)
-    cl2 = copy.deepcopy(cl0)
-    cl3 = copy.deepcopy(cl0)
-
 
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/theory/func_layer.py:612: UserWarning: Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:785: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:880: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Convergence = 0 for those galaxies.
 
+
+.. code:: ipython3
+
+    args = ('mock_cluster', cluster_ra, cluster_dec, cluster_z, noisy_data_z)
+    cl1 = GalaxyCluster(*args)
+    cl2 = GalaxyCluster(*args)
+    cl3 = GalaxyCluster(*args)
 
 Compute the WL weights
 ----------------------
@@ -134,17 +134,26 @@ redshift point estimate + no shape error
 using the functional interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Here, we use the true source redshifts stored in ``zgal``
+Here, we use the true source redshifts stored in ``z_gal``
 
 .. code:: ipython3
 
     w_ls_true = compute_galaxy_weights(
-        cluster_z, cosmo,z_source = z_gal, 
-        shape_component1 = noisy_data_z['e1'], shape_component2 = noisy_data_z['e2'], 
-        shape_component1_err = noisy_data_z['e_err'],
-        shape_component2_err = noisy_data_z['e_err'], 
-        use_pdz=False, pzpdf = None, pzbins = None,
-        use_shape_noise = False, is_deltasigma = True)
+        cluster_z, cosmo,z_source=z_gal, 
+        shape_component1=noisy_data_z['e1'],
+        shape_component2=noisy_data_z['e2'], 
+        shape_component1_err=noisy_data_z['e_err'],
+        shape_component2_err=noisy_data_z['e_err'], 
+        use_pdz=False, pzpdf=None, pzbins=None,
+        use_shape_noise=False, is_deltasigma=True)
+
+
+.. parsed-literal::
+
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/cosmology/parent_class.py:435: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Sigma_crit = np.inf for those galaxies.
+
 
 or as a method of the ``GalaxyCluster`` object
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -157,8 +166,16 @@ redshift used in the cell above.
 
 .. code:: ipython3
 
-    w_ls_point = cl0.compute_galaxy_weights(use_pdz = False, weight_name = 'w_ls_point', 
-                                            cosmo = cosmo, is_deltasigma = True, add = True)
+    w_ls_point = cl0.compute_galaxy_weights(use_pdz=False, weight_name='w_ls_point', 
+                                            cosmo=cosmo, is_deltasigma=True, add=True)
+
+
+.. parsed-literal::
+
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/cosmology/parent_class.py:435: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Sigma_crit = np.inf for those galaxies.
+
 
 photoz + no shape errors
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -175,8 +192,8 @@ an error if those do not exist.
 
 .. code:: ipython3
 
-    w_ls_photoz = cl1.compute_galaxy_weights(use_pdz = True, weight_name = 'w_ls_photoz', 
-                                             cosmo = cosmo, is_deltasigma = True, add = True)
+    w_ls_photoz = cl1.compute_galaxy_weights(use_pdz=True, weight_name='w_ls_photoz', 
+                                             cosmo=cosmo, is_deltasigma=True, add=True)
 
 redshift point estimate + shape error
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -188,11 +205,12 @@ redshift point estimate + shape error
 
 .. code:: ipython3
 
-    w_ls_shape = cl2.compute_galaxy_weights(use_pdz = False, 
-                                            use_shape_noise = True, shape_component1 = 'e1', shape_component2 = 'e2', 
-                                            use_shape_error = True, shape_component1_err = 'e_err', shape_component2_err = 'e_err', 
-                                            weight_name = 'w_ls_shape', cosmo = cosmo,
-                                            is_deltasigma = True, add = True)
+    w_ls_shape = cl2.compute_galaxy_weights(
+        use_pdz=False, 
+        use_shape_noise=True, shape_component1='e1', shape_component2='e2', 
+        use_shape_error=True, shape_component1_err='e_err', shape_component2_err='e_err', 
+        weight_name='w_ls_shape', cosmo=cosmo,
+        is_deltasigma=True, add=True)
 
 photoz + shape error
 ~~~~~~~~~~~~~~~~~~~~
@@ -204,11 +222,12 @@ photoz + shape error
 
 .. code:: ipython3
 
-    w_ls_photoz_shape = cl3.compute_galaxy_weights(use_pdz = True, 
-                                            use_shape_noise = True, shape_component1 = 'e1', shape_component2 = 'e2', 
-                                            use_shape_error = True, shape_component1_err = 'e_err', shape_component2_err = 'e_err', 
-                                            weight_name = 'w_ls_photoz_shape', cosmo = cosmo,
-                                            is_deltasigma = True, add = True)
+    w_ls_photoz_shape = cl3.compute_galaxy_weights(
+        use_pdz=True, 
+        use_shape_noise=True, shape_component1='e1', shape_component2='e2', 
+        use_shape_error=True, shape_component1_err='e_err', shape_component2_err='e_err', 
+        weight_name='w_ls_photoz_shape', cosmo=cosmo,
+        is_deltasigma=True, add=True)
 
 With ``add=True``, the weights have been added as new columns in the
 ``cl.galcat`` Table. A new ``sigma_c`` column is also automatically
@@ -216,18 +235,28 @@ added.
 
 .. code:: ipython3
 
-    print(cl0.galcat.columns)
-    print(cl1.galcat.columns)
-    print(cl2.galcat.columns)
-    print(cl3.galcat.columns)
+    cl0.galcat.colnames
+
+
 
 
 .. parsed-literal::
 
-    <TableColumns names=('ra','dec','e1','e2','e_err','z','ztrue','pzbins','pzpdf','id','sigma_c','w_ls_point')>
-    <TableColumns names=('ra','dec','e1','e2','e_err','z','ztrue','pzbins','pzpdf','id','sigma_c','w_ls_photoz')>
-    <TableColumns names=('ra','dec','e1','e2','e_err','z','ztrue','pzbins','pzpdf','id','sigma_c','w_ls_shape')>
-    <TableColumns names=('ra','dec','e1','e2','e_err','z','ztrue','pzbins','pzpdf','id','sigma_c','w_ls_photoz_shape')>
+    ['ra',
+     'dec',
+     'e1',
+     'e2',
+     'e_err',
+     'z',
+     'ztrue',
+     'pzpdf',
+     'id',
+     'sigma_c',
+     'w_ls_point',
+     'w_ls_photoz',
+     'w_ls_shape',
+     'w_ls_photoz_shape']
+
 
 
 :math:`\Sigma_c` metadata
@@ -236,7 +265,7 @@ added.
 As seen above, the weights are computed either using the standard
 definition of :math:`\Sigma_c^{\rm std}`, using point estimate redshift,
 or the effective definition based on the inverse
-:math:`\Sigma_c^{\rm eff}` averaged over the redshift pdf :math:`p(z)`:
+:math:`\Sigma_c^{\rm eff}` averaged over the redshift PDF :math:`p(z)`:
 
 .. math::
 
@@ -256,7 +285,7 @@ metadata
 .. parsed-literal::
 
     For cluster 0: standard
-    For cluster 1: effective
+    For cluster 1: standard
 
 
 Vizualizing the results
@@ -297,7 +326,7 @@ The figure below shows the normalized weight per galaxy
 
 
 
-.. image:: demo_compute_deltasigma_weights_files/demo_compute_deltasigma_weights_27_1.png
+.. image:: demo_compute_deltasigma_weights_files/demo_compute_deltasigma_weights_28_1.png
 
 
 -  The galaxy weights increase with the true galaxy redshift (left
@@ -338,73 +367,102 @@ background of the cluster is given by
 .. code:: ipython3
 
     # Generate new GC object with smaller photoz dispersion for comparison with cl0.
-    noisy_data_z_2 = mock.generate_galaxy_catalog(1e14, cluster_z, 4, 
-                                                    cosmo, 
-                                                    zsrc = 'chang13', 
-                                                    delta_so=200, 
-                                                    massdef='critical',
-                                                    halo_profile_model='nfw', 
-                                                    zsrc_min=0.1,
-                                                    zsrc_max=3., 
-                                                    field_size=10., 
-                                                    shapenoise=0.05, 
-                                                    photoz_sigma_unscaled=0.02,
-                                                    mean_e_err=0.1,
-                                                    ngals=3000)
+    noisy_data_z_2 = mock.generate_galaxy_catalog(
+        1e14, cluster_z, 4, cosmo,
+        delta_so=200, massdef='critical', halo_profile_model='nfw', 
+        zsrc = 'chang13', zsrc_min=0.1, zsrc_max=3., 
+        photoz_sigma_unscaled=0.02,
+        shapenoise=0.05, mean_e_err=0.1,
+        field_size=10., ngals=3000)
     cl0_new = clmm.GalaxyCluster('mock_cluster', 0, 0, cluster_z, noisy_data_z_2)
 
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/utils.py:644: UserWarning: Some source redshifts are lower than the cluster redshift. Returning Sigma_crit = np.inf for those galaxies.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.5.3-py3.11.egg/clmm/theory/func_layer.py:612: UserWarning: Some source redshifts are lower than the cluster redshift. kappa = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:785: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Shear = 0 for those galaxies.
+    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/parent_class.py:880: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Convergence = 0 for those galaxies.
 
 
 .. code:: ipython3
 
-    p_background_true = compute_background_probability(cluster_z,z_gal) #based on cl0 generation
+    p_background_true = compute_background_probability(cluster_z, z_gal) #based on cl0 generation
 
 .. code:: ipython3
 
-    p_background_photoz_1 = cl0.compute_background_probability(use_pdz=True, p_background_name='p_background_photoz_1',add=True)
+    p_background_photoz_1 = cl0.compute_background_probability(
+        use_pdz=True, p_background_name='p_background_photoz_1', add=True)
 
 .. code:: ipython3
 
-    p_background_photoz_2 = cl0_new.compute_background_probability(use_pdz=True, p_background_name='p_background_photoz_2',add=True)
+    p_background_photoz_2 = cl0_new.compute_background_probability(
+        use_pdz=True, p_background_name='p_background_photoz_2',add=True)
 
 .. code:: ipython3
 
     #plt.rcParams['axes.linewidth'] = 1
-    plt.figure( figsize = (7,5))
-    plt.tick_params(axis='both', which = 'major', labelsize= 10)
-    plt.scatter(cl0_new.galcat['ztrue'], p_background_photoz_2, c='darkorange', label = r'$\sigma_z = 0.02$',marker='x', s=10, alpha=0.5)
-    plt.scatter(cl0.galcat['ztrue'], p_background_photoz_1, c='blue', label = r'$\sigma_z = 0.05$', marker='+', s=10, alpha=0.5)
-    plt.scatter(z_gal, p_background_true, c='green', s = 3, zorder = 110, label='True z')
+    fig = plt.figure(figsize=(8, 5))
+    
+    plt.tick_params(axis='both', which='major', labelsize=10)
+    plt.scatter(cl0_new.galcat['ztrue'], p_background_photoz_2,
+                c='darkorange', label = r'$\sigma_z = 0.02$',
+                marker='x', s=10, alpha=0.5)
+    plt.scatter(cl0.galcat['ztrue'], p_background_photoz_1,
+                c='blue', label = r'$\sigma_z = 0.05$',
+                marker='+', s=10, alpha=0.5)
+    plt.scatter(z_gal, p_background_true, c='green',
+                s=3, zorder=110, label='True z')
+        
     plt.vlines(cluster_z, -0.1,1.1, color='k', linestyle=':')
     plt.xlim([0., 1])
     plt.ylim([-0.1, 1.1])
-    plt.legend(frameon = True, fontsize = 15)
-    plt.ylabel(r'$P(z_s > z_l)$', fontsize = 15)
-    plt.xlabel('true source redshift', fontsize = 15)
+    
+    plt.xlabel('true source redshift', fontsize=15)
+    plt.ylabel(r'$P(z_s > z_l)$', fontsize=15)
+    plt.legend(frameon=True, fontsize=15)
+    
+    
+    ax2 = fig.add_axes([.155, .65, .17, .18])
+    ax2.scatter(cl0_new.galcat['z'], p_background_photoz_2,
+                c='darkorange', label = r'$\sigma_z = 0.02$',
+                marker='x', s=1, alpha=0.5, lw=.1)
+    ax2.scatter(cl0.galcat['z'], p_background_photoz_1,
+                c='blue', label = r'$\sigma_z = 0.05$',
+                marker='+', s=1, alpha=0.5, lw=.1)
+    for item in (
+        ax2.title, ax2.xaxis.label, ax2.yaxis.label,
+        *ax2.get_xticklabels(), *ax2.get_yticklabels()):
+        item.set_fontsize(5)
+    ax2.set_yticklabels([])
+    ax2.vlines(cluster_z, -0.1,1.1, color='k', linestyle=':')
+    ax2.set_xlim([0., 1])
+    ax2.set_ylim([-0.1, 1.1])
+    ax2.set_xlabel('obs. source redshift', fontsize=10)
 
 
 
 
 .. parsed-literal::
 
-    Text(0.5, 0, 'true source redshift')
+    Text(0.5, 0, 'obs. source redshift')
 
 
 
 
-.. image:: demo_compute_deltasigma_weights_files/demo_compute_deltasigma_weights_35_1.png
+.. image:: demo_compute_deltasigma_weights_files/demo_compute_deltasigma_weights_36_1.png
 
 
 The figure above shows the background probability :math:`P(z > z_l)` for
 each galaxy. - When using true redshift (green), the background
 probability is a Heavyside function centered on :math:`z_s`,
-i.e. :math:`p(z) = \delta^D(z-z_s)`. - when using photometric redshift
+i.e. :math:`p(z) = \delta^D(z-z_s)`. - When using photometric redshift
 (blue and orange dots), galaxies on the foreground of the cluster have
 non-zero probability to be in the background. Idem, for close galaxies
 in the background, the probability in being in the foreground is
-non-zero.
+non-zero. - These weights represent the fraction of the galaxy PDF that
+is located behind the cluster and is mapped to the observed redshift as
+it can be seen on the top left panel. The scatter in the main panel
+comes from the scatter between true and observed redshifts.

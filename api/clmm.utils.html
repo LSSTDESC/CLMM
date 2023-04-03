@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>clmm.utils module &mdash; CLMM 1.5.3 documentation</title>
+  <title>clmm.utils module &mdash; CLMM 1.7.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -33,7 +33,7 @@
             <a href="../index.html" class="icon icon-home"> CLMM
           </a>
               <div class="version">
-                1.5.3
+                1.7.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -353,7 +353,7 @@ Default: None</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="clmm.utils.compute_for_good_redshifts">
-<span class="sig-prename descclassname"><span class="pre">clmm.utils.</span></span><span class="sig-name descname"><span class="pre">compute_for_good_redshifts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bad_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#compute_for_good_redshifts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.compute_for_good_redshifts" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">clmm.utils.</span></span><span class="sig-name descname"><span class="pre">compute_for_good_redshifts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bad_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warning_message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z1_arg_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'z1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z2_arg_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'z2'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_proj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#compute_for_good_redshifts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.compute_for_good_redshifts" title="Permalink to this definition"></a></dt>
 <dd><p>Computes function only for <cite>z1</cite> &lt; <cite>z2</cite>, the rest is filled with <cite>bad_value</cite></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -361,9 +361,18 @@ Default: None</p></li>
 <li><p><strong>function</strong> (<em>function</em>) -- Function to be executed</p></li>
 <li><p><strong>z1</strong> (<em>float</em><em>, </em><em>array_like</em>) -- Redshift lower</p></li>
 <li><p><strong>z2</strong> (<em>float</em><em>, </em><em>array_like</em>) -- Redshift higher</p></li>
-<li><p><strong>bad_value</strong> (<em>any</em>) -- Value to be added when z1&gt;=z2</p></li>
-<li><p><strong>error_message</strong> (<em>str</em>) -- Message to be displayed</p></li>
+<li><p><strong>bad_value</strong> (<em>any</em>) -- Value to fill when <cite>z1</cite> &gt;= <cite>z2</cite></p></li>
+<li><p><strong>warning_message</strong> (<em>str</em>) -- Warning message to be displayed when <cite>z1</cite> &gt;= <cite>z2</cite></p></li>
+<li><p><strong>z1_arg_name</strong> (<em>str</em><em>, </em><em>optional</em>) -- Name of the keyword argument that <cite>z1</cite> is passed to. Default: 'z1'</p></li>
+<li><p><strong>z2_arg_name</strong> (<em>str</em><em>, </em><em>optional</em>) -- Name of the keyword argument that <cite>z2</cite> is passed to. Default: 'z2'</p></li>
+<li><p><strong>r_proj</strong> (<em>float</em><em>, </em><em>array_like</em><em>, </em><em>optional</em>) -- Value to be passed to keyword argument <cite>r_proj</cite> of <cite>function</cite>. Default: None</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Output of <cite>function</cite> with value for <cite>z1</cite> &gt;= <cite>z2</cite> replaced by <cite>bad_value</cite></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Return type of <cite>function</cite></p>
 </dd>
 </dl>
 </dd></dl>
@@ -476,6 +485,7 @@ contain non-finite values, these are filtered.</p>
 <li><p><strong>binnumber</strong> (<em>1-D ndarray of ints</em>) -- Indices of the bins (corresponding to <cite>xbins</cite>) in which each value
 of <cite>xvals</cite> belongs.  Same length as <cite>yvals</cite>.  A binnumber of <cite>i</cite> means the
 corresponding value is between (xbins[i-1], xbins[i]).</p></li>
+<li><p><strong>wts_sum</strong> (<em>numpy.ndarray</em>) -- Sum of individual weights in each bin.</p></li>
 </ul>
 </p>
 </dd>
@@ -594,6 +604,27 @@ convert between physical and angular units. Default: None</p></li>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>sigma_corrected</strong> -- correted radial profile</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clmm.utils.gaussian">
+<span class="sig-prename descclassname"><span class="pre">clmm.utils.</span></span><span class="sig-name descname"><span class="pre">gaussian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scatter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils.html#gaussian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.gaussian" title="Permalink to this definition"></a></dt>
+<dd><p>Normal distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> (<em>array-like</em>) -- Values for which to evaluate gaussian.</p></li>
+<li><p><strong>mean</strong> (<em>float</em>) -- Mean value of normal distribution</p></li>
+<li><p><strong>scatter</strong> (<em>float</em>) -- Scatter of normal distribution</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Gaussian values at <cite>value</cite></p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>numpy.ndarray</p>
