@@ -14,16 +14,23 @@ def test_base(monkeypatch):
     # no backends available
     monkeypatch.setenv("CLMM_MODELING_BACKEND", "notabackend")
     clmm.theory.be_setup.__backends = {
-              'notabackend': {'name': 'notaname', 'available': False,
-                              'module': 'be_setup',
-                              'prereqs': ['notaprerq']},
-              # This calls the warning "BACKEND also not available"
-              'notabackend2': {'name': 'notaname', 'available': False,
-                              'module': 'be_setup',
-                              'prereqs': ['notaprerq']}}
+        'notabackend': {
+            'name': 'notaname',
+            'available': False,
+            'module': 'be_setup',
+            'prereqs': ["notaprereq"],
+                              },
+        # This calls the warning "BACKEND also not available"
+        'notabackend2': {
+            'name': 'notaname',
+            'available': False,
+            'module': 'be_setup',
+            'prereqs': ["notaprereq"],
+            },
+        }
     assert_raises(ImportError, importlib.reload, clmm.theory)
     # broken backend
-    clmm.theory.be_setup.__backends['notabackend']['available'] = True
+    clmm.theory.be_setup.__backends['notabackend']['prereqs'] = []
 
     monkeypatch.setenv("CLMM_MODELING_BACKEND", "notabackend2")
     importlib.reload(clmm.theory)

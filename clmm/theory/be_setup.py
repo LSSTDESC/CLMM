@@ -46,6 +46,6 @@ __backends = {
         "name": "notaname",
         "available": False,
         "module": "notamodule",
-        "prereqs": ["notaprerq"],
+        "prereqs": ["notaprereq"],
     },
 }

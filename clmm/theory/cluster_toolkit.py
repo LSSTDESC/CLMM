@@ -100,6 +100,7 @@ class CTModeling(CLMModeling):
 
     def _update_halo_density_profile(self):
         """ "updates halo density profile with set internal properties"""
+        # pylint: disable=unnecessary-pass
         pass
 
     def _get_concentration(self):

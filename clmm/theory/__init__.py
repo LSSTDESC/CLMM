@@ -6,7 +6,8 @@ Theory package
 import importlib
 import warnings
 import os
-from clmm.theory import be_setup
+from . import be_setup
+from . import func_layer
 
 #  Backend check:
 #    Checks all backends and set available to True for those that can be
@@ -56,7 +57,6 @@ else:
 __all__ = backend.__all__
 globals().update({k: getattr(backend, k) for k in backend.__all__})
 
-from . import func_layer
 
 try:
     func_layer.gcm = Modeling()
