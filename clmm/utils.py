@@ -1095,6 +1095,7 @@ def _validate_ra(loc, ra_name, is_array):
     v_type = "float_array" if is_array else (float, str)
     validate_argument(loc, ra_name, v_type, argmin=-360, eqmin=True, argmax=360, eqmax=True)
 
+
 def _validate_dec(loc, dec_name, is_array):
     r"""Validate DEC type and raise errors.
 

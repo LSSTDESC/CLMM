@@ -16,8 +16,9 @@ from .utils import (
     validate_argument,
     _validate_ra,
     _validate_dec,
-    _draw_random_points_from_tab_distribution
+    _draw_random_points_from_tab_distribution,
 )
+
 
 class GalaxyCluster:
     """Object that contains the galaxy cluster metadata and background galaxy data

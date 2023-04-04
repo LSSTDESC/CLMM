@@ -30,6 +30,7 @@ from ..utils import (
 
 warnings.filterwarnings("always", module="(clmm).*")
 
+
 class CLMModeling:
     r"""Object with functions for halo mass modeling
 

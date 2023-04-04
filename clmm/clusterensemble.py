@@ -35,6 +35,7 @@ class ClusterEnsemble:
     cov_cross_jk : array, None
         Covariance matrix of the cross component computed with jackknife
     """
+
     def __init__(self, unique_id, gc_list=None, **kwargs):
         """Initializes a ClusterEnsemble object
         Parameters
