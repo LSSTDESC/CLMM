@@ -9,13 +9,13 @@ def test_base(monkeypatch):
 
     # safekeep original code that will be monkeypatched in these tests
     Modeling_safe = clmm.theory.Modeling
-    backends_safe = clmm.theory.be_setup.__backends
+    backends_safe = clmm.theory.__backends
     # Unknown backend required
     monkeypatch.setenv("CLMM_MODELING_BACKEND", "not_available_be")
     assert_raises(ValueError, importlib.reload, clmm.theory)
     # no backends available
     monkeypatch.setenv("CLMM_MODELING_BACKEND", "notabackend")
-    clmm.theory.be_setup.__backends = {
+    clmm.theory.__backends = {
         "notabackend": {
             "name": "notaname",
             "available": False,
@@ -32,7 +32,7 @@ def test_base(monkeypatch):
     }
     assert_raises(ImportError, importlib.reload, clmm.theory)
     # broken backend
-    clmm.theory.be_setup.__backends["notabackend"]["prereqs"] = []
+    clmm.theory.__backends["notabackend"]["prereqs"] = []
 
     monkeypatch.setenv("CLMM_MODELING_BACKEND", "notabackend2")
     importlib.reload(clmm.theory)
@@ -47,4 +47,4 @@ def test_base(monkeypatch):
     assert clmm.theory.func_layer.gcm is None
     # restore original code that will be monkeypatched here
     clmm.theory.Modeling = Modeling_safe
-    clmm.theory.be_setup.__backends = backends_safe
+    clmm.theory.__backends = backends_safe

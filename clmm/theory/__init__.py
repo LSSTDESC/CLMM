@@ -6,66 +6,135 @@ Theory package
 import importlib
 import warnings
 import os
-from . import be_setup
 from . import func_layer
+
+# Functions that do the loading of different backends
+
+
+def backend_is_available(be_key):
+    """Check if required backend is available"""
+    conf = __backends.get(be_key)
+    if not conf:
+        return False
+    try:
+        if "preload" in conf:
+            conf["preload"]()
+        for module in conf["prereqs"]:
+            importlib.import_module(module)
+        return True
+    except ImportError:
+        return False
+
+
+def _load_one_backend(be_module):
+    """Loads one backend module
+
+    Parameters
+    ----------
+    be_module : str
+        Name of backend module
+    """
+    backend = importlib.import_module(f"clmm.theory.{be_module}")
+
+    #  Imports all backend symbols:
+    globals().update({k: getattr(backend, k) for k in backend.__all__})
+
+    try:
+        # pylint: disable=undefined-variable
+        func_layer.gcm = Modeling()
+    except NotImplementedError:
+        func_layer.gcm = None
+
+
+def load_backend(be_key):
+    """Loads the backend of choice if available or send a warning and try to load
+    the backends in the order of the __backends dictionary.
+
+
+    Parameters
+    ----------
+    be_key : str
+        Key for the selected backend in the __backends dictionary.
+    """
+    conf = __backends[be_key]
+    if conf["available"]:
+        _load_one_backend(conf["module"])
+        return be_key
+    warnings.warn(f"CLMM Backend requested '{conf['name']}' is not available, trying others...")
+    print(f"CLMM Backend requested '{conf['name']}' is not available, trying others...")
+    for be_key2, conf in __backends.items():
+        if conf["available"]:
+            _load_one_backend(conf["module"])
+            warnings.warn(f"* USING {conf['name']} BACKEND")
+            return be_key2
+        if be_key2 != be_key:
+            warnings.warn(f"* {conf['name']} BACKEND also not available")
+    raise ImportError("No modeling backend available.")
+
+
+##########################
+# Prepare the code backend
+##########################
+
+#  Preload functions:
+#    Some backends depend on more complicated modules and thus on a preload
+#    function.
+
+
+def __numcosmo_preload():
+    # pylint: disable=import-outside-toplevel
+    import gi
+
+    gi.require_version("NumCosmoMath", "1.0")
+    gi.require_version("NumCosmo", "1.0")
+
+
+#  Backend dictionary __backends:
+#    Dictonary controling the backends, it must test if the backend is available
+#    and loadable.
+#    - name: The backend name;
+#    - module: The actual module name, must be a .py file inside the modbackend
+#      directory;
+#    - prereqs: modules that need to be loadable to allow the backend to work;
+#    - preload: an optional function that must be called before the modules in
+#      prereqs are tested;
+#    - available: must always starts False;
+
+__backends = {
+    "ccl": {"name": "ccl", "available": False, "module": "ccl", "prereqs": ["pyccl"]},
+    "nc": {
+        "name": "NumCosmo",
+        "available": False,
+        "module": "numcosmo",
+        "prereqs": ["gi.repository.NumCosmoMath", "gi.repository.NumCosmo"],
+        "preload": __numcosmo_preload,
+    },
+    "ct": {
+        "name": "cluster_toolkit+astropy",
+        "available": False,
+        "module": "cluster_toolkit",
+        "prereqs": ["cluster_toolkit", "astropy"],
+    },
+    "notabackend": {
+        "name": "notaname",
+        "available": False,
+        "module": "notamodule",
+        "prereqs": ["notaprereq"],
+    },
+}
 
 #  Backend check:
 #    Checks all backends and set available to True for those that can be
 #    corretly loaded.
-for _, be in be_setup.__backends.items():
-    try:
-        if "preload" in be:
-            be["preload"]()
-        for module in be["prereqs"]:
-            importlib.import_module(module)
-        be["available"] = True
-    except:
-        pass
+for nick, be_conf in __backends.items():
+    be_conf["available"] = backend_is_available(nick)
 
 #  Backend nick:
 #    If the environment variable CLMM_MODELING_BACKEND is set it gets its value,
-#    falls back to 'ct' => cluster_toolkit if CLMM_MODELING_BACKEND is not set.
-be_nick = os.environ.get("CLMM_MODELING_BACKEND", "ccl")
-if be_nick not in be_setup.__backends:
-    raise ValueError("CLMM Backend `%s' is not supported" % (be_nick))
-be_conf = be_setup.__backends[be_nick]
+#    falls back to 'ccl' => CCL if CLMM_MODELING_BACKEND is not set.
+be_nick_env = os.environ.get("CLMM_MODELING_BACKEND", "ccl")
+if be_nick_env not in __backends:
+    raise ValueError(f"CLMM Backend {be_nick_env}'' is not supported")
 
 #  Backend load:
-#  Loads the backend of choice if available or send a warning and try to load
-#  the backends in the order of the dictionary above.
-if be_conf["available"]:
-    backend = importlib.import_module("clmm.theory." + be_conf["module"])
-else:
-    warnings.warn(f"CLMM Backend requested `{be_conf['name']}' is not available, trying others...")
-    LOADED = False
-    be_nick0 = be_nick
-    for be_nick, be_conf in be_setup.__backends.items():
-        if be_conf["available"]:
-            backend = importlib.import_module("clmm.theory." + be_conf["module"])
-            LOADED = True
-            warnings.warn(f"* USING {be_conf['name']} BACKEND")
-            break
-        if be_nick != be_nick0:
-            warnings.warn(f"* {be_conf['name']} BACKEND also not available")
-    if not LOADED:
-        raise ImportError("No modeling backend available.")
-
-#  Import all backend symbols:
-#    Updates __all__ with the exported symbols from the backend and
-#    import all symbols in the current namespace.
-
-__all__ = backend.__all__
-globals().update({k: getattr(backend, k) for k in backend.__all__})
-
-
-try:
-    func_layer.gcm = Modeling()
-except NotImplementedError:
-    func_layer.gcm = None
-
-
-def backend_is_available(be1):
-    """Check if required backend is available"""
-    if not be1 in be_setup.__backends:
-        raise ValueError("CLMM Backend `%s' is not supported" % (be1))
-    return be_setup.__backends[be1]["available"]
+be_nick = load_backend(be_nick_env)
