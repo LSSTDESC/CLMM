@@ -26,7 +26,7 @@ def backend_is_available(be_key):
         return False
 
 
-def _load_one_backend(be_module):
+def _load_backend(be_module):
     """Loads one backend module
 
     Parameters
@@ -46,7 +46,35 @@ def _load_one_backend(be_module):
         func_layer.gcm = None
 
 
-def load_backend(be_key):
+def _load_backend_fallback(be_key, backends_config):
+    """Loads the backend of choice if available or send a warning and try to load
+    the backends in the order of the __backends dictionary.
+
+
+    Parameters
+    ----------
+    be_key : str
+        Key for the selected backend in the __backends dictionary.
+    backends_config : dict
+        Dictionary with the configuration to load backends.
+    """
+    conf = backends_config[be_key]
+    if conf["available"]:
+        _load_backend(conf["module"])
+        return be_key
+    warnings.warn(f"CLMM Backend requested '{conf['name']}' is not available, trying others...")
+    print(f"CLMM Backend requested '{conf['name']}' is not available, trying others...")
+    for be_key2, conf in backends_config.items():
+        if conf["available"]:
+            _load_backend(conf["module"])
+            warnings.warn(f"* USING {conf['name']} BACKEND")
+            return be_key2
+        if be_key2 != be_key:
+            warnings.warn(f"* {conf['name']} BACKEND also not available")
+    raise ImportError("No modeling backend available.")
+
+
+def load_backend_env(backends_config=None):
     """Loads the backend of choice if available or send a warning and try to load
     the backends in the order of the __backends dictionary.
 
@@ -56,20 +84,24 @@ def load_backend(be_key):
     be_key : str
         Key for the selected backend in the __backends dictionary.
     """
-    conf = __backends[be_key]
-    if conf["available"]:
-        _load_one_backend(conf["module"])
-        return be_key
-    warnings.warn(f"CLMM Backend requested '{conf['name']}' is not available, trying others...")
-    print(f"CLMM Backend requested '{conf['name']}' is not available, trying others...")
-    for be_key2, conf in __backends.items():
-        if conf["available"]:
-            _load_one_backend(conf["module"])
-            warnings.warn(f"* USING {conf['name']} BACKEND")
-            return be_key2
-        if be_key2 != be_key:
-            warnings.warn(f"* {conf['name']} BACKEND also not available")
-    raise ImportError("No modeling backend available.")
+    if backends_config is None:
+        backends_config = __backends
+
+    #  Backend check:
+    #    Checks all backends and set available to True for those that can be
+    #    corretly loaded.
+    for nick, be_conf in backends_config.items():
+        be_conf["available"] = backend_is_available(nick)
+
+    #  Backend nick:
+    #    If the environment variable CLMM_MODELING_BACKEND is set it gets its value,
+    #    falls back to 'ccl' => CCL if CLMM_MODELING_BACKEND is not set.
+    be_nick_env = os.environ.get("CLMM_MODELING_BACKEND", "ccl")
+    if be_nick_env not in backends_config:
+        raise ValueError(f"CLMM Backend {be_nick_env}'' is not supported")
+
+    #  Backend load:
+    return _load_backend_fallback(be_nick_env, backends_config)
 
 
 ##########################
@@ -123,18 +155,4 @@ __backends = {
     },
 }
 
-#  Backend check:
-#    Checks all backends and set available to True for those that can be
-#    corretly loaded.
-for nick, be_conf in __backends.items():
-    be_conf["available"] = backend_is_available(nick)
-
-#  Backend nick:
-#    If the environment variable CLMM_MODELING_BACKEND is set it gets its value,
-#    falls back to 'ccl' => CCL if CLMM_MODELING_BACKEND is not set.
-be_nick_env = os.environ.get("CLMM_MODELING_BACKEND", "ccl")
-if be_nick_env not in __backends:
-    raise ValueError(f"CLMM Backend {be_nick_env}'' is not supported")
-
-#  Backend load:
-be_nick = load_backend(be_nick_env)
+be_nick = load_backend_env()
