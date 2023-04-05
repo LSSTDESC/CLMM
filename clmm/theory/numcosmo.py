@@ -44,6 +44,7 @@ class NumCosmoCLMModeling(CLMModeling):
         Dictionary with the definitions for profile
     """
     # pylint: disable=too-many-instance-attributes
+    # pylint: disable=abstract-method
 
     def __init__(
         self,
@@ -164,12 +165,12 @@ class NumCosmoCLMModeling(CLMModeling):
                 self.hdpm, self.cosmo.be_cosmo, r_proj, z_cl
             )
         )
-        self._eval_tangential_shear = np.vectorize(
+        self._eval_tangential_shear_core = np.vectorize(
             lambda r_proj, z_cl, z_src: self.cosmo.smd.shear(
                 self.hdpm, self.cosmo.be_cosmo, r_proj, z_src, z_cl, z_cl
             )
         )
-        self._eval_convergence = np.vectorize(
+        self._eval_convergence_core = np.vectorize(
             lambda r_proj, z_cl, z_src: self.cosmo.smd.convergence(
                 self.hdpm, self.cosmo.be_cosmo, r_proj, z_src, z_cl, z_cl
             )
