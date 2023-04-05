@@ -55,6 +55,7 @@ class NumCosmoCosmology(CLMMCosmology):
         assert isinstance(be_cosmo, Nc.HICosmoDECpl)
         assert isinstance(be_cosmo.peek_reparam(), Nc.HICosmoDEReparamOk)
         self.be_cosmo = be_cosmo
+        self._update_vec_funcs()
 
     def _init_from_params(self, H0, Omega_b0, Omega_dm0, Omega_k0):
         # pylint: disable=arguments-differ
@@ -75,6 +76,7 @@ class NumCosmoCosmology(CLMMCosmology):
         )
 
         self.be_cosmo.param_set_by_name("ENnu", ENnu)
+        self._update_vec_funcs()
 
     def _set_param(self, key, value):
         if key == "Omega_b0":
@@ -89,6 +91,7 @@ class NumCosmoCosmology(CLMMCosmology):
             self.be_cosmo.param_set_by_name("H0", value)
         else:
             raise ValueError(f"Unsupported parameter {key}")
+        self._update_vec_funcs()
 
     def _get_param(self, key):
         if key == "Omega_m0":
@@ -116,11 +119,19 @@ class NumCosmoCosmology(CLMMCosmology):
     def _get_Omega_m(self, z):
         return self._get_E2Omega_m(z) / self._get_E2(z)
 
-    def _get_E2(self, z):
-        return np.vectorize(self.be_cosmo.E2)(z)
+    def _update_vec_funcs(self):
+        """Update all functions that are vectorized"""
 
-    def _get_E2Omega_m(self, z):
-        return np.vectorize(self.be_cosmo.E2Omega_m)(z)
+        self._get_E2 = np.vectorize(self.be_cosmo.E2)
+        self._get_E2Omega_m = np.vectorize(self.be_cosmo.E2Omega_m)
+        self._eval_da_z1z2_core = np.vectorize(
+            lambda z1, z2: (
+                self.dist.angular_diameter_z1_z2(self.be_cosmo, z1, z2) * self.be_cosmo.RH_Mpc()
+            )
+        )
+        self._eval_sigma_crit_core = np.vectorize(
+            lambda z_len, z_src: (self.smd.sigma_critical(self.be_cosmo, z_src, z_len, z_len))
+        )
 
     def _get_rho_c(self, z):
         return (
@@ -138,18 +149,6 @@ class NumCosmoCosmology(CLMMCosmology):
             * self._get_param("h")
         )
         return rho_m
-
-    def _eval_da_z1z2_core(self, z1, z2):
-        return (
-            np.vectorize(self.dist.angular_diameter_z1_z2)(self.be_cosmo, z1, z2)
-            * self.be_cosmo.RH_Mpc()
-        )
-
-    def _eval_sigma_crit_core(self, z_len, z_src):
-        self.smd.prepare_if_needed(self.be_cosmo)
-
-        func = lambda z_len, z_src: self.smd.sigma_critical(self.be_cosmo, z_src, z_len, z_len)
-        return np.vectorize(func)(z_len, z_src)
 
     def _eval_linear_matter_powerspectrum(self, k_vals, redshift):
         # Using the EH transfer function as this is the
