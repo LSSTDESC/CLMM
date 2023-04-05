@@ -17,7 +17,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc,
                             zsrc_max=7., field_size=8., shapenoise=None,
                             mean_e_err=None, photoz_sigma_unscaled=None,
                             nretry=5, ngals=None, ngal_density=None,
-                            pz_bin_width=0.02, pzpdf_type='shared_bins',
+                            pz_bins=101, pzpdf_type='shared_bins',
                             validate_input=True):
     r"""Generates a mock dataset of sheared background galaxies.
 
@@ -118,8 +118,9 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc,
         table will not include this column.
     photoz_sigma_unscaled : float, optional
         If set, applies photo-z errors to source redshifts
-    pz_bin_width: float
-        Width of photo-z bins
+    pz_bins: int, array
+        Photo-z pdf bins in the given range. If int, the limits are set automatically.
+        If is array, must be the bin edges.
     pzpdf_type: str, None
         Type of photo-z pdf to be stored, options are:
             `None` - does not store PDFs;
@@ -171,6 +172,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc,
         validate_argument(locals(), 'nretry', int)
         validate_argument(locals(), 'ngals', float, none_ok=True)
         validate_argument(locals(), 'ngal_density', float, none_ok=True)
+        validate_argument(locals(), 'pz_bins', (int, 'array'))
 
 
     if zsrc_min is None: zsrc_min = cluster_z+0.1
@@ -182,7 +184,7 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc,
               'zsrc_min' : zsrc_min, 'zsrc_max' : zsrc_max,
               'shapenoise' : shapenoise, 'mean_e_err': mean_e_err,
               'photoz_sigma_unscaled' : photoz_sigma_unscaled,
-              'pz_bin_width': pz_bin_width, 'field_size' : field_size,
+              'pz_bins': pz_bins, 'field_size' : field_size,
               'pzpdf_type': pzpdf_type}
 
     if ngals is None and ngal_density is None:
@@ -204,6 +206,13 @@ def generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, zsrc,
     # Check for bad galaxies and replace them
     nbad, badids = _find_aphysical_galaxies(galaxy_catalog, zsrc_min)
     ntry = 0
+    # Prep bins for replacement
+    if (
+        photoz_sigma_unscaled is not None
+        and pzpdf_type=='shared_bins'
+        and nbad>0
+    ):
+        params['pz_bins'] = galaxy_catalog.pzpdf_info['zbins']
     while (nbad > 0) and (ntry < nretry):
         replacements = _generate_galaxy_catalog(ngals=nbad, **params)
         #galaxy_catalog[badids] = replacements
@@ -288,7 +297,7 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals,
                              zsrc_min=None, zsrc_max=None,
                              shapenoise=None, mean_e_err=None,
                              photoz_sigma_unscaled=None,
-                             pz_bin_width=0.02, pzpdf_type='shared_bins',
+                             pz_bins=101, pzpdf_type='shared_bins',
                              field_size=None):
     """A private function that skips the sanity checks on derived properties. This
     function should only be used when called directly from `generate_galaxy_catalog`.
@@ -306,7 +315,7 @@ def _generate_galaxy_catalog(cluster_m, cluster_z, cluster_c, cosmo, ngals,
         galaxy_catalog.pzpdf_info['type'] = pzpdf_type
         galaxy_catalog = _compute_photoz_pdfs(
             galaxy_catalog, photoz_sigma_unscaled,
-            pz_bin_width=pz_bin_width)
+            pz_bins=pz_bins)
 
     # Draw galaxy positions
     galaxy_catalog = _draw_galaxy_positions(
@@ -383,7 +392,7 @@ def _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals):
     ----------
     zsrc : float or str
         Choose the source galaxy distribution to be fixed or drawn from a predefined distribution.
-        float : All sources galaxies at this fixed redshift
+        float : All sources galaxies at this fixed redshift.
         str : Draws individual source gal redshifts from predefined distribution. Options are:
 
             * `chang13` - Chang et al. 2013 (arXiv:1305.0793);
@@ -432,8 +441,7 @@ def _draw_source_redshifts(zsrc, zsrc_min, zsrc_max, ngals):
     return GCData([zsrc_list, zsrc_list], names=('ztrue', 'z'))
 
 
-def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled,
-                         pz_bin_width=0.02):
+def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled, pz_bins=101):
     """Private function to add photo-z errors and PDFs to the mock catalog.
 
     Parameters
@@ -442,8 +450,9 @@ def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled,
         Input galaxy catalog to which photoz PDF will be added
     photoz_sigma_unscaled : float
         Width of the Gaussian PDF, without the (1+z) factor
-    pz_bin_width: float
-        Width of photo-z bins
+    pz_bins: int, sequence of scalars or str
+        Photo-z pdf bins in the given range. If int, the limits are set automatically.
+        If is array, must be the bin edges.
 
     Returns
     -------
@@ -458,24 +467,31 @@ def _compute_photoz_pdfs(galaxy_catalog, photoz_sigma_unscaled,
         np.random.standard_normal(len(galaxy_catalog))
 
     if galaxy_catalog.pzpdf_info['type'] is None:
-        pass
-    elif galaxy_catalog.pzpdf_info['type']=='shared_bins':
-        galaxy_catalog.pzpdf_info['zbins'] = np.arange(
-            max((galaxy_catalog['z']-10.*galaxy_catalog['pzsigma']).min(), 0.),
-            (galaxy_catalog['z']+10.*galaxy_catalog['pzsigma']).max()+pz_bin_width,
-             pz_bin_width)
+        return galaxy_catalog
+
+    zmin = galaxy_catalog['z']-10.*galaxy_catalog['pzsigma']
+    zmax = galaxy_catalog['z']+10.*galaxy_catalog['pzsigma']
+    zmin[zmin<0] = 0.0
+
+    if galaxy_catalog.pzpdf_info['type']=='shared_bins':
+        if isinstance(pz_bins, int):
+            galaxy_catalog.pzpdf_info['zbins'] = np.linspace(
+                zmin.min(), zmax.max(), pz_bins)
+        else:
+            galaxy_catalog.pzpdf_info['zbins'] = np.array(pz_bins)
         galaxy_catalog['pzpdf'] = gaussian(
             galaxy_catalog.pzpdf_info['zbins'],
             galaxy_catalog['z'][:,None],
             galaxy_catalog['pzsigma'][:,None])
     elif galaxy_catalog.pzpdf_info['type']=='individual_bins':
-        galaxy_catalog['pzbins'] = [
-            np.arange(zmin, zmax, pz_bin_width)
-            for zmin, zmax in zip(
-                galaxy_catalog['z']-10.*galaxy_catalog['pzsigma'],
-                galaxy_catalog['z']+10.*galaxy_catalog['pzsigma'])]
-        galaxy_catalog['pzpdf'] = [gaussian(row['pzbins'], row['z'], row['pzsigma'])
-                                   for row in galaxy_catalog]
+        if isinstance(pz_bins, int):
+            galaxy_catalog['pzbins'] = np.linspace(zmin, zmax, pz_bins).T
+        else:
+            galaxy_catalog['pzbins'] = [
+                pz_bins[max(np.digitize(z1, pz_bins)-1,0):np.digitize(z2, pz_bins)+1]
+                for z1, z2 in zip(zmin, zmax)]
+        galaxy_catalog['pzpdf'] = [
+            gaussian(row['pzbins'], row['z'], row['pzsigma']) for row in galaxy_catalog]
     elif galaxy_catalog.pzpdf_info['type']=='quantiles':
         raise NotImplementedError("PDF storing in quantiles not implemented.")
     else:
