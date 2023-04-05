@@ -9,6 +9,7 @@ def test_base(monkeypatch):
 
     # safekeep original code that will be monkeypatched in these tests
     Modeling_safe = clmm.theory.Modeling
+    backends_safe = clmm.theory.__backends
     # Unknown backend required
     monkeypatch.setenv("CLMM_MODELING_BACKEND", "not_available_be")
     assert_raises(ValueError, importlib.reload, clmm.theory)
@@ -46,3 +47,4 @@ def test_base(monkeypatch):
     assert clmm.theory.func_layer.gcm is None
     # restore original code that will be monkeypatched here
     clmm.theory.Modeling = Modeling_safe
+    clmm.theory.__backends = backends_safe
