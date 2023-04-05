@@ -5,6 +5,7 @@ import numpy as np
 
 import gi
 
+# pylint: disable=wrong-import-position
 gi.require_version("NumCosmo", "1.0")
 gi.require_version("NumCosmoMath", "1.0")
 from gi.repository import NumCosmo as Nc
@@ -26,6 +27,8 @@ class NumCosmoCosmology(CLMMCosmology):
     be_cosmo: cosmology library
         Cosmology library used in the back-end
     """
+    # pylint: disable=too-many-instance-attributes
+    # pylint: disable=abstract-method
 
     def __init__(self, dist=None, dist_zmax=15.0, **kwargs):
         self.dist = None
@@ -71,11 +74,11 @@ class NumCosmoCosmology(CLMMCosmology):
         self.be_cosmo.param_set_by_name("Omegak", Omega_k0)
 
         cosmo = self.be_cosmo
-        ENnu = 3.046 - 3.0 * cosmo.E2Press_mnu(1.0e10) / (
+        en_nu = 3.046 - 3.0 * cosmo.E2Press_mnu(1.0e10) / (
             cosmo.E2Omega_g(1.0e10) * (7.0 / 8.0 * (4.0 / 11.0) ** (4.0 / 3.0))
         )
 
-        self.be_cosmo.param_set_by_name("ENnu", ENnu)
+        self.be_cosmo.param_set_by_name("ENnu", en_nu)
         self._update_vec_funcs()
 
     def _set_param(self, key, value):
@@ -153,13 +156,13 @@ class NumCosmoCosmology(CLMMCosmology):
     def _eval_linear_matter_powerspectrum(self, k_vals, redshift):
         # Using the EH transfer function as this is the
         # default for the CCL backend as well
-        ps = Nc.PowspecMLTransfer.new(Nc.TransferFuncEH.new())
-        ps.set_kmin(self.additional_config["pk_kmin"])
-        ps.set_kmax(self.additional_config["pk_kmax"])
+        pow_spec = Nc.PowspecMLTransfer.new(Nc.TransferFuncEH.new())
+        pow_spec.set_kmin(self.additional_config["pk_kmin"])
+        pow_spec.set_kmax(self.additional_config["pk_kmax"])
 
         # Instead, computing the PS from the CLASS backend of Numcosmo
-        # ps  = Nc.PowspecMLCBE.new ()
-        # ps.peek_cbe().props.use_ppf = True
+        # pow_spec  = Nc.PowspecMLCBE.new ()
+        # pow_spec.peek_cbe().props.use_ppf = True
 
         if self.be_cosmo.reion is None:
             reion = Nc.HIReionCamb.new()
@@ -170,7 +173,7 @@ class NumCosmoCosmology(CLMMCosmology):
             # The default CLMM cosmology has ns=0.96 and sigma8=0.8
             # Need to adapt the NC cosmology accordingly
             self.be_cosmo.prim.props.n_SA = self.additional_config["ns"]
-            sigma8 = ps.sigma_tophat_R(  # computes sigma8 at z=0
+            sigma8 = pow_spec.sigma_tophat_R(  # computes sigma8 at z=0
                 self.be_cosmo,
                 self.additional_config["sigma8_eps"],
                 0.0,
@@ -181,6 +184,6 @@ class NumCosmoCosmology(CLMMCosmology):
                 (self.additional_config["sigma8"] / sigma8) ** 2 * old_amplitude
             )
 
-        ps.prepare(self.be_cosmo)
+        pow_spec.prepare(self.be_cosmo)
 
-        return [ps.eval(self.be_cosmo, redshift, k) for k in k_vals]
+        return [pow_spec.eval(self.be_cosmo, redshift, k) for k in k_vals]
