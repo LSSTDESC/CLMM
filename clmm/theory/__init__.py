@@ -7,6 +7,9 @@ import importlib
 import warnings
 import os
 from . import func_layer
+from . import generic
+
+globals().update({k: getattr(backend, k) for k in generic.__all__})
 
 # Functions that do the loading of different backends
 
@@ -38,6 +41,7 @@ def _load_backend(be_module):
 
     #  Imports all backend symbols:
     globals().update({k: getattr(backend, k) for k in backend.__all__})
+    globals().update({k: getattr(func_layer, k) for k in func_layer.__all__})
 
     try:
         # pylint: disable=undefined-variable

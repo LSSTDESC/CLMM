@@ -6,15 +6,13 @@ import numpy as np
 
 import cluster_toolkit as ct
 
-from . import func_layer
-from .func_layer import *
-from .parent_class import CLMModeling
 from ..utils import _patch_rho_crit_to_cd2018
 from ..cosmology.cluster_toolkit import AstroPyCosmology
+from .parent_class import CLMModeling
+
+__all__ = ["CTModeling", "Modeling", "Cosmology"]
 
 Cosmology = AstroPyCosmology
-
-__all__ = ["CTModeling", "Modeling", "Cosmology"] + func_layer.__all__
 
 
 def _assert_correct_type_ct(arg):

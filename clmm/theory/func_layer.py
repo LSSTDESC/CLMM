@@ -1,22 +1,15 @@
 """@file func_layer.py
 Main functions to encapsule oo calls
 """
+# pylint: disable=too-many-lines
 # Thin functonal layer on top of the class implementation of CLMModeling .
 # The functions expect a global instance of the actual CLMModeling named
 # `gcm'.
 
 import numpy as np
 
-from . import generic
-from .generic import (
-    compute_reduced_shear_from_convergence,
-    compute_magnification_bias_from_magnification,
-    compute_rdelta,
-    compute_profile_mass_in_radius,
-    convert_profile_mass_concentration,
-)
 
-__all__ = generic.__all__ + [
+__all__ = [
     "compute_3d_density",
     "compute_surface_density",
     "compute_mean_surface_density",

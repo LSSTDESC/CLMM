@@ -8,17 +8,15 @@ import gi
 from gi.repository import NumCosmoMath as Ncm
 from gi.repository import NumCosmo as Nc
 
+from ..cosmology.numcosmo import NumCosmoCosmology
+from .parent_class import CLMModeling
+
 gi.require_version("NumCosmo", "1.0")
 gi.require_version("NumCosmoMath", "1.0")
 
-from .func_layer import *
-from . import func_layer
-from .parent_class import CLMModeling
-from ..cosmology.numcosmo import NumCosmoCosmology
+__all__ = ["NumCosmoCLMModeling", "Modeling", "Cosmology"]
 
 Cosmology = NumCosmoCosmology
-
-__all__ = ["NumCosmoCLMModeling", "Modeling", "Cosmology"] + func_layer.__all__
 
 
 class NumCosmoCLMModeling(CLMModeling):

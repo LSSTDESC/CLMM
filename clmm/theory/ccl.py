@@ -2,22 +2,17 @@
 Modeling using CCL
 """
 # Functions to model halo profiles
-import numpy as np
+from packaging.version import parse
 
 import pyccl as ccl
 
-from scipy.interpolate import interp1d
-from packaging.version import parse
-
-from . import func_layer
-from .func_layer import *
-from .parent_class import CLMModeling
 from ..utils import _patch_rho_crit_to_cd2018
 from ..cosmology.ccl import CCLCosmology
+from .parent_class import CLMModeling
+
+__all__ = ["CCLCLMModeling", "Modeling", "Cosmology"]
 
 Cosmology = CCLCosmology
-
-__all__ = ["CCLCLMModeling", "Modeling", "Cosmology"] + func_layer.__all__
 
 
 class CCLCLMModeling(CLMModeling):
@@ -114,6 +109,7 @@ class CCLCLMModeling(CLMModeling):
 
     def _set_concentration(self, cdelta):
         """ "set concentration. Also sets/updates hdpm"""
+        # pylint: disable=protected-access
         self.conc = ccl.halos.ConcentrationConstant(c=cdelta, mdef=self.mdef)
         self.mdef._concentration_init(self.conc)
         self.hdpm = self.hdpm_dict[self.halo_profile_model](
@@ -133,6 +129,7 @@ class CCLCLMModeling(CLMModeling):
 
     def _get_einasto_alpha(self, z_cl=None):
         """ "get the value of the Einasto slope"""
+        # pylint: disable=protected-access
         if self.hdpm.alpha != "cosmo":
             a_cl = 1  # a_cl does not matter in this case
         else:
