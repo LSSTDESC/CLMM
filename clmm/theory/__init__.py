@@ -9,7 +9,7 @@ import os
 from . import func_layer
 from . import generic
 
-globals().update({k: getattr(backend, k) for k in generic.__all__})
+globals().update({k: getattr(generic, k) for k in generic.__all__})
 
 # Functions that do the loading of different backends
 
