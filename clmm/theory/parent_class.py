@@ -199,6 +199,7 @@ class CLMModeling:
 
     def _eval_excess_surface_density_2h(self, r_proj, z_cl, halobias=1.0, lsteps=500):
         """ "eval excess surface density from the 2-halo term"""
+        # pylint: disable=protected-access
         da = self.cosmo.eval_da(z_cl)
         rho_m = self.cosmo._get_rho_m(z_cl)
 
@@ -218,6 +219,7 @@ class CLMModeling:
 
     def _eval_surface_density_2h(self, r_proj, z_cl, halobias=1.0, lsteps=500):
         """ "eval surface density from the 2-halo term"""
+        # pylint: disable=protected-access
         da = self.cosmo.eval_da(z_cl)
         rho_m = self.cosmo._get_rho_m(z_cl)
 
@@ -364,11 +366,11 @@ class CLMModeling:
             validate_argument(locals(), "massdef", str)
             validate_argument(locals(), "halo_profile_model", str)
             validate_argument(locals(), "delta_mdef", int, argmin=0)
-            if not massdef in self.mdef_dict:
+            if massdef not in self.mdef_dict:
                 raise ValueError(
                     f"Halo density profile mass definition {massdef} not currently supported"
                 )
-            if not halo_profile_model in self.hdpm_dict:
+            if halo_profile_model not in self.hdpm_dict:
                 raise ValueError(
                     f"Halo density profile model {halo_profile_model} not currently supported"
                 )
@@ -401,10 +403,9 @@ class CLMModeling:
                 "for your combination of profile choice "
                 "or modeling backend."
             )
-        else:
-            if self.validate_input:
-                validate_argument(locals(), "alpha", float, none_ok=True)
-            self._set_einasto_alpha(alpha)
+        if self.validate_input:
+            validate_argument(locals(), "alpha", float, none_ok=True)
+        self._set_einasto_alpha(alpha)
 
     def get_einasto_alpha(self, z_cl=None):
         r"""Returns the value of the :math:`\alpha` parameter for the Einasto profile, if defined
@@ -416,8 +417,7 @@ class CLMModeling:
         """
         if self.halo_profile_model != "einasto":
             raise ValueError(f"Wrong profile model. Current profile = {self.halo_profile_model}")
-        else:
-            return self._get_einasto_alpha(z_cl)
+        return self._get_einasto_alpha(z_cl)
 
     def eval_3d_density(self, r3d, z_cl, verbose=False):
         r"""Retrieve the 3d density :math:`\rho(r)`.
@@ -443,7 +443,7 @@ class CLMModeling:
 
         return self._eval_3d_density(r3d=r3d, z_cl=z_cl)
 
-    def eval_critical_surface_density_eff(self, z_len, pzbins, pzpdf, validate_input=True):
+    def eval_critical_surface_density_eff(self, z_len, pzbins, pzpdf):
         r"""Computes the 'effective critical surface density'
 
         .. math::
@@ -465,8 +465,6 @@ class CLMModeling:
             Bins where the source redshift pdf is defined
         pzpdf : array-like
             Values of the source redshift pdf
-        validate_input: bool
-            Validade each input argument
 
 
         Returns
@@ -587,10 +585,7 @@ class CLMModeling:
                 f"2-halo term not currently supported with the {self.backend} backend. "
                 "Use the CCL or NumCosmo backend instead"
             )
-        else:
-            return self._eval_excess_surface_density_2h(
-                r_proj, z_cl, halobias=halobias, lsteps=lsteps
-            )
+        return self._eval_excess_surface_density_2h(r_proj, z_cl, halobias=halobias, lsteps=lsteps)
 
     def eval_surface_density_2h(self, r_proj, z_cl, halobias=1.0, lsteps=500):
         r"""Computes the 2-halo term surface density (CCL and NC backends only)
@@ -623,8 +618,7 @@ class CLMModeling:
                 f"2-halo term not currently supported with the {self.backend} backend. "
                 "Use the CCL or NumCosmo backend instead"
             )
-        else:
-            return self._eval_surface_density_2h(r_proj, z_cl, halobias=halobias, lsteps=lsteps)
+        return self._eval_surface_density_2h(r_proj, z_cl, halobias=halobias, lsteps=lsteps)
 
     def _get_beta_s_mean(self, z_cl, z_src, z_src_info="discrete", beta_kwargs=None):
         r"""Get mean value of the geometric lensing efficicency ratio from typical class function.
@@ -994,32 +988,32 @@ class CLMModeling:
             Function averaged by pdz, with r_proj dimention.
         """
 
-        def tfunc(z, r):
+        def tfunc(z, radius):
             return compute_beta_s_func(
                 z,
                 z_cl,
                 self.z_inf,
                 self.cosmo,
                 self._eval_tangential_shear_core,
-                r,
+                radius,
                 z_cl,
                 self.z_inf,
             )
 
-        def kfunc(z, r):
+        def kfunc(z, radius):
             return compute_beta_s_func(
                 z,
                 z_cl,
                 self.z_inf,
                 self.cosmo,
                 self._eval_convergence_core,
-                r,
+                radius,
                 z_cl,
                 self.z_inf,
             )
 
-        def __integrand__(z, r):
-            return pdz_func(z) * core(tfunc(z, r), kfunc(z, r))
+        def __integrand__(z, radius):
+            return pdz_func(z) * core(tfunc(z, radius), kfunc(z, radius))
 
         _integ_kwargs = {"zmax": 10.0, "delta_z_cut": 0.1}
         _integ_kwargs.update({} if integ_kwargs is None else integ_kwargs)
@@ -1666,7 +1660,7 @@ class CLMModeling:
 
         if (
             halo_profile_model == "einasto"
-            or (self.halo_profile_model == "einasto" and halo_profile_model == None)
+            or (self.halo_profile_model == "einasto" and halo_profile_model is None)
         ) and verbose:
             print(
                 "Einasto alpha (out) = "

@@ -205,7 +205,7 @@ def convert_profile_mass_concentration(
     alpha=None,
     alpha2=None,
 ):
-    """
+    r"""
     Parameters
     ----------
     mdelta : float
