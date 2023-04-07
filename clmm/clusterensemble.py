@@ -53,7 +53,7 @@ class ClusterEnsemble:
         self.cov = {
             "tan_sc": None,
             "cross_sc": None,
-            "tan_jk": None,
+            "tan_bs": None,
             "cross_bs": None,
             "tan_jk": None,
             "cross_jk": None,
