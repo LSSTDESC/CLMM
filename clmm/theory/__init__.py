@@ -76,6 +76,7 @@ def _load_backend_fallback(be_key, backends_config):
             first_msg = False
         else:
             warnings.warn(f"* {conf['name']} BACKEND also not available")
+    raise ImportError("No modeling backend available.")
 
 
 def load_backend_env(backends_config=None):
