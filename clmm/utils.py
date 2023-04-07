@@ -207,7 +207,7 @@ def compute_radial_averages(xvals, yvals, xbins, yerr=None, error_model="ste", w
         if yerr is None
         else compute_weighted_bin_sum(xfilt, np.array(yerr)[filt] ** 2, xbins, wts**2)
     )
-    stat_yerr2 = compute_weighted_bin_sum(xfilt, yfilt**2, xbins, wts) + mean_y**2
+    stat_yerr2 = compute_weighted_bin_sum(xfilt, yfilt**2, xbins, wts) - mean_y**2
     if error_model == "ste":
         # sum(wts^2)=1/n for not weighted
         stat_yerr2 *= compute_weighted_bin_sum(xfilt, wts, xbins, wts)
