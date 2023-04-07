@@ -35,7 +35,7 @@ def _assert_correct_type_ct(arg):
     return np.array(arg).astype(np.float64, order="C", copy=False)
 
 
-class CTModeling(CLMModeling):
+class CTCLMModeling(CLMModeling):
     r"""Object with functions for halo mass modeling
 
     Attributes
@@ -206,4 +206,4 @@ class CTModeling(CLMModeling):
 
 
 Cosmology = AstroPyCosmology
-Modeling = CTModeling
+Modeling = CTCLMModeling
