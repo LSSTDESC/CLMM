@@ -307,7 +307,7 @@ class ClusterEnsemble:
         )[1]
 
         coeff = (n_catalogs / (n_catalogs - 1)) ** 2
-        self.cov["tan_jk"] = coeff * np.cov(np.array(gt_boot), bias=False, ddof=0)
+        self.cov["tan_bs"] = coeff * np.cov(np.array(gt_boot), bias=False, ddof=0)
         self.cov["cross_bs"] = coeff * np.cov(np.array(gx_boot), bias=False)
 
     def compute_jackknife_covariance(self, tan_component="gt", cross_component="gx", n_side=16):
