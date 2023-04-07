@@ -15,8 +15,6 @@ gi.require_version("NumCosmo", "1.0")
 gi.require_version("NumCosmoMath", "1.0")
 
 
-
-
 class NumCosmoCLMModeling(CLMModeling):
     r"""Object with functions for halo mass modeling
 

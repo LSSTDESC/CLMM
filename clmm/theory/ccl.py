@@ -11,8 +11,6 @@ from ..cosmology.ccl import CCLCosmology
 from .parent_class import CLMModeling
 
 
-
-
 class CCLCLMModeling(CLMModeling):
     r"""Object with functions for halo mass modeling
 

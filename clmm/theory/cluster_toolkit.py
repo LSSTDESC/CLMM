@@ -11,8 +11,6 @@ from ..cosmology.cluster_toolkit import AstroPyCosmology
 from .parent_class import CLMModeling
 
 
-
-
 def _assert_correct_type_ct(arg):
     """Convert the argument to a type compatible with cluster_toolkit
     cluster_toolkit does not handle correctly scalar arguments that are

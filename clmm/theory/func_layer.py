@@ -12,6 +12,7 @@ import numpy as np
 if "_modeling_object" not in globals():
     _modeling_object = None
 
+
 def compute_3d_density(
     r3d,
     mdelta,
