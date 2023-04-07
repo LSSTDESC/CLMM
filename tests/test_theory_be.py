@@ -19,14 +19,14 @@ def test_base(monkeypatch):
         "notabackend": {
             "name": "notaname",
             "available": False,
-            "module": "generic",
+            "module": "parent_class",
             "prereqs": ["notaprereq"],
         },
         # This calls the warning "BACKEND also not available"
         "notabackend2": {
             "name": "notaname",
             "available": False,
-            "module": "generic",
+            "module": "parent_class",
             "prereqs": ["notaprereq"],
         },
     }
