@@ -22,18 +22,16 @@ class ClusterEnsemble:
         Dictionary of indices given the cluster id
     stacked_data : GCData, None
         Stacked cluster profiles
-    cov_tan_sv : array, None
-        Covariance matrix of the tangential component computed with sample covariance
-    cov_cross_sv : array, None
-        Covariance matrix of the cross component computed with sample covariance
-    cov_tan_bs : array, None
-        Covariance matrix of the tangential component computed with bootstrap
-    cov_cross_bs : array, None
-        Covariance matrix of the cross component computed with bootstrap
-    cov_tan_jk : array, None
-        Covariance matrix of the tangential component computed with jackknife
-    cov_cross_jk : array, None
-        Covariance matrix of the cross component computed with jackknife
+    cov : dict
+        Dictionary with the covariances:
+
+        * "tan_sc" : tangential component computed with sample covariance
+        * "cross_sc" : cross component computed with sample covariance
+        * "tan_jk" : tangential component computed with bootstrap
+        * "cross_bs" : cross component computed with bootstrap
+        * "tan_jk" : tangential component computed with jackknife
+        * "cross_jk" : cross component computed with jackknife
+
     """
 
     def __init__(self, unique_id, gc_list=None, **kwargs):
@@ -52,12 +50,14 @@ class ClusterEnsemble:
         if gc_list is not None:
             self._add_values(gc_list, **kwargs)
         self.stacked_data = None
-        self.cov_tan_sv = None
-        self.cov_cross_sv = None
-        self.cov_tan_bs = None
-        self.cov_cross_bs = None
-        self.cov_tan_jk = None
-        self.cov_cross_jk = None
+        self.cov = {
+            "tan_sc": None,
+            "cross_sc": None,
+            "tan_jk": None,
+            "cross_bs": None,
+            "tan_jk": None,
+            "cross_jk": None,
+        }
 
     def _add_values(self, gc_list, **kwargs):
         """Add values for all attributes
@@ -255,7 +255,7 @@ class ClusterEnsemble:
 
     def compute_sample_covariance(self, tan_component="gt", cross_component="gx"):
         """Compute Sample covariance matrix for cross and tangential and cross
-        stacked profiles adds as attributes: `cov_tan_sv`, `cov_cross_sv`.
+        stacked profiles and updates .cov dict (`tan_sc`, `cross_sc`).
 
         Parameters
         ----------
@@ -269,15 +269,14 @@ class ClusterEnsemble:
         self._check_empty_data()
 
         n_catalogs = len(self.data)
-        self.cov_tan_sv = np.cov(self.data[tan_component].T, bias=False) / n_catalogs
-        self.cov_cross_sv = np.cov(self.data[cross_component].T, bias=False) / n_catalogs
+        self.cov["tan_sc"] = np.cov(self.data[tan_component].T, bias=False) / n_catalogs
+        self.cov["cross_sc"] = np.cov(self.data[cross_component].T, bias=False) / n_catalogs
 
     def compute_bootstrap_covariance(
         self, tan_component="gt", cross_component="gx", n_bootstrap=10
     ):
         """Compute the bootstrap covariance matrix, add boostrap covariance matrix for
-        tangential and cross profiles as attributes: `cov_tan_bs`,
-        `cov_cross_bs`.
+        tangential and cross stacked profiles and updates .cov dict (`tan_jk`, `cross_bs`).
 
         Parameters
         ----------
@@ -308,13 +307,13 @@ class ClusterEnsemble:
         )[1]
 
         coeff = (n_catalogs / (n_catalogs - 1)) ** 2
-        self.cov_tan_bs = coeff * np.cov(np.array(gt_boot), bias=False, ddof=0)
-        self.cov_cross_bs = coeff * np.cov(np.array(gx_boot), bias=False)
+        self.cov["tan_jk"] = coeff * np.cov(np.array(gt_boot), bias=False, ddof=0)
+        self.cov["cross_bs"] = coeff * np.cov(np.array(gx_boot), bias=False)
 
     def compute_jackknife_covariance(self, tan_component="gt", cross_component="gx", n_side=16):
         """Compute the jackknife covariance matrix, add boostrap covariance matrix for
-        tangential and cross profiles as attributes: `cov_tan_jk`,
-        `cov_cross_jk`.
+        tangential and cross stacked profiles and updates .cov dict (`tan_jk`, `cross_jk`).
+
         Uses healpix sky area sub-division : https://healpix.sourceforge.io
 
         Parameters
@@ -346,8 +345,8 @@ class ClusterEnsemble:
             gx_jack.append(gx)
         n_jack = pixels_list_unique.size
         coeff = (n_jack - 1) ** 2 / (n_jack)
-        self.cov_tan_jk = coeff * np.cov(np.transpose(gt_jack), bias=False, ddof=0)
-        self.cov_cross_jk = coeff * np.cov(np.transpose(gx_jack), bias=False, ddof=0)
+        self.cov["tan_jk"] = coeff * np.cov(np.transpose(gt_jack), bias=False, ddof=0)
+        self.cov["cross_jk"] = coeff * np.cov(np.transpose(gx_jack), bias=False, ddof=0)
 
     def save(self, filename, **kwargs):
         """Saves GalaxyCluster object to filename using Pickle"""
