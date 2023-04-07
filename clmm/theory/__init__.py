@@ -9,7 +9,27 @@ import os
 from . import func_layer
 from . import generic
 
-globals().update({k: getattr(generic, k) for k in generic.__all__})
+from .generic import (
+    compute_reduced_shear_from_convergence,
+    compute_magnification_bias_from_magnification,
+    compute_rdelta,
+    compute_profile_mass_in_radius,
+    convert_profile_mass_concentration,
+)
+from .func_layer import (
+    compute_3d_density,
+    compute_surface_density,
+    compute_mean_surface_density,
+    compute_excess_surface_density,
+    compute_excess_surface_density_2h,
+    compute_surface_density_2h,
+    compute_critical_surface_density_eff,
+    compute_tangential_shear,
+    compute_convergence,
+    compute_reduced_tangential_shear,
+    compute_magnification,
+    compute_magnification_bias,
+)
 
 # Functions that do the loading of different backends
 
@@ -39,15 +59,15 @@ def _load_backend(be_module):
     """
     backend = importlib.import_module(f"clmm.theory.{be_module}")
 
-    #  Imports all backend symbols:
-    globals().update({k: getattr(backend, k) for k in backend.__all__})
-    globals().update({k: getattr(func_layer, k) for k in func_layer.__all__})
-
     # pylint: disable=protected-access
-    try:
-        # pylint: disable=undefined-variable
-        func_layer._modeling_object = Modeling()
-    except NotImplementedError:
+    if all(obj in vars(backend) for obj in ("Modeling", "Cosmology")):
+        # pylint: disable=global-statement
+        global Modeling
+        global Cosmology
+        Modeling = backend.Modeling
+        Cosmology = backend.Cosmology
+        func_layer._modeling_object = backend.Modeling()
+    else:
         func_layer._modeling_object = None
 
 
@@ -106,6 +126,12 @@ def load_backend_env():
 ##########################
 # Prepare the code backend
 ##########################
+
+# Global variables
+
+# pylint: disable=invalid-name
+Modeling = None
+Cosmology = None
 
 #  Preload functions:
 #    Some backends depend on more complicated modules and thus on a preload

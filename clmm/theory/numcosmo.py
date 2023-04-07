@@ -14,9 +14,7 @@ from .parent_class import CLMModeling
 gi.require_version("NumCosmo", "1.0")
 gi.require_version("NumCosmoMath", "1.0")
 
-__all__ = ["NumCosmoCLMModeling", "Modeling", "Cosmology"]
 
-Cosmology = NumCosmoCosmology
 
 
 class NumCosmoCLMModeling(CLMModeling):
@@ -199,4 +197,5 @@ class NumCosmoCLMModeling(CLMModeling):
         self.cosmo.smd = mset.get(Nc.WLSurfaceMassDensity.id())
 
 
+Cosmology = NumCosmoCosmology
 Modeling = NumCosmoCLMModeling

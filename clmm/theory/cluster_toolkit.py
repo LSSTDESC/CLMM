@@ -10,9 +10,7 @@ from ..utils import _patch_rho_crit_to_cd2018
 from ..cosmology.cluster_toolkit import AstroPyCosmology
 from .parent_class import CLMModeling
 
-__all__ = ["CTModeling", "Modeling", "Cosmology"]
 
-Cosmology = AstroPyCosmology
 
 
 def _assert_correct_type_ct(arg):
@@ -207,4 +205,5 @@ class CTModeling(CLMModeling):
         )  # pc**-2 to Mpc**-2
 
 
+Cosmology = AstroPyCosmology
 Modeling = CTModeling

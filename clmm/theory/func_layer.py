@@ -12,23 +12,6 @@ import numpy as np
 if "_modeling_object" not in globals():
     _modeling_object = None
 
-
-__all__ = [
-    "compute_3d_density",
-    "compute_surface_density",
-    "compute_mean_surface_density",
-    "compute_excess_surface_density",
-    "compute_excess_surface_density_2h",
-    "compute_surface_density_2h",
-    "compute_critical_surface_density_eff",
-    "compute_tangential_shear",
-    "compute_convergence",
-    "compute_reduced_tangential_shear",
-    "compute_magnification",
-    "compute_magnification_bias",
-]
-
-
 def compute_3d_density(
     r3d,
     mdelta,

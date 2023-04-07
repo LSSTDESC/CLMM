@@ -10,9 +10,7 @@ from ..utils import _patch_rho_crit_to_cd2018
 from ..cosmology.ccl import CCLCosmology
 from .parent_class import CLMModeling
 
-__all__ = ["CCLCLMModeling", "Modeling", "Cosmology"]
 
-Cosmology = CCLCosmology
 
 
 class CCLCLMModeling(CLMModeling):
@@ -203,4 +201,5 @@ class CCLCLMModeling(CLMModeling):
         )
 
 
+Cosmology = CCLCosmology
 Modeling = CCLCLMModeling
