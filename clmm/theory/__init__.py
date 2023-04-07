@@ -43,11 +43,12 @@ def _load_backend(be_module):
     globals().update({k: getattr(backend, k) for k in backend.__all__})
     globals().update({k: getattr(func_layer, k) for k in func_layer.__all__})
 
+    # pylint: disable=protected-access
     try:
         # pylint: disable=undefined-variable
-        func_layer.gcm = Modeling()
+        func_layer._modeling_object = Modeling()
     except NotImplementedError:
-        func_layer.gcm = None
+        func_layer._modeling_object = None
 
 
 def _load_backend_fallback(be_key, backends_config):
@@ -62,20 +63,19 @@ def _load_backend_fallback(be_key, backends_config):
     backends_config : dict
         Dictionary with the configuration to load backends.
     """
-    conf = backends_config[be_key]
-    if conf["available"]:
-        _load_backend(conf["module"])
-        return be_key
-    warnings.warn(f"CLMM Backend requested '{conf['name']}' is not available, trying others...")
-    print(f"CLMM Backend requested '{conf['name']}' is not available, trying others...")
-    for be_key2, conf in backends_config.items():
+    first_msg = True
+    for key in (be_key, *filter(lambda k: k != be_key, backends_config.keys())):
+        conf = backends_config[key]
         if conf["available"]:
             _load_backend(conf["module"])
-            warnings.warn(f"* USING {conf['name']} BACKEND")
-            return be_key2
-        if be_key2 != be_key:
+            return key
+        if first_msg:
+            warnings.warn(
+                f"CLMM Backend requested '{conf['name']}' is not available, trying others..."
+            )
+            first_msg = False
+        else:
             warnings.warn(f"* {conf['name']} BACKEND also not available")
-    raise ImportError("No modeling backend available.")
 
 
 def load_backend_env(backends_config=None):

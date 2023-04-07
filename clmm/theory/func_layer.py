@@ -2,11 +2,15 @@
 Main functions to encapsule oo calls
 """
 # pylint: disable=too-many-lines
+# pylint: disable=invalid-name
 # Thin functonal layer on top of the class implementation of CLMModeling .
 # The functions expect a global instance of the actual CLMModeling named
-# `gcm'.
+# `_modeling_object'.
 
 import numpy as np
+
+if "_modeling_object" not in globals():
+    _modeling_object = None
 
 
 __all__ = [
@@ -94,19 +98,19 @@ def compute_3d_density(
     Need to refactor later so we only require arguments that are necessary for all profiles
     and use another structure to take the arguments necessary for specific models
     """
-    gcm.validate_input = validate_input
-    gcm.set_cosmo(cosmo)
-    gcm.set_halo_density_profile(
+    _modeling_object.validate_input = validate_input
+    _modeling_object.set_cosmo(cosmo)
+    _modeling_object.set_halo_density_profile(
         halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef
     )
-    gcm.set_concentration(cdelta)
-    gcm.set_mass(mdelta)
+    _modeling_object.set_concentration(cdelta)
+    _modeling_object.set_mass(mdelta)
     if halo_profile_model == "einasto" or alpha_ein is not None:
-        gcm.set_einasto_alpha(alpha_ein)
+        _modeling_object.set_einasto_alpha(alpha_ein)
 
-    rho = gcm.eval_3d_density(r3d, z_cl, verbose=verbose)
+    rho = _modeling_object.eval_3d_density(r3d, z_cl, verbose=verbose)
 
-    gcm.validate_input = True
+    _modeling_object.validate_input = True
     return rho
 
 
@@ -179,19 +183,19 @@ def compute_surface_density(
     Need to refactory so we only require arguments that are necessary for all models and use
     another structure to take the arguments necessary for specific models.
     """
-    gcm.validate_input = validate_input
-    gcm.set_cosmo(cosmo)
-    gcm.set_halo_density_profile(
+    _modeling_object.validate_input = validate_input
+    _modeling_object.set_cosmo(cosmo)
+    _modeling_object.set_halo_density_profile(
         halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef
     )
-    gcm.set_concentration(cdelta)
-    gcm.set_mass(mdelta)
+    _modeling_object.set_concentration(cdelta)
+    _modeling_object.set_mass(mdelta)
     if halo_profile_model == "einasto" or alpha_ein is not None:
-        gcm.set_einasto_alpha(alpha_ein)
+        _modeling_object.set_einasto_alpha(alpha_ein)
 
-    sigma = gcm.eval_surface_density(r_proj, z_cl, verbose=verbose)
+    sigma = _modeling_object.eval_surface_density(r_proj, z_cl, verbose=verbose)
 
-    gcm.validate_input = True
+    _modeling_object.validate_input = True
     return sigma
 
 
@@ -261,19 +265,19 @@ def compute_mean_surface_density(
     Need to refactory so we only require arguments that are necessary for all models and use
     another structure to take the arguments necessary for specific models.
     """
-    gcm.validate_input = validate_input
-    gcm.set_cosmo(cosmo)
-    gcm.set_halo_density_profile(
+    _modeling_object.validate_input = validate_input
+    _modeling_object.set_cosmo(cosmo)
+    _modeling_object.set_halo_density_profile(
         halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef
     )
-    gcm.set_concentration(cdelta)
-    gcm.set_mass(mdelta)
+    _modeling_object.set_concentration(cdelta)
+    _modeling_object.set_mass(mdelta)
     if alpha_ein is not None:
-        gcm.set_einasto_alpha(alpha_ein)
+        _modeling_object.set_einasto_alpha(alpha_ein)
 
-    sigma_bar = gcm.eval_mean_surface_density(r_proj, z_cl, verbose=verbose)
+    sigma_bar = _modeling_object.eval_mean_surface_density(r_proj, z_cl, verbose=verbose)
 
-    gcm.validate_input = True
+    _modeling_object.validate_input = True
     return sigma_bar
 
 
@@ -339,19 +343,19 @@ def compute_excess_surface_density(
     deltasigma : numpy.ndarray, float
         Excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
     """
-    gcm.validate_input = validate_input
-    gcm.set_cosmo(cosmo)
-    gcm.set_halo_density_profile(
+    _modeling_object.validate_input = validate_input
+    _modeling_object.set_cosmo(cosmo)
+    _modeling_object.set_halo_density_profile(
         halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef
     )
-    gcm.set_concentration(cdelta)
-    gcm.set_mass(mdelta)
+    _modeling_object.set_concentration(cdelta)
+    _modeling_object.set_mass(mdelta)
     if halo_profile_model == "einasto" or alpha_ein is not None:
-        gcm.set_einasto_alpha(alpha_ein)
+        _modeling_object.set_einasto_alpha(alpha_ein)
 
-    deltasigma = gcm.eval_excess_surface_density(r_proj, z_cl, verbose=verbose)
+    deltasigma = _modeling_object.eval_excess_surface_density(r_proj, z_cl, verbose=verbose)
 
-    gcm.validate_input = True
+    _modeling_object.validate_input = True
     return deltasigma
 
 
@@ -391,14 +395,14 @@ def compute_excess_surface_density_2h(
     deltasigma_2h : numpy.ndarray, float
         2-halo term excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
     """
-    gcm.validate_input = validate_input
-    gcm.set_cosmo(cosmo)
+    _modeling_object.validate_input = validate_input
+    _modeling_object.set_cosmo(cosmo)
 
-    deltasigma_2h = gcm.eval_excess_surface_density_2h(
+    deltasigma_2h = _modeling_object.eval_excess_surface_density_2h(
         r_proj, z_cl, halobias=halobias, lsteps=lsteps
     )
 
-    gcm.validate_input = True
+    _modeling_object.validate_input = True
     return deltasigma_2h
 
 
@@ -436,12 +440,14 @@ def compute_surface_density_2h(r_proj, z_cl, cosmo, halobias=1, lsteps=500, vali
     sigma_2h : numpy.ndarray, float
         2-halo term surface density in units of :math:`M_\odot\ Mpc^{-2}`.
     """
-    gcm.validate_input = validate_input
-    gcm.set_cosmo(cosmo)
+    _modeling_object.validate_input = validate_input
+    _modeling_object.set_cosmo(cosmo)
 
-    sigma_2h = gcm.eval_surface_density_2h(r_proj, z_cl, halobias=halobias, lsteps=lsteps)
+    sigma_2h = _modeling_object.eval_surface_density_2h(
+        r_proj, z_cl, halobias=halobias, lsteps=lsteps
+    )
 
-    gcm.validate_input = True
+    _modeling_object.validate_input = True
     return sigma_2h
 
 
@@ -480,11 +486,11 @@ def compute_critical_surface_density_eff(cosmo, z_cluster, pzbins, pzpdf, valida
         :math:`M_\odot\ Mpc^{-2}`
     """
 
-    gcm.validate_input = validate_input
-    gcm.set_cosmo(cosmo)
-    sigma_c = gcm.eval_critical_surface_density_eff(z_cluster, pzbins, pzpdf)
+    _modeling_object.validate_input = validate_input
+    _modeling_object.set_cosmo(cosmo)
+    sigma_c = _modeling_object.eval_critical_surface_density_eff(z_cluster, pzbins, pzpdf)
 
-    gcm.validate_input = True
+    _modeling_object.validate_input = True
     return sigma_c
 
 
@@ -598,22 +604,22 @@ def compute_tangential_shear(
         Tangential shear
     """
 
-    gcm.validate_input = validate_input
-    gcm.set_cosmo(cosmo)
-    gcm.set_halo_density_profile(
+    _modeling_object.validate_input = validate_input
+    _modeling_object.set_cosmo(cosmo)
+    _modeling_object.set_halo_density_profile(
         halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef
     )
-    gcm.set_concentration(cdelta)
-    gcm.set_mass(mdelta)
+    _modeling_object.set_concentration(cdelta)
+    _modeling_object.set_mass(mdelta)
     if halo_profile_model == "einasto" or alpha_ein is not None:
-        gcm.set_einasto_alpha(alpha_ein)
+        _modeling_object.set_einasto_alpha(alpha_ein)
     if np.min(r_proj) < 1.0e-11:
         raise ValueError(
             f"Rmin = {np.min(r_proj):.2e} Mpc/h! This value is too small "
             "and may cause computational issues."
         )
 
-    tangential_shear = gcm.eval_tangential_shear(
+    tangential_shear = _modeling_object.eval_tangential_shear(
         r_proj,
         z_cluster,
         z_source,
@@ -622,7 +628,7 @@ def compute_tangential_shear(
         verbose=verbose,
     )
 
-    gcm.validate_input = True
+    _modeling_object.validate_input = True
     return tangential_shear
 
 
@@ -737,17 +743,17 @@ def compute_convergence(
 
     """
 
-    gcm.validate_input = validate_input
-    gcm.set_cosmo(cosmo)
-    gcm.set_halo_density_profile(
+    _modeling_object.validate_input = validate_input
+    _modeling_object.set_cosmo(cosmo)
+    _modeling_object.set_halo_density_profile(
         halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef
     )
-    gcm.set_concentration(cdelta)
-    gcm.set_mass(mdelta)
+    _modeling_object.set_concentration(cdelta)
+    _modeling_object.set_mass(mdelta)
     if halo_profile_model == "einasto" or alpha_ein is not None:
-        gcm.set_einasto_alpha(alpha_ein)
+        _modeling_object.set_einasto_alpha(alpha_ein)
 
-    convergence = gcm.eval_convergence(
+    convergence = _modeling_object.eval_convergence(
         r_proj,
         z_cluster,
         z_source,
@@ -756,7 +762,7 @@ def compute_convergence(
         verbose=verbose,
     )
 
-    gcm.validate_input = True
+    _modeling_object.validate_input = True
     return convergence
 
 
@@ -907,17 +913,17 @@ def compute_reduced_tangential_shear(
         Reduced tangential shear
 
     """
-    gcm.validate_input = validate_input
-    gcm.set_cosmo(cosmo)
-    gcm.set_halo_density_profile(
+    _modeling_object.validate_input = validate_input
+    _modeling_object.set_cosmo(cosmo)
+    _modeling_object.set_halo_density_profile(
         halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef
     )
-    gcm.set_concentration(cdelta)
-    gcm.set_mass(mdelta)
+    _modeling_object.set_concentration(cdelta)
+    _modeling_object.set_mass(mdelta)
     if halo_profile_model == "einasto" or alpha_ein is not None:
-        gcm.set_einasto_alpha(alpha_ein)
+        _modeling_object.set_einasto_alpha(alpha_ein)
 
-    red_tangential_shear = gcm.eval_reduced_tangential_shear(
+    red_tangential_shear = _modeling_object.eval_reduced_tangential_shear(
         r_proj,
         z_cluster,
         z_source,
@@ -927,7 +933,7 @@ def compute_reduced_tangential_shear(
         verbose=verbose,
     )
 
-    gcm.validate_input = True
+    _modeling_object.validate_input = True
     return red_tangential_shear
 
 
@@ -1073,17 +1079,17 @@ def compute_magnification(
 
     """
 
-    gcm.validate_input = validate_input
-    gcm.set_cosmo(cosmo)
-    gcm.set_halo_density_profile(
+    _modeling_object.validate_input = validate_input
+    _modeling_object.set_cosmo(cosmo)
+    _modeling_object.set_halo_density_profile(
         halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef
     )
-    gcm.set_concentration(cdelta)
-    gcm.set_mass(mdelta)
+    _modeling_object.set_concentration(cdelta)
+    _modeling_object.set_mass(mdelta)
     if halo_profile_model == "einasto" or alpha_ein is not None:
-        gcm.set_einasto_alpha(alpha_ein)
+        _modeling_object.set_einasto_alpha(alpha_ein)
 
-    magnification = gcm.eval_magnification(
+    magnification = _modeling_object.eval_magnification(
         r_proj,
         z_cluster,
         z_source,
@@ -1093,7 +1099,7 @@ def compute_magnification(
         verbose=verbose,
     )
 
-    gcm.validate_input = True
+    _modeling_object.validate_input = True
     return magnification
 
 
@@ -1258,17 +1264,17 @@ def compute_magnification_bias(
         magnification bias
     """
 
-    gcm.validate_input = validate_input
-    gcm.set_cosmo(cosmo)
-    gcm.set_halo_density_profile(
+    _modeling_object.validate_input = validate_input
+    _modeling_object.set_cosmo(cosmo)
+    _modeling_object.set_halo_density_profile(
         halo_profile_model=halo_profile_model, massdef=massdef, delta_mdef=delta_mdef
     )
-    gcm.set_concentration(cdelta)
-    gcm.set_mass(mdelta)
+    _modeling_object.set_concentration(cdelta)
+    _modeling_object.set_mass(mdelta)
     if halo_profile_model == "einasto" or alpha_ein is not None:
-        gcm.set_einasto_alpha(alpha_ein)
+        _modeling_object.set_einasto_alpha(alpha_ein)
 
-    magnification_bias = gcm.eval_magnification_bias(
+    magnification_bias = _modeling_object.eval_magnification_bias(
         r_proj,
         z_cluster,
         z_source,
@@ -1279,5 +1285,5 @@ def compute_magnification_bias(
         verbose=verbose,
     )
 
-    gcm.validate_input = True
+    _modeling_object.validate_input = True
     return magnification_bias

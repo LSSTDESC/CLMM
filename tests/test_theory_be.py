@@ -44,7 +44,7 @@ def test_base(monkeypatch):
 
     clmm.theory.Modeling = nie
     clmm.theory.load_backend_env()
-    assert clmm.theory.func_layer.gcm is None
+    assert clmm.theory.func_layer._modeling_object is None
     # restore original code that will be monkeypatched here
     clmm.theory.Modeling = Modeling_safe
     clmm.theory.__backends = backends_safe
