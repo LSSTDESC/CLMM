@@ -4,7 +4,7 @@ from scipy.special import gamma, gammainc
 
 
 def _functional_form(redshift, alpha, beta, redshift0, is_cdf=False):
-    """
+    r"""
     A private function that returns the functionnal form of the redshift distribution used in
     Chang et al (2013):
 

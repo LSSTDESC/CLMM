@@ -3,6 +3,7 @@
 import os
 import matplotlib as mpl
 
+# pylint: disable=wrong-import-position
 if os.environ.get("DISPLAY", "") == "test":
     print("no display found. Using non-interactive Agg backend")
     mpl.use("Agg")

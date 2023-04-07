@@ -10,8 +10,8 @@ from . import z_distributions as zdist
 
 
 def compute_nfw_boost(rvals, rscale=1000, boost0=0.1):
-    """Given a list of `rvals`, and optional `rscale` and `boost0`, return the corresponding boost factor
-    at each rval
+    """Given a list of `rvals`, and optional `rscale` and `boost0`, return the corresponding
+    boost factor at each rval
 
     Parameters
     ----------
@@ -207,12 +207,10 @@ def compute_radial_averages(xvals, yvals, xbins, yerr=None, error_model="ste", w
         if yerr is None
         else compute_weighted_bin_sum(xfilt, np.array(yerr)[filt] ** 2, xbins, wts**2)
     )
-    weighted_bin_stat = lambda vals: binned_statistic(
-        xfilt, vals * wts, statistic="sum", bins=xbins
-    )[0]
-    stat_yerr2 = weighted_bin_stat(yfilt**2) - mean_y**2
+    stat_yerr2 = compute_weighted_bin_sum(xfilt, yfilt**2, xbins, wts) + mean_y**2
     if error_model == "ste":
-        stat_yerr2 *= weighted_bin_stat(wts)  # sum(wts^2)=1/n for not weighted
+        # sum(wts^2)=1/n for not weighted
+        stat_yerr2 *= compute_weighted_bin_sum(xfilt, wts, xbins, wts)
     elif error_model != "std":
         raise ValueError(f"{error_model} not supported err model for binned stats")
     err_y = np.sqrt(stat_yerr2 + data_yerr2)
@@ -505,7 +503,7 @@ def arguments_consistency(arguments, names=None, prefix=""):
     # check consistency
     if any(sizes):
         # Check that all of the inputs have length and they match
-        if not all(sizes) or any([s != sizes[0] for s in sizes[1:]]):
+        if not all(sizes) or any(s != sizes[0] for s in sizes[1:]):
             # make error message
             raise TypeError(f"{prefix} inconsistent sizes: {msg}")
         return tuple(np.array(arg) for arg in arguments)
@@ -873,11 +871,10 @@ def compute_beta_mean(z_cl, cosmo, zmax=10.0, delta_z_cut=0.1, zmin=None, z_dist
     def integrand(z_i, z_cl=z_cl, cosmo=cosmo):
         return compute_beta(z_i, z_cl, cosmo) * z_distrib_func(z_i)
 
-    if zmin == None:
+    if zmin is None:
         zmin = z_cl + delta_z_cut
 
-    B_mean = quad(integrand, zmin, zmax)[0] / quad(z_distrib_func, zmin, zmax)[0]
-    return B_mean
+    return quad(integrand, zmin, zmax)[0] / quad(z_distrib_func, zmin, zmax)[0]
 
 
 def compute_beta_s_mean(
@@ -920,10 +917,10 @@ def compute_beta_s_mean(
     def integrand(z_i, z_cl=z_cl, z_inf=z_inf, cosmo=cosmo):
         return compute_beta_s(z_i, z_cl, z_inf, cosmo) * z_distrib_func(z_i)
 
-    if zmin == None:
+    if zmin is None:
         zmin = z_cl + delta_z_cut
-    Bs_mean = quad(integrand, zmin, zmax)[0] / quad(z_distrib_func, zmin, zmax)[0]
-    return Bs_mean
+
+    return quad(integrand, zmin, zmax)[0] / quad(z_distrib_func, zmin, zmax)[0]
 
 
 def compute_beta_s_square_mean(
@@ -966,10 +963,10 @@ def compute_beta_s_square_mean(
     def integrand(z_i, z_cl=z_cl, z_inf=z_inf, cosmo=cosmo):
         return compute_beta_s(z_i, z_cl, z_inf, cosmo) ** 2 * z_distrib_func(z_i)
 
-    if zmin == None:
+    if zmin is None:
         zmin = z_cl + delta_z_cut
-    Bs_square_mean = quad(integrand, zmin, zmax)[0] / quad(z_distrib_func, zmin, zmax)[0]
-    return Bs_square_mean
+
+    return quad(integrand, zmin, zmax)[0] / quad(z_distrib_func, zmin, zmax)[0]
 
 
 def _draw_random_points_from_distribution(xmin, xmax, nobj, dist_func, xstep=0.001):

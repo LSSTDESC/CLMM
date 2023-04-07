@@ -81,6 +81,7 @@ class GalaxyCluster:
         """Loads GalaxyCluster object to filename using Pickle"""
         with open(filename, "rb") as fin:
             self = pickle.load(fin, **kwargs)
+        # pylint: disable=protected-access
         self._check_types()
         return self
 
@@ -104,6 +105,7 @@ class GalaxyCluster:
 
     def _repr_html_(self):
         """Generates string for display(GalaxyCluster)"""
+        # pylint: disable=protected-access
         return (
             f"<b>GalaxyCluster:</b> {self.unique_id} "
             f"(ra={self.ra}, dec={self.dec}) at z={self.z}"
