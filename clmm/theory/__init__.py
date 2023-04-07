@@ -51,7 +51,7 @@ def _load_backend(be_module):
         func_layer._modeling_object = None
 
 
-def _load_backend_fallback(be_key, backends_config):
+def _load_backend_fallback(be_key):
     """Loads the backend of choice if available or send a warning and try to load
     the backends in the order of the __backends dictionary.
 
@@ -60,12 +60,10 @@ def _load_backend_fallback(be_key, backends_config):
     ----------
     be_key : str
         Key for the selected backend in the __backends dictionary.
-    backends_config : dict
-        Dictionary with the configuration to load backends.
     """
     first_msg = True
-    for key in (be_key, *filter(lambda k: k != be_key, backends_config.keys())):
-        conf = backends_config[key]
+    for key in (be_key, *filter(lambda k: k != be_key, __backends.keys())):
+        conf = __backends[key]
         if conf["available"]:
             _load_backend(conf["module"])
             return key
@@ -79,7 +77,7 @@ def _load_backend_fallback(be_key, backends_config):
     raise ImportError("No modeling backend available.")
 
 
-def load_backend_env(backends_config=None):
+def load_backend_env():
     """Loads the backend of choice if available or send a warning and try to load
     the backends in the order of the __backends dictionary.
 
@@ -89,24 +87,20 @@ def load_backend_env(backends_config=None):
     be_key : str
         Key for the selected backend in the __backends dictionary.
     """
-    if backends_config is None:
-        backends_config = __backends
-
     #  Backend check:
     #    Checks all backends and set available to True for those that can be
     #    corretly loaded.
-    for nick, be_conf in backends_config.items():
+    for nick, be_conf in __backends.items():
         be_conf["available"] = backend_is_available(nick)
 
     #  Backend nick:
     #    If the environment variable CLMM_MODELING_BACKEND is set it gets its value,
     #    falls back to 'ccl' => CCL if CLMM_MODELING_BACKEND is not set.
     be_nick_env = os.environ.get("CLMM_MODELING_BACKEND", "ccl")
-    if be_nick_env not in backends_config:
+    if be_nick_env not in __backends:
         raise ValueError(f"CLMM Backend {be_nick_env}'' is not supported")
-
     #  Backend load:
-    return _load_backend_fallback(be_nick_env, backends_config)
+    return _load_backend_fallback(be_nick_env)
 
 
 ##########################
