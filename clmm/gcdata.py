@@ -20,14 +20,10 @@ class GCMetaData(OrderedDict):
     def __init__(self, *args, **kwargs):
         OrderedDict.__init__(self, *args, **kwargs)
         if "cosmo" not in self:
-            self.__setitem__("cosmo", None, True)
+            OrderedDict.__setitem__(self, "cosmo", None)
 
-    def __setitem__(self, item, value, force=False):
-        if (
-            item == "cosmo"
-            and not force
-            and (self["cosmo"] is not None if "cosmo" in self else False)
-        ):
+    def __setitem__(self, item, value):
+        if item == "cosmo" and self.get("cosmo", None):
             raise ValueError(
                 "cosmo must be changed via update_cosmo or update_cosmo_ext_valid method"
             )
@@ -175,7 +171,7 @@ class GCData(APtable):
                     raise ValueError(
                         f"input '{key}' ({ext_value}) differs from gcdata '{key}' ({in_value})"
                     )
-            self.meta.__setitem__(key, ext_value, force=True)
+            OrderedDict.__setitem__(self.meta, key, ext_value)
 
     def update_cosmo_ext_valid(self, gcdata, cosmo, overwrite=False):
         r"""Updates cosmo metadata if the same as in gcdata
