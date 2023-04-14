@@ -521,7 +521,7 @@ def _is_valid(arg, valid_type):
 
 
 def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argmax=None,
-                      eqmin=False, eqmax=False):
+                      eqmin=False, eqmax=False, shape=None):
     r"""Validate argument type and raise errors.
 
     Parameters
@@ -542,10 +542,12 @@ def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argm
         Minimum value allowed. Default: None
     argmax : int, float, None, optional
         Maximum value allowed. Default: None
-    eqmin: bool, optional
+    eqmin : bool, optional
         If True, accepts min(arg)==argmin. Default: False
-    eqmax: bool, optional
+    eqmax : bool, optional
         If True, accepts max(arg)==argmax. Default: False
+    shape : tuple of ints, None, optional
+        Shape of object allowed. Default: None
     """
     var = loc[argname]
     # Check for None
@@ -576,6 +578,12 @@ def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argm
                 err = f'{argname} must be lesser than {argmax},' \
                       f' received max({argname}): {var_array.max()}'
                 raise ValueError(err)
+    # Check for shape
+    if shape is not None :
+        if np.shape(var) != shape :
+            err = f'{argname} must be of shape {shape},' \
+                  f'received shape({argname}): {np.shape(var)}'
+            raise ValueError(err)
 
 def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1., ngrid=1000):
     r"""
