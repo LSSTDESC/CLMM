@@ -9,7 +9,7 @@ import numpy as np
 # functions for the 2h term
 from scipy.integrate import simps, quad
 from scipy.special import jv
-from scipy.interpolate import interp1d
+from scipy.interpolate import interp1d, splrep, splev
 
 from .generic import (
     compute_reduced_shear_from_convergence,
@@ -197,43 +197,61 @@ class CLMModeling:
         r"""Sets the cosmology to the internal cosmology object"""
         self.cosmo = cosmo if cosmo is not None else self.cosmo_class()
 
-    def _eval_excess_surface_density_2h(self, r_proj, z_cl, halobias=1.0, lsteps=500):
+    def _eval_excess_surface_density_2h(
+        self,
+        r_proj,
+        z_cl,
+        halobias=1.0,
+        logkbounds=(-5, 5),
+        ksteps=1000,
+        loglbounds=(0, 6),
+        lsteps=500,
+    ):
         """ "eval excess surface density from the 2-halo term"""
         # pylint: disable=protected-access
         da = self.cosmo.eval_da(z_cl)
         rho_m = self.cosmo._get_rho_m(z_cl)
 
-        kk = np.logspace(-5.0, 5.0, 1000)
+        kk = np.logspace(logkbounds[0], logkbounds[1], ksteps)
         pk = self.cosmo._eval_linear_matter_powerspectrum(kk, z_cl)
-        interp_pk = interp1d(kk, pk, kind="cubic")
+        interp_pk = splrep(kk, pk)
         theta = r_proj / da
 
         # calculate integral, units [Mpc]**-3
         def __integrand__(l, theta):
             k = l / ((1 + z_cl) * da)
-            return l * jv(2, l * theta) * interp_pk(k)
+            return l * jv(2, l * theta) * splev(k, interp_pk)
 
-        ll = np.logspace(0, 6, lsteps)
+        ll = np.logspace(loglbounds[0], loglbounds[1], lsteps)
         val = np.array([simps(__integrand__(ll, t), ll) for t in theta])
         return halobias * val * rho_m / (2 * np.pi * (1 + z_cl) ** 3 * da**2)
 
-    def _eval_surface_density_2h(self, r_proj, z_cl, halobias=1.0, lsteps=500):
+    def _eval_surface_density_2h(
+        self,
+        r_proj,
+        z_cl,
+        halobias=1.0,
+        logkbounds=(-5, 5),
+        ksteps=1000,
+        loglbounds=(0, 6),
+        lsteps=500,
+    ):
         """ "eval surface density from the 2-halo term"""
         # pylint: disable=protected-access
         da = self.cosmo.eval_da(z_cl)
         rho_m = self.cosmo._get_rho_m(z_cl)
 
-        kk = np.logspace(-5.0, 5.0, 1000)
+        kk = np.logspace(logkbounds[0], logkbounds[1], ksteps)
         pk = self.cosmo._eval_linear_matter_powerspectrum(kk, z_cl)
-        interp_pk = interp1d(kk, pk, kind="cubic")
+        interp_pk = splrep(kk, pk)
         theta = r_proj / da
 
         # calculate integral, units [Mpc]**-3
         def __integrand__(l, theta):
             k = l / ((1 + z_cl) * da)
-            return l * jv(0, l * theta) * interp_pk(k)
+            return l * jv(0, l * theta) * splev(k, interp_pk)
 
-        ll = np.logspace(0, 6, lsteps)
+        ll = np.logspace(loglbounds[0], loglbounds[1], lsteps)
         val = np.array([simps(__integrand__(ll, t), ll) for t in theta])
         return halobias * val * rho_m / (2 * np.pi * (1 + z_cl) ** 3 * da**2)
 
@@ -554,7 +572,16 @@ class CLMModeling:
 
         return self._eval_excess_surface_density(r_proj=r_proj, z_cl=z_cl)
 
-    def eval_excess_surface_density_2h(self, r_proj, z_cl, halobias=1.0, lsteps=500):
+    def eval_excess_surface_density_2h(
+        self,
+        r_proj,
+        z_cl,
+        halobias=1.0,
+        logkbounds=(-5, 5),
+        ksteps=1000,
+        loglbounds=(0, 6),
+        lsteps=500,
+    ):
         r"""Computes the 2-halo term excess surface density (CCL and NC backends only)
 
         Parameters
@@ -565,6 +592,12 @@ class CLMModeling:
             Redshift of the cluster
         halobias : float, optional
             Value of the halo bias
+        logkbounds : tuple(float, float), shape (2,), optional
+           Log10 of the upper and lower bounds for the linear matter power spectrum
+        ksteps : int, optional
+           Number of steps in k-space
+        loglbounds : tuple(float, float), shape (2,), optional
+           Log10 of the upper and lower bounds for numerical integration
         lsteps: int, optional
             Number of steps for numerical integration
 
@@ -577,17 +610,38 @@ class CLMModeling:
         if self.validate_input:
             validate_argument(locals(), "r_proj", "float_array", argmin=0)
             validate_argument(locals(), "z_cl", float, argmin=0)
-            validate_argument(locals(), "lsteps", int, argmin=1)
             validate_argument(locals(), "halobias", float, argmin=0)
+            validate_argument(locals(), "logkbounds", tuple, shape=(2,))
+            validate_argument(locals(), "ksteps", int, argmin=1)
+            validate_argument(locals(), "loglbounds", tuple, shape=(2,))
+            validate_argument(locals(), "lsteps", int, argmin=1)
 
         if self.backend not in ("ccl", "nc"):
             raise NotImplementedError(
                 f"2-halo term not currently supported with the {self.backend} backend. "
                 "Use the CCL or NumCosmo backend instead"
             )
-        return self._eval_excess_surface_density_2h(r_proj, z_cl, halobias=halobias, lsteps=lsteps)
+        else:
+            return self._eval_excess_surface_density_2h(
+                r_proj,
+                z_cl,
+                halobias=halobias,
+                logkbounds=logkbounds,
+                ksteps=ksteps,
+                loglbounds=loglbounds,
+                lsteps=lsteps,
+            )
 
-    def eval_surface_density_2h(self, r_proj, z_cl, halobias=1.0, lsteps=500):
+    def eval_surface_density_2h(
+        self,
+        r_proj,
+        z_cl,
+        halobias=1.0,
+        logkbounds=(-5, 5),
+        ksteps=1000,
+        loglbounds=(0, 6),
+        lsteps=500,
+    ):
         r"""Computes the 2-halo term surface density (CCL and NC backends only)
 
         Parameters
@@ -598,6 +652,12 @@ class CLMModeling:
             Redshift of the cluster
         halobias : float, optional
            Value of the halo bias
+        logkbounds : tuple(float,float), shape (2,), optional
+           Log10 of the upper and lower bounds for the linear matter power spectrum
+        ksteps : int, optional
+           Number of steps in k-space
+        loglbounds : tuple(float,float), shape (2,), optional
+           Log10 of the upper and lower bounds for numerical integration
         lsteps: int, optional
             Number of steps for numerical integration
 
@@ -610,15 +670,27 @@ class CLMModeling:
         if self.validate_input:
             validate_argument(locals(), "r_proj", "float_array", argmin=0)
             validate_argument(locals(), "z_cl", float, argmin=0)
-            validate_argument(locals(), "lsteps", int, argmin=1)
             validate_argument(locals(), "halobias", float, argmin=0)
+            validate_argument(locals(), "logkbounds", tuple, shape=(2,))
+            validate_argument(locals(), "ksteps", int, argmin=1)
+            validate_argument(locals(), "loglbounds", tuple, shape=(2,))
+            validate_argument(locals(), "lsteps", int, argmin=1)
 
         if self.backend not in ("ccl", "nc"):
             raise NotImplementedError(
                 f"2-halo term not currently supported with the {self.backend} backend. "
                 "Use the CCL or NumCosmo backend instead"
             )
-        return self._eval_surface_density_2h(r_proj, z_cl, halobias=halobias, lsteps=lsteps)
+        else:
+            return self._eval_surface_density_2h(
+                r_proj,
+                z_cl,
+                halobias=halobias,
+                logkbounds=logkbounds,
+                ksteps=ksteps,
+                loglbounds=loglbounds,
+                lsteps=lsteps,
+            )
 
     def _get_beta_s_mean(self, z_cl, z_src, z_src_info="discrete", beta_kwargs=None):
         r"""Get mean value of the geometric lensing efficicency ratio from typical class function.
