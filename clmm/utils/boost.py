@@ -1,6 +1,7 @@
 """General utility functions that are used in multiple modules"""
 import numpy as np
 
+
 def compute_nfw_boost(rvals, rscale=1000, boost0=0.1):
     """Given a list of `rvals`, and optional `rscale` and `boost0`, return the corresponding
     boost factor at each rval
@@ -115,6 +116,7 @@ def correct_sigma_with_boost_model(rvals, sigma_vals, boost_model="nfw_boost", *
 
     sigma_corrected = np.array(sigma_vals) / boost_factors
     return sigma_corrected
+
 
 boost_models = {
     "nfw_boost": compute_nfw_boost,

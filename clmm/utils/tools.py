@@ -102,6 +102,7 @@ def validate_argument(
     argmax=None,
     eqmin=False,
     eqmax=False,
+    shape=None,
 ):
     r"""Validate argument type and raise errors.
 
@@ -123,10 +124,12 @@ def validate_argument(
         Minimum value allowed. Default: None
     argmax : int, float, None, optional
         Maximum value allowed. Default: None
-    eqmin: bool, optional
+    eqmin : bool, optional
         If True, accepts min(arg)==argmin. Default: False
-    eqmax: bool, optional
+    eqmax : bool, optional
         If True, accepts max(arg)==argmax. Default: False
+    shape : tuple of ints, None, optional
+        Shape of object allowed. Default: None
     """
     var = loc[argname]
     # Check for None
@@ -165,6 +168,13 @@ def validate_argument(
                     f" received max({argname}): {var_array.max()}"
                 )
                 raise ValueError(err)
+    # Check for shape
+    if shape is not None:
+        if np.shape(var) != shape:
+            err = (
+                f"{argname} must be of shape {shape}," f"received shape({argname}): {np.shape(var)}"
+            )
+            raise ValueError(err)
 
 
 def _validate_ra(loc, ra_name, is_array):

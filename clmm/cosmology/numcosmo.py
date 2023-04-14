@@ -27,6 +27,7 @@ class NumCosmoCosmology(CLMMCosmology):
     be_cosmo: cosmology library
         Cosmology library used in the back-end
     """
+
     # pylint: disable=too-many-instance-attributes
     # pylint: disable=abstract-method
 
