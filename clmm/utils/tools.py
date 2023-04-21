@@ -148,12 +148,12 @@ def validate_argument(
     if any(t is not None for t in (argmin, argmax)):
         try:
             var_array = np.array(var, dtype=float)
-        except:
+        except Exception as exc:
             err = (
                 f"{argname} ({type(var).__name__}) cannot be converted to number"
                 " for min/max validation."
             )
-            raise TypeError(err)
+            raise TypeError(err) from exc
         if argmin is not None:
             if var_array.min() < argmin if eqmin else var_array.min() <= argmin:
                 err = (
