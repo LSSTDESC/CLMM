@@ -623,10 +623,9 @@ class CLMModeling:
                 f"2-halo term not currently supported with the {self.backend} backend. "
                 "Use the CCL or NumCosmo backend instead"
             )
-        else:
-            return self._eval_excess_surface_density_2h(
-                r_proj, z_cl, halobias, logkbounds, ksteps, loglbounds, lsteps
-            )
+        return self._eval_excess_surface_density_2h(
+            r_proj, z_cl, halobias, logkbounds, ksteps, loglbounds, lsteps
+        )
 
     def eval_surface_density_2h(
         self,
@@ -677,10 +676,9 @@ class CLMModeling:
                 f"2-halo term not currently supported with the {self.backend} backend. "
                 "Use the CCL or NumCosmo backend instead"
             )
-        else:
-            return self._eval_surface_density_2h(
-                r_proj, z_cl, halobias, logkbounds, ksteps, loglbounds, lsteps
-            )
+        return self._eval_surface_density_2h(
+            r_proj, z_cl, halobias, logkbounds, ksteps, loglbounds, lsteps
+        )
 
     def _get_beta_s_mean(self, z_cl, z_src, z_src_info="discrete", beta_kwargs=None):
         r"""Get mean value of the geometric lensing efficicency ratio from typical class function.
