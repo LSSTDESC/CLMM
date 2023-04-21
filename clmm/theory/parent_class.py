@@ -9,7 +9,7 @@ import numpy as np
 # functions for the 2h term
 from scipy.integrate import simps, quad
 from scipy.special import jv
-from scipy.interpolate import interp1d, splrep, splev
+from scipy.interpolate import splrep, splev
 
 from .generic import (
     compute_reduced_shear_from_convergence,
@@ -197,8 +197,9 @@ class CLMModeling:
         r"""Sets the cosmology to the internal cosmology object"""
         self.cosmo = cosmo if cosmo is not None else self.cosmo_class()
 
-    def _eval_excess_surface_density_2h(
+    def _eval_2halo_term_generic(
         self,
+        sph_harm_ord,
         r_proj,
         z_cl,
         halobias=1.0,
@@ -212,19 +213,19 @@ class CLMModeling:
         da = self.cosmo.eval_da(z_cl)
         rho_m = self.cosmo._get_rho_m(z_cl)
 
-        kk = np.logspace(logkbounds[0], logkbounds[1], ksteps)
-        pk = self.cosmo._eval_linear_matter_powerspectrum(kk, z_cl)
-        interp_pk = splrep(kk, pk)
+        k_values = np.logspace(logkbounds[0], logkbounds[1], ksteps)
+        pk_values = self.cosmo._eval_linear_matter_powerspectrum(k_values, z_cl)
+        interp_pk = splrep(k_values, pk_values)
         theta = r_proj / da
 
         # calculate integral, units [Mpc]**-3
-        def __integrand__(l, theta):
-            k = l / ((1 + z_cl) * da)
-            return l * jv(2, l * theta) * splev(k, interp_pk)
+        def __integrand__(l_value, theta):
+            k_value = l_value / ((1 + z_cl) * da)
+            return l_value * jv(sph_harm_ord, l_value * theta) * splev(k_value, interp_pk)
 
-        ll = np.logspace(loglbounds[0], loglbounds[1], lsteps)
-        val = np.array([simps(__integrand__(ll, t), ll) for t in theta])
-        return halobias * val * rho_m / (2 * np.pi * (1 + z_cl) ** 3 * da**2)
+        l_values = np.logspace(loglbounds[0], loglbounds[1], lsteps)
+        kernel = np.array([simps(__integrand__(l_values, t), l_values) for t in theta])
+        return halobias * kernel * rho_m / (2 * np.pi * (1 + z_cl) ** 3 * da**2)
 
     def _eval_surface_density_2h(
         self,
@@ -237,23 +238,24 @@ class CLMModeling:
         lsteps=500,
     ):
         """ "eval surface density from the 2-halo term"""
-        # pylint: disable=protected-access
-        da = self.cosmo.eval_da(z_cl)
-        rho_m = self.cosmo._get_rho_m(z_cl)
+        return self._eval_2halo_term_generic(
+            0, r_proj, z_cl, halobias, logkbounds, ksteps, loglbounds, lsteps
+        )
 
-        kk = np.logspace(logkbounds[0], logkbounds[1], ksteps)
-        pk = self.cosmo._eval_linear_matter_powerspectrum(kk, z_cl)
-        interp_pk = splrep(kk, pk)
-        theta = r_proj / da
-
-        # calculate integral, units [Mpc]**-3
-        def __integrand__(l, theta):
-            k = l / ((1 + z_cl) * da)
-            return l * jv(0, l * theta) * splev(k, interp_pk)
-
-        ll = np.logspace(loglbounds[0], loglbounds[1], lsteps)
-        val = np.array([simps(__integrand__(ll, t), ll) for t in theta])
-        return halobias * val * rho_m / (2 * np.pi * (1 + z_cl) ** 3 * da**2)
+    def _eval_excess_surface_density_2h(
+        self,
+        r_proj,
+        z_cl,
+        halobias=1.0,
+        logkbounds=(-5, 5),
+        ksteps=1000,
+        loglbounds=(0, 6),
+        lsteps=500,
+    ):
+        """ "eval excess surface density from the 2-halo term"""
+        return self._eval_2halo_term_generic(
+            2, r_proj, z_cl, halobias, logkbounds, ksteps, loglbounds, lsteps
+        )
 
     def _eval_rdelta(self, z_cl):
         return compute_rdelta(self.mdelta, z_cl, self.cosmo, self.massdef, self.delta_mdef)
@@ -623,13 +625,7 @@ class CLMModeling:
             )
         else:
             return self._eval_excess_surface_density_2h(
-                r_proj,
-                z_cl,
-                halobias=halobias,
-                logkbounds=logkbounds,
-                ksteps=ksteps,
-                loglbounds=loglbounds,
-                lsteps=lsteps,
+                r_proj, z_cl, halobias, logkbounds, ksteps, loglbounds, lsteps
             )
 
     def eval_surface_density_2h(
@@ -683,13 +679,7 @@ class CLMModeling:
             )
         else:
             return self._eval_surface_density_2h(
-                r_proj,
-                z_cl,
-                halobias=halobias,
-                logkbounds=logkbounds,
-                ksteps=ksteps,
-                loglbounds=loglbounds,
-                lsteps=lsteps,
+                r_proj, z_cl, halobias, logkbounds, ksteps, loglbounds, lsteps
             )
 
     def _get_beta_s_mean(self, z_cl, z_src, z_src_info="discrete", beta_kwargs=None):
