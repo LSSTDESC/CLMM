@@ -659,6 +659,7 @@ def make_radial_profile(
             component,
             xbins=bins,
             yerr=None if components_error is None else components_error[i],
+            error_model=error_model,
             weights=weights,
         )
         profile_table[f"p_{i}"] = comp_avg
