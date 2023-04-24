@@ -37,7 +37,7 @@ from .statistic import (
     gaussian,
 )
 
-from .tools import (
+from .validation import (
     arguments_consistency,
     _patch_rho_crit_to_cd2018,
     validate_argument,
