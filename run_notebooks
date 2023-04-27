@@ -1,10 +1,22 @@
-KERNEL=$1
+EXECUTE="--execute"
+KERNEL=""
+while getopts 'k:s' flag; do
+  case "${flag}" in
+    s) EXECUTE="" ;;
+    k) KERNEL="${OPTARG}" ;;
+    *) exit 1 ;;
+  esac
+done
 if [ "$KERNEL" == "" ]; then
     KERNEL="python3"
     echo "*** no kernel specified, using $KERNEL"
 fi
 
 mkdir -p _executed_nbs/
-for nb in examples/*.ipynb
-    do jupyter nbconvert --execute --ExecutePreprocessor.kernel_name=$KERNEL --output-dir _executed_nbs/ --to notebook $nb
+for nb in `find examples/ -name "*.ipynb" -type f`
+    do
+    if [[ "$nb" != *".ipynb_checkpoints"* ]]
+        then
+        jupyter nbconvert $EXECUTE --ExecutePreprocessor.kernel_name=$KERNEL --output-dir _executed_nbs/ --to notebook $nb
+    fi
 done
