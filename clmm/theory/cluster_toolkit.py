@@ -93,28 +93,28 @@ class CTCLMModeling(CLMModeling):
     # Functions implemented by child class
 
     def _update_halo_density_profile(self):
-        """ "updates halo density profile with set internal properties"""
+        """updates halo density profile with set internal properties"""
         # pylint: disable=unnecessary-pass
         pass
 
     def _get_concentration(self):
-        """ "get concentration"""
+        """get concentration"""
         return self.__cdelta
 
     def _get_mass(self):
-        """ "get mass"""
+        """get mass"""
         return self.__mdelta
 
     def _set_concentration(self, cdelta):
-        """ " set concentration"""
+        """set concentration"""
         self.__cdelta = cdelta
 
     def _set_mass(self, mdelta):
-        """ " set mass"""
+        """set mass"""
         self.__mdelta = mdelta
 
     def _eval_3d_density(self, r3d, z_cl):
-        """ "eval 3d density"""
+        """eval 3d density"""
         h = self.cosmo["h"]
         Omega_m = self.mdef_dict[self.massdef](z_cl) * self.cor_factor
         return (
@@ -129,7 +129,7 @@ class CTCLMModeling(CLMModeling):
         )
 
     def _eval_surface_density(self, r_proj, z_cl):
-        """ "eval surface density"""
+        """eval surface density"""
         h = self.cosmo["h"]
         Omega_m = self.mdef_dict[self.massdef](z_cl) * self.cor_factor
         return (
@@ -168,7 +168,7 @@ class CTCLMModeling(CLMModeling):
         )
 
     def _eval_excess_surface_density(self, r_proj, z_cl):
-        """ "eval excess surface density"""
+        """eval excess surface density"""
         if np.min(r_proj) < 1.0e-11:
             raise ValueError(
                 f"Rmin = {np.min(r_proj):.2e} Mpc!"

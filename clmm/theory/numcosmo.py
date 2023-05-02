@@ -69,7 +69,7 @@ class NumCosmoCLMModeling(CLMModeling):
     # Functions implemented by child class
 
     def _update_halo_density_profile(self):
-        """ "updates halo density profile with set internal properties"""
+        """updates halo density profile with set internal properties"""
         # Makes sure current cdelta/mdelta values are kept
         has_cm_vals = self.hdpm is not None
         if has_cm_vals:
@@ -87,20 +87,20 @@ class NumCosmoCLMModeling(CLMModeling):
         self._update_vec_funcs()
 
     def _get_concentration(self):
-        """ "get concentration"""
+        """get concentration"""
         return self.hdpm.props.cDelta
 
     def _get_mass(self):
-        """ "get mass"""
+        """get mass"""
         return 10**self.hdpm.props.log10MDelta
 
     def _set_concentration(self, cdelta):
-        """ "set concentration"""
+        """set concentration"""
         self.hdpm.props.cDelta = cdelta
         self._update_vec_funcs()
 
     def _set_mass(self, mdelta):
-        """ "set mass"""
+        """set mass"""
         self.hdpm.props.log10MDelta = math.log10(mdelta)
         self._update_vec_funcs()
 
@@ -112,12 +112,12 @@ class NumCosmoCLMModeling(CLMModeling):
         self._update_vec_funcs()
 
     def _get_einasto_alpha(self, z_cl=None):
-        """ "get the value of the Einasto slope"""
+        """get the value of the Einasto slope"""
         # Note that z_cl is needed for CCL<2.6 only
         return self.hdpm.props.alpha
 
     def _eval_reduced_tangential_shear_core(self, r_proj, z_cl, z_src):
-        """ "eval reduced tangential shear considering a single redshift plane
+        """eval reduced tangential shear considering a single redshift plane
         for background sources"""
 
         if (

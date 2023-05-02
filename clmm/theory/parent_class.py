@@ -208,7 +208,7 @@ class CLMModeling:
         loglbounds=(0, 6),
         lsteps=500,
     ):
-        """ "eval excess surface density from the 2-halo term"""
+        """eval excess surface density from the 2-halo term"""
         # pylint: disable=protected-access
         da = self.cosmo.eval_da(z_cl)
         rho_m = self.cosmo._get_rho_m(z_cl)
@@ -237,7 +237,7 @@ class CLMModeling:
         loglbounds=(0, 6),
         lsteps=500,
     ):
-        """ "eval surface density from the 2-halo term"""
+        """eval surface density from the 2-halo term"""
         return self._eval_2halo_term_generic(
             0, r_proj, z_cl, halobias, logkbounds, ksteps, loglbounds, lsteps
         )
@@ -252,7 +252,7 @@ class CLMModeling:
         loglbounds=(0, 6),
         lsteps=500,
     ):
-        """ "eval excess surface density from the 2-halo term"""
+        """eval excess surface density from the 2-halo term"""
         return self._eval_2halo_term_generic(
             2, r_proj, z_cl, halobias, logkbounds, ksteps, loglbounds, lsteps
         )

@@ -86,7 +86,7 @@ class CCLCLMModeling(CLMModeling):
     # Functions implemented by child class
 
     def _update_halo_density_profile(self):
-        """ "updates halo density profile with set internal properties"""
+        """updates halo density profile with set internal properties"""
         # prepare mdef object
         self.mdef = ccl.halos.MassDef(self.delta_mdef, self.mdef_dict[self.massdef])
         # adjust it for ccl version > 2.6.1
@@ -96,15 +96,15 @@ class CCLCLMModeling(CLMModeling):
         self.cdelta = self.cdelta if self.hdpm else 4.0  # ccl always needs an input concentration
 
     def _get_concentration(self):
-        """ "get concentration"""
+        """get concentration"""
         return self.conc.c
 
     def _get_mass(self):
-        """ "get mass"""
+        """get mass"""
         return self.__mdelta_cor * self.cor_factor
 
     def _set_concentration(self, cdelta):
-        """ "set concentration. Also sets/updates hdpm"""
+        """set concentration. Also sets/updates hdpm"""
         # pylint: disable=protected-access
         self.conc = ccl.halos.ConcentrationConstant(c=cdelta, mdef=self.mdef)
         self.mdef._concentration_init(self.conc)
@@ -114,7 +114,7 @@ class CCLCLMModeling(CLMModeling):
         self.hdpm.update_precision_fftlog(padding_lo_fftlog=1e-4, padding_hi_fftlog=1e3)
 
     def _set_mass(self, mdelta):
-        """ " set mass"""
+        """set mass"""
         self.__mdelta_cor = mdelta / self.cor_factor
 
     def _set_einasto_alpha(self, alpha):
@@ -124,7 +124,7 @@ class CCLCLMModeling(CLMModeling):
             self.hdpm.update_parameters(alpha=alpha)
 
     def _get_einasto_alpha(self, z_cl=None):
-        """ "get the value of the Einasto slope"""
+        """get the value of the Einasto slope"""
         # pylint: disable=protected-access
         if self.hdpm.alpha != "cosmo":
             a_cl = 1  # a_cl does not matter in this case
@@ -133,7 +133,7 @@ class CCLCLMModeling(CLMModeling):
         return self.hdpm._get_alpha(self.cosmo.be_cosmo, self.__mdelta_cor, a_cl, self.mdef)
 
     def _eval_3d_density(self, r3d, z_cl):
-        """ "eval 3d density"""
+        """eval 3d density"""
         return self._call_ccl_profile_lens(self.hdpm.real, r3d, z_cl, ndim=3)
 
     def _eval_surface_density(self, r_proj, z_cl):
@@ -141,11 +141,11 @@ class CCLCLMModeling(CLMModeling):
         return self._call_ccl_profile_lens(self.hdpm.projected, r_proj, z_cl)
 
     def _eval_mean_surface_density(self, r_proj, z_cl):
-        """ "eval mean surface density"""
+        """eval mean surface density"""
         return self._call_ccl_profile_lens(self.hdpm.cumul2d, r_proj, z_cl)
 
     def _eval_excess_surface_density(self, r_proj, z_cl):
-        """ "eval excess surface density"""
+        """eval excess surface density"""
         return self._eval_mean_surface_density(r_proj, z_cl) - self._eval_surface_density(
             r_proj, z_cl
         )
@@ -169,7 +169,7 @@ class CCLCLMModeling(CLMModeling):
     # Helper functions unique to this class
 
     def _call_ccl_profile_lens(self, ccl_hdpm_func, radius, z_lens, ndim=2):
-        """ "call ccl profile functions that depend on the lens only"""
+        """call ccl profile functions that depend on the lens only"""
         a_lens = self.cosmo.get_a_from_z(z_lens)
 
         return (
@@ -185,7 +185,7 @@ class CCLCLMModeling(CLMModeling):
         )
 
     def _call_ccl_profile_lens_src(self, ccl_hdpm_func, radius, z_lens, z_src):
-        """ "call ccl profile functions that depend on the lens and the sources"""
+        """call ccl profile functions that depend on the lens and the sources"""
         a_lens = self.cosmo.get_a_from_z(z_lens)
         a_src = self.cosmo.get_a_from_z(z_src)
 
