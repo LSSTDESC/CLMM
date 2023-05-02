@@ -20,10 +20,12 @@ from .generic import (
 )
 from ..utils import (
     validate_argument,
-    _integ_pzfuncs,
     compute_beta_s_mean,
     compute_beta_s_square_mean,
     compute_beta_s_func,
+)
+from ..redshift import (
+    _integ_pzfuncs,
     compute_for_good_redshifts,
 )
 

@@ -2,7 +2,8 @@
 """
 # CLMM Cosmology object abstract superclass
 import numpy as np
-from ..utils import validate_argument, compute_for_good_redshifts
+from ..utils import validate_argument
+from ..redshift import compute_for_good_redshifts
 from ..constants import Constants as const
 
 

@@ -12,7 +12,7 @@ from clmm.utils import (
     arguments_consistency,
     validate_argument,
 )
-from clmm import z_distributions as zdist
+from clmm.redshift import distributions as zdist
 
 
 TOLERANCE = {"rtol": 1.0e-6, "atol": 0}

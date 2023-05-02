@@ -23,11 +23,6 @@ from .ellipticity import (
     compute_lensed_ellipticity,
 )
 
-from .redshift import (
-    _integ_pzfuncs,
-    compute_for_good_redshifts,
-)
-
 from .statistic import (
     compute_weighted_bin_sum,
     compute_radial_averages,

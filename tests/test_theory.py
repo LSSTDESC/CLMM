@@ -8,7 +8,7 @@ from clmm.constants import Constants as clc
 from clmm.galaxycluster import GalaxyCluster
 from clmm import GCData
 from clmm.utils import compute_beta_s_square_mean, compute_beta_s_mean
-from clmm.z_distributions import chang2013, desc_srd
+from clmm.redshift.distributions import chang2013, desc_srd
 
 TOLERANCE = {"rtol": 1.0e-8}
 

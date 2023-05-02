@@ -13,7 +13,10 @@ from ..utils import (
     validate_argument,
     _validate_ra,
     _validate_dec,
+)
+from ..redshift import (
     _integ_pzfuncs,
+    compute_for_good_redshifts,
 )
 from ..theory import compute_critical_surface_density_eff
 

@@ -13,7 +13,7 @@ from ..utils import (
     _draw_random_points_from_distribution,
     gaussian,
 )
-from .. import z_distributions as zdist
+from ..redshift import distributions as zdist
 
 
 def generate_galaxy_catalog(
