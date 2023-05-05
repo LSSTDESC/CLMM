@@ -108,7 +108,6 @@ class CCLCLMModeling(CLMModeling):
                 self.mdef.concentration = self.conc
         else:
             self.mdef.concentration = self.conc
-        self.mdef._concentration_init(self.conc)
         self.hdpm = self.hdpm_dict[self.halo_profile_model](
             self.conc, **self.hdpm_opts[self.halo_profile_model])
         self.hdpm.update_precision_fftlog(
