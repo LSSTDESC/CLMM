@@ -12,8 +12,11 @@ from .generic import (compute_reduced_shear_from_convergence,
                       compute_magnification_bias_from_magnification,
                       compute_rdelta, compute_profile_mass_in_radius,
                       convert_profile_mass_concentration)
-from ..utils import (validate_argument, _integ_pzfuncs, compute_beta_s_mean,
-                     compute_beta_s_square_mean, compute_beta_s_func)
+from ..utils import (validate_argument, _integ_pzfuncs, compute_beta_s_func,
+                     compute_beta_s_mean_from_weights,
+                     compute_beta_s_mean_from_distribution, 
+                     compute_beta_s_square_mean_from_weights,
+                     compute_beta_s_square_mean_from_distribution)
 
 
 class CLMModeling:
@@ -665,7 +668,7 @@ class CLMModeling:
         elif z_src_info=='distribution':
             # z_src (function) if PDZ
             beta_kwargs = {} if beta_kwargs is None else beta_kwargs
-            beta_s_mean = compute_beta_s_mean(
+            beta_s_mean = compute_beta_s_mean_from_distribution(
                 z_cl, self.z_inf, self.cosmo, z_distrib_func=z_src, **beta_kwargs)
         return beta_s_mean
 
@@ -726,9 +729,9 @@ class CLMModeling:
             # z_src (tuple) is (beta_s_mean, beta_s_square_mean)
             beta_s_square_mean = z_src[1]
         elif z_src_info=='distribution':
-            # z_src (function) if PDZ
+            # z_src (function) is PDZ
             beta_kwargs = {} if beta_kwargs is None else beta_kwargs
-            beta_s_square_mean = compute_beta_s_square_mean(
+            beta_s_square_mean = compute_beta_s_square_mean_from_distribution(
                 z_cl, self.z_inf, self.cosmo, z_distrib_func=z_src, **beta_kwargs)
         return beta_s_square_mean
 
@@ -931,10 +934,11 @@ class CLMModeling:
         array_like
             Function averaged by pdz, with r_proj dimention.
         """
+        z_src_info_beta = 'discrete'
         tfunc = lambda z, r: compute_beta_s_func(
-            z, z_cl, self.z_inf, self.cosmo, self._eval_tangential_shear, r, z_cl, self.z_inf)
+            z, z_cl, self.z_inf, self.cosmo, z_src_info_beta, self._eval_tangential_shear, r, z_cl, self.z_inf)
         kfunc = lambda z, r: compute_beta_s_func(
-            z, z_cl, self.z_inf, self.cosmo, self._eval_convergence, r, z_cl, self.z_inf)
+            z, z_cl, self.z_inf, self.cosmo, z_src_info_beta, self._eval_convergence, r, z_cl, self.z_inf)
         __integrand__ = lambda z, r: pdz_func(z)*core(tfunc(z, r), kfunc(z, r))
 
         _integ_kwargs = {'zmax': 10.0, 'delta_z_cut': 0.1}
