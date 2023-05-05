@@ -323,15 +323,16 @@ def test_compute_background_probability():
         z_lens, z_source=z_source, use_pdz=False, pzpdf=None, pzbins=None, validate_input=True)
     expected = np.array([1., 1., 1.])
     assert_allclose(p_bkg, expected, **TOLERANCE)
-    assert_raises(ValueError, da.compute_background_probability,
+    assert_raises(
+        ValueError, da.compute_background_probability,
         z_lens, z_source=None, use_pdz=False, pzpdf=None, pzbins=None, validate_input=True)
-
 
     #photoz + deltasigma
     pzbin = np.linspace(.0001, 5, 100)
     pzbins = [pzbin for i in range(z_source.size)]
     pzpdf = [multivariate_normal.pdf(pzbin, mean=z, cov=.3) for z in z_source]
-    assert_raises(ValueError, da.compute_background_probability,
+    assert_raises(
+        ValueError, da.compute_background_probability,
         z_lens, z_source=z_source, use_pdz=True, pzpdf=None, pzbins=pzbins, validate_input=True)
 
 
@@ -358,6 +359,20 @@ def test_compute_galaxy_weights():
     #photoz + deltasigma
     pzbin = np.linspace(.0001, 5, 100)
     pzbins = [pzbin for i in range(len(z_source))]
+    pzpdf = [multivariate_normal.pdf(pzbin, mean=z, cov=.3) for z in z_source]
+    weights = da.compute_galaxy_weights(
+        z_lens, cosmo, z_source=None, use_pdz=True, pzpdf=pzpdf, pzbins=pzbins,
+        use_shape_noise=False, shape_component1=shape_component1, shape_component2=shape_component2,
+        use_shape_error=False, shape_component1_err=None, shape_component2_err=None,
+        is_deltasigma=True,
+        validate_input=True)
+
+    expected = np.array([9.07709345e-33, 1.28167582e-32, 4.16870389e-32])
+    assert_allclose(weights*1e20, expected*1e20,**TOLERANCE)
+
+    #photoz + deltasigma - shared bins
+    pzbin = np.linspace(.0001, 5, 100)
+    pzbins = pzbin
     pzpdf = [multivariate_normal.pdf(pzbin, mean=z, cov=.3) for z in z_source]
     weights = da.compute_galaxy_weights(
         z_lens, cosmo, z_source=None, use_pdz=True, pzpdf=pzpdf, pzbins=pzbins,

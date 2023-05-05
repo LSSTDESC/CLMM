@@ -68,32 +68,22 @@ class NumCosmoCLMModeling(CLMModeling):
     # Functions implemented by child class
 
 
-    def _set_cosmo(self, cosmo):
-        """"set cosmo"""
-        CLMModeling._set_cosmo(self, cosmo)
+    def _update_halo_density_profile(self):
+        """"updates halo density profile with set internal properties"""
+        # Makes sure current cdelta/mdelta values are kept
+        has_cm_vals = self.hdpm is not None
+        if has_cm_vals:
+            cdelta = self.cdelta
+            log10_mdelta = self.hdpm.props.log10MDelta
 
-        self.cosmo.smd = Nc.WLSurfaceMassDensity.new(self.cosmo.dist)
-        self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
+        self.hdpm = self.hdpm_dict[self.halo_profile_model](
+            self.mdef_dict[self.massdef], self.delta_mdef)
 
-    def _set_halo_density_profile(self, halo_profile_model='nfw', massdef='mean', delta_mdef=200):
-        """"set halo density profile"""
-        # Check if we have already an instance of the required object, if not create one
-        if not((halo_profile_model==self.halo_profile_model)
-                and (massdef==self.massdef)
-                and (delta_mdef==self.delta_mdef)):
+        if has_cm_vals:
+            self.cdelta = cdelta
+            self.hdpm.props.log10MDelta = log10_mdelta
 
-            # Makes sure current cdelta/mdelta values are kept
-            has_cm_vals = self.hdpm is not None
-            if has_cm_vals:
-                cdelta = self.cdelta
-                log10_mdelta = self.hdpm.props.log10MDelta
-
-            self.hdpm = self.hdpm_dict[halo_profile_model](
-                self.mdef_dict[massdef], delta_mdef)
-
-            if has_cm_vals:
-                self.cdelta = cdelta
-                self.hdpm.props.log10MDelta = log10_mdelta
+        self._update_vec_funcs()
 
     def _get_concentration(self):
         """"get concentration"""
@@ -106,70 +96,29 @@ class NumCosmoCLMModeling(CLMModeling):
     def _set_concentration(self, cdelta):
         """"set concentration"""
         self.hdpm.props.cDelta = cdelta
+        self._update_vec_funcs()
 
     def _set_mass(self, mdelta):
         """"set mass"""
         self.hdpm.props.log10MDelta = math.log10(mdelta)
+        self._update_vec_funcs()
 
     def _set_einasto_alpha(self, alpha):
-        self.hdpm.props.alpha = alpha
+        if alpha is None:
+            self.hdpm.props.alpha = 0.25
+        else:
+            self.hdpm.props.alpha = alpha
+        self._update_vec_funcs()
 
     def _get_einasto_alpha(self, z_cl=None):
         """"get the value of the Einasto slope"""
-        # Note that z_cl is needed for the CCL backend only
-        # 
+        # Note that z_cl is needed for CCL<2.6 only
         return self.hdpm.props.alpha
 
-    def _eval_3d_density(self, r3d, z_cl):
-        """"eval 3d density"""
-        func = lambda r3d, z_cl: self.hdpm.eval_density(
-            self.cosmo.be_cosmo, r3d, z_cl)
-        return np.vectorize(func)(r3d, z_cl)
-
-    def _eval_surface_density(self, r_proj, z_cl):
-        """"eval surface density"""
-        self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
-        func = lambda r_proj, z_cl: self.cosmo.smd.sigma(
-            self.hdpm, self.cosmo.be_cosmo, r_proj, z_cl)
-        return np.vectorize(func)(r_proj, z_cl)
-
-    def _eval_mean_surface_density(self, r_proj, z_cl):
-        """"eval mean surface density"""
-
-        self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
-        func = lambda r_proj, z_cl: self.cosmo.smd.sigma_mean(
-            self.hdpm, self.cosmo.be_cosmo, r_proj, z_cl)
-        return np.vectorize(func)(r_proj, z_cl)
-
-    def _eval_excess_surface_density(self, r_proj, z_cl):
-        """"eval excess surface density"""
-
-        self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
-        func = lambda r_proj, z_cl: self.cosmo.smd.sigma_excess(
-            self.hdpm, self.cosmo.be_cosmo, r_proj, z_cl)
-        return np.vectorize(func)(r_proj, z_cl)
-
-    def _eval_tangential_shear(self, r_proj, z_cl, z_src):
-        """"eval tangential shear"""
-
-        self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
-        func = lambda r_proj, z_src, z_cl: self.cosmo.smd.shear(
-            self.hdpm, self.cosmo.be_cosmo, r_proj, z_src, z_cl, z_cl)
-        return np.vectorize(func)(r_proj, z_src, z_cl)
-
-    def _eval_convergence(self, r_proj, z_cl, z_src):
-        """"eval convergence"""
-
-        self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
-        func = lambda r_proj, z_src, z_cl: self.cosmo.smd.convergence(
-            self.hdpm, self.cosmo.be_cosmo, r_proj, z_src, z_cl, z_cl)
-        return np.vectorize(func)(r_proj, z_src, z_cl)
-
-    def _eval_reduced_tangential_shear(self, r_proj, z_cl, z_src):
+    def _eval_reduced_tangential_shear_core(self, r_proj, z_cl, z_src):
         """"eval reduced tangential shear considering a single redshift plane
         for background sources"""
 
-        self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
         if (isinstance(r_proj, (list, np.ndarray))
                 and isinstance(z_src, (list, np.ndarray))
                 and len(r_proj) == len(z_src)):
@@ -179,16 +128,31 @@ class NumCosmoCLMModeling(CLMModeling):
         return func(self.hdpm, self.cosmo.be_cosmo, np.atleast_1d(r_proj), 1.0,
                     1.0, np.atleast_1d(z_src), z_cl, z_cl)
 
-    def _eval_magnification(self, r_proj, z_cl, z_src):
-        """"eval magnification"""
-
-        self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
-
-        func = lambda r_proj, z_src, z_cl: self.cosmo.smd.magnification(
-            self.hdpm, self.cosmo.be_cosmo, r_proj, z_src, z_cl, z_cl)
-        return np.vectorize(func)(r_proj, z_src, z_cl)
-
     # Functions unique to this class
+
+    def _update_vec_funcs(self):
+        """Set/update all functions that are vectorized"""
+        self._eval_3d_density = np.vectorize(
+            lambda r3d, z_cl: self.hdpm.eval_density(
+                self.cosmo.be_cosmo, r3d, z_cl))
+        self._eval_surface_density = np.vectorize(
+            lambda r_proj, z_cl: self.cosmo.smd.sigma(
+                self.hdpm, self.cosmo.be_cosmo, r_proj, z_cl))
+        self._eval_mean_surface_density = np.vectorize(
+            lambda r_proj, z_cl: self.cosmo.smd.sigma_mean(
+                self.hdpm, self.cosmo.be_cosmo, r_proj, z_cl))
+        self._eval_excess_surface_density = np.vectorize(
+            lambda r_proj, z_cl: self.cosmo.smd.sigma_excess(
+                self.hdpm, self.cosmo.be_cosmo, r_proj, z_cl))
+        self._eval_tangential_shear = np.vectorize(
+            lambda r_proj, z_cl, z_src: self.cosmo.smd.shear(
+                self.hdpm, self.cosmo.be_cosmo, r_proj, z_src, z_cl, z_cl))
+        self._eval_convergence = np.vectorize(
+            lambda r_proj, z_cl, z_src: self.cosmo.smd.convergence(
+                self.hdpm, self.cosmo.be_cosmo, r_proj, z_src, z_cl, z_cl))
+        self._eval_magnification_core = np.vectorize(
+            lambda r_proj, z_cl, z_src: self.cosmo.smd.magnification(
+                self.hdpm, self.cosmo.be_cosmo, r_proj, z_src, z_cl, z_cl))
 
     def get_mset(self):
         r"""
@@ -209,6 +173,5 @@ class NumCosmoCLMModeling(CLMModeling):
         self.hdpm = mset.get(Nc.HaloDensityProfile.id())
         self.cosmo.smd = mset.get(Nc.WLSurfaceMassDensity.id())
 
-        self.cosmo.smd.prepare_if_needed(self.cosmo.be_cosmo)
 
 Modeling = NumCosmoCLMModeling

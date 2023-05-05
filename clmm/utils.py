@@ -155,6 +155,8 @@ def compute_radial_averages(xvals, yvals, xbins, yerr=None, error_model='ste', w
         Indices of the bins (corresponding to `xbins`) in which each value
         of `xvals` belongs.  Same length as `yvals`.  A binnumber of `i` means the
         corresponding value is between (xbins[i-1], xbins[i]).
+    wts_sum: numpy.ndarray
+        Sum of individual weights in each bin.
     """
     # make case independent
     error_model = error_model.lower()
@@ -180,7 +182,7 @@ def compute_radial_averages(xvals, yvals, xbins, yerr=None, error_model='ste', w
     err_y = np.sqrt(stat_yerr2+data_yerr2)
     # number of objects
     num_objects = np.histogram(x, xbins)[0]
-    return mean_x, mean_y, err_y, num_objects, binnumber
+    return mean_x, mean_y, err_y, num_objects, binnumber, wts_sum
 
 
 def make_bins(rmin, rmax, nbins=10, method='evenwidth', source_seps=None):
@@ -519,7 +521,7 @@ def _is_valid(arg, valid_type):
 
 
 def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argmax=None,
-                      eqmin=False, eqmax=False):
+                      eqmin=False, eqmax=False, shape=None):
     r"""Validate argument type and raise errors.
 
     Parameters
@@ -540,10 +542,12 @@ def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argm
         Minimum value allowed. Default: None
     argmax : int, float, None, optional
         Maximum value allowed. Default: None
-    eqmin: bool, optional
+    eqmin : bool, optional
         If True, accepts min(arg)==argmin. Default: False
-    eqmax: bool, optional
+    eqmax : bool, optional
         If True, accepts max(arg)==argmax. Default: False
+    shape : tuple of ints, None, optional
+        Shape of object allowed. Default: None
     """
     var = loc[argname]
     # Check for None
@@ -574,9 +578,14 @@ def validate_argument(loc, argname, valid_type, none_ok=False, argmin=None, argm
                 err = f'{argname} must be lesser than {argmax},' \
                       f' received max({argname}): {var_array.max()}'
                 raise ValueError(err)
+    # Check for shape
+    if shape is not None :
+        if np.shape(var) != shape :
+            err = f'{argname} must be of shape {shape},' \
+                  f'received shape({argname}): {np.shape(var)}'
+            raise ValueError(err)
 
-def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1.,
-                   is_unique_pzbins=False, ngrid=1000):
+def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1., ngrid=1000):
     r"""
     Integrates the product of a photo-z pdf with a given kernel. 
     This function was created to allow for data with different photo-z binnings.
@@ -594,8 +603,6 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1.,
     kernel : function, optional
         Function to be integrated with the pdf, must be f(z_array) format.
         Default: kernel(z)=1
-    is_unique_pzbins: bool, optional
-        Default: False
     ngrid : int, optional
         Number of points for the interpolation of the redshift pdf.
 
@@ -612,7 +619,7 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1.,
     # to a constant redshift grid for all galaxies. If there is a constant grid for all galaxies
     # these lines are not necessary and z_grid, pz_matrix = pzbins, pzpdf
 
-    if is_unique_pzbins==False:
+    if hasattr(pzbins[0], '__len__'):
         # First need to interpolate on a fixed grid
         z_grid = np.linspace(zmin, zmax, ngrid)
         pdf_interp_list = [interp1d(pzbin, pdf, bounds_error=False, fill_value=0.)
@@ -621,13 +628,16 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin=0., zmax=5, kernel=lambda z: 1.,
         kernel_matrix = kernel(z_grid)
     else:
         # OK perform the integration directly from the pdf binning common to all galaxies
-        z_grid = pzbins[0][(pzbins[0]>=zmin)*(pzbins[0]<=zmax)]
-        pz_matrix = pzpdf
+        mask = (pzbins>=zmin)*(pzbins<=zmax)
+        z_grid = pzbins[mask]
+        pz_matrix = np.array(pzpdf)[:,mask]
         kernel_matrix = kernel(z_grid)
 
     return simps(pz_matrix*kernel_matrix, x=z_grid, axis=1)
 
-def compute_for_good_redshifts(function, z1, z2, bad_value, error_message):
+def compute_for_good_redshifts(function, z1, z2, bad_value, warning_message,
+                               z1_arg_name='z1', z2_arg_name='z2', r_proj=None,
+                               **kwargs):
     """Computes function only for `z1` < `z2`, the rest is filled with `bad_value`
 
     Parameters
@@ -639,23 +649,41 @@ def compute_for_good_redshifts(function, z1, z2, bad_value, error_message):
     z2: float, array_like
         Redshift higher
     bad_value: any
-        Value to be added when z1>=z2
-    error_message: str
-        Message to be displayed
+        Value to fill when `z1` >= `z2`
+    warning_message: str
+        Warning message to be displayed when `z1` >= `z2`
+    z1_arg_name: str, optional
+        Name of the keyword argument that `z1` is passed to. Default: 'z1'
+    z2_arg_name: str, optional
+        Name of the keyword argument that `z2` is passed to. Default: 'z2'
+    r_proj: float, array_like, optional
+        Value to be passed to keyword argument `r_proj` of `function`. Default: None
+
+    Returns
+    -------
+    Return type of `function`
+        Output of `function` with value for `z1` >= `z2` replaced by `bad_value`
     """
+    kwargs = {z1_arg_name:locals()['z1'], z2_arg_name:locals()['z2'], **kwargs}
+
     z_good = np.less(z1, z2)
+    if r_proj is not None:
+        r_proj = np.array(r_proj)*np.full_like(z_good, True)
+        z_good = z_good*r_proj.astype(bool)
+        kwargs.update({'r_proj': r_proj[z_good] if np.iterable(r_proj) else r_proj})
+
     if not np.all(z_good):
-        warnings.warn(error_message)
+        warnings.warn(warning_message, stacklevel=2)
         if np.iterable(z_good):
-            res = np.full(z_good.size, bad_value)
+            res = np.full(z_good.shape, bad_value)
             if np.any(z_good):
-                res[z_good] = function(
-                    np.array(z1)[z_good] if np.iterable(z1) else z1,
-                    np.array(z2)[z_good] if np.iterable(z2) else z2)
+                kwargs[z1_arg_name] = np.array(z1)[z_good] if np.iterable(z1) else z1
+                kwargs[z2_arg_name] = np.array(z2)[z_good] if np.iterable(z2) else z2
+                res[z_good] = function(**kwargs)
         else:
             res = bad_value
     else:
-        res = function(z1, z2)
+        res = function(**kwargs)
     return res
 
 def compute_beta(z_src, z_cl, cosmo, z_src_info='discrete'):
@@ -948,7 +976,6 @@ def compute_beta_s_square_mean_from_weights(z_src, z_cl, z_inf, cosmo, shape_wei
     
     return Bs_square_mean
 
-
 def _draw_random_points_from_distribution(xmin, xmax, nobj, dist_func, xstep=0.001):
     """Draw random points with a given distribution.
 
@@ -1030,3 +1057,22 @@ def _draw_random_points_from_tab_distribution(x_tab, pdf_tab, nobj=1, xmin=None,
     # get the corresponding samples
     samples = inv_cdf(np.random.random(nobj)*(cdf_xmax-cdf_xmin)+cdf_xmin)
     return samples
+
+def gaussian(value, mean, scatter):
+    """Normal distribution.
+
+    Parameters
+    ----------
+    value : array-like
+        Values for which to evaluate gaussian.
+    mean : float
+        Mean value of normal distribution
+    scatter : float
+        Scatter of normal distribution
+
+    Returns
+    -------
+    numpy.ndarray
+        Gaussian values at `value`
+    """
+    return np.exp(-0.5*(value-mean)**2/scatter**2)/np.sqrt(2*np.pi*scatter**2)

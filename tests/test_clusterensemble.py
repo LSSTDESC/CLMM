@@ -2,10 +2,10 @@
 tests for clusterensemble.py
 """
 import os
-from numpy.testing import assert_raises, assert_equal, assert_allclose
+from numpy.testing import assert_raises, assert_equal, assert_allclose, assert_array_equal
 import clmm
 import numpy as np
-from clmm import clusterensemble
+from clmm import ClusterEnsemble
 from clmm import Cosmology
 from clmm import GCData
 from clmm.support import mock_data as mock
@@ -31,7 +31,7 @@ def test_cluster_ensemble():
     bin_units = 'radians'
     names = ('ra', 'dec', 'theta', 'w_ls', 'e1', 'e2', 'z')
 
-    galcat = clmm.GCData([ra_source, dec_source, theta_source, w_ls, 
+    galcat = clmm.GCData([ra_source, dec_source, theta_source, w_ls,
                          shear1, shear2, z_source],
                          names=names)
     # create cluster
@@ -40,25 +40,31 @@ def test_cluster_ensemble():
     cluster.compute_tangential_and_cross_components()
     bins = bins_radians
     gc_list = [cluster]
-    
+    #check empty cluster list
+    ce_empty = ClusterEnsemble('cluster_ensemble', tan_component_in='et',
+    cross_component_in='ex', weights_in = 'w_ls', bins=bins, bin_units='radians', cosmo=cosmo)
+    assert_raises(ValueError, ce_empty.make_stacked_radial_profile)
+    ce_empty.make_individual_radial_profile(cluster,tan_component_in='et',
+    cross_component_in='ex', weights_in = 'w_ls', bins=bins, bin_units='radians', cosmo=cosmo)
+
     #check bad id
-    assert_raises(TypeError, clusterensemble.ClusterEnsemble, 1.3, gc_list)
+    assert_raises(TypeError, ClusterEnsemble, 1.3, gc_list)
 
     #test without kwargs, args
-    ce = clusterensemble.ClusterEnsemble('cluster_ensemble', gc_list, tan_component_in='et',
+    ce = ClusterEnsemble('cluster_ensemble', gc_list, tan_component_in='et',
     cross_component_in='ex', weights_in = 'w_ls', bins=bins, bin_units='radians', cosmo=cosmo)
-    
+
     #test the lenght of the clusterensemble data attribute
     assert_equal(ce.__len__(), 1)
-    
+
     #test the lenght of the clusterensemble data attribute (after doubling the number of individual cluster)
-    ce._add_values([cluster], tan_component_in='et',cross_component_in='ex', 
+    ce._add_values([cluster], tan_component_in='et',cross_component_in='ex',
                    weights_in = 'w_ls', bins=bins, bin_units='radians', cosmo=cosmo)
     assert_equal(ce.__len__(), 2)
     #test if the len of averaged profile has the lenght of binning axis
     assert_equal(len(ce.data['W_l'][0]), len(bins_radians)-1)
     assert_equal(ce.__getitem__('gt'), ce.data['gt'])
-    
+
 def test_covariance():
     """test the shapes of covariance matrix with different methods"""
     cosmo = Cosmology(H0=70, Omega_dm0=0.262, Omega_b0=0.049)
@@ -72,6 +78,15 @@ def test_covariance():
     Rmin, Rmax = .3, 5 #Mpc
     thetamin, thetamax = Rmin/dz, Rmax/dz # radians
     phi = np.pi
+    bins = np.logspace(np.log10(0.3),np.log10(5), 10)
+    ce_empty = ClusterEnsemble('2', tan_component_in='et',
+    cross_component_in='ex', weights_in = 'w_ls', bins=bins, bin_units='radians', cosmo=cosmo)
+
+    #check empty cluster list
+    assert_raises(ValueError, ce_empty.compute_sample_covariance)
+    assert_raises(ValueError, ce_empty.compute_bootstrap_covariance)
+    assert_raises(ValueError, ce_empty.compute_jackknife_covariance)
+
     for i in range(n_catalogs):
         #generate random catalog
         e1, e2 = np.random.randn(ngals)*0.001, np.random.randn(ngals)*0.001
@@ -83,22 +98,27 @@ def test_covariance():
         data = {'theta':theta_gal, 'z':z_gal, 'id':id_gal, 'e1':e1, 'e2':e2, 'et':et, 'ex':ex, 'w_ls':w_ls}
         cl = clmm.GalaxyCluster('mock_cluster', cluster_ra[i], cluster_dec[i], 1., GCData(data))
         gclist.append(cl)
+        ce_empty.make_individual_radial_profile(galaxycluster=cl,tan_component_in='et',
+        cross_component_in='ex', weights_in = 'w_ls', bins=bins, bin_units='Mpc', cosmo=cosmo)
+
     ensemble_id = 1
     names = ['id', 'ra', 'dec', 'z', 'radius', 'gt', 'gx', 'W_l']
-    bins = np.logspace(np.log10(0.3),np.log10(5), 10)
-    
+
     #test without args, kwargs
-    ce = clusterensemble.ClusterEnsemble(ensemble_id, gclist)
-    assert_raises(KeyError, ce.make_stacked_radial_profile)
-    
+    ce = ClusterEnsemble(ensemble_id)
+    assert_raises(ValueError, ce.make_stacked_radial_profile)
+
     #test with args, kwargs
-    ce = clusterensemble.ClusterEnsemble(ensemble_id, gclist, tan_component_in='et',
+    ce = ClusterEnsemble(ensemble_id, gclist, tan_component_in='et',
     cross_component_in='ex', weights_in = 'w_ls', bins=bins, bin_units='Mpc', cosmo=cosmo)
 
     ce.make_stacked_radial_profile()
 
     assert_raises(ValueError, ce.make_individual_radial_profile,gclist[0], bin_units='radians')
-    
+    #test if te list object matches the calculation from the object with manually added clusters
+    ce_empty.make_stacked_radial_profile()
+    assert_array_equal(ce_empty.stacked_data, ce.stacked_data)
+
     #comparing brut force calculation for cross and tangential component
     gt_individual, gx_individual = ce.data['gt'], ce.data['gx']
     Wl_individual = ce.data['W_l']
@@ -111,17 +131,30 @@ def test_covariance():
     ce.compute_sample_covariance()
     ce.compute_bootstrap_covariance(n_bootstrap=3)
     ce.compute_jackknife_covariance(n_side=2)
-    
+
     #cross vs tangential covariances within a method -> shapes
-    assert_equal(ce.sample_tangential_covariance.shape,ce.sample_cross_covariance.shape )
-    assert_equal(ce.bootstrap_tangential_covariance.shape,ce.bootstrap_cross_covariance.shape )
-    assert_equal(ce.jackknife_tangential_covariance.shape,ce.jackknife_cross_covariance.shape )
-    
+    assert_equal(ce.cov_tan_sv.shape,ce.cov_cross_sv.shape)
+    assert_equal(ce.cov_tan_bs.shape,ce.cov_cross_bs.shape)
+    assert_equal(ce.cov_tan_jk.shape,ce.cov_cross_jk.shape)
+
     #comparing covariance estimation methods -> shapes
-    assert_equal(ce.sample_tangential_covariance.shape,ce.bootstrap_tangential_covariance.shape )
-    assert_equal(ce.bootstrap_tangential_covariance.shape,ce.jackknife_tangential_covariance.shape )
-    assert_equal(ce.jackknife_tangential_covariance.shape,ce.sample_tangential_covariance.shape )
-    
+    assert_equal(ce.cov_tan_sv.shape,ce.cov_tan_bs.shape)
+    assert_equal(ce.cov_tan_bs.shape,ce.cov_tan_jk.shape)
+    assert_equal(ce.cov_tan_jk.shape,ce.cov_tan_sv.shape)
+
     #comparing brut force calculation for sample variance
     std_gt_stack = np.std(gt_individual, axis = 0)/np.sqrt(n_catalogs-1)
-    assert_allclose(ce.sample_tangential_covariance.diagonal()**.5, std_gt_stack, 1e-6)
+    assert_allclose(ce.cov_tan_sv.diagonal()**.5, std_gt_stack, 1e-6)
+
+    #test save/load
+    ce.save('ce.test.pkl')
+
+    ce2 = ClusterEnsemble.load('ce.test.pkl')
+    os.system('rm ce.test.pkl')
+    assert_array_equal(ce.stacked_data, ce2.stacked_data)
+    assert_equal(ce.cov_tan_sv.shape, ce2.cov_tan_sv.shape)
+    assert_equal(ce.cov_tan_bs.shape, ce2.cov_tan_bs.shape)
+    assert_equal(ce.cov_tan_jk.shape, ce2.cov_tan_jk.shape)
+    assert_equal(ce.cov_cross_sv.shape, ce2.cov_cross_sv.shape)
+    assert_equal(ce.cov_cross_bs.shape, ce2.cov_cross_bs.shape)
+    assert_equal(ce.cov_cross_jk.shape, ce2.cov_cross_jk.shape)

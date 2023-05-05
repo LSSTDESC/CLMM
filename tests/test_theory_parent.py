@@ -17,7 +17,7 @@ def test_unimplemented(modeling_data):
     assert_raises(NotImplementedError, mod._set_mass, 1.0e15)
     assert_raises(NotImplementedError, mod.set_concentration, 4.0)
     assert_raises(NotImplementedError, mod._set_concentration, 4.0)
-    assert_raises(NotImplementedError, mod._set_halo_density_profile)
+    assert_raises(NotImplementedError, mod._update_halo_density_profile)
     assert_raises(NotImplementedError, mod._set_einasto_alpha, 0.5)
     assert_raises(NotImplementedError, mod._get_einasto_alpha)
     assert_raises(NotImplementedError, mod.eval_3d_density, [0.3], 0.3)
@@ -35,7 +35,6 @@ def test_unimplemented(modeling_data):
     assert_raises(NotImplementedError, mod.eval_magnification_bias, [0.3], 0.3, 0.5, 3.)
     assert_raises(NotImplementedError, mod.eval_magnification_bias, [0.3], 0.3, (0.6, 0.4), 3.,
                   'beta', 'order1')
-
 
 def test_instantiate(modeling_data):
     """ Unit tests for modeling objects' instantiation """
@@ -97,6 +96,12 @@ def test_instantiate(modeling_data):
 
     assert_allclose(sigma_excess, (sigma_mean-sigma), rtol=5.0e-15)
 
+    sigma = mod.eval_surface_density(r_proj[0], z_cl)
+    sigma_mean = mod.eval_mean_surface_density(r_proj[0], z_cl)
+    sigma_excess = mod.eval_excess_surface_density(r_proj[0], z_cl)
+
+    assert_allclose(sigma_excess, (sigma_mean-sigma), rtol=5.0e-15)
+
     shear = mod.eval_tangential_shear(r_proj, z_cl, z_src)
     convergence = mod.eval_convergence(r_proj, z_cl, z_src)
     reduced_shear = mod.eval_reduced_tangential_shear(r_proj, z_cl, z_src)
@@ -105,10 +110,8 @@ def test_instantiate(modeling_data):
     assert_allclose(reduced_shear, shear/(1.0-convergence), rtol=1.0e-12)
     assert_allclose(magnification, 1.0/((1.0-convergence)**2-np.abs(shear)**2), rtol=1.0e-12)
 
-    reduced_shear = mod.eval_reduced_tangential_shear(r_proj, z_cl, np.repeat(z_src, len(r_proj)))
+    reduced_shear = mod.eval_reduced_tangential_shear(r_proj, z_cl, np.full_like(r_proj, z_src))
     assert_allclose(reduced_shear, shear/(1.0-convergence), rtol=1.0e-12)
-
-    assert_raises(TypeError, mod.eval_critical_surface_density, z_cl)
 
 def test_einasto(modeling_data):
     """ Basic checks that verbose option for the Einasto profile runs """

@@ -113,7 +113,7 @@ class CLMMCosmology:
         r"""Gets the value of the dimensionless matter density
 
         .. math::
-            \Omega_m(z) = \frac{\rho_m(z)}{\rho_\mathrm{crit}(z)}.
+            \Omega_m(z) = \frac{\rho_m(z)}{\rho_\text{crit}(z)}.
 
         Parameters
         ----------
@@ -166,7 +166,7 @@ class CLMMCosmology:
         (normalized at 0)
 
         .. math::
-            \Omega_m(z) = \frac{\rho_m(z)}{\rho_\mathrm{crit}(z)}\frac{H(z)^{2}}{H_{0}^{2}}.
+            \Omega_m(z) = \frac{\rho_m(z)}{\rho_\text{crit}(z)}\frac{H(z)^{2}}{H_{0}^{2}}.
 
         Parameters
         ----------
@@ -259,9 +259,10 @@ class CLMMCosmology:
         return self._eval_da_z1z2(z1=z1, z2=z2)
 
     def _eval_da_z1z2(self, z1, z2):
+        warning_msg = '\nSome values of z2 are lower than z1.'+\
+        '\nda = np.nan for those.'
         return compute_for_good_redshifts(
-            self._eval_da_z1z2_core, z1, z2, np.nan,
-            error_message='Some values of z2 are lower than z1. Returning da = np.nan for those.')
+            self._eval_da_z1z2_core, z1, z2, np.nan, warning_message=warning_msg)
 
     def _eval_da_z1z2_core(self, z1, z2):
         raise NotImplementedError
@@ -429,10 +430,12 @@ class CLMMCosmology:
         return self._eval_sigma_crit(z_len=z_len, z_src=z_src)
 
     def _eval_sigma_crit(self, z_len, z_src):
+        warning_msg = '\nSome source redshifts are lower than the cluster redshift.'+\
+        '\nSigma_crit = np.inf for those galaxies.'
         return compute_for_good_redshifts(
             self._eval_sigma_crit_core, z_len, z_src, np.inf,
-            error_message='Some source redshifts are lower than the cluster redshift. '
-                          'Returning Sigma_crit = np.inf for those galaxies.')
+            z1_arg_name='z_len', z2_arg_name='z_src',
+            warning_message=warning_msg)
 
     def _eval_sigma_crit_core(self, z_len, z_src):
         raise NotImplementedError
