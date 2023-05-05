@@ -88,10 +88,6 @@ class CCLCLMModeling(CLMModeling):
         """"updates halo density profile with set internal properties"""
         # prepare mdef object
         self.mdef = ccl.halos.MassDef(self.delta_mdef, self.mdef_dict[self.massdef])
-        
-        if (parse(ccl.__version__) > parse('2.7.0')
-            and parse(ccl.__version__) < parse('2.7.1.dev10')):
-            ccl.UnlockInstance.Funlock(type(self.mdef), "_concentration_init", True)
         # setting concentration (also updates hdpm)
         self.cdelta = self.cdelta if self.hdpm else 4.0 # ccl always needs an input concentration
 
