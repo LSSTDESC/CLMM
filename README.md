@@ -35,7 +35,7 @@ CLMM requires Python version 3.6 or later.  CLMM has the following dependencies:
 For the theoretical predictions of the signal, CLMM relies on existing libraries and **at least one of the following must be installed as well**:
 
 - [cluster-toolkit](https://cluster-toolkit.readthedocs.io/en/latest/)
-- [CCL](https://ccl.readthedocs.io/en/latest/) (versions between 2.6.2dev7 and 2.7.1.dev10)
+- [CCL](https://ccl.readthedocs.io/en/latest/) (versions between 2.6.0 and 2.7.1.dev9)
 - [NumCosmo](https://numcosmo.github.io/) (v0.15 or later)
 
 
