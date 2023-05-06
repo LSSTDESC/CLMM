@@ -49,6 +49,9 @@ NOTE: Code is not complete without unit tests and documentation. Please ensure t
 
 To test this, first install the code by running `python setup.py install --user` (required after any change whatsoever to the `.py` files in `clmm/` directory). To run all of the unit tests, run `pytest` in the root package directory. To test the docs, in the root package directory after installing, run `./update_docs`. This script both deletes the old compiled documentation files and rebuilds them. You can view the compiled docs by running `open docs/_build/html/index.html`.
 
+NOTE2: If the changes you are making affect which CCL versions are compatible with the code,
+please update `clmm/theory/_ccl_supported_versions.py`, `README.md` and `INSTALL.md` accordingly.
+
 ## Adding documentation <a name="adding_documentation"></a>
 
 If you are adding documentation either in the form of example jupyter notebooks or new python modules, your documentation will need to compile for our online documentation hosted by the LSST-DESC website: http://lsstdesc.org/CLMM/
