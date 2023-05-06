@@ -22,15 +22,14 @@ Cosmology = CCLCosmology
 __all__ = ['CCLCLMModeling', 'Modeling', 'Cosmology']+func_layer.__all__
 
 # Check which versions of ccl are currently supported
-__ccl_vmin = '2.6.2dev7'
-__ccl_vmax = '2.7.1.dev10'
+from . import _ccl_supported_versions
 if (
-    parse(ccl.__version__) < parse(__ccl_vmin)
-    or parse(ccl.__version__) > parse(__ccl_vmax)
+    parse(ccl.__version__) < parse(_ccl_supported_versions.vmin)
+    or parse(ccl.__version__) > parse(_ccl_supported_versions.vmax)
 ):
     raise EnvironmentError(
         f"Current CCL version ({ccl.__version__}) not supported by CLMM. "
-        f"It must be between {__ccl_vmin} and {__ccl_vmax}."
+        f"It must be between {_ccl_supported_versions.vmin} and {_ccl_supported_versions.vmax}."
     )
 
 class CCLCLMModeling(CLMModeling):
