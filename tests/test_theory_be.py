@@ -80,7 +80,7 @@ def test_clmm_versioning_error():
 
         os.environ['CLMM_MODELING_BACKEND'] = 'ccl'
 
-        assert_raises(EnvironmentError, importlib.reload, clmm.theory)
+        assert_raises(EnvironmentError, importlib.reload, clmm.theory.ccl)
 
         _ccl_supported_versions.vmin = vmin_safe
         _ccl_supported_versions.vmax = vmax_safe
