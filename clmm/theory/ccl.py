@@ -21,6 +21,17 @@ Cosmology = CCLCosmology
 
 __all__ = ['CCLCLMModeling', 'Modeling', 'Cosmology']+func_layer.__all__
 
+# Check which versions of ccl are currently supported
+__ccl_vmin = '2.6.2dev7'
+__ccl_vmax = '2.7.1.dev10'
+if (
+    parse(ccl.__version__) < parse(__ccl_vmin)
+    or parse(ccl.__version__) > parse(__ccl_vmax)
+):
+    raise EnvironmentError(
+        f"Current CCL version ({ccl.__version__}) not supported by CLMM. "
+        f"It must be between {__ccl_vmin} and {__ccl_vmax}."
+    )
 
 class CCLCLMModeling(CLMModeling):
     r"""Object with functions for halo mass modeling
@@ -102,9 +113,7 @@ class CCLCLMModeling(CLMModeling):
     def _set_concentration(self, cdelta):
         """"set concentration. Also sets/updates hdpm"""
         self.conc = ccl.halos.ConcentrationConstant(c=cdelta, mdef=self.mdef)
-        # adjust it for ccl version > 2.7.0
-        if parse(ccl.__version__) > parse('2.7.0'):
-            ccl.UnlockInstance.Funlock(type(self.mdef), "_concentration_init", True)
+        ccl.UnlockInstance.Funlock(type(self.mdef), "_concentration_init", True)
         self.mdef._concentration_init(self.conc)
         self.hdpm = self.hdpm_dict[self.halo_profile_model](
             self.conc, **self.hdpm_opts[self.halo_profile_model])
