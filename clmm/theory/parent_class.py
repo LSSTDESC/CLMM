@@ -14,14 +14,10 @@ from .generic import (compute_reduced_shear_from_convergence,
                       compute_magnification_bias_from_magnification,
                       compute_rdelta, compute_profile_mass_in_radius,
                       convert_profile_mass_concentration)
-                      
+
 from ..utils import (validate_argument, _integ_pzfuncs, compute_beta_s_func,
-                     compute_beta_s_mean_from_weights,
-                     compute_beta_s_mean_from_distribution, 
-                     compute_beta_s_square_mean_from_weights,
-                     compute_beta_s_square_mean_from_distribution,
                      compute_for_good_redshifts)
-                     
+
 class CLMModeling:
     r"""Object with functions for halo mass modeling
 
@@ -425,7 +421,7 @@ class CLMModeling:
         This comes from the maximum likelihood estimator for evaluating a
         :math:`\Delta\Sigma` profile.
 
-        For the standard :math:`\Sigma_{\rm crit}(z)` definition, use the `eval_sigma_crit` method of 
+        For the standard :math:`\Sigma_{\rm crit}(z)` definition, use the `eval_sigma_crit` method of
         the CLMM cosmology object.
 
         Parameters
@@ -449,7 +445,7 @@ class CLMModeling:
 
         if self.validate_input:
             validate_argument(locals(), 'z_len', float, argmin=0)
- 
+
         def inv_sigmac(redshift):
             return 1./self.cosmo.eval_sigma_crit(z_len, redshift)
 
@@ -618,132 +614,8 @@ class CLMModeling:
                                                  logkbounds=logkbounds, ksteps=ksteps,
                                                  loglbounds=loglbounds, lsteps=lsteps)
 
-    def _get_beta_s_mean(self, z_cl, z_src, z_src_info='discrete', beta_kwargs=None):
-        r"""Get mean value of the geometric lensing efficicency ratio from typical class function.
-
-        Parameters
-        ----------
-        z_cl : float
-            Galaxy cluster redshift
-        z_src : array_like, float, function
-            Information on the background source galaxy redshift(s). Value required depends on
-            `z_src_info` (see below).
-        z_src_info : str, optional
-            Type of redshift information provided by the `z_src` argument.
-            The following supported options are:
-
-                * 'discrete' (default) : The redshift of sources is provided by `z_src`.
-                  It can be individual redshifts for each source galaxy when `z_src` is an
-                  arrayor all sources are at the same redshift when `z_src` is a float.
-
-                * 'distribution' : A redshift distribution function is provided by `z_src`.
-                  `z_src` must be a one dimentional function.
-
-                * 'beta' : The averaged lensing efficiency is provided by `z_src`.
-                  `z_src` must be a tuple containing
-                  ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
-                  the lensing efficiency and square of the lensing efficiency averaged over
-                  the galaxy redshift distribution repectively.
-
-                    .. math::
-                        \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}
-                        {D_{L,\infty}}\right\rangle
-
-                    .. math::
-                        \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}
-                        {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
-
-        beta_kwargs: None, dict
-            Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
-            Only used if `z_src_info='distribution'`. Possible keys are:
-
-                * 'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
-                  when performing the sum. (default=None)
-                * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
-                  when performing the sum. (default=10.0)
-                * 'delta_z_cut' (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.
-                  `delta_z_cut` is ignored if `z_min` is already provided. (default=0.1)
-
-        Returns
-        -------
-        array_like, float
-            The averaged lensing efficiency.
-        """
-        if z_src_info=='beta':
-            # z_src (tuple) is (beta_s_mean, beta_s_square_mean)
-            beta_s_mean = z_src[0]
-        elif z_src_info=='distribution':
-            # z_src (function) if PDZ
-            beta_kwargs = {} if beta_kwargs is None else beta_kwargs
-            beta_s_mean = compute_beta_s_mean_from_distribution(
-                z_cl, self.z_inf, self.cosmo, z_distrib_func=z_src, **beta_kwargs)
-        return beta_s_mean
-
-    def _get_beta_s_square_mean(self, z_cl, z_src, z_src_info='discrete',
-                                beta_kwargs=None):
-        r"""Get mean value of the square geometric lensing efficicency ratio from typical class
-        function.
-
-        Parameters
-        ----------
-        z_cl : float
-            Galaxy cluster redshift
-        z_src : array_like, float, function
-            Information on the background source galaxy redshift(s). Value required depends on
-            `z_src_info` (see below).
-        z_src_info : str, optional
-            Type of redshift information provided by the `z_src` argument.
-            The following supported options are:
-
-                * 'discrete' (default) : The redshift of sources is provided by `z_src`.
-                  It can be individual redshifts for each source galaxy when `z_src` is an
-                  arrayor all sources are at the same redshift when `z_src` is a float.
-
-                * 'distribution' : A redshift distribution function is provided by `z_src`.
-                  `z_src` must be a one dimentional function.
-
-                * 'beta' : The averaged lensing efficiency is provided by `z_src`.
-                  `z_src` must be a tuple containing
-                  ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
-                  the lensing efficiency and square of the lensing efficiency averaged over
-                  the galaxy redshift distribution repectively.
-
-                    .. math::
-                        \langle \beta_s \rangle = \left\langle \frac{D_{LS}}{D_S}\frac{D_\infty}
-                        {D_{L,\infty}}\right\rangle
-
-                    .. math::
-                        \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}
-                        {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
-
-        beta_kwargs: None, dict
-            Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
-            Only used if `z_src_info='distribution'`. Possible keys are:
-
-                * 'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
-                  when performing the sum. (default=None)
-                * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
-                  when performing the sum. (default=10.0)
-                * 'delta_z_cut' (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.
-                  `delta_z_cut` is ignored if `z_min` is already provided. (default=0.1)
-
-        Returns
-        -------
-        array_like, float
-            The square averaged lensing efficiency.
-        """
-        if z_src_info=='beta':
-            # z_src (tuple) is (beta_s_mean, beta_s_square_mean)
-            beta_s_square_mean = z_src[1]
-        elif z_src_info=='distribution':
-            # z_src (function) is PDZ
-            beta_kwargs = {} if beta_kwargs is None else beta_kwargs
-            beta_s_square_mean = compute_beta_s_square_mean_from_distribution(
-                z_cl, self.z_inf, self.cosmo, z_distrib_func=z_src, **beta_kwargs)
-        return beta_s_square_mean
-
     def eval_tangential_shear(self, r_proj, z_cl, z_src, z_src_info='discrete',
-                              beta_kwargs=None, verbose=False):
+                              verbose=False):
         r"""Computes the tangential shear
 
         Parameters
@@ -761,10 +633,7 @@ class CLMModeling:
 
                 * 'discrete' (default) : The redshift of sources is provided by `z_src`.
                   It can be individual redshifts for each source galaxy when `z_src` is an
-                  arrayor all sources are at the same redshift when `z_src` is a float.
-
-                * 'distribution' : A redshift distribution function is provided by `z_src`.
-                  `z_src` must be a one dimentional function.
+                  array or all sources are at the same redshift when `z_src` is a float.
 
                 * 'beta' : The averaged lensing efficiency is provided by `z_src`.
                   `z_src` must be a tuple containing
@@ -779,17 +648,6 @@ class CLMModeling:
                     .. math::
                         \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}
                         {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
-
-        beta_kwargs: None, dict
-            Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
-            Only used if `z_src_info='distribution'`. Possible keys are:
-
-                * 'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
-                  when performing the sum. (default=None)
-                * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
-                  when performing the sum. (default=10.0)
-                * 'delta_z_cut' (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.
-                  `delta_z_cut` is ignored if `z_min` is already provided. (default=0.1)
 
         verbose : bool, optional
             If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
@@ -815,10 +673,8 @@ class CLMModeling:
             gammat = compute_for_good_redshifts(self._eval_tangential_shear_core,
                                                 z_cl, z_src, 0., warning_msg,
                                                 'z_cl', 'z_src', r_proj)
-        elif z_src_info in ('distribution', 'beta'):
-            beta_s_mean = self._get_beta_s_mean(
-                z_cl, z_src, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
-
+        elif z_src_info=='beta':
+            beta_s_mean = z_src[0]
             gammat_inf = self._eval_tangential_shear_core(r_proj=r_proj,
                                                           z_cl=z_cl, z_src=self.z_inf)
 
@@ -829,7 +685,7 @@ class CLMModeling:
         return gammat
 
     def eval_convergence(self, r_proj, z_cl, z_src, z_src_info='discrete',
-                         beta_kwargs=None, verbose=False):
+                         verbose=False):
 
         r"""Computes the mass convergence
 
@@ -858,9 +714,6 @@ class CLMModeling:
                   It can be individual redshifts for each source galaxy when `z_src` is an
                   array or all sources are at the same redshift when `z_src` is a float.
 
-                * 'distribution' : A redshift distribution function is provided by `z_src`.
-                  `z_src` must be a one dimentional function.
-
                 * 'beta' : The averaged lensing efficiency is provided by `z_src`.
                   `z_src` must be a tuple containing
                   ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
@@ -874,17 +727,6 @@ class CLMModeling:
                     .. math::
                         \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}
                         {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
-
-        beta_kwargs: None, dict
-            Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
-            Only used if `z_src_info='distribution'`. Possible keys are:
-
-                * 'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
-                  when performing the sum. (default=None)
-                * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
-                  when performing the sum. (default=10.0)
-                * 'delta_z_cut' (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.
-                  `delta_z_cut` is ignored if `z_min` is already provided. (default=0.1)
 
         verbose : bool, optional
             If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and
@@ -910,9 +752,8 @@ class CLMModeling:
             kappa = compute_for_good_redshifts(self._eval_convergence_core,
                                                z_cl, z_src, 0., warning_msg,
                                                'z_cl', 'z_src', r_proj)
-        elif z_src_info in ('distribution', 'beta'):
-            beta_s_mean = self._get_beta_s_mean(
-                z_cl, z_src, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
+        elif z_src_info=='beta':
+            beta_s_mean = z_src[0]
 
             kappa_inf = self._eval_convergence_core(r_proj=r_proj, z_cl=z_cl, z_src=self.z_inf)
 
@@ -968,7 +809,7 @@ class CLMModeling:
         return out/quad(pdz_func, zmin, zmax)[0]
 
     def eval_reduced_tangential_shear(self, r_proj, z_cl, z_src, z_src_info='discrete',
-                                      approx=None, beta_kwargs=None, verbose=False):
+                                      approx=None, integ_kwargs=None, verbose=False):
         r"""Computes the reduced tangential shear
 
         .. math::
@@ -989,10 +830,11 @@ class CLMModeling:
 
                 * 'discrete' (default) : The redshift of sources is provided by `z_src`.
                   It can be individual redshifts for each source galaxy when `z_src` is an
-                  array or all sources are at the same redshift when `z_src` is a float.
+                  array or all sources are at the same redshift when `z_src` is a float
+                  (Used for `approx=None`).
 
                 * 'distribution' : A redshift distribution function is provided by `z_src`.
-                  `z_src` must be a one dimentional function.
+                  `z_src` must be a one dimentional function (Used when `approx=None`).
 
                 * 'beta' : The averaged lensing efficiency is provided by `z_src`.
                   `z_src` must be a tuple containing
@@ -1025,8 +867,7 @@ class CLMModeling:
 
                 * 'order1' : Same approach as in Weighing the Giants - III (equation 6 in
                   Applegate et al. 2014; https://arxiv.org/abs/1208.0605). `z_src_info` must be
-                  either 'beta', or 'distribution' (that will be used to compute
-                  :math:`\langle \beta_s \rangle`)
+                  'beta':
 
                   .. math::
                       g_t\approx\frac{\left<\beta_s\right>\gamma_{\infty}}
@@ -1035,8 +876,7 @@ class CLMModeling:
                 * 'order2' : Same approach as in Cluster Mass Calibration at High
                   Redshift (equation 12 in Schrabback et al. 2017;
                   https://arxiv.org/abs/1611.03866).
-                  `z_src_info` must be either 'beta', or 'distribution' (that will be used
-                  to compute :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`)
+                  `z_src_info` must be 'beta':
 
                   .. math::
                       g_t\approx\frac{\left<\beta_s\right>\gamma_{\infty}}
@@ -1044,9 +884,9 @@ class CLMModeling:
                       \left(1+\left(\frac{\left<\beta_s^2\right>}
                       {\left<\beta_s\right>^2}-1\right)\left<\beta_s\right>\kappa_{\infty}\right)
 
-        beta_kwargs: None, dict
-            Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
-            Only used if `z_src_info='distribution'`. Possible keys are:
+        integ_kwargs: None, dict
+            Extra arguments for the when `approx=None, z_src_info='distribution'`.
+            Possible keys are:
 
                 * 'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
                   when performing the sum. (default=None)
@@ -1082,7 +922,7 @@ class CLMModeling:
             if z_src_info=='distribution':
                 core = lambda gammat, kappa: gammat/(1-kappa)
                 gt = self._pdz_weighted_avg(core, z_src, r_proj, z_cl,
-                                            integ_kwargs=beta_kwargs)
+                                            integ_kwargs=integ_kwargs)
             elif z_src_info=='discrete':
                 warning_msg = '\nSome source redshifts are lower than the cluster redshift.'+\
                 '\nReduced_shear = 0 for those galaxies.'
@@ -1095,8 +935,9 @@ class CLMModeling:
                     f"z_src_info='{z_src_info}' was provided.")
 
         elif approx in ('order1', 'order2'):
-            beta_s_mean = self._get_beta_s_mean(
-                z_cl, z_src, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
+            if z_src_info !='beta':
+                raise ValueError('z_src_info must be beta if approx!=None.')
+            beta_s_mean = z_src[0]
 
             gammat_inf = self._eval_tangential_shear_core(r_proj, z_cl, z_src=self.z_inf)
             kappa_inf = self._eval_convergence_core(r_proj, z_cl, z_src=self.z_inf)
@@ -1104,8 +945,7 @@ class CLMModeling:
             gt = beta_s_mean * gammat_inf / (1. - beta_s_mean * kappa_inf)
 
             if approx == 'order2':
-                beta_s_square_mean = self._get_beta_s_square_mean(
-                    z_cl, z_src, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
+                beta_s_square_mean = z_src[1]
 
                 gt *= (1. + (beta_s_square_mean / (beta_s_mean * beta_s_mean) - 1.) \
                            * beta_s_mean * kappa_inf )
@@ -1115,7 +955,7 @@ class CLMModeling:
         return gt
 
     def eval_magnification(self, r_proj, z_cl, z_src, z_src_info='discrete',
-                           approx=None, beta_kwargs=None, verbose=False):
+                           approx=None, integ_kwargs=None, verbose=False):
         r"""Computes the magnification
 
         .. math::
@@ -1136,10 +976,11 @@ class CLMModeling:
 
                 * 'discrete' (default) : The redshift of sources is provided by `z_src`.
                   It can be individual redshifts for each source galaxy when `z_src` is an
-                  array or all sources are at the same redshift when `z_src` is a float.
+                  array or all sources are at the same redshift when `z_src` is a float
+                  (Used for `approx=None`).
 
                 * 'distribution' : A redshift distribution function is provided by `z_src`.
-                  `z_src` must be a one dimentional function.
+                  `z_src` must be a one dimentional function (Used when `approx=None`).
 
                 * 'beta' : The averaged lensing efficiency is provided by `z_src`.
                   `z_src` must be a tuple containing
@@ -1173,26 +1014,24 @@ class CLMModeling:
                       {\int_{z_{min}}^{z_{max}} N(z)\text{d}z}
 
                 * 'order1' : Uses the weak lensing approximation of the magnification with up to
-                  first-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`.
-                  `z_src_info` must be either 'beta', or 'distribution' (that will be used to
-                  compute :math:`\langle \beta_s \rangle`)
+                  first-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`
+                  (`z_src_info` must be 'beta'):
 
                   .. math::
                       \mu \approx 1 + 2 \left<\beta_s\right>\kappa_{\infty}
 
                 * 'order2' : Uses the weak lensing approximation of the magnification with up to
-                  second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`.
-                  `z_src_info` must be either 'beta', or 'distribution' (that will be used to
-                  compute :math:`\langle \beta_s \rangle`)
+                  second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`
+                  (`z_src_info` must be 'beta'):
 
                   .. math::
                       \mu \approx 1 + 2 \left<\beta_s\right>\kappa_{\infty}
                       + 3 \left<\beta_s^2\right>\kappa_{\infty}^2
                       + \left<\beta_s^2\right>\gamma_{\infty}^2
 
-        beta_kwargs: None, dict
-            Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
-            Only used if `z_src_info='distribution'`. Possible keys are:
+        integ_kwargs: None, dict
+            Extra arguments for the when `approx=None, z_src_info='distribution'`.
+            Possible keys are:
 
                 * 'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
                   when performing the sum. (default=None)
@@ -1225,7 +1064,7 @@ class CLMModeling:
             if z_src_info=='distribution':
                 core = lambda gammat, kappa: 1/((1-kappa)**2-gammat**2)
                 mu = self._pdz_weighted_avg(core, z_src, r_proj, z_cl,
-                                            integ_kwargs=beta_kwargs)
+                                            integ_kwargs=integ_kwargs)
             elif z_src_info=='discrete':
                 warning_msg = '\nSome source redshifts are lower than the cluster redshift.'+\
                 '\nMagnification = 1 for those galaxies.'
@@ -1238,8 +1077,9 @@ class CLMModeling:
                     f"z_src_info='{z_src_info}' was provided.")
 
         elif approx in ('order1', 'order2'):
-            beta_s_mean = self._get_beta_s_mean(
-                z_cl, z_src, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
+            if z_src_info !='beta':
+                raise ValueError('z_src_info must be beta if approx!=None.')
+            beta_s_mean = z_src[0]
 
             kappa_inf = self._eval_convergence_core(r_proj, z_cl, z_src=self.z_inf)
             gammat_inf = self._eval_tangential_shear_core(r_proj, z_cl, z_src=self.z_inf)
@@ -1247,8 +1087,7 @@ class CLMModeling:
             mu = 1 + 2*beta_s_mean*kappa_inf
 
             if approx == 'order2':
-                beta_s_square_mean = self._get_beta_s_square_mean(
-                    z_cl, z_src, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
+                beta_s_square_mean = z_src[1]
                 # Taylor expansion with up to second-order terms
                 mu += 3*beta_s_square_mean*kappa_inf**2 + beta_s_square_mean*gammat_inf**2
 
@@ -1257,7 +1096,7 @@ class CLMModeling:
         return mu
 
     def eval_magnification_bias(self, r_proj, z_cl, z_src, alpha, z_src_info='discrete',
-                                approx=None, beta_kwargs=None, verbose=False):
+                                approx=None, integ_kwargs=None, verbose=False):
         r"""Computes the magnification bias
 
         .. math::
@@ -1280,10 +1119,11 @@ class CLMModeling:
 
                 * 'discrete' (default) : The redshift of sources is provided by `z_src`.
                   It can be individual redshifts for each source galaxy when `z_src` is an
-                  array or all sources are at the same redshift when `z_src` is a float.
+                  array or all sources are at the same redshift when `z_src` is a float
+                  (Used for `approx=None`).
 
                 * 'distribution' : A redshift distribution function is provided by `z_src`.
-                  `z_src` must be a one dimentional function.
+                  `z_src` must be a one dimentional function (Used when `approx=None`).
 
                 * 'beta' : The averaged lensing efficiency is provided by `z_src`.
                   `z_src` must be a tuple containing
@@ -1318,18 +1158,16 @@ class CLMModeling:
                       {\int_{z_{min}}^{z_{max}} N(z)\text{d}z}
 
                 * 'order1' : Uses the weak lensing approximation of the magnification bias with up
-                  to first-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`.
-                  `z_src_info` must be either 'beta', or 'distribution' (that will be used to
-                  compute :math:`\langle \beta_s \rangle`)
+                  to first-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`
+                  (`z_src_info` must be 'beta'):
 
                   .. math::
                       \mu^{\alpha-1} \approx
                       1 + \left(\alpha-1\right)\left(2 \left<\beta_s\right>\kappa_{\infty}\right)
 
                 * 'order2' : Uses the weak lensing approximation of the magnification bias with up
-                  to second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`.
-                  `z_src_info` must be either 'beta', or 'distribution' (that will be used to
-                  compute :math:`\langle \beta_s \rangle`)
+                  to second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`
+                  (`z_src_info` must be 'beta'):
 
                   .. math::
                       \mu^{\alpha-1} \approx
@@ -1340,9 +1178,9 @@ class CLMModeling:
                       &+ \left(2\alpha-1\right)\left(\alpha-1\right)
                       \left(\left<\beta_s^2\right>\kappa_{\infty}^2\right)
 
-        beta_kwargs: None, dict
-            Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
-            Only used if `z_src_info='distribution'`. Possible keys are:
+        integ_kwargs: None, dict
+            Extra arguments for the when `approx=None, z_src_info='distribution'`.
+            Possible keys are:
 
                 * 'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
                   when performing the sum. (default=None)
@@ -1377,7 +1215,7 @@ class CLMModeling:
             if z_src_info=='distribution':
                 core = lambda gammat, kappa: 1/((1-kappa)**2-gammat**2)**(alpha-1)
                 mu_bias = self._pdz_weighted_avg(core, z_src, r_proj, z_cl,
-                                                 integ_kwargs=beta_kwargs)
+                                                 integ_kwargs=integ_kwargs)
             elif z_src_info=='discrete':
                 warning_msg = '\nSome source redshifts are lower than the cluster redshift.'+\
                 '\nMagnification bias = 1 for those galaxies.'
@@ -1390,8 +1228,9 @@ class CLMModeling:
                     f"z_src_info='{z_src_info}' was provided.")
 
         elif approx in ('order1', 'order2'):
-            beta_s_mean = self._get_beta_s_mean(
-                z_cl, z_src, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
+            if z_src_info !='beta':
+                raise ValueError('z_src_info must be beta if approx!=None.')
+            beta_s_mean = z_src[0]
 
             kappa_inf = self._eval_convergence_core(r_proj, z_cl, z_src=self.z_inf)
             gammat_inf = self._eval_tangential_shear_core(r_proj, z_cl, z_src=self.z_inf)
@@ -1399,8 +1238,7 @@ class CLMModeling:
             mu_bias = 1 + (alpha-1)*(2*beta_s_mean*kappa_inf)
 
             if approx == 'order2':
-                beta_s_square_mean = self._get_beta_s_square_mean(
-                    z_cl, z_src, z_src_info=z_src_info, beta_kwargs=beta_kwargs)
+                beta_s_square_mean = z_src[1]
                 # Taylor expansion with up to second-order terms
                 mu_bias += (alpha-1)*(beta_s_square_mean*gammat_inf**2)\
                            +(2*alpha-1)*(alpha-1)*beta_s_square_mean*kappa_inf**2
@@ -1542,11 +1380,11 @@ class CLMModeling:
             validate_argument(loc_dict, 'z_src', 'float_array', argmin=0)
         elif loc_dict['z_src_info']=='distribution':
             validate_argument(loc_dict, 'z_src', 'function', none_ok=False)
-            beta_kwargs = {} if loc_dict['beta_kwargs'] is None else loc_dict['beta_kwargs']
+            integ_kwargs = {} if loc_dict['integ_kwargs'] is None else loc_dict['integ_kwargs']
             _def_keys = ['zmin', 'zmax', 'delta_z_cut']
-            if any(key not in _def_keys for key in beta_kwargs):
-                raise KeyError(f'beta_kwargs must contain only {_def_keys} keys, '
-                               f' {beta_kwargs.keys()} provided.')
+            if any(key not in _def_keys for key in integ_kwargs):
+                raise KeyError(f'integ_kwargs must contain only {_def_keys} keys, '
+                               f' {integ_kwargs.keys()} provided.')
         elif loc_dict['z_src_info']=='beta':
             validate_argument(loc_dict, 'z_src', 'array')
             beta_info = {'beta_s_mean':loc_dict['z_src'][0],
