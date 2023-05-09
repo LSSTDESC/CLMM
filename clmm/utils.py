@@ -686,6 +686,30 @@ def compute_for_good_redshifts(function, z1, z2, bad_value, warning_message,
         res = function(**kwargs)
     return res
 
+def _compute_beta(z_src, z_cl, cosmo):
+    r"""Geometric lensing efficicency
+
+    .. math::
+        \beta = max(0, D_{a,\ ls}/D_{a,\ s})
+
+    Eq.2 in https://arxiv.org/pdf/1611.03866.pdf
+
+    Parameters
+    ----------
+    z_src : float
+        Source galaxy redshift
+    z_cl: float
+        Galaxy cluster redshift
+    cosmo: clmm.Cosmology
+        CLMM Cosmology object
+
+    Returns
+    -------
+    float
+        Geometric lensing efficicency
+    """
+    return np.heaviside(z_src-z_cl, 0) * cosmo.eval_da_z1z2(z_cl, z_src) / cosmo.eval_da(z_src)
+
 def compute_beta(z_src, z_cl, cosmo):
     r"""Geometric lensing efficicency
 
@@ -705,15 +729,15 @@ def compute_beta(z_src, z_cl, cosmo):
 
     Returns
     -------
-    numpy array
+    float, array
         Geometric lensing efficicency
     """
-    try:
-        len(z_src)
-    except TypeError:
-        z_src = [z_src]
-    beta = [np.heaviside(z_src_i-z_cl, 0) * cosmo.eval_da_z1z2(z_cl, z_src_i) / cosmo.eval_da(z_src_i) for z_src_i in z_src]
-    return np.array(beta)
+    if hasattr(z_src, '__len__'):
+        return np.array([
+            _compute_beta(z_src_i, z_cl, cosmo)
+            for z_src_i in z_src])
+    else:
+        return _compute_beta(z_src, z_cl, cosmo)
 
 def compute_beta_s(z_src, z_cl, z_inf, cosmo):
     r"""Geometric lensing efficicency ratio
