@@ -686,7 +686,7 @@ def compute_for_good_redshifts(function, z1, z2, bad_value, warning_message,
         res = function(**kwargs)
     return res
 
-def compute_beta(z_src, z_cl, cosmo, z_src_info='discrete'):
+def compute_beta(z_src, z_cl, cosmo):
     r"""Geometric lensing efficicency
 
     .. math::
@@ -696,20 +696,13 @@ def compute_beta(z_src, z_cl, cosmo, z_src_info='discrete'):
 
     Parameters
     ----------
-    z_src : array_like, float, function
-        Information on the background source galaxy redshift(s). Value required depends on
-        `z_src_info` (see below).
+    z_src : float, array_like
+        Source galaxy redshift
     z_cl: float
         Galaxy cluster redshift
     cosmo: clmm.Cosmology
         CLMM Cosmology object
-    z_src_info : str, optional
-        Type of redshift information provided by the `z_src` argument.
-        In this function, the only supported option is:
 
-            * 'discrete' (default) : The redshift of sources is provided by `z_src`.
-              It can be individual redshifts for each source galaxy when `z_src` is an
-              array or all sources are at the same redshift when `z_src` is a float.
     Returns
     -------
     numpy array
@@ -722,7 +715,7 @@ def compute_beta(z_src, z_cl, cosmo, z_src_info='discrete'):
     beta = [np.heaviside(z_src_i-z_cl, 0) * cosmo.eval_da_z1z2(z_cl, z_src_i) / cosmo.eval_da(z_src_i) for z_src_i in z_src]
     return np.array(beta)
 
-def compute_beta_s(z_src, z_cl, z_inf, cosmo, z_src_info='discrete'):
+def compute_beta_s(z_src, z_cl, z_inf, cosmo):
     r"""Geometric lensing efficicency ratio
 
     .. math::
@@ -730,22 +723,15 @@ def compute_beta_s(z_src, z_cl, z_inf, cosmo, z_src_info='discrete'):
 
     Parameters
     ----------
-    z_src : array_like, float, function
-        Information on the background source galaxy redshift(s). Value required depends on
-        `z_src_info` (see below).
+    z_src : float, array_like
+        Source galaxy redshift
     z_cl: float
         Galaxy cluster redshift
     z_inf: float
         Redshift at infinity
     cosmo: clmm.Cosmology
         CLMM Cosmology object
-    z_src_info : str, optional
-        Type of redshift information provided by the `z_src` argument.
-        In this function, the only supported option is:
 
-            * 'discrete' (default) : The redshift of sources is provided by `z_src`.
-              It can be individual redshifts for each source galaxy when `z_src` is an
-              array or all sources are at the same redshift when `z_src` is a float.
     Returns
     -------
     numpy array
@@ -754,7 +740,7 @@ def compute_beta_s(z_src, z_cl, z_inf, cosmo, z_src_info='discrete'):
     beta_s = compute_beta(z_src, z_cl, cosmo) / compute_beta(z_inf, z_cl, cosmo)
     return beta_s
 
-def compute_beta_s_func(z_src, z_cl, z_inf, cosmo, z_src_info, func, *args, **kwargs):
+def compute_beta_s_func(z_src, z_cl, z_inf, cosmo, func, *args, **kwargs):
     r"""Geometric lensing efficicency ratio times a value of a function
 
     .. math::
@@ -774,13 +760,6 @@ def compute_beta_s_func(z_src, z_cl, z_inf, cosmo, z_src_info, func, *args, **kw
         CLMM Cosmology object
     func: callable
         A scalar function
-    z_src_info : str, optional
-        Type of redshift information provided by the `z_src` argument.
-        In this function, the only supported option is:
-
-            * 'discrete' (default) : The redshift of sources is provided by `z_src`.
-              It can be individual redshifts for each source galaxy when `z_src` is an
-              array or all sources are at the same redshift when `z_src` is a float.
     *args: positional arguments
         args to be passed to `func`
     **kwargs: keyword arguments

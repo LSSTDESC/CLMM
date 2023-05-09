@@ -791,11 +791,10 @@ class CLMModeling:
         array_like
             Function averaged by pdz, with r_proj dimention.
         """
-        z_src_info_beta = 'discrete'
         tfunc = lambda z, r: compute_beta_s_func(
-            z, z_cl, self.z_inf, self.cosmo, z_src_info_beta, self._eval_tangential_shear_core, r, z_cl, self.z_inf)
+            z, z_cl, self.z_inf, self.cosmo, self._eval_tangential_shear, r, z_cl, self.z_inf)
         kfunc = lambda z, r: compute_beta_s_func(
-            z, z_cl, self.z_inf, self.cosmo, z_src_info_beta, self._eval_convergence_core, r, z_cl, self.z_inf)
+            z, z_cl, self.z_inf, self.cosmo, self._eval_convergence, r, z_cl, self.z_inf)
         __integrand__ = lambda z, r: pdz_func(z)*core(tfunc(z, r), kfunc(z, r))
 
         _integ_kwargs = {'zmax': 10.0, 'delta_z_cut': 0.1}
