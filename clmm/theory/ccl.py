@@ -88,9 +88,6 @@ class CCLCLMModeling(CLMModeling):
         """"updates halo density profile with set internal properties"""
         # prepare mdef object
         self.mdef = ccl.halos.MassDef(self.delta_mdef, self.mdef_dict[self.massdef])
-        # adjust it for ccl version > 2.6.1
-        if parse(ccl.__version__) >= parse('2.6.2dev7'):
-            ccl.UnlockInstance.Funlock(type(self.mdef), "_concentration_init", True)
         # setting concentration (also updates hdpm)
         self.cdelta = self.cdelta if self.hdpm else 4.0 # ccl always needs an input concentration
 
@@ -104,10 +101,11 @@ class CCLCLMModeling(CLMModeling):
 
     def _set_concentration(self, cdelta):
         """"set concentration. Also sets/updates hdpm"""
-        self.conc = ccl.halos.ConcentrationConstant(c=cdelta, mdef=self.mdef)
-        self.mdef._concentration_init(self.conc)
+        self.conc = ccl.halos.ConcentrationConstant(c=cdelta, mass_def=self.mdef)
+        with ccl.UnlockInstance(self.mdef):
+            self.mdef.concentration = self.conc
         self.hdpm = self.hdpm_dict[self.halo_profile_model](
-            self.conc, **self.hdpm_opts[self.halo_profile_model])
+            concentration=self.conc, **self.hdpm_opts[self.halo_profile_model])
         self.hdpm.update_precision_fftlog(
             padding_lo_fftlog=1e-4, padding_hi_fftlog=1e3)
 
@@ -127,7 +125,7 @@ class CCLCLMModeling(CLMModeling):
             a_cl = 1 # a_cl does not matter in this case
         else:
             a_cl = self.cosmo.get_a_from_z(z_cl)
-        return self.hdpm._get_alpha(self.cosmo.be_cosmo, self.__mdelta_cor, a_cl, self.mdef)
+        return self.hdpm._get_alpha(self.cosmo.be_cosmo, self.__mdelta_cor, a_cl)
 
     def _eval_3d_density(self, r3d, z_cl):
         """"eval 3d density"""
@@ -169,7 +167,7 @@ class CCLCLMModeling(CLMModeling):
         a_lens = self.cosmo.get_a_from_z(z_lens)
 
         return ccl_hdpm_func(self.cosmo.be_cosmo, radius/a_lens, self.__mdelta_cor,
-                             a_lens, self.mdef)*self.cor_factor/a_lens**ndim
+                             a_lens)*self.cor_factor/a_lens**ndim
 
     def _call_ccl_profile_lens_src(self, ccl_hdpm_func, radius, z_lens, z_src):
         """"call ccl profile functions that depend on the lens and the sources"""
@@ -177,6 +175,6 @@ class CCLCLMModeling(CLMModeling):
         a_src = self.cosmo.get_a_from_z(z_src)
 
         return ccl_hdpm_func(self.cosmo.be_cosmo, radius/a_lens, self.__mdelta_cor,
-                             a_lens, a_src, self.mdef)
+                             a_lens=a_lens, a_source=a_src)
 
 Modeling = CCLCLMModeling
