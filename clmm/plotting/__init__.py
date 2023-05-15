@@ -2,17 +2,26 @@
 # Set mpl backend run plots on github actions
 import os
 import matplotlib as mpl
-if os.environ.get('DISPLAY','') == 'test':
-    print('no display found. Using non-interactive Agg backend')
-    mpl.use('Agg')
+
+# pylint: disable=wrong-import-position
+if os.environ.get("DISPLAY", "") == "test":
+    print("no display found. Using non-interactive Agg backend")
+    mpl.use("Agg")
 import matplotlib.pyplot as plt
 
 
-def plot_profiles(rbins, tangential_component, tangential_component_error,
-                  cross_component, cross_component_error, r_units=None,
-                  xscale='linear', yscale='linear',
-                  tangential_component_label="Tangential component",
-                  cross_component_label="Cross component"):
+def plot_profiles(
+    rbins,
+    tangential_component,
+    tangential_component_error,
+    cross_component,
+    cross_component_error,
+    r_units=None,
+    xscale="linear",
+    yscale="linear",
+    tangential_component_label="Tangential component",
+    cross_component_label="Cross component",
+):
     """Plot shear profiles
 
     Parameters
@@ -43,20 +52,34 @@ def plot_profiles(rbins, tangential_component, tangential_component_error,
     """
     # Plot the tangential shears
     fig, axes = plt.subplots()
-    axes.errorbar(rbins, tangential_component,
-                  yerr=tangential_component_error,
-                  fmt='bo-', label=tangential_component_label,
-                  lw=.2, markersize=1.5, elinewidth=.5, capthick=3)
+    axes.errorbar(
+        rbins,
+        tangential_component,
+        yerr=tangential_component_error,
+        fmt="bo-",
+        label=tangential_component_label,
+        lw=0.2,
+        markersize=1.5,
+        elinewidth=0.5,
+        capthick=3,
+    )
     # Plot the cross shears
-    axes.errorbar(rbins, cross_component,
-                  yerr=cross_component_error,
-                  fmt='ro-', label=cross_component_label,
-                  lw=.2, markersize=1.5, elinewidth=.5, capthick=3)
+    axes.errorbar(
+        rbins,
+        cross_component,
+        yerr=cross_component_error,
+        fmt="ro-",
+        label=cross_component_label,
+        lw=0.2,
+        markersize=1.5,
+        elinewidth=0.5,
+        capthick=3,
+    )
     # format
     axes.set_xscale(xscale)
     axes.set_yscale(yscale)
     axes.legend()
-    axes.set_xlabel(f'Radius [{r_units}]')
-    axes.set_ylabel(rf'{tangential_component_label} | {cross_component_label}')
+    axes.set_xlabel(f"Radius [{r_units}]")
+    axes.set_ylabel(rf"{tangential_component_label} | {cross_component_label}")
 
     return fig, axes
