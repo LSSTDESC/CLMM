@@ -13,12 +13,12 @@ from .parent_class import CLMModeling
 # Check which versions of ccl are currently supported
 from . import _ccl_supported_versions
 
-if parse(ccl.__version__) < parse(_ccl_supported_versions.vmin) or parse(ccl.__version__) > parse(
-    _ccl_supported_versions.vmax
+if parse(ccl.__version__) < parse(_ccl_supported_versions.VMIN) or parse(ccl.__version__) > parse(
+    _ccl_supported_versions.VMAX
 ):
     raise EnvironmentError(
         f"Current CCL version ({ccl.__version__}) not supported by CLMM. "
-        f"It must be between {_ccl_supported_versions.vmin} and {_ccl_supported_versions.vmax}."
+        f"It must be between {_ccl_supported_versions.VMIN} and {_ccl_supported_versions.VMAX}."
     )
 
 
