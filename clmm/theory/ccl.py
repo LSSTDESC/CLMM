@@ -115,7 +115,7 @@ class CCLCLMModeling(CLMModeling):
         """set concentration. Also sets/updates hdpm"""
         # pylint: disable=protected-access
         self.conc = ccl.halos.ConcentrationConstant(c=cdelta, mdef=self.mdef)
-        if parse(ccl.__version__) >= parse("2.7.0"):
+        if parse(ccl.__version__) > parse("2.7.0"):
             ccl.UnlockInstance.Funlock(type(self.mdef), "_concentration_init", True)
         self.mdef._concentration_init(self.conc)
         self.hdpm = self.hdpm_dict[self.halo_profile_model](
