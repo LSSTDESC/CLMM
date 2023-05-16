@@ -1559,7 +1559,7 @@ class CLMModeling:
         locals_dict: dict
             Should be the call locals()
         """
-        if loc_dict.get("approx") and loc_dict["z_src_info"]!="beta":
+        if loc_dict.get("approx") and loc_dict["z_src_info"] != "beta":
             approx, z_src_info = loc_dict["approx"], loc_dict["z_src_info"]
             raise ValueError(
                 f"approx='{approx}' requires z_src_info='beta', "
