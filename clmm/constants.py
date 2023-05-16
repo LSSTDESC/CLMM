@@ -3,8 +3,8 @@ from enum import Enum
 
 
 class Constants(Enum):
-    """ A set of constants for consistency throughout the
-    code and dependencies. """
+    """A set of constants for consistency throughout the
+    code and dependencies."""
 
     CLIGHT = 299792458.0
     """ Speed of light (m/s)
@@ -12,7 +12,7 @@ class Constants(Enum):
     Source: CODATA 2018
     """
 
-    CLIGHT_KMS = CLIGHT*1.0e-3
+    CLIGHT_KMS = CLIGHT * 1.0e-3
     """ Speed of light (km/s)
 
     Source: CODATA 2018
@@ -36,7 +36,7 @@ class Constants(Enum):
     Source: IAU 2015
     """
 
-    SOLAR_MASS = GNEWT_SOLAR_MASS/GNEWT
+    SOLAR_MASS = GNEWT_SOLAR_MASS / GNEWT
     """ Solar mass (kg)
 
     Source: IAU 2015/CODATA 2018
