@@ -532,7 +532,7 @@ def compute_tangential_shear(
     massdef="mean",
     alpha_ein=None,
     z_src_info="discrete",
-    beta_kwargs=None,
+    integ_kwargs=None,
     verbose=False,
     validate_input=True,
 ):
@@ -588,10 +588,11 @@ def compute_tangential_shear(
 
             * 'discrete' (default) : The redshift of sources is provided by `z_source`.
               It can be individual redshifts for each source galaxy when `z_source` is an array
-              or all sources are at the same redshift when `z_source` is a float.
+              or all sources are at the same redshift when `z_source` is a float
+              (Used for `approx=None`).
 
             * 'distribution' : A redshift distribution function is provided by `z_source`.
-              `z_source` must be a one dimensional function.
+              `z_source` must be a one dimensional function (Used when `approx=None`).
 
             * 'beta' : The averaged lensing efficiency is provided by `z_source`.
               `z_source` must be a tuple containing
@@ -607,9 +608,9 @@ def compute_tangential_shear(
                     \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}
                     {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
 
-    beta_kwargs: None, dict
-        Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
-        Only used if `z_src_info='distribution'`. Possible keys are:
+    integ_kwargs: None, dict
+        Extra arguments for the redshift integration (when
+        `approx=None, z_src_info='distribution'`). Possible keys are:
 
             * 'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
               when performing the sum. (default=None)
@@ -650,7 +651,7 @@ def compute_tangential_shear(
         z_cluster,
         z_source,
         z_src_info=z_src_info,
-        beta_kwargs=beta_kwargs,
+        integ_kwargs=integ_kwargs,
         verbose=verbose,
     )
 
@@ -670,7 +671,7 @@ def compute_convergence(
     massdef="mean",
     alpha_ein=None,
     z_src_info="discrete",
-    beta_kwargs=None,
+    integ_kwargs=None,
     verbose=False,
     validate_input=True,
 ):
@@ -726,10 +727,11 @@ def compute_convergence(
 
             * 'discrete' (default) : The redshift of sources is provided by `z_source`.
               It can be individual redshifts for each source galaxy when `z_source` is an array
-              or all sources are at the same redshift when `z_source` is a float.
+              or all sources are at the same redshift when `z_source` is a float
+              (Used for `approx=None`).
 
             * 'distribution' : A redshift distribution function is provided by `z_source`.
-              `z_source` must be a one dimensional function.
+              `z_source` must be a one dimensional function (Used when `approx=None`).
 
             * 'beta' : The averaged lensing efficiency is provided by `z_source`.
               `z_source` must be a tuple containing
@@ -745,9 +747,9 @@ def compute_convergence(
                     \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}
                     {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
 
-    beta_kwargs: None, dict
-        Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
-        Only used if `z_src_info='distribution'`. Possible keys are:
+    integ_kwargs: None, dict
+        Extra arguments for the redshift integration (when
+        `approx=None, z_src_info='distribution'`). Possible keys are:
 
             * 'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
               when performing the sum. (default=None)
@@ -784,7 +786,7 @@ def compute_convergence(
         z_cluster,
         z_source,
         z_src_info=z_src_info,
-        beta_kwargs=beta_kwargs,
+        integ_kwargs=integ_kwargs,
         verbose=verbose,
     )
 
@@ -804,7 +806,7 @@ def compute_reduced_tangential_shear(
     massdef="mean",
     z_src_info="discrete",
     approx=None,
-    beta_kwargs=None,
+    integ_kwargs=None,
     alpha_ein=None,
     validate_input=True,
     verbose=False,
@@ -856,10 +858,11 @@ def compute_reduced_tangential_shear(
 
             * 'discrete' (default) : The redshift of sources is provided by `z_source`.
               It can be individual redshifts for each source galaxy when `z_source` is an array
-              or all sources are at the same redshift when `z_source` is a float.
+              or all sources are at the same redshift when `z_source` is a float
+              (Used for `approx=None`).
 
             * 'distribution' : A redshift distribution function is provided by `z_source`.
-              `z_source` must be a one dimensional function.
+              `z_source` must be a one dimensional function (Used when `approx=None`).
 
             * 'beta' : The averaged lensing efficiency is provided by `z_source`.
               `z_source` must be a tuple containing
@@ -891,9 +894,8 @@ def compute_reduced_tangential_shear(
                   {\int_{z_{min}}^{z_{max}} N(z)\text{d}z}
 
             * 'order1' : Same approach as in Weighing the Giants - III (equation 6 in
-              Applegate et al. 2014; https://arxiv.org/abs/1208.0605). `z_src_info` must be
-              either 'beta', or 'distribution' (that will be used to compute
-              :math:`\langle \beta_s \rangle`)
+              Applegate et al. 2014; https://arxiv.org/abs/1208.0605).
+              `z_src_info` must be 'beta':
 
               .. math::
                   g_t\approx\frac{\left<\beta_s\right>\gamma_{\infty}}
@@ -902,8 +904,7 @@ def compute_reduced_tangential_shear(
             * 'order2' : Same approach as in Cluster Mass Calibration at High
               Redshift (equation 12 in Schrabback et al. 2017;
               https://arxiv.org/abs/1611.03866).
-              `z_src_info` must be either 'beta', or 'distribution' (that will be used
-              to compute :math:`\langle \beta_s \rangle` and :math:`\langle \beta_s^2 \rangle`)
+              `z_src_info` must be 'beta':
 
               .. math::
                   g_t\approx\frac{\left<\beta_s\right>\gamma_{\infty}}
@@ -911,9 +912,9 @@ def compute_reduced_tangential_shear(
                   \left(1+\left(\frac{\left<\beta_s^2\right>}
                   {\left<\beta_s\right>^2}-1\right)\left<\beta_s\right>\kappa_{\infty}\right)
 
-    beta_kwargs: None, dict
-        Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
-        Only used if `z_src_info='distribution'`. Possible keys are:
+    integ_kwargs: None, dict
+        Extra arguments for the redshift integration (when
+        `approx=None, z_src_info='distribution'`). Possible keys are:
 
             * 'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
               when performing the sum. (default=None)
@@ -955,7 +956,7 @@ def compute_reduced_tangential_shear(
         z_source,
         z_src_info=z_src_info,
         approx=approx,
-        beta_kwargs=beta_kwargs,
+        integ_kwargs=integ_kwargs,
         verbose=verbose,
     )
 
@@ -976,7 +977,7 @@ def compute_magnification(
     alpha_ein=None,
     z_src_info="discrete",
     approx=None,
-    beta_kwargs=None,
+    integ_kwargs=None,
     verbose=False,
     validate_input=True,
 ):
@@ -1027,10 +1028,11 @@ def compute_magnification(
 
             * 'discrete' (default) : The redshift of sources is provided by `z_source`.
               It can be individual redshifts for each source galaxy when `z_source` is an array
-              or all sources are at the same redshift when `z_source` is a float.
+              or all sources are at the same redshift when `z_source` is a float
+              (Used for `approx=None`).
 
             * 'distribution' : A redshift distribution function is provided by `z_source`.
-              `z_source` must be a one dimensional function.
+              `z_source` must be a one dimensional function (Used when `approx=None`).
 
             * 'beta' : The averaged lensing efficiency is provided by `z_source`.
               `z_source` must be a tuple containing
@@ -1064,26 +1066,24 @@ def compute_magnification(
                   {\int_{z_{min}}^{z_{max}} N(z)\text{d}z}
 
             * 'order1' : Uses the weak lensing approximation of the magnification with up to
-              first-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`.
-              `z_src_info` must be either 'beta', or 'distribution' (that will be used to
-              compute :math:`\langle \beta_s \rangle`)
+              first-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`
+              (`z_src_info` must be 'beta'):
 
               .. math::
                   \mu \approx 1 + 2 \left<\beta_s\right>\kappa_{\infty}
 
             * 'order2' : Uses the weak lensing approximation of the magnification with up to
-              second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`.
-              `z_src_info` must be either 'beta', or 'distribution' (that will be used to
-              compute :math:`\langle \beta_s \rangle` and :math:`\langle \beta_s^2 \rangle`)
+              second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`
+              (`z_src_info` must be 'beta'):
 
               .. math::
                   \mu \approx 1 + 2 \left<\beta_s\right>\kappa_{\infty}
                   + 3 \left<\beta_s^2\right>\kappa_{\infty}^2
                   + \left<\beta_s^2\right>\gamma_{\infty}^2
 
-    beta_kwargs: None, dict
-        Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
-        Only used if `z_src_info='distribution'`. Possible keys are:
+    integ_kwargs: None, dict
+        Extra arguments for the redshift integration (when
+        `approx=None, z_src_info='distribution'`). Possible keys are:
 
             * 'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
               when performing the sum. (default=None)
@@ -1121,7 +1121,7 @@ def compute_magnification(
         z_source,
         z_src_info=z_src_info,
         approx=approx,
-        beta_kwargs=beta_kwargs,
+        integ_kwargs=integ_kwargs,
         verbose=verbose,
     )
 
@@ -1143,7 +1143,7 @@ def compute_magnification_bias(
     alpha_ein=None,
     z_src_info="discrete",
     approx=None,
-    beta_kwargs=None,
+    integ_kwargs=None,
     verbose=False,
     validate_input=True,
 ):
@@ -1210,10 +1210,11 @@ def compute_magnification_bias(
 
             * 'discrete' (default) : The redshift of sources is provided by `z_source`.
               It can be individual redshifts for each source galaxy when `z_source` is an array
-              or all sources are at the same redshift when `z_source` is a float.
+              or all sources are at the same redshift when `z_source` is a float
+              (Used for `approx=None`).
 
             * 'distribution' : A redshift distribution function is provided by `z_source`.
-              `z_source` must be a one dimensional function.
+              `z_source` must be a one dimensional function (Used when `approx=None`).
 
             * 'beta' : The averaged lensing efficiency is provided by `z_source`.
               `z_source` must be a tuple containing
@@ -1248,18 +1249,16 @@ def compute_magnification_bias(
                   {\int_{z_{min}}^{z_{max}} N(z)\text{d}z}
 
             * 'order1' : Uses the weak lensing approximation of the magnification bias with up
-              to first-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`.
-              `z_src_info` must be either 'beta', or 'distribution' (that will be used to
-              compute :math:`\langle \beta_s \rangle`)
+              to first-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`
+              (`z_src_info` must be 'beta'):
 
               .. math::
                   \mu^{\alpha-1} \approx
                   1 + \left(\alpha-1\right)\left(2 \left<\beta_s\right>\kappa_{\infty}\right)
 
             * 'order2' : Uses the weak lensing approximation of the magnification bias with up
-              to second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`.
-              `z_src_info` must be either 'beta', or 'distribution' (that will be used to
-              compute :math:`\langle \beta_s \rangle` and :math:`\langle \beta_s^2 \rangle`)
+              to second-order terms in :math:`\kappa_{\infty}` or :math:`\gamma_{\infty}`
+              `z_src_info` must be 'beta':
 
               .. math::
                   \mu^{\alpha-1} \approx
@@ -1270,9 +1269,9 @@ def compute_magnification_bias(
                   &+ \left(2\alpha-1\right)\left(\alpha-1\right)
                   \left(\left<\beta_s^2\right>\kappa_{\infty}^2\right)
 
-    beta_kwargs: None, dict
-        Extra arguments for the `compute_beta_s_mean, compute_beta_s_square_mean` functions.
-        Only used if `z_src_info='distribution'`. Possible keys are:
+    integ_kwargs: None, dict
+        Extra arguments for the redshift integration (when
+        `approx=None, z_src_info='distribution'`). Possible keys are:
 
             * 'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
               when performing the sum. (default=None)
@@ -1307,7 +1306,7 @@ def compute_magnification_bias(
         alpha,
         z_src_info=z_src_info,
         approx=approx,
-        beta_kwargs=beta_kwargs,
+        integ_kwargs=integ_kwargs,
         verbose=verbose,
     )
 
