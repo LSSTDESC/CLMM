@@ -532,7 +532,6 @@ def compute_tangential_shear(
     massdef="mean",
     alpha_ein=None,
     z_src_info="discrete",
-    integ_kwargs=None,
     verbose=False,
     validate_input=True,
 ):
@@ -608,17 +607,6 @@ def compute_tangential_shear(
                     \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}
                     {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
 
-    integ_kwargs: None, dict
-        Extra arguments for the redshift integration (when
-        `approx=None, z_src_info='distribution'`). Possible keys are:
-
-            * 'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
-              when performing the sum. (default=None)
-            * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
-              when performing the sum. (default=10.0)
-            * 'delta_z_cut' (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.
-              `delta_z_cut` is ignored if `z_min` is already provided. (default=0.1)
-
     verbose : bool, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL
         backends.
@@ -651,7 +639,6 @@ def compute_tangential_shear(
         z_cluster,
         z_source,
         z_src_info=z_src_info,
-        integ_kwargs=integ_kwargs,
         verbose=verbose,
     )
 
@@ -671,7 +658,6 @@ def compute_convergence(
     massdef="mean",
     alpha_ein=None,
     z_src_info="discrete",
-    integ_kwargs=None,
     verbose=False,
     validate_input=True,
 ):
@@ -747,17 +733,6 @@ def compute_convergence(
                     \langle \beta_s^2 \rangle = \left\langle \left(\frac{D_{LS}}
                     {D_S}\frac{D_\infty}{D_{L,\infty}}\right)^2 \right\rangle
 
-    integ_kwargs: None, dict
-        Extra arguments for the redshift integration (when
-        `approx=None, z_src_info='distribution'`). Possible keys are:
-
-            * 'zmin' (None, float) : Minimum redshift to be set as the source of the galaxy
-              when performing the sum. (default=None)
-            * 'zmax' (float) : Maximum redshift to be set as the source of the galaxy
-              when performing the sum. (default=10.0)
-            * 'delta_z_cut' (float) : Redshift cut so that `zmin` = `z_cl` + `delta_z_cut`.
-              `delta_z_cut` is ignored if `z_min` is already provided. (default=0.1)
-
     verbose : bool, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only availble for the NC and CCL
         backends.
@@ -786,7 +761,6 @@ def compute_convergence(
         z_cluster,
         z_source,
         z_src_info=z_src_info,
-        integ_kwargs=integ_kwargs,
         verbose=verbose,
     )
 

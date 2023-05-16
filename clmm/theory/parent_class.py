@@ -1055,7 +1055,7 @@ class CLMModeling:
             else:
                 raise ValueError(
                     "approx=None requires z_src_info='discrete' or 'distribution',"
-                    f"z_src_info='{z_src_info}' was provided."
+                    f" z_src_info='{z_src_info}' was provided."
                 )
         elif approx in ("order1", "order2"):
             if z_src_info != "beta":
@@ -1221,7 +1221,7 @@ class CLMModeling:
             else:
                 raise ValueError(
                     "approx=None requires z_src_info='discrete' or 'distribution',"
-                    f"z_src_info='{z_src_info}' was provided."
+                    f" z_src_info='{z_src_info}' was provided."
                 )
         elif approx in ("order1", "order2"):
             if z_src_info != "beta":
@@ -1395,7 +1395,7 @@ class CLMModeling:
             else:
                 raise ValueError(
                     "approx=None requires z_src_info='discrete' or 'distribution',"
-                    f"z_src_info='{z_src_info}' was provided."
+                    f" z_src_info='{z_src_info}' was provided."
                 )
 
         elif approx in ("order1", "order2"):
@@ -1559,6 +1559,12 @@ class CLMModeling:
         locals_dict: dict
             Should be the call locals()
         """
+        if loc_dict.get("approx") and loc_dict["z_src_info"]!="beta":
+            approx, z_src_info = loc_dict["approx"], loc_dict["z_src_info"]
+            raise ValueError(
+                f"approx='{approx}' requires z_src_info='beta', "
+                f"z_src_info='{z_src_info}' was provided."
+            )
         if loc_dict["z_src_info"] == "discrete":
             validate_argument(loc_dict, "z_src", "float_array", argmin=0)
         elif loc_dict["z_src_info"] == "distribution":
@@ -1578,9 +1584,3 @@ class CLMModeling:
             }
             validate_argument(beta_info, "beta_s_mean", "float_array")
             validate_argument(beta_info, "beta_s_square_mean", "float_array")
-        if loc_dict.get("approx") and loc_dict["z_src_info"] not in ("distribution", "beta"):
-            approx, z_src_info = loc_dict["approx"], loc_dict["z_src_info"]
-            raise ValueError(
-                f"approx='{approx}' requires z_src_info='distribution' or 'beta', "
-                f"z_src_info='{z_src_info}' was provided."
-            )
