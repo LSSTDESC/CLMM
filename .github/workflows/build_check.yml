@@ -36,7 +36,12 @@ jobs:
         conda install -c conda-forge cmake swig
         git clone https://github.com/LSSTDESC/CCL
         cd CCL
+        git checkout 1a351df
         pip install .
+    - name: Analysing the code with pylint
+      run: |
+        pip install pylint
+        pylint clmm
     - name: Run the unit tests
       run: |
         pip install pytest pytest-cov
