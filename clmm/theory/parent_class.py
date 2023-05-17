@@ -753,8 +753,6 @@ class CLMModeling:
                 r_proj=r_proj, z_cl=z_cl, z_src=self.z_inf
             )
             gammat = beta_s_mean * gammat_inf
-        else:
-            raise ValueError(f"Unsupported z_src_info (='{z_src_info}')")
 
         return gammat
 
@@ -837,8 +835,6 @@ class CLMModeling:
             beta_s_mean = z_src[0]
             kappa_inf = self._eval_convergence_core(r_proj=r_proj, z_cl=z_cl, z_src=self.z_inf)
             kappa = beta_s_mean * kappa_inf
-        else:
-            raise ValueError(f"Unsupported z_src_info (='{z_src_info}')")
 
         return kappa
 
@@ -1052,11 +1048,6 @@ class CLMModeling:
                     "z_src",
                     r_proj,
                 )
-            else:
-                raise ValueError(
-                    "approx=None requires z_src_info='discrete' or 'distribution',"
-                    f" z_src_info='{z_src_info}' was provided."
-                )
         elif approx in ("order1", "order2"):
             beta_s_mean = z_src[0]
 
@@ -1073,8 +1064,6 @@ class CLMModeling:
                     * beta_s_mean
                     * kappa_inf
                 )
-        else:
-            raise ValueError(f"Unsupported approx (='{approx}')")
 
         return gt
 
@@ -1216,11 +1205,6 @@ class CLMModeling:
                     "z_src",
                     r_proj,
                 )
-            else:
-                raise ValueError(
-                    "approx=None requires z_src_info='discrete' or 'distribution',"
-                    f" z_src_info='{z_src_info}' was provided."
-                )
         elif approx in ("order1", "order2"):
             beta_s_mean = z_src[0]
 
@@ -1234,8 +1218,6 @@ class CLMModeling:
                 # Taylor expansion with up to second-order terms
                 mu += 3 * beta_s_square_mean * kappa_inf**2 + beta_s_square_mean * gammat_inf**2
 
-        else:
-            raise ValueError(f"Unsupported approx (='{approx}')")
         return mu
 
     def eval_magnification_bias(
@@ -1388,11 +1370,6 @@ class CLMModeling:
                     r_proj,
                     alpha=alpha,
                 )
-            else:
-                raise ValueError(
-                    "approx=None requires z_src_info='discrete' or 'distribution',"
-                    f" z_src_info='{z_src_info}' was provided."
-                )
 
         elif approx in ("order1", "order2"):
             beta_s_mean = z_src[0]
@@ -1409,8 +1386,6 @@ class CLMModeling:
                     2 * alpha - 1
                 ) * (alpha - 1) * beta_s_square_mean * kappa_inf**2
 
-        else:
-            raise ValueError(f"Unsupported approx (='{approx}')")
 
         return mu_bias
 
@@ -1553,12 +1528,24 @@ class CLMModeling:
         locals_dict: dict
             Should be the call locals()
         """
-        if loc_dict.get("approx") and loc_dict["z_src_info"] != "beta":
+        # check compatility between approx and z_src_info
+        if "approx" in loc_dict:  # if func has approx keyword
             approx, z_src_info = loc_dict["approx"], loc_dict["z_src_info"]
-            raise ValueError(
-                f"approx='{approx}' requires z_src_info='beta', "
-                f"z_src_info='{z_src_info}' was provided."
-            )
+            if approx is None:
+                if z_src_info not in ("discrete", "distribution"):
+                    raise ValueError(
+                        "approx=None requires z_src_info='discrete' or 'distribution',"
+                        f" z_src_info='{z_src_info}' was provided."
+                    )
+            elif approx in ("order1", "order2"):
+                if z_src_info != "beta":
+                    raise ValueError(
+                        f"approx='{approx}' requires z_src_info='beta', "
+                        f"z_src_info='{z_src_info}' was provided."
+                    )
+            else:
+                raise ValueError(f"Unsupported approx (='{approx}')")
+        # check z_src_info type
         if loc_dict["z_src_info"] == "discrete":
             validate_argument(loc_dict, "z_src", "float_array", argmin=0)
         elif loc_dict["z_src_info"] == "distribution":
@@ -1578,3 +1565,5 @@ class CLMModeling:
             }
             validate_argument(beta_info, "beta_s_mean", "float_array")
             validate_argument(beta_info, "beta_s_square_mean", "float_array")
+        else:
+            raise ValueError(f"Unsupported z_src_info (='{loc_dict['z_src_info']}')")
