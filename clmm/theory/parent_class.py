@@ -1019,6 +1019,7 @@ class CLMModeling:
             validate_argument(locals(), "z_cl", float, argmin=0)
             validate_argument(locals(), "z_src_info", str)
             validate_argument(locals(), "approx", str, none_ok=True)
+            self._validate_approx_z_src_info(locals())
             self._validate_z_src(locals())
 
         if self.halo_profile_model == "einasto" and verbose:
@@ -1176,6 +1177,7 @@ class CLMModeling:
             validate_argument(locals(), "z_cl", float, argmin=0)
             validate_argument(locals(), "z_src_info", str)
             validate_argument(locals(), "approx", str, none_ok=True)
+            self._validate_approx_z_src_info(locals())
             self._validate_z_src(locals())
 
         if self.halo_profile_model == "einasto" and verbose:
@@ -1339,6 +1341,7 @@ class CLMModeling:
             validate_argument(locals(), "z_src_info", str)
             validate_argument(locals(), "alpha", "float_array")
             validate_argument(locals(), "approx", str, none_ok=True)
+            self._validate_approx_z_src_info(locals())
             self._validate_z_src(locals())
 
         if self.halo_profile_model == "einasto" and verbose:
@@ -1385,7 +1388,6 @@ class CLMModeling:
                 mu_bias += (alpha - 1) * (beta_s_square_mean * gammat_inf**2) + (
                     2 * alpha - 1
                 ) * (alpha - 1) * beta_s_square_mean * kappa_inf**2
-
 
         return mu_bias
 
@@ -1521,31 +1523,11 @@ class CLMModeling:
             * z_src_info='beta' : z_src must be a tuple containing
               ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`).
 
-        Also, if approx is provided and not None, z_src_info must be 'distribution' or 'beta'.
-
         Parameters
         ----------
         locals_dict: dict
             Should be the call locals()
         """
-        # check compatility between approx and z_src_info
-        if "approx" in loc_dict:  # if func has approx keyword
-            approx, z_src_info = loc_dict["approx"], loc_dict["z_src_info"]
-            if approx is None:
-                if z_src_info not in ("discrete", "distribution"):
-                    raise ValueError(
-                        "approx=None requires z_src_info='discrete' or 'distribution',"
-                        f" z_src_info='{z_src_info}' was provided."
-                    )
-            elif approx in ("order1", "order2"):
-                if z_src_info != "beta":
-                    raise ValueError(
-                        f"approx='{approx}' requires z_src_info='beta', "
-                        f"z_src_info='{z_src_info}' was provided."
-                    )
-            else:
-                raise ValueError(f"Unsupported approx (='{approx}')")
-        # check z_src_info type
         if loc_dict["z_src_info"] == "discrete":
             validate_argument(loc_dict, "z_src", "float_array", argmin=0)
         elif loc_dict["z_src_info"] == "distribution":
@@ -1567,3 +1549,32 @@ class CLMModeling:
             validate_argument(beta_info, "beta_s_square_mean", "float_array")
         else:
             raise ValueError(f"Unsupported z_src_info (='{loc_dict['z_src_info']}')")
+
+    def _validate_approx_z_src_info(self, loc_dict):
+        r"""Validation for compatility between approx and z_src_info. The conditions are:
+
+            * approx=None: z_src_info must be 'discrete' or 'distribution'
+            * approx='order1' or 'order2': z_src_info must be 'beta'
+            * approx=other: raises error
+
+        Parameters
+        ----------
+        locals_dict: dict
+            Should be the call locals()
+        """
+        # check compatility between approx and z_src_info
+        z_src_info, approx = loc_dict["z_src_info"], loc_dict["approx"]
+        if approx is None:
+            if z_src_info not in ("discrete", "distribution"):
+                raise ValueError(
+                    "approx=None requires z_src_info='discrete' or 'distribution',"
+                    f" z_src_info='{z_src_info}' was provided."
+                )
+        elif approx in ("order1", "order2"):
+            if z_src_info != "beta":
+                raise ValueError(
+                    f"approx='{approx}' requires z_src_info='beta', "
+                    f"z_src_info='{z_src_info}' was provided."
+                )
+        else:
+            raise ValueError(f"Unsupported approx (='{approx}')")
