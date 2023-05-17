@@ -1058,8 +1058,6 @@ class CLMModeling:
                     f" z_src_info='{z_src_info}' was provided."
                 )
         elif approx in ("order1", "order2"):
-            if z_src_info != "beta":
-                raise ValueError("z_src_info must be beta if approx!=None.")
             beta_s_mean = z_src[0]
 
             gammat_inf = self._eval_tangential_shear_core(r_proj, z_cl, z_src=self.z_inf)
@@ -1224,8 +1222,6 @@ class CLMModeling:
                     f" z_src_info='{z_src_info}' was provided."
                 )
         elif approx in ("order1", "order2"):
-            if z_src_info != "beta":
-                raise ValueError("z_src_info must be beta if approx!=None.")
             beta_s_mean = z_src[0]
 
             kappa_inf = self._eval_convergence_core(r_proj, z_cl, z_src=self.z_inf)
@@ -1399,8 +1395,6 @@ class CLMModeling:
                 )
 
         elif approx in ("order1", "order2"):
-            if z_src_info != "beta":
-                raise ValueError("z_src_info must be beta if approx!=None.")
             beta_s_mean = z_src[0]
 
             kappa_inf = self._eval_convergence_core(r_proj, z_cl, z_src=self.z_inf)
