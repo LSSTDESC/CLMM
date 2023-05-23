@@ -308,7 +308,7 @@ class GalaxyCluster:
             Probability for being a background galaxy
         """
         cols = self._get_input_galdata(
-            {"pzpdf": "pzpdf", "pzbins": "pzbins"} if use_pdz else {"z_source": "z"}
+            {"pzpdf": "pzpdf", "pzbins": "pzbins"} if use_pdz else {"z_src": "z"}
         )
         p_background = compute_background_probability(
             self.z, use_pdz=use_pdz, validate_input=self.validate_input, **cols
@@ -374,7 +374,7 @@ class GalaxyCluster:
         if is_deltasigma:
             if "sigma_c" not in self.galcat.columns:
                 self.add_critical_surface_density(cosmo, use_pdz=use_pdz)
-            col_dict.update({"z_source": "z", "sigma_c": "sigma_c"})
+            col_dict.update({"z_src": "z", "sigma_c": "sigma_c"})
         if use_shape_noise:
             col_dict.update(
                 {

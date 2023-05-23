@@ -525,7 +525,7 @@ def compute_tangential_shear(
     mdelta,
     cdelta,
     z_cluster,
-    z_source,
+    z_src,
     cosmo,
     delta_mdef=200,
     halo_profile_model="nfw",
@@ -556,7 +556,7 @@ def compute_tangential_shear(
         Galaxy cluster NFW concentration.
     z_cluster : float
         Galaxy cluster redshift
-    z_source : array_like, float, function
+    z_src : array_like, float, function
         Information on the background source galaxy redshift(s). Value required depends on
         `z_src_info` (see below).
     cosmo : clmm.cosmology.Cosmology object
@@ -583,18 +583,18 @@ def compute_tangential_shear(
         If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
         cosmology-dependent value for the CCL backend.)
     z_src_info : str, optional
-        Type of redshift information provided by the `z_source` argument.
+        Type of redshift information provided by the `z_src` argument.
         The following supported options are:
 
-            * 'discrete' (default) : The redshift of sources is provided by `z_source`.
-              It can be individual redshifts for each source galaxy when `z_source` is an array
-              or all sources are at the same redshift when `z_source` is a float.
+            * 'discrete' (default) : The redshift of sources is provided by `z_src`.
+              It can be individual redshifts for each source galaxy when `z_src` is an array
+              or all sources are at the same redshift when `z_src` is a float.
 
-            * 'distribution' : A redshift distribution function is provided by `z_source`.
-              `z_source` must be a one dimensional function.
+            * 'distribution' : A redshift distribution function is provided by `z_src`.
+              `z_src` must be a one dimensional function.
 
-            * 'beta' : The averaged lensing efficiency is provided by `z_source`.
-              `z_source` must be a tuple containing
+            * 'beta' : The averaged lensing efficiency is provided by `z_src`.
+              `z_src` must be a tuple containing
               ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
               the lensing efficiency and square of the lensing efficiency averaged over
               the galaxy redshift distribution repectively.
@@ -648,7 +648,7 @@ def compute_tangential_shear(
     tangential_shear = _modeling_object.eval_tangential_shear(
         r_proj,
         z_cluster,
-        z_source,
+        z_src,
         z_src_info=z_src_info,
         beta_kwargs=beta_kwargs,
         verbose=verbose,
@@ -663,7 +663,7 @@ def compute_convergence(
     mdelta,
     cdelta,
     z_cluster,
-    z_source,
+    z_src,
     cosmo,
     delta_mdef=200,
     halo_profile_model="nfw",
@@ -694,7 +694,7 @@ def compute_convergence(
         Galaxy cluster NFW concentration.
     z_cluster : float
         Galaxy cluster redshift
-    z_source : array_like, float, function
+    z_src : array_like, float, function
         Information on the background source galaxy redshift(s). Value required depends on
         `z_src_info` (see below).
     cosmo : clmm.cosmology.Cosmology object
@@ -721,18 +721,18 @@ def compute_convergence(
         If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
         cosmology-dependent value for the CCL backend.)
     z_src_info : str, optional
-        Type of redshift information provided by the `z_source` argument.
+        Type of redshift information provided by the `z_src` argument.
         The following supported options are:
 
-            * 'discrete' (default) : The redshift of sources is provided by `z_source`.
-              It can be individual redshifts for each source galaxy when `z_source` is an array
-              or all sources are at the same redshift when `z_source` is a float.
+            * 'discrete' (default) : The redshift of sources is provided by `z_src`.
+              It can be individual redshifts for each source galaxy when `z_src` is an array
+              or all sources are at the same redshift when `z_src` is a float.
 
-            * 'distribution' : A redshift distribution function is provided by `z_source`.
-              `z_source` must be a one dimensional function.
+            * 'distribution' : A redshift distribution function is provided by `z_src`.
+              `z_src` must be a one dimensional function.
 
-            * 'beta' : The averaged lensing efficiency is provided by `z_source`.
-              `z_source` must be a tuple containing
+            * 'beta' : The averaged lensing efficiency is provided by `z_src`.
+              `z_src` must be a tuple containing
               ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
               the lensing efficiency and square of the lensing efficiency averaged over
               the galaxy redshift distribution repectively.
@@ -782,7 +782,7 @@ def compute_convergence(
     convergence = _modeling_object.eval_convergence(
         r_proj,
         z_cluster,
-        z_source,
+        z_src,
         z_src_info=z_src_info,
         beta_kwargs=beta_kwargs,
         verbose=verbose,
@@ -797,7 +797,7 @@ def compute_reduced_tangential_shear(
     mdelta,
     cdelta,
     z_cluster,
-    z_source,
+    z_src,
     cosmo,
     delta_mdef=200,
     halo_profile_model="nfw",
@@ -824,7 +824,7 @@ def compute_reduced_tangential_shear(
         Galaxy cluster NFW concentration.
     z_cluster : float
         Galaxy cluster redshift
-    z_source : array_like, float, function
+    z_src : array_like, float, function
         Information on the background source galaxy redshift(s). Value required depends on
         `z_src_info` (see below).
     cosmo : clmm.cosmology.Cosmology object
@@ -851,18 +851,18 @@ def compute_reduced_tangential_shear(
         If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
         cosmology-dependent value for the CCL backend.)
     z_src_info : str, optional
-        Type of redshift information provided by the `z_source` argument.
+        Type of redshift information provided by the `z_src` argument.
         The following supported options are:
 
-            * 'discrete' (default) : The redshift of sources is provided by `z_source`.
-              It can be individual redshifts for each source galaxy when `z_source` is an array
-              or all sources are at the same redshift when `z_source` is a float.
+            * 'discrete' (default) : The redshift of sources is provided by `z_src`.
+              It can be individual redshifts for each source galaxy when `z_src` is an array
+              or all sources are at the same redshift when `z_src` is a float.
 
-            * 'distribution' : A redshift distribution function is provided by `z_source`.
-              `z_source` must be a one dimensional function.
+            * 'distribution' : A redshift distribution function is provided by `z_src`.
+              `z_src` must be a one dimensional function.
 
-            * 'beta' : The averaged lensing efficiency is provided by `z_source`.
-              `z_source` must be a tuple containing
+            * 'beta' : The averaged lensing efficiency is provided by `z_src`.
+              `z_src` must be a tuple containing
               ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
               the lensing efficiency and square of the lensing efficiency averaged over
               the galaxy redshift distribution repectively.
@@ -880,7 +880,7 @@ def compute_reduced_tangential_shear(
 
             * None (default): Requires `z_src_info` to be 'discrete' or 'distribution'.
               If `z_src_info='discrete'`, full computation is made for each
-              `r_proj, z_source` pair individually. If `z_src_info='distribution'`, reduced
+              `r_proj, z_src` pair individually. If `z_src_info='distribution'`, reduced
               tangential shear at each value of `r_proj` is calculated as
 
               .. math::
@@ -952,7 +952,7 @@ def compute_reduced_tangential_shear(
     red_tangential_shear = _modeling_object.eval_reduced_tangential_shear(
         r_proj,
         z_cluster,
-        z_source,
+        z_src,
         z_src_info=z_src_info,
         approx=approx,
         beta_kwargs=beta_kwargs,
@@ -968,7 +968,7 @@ def compute_magnification(
     mdelta,
     cdelta,
     z_cluster,
-    z_source,
+    z_src,
     cosmo,
     delta_mdef=200,
     halo_profile_model="nfw",
@@ -995,7 +995,7 @@ def compute_magnification(
         Galaxy cluster NFW concentration.
     z_cluster : float
         Galaxy cluster redshift
-    z_source : array_like, float, function
+    z_src : array_like, float, function
         Information on the background source galaxy redshift(s). Value required depends on
         `z_src_info` (see below).
     cosmo : clmm.cosmology.Cosmology object
@@ -1022,18 +1022,18 @@ def compute_magnification(
         If None, use the default value of the backend. (0.25 for the NumCosmo backend and a
         cosmology-dependent value for the CCL backend.)
     z_src_info : str, optional
-        Type of redshift information provided by the `z_source` argument.
+        Type of redshift information provided by the `z_src` argument.
         The following supported options are:
 
-            * 'discrete' (default) : The redshift of sources is provided by `z_source`.
-              It can be individual redshifts for each source galaxy when `z_source` is an array
-              or all sources are at the same redshift when `z_source` is a float.
+            * 'discrete' (default) : The redshift of sources is provided by `z_src`.
+              It can be individual redshifts for each source galaxy when `z_src` is an array
+              or all sources are at the same redshift when `z_src` is a float.
 
-            * 'distribution' : A redshift distribution function is provided by `z_source`.
-              `z_source` must be a one dimensional function.
+            * 'distribution' : A redshift distribution function is provided by `z_src`.
+              `z_src` must be a one dimensional function.
 
-            * 'beta' : The averaged lensing efficiency is provided by `z_source`.
-              `z_source` must be a tuple containing
+            * 'beta' : The averaged lensing efficiency is provided by `z_src`.
+              `z_src` must be a tuple containing
               ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
               the lensing efficiency and square of the lensing efficiency averaged over
               the galaxy redshift distribution repectively.
@@ -1051,7 +1051,7 @@ def compute_magnification(
 
             * None (default): Requires `z_src_info` to be 'discrete' or 'distribution'.
               If `z_src_info='discrete'`, full computation is made for each
-              `r_proj, z_source` pair individually. If `z_src_info='distribution'`, magnification
+              `r_proj, z_src` pair individually. If `z_src_info='distribution'`, magnification
               at each value of `r_proj` is calculated as
 
               .. math::
@@ -1118,7 +1118,7 @@ def compute_magnification(
     magnification = _modeling_object.eval_magnification(
         r_proj,
         z_cluster,
-        z_source,
+        z_src,
         z_src_info=z_src_info,
         approx=approx,
         beta_kwargs=beta_kwargs,
@@ -1135,7 +1135,7 @@ def compute_magnification_bias(
     mdelta,
     cdelta,
     z_cluster,
-    z_source,
+    z_src,
     cosmo,
     delta_mdef=200,
     halo_profile_model="nfw",
@@ -1178,7 +1178,7 @@ def compute_magnification_bias(
         Galaxy cluster NFW concentration.
     z_cluster : float
         Galaxy cluster redshift
-    z_source : array_like, float, function
+    z_src : array_like, float, function
         Information on the background source galaxy redshift(s). Value required depends on
         `z_src_info` (see below).
     cosmo : clmm.cosmology.Cosmology object
@@ -1205,18 +1205,18 @@ def compute_magnification_bias(
             * 'virial'
 
     z_src_info : str, optional
-        Type of redshift information provided by the `z_source` argument.
+        Type of redshift information provided by the `z_src` argument.
         The following supported options are:
 
-            * 'discrete' (default) : The redshift of sources is provided by `z_source`.
-              It can be individual redshifts for each source galaxy when `z_source` is an array
-              or all sources are at the same redshift when `z_source` is a float.
+            * 'discrete' (default) : The redshift of sources is provided by `z_src`.
+              It can be individual redshifts for each source galaxy when `z_src` is an array
+              or all sources are at the same redshift when `z_src` is a float.
 
-            * 'distribution' : A redshift distribution function is provided by `z_source`.
-              `z_source` must be a one dimensional function.
+            * 'distribution' : A redshift distribution function is provided by `z_src`.
+              `z_src` must be a one dimensional function.
 
-            * 'beta' : The averaged lensing efficiency is provided by `z_source`.
-              `z_source` must be a tuple containing
+            * 'beta' : The averaged lensing efficiency is provided by `z_src`.
+              `z_src` must be a tuple containing
               ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`),
               the lensing efficiency and square of the lensing efficiency averaged over
               the galaxy redshift distribution repectively.
@@ -1234,7 +1234,7 @@ def compute_magnification_bias(
 
             * None (default): Requires `z_src_info` to be 'discrete' or 'distribution'.
               If `z_src_info='discrete'`, full computation is made for each
-              `r_proj, z_source` pair individually. If `z_src_info='distribution'`, magnification
+              `r_proj, z_src` pair individually. If `z_src_info='distribution'`, magnification
               bias at each value of `r_proj` is calculated as
 
               .. math::
@@ -1303,7 +1303,7 @@ def compute_magnification_bias(
     magnification_bias = _modeling_object.eval_magnification_bias(
         r_proj,
         z_cluster,
-        z_source,
+        z_src,
         alpha,
         z_src_info=z_src_info,
         approx=approx,

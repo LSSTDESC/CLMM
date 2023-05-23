@@ -94,7 +94,7 @@ def load_validation_config(halo_profile_model=None):
         "mdelta": testcase["cluster_mass"],
         "cdelta": testcase["cluster_concentration"],
         "z_cluster": testcase["z_cluster"],
-        "z_source": testcase["z_source"],
+        "z_src": testcase["z_src"],
         "delta_mdef": testcase["mass_Delta"],
         "halo_profile_model": testcase["density_profile_parametrization"],
         "z_src_info": "discrete",
@@ -102,7 +102,7 @@ def load_validation_config(halo_profile_model=None):
 
     return {
         "TEST_CASE": testcase,
-        "z_source": testcase["z_source"],
+        "z_src": testcase["z_src"],
         "cosmo": cosmo,
         "cosmo_pars": {k.replace("cosmo_", ""): v for k, v in testcase.items() if "cosmo_" in k},
         "RHO_PARAMS": RHO_PARAMS,
@@ -450,7 +450,7 @@ def helper_physics_functions(func, additional_kwargs={}):
         "mdelta": 1.0e15,
         "cdelta": 4.0,
         "z_cluster": 0.2,
-        "z_source": 0.45,
+        "z_src": 0.45,
         "cosmo": theo.Cosmology(Omega_dm0=0.25, Omega_b0=0.05, H0=70.0),
     }
     kwargs.update(additional_kwargs)
@@ -524,19 +524,19 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         cfg_inf = load_validation_config()
 
         # compute some values
-        cfg_inf["GAMMA_PARAMS"]["z_source"] = 1000.0
+        cfg_inf["GAMMA_PARAMS"]["z_src"] = 1000.0
         beta_s_mean = compute_beta_s_mean(
-            cfg_inf["GAMMA_PARAMS"]["z_cluster"], cfg_inf["GAMMA_PARAMS"]["z_source"], cosmo
+            cfg_inf["GAMMA_PARAMS"]["z_cluster"], cfg_inf["GAMMA_PARAMS"]["z_src"], cosmo
         )
         beta_s_square_mean = compute_beta_s_square_mean(
-            cfg_inf["GAMMA_PARAMS"]["z_cluster"], cfg_inf["GAMMA_PARAMS"]["z_source"], cosmo
+            cfg_inf["GAMMA_PARAMS"]["z_cluster"], cfg_inf["GAMMA_PARAMS"]["z_src"], cosmo
         )
 
         gammat_inf = theo.compute_tangential_shear(cosmo=cosmo, **cfg_inf["GAMMA_PARAMS"])
         kappa_inf = theo.compute_convergence(cosmo=cosmo, **cfg_inf["GAMMA_PARAMS"])
 
         # test z_src = chang2013 distribution
-        cfg_inf["GAMMA_PARAMS"]["z_source"] = chang2013
+        cfg_inf["GAMMA_PARAMS"]["z_src"] = chang2013
         cfg_inf["GAMMA_PARAMS"]["z_src_info"] = "distribution"
 
         # store original values
@@ -739,7 +739,7 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
 
         # test z_src_info = 'beta'
         beta_s_mean, beta_s_square_mean = 0.9, 0.6
-        cfg_inf["GAMMA_PARAMS"]["z_source"] = (beta_s_mean, beta_s_square_mean)
+        cfg_inf["GAMMA_PARAMS"]["z_src"] = (beta_s_mean, beta_s_square_mean)
         cfg_inf["GAMMA_PARAMS"]["z_src_info"] = "beta"
         # tangential shear
         assert_allclose(
@@ -813,7 +813,7 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         # First, check for a array of radius and single source z
         radius = np.logspace(-2, 2, 10)
         z_cluster = 0.3
-        z_source = 0.2
+        z_src = 0.2
 
         assert_allclose(
             theo.compute_convergence(
@@ -821,7 +821,7 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
                 mdelta=1.0e15,
                 cdelta=4.0,
                 z_cluster=z_cluster,
-                z_source=z_source,
+                z_src=z_src,
                 cosmo=cosmo,
             ),
             np.zeros(len(radius)),
@@ -833,7 +833,7 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
                 mdelta=1.0e15,
                 cdelta=4.0,
                 z_cluster=z_cluster,
-                z_source=z_source,
+                z_src=z_src,
                 cosmo=cosmo,
             ),
             np.zeros(len(radius)),
@@ -845,7 +845,7 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
                 mdelta=1.0e15,
                 cdelta=4.0,
                 z_cluster=z_cluster,
-                z_source=z_source,
+                z_src=z_src,
                 cosmo=cosmo,
             ),
             np.zeros(len(radius)),
@@ -857,7 +857,7 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
                 mdelta=1.0e15,
                 cdelta=4.0,
                 z_cluster=z_cluster,
-                z_source=z_source,
+                z_src=z_src,
                 cosmo=cosmo,
             ),
             np.ones(len(radius)),
@@ -870,7 +870,7 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
                 mdelta=1.0e15,
                 cdelta=4.0,
                 z_cluster=z_cluster,
-                z_source=z_source,
+                z_src=z_src,
                 cosmo=cosmo,
             ),
             np.ones(len(radius)),
@@ -879,17 +879,17 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
 
         # Second, check a single radius and array of source z
         radius = 1.0
-        z_source = [0.25, 0.1, 0.14, 0.02]
+        z_src = [0.25, 0.1, 0.14, 0.02]
         assert_allclose(
             theo.compute_convergence(
                 radius,
                 mdelta=1.0e15,
                 cdelta=4.0,
                 z_cluster=z_cluster,
-                z_source=z_source,
+                z_src=z_src,
                 cosmo=cosmo,
             ),
-            np.zeros(len(z_source)),
+            np.zeros(len(z_src)),
             1.0e-10,
         )
         assert_allclose(
@@ -898,10 +898,10 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
                 mdelta=1.0e15,
                 cdelta=4.0,
                 z_cluster=z_cluster,
-                z_source=z_source,
+                z_src=z_src,
                 cosmo=cosmo,
             ),
-            np.zeros(len(z_source)),
+            np.zeros(len(z_src)),
             1.0e-10,
         )
         assert_allclose(
@@ -910,10 +910,10 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
                 mdelta=1.0e15,
                 cdelta=4.0,
                 z_cluster=z_cluster,
-                z_source=z_source,
+                z_src=z_src,
                 cosmo=cosmo,
             ),
-            np.zeros(len(z_source)),
+            np.zeros(len(z_src)),
             1.0e-10,
         )
         assert_allclose(
@@ -922,10 +922,10 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
                 mdelta=1.0e15,
                 cdelta=4.0,
                 z_cluster=z_cluster,
-                z_source=z_source,
+                z_src=z_src,
                 cosmo=cosmo,
             ),
-            np.ones(len(z_source)),
+            np.ones(len(z_src)),
             1.0e-10,
         )
         assert_allclose(
@@ -935,10 +935,10 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
                 mdelta=1.0e15,
                 cdelta=4.0,
                 z_cluster=z_cluster,
-                z_source=z_source,
+                z_src=z_src,
                 cosmo=cosmo,
             ),
-            np.ones(len(z_source)),
+            np.ones(len(z_src)),
             1.0e-10,
         )
 
@@ -973,7 +973,7 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         profile_pars = [
             cfg["GAMMA_PARAMS"]["r_proj"],
             cfg["GAMMA_PARAMS"]["z_cluster"],
-            cfg["GAMMA_PARAMS"]["z_source"],
+            cfg["GAMMA_PARAMS"]["z_src"],
         ]
         # Validate tangential shear
         gammat = mod.eval_tangential_shear(*profile_pars)
@@ -1090,49 +1090,49 @@ def test_shear_convergence_unittests(modeling_data, profile_init):
         # First, check for a array of radius and single source z
         radius = np.logspace(-2, 2, 10)
         z_cluster = 0.3
-        z_source = 0.2
+        z_src = 0.2
 
         assert_allclose(
-            mod.eval_convergence(radius, z_cluster, z_source), np.zeros(len(radius)), 1.0e-10
+            mod.eval_convergence(radius, z_cluster, z_src), np.zeros(len(radius)), 1.0e-10
         )
         assert_allclose(
-            mod.eval_tangential_shear(radius, z_cluster, z_source), np.zeros(len(radius)), 1.0e-10
+            mod.eval_tangential_shear(radius, z_cluster, z_src), np.zeros(len(radius)), 1.0e-10
         )
         assert_allclose(
-            mod.eval_reduced_tangential_shear(radius, z_cluster, z_source),
+            mod.eval_reduced_tangential_shear(radius, z_cluster, z_src),
             np.zeros(len(radius)),
             1.0e-10,
         )
         assert_allclose(
-            mod.eval_magnification(radius, z_cluster, z_source), np.ones(len(radius)), 1.0e-10
+            mod.eval_magnification(radius, z_cluster, z_src), np.ones(len(radius)), 1.0e-10
         )
         assert_allclose(
-            mod.eval_magnification_bias(radius, z_cluster, z_source, alpha),
+            mod.eval_magnification_bias(radius, z_cluster, z_src, alpha),
             np.ones(len(radius)),
             1.0e-10,
         )
 
         # Second, check a single radius and array of source z
         radius = 1.0
-        z_source = [0.25, 0.1, 0.14, 0.02]
+        z_src = [0.25, 0.1, 0.14, 0.02]
 
         assert_allclose(
-            mod.eval_convergence(radius, z_cluster, z_source), np.zeros(len(z_source)), 1.0e-10
+            mod.eval_convergence(radius, z_cluster, z_src), np.zeros(len(z_src)), 1.0e-10
         )
         assert_allclose(
-            mod.eval_tangential_shear(radius, z_cluster, z_source), np.zeros(len(z_source)), 1.0e-10
+            mod.eval_tangential_shear(radius, z_cluster, z_src), np.zeros(len(z_src)), 1.0e-10
         )
         assert_allclose(
-            mod.eval_reduced_tangential_shear(radius, z_cluster, z_source),
-            np.zeros(len(z_source)),
+            mod.eval_reduced_tangential_shear(radius, z_cluster, z_src),
+            np.zeros(len(z_src)),
             1.0e-10,
         )
         assert_allclose(
-            mod.eval_magnification(radius, z_cluster, z_source), np.ones(len(z_source)), 1.0e-10
+            mod.eval_magnification(radius, z_cluster, z_src), np.ones(len(z_src)), 1.0e-10
         )
         assert_allclose(
-            mod.eval_magnification_bias(radius, z_cluster, z_source, alpha),
-            np.ones(len(z_source)),
+            mod.eval_magnification_bias(radius, z_cluster, z_src, alpha),
+            np.ones(len(z_src)),
             1.0e-10,
         )
 

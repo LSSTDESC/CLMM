@@ -457,7 +457,7 @@ def test_compute_tangential_and_cross_components(modeling_data):
         is_deltasigma=True,
         cosmo=None,
         z_lens=z_lens,
-        z_source=gals["z"],
+        z_src=gals["z"],
     )
     assert_raises(
         TypeError,
@@ -471,7 +471,7 @@ def test_compute_tangential_and_cross_components(modeling_data):
         is_deltasigma=True,
         cosmo=cosmo,
         z_lens=None,
-        z_source=gals["z"],
+        z_src=gals["z"],
     )
     assert_raises(
         TypeError,
@@ -485,7 +485,7 @@ def test_compute_tangential_and_cross_components(modeling_data):
         is_deltasigma=True,
         cosmo=cosmo,
         z_lens=z_lens,
-        z_source=None,
+        z_src=None,
     )
 
     # test  missing info for use_pdz=True
@@ -502,7 +502,7 @@ def test_compute_tangential_and_cross_components(modeling_data):
         use_pdz=True,
         cosmo=cosmo,
         z_lens=z_lens,
-        z_source=None,
+        z_src=None,
     )
 
     # Trying to got through line 173 of dataops/__init__.py
@@ -517,7 +517,7 @@ def test_compute_tangential_and_cross_components(modeling_data):
         use_pdz=True,
         cosmo=cosmo,
         z_lens=z_lens,
-        z_source=None,
+        z_src=None,
         pzbins=[[0.55, 0.6, 0.65, 0.7, 0.75]],
         pzpdf=[[0.01, 1, 0.01, 0.001, 0.0001]],
     )
@@ -534,7 +534,7 @@ def test_compute_tangential_and_cross_components(modeling_data):
             is_deltasigma=True,
             cosmo=cosmo,
             z_lens=z_lens,
-            z_source=gals["z"],
+            z_src=gals["z"],
             geometry=geometry,
         )
         assert_allclose(
@@ -587,11 +587,11 @@ def test_compute_tangential_and_cross_components(modeling_data):
 def test_compute_background_probability():
     """test for compute background probability"""
     z_lens = 0.1
-    z_source = np.array([0.22, 0.35, 1.7])
+    z_src = np.array([0.22, 0.35, 1.7])
 
     # true redshift
     p_bkg = da.compute_background_probability(
-        z_lens, z_source=z_source, use_pdz=False, pzpdf=None, pzbins=None, validate_input=True
+        z_lens, z_src=z_src, use_pdz=False, pzpdf=None, pzbins=None, validate_input=True
     )
     expected = np.array([1.0, 1.0, 1.0])
     assert_allclose(p_bkg, expected, **TOLERANCE)
@@ -599,7 +599,7 @@ def test_compute_background_probability():
         ValueError,
         da.compute_background_probability,
         z_lens,
-        z_source=None,
+        z_src=None,
         use_pdz=False,
         pzpdf=None,
         pzbins=None,
@@ -608,13 +608,13 @@ def test_compute_background_probability():
 
     # photoz + deltasigma
     pzbin = np.linspace(0.0001, 5, 100)
-    pzbins = [pzbin for i in range(z_source.size)]
-    pzpdf = [multivariate_normal.pdf(pzbin, mean=z, cov=0.3) for z in z_source]
+    pzbins = [pzbin for i in range(z_src.size)]
+    pzpdf = [multivariate_normal.pdf(pzbin, mean=z, cov=0.3) for z in z_src]
     assert_raises(
         ValueError,
         da.compute_background_probability,
         z_lens,
-        z_source=z_source,
+        z_src=z_src,
         use_pdz=True,
         pzpdf=None,
         pzbins=pzbins,
@@ -626,7 +626,7 @@ def test_compute_galaxy_weights():
     """test for compute galaxy weights"""
     cosmo = clmm.Cosmology(H0=71.0, Omega_dm0=0.265 - 0.0448, Omega_b0=0.0448, Omega_k0=0.0)
     z_lens = 0.1
-    z_source = [0.22, 0.35, 1.7]
+    z_src = [0.22, 0.35, 1.7]
     shape_component1 = np.array([0.143, 0.063, -0.171])
     shape_component2 = np.array([-0.011, 0.012, -0.250])
     shape_component1_err = np.array([0.11, 0.01, 0.2])
@@ -636,7 +636,7 @@ def test_compute_galaxy_weights():
     weights = da.compute_galaxy_weights(
         z_lens,
         cosmo,
-        z_source=z_source,
+        z_src=z_src,
         use_pdz=False,
         pzpdf=None,
         pzbins=None,
@@ -654,12 +654,12 @@ def test_compute_galaxy_weights():
 
     # photoz + deltasigma
     pzbin = np.linspace(0.0001, 5, 100)
-    pzbins = [pzbin for i in range(len(z_source))]
-    pzpdf = [multivariate_normal.pdf(pzbin, mean=z, cov=0.3) for z in z_source]
+    pzbins = [pzbin for i in range(len(z_src))]
+    pzpdf = [multivariate_normal.pdf(pzbin, mean=z, cov=0.3) for z in z_src]
     weights = da.compute_galaxy_weights(
         z_lens,
         cosmo,
-        z_source=None,
+        z_src=None,
         use_pdz=True,
         pzpdf=pzpdf,
         pzbins=pzbins,
@@ -679,11 +679,11 @@ def test_compute_galaxy_weights():
     # photoz + deltasigma - shared bins
     pzbin = np.linspace(0.0001, 5, 100)
     pzbins = pzbin
-    pzpdf = [multivariate_normal.pdf(pzbin, mean=z, cov=0.3) for z in z_source]
+    pzpdf = [multivariate_normal.pdf(pzbin, mean=z, cov=0.3) for z in z_src]
     weights = da.compute_galaxy_weights(
         z_lens,
         cosmo,
-        z_source=None,
+        z_src=None,
         use_pdz=True,
         pzpdf=pzpdf,
         pzbins=pzbins,
@@ -704,7 +704,7 @@ def test_compute_galaxy_weights():
     weights = da.compute_galaxy_weights(
         z_lens,
         cosmo,
-        z_source=None,
+        z_src=None,
         use_pdz=True,
         pzpdf=pzpdf,
         pzbins=pzbins,
@@ -725,7 +725,7 @@ def test_compute_galaxy_weights():
     weights = da.compute_galaxy_weights(
         z_lens,
         cosmo,
-        z_source=None,
+        z_src=None,
         use_pdz=True,
         pzpdf=pzpdf,
         pzbins=pzbins,
@@ -748,7 +748,7 @@ def test_compute_galaxy_weights():
         da.compute_galaxy_weights,
         z_lens,
         cosmo,
-        z_source=None,
+        z_src=None,
         use_pdz=True,
         pzpdf=pzpdf,
         pzbins=pzbins,
@@ -768,7 +768,7 @@ def test_compute_galaxy_weights():
         da.compute_galaxy_weights,
         z_lens,
         cosmo,
-        z_source=None,
+        z_src=None,
         use_pdz=True,
         pzpdf=pzpdf,
         pzbins=pzbins,
@@ -785,7 +785,7 @@ def test_compute_galaxy_weights():
         da.compute_galaxy_weights,
         z_lens,
         cosmo=None,
-        z_source=None,
+        z_src=None,
         use_pdz=False,
         pzpdf=pzpdf,
         pzbins=pzbins,
@@ -803,7 +803,7 @@ def test_compute_galaxy_weights():
         da.compute_galaxy_weights,
         z_lens,
         cosmo=None,
-        z_source=None,
+        z_src=None,
         use_pdz=True,
         pzpdf=pzpdf,
         pzbins=pzbins,
