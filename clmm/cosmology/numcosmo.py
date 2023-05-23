@@ -4,8 +4,10 @@ Cosmology using NumCosmo
 import numpy as np
 
 import gi
-gi.require_version('NumCosmo', '1.0')
-gi.require_version('NumCosmoMath', '1.0')
+
+# pylint: disable=wrong-import-position
+gi.require_version("NumCosmo", "1.0")
+gi.require_version("NumCosmoMath", "1.0")
 from gi.repository import NumCosmo as Nc
 from gi.repository import NumCosmoMath as Ncm
 
@@ -26,38 +28,42 @@ class NumCosmoCosmology(CLMMCosmology):
         Cosmology library used in the back-end
     """
 
-    def __init__(self, dist=None, dist_zmax=15.0, **kwargs):
+    # pylint: disable=too-many-instance-attributes
+    # pylint: disable=abstract-method
 
+    def __init__(self, dist=None, dist_zmax=15.0, **kwargs):
         self.dist = None
 
         super().__init__(**kwargs)
 
         # this tag will be used to check if the cosmology object is accepted by the modeling
-        self.backend = 'nc'
+        self.backend = "nc"
 
         # set kmin/kmax for powerspectrum computations
-        self.additional_config['pk_kmin'] = 1.0e-5
-        self.additional_config['pk_kmax'] = 1.0
-        self.additional_config['ns'] = 0.96
-        self.additional_config['sigma8'] = 0.8
-        self.additional_config['sigma8_eps'] = 1e-8
+        self.additional_config["pk_kmin"] = 1.0e-5
+        self.additional_config["pk_kmax"] = 1.0
+        self.additional_config["ns"] = 0.96
+        self.additional_config["sigma8"] = 0.8
+        self.additional_config["sigma8_eps"] = 1e-8
 
         if dist:
             self.set_dist(dist)
         else:
             self.set_dist(Nc.Distance.new(dist_zmax))
 
-    def _init_from_cosmo(self, be_cosmo):
+        self.smd = Nc.WLSurfaceMassDensity.new(self.dist)
+        self.smd.prepare_if_needed(self.be_cosmo)
 
+    def _init_from_cosmo(self, be_cosmo):
         assert isinstance(be_cosmo, Nc.HICosmo)
         assert isinstance(be_cosmo, Nc.HICosmoDECpl)
         assert isinstance(be_cosmo.peek_reparam(), Nc.HICosmoDEReparamOk)
         self.be_cosmo = be_cosmo
+        self._update_vec_funcs()
 
     def _init_from_params(self, H0, Omega_b0, Omega_dm0, Omega_k0):
-
-        self.be_cosmo = Nc.HICosmo.new_from_name(
-            Nc.HICosmo, "NcHICosmoDECpl{'massnu-length':<1>}")
+        # pylint: disable=arguments-differ
+        self.be_cosmo = Nc.HICosmo.new_from_name(Nc.HICosmo, "NcHICosmoDECpl{'massnu-length':<1>}")
         self.be_cosmo.omega_x2omega_k()
         self.be_cosmo.param_set_by_name("w0", -1.0)
         self.be_cosmo.param_set_by_name("w1", 0.0)
@@ -69,11 +75,12 @@ class NumCosmoCosmology(CLMMCosmology):
         self.be_cosmo.param_set_by_name("Omegak", Omega_k0)
 
         cosmo = self.be_cosmo
-        ENnu = 3.046 - 3.0 * \
-            cosmo.E2Press_mnu(1.0e10) / (cosmo.E2Omega_g(1.0e10)
-                                         * (7.0 / 8.0 * (4.0/11.0)**(4.0/3.0)))
+        en_nu = 3.046 - 3.0 * cosmo.E2Press_mnu(1.0e10) / (
+            cosmo.E2Omega_g(1.0e10) * (7.0 / 8.0 * (4.0 / 11.0) ** (4.0 / 3.0))
+        )
 
-        self.be_cosmo.param_set_by_name("ENnu", ENnu)
+        self.be_cosmo.param_set_by_name("ENnu", en_nu)
+        self._update_vec_funcs()
 
     def _set_param(self, key, value):
         if key == "Omega_b0":
@@ -82,12 +89,13 @@ class NumCosmoCosmology(CLMMCosmology):
             self.be_cosmo.param_set_by_name("Omegac", value)
         elif key == "Omega_k0":
             self.be_cosmo.param_set_by_name("Omegak", value)
-        elif key == 'h':
-            self.be_cosmo.param_set_by_name("H0", value*100.0)
-        elif key == 'H0':
+        elif key == "h":
+            self.be_cosmo.param_set_by_name("H0", value * 100.0)
+        elif key == "H0":
             self.be_cosmo.param_set_by_name("H0", value)
         else:
             raise ValueError(f"Unsupported parameter {key}")
+        self._update_vec_funcs()
 
     def _get_param(self, key):
         if key == "Omega_m0":
@@ -98,86 +106,85 @@ class NumCosmoCosmology(CLMMCosmology):
             value = self.be_cosmo.Omega_c0()
         elif key == "Omega_k0":
             value = self.be_cosmo.Omega_k0()
-        elif key == 'h':
+        elif key == "h":
             value = self.be_cosmo.h()
-        elif key == 'H0':
+        elif key == "H0":
             value = self.be_cosmo.H0()
         else:
             raise ValueError(f"Unsupported parameter {key}")
         return value
 
     def set_dist(self, dist):
-        r"""Sets distance functions (NumCosmo internal use)
-        """
+        r"""Sets distance functions (NumCosmo internal use)"""
         assert isinstance(dist, Nc.Distance)
         self.dist = dist
         self.dist.prepare_if_needed(self.be_cosmo)
 
     def _get_Omega_m(self, z):
-
         return self._get_E2Omega_m(z) / self._get_E2(z)
 
-    def _get_E2(self, z):
+    def _update_vec_funcs(self):
+        """Update all functions that are vectorized"""
 
-        return np.vectorize(self.be_cosmo.E2)(z)
-
-    def _get_E2Omega_m(self, z):
-
-        return np.vectorize(self.be_cosmo.E2Omega_m)(z)
+        self._get_E2 = np.vectorize(self.be_cosmo.E2)
+        self._get_E2Omega_m = np.vectorize(self.be_cosmo.E2Omega_m)
+        self._eval_da_z1z2_core = np.vectorize(
+            lambda z1, z2: (
+                self.dist.angular_diameter_z1_z2(self.be_cosmo, z1, z2) * self.be_cosmo.RH_Mpc()
+            )
+        )
+        self._eval_sigma_crit_core = np.vectorize(
+            lambda z_len, z_src: (self.smd.sigma_critical(self.be_cosmo, z_src, z_len, z_len))
+        )
 
     def _get_rho_c(self, z):
-
-        return Ncm.C.crit_mass_density_h2_solar_mass_Mpc3() * \
-    self._get_param('h')**2 * self._get_E2(z)
+        return (
+            Ncm.C.crit_mass_density_h2_solar_mass_Mpc3()
+            * self._get_param("h") ** 2
+            * self._get_E2(z)
+        )
 
     def _get_rho_m(self, z):
         # total matter density in physical units [Msun/Mpc3]
-        rho_m = self._get_E2Omega_m(z) * \
-            Ncm.C.crit_mass_density_h2_solar_mass_Mpc3() * \
-            self._get_param('h') * self._get_param('h')
+        rho_m = (
+            self._get_E2Omega_m(z)
+            * Ncm.C.crit_mass_density_h2_solar_mass_Mpc3()
+            * self._get_param("h")
+            * self._get_param("h")
+        )
         return rho_m
 
-    def _eval_da_z1z2_core(self, z1, z2):
-
-        return np.vectorize(self.dist.angular_diameter_z1_z2)(
-            self.be_cosmo, z1, z2) * self.be_cosmo.RH_Mpc()
-
-    def _eval_sigma_crit_core(self, z_len, z_src):
-
-        self.smd.prepare_if_needed(self.be_cosmo)
-
-        func = lambda z_len, z_src: self.smd.sigma_critical(
-            self.be_cosmo, z_src, z_len, z_len)
-        return np.vectorize(func)(z_len, z_src)
-
     def _eval_linear_matter_powerspectrum(self, k_vals, redshift):
-
-        # Using the EH transfer function as this is the 
+        # Using the EH transfer function as this is the
         # default for the CCL backend as well
-        ps = Nc.PowspecMLTransfer.new(Nc.TransferFuncEH.new())
-        ps.set_kmin(self.additional_config['pk_kmin'])
-        ps.set_kmax(self.additional_config['pk_kmax'])
+        pow_spec = Nc.PowspecMLTransfer.new(Nc.TransferFuncEH.new())
+        pow_spec.set_kmin(self.additional_config["pk_kmin"])
+        pow_spec.set_kmax(self.additional_config["pk_kmax"])
 
         # Instead, computing the PS from the CLASS backend of Numcosmo
-        # ps  = Nc.PowspecMLCBE.new ()
-        # ps.peek_cbe().props.use_ppf = True
+        # pow_spec  = Nc.PowspecMLCBE.new ()
+        # pow_spec.peek_cbe().props.use_ppf = True
 
         if self.be_cosmo.reion is None:
             reion = Nc.HIReionCamb.new()
             self.be_cosmo.add_submodel(reion)
         if self.be_cosmo.prim is None:
-            prim  = Nc.HIPrimPowerLaw.new()
+            prim = Nc.HIPrimPowerLaw.new()
             self.be_cosmo.add_submodel(prim)
             # The default CLMM cosmology has ns=0.96 and sigma8=0.8
             # Need to adapt the NC cosmology accordingly
-            self.be_cosmo.prim.props.n_SA = self.additional_config['ns']
-            sigma8 = ps.sigma_tophat_R( # computes sigma8 at z=0
-                self.be_cosmo, self.additional_config['sigma8_eps'],
-                0.0, 8.0/self.be_cosmo.h())
+            self.be_cosmo.prim.props.n_SA = self.additional_config["ns"]
+            sigma8 = pow_spec.sigma_tophat_R(  # computes sigma8 at z=0
+                self.be_cosmo,
+                self.additional_config["sigma8_eps"],
+                0.0,
+                8.0 / self.be_cosmo.h(),
+            )
             old_amplitude = np.exp(self.be_cosmo.prim.props.ln10e10ASA)
             self.be_cosmo.prim.props.ln10e10ASA = np.log(
-                (self.additional_config['sigma8']/sigma8)**2*old_amplitude)
+                (self.additional_config["sigma8"] / sigma8) ** 2 * old_amplitude
+            )
 
-        ps.prepare(self.be_cosmo)
+        pow_spec.prepare(self.be_cosmo)
 
-        return [ps.eval(self.be_cosmo, redshift, k) for k in k_vals]
+        return [pow_spec.eval(self.be_cosmo, redshift, k) for k in k_vals]
