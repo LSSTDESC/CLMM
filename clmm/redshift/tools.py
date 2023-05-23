@@ -4,6 +4,13 @@ import numpy as np
 from scipy.integrate import simps
 from scipy.interpolate import interp1d
 
+try:
+    import qp
+
+    _HAS_QP = True
+except ImportError:
+    _HAS_QP = False
+
 
 def _integ_pzfuncs(pzpdf, pzbins, zmin=0.0, zmax=5, kernel=lambda z: 1.0, ngrid=1000, use_qp=False):
     r"""
@@ -37,11 +44,12 @@ def _integ_pzfuncs(pzpdf, pzbins, zmin=0.0, zmax=5, kernel=lambda z: 1.0, ngrid=
     # to a constant redshift grid for all galaxies. If there is a constant grid for all galaxies
     # these lines are not necessary and z_grid, pz_matrix = pzbins, pzpdf
     if use_qp:
-        import qp
+        if not _HAS_QP:
+            raise ImportError("qp is not installed")
 
         qp_ensamble = qp.Ensemble(
             qp.interp_irregular,
-            data=dict(xvals=pzbins, yvals=pzpdf, check_input=True),
+            data={"xvals": pzbins, "yvals": pzpdf, "check_input": True},
         )
         z_grid = pzbins[0][(pzbins[0] >= zmin) * (pzbins[0] <= zmax)]
         pz_matrix = qp_ensamble.pdf(z_grid)
