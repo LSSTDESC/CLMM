@@ -4,6 +4,8 @@ import numpy as np
 from scipy.integrate import simps
 from scipy.interpolate import interp1d
 
+from ..utils import validate_argument
+
 
 def _integ_pzfuncs(pzpdf, pzbins, zmin=0.0, zmax=5, kernel=lambda z: 1.0, ngrid=1000):
     r"""
@@ -116,3 +118,78 @@ def compute_for_good_redshifts(
     else:
         res = function(**kwargs)
     return res
+
+
+def _validate_theory_z_src(loc_dict):
+    r"""Validation for z_src according to z_src_info. The conditions are:
+
+        * z_src_info='discrete' : z_src must be array or float.
+        * z_src_info='distribution' : z_src must be a one dimentional function.
+        * z_src_info='beta' : z_src must be a tuple containing
+          ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`).
+
+    Also, if approx is provided and not None, z_src_info must be 'distribution' or 'beta'.
+
+    Parameters
+    ----------
+    locals_dict: dict
+        Should be the call locals()
+    """
+    if loc_dict["z_src_info"] == "discrete":
+        validate_argument(loc_dict, "z_src", "float_array", argmin=0)
+    elif loc_dict["z_src_info"] == "distribution":
+        validate_argument(loc_dict, "z_src", "function", none_ok=False)
+        beta_kwargs = {} if loc_dict["beta_kwargs"] is None else loc_dict["beta_kwargs"]
+        _def_keys = ["zmin", "zmax", "delta_z_cut"]
+        if any(key not in _def_keys for key in beta_kwargs):
+            raise KeyError(
+                f"beta_kwargs must contain only {_def_keys} keys, "
+                f" {beta_kwargs.keys()} provided."
+            )
+    elif loc_dict["z_src_info"] == "beta":
+        validate_argument(loc_dict, "z_src", "array")
+        beta_info = {
+            "beta_s_mean": loc_dict["z_src"][0],
+            "beta_s_square_mean": loc_dict["z_src"][1],
+        }
+        validate_argument(beta_info, "beta_s_mean", "float_array")
+        validate_argument(beta_info, "beta_s_square_mean", "float_array")
+    if loc_dict.get("approx") and loc_dict["z_src_info"] not in (
+        "distribution",
+        "beta",
+    ):
+        approx, z_src_info = loc_dict["approx"], loc_dict["z_src_info"]
+        raise ValueError(
+            f"approx='{approx}' requires z_src_info='distribution' or 'beta', "
+            f"z_src_info='{z_src_info}' was provided."
+        )
+
+
+def _validate_data_z_src(loc_dict):
+    r"""Validation for z_src according to z_src_info. The conditions are:
+
+        * z_src_info='discrete' : z_src must be array or float.
+        * z_src_info='pdf' : z_src must be a one dimentional function.
+        * z_src_info='quantile' : z_src must be a tuple containing
+          ( :math:`\langle \beta_s \rangle, \langle \beta_s^2 \rangle`).
+
+    Also, if approx is provided and not None, z_src_info must be 'distribution' or 'beta'.
+
+    Parameters
+    ----------
+    locals_dict: dict
+        Should be the call locals()
+    """
+    if loc_dict["z_src_info"] == "discrete":
+        validate_argument(loc_dict, "z_src", "float_array", argmin=0)
+    elif loc_dict["z_src_info"] == "pdf":
+        validate_argument(loc_dict, "z_src", "function", none_ok=False)
+        integ_kwargs = {} if loc_dict["integ_kwargs"] is None else loc_dict["integ_kwargs"]
+        _def_keys = ["zmin", "zmax", "delta_z_cut"]
+        if any(key not in _def_keys for key in integ_kwargs):
+            raise KeyError(
+                f"integ_kwargs must contain only {_def_keys} keys, "
+                f" {integ_kwargs.keys()} provided."
+            )
+    elif z_src_info == "quantile":
+        validate_argument(loc_dict, "z_src", "float_array")

@@ -17,7 +17,6 @@ from ..utils import (
 from ..redshift import (
     _integ_pzfuncs,
     compute_for_good_redshifts,
-    _validate_data_z_src,
 )
 from ..theory import compute_critical_surface_density_eff
 
