@@ -277,7 +277,6 @@ class GalaxyCluster:
             dec_lens=self.dec,
             geometry=geometry,
             is_deltasigma=is_deltasigma,
-            use_pdz=use_pdz,
             validate_input=self.validate_input,
             **cols,
         )
@@ -369,12 +368,10 @@ class GalaxyCluster:
         """
         # input cols
         col_dict = {}
-        if use_pdz:
-            col_dict.update({"pzpdf": "pzpdf", "pzbins": "pzbins"})
         if is_deltasigma:
             if "sigma_c" not in self.galcat.columns:
                 self.add_critical_surface_density(cosmo, use_pdz=use_pdz)
-            col_dict.update({"z_src": "z", "sigma_c": "sigma_c"})
+            col_dict.update({"sigma_c": "sigma_c"})
         if use_shape_noise:
             col_dict.update(
                 {
@@ -395,7 +392,6 @@ class GalaxyCluster:
         w_ls = compute_galaxy_weights(
             self.z,
             cosmo,
-            use_pdz=use_pdz,
             use_shape_noise=use_shape_noise,
             use_shape_error=use_shape_error,
             is_deltasigma=is_deltasigma,
