@@ -161,9 +161,16 @@ def compute_tangential_and_cross_components(
 
 
 def compute_background_probability(
-    z_lens, z_src=None, z_src_info=None, pzpdf=None, pzbins=None, validate_input=True
+    z_lens, z_src=None, use_pdz=False, pzpdf=None, pzbins=None, validate_input=True
 ):
-    r"""Probability for being a background galaxy
+    r"""Probability for being a background galaxy, defined by:
+
+        .. math::
+            P(z_s > z_l) = \int_{z_l}^{+\infty} dz_s p_{\text{photoz}}(z_s),
+
+    when the photometric probability density functions ($p p_{\text{photoz}}(z_s)$) are provided.
+    In the case of true redshifts, it returns 1 if :math:`z_s > z_l` else returns 0.
+
 
     Parameters
     ----------
