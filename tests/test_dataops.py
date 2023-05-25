@@ -445,23 +445,6 @@ def test_compute_tangential_and_cross_components(modeling_data):
     # Check behaviour for the deltasigma option.
     cosmo = clmm.Cosmology(H0=70.0, Omega_dm0=0.275, Omega_b0=0.025)
 
-    # Trying to got through line 173 of dataops/__init__.py
-    # da.compute_tangential_and_cross_components(
-    #    ra_lens=ra_lens,
-    #    dec_lens=dec_lens,
-    #    ra_source=gals["ra"][0],
-    #    dec_source=gals["dec"][0],
-    #    shear1=gals["e1"][0],
-    #    shear2=gals["e2"][0],
-    #    is_deltasigma=True,
-    #    use_pdz=True,
-    #    cosmo=cosmo,
-    #    z_lens=z_lens,
-    #    z_src=None,
-    #    pzbins=[[0.55, 0.6, 0.65, 0.7, 0.75]],
-    #    pzpdf=[[0.01, 1, 0.01, 0.001, 0.0001]],
-    # )
-
     # check values for DeltaSigma
     sigma_c = cosmo.eval_sigma_crit(z_lens, gals["z"])
     for geometry, expected in geo_tests:
@@ -525,6 +508,7 @@ def test_compute_tangential_and_cross_components(modeling_data):
     cluster.compute_galaxy_weights()
     expected = np.array([1.0, 1.0])
     assert_allclose(cluster.galcat["w_ls"], expected, **TOLERANCE)
+
 
 def test_compute_background_probability():
     """test for compute background probability"""
