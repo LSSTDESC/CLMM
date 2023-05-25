@@ -201,15 +201,13 @@ def compute_background_probability(
 
 
 def compute_galaxy_weights(
-    z_lens,
-    cosmo,
+    sigma_c,
     use_shape_noise=False,
     shape_component1=None,
     shape_component2=None,
     use_shape_error=False,
     shape_component1_err=None,
     shape_component2_err=None,
-    sigma_c=1.0,
     validate_input=True,
 ):
     r"""Computes the individual lens-source pair weights
@@ -217,45 +215,36 @@ def compute_galaxy_weights(
     The weights :math:`w_{ls}` express as : :math:`w_{ls} = w_{ls, \text{geo}} \times w_{ls,
     \text{shape}}`, following E. S. Sheldon et al. (2003), arXiv:astro-ph/0312036:
 
-    1. The geometrical weight :math:`w_{ls, \text{geo}}` depends on lens and source redshift
-    information. When considering only redshift point estimates, the weights read
+    1. When computed for tangential shear, the geometrical weights :math:`w_{ls, \text{geo}}` are
+    equal to 1. When compute for $\Delta \Sigma$, it depends on lens and source redshift information
+    via the critical surface density. It can be expressed as:
 
         .. math::
-            w_{ls, \text{geo}} = \Sigma_c(\text{cosmo}, z_l, z_{\text{src}})^{-2}\;.
+            w_{ls, \text{geo}} = \Sigma_{\rm crit}(z_l, z_{\text{src}})^{-2}\;.
 
-        If the redshift pdf of each source, :math:`p_{\text{photoz}}(z_s)`, is known,
-        the weights are computed instead as
+        when only redshift point estimates are provided, or as:
+
 
         .. math::
-            w_{ls, \text{geo}} = \left[\int_{\delta + z_l} dz_s p_{\text{photoz}}(z_s)
-            \Sigma_c(\text{cosmo}, z_l, z_s)^{-1}\right]^2
+            w_{ls, \text{geo}} = \Sigma_{\rm crit}^{\rm eff}(z_l, z_{\text{src}})^{-2}
+            = \left[\int_{\delta + z_l} dz_s p_{\text{photoz}}(z_s)
+            \Sigma_{\rm crit}(z_l, z_s)^{-1}\right]^2
 
-        for the tangential shear, the weights :math:`w_{ls, \text{geo}}` are 1.
+        when the redshift pdf of each source, :math:`p_{\text{photoz}}(z_s)`, is known.
 
     2. The shape weight :math:`w_{ls,{\text{shape}}}` depends on shapenoise and/or shape
     measurement errors
 
         .. math::
-            w_{ls, \text{shape}} = 1/(\sigma_{\text{shapenoise}}^2 +
+            w_{ls, \text{shape}}^{-1} = (\sigma_{\text{shapenoise}}^2 +
             \sigma_{\text{measurement}}^2)
-
-
-    3. The probability for a galaxy to be in the background of the cluster is defined by:
-
-        .. math::
-            P(z_s > z_l) = \int_{z_l}^{+\infty} dz_s p_{\text{photoz}}(z_s)
-
-        The function return the probability for a galaxy to be in the background of the cluster;
-        if photometric probability density functions are provoded, the function computes the above
-        integral. In the case of true redshifts, it returns 1 if :math:`z_s > z_l` else returns 0.
 
 
     Parameters
     ----------
-    z_lens: float
-        Redshift of the lens.
-    cosmo: clmm.Comology object, None
-        CLMM Cosmology object.
+    sigma_c : float, optional
+        Critical (effective) surface density in units of :math:`M_\odot\ Mpc^{-2}`.
+        Should be equal to 1 if weights for tangential shear are being computed.
     use_shape_noise: bool
         If `True` shape noise is included in the weight computation. It then requires
         `shape_componenet{1,2}` to be provided. Default: False.
@@ -274,9 +263,6 @@ def compute_galaxy_weights(
     shape_component2_err: array_like
         The measurement error on the 2nd-component of ellipticity of the source galaxies,
         used if `use_shape_error=True`
-    sigma_c : float, optional
-        Critical surface density in units of :math:`M_\odot\ Mpc^{-2}`. If sigma_c!=1,
-        weights are based on the excess surface density instead of tangential shear.
     validate_input: bool
         Validade each input argument
 
@@ -286,13 +272,12 @@ def compute_galaxy_weights(
         Individual lens source pair weights
     """
     if validate_input:
-        validate_argument(locals(), "z_lens", float, argmin=0, eqmin=True)
+        validate_argument(locals(), "sigma_c", "float_array")
         validate_argument(locals(), "shape_component1", "float_array", none_ok=True)
         validate_argument(locals(), "shape_component2", "float_array", none_ok=True)
         validate_argument(locals(), "shape_component1_err", "float_array", none_ok=True)
         validate_argument(locals(), "shape_component2_err", "float_array", none_ok=True)
         validate_argument(locals(), "use_shape_noise", bool)
-        validate_argument(locals(), "sigma_c", "float_array")
         arguments_consistency(
             [shape_component1, shape_component2],
             names=("shape_component1", "shape_component2"),
