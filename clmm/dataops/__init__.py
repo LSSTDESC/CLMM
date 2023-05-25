@@ -307,7 +307,7 @@ def compute_galaxy_weights(
         err_e2 += shape_component2_err**2
 
     if hasattr(err_e2, "__len__"):
-        w_ls_shape = np.ones(err_e2)
+        w_ls_shape = np.ones(len(err_e2))
         w_ls_shape[err_e2 > 0] = 1.0 / err_e2[err_e2 > 0]
     else:
         w_ls_shape = 1.0 / err_e2 if err_e2 > 0 else 1.0
