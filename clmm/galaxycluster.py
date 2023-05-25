@@ -276,7 +276,6 @@ class GalaxyCluster:
             ra_lens=self.ra,
             dec_lens=self.dec,
             geometry=geometry,
-            is_deltasigma=is_deltasigma,
             validate_input=self.validate_input,
             **cols,
         )
@@ -387,14 +386,13 @@ class GalaxyCluster:
                 }
             )
         cols = self._get_input_galdata(col_dict)
+        if not is_deltasigma:
+            cols["sigma_c"] = 1.0
 
         # computes weights
         w_ls = compute_galaxy_weights(
-            self.z,
-            cosmo,
             use_shape_noise=use_shape_noise,
             use_shape_error=use_shape_error,
-            is_deltasigma=is_deltasigma,
             validate_input=self.validate_input,
             **cols,
         )
