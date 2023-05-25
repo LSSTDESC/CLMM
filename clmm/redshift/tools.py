@@ -4,7 +4,7 @@ import numpy as np
 from scipy.integrate import simps
 from scipy.interpolate import interp1d
 
-from ..utils import validate_argument
+from ..utils.validation import validate_argument
 
 
 def _integ_pzfuncs(pzpdf, pzbins, zmin=0.0, zmax=5, kernel=lambda z: 1.0, ngrid=1000):
