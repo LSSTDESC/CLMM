@@ -521,6 +521,10 @@ def test_compute_tangential_and_cross_components(modeling_data):
             err_msg="Cross Shear not correct when using cluster method",
         )
 
+    # test basic weights functionality
+    cluster.compute_galaxy_weights()
+    expected = np.array([1.0, 1.0])
+    assert_allclose(cluster.galcat["w_ls"], expected, **TOLERANCE)
 
 def test_compute_background_probability():
     """test for compute background probability"""
