@@ -20,7 +20,7 @@ link to this repository: https://github.com/LSSTDESC/CLMM. Please follow the gui
 
 ## Requirements <a name="requirements"></a>
 
-CLMM requires Python version 3.6 or later.  CLMM has the following dependencies:
+CLMM requires Python version 3.8 or later.  CLMM has the following dependencies:
 
 - [NumPy](https://www.numpy.org/) (v1.17 or later)
 - [SciPy](https://scipy.org/) (v1.3 or later)
