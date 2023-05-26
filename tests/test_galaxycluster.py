@@ -177,7 +177,8 @@ def test_integrity_of_lensfuncs():
         cluster.compute_tangential_and_cross_components(
             is_deltasigma=True, use_pdz=True, cosmo=cosmo, add=True
         )
-        assert_equal(cluster.galcat.meta["sigmac_type"], "effective")
+        for comp_name in ("et", "ex"):
+            assert_equal(cluster.galcat.meta[f"{comp_name}_sigmac_type"], "effective")
 
 
 def test_integrity_of_probfuncs():

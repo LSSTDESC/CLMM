@@ -137,11 +137,10 @@ class GalaxyCluster:
         """
         if cosmo is None:
             raise TypeError("To compute Sigma_crit, please provide a cosmology")
-        sigmac_type_required = "effective" if use_pdz else "standard"
+        sigmac_colname = "sigma_c_eff" if use_pdz else "sigma_c"
         if (
             cosmo.get_desc() != self.galcat.meta["cosmo"]
-            or "sigma_c" not in self.galcat.columns
-            or self.galcat.meta.get("sigmac_type", None) != sigmac_type_required
+            or sigmac_colname not in self.galcat.columns
             or force
         ):
             if self.z is None:
@@ -158,18 +157,17 @@ class GalaxyCluster:
 
             self.galcat.update_cosmo(cosmo, overwrite=True)
             if not use_pdz:
-                self.galcat["sigma_c"] = cosmo.eval_sigma_crit(self.z, self.galcat["z"])
-                self.galcat.meta["sigmac_type"] = "standard"
+                self.galcat[sigmac_colname] = cosmo.eval_sigma_crit(self.z, self.galcat["z"])
             else:
                 zdata = self._get_input_galdata({"pzpdf": "pzpdf", "pzbins": "pzbins"})
-                self.galcat["sigma_c"] = compute_critical_surface_density_eff(
+                self.galcat[sigmac_colname] = compute_critical_surface_density_eff(
                     cosmo=cosmo,
                     z_cluster=self.z,
                     pzbins=zdata["pzbins"],
                     pzpdf=zdata["pzpdf"],
                     validate_input=self.validate_input,
                 )
-                self.galcat.meta["sigmac_type"] = "effective"
+        return sigmac_colname
 
     def _get_input_galdata(self, col_dict):
         """
@@ -266,18 +264,16 @@ class GalaxyCluster:
             Cross shear (or assimilated quantity) for each source galaxy
         """
         # Check is all the required data is available
-        cols = self._get_input_galdata(
-            {
-                "ra_source": "ra",
-                "dec_source": "dec",
-                "shear1": shape_component1,
-                "shear2": shape_component2,
-            }
-        )
-
+        col_dict = {
+            "ra_source": "ra",
+            "dec_source": "dec",
+            "shear1": shape_component1,
+            "shear2": shape_component2,
+        }
         if is_deltasigma:
-            self.add_critical_surface_density(cosmo, use_pdz=use_pdz)
-            cols["sigma_c"] = self.galcat["sigma_c"]
+            sigmac_colname = self.add_critical_surface_density(cosmo, use_pdz=use_pdz)
+            col_dict.update({"sigma_c": sigmac_colname})
+        cols = self._get_input_galdata(col_dict)
 
         # compute shears
         angsep, tangential_comp, cross_comp = compute_tangential_and_cross_components(
@@ -291,6 +287,10 @@ class GalaxyCluster:
             self.galcat["theta"] = angsep
             self.galcat[tan_component] = tangential_comp
             self.galcat[cross_component] = cross_comp
+            if is_deltasigma:
+                sigmac_type = "effective" if use_pdz else "standard"
+                self.galcat.meta[f"{tan_component}_sigmac_type"] = sigmac_type
+                self.galcat.meta[f"{cross_component}_sigmac_type"] = sigmac_type
         return angsep, tangential_comp, cross_comp
 
     def compute_background_probability(
@@ -376,8 +376,8 @@ class GalaxyCluster:
         # input cols
         col_dict = {}
         if is_deltasigma:
-            self.add_critical_surface_density(cosmo, use_pdz=use_pdz)
-            col_dict.update({"sigma_c": "sigma_c"})
+            sigmac_colname = self.add_critical_surface_density(cosmo, use_pdz=use_pdz)
+            col_dict.update({"sigma_c": sigmac_colname})
         if use_shape_noise:
             col_dict.update(
                 {
@@ -393,8 +393,6 @@ class GalaxyCluster:
                 }
             )
         cols = self._get_input_galdata(col_dict)
-        if not is_deltasigma:
-            cols["sigma_c"] = 1.0
 
         # computes weights
         w_ls = compute_galaxy_weights(
@@ -405,6 +403,10 @@ class GalaxyCluster:
         )
         if add:
             self.galcat[weight_name] = w_ls
+            if is_deltasigma:
+                self.galcat.meta[f"{weight_name}_sigmac_type"] = (
+                    "effective" if use_pdz else "standard"
+                )
         return w_ls
 
     def draw_gal_z_from_pdz(self, zcol_out="z", overwrite=False, nobj=1, xmin=None, xmax=None):
