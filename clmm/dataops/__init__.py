@@ -69,17 +69,15 @@ def compute_tangential_and_cross_components(
         g_t =& -\left( g_1\cos\left(2\phi\right)+g_2\sin\left(2\phi\right)\right)\\
         g_x =& g_1 \sin\left(2\phi\right)-g_2\cos\left(2\phi\right)
 
-    Finally, and if requested by the user throught the `is_deltasigma` flag, an estimate of the
+    Finally, if  the critical surface density (:math:`\Sigma_c`) is provided, an estimate of the
     excess surface density :math:`\widehat{\Delta\Sigma}` is obtained from
 
     .. math::
         \widehat{\Delta\Sigma_{t,x}} = g_{t,x} \times \Sigma_c(cosmo, z_l, z_{\text{src}})
 
-    where :math:`\Sigma_c` is the critical surface density that depends on the cosmology and on
-    the lens and source redshifts. If :math:`g_{t,x}` correspond to the shear, the above
-    expression is an accurate. However, if :math:`g_{t,x}` correspond to ellipticities or reduced
-    shear, this expression only gives an estimate :math:`\widehat{\Delta\Sigma_{t,x}}`, valid only
-    in the weak lensing regime.
+    If :math:`g_{t,x}` correspond to the shear, the above expression is an accurate. However, if
+    :math:`g_{t,x}` correspond to ellipticities or reduced shear, this expression only gives an
+    estimate :math:`\widehat{\Delta\Sigma_{t,x}}`, valid only in the weak lensing regime.
 
     Parameters
     ----------
