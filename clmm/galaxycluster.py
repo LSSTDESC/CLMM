@@ -114,7 +114,7 @@ class GalaxyCluster:
             f"<br>{self.galcat._html_table()}"
         )
 
-    def add_critical_surface_density(self, cosmo, use_pdz=False):
+    def add_critical_surface_density(self, cosmo, use_pdz=False, force=False):
         r"""Computes the critical surface density for each galaxy in `galcat`.
         It only runs if input cosmo != galcat cosmo or if `sigma_c` not in `galcat`.
 
@@ -128,6 +128,8 @@ class GalaxyCluster:
             `sigma_c` is computed as 1/<1/Sigma_crit>, where the average is performed using
             the individual galaxy redshift pdf. In that case, the `galcat` table should have
             pzbins` and `pzpdf` columns.
+        force : bool
+            Force recomputation of sigma_c.
 
         Returns
         -------
@@ -135,7 +137,13 @@ class GalaxyCluster:
         """
         if cosmo is None:
             raise TypeError("To compute Sigma_crit, please provide a cosmology")
-        if cosmo.get_desc() != self.galcat.meta["cosmo"] or "sigma_c" not in self.galcat.columns:
+        sigmac_type_required = "effective" if use_pdz else "standard"
+        if (
+            cosmo.get_desc() != self.galcat.meta["cosmo"]
+            or "sigma_c" not in self.galcat.columns
+            or self.galcat.meta.get("sigmac_type", None) != sigmac_type_required
+            or force
+        ):
             if self.z is None:
                 raise TypeError("Cluster's redshift is None. Cannot compute Sigma_crit")
             if not use_pdz and "z" not in self.galcat.columns:
@@ -149,7 +157,7 @@ class GalaxyCluster:
                 )
 
             self.galcat.update_cosmo(cosmo, overwrite=True)
-            if use_pdz is False:
+            if not use_pdz:
                 self.galcat["sigma_c"] = cosmo.eval_sigma_crit(self.z, self.galcat["z"])
                 self.galcat.meta["sigmac_type"] = "standard"
             else:
@@ -368,8 +376,7 @@ class GalaxyCluster:
         # input cols
         col_dict = {}
         if is_deltasigma:
-            if "sigma_c" not in self.galcat.columns:
-                self.add_critical_surface_density(cosmo, use_pdz=use_pdz)
+            self.add_critical_surface_density(cosmo, use_pdz=use_pdz)
             col_dict.update({"sigma_c": "sigma_c"})
         if use_shape_noise:
             col_dict.update(
