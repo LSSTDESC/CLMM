@@ -152,8 +152,9 @@ def compute_tangential_and_cross_components(
     cross_comp = _compute_cross_shear(shear1_, shear2_, phi)
 
     if sigma_c is not None:
-        tangential_comp *= sigma_c
-        cross_comp *= sigma_c
+        _sigma_c_arr = np.array(sigma_c)
+        tangential_comp *= _sigma_c_arr
+        cross_comp *= _sigma_c_arr
 
     return angsep, tangential_comp, cross_comp
 
@@ -287,7 +288,7 @@ def compute_galaxy_weights(
     # computing w_ls_geo
     w_ls_geo = 1.0
     if sigma_c is not None:
-        w_ls_geo /= sigma_c**2
+        w_ls_geo /= np.array(sigma_c) ** 2
 
     # computing w_ls_shape
     err_e2 = 0
