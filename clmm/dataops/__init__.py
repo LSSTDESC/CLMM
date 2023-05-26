@@ -69,11 +69,11 @@ def compute_tangential_and_cross_components(
         g_t =& -\left( g_1\cos\left(2\phi\right)+g_2\sin\left(2\phi\right)\right)\\
         g_x =& g_1 \sin\left(2\phi\right)-g_2\cos\left(2\phi\right)
 
-    Finally, if  the critical surface density (:math:`\Sigma_c`) is provided, an estimate of the
+    Finally, if  the critical surface density (:math:`\Sigma_\text{crit}`) is provided, an estimate of the
     excess surface density :math:`\widehat{\Delta\Sigma}` is obtained from
 
     .. math::
-        \widehat{\Delta\Sigma_{t,x}} = g_{t,x} \times \Sigma_c(cosmo, z_l, z_{\text{src}})
+        \widehat{\Delta\Sigma_{t,x}} = g_{t,x} \times \Sigma_\text{crit}(z_l, z_{\text{src}})
 
     If :math:`g_{t,x}` correspond to the shear, the above expression is an accurate. However, if
     :math:`g_{t,x}` correspond to ellipticities or reduced shear, this expression only gives an
@@ -98,7 +98,7 @@ def compute_tangential_and_cross_components(
         Options are curve (uses astropy) or flat.
     sigma_c : None, array_like
         Critical (effective) surface density in units of :math:`M_\odot\ Mpc^{-2}`.
-        If equals to None, shear components are returned, else $\Delta \Sigma$ components
+        If equals to None, shear components are returned, else :math:`\Delta \Sigma` components
         are returned.
     validate_input: bool
         Validade each input argument
@@ -164,9 +164,9 @@ def compute_background_probability(
     r"""Probability for being a background galaxy, defined by:
 
         .. math::
-            P(z_s > z_l) = \int_{z_l}^{+\infty} dz_s p_{\text{photoz}}(z_s),
+            P(z_s > z_l) = \int_{z_l}^{+\infty} dz_s \; p_{\text{photoz}}(z_s),
 
-    when the photometric probability density functions ($p p_{\text{photoz}}(z_s)$) are provided.
+    when the photometric probability density functions (:math:`p_{\text{photoz}}(z_s)`) are provided.
     In the case of true redshifts, it returns 1 if :math:`z_s > z_l` else returns 0.
 
 
@@ -213,9 +213,9 @@ def compute_galaxy_weights(
     The weights :math:`w_{ls}` express as : :math:`w_{ls} = w_{ls, \text{geo}} \times w_{ls,
     \text{shape}}`, following E. S. Sheldon et al. (2003), arXiv:astro-ph/0312036:
 
-    1. When computed for tangential shear, the geometrical weights :math:`w_{ls, \text{geo}}` are
-    equal to 1. When compute for $\Delta \Sigma$, it depends on lens and source redshift information
-    via the critical surface density. It can be expressed as:
+    1. If computed for shear, the geometrical weights :math:`w_{ls, \text{geo}}` are equal to 1. If
+    computed for :math:`\Delta \Sigma`, it depends on lens and source redshift information via the
+    critical surface density. This component can be expressed as:
 
         .. math::
             w_{ls, \text{geo}} = \Sigma_\text{crit}(z_l, z_{\text{src}})^{-2}\;.
@@ -225,7 +225,7 @@ def compute_galaxy_weights(
 
         .. math::
             w_{ls, \text{geo}} = \Sigma_\text{crit}^\text{eff}(z_l, z_{\text{src}})^{-2}
-            = \left[\int_{\delta + z_l} dz_s p_{\text{photoz}}(z_s)
+            = \left[\int_{\delta + z_l} dz_s \; p_{\text{photoz}}(z_s)
             \Sigma_\text{crit}(z_l, z_s)^{-1}\right]^2
 
         when the redshift pdf of each source, :math:`p_{\text{photoz}}(z_s)`, is known.
@@ -234,8 +234,8 @@ def compute_galaxy_weights(
     measurement errors
 
         .. math::
-            w_{ls, \text{shape}}^{-1} = (\sigma_{\text{shapenoise}}^2 +
-            \sigma_{\text{measurement}}^2)
+            w_{ls, \text{shape}}^{-1} = \sigma_{\text{shapenoise}}^2 +
+            \sigma_{\text{measurement}}^2
 
 
     Parameters
@@ -243,7 +243,7 @@ def compute_galaxy_weights(
     sigma_c : None, array_like
         Critical (effective) surface density in units of :math:`M_\odot\ Mpc^{-2}`.
         If equals to None, weights are computed for shear, else weights are computed for
-        $\Delta \Sigma$.
+        :math:`\Delta \Sigma`.
     use_shape_noise: bool
         If `True` shape noise is included in the weight computation. It then requires
         `shape_componenet{1,2}` to be provided. Default: False.
