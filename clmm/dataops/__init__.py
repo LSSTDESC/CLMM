@@ -218,15 +218,15 @@ def compute_galaxy_weights(
     via the critical surface density. It can be expressed as:
 
         .. math::
-            w_{ls, \text{geo}} = \Sigma_{\rm crit}(z_l, z_{\text{src}})^{-2}\;.
+            w_{ls, \text{geo}} = \Sigma_\text{crit}(z_l, z_{\text{src}})^{-2}\;.
 
         when only redshift point estimates are provided, or as:
 
 
         .. math::
-            w_{ls, \text{geo}} = \Sigma_{\rm crit}^{\rm eff}(z_l, z_{\text{src}})^{-2}
+            w_{ls, \text{geo}} = \Sigma_\text{crit}^\text{eff}(z_l, z_{\text{src}})^{-2}
             = \left[\int_{\delta + z_l} dz_s p_{\text{photoz}}(z_s)
-            \Sigma_{\rm crit}(z_l, z_s)^{-1}\right]^2
+            \Sigma_\text{crit}(z_l, z_s)^{-1}\right]^2
 
         when the redshift pdf of each source, :math:`p_{\text{photoz}}(z_s)`, is known.
 
