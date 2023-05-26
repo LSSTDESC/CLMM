@@ -29,7 +29,7 @@ def compute_tangential_and_cross_components(
     shear1,
     shear2,
     geometry="curve",
-    sigma_c=1.0,
+    sigma_c=None,
     validate_input=True,
 ):
     r"""Computes tangential- and cross- components for shear or ellipticity
@@ -98,10 +98,10 @@ def compute_tangential_and_cross_components(
     geometry: str, optional
         Sky geometry to compute angular separation.
         Options are curve (uses astropy) or flat.
-    sigma_c : float, optional
-        Critical surface density in units of :math:`M_\odot\ Mpc^{-2}`. If sigma_c!=1,
-        the tangential and cross components returned are overdensities (Delta Sigma).
-        Results in units of :math:`M_\odot\ Mpc^{-2}`
+    sigma_c : None, array_like
+        Critical (effective) surface density in units of :math:`M_\odot\ Mpc^{-2}`.
+        If equals to None, shear components are returned, else $\Delta \Sigma$ components
+        are returned.
     validate_input: bool
         Validade each input argument
 
@@ -125,7 +125,7 @@ def compute_tangential_and_cross_components(
         validate_argument(locals(), "shear1", "float_array")
         validate_argument(locals(), "shear2", "float_array")
         validate_argument(locals(), "geometry", str)
-        validate_argument(locals(), "sigma_c", "float_array")
+        validate_argument(locals(), "sigma_c", "float_array", none_ok=True)
         ra_source_, dec_source_, shear1_, shear2_ = arguments_consistency(
             [ra_source, dec_source, shear1, shear2],
             names=("Ra", "Dec", "Shear1", "Shear2"),
@@ -153,9 +153,9 @@ def compute_tangential_and_cross_components(
     tangential_comp = _compute_tangential_shear(shear1_, shear2_, phi)
     cross_comp = _compute_cross_shear(shear1_, shear2_, phi)
 
-    # If the is_deltasigma flag is True, multiply the results by Sigma_crit.
-    tangential_comp *= sigma_c
-    cross_comp *= sigma_c
+    if sigma_c is not None:
+        tangential_comp *= sigma_c
+        cross_comp *= sigma_c
 
     return angsep, tangential_comp, cross_comp
 
@@ -201,7 +201,7 @@ def compute_background_probability(
 
 
 def compute_galaxy_weights(
-    sigma_c,
+    sigma_c=None,
     use_shape_noise=False,
     shape_component1=None,
     shape_component2=None,
@@ -242,9 +242,10 @@ def compute_galaxy_weights(
 
     Parameters
     ----------
-    sigma_c : float, optional
+    sigma_c : None, array_like
         Critical (effective) surface density in units of :math:`M_\odot\ Mpc^{-2}`.
-        Should be equal to 1 if weights for tangential shear are being computed.
+        If equals to None, weights are computed for shear, else weights are computed for
+        $\Delta \Sigma$.
     use_shape_noise: bool
         If `True` shape noise is included in the weight computation. It then requires
         `shape_componenet{1,2}` to be provided. Default: False.
@@ -272,12 +273,13 @@ def compute_galaxy_weights(
         Individual lens source pair weights
     """
     if validate_input:
-        validate_argument(locals(), "sigma_c", "float_array")
+        validate_argument(locals(), "sigma_c", "float_array", none_ok=True)
         validate_argument(locals(), "shape_component1", "float_array", none_ok=True)
         validate_argument(locals(), "shape_component2", "float_array", none_ok=True)
         validate_argument(locals(), "shape_component1_err", "float_array", none_ok=True)
         validate_argument(locals(), "shape_component2_err", "float_array", none_ok=True)
         validate_argument(locals(), "use_shape_noise", bool)
+        validate_argument(locals(), "use_shape_error", bool)
         arguments_consistency(
             [shape_component1, shape_component2],
             names=("shape_component1", "shape_component2"),
@@ -285,7 +287,9 @@ def compute_galaxy_weights(
         )
 
     # computing w_ls_geo
-    w_ls_geo = 1.0 / sigma_c**2
+    w_ls_geo = 1.0
+    if sigma_c is not None:
+        w_ls_geo /= sigma_c**2
 
     # computing w_ls_shape
     err_e2 = 0

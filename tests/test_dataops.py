@@ -632,7 +632,7 @@ def test_compute_galaxy_weights():
 
     # test with is_deltasigma=False and geometric weights only
     weights = da.compute_galaxy_weights(
-        sigma_c=1.0,
+        sigma_c=None,
         use_shape_noise=False,
         shape_component1=shape_component1,
         shape_component2=shape_component2,
