@@ -69,8 +69,8 @@ def compute_tangential_and_cross_components(
         g_t =& -\left( g_1\cos\left(2\phi\right)+g_2\sin\left(2\phi\right)\right)\\
         g_x =& g_1 \sin\left(2\phi\right)-g_2\cos\left(2\phi\right)
 
-    Finally, if  the critical surface density (:math:`\Sigma_\text{crit}`) is provided, an estimate of the
-    excess surface density :math:`\widehat{\Delta\Sigma}` is obtained from
+    Finally, if  the critical surface density (:math:`\Sigma_\text{crit}`) is provided, an estimate
+    of the excess surface density :math:`\widehat{\Delta\Sigma}` is obtained from
 
     .. math::
         \widehat{\Delta\Sigma_{t,x}} = g_{t,x} \times \Sigma_\text{crit}(z_l, z_{\text{src}})
@@ -167,8 +167,8 @@ def compute_background_probability(
         .. math::
             P(z_s > z_l) = \int_{z_l}^{+\infty} dz_s \; p_{\text{photoz}}(z_s),
 
-    when the photometric probability density functions (:math:`p_{\text{photoz}}(z_s)`) are provided.
-    In the case of true redshifts, it returns 1 if :math:`z_s > z_l` else returns 0.
+    when the photometric probability density functions (:math:`p_{\text{photoz}}(z_s)`) are
+    provided. In the case of true redshifts, it returns 1 if :math:`z_s > z_l` else returns 0.
 
 
     Parameters
