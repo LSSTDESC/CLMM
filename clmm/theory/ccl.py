@@ -117,7 +117,8 @@ class CCLCLMModeling(CLMModeling):
         with ccl.UnlockInstance(self.mdef):
             self.mdef.concentration = self.conc
         self.hdpm = self.hdpm_dict[self.halo_profile_model](
-            concentration=self.conc, **self.hdpm_opts[self.halo_profile_model])
+            concentration=self.conc, mass_def=self.mdef,
+            **self.hdpm_opts[self.halo_profile_model])
         self.hdpm.update_precision_fftlog(
             padding_lo_fftlog=1e-4, padding_hi_fftlog=1e3)
 
@@ -186,7 +187,6 @@ class CCLCLMModeling(CLMModeling):
                 radius / a_lens,
                 self.__mdelta_cor,
                 a_lens,
-                self.mdef,
             )
             * self.cor_factor
             / a_lens**ndim
@@ -201,9 +201,8 @@ class CCLCLMModeling(CLMModeling):
             self.cosmo.be_cosmo,
             radius / a_lens,
             self.__mdelta_cor,
-            a_lens,
-            a_src,
-            self.mdef,
+            a_lens=a_lens,
+            a_source=a_src,
         )
 
 
