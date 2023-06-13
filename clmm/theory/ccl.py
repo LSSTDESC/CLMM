@@ -2,24 +2,24 @@
 Modeling using CCL
 """
 # Functions to model halo profiles
+from packaging.version import parse
 
 import pyccl as ccl
 
-import numpy as np
-from scipy.interpolate import interp1d
-from packaging.version import parse
-
-from . import func_layer
-from . func_layer import *
-
+from ..utils import _patch_rho_crit_to_cd2018
+from ..cosmology.ccl import CCLCosmology
 from .parent_class import CLMModeling
 
-from .. utils import _patch_rho_crit_to_cd2018
+# Check which versions of ccl are currently supported
+from . import _ccl_supported_versions
 
-from .. cosmology.ccl import CCLCosmology
-Cosmology = CCLCosmology
-
-__all__ = ['CCLCLMModeling', 'Modeling', 'Cosmology']+func_layer.__all__
+if parse(ccl.__version__) < parse(_ccl_supported_versions.VMIN) or parse(ccl.__version__) > parse(
+    _ccl_supported_versions.VMAX
+):
+    raise EnvironmentError(
+        f"Current CCL version ({ccl.__version__}) not supported by CLMM. "
+        f"It must be between {_ccl_supported_versions.VMIN} and {_ccl_supported_versions.VMAX}."
+    )
 
 
 class CCLCLMModeling(CLMModeling):
@@ -50,29 +50,43 @@ class CCLCLMModeling(CLMModeling):
     """
     # pylint: disable=too-many-instance-attributes
 
-    def __init__(self, massdef='mean', delta_mdef=200, halo_profile_model='nfw',
-                 validate_input=True):
+    def __init__(
+        self,
+        massdef="mean",
+        delta_mdef=200,
+        halo_profile_model="nfw",
+        validate_input=True,
+    ):
         CLMModeling.__init__(self, validate_input)
         # Update class attributes
-        self.backend = 'ccl'
+        self.backend = "ccl"
         self.mdef_dict = {
-            'mean': 'matter',
-            'critical': 'critical',
-            'virial': 'critical'}
-        self.hdpm_dict = {'nfw': ccl.halos.HaloProfileNFW,
-                          'einasto': ccl.halos.HaloProfileEinasto,
-                          'hernquist': ccl.halos.HaloProfileHernquist}
+            "mean": "matter",
+            "critical": "critical",
+            "virial": "critical",
+        }
+        self.hdpm_dict = {
+            "nfw": ccl.halos.HaloProfileNFW,
+            "einasto": ccl.halos.HaloProfileEinasto,
+            "hernquist": ccl.halos.HaloProfileHernquist,
+        }
         self.cosmo_class = CCLCosmology
-        self.hdpm_opts = {'nfw': {'truncated': False,
-                                  'projected_analytic': True,
-                                  'cumul2d_analytic': True},
-                          'einasto': {'truncated': False},
-                          'hernquist': {'truncated': False,
-                                        'projected_analytic': True,
-                                        'cumul2d_analytic': True}}
+        self.hdpm_opts = {
+            "nfw": {
+                "truncated": False,
+                "projected_analytic": True,
+                "cumul2d_analytic": True,
+            },
+            "einasto": {"truncated": False},
+            "hernquist": {
+                "truncated": False,
+                "projected_analytic": True,
+                "cumul2d_analytic": True,
+            },
+        }
         self.cor_factor = _patch_rho_crit_to_cd2018(ccl.physical_constants.RHO_CRITICAL)
-        self.__mdelta_cor = 0.0 ## mass with corretion for input
-        #self.hdpm_opts['einasto'].update({'alpha': 0.25}) # same as NC default
+        self.__mdelta_cor = 0.0  ## mass with corretion for input
+        # self.hdpm_opts['einasto'].update({'alpha': 0.25}) # same as NC default
 
         # Set halo profile and cosmology
         self.mdef = None
@@ -80,24 +94,22 @@ class CCLCLMModeling(CLMModeling):
         self.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
         self.set_cosmo(None)
 
-
     # Functions implemented by child class
 
-
     def _update_halo_density_profile(self):
-        """"updates halo density profile with set internal properties"""
+        """updates halo density profile with set internal properties"""
         # prepare mdef object
         self.mdef = ccl.halos.MassDef(self.delta_mdef, self.mdef_dict[self.massdef])
         # setting concentration (also updates hdpm)
-        self.cdelta = self.cdelta if self.hdpm else 4.0 # ccl always needs an input concentration
+        self.cdelta = self.cdelta if self.hdpm else 4.0  # ccl always needs an input concentration
 
     def _get_concentration(self):
-        """"get concentration"""
+        """get concentration"""
         return self.conc.c
 
     def _get_mass(self):
-        """"get mass"""
-        return self.__mdelta_cor*self.cor_factor
+        """get mass"""
+        return self.__mdelta_cor * self.cor_factor
 
     def _set_concentration(self, cdelta):
         """"set concentration. Also sets/updates hdpm"""
@@ -110,25 +122,26 @@ class CCLCLMModeling(CLMModeling):
             padding_lo_fftlog=1e-4, padding_hi_fftlog=1e3)
 
     def _set_mass(self, mdelta):
-        """" set mass"""
-        self.__mdelta_cor = mdelta/self.cor_factor
+        """set mass"""
+        self.__mdelta_cor = mdelta / self.cor_factor
 
     def _set_einasto_alpha(self, alpha):
         if alpha is None:
-            self.hdpm.update_parameters(alpha='cosmo')
+            self.hdpm.update_parameters(alpha="cosmo")
         else:
             self.hdpm.update_parameters(alpha=alpha)
 
     def _get_einasto_alpha(self, z_cl=None):
-        """"get the value of the Einasto slope"""
-        if self.hdpm.alpha!='cosmo':
-            a_cl = 1 # a_cl does not matter in this case
+        """get the value of the Einasto slope"""
+        # pylint: disable=protected-access
+        if self.hdpm.alpha != "cosmo":
+            a_cl = 1  # a_cl does not matter in this case
         else:
             a_cl = self.cosmo.get_a_from_z(z_cl)
         return self.hdpm._get_alpha(self.cosmo.be_cosmo, self.__mdelta_cor, a_cl)
 
     def _eval_3d_density(self, r3d, z_cl):
-        """"eval 3d density"""
+        """eval 3d density"""
         return self._call_ccl_profile_lens(self.hdpm.real, r3d, z_cl, ndim=3)
 
     def _eval_surface_density(self, r_proj, z_cl):
@@ -136,13 +149,14 @@ class CCLCLMModeling(CLMModeling):
         return self._call_ccl_profile_lens(self.hdpm.projected, r_proj, z_cl)
 
     def _eval_mean_surface_density(self, r_proj, z_cl):
-        """"eval mean surface density"""
+        """eval mean surface density"""
         return self._call_ccl_profile_lens(self.hdpm.cumul2d, r_proj, z_cl)
 
     def _eval_excess_surface_density(self, r_proj, z_cl):
-        """"eval excess surface density"""
-        return self._eval_mean_surface_density(r_proj, z_cl) \
-               - self._eval_surface_density(r_proj, z_cl)
+        """eval excess surface density"""
+        return self._eval_mean_surface_density(r_proj, z_cl) - self._eval_surface_density(
+            r_proj, z_cl
+        )
 
     def _eval_convergence_core(self, r_proj, z_cl, z_src):
         """eval convergence"""
@@ -163,18 +177,35 @@ class CCLCLMModeling(CLMModeling):
     # Helper functions unique to this class
 
     def _call_ccl_profile_lens(self, ccl_hdpm_func, radius, z_lens, ndim=2):
-        """"call ccl profile functions that depend on the lens only"""
+        """call ccl profile functions that depend on the lens only"""
         a_lens = self.cosmo.get_a_from_z(z_lens)
 
-        return ccl_hdpm_func(self.cosmo.be_cosmo, radius/a_lens, self.__mdelta_cor,
-                             a_lens)*self.cor_factor/a_lens**ndim
+        return (
+            ccl_hdpm_func(
+                self.cosmo.be_cosmo,
+                radius / a_lens,
+                self.__mdelta_cor,
+                a_lens,
+                self.mdef,
+            )
+            * self.cor_factor
+            / a_lens**ndim
+        )
 
     def _call_ccl_profile_lens_src(self, ccl_hdpm_func, radius, z_lens, z_src):
-        """"call ccl profile functions that depend on the lens and the sources"""
+        """call ccl profile functions that depend on the lens and the sources"""
         a_lens = self.cosmo.get_a_from_z(z_lens)
         a_src = self.cosmo.get_a_from_z(z_src)
 
-        return ccl_hdpm_func(self.cosmo.be_cosmo, radius/a_lens, self.__mdelta_cor,
-                             a_lens=a_lens, a_source=a_src)
+        return ccl_hdpm_func(
+            self.cosmo.be_cosmo,
+            radius / a_lens,
+            self.__mdelta_cor,
+            a_lens,
+            a_src,
+            self.mdef,
+        )
 
+
+Cosmology = CCLCosmology
 Modeling = CCLCLMModeling
