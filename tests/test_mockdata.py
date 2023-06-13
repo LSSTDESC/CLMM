@@ -31,8 +31,6 @@ def test_mock_data():
     with warnings.catch_warnings(record=True) as warn:
         # Cause all warnings to always be triggered.
         warnings.simplefilter("always")
-        # Filter out warnings from CCL
-        warnings.filterwarnings("ignore", module='.*(pyccl).*')
         # Trigger a warning.
         np.random.seed(314)
         mock.generate_galaxy_catalog(1e15, 0.3, 4, cosmo, 0.30001, ngals=1000, nretry=0)
