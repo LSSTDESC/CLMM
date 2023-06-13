@@ -10,6 +10,17 @@ from ..utils import _patch_rho_crit_to_cd2018
 from ..cosmology.ccl import CCLCosmology
 from .parent_class import CLMModeling
 
+# Check which versions of ccl are currently supported
+from . import _ccl_supported_versions
+
+if parse(ccl.__version__) < parse(_ccl_supported_versions.VMIN) or parse(ccl.__version__) > parse(
+    _ccl_supported_versions.VMAX
+):
+    raise EnvironmentError(
+        f"Current CCL version ({ccl.__version__}) not supported by CLMM. "
+        f"It must be between {_ccl_supported_versions.VMIN} and {_ccl_supported_versions.VMAX}."
+    )
+
 
 class CCLCLMModeling(CLMModeling):
     r"""Object with functions for halo mass modeling
@@ -89,9 +100,6 @@ class CCLCLMModeling(CLMModeling):
         """updates halo density profile with set internal properties"""
         # prepare mdef object
         self.mdef = ccl.halos.MassDef(self.delta_mdef, self.mdef_dict[self.massdef])
-        # adjust it for ccl version > 2.6.1
-        if parse(ccl.__version__) >= parse("2.6.2dev7"):
-            ccl.UnlockInstance.Funlock(type(self.mdef), "_concentration_init", True)
         # setting concentration (also updates hdpm)
         self.cdelta = self.cdelta if self.hdpm else 4.0  # ccl always needs an input concentration
 
@@ -107,6 +115,8 @@ class CCLCLMModeling(CLMModeling):
         """set concentration. Also sets/updates hdpm"""
         # pylint: disable=protected-access
         self.conc = ccl.halos.ConcentrationConstant(c=cdelta, mdef=self.mdef)
+        if hasattr(ccl, 'UnlockInstance'):
+            ccl.UnlockInstance.Funlock(type(self.mdef), "_concentration_init", True)
         self.mdef._concentration_init(self.conc)
         self.hdpm = self.hdpm_dict[self.halo_profile_model](
             self.conc, **self.hdpm_opts[self.halo_profile_model]
