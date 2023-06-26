@@ -755,8 +755,6 @@ class CLMModeling:
             )
             gammat = beta_s_mean * gammat_inf
 
-        print("test")
-        gammat = 0
         return gammat
 
     def eval_convergence(self, r_proj, z_cl, z_src, z_src_info="discrete", verbose=False):
