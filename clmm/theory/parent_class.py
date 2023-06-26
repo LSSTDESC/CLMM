@@ -723,6 +723,7 @@ class CLMModeling:
         numpy.ndarray, float
             tangential shear
         """
+
         if self.validate_input:
             validate_argument(locals(), "r_proj", "float_array", argmin=0)
             validate_argument(locals(), "z_cl", float, argmin=0)
@@ -731,7 +732,7 @@ class CLMModeling:
 
         if self.halo_profile_model == "einasto" and verbose:
             print(f"Einasto alpha = {self._get_einasto_alpha(z_cl=z_cl)}")
-
+        gammat = None
         if z_src_info == "discrete":
             warning_msg = (
                 "\nSome source redshifts are lower than the cluster redshift."
@@ -754,6 +755,8 @@ class CLMModeling:
             )
             gammat = beta_s_mean * gammat_inf
 
+        print("test")
+        gammat = 0
         return gammat
 
     def eval_convergence(self, r_proj, z_cl, z_src, z_src_info="discrete", verbose=False):
