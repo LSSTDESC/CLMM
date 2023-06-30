@@ -2,8 +2,9 @@
 import numpy as np
 from scipy.special import gamma, gammainc
 
+
 def _functional_form(redshift, alpha, beta, redshift0, is_cdf=False):
-    """
+    r"""
     A private function that returns the functionnal form of the redshift distribution used in
     Chang et al (2013):
 
@@ -24,10 +25,13 @@ def _functional_form(redshift, alpha, beta, redshift0, is_cdf=False):
     The value of the function at z
     """
     if is_cdf:
-        return redshift0**(alpha+1)*gammainc((alpha+1)/beta, (redshift/redshift0)**beta)\
-    /beta*gamma((alpha+1)/beta)
-    else:
-        return (redshift**alpha)*np.exp(-(redshift/redshift0)**beta)
+        return (
+            redshift0 ** (alpha + 1)
+            * gammainc((alpha + 1) / beta, (redshift / redshift0) ** beta)
+            / beta
+            * gamma((alpha + 1) / beta)
+        )
+    return (redshift**alpha) * np.exp(-((redshift / redshift0) ** beta))
 
 
 def chang2013(redshift, is_cdf=False):
@@ -66,5 +70,5 @@ def desc_srd(redshift, is_cdf=False):
     -------
     The value of the distribution at z
     """
-    alpha, beta, redshift0 = 2., 0.9, 0.28
+    alpha, beta, redshift0 = 2.0, 0.9, 0.28
     return _functional_form(redshift, alpha, beta, redshift0, is_cdf)

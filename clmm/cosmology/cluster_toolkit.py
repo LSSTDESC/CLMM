@@ -6,7 +6,7 @@ import numpy as np
 from astropy import units
 from astropy.cosmology import LambdaCDM, FlatLambdaCDM
 
-from .. constants import Constants as const
+from ..constants import Constants as const
 
 from .parent_class import CLMMCosmology
 
@@ -29,28 +29,28 @@ class AstroPyCosmology(CLMMCosmology):
         super().__init__(**kwargs)
 
         # this tag will be used to check if the cosmology object is accepted by the modeling
-        self.backend = 'ct'
+        self.backend = "ct"
 
         assert isinstance(self.be_cosmo, LambdaCDM)
 
     def _init_from_cosmo(self, be_cosmo):
-
         assert isinstance(be_cosmo, LambdaCDM)
         self.be_cosmo = be_cosmo
 
     def _init_from_params(self, H0, Omega_b0, Omega_dm0, Omega_k0):
-
-        Om0 = Omega_b0+Omega_dm0
-        Ob0 = Omega_b0
-
-        self.be_cosmo = FlatLambdaCDM(
-            H0=H0, Om0=Om0, Ob0=Ob0, Tcmb0=2.7255, Neff=3.046,
-            m_nu=([0.06, 0.0, 0.0]*units.eV))
+        # pylint: disable=arguments-differ
+        kwargs = {
+            "H0": H0,
+            "Om0": Omega_b0 + Omega_dm0,
+            "Ob0": Omega_b0,
+            "Tcmb0": 2.7255,
+            "Neff": 3.046,
+            "m_nu": ([0.06, 0.0, 0.0] * units.eV),
+        }
+        self.be_cosmo = FlatLambdaCDM(**kwargs)
         if Omega_k0 != 0.0:
-            self.be_cosmo = LambdaCDM(
-                H0=H0, Om0=Om0, Ob0=Ob0, Tcmb0=2.7255, Neff=3.046,
-                Ode0=self.be_cosmo.Ode0-Omega_k0,
-                m_nu=([0.06, 0.0, 0.0]*units.eV))
+            kwargs["Ode0"] = self.be_cosmo.Ode0 - Omega_k0
+            self.be_cosmo = LambdaCDM(**kwargs)
 
     def _set_param(self, key, value):
         raise NotImplementedError("Astropy do not support changing parameters")
@@ -64,9 +64,9 @@ class AstroPyCosmology(CLMMCosmology):
             value = self.be_cosmo.Odm0
         elif key == "Omega_k0":
             value = self.be_cosmo.Ok0
-        elif key == 'h':
-            value = self.be_cosmo.H0.to_value()/100.0
-        elif key == 'H0':
+        elif key == "h":
+            value = self.be_cosmo.H0.to_value() / 100.0
+        elif key == "H0":
             value = self.be_cosmo.H0.to_value()
         else:
             raise ValueError(f"Unsupported parameter {key}")
@@ -76,25 +76,26 @@ class AstroPyCosmology(CLMMCosmology):
         return self.be_cosmo.Om(z)
 
     def _get_E2(self, z):
-        return (self.be_cosmo.H(z)/self.be_cosmo.H0)**2
+        return (self.be_cosmo.H(z) / self.be_cosmo.H0) ** 2
 
     def _get_E2Omega_m(self, z):
-        return self.be_cosmo.Om(z)*(self.be_cosmo.H(z)/self.be_cosmo.H0)**2
+        return self.be_cosmo.Om(z) * (self.be_cosmo.H(z) / self.be_cosmo.H0) ** 2
 
     def _get_rho_c(self, z):
-        return self.be_cosmo.critical_density(z).to(units.Msun/units.Mpc**3).value
+        return self.be_cosmo.critical_density(z).to(units.Msun / units.Mpc**3).value
 
     def _eval_da_z1z2_core(self, z1, z2):
         return self.be_cosmo.angular_diameter_distance_z1z2(z1, z2).to_value(units.Mpc)
 
     def _eval_sigma_crit_core(self, z_len, z_src):
         # Constants
-        clight_pc_s = const.CLIGHT_KMS.value*1000./const.PC_TO_METER.value
-        gnewt_pc3_msun_s2 = const.GNEWT.value * \
-            const.SOLAR_MASS.value/const.PC_TO_METER.value**3
+        clight_pc_s = const.CLIGHT_KMS.value * 1000.0 / const.PC_TO_METER.value
+        gnewt_pc3_msun_s2 = (
+            const.GNEWT.value * const.SOLAR_MASS.value / const.PC_TO_METER.value**3
+        )
 
         d_l = self._eval_da_z1z2_core(0, z_len)
         d_s = self._eval_da_z1z2_core(0, z_src)
         d_ls = self._eval_da_z1z2_core(z_len, z_src)
 
-        return clight_pc_s**2/(4.0*np.pi*gnewt_pc3_msun_s2)*d_s/(d_l*d_ls)*1.0e6
+        return clight_pc_s**2 / (4.0 * np.pi * gnewt_pc3_msun_s2) * d_s / (d_l * d_ls) * 1.0e6

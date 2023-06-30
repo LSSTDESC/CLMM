@@ -6,7 +6,7 @@ from scipy import optimize as spo
 
 
 def sciopt(model_to_shear_profile, logm_0, **kwargs):
-    r''' Uses scipy optimize minimize to output the peak
+    r"""Uses scipy optimize minimize to output the peak
 
     Parameters
     ----------
@@ -28,13 +28,12 @@ def sciopt(model_to_shear_profile, logm_0, **kwargs):
     x : array
     The solution of the optimization
 
-    '''
-    return spo.minimize(model_to_shear_profile, logm_0,
-                        **kwargs).x
+    """
+    return spo.minimize(model_to_shear_profile, logm_0, **kwargs).x
 
 
 def basinhopping(model_to_shear_profile, logm_0, **kwargs):
-    r'''Uses basinhopping, a scipy global optimization function, to find the minimum.
+    r"""Uses basinhopping, a scipy global optimization function, to find the minimum.
 
     Parameters
     ----------
@@ -56,7 +55,7 @@ def basinhopping(model_to_shear_profile, logm_0, **kwargs):
     x : array
     The solution of the optimization
 
-    '''
+    """
     return spo.basinhopping(model_to_shear_profile, logm_0, **kwargs).x
 
 
@@ -118,14 +117,12 @@ def scicurve_fit(profile_model, radius, profile, err_profile, absolute_sigma=Tru
 
     """
     return spo.curve_fit(
-        profile_model, radius, profile, sigma=err_profile,
-        absolute_sigma=absolute_sigma, **kwargs)
+        profile_model, radius, profile, sigma=err_profile, absolute_sigma=absolute_sigma, **kwargs
+    )
 
-samplers = {
-    'minimize': sciopt,
-    'basinhopping': basinhopping
-}
+
+samplers = {"minimize": sciopt, "basinhopping": basinhopping}
 
 fitters = {
-    'curve_fit': scicurve_fit,
+    "curve_fit": scicurve_fit,
 }
