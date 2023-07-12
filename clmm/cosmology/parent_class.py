@@ -68,10 +68,8 @@ class CLMMCosmology:
     def _get_rho_c(self, z):
         raise NotImplementedError
 
-
     def _eval_da_z1z2_core(self, z1, z2):
         raise NotImplementedError
-
 
     def _eval_sigma_crit_core(self, z_len, z_src):
         raise NotImplementedError
@@ -92,6 +90,7 @@ class CLMMCosmology:
         return compute_for_good_redshifts(
             self._eval_da_z1z2_core, z1, z2, np.nan, warning_message=warning_msg
         )
+
     def _eval_da(self, z):
         return self._eval_da_z1z2(0.0, z)
 
@@ -487,4 +486,3 @@ class CLMMCosmology:
             validate_argument(locals(), "k_vals", "float_array", argmin=0)
             validate_argument(locals(), "redshift", float, argmin=0, eqmin=True)
         return self._eval_linear_matter_powerspectrum(k_vals, redshift)
-
