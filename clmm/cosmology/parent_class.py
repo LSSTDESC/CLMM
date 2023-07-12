@@ -1,4 +1,5 @@
 """@file parent_class.py
+CLMMCosmology abstract class
 """
 # CLMM Cosmology object abstract superclass
 import numpy as np
@@ -41,7 +42,83 @@ class CLMMCosmology:
         else:
             raise TypeError(f"key input must be str, not {type(key)}")
 
-    # Public functions
+    # 1. Functions to be implemented by children classes
+
+    def _init_from_cosmo(self, be_cosmo):
+        raise NotImplementedError
+
+    def _init_from_params(self, **kwargs):
+        raise NotImplementedError
+
+    def _set_param(self, key, value):
+        raise NotImplementedError
+
+    def _get_param(self, key):
+        raise NotImplementedError
+
+    def _get_Omega_m(self, z):
+        raise NotImplementedError
+
+    def _get_E2(self, z):
+        raise NotImplementedError
+
+    def _get_E2Omega_m(self, z):
+        raise NotImplementedError
+
+    def _get_rho_c(self, z):
+        raise NotImplementedError
+
+
+    def _eval_da_z1z2_core(self, z1, z2):
+        raise NotImplementedError
+
+
+    def _eval_sigma_crit_core(self, z_len, z_src):
+        raise NotImplementedError
+
+    def _eval_linear_matter_powerspectrum(self, k_vals, redshift):
+        raise NotImplementedError
+
+    # 2. Functions that can be used by all subclasses
+
+    def _get_rho_m(self, z):
+        rhocrit_cd2018 = (3.0e16 * const.PC_TO_METER.value) / (
+            8.0 * np.pi * const.GNEWT.value * const.SOLAR_MASS.value
+        )
+        return rhocrit_cd2018 * (z + 1) ** 3 * self["Omega_m0"] * self["h"] ** 2
+
+    def _eval_da_z1z2(self, z1, z2):
+        warning_msg = "\nSome values of z2 are lower than z1." + "\nda = np.nan for those."
+        return compute_for_good_redshifts(
+            self._eval_da_z1z2_core, z1, z2, np.nan, warning_message=warning_msg
+        )
+    def _eval_da(self, z):
+        return self._eval_da_z1z2(0.0, z)
+
+    def _get_a_from_z(self, z):
+        z = np.array(z)
+        return 1.0 / (1.0 + z)
+
+    def _get_z_from_a(self, a):
+        a = np.array(a)
+        return (1.0 / a) - 1.0
+
+    def _eval_sigma_crit(self, z_len, z_src):
+        warning_msg = (
+            "\nSome source redshifts are lower than the cluster redshift."
+            + "\nSigma_crit = np.inf for those galaxies."
+        )
+        return compute_for_good_redshifts(
+            self._eval_sigma_crit_core,
+            z_len,
+            z_src,
+            np.inf,
+            z1_arg_name="z_len",
+            z2_arg_name="z_src",
+            warning_message=warning_msg,
+        )
+
+    # 3. Wrapper functions for input validation
 
     def get_desc(self):
         """
@@ -411,75 +488,3 @@ class CLMMCosmology:
             validate_argument(locals(), "redshift", float, argmin=0, eqmin=True)
         return self._eval_linear_matter_powerspectrum(k_vals, redshift)
 
-    # Private functions
-
-    def _init_from_cosmo(self, be_cosmo):
-        raise NotImplementedError
-
-    def _init_from_params(self, **kwargs):
-        raise NotImplementedError
-
-    def _set_param(self, key, value):
-        raise NotImplementedError
-
-    def _get_param(self, key):
-        raise NotImplementedError
-
-    def _get_Omega_m(self, z):
-        raise NotImplementedError
-
-    def _get_E2(self, z):
-        raise NotImplementedError
-
-    def _get_E2Omega_m(self, z):
-        raise NotImplementedError
-
-    def _get_rho_m(self, z):
-        rhocrit_cd2018 = (3.0e16 * const.PC_TO_METER.value) / (
-            8.0 * np.pi * const.GNEWT.value * const.SOLAR_MASS.value
-        )
-        return rhocrit_cd2018 * (z + 1) ** 3 * self["Omega_m0"] * self["h"] ** 2
-
-    def _get_rho_c(self, z):
-        raise NotImplementedError
-
-    def _eval_da_z1z2(self, z1, z2):
-        warning_msg = "\nSome values of z2 are lower than z1." + "\nda = np.nan for those."
-        return compute_for_good_redshifts(
-            self._eval_da_z1z2_core, z1, z2, np.nan, warning_message=warning_msg
-        )
-
-    def _eval_da_z1z2_core(self, z1, z2):
-        raise NotImplementedError
-
-    def _eval_da(self, z):
-        return self._eval_da_z1z2(0.0, z)
-
-    def _get_a_from_z(self, z):
-        z = np.array(z)
-        return 1.0 / (1.0 + z)
-
-    def _get_z_from_a(self, a):
-        a = np.array(a)
-        return (1.0 / a) - 1.0
-
-    def _eval_sigma_crit(self, z_len, z_src):
-        warning_msg = (
-            "\nSome source redshifts are lower than the cluster redshift."
-            + "\nSigma_crit = np.inf for those galaxies."
-        )
-        return compute_for_good_redshifts(
-            self._eval_sigma_crit_core,
-            z_len,
-            z_src,
-            np.inf,
-            z1_arg_name="z_len",
-            z2_arg_name="z_src",
-            warning_message=warning_msg,
-        )
-
-    def _eval_sigma_crit_core(self, z_len, z_src):
-        raise NotImplementedError
-
-    def _eval_linear_matter_powerspectrum(self, k_vals, redshift):
-        raise NotImplementedError
