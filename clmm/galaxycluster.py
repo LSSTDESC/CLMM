@@ -217,15 +217,14 @@ class GalaxyCluster:
         r"""Adds a tangential- and cross- components for shear or ellipticity to self
 
         Calls `clmm.dataops.compute_tangential_and_cross_components` with the following arguments:
-        ra_lens: cluster Ra
-        dec_lens: cluster Dec
+        ra_lens: `cluster` Ra
+        dec_lens: `cluster` Dec
         ra_source: `galcat` Ra
         dec_source: `galcat` Dec
         shear1: `galcat` shape_component1
         shear2: `galcat` shape_component2
         geometry: `input` geometry
         is_deltasigma: `input` is_deltasigma
-        sigma_c: `galcat` sigma_c | None
 
         Parameters
         ----------
