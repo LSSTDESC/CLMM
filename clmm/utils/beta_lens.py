@@ -5,31 +5,6 @@ from scipy.integrate import quad
 from ..redshift import distributions as zdist
 
 
-def _compute_beta(z_src, z_cl, cosmo):
-    r"""Geometric lensing efficicency
-
-    .. math::
-        \beta = max(0, D_{a,\ ls}/D_{a,\ s})
-
-    Eq.2 in https://arxiv.org/pdf/1611.03866.pdf
-
-    Parameters
-    ----------
-    z_src : float
-        Source galaxy redshift
-    z_cl: float
-        Galaxy cluster redshift
-    cosmo: clmm.Cosmology
-        CLMM Cosmology object
-
-    Returns
-    -------
-    float
-        Geometric lensing efficicency
-    """
-    return np.heaviside(z_src - z_cl, 0) * cosmo.eval_da_z1z2(z_cl, z_src) / cosmo.eval_da(z_src)
-
-
 def compute_beta(z_src, z_cl, cosmo):
     r"""Geometric lensing efficicency
 
@@ -52,9 +27,7 @@ def compute_beta(z_src, z_cl, cosmo):
     float, array
         Geometric lensing efficicency
     """
-    if hasattr(z_src, "__len__"):
-        return np.array([_compute_beta(z_src_i, z_cl, cosmo) for z_src_i in z_src])
-    return _compute_beta(z_src, z_cl, cosmo)
+    return np.heaviside(z_src - z_cl, 0) * cosmo.eval_da_z1z2(z_cl, z_src) / cosmo.eval_da(z_src)
 
 
 def compute_beta_s(z_src, z_cl, z_inf, cosmo):
@@ -237,6 +210,8 @@ def compute_beta_s_mean_from_weights(z_src, z_cl, z_inf, cosmo, shape_weights):
     float
         Mean value of the geometric lensing efficicency ratio.
     """
+    if shape_weights is None:
+        shape_weights = z_src * 0 + 1
     try:
         if len(z_src) != len(shape_weights):
             raise ValueError("The source redshifts and the weights array must be the same size.")
@@ -279,6 +254,8 @@ def compute_beta_s_square_mean_from_weights(
     float
         Mean square value of the geometric lensing efficicency ratio.
     """
+    if shape_weights is None:
+        shape_weights = z_src * 0 + 1
     try:
         if len(z_src) != len(shape_weights):
             raise ValueError("The source redshifts and the weights array must be the same size.")
