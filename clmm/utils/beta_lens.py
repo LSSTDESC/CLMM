@@ -27,7 +27,10 @@ def compute_beta(z_src, z_cl, cosmo):
     float, array
         Geometric lensing efficicency
     """
-    return np.heaviside(z_src - z_cl, 0) * cosmo.eval_da_z1z2(z_cl, z_src) / cosmo.eval_da(z_src)
+    _z_src = np.array(z_src)
+    return (
+        np.heaviside(_z_src - z_cl, 0) * cosmo._eval_da_z1z2(z_cl, _z_src) / cosmo._eval_da(_z_src)
+    )
 
 
 def compute_beta_s(z_src, z_cl, z_inf, cosmo):
@@ -210,18 +213,13 @@ def compute_beta_s_mean_from_weights(z_src, z_cl, z_inf, cosmo, shape_weights):
     float
         Mean value of the geometric lensing efficicency ratio.
     """
+    _z_src = np.array(z_src)
     if shape_weights is None:
-        shape_weights = z_src * 0 + 1
-    try:
-        if len(z_src) != len(shape_weights):
-            raise ValueError("The source redshifts and the weights array must be the same size.")
-    except TypeError:
-        z_src = [z_src]
-        shape_weights = [shape_weights]
-
-    shape_weights = np.array(shape_weights)
-    beta_s = compute_beta_s(z_src, z_cl, z_inf, cosmo)
-    return (shape_weights * beta_s).sum() / shape_weights.sum()
+        _shape_weights = np.ones_like(_z_src)
+    else:
+        _shape_weights = np.array(shape_weights)
+    beta_s = compute_beta_s(_z_src, z_cl, z_inf, cosmo)
+    return (_shape_weights * beta_s).sum() / _shape_weights.sum()
 
 
 def compute_beta_s_square_mean_from_weights(
@@ -254,15 +252,10 @@ def compute_beta_s_square_mean_from_weights(
     float
         Mean square value of the geometric lensing efficicency ratio.
     """
+    _z_src = np.array(z_src)
     if shape_weights is None:
-        shape_weights = z_src * 0 + 1
-    try:
-        if len(z_src) != len(shape_weights):
-            raise ValueError("The source redshifts and the weights array must be the same size.")
-    except TypeError:
-        z_src = [z_src]
-        shape_weights = [shape_weights]
-
-    shape_weights = np.array(shape_weights)
-    beta_s = compute_beta_s(z_src, z_cl, z_inf, cosmo)
-    return (shape_weights * beta_s**2).sum() / shape_weights.sum()
+        _shape_weights = np.ones_like(_z_src)
+    else:
+        _shape_weights = np.array(shape_weights)
+    beta_s = compute_beta_s(_z_src, z_cl, z_inf, cosmo)
+    return (_shape_weights * beta_s**2).sum() / _shape_weights.sum()
