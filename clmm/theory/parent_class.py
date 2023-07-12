@@ -64,6 +64,10 @@ class CLMModeling:
         The value used as infinite redshift
     """
     # pylint: disable=too-many-instance-attributes
+    # The disable below is added to avoid a pylint error where it thinks CLMMCosmlogy
+    # has duplicates since both have many NotImplementedError functions
+    # description of bug at https://github.com/pylint-dev/pylint/issues/7213
+    # pylint: disable=duplicate-code
 
     def __init__(self, validate_input=True, z_inf=1000):
         self.backend = None
