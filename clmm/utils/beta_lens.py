@@ -27,6 +27,7 @@ def compute_beta(z_src, z_cl, cosmo):
     float, array
         Geometric lensing efficicency
     """
+    # pylint: disable-msg=protected-access
     _z_src = np.array(z_src)
     return (
         np.heaviside(_z_src - z_cl, 0) * cosmo._eval_da_z1z2(z_cl, _z_src) / cosmo._eval_da(_z_src)
