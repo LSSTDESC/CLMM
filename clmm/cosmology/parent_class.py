@@ -284,14 +284,28 @@ class CLMMCosmology:
         -------
         float, numpy.ndarray
             Angular diameter distance in units :math:`M\!pc`
-
-        Notes
-        -----
-        Describe the vectorization.
         """
         if self.validate_input:
             validate_argument(locals(), "z", "float_array", argmin=0, eqmin=True)
-        return self.eval_da_z1z2(0.0, z)
+        return self._eval_da(z)
+
+    def _eval_da(self, z):
+        r"""Computes the angular diameter distance between 0.0 and z
+
+        .. math::
+            d_a(z) = \frac{c}{H_0}\frac{1}{1+z}\int_{0}^{z}\frac{dz'}{E(z')}.
+
+        Parameters
+        ----------
+        z : float, array_like
+            Redshift
+
+        Returns
+        -------
+        float, numpy.ndarray
+            Angular diameter distance in units :math:`M\!pc`
+        """
+        return self._eval_da_z1z2(0.0, z)
 
     def eval_da_a1a2(self, a1, a2=1.0):
         r"""This is a function to calculate the angular diameter distance
@@ -340,7 +354,7 @@ class CLMMCosmology:
             )
         z1 = self.get_z_from_a(a2)
         z2 = self.get_z_from_a(a1)
-        return self.eval_da_z1z2(z1, z2)
+        return self._eval_da_z1z2(z1, z2)
 
     def get_a_from_z(self, z):
         """Convert redshift to scale factor
@@ -357,6 +371,21 @@ class CLMMCosmology:
         """
         if self.validate_input:
             validate_argument(locals(), "z", "float_array", argmin=0, eqmin=True)
+        return self._get_a_from_z(z)
+
+    def _get_a_from_z(self, z):
+        """Convert redshift to scale factor
+
+        Parameters
+        ----------
+        z : float, array_like
+            Redshift
+
+        Returns
+        -------
+        a : float, numpy.ndarray
+            Scale factor
+        """
         z = np.array(z)
         return 1.0 / (1.0 + z)
 
@@ -377,6 +406,21 @@ class CLMMCosmology:
             validate_argument(
                 locals(), "a", "float_array", argmin=0, eqmin=True, argmax=1, eqmax=True
             )
+        return self._get_z_from_a(a)
+
+    def _get_z_from_a(self, a):
+        """Convert scale factor to redshift
+
+        Parameters
+        ----------
+        a : float, array_like
+            Scale factor
+
+        Returns
+        -------
+        z : float, numpy.ndarray
+            Redshift
+        """
         a = np.array(a)
         return (1.0 / a) - 1.0
 

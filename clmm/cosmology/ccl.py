@@ -76,29 +76,29 @@ class CCLCosmology(CLMMCosmology):
         return value
 
     def _get_Omega_m(self, z):
-        a = self.get_a_from_z(z)
+        a = self._get_a_from_z(z)
         return ccl.omega_x(self.be_cosmo, a, "matter")
 
     def _get_E2(self, z):
-        a = self.get_a_from_z(z)
+        a = self._get_a_from_z(z)
         return (ccl.h_over_h0(self.be_cosmo, a)) ** 2
 
     def _get_E2Omega_m(self, z):
-        a = self.get_a_from_z(z)
+        a = self._get_a_from_z(z)
         return ccl.omega_x(self.be_cosmo, a, "matter") * (ccl.h_over_h0(self.be_cosmo, a)) ** 2
 
     def _get_rho_m(self, z):
         # total matter density in physical units [Msun/Mpc3]
-        a = self.get_a_from_z(z)
+        a = self._get_a_from_z(z)
         return ccl.rho_x(self.be_cosmo, a, "matter", is_comoving=False)
 
     def _get_rho_c(self, z):
-        a = self.get_a_from_z(z)
+        a = self._get_a_from_z(z)
         return ccl.rho_x(self.be_cosmo, a, "critical", is_comoving=False)
 
     def _eval_da_z1z2_core(self, z1, z2):
-        a1 = np.atleast_1d(self.get_a_from_z(z1))
-        a2 = np.atleast_1d(self.get_a_from_z(z2))
+        a1 = np.atleast_1d(self._get_a_from_z(z1))
+        a2 = np.atleast_1d(self._get_a_from_z(z2))
         if len(a1) == 1 and len(a2) != 1:
             a1 = np.full_like(a2, a1)
         elif len(a2) == 1 and len(a1) != 1:
@@ -110,10 +110,10 @@ class CCLCosmology(CLMMCosmology):
         return res
 
     def _eval_sigma_crit_core(self, z_len, z_src):
-        a_len = self.get_a_from_z(z_len)
-        a_src = self.get_a_from_z(z_src)
+        a_len = self._get_a_from_z(z_len)
+        a_src = self._get_a_from_z(z_src)
 
         return self.be_cosmo.sigma_critical(a_len, a_src) * self.cor_factor
 
     def _eval_linear_matter_powerspectrum(self, k_vals, redshift):
-        return ccl.linear_matter_power(self.be_cosmo, k_vals, self.get_a_from_z(redshift))
+        return ccl.linear_matter_power(self.be_cosmo, k_vals, self._get_a_from_z(redshift))
