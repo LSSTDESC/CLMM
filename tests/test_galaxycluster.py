@@ -292,9 +292,7 @@ def test_pzpdf_random_draw():
 
         cluster.galcat.pzpdf_info.pop("zbins")
         cluster.galcat.remove_column("pzbins")
-        cluster.galcat["pzpdf"] = [
-            multivariate_normal.pdf(pzbins, mean=z, cov=0.3) for z in z_src
-        ]
+        cluster.galcat["pzpdf"] = [multivariate_normal.pdf(pzbins, mean=z, cov=0.3) for z in z_src]
         assert_raises(TypeError, cluster.draw_gal_z_from_pdz)
 
         # add pzbins back to galcat
