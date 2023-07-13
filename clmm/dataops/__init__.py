@@ -205,14 +205,14 @@ def compute_background_probability(
 
 
 def compute_galaxy_weights(
-    is_deltasigma=False,
-    sigma_c=None,
     use_shape_noise=False,
     shape_component1=None,
     shape_component2=None,
     use_shape_error=False,
     shape_component1_err=None,
     shape_component2_err=None,
+    is_deltasigma=False,
+    sigma_c=None,
     validate_input=True,
 ):
     r"""Computes the individual lens-source pair weights
