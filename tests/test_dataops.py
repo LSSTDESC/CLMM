@@ -447,6 +447,32 @@ def test_compute_tangential_and_cross_components(modeling_data):
 
     # check values for DeltaSigma
     sigma_c = cosmo.eval_sigma_crit(z_lens, gals["z"])
+    # check validation between is_deltasigma and sigma_c
+    assert_raises(
+        TypeError,
+        da.compute_tangential_and_cross_components,
+        ra_lens=ra_lens,
+        dec_lens=dec_lens,
+        ra_source=gals["ra"],
+        dec_source=gals["dec"],
+        shear1=gals["e1"],
+        shear2=gals["e2"],
+        is_deltasigma=False,
+        sigma_c=sigma_c,
+    )
+    assert_raises(
+        TypeError,
+        da.compute_tangential_and_cross_components,
+        ra_lens=ra_lens,
+        dec_lens=dec_lens,
+        ra_source=gals["ra"],
+        dec_source=gals["dec"],
+        shear1=gals["e1"],
+        shear2=gals["e2"],
+        is_deltasigma=True,
+        sigma_c=None,
+    )
+    # test values
     for geometry, expected in geo_tests:
         angsep_DS, tDS, xDS = da.compute_tangential_and_cross_components(
             ra_lens=ra_lens,
@@ -455,6 +481,7 @@ def test_compute_tangential_and_cross_components(modeling_data):
             dec_source=gals["dec"],
             shear1=gals["e1"],
             shear2=gals["e2"],
+            is_deltasigma=True,
             sigma_c=sigma_c,
             geometry=geometry,
         )
@@ -561,7 +588,8 @@ def test_compute_galaxy_weights():
     # true redshift + deltasigma
     sigma_c = cosmo.eval_sigma_crit(z_lens, z_src)
     weights = da.compute_galaxy_weights(
-        sigma_c,
+        is_deltasigma=True,
+        sigma_c=sigma_c,
         use_shape_noise=False,
         shape_component1=shape_component1,
         shape_component2=shape_component2,
@@ -584,7 +612,8 @@ def test_compute_galaxy_weights():
         pzpdf=pzpdf,
     )
     weights = da.compute_galaxy_weights(
-        sigma_c_eff,
+        is_deltasigma=True,
+        sigma_c=sigma_c_eff,
         use_shape_noise=False,
         shape_component1=shape_component1,
         shape_component2=shape_component2,
@@ -602,7 +631,8 @@ def test_compute_galaxy_weights():
     pzbins = pzbin
     pzpdf = [multivariate_normal.pdf(pzbin, mean=z, cov=0.3) for z in z_src]
     weights = da.compute_galaxy_weights(
-        sigma_c_eff,
+        is_deltasigma=True,
+        sigma_c=sigma_c_eff,
         use_shape_noise=False,
         shape_component1=shape_component1,
         shape_component2=shape_component2,
@@ -617,7 +647,8 @@ def test_compute_galaxy_weights():
 
     # test with noise
     weights = da.compute_galaxy_weights(
-        sigma_c_eff,
+        is_deltasigma=True,
+        sigma_c=sigma_c_eff,
         use_shape_noise=True,
         shape_component1=shape_component1,
         shape_component2=shape_component2,
@@ -632,6 +663,7 @@ def test_compute_galaxy_weights():
 
     # test with is_deltasigma=False and geometric weights only
     weights = da.compute_galaxy_weights(
+        is_deltasigma=False,
         sigma_c=None,
         use_shape_noise=False,
         shape_component1=shape_component1,
@@ -649,7 +681,8 @@ def test_compute_galaxy_weights():
     assert_raises(
         ValueError,
         da.compute_galaxy_weights,
-        sigma_c_eff,
+        is_deltasigma=True,
+        sigma_c=sigma_c_eff,
         use_shape_noise=True,
         shape_component1=None,
         shape_component2=None,
@@ -663,7 +696,8 @@ def test_compute_galaxy_weights():
     assert_raises(
         ValueError,
         da.compute_galaxy_weights,
-        sigma_c_eff,
+        is_deltasigma=True,
+        sigma_c=sigma_c_eff,
         use_shape_noise=False,
         use_shape_error=True,
         shape_component1_err=None,

@@ -190,9 +190,7 @@ def test_integrity_of_probfuncs():
         ra=161.3,
         dec=34.0,
         z=0.3,
-        galcat=GCData(
-            [ra_source, dec_source, z_srcs, id_source], names=("ra", "dec", "z", "id")
-        ),
+        galcat=GCData([ra_source, dec_source, z_srcs, id_source], names=("ra", "dec", "z", "id")),
     )
     # true redshift
     cluster.compute_background_probability(use_pdz=False, p_background_name="p_bkg_true")
