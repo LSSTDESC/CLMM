@@ -13,6 +13,7 @@ from ..utils import (
     validate_argument,
     _validate_ra,
     _validate_dec,
+    _validate_is_deltasigma_sigma_c,
 )
 from ..redshift import (
     _integ_pzfuncs,
@@ -29,6 +30,7 @@ def compute_tangential_and_cross_components(
     shear1,
     shear2,
     geometry="curve",
+    is_deltasigma=False,
     sigma_c=None,
     validate_input=True,
 ):
@@ -96,10 +98,12 @@ def compute_tangential_and_cross_components(
     geometry: str, optional
         Sky geometry to compute angular separation.
         Options are curve (uses astropy) or flat.
+    is_deltasigma: bool
+        If `True`, the tangential and cross components returned are multiplied by Sigma_crit.
+        It requires `sigma_c` argument. Results in units of :math:`M_\odot\ Mpc^{-2}`
     sigma_c : None, array_like
         Critical (effective) surface density in units of :math:`M_\odot\ Mpc^{-2}`.
-        If equals to None, shear components are returned, else :math:`\Delta \Sigma` components
-        are returned.
+        Used only when is_deltasigma=True.
     validate_input: bool
         Validade each input argument
 
@@ -129,6 +133,7 @@ def compute_tangential_and_cross_components(
             names=("Ra", "Dec", "Shear1", "Shear2"),
             prefix="Tangential- and Cross- shape components sources",
         )
+        _validate_is_deltasigma_sigma_c(locals())
     elif np.iterable(ra_source):
         ra_source_, dec_source_, shear1_, shear2_ = (
             np.array(col) for col in [ra_source, dec_source, shear1, shear2]
@@ -200,6 +205,7 @@ def compute_background_probability(
 
 
 def compute_galaxy_weights(
+    is_deltasigma=False,
     sigma_c=None,
     use_shape_noise=False,
     shape_component1=None,
@@ -241,10 +247,12 @@ def compute_galaxy_weights(
 
     Parameters
     ----------
+    is_deltasigma: bool
+        If `True`, the tangential and cross components returned are multiplied by Sigma_crit.
+        It requires `sigma_c` argument. Results in units of :math:`M_\odot\ Mpc^{-2}`
     sigma_c : None, array_like
         Critical (effective) surface density in units of :math:`M_\odot\ Mpc^{-2}`.
-        If equals to None, weights are computed for shear, else weights are computed for
-        :math:`\Delta \Sigma`.
+        Used only when is_deltasigma=True.
     use_shape_noise: bool
         If `True` shape noise is included in the weight computation. It then requires
         `shape_componenet{1,2}` to be provided. Default: False.
@@ -284,6 +292,7 @@ def compute_galaxy_weights(
             names=("shape_component1", "shape_component2"),
             prefix="Shape components sources",
         )
+        _validate_is_deltasigma_sigma_c(locals())
 
     # computing w_ls_geo
     w_ls_geo = 1.0

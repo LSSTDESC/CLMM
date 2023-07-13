@@ -207,3 +207,18 @@ def _validate_dec(loc, dec_name, is_array):
     """
     v_type = "float_array" if is_array else (float, str)
     validate_argument(loc, dec_name, v_type, argmin=-90, eqmin=True, argmax=90, eqmax=True)
+
+
+def _validate_is_deltasigma_sigma_c(loc):
+    """ "Validate the compatibility between is_deltasigma and sigma_c arguments.
+
+
+    Parameters
+    ----------
+    loc: dict
+        Dictionary with all input arguments. Should be locals().
+    """
+    if loc["is_deltasigma"] and loc["sigma_c"] is None:
+        raise TypeError("sigma_c (=None) must be provided when is_deltasigma=True")
+    if not loc["is_deltasigma"] and loc["sigma_c"] is not None:
+        raise TypeError(f"sigma_c (={loc['sigma_c']}) be provided when is_deltasigma=False")

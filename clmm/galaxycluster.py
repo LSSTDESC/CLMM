@@ -276,6 +276,7 @@ class GalaxyCluster:
 
         # compute shears
         angsep, tangential_comp, cross_comp = compute_tangential_and_cross_components(
+            is_deltasigma=is_deltasigma,
             ra_lens=self.ra,
             dec_lens=self.dec,
             geometry=geometry,
@@ -395,6 +396,7 @@ class GalaxyCluster:
 
         # computes weights
         w_ls = compute_galaxy_weights(
+            is_deltasigma=is_deltasigma,
             use_shape_noise=use_shape_noise,
             use_shape_error=use_shape_error,
             validate_input=self.validate_input,
