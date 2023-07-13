@@ -133,7 +133,7 @@ def compute_tangential_and_cross_components(
             names=("Ra", "Dec", "Shear1", "Shear2"),
             prefix="Tangential- and Cross- shape components sources",
         )
-        _validate_is_deltasigma_sigma_c(locals())
+        _validate_is_deltasigma_sigma_c(is_deltasigma, sigma_c)
     elif np.iterable(ra_source):
         ra_source_, dec_source_, shear1_, shear2_ = (
             np.array(col) for col in [ra_source, dec_source, shear1, shear2]
@@ -248,8 +248,8 @@ def compute_galaxy_weights(
     Parameters
     ----------
     is_deltasigma: bool
-        If `True`, the tangential and cross components returned are multiplied by Sigma_crit.
-        It requires `sigma_c` argument. Results in units of :math:`M_\odot\ Mpc^{-2}`
+        If `False`, weights are computed for shear, else weights are computed for
+        :math:`\Delta \Sigma`.
     sigma_c : None, array_like
         Critical (effective) surface density in units of :math:`M_\odot\ Mpc^{-2}`.
         Used only when is_deltasigma=True.
@@ -292,7 +292,7 @@ def compute_galaxy_weights(
             names=("shape_component1", "shape_component2"),
             prefix="Shape components sources",
         )
-        _validate_is_deltasigma_sigma_c(locals())
+        _validate_is_deltasigma_sigma_c(is_deltasigma, sigma_c)
 
     # computing w_ls_geo
     w_ls_geo = 1.0
