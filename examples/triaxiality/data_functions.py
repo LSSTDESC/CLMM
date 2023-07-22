@@ -16,10 +16,10 @@ def calc_theta(x, y, rotation=-np.pi/2) :
 def make_radial_bins(x, y, Nbins=10) :
 	r = np.sqrt(x**2 + y**2)
 	#r_bins = np.linspace(np.min(r), np.max(r), Nbins+1)
-	r_bins = np.logspace(np.log10(np.min(r)), np.log10(np.max(r)), Nbins+1)
-	inds = np.digitize(r, r_bins, right=True) - 1
-	rbins_mean = np.array([np.mean(r[inds==i]) for i in range(Nbins)])
-	return r, rbins_mean, inds
+	rbin_edges = np.logspace(np.log10(np.min(r)), np.log10(np.max(r)), Nbins+1)
+	inds = np.digitize(r, rbin_edges, right=True) - 1
+	rbin_mean = np.array([np.mean(r[inds==i]) for i in range(Nbins)])
+	return r, rbin_edges, rbin_mean, inds
 
 def Delta_Sigma_const(w, gamma1, Sigma_crit) :
 	## TODO: sum over clusters
