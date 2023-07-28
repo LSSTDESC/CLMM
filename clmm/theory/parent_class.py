@@ -181,6 +181,10 @@ class CLMModeling:
         if defined"""
         raise NotImplementedError
 
+    def _use_projected_quad(self, use_quad):
+        """Implemented for the CCL backend only"""
+        raise NotImplementedError
+
     def _eval_3d_density(self, r3d, z_cl):
         raise NotImplementedError
 
