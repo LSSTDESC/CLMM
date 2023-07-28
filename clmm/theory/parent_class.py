@@ -376,9 +376,11 @@ class CLMModeling:
         Parameters
         ----------
         halo_profile_model: str
-            Halo mass profile, current options are 'nfw' (letter case independent)
+            Halo mass profile, current options are 'nfw', 'einasto', 'hernquist'
+            (letter case independent)
         massdef: str
-            Mass definition, current options are 'mean' (letter case independent)
+            Mass definition, current options are 'mean', 'critical', 'virial'
+            (letter case independent)
         delta_mdef: int
             Overdensity number
         """
@@ -477,8 +479,8 @@ class CLMModeling:
         This comes from the maximum likelihood estimator for evaluating a
         :math:`\Delta\Sigma` profile.
 
-        For the standard :math:`\Sigma_{\rm crit}(z)` definition, use the `eval_sigma_crit` method
-        of the CLMM cosmology object.
+        For the standard :math:`\Sigma_{\text{crit}}(z)` definition, use the `eval_sigma_crit`
+        method of the CLMM cosmology object.
 
         Parameters
         ----------
