@@ -444,6 +444,22 @@ class CLMModeling:
             raise ValueError(f"Wrong profile model. Current profile = {self.halo_profile_model}")
         return self._get_einasto_alpha(z_cl)
 
+    def use_projected_quad(self, use_quad):
+        r"""Sets the value of the :math:`\alpha` parameter for the Einasto profile
+
+        Parameters
+        ----------
+        use_quad : bool
+            Only available for Einasto profile with CCL as the backend. If True, CCL will ues
+            quad_vec instead of default FFTLog to calculate the surface density profile.
+        """
+        if self.halo_profile_model != "einasto" or self.backend != "ccl":
+            raise NotImplementedError(
+                "This option is only available for the CCL Einasto profile.")
+        if self.validate_input:
+            validate_argument(locals(), "use_quad", bool)
+        self._use_projected_quad(use_quad)
+
     def eval_3d_density(self, r3d, z_cl, verbose=False):
         r"""Retrieve the 3d density :math:`\rho(r)`.
 
