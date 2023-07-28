@@ -383,10 +383,11 @@ class CLMModeling:
             Overdensity number
         """
         # make case independent
+        validate_argument(locals(), "massdef", str)
+        validate_argument(locals(), "halo_profile_model", str)
         massdef, halo_profile_model = massdef.lower(), halo_profile_model.lower()
+
         if self.validate_input:
-            validate_argument(locals(), "massdef", str)
-            validate_argument(locals(), "halo_profile_model", str)
             validate_argument(locals(), "delta_mdef", int, argmin=0)
             if massdef not in self.mdef_dict:
                 raise ValueError(
