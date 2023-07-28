@@ -25,7 +25,7 @@ def _assert_correct_type_ct(arg):
 
     Returns
     -------
-    scale_factor : array_like
+    scale_factor : numpy.ndarray
         Scale factor
     """
     if np.isscalar(arg):
@@ -156,7 +156,7 @@ class CTCLMModeling(CLMModeling):
 
         Returns
         -------
-        array_like, float
+        numpy.ndarray, float
             Excess surface density in units of :math:`M_\odot\ Mpc^{-2}`.
 
         Note
