@@ -99,8 +99,10 @@ class CCLCLMModeling(CLMModeling):
     def _update_halo_density_profile(self):
         """updates halo density profile with set internal properties"""
         # prepare mdef object
-        self.delta_mdef = "vir" if self.massdef == "virial" else self.delta_mdef
-        self.mdef = ccl.halos.MassDef(self.delta_mdef, self.mdef_dict[self.massdef])
+        if self.massdef == "virial":
+            self.mdef = ccl.halos.MassDef("vir", self.mdef_dict[self.massdef])
+        else:
+            self.mdef = ccl.halos.MassDef(self.delta_mdef, self.mdef_dict[self.massdef])
         # setting concentration (also updates hdpm)
         self.cdelta = self.cdelta if self.hdpm else 4.0  # ccl always needs an input concentration
 
