@@ -449,12 +449,13 @@ class CLMModeling:
         return self._get_einasto_alpha(z_cl)
 
     def use_projected_quad(self, use_quad):
-        r"""Sets the value of the :math:`\alpha` parameter for the Einasto profile
+        r"""Control the use of quad_vec to calculate the surface density profile for
+        CCL Einasto profile.
 
         Parameters
         ----------
         use_quad : bool
-            Only available for Einasto profile with CCL as the backend. If True, CCL will ues
+            Only available for Einasto profile with CCL as the backend. If True, CCL will use
             quad_vec instead of default FFTLog to calculate the surface density profile.
         """
         if self.halo_profile_model != "einasto" or self.backend != "ccl":
