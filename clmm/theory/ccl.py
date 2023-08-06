@@ -95,12 +95,11 @@ class CCLCLMModeling(CLMModeling):
         self.set_cosmo(None)
 
     def _use_projected_quad(self, use_quad):
-        if hasattr(self.hdpm, 'projected_quad'):
+        if hasattr(self.hdpm, "projected_quad"):
             self.hdpm_opts["einasto"]["projected_quad"] = use_quad
             self._update_halo_density_profile()
         else:
-            raise NotImplementedError(
-                "projected_quad is not available on this version of CCL.")
+            raise NotImplementedError("projected_quad is not available on this version of CCL.")
 
     # Functions implemented by child class
 
@@ -123,13 +122,12 @@ class CCLCLMModeling(CLMModeling):
         return self.__mdelta_cor * self.cor_factor
 
     def _set_concentration(self, cdelta):
-        """"set concentration. Also sets/updates hdpm"""
+        """set concentration. Also sets/updates hdpm"""
         self.conc = ccl.halos.ConcentrationConstant(c=cdelta, mass_def=self.mdef)
         self.hdpm = self.hdpm_dict[self.halo_profile_model](
-            concentration=self.conc, mass_def=self.mdef,
-            **self.hdpm_opts[self.halo_profile_model])
-        self.hdpm.update_precision_fftlog(
-            padding_lo_fftlog=1e-4, padding_hi_fftlog=1e3)
+            concentration=self.conc, mass_def=self.mdef, **self.hdpm_opts[self.halo_profile_model]
+        )
+        self.hdpm.update_precision_fftlog(padding_lo_fftlog=1e-4, padding_hi_fftlog=1e3)
 
     def _set_mass(self, mdelta):
         """set mass"""

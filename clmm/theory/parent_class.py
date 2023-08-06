@@ -459,8 +459,7 @@ class CLMModeling:
             quad_vec instead of default FFTLog to calculate the surface density profile.
         """
         if self.halo_profile_model != "einasto" or self.backend != "ccl":
-            raise NotImplementedError(
-                "This option is only available for the CCL Einasto profile.")
+            raise NotImplementedError("This option is only available for the CCL Einasto profile.")
         if self.validate_input:
             validate_argument(locals(), "use_quad", bool)
         self._use_projected_quad(use_quad)
