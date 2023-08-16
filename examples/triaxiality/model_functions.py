@@ -4,7 +4,12 @@ import scipy
 from scipy.interpolate import InterpolatedUnivariateSpline
 
 
+
+## CALCULATE MONOPOLE COMPONENT OF GAMMA_T
 def gamma_tangential_monopole(r, mdelta, cdelta, z_cl, cosmo, hpmd='nfw'):
+    ## Calculate the monopole component of gamma_T given by
+    ## 2 * r^-2 * Integrate[ r'*Sigma(r', mdelta, cdelta, z_cl, **kwargs), 0, r] - Sigma(r, mdelta, cdelta, z_cl, **kwargs)
+
     kappa_0 = clmm.compute_surface_density(r, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, 
                                      halo_profile_model=hpmd, massdef='mean', alpha_ein=None, 
                                      verbose=False, validate_input=True)
@@ -12,6 +17,32 @@ def gamma_tangential_monopole(r, mdelta, cdelta, z_cl, cosmo, hpmd='nfw'):
     f = lambda r_i: r_i*clmm.compute_surface_density(r_i, mdelta, cdelta, z_cl, cosmo, delta_mdef=200, 
                                          halo_profile_model=hpmd, massdef='mean', alpha_ein=None, 
                                           verbose=False, validate_input=True)
+    integrate = np.vectorize(pyfunc = scipy.integrate.quad_vec)
+    
+    integral, err = integrate(f,0,r)
+ 
+    
+    return (2/r**2)*integral - kappa_0
+
+
+
+## CALCULATE MONOPOLE COMPONENT OF GAMMA_T WITH EPSILON^2 CORRECTIONS
+def gamma_tangential_monopole_e2corrected(r, ell, mdelta, cdelta, z_cl, cosmo, hpmd='nfw'):
+    ## Calculate the monopole component of gamma_T given by
+    ## 2 * r^-2 * Integrate[ r'*Sigma0(r', mdelta, cdelta, z_cl, **kwargs), 0, r] - Sigma0(r, mdelta, cdelta, z_cl, **kwargs)
+    ## where Sigma0 = Sigma*(1 + e^2/8 * (eta_0 + eta_0^2/2 + r*(deta_0/dr)/2))
+
+    kappa = clmm.compute_surface_density(r, mdelta, cdelta, z_cl, cosmo, delta_mdef=200,
+                                     halo_profile_model=hpmd, massdef='mean', alpha_ein=None, 
+                                     verbose=False, validate_input=True)
+    
+    eta_0  = r * np.gradient(np.log(kappa), r)
+    Deta_0 = r * np.gradient(eta_0, r)
+    
+    kappa_0 = kappa * (1 + ell**2/8 * (eta_0 + eta_0**2/2 + Deta_0/2))
+    
+    f = lambda r_i, kapp_0_i: r_i * kappa_0_i
+
     integrate = np.vectorize(pyfunc = scipy.integrate.quad_vec)
     
     integral, err = integrate(f,0,r)
@@ -93,6 +124,10 @@ def _delta_sigma_const(ell_, r, mdelta, cdelta, z_cl, cosmo, hpmd='nfw', sample_
     return (ell_/4.0)*(2*I_2 - sigma_0*eta_0), eta_0_interpolation_func
 
 
+def _sigma(r, mdelta, cdelta, z_cl, cosmo, hpmd='nfw', sample_N=1000, delta_mdef=200):
+    return clmm.compute_surface_density(r, mdelta, cdelta, z_cl, cosmo, delta_mdef=delta_mdef, 
+                                     halo_profile_model=hpmd, massdef='mean', alpha_ein=None, 
+                                     verbose=False, validate_input=True)
 
 def _delta_sigma_excess(ell_, r, mdelta, cdelta, z_cl, cosmo, hpmd='nfw', sample_N=1000, delta_mdef=200):
     return clmm.compute_excess_surface_density(r, mdelta, cdelta, z_cl, cosmo, delta_mdef=delta_mdef, 
