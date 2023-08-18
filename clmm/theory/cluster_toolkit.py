@@ -41,7 +41,7 @@ class CTCLMModeling(CLMModeling):
     backend: str
         Name of the backend being used
     massdef : str
-        Profile mass definition (`mean`, `critical`, `virial` - letter case independent)
+        Profile mass definition (`mean`, `critical` - letter case independent)
     delta_mdef : int
         Mass overdensity definition.
     halo_profile_model : str
@@ -85,7 +85,6 @@ class CTCLMModeling(CLMModeling):
         self.mdef_dict = {
             "mean": self.cosmo.get_E2Omega_m,
             "critical": self.cosmo.get_E2,
-            "virial": self.cosmo.get_E2,
         }
 
         self.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
