@@ -380,10 +380,10 @@ class CLMModeling:
         Parameters
         ----------
         halo_profile_model: str
-            Halo mass profile, current options are 'nfw', 'einasto', 'hernquist'
+            Halo mass profile, supported options are 'nfw', 'einasto', 'hernquist'
             (letter case independent)
         massdef: str
-            Mass definition, current options are 'mean', 'critical', 'virial'
+            Mass definition, supported options are 'mean', 'critical', 'virial'
             (letter case independent)
         delta_mdef: int
             Overdensity number
