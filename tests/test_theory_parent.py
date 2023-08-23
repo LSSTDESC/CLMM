@@ -21,7 +21,7 @@ def test_unimplemented(modeling_data):
     assert_raises(NotImplementedError, mod._update_halo_density_profile)
     assert_raises(NotImplementedError, mod._set_einasto_alpha, 0.5)
     assert_raises(NotImplementedError, mod._get_einasto_alpha)
-    assert_raises(NotImplementedError, mod._use_projected_quad, True)
+    assert_raises(NotImplementedError, mod._set_projected_quad, True)
     assert_raises(NotImplementedError, mod.eval_3d_density, [0.3], 0.3)
     assert_raises(NotImplementedError, mod.eval_surface_density, [0.3], 0.3)
     assert_raises(NotImplementedError, mod.eval_mean_surface_density, [0.3], 0.3)
@@ -163,16 +163,16 @@ def test_einasto(modeling_data):
         mod.eval_magnification_bias(0.1, 2, 0.1, 0.5, verbose=True)
 
 
-def test_use_projected_quad(modeling_data):
-    """Test use_projected_quad method"""
+def test_set_projected_quad(modeling_data):
+    """Test set_projected_quad method"""
     mod = theo.Modeling()
-    assert_raises(NotImplementedError, mod.use_projected_quad, True)
+    assert_raises(NotImplementedError, mod.set_projected_quad, True)
 
     if theo.be_nick == "ccl":
-        assert_raises(NotImplementedError, mod.use_projected_quad, True)
+        assert_raises(NotImplementedError, mod.set_projected_quad, True)
         mod.set_halo_density_profile("hernquist")
-        assert_raises(NotImplementedError, mod.use_projected_quad, True)
+        assert_raises(NotImplementedError, mod.set_projected_quad, True)
         mod.set_halo_density_profile("einasto")
-        mod.use_projected_quad(True)
+        mod.set_projected_quad(True)
     else:
-        assert_raises(NotImplementedError, mod.use_projected_quad, True)
+        assert_raises(NotImplementedError, mod.set_projected_quad, True)

@@ -343,7 +343,7 @@ def test_profiles(modeling_data, profile_init):
             )
         if mod.backend == "ccl" and profile_init == "einasto":
             if hasattr(mod.hdpm, 'projected_quad'):
-                mod.use_projected_quad(True)
+                mod.set_projected_quad(True)
                 assert_allclose(
                     mod.eval_surface_density(
                         cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], verbose=True
@@ -352,7 +352,7 @@ def test_profiles(modeling_data, profile_init):
                     reltol*1e-1,
                 )
                 delattr(mod.hdpm, "projected_quad")
-                assert_raises(NotImplementedError, mod.use_projected_quad, True)
+                assert_raises(NotImplementedError, mod.set_projected_quad, True)
 
         # Functional interface tests
         # alpha_ein is None unless testing Einasto with the NC and CCL backend
