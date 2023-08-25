@@ -94,9 +94,9 @@ class CCLCLMModeling(CLMModeling):
         self.set_halo_density_profile(halo_profile_model, massdef, delta_mdef)
         self.set_cosmo(None)
 
-    def _set_projected_quad(self, projected_quad):
+    def _set_projected_quad(self, use_projected_quad):
         if hasattr(self.hdpm, "projected_quad"):
-            self.hdpm_opts["einasto"]["projected_quad"] = projected_quad
+            self.hdpm_opts["einasto"]["projected_quad"] = use_projected_quad
             self._update_halo_density_profile()
         else:
             raise NotImplementedError("projected_quad is not available on this version of CCL.")
