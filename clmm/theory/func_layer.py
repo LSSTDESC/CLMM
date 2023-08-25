@@ -109,6 +109,7 @@ def compute_surface_density(
     massdef="mean",
     alpha_ein=None,
     verbose=False,
+    use_projected_quad=False,
     validate_input=True,
 ):
     r"""Computes the surface mass density
@@ -154,6 +155,10 @@ def compute_surface_density(
     verbose : boolean, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
         backends.
+    use_projected_quad : bool
+        Only available for Einasto profile with CCL as the backend. If True, CCL will use
+        quad_vec instead of default FFTLog to calculate the surface density profile.
+        Default: False
     validate_input : bool, optional
         If True (default), the types of the arguments are checked before proceeding.
 
@@ -176,6 +181,8 @@ def compute_surface_density(
     _modeling_object.set_mass(mdelta)
     if halo_profile_model == "einasto" or alpha_ein is not None:
         _modeling_object.set_einasto_alpha(alpha_ein)
+    if halo_profile_model == "einasto" and _modeling_object.backend=="ccl":
+        _modeling_object.set_projected_quad(use_projected_quad)
 
     sigma = _modeling_object.eval_surface_density(r_proj, z_cl, verbose=verbose)
 

@@ -341,18 +341,6 @@ def test_profiles(modeling_data, profile_init):
             assert_raises(
                 ValueError, mod.eval_excess_surface_density, 1e-12, cfg["SIGMA_PARAMS"]["z_cl"]
             )
-        if mod.backend == "ccl" and profile_init == "einasto":
-            if hasattr(mod.hdpm, 'projected_quad'):
-                mod.set_projected_quad(True)
-                assert_allclose(
-                    mod.eval_surface_density(
-                        cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], verbose=True
-                    ),
-                    cfg["numcosmo_profiles"]["Sigma"],
-                    reltol*1e-1,
-                )
-                delattr(mod.hdpm, "projected_quad")
-                assert_raises(NotImplementedError, mod.set_projected_quad, True)
 
         # Functional interface tests
         # alpha_ein is None unless testing Einasto with the NC and CCL backend
@@ -384,6 +372,29 @@ def test_profiles(modeling_data, profile_init):
             cfg["numcosmo_profiles"]["DeltaSigma"],
             reltol,
         )
+
+        # Test use_projected_quad
+        if mod.backend == "ccl" and profile_init == "einasto":
+            if hasattr(mod.hdpm, 'projected_quad'):
+                mod.set_projected_quad(True)
+                assert_allclose(
+                    mod.eval_surface_density(
+                        cfg["SIGMA_PARAMS"]["r_proj"], cfg["SIGMA_PARAMS"]["z_cl"], verbose=True
+                    ),
+                    cfg["numcosmo_profiles"]["Sigma"],
+                    reltol*1e-1,
+                )
+                assert_allclose(
+                    theo.compute_surface_density(
+                        cosmo=cosmo, **cfg["SIGMA_PARAMS"], alpha_ein=alpha_ein, verbose=True,
+                        use_projected_quad=True,
+                    ),
+                    cfg["numcosmo_profiles"]["Sigma"],
+                    reltol*1e-1,
+                )
+
+                delattr(mod.hdpm, "projected_quad")
+                assert_raises(NotImplementedError, mod.set_projected_quad, True)
 
 
 def test_2halo_term(modeling_data):
