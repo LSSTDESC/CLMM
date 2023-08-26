@@ -45,11 +45,11 @@ class CLMModeling:
     cdelta: float
         Concentration of the profile
     massdef : str
-        Profile mass definition (`mean`, `critical`, `virial` - letter case independent)
+        Profile mass definition ("mean", "critical", "virial" - letter case independent)
     delta_mdef : int
         Mass overdensity definition.
     halo_profile_model : str
-        Profile model parameterization (`nfw`, `einasto`, `hernquist` - letter case independent)
+        Profile model parameterization ("nfw", "einasto", "hernquist" - letter case independent)
     cosmo: Cosmology
         Cosmology object
     hdpm: Object
@@ -1714,13 +1714,13 @@ class CLMModeling:
         z_cl: float
             Redshift of the cluster
         massdef : str, None
-            Profile mass definition to convert to (`mean`, `critical`, `virial`).
+            Profile mass definition to convert to ("mean", "critical", "virial").
             If None, same value of current model is used.
         delta_mdef : int, None
             Mass overdensity definition to convert to.
             If None, same value of current model is used.
         halo_profile_model : str, None
-            Profile model parameterization to convert to (`nfw`, `einasto`, `hernquist`).
+            Profile model parameterization to convert to ("nfw", "einasto", "hernquist").
             If None, same value of current model is used.
         alpha : float, None
             Einasto slope to convert to when `halo_profile_model='einasto'`.

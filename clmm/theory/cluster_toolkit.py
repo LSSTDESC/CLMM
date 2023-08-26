@@ -41,11 +41,11 @@ class CTCLMModeling(CLMModeling):
     backend: str
         Name of the backend being used
     massdef : str
-        Profile mass definition (`mean`, `critical` - letter case independent)
+        Profile mass definition ("mean", "critical" - letter case independent)
     delta_mdef : int
         Mass overdensity definition.
     halo_profile_model : str
-        Profile model parameterization (`nfw`, `einasto`, `hernquist` - letter case independent)
+        Profile model parameterization ("nfw", "einasto", "hernquist" - letter case independent)
     cosmo: Cosmology
         Cosmology object
     hdpm: Object
@@ -144,7 +144,7 @@ class CTCLMModeling(CLMModeling):
         )  # pc**-2 to Mpc**-2
 
     def _eval_mean_surface_density(self, r_proj, z_cl):
-        r"""Computes the mean value of surface density inside radius r_proj
+        r"""Computes the mean value of surface density inside radius `r_proj`
 
         Parameters
         ----------
