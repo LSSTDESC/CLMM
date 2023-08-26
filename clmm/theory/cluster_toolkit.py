@@ -45,7 +45,7 @@ class CTCLMModeling(CLMModeling):
     delta_mdef : int
         Mass overdensity definition.
     halo_profile_model : str
-        Profile model parameterization ("nfw", "einasto", "hernquist" - letter case independent)
+        Profile model parameterization ("nfw" - letter case independent)
     cosmo: Cosmology
         Cosmology object
     hdpm: Object
