@@ -223,4 +223,4 @@ def _validate_is_deltasigma_sigma_c(is_deltasigma, sigma_c):
     if is_deltasigma and sigma_c is None:
         raise TypeError("sigma_c (=None) must be provided when is_deltasigma=True")
     if not is_deltasigma and sigma_c is not None:
-        raise TypeError(f"sigma_c (={sigma_c}) be provided when is_deltasigma=False")
+        raise TypeError(f"sigma_c (={sigma_c}) must be None when is_deltasigma=False")
