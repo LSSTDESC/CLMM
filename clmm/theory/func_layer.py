@@ -5,7 +5,7 @@ Main functions to encapsule oo calls
 # pylint: disable=invalid-name
 # Thin functonal layer on top of the class implementation of CLMModeling .
 # The functions expect a global instance of the actual CLMModeling named
-# `_modeling_object'.
+# "_modeling_object".
 
 import numpy as np
 
@@ -109,6 +109,7 @@ def compute_surface_density(
     massdef="mean",
     alpha_ein=None,
     verbose=False,
+    use_projected_quad=False,
     validate_input=True,
 ):
     r"""Computes the surface mass density
@@ -154,6 +155,10 @@ def compute_surface_density(
     verbose : boolean, optional
         If True, the Einasto slope (alpha_ein) is printed out. Only available for the NC and CCL
         backends.
+    use_projected_quad : bool
+        Only available for Einasto profile with CCL as the backend. If True, CCL will use
+        quad_vec instead of default FFTLog to calculate the surface density profile.
+        Default: False
     validate_input : bool, optional
         If True (default), the types of the arguments are checked before proceeding.
 
@@ -176,6 +181,8 @@ def compute_surface_density(
     _modeling_object.set_mass(mdelta)
     if halo_profile_model == "einasto" or alpha_ein is not None:
         _modeling_object.set_einasto_alpha(alpha_ein)
+    if halo_profile_model == "einasto" and _modeling_object.backend=="ccl":
+        _modeling_object.set_projected_quad(use_projected_quad)
 
     sigma = _modeling_object.eval_surface_density(r_proj, z_cl, verbose=verbose)
 
@@ -358,7 +365,7 @@ def compute_excess_surface_density_2h(
 
     .. math::
         \Delta\Sigma_{\text{2h}}(R) = \frac{\rho_m(z)b(M)}{(1 + z)^3D_A(z)^2}
-        \int\frac{ldl}{(2\pi)} P_{\rm mm}(k_l, z)J_2(l\theta)
+        \int\frac{ldl}{(2\pi)} P_{\text{mm}}(k_l, z)J_2(l\theta)
 
     where
 
@@ -424,13 +431,13 @@ def compute_surface_density_2h(
     r"""Computes the 2-halo term surface density from eq.(13) of Oguri & Hamana (2011)
 
     .. math::
-        \Sigma_{\rm 2h}(R) = \frac{\rho_m(z)b(M)}{(1 + z)^3D_A(z)^2} \int\frac{ldl}{(2\pi)}
-        P_{\rm mm}(k_l, z)J_0(l\theta)
+        \Sigma_{\text{2h}}(R) = \frac{\rho_\text{m}(z)b(M)}{(1 + z)^3D_A(z)^2}
+        \int\frac{ldl}{(2\pi)}P_{\text{mm}}(k_l, z)J_0(l\theta)
 
     where
 
     .. math::
-        k_l = \frac{l}{D_A(z)(1 +z)}
+        k_l = \frac{l}{D_A(z)(1 + z)}
 
     and :math:`b(M)` is the halo bias
 
@@ -481,14 +488,14 @@ def compute_critical_surface_density_eff(cosmo, z_cluster, pzbins, pzpdf, valida
     r"""Computes the 'effective critical surface density'
 
     .. math::
-        \langle \Sigma_{\rm crit}^{-1}\rangle^{-1} = \left(\int \frac{1}{\Sigma_{\rm crit}(z)}
-        p(z) dz\right)^{-1}
+        \langle \Sigma_{\text{crit}}^{-1}\rangle^{-1} =
+        \left(\int \frac{1}{\Sigma_{\text{crit}}(z)}p(z) \mathrm{d}z\right)^{-1}
 
     where :math:`p(z)` is the source photoz probability density function.
     This comes from the maximum likelihood estimator for evaluating a :math:`\Delta\Sigma`
     profile.
 
-    For the standard :math:`\Sigma_{\rm crit}(z)` definition, use the `eval_sigma_crit` method of
+    For the standard :math:`\Sigma_{\text{crit}}(z)` definition, use the `eval_sigma_crit` method of
     the CLMM cosmology object.
 
     Parameters
@@ -841,9 +848,9 @@ def compute_reduced_tangential_shear(
     massdef : str, optional
         Profile mass definition, with the following supported options (letter case independent):
 
-            * `mean` (default);
-            * `critical` - not in cluster_toolkit;
-            * `virial` - not in cluster_toolkit;
+            * 'mean' (default);
+            * 'critical' - not in cluster_toolkit;
+            * 'virial' - not in cluster_toolkit;
 
     alpha_ein : float, None, optional
         If `halo_profile_model=='einasto'`, set the value of the Einasto slope.
