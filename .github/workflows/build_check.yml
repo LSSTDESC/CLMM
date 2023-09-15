@@ -16,10 +16,9 @@ jobs:
     - name: Install prereq using conda
       run: |
         echo "$CONDA/bin" >> $GITHUB_PATH
-        conda install -c conda-forge gobject-introspection pygobject
+        conda install -c conda-forge gobject-introspection pygobject cmake=3.27.4
     - name: Install prereq using pip
       run: |
-        pip install pyproject-toml
         pip install -r requirements.txt
     - name: Install the package
       run: |
