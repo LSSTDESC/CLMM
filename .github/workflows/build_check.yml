@@ -16,7 +16,7 @@ jobs:
     - name: Install prereq using conda
       run: |
         echo "$CONDA/bin" >> $GITHUB_PATH
-        conda install -c conda-forge gobject-introspection pygobject
+        conda install -c conda-forge gobject-introspection pygobject==3.44.1
     - name: Install prereq using pip
       run: |
         pip install -r requirements.txt
