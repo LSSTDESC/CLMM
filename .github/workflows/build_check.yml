@@ -13,10 +13,11 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: conda-incubator/setup-miniconda@v2
+      with:
+        channels: conda-forge
     - name: Install prereq using conda
       run: |
         echo "$CONDA/bin" >> $GITHUB_PATH
-        conda info
         conda install -c conda-forge gobject-introspection pygobject
     - name: Install prereq using pip
       run: |
