@@ -33,7 +33,7 @@ jobs:
         pip install .
     - name: Install CCL from source
       run: |
-        conda install -c conda-forge cmake swig
+        conda install -c conda-forge cmake swig libcurl>8.2.1
         git clone https://github.com/LSSTDESC/CCL
         cd CCL
         git checkout v3.0.0
