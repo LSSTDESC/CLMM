@@ -23,6 +23,13 @@ jobs:
     - name: Install the package
       run: |
         pip install .
+    - name: Install CCL from source
+      run: |
+        conda install -c conda-forge cmake swig "cmake>=3.27"
+        git clone https://github.com/LSSTDESC/CCL
+        cd CCL
+        git checkout v3.0.0
+        pip install .
     - name: Install NumCosmo from conda-forge
       run: |
         conda install -c conda-forge numcosmo
@@ -30,13 +37,6 @@ jobs:
       run: |
         git clone https://github.com/tmcclintock/cluster_toolkit.git
         cd cluster_toolkit
-        pip install .
-    - name: Install CCL from source
-      run: |
-        conda install -c conda-forge cmake swig "cmake>=3.27"
-        git clone https://github.com/LSSTDESC/CCL
-        cd CCL
-        git checkout v3.0.0
         pip install .
     - name: Analysing the code with pylint
       run: |
