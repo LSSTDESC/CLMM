@@ -85,7 +85,7 @@ def compute_rdelta(mdelta, redshift, cosmo, massdef="mean", delta_mdef=200):
     cosmo : clmm.Cosmology
         Cosmology object
     massdef : str, None
-        Profile mass definition (`mean`, `critical`, `virial`).
+        Profile mass definition ("mean", "critical", "virial").
     delta_mdef : int, None
         Mass overdensity definition.
 
@@ -151,11 +151,11 @@ def compute_profile_mass_in_radius(
     cdelta : float
         Concentration of the profile.
     massdef : str, None
-        Profile mass definition (`mean`, `critical`, `virial`).
+        Profile mass definition ("mean", "critical", "virial").
     delta_mdef : int, None
         Mass overdensity definition.
     halo_profile_model : str
-        Profile model parameterization (`nfw`, `einasto`, `hernquist`).
+        Profile model parameterization ("nfw", "einasto", "hernquist").
     alpha : float, None
         Einasto slope, required when `halo_profile_model='einasto'`.
 
@@ -209,19 +209,19 @@ def convert_profile_mass_concentration(
     cosmo : clmm.Cosmology
         Cosmology object
     massdef : str, None
-        Input profile mass definition (`mean`, `critical`, `virial`).
+        Input profile mass definition ("mean", "critical", "virial").
     delta_mdef : int, None
         Input mass overdensity definition.
     halo_profile_model : str, None
-        Input profile model parameterization (`nfw`, `einasto`, `hernquist`).
+        Input profile model parameterization ("nfw", "einasto", "hernquist").
     massdef2 : str, None
-        Profile mass definition to convert to (`mean`, `critical`, `virial`).
+        Profile mass definition to convert to ("mean", "critical", "virial").
         If None, `massdef2=massdef`.
     delta_mdef2 : int, None
         Mass overdensity definition to convert to.
         If None, `delta_mdef2=delta_mdef`.
     halo_profile_model2 : str, None
-        Profile model parameterization to convert to (`nfw`, `einasto`, `hernquist`).
+        Profile model parameterization to convert to ("nfw", "einasto", "hernquist").
         If None, `halo_profile_model2=halo_profile_model`.
     alpha : float, None
         Input Einasto slope when `halo_profile_model='einasto'`.
