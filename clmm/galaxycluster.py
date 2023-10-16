@@ -114,7 +114,7 @@ class GalaxyCluster:
             f"<br>{self.galcat._html_table()}"
         )
 
-    def add_critical_surface_density(self, cosmo, use_pdz=False):
+    def add_critical_surface_density(self, cosmo, use_pdz=False, force=False):
         r"""Computes the critical surface density for each galaxy in `galcat`.
         It only runs if input cosmo != galcat cosmo or if `sigma_c` not in `galcat`.
 
@@ -128,6 +128,8 @@ class GalaxyCluster:
             `sigma_c` is computed as 1/<1/Sigma_crit>, where the average is performed using
             the individual galaxy redshift pdf. In that case, the `galcat` table should have
             pzbins` and `pzpdf` columns.
+        force : bool
+            Force recomputation of sigma_c.
 
         Returns
         -------
@@ -135,7 +137,12 @@ class GalaxyCluster:
         """
         if cosmo is None:
             raise TypeError("To compute Sigma_crit, please provide a cosmology")
-        if cosmo.get_desc() != self.galcat.meta["cosmo"] or "sigma_c" not in self.galcat.columns:
+        sigmac_colname = "sigma_c_eff" if use_pdz else "sigma_c"
+        if (
+            cosmo.get_desc() != self.galcat.meta["cosmo"]
+            or sigmac_colname not in self.galcat.columns
+            or force
+        ):
             if self.z is None:
                 raise TypeError("Cluster's redshift is None. Cannot compute Sigma_crit")
             if not use_pdz and "z" not in self.galcat.columns:
@@ -149,19 +156,18 @@ class GalaxyCluster:
                 )
 
             self.galcat.update_cosmo(cosmo, overwrite=True)
-            if use_pdz is False:
-                self.galcat["sigma_c"] = cosmo.eval_sigma_crit(self.z, self.galcat["z"])
-                self.galcat.meta["sigmac_type"] = "standard"
+            if not use_pdz:
+                self.galcat[sigmac_colname] = cosmo.eval_sigma_crit(self.z, self.galcat["z"])
             else:
                 zdata = self._get_input_galdata({"pzpdf": "pzpdf", "pzbins": "pzbins"})
-                self.galcat["sigma_c"] = compute_critical_surface_density_eff(
+                self.galcat[sigmac_colname] = compute_critical_surface_density_eff(
                     cosmo=cosmo,
                     z_cluster=self.z,
                     pzbins=zdata["pzbins"],
                     pzpdf=zdata["pzpdf"],
                     validate_input=self.validate_input,
                 )
-                self.galcat.meta["sigmac_type"] = "effective"
+        return sigmac_colname
 
     def _get_input_galdata(self, col_dict):
         """
@@ -211,15 +217,14 @@ class GalaxyCluster:
         r"""Adds a tangential- and cross- components for shear or ellipticity to self
 
         Calls `clmm.dataops.compute_tangential_and_cross_components` with the following arguments:
-        ra_lens: cluster Ra
-        dec_lens: cluster Dec
+        ra_lens: `cluster` Ra
+        dec_lens: `cluster` Dec
         ra_source: `galcat` Ra
         dec_source: `galcat` Dec
         shear1: `galcat` shape_component1
         shear2: `galcat` shape_component2
         geometry: `input` geometry
         is_deltasigma: `input` is_deltasigma
-        sigma_c: `galcat` sigma_c | None
 
         Parameters
         ----------
@@ -258,26 +263,23 @@ class GalaxyCluster:
             Cross shear (or assimilated quantity) for each source galaxy
         """
         # Check is all the required data is available
-        cols = self._get_input_galdata(
-            {
-                "ra_source": "ra",
-                "dec_source": "dec",
-                "shear1": shape_component1,
-                "shear2": shape_component2,
-            }
-        )
-
+        col_dict = {
+            "ra_source": "ra",
+            "dec_source": "dec",
+            "shear1": shape_component1,
+            "shear2": shape_component2,
+        }
         if is_deltasigma:
-            self.add_critical_surface_density(cosmo, use_pdz=use_pdz)
-            cols["sigma_c"] = self.galcat["sigma_c"]
+            sigmac_colname = self.add_critical_surface_density(cosmo, use_pdz=use_pdz)
+            col_dict.update({"sigma_c": sigmac_colname})
+        cols = self._get_input_galdata(col_dict)
 
         # compute shears
         angsep, tangential_comp, cross_comp = compute_tangential_and_cross_components(
+            is_deltasigma=is_deltasigma,
             ra_lens=self.ra,
             dec_lens=self.dec,
             geometry=geometry,
-            is_deltasigma=is_deltasigma,
-            use_pdz=use_pdz,
             validate_input=self.validate_input,
             **cols,
         )
@@ -285,6 +287,10 @@ class GalaxyCluster:
             self.galcat["theta"] = angsep
             self.galcat[tan_component] = tangential_comp
             self.galcat[cross_component] = cross_comp
+            if is_deltasigma:
+                sigmac_type = "effective" if use_pdz else "standard"
+                self.galcat.meta[f"{tan_component}_sigmac_type"] = sigmac_type
+                self.galcat.meta[f"{cross_component}_sigmac_type"] = sigmac_type
         return angsep, tangential_comp, cross_comp
 
     def compute_background_probability(
@@ -308,7 +314,7 @@ class GalaxyCluster:
             Probability for being a background galaxy
         """
         cols = self._get_input_galdata(
-            {"pzpdf": "pzpdf", "pzbins": "pzbins"} if use_pdz else {"z_source": "z"}
+            {"pzpdf": "pzpdf", "pzbins": "pzbins"} if use_pdz else {"z_src": "z"}
         )
         p_background = compute_background_probability(
             self.z, use_pdz=use_pdz, validate_input=self.validate_input, **cols
@@ -369,12 +375,9 @@ class GalaxyCluster:
         """
         # input cols
         col_dict = {}
-        if use_pdz:
-            col_dict.update({"pzpdf": "pzpdf", "pzbins": "pzbins"})
         if is_deltasigma:
-            if "sigma_c" not in self.galcat.columns:
-                self.add_critical_surface_density(cosmo, use_pdz=use_pdz)
-            col_dict.update({"z_source": "z", "sigma_c": "sigma_c"})
+            sigmac_colname = self.add_critical_surface_density(cosmo, use_pdz=use_pdz)
+            col_dict.update({"sigma_c": sigmac_colname})
         if use_shape_noise:
             col_dict.update(
                 {
@@ -393,17 +396,18 @@ class GalaxyCluster:
 
         # computes weights
         w_ls = compute_galaxy_weights(
-            self.z,
-            cosmo,
-            use_pdz=use_pdz,
+            is_deltasigma=is_deltasigma,
             use_shape_noise=use_shape_noise,
             use_shape_error=use_shape_error,
-            is_deltasigma=is_deltasigma,
             validate_input=self.validate_input,
             **cols,
         )
         if add:
             self.galcat[weight_name] = w_ls
+            if is_deltasigma:
+                self.galcat.meta[f"{weight_name}_sigmac_type"] = (
+                    "effective" if use_pdz else "standard"
+                )
         return w_ls
 
     def draw_gal_z_from_pdz(self, zcol_out="z", overwrite=False, nobj=1, xmin=None, xmax=None):
