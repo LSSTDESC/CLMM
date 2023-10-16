@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: conda-incubator/setup-miniconda@v2
     - name: Install prereq using conda
       run: |
@@ -33,10 +33,10 @@ jobs:
         pip install .
     - name: Install CCL from source
       run: |
-        conda install -c conda-forge cmake swig
+        conda install -c conda-forge cmake swig --override-channels
         git clone https://github.com/LSSTDESC/CCL
         cd CCL
-        git checkout 1a351df
+        git checkout v3.0.0
         pip install .
     - name: Analysing the code with pylint
       run: |

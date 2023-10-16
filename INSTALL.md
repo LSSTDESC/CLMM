@@ -17,7 +17,10 @@ To create a specific conda environment for CLMM, we recommend you to check the b
 [Access to the proper environment on cori.nersc.gov](#access_to_the_proper_environment_on_cori).
 
 ### Theory backend installation
-First, choose and install a theory backend for CLMM. This can be CCL (v2.1.0 or later) or NumCosmo (v0.15 or later), or cluster_toolkit and they are installable as follows.
+First, choose and install a theory backend for CLMM.
+This can be CCL (versions between 2.7.1.dev10+gf81b59a4 and 3),
+NumCosmo (v0.15 or later),
+or cluster_toolkit and they are installable as follows.
 
 To install CCL as the theory/cosmology backend, run
 

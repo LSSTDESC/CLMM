@@ -41,5 +41,5 @@ setup(
         "Programming Language :: Python",
     ],
     install_requires=["astropy>=4.0", "numpy", "scipy", "healpy"],
-    python_requires=">" + str(required_py_version),
+    python_requires=">=" + str(required_py_version),
 )
