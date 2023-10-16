@@ -6,8 +6,9 @@ import clmm
 from clmm import GCData
 from scipy.stats import multivariate_normal
 import clmm.dataops as da
+from clmm.theory import compute_critical_surface_density_eff
 
-TOLERANCE = {'rtol': 1.e-7, 'atol': 1.e-7}
+TOLERANCE = {"rtol": 1.0e-7, "atol": 1.0e-7}
 
 
 def test_compute_cross_shear():
@@ -25,18 +26,12 @@ def test_compute_cross_shear():
     assert_allclose(cross_shear, expected_cross_shear)
 
     # Edge case tests
-    assert_allclose(da._compute_cross_shear(100., 0., 0.), 0.0,
-                            **TOLERANCE)
-    assert_allclose(da._compute_cross_shear(100., 0., np.pi/2), 0.0,
-                            **TOLERANCE)
-    assert_allclose(da._compute_cross_shear(0., 100., 0.), -100.0,
-                            **TOLERANCE)
-    assert_allclose(da._compute_cross_shear(0., 100., np.pi/2), 100.0,
-                            **TOLERANCE)
-    assert_allclose(da._compute_cross_shear(0., 100., np.pi/4.), 0.0,
-                            **TOLERANCE)
-    assert_allclose(da._compute_cross_shear(0., 0., 0.3), 0.,
-                            **TOLERANCE)
+    assert_allclose(da._compute_cross_shear(100.0, 0.0, 0.0), 0.0, **TOLERANCE)
+    assert_allclose(da._compute_cross_shear(100.0, 0.0, np.pi / 2), 0.0, **TOLERANCE)
+    assert_allclose(da._compute_cross_shear(0.0, 100.0, 0.0), -100.0, **TOLERANCE)
+    assert_allclose(da._compute_cross_shear(0.0, 100.0, np.pi / 2), 100.0, **TOLERANCE)
+    assert_allclose(da._compute_cross_shear(0.0, 100.0, np.pi / 4.0), 0.0, **TOLERANCE)
+    assert_allclose(da._compute_cross_shear(0.0, 0.0, 0.3), 0.0, **TOLERANCE)
 
 
 def test_compute_tangential_shear():
@@ -54,21 +49,25 @@ def test_compute_tangential_shear():
     assert_allclose(tangential_shear, expected_tangential_shear)
 
     # test for reasonable values
-    assert_allclose(
-        da._compute_tangential_shear(100., 0., 0.), -100.0, **TOLERANCE)
-    assert_allclose(
-        da._compute_tangential_shear(0., 100., np.pi/4.), -100.0, **TOLERANCE)
-    assert_allclose(da._compute_tangential_shear(0., 0., 0.3), 0., **TOLERANCE)
+    assert_allclose(da._compute_tangential_shear(100.0, 0.0, 0.0), -100.0, **TOLERANCE)
+    assert_allclose(da._compute_tangential_shear(0.0, 100.0, np.pi / 4.0), -100.0, **TOLERANCE)
+    assert_allclose(da._compute_tangential_shear(0.0, 0.0, 0.3), 0.0, **TOLERANCE)
 
 
 def test_compute_lensing_angles_flatsky():
     """test compute lensing angles flatsky"""
-    ra_l, dec_l = 161., 65.
-    ra_s, dec_s = np.array([-355., 355.]), np.array([-85., 85.])
+    ra_l, dec_l = 161.0, 65.0
+    ra_s, dec_s = np.array([-355.0, 355.0]), np.array([-85.0, 85.0])
 
     # Ensure that we throw a warning with >1 deg separation
-    assert_warns(UserWarning, da._compute_lensing_angles_flatsky,
-                         ra_l, dec_l, np.array([151.32, 161.34]), np.array([41.49, 51.55]))
+    assert_warns(
+        UserWarning,
+        da._compute_lensing_angles_flatsky,
+        ra_l,
+        dec_l,
+        np.array([151.32, 161.34]),
+        np.array([41.49, 51.55]),
+    )
 
     # Test outputs for reasonable values
     ra_l, dec_l = 161.32, 51.49
@@ -76,547 +75,999 @@ def test_compute_lensing_angles_flatsky():
     thetas, phis = da._compute_lensing_angles_flatsky(ra_l, dec_l, ra_s, dec_s)
 
     assert_allclose(
-        thetas, np.array([0.00077050407583119666, 0.00106951489719733675]), **TOLERANCE,
-        err_msg="Reasonable values with flat sky not matching to precision for theta")
+        thetas,
+        np.array([0.00077050407583119666, 0.00106951489719733675]),
+        **TOLERANCE,
+        err_msg="Reasonable values with flat sky not matching to precision for theta",
+    )
 
     assert_allclose(
-        phis, np.array([-1.13390499136495481736, 1.77544123918164542530]), **TOLERANCE,
-        err_msg="Reasonable values with flat sky not matching to precision for phi")
+        phis,
+        np.array([-1.13390499136495481736, 1.77544123918164542530]),
+        **TOLERANCE,
+        err_msg="Reasonable values with flat sky not matching to precision for phi",
+    )
 
     # lens and source at the same ra
     assert_allclose(
         da._compute_lensing_angles_flatsky(ra_l, dec_l, np.array([161.32, 161.34]), dec_s),
-        [[0.00069813170079771690, 0.00106951489719733675], [-1.57079632679489655800,
-        1.77544123918164542530]], **TOLERANCE, err_msg="Failure when lens and a source share an RA")
+        [
+            [0.00069813170079771690, 0.00106951489719733675],
+            [-1.57079632679489655800, 1.77544123918164542530],
+        ],
+        **TOLERANCE,
+        err_msg="Failure when lens and a source share an RA",
+    )
 
     # lens and source at the same dec
     assert_allclose(
         da._compute_lensing_angles_flatsky(ra_l, dec_l, ra_s, np.array([51.49, 51.55])),
-        [[0.00032601941539388962, 0.00106951489719733675], [ 0.00000000000000000000,
-        1.77544123918164542530]], **TOLERANCE, err_msg="Failure when lens and a source share a DEC")
+        [
+            [0.00032601941539388962, 0.00106951489719733675],
+            [0.00000000000000000000, 1.77544123918164542530],
+        ],
+        **TOLERANCE,
+        err_msg="Failure when lens and a source share a DEC",
+    )
 
     # lens and source at the same ra and dec
     assert_allclose(
-        da._compute_lensing_angles_flatsky(ra_l, dec_l, np.array([ra_l, 161.34]), np.array([dec_l,
-        51.55])), [[0.00000000000000000000, 0.00106951489719733675], [ 0.00000000000000000000,
-        1.77544123918164542530]], TOLERANCE['rtol'],
-        err_msg="Failure when lens and a source share an RA and a DEC")
+        da._compute_lensing_angles_flatsky(
+            ra_l, dec_l, np.array([ra_l, 161.34]), np.array([dec_l, 51.55])
+        ),
+        [
+            [0.00000000000000000000, 0.00106951489719733675],
+            [0.00000000000000000000, 1.77544123918164542530],
+        ],
+        TOLERANCE["rtol"],
+        err_msg="Failure when lens and a source share an RA and a DEC",
+    )
 
     # angles over the branch cut between 0 and 360
     assert_allclose(
         da._compute_lensing_angles_flatsky(0.1, dec_l, np.array([359.9, 359.5]), dec_s),
-        [[0.0022828333888309108, 0.006603944760273219], [-0.31079754672938664,
-        0.15924369771830643]], TOLERANCE['rtol'],
-        err_msg="Failure when ra_l and ra_s are close but on the opposite sides of the 0 axis")
+        [
+            [0.0022828333888309108, 0.006603944760273219],
+            [-0.31079754672938664, 0.15924369771830643],
+        ],
+        TOLERANCE["rtol"],
+        err_msg="Failure when ra_l and ra_s are close but on the opposite sides of the 0 axis",
+    )
 
     # angles over the branch cut between 0 and 360
     assert_allclose(
         da._compute_lensing_angles_flatsky(-180, dec_l, np.array([180.1, 179.7]), dec_s),
         [[0.0012916551296819666, 0.003424250083245557], [-2.570568636904587, 0.31079754672944354]],
-        TOLERANCE['rtol'],
-        err_msg="Failure when ra_l and ra_s are the same but one is defined negative")
+        TOLERANCE["rtol"],
+        err_msg="Failure when ra_l and ra_s are the same but one is defined negative",
+    )
 
 
 def test_compute_tangential_and_cross_components(modeling_data):
     """test compute tangential and cross components"""
     # Input values
-    reltol = modeling_data['dataops_reltol']
-    ra_lens, dec_lens, z_lens = 120., 42., 0.5
-    gals = GCData({
-        'ra': np.array([120.1, 119.9]),
-        'dec': np.array([41.9, 42.2]),
-        'id': np.array([1, 2]),
-        'e1': np.array([0.2, 0.4]),
-        'e2': np.array([0.3, 0.5]),
-        'z': np.array([1., 2.])
-    })
+    reltol = modeling_data["dataops_reltol"]
+    ra_lens, dec_lens, z_lens = 120.0, 42.0, 0.5
+    gals = GCData(
+        {
+            "ra": np.array([120.1, 119.9]),
+            "dec": np.array([41.9, 42.2]),
+            "id": np.array([1, 2]),
+            "e1": np.array([0.2, 0.4]),
+            "e2": np.array([0.3, 0.5]),
+            "z": np.array([1.0, 2.0]),
+        }
+    )
     # Correct values
     expected_flat = {
-        'angsep': np.array([0.0021745039090962414, 0.0037238407383072053]),
-        'cross_shear': np.array([0.2780316984090899, 0.6398792901134982]),
-        'tangential_shear': np.array([-0.22956126563459447, -0.02354769805831558]),
+        "angsep": np.array([0.0021745039090962414, 0.0037238407383072053]),
+        "cross_shear": np.array([0.2780316984090899, 0.6398792901134982]),
+        "tangential_shear": np.array([-0.22956126563459447, -0.02354769805831558]),
         # DeltaSigma expected values for clmm.Cosmology(H0=70.0, Omega_dm0=0.275, Omega_b0=0.025)
-        'cross_DS': np.array([8.58093068e+14, 1.33131522e+15]),
+        "cross_DS": np.array([8.58093068e14, 1.33131522e15]),
         # [1224.3326297393244, 1899.6061989365176])*0.7*1.0e12*1.0002565513832675
-        'tangential_DS': np.array([-7.08498103e+14, -4.89926917e+13]),
+        "tangential_DS": np.array([-7.08498103e14, -4.89926917e13]),
         # [-1010.889584349285, -69.9059242788237])*0.7*1.0e12*1.0002565513832675
     }
-    expected_curve = { 
-        'angsep': np.array([0.002175111279323424171, 0.003723129781247932167]),
-        'cross_shear': np.array([0.277590689496438781, 0.639929479722048944]),
-        'tangential_shear': np.array([-0.23009434826803484841, -0.02214183783401518779]),
+    expected_curve = {
+        "angsep": np.array([0.002175111279323424171, 0.003723129781247932167]),
+        "cross_shear": np.array([0.277590689496438781, 0.639929479722048944]),
+        "tangential_shear": np.array([-0.23009434826803484841, -0.02214183783401518779]),
         # DeltaSigma expected values for clmm.Cosmology(H0=70.0, Omega_dm0=0.275, Omega_b0=0.025)
-        'cross_DS': np.array([8.56731976e+14, 1.33141964e+15]),
-        'tangential_DS': np.array([-7.10143363e+14, -4.60676976e+13]),
+        "cross_DS": np.array([8.56731976e14, 1.33141964e15]),
+        "tangential_DS": np.array([-7.10143363e14, -4.60676976e13]),
     }
     # Geometries to test
-    geo_tests = [('flat', expected_flat), ('curve', expected_curve)]
+    geo_tests = [("flat", expected_flat), ("curve", expected_curve)]
     # Test domains on inputs
-    ra_l, dec_l = 161., 65.
-    ra_s, dec_s = np.array([-355., 355.]), np.array([-85., 85.])
-    shear1, shear2 = gals['e1'][:2], gals['e2'][:2]
-    assert_raises(ValueError, da.compute_tangential_and_cross_components,
-                          -365., dec_l, ra_s, dec_s, shear1, shear2)
-    assert_raises(ValueError, da.compute_tangential_and_cross_components,
-                          365., dec_l, ra_s, dec_s, shear1, shear2)
-    assert_raises(ValueError, da.compute_tangential_and_cross_components,
-                          ra_l, 95., ra_s, dec_s, shear1, shear2)
-    assert_raises(ValueError, da.compute_tangential_and_cross_components,
-                          ra_l, -95., ra_s, dec_s, shear1, shear2)
-    assert_raises(ValueError, da.compute_tangential_and_cross_components,
-                          ra_l, dec_l, ra_s-10., dec_s, shear1, shear2)
-    assert_raises(ValueError, da.compute_tangential_and_cross_components,
-                          ra_l, dec_l, ra_s+10., dec_s, shear1, shear2)
-    assert_raises(ValueError, da.compute_tangential_and_cross_components,
-                          ra_l, dec_l, ra_s, dec_s-10., shear1, shear2)
-    assert_raises(ValueError, da.compute_tangential_and_cross_components,
-                          ra_l, dec_l, ra_s, dec_s+10., shear1, shear2)
+    ra_l, dec_l = 161.0, 65.0
+    ra_s, dec_s = np.array([-355.0, 355.0]), np.array([-85.0, 85.0])
+    shear1, shear2 = gals["e1"][:2], gals["e2"][:2]
+    assert_raises(
+        ValueError,
+        da.compute_tangential_and_cross_components,
+        -365.0,
+        dec_l,
+        ra_s,
+        dec_s,
+        shear1,
+        shear2,
+    )
+    assert_raises(
+        ValueError,
+        da.compute_tangential_and_cross_components,
+        365.0,
+        dec_l,
+        ra_s,
+        dec_s,
+        shear1,
+        shear2,
+    )
+    assert_raises(
+        ValueError,
+        da.compute_tangential_and_cross_components,
+        ra_l,
+        95.0,
+        ra_s,
+        dec_s,
+        shear1,
+        shear2,
+    )
+    assert_raises(
+        ValueError,
+        da.compute_tangential_and_cross_components,
+        ra_l,
+        -95.0,
+        ra_s,
+        dec_s,
+        shear1,
+        shear2,
+    )
+    assert_raises(
+        ValueError,
+        da.compute_tangential_and_cross_components,
+        ra_l,
+        dec_l,
+        ra_s - 10.0,
+        dec_s,
+        shear1,
+        shear2,
+    )
+    assert_raises(
+        ValueError,
+        da.compute_tangential_and_cross_components,
+        ra_l,
+        dec_l,
+        ra_s + 10.0,
+        dec_s,
+        shear1,
+        shear2,
+    )
+    assert_raises(
+        ValueError,
+        da.compute_tangential_and_cross_components,
+        ra_l,
+        dec_l,
+        ra_s,
+        dec_s - 10.0,
+        shear1,
+        shear2,
+    )
+    assert_raises(
+        ValueError,
+        da.compute_tangential_and_cross_components,
+        ra_l,
+        dec_l,
+        ra_s,
+        dec_s + 10.0,
+        shear1,
+        shear2,
+    )
     # test incosnsitent data
-    assert_raises(TypeError, da.compute_tangential_and_cross_components,
-                          ra_lens=ra_lens, dec_lens=dec_lens,
-                          ra_source=gals['ra'][0], dec_source=gals['dec'],
-                          shear1=gals['e1'], shear2=gals['e2'])
-    assert_raises(TypeError, da.compute_tangential_and_cross_components,
-                          ra_lens=ra_lens, dec_lens=dec_lens,
-                          ra_source=gals['ra'][:1], dec_source=gals['dec'],
-                          shear1=gals['e1'], shear2=gals['e2'])
+    assert_raises(
+        TypeError,
+        da.compute_tangential_and_cross_components,
+        ra_lens=ra_lens,
+        dec_lens=dec_lens,
+        ra_source=gals["ra"][0],
+        dec_source=gals["dec"],
+        shear1=gals["e1"],
+        shear2=gals["e2"],
+    )
+    assert_raises(
+        TypeError,
+        da.compute_tangential_and_cross_components,
+        ra_lens=ra_lens,
+        dec_lens=dec_lens,
+        ra_source=gals["ra"][:1],
+        dec_source=gals["dec"],
+        shear1=gals["e1"],
+        shear2=gals["e2"],
+    )
     # test not implemented geometry
     assert_raises(
-        NotImplementedError, da.compute_tangential_and_cross_components, ra_lens=ra_lens,
-        dec_lens=dec_lens, ra_source=gals['ra'], dec_source=gals['dec'], shear1=gals['e1'],
-        shear2=gals['e2'], geometry='something crazy')
+        NotImplementedError,
+        da.compute_tangential_and_cross_components,
+        ra_lens=ra_lens,
+        dec_lens=dec_lens,
+        ra_source=gals["ra"],
+        dec_source=gals["dec"],
+        shear1=gals["e1"],
+        shear2=gals["e2"],
+        geometry="something crazy",
+    )
     for geometry, expected in geo_tests:
         # Pass arrays directly into function
         angsep, tshear, xshear = da.compute_tangential_and_cross_components(
-            ra_lens=ra_lens, dec_lens=dec_lens, ra_source=gals['ra'], dec_source=gals['dec'],
-            shear1=gals['e1'], shear2=gals['e2'], geometry=geometry)
-        assert_allclose(angsep, expected['angsep'], **TOLERANCE,
-                                err_msg="Angular Separation not correct when passing lists")
-        assert_allclose(tshear, expected['tangential_shear'], **TOLERANCE,
-                                err_msg="Tangential Shear not correct when passing lists")
-        assert_allclose(xshear, expected['cross_shear'], **TOLERANCE,
-                                err_msg="Cross Shear not correct when passing lists")
+            ra_lens=ra_lens,
+            dec_lens=dec_lens,
+            ra_source=gals["ra"],
+            dec_source=gals["dec"],
+            shear1=gals["e1"],
+            shear2=gals["e2"],
+            geometry=geometry,
+        )
+        assert_allclose(
+            angsep,
+            expected["angsep"],
+            **TOLERANCE,
+            err_msg="Angular Separation not correct when passing lists",
+        )
+        assert_allclose(
+            tshear,
+            expected["tangential_shear"],
+            **TOLERANCE,
+            err_msg="Tangential Shear not correct when passing lists",
+        )
+        assert_allclose(
+            xshear,
+            expected["cross_shear"],
+            **TOLERANCE,
+            err_msg="Cross Shear not correct when passing lists",
+        )
         # Pass LISTS into function
         angsep, tshear, xshear = da.compute_tangential_and_cross_components(
-            ra_lens=ra_lens, dec_lens=dec_lens, ra_source=list(gals['ra']),
-            dec_source=list(gals['dec']), shear1=list(gals['e1']), shear2=list(gals['e2']),
-            geometry=geometry)
-        assert_allclose(angsep, expected['angsep'], **TOLERANCE,
-                                err_msg="Angular Separation not correct when passing lists")
-        assert_allclose(tshear, expected['tangential_shear'], **TOLERANCE,
-                                err_msg="Tangential Shear not correct when passing lists")
-        assert_allclose(xshear, expected['cross_shear'], **TOLERANCE,
-                                err_msg="Cross Shear not correct when passing lists")
+            ra_lens=ra_lens,
+            dec_lens=dec_lens,
+            ra_source=list(gals["ra"]),
+            dec_source=list(gals["dec"]),
+            shear1=list(gals["e1"]),
+            shear2=list(gals["e2"]),
+            geometry=geometry,
+        )
+        assert_allclose(
+            angsep,
+            expected["angsep"],
+            **TOLERANCE,
+            err_msg="Angular Separation not correct when passing lists",
+        )
+        assert_allclose(
+            tshear,
+            expected["tangential_shear"],
+            **TOLERANCE,
+            err_msg="Tangential Shear not correct when passing lists",
+        )
+        assert_allclose(
+            xshear,
+            expected["cross_shear"],
+            **TOLERANCE,
+            err_msg="Cross Shear not correct when passing lists",
+        )
         # Test without validation
         angsep, tshear, xshear = da.compute_tangential_and_cross_components(
-            ra_lens=ra_lens, dec_lens=dec_lens, ra_source=list(gals['ra']),
-            dec_source=list(gals['dec']), shear1=list(gals['e1']), shear2=list(gals['e2']),
-            geometry=geometry, validate_input=False)
-        assert_allclose(angsep, expected['angsep'], **TOLERANCE,
-                                err_msg="Angular Separation not correct when passing lists")
-        assert_allclose(tshear, expected['tangential_shear'], **TOLERANCE,
-                                err_msg="Tangential Shear not correct when passing lists")
-        assert_allclose(xshear, expected['cross_shear'], **TOLERANCE,
-                                err_msg="Cross Shear not correct when passing lists")
+            ra_lens=ra_lens,
+            dec_lens=dec_lens,
+            ra_source=list(gals["ra"]),
+            dec_source=list(gals["dec"]),
+            shear1=list(gals["e1"]),
+            shear2=list(gals["e2"]),
+            geometry=geometry,
+            validate_input=False,
+        )
+        assert_allclose(
+            angsep,
+            expected["angsep"],
+            **TOLERANCE,
+            err_msg="Angular Separation not correct when passing lists",
+        )
+        assert_allclose(
+            tshear,
+            expected["tangential_shear"],
+            **TOLERANCE,
+            err_msg="Tangential Shear not correct when passing lists",
+        )
+        assert_allclose(
+            xshear,
+            expected["cross_shear"],
+            **TOLERANCE,
+            err_msg="Cross Shear not correct when passing lists",
+        )
         # Test without validation and float arguments
         angsep, tshear, xshear = da.compute_tangential_and_cross_components(
-            ra_lens=ra_lens, dec_lens=dec_lens, ra_source=gals['ra'][0], dec_source=gals['dec'][0],
-            shear1=gals['e1'][0], shear2=gals['e2'][0], geometry=geometry, validate_input=False)
-        assert_allclose(angsep, expected['angsep'][0], **TOLERANCE,
-                                err_msg="Angular Separation not correct when passing lists")
-        assert_allclose(tshear, expected['tangential_shear'][0], **TOLERANCE,
-                                err_msg="Tangential Shear not correct when passing lists")
-        assert_allclose(xshear, expected['cross_shear'][0], **TOLERANCE,
-                                err_msg="Cross Shear not correct when passing lists")
+            ra_lens=ra_lens,
+            dec_lens=dec_lens,
+            ra_source=gals["ra"][0],
+            dec_source=gals["dec"][0],
+            shear1=gals["e1"][0],
+            shear2=gals["e2"][0],
+            geometry=geometry,
+            validate_input=False,
+        )
+        assert_allclose(
+            angsep,
+            expected["angsep"][0],
+            **TOLERANCE,
+            err_msg="Angular Separation not correct when passing lists",
+        )
+        assert_allclose(
+            tshear,
+            expected["tangential_shear"][0],
+            **TOLERANCE,
+            err_msg="Tangential Shear not correct when passing lists",
+        )
+        assert_allclose(
+            xshear,
+            expected["cross_shear"][0],
+            **TOLERANCE,
+            err_msg="Cross Shear not correct when passing lists",
+        )
     # Use the cluster method
-    cluster = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
-                                 galcat=gals['ra', 'dec', 'e1', 'e2'])
+    cluster = clmm.GalaxyCluster(
+        unique_id="blah", ra=ra_lens, dec=dec_lens, z=z_lens, galcat=gals["ra", "dec", "e1", "e2"]
+    )
     # Test error with bad name/missing column
-    assert_raises(TypeError, cluster.compute_tangential_and_cross_components,
-                          shape_component1='crazy name')
+    assert_raises(
+        TypeError, cluster.compute_tangential_and_cross_components, shape_component1="crazy name"
+    )
     # Test output
     for geometry, expected in geo_tests:
         angsep3, tshear3, xshear3 = cluster.compute_tangential_and_cross_components(
-            geometry=geometry)
-        assert_allclose(angsep3, expected['angsep'], **TOLERANCE,
-                                err_msg="Angular Separation not correct when using cluster method")
-        assert_allclose(tshear3, expected['tangential_shear'], **TOLERANCE,
-                                err_msg="Tangential Shear not correct when using cluster method")
-        assert_allclose(xshear3, expected['cross_shear'], **TOLERANCE,
-                                err_msg="Cross Shear not correct when using cluster method")
+            geometry=geometry
+        )
+        assert_allclose(
+            angsep3,
+            expected["angsep"],
+            **TOLERANCE,
+            err_msg="Angular Separation not correct when using cluster method",
+        )
+        assert_allclose(
+            tshear3,
+            expected["tangential_shear"],
+            **TOLERANCE,
+            err_msg="Tangential Shear not correct when using cluster method",
+        )
+        assert_allclose(
+            xshear3,
+            expected["cross_shear"],
+            **TOLERANCE,
+            err_msg="Cross Shear not correct when using cluster method",
+        )
     # Check behaviour for the deltasigma option.
     cosmo = clmm.Cosmology(H0=70.0, Omega_dm0=0.275, Omega_b0=0.025)
 
-    # test missing info for is_deltasigma=True
-    assert_raises(
-        TypeError, da.compute_tangential_and_cross_components, ra_lens=ra_lens, dec_lens=dec_lens,
-        ra_source=gals['ra'], dec_source=gals['dec'], shear1=gals['e1'], shear2=gals['e2'],
-        is_deltasigma=True, cosmo=None, z_lens=z_lens, z_source=gals['z'])
-    assert_raises(
-        TypeError, da.compute_tangential_and_cross_components, ra_lens=ra_lens, dec_lens=dec_lens,
-        ra_source=gals['ra'], dec_source=gals['dec'], shear1=gals['e1'], shear2=gals['e2'],
-        is_deltasigma=True, cosmo=cosmo, z_lens=None, z_source=gals['z'])
-    assert_raises(
-        TypeError, da.compute_tangential_and_cross_components, ra_lens=ra_lens, dec_lens=dec_lens,
-        ra_source=gals['ra'], dec_source=gals['dec'], shear1=gals['e1'], shear2=gals['e2'],
-        is_deltasigma=True, cosmo=cosmo, z_lens=z_lens, z_source=None)
-
-    # test  missing info for use_pdz=True
-    assert_raises(
-        TypeError, da.compute_tangential_and_cross_components, ra_lens=ra_lens, dec_lens=dec_lens,
-        ra_source=gals['ra'], dec_source=gals['dec'], shear1=gals['e1'], shear2=gals['e2'],
-        is_deltasigma=True, use_pdz=True, cosmo=cosmo, z_lens=z_lens, z_source=None)
-
-
-    # Trying to got through line 173 of dataops/__init__.py
-    da.compute_tangential_and_cross_components(ra_lens=ra_lens, dec_lens=dec_lens,
-                                               ra_source=gals['ra'][0], dec_source=gals['dec'][0], 
-                                               shear1=gals['e1'][0], shear2=gals['e2'][0],
-                                               is_deltasigma=True, use_pdz=True,
-                                               cosmo=cosmo, z_lens=z_lens,
-                                               z_source=None, pzbins=[[0.55,0.6,0.65,0.7,0.75]], 
-                                               pzpdf=[[0.01,1,0.01, 0.001, 0.0001]])
-
     # check values for DeltaSigma
+    sigma_c = cosmo.eval_sigma_crit(z_lens, gals["z"])
+    # check validation between is_deltasigma and sigma_c
+    assert_raises(
+        TypeError,
+        da.compute_tangential_and_cross_components,
+        ra_lens=ra_lens,
+        dec_lens=dec_lens,
+        ra_source=gals["ra"],
+        dec_source=gals["dec"],
+        shear1=gals["e1"],
+        shear2=gals["e2"],
+        is_deltasigma=False,
+        sigma_c=sigma_c,
+    )
+    assert_raises(
+        TypeError,
+        da.compute_tangential_and_cross_components,
+        ra_lens=ra_lens,
+        dec_lens=dec_lens,
+        ra_source=gals["ra"],
+        dec_source=gals["dec"],
+        shear1=gals["e1"],
+        shear2=gals["e2"],
+        is_deltasigma=True,
+        sigma_c=None,
+    )
+    # test values
     for geometry, expected in geo_tests:
         angsep_DS, tDS, xDS = da.compute_tangential_and_cross_components(
-            ra_lens=ra_lens, dec_lens=dec_lens,
-            ra_source=gals['ra'], dec_source=gals['dec'],
-            shear1=gals['e1'], shear2=gals['e2'], is_deltasigma=True,
-            cosmo=cosmo, z_lens=z_lens, z_source=gals['z'], geometry=geometry)
-        assert_allclose(angsep_DS, expected['angsep'], reltol,
-                                err_msg="Angular Separation not correct")
-        assert_allclose(tDS, expected['tangential_DS'], reltol,
-                                err_msg="Tangential Shear not correct")
-        assert_allclose(xDS, expected['cross_DS'], reltol,
-                                err_msg="Cross Shear not correct")
+            ra_lens=ra_lens,
+            dec_lens=dec_lens,
+            ra_source=gals["ra"],
+            dec_source=gals["dec"],
+            shear1=gals["e1"],
+            shear2=gals["e2"],
+            is_deltasigma=True,
+            sigma_c=sigma_c,
+            geometry=geometry,
+        )
+        assert_allclose(
+            angsep_DS, expected["angsep"], reltol, err_msg="Angular Separation not correct"
+        )
+        assert_allclose(
+            tDS, expected["tangential_DS"], reltol, err_msg="Tangential Shear not correct"
+        )
+        assert_allclose(xDS, expected["cross_DS"], reltol, err_msg="Cross Shear not correct")
     # Tests with the cluster object
     # cluster object missing source redshift, and function call missing cosmology
-    cluster = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
-                                 galcat=gals['ra', 'dec', 'e1', 'e2'])
-    assert_raises(
-        TypeError, cluster.compute_tangential_and_cross_components, is_deltasigma=True)
+    cluster = clmm.GalaxyCluster(
+        unique_id="blah", ra=ra_lens, dec=dec_lens, z=z_lens, galcat=gals["ra", "dec", "e1", "e2"]
+    )
+    assert_raises(TypeError, cluster.compute_tangential_and_cross_components, is_deltasigma=True)
     # cluster object OK but function call missing cosmology
-    cluster = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
-                                 galcat=gals['ra', 'dec', 'e1', 'e2', 'z'])
-    assert_raises(
-        TypeError, cluster.compute_tangential_and_cross_components, is_deltasigma=True)
+    cluster = clmm.GalaxyCluster(
+        unique_id="blah",
+        ra=ra_lens,
+        dec=dec_lens,
+        z=z_lens,
+        galcat=gals["ra", "dec", "e1", "e2", "z"],
+    )
+    assert_raises(TypeError, cluster.compute_tangential_and_cross_components, is_deltasigma=True)
     # check values for DeltaSigma
     for geometry, expected in geo_tests:
         angsep_DS, tDS, xDS = cluster.compute_tangential_and_cross_components(
-            cosmo=cosmo, is_deltasigma=True, geometry=geometry)
-        assert_allclose(angsep_DS, expected['angsep'], reltol,
-                                err_msg="Angular Separation not correct when using cluster method")
-        assert_allclose(tDS, expected['tangential_DS'], reltol,
-                                err_msg="Tangential Shear not correct when using cluster method")
-        assert_allclose(xDS, expected['cross_DS'], reltol,
-                                err_msg="Cross Shear not correct when using cluster method")
+            cosmo=cosmo, is_deltasigma=True, geometry=geometry
+        )
+        assert_allclose(
+            angsep_DS,
+            expected["angsep"],
+            reltol,
+            err_msg="Angular Separation not correct when using cluster method",
+        )
+        assert_allclose(
+            tDS,
+            expected["tangential_DS"],
+            reltol,
+            err_msg="Tangential Shear not correct when using cluster method",
+        )
+        assert_allclose(
+            xDS,
+            expected["cross_DS"],
+            reltol,
+            err_msg="Cross Shear not correct when using cluster method",
+        )
+
+    # test basic weights functionality
+    cluster.compute_galaxy_weights()
+    expected = np.array([1.0, 1.0])
+    assert_allclose(cluster.galcat["w_ls"], expected, **TOLERANCE)
 
 
 def test_compute_background_probability():
     """test for compute background probability"""
-    z_lens = .1
-    z_source = np.array([.22, .35, 1.7])
+    z_lens = 0.1
+    z_src = np.array([0.22, 0.35, 1.7])
 
     # true redshift
     p_bkg = da.compute_background_probability(
-        z_lens, z_source=z_source, use_pdz=False, pzpdf=None, pzbins=None, validate_input=True)
-    expected = np.array([1., 1., 1.])
+        z_lens, z_src=z_src, use_pdz=False, pzpdf=None, pzbins=None, validate_input=True
+    )
+    expected = np.array([1.0, 1.0, 1.0])
     assert_allclose(p_bkg, expected, **TOLERANCE)
     assert_raises(
-        ValueError, da.compute_background_probability,
-        z_lens, z_source=None, use_pdz=False, pzpdf=None, pzbins=None, validate_input=True)
+        ValueError,
+        da.compute_background_probability,
+        z_lens,
+        z_src=None,
+        use_pdz=False,
+        pzpdf=None,
+        pzbins=None,
+        validate_input=True,
+    )
 
-    #photoz + deltasigma
-    pzbin = np.linspace(.0001, 5, 100)
-    pzbins = [pzbin for i in range(z_source.size)]
-    pzpdf = [multivariate_normal.pdf(pzbin, mean=z, cov=.3) for z in z_source]
+    # photoz + deltasigma
+    pzbin = np.linspace(0.0001, 5, 100)
+    pzbins = [pzbin for i in range(z_src.size)]
+    pzpdf = [multivariate_normal.pdf(pzbin, mean=z, cov=0.3) for z in z_src]
     assert_raises(
-        ValueError, da.compute_background_probability,
-        z_lens, z_source=z_source, use_pdz=True, pzpdf=None, pzbins=pzbins, validate_input=True)
+        ValueError,
+        da.compute_background_probability,
+        z_lens,
+        z_src=z_src,
+        use_pdz=True,
+        pzpdf=None,
+        pzbins=pzbins,
+        validate_input=True,
+    )
 
 
 def test_compute_galaxy_weights():
     """test for compute galaxy weights"""
-    cosmo = clmm.Cosmology(H0 = 71.0, Omega_dm0 = 0.265 - 0.0448, Omega_b0 = 0.0448, Omega_k0 = 0.0)
-    z_lens = .1
-    z_source = [.22, .35, 1.7]
-    shape_component1 = np.array([.143, .063, -.171])
-    shape_component2 = np.array([-.011, .012,-.250])
-    shape_component1_err = np.array([.11, .01, .2])
-    shape_component2_err = np.array([.14, .16, .21])
+    cosmo = clmm.Cosmology(H0=71.0, Omega_dm0=0.265 - 0.0448, Omega_b0=0.0448, Omega_k0=0.0)
+    z_lens = 0.1
+    z_src = [0.22, 0.35, 1.7]
+    shape_component1 = np.array([0.143, 0.063, -0.171])
+    shape_component2 = np.array([-0.011, 0.012, -0.250])
+    shape_component1_err = np.array([0.11, 0.01, 0.2])
+    shape_component2_err = np.array([0.14, 0.16, 0.21])
 
-    #true redshift + deltasigma
+    # true redshift + deltasigma
+    sigma_c = cosmo.eval_sigma_crit(z_lens, z_src)
     weights = da.compute_galaxy_weights(
-        z_lens, cosmo, z_source=z_source, use_pdz=False, pzpdf=None, pzbins=None,
-        use_shape_noise=False, shape_component1=shape_component1, shape_component2=shape_component2,
-        use_shape_error=False, shape_component1_err=shape_component1_err,
-        shape_component2_err=shape_component2_err, is_deltasigma=True,
-        validate_input=True)
+        is_deltasigma=True,
+        sigma_c=sigma_c,
+        use_shape_noise=False,
+        shape_component1=shape_component1,
+        shape_component2=shape_component2,
+        use_shape_error=False,
+        shape_component1_err=shape_component1_err,
+        shape_component2_err=shape_component2_err,
+        validate_input=True,
+    )
     expected = np.array([4.58644320e-31, 9.68145632e-31, 5.07260777e-31])
-    assert_allclose(weights*1e20, expected*1e20,**TOLERANCE)
+    assert_allclose(weights * 1e20, expected * 1e20, **TOLERANCE)
 
-    #photoz + deltasigma
-    pzbin = np.linspace(.0001, 5, 100)
-    pzbins = [pzbin for i in range(len(z_source))]
-    pzpdf = [multivariate_normal.pdf(pzbin, mean=z, cov=.3) for z in z_source]
+    # photoz + deltasigma
+    pzbin = np.linspace(0.0001, 5, 100)
+    pzbins = [pzbin for i in range(len(z_src))]
+    pzpdf = [multivariate_normal.pdf(pzbin, mean=z, cov=0.3) for z in z_src]
+    sigma_c_eff = compute_critical_surface_density_eff(
+        cosmo=cosmo,
+        z_cluster=z_lens,
+        pzbins=pzbins,
+        pzpdf=pzpdf,
+    )
     weights = da.compute_galaxy_weights(
-        z_lens, cosmo, z_source=None, use_pdz=True, pzpdf=pzpdf, pzbins=pzbins,
-        use_shape_noise=False, shape_component1=shape_component1, shape_component2=shape_component2,
-        use_shape_error=False, shape_component1_err=None, shape_component2_err=None,
         is_deltasigma=True,
-        validate_input=True)
+        sigma_c=sigma_c_eff,
+        use_shape_noise=False,
+        shape_component1=shape_component1,
+        shape_component2=shape_component2,
+        use_shape_error=False,
+        shape_component1_err=None,
+        shape_component2_err=None,
+        validate_input=True,
+    )
 
     expected = np.array([9.07709345e-33, 1.28167582e-32, 4.16870389e-32])
-    assert_allclose(weights*1e20, expected*1e20,**TOLERANCE)
+    assert_allclose(weights * 1e20, expected * 1e20, **TOLERANCE)
 
-    #photoz + deltasigma - shared bins
-    pzbin = np.linspace(.0001, 5, 100)
+    # photoz + deltasigma - shared bins
+    pzbin = np.linspace(0.0001, 5, 100)
     pzbins = pzbin
-    pzpdf = [multivariate_normal.pdf(pzbin, mean=z, cov=.3) for z in z_source]
+    pzpdf = [multivariate_normal.pdf(pzbin, mean=z, cov=0.3) for z in z_src]
     weights = da.compute_galaxy_weights(
-        z_lens, cosmo, z_source=None, use_pdz=True, pzpdf=pzpdf, pzbins=pzbins,
-        use_shape_noise=False, shape_component1=shape_component1, shape_component2=shape_component2,
-        use_shape_error=False, shape_component1_err=None, shape_component2_err=None,
         is_deltasigma=True,
-        validate_input=True)
+        sigma_c=sigma_c_eff,
+        use_shape_noise=False,
+        shape_component1=shape_component1,
+        shape_component2=shape_component2,
+        use_shape_error=False,
+        shape_component1_err=None,
+        shape_component2_err=None,
+        validate_input=True,
+    )
 
     expected = np.array([9.07709345e-33, 1.28167582e-32, 4.16870389e-32])
-    assert_allclose(weights*1e20, expected*1e20,**TOLERANCE)
+    assert_allclose(weights * 1e20, expected * 1e20, **TOLERANCE)
 
     # test with noise
     weights = da.compute_galaxy_weights(
-        z_lens, cosmo, z_source=None, use_pdz=True, pzpdf=pzpdf, pzbins=pzbins,
-        use_shape_noise=True, shape_component1=shape_component1,
-        shape_component2=shape_component2, use_shape_error=False,
-        shape_component1_err=None, shape_component2_err=None,
-        is_deltasigma=True, validate_input=True)
+        is_deltasigma=True,
+        sigma_c=sigma_c_eff,
+        use_shape_noise=True,
+        shape_component1=shape_component1,
+        shape_component2=shape_component2,
+        use_shape_error=False,
+        shape_component1_err=None,
+        shape_component2_err=None,
+        validate_input=True,
+    )
 
     expected = np.array([9.07709345e-33, 1.28167582e-32, 4.16870389e-32])
-    assert_allclose(weights*1e20, expected*1e20,**TOLERANCE)
+    assert_allclose(weights * 1e20, expected * 1e20, **TOLERANCE)
 
     # test with is_deltasigma=False and geometric weights only
     weights = da.compute_galaxy_weights(
-        z_lens, cosmo, z_source=None, use_pdz=True, pzpdf=pzpdf, pzbins=pzbins,
-        use_shape_noise=False, shape_component1=shape_component1,
-        shape_component2=shape_component2, use_shape_error=False,
-        shape_component1_err=None, shape_component2_err=None,
-        is_deltasigma=False, validate_input=True)
+        is_deltasigma=False,
+        sigma_c=None,
+        use_shape_noise=False,
+        shape_component1=shape_component1,
+        shape_component2=shape_component2,
+        use_shape_error=False,
+        shape_component1_err=None,
+        shape_component2_err=None,
+        validate_input=True,
+    )
 
-    expected = np.array([1., 1.,1.])
-    assert_allclose(weights, expected,**TOLERANCE)
+    expected = np.array([1.0, 1.0, 1.0])
+    assert_allclose(weights, expected, **TOLERANCE)
 
     # # test error when missing information
-    assert_raises(ValueError, da.compute_galaxy_weights, z_lens, cosmo,
-                  z_source=None, use_pdz=True, pzpdf=pzpdf, pzbins=pzbins,
-                  use_shape_noise=True, shape_component1=None,
-                  shape_component2=None, use_shape_error=False,
-                  shape_component1_err=None, shape_component2_err=None,
-                  is_deltasigma=False, validate_input=True)
+    assert_raises(
+        ValueError,
+        da.compute_galaxy_weights,
+        is_deltasigma=True,
+        sigma_c=sigma_c_eff,
+        use_shape_noise=True,
+        shape_component1=None,
+        shape_component2=None,
+        use_shape_error=False,
+        shape_component1_err=None,
+        shape_component2_err=None,
+        validate_input=True,
+    )
 
     # test error when missing information
-    assert_raises(ValueError, da.compute_galaxy_weights, z_lens, cosmo,
-                  z_source=None, use_pdz=True, pzpdf=pzpdf, pzbins=pzbins,
-                  use_shape_noise=False, use_shape_error=True,
-                  shape_component1_err=None, shape_component2_err=None,
-                  is_deltasigma=False, validate_input=True)
-
-    assert_raises(TypeError, da.compute_galaxy_weights, z_lens, cosmo=None, z_source=None,
-                  use_pdz=False, pzpdf=pzpdf, pzbins=pzbins,
-                  use_shape_noise=True, shape_component1=None, shape_component2=None,
-                  use_shape_error=False, shape_component1_err=None, shape_component2_err=None,
-                  is_deltasigma=True, validate_input=True)
-    assert_raises(TypeError, da.compute_galaxy_weights, z_lens, cosmo=None, z_source=None,
-                  use_pdz=True, pzpdf=pzpdf, pzbins=pzbins,
-                  use_shape_noise=False,
-                  use_shape_error=False, shape_component1_err=None, shape_component2_err=None,
-                  is_deltasigma=True, validate_input=True)
+    assert_raises(
+        ValueError,
+        da.compute_galaxy_weights,
+        is_deltasigma=True,
+        sigma_c=sigma_c_eff,
+        use_shape_noise=False,
+        use_shape_error=True,
+        shape_component1_err=None,
+        shape_component2_err=None,
+        validate_input=True,
+    )
 
 
-def _test_profile_table_output(profile, expected_rmin, expected_radius, expected_rmax,
-                               expected_p0, expected_p1, expected_nsrc,
-                               expected_gal_id=None, p0='p_0', p1='p_1'):
-    """Func to make the validation of the table with the expected values
-    """
-    assert_allclose(profile['radius_min'], expected_rmin, **TOLERANCE,
-                            err_msg="Minimum radius in bin not expected.")
-    assert_allclose(profile['radius'], expected_radius, **TOLERANCE,
-                            err_msg="Mean radius in bin not expected.")
-    assert_allclose(profile['radius_max'], expected_rmax, **TOLERANCE,
-                            err_msg="Maximum radius in bin not expected.")
-    assert_allclose(profile[p0], expected_p0, **TOLERANCE,
-                            err_msg="Tangential shear in bin not expected")
-    assert_allclose(profile[p1], expected_p1, **TOLERANCE,
-                            err_msg="Cross shear in bin not expected")
-    assert_array_equal(profile['n_src'], expected_nsrc)
+def _test_profile_table_output(
+    profile,
+    expected_rmin,
+    expected_radius,
+    expected_rmax,
+    expected_p0,
+    expected_p1,
+    expected_nsrc,
+    expected_gal_id=None,
+    p0="p_0",
+    p1="p_1",
+):
+    """Func to make the validation of the table with the expected values"""
+    assert_allclose(
+        profile["radius_min"],
+        expected_rmin,
+        **TOLERANCE,
+        err_msg="Minimum radius in bin not expected.",
+    )
+    assert_allclose(
+        profile["radius"], expected_radius, **TOLERANCE, err_msg="Mean radius in bin not expected."
+    )
+    assert_allclose(
+        profile["radius_max"],
+        expected_rmax,
+        **TOLERANCE,
+        err_msg="Maximum radius in bin not expected.",
+    )
+    assert_allclose(
+        profile[p0], expected_p0, **TOLERANCE, err_msg="Tangential shear in bin not expected"
+    )
+    assert_allclose(
+        profile[p1], expected_p1, **TOLERANCE, err_msg="Cross shear in bin not expected"
+    )
+    assert_array_equal(profile["n_src"], expected_nsrc)
     if expected_gal_id is not None:
-        assert_array_equal(profile['gal_id'], np.array(expected_gal_id, dtype=object))
+        assert_array_equal(profile["gal_id"], np.array(expected_gal_id, dtype=object))
 
 
 def test_make_radial_profiles():
     """test make radial profiles"""
     # Set up a cluster object and compute cross and tangential shears
-    ra_lens, dec_lens, z_lens = 120., 42., 0.5
-    gals = GCData({
-        'ra': np.array([120.1, 119.9, 119.9]),
-        'dec': np.array([41.9, 42.2, 42.2]),
-        'id': np.array([1, 2, 3]),
-        'e1': np.array([0.2, 0.4, 0.4]),
-        'e2': np.array([0.3, 0.5, 0.5]),
-        'z': np.ones(3),
-    })
-    angsep_units, bin_units = 'radians', 'radians'
+    ra_lens, dec_lens, z_lens = 120.0, 42.0, 0.5
+    gals = GCData(
+        {
+            "ra": np.array([120.1, 119.9, 119.9]),
+            "dec": np.array([41.9, 42.2, 42.2]),
+            "id": np.array([1, 2, 3]),
+            "e1": np.array([0.2, 0.4, 0.4]),
+            "e2": np.array([0.3, 0.5, 0.5]),
+            "z": np.ones(3),
+        }
+    )
+    angsep_units, bin_units = "radians", "radians"
     # Set up radial values
     bins_radians = np.array([0.002, 0.003, 0.004])
     expected_radius_flat = [0.0021745039090962414, 0.0037238407383072053]
     expected_radius_curve = [0.002175111279323424171, 0.003723129781247932167]
     expected_flat = {
-        'angsep': np.array([0.0021745039090962414, 0.0037238407383072053, 0.0037238407383072053]),
-        'cross_shear': np.array([0.2780316984090899, 0.6398792901134982, 0.6398792901134982]),
-        'tan_shear': np.array([-0.22956126563459447, -0.02354769805831558, -0.02354769805831558]),
+        "angsep": np.array([0.0021745039090962414, 0.0037238407383072053, 0.0037238407383072053]),
+        "cross_shear": np.array([0.2780316984090899, 0.6398792901134982, 0.6398792901134982]),
+        "tan_shear": np.array([-0.22956126563459447, -0.02354769805831558, -0.02354769805831558]),
     }
-    expected_curve = {  
-        'angsep': np.array([0.002175111279323424171, 0.003723129781247932167,
-                            0.003723129781247932167]),
-        'cross_shear': np.array([0.277590689496438781, 0.639929479722048944,
-                                 0.639929479722048944]),
-        'tan_shear': np.array([-0.23009434826803484841, -0.02214183783401518779,
-                               -0.02214183783401518779]),
+    expected_curve = {
+        "angsep": np.array(
+            [0.002175111279323424171, 0.003723129781247932167, 0.003723129781247932167]
+        ),
+        "cross_shear": np.array([0.277590689496438781, 0.639929479722048944, 0.639929479722048944]),
+        "tan_shear": np.array(
+            [-0.23009434826803484841, -0.02214183783401518779, -0.02214183783401518779]
+        ),
     }
     # Geometries to test
-    geo_tests = [('flat', expected_flat), ('curve', expected_curve)]
+    geo_tests = [("flat", expected_flat), ("curve", expected_curve)]
     for geometry, expected in geo_tests:
         #######################################
         ### Use without cluster object ########
         #######################################
-        if geometry == 'flat':
-          expected_radius = expected_radius_flat
-        elif geometry == 'curve':
-          expected_radius = expected_radius_curve
+        if geometry == "flat":
+            expected_radius = expected_radius_flat
+        elif geometry == "curve":
+            expected_radius = expected_radius_curve
         angsep, tshear, xshear = da.compute_tangential_and_cross_components(
-            ra_lens=ra_lens, dec_lens=dec_lens, ra_source=gals['ra'], dec_source=gals['dec'],
-            shear1=gals['e1'], shear2=gals['e2'], geometry=geometry)
+            ra_lens=ra_lens,
+            dec_lens=dec_lens,
+            ra_source=gals["ra"],
+            dec_source=gals["dec"],
+            shear1=gals["e1"],
+            shear2=gals["e2"],
+            geometry=geometry,
+        )
         # Tests passing int as bins arg makes the correct bins
         bins = 2
         vec_bins = clmm.utils.make_bins(np.min(angsep), np.max(angsep), bins)
         assert_array_equal(
-            da.make_radial_profile([tshear, xshear, gals['z']], angsep,
-                                   angsep_units, bin_units, bins=bins)[0],
-            da.make_radial_profile([tshear, xshear, gals['z']], angsep,
-                                   angsep_units, bin_units, bins=vec_bins)[0])
+            da.make_radial_profile(
+                [tshear, xshear, gals["z"]], angsep, angsep_units, bin_units, bins=bins
+            )[0],
+            da.make_radial_profile(
+                [tshear, xshear, gals["z"]], angsep, angsep_units, bin_units, bins=vec_bins
+            )[0],
+        )
         # Test the outputs of compute_tangential_and_cross_components just to be safe
         assert_allclose(
-            angsep, expected['angsep'], **TOLERANCE,
-            err_msg="Angular Separation not correct when testing shear profiles")
+            angsep,
+            expected["angsep"],
+            **TOLERANCE,
+            err_msg="Angular Separation not correct when testing shear profiles",
+        )
         assert_allclose(
-            tshear, expected['tan_shear'], **TOLERANCE,
-            err_msg="Tangential Shear not correct when testing shear profiles")
+            tshear,
+            expected["tan_shear"],
+            **TOLERANCE,
+            err_msg="Tangential Shear not correct when testing shear profiles",
+        )
         assert_allclose(
-            xshear, expected['cross_shear'], **TOLERANCE,
-            err_msg="Cross Shear not correct when testing shear profiles")
+            xshear,
+            expected["cross_shear"],
+            **TOLERANCE,
+            err_msg="Cross Shear not correct when testing shear profiles",
+        )
         # Test default behavior, remember that include_empty_bins=False excludes all bins with N>=1
         profile = da.make_radial_profile(
-            [tshear, xshear, gals['z']], angsep, angsep_units, bin_units, bins=bins_radians,
-            include_empty_bins=False)
-        _test_profile_table_output(profile, bins_radians[1], expected_radius[1], bins_radians[2],
-                                   expected['tan_shear'][1], expected['cross_shear'][1], [2])
+            [tshear, xshear, gals["z"]],
+            angsep,
+            angsep_units,
+            bin_units,
+            bins=bins_radians,
+            include_empty_bins=False,
+        )
+        _test_profile_table_output(
+            profile,
+            bins_radians[1],
+            expected_radius[1],
+            bins_radians[2],
+            expected["tan_shear"][1],
+            expected["cross_shear"][1],
+            [2],
+        )
         # Test metadata
-        assert_array_equal(profile.meta['bin_units'], bin_units)
-        assert_array_equal(profile.meta['cosmo'], None)
+        assert_array_equal(profile.meta["bin_units"], bin_units)
+        assert_array_equal(profile.meta["cosmo"], None)
         # Test simple unit convesion
         profile = da.make_radial_profile(
-            [tshear, xshear, gals['z']], angsep*180./np.pi, 'degrees', bin_units, bins=bins_radians,
-            include_empty_bins=False)
-        _test_profile_table_output(profile, bins_radians[1], expected_radius[1], bins_radians[2],
-                                   expected['tan_shear'][1], expected['cross_shear'][1], [2])
+            [tshear, xshear, gals["z"]],
+            angsep * 180.0 / np.pi,
+            "degrees",
+            bin_units,
+            bins=bins_radians,
+            include_empty_bins=False,
+        )
+        _test_profile_table_output(
+            profile,
+            bins_radians[1],
+            expected_radius[1],
+            bins_radians[2],
+            expected["tan_shear"][1],
+            expected["cross_shear"][1],
+            [2],
+        )
         # including empty bins
         profile = da.make_radial_profile(
-            [tshear, xshear, gals['z']], angsep, angsep_units, bin_units, bins=bins_radians,
-            include_empty_bins=True)
-        _test_profile_table_output(profile, bins_radians[:-1], expected_radius, bins_radians[1:],
-                                   expected['tan_shear'][:-1], expected['cross_shear'][:-1], [1, 2])
+            [tshear, xshear, gals["z"]],
+            angsep,
+            angsep_units,
+            bin_units,
+            bins=bins_radians,
+            include_empty_bins=True,
+        )
+        _test_profile_table_output(
+            profile,
+            bins_radians[:-1],
+            expected_radius,
+            bins_radians[1:],
+            expected["tan_shear"][:-1],
+            expected["cross_shear"][:-1],
+            [1, 2],
+        )
         # test with return_binnumber
         profile, binnumber = da.make_radial_profile(
-            [tshear, xshear, gals['z']], angsep, angsep_units, bin_units, bins=bins_radians,
-            include_empty_bins=True, return_binnumber=True)
-        _test_profile_table_output(profile, bins_radians[:-1], expected_radius, bins_radians[1:],
-                                   expected['tan_shear'][:-1], expected['cross_shear'][:-1], [1, 2])
+            [tshear, xshear, gals["z"]],
+            angsep,
+            angsep_units,
+            bin_units,
+            bins=bins_radians,
+            include_empty_bins=True,
+            return_binnumber=True,
+        )
+        _test_profile_table_output(
+            profile,
+            bins_radians[:-1],
+            expected_radius,
+            bins_radians[1:],
+            expected["tan_shear"][:-1],
+            expected["cross_shear"][:-1],
+            [1, 2],
+        )
         assert_array_equal(binnumber, [1, 2, 2])
         ###################################
         ### Test with cluster object ######
         ###################################
-        cluster = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
-                                     galcat=gals['ra', 'dec', 'e1', 'e2', 'z', 'id'])
+        cluster = clmm.GalaxyCluster(
+            unique_id="blah",
+            ra=ra_lens,
+            dec=dec_lens,
+            z=z_lens,
+            galcat=gals["ra", "dec", "e1", "e2", "z", "id"],
+        )
         cluster.compute_tangential_and_cross_components(geometry=geometry)
-        cluster.make_radial_profile(
-            bin_units, bins=bins_radians, include_empty_bins=False)
+        cluster.make_radial_profile(bin_units, bins=bins_radians, include_empty_bins=False)
         # Test default behavior, remember that include_empty_bins=False excludes all bins with N>=1
         _test_profile_table_output(
-            cluster.profile, bins_radians[1], expected_radius[1], bins_radians[2],
-            expected['tan_shear'][1], expected['cross_shear'][1], [ 2], p0='gt', p1='gx')
+            cluster.profile,
+            bins_radians[1],
+            expected_radius[1],
+            bins_radians[2],
+            expected["tan_shear"][1],
+            expected["cross_shear"][1],
+            [2],
+            p0="gt",
+            p1="gx",
+        )
         # including empty bins
         cluster.make_radial_profile(
-            bin_units, bins=bins_radians, include_empty_bins=True, table_name='profile2')
+            bin_units, bins=bins_radians, include_empty_bins=True, table_name="profile2"
+        )
         _test_profile_table_output(
-            cluster.profile2, bins_radians[:-1], expected_radius, bins_radians[1:],
-            expected['tan_shear'][:- 1], expected['cross_shear'][:-1], [1, 2], p0='gt', p1='gx')
+            cluster.profile2,
+            bins_radians[:-1],
+            expected_radius,
+            bins_radians[1:],
+            expected["tan_shear"][:-1],
+            expected["cross_shear"][:-1],
+            [1, 2],
+            p0="gt",
+            p1="gx",
+        )
         # Test with galaxy id's
-        cluster.make_radial_profile(bin_units, bins=bins_radians, include_empty_bins=True,
-                                    gal_ids_in_bins=True, table_name='profile3')
+        cluster.make_radial_profile(
+            bin_units,
+            bins=bins_radians,
+            include_empty_bins=True,
+            gal_ids_in_bins=True,
+            table_name="profile3",
+        )
         _test_profile_table_output(
-            cluster.profile3, bins_radians[:-1], expected_radius, bins_radians[1:],
-            expected['tan_shear'][:-1], expected['cross_shear'][:- 1], [1, 2], [[1], [2, 3]],
-            p0='gt', p1='gx')
+            cluster.profile3,
+            bins_radians[:-1],
+            expected_radius,
+            bins_radians[1:],
+            expected["tan_shear"][:-1],
+            expected["cross_shear"][:-1],
+            [1, 2],
+            [[1], [2, 3]],
+            p0="gt",
+            p1="gx",
+        )
         # Test it runs with galaxy id's and int bins
-        cluster.make_radial_profile(bin_units, bins=5, include_empty_bins=True,
-                                    gal_ids_in_bins=True, table_name='profile3')
+        cluster.make_radial_profile(
+            bin_units, bins=5, include_empty_bins=True, gal_ids_in_bins=True, table_name="profile3"
+        )
         # And overwriting table
-        cluster.make_radial_profile(bin_units, bins=bins_radians, include_empty_bins=True,
-                                    gal_ids_in_bins=True, table_name='profile3')
+        cluster.make_radial_profile(
+            bin_units,
+            bins=bins_radians,
+            include_empty_bins=True,
+            gal_ids_in_bins=True,
+            table_name="profile3",
+        )
         _test_profile_table_output(
-            cluster.profile3, bins_radians[:-1], expected_radius, bins_radians[1:],
-            expected['tan_shear'][:-1], expected['cross_shear'][:- 1], [1, 2], [[1], [2, 3]],
-            p0='gt', p1='gx')
+            cluster.profile3,
+            bins_radians[:-1],
+            expected_radius,
+            bins_radians[1:],
+            expected["tan_shear"][:-1],
+            expected["cross_shear"][:-1],
+            [1, 2],
+            [[1], [2, 3]],
+            p0="gt",
+            p1="gx",
+        )
         # Test it runs with galaxy id's and int bins and no empty bins
-        cluster.make_radial_profile(bin_units, bins=bins_radians, include_empty_bins=False,
-                                    gal_ids_in_bins=True, table_name='profile3')
-        _test_profile_table_output(cluster.profile3, bins_radians[1], expected_radius[1],
-                                   bins_radians[2], expected['tan_shear'][1],
-                                   expected['cross_shear'][1], [2], p0='gt',
-                                   p1='gx')
+        cluster.make_radial_profile(
+            bin_units,
+            bins=bins_radians,
+            include_empty_bins=False,
+            gal_ids_in_bins=True,
+            table_name="profile3",
+        )
+        _test_profile_table_output(
+            cluster.profile3,
+            bins_radians[1],
+            expected_radius[1],
+            bins_radians[2],
+            expected["tan_shear"][1],
+            expected["cross_shear"][1],
+            [2],
+            p0="gt",
+            p1="gx",
+        )
         # Test passing zeror errors
-        cluster_err = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
-                                         galcat=gals['ra', 'dec', 'e1', 'e2', 'z', 'id'])
+        cluster_err = clmm.GalaxyCluster(
+            unique_id="blah",
+            ra=ra_lens,
+            dec=dec_lens,
+            z=z_lens,
+            galcat=gals["ra", "dec", "e1", "e2", "z", "id"],
+        )
         cluster_err.compute_tangential_and_cross_components(geometry=geometry)
-        cluster_err.galcat['et_err'] = 0
-        cluster_err.galcat['ex_err'] = 0
-        cluster_err.make_radial_profile(bin_units, bins=bins_radians, include_empty_bins=False,
-            tan_component_in_err='et_err', cross_component_in_err='ex_err')
+        cluster_err.galcat["et_err"] = 0
+        cluster_err.galcat["ex_err"] = 0
+        cluster_err.make_radial_profile(
+            bin_units,
+            bins=bins_radians,
+            include_empty_bins=False,
+            tan_component_in_err="et_err",
+            cross_component_in_err="ex_err",
+        )
         for c in cluster_err.profile.colnames:
-            assert_allclose(cluster.profile[c], cluster_err.profile[c], **TOLERANCE,
-                                    err_msg=f"Value for {c} in bin not expected.")
+            assert_allclose(
+                cluster.profile[c],
+                cluster_err.profile[c],
+                **TOLERANCE,
+                err_msg=f"Value for {c} in bin not expected.",
+            )
 
     ########################################
     ### Basic tests of cluster object ######
     ########################################
     # Test error of missing redshift
-    cluster = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
-                                 galcat=gals['ra', 'dec', 'e1', 'e2'])
+    cluster = clmm.GalaxyCluster(
+        unique_id="blah", ra=ra_lens, dec=dec_lens, z=z_lens, galcat=gals["ra", "dec", "e1", "e2"]
+    )
     cluster.compute_tangential_and_cross_components()
     assert_raises(TypeError, cluster.make_radial_profile, bin_units)
     # Test error of missing shear
-    cluster = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
-                                 galcat=gals['ra', 'dec', 'e1', 'e2', 'z', 'id'])
+    cluster = clmm.GalaxyCluster(
+        unique_id="blah",
+        ra=ra_lens,
+        dec=dec_lens,
+        z=z_lens,
+        galcat=gals["ra", "dec", "e1", "e2", "z", "id"],
+    )
     assert_raises(TypeError, cluster.make_radial_profile, bin_units)
     # Test error with overwrite=False
     cluster.compute_tangential_and_cross_components()
-    cluster.make_radial_profile(
-        bin_units, bins=bins_radians, table_name='profile3')
-    assert_raises(AttributeError, cluster.make_radial_profile, bin_units, bins=bins_radians,
-                          table_name='profile3', overwrite=False)
-    # Check error of missing id's
-    cluster_noid = clmm.GalaxyCluster(unique_id='blah', ra=ra_lens, dec=dec_lens, z=z_lens,
-                                      galcat=gals['ra', 'dec', 'e1', 'e2', 'z'])
-    cluster_noid.compute_tangential_and_cross_components()
+    cluster.make_radial_profile(bin_units, bins=bins_radians, table_name="profile3")
     assert_raises(
-        TypeError, cluster_noid.make_radial_profile, bin_units, gal_ids_in_bins=True)
+        AttributeError,
+        cluster.make_radial_profile,
+        bin_units,
+        bins=bins_radians,
+        table_name="profile3",
+        overwrite=False,
+    )
+    # Check error of missing id's
+    cluster_noid = clmm.GalaxyCluster(
+        unique_id="blah",
+        ra=ra_lens,
+        dec=dec_lens,
+        z=z_lens,
+        galcat=gals["ra", "dec", "e1", "e2", "z"],
+    )
+    cluster_noid.compute_tangential_and_cross_components()
+    assert_raises(TypeError, cluster_noid.make_radial_profile, bin_units, gal_ids_in_bins=True)

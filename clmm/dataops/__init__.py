@@ -1,23 +1,39 @@
 """Functions to compute polar/azimuthal averages in radial bins"""
-import math
 import warnings
 import numpy as np
 import scipy
 from astropy.coordinates import SkyCoord
 from astropy import units as u
-from .. gcdata import GCData
-from .. utils import (compute_radial_averages, make_bins, convert_units,
-                      arguments_consistency, validate_argument, _integ_pzfuncs)
-from .. theory import compute_critical_surface_density_eff
+from ..gcdata import GCData
+from ..utils import (
+    compute_radial_averages,
+    make_bins,
+    convert_units,
+    arguments_consistency,
+    validate_argument,
+    _validate_ra,
+    _validate_dec,
+    _validate_is_deltasigma_sigma_c,
+)
+from ..redshift import (
+    _integ_pzfuncs,
+    compute_for_good_redshifts,
+)
+from ..theory import compute_critical_surface_density_eff
 
 
 def compute_tangential_and_cross_components(
-        ra_lens, dec_lens, ra_source, dec_source,
-        shear1, shear2, geometry='curve',
-        is_deltasigma=False, cosmo=None,
-        z_lens=None, z_source=None, sigma_c=None,
-        use_pdz=False, pzbins=None, pzpdf=None,
-        validate_input=True):
+    ra_lens,
+    dec_lens,
+    ra_source,
+    dec_source,
+    shear1,
+    shear2,
+    geometry="curve",
+    is_deltasigma=False,
+    sigma_c=None,
+    validate_input=True,
+):
     r"""Computes tangential- and cross- components for shear or ellipticity
 
     To do so, we need the right ascension and declination of the lens and of all of the sources.
@@ -55,17 +71,15 @@ def compute_tangential_and_cross_components(
         g_t =& -\left( g_1\cos\left(2\phi\right)+g_2\sin\left(2\phi\right)\right)\\
         g_x =& g_1 \sin\left(2\phi\right)-g_2\cos\left(2\phi\right)
 
-    Finally, and if requested by the user throught the `is_deltasigma` flag, an estimate of the
-    excess surface density :math:`\widehat{\Delta\Sigma}` is obtained from
+    Finally, if  the critical surface density (:math:`\Sigma_\text{crit}`) is provided, an estimate
+    of the excess surface density :math:`\widehat{\Delta\Sigma}` is obtained from
 
     .. math::
-        \widehat{\Delta\Sigma_{t,x}} = g_{t,x} \times \Sigma_c(cosmo, z_l, z_{\text{src}})
+        \widehat{\Delta\Sigma_{t,x}} = g_{t,x} \times \Sigma_\text{crit}(z_l, z_{\text{src}})
 
-    where :math:`\Sigma_c` is the critical surface density that depends on the cosmology and on
-    the lens and source redshifts. If :math:`g_{t,x}` correspond to the shear, the above
-    expression is an accurate. However, if :math:`g_{t,x}` correspond to ellipticities or reduced
-    shear, this expression only gives an estimate :math:`\widehat{\Delta\Sigma_{t,x}}`, valid only
-    in the weak lensing regime.
+    If :math:`g_{t,x}` correspond to the shear, the above expression is an accurate. However, if
+    :math:`g_{t,x}` correspond to ellipticities or reduced shear, this expression only gives an
+    estimate :math:`\widehat{\Delta\Sigma_{t,x}}`, valid only in the weak lensing regime.
 
     Parameters
     ----------
@@ -86,28 +100,10 @@ def compute_tangential_and_cross_components(
         Options are curve (uses astropy) or flat.
     is_deltasigma: bool
         If `True`, the tangential and cross components returned are multiplied by Sigma_crit.
-        Results in units of :math:`M_\odot\ Mpc^{-2}`
-    cosmo: clmm.Cosmology, optional
-        Required if `is_deltasigma` is True and `sigma_c` not provided.
-        Not used if `sigma_c` is provided.
-    z_lens: float, optional
-        Redshift of the lens, required if `is_deltasigma` is True and `sigma_c` not provided.
-        Not used if `sigma_c` is provided.
-    z_source: array, optional
-        Redshift of the source, required if `is_deltasigma` is True and `sigma_c` not provided.
-        Not used if `sigma_c` is provided or `use_pdz=True`.
-    sigma_c : float, optional
-        Critical surface density in units of :math:`M_\odot\ Mpc^{-2}`,
-        if provided, `cosmo`, `z_lens` and `z_source` are not used.
-    use_pdz: bool
-        Flag to use or not the source redshift p(z), required if `is_deltasigma` is True
-        and `sigma_c` not provided. If `False`, the point estimate provided by `z_source` is used.
-    pzpdf : array, optional
-        Photometric probablility density functions of the source galaxies, required if
-        `is_deltasigma=True` and `use_pdz=True` and `sigma_c` not provided.
-    pzbins : array, optional
-        Redshift axis on which the individual photoz pdf is tabulated, required if
-        `is_deltasigma=True` and `use_pdz=True` and `sigma_c` not provided.
+        It requires `sigma_c` argument. Results in units of :math:`M_\odot\ Mpc^{-2}`
+    sigma_c : None, array_like
+        Critical (effective) surface density in units of :math:`M_\odot\ Mpc^{-2}`.
+        Used only when is_deltasigma=True.
     validate_input: bool
         Validade each input argument
 
@@ -124,90 +120,68 @@ def compute_tangential_and_cross_components(
     # Note: we make these quantities to be np.array so that a name is not passed from astropy
     # columns
     if validate_input:
-        validate_argument(locals(), 'ra_source', 'float_array',
-                          argmin=-360, eqmin=True, argmax=360, eqmax=True)
-        validate_argument(locals(), 'dec_source', 'float_array',
-                          argmin=-90, eqmin=True, argmax=90, eqmax=True)
-        validate_argument(locals(), 'ra_lens', 'float_array',
-                          argmin=-360, eqmin=True, argmax=360, eqmax=True)
-        validate_argument(locals(), 'dec_lens', 'float_array',
-                          argmin=-90, eqmin=True, argmax=90, eqmax=True)
-        validate_argument(locals(), 'shear1', 'float_array')
-        validate_argument(locals(), 'shear2', 'float_array')
-        validate_argument(locals(), 'geometry', str)
-        validate_argument(locals(), 'is_deltasigma', bool)
-        validate_argument(locals(), 'z_lens', float, argmin=0, eqmin=True, none_ok=True)
-        validate_argument(locals(), 'z_source', 'float_array', argmin=0, eqmin=True, none_ok=True)
-        validate_argument(locals(), 'sigma_c', 'float_array', none_ok=True)
+        _validate_ra(locals(), "ra_source", True)
+        _validate_dec(locals(), "dec_source", True)
+        _validate_ra(locals(), "ra_lens", True)
+        _validate_dec(locals(), "dec_lens", True)
+        validate_argument(locals(), "shear1", "float_array")
+        validate_argument(locals(), "shear2", "float_array")
+        validate_argument(locals(), "geometry", str)
+        validate_argument(locals(), "sigma_c", "float_array", none_ok=True)
         ra_source_, dec_source_, shear1_, shear2_ = arguments_consistency(
             [ra_source, dec_source, shear1, shear2],
-            names=('Ra', 'Dec', 'Shear1', 'Shear2'),
-            prefix='Tangential- and Cross- shape components sources')
+            names=("Ra", "Dec", "Shear1", "Shear2"),
+            prefix="Tangential- and Cross- shape components sources",
+        )
+        _validate_is_deltasigma_sigma_c(is_deltasigma, sigma_c)
     elif np.iterable(ra_source):
         ra_source_, dec_source_, shear1_, shear2_ = (
-            np.array(col) for col in [ra_source, dec_source, shear1, shear2])
+            np.array(col) for col in [ra_source, dec_source, shear1, shear2]
+        )
     else:
-        ra_source_, dec_source_, shear1_, shear2_ = ra_source, dec_source, shear1, shear2
+        ra_source_, dec_source_, shear1_, shear2_ = (
+            ra_source,
+            dec_source,
+            shear1,
+            shear2,
+        )
     # Compute the lensing angles
-    if geometry == 'flat':
-        angsep, phi = _compute_lensing_angles_flatsky(
-            ra_lens, dec_lens, ra_source_, dec_source_)
-    elif geometry == 'curve':
-        angsep, phi = _compute_lensing_angles_astropy(
-            ra_lens, dec_lens, ra_source_, dec_source_)
+    if geometry == "flat":
+        angsep, phi = _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_, dec_source_)
+    elif geometry == "curve":
+        angsep, phi = _compute_lensing_angles_astropy(ra_lens, dec_lens, ra_source_, dec_source_)
     else:
-        raise NotImplementedError(
-            f"Sky geometry {geometry} is not currently supported")
+        raise NotImplementedError(f"Sky geometry {geometry} is not currently supported")
     # Compute the tangential and cross shears
     tangential_comp = _compute_tangential_shear(shear1_, shear2_, phi)
     cross_comp = _compute_cross_shear(shear1_, shear2_, phi)
-    # If the is_deltasigma flag is True, multiply the results by Sigma_crit.
 
-    if is_deltasigma:
-        if sigma_c is None and use_pdz is False:
-            # Need to verify that cosmology and redshifts are provided
-            if any(t_ is None for t_ in (z_lens, z_source, cosmo)):
-                raise TypeError(
-                    'To compute DeltaSigma, please provide a '
-                    'i) cosmology, ii) redshift of lens and sources')
+    if sigma_c is not None:
+        _sigma_c_arr = np.array(sigma_c)
+        tangential_comp *= _sigma_c_arr
+        cross_comp *= _sigma_c_arr
 
-            sigma_c = cosmo.eval_sigma_crit(z_lens, z_source)  
-
-        elif sigma_c is None:
-            # Need to verify that cosmology, lens redshift, source redshift bins and
-            # source redshift pdf are provided
-            if any(t_ is None for t_ in (z_lens, cosmo, pzbins, pzpdf)):
-                raise TypeError(
-                    'To compute DeltaSigma using the redshift pdz of the sources, '
-                    'please provide a '
-                    'i) cosmology, ii) lens redshift, iii) source redshift bins and'
-                    'iv) source redshift pdf')
-
-            sigma_c = compute_critical_surface_density_eff(cosmo, z_lens,
-                                                           pzbins=pzbins, pzpdf=pzpdf)
-
-        tangential_comp *= sigma_c
-        cross_comp *= sigma_c
     return angsep, tangential_comp, cross_comp
 
-def compute_background_probability(z_lens, z_source=None, use_pdz=False, pzpdf=None, pzbins=None,
-                                   validate_input=True):
-    r"""Probability for being a background galaxy
+
+def compute_background_probability(
+    z_lens, z_src=None, use_pdz=False, pzpdf=None, pzbins=None, validate_input=True
+):
+    r"""Probability for being a background galaxy, defined by:
+
+        .. math::
+            P(z_s > z_l) = \int_{z_l}^{+\infty} dz_s \; p_{\text{photoz}}(z_s),
+
+    when the photometric probability density functions (:math:`p_{\text{photoz}}(z_s)`) are
+    provided. In the case of true redshifts, it returns 1 if :math:`z_s > z_l` else returns 0.
+
 
     Parameters
     ----------
     z_lens: float
         Redshift of the lens.
-    z_source: array, optional
+    z_src: array, optional
         Redshift of the source. Used only if pzpdf=pzbins=None.
-    use_pdz: bool
-        Flag to use or not the source redshif. If `False`,
-        the point estimate provided by `z_source` is used.
-    pzpdf : array, optional
-        Photometric probablility density functions of the source galaxies.
-        Used instead of z_source if provided.
-    pzbins : array, optional
-        Redshift axis on which the individual photoz pdf is tabulated.
 
     Returns
     -------
@@ -215,79 +189,70 @@ def compute_background_probability(z_lens, z_source=None, use_pdz=False, pzpdf=N
         Probability for being a background galaxy
     """
     if validate_input:
-        validate_argument(locals(), 'z_lens', float, argmin=0, eqmin=True)
-        validate_argument(locals(), 'z_source', 'float_array', argmin=0, eqmin=True, none_ok=True)
+        validate_argument(locals(), "z_lens", float, argmin=0, eqmin=True)
+        validate_argument(locals(), "z_src", "float_array", argmin=0, eqmin=True, none_ok=True)
 
     if use_pdz is False:
-        if z_source is None:
-            raise ValueError('z_source must be provided.')
-        p_background = np.array(z_source>z_lens, dtype=float)
+        if z_src is None:
+            raise ValueError("z_src must be provided.")
+        p_background = np.array(z_src > z_lens, dtype=float)
     else:
-        if (pzpdf is None or pzbins is None):
-            raise ValueError('pzbins must be provided with pzpdf.')
+        if pzpdf is None or pzbins is None:
+            raise ValueError("pzbins must be provided with pzpdf.")
         p_background = _integ_pzfuncs(pzpdf, pzbins, z_lens)
 
     return p_background
 
-def compute_galaxy_weights(z_lens, cosmo, z_source=None, use_pdz=False, pzpdf=None, pzbins=None,
-                           use_shape_noise=False, shape_component1=None, shape_component2=None,
-                           use_shape_error=False,
-                           shape_component1_err=None, shape_component2_err=None,
-                           is_deltasigma=False, sigma_c=None, validate_input=True):
+
+def compute_galaxy_weights(
+    use_shape_noise=False,
+    shape_component1=None,
+    shape_component2=None,
+    use_shape_error=False,
+    shape_component1_err=None,
+    shape_component2_err=None,
+    is_deltasigma=False,
+    sigma_c=None,
+    validate_input=True,
+):
     r"""Computes the individual lens-source pair weights
 
     The weights :math:`w_{ls}` express as : :math:`w_{ls} = w_{ls, \text{geo}} \times w_{ls,
     \text{shape}}`, following E. S. Sheldon et al. (2003), arXiv:astro-ph/0312036:
 
-    1. The geometrical weight :math:`w_{ls, \text{geo}}` depends on lens and source redshift
-    information. When considering only redshift point estimates, the weights read
+    1. If computed for shear, the geometrical weights :math:`w_{ls, \text{geo}}` are equal to 1. If
+    computed for :math:`\Delta \Sigma`, it depends on lens and source redshift information via the
+    critical surface density. This component can be expressed as:
 
         .. math::
-            w_{ls, \text{geo}} = \Sigma_c(\text{cosmo}, z_l, z_{\text{src}})^{-2}\;.
+            w_{ls, \text{geo}} = \Sigma_\text{crit}(z_l, z_{\text{src}})^{-2}\;.
 
-        If the redshift pdf of each source, :math:`p_{\text{photoz}}(z_s)`, is known,
-        the weights are computed instead as
+        when only redshift point estimates are provided, or as:
+
 
         .. math::
-            w_{ls, \text{geo}} = \left[\int_{\delta + z_l} dz_s p_{\text{photoz}}(z_s)
-            \Sigma_c(\text{cosmo}, z_l, z_s)^{-1}\right]^2
+            w_{ls, \text{geo}} = \Sigma_\text{crit}^\text{eff}(z_l, z_{\text{src}})^{-2}
+            = \left[\int_{\delta + z_l} dz_s \; p_{\text{photoz}}(z_s)
+            \Sigma_\text{crit}(z_l, z_s)^{-1}\right]^2
 
-        for the tangential shear, the weights :math:`w_{ls, \text{geo}}` are 1.
+        when the redshift pdf of each source, :math:`p_{\text{photoz}}(z_s)`, is known.
 
     2. The shape weight :math:`w_{ls,{\text{shape}}}` depends on shapenoise and/or shape
     measurement errors
 
         .. math::
-            w_{ls, \text{shape}} = 1/(\sigma_{\text{shapenoise}}^2 +
-            \sigma_{\text{measurement}}^2)
-
-
-    3. The probability for a galaxy to be in the background of the cluster is defined by:
-
-        .. math::
-            P(z_s > z_l) = \int_{z_l}^{+\infty} dz_s p_{\text{photoz}}(z_s)
-
-        The function return the probability for a galaxy to be in the background of the cluster;
-        if photometric probability density functions are provoded, the function computes the above
-        integral. In the case of true redshifts, it returns 1 if :math:`z_s > z_l` else returns 0.
+            w_{ls, \text{shape}}^{-1} = \sigma_{\text{shapenoise}}^2 +
+            \sigma_{\text{measurement}}^2
 
 
     Parameters
     ----------
-    z_lens: float
-        Redshift of the lens.
-    z_source: array_like, optional
-        Redshift of the source (point estimate). Used only if `use_pdz=False`.
-    cosmo: clmm.Comology object, None
-        CLMM Cosmology object.
-    use_pdz: bool
-        Flag to use or not the source redshift p(z). If `False` (default) the point estimate
-        provided by `z_source` is used.
-    pzpdf : array_like, optional
-        Photometric probablility density functions of the source galaxies.
-        Used instead of z_source if `use_pdz=True`
-    pzbins : array_like, optional
-        Redshift axis on which the individual photoz pdf is tabulated. Required if `use_pdz=True`
+    is_deltasigma: bool
+        If `False`, weights are computed for shear, else weights are computed for
+        :math:`\Delta \Sigma`.
+    sigma_c : None, array_like
+        Critical (effective) surface density in units of :math:`M_\odot\ Mpc^{-2}`.
+        Used only when is_deltasigma=True.
     use_shape_noise: bool
         If `True` shape noise is included in the weight computation. It then requires
         `shape_componenet{1,2}` to be provided. Default: False.
@@ -306,8 +271,6 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, use_pdz=False, pzpdf=No
     shape_component2_err: array_like
         The measurement error on the 2nd-component of ellipticity of the source galaxies,
         used if `use_shape_error=True`
-    is_deltasigma: bool
-        Indicates whether it is the excess surface density or the tangential shear
     validate_input: bool
         Validade each input argument
 
@@ -317,72 +280,54 @@ def compute_galaxy_weights(z_lens, cosmo, z_source=None, use_pdz=False, pzpdf=No
         Individual lens source pair weights
     """
     if validate_input:
-        validate_argument(locals(), 'z_lens', float, argmin=0, eqmin=True)
-        validate_argument(locals(), 'z_source', 'float_array', argmin=0, eqmin=True, none_ok=True)
-        validate_argument(locals(), 'use_pdz', bool)
-        # validate_argument(locals(), 'pzpdf', 'float_array', none_ok=True)
-        # validate_argument(locals(), 'pzbins', 'float_array', none_ok=True)
-        validate_argument(locals(), 'shape_component1', 'float_array', none_ok=True)
-        validate_argument(locals(), 'shape_component2', 'float_array', none_ok=True)
-        validate_argument(locals(), 'shape_component1_err', 'float_array', none_ok=True)
-        validate_argument(locals(), 'shape_component2_err', 'float_array', none_ok=True)
-        validate_argument(locals(), 'use_shape_noise', bool)
-        validate_argument(locals(), 'is_deltasigma', bool)
+        validate_argument(locals(), "sigma_c", "float_array", none_ok=True)
+        validate_argument(locals(), "shape_component1", "float_array", none_ok=True)
+        validate_argument(locals(), "shape_component2", "float_array", none_ok=True)
+        validate_argument(locals(), "shape_component1_err", "float_array", none_ok=True)
+        validate_argument(locals(), "shape_component2_err", "float_array", none_ok=True)
+        validate_argument(locals(), "use_shape_noise", bool)
+        validate_argument(locals(), "use_shape_error", bool)
         arguments_consistency(
             [shape_component1, shape_component2],
-            names=('shape_component1', 'shape_component2'),
-            prefix='Shape components sources')
+            names=("shape_component1", "shape_component2"),
+            prefix="Shape components sources",
+        )
+        _validate_is_deltasigma_sigma_c(is_deltasigma, sigma_c)
 
-    #computing w_ls_geo
+    # computing w_ls_geo
+    w_ls_geo = 1.0
+    if sigma_c is not None:
+        w_ls_geo /= np.array(sigma_c) ** 2
 
-    if is_deltasigma is False:
-        w_ls_geo = 1.
-    else:
-        if sigma_c is None and use_pdz is False:
-            # Need to verify that cosmology and redshifts are provided
-            if any(t_ is None for t_ in (z_lens, z_source, cosmo)):
-                raise TypeError(
-                    'To compute DeltaSigma, please provide a '
-                    'i) cosmology, ii) redshift of lens and sources')
-            sigma_c = cosmo.eval_sigma_crit(z_lens, z_source)
-        elif sigma_c is None:
-            # Need to verify that cosmology, lens redshift, source redshift bins and
-            # source redshift pdf are provided
-            if any(t_ is None for t_ in (z_lens, cosmo, pzbins, pzpdf)):
-                raise TypeError(
-                    'To compute DeltaSigma using the redshift pdz of the sources, '
-                    'please provide a '
-                    'i) cosmology, ii) lens redshift, iii) source redshift bins and'
-                    'iv) source redshift pdf')
-            sigma_c = compute_critical_surface_density_eff(cosmo, z_lens,
-                                                           pzbins=pzbins,
-                                                           pzpdf=pzpdf)
-        w_ls_geo = 1./sigma_c**2
-
-    #computing w_ls_shape
-    if not use_pdz:
-        ngals = len(z_source)
-    else:
-        ngals = len(pzpdf)
-    err_e2 = np.zeros(ngals)
+    # computing w_ls_shape
+    err_e2 = 0
 
     if use_shape_noise:
         if shape_component1 is None or shape_component2 is None:
-            raise ValueError('With the shape noise option, the source shapes '
-                             '`shape_component_{1,2}` must be specified')
-        err_e2 += np.std(shape_component1)**2 + np.std(shape_component2)**2
+            raise ValueError(
+                "With the shape noise option, the source shapes "
+                "`shape_component_{1,2}` must be specified"
+            )
+        err_e2 += np.std(shape_component1) ** 2 + np.std(shape_component2) ** 2
     if use_shape_error:
         if shape_component1_err is None or shape_component2_err is None:
-            raise ValueError('With the shape error option, the source shapes errors'
-                             '`shape_component_err{1,2}` must be specified')
+            raise ValueError(
+                "With the shape error option, the source shapes errors"
+                "`shape_component_err{1,2}` must be specified"
+            )
         err_e2 += shape_component1_err**2
         err_e2 += shape_component2_err**2
-    w_ls_shape = np.ones(ngals)
-    w_ls_shape[err_e2>0] = 1./err_e2[err_e2>0]
+
+    if hasattr(err_e2, "__len__"):
+        w_ls_shape = np.ones(len(err_e2))
+        w_ls_shape[err_e2 > 0] = 1.0 / err_e2[err_e2 > 0]
+    else:
+        w_ls_shape = 1.0 / err_e2 if err_e2 > 0 else 1.0
 
     w_ls = w_ls_shape * w_ls_geo
 
     return w_ls
+
 
 def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_source_list):
     r"""Compute the angular separation between the lens and the source and the azimuthal
@@ -416,24 +361,23 @@ def _compute_lensing_angles_flatsky(ra_lens, dec_lens, ra_source_list, dec_sourc
     phi: array
         Azimuthal angle from the lens to the source in radians
     """
+    delta_ra = np.radians(ra_source_list - ra_lens)
     # Put angles between -pi and pi
-    r2pi = lambda x: x-np.round(x/(2.0*math.pi))*2.0*math.pi
-    deltax = r2pi(np.radians(ra_source_list-ra_lens)) * \
-        math.cos(math.radians(dec_lens))
-    deltay = np.radians(dec_source_list-dec_lens)
+    delta_ra -= np.round(delta_ra / (2.0 * np.pi)) * 2.0 * np.pi
+    deltax = delta_ra * np.cos(np.radians(dec_lens))
+    deltay = np.radians(dec_source_list - dec_lens)
     # Ensure that abs(delta ra) < pi
-    #deltax[deltax >= np.pi] = deltax[deltax >= np.pi]-2.*np.pi
-    #deltax[deltax < -np.pi] = deltax[deltax < -np.pi]+2.*np.pi
-    angsep = np.sqrt(deltax**2+deltay**2)
+    # deltax[deltax >= np.pi] = deltax[deltax >= np.pi]-2.*np.pi
+    # deltax[deltax < -np.pi] = deltax[deltax < -np.pi]+2.*np.pi
+    angsep = np.sqrt(deltax**2 + deltay**2)
     phi = np.arctan2(deltay, -deltax)
     # Forcing phi to be zero everytime angsep is zero. This is necessary due to arctan2 features.
     if np.iterable(phi):
         phi[angsep == 0.0] = 0.0
     else:
         phi = 0.0 if angsep == 0.0 else phi
-    if np.any(angsep > np.pi/180.):
-        warnings.warn(
-            "Using the flat-sky approximation with separations >1 deg may be inaccurate")
+    if np.any(angsep > np.pi / 180.0):
+        warnings.warn("Using the flat-sky approximation with separations >1 deg may be inaccurate")
     return angsep, phi
 
 
@@ -459,18 +403,16 @@ def _compute_lensing_angles_astropy(ra_lens, dec_lens, ra_source_list, dec_sourc
     phi: array
         Azimuthal angle from the lens to the source in radians
     """
-    sk_lens = SkyCoord(ra_lens*u.deg, dec_lens*u.deg, frame='icrs')
-    sk_src = SkyCoord(ra_source_list*u.deg,
-                      dec_source_list*u.deg, frame='icrs')
-    angsep, phi = sk_lens.separation(
-        sk_src).rad, sk_lens.position_angle(sk_src).rad
+    sk_lens = SkyCoord(ra_lens * u.deg, dec_lens * u.deg, frame="icrs")
+    sk_src = SkyCoord(ra_source_list * u.deg, dec_source_list * u.deg, frame="icrs")
+    angsep, phi = sk_lens.separation(sk_src).rad, sk_lens.position_angle(sk_src).rad
     # Transformations for phi to have same orientation as _compute_lensing_angles_flatsky
-    phi += 0.5*np.pi
+    phi += 0.5 * np.pi
     if np.iterable(phi):
-        phi[phi > np.pi] -= 2*np.pi
+        phi[phi > np.pi] -= 2 * np.pi
         phi[angsep == 0] = 0
     else:
-        phi -= 2*np.pi if phi > np.pi else 0
+        phi -= 2 * np.pi if phi > np.pi else 0
         phi = 0 if angsep == 0 else phi
     return angsep, phi
 
@@ -486,7 +428,7 @@ def _compute_tangential_shear(shear1, shear2, phi):
 
     For extended descriptions of parameters, see `compute_shear()` documentation.
     """
-    return -(shear1*np.cos(2.*phi)+shear2*np.sin(2.*phi))
+    return -(shear1 * np.cos(2.0 * phi) + shear2 * np.sin(2.0 * phi))
 
 
 def _compute_cross_shear(shear1, shear2, phi):
@@ -501,13 +443,24 @@ def _compute_cross_shear(shear1, shear2, phi):
 
     For extended descriptions of parameters, see `compute_shear()` documentation.
     """
-    return shear1*np.sin(2.*phi)-shear2*np.cos(2.*phi)
+    return shear1 * np.sin(2.0 * phi) - shear2 * np.cos(2.0 * phi)
 
 
-def make_radial_profile(components, angsep, angsep_units, bin_units,
-                        bins=10, components_error=None, error_model='ste',
-                        include_empty_bins=False, return_binnumber=False,
-                        cosmo=None, z_lens=None, validate_input=True, weights=None):
+def make_radial_profile(
+    components,
+    angsep,
+    angsep_units,
+    bin_units,
+    bins=10,
+    components_error=None,
+    error_model="ste",
+    include_empty_bins=False,
+    return_binnumber=False,
+    cosmo=None,
+    z_lens=None,
+    validate_input=True,
+    weights=None,
+):
     r"""Compute the angular profile of given components
 
     We assume that the cluster object contains information on the cross and
@@ -579,41 +532,45 @@ def make_radial_profile(components, angsep, angsep_units, bin_units,
     """
     # pylint: disable-msg=too-many-locals
     if validate_input:
-        validate_argument(locals(), 'angsep', 'float_array')
-        validate_argument(locals(), 'angsep_units', str)
-        validate_argument(locals(), 'bin_units', str)
-        validate_argument(locals(), 'include_empty_bins', bool)
-        validate_argument(locals(), 'return_binnumber', bool)
-        validate_argument(locals(), 'z_lens', 'float_array', none_ok=True)
-        comp_dict = {f'components[{i}]': comp for i, comp in enumerate(components)}
-        arguments_consistency(components, names=comp_dict.keys(), prefix='Input components')
+        validate_argument(locals(), "angsep", "float_array")
+        validate_argument(locals(), "angsep_units", str)
+        validate_argument(locals(), "bin_units", str)
+        validate_argument(locals(), "include_empty_bins", bool)
+        validate_argument(locals(), "return_binnumber", bool)
+        validate_argument(locals(), "z_lens", "float_array", none_ok=True)
+        comp_dict = {f"components[{i}]": comp for i, comp in enumerate(components)}
+        arguments_consistency(components, names=comp_dict.keys(), prefix="Input components")
         for component in comp_dict:
-            validate_argument(comp_dict, component, 'float_array')
+            validate_argument(comp_dict, component, "float_array")
     # Check to see if we need to do a unit conversion
     if angsep_units is not bin_units:
-        source_seps = convert_units(angsep, angsep_units, bin_units,
-                                    redshift=z_lens, cosmo=cosmo)
+        source_seps = convert_units(angsep, angsep_units, bin_units, redshift=z_lens, cosmo=cosmo)
     else:
         source_seps = angsep
     # Make bins if they are not provided
-    if not hasattr(bins, '__len__'):
+    if not hasattr(bins, "__len__"):
         bins = make_bins(np.min(source_seps), np.max(source_seps), bins)
     # Create output table
-    profile_table = GCData([bins[:-1], np.zeros(len(bins)-1), bins[1:]],
-                           names=('radius_min', 'radius', 'radius_max'),
-                           meta={'bin_units': bin_units},  # Add metadata
-                           )
+    profile_table = GCData(
+        [bins[:-1], np.zeros(len(bins) - 1), bins[1:]],
+        names=("radius_min", "radius", "radius_max"),
+        meta={"bin_units": bin_units},  # Add metadata
+    )
     # Compute the binned averages and associated errors
     for i, component in enumerate(components):
         r_avg, comp_avg, comp_err, nsrc, binnumber, wts_sum = compute_radial_averages(
-            source_seps, component, xbins=bins,
+            source_seps,
+            component,
+            xbins=bins,
             yerr=None if components_error is None else components_error[i],
-            weights=weights)
-        profile_table[f'p_{i}'] = comp_avg
-        profile_table[f'p_{i}_err'] = comp_err
-    profile_table['radius'] = r_avg
-    profile_table['n_src'] = nsrc
-    profile_table['weights_sum'] = wts_sum
+            error_model=error_model,
+            weights=weights,
+        )
+        profile_table[f"p_{i}"] = comp_avg
+        profile_table[f"p_{i}_err"] = comp_err
+    profile_table["radius"] = r_avg
+    profile_table["n_src"] = nsrc
+    profile_table["weights_sum"] = wts_sum
     # return empty bins?
     if not include_empty_bins:
         profile_table = profile_table[nsrc > 1]
@@ -643,6 +600,7 @@ def make_stacked_radial_profile(angsep, weights, components):
         List of stacked components.
     """
     staked_angsep = np.average(angsep, axis=0, weights=None)
-    stacked_components = [np.average(component, axis=0, weights=weights)
-                                for component in components]
+    stacked_components = [
+        np.average(component, axis=0, weights=weights) for component in components
+    ]
     return staked_angsep, stacked_components
