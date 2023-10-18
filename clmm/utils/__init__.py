@@ -39,6 +39,7 @@ from .validation import (
     validate_argument,
     _validate_ra,
     _validate_dec,
+    _validate_is_deltasigma_sigma_c,
 )
 
 from .units import (

@@ -43,11 +43,11 @@ class CLMModeling:
     cdelta: float
         Concentration of the profile
     massdef : str
-        Profile mass definition (`mean`, `critical`, `virial` - letter case independent)
+        Profile mass definition ("mean", "critical", "virial" - letter case independent)
     delta_mdef : int
         Mass overdensity definition.
     halo_profile_model : str
-        Profile model parameterization (`nfw`, `einasto`, `hernquist` - letter case independent)
+        Profile model parameterization ("nfw", "einasto", "hernquist" - letter case independent)
     cosmo: Cosmology
         Cosmology object
     hdpm: Object
@@ -181,6 +181,10 @@ class CLMModeling:
     def _get_einasto_alpha(self, z_cl=None):
         r"""Returns the value of the :math:`\alpha` parameter for the Einasto profile,
         if defined"""
+        raise NotImplementedError
+
+    def _set_projected_quad(self, use_projected_quad):
+        """Implemented for the CCL backend only"""
         raise NotImplementedError
 
     def _eval_3d_density(self, r3d, z_cl):
@@ -378,17 +382,20 @@ class CLMModeling:
         Parameters
         ----------
         halo_profile_model: str
-            Halo mass profile, current options are 'nfw' (letter case independent)
+            Halo mass profile, supported options are 'nfw', 'einasto', 'hernquist'
+            (letter case independent)
         massdef: str
-            Mass definition, current options are 'mean' (letter case independent)
+            Mass definition, supported options are 'mean', 'critical', 'virial'
+            (letter case independent)
         delta_mdef: int
             Overdensity number
         """
         # make case independent
+        validate_argument(locals(), "massdef", str)
+        validate_argument(locals(), "halo_profile_model", str)
         massdef, halo_profile_model = massdef.lower(), halo_profile_model.lower()
+
         if self.validate_input:
-            validate_argument(locals(), "massdef", str)
-            validate_argument(locals(), "halo_profile_model", str)
             validate_argument(locals(), "delta_mdef", int, argmin=0)
             if massdef not in self.mdef_dict:
                 raise ValueError(
@@ -443,6 +450,22 @@ class CLMModeling:
             raise ValueError(f"Wrong profile model. Current profile = {self.halo_profile_model}")
         return self._get_einasto_alpha(z_cl)
 
+    def set_projected_quad(self, use_projected_quad):
+        r"""Control the use of quad_vec to calculate the surface density profile for
+        CCL Einasto profile.
+
+        Parameters
+        ----------
+        use_projected_quad : bool
+            Only available for Einasto profile with CCL as the backend. If True, CCL will use
+            quad_vec instead of default FFTLog to calculate the surface density profile.
+        """
+        if self.halo_profile_model != "einasto" or self.backend != "ccl":
+            raise NotImplementedError("This option is only available for the CCL Einasto profile.")
+        if self.validate_input:
+            validate_argument(locals(), "use_projected_quad", bool)
+        self._set_projected_quad(use_projected_quad)
+
     def eval_3d_density(self, r3d, z_cl, verbose=False):
         r"""Retrieve the 3d density :math:`\rho(r)`.
 
@@ -478,8 +501,8 @@ class CLMModeling:
         This comes from the maximum likelihood estimator for evaluating a
         :math:`\Delta\Sigma` profile.
 
-        For the standard :math:`\Sigma_{\rm crit}(z)` definition, use the `eval_sigma_crit` method
-        of the CLMM cosmology object.
+        For the standard :math:`\Sigma_{\text{crit}}(z)` definition, use the `eval_sigma_crit`
+        method of the CLMM cosmology object.
 
         Parameters
         ----------
@@ -1478,13 +1501,13 @@ class CLMModeling:
         z_cl: float
             Redshift of the cluster
         massdef : str, None
-            Profile mass definition to convert to (`mean`, `critical`, `virial`).
+            Profile mass definition to convert to ("mean", "critical", "virial").
             If None, same value of current model is used.
         delta_mdef : int, None
             Mass overdensity definition to convert to.
             If None, same value of current model is used.
         halo_profile_model : str, None
-            Profile model parameterization to convert to (`nfw`, `einasto`, `hernquist`).
+            Profile model parameterization to convert to ("nfw", "einasto", "hernquist").
             If None, same value of current model is used.
         alpha : float, None
             Einasto slope to convert to when `halo_profile_model='einasto'`.

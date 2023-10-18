@@ -113,7 +113,7 @@ class CCLCosmology(CLMMCosmology):
         a_len = self._get_a_from_z(z_len)
         a_src = self._get_a_from_z(z_src)
 
-        return self.be_cosmo.sigma_critical(a_len, a_src) * self.cor_factor
+        return self.be_cosmo.sigma_critical(a_lens=a_len, a_source=a_src) * self.cor_factor
 
     def _eval_linear_matter_powerspectrum(self, k_vals, redshift):
         return ccl.linear_matter_power(self.be_cosmo, k_vals, self._get_a_from_z(redshift))
