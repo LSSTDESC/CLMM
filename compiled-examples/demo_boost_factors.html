@@ -1,22 +1,21 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Boost factors &mdash; CLMM 1.7.1 documentation</title>
+  <title>Boost factors &mdash; CLMM 1.10.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=1d24b1d9"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -30,14 +29,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> CLMM
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CLMM
           </a>
               <div class="version">
-                1.7.1
+                1.10.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -90,8 +93,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.dataops.html">clmm.dataops package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.gcdata.html">clmm.gcdata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.redshift.html">clmm.redshift package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.redshift.distributions.html">clmm.redshift.distributions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.redshift.tools.html">clmm.redshift.tools module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.theory.html">clmm.theory package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.be_setup.html">clmm.theory.be_setup module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.ccl.html">clmm.theory.ccl module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.cluster_toolkit.html">clmm.theory.cluster_toolkit module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.func_layer.html">clmm.theory.func_layer module</a></li>
@@ -101,8 +108,15 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.plotting.html">clmm.plotting package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/clmm.utils.html">clmm.utils module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/clmm.z_distributions.html">clmm.z_distributions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.utils.html">clmm.utils package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.beta_lens.html">clmm.utils.beta_lens module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.boost.html">clmm.utils.boost module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.ellipticity.html">clmm.utils.ellipticity module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.statistic.html">clmm.utils.statistic module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.units.html">clmm.utils.units module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.validation.html">clmm.utils.validation module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.support.html">clmm.support package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/clmm.support.mock_data.html">clmm.support.mock_data module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/clmm.support.sampler.html">clmm.support.sampler module</a></li>
@@ -125,7 +139,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Boost factors</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/compiled-examples/demo_boost_factors.rst.txt" rel="nofollow"> View page source</a>
@@ -137,7 +151,7 @@
            <div itemprop="articleBody">
              
   <section id="boost-factors">
-<h1>Boost factors<a class="headerlink" href="#boost-factors" title="Permalink to this heading"></a></h1>
+<h1>Boost factors<a class="headerlink" href="#boost-factors" title="Link to this heading"></a></h1>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">clmm</span>
 <span class="kn">from</span> <span class="nn">clmm</span> <span class="kn">import</span> <span class="n">Cosmology</span>
 <span class="kn">from</span> <span class="nn">clmm.support</span> <span class="kn">import</span> <span class="n">mock_data</span> <span class="k">as</span> <span class="n">mock</span>
@@ -151,12 +165,12 @@
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clmm</span><span class="o">.</span><span class="n">__version__</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.7.1&#39;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.10.0&#39;</span>
 </pre></div>
 </div>
 <section id="define-cosmology-object">
-<h2>Define cosmology object<a class="headerlink" href="#define-cosmology-object" title="Permalink to this heading"></a></h2>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mock_cosmo</span> <span class="o">=</span> <span class="n">Cosmology</span><span class="p">(</span><span class="n">H0</span> <span class="o">=</span> <span class="mf">70.0</span><span class="p">,</span> <span class="n">Omega_dm0</span> <span class="o">=</span> <span class="mf">0.27</span> <span class="o">-</span> <span class="mf">0.045</span><span class="p">,</span> <span class="n">Omega_b0</span> <span class="o">=</span> <span class="mf">0.045</span><span class="p">,</span> <span class="n">Omega_k0</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">)</span>
+<h2>Define cosmology object<a class="headerlink" href="#define-cosmology-object" title="Link to this heading"></a></h2>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mock_cosmo</span> <span class="o">=</span> <span class="n">Cosmology</span><span class="p">(</span><span class="n">H0</span><span class="o">=</span><span class="mf">70.0</span><span class="p">,</span> <span class="n">Omega_dm0</span><span class="o">=</span><span class="mf">0.27</span> <span class="o">-</span> <span class="mf">0.045</span><span class="p">,</span> <span class="n">Omega_b0</span><span class="o">=</span><span class="mf">0.045</span><span class="p">,</span> <span class="n">Omega_k0</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>First, we want to generate a <span class="math notranslate nohighlight">\(\Delta\Sigma\)</span> (excess surface
@@ -165,73 +179,86 @@ The mock data is generated in the following cells.</p>
 <p>Generate cluster object from mock data</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cosmo</span> <span class="o">=</span> <span class="n">mock_cosmo</span>
 <span class="n">cluster_id</span> <span class="o">=</span> <span class="s2">&quot;Awesome_cluster&quot;</span>
-<span class="n">cluster_m</span> <span class="o">=</span> <span class="mf">1.e15</span>
+<span class="n">cluster_m</span> <span class="o">=</span> <span class="mf">1.0e15</span>
 <span class="n">cluster_z</span> <span class="o">=</span> <span class="mf">0.3</span>
 <span class="n">concentration</span> <span class="o">=</span> <span class="mi">4</span>
 <span class="n">ngals</span> <span class="o">=</span> <span class="mi">1000</span>
 
-<span class="n">zsrc_min</span> <span class="o">=</span> <span class="n">cluster_z</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="c1"># we only want to draw background galaxies</span>
+<span class="n">zsrc_min</span> <span class="o">=</span> <span class="n">cluster_z</span> <span class="o">+</span> <span class="mf">0.1</span>  <span class="c1"># we only want to draw background galaxies</span>
 
-<span class="n">noisy_data_z</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span><span class="n">cluster_m</span><span class="p">,</span>
-                                            <span class="n">cluster_z</span><span class="p">,</span>
-                                            <span class="n">concentration</span><span class="p">,</span>
-                                            <span class="n">cosmo</span><span class="p">,</span>
-                                            <span class="s1">&#39;chang13&#39;</span><span class="p">,</span>
-                                            <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span>
-                                            <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span>
-                                            <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">)</span>
+<span class="n">noisy_data_z</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span>
+    <span class="n">cluster_m</span><span class="p">,</span>
+    <span class="n">cluster_z</span><span class="p">,</span>
+    <span class="n">concentration</span><span class="p">,</span>
+    <span class="n">cosmo</span><span class="p">,</span>
+    <span class="s2">&quot;chang13&quot;</span><span class="p">,</span>
+    <span class="n">zsrc_min</span><span class="o">=</span><span class="n">zsrc_min</span><span class="p">,</span>
+    <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span>
+    <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+    <span class="n">ngals</span><span class="o">=</span><span class="n">ngals</span><span class="p">,</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 <p>Loading this into a CLMM cluster object centered on (0,0)</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cluster_ra</span> <span class="o">=</span> <span class="mf">0.0</span>
 <span class="n">cluster_dec</span> <span class="o">=</span> <span class="mf">0.0</span>
-<span class="n">cl</span> <span class="o">=</span> <span class="n">GalaxyCluster</span><span class="p">(</span><span class="n">cluster_id</span><span class="p">,</span> <span class="n">cluster_ra</span><span class="p">,</span> <span class="n">cluster_dec</span><span class="p">,</span>
-                               <span class="n">cluster_z</span><span class="p">,</span> <span class="n">noisy_data_z</span><span class="p">)</span>
+<span class="n">cl</span> <span class="o">=</span> <span class="n">GalaxyCluster</span><span class="p">(</span><span class="n">cluster_id</span><span class="p">,</span> <span class="n">cluster_ra</span><span class="p">,</span> <span class="n">cluster_dec</span><span class="p">,</span> <span class="n">cluster_z</span><span class="p">,</span> <span class="n">noisy_data_z</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Compute cross and tangential excess surface density for each source
 galaxy</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">_</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">compute_tangential_and_cross_components</span><span class="p">(</span>
-    <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;flat&quot;</span><span class="p">,</span> <span class="n">shape_component1</span><span class="o">=</span><span class="s1">&#39;e1&#39;</span><span class="p">,</span> <span class="n">shape_component2</span><span class="o">=</span><span class="s1">&#39;e2&#39;</span><span class="p">,</span>
-    <span class="n">tan_component</span><span class="o">=</span><span class="s1">&#39;DeltaSigma_tan&#39;</span><span class="p">,</span> <span class="n">cross_component</span><span class="o">=</span><span class="s1">&#39;DeltaSigma_cross&#39;</span><span class="p">,</span>
-    <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">is_deltasigma</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;flat&quot;</span><span class="p">,</span>
+    <span class="n">shape_component1</span><span class="o">=</span><span class="s2">&quot;e1&quot;</span><span class="p">,</span>
+    <span class="n">shape_component2</span><span class="o">=</span><span class="s2">&quot;e2&quot;</span><span class="p">,</span>
+    <span class="n">tan_component</span><span class="o">=</span><span class="s2">&quot;DeltaSigma_tan&quot;</span><span class="p">,</span>
+    <span class="n">cross_component</span><span class="o">=</span><span class="s2">&quot;DeltaSigma_cross&quot;</span><span class="p">,</span>
+    <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
+    <span class="n">is_deltasigma</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="n">cori</span><span class="o">/</span><span class="mf">3.9</span><span class="o">-</span><span class="n">anaconda</span><span class="o">-</span><span class="mf">2021.11</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.11</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">1.7.1</span><span class="o">-</span><span class="n">py3</span><span class="mf">.11</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">cosmology</span><span class="o">/</span><span class="n">parent_class</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">435</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="k">global</span><span class="o">/</span><span class="n">homes</span><span class="o">/</span><span class="n">a</span><span class="o">/</span><span class="n">aguena</span><span class="o">/.</span><span class="n">local</span><span class="o">/</span><span class="n">perlmutter</span><span class="o">/</span><span class="n">python</span><span class="o">-</span><span class="mf">3.11</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.11</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">clmm</span><span class="o">-</span><span class="mf">1.10.0</span><span class="o">-</span><span class="n">py3</span><span class="mf">.11</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">clmm</span><span class="o">/</span><span class="n">cosmology</span><span class="o">/</span><span class="n">parent_class</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">454</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span>
 <span class="n">Some</span> <span class="n">source</span> <span class="n">redshifts</span> <span class="n">are</span> <span class="n">lower</span> <span class="n">than</span> <span class="n">the</span> <span class="n">cluster</span> <span class="n">redshift</span><span class="o">.</span>
 <span class="n">Sigma_crit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span> <span class="k">for</span> <span class="n">those</span> <span class="n">galaxies</span><span class="o">.</span>
 </pre></div>
 </div>
 <p>Calculate the binned profile</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cl</span><span class="o">.</span><span class="n">make_radial_profile</span><span class="p">(</span><span class="s2">&quot;kpc&quot;</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
-                       <span class="n">tan_component_in</span><span class="o">=</span><span class="s1">&#39;DeltaSigma_tan&#39;</span><span class="p">,</span> <span class="n">cross_component_in</span><span class="o">=</span><span class="s1">&#39;DeltaSigma_cross&#39;</span><span class="p">,</span>
-                       <span class="n">tan_component_out</span><span class="o">=</span><span class="s1">&#39;DeltaSigma_tan&#39;</span><span class="p">,</span> <span class="n">cross_component_out</span><span class="o">=</span><span class="s1">&#39;DeltaSigma_cross&#39;</span><span class="p">,</span>
-                       <span class="n">table_name</span><span class="o">=</span><span class="s1">&#39;DeltaSigma_profile&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cl</span><span class="o">.</span><span class="n">make_radial_profile</span><span class="p">(</span>
+    <span class="s2">&quot;kpc&quot;</span><span class="p">,</span>
+    <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
+    <span class="n">tan_component_in</span><span class="o">=</span><span class="s2">&quot;DeltaSigma_tan&quot;</span><span class="p">,</span>
+    <span class="n">cross_component_in</span><span class="o">=</span><span class="s2">&quot;DeltaSigma_cross&quot;</span><span class="p">,</span>
+    <span class="n">tan_component_out</span><span class="o">=</span><span class="s2">&quot;DeltaSigma_tan&quot;</span><span class="p">,</span>
+    <span class="n">cross_component_out</span><span class="o">=</span><span class="s2">&quot;DeltaSigma_cross&quot;</span><span class="p">,</span>
+    <span class="n">table_name</span><span class="o">=</span><span class="s2">&quot;DeltaSigma_profile&quot;</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="c1"># Format columns for display</span>
 <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="o">.</span><span class="n">colnames</span><span class="p">:</span>
     <span class="n">fmt</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">format</span>
-    <span class="k">if</span> <span class="s1">&#39;DeltaSigma&#39;</span> <span class="ow">in</span> <span class="n">col</span><span class="p">:</span>
-        <span class="n">fmt</span> <span class="o">=</span> <span class="s1">&#39;.2e&#39;</span>
-    <span class="k">elif</span> <span class="nb">any</span><span class="p">(</span><span class="n">typ</span> <span class="ow">in</span> <span class="n">col</span> <span class="k">for</span> <span class="n">typ</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;radius&#39;</span><span class="p">)):</span>
-        <span class="n">fmt</span> <span class="o">=</span> <span class="s1">&#39;.2f&#39;</span>
+    <span class="k">if</span> <span class="s2">&quot;DeltaSigma&quot;</span> <span class="ow">in</span> <span class="n">col</span><span class="p">:</span>
+        <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;.2e&quot;</span>
+    <span class="k">elif</span> <span class="nb">any</span><span class="p">(</span><span class="n">typ</span> <span class="ow">in</span> <span class="n">col</span> <span class="k">for</span> <span class="n">typ</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="s2">&quot;radius&quot;</span><span class="p">)):</span>
+        <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;.2f&quot;</span>
     <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">format</span> <span class="o">=</span> <span class="n">fmt</span>
 <span class="c1"># Show</span>
 <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="o">.</span><span class="n">show_in_notebook</span><span class="p">()</span>
 </pre></div>
 </div>
 <i>GCData length=10</i>
-<table id="table23455174878864-845689" class="table-striped table-bordered table-condensed">
+<table id="table140312001036944-695941" class="table-striped table-bordered table-condensed">
 <thead><tr><th>idx</th><th>radius_min</th><th>radius</th><th>radius_max</th><th>DeltaSigma_tan</th><th>DeltaSigma_tan_err</th><th>DeltaSigma_cross</th><th>DeltaSigma_cross_err</th><th>z</th><th>z_err</th><th>n_src</th><th>W_l</th></tr></thead>
-<tr><td>0</td><td>126.33</td><td>508.50</td><td>673.87</td><td>1.84e+14</td><td>1.12e+13</td><td>3.45e+11</td><td>2.42e+12</td><td>1.31</td><td>0.17</td><td>19</td><td>19.0</td></tr>
-<tr><td>1</td><td>673.87</td><td>988.75</td><td>1221.41</td><td>1.13e+14</td><td>3.50e+12</td><td>1.92e+12</td><td>2.71e+12</td><td>1.13</td><td>0.09</td><td>57</td><td>57.0</td></tr>
-<tr><td>2</td><td>1221.41</td><td>1533.45</td><td>1768.95</td><td>7.58e+13</td><td>2.35e+12</td><td>7.11e+10</td><td>1.80e+12</td><td>1.13</td><td>0.06</td><td>87</td><td>87.0</td></tr>
-<tr><td>3</td><td>1768.95</td><td>2061.71</td><td>2316.49</td><td>5.67e+13</td><td>1.85e+12</td><td>2.23e+12</td><td>1.47e+12</td><td>1.32</td><td>0.09</td><td>96</td><td>96.0</td></tr>
-<tr><td>4</td><td>2316.49</td><td>2598.44</td><td>2864.03</td><td>4.46e+13</td><td>1.34e+12</td><td>6.92e+11</td><td>1.31e+12</td><td>1.31</td><td>0.05</td><td>163</td><td>163.0</td></tr>
-<tr><td>5</td><td>2864.03</td><td>3154.61</td><td>3411.57</td><td>3.24e+13</td><td>1.18e+12</td><td>2.35e+12</td><td>1.22e+12</td><td>1.35</td><td>0.06</td><td>164</td><td>164.0</td></tr>
-<tr><td>6</td><td>3411.57</td><td>3700.92</td><td>3959.11</td><td>2.69e+13</td><td>1.19e+12</td><td>-1.25e+12</td><td>1.34e+12</td><td>1.19</td><td>0.05</td><td>193</td><td>193.0</td></tr>
-<tr><td>7</td><td>3959.11</td><td>4185.57</td><td>4506.65</td><td>2.47e+13</td><td>1.38e+12</td><td>-2.37e+11</td><td>1.35e+12</td><td>1.24</td><td>0.06</td><td>129</td><td>129.0</td></tr>
-<tr><td>8</td><td>4506.65</td><td>4729.89</td><td>5054.19</td><td>1.96e+13</td><td>1.63e+12</td><td>-1.19e+12</td><td>2.13e+12</td><td>1.39</td><td>0.09</td><td>69</td><td>69.0</td></tr>
-<tr><td>9</td><td>5054.19</td><td>5270.56</td><td>5601.73</td><td>1.97e+13</td><td>3.31e+12</td><td>6.14e+11</td><td>3.02e+12</td><td>1.22</td><td>0.18</td><td>23</td><td>23.0</td></tr>
+<tr><td>0</td><td>129.68</td><td>404.29</td><td>662.49</td><td>2.11e+14</td><td>1.21e+13</td><td>2.00e+12</td><td>2.58e+12</td><td>1.49</td><td>0.15</td><td>21</td><td>21.0</td></tr>
+<tr><td>1</td><td>662.49</td><td>897.54</td><td>1195.31</td><td>1.38e+14</td><td>1.38e+13</td><td>-9.11e+10</td><td>4.90e+12</td><td>1.15</td><td>0.08</td><td>50</td><td>50.0</td></tr>
+<tr><td>2</td><td>1195.31</td><td>1509.51</td><td>1728.12</td><td>7.95e+13</td><td>3.68e+12</td><td>-6.72e+11</td><td>2.53e+12</td><td>1.20</td><td>0.08</td><td>68</td><td>68.0</td></tr>
+<tr><td>3</td><td>1728.12</td><td>2012.26</td><td>2260.93</td><td>5.73e+13</td><td>1.86e+12</td><td>-2.10e+12</td><td>1.76e+12</td><td>1.21</td><td>0.07</td><td>103</td><td>103.0</td></tr>
+<tr><td>4</td><td>2260.93</td><td>2551.61</td><td>2793.74</td><td>4.40e+13</td><td>1.50e+12</td><td>1.01e+12</td><td>1.17e+12</td><td>1.20</td><td>0.05</td><td>130</td><td>130.0</td></tr>
+<tr><td>5</td><td>2793.74</td><td>3058.68</td><td>3326.55</td><td>3.71e+13</td><td>1.27e+12</td><td>-4.86e+11</td><td>1.44e+12</td><td>1.30</td><td>0.06</td><td>157</td><td>157.0</td></tr>
+<tr><td>6</td><td>3326.55</td><td>3605.89</td><td>3859.37</td><td>3.01e+13</td><td>1.57e+12</td><td>2.20e+12</td><td>2.82e+12</td><td>1.30</td><td>0.05</td><td>192</td><td>192.0</td></tr>
+<tr><td>7</td><td>3859.37</td><td>4079.44</td><td>4392.18</td><td>2.39e+13</td><td>1.22e+12</td><td>5.17e+11</td><td>1.47e+12</td><td>1.37</td><td>0.06</td><td>144</td><td>144.0</td></tr>
+<tr><td>8</td><td>4392.18</td><td>4635.51</td><td>4924.99</td><td>1.82e+13</td><td>1.66e+12</td><td>2.09e+12</td><td>1.65e+12</td><td>1.28</td><td>0.07</td><td>87</td><td>87.0</td></tr>
+<tr><td>9</td><td>4924.99</td><td>5107.68</td><td>5457.80</td><td>1.28e+13</td><td>3.50e+12</td><td>-1.97e+12</td><td>2.42e+12</td><td>1.17</td><td>0.09</td><td>48</td><td>48.0</td></tr>
 </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
 .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
 display: inline-block; margin-right: 1em; }
@@ -255,14 +282,14 @@ require.config({paths: {
     datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
 }});
 require(["datatables"], function(){
-    console.log("$('#table23455174878864-845689').dataTable()");
+    console.log("$('#table140312001036944-695941').dataTable()");
 
 jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     "optionalnum-asc": astropy_sort_num,
     "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
 });
 
-    $('#table23455174878864-845689').dataTable({
+    $('#table140312001036944-695941').dataTable({
         order: [],
         pageLength: 50,
         lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -271,19 +298,23 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     });
 });
 </script><p>Plot the <span class="math notranslate nohighlight">\(\Delta\Sigma\)</span> profile</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s1">&#39;DeltaSigma_tan&#39;</span><span class="p">],</span>
-             <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s1">&#39;DeltaSigma_tan_err&#39;</span><span class="p">],</span> <span class="n">marker</span> <span class="o">=</span> <span class="s1">&#39;o&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span>
+    <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s2">&quot;radius&quot;</span><span class="p">],</span>
+    <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s2">&quot;DeltaSigma_tan&quot;</span><span class="p">],</span>
+    <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s2">&quot;DeltaSigma_tan_err&quot;</span><span class="p">],</span>
+    <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span>
+<span class="p">)</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;DeltaSigma profile&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;DeltaSigma profile&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Radius [kpc]&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;$\Delta\Sigma [M_\odot\; Mpc^{-2}]$&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;$\Delta\Sigma [M_\odot\; Mpc^{-2}]$&quot;</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 <img alt="../_images/demo_boost_factors_16_0.png" src="../_images/demo_boost_factors_16_0.png" />
 <section id="id1">
-<h3>Boost Factors<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h3>
+<h3>Boost Factors<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
 <p>CLMM offers two boost models, the NFW boost model, and a powerlaw boost
 model.</p>
 <p>Note that <code class="docutils literal notranslate"><span class="pre">compute_nfw_boost</span></code> requires two parameters to be specified,
@@ -292,14 +323,16 @@ paramters, <code class="docutils literal notranslate"><span class="pre">rs</span
 <p>Details on these boost models can be found
 <a class="reference external" href="https://cluster-toolkit.readthedocs.io/en/latest/source/boostfactors.html">here</a></p>
 <p>First, we can calculate the boost factors from the two models.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">nfw_boost</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">compute_nfw_boost</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span><span class="n">rs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">b0</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">nfw_boost</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">compute_nfw_boost</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s2">&quot;radius&quot;</span><span class="p">],</span> <span class="n">rscale</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">boost0</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
 
-<span class="n">powerlaw_boost</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">compute_powerlaw_boost</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span><span class="n">rs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">b0</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">powerlaw_boost</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">compute_powerlaw_boost</span><span class="p">(</span>
+    <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s2">&quot;radius&quot;</span><span class="p">],</span> <span class="n">rscale</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">boost0</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=-</span><span class="mf">1.0</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 <p>Plot the two boost factors, <span class="math notranslate nohighlight">\(B(R)\)</span></p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span><span class="n">nfw_boost</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;NFW boost factor&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span><span class="n">powerlaw_boost</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Powerlaw boost factor&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s2">&quot;radius&quot;</span><span class="p">],</span> <span class="n">nfw_boost</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;NFW boost factor&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s2">&quot;radius&quot;</span><span class="p">],</span> <span class="n">powerlaw_boost</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Powerlaw boost factor&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Radius [kpc]&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;$B(R)$&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
@@ -331,52 +364,90 @@ lower than the uncorrected one.</p>
 contamination by cluster members.</p>
 <p>First we will apply the boost factor with
 <code class="docutils literal notranslate"><span class="pre">correct_sigma_with_boost_values</span></code></p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Sigma_corrected_powerlaw_boost</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">correct_sigma_with_boost_values</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s1">&#39;DeltaSigma_tan&#39;</span><span class="p">],</span>
-                                                                   <span class="n">powerlaw_boost</span><span class="p">)</span>
-<span class="n">Sigma_corrected_nfw_boost</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">correct_sigma_with_boost_values</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s1">&#39;DeltaSigma_tan&#39;</span><span class="p">],</span>
-                                                              <span class="n">nfw_boost</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Sigma_corrected_powerlaw_boost</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">correct_sigma_with_boost_values</span><span class="p">(</span>
+    <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s2">&quot;DeltaSigma_tan&quot;</span><span class="p">],</span> <span class="n">powerlaw_boost</span>
+<span class="p">)</span>
+<span class="n">Sigma_corrected_nfw_boost</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">correct_sigma_with_boost_values</span><span class="p">(</span>
+    <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s2">&quot;DeltaSigma_tan&quot;</span><span class="p">],</span> <span class="n">nfw_boost</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 <p>Plot the result</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="n">Sigma_corrected_nfw_boost</span><span class="p">,</span>
-             <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s1">&#39;DeltaSigma_tan_err&#39;</span><span class="p">],</span> <span class="n">marker</span> <span class="o">=</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;$\Delta \Sigma$ / NFW boost factor&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span>
+    <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s2">&quot;radius&quot;</span><span class="p">],</span>
+    <span class="n">Sigma_corrected_nfw_boost</span><span class="p">,</span>
+    <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s2">&quot;DeltaSigma_tan_err&quot;</span><span class="p">],</span>
+    <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s2">&quot;$\Delta \Sigma$ / NFW boost factor&quot;</span><span class="p">,</span>
+<span class="p">)</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="n">Sigma_corrected_powerlaw_boost</span><span class="p">,</span>
-             <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s1">&#39;DeltaSigma_tan_err&#39;</span><span class="p">],</span> <span class="n">marker</span> <span class="o">=</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;$\Delta \Sigma$ / Powerlaw boost factor&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span>
+    <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s2">&quot;radius&quot;</span><span class="p">],</span>
+    <span class="n">Sigma_corrected_powerlaw_boost</span><span class="p">,</span>
+    <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s2">&quot;DeltaSigma_tan_err&quot;</span><span class="p">],</span>
+    <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s2">&quot;$\Delta \Sigma$ / Powerlaw boost factor&quot;</span><span class="p">,</span>
+<span class="p">)</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s1">&#39;DeltaSigma_tan&#39;</span><span class="p">],</span>
-             <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s1">&#39;DeltaSigma_tan_err&#39;</span><span class="p">],</span> <span class="n">marker</span> <span class="o">=</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;uncorrected $\Delta \Sigma$&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span>
+    <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s2">&quot;radius&quot;</span><span class="p">],</span>
+    <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s2">&quot;DeltaSigma_tan&quot;</span><span class="p">],</span>
+    <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s2">&quot;DeltaSigma_tan_err&quot;</span><span class="p">],</span>
+    <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s2">&quot;uncorrected $\Delta \Sigma$&quot;</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">,</span>
+<span class="p">)</span>
 
-<span class="c1">#plt.loglog()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;DeltaSigma profile&#39;</span><span class="p">)</span>
+<span class="c1"># plt.loglog()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;DeltaSigma profile&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Radius [kpc]&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;$\Delta\Sigma [M_\odot\; Mpc^{-2}]$&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;$\Delta\Sigma [M_\odot\; Mpc^{-2}]$&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 <img alt="../_images/demo_boost_factors_27_0.png" src="../_images/demo_boost_factors_27_0.png" />
 <p>Now the same again but with <code class="docutils literal notranslate"><span class="pre">correct_sigma_with_boost_model</span></code></p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Sigma_corrected_powerlaw_boost</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">correct_sigma_with_boost_model</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span>
-                                                                   <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s1">&#39;DeltaSigma_tan&#39;</span><span class="p">],</span>
-                                                                   <span class="n">boost_model</span><span class="o">=</span><span class="s1">&#39;powerlaw_boost&#39;</span><span class="p">)</span>
-<span class="n">Sigma_corrected_nfw_boost</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">correct_sigma_with_boost_model</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span>
-                                                              <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s1">&#39;DeltaSigma_tan&#39;</span><span class="p">],</span>
-                                                              <span class="n">boost_model</span><span class="o">=</span><span class="s1">&#39;nfw_boost&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Sigma_corrected_powerlaw_boost</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">correct_sigma_with_boost_model</span><span class="p">(</span>
+    <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s2">&quot;radius&quot;</span><span class="p">],</span>
+    <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s2">&quot;DeltaSigma_tan&quot;</span><span class="p">],</span>
+    <span class="n">boost_model</span><span class="o">=</span><span class="s2">&quot;powerlaw_boost&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">Sigma_corrected_nfw_boost</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">correct_sigma_with_boost_model</span><span class="p">(</span>
+    <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s2">&quot;radius&quot;</span><span class="p">],</span>
+    <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s2">&quot;DeltaSigma_tan&quot;</span><span class="p">],</span>
+    <span class="n">boost_model</span><span class="o">=</span><span class="s2">&quot;nfw_boost&quot;</span><span class="p">,</span>
+<span class="p">)</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="n">Sigma_corrected_nfw_boost</span><span class="p">,</span>
-             <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s1">&#39;DeltaSigma_tan_err&#39;</span><span class="p">],</span> <span class="n">marker</span> <span class="o">=</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;$\Delta \Sigma$ / NFW boost factor&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span>
+    <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s2">&quot;radius&quot;</span><span class="p">],</span>
+    <span class="n">Sigma_corrected_nfw_boost</span><span class="p">,</span>
+    <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s2">&quot;DeltaSigma_tan_err&quot;</span><span class="p">],</span>
+    <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s2">&quot;$\Delta \Sigma$ / NFW boost factor&quot;</span><span class="p">,</span>
+<span class="p">)</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="n">Sigma_corrected_powerlaw_boost</span><span class="p">,</span>
-             <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s1">&#39;DeltaSigma_tan_err&#39;</span><span class="p">],</span> <span class="n">marker</span> <span class="o">=</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;$\Delta \Sigma$ / Powerlaw boost factor&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span>
+    <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s2">&quot;radius&quot;</span><span class="p">],</span>
+    <span class="n">Sigma_corrected_powerlaw_boost</span><span class="p">,</span>
+    <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s2">&quot;DeltaSigma_tan_err&quot;</span><span class="p">],</span>
+    <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s2">&quot;$\Delta \Sigma$ / Powerlaw boost factor&quot;</span><span class="p">,</span>
+<span class="p">)</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span> <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s1">&#39;DeltaSigma_tan&#39;</span><span class="p">],</span>
-             <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s1">&#39;DeltaSigma_tan_err&#39;</span><span class="p">],</span> <span class="n">marker</span> <span class="o">=</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;uncorrected $\Delta \Sigma$&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span>
+    <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s2">&quot;radius&quot;</span><span class="p">],</span>
+    <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s2">&quot;DeltaSigma_tan&quot;</span><span class="p">],</span>
+    <span class="n">cl</span><span class="o">.</span><span class="n">DeltaSigma_profile</span><span class="p">[</span><span class="s2">&quot;DeltaSigma_tan_err&quot;</span><span class="p">],</span>
+    <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s2">&quot;uncorrected $\Delta \Sigma$&quot;</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">,</span>
+<span class="p">)</span>
 
-<span class="c1">#plt.loglog()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;DeltaSigma profile&#39;</span><span class="p">)</span>
+<span class="c1"># plt.loglog()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;DeltaSigma profile&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Radius [kpc]&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;$\Delta\Sigma [M_\odot\; Mpc^{-2}]$&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;$\Delta\Sigma [M_\odot\; Mpc^{-2}]$&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>

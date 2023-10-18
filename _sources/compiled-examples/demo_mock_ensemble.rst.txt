@@ -28,7 +28,7 @@ Generate cluster ensemble with random masses and redshifts
 
 .. parsed-literal::
 
-    '1.7.1'
+    '1.10.0'
 
 
 
@@ -38,7 +38,7 @@ Generate cluster ensemble with random masses and redshifts
 
 .. code:: ipython3
 
-    cosmo = Cosmology(H0 = 71.0, Omega_dm0 = 0.265 - 0.0448, Omega_b0 = 0.0448, Omega_k0 = 0.0)
+    cosmo = Cosmology(H0=71.0, Omega_dm0=0.265 - 0.0448, Omega_b0=0.0448, Omega_k0=0.0)
 
 Generating a cluster catalog and associated source catalogs
 -----------------------------------------------------------
@@ -51,25 +51,27 @@ following a halo mass function).
 .. code:: ipython3
 
     # redshift and mass range of the galaxy clusters
-    z_bin = [0.2,0.25]
-    logm_bin = np.array([14, 14.1]) #Solar Mass
+    z_bin = [0.2, 0.25]
+    logm_bin = np.array([14, 14.1])  # Solar Mass
     
     # number of clusters in the ensemble
     n_clusters = 30
     
     # random draw in the mass and redshift range (for simplicity, uniform instead of following an actual mass function)
-    cluster_m = 10 **((logm_bin[1] - logm_bin[0])*np.random.random(n_clusters) + logm_bin[0]) #in M_sun
-    cluster_z =  (z_bin[1] - z_bin[0])*np.random.random(n_clusters) + z_bin[0] 
+    cluster_m = 10 ** (
+        (logm_bin[1] - logm_bin[0]) * np.random.random(n_clusters) + logm_bin[0]
+    )  # in M_sun
+    cluster_z = (z_bin[1] - z_bin[0]) * np.random.random(n_clusters) + z_bin[0]
     
     # random normal draw of cluster concentration, around c_mean
-    c_mean = 4.
-    lnc = abs(np.log(c_mean) + 0.01*np.random.randn(n_clusters))
+    c_mean = 4.0
+    lnc = abs(np.log(c_mean) + 0.01 * np.random.randn(n_clusters))
     concentration = np.exp(lnc)
     
     # randomly draw cluster positions on the sky
-    ra = np.random.random(n_clusters) * 360 #from 0 to 360 deg
+    ra = np.random.random(n_clusters) * 360  # from 0 to 360 deg
     sindec = np.random.random(n_clusters) * 2 - 1
-    dec = np.arcsin(sindec) * 180 / np.pi #from -90 to 90 deg
+    dec = np.arcsin(sindec) * 180 / np.pi  # from -90 to 90 deg
 
 Background galaxy catalog generation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -91,44 +93,68 @@ The cluster objects are then stored in ``gclist``.
 
 .. code:: ipython3
 
-    import warnings 
-    warnings.simplefilter('ignore') # just to prevent warning print out when looping over the cluster ensemble below
+    import warnings
+    
+    warnings.simplefilter(
+        "ignore"
+    )  # just to prevent warning print out when looping over the cluster ensemble below
 
 .. code:: ipython3
 
     gclist = []
     # number of galaxies in each cluster field (alternatively, can use the galaxy density instead)
     n_gals = 10000
-    #ngal_density = 10
+    # ngal_density = 10
     
     for i in range(n_clusters):
         # generate background galaxy catalog for cluster i
-        noisy_data_z = mock.generate_galaxy_catalog(cluster_m[i], cluster_z[i], concentration[i], cosmo, 
-                                                    cluster_ra=ra[i], cluster_dec=dec[i],
-                                                    zsrc = 'chang13', 
-                                                    delta_so=200, 
-                                                    massdef='critical',
-                                                    halo_profile_model='nfw', 
-                                                    zsrc_min=cluster_z[i] + 0.1,
-                                                    zsrc_max=3., 
-                                                    field_size=10., 
-                                                    shapenoise=.04, 
-                                                    photoz_sigma_unscaled=0.02, 
-                                                    ngals=n_gals,
-                                                    mean_e_err=.1)
+        noisy_data_z = mock.generate_galaxy_catalog(
+            cluster_m[i],
+            cluster_z[i],
+            concentration[i],
+            cosmo,
+            cluster_ra=ra[i],
+            cluster_dec=dec[i],
+            zsrc="chang13",
+            delta_so=200,
+            massdef="critical",
+            halo_profile_model="nfw",
+            zsrc_min=cluster_z[i] + 0.1,
+            zsrc_max=3.0,
+            field_size=10.0,
+            shapenoise=0.04,
+            photoz_sigma_unscaled=0.02,
+            ngals=n_gals,
+            mean_e_err=0.1,
+        )
     
-        cl = clmm.GalaxyCluster('mock_cluster', ra[i], dec[i], cluster_z[i], noisy_data_z)
+        cl = clmm.GalaxyCluster("mock_cluster", ra[i], dec[i], cluster_z[i], noisy_data_z)
     
         # compute DeltaSigma for each background galaxy
-        cl.compute_tangential_and_cross_components(shape_component1='e1', shape_component2='e2', 
-                                                   tan_component='DS_t', cross_component='DS_x',
-                                                   cosmo=cosmo, is_deltasigma=True, use_pdz=True)
-        
+        cl.compute_tangential_and_cross_components(
+            shape_component1="e1",
+            shape_component2="e2",
+            tan_component="DS_t",
+            cross_component="DS_x",
+            cosmo=cosmo,
+            is_deltasigma=True,
+            use_pdz=True,
+        )
+    
         # compute the weights to be used to bluid the DeltaSigma radial profiles
-        cl.compute_galaxy_weights(use_pdz = True,
-        use_shape_noise = True, shape_component1 = 'e1', shape_component2 = 'e2', 
-        use_shape_error = True, shape_component1_err = 'e_err', shape_component2_err = 'e_err', 
-        weight_name = 'w_ls', cosmo = cosmo, is_deltasigma = True, add = True)
+        cl.compute_galaxy_weights(
+            use_pdz=True,
+            use_shape_noise=True,
+            shape_component1="e1",
+            shape_component2="e2",
+            use_shape_error=True,
+            shape_component1_err="e_err",
+            shape_component2_err="e_err",
+            weight_name="w_ls",
+            cosmo=cosmo,
+            is_deltasigma=True,
+            add=True,
+        )
     
         # append the cluster in the list
         gclist.append(cl)
@@ -142,7 +168,7 @@ The cluster objects are then stored in ``gclist``.
 
 .. parsed-literal::
 
-    <TableColumns names=('ra','dec','e1','e2','e_err','z','ztrue','pzpdf','id','sigma_c','theta','DS_t','DS_x','w_ls')>
+    <TableColumns names=('ra','dec','e1','e2','e_err','z','ztrue','pzpdf','id','sigma_c_eff','theta','DS_t','DS_x','w_ls')>
 
 
 
@@ -166,13 +192,21 @@ to compute
 .. code:: ipython3
 
     ensemble_id = 1
-    names = ['id', 'ra', 'dec', 'z', 'radius', 'gt', 'gx', 'W_l']
-    bins = np.logspace(np.log10(0.3),np.log10(5),10)
-    clusterensemble = ClusterEnsemble(ensemble_id, gclist, 
-                                      tan_component_in='DS_t', cross_component_in='DS_x', 
-                                      tan_component_out='DS_t', cross_component_out='DS_x', 
-                                      weights_in='w_ls', weights_out='W_l', 
-                                      bins=bins, bin_units='Mpc', cosmo=cosmo)
+    names = ["id", "ra", "dec", "z", "radius", "gt", "gx", "W_l"]
+    bins = np.logspace(np.log10(0.3), np.log10(5), 10)
+    clusterensemble = ClusterEnsemble(
+        ensemble_id,
+        gclist,
+        tan_component_in="DS_t",
+        cross_component_in="DS_x",
+        tan_component_out="DS_t",
+        cross_component_out="DS_x",
+        weights_in="w_ls",
+        weights_out="W_l",
+        bins=bins,
+        bin_units="Mpc",
+        cosmo=cosmo,
+    )
 
 There is also the option to create an ``ClusterEnsemble`` object without
 the clusters list. Then, the user may compute the individual profile for
@@ -188,10 +222,17 @@ individual profile and then delete the cluster object.
     empty_cluster_ensemble = ClusterEnsemble(ensemble_id2)
     for cluster in gclist:
         empty_cluster_ensemble.make_individual_radial_profile(
-            galaxycluster=cluster, tan_component_in='DS_t', cross_component_in='DS_x', 
-            tan_component_out='DS_t', cross_component_out='DS_x', 
-            weights_in='w_ls', weights_out='W_l', 
-            bins=bins, bin_units='Mpc', cosmo=cosmo)
+            galaxycluster=cluster,
+            tan_component_in="DS_t",
+            cross_component_in="DS_x",
+            tan_component_out="DS_t",
+            cross_component_out="DS_x",
+            weights_in="w_ls",
+            weights_out="W_l",
+            bins=bins,
+            bin_units="Mpc",
+            cosmo=cosmo,
+        )
 
 A third option is where all clusters already have the profile computed,
 and we just add those to the ``ClusterEnsemble`` object:
@@ -201,10 +242,16 @@ and we just add those to the ``ClusterEnsemble`` object:
     # add profiles to gclist
     for cluster in gclist:
         cluster.make_radial_profile(
-            tan_component_in='DS_t', cross_component_in='DS_x', 
-            tan_component_out='DS_t', cross_component_out='DS_x', 
-            weights_in = 'w_ls', weights_out = 'W_l', 
-            bins=bins, bin_units='Mpc', cosmo=cosmo)
+            tan_component_in="DS_t",
+            cross_component_in="DS_x",
+            tan_component_out="DS_t",
+            cross_component_out="DS_x",
+            weights_in="w_ls",
+            weights_out="W_l",
+            bins=bins,
+            bin_units="Mpc",
+            cosmo=cosmo,
+        )
 
 .. code:: ipython3
 
@@ -212,8 +259,12 @@ and we just add those to the ``ClusterEnsemble`` object:
     empty_cluster_ensemble = ClusterEnsemble(ensemble_id3)
     for cluster in gclist:
         empty_cluster_ensemble.add_individual_radial_profile(
-            galaxycluster=cluster, profile_table=cluster.profile,
-            tan_component='DS_t', cross_component='DS_x', weights='W_l')
+            galaxycluster=cluster,
+            profile_table=cluster.profile,
+            tan_component="DS_t",
+            cross_component="DS_x",
+            weights="W_l",
+        )
 
 Stacked profile of the cluster ensemble
 ---------------------------------------
@@ -222,7 +273,7 @@ The stacked radial profile of the ensemble is then obtained as
 
 .. code:: ipython3
 
-    clusterensemble.make_stacked_radial_profile(tan_component='DS_t', cross_component='DS_x')
+    clusterensemble.make_stacked_radial_profile(tan_component="DS_t", cross_component="DS_x")
 
 Covariance (Bootstrap, sample, Jackknife) of the stack between radial bins
 --------------------------------------------------------------------------
@@ -250,24 +301,49 @@ but these are not (yet) available in ``CLMM``
 
 .. code:: ipython3
 
-    clusterensemble.compute_sample_covariance(tan_component='DS_t', cross_component='DS_x')
-    clusterensemble.compute_bootstrap_covariance(tan_component='DS_t', cross_component='DS_x', n_bootstrap=300)
-    clusterensemble.compute_jackknife_covariance(n_side=16,tan_component='DS_t', cross_component='DS_x')
+    clusterensemble.compute_sample_covariance(tan_component="DS_t", cross_component="DS_x")
+    clusterensemble.compute_bootstrap_covariance(
+        tan_component="DS_t", cross_component="DS_x", n_bootstrap=300
+    )
+    clusterensemble.compute_jackknife_covariance(
+        n_side=16, tan_component="DS_t", cross_component="DS_x"
+    )
 
 .. code:: ipython3
 
-    plt.figure(figsize = (7,7))
-    plt.rcParams['axes.linewidth'] = 2
-    plt.plot(clusterensemble.data['radius'][0], clusterensemble.cov_tan_sv.diagonal()**0.5/1e13,'--',c = 'royalblue', label = 'Sample', linewidth = 3)
-    plt.plot(clusterensemble.data['radius'][0], clusterensemble.cov_tan_bs.diagonal()**0.5/1e13,'-s',c = 'g', label = 'Bootstrap', linewidth = 3, markersize = 10)
-    plt.plot(clusterensemble.data['radius'][0], clusterensemble.cov_tan_jk.diagonal()**0.5/1e13,c = 'r', label = 'Jackknife', linewidth = 3)
-    plt.xlabel('R [Mpc]', fontsize =20)
-    plt.ylabel(r'$\sigma_{\Delta\Sigma}\ (\times 10^{13} M_\odot /Mpc^2)$', fontsize =25)
-    plt.tick_params(axis='both', which = 'major', labelsize= 18)
-    plt.legend(frameon = False, fontsize = 20)
+    plt.figure(figsize=(7, 7))
+    plt.rcParams["axes.linewidth"] = 2
+    plt.plot(
+        clusterensemble.data["radius"][0],
+        clusterensemble.cov["tan_sc"].diagonal() ** 0.5 / 1e13,
+        "--",
+        c="royalblue",
+        label="Sample",
+        linewidth=3,
+    )
+    plt.plot(
+        clusterensemble.data["radius"][0],
+        clusterensemble.cov["tan_bs"].diagonal() ** 0.5 / 1e13,
+        "-s",
+        c="g",
+        label="Bootstrap",
+        linewidth=3,
+        markersize=10,
+    )
+    plt.plot(
+        clusterensemble.data["radius"][0],
+        clusterensemble.cov["tan_jk"].diagonal() ** 0.5 / 1e13,
+        c="r",
+        label="Jackknife",
+        linewidth=3,
+    )
+    plt.xlabel("R [Mpc]", fontsize=20)
+    plt.ylabel(r"$\sigma_{\Delta\Sigma}\ (\times 10^{13} M_\odot /Mpc^2)$", fontsize=25)
+    plt.tick_params(axis="both", which="major", labelsize=18)
+    plt.legend(frameon=False, fontsize=20)
     plt.minorticks_on()
-    plt.grid(lw=.5)
-    plt.grid(which='minor', lw=.1)
+    plt.grid(lw=0.5)
+    plt.grid(which="minor", lw=0.1)
     plt.loglog()
 
 
@@ -285,23 +361,21 @@ but these are not (yet) available in ``CLMM``
 
 .. code:: ipython3
 
-    fig, axes = plt.subplots(1,3, figsize =(20, 5))
-    plt.rcParams['axes.linewidth'] = 2
+    fig, axes = plt.subplots(1, 3, figsize=(20, 5))
+    plt.rcParams["axes.linewidth"] = 2
     fig.subplots_adjust(wspace=0.15, hspace=0)
     
-    maximum = clusterensemble.cov_tan_sv.max()
+    maximum = clusterensemble.cov["tan_sc"].max()
     for ax, cov, label in zip(
         axes,
-        [clusterensemble.cov_tan_sv, 
-         clusterensemble.cov_tan_bs,
-         clusterensemble.cov_tan_jk],
-        ['Stack : Sample', 'Stack : Bootstrap', 'Stack : Jackknife'],
+        [clusterensemble.cov["tan_sc"], clusterensemble.cov["tan_bs"], clusterensemble.cov["tan_jk"]],
+        ["Stack : Sample", "Stack : Bootstrap", "Stack : Jackknife"],
     ):
-        ax.set_title(label, fontsize = 20)
-        ax.set_xlabel('radial bin index', fontsize=18)
-        ax.set_ylabel('radial bin index', fontsize=18)
-        ax.tick_params(axis='both', which='major', labelsize=12)
-        im = ax.imshow(cov, cmap = 'Reds', vmin=0, vmax=maximum, origin='lower')
+        ax.set_title(label, fontsize=20)
+        ax.set_xlabel("radial bin index", fontsize=18)
+        ax.set_ylabel("radial bin index", fontsize=18)
+        ax.tick_params(axis="both", which="major", labelsize=12)
+        im = ax.imshow(cov, cmap="Reds", vmin=0, vmax=maximum, origin="lower")
         plt.colorbar(im, ax=ax)
 
 
@@ -319,7 +393,7 @@ mass, concentration and redshift in the stack (dashed black)
 
 .. code:: ipython3
 
-    moo = clmm.Modeling(massdef = 'critical', delta_mdef = 200, halo_profile_model = 'nfw')
+    moo = clmm.Modeling(massdef="critical", delta_mdef=200, halo_profile_model="nfw")
     moo.set_cosmo(cosmo)
     # Average values of mass and concentration of the ensemble to be used below to overplot the model on the stacked profile
     moo.set_concentration(concentration.mean())
@@ -327,46 +401,97 @@ mass, concentration and redshift in the stack (dashed black)
 
 .. code:: ipython3
 
-    r_stack, gt_stack, gx_stack = (clusterensemble.stacked_data[c] for c in ('radius', 'DS_t', 'DS_x'))
-    plt.rcParams['axes.linewidth'] = 2
-    fig, axs = plt.subplots(1,2, figsize = (17,6))
+    r_stack, gt_stack, gx_stack = (clusterensemble.stacked_data[c] for c in ("radius", "DS_t", "DS_x"))
+    plt.rcParams["axes.linewidth"] = 2
+    fig, axs = plt.subplots(1, 2, figsize=(17, 6))
     
-    err_gt = clusterensemble.cov_tan_sv.diagonal()**0.5/1e13
-    err_gx = clusterensemble.cov_cross_sv.diagonal()**0.5/1e13
+    err_gt = clusterensemble.cov["tan_sc"].diagonal() ** 0.5 / 1e13
+    err_gx = clusterensemble.cov["cross_sc"].diagonal() ** 0.5 / 1e13
     
-    axs[0].errorbar(r_stack,gt_stack/1e13, err_gt,markersize = 5, c = 'r', fmt = 'o', capsize = 10, elinewidth = 1, zorder = 1000, alpha = 1, label = 'Stack')
-    axs[1].errorbar(r_stack,gx_stack/1e13, err_gx,markersize = 5, c = 'r', fmt = 'o', capsize = 10, elinewidth = 1, zorder = 1000, alpha = 1, label = 'Stack')
+    axs[0].errorbar(
+        r_stack,
+        gt_stack / 1e13,
+        err_gt,
+        markersize=5,
+        c="r",
+        fmt="o",
+        capsize=10,
+        elinewidth=1,
+        zorder=1000,
+        alpha=1,
+        label="Stack",
+    )
+    axs[1].errorbar(
+        r_stack,
+        gx_stack / 1e13,
+        err_gx,
+        markersize=5,
+        c="r",
+        fmt="o",
+        capsize=10,
+        elinewidth=1,
+        zorder=1000,
+        alpha=1,
+        label="Stack",
+    )
     
-    axs[0].plot(clusterensemble.data['radius'][0],moo.eval_excess_surface_density(clusterensemble.data['radius'][0], cluster_z.mean())/1e13, '--k', linewidth = 3, label = 'Prediction from stack mean cluster', zorder = 100)
-    axs[1].plot(clusterensemble.data['radius'][0],0*moo.eval_excess_surface_density(clusterensemble.data['radius'][0], cluster_z.mean())/1e13, '--k', linewidth = 3, label = 'y=0', zorder = 100)
+    axs[0].plot(
+        clusterensemble.data["radius"][0],
+        moo.eval_excess_surface_density(clusterensemble.data["radius"][0], cluster_z.mean()) / 1e13,
+        "--k",
+        linewidth=3,
+        label="Prediction from stack mean cluster",
+        zorder=100,
+    )
+    axs[1].plot(
+        clusterensemble.data["radius"][0],
+        0 * moo.eval_excess_surface_density(clusterensemble.data["radius"][0], cluster_z.mean()) / 1e13,
+        "--k",
+        linewidth=3,
+        label="y=0",
+        zorder=100,
+    )
     
-    axs[0].set_xscale('log')
-    axs[1].set_xscale('log')
+    axs[0].set_xscale("log")
+    axs[1].set_xscale("log")
     
     
     for i in range(n_clusters):
-        axs[0].plot(clusterensemble.data['radius'][i],clusterensemble.data['DS_t'][i]/1e13, 'cyan', label = 'Individual', alpha = 1, linewidth = 1)
-        axs[1].plot(clusterensemble.data['radius'][i],clusterensemble.data['DS_x'][i]/1e13, 'cyan', label = 'Individual', alpha = 1, linewidth = 1)
+        axs[0].plot(
+            clusterensemble.data["radius"][i],
+            clusterensemble.data["DS_t"][i] / 1e13,
+            "cyan",
+            label="Individual",
+            alpha=1,
+            linewidth=1,
+        )
+        axs[1].plot(
+            clusterensemble.data["radius"][i],
+            clusterensemble.data["DS_x"][i] / 1e13,
+            "cyan",
+            label="Individual",
+            alpha=1,
+            linewidth=1,
+        )
         if i == 0:
-            axs[0].legend(frameon = False, fontsize = 15)
-            axs[1].legend(frameon = False, fontsize = 15)
-    #axs[0].plot(np.average(clusterensemble.data['radius'], axis = 0), np.average(clusterensemble.data['gt'], weights = None, axis = 0)/1e13)
-    axs[0].set_xlabel('R [Mpc]', fontsize =20)
-    axs[1].set_xlabel('R [Mpc]', fontsize =20)
-    axs[0].tick_params(axis='both', which = 'major', labelsize= 18)
-    axs[1].tick_params(axis='both', which = 'major', labelsize= 18)
-    axs[0].set_ylabel(r'$\Delta\Sigma_+$ $[\times 10^{13} M_\odot /Mpc^])$', fontsize= 20)
-    axs[1].set_ylabel(r'$\Delta\Sigma_\times$  $[\times 10^{13} M_\odot /Mpc^2]$', fontsize= 20)
-    axs[0].set_title(r'Tangential', fontsize= 20)
-    axs[1].set_title(r'Cross', fontsize= 20)
+            axs[0].legend(frameon=False, fontsize=15)
+            axs[1].legend(frameon=False, fontsize=15)
+    # axs[0].plot(np.average(clusterensemble.data['radius'], axis = 0), np.average(clusterensemble.data['gt'], weights = None, axis = 0)/1e13)
+    axs[0].set_xlabel("R [Mpc]", fontsize=20)
+    axs[1].set_xlabel("R [Mpc]", fontsize=20)
+    axs[0].tick_params(axis="both", which="major", labelsize=18)
+    axs[1].tick_params(axis="both", which="major", labelsize=18)
+    axs[0].set_ylabel(r"$\Delta\Sigma_+$ $[\times 10^{13} M_\odot /Mpc^])$", fontsize=20)
+    axs[1].set_ylabel(r"$\Delta\Sigma_\times$  $[\times 10^{13} M_\odot /Mpc^2]$", fontsize=20)
+    axs[0].set_title(r"Tangential", fontsize=20)
+    axs[1].set_title(r"Cross", fontsize=20)
     
     for ax in axs:
         ax.minorticks_on()
-        ax.grid(lw=.5)
-        ax.grid(which='minor', lw=.1)
+        ax.grid(lw=0.5)
+        ax.grid(which="minor", lw=0.1)
     
     plt.show()
-
 
 
 
@@ -380,8 +505,8 @@ The ``ClusterEnsemble`` object also have an option for saving/loading:
 
 .. code:: ipython3
 
-    clusterensemble.save('ce.pkl')
+    clusterensemble.save("ce.pkl")
 
 .. code:: ipython3
 
-    clusterensemble2 = ClusterEnsemble.load('ce.pkl')
+    clusterensemble2 = ClusterEnsemble.load("ce.pkl")

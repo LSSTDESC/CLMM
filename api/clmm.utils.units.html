@@ -1,27 +1,26 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>clmm.theory.be_setup module &mdash; CLMM 1.7.1 documentation</title>
+  <title>clmm.utils.units module &mdash; CLMM 1.10.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=1d24b1d9"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="clmm.theory.ccl module" href="clmm.theory.ccl.html" />
-    <link rel="prev" title="clmm.theory package" href="clmm.theory.html" /> 
+    <link rel="next" title="clmm.utils.validation module" href="clmm.utils.validation.html" />
+    <link rel="prev" title="clmm.utils.statistic module" href="clmm.utils.statistic.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -29,14 +28,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> CLMM
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CLMM
           </a>
               <div class="version">
-                1.7.1
+                1.10.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -89,8 +92,12 @@
 <li class="toctree-l2"><a class="reference internal" href="clmm.dataops.html">clmm.dataops package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.gcdata.html">clmm.gcdata module</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="clmm.theory.html">clmm.theory package</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">clmm.theory.be_setup module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.redshift.html">clmm.redshift package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="clmm.redshift.distributions.html">clmm.redshift.distributions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.redshift.tools.html">clmm.redshift.tools module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.theory.html">clmm.theory package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="clmm.theory.ccl.html">clmm.theory.ccl module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="clmm.theory.cluster_toolkit.html">clmm.theory.cluster_toolkit module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="clmm.theory.func_layer.html">clmm.theory.func_layer module</a></li>
@@ -100,8 +107,15 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.plotting.html">clmm.plotting package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="clmm.utils.html">clmm.utils module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="clmm.z_distributions.html">clmm.z_distributions module</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="clmm.utils.html">clmm.utils package</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.beta_lens.html">clmm.utils.beta_lens module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.boost.html">clmm.utils.boost module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.ellipticity.html">clmm.utils.ellipticity module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.statistic.html">clmm.utils.statistic module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">clmm.utils.units module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.validation.html">clmm.utils.validation module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.support.html">clmm.support package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="clmm.support.mock_data.html">clmm.support.mock_data module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="clmm.support.sampler.html">clmm.support.sampler module</a></li>
@@ -124,12 +138,12 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../api.html">API Documentation</a></li>
-          <li class="breadcrumb-item"><a href="clmm.theory.html">clmm.theory package</a></li>
-      <li class="breadcrumb-item active">clmm.theory.be_setup module</li>
+          <li class="breadcrumb-item"><a href="clmm.utils.html">clmm.utils package</a></li>
+      <li class="breadcrumb-item active">clmm.utils.units module</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/api/clmm.theory.be_setup.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/api/clmm.utils.units.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -137,10 +151,37 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-clmm.theory.be_setup">
-<span id="clmm-theory-be-setup-module"></span><h1>clmm.theory.be_setup module<a class="headerlink" href="#module-clmm.theory.be_setup" title="Permalink to this heading"></a></h1>
-<p>&#64;file be_setup.py
-Setup config for the different backends</p>
+  <section id="module-clmm.utils.units">
+<span id="clmm-utils-units-module"></span><h1>clmm.utils.units module<a class="headerlink" href="#module-clmm.utils.units" title="Link to this heading"></a></h1>
+<p>General utility functions that are used in multiple modules</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="clmm.utils.units.convert_units">
+<span class="sig-prename descclassname"><span class="pre">clmm.utils.units.</span></span><span class="sig-name descname"><span class="pre">convert_units</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dist1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redshift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/utils/units.html#convert_units"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.utils.units.convert_units" title="Link to this definition"></a></dt>
+<dd><p>Convenience wrapper to convert between a combination of angular and physical units.</p>
+<p>Supported units: radians, degrees, arcmin, arcsec, Mpc, kpc, pc
+(letter case independent)</p>
+<p>To convert between angular and physical units you must provide both
+<cite>redshift</cite> and a CLMM Cosmology object <cite>cosmo</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dist1</strong> (<em>float</em><em>, </em><em>array_like</em>) -- Input distances</p></li>
+<li><p><strong>unit1</strong> (<em>str</em>) -- Unit for the input distances</p></li>
+<li><p><strong>unit2</strong> (<em>str</em>) -- Unit for the output distances</p></li>
+<li><p><strong>redshift</strong> (<em>float</em><em>, </em><em>None</em><em>, </em><em>optional</em>) -- Redshift used to convert between angular and physical units. Default: None</p></li>
+<li><p><strong>cosmo</strong> (<em>clmm.Cosmology</em><em>, </em><em>None</em><em>, </em><em>optional</em>) -- CLMM Cosmology object to compute angular diameter distance to
+convert between physical and angular units. Default: None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>dist2</strong> -- Input distances converted to unit2</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float, numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 

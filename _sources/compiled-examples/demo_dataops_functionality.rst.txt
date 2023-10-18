@@ -44,7 +44,7 @@ Make sure we know which version we’re using
 
 .. parsed-literal::
 
-    '1.7.1'
+    '1.10.0'
 
 
 
@@ -59,7 +59,7 @@ Define cosmology object
 
 .. code:: ipython3
 
-    mock_cosmo = Cosmology(H0 = 70.0, Omega_dm0 = 0.27 - 0.045, Omega_b0 = 0.045, Omega_k0 = 0.0)
+    mock_cosmo = Cosmology(H0=70.0, Omega_dm0=0.27 - 0.045, Omega_b0=0.045, Omega_k0=0.0)
 
 1. Generate cluster object from mock data
 -----------------------------------------
@@ -73,32 +73,35 @@ Define toy cluster parameters for mock data generation
 
     cosmo = mock_cosmo
     cluster_id = "Awesome_cluster"
-    cluster_m = 1.e15
+    cluster_m = 1.0e15
     cluster_z = 0.3
     concentration = 4
     ngals = 10000
     
-    cluster_ra = 0.
-    cluster_dec = 90.
+    cluster_ra = 0.0
+    cluster_dec = 90.0
     
-    zsrc_min = cluster_z + 0.1 # we only want to draw background galaxies
+    zsrc_min = cluster_z + 0.1  # we only want to draw background galaxies
     
-    noisy_data_z = mock.generate_galaxy_catalog(cluster_m,
-                                                cluster_z,
-                                                concentration,
-                                                cosmo,
-                                                'chang13',
-                                                zsrc_min=zsrc_min,
-                                                shapenoise=0.05,
-                                                photoz_sigma_unscaled=0.05, ngals=ngals, 
-                                                cluster_ra=cluster_ra, cluster_dec=cluster_dec)
+    noisy_data_z = mock.generate_galaxy_catalog(
+        cluster_m,
+        cluster_z,
+        concentration,
+        cosmo,
+        "chang13",
+        zsrc_min=zsrc_min,
+        shapenoise=0.05,
+        photoz_sigma_unscaled=0.05,
+        ngals=ngals,
+        cluster_ra=cluster_ra,
+        cluster_dec=cluster_dec,
+    )
 
 Loading this into a CLMM cluster object centered on (0,0)
 
 .. code:: ipython3
 
-    cl = GalaxyCluster(cluster_id, cluster_ra, cluster_dec, 
-                                   cluster_z, noisy_data_z)
+    cl = GalaxyCluster(cluster_id, cluster_ra, cluster_dec, cluster_z, noisy_data_z)
 
 2. Load cluster object containing:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -112,8 +115,7 @@ Loading this into a CLMM cluster object centered on (0,0)
 
 .. code:: ipython3
 
-    print("Cluster info = ID:", cl.unique_id, "; ra:", cl.ra,
-          "; dec:", cl.dec, "; z_l :", cl.z)
+    print("Cluster info = ID:", cl.unique_id, "; ra:", cl.ra, "; dec:", cl.dec, "; z_l :", cl.z)
     print("The number of source galaxies is :", len(cl.galcat))
 
 
@@ -133,20 +135,20 @@ Loading this into a CLMM cluster object centered on (0,0)
 
     f, ax = plt.subplots(1, 2, figsize=(12, 4))
     
-    ax[0].scatter(cl.galcat['ra'], cl.galcat['dec'], color='blue', s=1, alpha=0.3)
-    ax[0].plot(cl.ra, cl.dec, 'ro')
-    ax[0].set_ylabel('dec', fontsize="large")
-    ax[0].set_xlabel('ra', fontsize="large")
+    ax[0].scatter(cl.galcat["ra"], cl.galcat["dec"], color="blue", s=1, alpha=0.3)
+    ax[0].plot(cl.ra, cl.dec, "ro")
+    ax[0].set_ylabel("dec", fontsize="large")
+    ax[0].set_xlabel("ra", fontsize="large")
     
-    hist = ax[1].hist(cl.galcat['z'], bins=40)[0]
-    ax[1].axvline(cl.z, c='r', ls='--')
-    ax[1].set_xlabel('$z_{source}$', fontsize="large")
-    xt = {t:f'{t}' for t in ax[1].get_xticks() if t!=0}
-    xt[cl.z] ='$z_{cl}$'
-    xto = sorted(list(xt.keys())+[cl.z])
+    hist = ax[1].hist(cl.galcat["z"], bins=40)[0]
+    ax[1].axvline(cl.z, c="r", ls="--")
+    ax[1].set_xlabel("$z_{source}$", fontsize="large")
+    xt = {t: f"{t}" for t in ax[1].get_xticks() if t != 0}
+    xt[cl.z] = "$z_{cl}$"
+    xto = sorted(list(xt.keys()) + [cl.z])
     ax[1].set_xticks(xto)
     ax[1].set_xticklabels(xt[t] for t in xto)
-    ax[1].get_xticklabels()[xto.index(cl.z)].set_color('red')
+    ax[1].get_xticklabels()[xto.index(cl.z)].set_color("red")
     plt.xlim(0, max(xto))
     plt.show()
 
@@ -161,19 +163,19 @@ Loading this into a CLMM cluster object centered on (0,0)
 
     fig, ax1 = plt.subplots(1, 1)
     
-    ax1.scatter(cl.galcat['e1'], cl.galcat['e2'], s=1, alpha=0.2)
-    ax1.set_xlabel('e1')
-    ax1.set_ylabel('e2')
-    ax1.set_aspect('equal', 'datalim')
-    ax1.axvline(0, linestyle='dotted', color='black')
-    ax1.axhline(0, linestyle='dotted', color='black')
+    ax1.scatter(cl.galcat["e1"], cl.galcat["e2"], s=1, alpha=0.2)
+    ax1.set_xlabel("e1")
+    ax1.set_ylabel("e2")
+    ax1.set_aspect("equal", "datalim")
+    ax1.axvline(0, linestyle="dotted", color="black")
+    ax1.axhline(0, linestyle="dotted", color="black")
 
 
 
 
 .. parsed-literal::
 
-    <matplotlib.lines.Line2D at 0x155515320e50>
+    <matplotlib.lines.Line2D at 0x7fe9e867d950>
 
 
 
@@ -190,9 +192,13 @@ Loading this into a CLMM cluster object centered on (0,0)
 .. code:: ipython3
 
     theta, e_t, e_x = compute_tangential_and_cross_components(
-                    ra_lens=cl.ra, dec_lens=cl.dec,
-                    ra_source=cl.galcat['ra'], dec_source=cl.galcat['dec'],
-                    shear1=cl.galcat['e1'], shear2=cl.galcat['e2'])
+        ra_lens=cl.ra,
+        dec_lens=cl.dec,
+        ra_source=cl.galcat["ra"],
+        dec_source=cl.galcat["dec"],
+        shear1=cl.galcat["e1"],
+        shear2=cl.galcat["e2"],
+    )
 
 3.1.1 Using ``GalaxyCluster`` object
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -205,9 +211,9 @@ Loading this into a CLMM cluster object centered on (0,0)
 .. code:: ipython3
 
     cl.compute_tangential_and_cross_components(add=True)
-    # With the option add the cl object has theta, et and ex new columns 
+    # With the option add the cl object has theta, et and ex new columns
     # (default: takes in columns named 'e1' and 'e2' and save the results in 'et' and 'ex')
-    cl.galcat['et', 'ex'].pprint(max_width=-1)
+    cl.galcat["et", "ex"].pprint(max_width=-1)
 
 
 .. parsed-literal::
@@ -217,7 +223,7 @@ Loading this into a CLMM cluster object centered on (0,0)
     -0.014193669604212844    0.024770292812117598
      0.027593288682813785   -0.031444795110656676
     -0.005206908899369735   -0.030510857504521028
-       0.1123263143638015     0.07290036434929753
+      0.11232631436380155     0.07290036434929753
       -0.1256142518002091    0.018802231820255564
      0.019055204201741657     0.06050406041741734
      0.038412781291329155      0.0267416481414113
@@ -227,39 +233,35 @@ Loading this into a CLMM cluster object centered on (0,0)
      -0.03582158053386026     0.06837657195958713
      0.050596362016295554   -0.009951128297566936
       0.09421646798534064    0.015587818027871042
-      0.07975549313994046    -0.07102831279362881
+      0.07975549313994046    -0.07102831279362883
     0.0007749626574570633      0.0478204490885428
-    -0.028015540528346386     0.04659801344896773
+    -0.028015540528346306     0.04659801344896773
       -0.0529858412338219    0.034872242016200955
      0.038405259482106824    0.026001762081430766
        0.1197017887991115 -0.00017594425025361377
     -0.022159728710095222  -0.0005741244288848292
        0.2010969697875847     0.07058694279618334
-      -0.0452653271235742    0.005864801263309683
-     0.017705557405416968     0.01299156643524062
                       ...                     ...
-    -0.046609374938223994    -0.05067850161842877
-     0.010719332552569169    -0.13640351684318933
-     0.009928255198615996    -0.05882170840311077
+     0.009928255198615999    -0.05882170840311077
     -0.015791006414372845   -0.011393464604573304
      0.012215965508645624      0.0049623423240184
      0.004540992199877877    0.017415718137861653
-      0.01545541830928578    -0.06012100352723429
+     0.015455418309285786    -0.06012100352723429
       0.02400758201785442      -0.062922003987883
      0.006353797774013829   -0.009676100200072795
-      -0.0255341995540345   -0.007604721209673803
+     -0.02553419955403451   -0.007604721209673803
      0.036541542133955385    -0.13237962978298412
       0.04922842883460248    0.006502573562270769
-     0.043062951211047196    0.009928395972140016
+      0.04306295121104719    0.009928395972140016
      -0.04534396117336687     0.04809864798978794
       0.13235030069330608    0.010849217743934977
      -0.04648427585274571    -0.05268394123309532
-     -0.03498815031434638  -0.0015608398752305023
-     0.031872667245326065    -0.07335010293675895
+     -0.03498815031434638   -0.001560839875230504
+      0.03187266724532606    -0.07335010293675895
       0.06922795072503296    -0.03909067857437158
      0.026474999081928356     0.04501156446867458
       0.06794774688091935     -0.0870781268087891
-       0.1165859639077283   -0.007006942480985608
+      0.11658596390772831   -0.007006942480985608
       -0.0582783624179269    -0.01879387705087386
       0.06611775764202141    -0.01725669970366957
     Length = 10000 rows
@@ -271,10 +273,14 @@ Loading this into a CLMM cluster object centered on (0,0)
 
 .. code:: ipython3
 
-    cl.compute_tangential_and_cross_components(shape_component1='e1', shape_component2='e2', 
-                                               tan_component='e_tan', cross_component='e_cross',
-                                               add=True)
-    cl.galcat['e_tan', 'e_cross'].pprint(max_width=-1)
+    cl.compute_tangential_and_cross_components(
+        shape_component1="e1",
+        shape_component2="e2",
+        tan_component="e_tan",
+        cross_component="e_cross",
+        add=True,
+    )
+    cl.galcat["e_tan", "e_cross"].pprint(max_width=-1)
 
 
 .. parsed-literal::
@@ -284,7 +290,7 @@ Loading this into a CLMM cluster object centered on (0,0)
     -0.014193669604212844    0.024770292812117598
      0.027593288682813785   -0.031444795110656676
     -0.005206908899369735   -0.030510857504521028
-       0.1123263143638015     0.07290036434929753
+      0.11232631436380155     0.07290036434929753
       -0.1256142518002091    0.018802231820255564
      0.019055204201741657     0.06050406041741734
      0.038412781291329155      0.0267416481414113
@@ -294,39 +300,35 @@ Loading this into a CLMM cluster object centered on (0,0)
      -0.03582158053386026     0.06837657195958713
      0.050596362016295554   -0.009951128297566936
       0.09421646798534064    0.015587818027871042
-      0.07975549313994046    -0.07102831279362881
+      0.07975549313994046    -0.07102831279362883
     0.0007749626574570633      0.0478204490885428
-    -0.028015540528346386     0.04659801344896773
+    -0.028015540528346306     0.04659801344896773
       -0.0529858412338219    0.034872242016200955
      0.038405259482106824    0.026001762081430766
        0.1197017887991115 -0.00017594425025361377
     -0.022159728710095222  -0.0005741244288848292
        0.2010969697875847     0.07058694279618334
-      -0.0452653271235742    0.005864801263309683
-     0.017705557405416968     0.01299156643524062
                       ...                     ...
-    -0.046609374938223994    -0.05067850161842877
-     0.010719332552569169    -0.13640351684318933
-     0.009928255198615996    -0.05882170840311077
+     0.009928255198615999    -0.05882170840311077
     -0.015791006414372845   -0.011393464604573304
      0.012215965508645624      0.0049623423240184
      0.004540992199877877    0.017415718137861653
-      0.01545541830928578    -0.06012100352723429
+     0.015455418309285786    -0.06012100352723429
       0.02400758201785442      -0.062922003987883
      0.006353797774013829   -0.009676100200072795
-      -0.0255341995540345   -0.007604721209673803
+     -0.02553419955403451   -0.007604721209673803
      0.036541542133955385    -0.13237962978298412
       0.04922842883460248    0.006502573562270769
-     0.043062951211047196    0.009928395972140016
+      0.04306295121104719    0.009928395972140016
      -0.04534396117336687     0.04809864798978794
       0.13235030069330608    0.010849217743934977
      -0.04648427585274571    -0.05268394123309532
-     -0.03498815031434638  -0.0015608398752305023
-     0.031872667245326065    -0.07335010293675895
+     -0.03498815031434638   -0.001560839875230504
+      0.03187266724532606    -0.07335010293675895
       0.06922795072503296    -0.03909067857437158
      0.026474999081928356     0.04501156446867458
       0.06794774688091935     -0.0870781268087891
-       0.1165859639077283   -0.007006942480985608
+      0.11658596390772831   -0.007006942480985608
       -0.0582783624179269    -0.01879387705087386
       0.06611775764202141    -0.01725669970366957
     Length = 10000 rows
@@ -339,12 +341,12 @@ which can be accessed in the galaxy cluster object, cl.
 
     f, ax = plt.subplots(1, 2, figsize=(10, 4))
     
-    ax[0].hist(cl.galcat['et'],bins=50)
-    ax[0].set_xlabel('$\\epsilon_t$',fontsize='xx-large')
+    ax[0].hist(cl.galcat["et"], bins=50)
+    ax[0].set_xlabel("$\\epsilon_t$", fontsize="xx-large")
     
-    ax[1].hist(cl.galcat['ex'],bins=50)
-    ax[1].set_xlabel('$\\epsilon_x$',fontsize='xx-large')
-    ax[1].set_yscale('log')
+    ax[1].hist(cl.galcat["ex"], bins=50)
+    ax[1].set_xlabel("$\\epsilon_x$", fontsize="xx-large")
+    ax[1].set_yscale("log")
 
 
 
@@ -363,10 +365,15 @@ user may ask for a binned profile in various projected distance units.
 
 .. code:: ipython3
 
-    profiles = make_radial_profile([cl.galcat['et'], cl.galcat['ex'], cl.galcat['z']],
-                                        angsep=cl.galcat['theta'], angsep_units="radians",
-                                        bin_units="kpc", cosmo=cosmo, z_lens=cl.z)
-    #profiles.pprint(max_width=-1)
+    profiles = make_radial_profile(
+        [cl.galcat["et"], cl.galcat["ex"], cl.galcat["z"]],
+        angsep=cl.galcat["theta"],
+        angsep_units="radians",
+        bin_units="kpc",
+        cosmo=cosmo,
+        z_lens=cl.z,
+    )
+    # profiles.pprint(max_width=-1)
     profiles.show_in_notebook()
 
 
@@ -375,18 +382,18 @@ user may ask for a binned profile in various projected distance units.
 .. raw:: html
 
     <i>GCData length=10</i>
-    <table id="table23455172063888-994773" class="table-striped table-bordered table-condensed">
+    <table id="table140642573042000-994773" class="table-striped table-bordered table-condensed">
     <thead><tr><th>idx</th><th>radius_min</th><th>radius</th><th>radius_max</th><th>p_0</th><th>p_0_err</th><th>p_1</th><th>p_1_err</th><th>p_2</th><th>p_2_err</th><th>n_src</th><th>weights_sum</th></tr></thead>
-    <tr><td>0</td><td>49.89926186693261</td><td>400.9726230192822</td><td>607.3017710391922</td><td>0.07369228018322305</td><td>0.004447742307624307</td><td>0.006080026121867751</td><td>0.003603728713525908</td><td>1.2297028108389079</td><td>0.051127320754086575</td><td>166</td><td>166.0</td></tr>
-    <tr><td>1</td><td>607.3017710391922</td><td>923.2018463923688</td><td>1164.7042802114518</td><td>0.03614651683782503</td><td>0.0022793578568861806</td><td>0.0018176846014553525</td><td>0.002206990305431073</td><td>1.229806743651577</td><td>0.0306826464937024</td><td>489</td><td>489.0</td></tr>
-    <tr><td>2</td><td>1164.7042802114518</td><td>1456.255915260044</td><td>1722.1067893837112</td><td>0.02600871899042059</td><td>0.0018649252714886544</td><td>-0.0021117832844851905</td><td>0.0017201795943530447</td><td>1.2904975456410464</td><td>0.025796286531234478</td><td>796</td><td>796.0</td></tr>
-    <tr><td>3</td><td>1722.1067893837112</td><td>2010.627504774046</td><td>2279.509298555971</td><td>0.016452486829944022</td><td>0.001493469787073072</td><td>-0.0012393150423236218</td><td>0.0015266379256973623</td><td>1.2405106399736192</td><td>0.021870519290172103</td><td>1104</td><td>1104.0</td></tr>
-    <tr><td>4</td><td>2279.509298555971</td><td>2566.5744727945316</td><td>2836.9118077282305</td><td>0.015325088325993363</td><td>0.001347574981311564</td><td>0.0024568464199461464</td><td>0.001305269614002815</td><td>1.249718872885107</td><td>0.01937972914536564</td><td>1364</td><td>1364.0</td></tr>
+    <tr><td>0</td><td>49.89926186693261</td><td>400.9726230192822</td><td>607.3017710391922</td><td>0.07369228018322313</td><td>0.004447742307624298</td><td>0.006080026121867754</td><td>0.003603728713525908</td><td>1.2297028108389079</td><td>0.051127320754086575</td><td>166</td><td>166.0</td></tr>
+    <tr><td>1</td><td>607.3017710391922</td><td>923.2018463923688</td><td>1164.7042802114518</td><td>0.036146516837835</td><td>0.00227935785688623</td><td>0.0018176846014553104</td><td>0.002206990305431071</td><td>1.229806743651577</td><td>0.0306826464937024</td><td>489</td><td>489.0</td></tr>
+    <tr><td>2</td><td>1164.7042802114518</td><td>1456.255915260044</td><td>1722.1067893837112</td><td>0.02600871899042059</td><td>0.0018649252714886544</td><td>-0.0021117832844851914</td><td>0.0017201795943530447</td><td>1.2904975456410464</td><td>0.025796286531234478</td><td>796</td><td>796.0</td></tr>
+    <tr><td>3</td><td>1722.1067893837112</td><td>2010.627504774046</td><td>2279.509298555971</td><td>0.016452486829944022</td><td>0.001493469787073072</td><td>-0.0012393150423236211</td><td>0.0015266379256973623</td><td>1.2405106399736192</td><td>0.021870519290172103</td><td>1104</td><td>1104.0</td></tr>
+    <tr><td>4</td><td>2279.509298555971</td><td>2566.5744727945316</td><td>2836.9118077282305</td><td>0.015325088325993361</td><td>0.001347574981311564</td><td>0.0024568464199461464</td><td>0.001305269614002815</td><td>1.249718872885107</td><td>0.01937972914536564</td><td>1364</td><td>1364.0</td></tr>
     <tr><td>5</td><td>2836.9118077282305</td><td>3126.4017074551457</td><td>3394.3143169004898</td><td>0.010970572729309921</td><td>0.0012016555444631944</td><td>0.0017746612850044355</td><td>0.0011924727814665885</td><td>1.2654482714997306</td><td>0.017411676235896328</td><td>1752</td><td>1752.0</td></tr>
     <tr><td>6</td><td>3394.3143169004898</td><td>3680.361810684402</td><td>3951.7168260727494</td><td>0.008230849462521983</td><td>0.001156373463097785</td><td>0.00026482017882748204</td><td>0.0011144802873654758</td><td>1.2519063116529148</td><td>0.015901612106466546</td><td>1972</td><td>1972.0</td></tr>
-    <tr><td>7</td><td>3951.7168260727494</td><td>4206.4472560421955</td><td>4509.119335245009</td><td>0.008368823939991617</td><td>0.0013187944446566542</td><td>0.0020117004045590546</td><td>0.001347544793784184</td><td>1.2339023632491457</td><td>0.018265497762873995</td><td>1447</td><td>1447.0</td></tr>
+    <tr><td>7</td><td>3951.7168260727494</td><td>4206.4472560421955</td><td>4509.119335245009</td><td>0.00836882393999162</td><td>0.0013187944446566542</td><td>0.0020117004045590546</td><td>0.001347544793784184</td><td>1.2339023632491457</td><td>0.018265497762873995</td><td>1447</td><td>1447.0</td></tr>
     <tr><td>8</td><td>4509.119335245009</td><td>4740.680183376606</td><td>5066.521844417269</td><td>0.004837485395708411</td><td>0.0019128628423446025</td><td>0.002688253267273817</td><td>0.001892572870744313</td><td>1.2803793398548848</td><td>0.027250788734393197</td><td>674</td><td>674.0</td></tr>
-    <tr><td>9</td><td>5066.521844417269</td><td>5263.692943534735</td><td>5623.924353589528</td><td>0.005696398425432692</td><td>0.003208271061865603</td><td>-0.00011806820317391168</td><td>0.0031087370020959184</td><td>1.2520857801069578</td><td>0.04417548810164287</td><td>236</td><td>236.0</td></tr>
+    <tr><td>9</td><td>5066.521844417269</td><td>5263.692943534735</td><td>5623.924353589528</td><td>0.005696398425432691</td><td>0.003208271061865603</td><td>-0.00011806820317391168</td><td>0.0031087370020959184</td><td>1.2520857801069578</td><td>0.04417548810164287</td><td>236</td><td>236.0</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -410,14 +417,14 @@ user may ask for a binned profile in various projected distance units.
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table23455172063888-994773').dataTable()");
+        console.log("$('#table140642573042000-994773').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table23455172063888-994773').dataTable({
+        $('#table140642573042000-994773').dataTable({
             order: [],
             pageLength: 50,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -443,7 +450,7 @@ as a new attribute of the galaxy cluster object.
 .. code:: ipython3
 
     cl.make_radial_profile("kpc", cosmo=cosmo)
-    #cl.profile.pprint(max_width=-1)
+    # cl.profile.pprint(max_width=-1)
     cl.profile.show_in_notebook()
 
 
@@ -452,18 +459,18 @@ as a new attribute of the galaxy cluster object.
 .. raw:: html
 
     <i>GCData length=10</i>
-    <table id="table23455163498000-685971" class="table-striped table-bordered table-condensed">
+    <table id="table140642572834384-685971" class="table-striped table-bordered table-condensed">
     <thead><tr><th>idx</th><th>radius_min</th><th>radius</th><th>radius_max</th><th>gt</th><th>gt_err</th><th>gx</th><th>gx_err</th><th>z</th><th>z_err</th><th>n_src</th><th>W_l</th></tr></thead>
-    <tr><td>0</td><td>49.89926186693261</td><td>400.9726230192822</td><td>607.3017710391922</td><td>0.07369228018322305</td><td>0.004447742307624307</td><td>0.006080026121867751</td><td>0.003603728713525908</td><td>1.2297028108389079</td><td>0.051127320754086575</td><td>166</td><td>166.0</td></tr>
-    <tr><td>1</td><td>607.3017710391922</td><td>923.2018463923688</td><td>1164.7042802114518</td><td>0.03614651683782503</td><td>0.0022793578568861806</td><td>0.0018176846014553525</td><td>0.002206990305431073</td><td>1.229806743651577</td><td>0.0306826464937024</td><td>489</td><td>489.0</td></tr>
-    <tr><td>2</td><td>1164.7042802114518</td><td>1456.255915260044</td><td>1722.1067893837112</td><td>0.02600871899042059</td><td>0.0018649252714886544</td><td>-0.0021117832844851905</td><td>0.0017201795943530447</td><td>1.2904975456410464</td><td>0.025796286531234478</td><td>796</td><td>796.0</td></tr>
-    <tr><td>3</td><td>1722.1067893837112</td><td>2010.627504774046</td><td>2279.509298555971</td><td>0.016452486829944022</td><td>0.001493469787073072</td><td>-0.0012393150423236218</td><td>0.0015266379256973623</td><td>1.2405106399736192</td><td>0.021870519290172103</td><td>1104</td><td>1104.0</td></tr>
-    <tr><td>4</td><td>2279.509298555971</td><td>2566.5744727945316</td><td>2836.9118077282305</td><td>0.015325088325993363</td><td>0.001347574981311564</td><td>0.0024568464199461464</td><td>0.001305269614002815</td><td>1.249718872885107</td><td>0.01937972914536564</td><td>1364</td><td>1364.0</td></tr>
+    <tr><td>0</td><td>49.89926186693261</td><td>400.9726230192822</td><td>607.3017710391922</td><td>0.07369228018322313</td><td>0.004447742307624298</td><td>0.006080026121867754</td><td>0.003603728713525908</td><td>1.2297028108389079</td><td>0.051127320754086575</td><td>166</td><td>166.0</td></tr>
+    <tr><td>1</td><td>607.3017710391922</td><td>923.2018463923688</td><td>1164.7042802114518</td><td>0.036146516837835</td><td>0.00227935785688623</td><td>0.0018176846014553104</td><td>0.002206990305431071</td><td>1.229806743651577</td><td>0.0306826464937024</td><td>489</td><td>489.0</td></tr>
+    <tr><td>2</td><td>1164.7042802114518</td><td>1456.255915260044</td><td>1722.1067893837112</td><td>0.02600871899042059</td><td>0.0018649252714886544</td><td>-0.0021117832844851914</td><td>0.0017201795943530447</td><td>1.2904975456410464</td><td>0.025796286531234478</td><td>796</td><td>796.0</td></tr>
+    <tr><td>3</td><td>1722.1067893837112</td><td>2010.627504774046</td><td>2279.509298555971</td><td>0.016452486829944022</td><td>0.001493469787073072</td><td>-0.0012393150423236211</td><td>0.0015266379256973623</td><td>1.2405106399736192</td><td>0.021870519290172103</td><td>1104</td><td>1104.0</td></tr>
+    <tr><td>4</td><td>2279.509298555971</td><td>2566.5744727945316</td><td>2836.9118077282305</td><td>0.015325088325993361</td><td>0.001347574981311564</td><td>0.0024568464199461464</td><td>0.001305269614002815</td><td>1.249718872885107</td><td>0.01937972914536564</td><td>1364</td><td>1364.0</td></tr>
     <tr><td>5</td><td>2836.9118077282305</td><td>3126.4017074551457</td><td>3394.3143169004898</td><td>0.010970572729309921</td><td>0.0012016555444631944</td><td>0.0017746612850044355</td><td>0.0011924727814665885</td><td>1.2654482714997306</td><td>0.017411676235896328</td><td>1752</td><td>1752.0</td></tr>
     <tr><td>6</td><td>3394.3143169004898</td><td>3680.361810684402</td><td>3951.7168260727494</td><td>0.008230849462521983</td><td>0.001156373463097785</td><td>0.00026482017882748204</td><td>0.0011144802873654758</td><td>1.2519063116529148</td><td>0.015901612106466546</td><td>1972</td><td>1972.0</td></tr>
-    <tr><td>7</td><td>3951.7168260727494</td><td>4206.4472560421955</td><td>4509.119335245009</td><td>0.008368823939991617</td><td>0.0013187944446566542</td><td>0.0020117004045590546</td><td>0.001347544793784184</td><td>1.2339023632491457</td><td>0.018265497762873995</td><td>1447</td><td>1447.0</td></tr>
+    <tr><td>7</td><td>3951.7168260727494</td><td>4206.4472560421955</td><td>4509.119335245009</td><td>0.00836882393999162</td><td>0.0013187944446566542</td><td>0.0020117004045590546</td><td>0.001347544793784184</td><td>1.2339023632491457</td><td>0.018265497762873995</td><td>1447</td><td>1447.0</td></tr>
     <tr><td>8</td><td>4509.119335245009</td><td>4740.680183376606</td><td>5066.521844417269</td><td>0.004837485395708411</td><td>0.0019128628423446025</td><td>0.002688253267273817</td><td>0.001892572870744313</td><td>1.2803793398548848</td><td>0.027250788734393197</td><td>674</td><td>674.0</td></tr>
-    <tr><td>9</td><td>5066.521844417269</td><td>5263.692943534735</td><td>5623.924353589528</td><td>0.005696398425432692</td><td>0.003208271061865603</td><td>-0.00011806820317391168</td><td>0.0031087370020959184</td><td>1.2520857801069578</td><td>0.04417548810164287</td><td>236</td><td>236.0</td></tr>
+    <tr><td>9</td><td>5066.521844417269</td><td>5263.692943534735</td><td>5623.924353589528</td><td>0.005696398425432691</td><td>0.003208271061865603</td><td>-0.00011806820317391168</td><td>0.0031087370020959184</td><td>1.2520857801069578</td><td>0.04417548810164287</td><td>236</td><td>236.0</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -487,14 +494,14 @@ as a new attribute of the galaxy cluster object.
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table23455163498000-685971').dataTable()");
+        console.log("$('#table140642572834384-685971').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table23455163498000-685971').dataTable({
+        $('#table140642572834384-685971').dataTable({
             order: [],
             pageLength: 50,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -512,8 +519,8 @@ comology and bin units
 
 .. code:: ipython3
 
-    print('Cosmology:', cl.profile.meta['cosmo'])
-    print('bin units:', cl.profile.meta['bin_units'])
+    print("Cosmology:", cl.profile.meta["cosmo"])
+    print("bin units:", cl.profile.meta["bin_units"])
 
 
 .. parsed-literal::
@@ -526,7 +533,7 @@ Use function to plot the profiles
 
 .. code:: ipython3
 
-    fig, ax = cl.plot_profiles(xscale='log')
+    fig, ax = cl.plot_profiles(xscale="log")
 
 
 
@@ -537,13 +544,13 @@ Use function to plot the profiles
 
 .. code:: ipython3
 
-    new_profiles = cl.make_radial_profile("degrees",cosmo=cosmo)
+    new_profiles = cl.make_radial_profile("degrees", cosmo=cosmo)
     fig1, ax1 = cl.plot_profiles()
 
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/galaxycluster.py:522: UserWarning: overwriting profile table.
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/galaxycluster.py:613: UserWarning: overwriting profile table.
 
 
 
@@ -561,18 +568,17 @@ function is provided in ``utils.py`` and allow for various options.
 
 .. code:: ipython3
 
-    new_bins = make_bins(1, 6, nbins=20, method='evenwidth')
+    new_bins = make_bins(1, 6, nbins=20, method="evenwidth")
     
     # Make the shear profile in this binning
-    new_profiles = cl.make_radial_profile("Mpc",
-                                      bins=new_bins, cosmo=cosmo)
+    new_profiles = cl.make_radial_profile("Mpc", bins=new_bins, cosmo=cosmo)
     
     fig1, ax1 = cl.plot_profiles()
 
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/galaxycluster.py:522: UserWarning: overwriting profile table.
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/galaxycluster.py:613: UserWarning: overwriting profile table.
 
 
 
@@ -584,17 +590,16 @@ function is provided in ``utils.py`` and allow for various options.
 
 .. code:: ipython3
 
-    new_bins = make_bins(1, 6, nbins=20, method='evenlog10width')
+    new_bins = make_bins(1, 6, nbins=20, method="evenlog10width")
     
-    new_profiles = cl.make_radial_profile("Mpc",
-                                      bins=new_bins, cosmo=cosmo)
+    new_profiles = cl.make_radial_profile("Mpc", bins=new_bins, cosmo=cosmo)
     fig1, ax1 = cl.plot_profiles()
-    ax1.set_xscale('log')
+    ax1.set_xscale("log")
 
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/galaxycluster.py:522: UserWarning: overwriting profile table.
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/galaxycluster.py:613: UserWarning: overwriting profile table.
 
 
 
@@ -609,8 +614,8 @@ function is provided in ``utils.py`` and allow for various options.
     # First, convert the source separation table to Mpc
     seps = u.convert_units(cl.galcat["theta"], "radians", "Mpc", redshift=cl.z, cosmo=cosmo)
     
-    new_bins = make_bins(1, 6, nbins=20, method='equaloccupation', source_seps=seps)
-    new_profiles = cl.make_radial_profile("Mpc",bins=new_bins, cosmo=cosmo)
+    new_bins = make_bins(1, 6, nbins=20, method="equaloccupation", source_seps=seps)
+    new_profiles = cl.make_radial_profile("Mpc", bins=new_bins, cosmo=cosmo)
     
     print(f"number of galaxies in each bin: {list(cl.profile['n_src'])}")
     fig1, ax1 = cl.plot_profiles()
@@ -618,12 +623,12 @@ function is provided in ``utils.py`` and allow for various options.
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/galaxycluster.py:522: UserWarning: overwriting profile table.
+    number of galaxies in each bin: [477, 477, 476, 477, 476, 477, 476, 477, 476, 477, 477, 476, 477, 476, 477, 476, 477, 476, 477, 477]
 
 
 .. parsed-literal::
 
-    number of galaxies in each bin: [477, 477, 476, 477, 476, 477, 476, 477, 476, 477, 477, 476, 477, 476, 477, 476, 477, 476, 477, 477]
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/galaxycluster.py:613: UserWarning: overwriting profile table.
 
 
 
@@ -635,13 +640,12 @@ function is provided in ``utils.py`` and allow for various options.
 
 .. code:: ipython3
 
-    plt.title('Average redshift in radial bins')
-    plt.errorbar(new_profiles['radius'], new_profiles['z'],
-                 new_profiles['z_err'], marker = 'o')
-    plt.axhline(cl.z, linestyle='dotted', color='r')
-    plt.text(1, cl.z*1.1, '$z_{cl}$', color='r')
+    plt.title("Average redshift in radial bins")
+    plt.errorbar(new_profiles["radius"], new_profiles["z"], new_profiles["z_err"], marker="o")
+    plt.axhline(cl.z, linestyle="dotted", color="r")
+    plt.text(1, cl.z * 1.1, "$z_{cl}$", color="r")
     plt.xlabel("Radius [Mpc]")
-    plt.ylabel('$\langle z\\rangle$')
+    plt.ylabel("$\langle z\\rangle$")
     plt.show()
 
 
@@ -666,13 +670,13 @@ that have fallen in that bin.
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/galaxycluster.py:522: UserWarning: overwriting profile table.
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/galaxycluster.py:613: UserWarning: overwriting profile table.
 
 
 .. code:: ipython3
 
     # Here the list of galaxy IDs that are in the first bin of the tangential shear profile
-    gal_list = cl.profile['gal_id'][0]
+    gal_list = cl.profile["gal_id"][0]
     print(gal_list)
 
 
@@ -693,16 +697,21 @@ cluster object.
 
 .. code:: ipython3
 
-    cl.make_radial_profile("kpc", cosmo=cosmo, 
-                           tan_component_in='e_tan', cross_component_in='e_cross',
-                           tan_component_out='g_tan', cross_component_out='g_cross');
-    #cl.profile.pprint(max_width=-1)
+    cl.make_radial_profile(
+        "kpc",
+        cosmo=cosmo,
+        tan_component_in="e_tan",
+        cross_component_in="e_cross",
+        tan_component_out="g_tan",
+        cross_component_out="g_cross",
+    )
+    # cl.profile.pprint(max_width=-1)
     cl.profile.show_in_notebook()
 
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/galaxycluster.py:522: UserWarning: overwriting profile table.
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/galaxycluster.py:613: UserWarning: overwriting profile table.
 
 
 
@@ -710,18 +719,18 @@ cluster object.
 .. raw:: html
 
     <i>GCData length=10</i>
-    <table id="table23455163336272-511334" class="table-striped table-bordered table-condensed">
+    <table id="table140642680452048-511334" class="table-striped table-bordered table-condensed">
     <thead><tr><th>idx</th><th>radius_min</th><th>radius</th><th>radius_max</th><th>g_tan</th><th>g_tan_err</th><th>g_cross</th><th>g_cross_err</th><th>z</th><th>z_err</th><th>n_src</th><th>W_l</th></tr></thead>
-    <tr><td>0</td><td>49.89926186693261</td><td>400.9726230192822</td><td>607.3017710391922</td><td>0.07369228018322305</td><td>0.004447742307624307</td><td>0.006080026121867751</td><td>0.003603728713525908</td><td>1.2297028108389079</td><td>0.051127320754086575</td><td>166</td><td>166.0</td></tr>
-    <tr><td>1</td><td>607.3017710391922</td><td>923.2018463923688</td><td>1164.7042802114518</td><td>0.03614651683782503</td><td>0.0022793578568861806</td><td>0.0018176846014553525</td><td>0.002206990305431073</td><td>1.229806743651577</td><td>0.0306826464937024</td><td>489</td><td>489.0</td></tr>
-    <tr><td>2</td><td>1164.7042802114518</td><td>1456.255915260044</td><td>1722.1067893837112</td><td>0.02600871899042059</td><td>0.0018649252714886544</td><td>-0.0021117832844851905</td><td>0.0017201795943530447</td><td>1.2904975456410464</td><td>0.025796286531234478</td><td>796</td><td>796.0</td></tr>
-    <tr><td>3</td><td>1722.1067893837112</td><td>2010.627504774046</td><td>2279.509298555971</td><td>0.016452486829944022</td><td>0.001493469787073072</td><td>-0.0012393150423236218</td><td>0.0015266379256973623</td><td>1.2405106399736192</td><td>0.021870519290172103</td><td>1104</td><td>1104.0</td></tr>
-    <tr><td>4</td><td>2279.509298555971</td><td>2566.5744727945316</td><td>2836.9118077282305</td><td>0.015325088325993363</td><td>0.001347574981311564</td><td>0.0024568464199461464</td><td>0.001305269614002815</td><td>1.249718872885107</td><td>0.01937972914536564</td><td>1364</td><td>1364.0</td></tr>
+    <tr><td>0</td><td>49.89926186693261</td><td>400.9726230192822</td><td>607.3017710391922</td><td>0.07369228018322313</td><td>0.004447742307624298</td><td>0.006080026121867754</td><td>0.003603728713525908</td><td>1.2297028108389079</td><td>0.051127320754086575</td><td>166</td><td>166.0</td></tr>
+    <tr><td>1</td><td>607.3017710391922</td><td>923.2018463923688</td><td>1164.7042802114518</td><td>0.036146516837835</td><td>0.00227935785688623</td><td>0.0018176846014553104</td><td>0.002206990305431071</td><td>1.229806743651577</td><td>0.0306826464937024</td><td>489</td><td>489.0</td></tr>
+    <tr><td>2</td><td>1164.7042802114518</td><td>1456.255915260044</td><td>1722.1067893837112</td><td>0.02600871899042059</td><td>0.0018649252714886544</td><td>-0.0021117832844851914</td><td>0.0017201795943530447</td><td>1.2904975456410464</td><td>0.025796286531234478</td><td>796</td><td>796.0</td></tr>
+    <tr><td>3</td><td>1722.1067893837112</td><td>2010.627504774046</td><td>2279.509298555971</td><td>0.016452486829944022</td><td>0.001493469787073072</td><td>-0.0012393150423236211</td><td>0.0015266379256973623</td><td>1.2405106399736192</td><td>0.021870519290172103</td><td>1104</td><td>1104.0</td></tr>
+    <tr><td>4</td><td>2279.509298555971</td><td>2566.5744727945316</td><td>2836.9118077282305</td><td>0.015325088325993361</td><td>0.001347574981311564</td><td>0.0024568464199461464</td><td>0.001305269614002815</td><td>1.249718872885107</td><td>0.01937972914536564</td><td>1364</td><td>1364.0</td></tr>
     <tr><td>5</td><td>2836.9118077282305</td><td>3126.4017074551457</td><td>3394.3143169004898</td><td>0.010970572729309921</td><td>0.0012016555444631944</td><td>0.0017746612850044355</td><td>0.0011924727814665885</td><td>1.2654482714997306</td><td>0.017411676235896328</td><td>1752</td><td>1752.0</td></tr>
     <tr><td>6</td><td>3394.3143169004898</td><td>3680.361810684402</td><td>3951.7168260727494</td><td>0.008230849462521983</td><td>0.001156373463097785</td><td>0.00026482017882748204</td><td>0.0011144802873654758</td><td>1.2519063116529148</td><td>0.015901612106466546</td><td>1972</td><td>1972.0</td></tr>
-    <tr><td>7</td><td>3951.7168260727494</td><td>4206.4472560421955</td><td>4509.119335245009</td><td>0.008368823939991617</td><td>0.0013187944446566542</td><td>0.0020117004045590546</td><td>0.001347544793784184</td><td>1.2339023632491457</td><td>0.018265497762873995</td><td>1447</td><td>1447.0</td></tr>
+    <tr><td>7</td><td>3951.7168260727494</td><td>4206.4472560421955</td><td>4509.119335245009</td><td>0.00836882393999162</td><td>0.0013187944446566542</td><td>0.0020117004045590546</td><td>0.001347544793784184</td><td>1.2339023632491457</td><td>0.018265497762873995</td><td>1447</td><td>1447.0</td></tr>
     <tr><td>8</td><td>4509.119335245009</td><td>4740.680183376606</td><td>5066.521844417269</td><td>0.004837485395708411</td><td>0.0019128628423446025</td><td>0.002688253267273817</td><td>0.001892572870744313</td><td>1.2803793398548848</td><td>0.027250788734393197</td><td>674</td><td>674.0</td></tr>
-    <tr><td>9</td><td>5066.521844417269</td><td>5263.692943534735</td><td>5623.924353589528</td><td>0.005696398425432692</td><td>0.003208271061865603</td><td>-0.00011806820317391168</td><td>0.0031087370020959184</td><td>1.2520857801069578</td><td>0.04417548810164287</td><td>236</td><td>236.0</td></tr>
+    <tr><td>9</td><td>5066.521844417269</td><td>5263.692943534735</td><td>5623.924353589528</td><td>0.005696398425432691</td><td>0.003208271061865603</td><td>-0.00011806820317391168</td><td>0.0031087370020959184</td><td>1.2520857801069578</td><td>0.04417548810164287</td><td>236</td><td>236.0</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -745,14 +754,14 @@ cluster object.
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table23455163336272-511334').dataTable()");
+        console.log("$('#table140642680452048-511334').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table23455163336272-511334').dataTable({
+        $('#table140642680452048-511334').dataTable({
             order: [],
             pageLength: 50,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -771,11 +780,16 @@ we asked the binned profile to be saved into the
 
 .. code:: ipython3
 
-    cl.make_radial_profile("kpc", cosmo=cosmo, 
-                           tan_component_in='e_tan', cross_component_in='e_cross',
-                           tan_component_out='g_tan', cross_component_out='g_cross',
-                           table_name='reduced_shear_profile');
-    #cl.reduced_shear_profile.pprint(max_width=-1)
+    cl.make_radial_profile(
+        "kpc",
+        cosmo=cosmo,
+        tan_component_in="e_tan",
+        cross_component_in="e_cross",
+        tan_component_out="g_tan",
+        cross_component_out="g_cross",
+        table_name="reduced_shear_profile",
+    )
+    # cl.reduced_shear_profile.pprint(max_width=-1)
     cl.reduced_shear_profile.show_in_notebook()
 
 
@@ -784,18 +798,18 @@ we asked the binned profile to be saved into the
 .. raw:: html
 
     <i>GCData length=10</i>
-    <table id="table23455174357904-436963" class="table-striped table-bordered table-condensed">
+    <table id="table140642680432912-436963" class="table-striped table-bordered table-condensed">
     <thead><tr><th>idx</th><th>radius_min</th><th>radius</th><th>radius_max</th><th>g_tan</th><th>g_tan_err</th><th>g_cross</th><th>g_cross_err</th><th>z</th><th>z_err</th><th>n_src</th><th>W_l</th></tr></thead>
-    <tr><td>0</td><td>49.89926186693261</td><td>400.9726230192822</td><td>607.3017710391922</td><td>0.07369228018322305</td><td>0.004447742307624307</td><td>0.006080026121867751</td><td>0.003603728713525908</td><td>1.2297028108389079</td><td>0.051127320754086575</td><td>166</td><td>166.0</td></tr>
-    <tr><td>1</td><td>607.3017710391922</td><td>923.2018463923688</td><td>1164.7042802114518</td><td>0.03614651683782503</td><td>0.0022793578568861806</td><td>0.0018176846014553525</td><td>0.002206990305431073</td><td>1.229806743651577</td><td>0.0306826464937024</td><td>489</td><td>489.0</td></tr>
-    <tr><td>2</td><td>1164.7042802114518</td><td>1456.255915260044</td><td>1722.1067893837112</td><td>0.02600871899042059</td><td>0.0018649252714886544</td><td>-0.0021117832844851905</td><td>0.0017201795943530447</td><td>1.2904975456410464</td><td>0.025796286531234478</td><td>796</td><td>796.0</td></tr>
-    <tr><td>3</td><td>1722.1067893837112</td><td>2010.627504774046</td><td>2279.509298555971</td><td>0.016452486829944022</td><td>0.001493469787073072</td><td>-0.0012393150423236218</td><td>0.0015266379256973623</td><td>1.2405106399736192</td><td>0.021870519290172103</td><td>1104</td><td>1104.0</td></tr>
-    <tr><td>4</td><td>2279.509298555971</td><td>2566.5744727945316</td><td>2836.9118077282305</td><td>0.015325088325993363</td><td>0.001347574981311564</td><td>0.0024568464199461464</td><td>0.001305269614002815</td><td>1.249718872885107</td><td>0.01937972914536564</td><td>1364</td><td>1364.0</td></tr>
+    <tr><td>0</td><td>49.89926186693261</td><td>400.9726230192822</td><td>607.3017710391922</td><td>0.07369228018322313</td><td>0.004447742307624298</td><td>0.006080026121867754</td><td>0.003603728713525908</td><td>1.2297028108389079</td><td>0.051127320754086575</td><td>166</td><td>166.0</td></tr>
+    <tr><td>1</td><td>607.3017710391922</td><td>923.2018463923688</td><td>1164.7042802114518</td><td>0.036146516837835</td><td>0.00227935785688623</td><td>0.0018176846014553104</td><td>0.002206990305431071</td><td>1.229806743651577</td><td>0.0306826464937024</td><td>489</td><td>489.0</td></tr>
+    <tr><td>2</td><td>1164.7042802114518</td><td>1456.255915260044</td><td>1722.1067893837112</td><td>0.02600871899042059</td><td>0.0018649252714886544</td><td>-0.0021117832844851914</td><td>0.0017201795943530447</td><td>1.2904975456410464</td><td>0.025796286531234478</td><td>796</td><td>796.0</td></tr>
+    <tr><td>3</td><td>1722.1067893837112</td><td>2010.627504774046</td><td>2279.509298555971</td><td>0.016452486829944022</td><td>0.001493469787073072</td><td>-0.0012393150423236211</td><td>0.0015266379256973623</td><td>1.2405106399736192</td><td>0.021870519290172103</td><td>1104</td><td>1104.0</td></tr>
+    <tr><td>4</td><td>2279.509298555971</td><td>2566.5744727945316</td><td>2836.9118077282305</td><td>0.015325088325993361</td><td>0.001347574981311564</td><td>0.0024568464199461464</td><td>0.001305269614002815</td><td>1.249718872885107</td><td>0.01937972914536564</td><td>1364</td><td>1364.0</td></tr>
     <tr><td>5</td><td>2836.9118077282305</td><td>3126.4017074551457</td><td>3394.3143169004898</td><td>0.010970572729309921</td><td>0.0012016555444631944</td><td>0.0017746612850044355</td><td>0.0011924727814665885</td><td>1.2654482714997306</td><td>0.017411676235896328</td><td>1752</td><td>1752.0</td></tr>
     <tr><td>6</td><td>3394.3143169004898</td><td>3680.361810684402</td><td>3951.7168260727494</td><td>0.008230849462521983</td><td>0.001156373463097785</td><td>0.00026482017882748204</td><td>0.0011144802873654758</td><td>1.2519063116529148</td><td>0.015901612106466546</td><td>1972</td><td>1972.0</td></tr>
-    <tr><td>7</td><td>3951.7168260727494</td><td>4206.4472560421955</td><td>4509.119335245009</td><td>0.008368823939991617</td><td>0.0013187944446566542</td><td>0.0020117004045590546</td><td>0.001347544793784184</td><td>1.2339023632491457</td><td>0.018265497762873995</td><td>1447</td><td>1447.0</td></tr>
+    <tr><td>7</td><td>3951.7168260727494</td><td>4206.4472560421955</td><td>4509.119335245009</td><td>0.00836882393999162</td><td>0.0013187944446566542</td><td>0.0020117004045590546</td><td>0.001347544793784184</td><td>1.2339023632491457</td><td>0.018265497762873995</td><td>1447</td><td>1447.0</td></tr>
     <tr><td>8</td><td>4509.119335245009</td><td>4740.680183376606</td><td>5066.521844417269</td><td>0.004837485395708411</td><td>0.0019128628423446025</td><td>0.002688253267273817</td><td>0.001892572870744313</td><td>1.2803793398548848</td><td>0.027250788734393197</td><td>674</td><td>674.0</td></tr>
-    <tr><td>9</td><td>5066.521844417269</td><td>5263.692943534735</td><td>5623.924353589528</td><td>0.005696398425432692</td><td>0.003208271061865603</td><td>-0.00011806820317391168</td><td>0.0031087370020959184</td><td>1.2520857801069578</td><td>0.04417548810164287</td><td>236</td><td>236.0</td></tr>
+    <tr><td>9</td><td>5066.521844417269</td><td>5263.692943534735</td><td>5623.924353589528</td><td>0.005696398425432691</td><td>0.003208271061865603</td><td>-0.00011806820317391168</td><td>0.0031087370020959184</td><td>1.2520857801069578</td><td>0.04417548810164287</td><td>236</td><td>236.0</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -819,14 +833,14 @@ we asked the binned profile to be saved into the
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table23455174357904-436963').dataTable()");
+        console.log("$('#table140642680432912-436963').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table23455174357904-436963').dataTable({
+        $('#table140642680432912-436963').dataTable({
             order: [],
             pageLength: 50,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -851,15 +865,21 @@ table.
 
 .. code:: ipython3
 
-    cl.compute_tangential_and_cross_components(shape_component1='e1', shape_component2='e2', 
-                                               tan_component='DeltaSigma_tan', cross_component='DeltaSigma_cross',
-                                                add=True, cosmo=cosmo, is_deltasigma=True)
+    cl.compute_tangential_and_cross_components(
+        shape_component1="e1",
+        shape_component2="e2",
+        tan_component="DeltaSigma_tan",
+        cross_component="DeltaSigma_cross",
+        add=True,
+        cosmo=cosmo,
+        is_deltasigma=True,
+    )
     cl.galcat.columns
 
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/cosmology/parent_class.py:435: UserWarning: 
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/cosmology/parent_class.py:454: UserWarning: 
     Some source redshifts are lower than the cluster redshift.
     Sigma_crit = np.inf for those galaxies.
 
@@ -881,17 +901,31 @@ stored as an extra columns of the ``galcat`` table (see the
 
 .. code:: ipython3
 
-    cl.compute_galaxy_weights(use_pdz = True, use_shape_noise = True, shape_component1 = 'e1', shape_component2 = 'e2', 
-                                                  cosmo = cosmo, is_deltasigma = True, add = True);
+    cl.compute_galaxy_weights(
+        use_pdz=True,
+        use_shape_noise=True,
+        shape_component1="e1",
+        shape_component2="e2",
+        cosmo=cosmo,
+        is_deltasigma=True,
+        add=True,
+    )
     
     cl.galcat.columns
+
+
+.. parsed-literal::
+
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/cosmology/parent_class.py:454: UserWarning: 
+    Some source redshifts are lower than the cluster redshift.
+    Sigma_crit = np.inf for those galaxies.
 
 
 
 
 .. parsed-literal::
 
-    <TableColumns names=('ra','dec','e1','e2','z','ztrue','pzpdf','id','theta','et','ex','e_tan','e_cross','sigma_c','DeltaSigma_tan','DeltaSigma_cross','w_ls')>
+    <TableColumns names=('ra','dec','e1','e2','z','ztrue','pzpdf','id','theta','et','ex','e_tan','e_cross','sigma_c','DeltaSigma_tan','DeltaSigma_cross','sigma_c_eff','w_ls')>
 
 
 
@@ -900,7 +934,7 @@ Because these operations required a ``Cosmology``, it was added to
 
 .. code:: ipython3
 
-    cl.galcat.meta['cosmo']
+    cl.galcat.meta["cosmo"]
 
 
 
@@ -919,20 +953,26 @@ performed using the weights stored in ``galcat``.
 
 .. code:: ipython3
 
-    '''
+    """
     cl.make_radial_profile("Mpc", cosmo=cosmo, 
                            tan_component_in='DeltaSigma_tan', cross_component_in='DeltaSigma_cross',
                            tan_component_out='DeltaSigma_tan', cross_component_out='DeltaSigma_cross',
                            table_name='DeltaSigma_profile').pprint(max_width=-1)
-    '''
-    cl.make_radial_profile("Mpc", cosmo=cosmo, 
-                           tan_component_in='DeltaSigma_tan', cross_component_in='DeltaSigma_cross',
-                           tan_component_out='DeltaSigma_tan', cross_component_out='DeltaSigma_cross',
-                           table_name='DeltaSigma_profile', use_weights=True);
+    """
+    cl.make_radial_profile(
+        "Mpc",
+        cosmo=cosmo,
+        tan_component_in="DeltaSigma_tan",
+        cross_component_in="DeltaSigma_cross",
+        tan_component_out="DeltaSigma_tan",
+        cross_component_out="DeltaSigma_cross",
+        table_name="DeltaSigma_profile",
+        use_weights=True,
+    );
 
 .. code:: ipython3
 
-    #cl.DeltaSigma_profile.pprint(max_width=-1)
+    # cl.DeltaSigma_profile.pprint(max_width=-1)
     cl.DeltaSigma_profile.show_in_notebook()
 
 
@@ -941,18 +981,18 @@ performed using the weights stored in ``galcat``.
 .. raw:: html
 
     <i>GCData length=10</i>
-    <table id="table23455174350864-504512" class="table-striped table-bordered table-condensed">
+    <table id="table140642603490576-504512" class="table-striped table-bordered table-condensed">
     <thead><tr><th>idx</th><th>radius_min</th><th>radius</th><th>radius_max</th><th>DeltaSigma_tan</th><th>DeltaSigma_tan_err</th><th>DeltaSigma_cross</th><th>DeltaSigma_cross_err</th><th>z</th><th>z_err</th><th>n_src</th><th>W_l</th></tr></thead>
-    <tr><td>0</td><td>0.04989926186693261</td><td>0.40166751885366225</td><td>0.6073017710391921</td><td>212849432564271.94</td><td>12568408070240.916</td><td>16535770817286.94</td><td>10817125213409.643</td><td>1.4573373336564153</td><td>0.05753845086718409</td><td>166</td><td>3.983152080203853e-27</td></tr>
-    <tr><td>1</td><td>0.6073017710391921</td><td>0.9201089345771568</td><td>1.1647042802114518</td><td>106977396439976.48</td><td>6773672338775.922</td><td>8115568605966.637</td><td>6739747601994.514</td><td>1.4881979166491797</td><td>0.034221341138279925</td><td>489</td><td>1.153250117392935e-26</td></tr>
-    <tr><td>2</td><td>1.1647042802114518</td><td>1.4544541636077144</td><td>1.722106789383711</td><td>74903786781872.16</td><td>5469848298408.639</td><td>-4914243923957.982</td><td>5100179853292.087</td><td>1.5390425619892216</td><td>0.02917709657039541</td><td>796</td><td>1.951156209163538e-26</td></tr>
-    <tr><td>3</td><td>1.722106789383711</td><td>2.0092482590957026</td><td>2.2795092985559706</td><td>46099938135795.0</td><td>4555219537878.576</td><td>-3115671990976.103</td><td>4653722811671.555</td><td>1.5040229215181145</td><td>0.025367067164930722</td><td>1104</td><td>2.6101946738324017e-26</td></tr>
-    <tr><td>4</td><td>2.2795092985559706</td><td>2.5657722292576963</td><td>2.8369118077282303</td><td>43765127954363.43</td><td>4069381252418.73</td><td>5505176159201.438</td><td>3958931113155.812</td><td>1.511166273370597</td><td>0.022101567833813347</td><td>1364</td><td>3.2460999010279096e-26</td></tr>
-    <tr><td>5</td><td>2.8369118077282303</td><td>3.1300118576221085</td><td>3.3943143169004895</td><td>31089940373263.63</td><td>3603915949861.1587</td><td>4310308713815.028</td><td>3579538508597.203</td><td>1.5189914520383492</td><td>0.020017062817359356</td><td>1752</td><td>4.225057554099979e-26</td></tr>
-    <tr><td>6</td><td>3.3943143169004895</td><td>3.678900656059247</td><td>3.951716826072749</td><td>23608426054533.46</td><td>3483464333559.517</td><td>97762486569.06813</td><td>3359581133761.9404</td><td>1.502452285602269</td><td>0.018109338393808985</td><td>1972</td><td>4.727545815859229e-26</td></tr>
-    <tr><td>7</td><td>3.951716826072749</td><td>4.207951332850632</td><td>4.509119335245009</td><td>22636269022148.844</td><td>4019007058448.602</td><td>5200063531486.648</td><td>4105619727113.5693</td><td>1.4902481525861924</td><td>0.020730764113314853</td><td>1447</td><td>3.423163521604196e-26</td></tr>
-    <tr><td>8</td><td>4.509119335245009</td><td>4.736102475970469</td><td>5.066521844417268</td><td>11472170923431.008</td><td>5742825282038.972</td><td>8950967361246.516</td><td>5667454849713.679</td><td>1.5379390386082112</td><td>0.0301558084965462</td><td>674</td><td>1.6366785382893905e-26</td></tr>
-    <tr><td>9</td><td>5.066521844417268</td><td>5.265355034421074</td><td>5.623924353589528</td><td>16215326661822.408</td><td>9633417596940.713</td><td>-2657503202672.5625</td><td>9335282941219.613</td><td>1.495022656689385</td><td>0.04920580080794889</td><td>236</td><td>5.681762258566114e-27</td></tr>
+    <tr><td>0</td><td>0.04989926186693261</td><td>0.40181702725631496</td><td>0.6073017710391921</td><td>212624096345828.4</td><td>12655402657482.291</td><td>15732761567739.193</td><td>12296182303656.047</td><td>1.463567191680782</td><td>0.057677669439307994</td><td>166</td><td>3.9434463355203176e-27</td></tr>
+    <tr><td>1</td><td>0.6073017710391921</td><td>0.91997828958074</td><td>1.1647042802114518</td><td>107977347608942.44</td><td>7146281284443.765</td><td>7854532242277.562</td><td>6871295327248.187</td><td>1.4877929742814777</td><td>0.03349197273932518</td><td>489</td><td>1.1389768721844858e-26</td></tr>
+    <tr><td>2</td><td>1.1647042802114518</td><td>1.4541808661703517</td><td>1.722106789383711</td><td>74201758964831.72</td><td>10177508339578.314</td><td>-5945024572810.5</td><td>11944613981983.064</td><td>1.5363457767152802</td><td>0.028559938092406267</td><td>796</td><td>1.92631612565532e-26</td></tr>
+    <tr><td>3</td><td>1.722106789383711</td><td>2.009026398675747</td><td>2.2795092985559706</td><td>46230165382404.27</td><td>4653190892495.732</td><td>-3134990325918.112</td><td>4649628199369.969</td><td>1.4970067826674796</td><td>0.024468325558512957</td><td>1104</td><td>2.572249004973109e-26</td></tr>
+    <tr><td>4</td><td>2.2795092985559706</td><td>2.565913261120448</td><td>2.8369118077282303</td><td>43758379098921.62</td><td>4082127758886.9214</td><td>5693879230724.072</td><td>3946533113222.4775</td><td>1.5110619977710178</td><td>0.02170896089793281</td><td>1364</td><td>3.208215057365071e-26</td></tr>
+    <tr><td>5</td><td>2.8369118077282303</td><td>3.1303364895960697</td><td>3.3943143169004895</td><td>30806708059922.51</td><td>3852954883455.599</td><td>4681373494567.763</td><td>3834674599987.0015</td><td>1.5032833726840107</td><td>0.018517337757787914</td><td>1752</td><td>4.1690647252400884e-26</td></tr>
+    <tr><td>6</td><td>3.3943143169004895</td><td>3.679064294819914</td><td>3.951716826072749</td><td>23886688363580.266</td><td>3507193605501.202</td><td>-219434498994.54385</td><td>3416172893642.015</td><td>1.4964103679695608</td><td>0.0174998417128246</td><td>1972</td><td>4.6712786340082035e-26</td></tr>
+    <tr><td>7</td><td>3.951716826072749</td><td>4.2081944476143835</td><td>4.509119335245009</td><td>22855624279366.89</td><td>4198818643913.042</td><td>5320352842195.89</td><td>4188709345517.6226</td><td>1.4969016764903824</td><td>0.020786085574901803</td><td>1447</td><td>3.3876100059854263e-26</td></tr>
+    <tr><td>8</td><td>4.509119335245009</td><td>4.736457929318898</td><td>5.066521844417268</td><td>12048101637529.809</td><td>5702911589032.317</td><td>9297096328274.348</td><td>5661409712336.724</td><td>1.5349261798982219</td><td>0.029188305071441458</td><td>674</td><td>1.616613161376441e-26</td></tr>
+    <tr><td>9</td><td>5.066521844417268</td><td>5.265782408007491</td><td>5.623924353589528</td><td>17132048449502.816</td><td>9626411199780.172</td><td>-2710585711141.1704</td><td>9301892446424.824</td><td>1.4907418293219912</td><td>0.04783133799403878</td><td>236</td><td>5.620502059384091e-27</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -976,14 +1016,14 @@ performed using the weights stored in ``galcat``.
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table23455174350864-504512').dataTable()");
+        console.log("$('#table140642603490576-504512').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table23455174350864-504512').dataTable({
+        $('#table140642603490576-504512').dataTable({
             order: [],
             pageLength: 50,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1002,8 +1042,15 @@ unweighted averaged profile. The outputs columns are called by default
 
 .. code:: ipython3
 
-    avg_profile_noweights = make_radial_profile([cl.galcat['DeltaSigma_tan'], cl.galcat['DeltaSigma_cross']], cl.galcat['theta'], 
-                              z_lens=cl.z, bin_units="Mpc", angsep_units='radians', cosmo=cosmo, weights=None);
+    avg_profile_noweights = make_radial_profile(
+        [cl.galcat["DeltaSigma_tan"], cl.galcat["DeltaSigma_cross"]],
+        cl.galcat["theta"],
+        z_lens=cl.z,
+        bin_units="Mpc",
+        angsep_units="radians",
+        cosmo=cosmo,
+        weights=None,
+    )
     avg_profile_noweights.columns
 
 
@@ -1017,14 +1064,24 @@ unweighted averaged profile. The outputs columns are called by default
 
 .. code:: ipython3
 
-    plt.errorbar(cl.DeltaSigma_profile['radius'], cl.DeltaSigma_profile['DeltaSigma_tan'],
-                 cl.DeltaSigma_profile['DeltaSigma_tan_err'], marker = 'o', label='using weights')
-    plt.errorbar(avg_profile_noweights['radius'], avg_profile_noweights['p_0'],
-                 avg_profile_noweights['p_0_err'], marker = 'x', label='no weights')
+    plt.errorbar(
+        cl.DeltaSigma_profile["radius"],
+        cl.DeltaSigma_profile["DeltaSigma_tan"],
+        cl.DeltaSigma_profile["DeltaSigma_tan_err"],
+        marker="o",
+        label="using weights",
+    )
+    plt.errorbar(
+        avg_profile_noweights["radius"],
+        avg_profile_noweights["p_0"],
+        avg_profile_noweights["p_0_err"],
+        marker="x",
+        label="no weights",
+    )
     
-    plt.title('DeltaSigma profile')
+    plt.title("DeltaSigma profile")
     plt.xlabel("Radius [Mpc]")
-    plt.ylabel('$\Delta\Sigma [M_\odot\; Mpc^{-2}]$')
+    plt.ylabel("$\Delta\Sigma [M_\odot\; Mpc^{-2}]$")
     plt.legend()
     plt.show()
 

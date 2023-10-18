@@ -12,7 +12,6 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   clmm.theory.be_setup
    clmm.theory.ccl
    clmm.theory.cluster_toolkit
    clmm.theory.func_layer

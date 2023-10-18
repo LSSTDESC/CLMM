@@ -12,9 +12,10 @@ both the object-oriented and functional interfaces of the code.
 .. code:: ipython3
 
     import os
-    os.environ['CLMM_MODELING_BACKEND'] = 'ccl' # here you may choose ccl, nc (NumCosmo) or ct (cluster_toolkit)
-    import warnings
-    warnings.filterwarnings("ignore", message='.*(!).*')
+    
+    os.environ[
+        "CLMM_MODELING_BACKEND"
+    ] = "ccl"  # here you may choose ccl, nc (NumCosmo) or ct (cluster_toolkit)
     import clmm
     import numpy as np
     import matplotlib.pyplot as plt
@@ -23,7 +24,7 @@ We define a cosmology first:
 
 .. code:: ipython3
 
-    cosmo = clmm.Cosmology(H0 = 70.0, Omega_dm0 = 0.27 - 0.045, Omega_b0 = 0.045, Omega_k0 = 0.0)
+    cosmo = clmm.Cosmology(H0=70.0, Omega_dm0=0.27 - 0.045, Omega_b0=0.045, Omega_k0=0.0)
 
 Create a ``CLMM`` Modeling object
 ---------------------------------
@@ -37,22 +38,22 @@ definition: 1. the mass :math:`M_{200m}` 2. the concentration
 
 .. code:: ipython3
 
-    #first SOD definition
+    # first SOD definition
     M1 = 1e14
     c1 = 3
-    massdef1 = 'mean'
+    massdef1 = "mean"
     delta_mdef1 = 200
-    #cluster redshift
+    # cluster redshift
     z_cl = 0.4
 
 .. code:: ipython3
 
-    #create a clmm Modeling object for each profile parametrisation
-    nfw_def1 = clmm.Modeling(massdef=massdef1, delta_mdef=delta_mdef1, halo_profile_model='nfw')
-    her_def1 = clmm.Modeling(massdef=massdef1, delta_mdef=delta_mdef1, halo_profile_model='hernquist')
-    ein_def1 = clmm.Modeling(massdef=massdef1, delta_mdef=delta_mdef1, halo_profile_model='einasto')
+    # create a clmm Modeling object for each profile parametrisation
+    nfw_def1 = clmm.Modeling(massdef=massdef1, delta_mdef=delta_mdef1, halo_profile_model="nfw")
+    her_def1 = clmm.Modeling(massdef=massdef1, delta_mdef=delta_mdef1, halo_profile_model="hernquist")
+    ein_def1 = clmm.Modeling(massdef=massdef1, delta_mdef=delta_mdef1, halo_profile_model="einasto")
     
-    #set the properties of the profiles
+    # set the properties of the profiles
     nfw_def1.set_mass(M1)
     nfw_def1.set_concentration(c1)
     nfw_def1.set_cosmo(cosmo)
@@ -88,24 +89,43 @@ where :math:`f(x)` for the different models are
 .. code:: ipython3
 
     r = np.logspace(-2, 0.4, 100)
-    #object oriented
+    # object oriented
     nfw_def1_enclosed_oo = nfw_def1.eval_mass_in_radius(r3d=r, z_cl=z_cl)
     her_def1_enclosed_oo = her_def1.eval_mass_in_radius(r3d=r, z_cl=z_cl)
     ein_def1_enclosed_oo = ein_def1.eval_mass_in_radius(r3d=r, z_cl=z_cl)
     
-    #functional
-    nfw_def1_enclosed = clmm.compute_profile_mass_in_radius(r3d=r, redshift=z_cl, cosmo=cosmo,
-                                                            mdelta=M1, cdelta=c1,
-                                                            massdef=massdef1, delta_mdef=delta_mdef1,
-                                                            halo_profile_model='nfw')
-    her_def1_enclosed = clmm.compute_profile_mass_in_radius(r3d=r, redshift=z_cl, cosmo=cosmo,
-                                                            mdelta=M1, cdelta=c1,
-                                                            massdef=massdef1, delta_mdef=delta_mdef1,
-                                                            halo_profile_model='hernquist')
-    ein_def1_enclosed = clmm.compute_profile_mass_in_radius(r3d=r, redshift=z_cl, cosmo=cosmo,
-                                                            mdelta=M1, cdelta=c1,
-                                                            massdef=massdef1, delta_mdef=delta_mdef1,
-                                                            halo_profile_model='einasto', alpha=ein_def1.get_einasto_alpha(z_cl))
+    # functional
+    nfw_def1_enclosed = clmm.compute_profile_mass_in_radius(
+        r3d=r,
+        redshift=z_cl,
+        cosmo=cosmo,
+        mdelta=M1,
+        cdelta=c1,
+        massdef=massdef1,
+        delta_mdef=delta_mdef1,
+        halo_profile_model="nfw",
+    )
+    her_def1_enclosed = clmm.compute_profile_mass_in_radius(
+        r3d=r,
+        redshift=z_cl,
+        cosmo=cosmo,
+        mdelta=M1,
+        cdelta=c1,
+        massdef=massdef1,
+        delta_mdef=delta_mdef1,
+        halo_profile_model="hernquist",
+    )
+    ein_def1_enclosed = clmm.compute_profile_mass_in_radius(
+        r3d=r,
+        redshift=z_cl,
+        cosmo=cosmo,
+        mdelta=M1,
+        cdelta=c1,
+        massdef=massdef1,
+        delta_mdef=delta_mdef1,
+        halo_profile_model="einasto",
+        alpha=ein_def1.get_einasto_alpha(z_cl),
+    )
 
 Sanity check: comparison of the results given by the object-oriented and
 functional interface
@@ -113,14 +133,14 @@ functional interface
 .. code:: ipython3
 
     fig = plt.figure(figsize=(8, 6))
-    fig.gca().loglog(r, nfw_def1_enclosed, label=' NFW functional')
-    fig.gca().loglog(r, nfw_def1_enclosed_oo, ls='--', label=' NFW object oriented')
-    fig.gca().loglog(r, her_def1_enclosed, label='Hernquist functional')
-    fig.gca().loglog(r, her_def1_enclosed_oo, ls='--', label='Hernquist object oriented')
-    fig.gca().loglog(r, ein_def1_enclosed, label='Einasto functional')
-    fig.gca().loglog(r, ein_def1_enclosed_oo, ls='--', label='Einasto object oriented')
-    fig.gca().set_xlabel(r'$r\ [Mpc]$', fontsize = 20)
-    fig.gca().set_ylabel(r'$M(<r)\ [M_\odot]$', fontsize = 20)
+    fig.gca().loglog(r, nfw_def1_enclosed, label=" NFW functional")
+    fig.gca().loglog(r, nfw_def1_enclosed_oo, ls="--", label=" NFW object oriented")
+    fig.gca().loglog(r, her_def1_enclosed, label="Hernquist functional")
+    fig.gca().loglog(r, her_def1_enclosed_oo, ls="--", label="Hernquist object oriented")
+    fig.gca().loglog(r, ein_def1_enclosed, label="Einasto functional")
+    fig.gca().loglog(r, ein_def1_enclosed_oo, ls="--", label="Einasto object oriented")
+    fig.gca().set_xlabel(r"$r\ [Mpc]$", fontsize=20)
+    fig.gca().set_ylabel(r"$M(<r)\ [M_\odot]$", fontsize=20)
     fig.gca().legend()
     plt.show()
 
@@ -141,12 +161,13 @@ with ``eval_rdelta`` (resp. ``compute_rdelta``) in the object oriented
     ## OO interface
     r200m_oo = nfw_def1.eval_rdelta(z_cl)
     
-    #functional interface
-    r200m = clmm.compute_rdelta(mdelta=M1, redshift=z_cl, cosmo=cosmo,
-                                massdef=massdef1, delta_mdef=delta_mdef1)
+    # functional interface
+    r200m = clmm.compute_rdelta(
+        mdelta=M1, redshift=z_cl, cosmo=cosmo, massdef=massdef1, delta_mdef=delta_mdef1
+    )
     
-    print(f'r200m_oo = {r200m_oo} Mpc')
-    print(f'r200m = {r200m} Mpc')
+    print(f"r200m_oo = {r200m_oo} Mpc")
+    print(f"r200m = {r200m} Mpc")
 
 
 .. parsed-literal::
@@ -161,7 +182,7 @@ Conversion to another SOD definition (here we choose 500c)
 .. code:: ipython3
 
     # New SOD definition
-    massdef2 = 'critical'
+    massdef2 = "critical"
     delta_mdef2 = 500
 
 To find :math:`M_2` and :math:`c_2` of the second SOD definition, we
@@ -190,14 +211,19 @@ second SOD definition.
 
 .. code:: ipython3
 
-    M2_nfw_oo, c2_nfw_oo = nfw_def1.convert_mass_concentration(z_cl=z_cl, massdef=massdef2, delta_mdef=delta_mdef2)
-    M2_her_oo, c2_her_oo = her_def1.convert_mass_concentration(z_cl=z_cl, massdef=massdef2, delta_mdef=delta_mdef2)
-    M2_ein_oo, c2_ein_oo = ein_def1.convert_mass_concentration(z_cl=z_cl, massdef=massdef2, delta_mdef=delta_mdef2)
+    M2_nfw_oo, c2_nfw_oo = nfw_def1.convert_mass_concentration(
+        z_cl=z_cl, massdef=massdef2, delta_mdef=delta_mdef2
+    )
+    M2_her_oo, c2_her_oo = her_def1.convert_mass_concentration(
+        z_cl=z_cl, massdef=massdef2, delta_mdef=delta_mdef2
+    )
+    M2_ein_oo, c2_ein_oo = ein_def1.convert_mass_concentration(
+        z_cl=z_cl, massdef=massdef2, delta_mdef=delta_mdef2
+    )
     
-    print(f'NFW: M2 = {M2_nfw_oo:.2e} M_sun, c2 = {c2_nfw_oo:.2f}')
-    print(f'HER: M2 = {M2_her_oo:.2e} M_sun, c2 = {c2_her_oo:.2f}')
-    print(f'EIN: M2 = {M2_ein_oo:.2e} M_sun, c2 = {c2_ein_oo:.2f}')
-
+    print(f"NFW: M2 = {M2_nfw_oo:.2e} M_sun, c2 = {c2_nfw_oo:.2f}")
+    print(f"HER: M2 = {M2_her_oo:.2e} M_sun, c2 = {c2_her_oo:.2f}")
+    print(f"EIN: M2 = {M2_ein_oo:.2e} M_sun, c2 = {c2_ein_oo:.2f}")
 
 
 .. parsed-literal::
@@ -213,11 +239,17 @@ showing it for NFW below)
 .. code:: ipython3
 
     M2, c2 = clmm.convert_profile_mass_concentration(
-        mdelta=M1, cdelta=c1, redshift=z_cl, cosmo=cosmo,
-        massdef=massdef1, delta_mdef=delta_mdef1, halo_profile_model='nfw',
-        massdef2=massdef2, delta_mdef2=delta_mdef2)
-    print(f'NFW: M2 = {M2_nfw_oo:.2e} M_sun, c2 = {c2_nfw_oo:.2f}')
-
+        mdelta=M1,
+        cdelta=c1,
+        redshift=z_cl,
+        cosmo=cosmo,
+        massdef=massdef1,
+        delta_mdef=delta_mdef1,
+        halo_profile_model="nfw",
+        massdef2=massdef2,
+        delta_mdef2=delta_mdef2,
+    )
+    print(f"NFW: M2 = {M2_nfw_oo:.2e} M_sun, c2 = {c2_nfw_oo:.2f}")
 
 
 .. parsed-literal::
@@ -240,25 +272,50 @@ enclosed mass between the two mass definitions.
 .. code:: ipython3
 
     r = np.logspace(-3, 1, 100)
-    nfw_def2_enclosed = clmm.compute_profile_mass_in_radius(r3d=r, redshift=z_cl, cosmo=cosmo,
-                                                            mdelta=M2, cdelta=c2,
-                                                            massdef=massdef2, delta_mdef=delta_mdef2,
-                                                            halo_profile_model='nfw')
-    her_def2_enclosed = clmm.compute_profile_mass_in_radius(r3d=r, redshift=z_cl, cosmo=cosmo,
-                                                            mdelta=M2_her_oo, cdelta=c2_her_oo,
-                                                            massdef=massdef2, delta_mdef=delta_mdef2,
-                                                            halo_profile_model='hernquist')
-    ein_def2_enclosed = clmm.compute_profile_mass_in_radius(r3d=r, redshift=z_cl, cosmo=cosmo,
-                                                            mdelta=M2_ein_oo, cdelta=c2_ein_oo,
-                                                            massdef=massdef2, delta_mdef=delta_mdef2,
-                                                            halo_profile_model='einasto',alpha=ein_def1.get_einasto_alpha(z_cl))
+    nfw_def2_enclosed = clmm.compute_profile_mass_in_radius(
+        r3d=r,
+        redshift=z_cl,
+        cosmo=cosmo,
+        mdelta=M2,
+        cdelta=c2,
+        massdef=massdef2,
+        delta_mdef=delta_mdef2,
+        halo_profile_model="nfw",
+    )
+    her_def2_enclosed = clmm.compute_profile_mass_in_radius(
+        r3d=r,
+        redshift=z_cl,
+        cosmo=cosmo,
+        mdelta=M2_her_oo,
+        cdelta=c2_her_oo,
+        massdef=massdef2,
+        delta_mdef=delta_mdef2,
+        halo_profile_model="hernquist",
+    )
+    ein_def2_enclosed = clmm.compute_profile_mass_in_radius(
+        r3d=r,
+        redshift=z_cl,
+        cosmo=cosmo,
+        mdelta=M2_ein_oo,
+        cdelta=c2_ein_oo,
+        massdef=massdef2,
+        delta_mdef=delta_mdef2,
+        halo_profile_model="einasto",
+        alpha=ein_def1.get_einasto_alpha(z_cl),
+    )
     
     fig2 = plt.figure(figsize=(8, 6))
-    fig2.gca().loglog(r, abs(nfw_def2_enclosed/nfw_def1.eval_mass_in_radius(r, z_cl)-1), ls='-', label='nfw')
-    fig2.gca().loglog(r, abs(her_def2_enclosed/her_def1.eval_mass_in_radius(r, z_cl)-1), ls='-', label='hernquist')
-    fig2.gca().loglog(r, abs(ein_def2_enclosed/ein_def1.eval_mass_in_radius(r, z_cl)-1), ls='-', label='einasto')
-    fig2.gca().set_xlabel('r [Mpc]', fontsize = 20)
-    fig2.gca().set_ylabel(r'relative difference', fontsize = 20)
+    fig2.gca().loglog(
+        r, abs(nfw_def2_enclosed / nfw_def1.eval_mass_in_radius(r, z_cl) - 1), ls="-", label="nfw"
+    )
+    fig2.gca().loglog(
+        r, abs(her_def2_enclosed / her_def1.eval_mass_in_radius(r, z_cl) - 1), ls="-", label="hernquist"
+    )
+    fig2.gca().loglog(
+        r, abs(ein_def2_enclosed / ein_def1.eval_mass_in_radius(r, z_cl) - 1), ls="-", label="einasto"
+    )
+    fig2.gca().set_xlabel("r [Mpc]", fontsize=20)
+    fig2.gca().set_ylabel(r"relative difference", fontsize=20)
     fig2.gca().legend()
     plt.show()
 

@@ -1,0 +1,16 @@
+clmm.redshift package
+=====================
+
+.. automodule:: clmm.redshift
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   clmm.redshift.distributions
+   clmm.redshift.tools

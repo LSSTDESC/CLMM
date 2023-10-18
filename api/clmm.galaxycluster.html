@@ -1,22 +1,21 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>clmm.galaxycluster module &mdash; CLMM 1.7.1 documentation</title>
+  <title>clmm.galaxycluster module &mdash; CLMM 1.10.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=1d24b1d9"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -30,14 +29,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> CLMM
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CLMM
           </a>
               <div class="version">
-                1.7.1
+                1.10.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -90,8 +93,12 @@
 <li class="toctree-l2"><a class="reference internal" href="clmm.dataops.html">clmm.dataops package</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">clmm.galaxycluster module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.gcdata.html">clmm.gcdata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.redshift.html">clmm.redshift package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="clmm.redshift.distributions.html">clmm.redshift.distributions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.redshift.tools.html">clmm.redshift.tools module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.theory.html">clmm.theory package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="clmm.theory.be_setup.html">clmm.theory.be_setup module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="clmm.theory.ccl.html">clmm.theory.ccl module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="clmm.theory.cluster_toolkit.html">clmm.theory.cluster_toolkit module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="clmm.theory.func_layer.html">clmm.theory.func_layer module</a></li>
@@ -101,8 +108,15 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.plotting.html">clmm.plotting package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="clmm.utils.html">clmm.utils module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="clmm.z_distributions.html">clmm.z_distributions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.utils.html">clmm.utils package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.beta_lens.html">clmm.utils.beta_lens module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.boost.html">clmm.utils.boost module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.ellipticity.html">clmm.utils.ellipticity module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.statistic.html">clmm.utils.statistic module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.units.html">clmm.utils.units module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.validation.html">clmm.utils.validation module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.support.html">clmm.support package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="clmm.support.mock_data.html">clmm.support.mock_data module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="clmm.support.sampler.html">clmm.support.sampler module</a></li>
@@ -125,7 +139,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../api.html">API Documentation</a></li>
       <li class="breadcrumb-item active">clmm.galaxycluster module</li>
       <li class="wy-breadcrumbs-aside">
@@ -138,16 +152,16 @@
            <div itemprop="articleBody">
              
   <section id="module-clmm.galaxycluster">
-<span id="clmm-galaxycluster-module"></span><h1>clmm.galaxycluster module<a class="headerlink" href="#module-clmm.galaxycluster" title="Permalink to this heading"></a></h1>
+<span id="clmm-galaxycluster-module"></span><h1>clmm.galaxycluster module<a class="headerlink" href="#module-clmm.galaxycluster" title="Link to this heading"></a></h1>
 <p>&#64;file galaxycluster.py
 The GalaxyCluster class</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="clmm.galaxycluster.GalaxyCluster">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clmm.galaxycluster.</span></span><span class="sig-name descname"><span class="pre">GalaxyCluster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_input</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/galaxycluster.html#GalaxyCluster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.galaxycluster.GalaxyCluster" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clmm.galaxycluster.</span></span><span class="sig-name descname"><span class="pre">GalaxyCluster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate_input</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/galaxycluster.html#GalaxyCluster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.galaxycluster.GalaxyCluster" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Object that contains the galaxy cluster metadata and background galaxy data</p>
 <dl class="field-list simple">
-<dt class="field-odd">Variables</dt>
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>unique_id</strong> (<em>int</em><em> or </em><em>string</em>) -- Unique identifier of the galaxy cluster</p></li>
 <li><p><strong>ra</strong> (<em>float</em>) -- Right ascension of galaxy cluster center (in degrees)</p></li>
@@ -160,11 +174,11 @@ The GalaxyCluster class</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.galaxycluster.GalaxyCluster.add_critical_surface_density">
-<span class="sig-name descname"><span class="pre">add_critical_surface_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_pdz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/galaxycluster.html#GalaxyCluster.add_critical_surface_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.galaxycluster.GalaxyCluster.add_critical_surface_density" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">add_critical_surface_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cosmo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_pdz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/galaxycluster.html#GalaxyCluster.add_critical_surface_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.galaxycluster.GalaxyCluster.add_critical_surface_density" title="Link to this definition"></a></dt>
 <dd><p>Computes the critical surface density for each galaxy in <cite>galcat</cite>.
 It only runs if input cosmo != galcat cosmo or if <cite>sigma_c</cite> not in <cite>galcat</cite>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cosmo</strong> (<em>clmm.Cosmology object</em>) -- CLMM Cosmology object</p></li>
 <li><p><strong>use_pdz</strong> (<em>bool</em>) -- Flag to specify the use of the photoz pdf. If <cite>False</cite> (default), <cite>sigma_c</cite> is computed
@@ -172,9 +186,10 @@ using the redshift point estimates of the <cite>z</cite> column of the <cite>gal
 <cite>sigma_c</cite> is computed as 1/&lt;1/Sigma_crit&gt;, where the average is performed using
 the individual galaxy redshift pdf. In that case, the <cite>galcat</cite> table should have
 pzbins` and <cite>pzpdf</cite> columns.</p></li>
+<li><p><strong>force</strong> (<em>bool</em>) -- Force recomputation of sigma_c.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
 </dd>
 </dl>
@@ -182,10 +197,10 @@ pzbins` and <cite>pzpdf</cite> columns.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.galaxycluster.GalaxyCluster.compute_background_probability">
-<span class="sig-name descname"><span class="pre">compute_background_probability</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">use_pdz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_background_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'p_background'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/galaxycluster.html#GalaxyCluster.compute_background_probability"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.galaxycluster.GalaxyCluster.compute_background_probability" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">compute_background_probability</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">use_pdz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_background_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'p_background'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/galaxycluster.html#GalaxyCluster.compute_background_probability"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.galaxycluster.GalaxyCluster.compute_background_probability" title="Link to this definition"></a></dt>
 <dd><p>Probability for being a background galaxy</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>use_pdz</strong> (<em>bool</em>) -- If True, computes the probability using the photoz pdf</p></li>
 <li><p><strong>add</strong> (<em>bool</em>) -- If True, add background probability columns to the galcat table</p></li>
@@ -193,10 +208,10 @@ pzbins` and <cite>pzpdf</cite> columns.</p></li>
 in the galcat table (i.e., if add=True)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>p_background</strong> -- Probability for being a background galaxy</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>array</p>
 </dd>
 </dl>
@@ -204,10 +219,10 @@ in the galcat table (i.e., if add=True)</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.galaxycluster.GalaxyCluster.compute_galaxy_weights">
-<span class="sig-name descname"><span class="pre">compute_galaxy_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">use_pdz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_shape_noise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape_component1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'e1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape_component2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'e2'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_shape_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape_component1_err</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'e1_err'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape_component2_err</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'e2_err'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'w_ls'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_deltasigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/galaxycluster.html#GalaxyCluster.compute_galaxy_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.galaxycluster.GalaxyCluster.compute_galaxy_weights" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">compute_galaxy_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">use_pdz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_shape_noise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape_component1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'e1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape_component2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'e2'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_shape_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape_component1_err</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'e1_err'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape_component2_err</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'e2_err'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'w_ls'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_deltasigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/galaxycluster.html#GalaxyCluster.compute_galaxy_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.galaxycluster.GalaxyCluster.compute_galaxy_weights" title="Link to this definition"></a></dt>
 <dd><p>Computes the individual lens-source pair weights</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>use_pdz</strong> (<em>bool</em>) -- True for computing photometric weights</p></li>
 <li><p><strong>use_shape_noise</strong> (<em>bool</em>) -- True for considering shapenoise in the weight computation</p></li>
@@ -226,10 +241,10 @@ of the source galaxies</p></li>
 <li><p><strong>add</strong> (<em>bool</em>) -- If True, add weight column to the galcat table</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>w_ls</strong> -- the individual lens source pair weights</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>array</p>
 </dd>
 </dl>
@@ -237,20 +252,19 @@ of the source galaxies</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.galaxycluster.GalaxyCluster.compute_tangential_and_cross_components">
-<span class="sig-name descname"><span class="pre">compute_tangential_and_cross_components</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape_component1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'e1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape_component2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'e2'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tan_component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'et'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ex'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'curve'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_deltasigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_pdz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/galaxycluster.html#GalaxyCluster.compute_tangential_and_cross_components"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.galaxycluster.GalaxyCluster.compute_tangential_and_cross_components" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">compute_tangential_and_cross_components</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape_component1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'e1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape_component2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'e2'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tan_component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'et'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ex'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'curve'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_deltasigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_pdz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/galaxycluster.html#GalaxyCluster.compute_tangential_and_cross_components"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.galaxycluster.GalaxyCluster.compute_tangential_and_cross_components" title="Link to this definition"></a></dt>
 <dd><p>Adds a tangential- and cross- components for shear or ellipticity to self</p>
 <p>Calls <cite>clmm.dataops.compute_tangential_and_cross_components</cite> with the following arguments:
-ra_lens: cluster Ra
-dec_lens: cluster Dec
+ra_lens: <cite>cluster</cite> Ra
+dec_lens: <cite>cluster</cite> Dec
 ra_source: <cite>galcat</cite> Ra
 dec_source: <cite>galcat</cite> Dec
 shear1: <cite>galcat</cite> shape_component1
 shear2: <cite>galcat</cite> shape_component2
 geometry: <cite>input</cite> geometry
-is_deltasigma: <cite>input</cite> is_deltasigma
-sigma_c: <cite>galcat</cite> sigma_c | None</p>
+is_deltasigma: <cite>input</cite> is_deltasigma</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>shape_component1</strong> (<em>string</em><em>, </em><em>optional</em>) -- Name of the column in the <cite>galcat</cite> astropy table of the cluster object that contains
 the shape or shear measurement along the first axis. Default: <cite>e1</cite></p></li>
@@ -270,7 +284,7 @@ Results in units of <span class="math notranslate nohighlight">\(M_\odot\ Mpc^{-
 <li><p><strong>add</strong> (<em>bool</em>) -- If <cite>True</cite>, adds the computed shears to the <cite>galcat</cite></p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>angsep</strong> (<em>array_like</em>) -- Angular separation between lens and each source galaxy in radians</p></li>
 <li><p><strong>tangential_component</strong> (<em>array_like</em>) -- Tangential shear (or assimilated quantity) for each source galaxy</p></li>
@@ -283,11 +297,11 @@ Results in units of <span class="math notranslate nohighlight">\(M_\odot\ Mpc^{-
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.galaxycluster.GalaxyCluster.draw_gal_z_from_pdz">
-<span class="sig-name descname"><span class="pre">draw_gal_z_from_pdz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zcol_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'z'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nobj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/galaxycluster.html#GalaxyCluster.draw_gal_z_from_pdz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.galaxycluster.GalaxyCluster.draw_gal_z_from_pdz" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">draw_gal_z_from_pdz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zcol_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'z'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nobj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/galaxycluster.html#GalaxyCluster.draw_gal_z_from_pdz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.galaxycluster.GalaxyCluster.draw_gal_z_from_pdz" title="Link to this definition"></a></dt>
 <dd><p>Draw random redshifts from the photoz pdf for each galaxy
 of the galcat table.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>zcol_out</strong> (<em>string</em>) -- Name of the column of the galcat table where the random
 redshifts are to be stored. Default='z'</p></li>
@@ -298,10 +312,10 @@ will be overwritten by the new random values</p></li>
 <li><p><strong>xmax</strong> (<em>float</em>) -- Upper bound to draw redshift. Default is the max(x_tab)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>samples</strong> -- Random points following the pdf_tab distribution</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>ndarray</p>
 </dd>
 </dl>
@@ -309,13 +323,13 @@ will be overwritten by the new random values</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.galaxycluster.GalaxyCluster.load">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/galaxycluster.html#GalaxyCluster.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.galaxycluster.GalaxyCluster.load" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/galaxycluster.html#GalaxyCluster.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.galaxycluster.GalaxyCluster.load" title="Link to this definition"></a></dt>
 <dd><p>Loads GalaxyCluster object to filename using Pickle</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.galaxycluster.GalaxyCluster.make_radial_profile">
-<span class="sig-name descname"><span class="pre">make_radial_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bin_units</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ste'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tan_component_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'et'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_component_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ex'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tan_component_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_component_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gx'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tan_component_in_err</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_component_in_err</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_empty_bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gal_ids_in_bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'profile'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'w_ls'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'W_l'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/galaxycluster.html#GalaxyCluster.make_radial_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.galaxycluster.GalaxyCluster.make_radial_profile" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">make_radial_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bin_units</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ste'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tan_component_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'et'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_component_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ex'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tan_component_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_component_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gx'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tan_component_in_err</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_component_in_err</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_empty_bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gal_ids_in_bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'profile'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'w_ls'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'W_l'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/galaxycluster.html#GalaxyCluster.make_radial_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.galaxycluster.GalaxyCluster.make_radial_profile" title="Link to this definition"></a></dt>
 <dd><p>Compute the shear or ellipticity profile of the cluster</p>
 <p>We assume that the cluster object contains information on the cross and
 tangential shears or ellipticities and angular separation of the source galaxies</p>
@@ -329,7 +343,7 @@ include_empty_bins: <cite>input</cite> include_empty_bins
 cosmo: <cite>input</cite> cosmo
 z_lens: cluster z</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>bin_units</strong> (<em>str</em>) -- Units to use for the radial bins of the shear profile
 Allowed Options = [&quot;radians&quot;, &quot;deg&quot;, &quot;arcmin&quot;, &quot;arcsec&quot;, &quot;kpc&quot;, &quot;Mpc&quot;]
@@ -372,12 +386,12 @@ Default: False</p></li>
 Default: 'w_ls'</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>profile</strong> -- Output table containing the radius grid points, the tangential and cross shear
 profiles on that grid, and the errors in the two shear profiles. The errors are
 defined as the standard errors in each bin.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="clmm.gcdata.html#clmm.gcdata.GCData" title="clmm.gcdata.GCData">GCData</a></p>
 </dd>
 </dl>
@@ -385,10 +399,10 @@ defined as the standard errors in each bin.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.galaxycluster.GalaxyCluster.plot_profiles">
-<span class="sig-name descname"><span class="pre">plot_profiles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tangential_component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tangential_component_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gt_err'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gx'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_component_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gx_err'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'profile'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xscale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'linear'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yscale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'linear'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/galaxycluster.html#GalaxyCluster.plot_profiles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.galaxycluster.GalaxyCluster.plot_profiles" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">plot_profiles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tangential_component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gt'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tangential_component_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gt_err'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gx'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cross_component_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gx_err'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'profile'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xscale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'linear'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yscale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'linear'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/galaxycluster.html#GalaxyCluster.plot_profiles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.galaxycluster.GalaxyCluster.plot_profiles" title="Link to this definition"></a></dt>
 <dd><p>Plot shear profiles using <cite>plotting.plot_profiles</cite> function</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>tangential_component</strong> (<em>str</em><em>, </em><em>optional</em>) -- Name of the column in the galcat Table corresponding to the tangential component of
 the shear or reduced shear (Delta Sigma not yet implemented). Default: 'gt'</p></li>
@@ -403,7 +417,7 @@ component of the shear or reduced shear. Default: 'gx_err'</p></li>
 <li><p><strong>yscale</strong> -- matplotlib.pyplot.yscale parameter to set y-axis scale (e.g. to logarithmic axis)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><em>fig</em> -- The matplotlib figure object that has been plotted to.</p></li>
 <li><p><em>axes</em> -- The matplotlib axes object that has been plotted to.</p></li>
@@ -415,16 +429,16 @@ component of the shear or reduced shear. Default: 'gx_err'</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.galaxycluster.GalaxyCluster.save">
-<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/galaxycluster.html#GalaxyCluster.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.galaxycluster.GalaxyCluster.save" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/galaxycluster.html#GalaxyCluster.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.galaxycluster.GalaxyCluster.save" title="Link to this definition"></a></dt>
 <dd><p>Saves GalaxyCluster object to filename using Pickle</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.galaxycluster.GalaxyCluster.set_ra_lower">
-<span class="sig-name descname"><span class="pre">set_ra_lower</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ra_low</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/galaxycluster.html#GalaxyCluster.set_ra_lower"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.galaxycluster.GalaxyCluster.set_ra_lower" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set_ra_lower</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ra_low</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/galaxycluster.html#GalaxyCluster.set_ra_lower"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.galaxycluster.GalaxyCluster.set_ra_lower" title="Link to this definition"></a></dt>
 <dd><p>Set window of values for cluster and galcat RA to [ra_low, ra_low+360[</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>ra_low</strong> (<em>float</em>) -- Lower value for RA range, can be -180 or 0</p>
 </dd>
 </dl>

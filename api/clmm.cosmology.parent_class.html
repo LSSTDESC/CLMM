@@ -1,22 +1,21 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>clmm.cosmology.parent_class module &mdash; CLMM 1.7.1 documentation</title>
+  <title>clmm.cosmology.parent_class module &mdash; CLMM 1.10.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=1d24b1d9"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -30,14 +29,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> CLMM
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CLMM
           </a>
               <div class="version">
-                1.7.1
+                1.10.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -90,8 +93,12 @@
 <li class="toctree-l2"><a class="reference internal" href="clmm.dataops.html">clmm.dataops package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.gcdata.html">clmm.gcdata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.redshift.html">clmm.redshift package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="clmm.redshift.distributions.html">clmm.redshift.distributions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.redshift.tools.html">clmm.redshift.tools module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.theory.html">clmm.theory package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="clmm.theory.be_setup.html">clmm.theory.be_setup module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="clmm.theory.ccl.html">clmm.theory.ccl module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="clmm.theory.cluster_toolkit.html">clmm.theory.cluster_toolkit module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="clmm.theory.func_layer.html">clmm.theory.func_layer module</a></li>
@@ -101,8 +108,15 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.plotting.html">clmm.plotting package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="clmm.utils.html">clmm.utils module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="clmm.z_distributions.html">clmm.z_distributions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.utils.html">clmm.utils package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.beta_lens.html">clmm.utils.beta_lens module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.boost.html">clmm.utils.boost module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.ellipticity.html">clmm.utils.ellipticity module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.statistic.html">clmm.utils.statistic module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.units.html">clmm.utils.units module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.validation.html">clmm.utils.validation module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.support.html">clmm.support package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="clmm.support.mock_data.html">clmm.support.mock_data module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="clmm.support.sampler.html">clmm.support.sampler module</a></li>
@@ -125,7 +139,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../api.html">API Documentation</a></li>
           <li class="breadcrumb-item"><a href="clmm.cosmology.html">clmm.cosmology package</a></li>
       <li class="breadcrumb-item active">clmm.cosmology.parent_class module</li>
@@ -139,15 +153,15 @@
            <div itemprop="articleBody">
              
   <section id="module-clmm.cosmology.parent_class">
-<span id="clmm-cosmology-parent-class-module"></span><h1>clmm.cosmology.parent_class module<a class="headerlink" href="#module-clmm.cosmology.parent_class" title="Permalink to this heading"></a></h1>
+<span id="clmm-cosmology-parent-class-module"></span><h1>clmm.cosmology.parent_class module<a class="headerlink" href="#module-clmm.cosmology.parent_class" title="Link to this heading"></a></h1>
 <p>&#64;file parent_class.py</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="clmm.cosmology.parent_class.CLMMCosmology">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clmm.cosmology.parent_class.</span></span><span class="sig-name descname"><span class="pre">CLMMCosmology</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">validate_input</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">clmm.cosmology.parent_class.</span></span><span class="sig-name descname"><span class="pre">CLMMCosmology</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">validate_input</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Cosmology object superclass for supporting multiple back-end cosmology objects</p>
 <dl class="field-list simple">
-<dt class="field-odd">Variables</dt>
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>backend</strong> (<em>str</em>) -- Name of back-end used</p></li>
 <li><p><strong>be_cosmo</strong> (<em>cosmology library</em>) -- Cosmology library used in the back-end</p></li>
@@ -158,18 +172,18 @@
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.cosmology.parent_class.CLMMCosmology.eval_da">
-<span class="sig-name descname"><span class="pre">eval_da</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology.eval_da"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology.eval_da" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">eval_da</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology.eval_da"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology.eval_da" title="Link to this definition"></a></dt>
 <dd><p>Computes the angular diameter distance between 0.0 and z</p>
 <div class="math notranslate nohighlight">
 \[d_a(z) = \frac{c}{H_0}\frac{1}{1+z}\int_{0}^{z}\frac{dz'}{E(z')}.\]</div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>z</strong> (<em>float</em><em>, </em><em>array_like</em>) -- Redshift</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Angular diameter distance in units <span class="math notranslate nohighlight">\(M\!pc\)</span></p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float, numpy.ndarray</p>
 </dd>
 </dl>
@@ -179,7 +193,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.cosmology.parent_class.CLMMCosmology.eval_da_a1a2">
-<span class="sig-name descname"><span class="pre">eval_da_a1a2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology.eval_da_a1a2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology.eval_da_a1a2" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">eval_da_a1a2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology.eval_da_a1a2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology.eval_da_a1a2" title="Link to this definition"></a></dt>
 <dd><p>This is a function to calculate the angular diameter distance
 between two scale factors.</p>
 <div class="math notranslate nohighlight">
@@ -190,16 +204,16 @@ returns the angular diameter distance between a1 and a2.</p>
 <div class="math notranslate nohighlight">
 \[d_a(a) = \frac{c}{H_0}a\int_{a}^{1}\frac{da'}{a'^2E(a')}\]</div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>a1</strong> (<em>float</em><em>, </em><em>array_like</em>) -- Scale factor</p></li>
 <li><p><strong>a2</strong> (<em>float</em><em>, </em><em>array_like</em><em>, </em><em>optional</em>) -- Scale factor</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Angular diameter distance in units <span class="math notranslate nohighlight">\(M\!pc\)</span></p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float, numpy.ndarray</p>
 </dd>
 </dl>
@@ -207,21 +221,21 @@ returns the angular diameter distance between a1 and a2.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.cosmology.parent_class.CLMMCosmology.eval_da_z1z2">
-<span class="sig-name descname"><span class="pre">eval_da_z1z2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology.eval_da_z1z2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology.eval_da_z1z2" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">eval_da_z1z2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology.eval_da_z1z2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology.eval_da_z1z2" title="Link to this definition"></a></dt>
 <dd><p>Computes the angular diameter distance between z1 and z2</p>
 <div class="math notranslate nohighlight">
 \[d_a(z1, z2) = \frac{c}{H_0}\frac{1}{1+z2}\int_{z1}^{z2}\frac{dz'}{E(z')}.\]</div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>z1</strong> (<em>float</em><em>, </em><em>array_like</em>) -- Redshift</p></li>
 <li><p><strong>z2</strong> (<em>float</em><em>, </em><em>array_like</em>) -- Redshift</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Angular diameter distance in units <span class="math notranslate nohighlight">\(M\!pc\)</span></p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float, numpy.ndarray</p>
 </dd>
 </dl>
@@ -231,19 +245,19 @@ returns the angular diameter distance between a1 and a2.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.cosmology.parent_class.CLMMCosmology.eval_linear_matter_powerspectrum">
-<span class="sig-name descname"><span class="pre">eval_linear_matter_powerspectrum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redshift</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology.eval_linear_matter_powerspectrum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology.eval_linear_matter_powerspectrum" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">eval_linear_matter_powerspectrum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redshift</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology.eval_linear_matter_powerspectrum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology.eval_linear_matter_powerspectrum" title="Link to this definition"></a></dt>
 <dd><p>Computes the linear matter power spectrum</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>k_vals</strong> (<em>float</em><em>, </em><em>array_like</em>) -- Wavenumber k [math:<cite>Mpc^{-1}</cite>] values to compute the power spectrum.</p></li>
 <li><p><strong>redshift</strong> (<em>float</em>) -- Redshift to get the power spectrum.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Linear matter spectrum in units of math:<cite>Mpc^{3}</cite></p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float, numpy.ndarray</p>
 </dd>
 </dl>
@@ -251,19 +265,19 @@ returns the angular diameter distance between a1 and a2.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.cosmology.parent_class.CLMMCosmology.eval_sigma_crit">
-<span class="sig-name descname"><span class="pre">eval_sigma_crit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_len</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology.eval_sigma_crit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology.eval_sigma_crit" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">eval_sigma_crit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_len</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_src</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology.eval_sigma_crit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology.eval_sigma_crit" title="Link to this definition"></a></dt>
 <dd><p>Computes the critical surface density</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>z_len</strong> (<em>float</em>) -- Lens redshift</p></li>
 <li><p><strong>z_src</strong> (<em>float</em><em>, </em><em>array_like</em>) -- Background source galaxy redshift(s)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Cosmology-dependent critical surface density in units of <span class="math notranslate nohighlight">\(M_\odot\ Mpc^{-2}\)</span></p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float, numpy.ndarray</p>
 </dd>
 </dl>
@@ -273,18 +287,18 @@ returns the angular diameter distance between a1 and a2.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.cosmology.parent_class.CLMMCosmology.get_E2">
-<span class="sig-name descname"><span class="pre">get_E2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology.get_E2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology.get_E2" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_E2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology.get_E2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology.get_E2" title="Link to this definition"></a></dt>
 <dd><p>Gets the value of the hubble parameter (normalized at 0)</p>
 <div class="math notranslate nohighlight">
 \[E^2(z) = \frac{H(z)^{2}}{H_{0}^{2}}.\]</div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>z</strong> (<em>float</em>) -- Redshift.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>Hubble parameter</strong> -- <span class="math notranslate nohighlight">\(H(z)^{2}/H_{0}^{2}\)</span>.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float</p>
 </dd>
 </dl>
@@ -294,19 +308,19 @@ returns the angular diameter distance between a1 and a2.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.cosmology.parent_class.CLMMCosmology.get_E2Omega_m">
-<span class="sig-name descname"><span class="pre">get_E2Omega_m</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology.get_E2Omega_m"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology.get_E2Omega_m" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_E2Omega_m</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology.get_E2Omega_m"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology.get_E2Omega_m" title="Link to this definition"></a></dt>
 <dd><p>Gets the value of the dimensionless matter density times the Hubble parameter squared
 (normalized at 0)</p>
 <div class="math notranslate nohighlight">
 \[\Omega_m(z) = \frac{\rho_m(z)}{\rho_\text{crit}(z)}\frac{H(z)^{2}}{H_{0}^{2}}.\]</div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>z</strong> (<em>float</em><em>, </em><em>array_like</em>) -- Redshift</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>Omega_m</strong> -- Dimensionless matter density, <span class="math notranslate nohighlight">\(\Omega_m(z)\times H(z)^{2}/H_{0}^{2}\)</span></p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float, numpy.ndarray</p>
 </dd>
 </dl>
@@ -316,18 +330,18 @@ returns the angular diameter distance between a1 and a2.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.cosmology.parent_class.CLMMCosmology.get_Omega_m">
-<span class="sig-name descname"><span class="pre">get_Omega_m</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology.get_Omega_m"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology.get_Omega_m" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_Omega_m</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology.get_Omega_m"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology.get_Omega_m" title="Link to this definition"></a></dt>
 <dd><p>Gets the value of the dimensionless matter density</p>
 <div class="math notranslate nohighlight">
 \[\Omega_m(z) = \frac{\rho_m(z)}{\rho_\text{crit}(z)}.\]</div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>z</strong> (<em>float</em><em>, </em><em>array_like</em>) -- Redshift</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>Omega_m</strong> -- Dimensionless matter density, <span class="math notranslate nohighlight">\(\Omega_m(z)\)</span></p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float, numpy.ndarray</p>
 </dd>
 </dl>
@@ -337,16 +351,16 @@ returns the angular diameter distance between a1 and a2.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.cosmology.parent_class.CLMMCosmology.get_a_from_z">
-<span class="sig-name descname"><span class="pre">get_a_from_z</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology.get_a_from_z"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology.get_a_from_z" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_a_from_z</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology.get_a_from_z"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology.get_a_from_z" title="Link to this definition"></a></dt>
 <dd><p>Convert redshift to scale factor</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>z</strong> (<em>float</em><em>, </em><em>array_like</em>) -- Redshift</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>a</strong> -- Scale factor</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float, numpy.ndarray</p>
 </dd>
 </dl>
@@ -354,22 +368,22 @@ returns the angular diameter distance between a1 and a2.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.cosmology.parent_class.CLMMCosmology.get_desc">
-<span class="sig-name descname"><span class="pre">get_desc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology.get_desc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology.get_desc" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_desc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology.get_desc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology.get_desc" title="Link to this definition"></a></dt>
 <dd><p>Returns the Cosmology description.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.cosmology.parent_class.CLMMCosmology.get_rho_c">
-<span class="sig-name descname"><span class="pre">get_rho_c</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology.get_rho_c"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology.get_rho_c" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_rho_c</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology.get_rho_c"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology.get_rho_c" title="Link to this definition"></a></dt>
 <dd><p>Gets physical critical density at a given redshift.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>z</strong> (<em>float</em>) -- Redshift.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Critical density <span class="math notranslate nohighlight">\(M_\odot\ Mpc^{-3}\)</span>.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float</p>
 </dd>
 </dl>
@@ -377,16 +391,16 @@ returns the angular diameter distance between a1 and a2.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.cosmology.parent_class.CLMMCosmology.get_rho_m">
-<span class="sig-name descname"><span class="pre">get_rho_m</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology.get_rho_m"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology.get_rho_m" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_rho_m</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology.get_rho_m"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology.get_rho_m" title="Link to this definition"></a></dt>
 <dd><p>Gets physical matter density at a given redshift.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>z</strong> (<em>float</em><em>, </em><em>array_like</em>) -- Redshift</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Matter density <span class="math notranslate nohighlight">\(M_\odot\ Mpc^{-3}\)</span></p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float, numpy.ndarray</p>
 </dd>
 </dl>
@@ -394,16 +408,16 @@ returns the angular diameter distance between a1 and a2.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.cosmology.parent_class.CLMMCosmology.get_z_from_a">
-<span class="sig-name descname"><span class="pre">get_z_from_a</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology.get_z_from_a"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology.get_z_from_a" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_z_from_a</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology.get_z_from_a"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology.get_z_from_a" title="Link to this definition"></a></dt>
 <dd><p>Convert scale factor to redshift</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>a</strong> (<em>float</em><em>, </em><em>array_like</em>) -- Scale factor</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>z</strong> -- Redshift</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float, numpy.ndarray</p>
 </dd>
 </dl>
@@ -411,10 +425,10 @@ returns the angular diameter distance between a1 and a2.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.cosmology.parent_class.CLMMCosmology.init_from_params">
-<span class="sig-name descname"><span class="pre">init_from_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">H0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">67.66</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Omega_b0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.049</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Omega_dm0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.262</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Omega_k0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology.init_from_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology.init_from_params" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">init_from_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">H0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">67.66</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Omega_b0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.049</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Omega_dm0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.262</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Omega_k0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology.init_from_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology.init_from_params" title="Link to this definition"></a></dt>
 <dd><p>Set the cosmology from parameters</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>H0</strong> (<em>float</em>) -- Hubble parameter.</p></li>
 <li><p><strong>Omega_b0</strong> (<em>float</em>) -- Mass density of baryons today.</p></li>
@@ -427,20 +441,20 @@ returns the angular diameter distance between a1 and a2.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.cosmology.parent_class.CLMMCosmology.mpc2rad">
-<span class="sig-name descname"><span class="pre">mpc2rad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dist1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redshift</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology.mpc2rad"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology.mpc2rad" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">mpc2rad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dist1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redshift</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology.mpc2rad"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology.mpc2rad" title="Link to this definition"></a></dt>
 <dd><p>Convert between radians and Mpc using the small angle approximation
 and <span class="math notranslate nohighlight">\(d = D_A \theta\)</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dist1</strong> (<em>float</em><em>, </em><em>array_like</em>) -- Input distances in Mpc</p></li>
 <li><p><strong>redshift</strong> (<em>float</em>) -- Redshift used to convert between angular and physical units</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>dist2</strong> -- Distances in radians</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float, numpy.ndarray</p>
 </dd>
 </dl>
@@ -448,20 +462,20 @@ and <span class="math notranslate nohighlight">\(d = D_A \theta\)</span>.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.cosmology.parent_class.CLMMCosmology.rad2mpc">
-<span class="sig-name descname"><span class="pre">rad2mpc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dist1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redshift</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology.rad2mpc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology.rad2mpc" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">rad2mpc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dist1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redshift</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology.rad2mpc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology.rad2mpc" title="Link to this definition"></a></dt>
 <dd><p>Convert between radians and Mpc using the small angle approximation
 and <span class="math notranslate nohighlight">\(d = D_A \theta\)</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dist1</strong> (<em>float</em><em>, </em><em>array_like</em>) -- Input distances in radians</p></li>
 <li><p><strong>redshift</strong> (<em>float</em>) -- Redshift used to convert between angular and physical units</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>dist2</strong> -- Distances in Mpc</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float, numpy.ndarray</p>
 </dd>
 </dl>
@@ -469,10 +483,10 @@ and <span class="math notranslate nohighlight">\(d = D_A \theta\)</span>.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="clmm.cosmology.parent_class.CLMMCosmology.set_be_cosmo">
-<span class="sig-name descname"><span class="pre">set_be_cosmo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">be_cosmo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">67.66</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Omega_b0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.049</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Omega_dm0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.262</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Omega_k0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology.set_be_cosmo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology.set_be_cosmo" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set_be_cosmo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">be_cosmo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">67.66</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Omega_b0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.049</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Omega_dm0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.262</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Omega_k0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/cosmology/parent_class.html#CLMMCosmology.set_be_cosmo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.cosmology.parent_class.CLMMCosmology.set_be_cosmo" title="Link to this definition"></a></dt>
 <dd><p>Set the cosmology</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>be_cosmo</strong> (<em>clmm.cosmology.Cosmology object</em><em>, </em><em>None</em>) -- Input cosmology, used if not None.</p></li>
 <li><p><strong>**kwargs</strong> -- Individual cosmological parameters, see init_from_params function.</p></li>

@@ -1,0 +1,7 @@
+clmm.redshift.distributions module
+==================================
+
+.. automodule:: clmm.redshift.distributions
+   :members:
+   :undoc-members:
+   :show-inheritance:

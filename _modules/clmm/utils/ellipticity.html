@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>clmm.utils.ellipticity &mdash; CLMM 1.10.0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=1d24b1d9"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            CLMM
+          </a>
+              <div class="version">
+                1.10.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/overview.html">Rapid overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/citing.html">Using and citing CLMM</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Usage Demos</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_mock_cluster.html">Generate mock data for a cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_dataops_functionality.html">Measure WL Profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_theory_functionality.html">Model WL Profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_mock_ensemble.html">Generate mock data for a cluster ensemble</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/data_and_model_demo_DC2.html">Using the cosmoDC2 catalog</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Mass Fitting Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example1_Fit_Halo_Mass_to_Shear_Catalog.html">Example 1: Ideal data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example1_Fit_shear_profile_with_miscentering.html">Example 1b: Impact of miscentering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example2_Fit_Halo_Mass_to_Shear_Catalog.html">Example 2: Realistic data and wrong model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example3_Fit_Halo_Mass_to_Shear_Catalog.html">Example 3: Account for the n(z) of sources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example4_Fit_Halo_mass_to_HSC_data.html">Example 4: Using a real dataset (HSC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/Example5_Fit_Halo_mass_to_DES_data.html">Example 5: Using a real datasets (DES)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Other</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_theory_functionality_diff_z_types.html">Model WL Profiles (different redshift inputs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_theory_functionality_oo.html">Model WL Profiles (Object Oriented)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_boost_factors.html">Boost factors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_compute_deltasigma_weights.html">Weak lensing weights</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_mass_conversion.html">Mass conversion between different mass definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compiled-examples/demo_mock_ensemble_realistic.html">Generate “realistic” mock data for a cluster ensemble</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.clusterensemble.html">clmm.clusterensemble module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.constants.html">clmm.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.cosmology.html">clmm.cosmology package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.cosmology.ccl.html">clmm.cosmology.ccl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.cosmology.cluster_toolkit.html">clmm.cosmology.cluster_toolkit module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.cosmology.numcosmo.html">clmm.cosmology.numcosmo module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.cosmology.parent_class.html">clmm.cosmology.parent_class module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.dataops.html">clmm.dataops package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.gcdata.html">clmm.gcdata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.redshift.html">clmm.redshift package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.redshift.distributions.html">clmm.redshift.distributions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.redshift.tools.html">clmm.redshift.tools module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.theory.html">clmm.theory package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.theory.ccl.html">clmm.theory.ccl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.theory.cluster_toolkit.html">clmm.theory.cluster_toolkit module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.theory.func_layer.html">clmm.theory.func_layer module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.theory.generic.html">clmm.theory.generic module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.theory.numcosmo.html">clmm.theory.numcosmo module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.theory.parent_class.html">clmm.theory.parent_class module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.plotting.html">clmm.plotting package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.utils.html">clmm.utils package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.utils.beta_lens.html">clmm.utils.beta_lens module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.utils.boost.html">clmm.utils.boost module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.utils.ellipticity.html">clmm.utils.ellipticity module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.utils.statistic.html">clmm.utils.statistic module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.utils.units.html">clmm.utils.units module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.utils.validation.html">clmm.utils.validation module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/clmm.support.html">clmm.support package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.support.mock_data.html">clmm.support.mock_data module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/clmm.support.sampler.html">clmm.support.sampler module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">CLMM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">clmm.utils.ellipticity</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for clmm.utils.ellipticity</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;General utility functions that are used in multiple modules&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<div class="viewcode-block" id="convert_shapes_to_epsilon">
+<a class="viewcode-back" href="../../../api/clmm.utils.ellipticity.html#clmm.utils.ellipticity.convert_shapes_to_epsilon">[docs]</a>
+<span class="k">def</span> <span class="nf">convert_shapes_to_epsilon</span><span class="p">(</span><span class="n">shape_1</span><span class="p">,</span> <span class="n">shape_2</span><span class="p">,</span> <span class="n">shape_definition</span><span class="o">=</span><span class="s2">&quot;epsilon&quot;</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert shape components 1 and 2 appropriately to make them estimators of the</span>
+<span class="sd">    reduced shear once averaged.  The shape 1 and 2 components may correspond to ellipticities</span>
+<span class="sd">    according the :math:`\epsilon`- or :math:`\chi`-definition, but also to the 1 and 2 components</span>
+<span class="sd">    of the shear. See Bartelmann &amp; Schneider 2001 for details</span>
+<span class="sd">    (https://arxiv.org/pdf/astro-ph/9912508.pdf).</span>
+
+<span class="sd">    The :math:`\epsilon`-ellipticity is a direct estimator of</span>
+<span class="sd">    the reduced shear. The shear :math:`\gamma` may be converted to reduced shear :math:`g` if the</span>
+<span class="sd">    convergence :math:`\kappa` is known. The conversions are given below.</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">     \epsilon = \frac{\chi}{1+(1-|\chi|^2)^{1/2}}</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">     g=\frac{\gamma}{1-\kappa}</span>
+
+<span class="sd">    - If `shape_definition = &#39;chi&#39;`, this function returns the corresponding `epsilon`</span>
+<span class="sd">      ellipticities</span>
+
+<span class="sd">    - If `shape_definition = &#39;shear&#39;`, it returns the corresponding reduced shear, given the</span>
+<span class="sd">      convergence `kappa`</span>
+
+<span class="sd">    - If `shape_definition = &#39;epsilon&#39;` or `&#39;reduced_shear&#39;`, it returns them as is as no</span>
+<span class="sd">      conversion is needed.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    shape_1 : float, numpy.ndarray</span>
+<span class="sd">        Input shapes or shears along principal axis (g1 or e1)</span>
+<span class="sd">    shape_2 : float, numpy.ndarray</span>
+<span class="sd">        Input shapes or shears along secondary axis (g2 or e2)</span>
+<span class="sd">    shape_definition : str, optional</span>
+<span class="sd">        Definition of the input shapes, can be ellipticities &#39;epsilon&#39; or &#39;chi&#39; or shears &#39;shear&#39;</span>
+<span class="sd">        or &#39;reduced_shear&#39;. Defaut: &#39;epsilon&#39;</span>
+<span class="sd">    kappa : float, numpy.ndarray, optional</span>
+<span class="sd">        Convergence for transforming to a reduced shear. Default is 0</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    epsilon_1 : float, numpy.ndarray</span>
+<span class="sd">        Epsilon ellipticity (or reduced shear) along principal axis (epsilon1)</span>
+<span class="sd">    epsilon_2 : float, numpy.ndarray</span>
+<span class="sd">        Epsilon ellipticity (or reduced shear) along secondary axis (epsilon2)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">shape_definition</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;epsilon&quot;</span><span class="p">,</span> <span class="s2">&quot;reduced_shear&quot;</span><span class="p">):</span>
+        <span class="n">epsilon_1</span><span class="p">,</span> <span class="n">epsilon_2</span> <span class="o">=</span> <span class="n">shape_1</span><span class="p">,</span> <span class="n">shape_2</span>
+    <span class="k">elif</span> <span class="n">shape_definition</span> <span class="o">==</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span>
+        <span class="n">chi_to_eps_conversion</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">shape_1</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">shape_2</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> <span class="o">**</span> <span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">epsilon_1</span><span class="p">,</span> <span class="n">epsilon_2</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">shape_1</span> <span class="o">*</span> <span class="n">chi_to_eps_conversion</span><span class="p">,</span>
+            <span class="n">shape_2</span> <span class="o">*</span> <span class="n">chi_to_eps_conversion</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">shape_definition</span> <span class="o">==</span> <span class="s2">&quot;shear&quot;</span><span class="p">:</span>
+        <span class="n">epsilon_1</span><span class="p">,</span> <span class="n">epsilon_2</span> <span class="o">=</span> <span class="n">shape_1</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">kappa</span><span class="p">),</span> <span class="n">shape_2</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">kappa</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Please choose epsilon, chi, shear, reduced_shear&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">epsilon_1</span><span class="p">,</span> <span class="n">epsilon_2</span></div>
+
+
+
+<div class="viewcode-block" id="build_ellipticities">
+<a class="viewcode-back" href="../../../api/clmm.utils.ellipticity.html#clmm.utils.ellipticity.build_ellipticities">[docs]</a>
+<span class="k">def</span> <span class="nf">build_ellipticities</span><span class="p">(</span><span class="n">q11</span><span class="p">,</span> <span class="n">q22</span><span class="p">,</span> <span class="n">q12</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build ellipticties from second moments. See, e.g., Schneider et al. (2006)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    q11 : float, numpy.ndarray</span>
+<span class="sd">        Second brightness moment tensor, component (1,1)</span>
+<span class="sd">    q22 : float, numpy.ndarray</span>
+<span class="sd">        Second brightness moment tensor, component (2,2)</span>
+<span class="sd">    q12 :  float, numpy.ndarray</span>
+<span class="sd">        Second brightness moment tensor, component (1,2)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    chi1, chi2 : float, numpy.ndarray</span>
+<span class="sd">        Ellipticities using the &quot;chi definition&quot;</span>
+<span class="sd">    epsilon1, epsilon2 : float, numpy.ndarray</span>
+<span class="sd">        Ellipticities using the &quot;epsilon definition&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">norm_x</span><span class="p">,</span> <span class="n">norm_e</span> <span class="o">=</span> <span class="n">q11</span> <span class="o">+</span> <span class="n">q22</span><span class="p">,</span> <span class="n">q11</span> <span class="o">+</span> <span class="n">q22</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">q11</span> <span class="o">*</span> <span class="n">q22</span> <span class="o">-</span> <span class="n">q12</span> <span class="o">*</span> <span class="n">q12</span><span class="p">)</span>
+    <span class="n">chi1</span><span class="p">,</span> <span class="n">chi2</span> <span class="o">=</span> <span class="p">(</span><span class="n">q11</span> <span class="o">-</span> <span class="n">q22</span><span class="p">)</span> <span class="o">/</span> <span class="n">norm_x</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">q12</span> <span class="o">/</span> <span class="n">norm_x</span>
+    <span class="n">epsilon1</span><span class="p">,</span> <span class="n">epsilon2</span> <span class="o">=</span> <span class="p">(</span><span class="n">q11</span> <span class="o">-</span> <span class="n">q22</span><span class="p">)</span> <span class="o">/</span> <span class="n">norm_e</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">q12</span> <span class="o">/</span> <span class="n">norm_e</span>
+    <span class="k">return</span> <span class="n">chi1</span><span class="p">,</span> <span class="n">chi2</span><span class="p">,</span> <span class="n">epsilon1</span><span class="p">,</span> <span class="n">epsilon2</span></div>
+
+
+
+<div class="viewcode-block" id="compute_lensed_ellipticity">
+<a class="viewcode-back" href="../../../api/clmm.utils.ellipticity.html#clmm.utils.ellipticity.compute_lensed_ellipticity">[docs]</a>
+<span class="k">def</span> <span class="nf">compute_lensed_ellipticity</span><span class="p">(</span><span class="n">ellipticity1_true</span><span class="p">,</span> <span class="n">ellipticity2_true</span><span class="p">,</span> <span class="n">shear1</span><span class="p">,</span> <span class="n">shear2</span><span class="p">,</span> <span class="n">convergence</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compute lensed ellipticities from the intrinsic ellipticities, shear and convergence.</span>
+<span class="sd">    Following Schneider et al. (2006)</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        \epsilon^{\text{lensed}}=\epsilon^{\text{lensed}}_1+i\epsilon^{\text{lensed}}_2=</span>
+<span class="sd">        \frac{\epsilon^{\text{true}}+g}{1+g^\ast\epsilon^{\text{true}}},</span>
+
+<span class="sd">    where, the complex reduced shear :math:`g` is obtained from the shear</span>
+<span class="sd">    :math:`\gamma=\gamma_1+i\gamma_2` and convergence :math:`\kappa` as :math:`g =</span>
+<span class="sd">    \gamma/(1-\kappa)`, and the complex intrinsic ellipticity is :math:`\epsilon^{\text{</span>
+<span class="sd">    true}}=\epsilon^{\text{true}}_1+i\epsilon^{\text{true}}_2`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ellipticity1_true : float, numpy.ndarray</span>
+<span class="sd">        Intrinsic ellipticity of the sources along the principal axis</span>
+<span class="sd">    ellipticity2_true : float, numpy.ndarray</span>
+<span class="sd">        Intrinsic ellipticity of the sources along the second axis</span>
+<span class="sd">    shear1 :  float, numpy.ndarray</span>
+<span class="sd">        Shear component (not reduced shear) along the principal axis at the source location</span>
+<span class="sd">    shear2 :  float, numpy.ndarray</span>
+<span class="sd">        Shear component (not reduced shear) along the 45-degree axis at the source location</span>
+<span class="sd">    convergence :  float, numpy.ndarray</span>
+<span class="sd">        Convergence at the source location</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    e1, e2 : float, numpy.ndarray</span>
+<span class="sd">        Lensed ellipicity along both reference axes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># shear (as a complex number)</span>
+    <span class="n">shear</span> <span class="o">=</span> <span class="n">shear1</span> <span class="o">+</span> <span class="n">shear2</span> <span class="o">*</span> <span class="mi">1</span><span class="n">j</span>
+    <span class="c1"># intrinsic ellipticity (as a complex number)</span>
+    <span class="n">ellipticity_true</span> <span class="o">=</span> <span class="n">ellipticity1_true</span> <span class="o">+</span> <span class="n">ellipticity2_true</span> <span class="o">*</span> <span class="mi">1</span><span class="n">j</span>
+    <span class="c1"># reduced shear</span>
+    <span class="n">reduced_shear</span> <span class="o">=</span> <span class="n">shear</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">convergence</span><span class="p">)</span>
+    <span class="c1"># lensed ellipticity</span>
+    <span class="n">lensed_ellipticity</span> <span class="o">=</span> <span class="p">(</span><span class="n">ellipticity_true</span> <span class="o">+</span> <span class="n">reduced_shear</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span>
+        <span class="mf">1.0</span> <span class="o">+</span> <span class="n">reduced_shear</span><span class="o">.</span><span class="n">conjugate</span><span class="p">()</span> <span class="o">*</span> <span class="n">ellipticity_true</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">lensed_ellipticity</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">lensed_ellipticity</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2018-2021, LSST DESC CLMM Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

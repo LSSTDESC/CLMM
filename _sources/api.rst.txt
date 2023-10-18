@@ -12,8 +12,8 @@ Information on specific functions, classes, and methods.
    api/clmm.dataops.rst
    api/clmm.galaxycluster.rst
    api/clmm.gcdata.rst
+   api/clmm.redshift.rst
    api/clmm.theory.rst
    api/clmm.plotting.rst
    api/clmm.utils.rst
-   api/clmm.z_distributions.rst
    api/clmm.support.rst

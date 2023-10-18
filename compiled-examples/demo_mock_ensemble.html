@@ -1,22 +1,21 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Generate mock data for a cluster ensemble &mdash; CLMM 1.7.1 documentation</title>
+  <title>Generate mock data for a cluster ensemble &mdash; CLMM 1.10.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=1d24b1d9"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -30,14 +29,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> CLMM
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CLMM
           </a>
               <div class="version">
-                1.7.1
+                1.10.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -90,8 +93,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.dataops.html">clmm.dataops package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.gcdata.html">clmm.gcdata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.redshift.html">clmm.redshift package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.redshift.distributions.html">clmm.redshift.distributions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.redshift.tools.html">clmm.redshift.tools module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.theory.html">clmm.theory package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.be_setup.html">clmm.theory.be_setup module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.ccl.html">clmm.theory.ccl module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.cluster_toolkit.html">clmm.theory.cluster_toolkit module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/clmm.theory.func_layer.html">clmm.theory.func_layer module</a></li>
@@ -101,8 +108,15 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.plotting.html">clmm.plotting package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/clmm.utils.html">clmm.utils module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/clmm.z_distributions.html">clmm.z_distributions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/clmm.utils.html">clmm.utils package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.beta_lens.html">clmm.utils.beta_lens module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.boost.html">clmm.utils.boost module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.ellipticity.html">clmm.utils.ellipticity module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.statistic.html">clmm.utils.statistic module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.units.html">clmm.utils.units module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/clmm.utils.validation.html">clmm.utils.validation module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../api/clmm.support.html">clmm.support package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/clmm.support.mock_data.html">clmm.support.mock_data module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/clmm.support.sampler.html">clmm.support.sampler module</a></li>
@@ -125,7 +139,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Generate mock data for a cluster ensemble</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/compiled-examples/demo_mock_ensemble.rst.txt" rel="nofollow"> View page source</a>
@@ -137,9 +151,9 @@
            <div itemprop="articleBody">
              
   <section id="generate-mock-data-for-a-cluster-ensemble">
-<h1>Generate mock data for a cluster ensemble<a class="headerlink" href="#generate-mock-data-for-a-cluster-ensemble" title="Permalink to this heading"></a></h1>
+<h1>Generate mock data for a cluster ensemble<a class="headerlink" href="#generate-mock-data-for-a-cluster-ensemble" title="Link to this heading"></a></h1>
 <section id="generate-cluster-ensemble-with-random-masses-and-redshifts">
-<h2>Generate cluster ensemble with random masses and redshifts<a class="headerlink" href="#generate-cluster-ensemble-with-random-masses-and-redshifts" title="Permalink to this heading"></a></h2>
+<h2>Generate cluster ensemble with random masses and redshifts<a class="headerlink" href="#generate-cluster-ensemble-with-random-masses-and-redshifts" title="Link to this heading"></a></h2>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">load_ext</span> autoreload
 <span class="o">%</span><span class="k">autoreload</span> 2
 
@@ -158,46 +172,48 @@
 <span class="n">clmm</span><span class="o">.</span><span class="n">__version__</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.7.1&#39;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;1.10.0&#39;</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cosmo</span> <span class="o">=</span> <span class="n">Cosmology</span><span class="p">(</span><span class="n">H0</span> <span class="o">=</span> <span class="mf">71.0</span><span class="p">,</span> <span class="n">Omega_dm0</span> <span class="o">=</span> <span class="mf">0.265</span> <span class="o">-</span> <span class="mf">0.0448</span><span class="p">,</span> <span class="n">Omega_b0</span> <span class="o">=</span> <span class="mf">0.0448</span><span class="p">,</span> <span class="n">Omega_k0</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cosmo</span> <span class="o">=</span> <span class="n">Cosmology</span><span class="p">(</span><span class="n">H0</span><span class="o">=</span><span class="mf">71.0</span><span class="p">,</span> <span class="n">Omega_dm0</span><span class="o">=</span><span class="mf">0.265</span> <span class="o">-</span> <span class="mf">0.0448</span><span class="p">,</span> <span class="n">Omega_b0</span><span class="o">=</span><span class="mf">0.0448</span><span class="p">,</span> <span class="n">Omega_k0</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="generating-a-cluster-catalog-and-associated-source-catalogs">
-<h2>Generating a cluster catalog and associated source catalogs<a class="headerlink" href="#generating-a-cluster-catalog-and-associated-source-catalogs" title="Permalink to this heading"></a></h2>
+<h2>Generating a cluster catalog and associated source catalogs<a class="headerlink" href="#generating-a-cluster-catalog-and-associated-source-catalogs" title="Link to this heading"></a></h2>
 <p>Below, we randomly generate the masses, redshifts, concentrations and
 coordinates of an ensemble of <code class="docutils literal notranslate"><span class="pre">n_clusters</span></code> clusters. For simplicity,
 the drawing is performed uniformly in logm and redshift (instead of
 following a halo mass function).</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># redshift and mass range of the galaxy clusters</span>
-<span class="n">z_bin</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span><span class="mf">0.25</span><span class="p">]</span>
-<span class="n">logm_bin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">14</span><span class="p">,</span> <span class="mf">14.1</span><span class="p">])</span> <span class="c1">#Solar Mass</span>
+<span class="n">z_bin</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">]</span>
+<span class="n">logm_bin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">14</span><span class="p">,</span> <span class="mf">14.1</span><span class="p">])</span>  <span class="c1"># Solar Mass</span>
 
 <span class="c1"># number of clusters in the ensemble</span>
 <span class="n">n_clusters</span> <span class="o">=</span> <span class="mi">30</span>
 
 <span class="c1"># random draw in the mass and redshift range (for simplicity, uniform instead of following an actual mass function)</span>
-<span class="n">cluster_m</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span><span class="p">((</span><span class="n">logm_bin</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">logm_bin</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">n_clusters</span><span class="p">)</span> <span class="o">+</span> <span class="n">logm_bin</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="c1">#in M_sun</span>
-<span class="n">cluster_z</span> <span class="o">=</span>  <span class="p">(</span><span class="n">z_bin</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">z_bin</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">n_clusters</span><span class="p">)</span> <span class="o">+</span> <span class="n">z_bin</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">cluster_m</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span>
+    <span class="p">(</span><span class="n">logm_bin</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">logm_bin</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">n_clusters</span><span class="p">)</span> <span class="o">+</span> <span class="n">logm_bin</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="p">)</span>  <span class="c1"># in M_sun</span>
+<span class="n">cluster_z</span> <span class="o">=</span> <span class="p">(</span><span class="n">z_bin</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">z_bin</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">n_clusters</span><span class="p">)</span> <span class="o">+</span> <span class="n">z_bin</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
 <span class="c1"># random normal draw of cluster concentration, around c_mean</span>
-<span class="n">c_mean</span> <span class="o">=</span> <span class="mf">4.</span>
-<span class="n">lnc</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">c_mean</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.01</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n_clusters</span><span class="p">))</span>
+<span class="n">c_mean</span> <span class="o">=</span> <span class="mf">4.0</span>
+<span class="n">lnc</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">c_mean</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.01</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n_clusters</span><span class="p">))</span>
 <span class="n">concentration</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">lnc</span><span class="p">)</span>
 
 <span class="c1"># randomly draw cluster positions on the sky</span>
-<span class="n">ra</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">n_clusters</span><span class="p">)</span> <span class="o">*</span> <span class="mi">360</span> <span class="c1">#from 0 to 360 deg</span>
+<span class="n">ra</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">n_clusters</span><span class="p">)</span> <span class="o">*</span> <span class="mi">360</span>  <span class="c1"># from 0 to 360 deg</span>
 <span class="n">sindec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">n_clusters</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span>
-<span class="n">dec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="n">sindec</span><span class="p">)</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="c1">#from -90 to 90 deg</span>
+<span class="n">dec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="n">sindec</span><span class="p">)</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>  <span class="c1"># from -90 to 90 deg</span>
 </pre></div>
 </div>
 <section id="background-galaxy-catalog-generation">
-<h3>Background galaxy catalog generation<a class="headerlink" href="#background-galaxy-catalog-generation" title="Permalink to this heading"></a></h3>
+<h3>Background galaxy catalog generation<a class="headerlink" href="#background-galaxy-catalog-generation" title="Link to this heading"></a></h3>
 <p>For each cluster of the ensemble, we use <code class="docutils literal notranslate"><span class="pre">mock_data</span></code> to generate a
 background galaxy catalog and store the results in a <code class="docutils literal notranslate"><span class="pre">GalaxyCluster</span></code>
 object. Note that: - The cluster density profiles follow the NFW
@@ -212,42 +228,66 @@ profiles (see <code class="docutils literal notranslate"><span class="pre">demo_
 details)</p>
 <p>The cluster objects are then stored in <code class="docutils literal notranslate"><span class="pre">gclist</span></code>.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">warnings</span>
-<span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span> <span class="c1"># just to prevent warning print out when looping over the cluster ensemble below</span>
+
+<span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span>
+    <span class="s2">&quot;ignore&quot;</span>
+<span class="p">)</span>  <span class="c1"># just to prevent warning print out when looping over the cluster ensemble below</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gclist</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="c1"># number of galaxies in each cluster field (alternatively, can use the galaxy density instead)</span>
 <span class="n">n_gals</span> <span class="o">=</span> <span class="mi">10000</span>
-<span class="c1">#ngal_density = 10</span>
+<span class="c1"># ngal_density = 10</span>
 
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_clusters</span><span class="p">):</span>
     <span class="c1"># generate background galaxy catalog for cluster i</span>
-    <span class="n">noisy_data_z</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span><span class="n">cluster_m</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">cluster_z</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">concentration</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">cosmo</span><span class="p">,</span>
-                                                <span class="n">cluster_ra</span><span class="o">=</span><span class="n">ra</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">cluster_dec</span><span class="o">=</span><span class="n">dec</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                                                <span class="n">zsrc</span> <span class="o">=</span> <span class="s1">&#39;chang13&#39;</span><span class="p">,</span>
-                                                <span class="n">delta_so</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
-                                                <span class="n">massdef</span><span class="o">=</span><span class="s1">&#39;critical&#39;</span><span class="p">,</span>
-                                                <span class="n">halo_profile_model</span><span class="o">=</span><span class="s1">&#39;nfw&#39;</span><span class="p">,</span>
-                                                <span class="n">zsrc_min</span><span class="o">=</span><span class="n">cluster_z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.1</span><span class="p">,</span>
-                                                <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">3.</span><span class="p">,</span>
-                                                <span class="n">field_size</span><span class="o">=</span><span class="mf">10.</span><span class="p">,</span>
-                                                <span class="n">shapenoise</span><span class="o">=</span><span class="mf">.04</span><span class="p">,</span>
-                                                <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span>
-                                                <span class="n">ngals</span><span class="o">=</span><span class="n">n_gals</span><span class="p">,</span>
-                                                <span class="n">mean_e_err</span><span class="o">=</span><span class="mf">.1</span><span class="p">)</span>
+    <span class="n">noisy_data_z</span> <span class="o">=</span> <span class="n">mock</span><span class="o">.</span><span class="n">generate_galaxy_catalog</span><span class="p">(</span>
+        <span class="n">cluster_m</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+        <span class="n">cluster_z</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+        <span class="n">concentration</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+        <span class="n">cosmo</span><span class="p">,</span>
+        <span class="n">cluster_ra</span><span class="o">=</span><span class="n">ra</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+        <span class="n">cluster_dec</span><span class="o">=</span><span class="n">dec</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+        <span class="n">zsrc</span><span class="o">=</span><span class="s2">&quot;chang13&quot;</span><span class="p">,</span>
+        <span class="n">delta_so</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+        <span class="n">massdef</span><span class="o">=</span><span class="s2">&quot;critical&quot;</span><span class="p">,</span>
+        <span class="n">halo_profile_model</span><span class="o">=</span><span class="s2">&quot;nfw&quot;</span><span class="p">,</span>
+        <span class="n">zsrc_min</span><span class="o">=</span><span class="n">cluster_z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">zsrc_max</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
+        <span class="n">field_size</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
+        <span class="n">shapenoise</span><span class="o">=</span><span class="mf">0.04</span><span class="p">,</span>
+        <span class="n">photoz_sigma_unscaled</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span>
+        <span class="n">ngals</span><span class="o">=</span><span class="n">n_gals</span><span class="p">,</span>
+        <span class="n">mean_e_err</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="p">)</span>
 
-    <span class="n">cl</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">GalaxyCluster</span><span class="p">(</span><span class="s1">&#39;mock_cluster&#39;</span><span class="p">,</span> <span class="n">ra</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">dec</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">cluster_z</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">noisy_data_z</span><span class="p">)</span>
+    <span class="n">cl</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">GalaxyCluster</span><span class="p">(</span><span class="s2">&quot;mock_cluster&quot;</span><span class="p">,</span> <span class="n">ra</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">dec</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">cluster_z</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">noisy_data_z</span><span class="p">)</span>
 
     <span class="c1"># compute DeltaSigma for each background galaxy</span>
-    <span class="n">cl</span><span class="o">.</span><span class="n">compute_tangential_and_cross_components</span><span class="p">(</span><span class="n">shape_component1</span><span class="o">=</span><span class="s1">&#39;e1&#39;</span><span class="p">,</span> <span class="n">shape_component2</span><span class="o">=</span><span class="s1">&#39;e2&#39;</span><span class="p">,</span>
-                                               <span class="n">tan_component</span><span class="o">=</span><span class="s1">&#39;DS_t&#39;</span><span class="p">,</span> <span class="n">cross_component</span><span class="o">=</span><span class="s1">&#39;DS_x&#39;</span><span class="p">,</span>
-                                               <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span> <span class="n">is_deltasigma</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">use_pdz</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">cl</span><span class="o">.</span><span class="n">compute_tangential_and_cross_components</span><span class="p">(</span>
+        <span class="n">shape_component1</span><span class="o">=</span><span class="s2">&quot;e1&quot;</span><span class="p">,</span>
+        <span class="n">shape_component2</span><span class="o">=</span><span class="s2">&quot;e2&quot;</span><span class="p">,</span>
+        <span class="n">tan_component</span><span class="o">=</span><span class="s2">&quot;DS_t&quot;</span><span class="p">,</span>
+        <span class="n">cross_component</span><span class="o">=</span><span class="s2">&quot;DS_x&quot;</span><span class="p">,</span>
+        <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
+        <span class="n">is_deltasigma</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">use_pdz</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="c1"># compute the weights to be used to bluid the DeltaSigma radial profiles</span>
-    <span class="n">cl</span><span class="o">.</span><span class="n">compute_galaxy_weights</span><span class="p">(</span><span class="n">use_pdz</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">use_shape_noise</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">shape_component1</span> <span class="o">=</span> <span class="s1">&#39;e1&#39;</span><span class="p">,</span> <span class="n">shape_component2</span> <span class="o">=</span> <span class="s1">&#39;e2&#39;</span><span class="p">,</span>
-    <span class="n">use_shape_error</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">shape_component1_err</span> <span class="o">=</span> <span class="s1">&#39;e_err&#39;</span><span class="p">,</span> <span class="n">shape_component2_err</span> <span class="o">=</span> <span class="s1">&#39;e_err&#39;</span><span class="p">,</span>
-    <span class="n">weight_name</span> <span class="o">=</span> <span class="s1">&#39;w_ls&#39;</span><span class="p">,</span> <span class="n">cosmo</span> <span class="o">=</span> <span class="n">cosmo</span><span class="p">,</span> <span class="n">is_deltasigma</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">add</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">cl</span><span class="o">.</span><span class="n">compute_galaxy_weights</span><span class="p">(</span>
+        <span class="n">use_pdz</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">use_shape_noise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">shape_component1</span><span class="o">=</span><span class="s2">&quot;e1&quot;</span><span class="p">,</span>
+        <span class="n">shape_component2</span><span class="o">=</span><span class="s2">&quot;e2&quot;</span><span class="p">,</span>
+        <span class="n">use_shape_error</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">shape_component1_err</span><span class="o">=</span><span class="s2">&quot;e_err&quot;</span><span class="p">,</span>
+        <span class="n">shape_component2_err</span><span class="o">=</span><span class="s2">&quot;e_err&quot;</span><span class="p">,</span>
+        <span class="n">weight_name</span><span class="o">=</span><span class="s2">&quot;w_ls&quot;</span><span class="p">,</span>
+        <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
+        <span class="n">is_deltasigma</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">add</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="c1"># append the cluster in the list</span>
     <span class="n">gclist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cl</span><span class="p">)</span>
@@ -256,13 +296,13 @@ details)</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cl</span><span class="o">.</span><span class="n">galcat</span><span class="o">.</span><span class="n">columns</span>
 </pre></div>
 </div>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">TableColumns</span> <span class="n">names</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;ra&#39;</span><span class="p">,</span><span class="s1">&#39;dec&#39;</span><span class="p">,</span><span class="s1">&#39;e1&#39;</span><span class="p">,</span><span class="s1">&#39;e2&#39;</span><span class="p">,</span><span class="s1">&#39;e_err&#39;</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">,</span><span class="s1">&#39;ztrue&#39;</span><span class="p">,</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">,</span><span class="s1">&#39;id&#39;</span><span class="p">,</span><span class="s1">&#39;sigma_c&#39;</span><span class="p">,</span><span class="s1">&#39;theta&#39;</span><span class="p">,</span><span class="s1">&#39;DS_t&#39;</span><span class="p">,</span><span class="s1">&#39;DS_x&#39;</span><span class="p">,</span><span class="s1">&#39;w_ls&#39;</span><span class="p">)</span><span class="o">&gt;</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">TableColumns</span> <span class="n">names</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;ra&#39;</span><span class="p">,</span><span class="s1">&#39;dec&#39;</span><span class="p">,</span><span class="s1">&#39;e1&#39;</span><span class="p">,</span><span class="s1">&#39;e2&#39;</span><span class="p">,</span><span class="s1">&#39;e_err&#39;</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">,</span><span class="s1">&#39;ztrue&#39;</span><span class="p">,</span><span class="s1">&#39;pzpdf&#39;</span><span class="p">,</span><span class="s1">&#39;id&#39;</span><span class="p">,</span><span class="s1">&#39;sigma_c_eff&#39;</span><span class="p">,</span><span class="s1">&#39;theta&#39;</span><span class="p">,</span><span class="s1">&#39;DS_t&#39;</span><span class="p">,</span><span class="s1">&#39;DS_x&#39;</span><span class="p">,</span><span class="s1">&#39;w_ls&#39;</span><span class="p">)</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 </section>
 </section>
 <section id="creating-clusterensemble-object-and-estimation-of-individual-excess-surface-density-profiles">
-<h2>Creating ClusterEnsemble object and estimation of individual excess surface density profiles<a class="headerlink" href="#creating-clusterensemble-object-and-estimation-of-individual-excess-surface-density-profiles" title="Permalink to this heading"></a></h2>
+<h2>Creating ClusterEnsemble object and estimation of individual excess surface density profiles<a class="headerlink" href="#creating-clusterensemble-object-and-estimation-of-individual-excess-surface-density-profiles" title="Link to this heading"></a></h2>
 <p>From the galaxy cluster object list <code class="docutils literal notranslate"><span class="pre">gclist</span></code>, we instantiate a cluster
 ensemble object <code class="docutils literal notranslate"><span class="pre">clusterensemble</span></code>. This instantiation step uses - the
 individual galaxy input <span class="math notranslate nohighlight">\(\Delta\Sigma_+\)</span> and
@@ -277,13 +317,21 @@ profiles (where the binning is controlled by <code class="docutils literal notra
 the stacked profile)</p></li>
 </ul>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ensemble_id</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;ra&#39;</span><span class="p">,</span> <span class="s1">&#39;dec&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;radius&#39;</span><span class="p">,</span> <span class="s1">&#39;gt&#39;</span><span class="p">,</span> <span class="s1">&#39;gx&#39;</span><span class="p">,</span> <span class="s1">&#39;W_l&#39;</span><span class="p">]</span>
-<span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mf">0.3</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span><span class="mi">10</span><span class="p">)</span>
-<span class="n">clusterensemble</span> <span class="o">=</span> <span class="n">ClusterEnsemble</span><span class="p">(</span><span class="n">ensemble_id</span><span class="p">,</span> <span class="n">gclist</span><span class="p">,</span>
-                                  <span class="n">tan_component_in</span><span class="o">=</span><span class="s1">&#39;DS_t&#39;</span><span class="p">,</span> <span class="n">cross_component_in</span><span class="o">=</span><span class="s1">&#39;DS_x&#39;</span><span class="p">,</span>
-                                  <span class="n">tan_component_out</span><span class="o">=</span><span class="s1">&#39;DS_t&#39;</span><span class="p">,</span> <span class="n">cross_component_out</span><span class="o">=</span><span class="s1">&#39;DS_x&#39;</span><span class="p">,</span>
-                                  <span class="n">weights_in</span><span class="o">=</span><span class="s1">&#39;w_ls&#39;</span><span class="p">,</span> <span class="n">weights_out</span><span class="o">=</span><span class="s1">&#39;W_l&#39;</span><span class="p">,</span>
-                                  <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">bin_units</span><span class="o">=</span><span class="s1">&#39;Mpc&#39;</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
+<span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;ra&quot;</span><span class="p">,</span> <span class="s2">&quot;dec&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="s2">&quot;radius&quot;</span><span class="p">,</span> <span class="s2">&quot;gt&quot;</span><span class="p">,</span> <span class="s2">&quot;gx&quot;</span><span class="p">,</span> <span class="s2">&quot;W_l&quot;</span><span class="p">]</span>
+<span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mf">0.3</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">clusterensemble</span> <span class="o">=</span> <span class="n">ClusterEnsemble</span><span class="p">(</span>
+    <span class="n">ensemble_id</span><span class="p">,</span>
+    <span class="n">gclist</span><span class="p">,</span>
+    <span class="n">tan_component_in</span><span class="o">=</span><span class="s2">&quot;DS_t&quot;</span><span class="p">,</span>
+    <span class="n">cross_component_in</span><span class="o">=</span><span class="s2">&quot;DS_x&quot;</span><span class="p">,</span>
+    <span class="n">tan_component_out</span><span class="o">=</span><span class="s2">&quot;DS_t&quot;</span><span class="p">,</span>
+    <span class="n">cross_component_out</span><span class="o">=</span><span class="s2">&quot;DS_x&quot;</span><span class="p">,</span>
+    <span class="n">weights_in</span><span class="o">=</span><span class="s2">&quot;w_ls&quot;</span><span class="p">,</span>
+    <span class="n">weights_out</span><span class="o">=</span><span class="s2">&quot;W_l&quot;</span><span class="p">,</span>
+    <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span>
+    <span class="n">bin_units</span><span class="o">=</span><span class="s2">&quot;Mpc&quot;</span><span class="p">,</span>
+    <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 <p>There is also the option to create an <code class="docutils literal notranslate"><span class="pre">ClusterEnsemble</span></code> object without
@@ -297,10 +345,17 @@ individual profile and then delete the cluster object.</p>
 <span class="n">empty_cluster_ensemble</span> <span class="o">=</span> <span class="n">ClusterEnsemble</span><span class="p">(</span><span class="n">ensemble_id2</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">cluster</span> <span class="ow">in</span> <span class="n">gclist</span><span class="p">:</span>
     <span class="n">empty_cluster_ensemble</span><span class="o">.</span><span class="n">make_individual_radial_profile</span><span class="p">(</span>
-        <span class="n">galaxycluster</span><span class="o">=</span><span class="n">cluster</span><span class="p">,</span> <span class="n">tan_component_in</span><span class="o">=</span><span class="s1">&#39;DS_t&#39;</span><span class="p">,</span> <span class="n">cross_component_in</span><span class="o">=</span><span class="s1">&#39;DS_x&#39;</span><span class="p">,</span>
-        <span class="n">tan_component_out</span><span class="o">=</span><span class="s1">&#39;DS_t&#39;</span><span class="p">,</span> <span class="n">cross_component_out</span><span class="o">=</span><span class="s1">&#39;DS_x&#39;</span><span class="p">,</span>
-        <span class="n">weights_in</span><span class="o">=</span><span class="s1">&#39;w_ls&#39;</span><span class="p">,</span> <span class="n">weights_out</span><span class="o">=</span><span class="s1">&#39;W_l&#39;</span><span class="p">,</span>
-        <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">bin_units</span><span class="o">=</span><span class="s1">&#39;Mpc&#39;</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
+        <span class="n">galaxycluster</span><span class="o">=</span><span class="n">cluster</span><span class="p">,</span>
+        <span class="n">tan_component_in</span><span class="o">=</span><span class="s2">&quot;DS_t&quot;</span><span class="p">,</span>
+        <span class="n">cross_component_in</span><span class="o">=</span><span class="s2">&quot;DS_x&quot;</span><span class="p">,</span>
+        <span class="n">tan_component_out</span><span class="o">=</span><span class="s2">&quot;DS_t&quot;</span><span class="p">,</span>
+        <span class="n">cross_component_out</span><span class="o">=</span><span class="s2">&quot;DS_x&quot;</span><span class="p">,</span>
+        <span class="n">weights_in</span><span class="o">=</span><span class="s2">&quot;w_ls&quot;</span><span class="p">,</span>
+        <span class="n">weights_out</span><span class="o">=</span><span class="s2">&quot;W_l&quot;</span><span class="p">,</span>
+        <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span>
+        <span class="n">bin_units</span><span class="o">=</span><span class="s2">&quot;Mpc&quot;</span><span class="p">,</span>
+        <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
+    <span class="p">)</span>
 </pre></div>
 </div>
 <p>A third option is where all clusters already have the profile computed,
@@ -308,30 +363,40 @@ and we just add those to the <code class="docutils literal notranslate"><span cl
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># add profiles to gclist</span>
 <span class="k">for</span> <span class="n">cluster</span> <span class="ow">in</span> <span class="n">gclist</span><span class="p">:</span>
     <span class="n">cluster</span><span class="o">.</span><span class="n">make_radial_profile</span><span class="p">(</span>
-        <span class="n">tan_component_in</span><span class="o">=</span><span class="s1">&#39;DS_t&#39;</span><span class="p">,</span> <span class="n">cross_component_in</span><span class="o">=</span><span class="s1">&#39;DS_x&#39;</span><span class="p">,</span>
-        <span class="n">tan_component_out</span><span class="o">=</span><span class="s1">&#39;DS_t&#39;</span><span class="p">,</span> <span class="n">cross_component_out</span><span class="o">=</span><span class="s1">&#39;DS_x&#39;</span><span class="p">,</span>
-        <span class="n">weights_in</span> <span class="o">=</span> <span class="s1">&#39;w_ls&#39;</span><span class="p">,</span> <span class="n">weights_out</span> <span class="o">=</span> <span class="s1">&#39;W_l&#39;</span><span class="p">,</span>
-        <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">bin_units</span><span class="o">=</span><span class="s1">&#39;Mpc&#39;</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
+        <span class="n">tan_component_in</span><span class="o">=</span><span class="s2">&quot;DS_t&quot;</span><span class="p">,</span>
+        <span class="n">cross_component_in</span><span class="o">=</span><span class="s2">&quot;DS_x&quot;</span><span class="p">,</span>
+        <span class="n">tan_component_out</span><span class="o">=</span><span class="s2">&quot;DS_t&quot;</span><span class="p">,</span>
+        <span class="n">cross_component_out</span><span class="o">=</span><span class="s2">&quot;DS_x&quot;</span><span class="p">,</span>
+        <span class="n">weights_in</span><span class="o">=</span><span class="s2">&quot;w_ls&quot;</span><span class="p">,</span>
+        <span class="n">weights_out</span><span class="o">=</span><span class="s2">&quot;W_l&quot;</span><span class="p">,</span>
+        <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span>
+        <span class="n">bin_units</span><span class="o">=</span><span class="s2">&quot;Mpc&quot;</span><span class="p">,</span>
+        <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
+    <span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ensemble_id3</span> <span class="o">=</span> <span class="mi">3</span>
 <span class="n">empty_cluster_ensemble</span> <span class="o">=</span> <span class="n">ClusterEnsemble</span><span class="p">(</span><span class="n">ensemble_id3</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">cluster</span> <span class="ow">in</span> <span class="n">gclist</span><span class="p">:</span>
     <span class="n">empty_cluster_ensemble</span><span class="o">.</span><span class="n">add_individual_radial_profile</span><span class="p">(</span>
-        <span class="n">galaxycluster</span><span class="o">=</span><span class="n">cluster</span><span class="p">,</span> <span class="n">profile_table</span><span class="o">=</span><span class="n">cluster</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span>
-        <span class="n">tan_component</span><span class="o">=</span><span class="s1">&#39;DS_t&#39;</span><span class="p">,</span> <span class="n">cross_component</span><span class="o">=</span><span class="s1">&#39;DS_x&#39;</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="s1">&#39;W_l&#39;</span><span class="p">)</span>
+        <span class="n">galaxycluster</span><span class="o">=</span><span class="n">cluster</span><span class="p">,</span>
+        <span class="n">profile_table</span><span class="o">=</span><span class="n">cluster</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span>
+        <span class="n">tan_component</span><span class="o">=</span><span class="s2">&quot;DS_t&quot;</span><span class="p">,</span>
+        <span class="n">cross_component</span><span class="o">=</span><span class="s2">&quot;DS_x&quot;</span><span class="p">,</span>
+        <span class="n">weights</span><span class="o">=</span><span class="s2">&quot;W_l&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="stacked-profile-of-the-cluster-ensemble">
-<h2>Stacked profile of the cluster ensemble<a class="headerlink" href="#stacked-profile-of-the-cluster-ensemble" title="Permalink to this heading"></a></h2>
+<h2>Stacked profile of the cluster ensemble<a class="headerlink" href="#stacked-profile-of-the-cluster-ensemble" title="Link to this heading"></a></h2>
 <p>The stacked radial profile of the ensemble is then obtained as</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clusterensemble</span><span class="o">.</span><span class="n">make_stacked_radial_profile</span><span class="p">(</span><span class="n">tan_component</span><span class="o">=</span><span class="s1">&#39;DS_t&#39;</span><span class="p">,</span> <span class="n">cross_component</span><span class="o">=</span><span class="s1">&#39;DS_x&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clusterensemble</span><span class="o">.</span><span class="n">make_stacked_radial_profile</span><span class="p">(</span><span class="n">tan_component</span><span class="o">=</span><span class="s2">&quot;DS_t&quot;</span><span class="p">,</span> <span class="n">cross_component</span><span class="o">=</span><span class="s2">&quot;DS_x&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="covariance-bootstrap-sample-jackknife-of-the-stack-between-radial-bins">
-<h2>Covariance (Bootstrap, sample, Jackknife) of the stack between radial bins<a class="headerlink" href="#covariance-bootstrap-sample-jackknife-of-the-stack-between-radial-bins" title="Permalink to this heading"></a></h2>
+<h2>Covariance (Bootstrap, sample, Jackknife) of the stack between radial bins<a class="headerlink" href="#covariance-bootstrap-sample-jackknife-of-the-stack-between-radial-bins" title="Link to this heading"></a></h2>
 <p>Radial bins may be correlated and the <code class="docutils literal notranslate"><span class="pre">ClusterEnsemble</span></code> class provides
 three methods to compute the covariance matrix of the stacked signal,
 from the data: - The Sample covariance directly computes the covariance
@@ -351,23 +416,48 @@ controlled by the <code class="docutils literal notranslate"><span class="pre">n
 <span class="math notranslate nohighlight">\(N_{\rm region}=12 N_{\rm side}^2\)</span>.</p>
 <p>NB: Approaches exist to compute the theoretical covariance of a stack
 but these are not (yet) available in <code class="docutils literal notranslate"><span class="pre">CLMM</span></code></p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clusterensemble</span><span class="o">.</span><span class="n">compute_sample_covariance</span><span class="p">(</span><span class="n">tan_component</span><span class="o">=</span><span class="s1">&#39;DS_t&#39;</span><span class="p">,</span> <span class="n">cross_component</span><span class="o">=</span><span class="s1">&#39;DS_x&#39;</span><span class="p">)</span>
-<span class="n">clusterensemble</span><span class="o">.</span><span class="n">compute_bootstrap_covariance</span><span class="p">(</span><span class="n">tan_component</span><span class="o">=</span><span class="s1">&#39;DS_t&#39;</span><span class="p">,</span> <span class="n">cross_component</span><span class="o">=</span><span class="s1">&#39;DS_x&#39;</span><span class="p">,</span> <span class="n">n_bootstrap</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
-<span class="n">clusterensemble</span><span class="o">.</span><span class="n">compute_jackknife_covariance</span><span class="p">(</span><span class="n">n_side</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span><span class="n">tan_component</span><span class="o">=</span><span class="s1">&#39;DS_t&#39;</span><span class="p">,</span> <span class="n">cross_component</span><span class="o">=</span><span class="s1">&#39;DS_x&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clusterensemble</span><span class="o">.</span><span class="n">compute_sample_covariance</span><span class="p">(</span><span class="n">tan_component</span><span class="o">=</span><span class="s2">&quot;DS_t&quot;</span><span class="p">,</span> <span class="n">cross_component</span><span class="o">=</span><span class="s2">&quot;DS_x&quot;</span><span class="p">)</span>
+<span class="n">clusterensemble</span><span class="o">.</span><span class="n">compute_bootstrap_covariance</span><span class="p">(</span>
+    <span class="n">tan_component</span><span class="o">=</span><span class="s2">&quot;DS_t&quot;</span><span class="p">,</span> <span class="n">cross_component</span><span class="o">=</span><span class="s2">&quot;DS_x&quot;</span><span class="p">,</span> <span class="n">n_bootstrap</span><span class="o">=</span><span class="mi">300</span>
+<span class="p">)</span>
+<span class="n">clusterensemble</span><span class="o">.</span><span class="n">compute_jackknife_covariance</span><span class="p">(</span>
+    <span class="n">n_side</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">tan_component</span><span class="o">=</span><span class="s2">&quot;DS_t&quot;</span><span class="p">,</span> <span class="n">cross_component</span><span class="o">=</span><span class="s2">&quot;DS_x&quot;</span>
+<span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="mi">7</span><span class="p">))</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;axes.linewidth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">clusterensemble</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">clusterensemble</span><span class="o">.</span><span class="n">cov_tan_sv</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span><span class="o">**</span><span class="mf">0.5</span><span class="o">/</span><span class="mf">1e13</span><span class="p">,</span><span class="s1">&#39;--&#39;</span><span class="p">,</span><span class="n">c</span> <span class="o">=</span> <span class="s1">&#39;royalblue&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Sample&#39;</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">clusterensemble</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">clusterensemble</span><span class="o">.</span><span class="n">cov_tan_bs</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span><span class="o">**</span><span class="mf">0.5</span><span class="o">/</span><span class="mf">1e13</span><span class="p">,</span><span class="s1">&#39;-s&#39;</span><span class="p">,</span><span class="n">c</span> <span class="o">=</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Bootstrap&#39;</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">markersize</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">clusterensemble</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">clusterensemble</span><span class="o">.</span><span class="n">cov_tan_jk</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span><span class="o">**</span><span class="mf">0.5</span><span class="o">/</span><span class="mf">1e13</span><span class="p">,</span><span class="n">c</span> <span class="o">=</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Jackknife&#39;</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;R [Mpc]&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span><span class="mi">20</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$\sigma_{\Delta\Sigma}\ (\times 10^</span><span class="si">{13}</span><span class="s1"> M_\odot /Mpc^2)$&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span><span class="mi">25</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">which</span> <span class="o">=</span> <span class="s1">&#39;major&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span> <span class="mi">18</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">frameon</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;axes.linewidth&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">clusterensemble</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;radius&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+    <span class="n">clusterensemble</span><span class="o">.</span><span class="n">cov</span><span class="p">[</span><span class="s2">&quot;tan_sc&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">/</span> <span class="mf">1e13</span><span class="p">,</span>
+    <span class="s2">&quot;--&quot;</span><span class="p">,</span>
+    <span class="n">c</span><span class="o">=</span><span class="s2">&quot;royalblue&quot;</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Sample&quot;</span><span class="p">,</span>
+    <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">clusterensemble</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;radius&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+    <span class="n">clusterensemble</span><span class="o">.</span><span class="n">cov</span><span class="p">[</span><span class="s2">&quot;tan_bs&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">/</span> <span class="mf">1e13</span><span class="p">,</span>
+    <span class="s2">&quot;-s&quot;</span><span class="p">,</span>
+    <span class="n">c</span><span class="o">=</span><span class="s2">&quot;g&quot;</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Bootstrap&quot;</span><span class="p">,</span>
+    <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">markersize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">clusterensemble</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;radius&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+    <span class="n">clusterensemble</span><span class="o">.</span><span class="n">cov</span><span class="p">[</span><span class="s2">&quot;tan_jk&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">/</span> <span class="mf">1e13</span><span class="p">,</span>
+    <span class="n">c</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Jackknife&quot;</span><span class="p">,</span>
+    <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;R [Mpc]&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\sigma_{\Delta\Sigma}\ (\times 10^</span><span class="si">{13}</span><span class="s2"> M_\odot /Mpc^2)$&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s2">&quot;major&quot;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">minorticks_on</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">lw</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;minor&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">.1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s2">&quot;minor&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">loglog</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -375,78 +465,128 @@ but these are not (yet) available in <code class="docutils literal notranslate">
 </pre></div>
 </div>
 <img alt="../_images/demo_mock_ensemble_21_1.png" src="../_images/demo_mock_ensemble_21_1.png" />
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span> <span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;axes.linewidth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;axes.linewidth&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">wspace</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
-<span class="n">maximum</span> <span class="o">=</span> <span class="n">clusterensemble</span><span class="o">.</span><span class="n">cov_tan_sv</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+<span class="n">maximum</span> <span class="o">=</span> <span class="n">clusterensemble</span><span class="o">.</span><span class="n">cov</span><span class="p">[</span><span class="s2">&quot;tan_sc&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
 <span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">cov</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
     <span class="n">axes</span><span class="p">,</span>
-    <span class="p">[</span><span class="n">clusterensemble</span><span class="o">.</span><span class="n">cov_tan_sv</span><span class="p">,</span>
-     <span class="n">clusterensemble</span><span class="o">.</span><span class="n">cov_tan_bs</span><span class="p">,</span>
-     <span class="n">clusterensemble</span><span class="o">.</span><span class="n">cov_tan_jk</span><span class="p">],</span>
-    <span class="p">[</span><span class="s1">&#39;Stack : Sample&#39;</span><span class="p">,</span> <span class="s1">&#39;Stack : Bootstrap&#39;</span><span class="p">,</span> <span class="s1">&#39;Stack : Jackknife&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="n">clusterensemble</span><span class="o">.</span><span class="n">cov</span><span class="p">[</span><span class="s2">&quot;tan_sc&quot;</span><span class="p">],</span> <span class="n">clusterensemble</span><span class="o">.</span><span class="n">cov</span><span class="p">[</span><span class="s2">&quot;tan_bs&quot;</span><span class="p">],</span> <span class="n">clusterensemble</span><span class="o">.</span><span class="n">cov</span><span class="p">[</span><span class="s2">&quot;tan_jk&quot;</span><span class="p">]],</span>
+    <span class="p">[</span><span class="s2">&quot;Stack : Sample&quot;</span><span class="p">,</span> <span class="s2">&quot;Stack : Bootstrap&quot;</span><span class="p">,</span> <span class="s2">&quot;Stack : Jackknife&quot;</span><span class="p">],</span>
 <span class="p">):</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;radial bin index&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;radial bin index&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
-    <span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">cov</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;Reds&#39;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">maximum</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;radial bin index&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;radial bin index&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s2">&quot;major&quot;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+    <span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">cov</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;Reds&quot;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">maximum</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s2">&quot;lower&quot;</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="../_images/demo_mock_ensemble_22_0.png" src="../_images/demo_mock_ensemble_22_0.png" />
 </section>
 <section id="visualizing-the-stacked-profiles-and-corresponding-model">
-<h2>Visualizing the stacked profiles and corresponding model<a class="headerlink" href="#visualizing-the-stacked-profiles-and-corresponding-model" title="Permalink to this heading"></a></h2>
+<h2>Visualizing the stacked profiles and corresponding model<a class="headerlink" href="#visualizing-the-stacked-profiles-and-corresponding-model" title="Link to this heading"></a></h2>
 <p>In the figure below, we plot: - the individual <span class="math notranslate nohighlight">\(\Delta\Sigma\)</span>
 profiles of the clusters (light blue) - the stacked signal (red symbols)
 - the prediction computed using a NFW profile and the mean values of the
 mass, concentration and redshift in the stack (dashed black)</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">moo</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">Modeling</span><span class="p">(</span><span class="n">massdef</span> <span class="o">=</span> <span class="s1">&#39;critical&#39;</span><span class="p">,</span> <span class="n">delta_mdef</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span> <span class="n">halo_profile_model</span> <span class="o">=</span> <span class="s1">&#39;nfw&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">moo</span> <span class="o">=</span> <span class="n">clmm</span><span class="o">.</span><span class="n">Modeling</span><span class="p">(</span><span class="n">massdef</span><span class="o">=</span><span class="s2">&quot;critical&quot;</span><span class="p">,</span> <span class="n">delta_mdef</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">halo_profile_model</span><span class="o">=</span><span class="s2">&quot;nfw&quot;</span><span class="p">)</span>
 <span class="n">moo</span><span class="o">.</span><span class="n">set_cosmo</span><span class="p">(</span><span class="n">cosmo</span><span class="p">)</span>
 <span class="c1"># Average values of mass and concentration of the ensemble to be used below to overplot the model on the stacked profile</span>
 <span class="n">moo</span><span class="o">.</span><span class="n">set_concentration</span><span class="p">(</span><span class="n">concentration</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
 <span class="n">moo</span><span class="o">.</span><span class="n">set_mass</span><span class="p">(</span><span class="n">cluster_m</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
 </pre></div>
 </div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">r_stack</span><span class="p">,</span> <span class="n">gt_stack</span><span class="p">,</span> <span class="n">gx_stack</span> <span class="o">=</span> <span class="p">(</span><span class="n">clusterensemble</span><span class="o">.</span><span class="n">stacked_data</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;radius&#39;</span><span class="p">,</span> <span class="s1">&#39;DS_t&#39;</span><span class="p">,</span> <span class="s1">&#39;DS_x&#39;</span><span class="p">))</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;axes.linewidth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">17</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">r_stack</span><span class="p">,</span> <span class="n">gt_stack</span><span class="p">,</span> <span class="n">gx_stack</span> <span class="o">=</span> <span class="p">(</span><span class="n">clusterensemble</span><span class="o">.</span><span class="n">stacked_data</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;radius&quot;</span><span class="p">,</span> <span class="s2">&quot;DS_t&quot;</span><span class="p">,</span> <span class="s2">&quot;DS_x&quot;</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;axes.linewidth&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 
-<span class="n">err_gt</span> <span class="o">=</span> <span class="n">clusterensemble</span><span class="o">.</span><span class="n">cov_tan_sv</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span><span class="o">**</span><span class="mf">0.5</span><span class="o">/</span><span class="mf">1e13</span>
-<span class="n">err_gx</span> <span class="o">=</span> <span class="n">clusterensemble</span><span class="o">.</span><span class="n">cov_cross_sv</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span><span class="o">**</span><span class="mf">0.5</span><span class="o">/</span><span class="mf">1e13</span>
+<span class="n">err_gt</span> <span class="o">=</span> <span class="n">clusterensemble</span><span class="o">.</span><span class="n">cov</span><span class="p">[</span><span class="s2">&quot;tan_sc&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">/</span> <span class="mf">1e13</span>
+<span class="n">err_gx</span> <span class="o">=</span> <span class="n">clusterensemble</span><span class="o">.</span><span class="n">cov</span><span class="p">[</span><span class="s2">&quot;cross_sc&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">/</span> <span class="mf">1e13</span>
 
-<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">r_stack</span><span class="p">,</span><span class="n">gt_stack</span><span class="o">/</span><span class="mf">1e13</span><span class="p">,</span> <span class="n">err_gt</span><span class="p">,</span><span class="n">markersize</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">fmt</span> <span class="o">=</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">capsize</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">elinewidth</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">zorder</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Stack&#39;</span><span class="p">)</span>
-<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">r_stack</span><span class="p">,</span><span class="n">gx_stack</span><span class="o">/</span><span class="mf">1e13</span><span class="p">,</span> <span class="n">err_gx</span><span class="p">,</span><span class="n">markersize</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">fmt</span> <span class="o">=</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">capsize</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">elinewidth</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">zorder</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Stack&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span>
+    <span class="n">r_stack</span><span class="p">,</span>
+    <span class="n">gt_stack</span> <span class="o">/</span> <span class="mf">1e13</span><span class="p">,</span>
+    <span class="n">err_gt</span><span class="p">,</span>
+    <span class="n">markersize</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">c</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span>
+    <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span>
+    <span class="n">capsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">elinewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">zorder</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Stack&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span>
+    <span class="n">r_stack</span><span class="p">,</span>
+    <span class="n">gx_stack</span> <span class="o">/</span> <span class="mf">1e13</span><span class="p">,</span>
+    <span class="n">err_gx</span><span class="p">,</span>
+    <span class="n">markersize</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">c</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span>
+    <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span>
+    <span class="n">capsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">elinewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">zorder</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Stack&quot;</span><span class="p">,</span>
+<span class="p">)</span>
 
-<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">clusterensemble</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">moo</span><span class="o">.</span><span class="n">eval_excess_surface_density</span><span class="p">(</span><span class="n">clusterensemble</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">cluster_z</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span><span class="o">/</span><span class="mf">1e13</span><span class="p">,</span> <span class="s1">&#39;--k&#39;</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Prediction from stack mean cluster&#39;</span><span class="p">,</span> <span class="n">zorder</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span>
-<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">clusterensemble</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="mi">0</span><span class="o">*</span><span class="n">moo</span><span class="o">.</span><span class="n">eval_excess_surface_density</span><span class="p">(</span><span class="n">clusterensemble</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">cluster_z</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span><span class="o">/</span><span class="mf">1e13</span><span class="p">,</span> <span class="s1">&#39;--k&#39;</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;y=0&#39;</span><span class="p">,</span> <span class="n">zorder</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">clusterensemble</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;radius&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+    <span class="n">moo</span><span class="o">.</span><span class="n">eval_excess_surface_density</span><span class="p">(</span><span class="n">clusterensemble</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;radius&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">cluster_z</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span> <span class="o">/</span> <span class="mf">1e13</span><span class="p">,</span>
+    <span class="s2">&quot;--k&quot;</span><span class="p">,</span>
+    <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Prediction from stack mean cluster&quot;</span><span class="p">,</span>
+    <span class="n">zorder</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">clusterensemble</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;radius&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+    <span class="mi">0</span> <span class="o">*</span> <span class="n">moo</span><span class="o">.</span><span class="n">eval_excess_surface_density</span><span class="p">(</span><span class="n">clusterensemble</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;radius&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">cluster_z</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span> <span class="o">/</span> <span class="mf">1e13</span><span class="p">,</span>
+    <span class="s2">&quot;--k&quot;</span><span class="p">,</span>
+    <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s2">&quot;y=0&quot;</span><span class="p">,</span>
+    <span class="n">zorder</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+<span class="p">)</span>
 
-<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
-<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>
 
 
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_clusters</span><span class="p">):</span>
-    <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">clusterensemble</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">],</span><span class="n">clusterensemble</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;DS_t&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">/</span><span class="mf">1e13</span><span class="p">,</span> <span class="s1">&#39;cyan&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Individual&#39;</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">clusterensemble</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;radius&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">],</span><span class="n">clusterensemble</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;DS_x&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">/</span><span class="mf">1e13</span><span class="p">,</span> <span class="s1">&#39;cyan&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Individual&#39;</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+        <span class="n">clusterensemble</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;radius&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">],</span>
+        <span class="n">clusterensemble</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;DS_t&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="mf">1e13</span><span class="p">,</span>
+        <span class="s2">&quot;cyan&quot;</span><span class="p">,</span>
+        <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Individual&quot;</span><span class="p">,</span>
+        <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+        <span class="n">clusterensemble</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;radius&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">],</span>
+        <span class="n">clusterensemble</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;DS_x&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="mf">1e13</span><span class="p">,</span>
+        <span class="s2">&quot;cyan&quot;</span><span class="p">,</span>
+        <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Individual&quot;</span><span class="p">,</span>
+        <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">frameon</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">15</span><span class="p">)</span>
-        <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">frameon</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">15</span><span class="p">)</span>
-<span class="c1">#axs[0].plot(np.average(clusterensemble.data[&#39;radius&#39;], axis = 0), np.average(clusterensemble.data[&#39;gt&#39;], weights = None, axis = 0)/1e13)</span>
-<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;R [Mpc]&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span><span class="mi">20</span><span class="p">)</span>
-<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;R [Mpc]&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span><span class="mi">20</span><span class="p">)</span>
-<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">which</span> <span class="o">=</span> <span class="s1">&#39;major&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span> <span class="mi">18</span><span class="p">)</span>
-<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">which</span> <span class="o">=</span> <span class="s1">&#39;major&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span> <span class="mi">18</span><span class="p">)</span>
-<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$\Delta\Sigma_+$ $[\times 10^</span><span class="si">{13}</span><span class="s1"> M_\odot /Mpc^])$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
-<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$\Delta\Sigma_\times$  $[\times 10^</span><span class="si">{13}</span><span class="s1"> M_\odot /Mpc^2]$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
-<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Tangential&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
-<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Cross&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+        <span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+        <span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="c1"># axs[0].plot(np.average(clusterensemble.data[&#39;radius&#39;], axis = 0), np.average(clusterensemble.data[&#39;gt&#39;], weights = None, axis = 0)/1e13)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;R [Mpc]&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;R [Mpc]&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s2">&quot;major&quot;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s2">&quot;major&quot;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\Delta\Sigma_+$ $[\times 10^</span><span class="si">{13}</span><span class="s2"> M_\odot /Mpc^])$&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\Delta\Sigma_\times$  $[\times 10^</span><span class="si">{13}</span><span class="s2"> M_\odot /Mpc^2]$&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;Tangential&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;Cross&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axs</span><span class="p">:</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">minorticks_on</span><span class="p">()</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">lw</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;minor&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">.1</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s2">&quot;minor&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
@@ -454,12 +594,12 @@ mass, concentration and redshift in the stack (dashed black)</p>
 <img alt="../_images/demo_mock_ensemble_26_0.png" src="../_images/demo_mock_ensemble_26_0.png" />
 </section>
 <section id="saving-loading-clusterensemble">
-<h2>Saving/Loading ClusterEnsemble<a class="headerlink" href="#saving-loading-clusterensemble" title="Permalink to this heading"></a></h2>
+<h2>Saving/Loading ClusterEnsemble<a class="headerlink" href="#saving-loading-clusterensemble" title="Link to this heading"></a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">ClusterEnsemble</span></code> object also have an option for saving/loading:</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clusterensemble</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;ce.pkl&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clusterensemble</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;ce.pkl&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clusterensemble2</span> <span class="o">=</span> <span class="n">ClusterEnsemble</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;ce.pkl&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">clusterensemble2</span> <span class="o">=</span> <span class="n">ClusterEnsemble</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;ce.pkl&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>

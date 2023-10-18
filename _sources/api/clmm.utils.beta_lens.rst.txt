@@ -1,7 +1,7 @@
-clmm.theory.be\_setup module
+clmm.utils.beta\_lens module
 ============================
 
-.. automodule:: clmm.theory.be_setup
+.. automodule:: clmm.utils.beta_lens
    :members:
    :undoc-members:
    :show-inheritance:

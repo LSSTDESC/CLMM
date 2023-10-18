@@ -22,7 +22,7 @@ with\ ``CLMM``. This notebook is based on notebook
     from clmm import Cosmology
     from clmm.support import mock_data as mock
     import clmm.galaxycluster as gc
-    from numpy import random 
+    from numpy import random
     import numpy as np
     import clmm.dataops as da
     from clmm.support.sampler import fitters
@@ -41,7 +41,7 @@ Make sure we know which version we’re using
 
 .. parsed-literal::
 
-    '1.7.1'
+    '1.10.0'
 
 
 
@@ -50,7 +50,7 @@ Define cosmology object
 
 .. code:: ipython3
 
-    mock_cosmo = Cosmology(H0 = 70.0, Omega_dm0 = 0.27 - 0.045, Omega_b0 = 0.045, Omega_k0 = 0.0)
+    mock_cosmo = Cosmology(H0=70.0, Omega_dm0=0.27 - 0.045, Omega_b0=0.045, Omega_k0=0.0)
     np.random.seed(11)
 
 1. Generate cluster objects from mock data
@@ -65,26 +65,29 @@ Define toy cluster parameters for mock data generation
 
     cosmo = mock_cosmo
     cluster_id = "Awesome_cluster"
-    cluster_m = 1.e15
+    cluster_m = 1.0e15
     cluster_z = 0.3
     concentration = 4
-    ngal_density = 50 #gal/arcmin2 
-    cluster_ra = 20.
-    cluster_dec = 40.
-    zsrc_min = cluster_z + 0.1 # we only want to draw background galaxies
-    field_size = 20 #Mpc
+    ngal_density = 50  # gal/arcmin2
+    cluster_ra = 20.0
+    cluster_dec = 40.0
+    zsrc_min = cluster_z + 0.1  # we only want to draw background galaxies
+    field_size = 20  # Mpc
     
-    ideal_data_z = mock.generate_galaxy_catalog(cluster_m,
-                                                cluster_z,
-                                                concentration,
-                                                cosmo,
-                                                'chang13',delta_so=200,
-                                                massdef="mean",
-                                                zsrc_min=zsrc_min,
-                                                ngal_density=ngal_density, 
-                                                cluster_ra=cluster_ra,
-                                                cluster_dec = cluster_dec,
-                                                field_size=field_size)
+    ideal_data_z = mock.generate_galaxy_catalog(
+        cluster_m,
+        cluster_z,
+        concentration,
+        cosmo,
+        "chang13",
+        delta_so=200,
+        massdef="mean",
+        zsrc_min=zsrc_min,
+        ngal_density=ngal_density,
+        cluster_ra=cluster_ra,
+        cluster_dec=cluster_dec,
+        field_size=field_size,
+    )
 
 We want to load this mock data into several CLMM cluster objects, with
 cluster centers located in a 0.4 x 0.4 degrees windows around the
@@ -99,22 +102,21 @@ corresponds to a == 0 in the cell below.
     cluster_list = []
     coord = []
     
-    for a in range (0, center_number):
+    for a in range(0, center_number):
         if a == 0:
             cluster_ra_new = cluster_ra
             cluster_dec_new = cluster_dec
         else:
-            cluster_ra_new  = random.uniform(cluster_ra - 0.2, cluster_ra + 0.2)
+            cluster_ra_new = random.uniform(cluster_ra - 0.2, cluster_ra + 0.2)
             cluster_dec_new = random.uniform(cluster_dec - 0.2, cluster_dec + 0.2)
-            
-        cl = clmm.GalaxyCluster(cluster_id, cluster_ra_new, cluster_dec_new,
-                                   cluster_z, ideal_data_z)
-        
-        print(f'Cluster info = ID: {cl.unique_id}; ra: {cl.ra:.2f}; dec: {cl.dec:.2f}; z_l: {cl.z}')
-        print(f'The number of source galaxies is : {len(cl.galcat)}')
-        
+    
+        cl = clmm.GalaxyCluster(cluster_id, cluster_ra_new, cluster_dec_new, cluster_z, ideal_data_z)
+    
+        print(f"Cluster info = ID: {cl.unique_id}; ra: {cl.ra:.2f}; dec: {cl.dec:.2f}; z_l: {cl.z}")
+        print(f"The number of source galaxies is : {len(cl.galcat)}")
+    
         cluster_list.append(cl)
-        coord.append(SkyCoord(cl.ra*u.deg, cl.dec*u.deg))
+        coord.append(SkyCoord(cl.ra * u.deg, cl.dec * u.deg))
 
 
 .. parsed-literal::
@@ -133,7 +135,7 @@ corresponds to a == 0 in the cell below.
 
 .. code:: ipython3
 
-    #Offset of the different cluster centers from the position 0,0 (in degree)
+    # Offset of the different cluster centers from the position 0,0 (in degree)
     offset = [coord[0].separation(coord[i]).value for i in range(5)]
 
 2. Basic checks and plots
@@ -150,23 +152,23 @@ represented by the red dots.
     f, ax = plt.subplots(1, 2, figsize=(12, 4))
     
     for cl in cluster_list:
-        ax[0].scatter(cl.galcat['ra'], cl.galcat['dec'], color='blue', s=1, alpha=0.3)
-        ax[0].plot(cl.ra, cl.dec, 'ro')
-        ax[0].set_ylabel('dec', fontsize="large")
-        ax[0].set_xlabel('ra', fontsize="large")
+        ax[0].scatter(cl.galcat["ra"], cl.galcat["dec"], color="blue", s=1, alpha=0.3)
+        ax[0].plot(cl.ra, cl.dec, "ro")
+        ax[0].set_ylabel("dec", fontsize="large")
+        ax[0].set_xlabel("ra", fontsize="large")
     
-        hist = ax[1].hist(cl.galcat['z'], bins=20)[0]
+        hist = ax[1].hist(cl.galcat["z"], bins=20)[0]
     
-        ax[1].axvline(cl.z, c='r', ls='--')
-        ax[1].set_xlabel('$z_{source}$', fontsize="large")
-        xt = {t:f'{t}' for t in ax[1].get_xticks() if t!=0}
-        xt[cl.z] ='$z_{cl}$'
-        xto = sorted(list(xt.keys())+[cl.z])
+        ax[1].axvline(cl.z, c="r", ls="--")
+        ax[1].set_xlabel("$z_{source}$", fontsize="large")
+        xt = {t: f"{t}" for t in ax[1].get_xticks() if t != 0}
+        xt[cl.z] = "$z_{cl}$"
+        xto = sorted(list(xt.keys()) + [cl.z])
         ax[1].set_xticks(xto)
         ax[1].set_xticklabels(xt[t] for t in xto)
-        ax[1].get_xticklabels()[xto.index(cl.z)].set_color('red')
+        ax[1].get_xticklabels()[xto.index(cl.z)].set_color("red")
         plt.xlim(0, max(xto))
-        
+    
     plt.show()
 
 
@@ -184,29 +186,39 @@ components.
 
 .. code:: ipython3
 
-    bin_edges = make_bins(0.3, 6, 10) # We want to specify the same bins for all the centers.
+    bin_edges = make_bins(0.3, 6, 10)  # We want to specify the same bins for all the centers.
     
     profile_list = []
     
     for cl in cluster_list:
         theta, e_t, e_x = compute_tangential_and_cross_components(
-                        ra_lens=cl.ra, dec_lens=cl.dec,
-                        ra_source=cl.galcat['ra'], dec_source=cl.galcat['dec'],
-                        shear1=cl.galcat['e1'], shear2=cl.galcat['e2'])
+            ra_lens=cl.ra,
+            dec_lens=cl.dec,
+            ra_source=cl.galcat["ra"],
+            dec_source=cl.galcat["dec"],
+            shear1=cl.galcat["e1"],
+            shear2=cl.galcat["e2"],
+        )
         cl.compute_tangential_and_cross_components(add=True)
-        cl.make_radial_profile("Mpc", cosmo=cosmo,bins=bin_edges, include_empty_bins=False)
+        cl.make_radial_profile("Mpc", cosmo=cosmo, bins=bin_edges, include_empty_bins=False)
         profile_list.append(cl.profile)
 
 .. code:: ipython3
 
     fig = plt.figure(figsize=(10, 6))
     
-    for a in range (0, len(profile_list)):
-        fig.gca().errorbar(profile_list[a]['radius'],profile_list[a]['gt'],profile_list[a]['gt_err'],linestyle='-', 
-        marker='o', label =f'offset = {"{:.2f}".format(offset[a])}°')
+    for a in range(0, len(profile_list)):
+        fig.gca().errorbar(
+            profile_list[a]["radius"],
+            profile_list[a]["gt"],
+            profile_list[a]["gt_err"],
+            linestyle="-",
+            marker="o",
+            label=f'offset = {"{:.2f}".format(offset[a])}°',
+        )
     
-    plt.xlabel('log(radius)', size=14)
-    plt.ylabel('gt', size=14)
+    plt.xlabel("log(radius)", size=14)
+    plt.ylabel("gt", size=14)
     
     plt.legend()
     plt.show()
@@ -220,12 +232,18 @@ components.
 
     fig2 = plt.figure(figsize=(10, 6))
     
-    for a in range (0, len(profile_list)):
-        fig2.gca().errorbar(profile_list[a]['radius'],profile_list[a]['gx'],profile_list[a]['gx_err'],linestyle='-', 
-        marker='o', label =f'offset = {"{:.2f}".format(offset[a])}°')
-        
-    plt.xlabel('log(radius)', size=14)
-    plt.ylabel('gx', size=14)
+    for a in range(0, len(profile_list)):
+        fig2.gca().errorbar(
+            profile_list[a]["radius"],
+            profile_list[a]["gx"],
+            profile_list[a]["gx_err"],
+            linestyle="-",
+            marker="o",
+            label=f'offset = {"{:.2f}".format(offset[a])}°',
+        )
+    
+    plt.xlabel("log(radius)", size=14)
+    plt.ylabel("gx", size=14)
     plt.legend(loc=4)
     
     plt.show()
@@ -256,38 +274,44 @@ check the notebook “Example2_Fit_Halo_Mass_to_Shear_Catalog.ipynb”
 
 .. code:: ipython3
 
-    logm_0 = random.uniform(13., 17., 1)[0]
+    logm_0 = random.uniform(13.0, 17.0, 1)[0]
+    
+    
     def shear_profile_model(r, logm, z_src):
-        m = 10.**logm
-        gt_model = clmm.compute_reduced_tangential_shear(r,
-                                                         m, concentration,
-                                                         cluster_z, z_src, cosmo,
-                                                         delta_mdef=200,
-                                                         halo_profile_model='nfw')    
+        m = 10.0**logm
+        gt_model = clmm.compute_reduced_tangential_shear(
+            r, m, concentration, cluster_z, z_src, cosmo, delta_mdef=200, halo_profile_model="nfw"
+        )
         return gt_model
 
 .. code:: ipython3
 
     for a in range(0, len(cluster_list)):
-        popt,pcov = fitters['curve_fit'](lambda r, logm:shear_profile_model(r, logm, profile_list[a]['z']), 
-                        profile_list[a]['radius'], 
-                        profile_list[a]['gt'], 
-                        profile_list[a]['gt_err'], bounds=[13.,17.])
+        popt, pcov = fitters["curve_fit"](
+            lambda r, logm: shear_profile_model(r, logm, profile_list[a]["z"]),
+            profile_list[a]["radius"],
+            profile_list[a]["gt"],
+            profile_list[a]["gt_err"],
+            bounds=[13.0, 17.0],
+        )
     
-        m_est1 = 10.**popt[0]
-        m_est_err1 =  m_est1 * np.sqrt(pcov[0][0]) * np.log(10) # convert the error on logm to error on m
+        m_est1 = 10.0 ** popt[0]
+        m_est_err1 = (
+            m_est1 * np.sqrt(pcov[0][0]) * np.log(10)
+        )  # convert the error on logm to error on m
     
         print(f"The fitted mass is : {m_est1:.2e}, for the offset distance: {offset[a]:.2f} deg")
-        plt.errorbar(offset[a], m_est1, yerr = m_est_err1, fmt='.', color='black', markersize=10)#, label=f'Offset:{"{:.2f}".format(offset[a])}°')
+        plt.errorbar(
+            offset[a], m_est1, yerr=m_est_err1, fmt=".", color="black", markersize=10
+        )  # , label=f'Offset:{"{:.2f}".format(offset[a])}°')
     
-    plt.xlabel('offset [deg]', size=12)
-    plt.ylabel('fitted mass $M_{200,m}$ [M$_{\odot}$]', size=12)
-    plt.yscale('log')
-    plt.ylim([5.e12,2.e15])
-    plt.axhline(cluster_m, label = "input mass")
+    plt.xlabel("offset [deg]", size=12)
+    plt.ylabel("fitted mass $M_{200,m}$ [M$_{\odot}$]", size=12)
+    plt.yscale("log")
+    plt.ylim([5.0e12, 2.0e15])
+    plt.axhline(cluster_m, label="input mass")
     plt.legend(loc="best")
     plt.show()
-
 
 
 .. parsed-literal::

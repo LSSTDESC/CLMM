@@ -26,16 +26,18 @@ information of the source. For a detailed description on it, see
 
     import numpy as np
     import matplotlib.pyplot as plt
+    
     %matplotlib inline
 
 Imports specific to clmm
 
 .. code:: ipython3
 
-    import warnings
-    warnings.filterwarnings("ignore", message='.*(!).*')
     import os
-    os.environ['CLMM_MODELING_BACKEND'] = 'ccl' # here you may choose ccl, nc (NumCosmo) or ct (cluster_toolkit)
+    
+    os.environ[
+        "CLMM_MODELING_BACKEND"
+    ] = "ccl"  # here you may choose ccl, nc (NumCosmo) or ct (cluster_toolkit)
     import clmm
     import clmm.theory as m
     from clmm import Cosmology
@@ -51,7 +53,7 @@ Make sure we know which version we’re using
 
 .. parsed-literal::
 
-    '1.7.1'
+    '1.10.0'
 
 
 
@@ -59,7 +61,7 @@ Define a cosmology using astropy
 
 .. code:: ipython3
 
-    cosmo = Cosmology(H0 = 70.0, Omega_dm0 = 0.27 - 0.045, Omega_b0 = 0.045, Omega_k0 = 0.0)
+    cosmo = Cosmology(H0=70.0, Omega_dm0=0.27 - 0.045, Omega_b0=0.045, Omega_k0=0.0)
 
 Define the galaxy cluster model. Here, we choose parameters that
 describe the galaxy cluster model, including the mass definition,
@@ -68,17 +70,17 @@ choose a distribution that follows an NFW profile.
 
 .. code:: ipython3
 
-    #cluster properties
-    density_profile_parametrization = 'nfw'
+    # cluster properties
+    density_profile_parametrization = "nfw"
     mass_Delta = 200
-    cluster_mass = 1.e15
+    cluster_mass = 1.0e15
     cluster_concentration = 4
-    z_cl = 1.
+    z_cl = 1.0
     
-    #source properties
-    z_source = 2. #all sources in the same plan
-    z_distrib_func = clmm.z_distributions.chang2013 #sources redshift following a distribution
-    alpha = [2, -0.5] 
+    # source properties
+    z_src = 2.0  # all sources in the same plan
+    z_distrib_func = clmm.redshift.distributions.chang2013  # sources redshift following a distribution
+    alpha = [2, -0.5]
 
 Quick test of all theory functionality
 
@@ -88,66 +90,110 @@ Quick test of all theory functionality
 
 .. code:: ipython3
 
-    rho = m.compute_3d_density(r3d, mdelta=cluster_mass, cdelta=cluster_concentration, 
-                           z_cl=z_cl, cosmo=cosmo)
+    rho = m.compute_3d_density(
+        r3d, mdelta=cluster_mass, cdelta=cluster_concentration, z_cl=z_cl, cosmo=cosmo
+    )
 
 .. code:: ipython3
 
-    Sigma = m.compute_surface_density(r3d, cluster_mass, cluster_concentration, z_cl, cosmo=cosmo, 
-                                      delta_mdef=mass_Delta, 
-                                      halo_profile_model=density_profile_parametrization)
+    Sigma = m.compute_surface_density(
+        r3d,
+        cluster_mass,
+        cluster_concentration,
+        z_cl,
+        cosmo=cosmo,
+        delta_mdef=mass_Delta,
+        halo_profile_model=density_profile_parametrization,
+    )
 
 .. code:: ipython3
 
-    DeltaSigma = m.compute_excess_surface_density(r3d, cluster_mass, cluster_concentration, z_cl, cosmo=cosmo, 
-                                                  delta_mdef=mass_Delta, 
-                                                  halo_profile_model=density_profile_parametrization)
+    DeltaSigma = m.compute_excess_surface_density(
+        r3d,
+        cluster_mass,
+        cluster_concentration,
+        z_cl,
+        cosmo=cosmo,
+        delta_mdef=mass_Delta,
+        halo_profile_model=density_profile_parametrization,
+    )
 
 .. code:: ipython3
 
-    gammat = m.compute_tangential_shear(r3d, mdelta=cluster_mass, cdelta=cluster_concentration, z_cluster=z_cl, 
-                                        z_source=z_source, cosmo=cosmo, delta_mdef=mass_Delta, 
-                                        halo_profile_model=density_profile_parametrization, 
-                                        z_src_info='discrete')
+    gammat = m.compute_tangential_shear(
+        r3d,
+        mdelta=cluster_mass,
+        cdelta=cluster_concentration,
+        z_cluster=z_cl,
+        z_src=z_src,
+        cosmo=cosmo,
+        delta_mdef=mass_Delta,
+        halo_profile_model=density_profile_parametrization,
+        z_src_info="discrete",
+    )
 
 .. code:: ipython3
 
-    kappa = m.compute_convergence(r3d, mdelta=cluster_mass, cdelta=cluster_concentration, 
-                                   z_cluster=z_cl, z_source=z_source,
-                                   cosmo=cosmo, delta_mdef=mass_Delta, 
-                                   halo_profile_model=density_profile_parametrization, 
-                                   z_src_info='discrete')
+    kappa = m.compute_convergence(
+        r3d,
+        mdelta=cluster_mass,
+        cdelta=cluster_concentration,
+        z_cluster=z_cl,
+        z_src=z_src,
+        cosmo=cosmo,
+        delta_mdef=mass_Delta,
+        halo_profile_model=density_profile_parametrization,
+        z_src_info="discrete",
+    )
 
 .. code:: ipython3
 
-    gt = m.compute_reduced_tangential_shear(r3d, mdelta=cluster_mass, cdelta=cluster_concentration, 
-                                            z_cluster=z_cl, z_source=z_source, cosmo=cosmo, 
-                                            delta_mdef=mass_Delta, 
-                                            halo_profile_model=density_profile_parametrization, 
-                                            z_src_info='discrete')
+    gt = m.compute_reduced_tangential_shear(
+        r3d,
+        mdelta=cluster_mass,
+        cdelta=cluster_concentration,
+        z_cluster=z_cl,
+        z_src=z_src,
+        cosmo=cosmo,
+        delta_mdef=mass_Delta,
+        halo_profile_model=density_profile_parametrization,
+        z_src_info="discrete",
+    )
 
 .. code:: ipython3
 
-    mu = m.compute_magnification(r3d, mdelta=cluster_mass, cdelta=cluster_concentration, 
-                                            z_cluster=z_cl, z_source=z_source, cosmo=cosmo, 
-                                            delta_mdef=mass_Delta, 
-                                            halo_profile_model=density_profile_parametrization, 
-                                            z_src_info='discrete')
+    mu = m.compute_magnification(
+        r3d,
+        mdelta=cluster_mass,
+        cdelta=cluster_concentration,
+        z_cluster=z_cl,
+        z_src=z_src,
+        cosmo=cosmo,
+        delta_mdef=mass_Delta,
+        halo_profile_model=density_profile_parametrization,
+        z_src_info="discrete",
+    )
 
 .. code:: ipython3
 
-    mu_bias = m.compute_magnification_bias(r3d, alpha=alpha, mdelta=cluster_mass, cdelta=cluster_concentration, 
-                                            z_cluster=z_cl, z_source=z_source, cosmo=cosmo, 
-                                            delta_mdef=mass_Delta, 
-                                            halo_profile_model=density_profile_parametrization, 
-                                            z_src_info='discrete')
-
+    mu_bias = m.compute_magnification_bias(
+        r3d,
+        alpha=alpha,
+        mdelta=cluster_mass,
+        cdelta=cluster_concentration,
+        z_cluster=z_cl,
+        z_src=z_src,
+        cosmo=cosmo,
+        delta_mdef=mass_Delta,
+        halo_profile_model=density_profile_parametrization,
+        z_src_info="discrete",
+    )
 
 
 .. parsed-literal::
 
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/generic.py:72: UserWarning: Magnification is negative for certain radii,                     returning nan for magnification bias in this case.
-    /global/homes/a/aguena/.local/cori/3.9-anaconda-2021.11/lib/python3.11/site-packages/clmm-1.7.1-py3.11.egg/clmm/theory/generic.py:74: RuntimeWarning: invalid value encountered in power
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/generic.py:66: UserWarning: Magnification is negative for certain radii,                     returning nan for magnification bias in this case.
+    /global/homes/a/aguena/.local/perlmutter/python-3.11/lib/python3.11/site-packages/clmm-1.10.0-py3.11.egg/clmm/theory/generic.py:70: RuntimeWarning: invalid value encountered in power
 
 
 Lensing quantities assuming sources follow a given redshift
@@ -155,25 +201,31 @@ distribution.
 
 .. code:: ipython3
 
-    gt_z = m.compute_reduced_tangential_shear(r3d, mdelta=cluster_mass, cdelta=cluster_concentration, 
-                                            z_cluster=z_cl, z_source=z_distrib_func, cosmo=cosmo, 
-                                            delta_mdef=mass_Delta, 
-                                            halo_profile_model=density_profile_parametrization,
-                                            z_src_info='distribution',
-                                            approx='order2')
+    gt_z = m.compute_reduced_tangential_shear(
+        r3d,
+        mdelta=cluster_mass,
+        cdelta=cluster_concentration,
+        z_cluster=z_cl,
+        z_src=z_distrib_func,
+        cosmo=cosmo,
+        delta_mdef=mass_Delta,
+        halo_profile_model=density_profile_parametrization,
+        z_src_info="distribution",
+        approx="order2",
+    )
 
 Plot the predicted profiles
 
 .. code:: ipython3
 
-    def plot_profile(r, profile_vals, profile_label='rho', label = ''):
+    def plot_profile(r, profile_vals, profile_label="rho", label=""):
         plt.loglog(r, profile_vals, label=label)
-        plt.xlabel('r [Mpc]', fontsize='xx-large')
-        plt.ylabel(profile_label, fontsize='xx-large')
+        plt.xlabel("r [Mpc]", fontsize="xx-large")
+        plt.ylabel(profile_label, fontsize="xx-large")
 
 .. code:: ipython3
 
-    plot_profile(r3d, rho, '$\\rho_{\\rm 3d}$')
+    plot_profile(r3d, rho, "$\\rho_{\\rm 3d}$")
 
 
 
@@ -182,7 +234,7 @@ Plot the predicted profiles
 
 .. code:: ipython3
 
-    plot_profile(r3d, Sigma, '$\\Sigma_{\\rm 2d}$')
+    plot_profile(r3d, Sigma, "$\\Sigma_{\\rm 2d}$")
 
 
 
@@ -191,7 +243,7 @@ Plot the predicted profiles
 
 .. code:: ipython3
 
-    plot_profile(r3d, DeltaSigma, '$\\Delta\\Sigma_{\\rm 2d}$')
+    plot_profile(r3d, DeltaSigma, "$\\Delta\\Sigma_{\\rm 2d}$")
 
 
 
@@ -200,7 +252,7 @@ Plot the predicted profiles
 
 .. code:: ipython3
 
-    plot_profile(r3d, kappa, '$\\kappa$')
+    plot_profile(r3d, kappa, "$\\kappa$")
 
 
 
@@ -209,7 +261,7 @@ Plot the predicted profiles
 
 .. code:: ipython3
 
-    plot_profile(r3d, gammat, '$\\gamma_t$')
+    plot_profile(r3d, gammat, "$\\gamma_t$")
 
 
 
@@ -218,17 +270,16 @@ Plot the predicted profiles
 
 .. code:: ipython3
 
-    plot_profile(r3d, gt, '$g_t$', label = 'single plane')
-    plot_profile(r3d, gt_z, '$g_t$', label = 'redshift distribution')
+    plot_profile(r3d, gt, "$g_t$", label="single plane")
+    plot_profile(r3d, gt_z, "$g_t$", label="redshift distribution")
     plt.legend()
-
 
 
 
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x1555153429d0>
+    <matplotlib.legend.Legend at 0x7f9ea39e2710>
 
 
 
@@ -238,7 +289,7 @@ Plot the predicted profiles
 
 .. code:: ipython3
 
-    plot_profile(r3d, mu, '$\mu$')
+    plot_profile(r3d, mu, "$\mu$")
 
 
 
@@ -247,14 +298,16 @@ Plot the predicted profiles
 
 .. code:: ipython3
 
-    plot_profile(r3d, mu_bias[0]-1, profile_label = '$\delta_{\mu}$', label = '$\\alpha$ =' + str(alpha[0]))
-    plot_profile(r3d, mu_bias[1]-1, '$\delta_{\mu}$', label = '$\\alpha$ =' + str(alpha[1]))
+    plot_profile(
+        r3d, mu_bias[0] - 1, profile_label="$\delta_{\mu}$", label="$\\alpha$ =" + str(alpha[0])
+    )
+    plot_profile(r3d, mu_bias[1] - 1, "$\delta_{\mu}$", label="$\\alpha$ =" + str(alpha[1]))
     
-    plt.legend(fontsize='xx-large')
-    plt.yscale('linear')
+    plt.legend(fontsize="xx-large")
+    plt.yscale("linear")
     plt.grid()
     
-    plt.ylim(-3,5)
+    plt.ylim(-3, 5)
 
 
 
@@ -275,7 +328,7 @@ Plot the predicted profiles
     # An error will be raised if using the CT backend instead
     
     DeltaSigma_2h = m.compute_excess_surface_density_2h(r3d, z_cl, cosmo=cosmo, halobias=0.3)
-    plot_profile(r3d, DeltaSigma_2h, '$\\Delta\\Sigma_{\\rm 2h}$')
+    plot_profile(r3d, DeltaSigma_2h, "$\\Delta\\Sigma_{\\rm 2h}$")
 
 
 
@@ -288,7 +341,7 @@ Plot the predicted profiles
     # An error will be raised if using the CT backend instead
     
     Sigma_2h = m.compute_surface_density_2h(r3d, z_cl, cosmo=cosmo, halobias=0.3)
-    plot_profile(r3d, Sigma_2h, '$\\Sigma_{\\rm 2h}$')
+    plot_profile(r3d, Sigma_2h, "$\\Sigma_{\\rm 2h}$")
 
 
 
@@ -306,7 +359,7 @@ the default Einasto slope depends on cosmology, redshift and halo mass.
 - In NumCosmo, the default value is :math:`\alpha_{\rm ein}=0.25`.
 
 **NB: for CCL, setting a user-defined value for the Einasto slope is
-only available for CCL version >= 2.6.** Earlier versions only allow the
+only available for versions >= 2.6.** Earlier versions only allow the
 default option.
 
 The verbose option allows to print the value of :math:`\alpha` that is
@@ -314,19 +367,26 @@ being used, as follows:
 
 .. code:: ipython3
 
-    rho = m.compute_3d_density(r3d, mdelta=cluster_mass, cdelta=cluster_concentration, 
-                               z_cl=z_cl, cosmo=cosmo, halo_profile_model='einasto', alpha_ein=0.17,
-                               verbose=True)
+    rho = m.compute_3d_density(
+        r3d,
+        mdelta=cluster_mass,
+        cdelta=cluster_concentration,
+        z_cl=z_cl,
+        cosmo=cosmo,
+        halo_profile_model="einasto",
+        alpha_ein=0.17,
+        verbose=True,
+    )
     
-    # For CCL < 2.6, the above call will return an error, as alpha_ein could not be set. The call below, not specifying alpha_ein, 
-    # will use the default value (for both backend)
+    # For CCL < 2.6, the above call will return an error, as alpha_ein can not be set. The call below, not specifying alpha_ein,
+    # will use the default value (for both CCL and NC backends)
     
-    # rho = m.compute_3d_density(r3d, mdelta=cluster_mass, cdelta=cluster_concentration, 
-    #                            z_cl=z_cl, cosmo=cosmo, halo_profile_model='einasto', 
+    # rho = m.compute_3d_density(r3d, mdelta=cluster_mass, cdelta=cluster_concentration,
+    #                            z_cl=z_cl, cosmo=cosmo, halo_profile_model='einasto',
     #                            verbose=True)
     
     
-    plot_profile(r3d, rho, '$\\rho_{\\rm 3d}$')
+    plot_profile(r3d, rho, "$\\rho_{\\rm 3d}$")
 
 
 .. parsed-literal::
@@ -336,4 +396,67 @@ being used, as follows:
 
 
 .. image:: demo_theory_functionality_files/demo_theory_functionality_36_1.png
+
+
+Side note regarding the Einasto profile (CCL backend only)
+----------------------------------------------------------
+
+For CCL versions >= 2.8.1.dev73+g86125b08, the surface mass density
+profile can be calculated with the quad_vec numerial integration in
+addition to the default FFTLog. This option will increase the precision
+of the profile at large radii and can be enabled by passing
+``use_projected_quad`` keyword argument to ``compute_surface_density``.
+
+.. code:: ipython3
+
+    # use quad_vec
+    Sigma_quad = m.compute_surface_density(
+        r3d,
+        mdelta=cluster_mass,
+        cdelta=cluster_concentration,
+        z_cl=z_cl,
+        cosmo=cosmo,
+        halo_profile_model="einasto",
+        alpha_ein=0.17,
+        use_projected_quad=True, # use quad_vec
+        verbose=True,
+    )
+    
+    plot_profile(r3d, Sigma_quad, "$\\Sigma_{\\rm quad}$")
+
+
+.. parsed-literal::
+
+    Einasto alpha = 0.3713561546989172
+
+
+
+.. image:: demo_theory_functionality_files/demo_theory_functionality_38_1.png
+
+
+.. code:: ipython3
+
+    # default behavior
+    Sigma_FFTLog = m.compute_surface_density(
+        r3d,
+        mdelta=cluster_mass,
+        cdelta=cluster_concentration,
+        z_cl=z_cl,
+        cosmo=cosmo,
+        halo_profile_model="einasto",
+        alpha_ein=0.17,
+        use_projected_quad=False, # default
+        verbose=True,
+    )
+    
+    plot_profile(r3d, Sigma_FFTLog, "$\\Sigma_{\\rm FFTLog}$")
+
+
+.. parsed-literal::
+
+    Einasto alpha = 0.3713561546989172
+
+
+
+.. image:: demo_theory_functionality_files/demo_theory_functionality_39_1.png
 

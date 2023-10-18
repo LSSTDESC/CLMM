@@ -13,22 +13,21 @@ line below to select your backend.
 
 .. code:: ipython3
 
-    import warnings
-    warnings.filterwarnings("ignore", message='.*(!).*')
     import os
+    
     ## Uncomment the following line if you want to use a specific modeling backend among 'ct' (cluster-toolkit), 'ccl' (CCL) or 'nc' (Numcosmo). Default is 'ccl'
-    #os.environ['CLMM_MODELING_BACKEND'] = 'nc'
+    # os.environ['CLMM_MODELING_BACKEND'] = 'nc'
 
 .. code:: ipython3
 
-    try: import clmm
-    except:
-        import notebook_install
-        notebook_install.install_clmm_pipeline(upgrade=False)
-        import clmm
     import numpy as np
     import matplotlib.pyplot as plt
+    
     %matplotlib inline
+
+.. code:: ipython3
+
+    import clmm
 
 Make sure we know which version we’re using
 
@@ -41,7 +40,7 @@ Make sure we know which version we’re using
 
 .. parsed-literal::
 
-    '1.7.1'
+    '1.10.0'
 
 
 
@@ -57,7 +56,7 @@ Mock data generation requires a defined cosmology
 
 .. code:: ipython3
 
-    mock_cosmo = Cosmology(H0 = 70.0, Omega_dm0 = 0.27 - 0.045, Omega_b0 = 0.045, Omega_k0 = 0.0)
+    mock_cosmo = Cosmology(H0=70.0, Omega_dm0=0.27 - 0.045, Omega_b0=0.045, Omega_k0=0.0)
 
 Mock data generation requires some cluster information. The default is
 to work with the NFW profile, using the “200,mean” mass definition. The
@@ -68,15 +67,15 @@ of this notebook)
 
     cosmo = mock_cosmo
     cluster_id = "Awesome_cluster"
-    cluster_m = 1.e15 # M200,m
+    cluster_m = 1.0e15  # M200,m
     cluster_z = 0.3
     src_z = 0.8
-    concentration = 4 
-    ngals = 1000 # number of source galaxies
+    concentration = 4
+    ngals = 1000  # number of source galaxies
     
     # Cluster centre coordinates
-    cluster_ra = 50.
-    cluster_dec = 87.
+    cluster_ra = 50.0
+    cluster_dec = 87.0
 
 Generate the mock catalog with different source galaxy options
 --------------------------------------------------------------
@@ -85,34 +84,44 @@ Generate the mock catalog with different source galaxy options
 
 .. code:: ipython3
 
-    zsrc_min = cluster_z + 0.1 
+    zsrc_min = cluster_z + 0.1
 
 .. code:: ipython3
 
-    ideal_data = mock.generate_galaxy_catalog(cluster_m, cluster_z, concentration, cosmo, src_z, ngals=ngals,
-                                              cluster_ra=cluster_ra, cluster_dec=cluster_dec)
+    ideal_data = mock.generate_galaxy_catalog(
+        cluster_m,
+        cluster_z,
+        concentration,
+        cosmo,
+        src_z,
+        ngals=ngals,
+        cluster_ra=cluster_ra,
+        cluster_dec=cluster_dec,
+    )
 
 .. code:: ipython3
 
     # let's put all these quantities in a single dictionary to facilitate clarity
     cluster_kwargs = {
-        'cluster_m':cluster_m, 'cluster_z':cluster_z,
-        'cluster_ra':cluster_ra, 'cluster_dec':cluster_dec,
-        'cluster_c':concentration,
-        'cosmo':cosmo}
+        "cluster_m": cluster_m,
+        "cluster_z": cluster_z,
+        "cluster_ra": cluster_ra,
+        "cluster_dec": cluster_dec,
+        "cluster_c": concentration,
+        "cosmo": cosmo,
+    }
 
 .. code:: ipython3
 
-    ideal_data = mock.generate_galaxy_catalog(
-        **cluster_kwargs, zsrc=src_z, ngals=ngals)
+    ideal_data = mock.generate_galaxy_catalog(**cluster_kwargs, zsrc=src_z, ngals=ngals)
 
 -  Noisy data: shape noise, all galaxies at the same redshift
 
 .. code:: ipython3
 
     noisy_data_src_z = mock.generate_galaxy_catalog(
-        **cluster_kwargs, zsrc=src_z, 
-        shapenoise=0.05, ngals=ngals)
+        **cluster_kwargs, zsrc=src_z, shapenoise=0.05, ngals=ngals
+    )
 
 -  Noisy data: shape noise plus measurement error, all galaxies at the
    same redshift
@@ -120,8 +129,8 @@ Generate the mock catalog with different source galaxy options
 .. code:: ipython3
 
     noisy_data_src_z_e_err = mock.generate_galaxy_catalog(
-        **cluster_kwargs, zsrc=src_z,
-        shapenoise=0.05, mean_e_err=0.05, ngals=ngals)
+        **cluster_kwargs, zsrc=src_z, shapenoise=0.05, mean_e_err=0.05, ngals=ngals
+    )
 
 .. container:: alert alert-warning
 
@@ -139,9 +148,13 @@ Generate the mock catalog with different source galaxy options
 .. code:: ipython3
 
     noisy_data_photoz = mock.generate_galaxy_catalog(
-        **cluster_kwargs, zsrc=src_z,
-        shapenoise=0.05, photoz_sigma_unscaled=0.05,
-        pz_bins=101, ngals=ngals)
+        **cluster_kwargs,
+        zsrc=src_z,
+        shapenoise=0.05,
+        photoz_sigma_unscaled=0.05,
+        pz_bins=101,
+        ngals=ngals
+    )
 
 In the default PDF storing (``pzpdf_type='shared_bins'``), the values of
 the PDF are added to the ``pzpdf`` column and the binning scheme is
@@ -157,27 +170,27 @@ stored in the ``pzpdf_info`` attribute:
 .. parsed-literal::
 
     {'type': 'shared_bins',
-     'zbins': array([0.        , 0.02030982, 0.04061963, 0.06092945, 0.08123926,
-            0.10154908, 0.12185889, 0.14216871, 0.16247852, 0.18278834,
-            0.20309815, 0.22340797, 0.24371778, 0.2640276 , 0.28433742,
-            0.30464723, 0.32495705, 0.34526686, 0.36557668, 0.38588649,
-            0.40619631, 0.42650612, 0.44681594, 0.46712575, 0.48743557,
-            0.50774538, 0.5280552 , 0.54836502, 0.56867483, 0.58898465,
-            0.60929446, 0.62960428, 0.64991409, 0.67022391, 0.69053372,
-            0.71084354, 0.73115335, 0.75146317, 0.77177298, 0.7920828 ,
-            0.81239262, 0.83270243, 0.85301225, 0.87332206, 0.89363188,
-            0.91394169, 0.93425151, 0.95456132, 0.97487114, 0.99518095,
-            1.01549077, 1.03580058, 1.0561104 , 1.07642022, 1.09673003,
-            1.11703985, 1.13734966, 1.15765948, 1.17796929, 1.19827911,
-            1.21858892, 1.23889874, 1.25920855, 1.27951837, 1.29982818,
-            1.320138  , 1.34044782, 1.36075763, 1.38106745, 1.40137726,
-            1.42168708, 1.44199689, 1.46230671, 1.48261652, 1.50292634,
-            1.52323615, 1.54354597, 1.56385578, 1.5841656 , 1.60447542,
-            1.62478523, 1.64509505, 1.66540486, 1.68571468, 1.70602449,
-            1.72633431, 1.74664412, 1.76695394, 1.78726375, 1.80757357,
-            1.82788338, 1.8481932 , 1.86850302, 1.88881283, 1.90912265,
-            1.92943246, 1.94974228, 1.97005209, 1.99036191, 2.01067172,
-            2.03098154])}
+     'zbins': array([0.        , 0.02010102, 0.04020204, 0.06030306, 0.08040408,
+            0.1005051 , 0.12060612, 0.14070714, 0.16080816, 0.18090918,
+            0.2010102 , 0.22111122, 0.24121224, 0.26131326, 0.28141428,
+            0.3015153 , 0.32161632, 0.34171734, 0.36181836, 0.38191938,
+            0.4020204 , 0.42212141, 0.44222243, 0.46232345, 0.48242447,
+            0.50252549, 0.52262651, 0.54272753, 0.56282855, 0.58292957,
+            0.60303059, 0.62313161, 0.64323263, 0.66333365, 0.68343467,
+            0.70353569, 0.72363671, 0.74373773, 0.76383875, 0.78393977,
+            0.80404079, 0.82414181, 0.84424283, 0.86434385, 0.88444487,
+            0.90454589, 0.92464691, 0.94474793, 0.96484895, 0.98494997,
+            1.00505099, 1.02515201, 1.04525303, 1.06535405, 1.08545507,
+            1.10555609, 1.12565711, 1.14575813, 1.16585915, 1.18596017,
+            1.20606119, 1.22616221, 1.24626322, 1.26636424, 1.28646526,
+            1.30656628, 1.3266673 , 1.34676832, 1.36686934, 1.38697036,
+            1.40707138, 1.4271724 , 1.44727342, 1.46737444, 1.48747546,
+            1.50757648, 1.5276775 , 1.54777852, 1.56787954, 1.58798056,
+            1.60808158, 1.6281826 , 1.64828362, 1.66838464, 1.68848566,
+            1.70858668, 1.7286877 , 1.74878872, 1.76888974, 1.78899076,
+            1.80909178, 1.8291928 , 1.84929382, 1.86939484, 1.88949586,
+            1.90959688, 1.9296979 , 1.94979892, 1.96989994, 1.99000096,
+            2.01010198])}
 
 
 
@@ -193,17 +206,17 @@ stored in the ``pzpdf_info`` attribute:
     <b>GCData</b>
     <br> <b>defined by:</b> cosmo=None
     <br> <b>with columns:</b> ra, dec, e1, e2, z, ztrue, pzpdf, id
-    <br> <b>and pzpdf:</b> shared_bins [0.   0.02 0.04 0.06 0.08 ... 1.95 1.97 1.99 2.01 2.03]
+    <br> <b>and pzpdf:</b> shared_bins [0.   0.02 0.04 0.06 0.08 ... 1.93 1.95 1.97 1.99 2.01]
     <br> 5 objects
     <br> 
-    <table id="table23455184190288" class="table-striped table-bordered table-condensed">
+    <table id="table140156884915600" class="table-striped table-bordered table-condensed">
     <thead><tr><th>ra</th><th>dec</th><th>e1</th><th>e2</th><th>z</th><th>ztrue</th><th>pzpdf</th><th>id</th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64[101]</th><th>int64</th></tr></thead>
-    <tr><td>52.841858204488055</td><td>86.89754406267971</td><td>-0.019804232336813544</td><td>0.018758072467907817</td><td>0.8130718133403707</td><td>0.8</td><td>8.396164075501283e-18 .. 7.617356270794303e-40</td><td>0</td></tr>
-    <tr><td>52.73303076554426</td><td>86.79087138047893</td><td>-0.09845605603186636</td><td>-0.09707537241897056</td><td>0.6378176413827824</td><td>0.8</td><td>5.504862328419829e-11 .. 4.114187997533234e-52</td><td>1</td></tr>
-    <tr><td>49.145636493730734</td><td>86.99763514436867</td><td>-0.06720542389736725</td><td>0.09738725910222829</td><td>0.7662925215088182</td><td>0.8</td><td>8.030075766395566e-16 .. 5.86736816961973e-43</td><td>2</td></tr>
-    <tr><td>45.33619828577285</td><td>87.17593196925363</td><td>0.0784418087127538</td><td>-0.009942333365466158</td><td>0.7497356074409485</td><td>0.8</td><td>3.781186032443505e-15 .. 4.349082777490159e-44</td><td>3</td></tr>
-    <tr><td>46.718193149625286</td><td>87.21634408787365</td><td>0.004171100989364179</td><td>-0.02086000860305693</td><td>0.8608203080824607</td><td>0.8</td><td>6.0451238503524e-20 .. 8.682982194606625e-37</td><td>4</td></tr>
+    <tr><td>46.024271204904984</td><td>87.12415084509054</td><td>0.05532947826871328</td><td>0.01922409925243582</td><td>0.830882529747833</td><td>0.8</td><td>1.3776336115668105e-18 .. 2.334297518677807e-37</td><td>0</td></tr>
+    <tr><td>46.59154140045528</td><td>86.94481077279868</td><td>-0.1031198705358412</td><td>0.006944236018523485</td><td>0.6534327294723785</td><td>0.8</td><td>1.585663378055366e-11 .. 2.016553815168471e-49</td><td>1</td></tr>
+    <tr><td>53.12635251656326</td><td>87.03922071589238</td><td>-0.008673499385743667</td><td>-0.016308296551964474</td><td>0.7169627909374777</td><td>0.8</td><td>7.349285474174153e-14 .. 6.570313386148236e-45</td><td>2</td></tr>
+    <tr><td>52.18453739034647</td><td>87.13273958791184</td><td>-0.04575080665169042</td><td>0.08613713421900841</td><td>0.645663086033894</td><td>0.8</td><td>2.9566566109121113e-11 .. 5.467989068571349e-50</td><td>3</td></tr>
+    <tr><td>53.28699559841387</td><td>86.77018133727904</td><td>-0.05234835111198638</td><td>0.01520148560002627</td><td>0.6744044552919288</td><td>0.8</td><td>2.8423609397170465e-12 .. 6.581159566513934e-48</td><td>4</td></tr>
     </table></div>
 
 
@@ -215,9 +228,14 @@ the PDF are added to the ``pzpdf`` column:
 .. code:: ipython3
 
     mock.generate_galaxy_catalog(
-        **cluster_kwargs, zsrc=src_z,
-        shapenoise=0.05, photoz_sigma_unscaled=0.05,
-        pz_bins=101, ngals=ngals, pzpdf_type='individual_bins')[:5]
+        **cluster_kwargs,
+        zsrc=src_z,
+        shapenoise=0.05,
+        photoz_sigma_unscaled=0.05,
+        pz_bins=101,
+        ngals=ngals,
+        pzpdf_type="individual_bins"
+    )[:5]
 
 
 
@@ -230,14 +248,14 @@ the PDF are added to the ``pzpdf`` column:
     <br> <b>and pzpdf:</b> individual_bins
     <br> 5 objects
     <br> 
-    <table id="table23455185017936" class="table-striped table-bordered table-condensed">
+    <table id="table140156884890704" class="table-striped table-bordered table-condensed">
     <thead><tr><th>ra</th><th>dec</th><th>e1</th><th>e2</th><th>z</th><th>ztrue</th><th>pzbins</th><th>pzpdf</th><th>id</th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64[101]</th><th>float64[101]</th><th>int64</th></tr></thead>
-    <tr><td>54.59644638534904</td><td>87.07526191402499</td><td>0.048958242246936054</td><td>-0.030265474325131363</td><td>0.8435054671163636</td><td>0.8</td><td>0.0 .. 1.7435054671163637</td><td>3.7369875785239874e-19 .. 8.54955402967386e-22</td><td>0</td></tr>
-    <tr><td>54.6027535708398</td><td>87.10324304043611</td><td>0.01816139737320581</td><td>0.02503566377463366</td><td>1.0478715356321469</td><td>0.8</td><td>0.14787153563214672 .. 1.947871535632147</td><td>8.549554029673739e-22 .. 8.549554029673739e-22</td><td>1</td></tr>
-    <tr><td>45.781721267526585</td><td>86.99375395269337</td><td>0.02049106534188096</td><td>0.0645746509456644</td><td>0.7790329055962879</td><td>0.8</td><td>0.0 .. 1.679032905596288</td><td>2.3818628324198813e-16 .. 8.549554029673739e-22</td><td>2</td></tr>
-    <tr><td>47.57443948134704</td><td>87.0591997204818</td><td>-0.04589118552065931</td><td>-0.0028848769979725906</td><td>0.7144791999989415</td><td>0.8</td><td>0.0 .. 1.6144791999989416</td><td>9.152753116886493e-14 .. 8.549554029673739e-22</td><td>3</td></tr>
-    <tr><td>48.7220356257719</td><td>86.83296298318626</td><td>-0.04846101638122205</td><td>-0.03262761788353309</td><td>0.8637292268724595</td><td>0.8</td><td>0.0 .. 1.7637292268724596</td><td>4.435262828976264e-20 .. 8.549554029673739e-22</td><td>4</td></tr>
+    <tr><td>49.90068048154564</td><td>86.80550586210887</td><td>0.006776372254203618</td><td>-0.056443346031055115</td><td>0.7384447556113741</td><td>0.8</td><td>0.0 .. 1.6384447556113741</td><td>1.0668005075516611e-14 .. 8.54955402967386e-22</td><td>0</td></tr>
+    <tr><td>49.84807334598397</td><td>87.09989284150305</td><td>0.0626176620519528</td><td>0.006618553955043878</td><td>0.7890225583322611</td><td>0.8</td><td>0.0 .. 1.6890225583322613</td><td>9.056964810523246e-17 .. 8.549554029673677e-22</td><td>1</td></tr>
+    <tr><td>46.0111841553351</td><td>87.08025957868881</td><td>0.052596163918858276</td><td>-0.110084409925105</td><td>0.7987521935963867</td><td>0.8</td><td>0.0 .. 1.6987521935963867</td><td>3.490080643864716e-17 .. 8.54955402967386e-22</td><td>2</td></tr>
+    <tr><td>50.31272507231808</td><td>87.1546032279247</td><td>0.019113930437658577</td><td>0.016503292230688475</td><td>0.8175078771887231</td><td>0.8</td><td>0.0 .. 1.7175078771887233</td><td>5.372382672260738e-18 .. 8.549554029673677e-22</td><td>3</td></tr>
+    <tr><td>46.96549350177882</td><td>86.79148752301168</td><td>-0.009398885086943403</td><td>-0.020027456296304834</td><td>0.7907510391787148</td><td>0.8</td><td>0.0 .. 1.690751039178715</td><td>7.652083622185505e-17 .. 8.549554029673677e-22</td><td>4</td></tr>
     </table></div>
 
 
@@ -247,9 +265,14 @@ Note that if ``pzpdf_type=None``, the pdf is not stored:
 .. code:: ipython3
 
     mock.generate_galaxy_catalog(
-        **cluster_kwargs, zsrc=src_z,
-        shapenoise=0.05, photoz_sigma_unscaled=0.05,
-        pz_bins=101, ngals=ngals, pzpdf_type=None)[:5]
+        **cluster_kwargs,
+        zsrc=src_z,
+        shapenoise=0.05,
+        photoz_sigma_unscaled=0.05,
+        pz_bins=101,
+        ngals=ngals,
+        pzpdf_type=None
+    )[:5]
 
 
 
@@ -261,14 +284,14 @@ Note that if ``pzpdf_type=None``, the pdf is not stored:
     <br> <b>with columns:</b> ra, dec, e1, e2, z, ztrue, id
     <br> 5 objects
     <br> 
-    <table id="table23455193110416" class="table-striped table-bordered table-condensed">
+    <table id="table140156808395536" class="table-striped table-bordered table-condensed">
     <thead><tr><th>ra</th><th>dec</th><th>e1</th><th>e2</th><th>z</th><th>ztrue</th><th>id</th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>int64</th></tr></thead>
-    <tr><td>53.55162375500477</td><td>87.23085108554464</td><td>0.14524934916773688</td><td>0.01031942124392834</td><td>0.9318715064655025</td><td>0.8</td><td>0</td></tr>
-    <tr><td>53.88704204924513</td><td>86.94414326880965</td><td>0.014936880433884034</td><td>-0.04775846613112262</td><td>0.7395856221355515</td><td>0.8</td><td>1</td></tr>
-    <tr><td>51.96077690819076</td><td>86.98562788350445</td><td>-0.047685052183697806</td><td>-0.0602269701314612</td><td>0.9464221814674415</td><td>0.8</td><td>2</td></tr>
-    <tr><td>46.14702202331457</td><td>87.1587624316356</td><td>-0.0020605344109630086</td><td>0.06975281559772473</td><td>0.837010033435752</td><td>0.8</td><td>3</td></tr>
-    <tr><td>52.76294877445691</td><td>86.93072311521142</td><td>0.030072829496200857</td><td>-0.04409052960121885</td><td>0.7363462441721306</td><td>0.8</td><td>4</td></tr>
+    <tr><td>45.63953153227059</td><td>86.7618656264434</td><td>0.07469710637080207</td><td>0.016895146066059588</td><td>0.8767940368293706</td><td>0.8</td><td>0</td></tr>
+    <tr><td>52.67355068259027</td><td>86.80697457031367</td><td>-0.004677747154520466</td><td>0.04098143019427342</td><td>0.8406804697538622</td><td>0.8</td><td>1</td></tr>
+    <tr><td>54.37060933361849</td><td>87.1265389263517</td><td>0.08055032373482954</td><td>-0.04232511899646986</td><td>0.8128773339495362</td><td>0.8</td><td>2</td></tr>
+    <tr><td>49.06694258122998</td><td>86.8099717758908</td><td>0.060868783737722705</td><td>-0.044573536651355314</td><td>0.7727759976711482</td><td>0.8</td><td>3</td></tr>
+    <tr><td>49.92654192390971</td><td>86.94749959460441</td><td>-0.044762367376333975</td><td>0.06064029812457947</td><td>0.8940638927639172</td><td>0.8</td><td>4</td></tr>
     </table></div>
 
 
@@ -282,8 +305,8 @@ Note that if ``pzpdf_type=None``, the pdf is not stored:
 .. code:: ipython3
 
     ideal_with_src_dist = mock.generate_galaxy_catalog(
-        **cluster_kwargs, zsrc='chang13',
-        zsrc_min=zsrc_min, zsrc_max=7.0, ngals=ngals)
+        **cluster_kwargs, zsrc="chang13", zsrc_min=zsrc_min, zsrc_max=7.0, ngals=ngals
+    )
 
 -  Noisy data: galaxies following redshift distribution, redshift error,
    shape noise
@@ -295,18 +318,25 @@ Note that if ``pzpdf_type=None``, the pdf is not stored:
 .. code:: ipython3
 
     allsystematics = mock.generate_galaxy_catalog(
-        **cluster_kwargs, zsrc='chang13',
-        zsrc_min=zsrc_min, photoz_sigma_unscaled=0.05, ngals=ngals,
+        **cluster_kwargs,
+        zsrc="chang13",
+        zsrc_min=zsrc_min,
+        photoz_sigma_unscaled=0.05,
+        ngals=ngals,
         pz_bins=pzbins,
     )
 
 .. code:: ipython3
 
     allsystematics2 = mock.generate_galaxy_catalog(
-        **cluster_kwargs, zsrc='desc_srd',
-        zsrc_min=zsrc_min, zsrc_max=7.0, 
-        photoz_sigma_unscaled=0.05, ngals=ngals,
-        pz_bins=pzbins, shapenoise=0.05,
+        **cluster_kwargs,
+        zsrc="desc_srd",
+        zsrc_min=zsrc_min,
+        zsrc_max=7.0,
+        photoz_sigma_unscaled=0.05,
+        ngals=ngals,
+        pz_bins=pzbins,
+        shapenoise=0.05,
     )
 
 Sanity check: checking that no galaxies were originally drawn below
@@ -314,13 +344,15 @@ zsrc_min, before photoz errors are applied (when relevant)
 
 .. code:: ipython3
 
-    print(f'''Number of galaxies below zsrc_min:
+    print(
+        f"""Number of galaxies below zsrc_min:
         ideal_data          : {np.sum(ideal_data['ztrue']<zsrc_min):5,}
         noisy_data_src_z    : {np.sum(noisy_data_src_z['ztrue']<zsrc_min):5,}
         noisy_data_photoz   : {np.sum(noisy_data_photoz['ztrue']<zsrc_min):5,}
         ideal_with_src_dist : {np.sum(ideal_with_src_dist['ztrue']<zsrc_min):5,}
         allsystematics      : {np.sum(allsystematics['ztrue']<zsrc_min):5,}
-    ''')
+    """
+    )
 
 
 .. parsed-literal::
@@ -342,9 +374,9 @@ Inspect the catalog data
 
 .. code:: ipython3
 
-    for n in ideal_data.colnames: 
-        if n!='id':
-            ideal_data[n].format = "%6.3e" 
+    for n in ideal_data.colnames:
+        if n != "id":
+            ideal_data[n].format = "%6.3e"
     ideal_data[0:3].show_in_notebook()
 
 
@@ -353,11 +385,11 @@ Inspect the catalog data
 .. raw:: html
 
     <i>GCData length=3</i>
-    <table id="table23455184967120-562700" class="table-striped table-bordered table-condensed">
+    <table id="table140156808578640-257980" class="table-striped table-bordered table-condensed">
     <thead><tr><th>idx</th><th>ra</th><th>dec</th><th>e1</th><th>e2</th><th>z</th><th>ztrue</th><th>id</th></tr></thead>
-    <tr><td>0</td><td>5.127e+01</td><td>8.701e+01</td><td>-3.087e-02</td><td>1.040e-02</td><td>8.000e-01</td><td>8.000e-01</td><td>0</td></tr>
-    <tr><td>1</td><td>4.561e+01</td><td>8.715e+01</td><td>-2.412e-03</td><td>-6.750e-03</td><td>8.000e-01</td><td>8.000e-01</td><td>1</td></tr>
-    <tr><td>2</td><td>4.996e+01</td><td>8.707e+01</td><td>2.950e-02</td><td>-1.637e-03</td><td>8.000e-01</td><td>8.000e-01</td><td>2</td></tr>
+    <tr><td>0</td><td>4.748e+01</td><td>8.690e+01</td><td>-4.381e-03</td><td>1.214e-02</td><td>8.000e-01</td><td>8.000e-01</td><td>0</td></tr>
+    <tr><td>1</td><td>5.081e+01</td><td>8.696e+01</td><td>-8.951e-04</td><td>-3.574e-02</td><td>8.000e-01</td><td>8.000e-01</td><td>1</td></tr>
+    <tr><td>2</td><td>5.470e+01</td><td>8.706e+01</td><td>-6.717e-03</td><td>4.013e-03</td><td>8.000e-01</td><td>8.000e-01</td><td>2</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -381,14 +413,14 @@ Inspect the catalog data
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table23455184967120-562700').dataTable()");
+        console.log("$('#table140156808578640-257980').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table23455184967120-562700').dataTable({
+        $('#table140156808578640-257980').dataTable({
             order: [],
             pageLength: 50,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -405,8 +437,8 @@ Inspect the catalog data
 
 .. code:: ipython3
 
-    for n in noisy_data_photoz.colnames: 
-        if n!='id':
+    for n in noisy_data_photoz.colnames:
+        if n != "id":
             noisy_data_photoz[n].format = "%6.3e"
     noisy_data_photoz[0:3].show_in_notebook()
 
@@ -416,11 +448,11 @@ Inspect the catalog data
 .. raw:: html
 
     <i>GCData length=3</i>
-    <table id="table23455174798736-116188" class="table-striped table-bordered table-condensed">
+    <table id="table140156884054096-95202" class="table-striped table-bordered table-condensed">
     <thead><tr><th>idx</th><th>ra</th><th>dec</th><th>e1</th><th>e2</th><th>z</th><th>ztrue</th><th>pzpdf</th><th>id</th></tr></thead>
-    <tr><td>0</td><td>5.284e+01</td><td>8.690e+01</td><td>-1.980e-02</td><td>1.876e-02</td><td>8.131e-01</td><td>8.000e-01</td><td>8.396e-18 .. 7.617e-40</td><td>0</td></tr>
-    <tr><td>1</td><td>5.273e+01</td><td>8.679e+01</td><td>-9.846e-02</td><td>-9.708e-02</td><td>6.378e-01</td><td>8.000e-01</td><td>5.505e-11 .. 4.114e-52</td><td>1</td></tr>
-    <tr><td>2</td><td>4.915e+01</td><td>8.700e+01</td><td>-6.721e-02</td><td>9.739e-02</td><td>7.663e-01</td><td>8.000e-01</td><td>8.030e-16 .. 5.867e-43</td><td>2</td></tr>
+    <tr><td>0</td><td>4.602e+01</td><td>8.712e+01</td><td>5.533e-02</td><td>1.922e-02</td><td>8.309e-01</td><td>8.000e-01</td><td>1.378e-18 .. 2.334e-37</td><td>0</td></tr>
+    <tr><td>1</td><td>4.659e+01</td><td>8.694e+01</td><td>-1.031e-01</td><td>6.944e-03</td><td>6.534e-01</td><td>8.000e-01</td><td>1.586e-11 .. 2.017e-49</td><td>1</td></tr>
+    <tr><td>2</td><td>5.313e+01</td><td>8.704e+01</td><td>-8.673e-03</td><td>-1.631e-02</td><td>7.170e-01</td><td>8.000e-01</td><td>7.349e-14 .. 6.570e-45</td><td>2</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -444,14 +476,14 @@ Inspect the catalog data
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table23455174798736-116188').dataTable()");
+        console.log("$('#table140156884054096-95202').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table23455174798736-116188').dataTable({
+        $('#table140156884054096-95202').dataTable({
             order: [],
             pageLength: 50,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -472,30 +504,36 @@ Inspect the catalog data
 
 .. code:: ipython3
 
-    plt.hist(allsystematics['z'], bins=50, alpha=0.3, density=True, label='measured z (i.e. including photoz error)');
-    plt.hist(allsystematics['ztrue'], bins=50, alpha=0.3, density=True, label='true z')
-    stacked_pdf = np.mean(allsystematics['pzpdf'], axis=0)
-    plt.plot(allsystematics.pzpdf_info['zbins'], stacked_pdf, 'C3', label='stacked pdf')
-    plt.axvline(zsrc_min, color='k', label='requested zmin')
-    plt.xlabel('Source Redshift')
-    plt.ylabel('n(z)')
+    plt.hist(
+        allsystematics["z"],
+        bins=50,
+        alpha=0.3,
+        density=True,
+        label="measured z (i.e. including photoz error)",
+    )
+    plt.hist(allsystematics["ztrue"], bins=50, alpha=0.3, density=True, label="true z")
+    stacked_pdf = np.mean(allsystematics["pzpdf"], axis=0)
+    plt.plot(allsystematics.pzpdf_info["zbins"], stacked_pdf, "C3", label="stacked pdf")
+    plt.axvline(zsrc_min, color="k", label="requested zmin")
+    plt.xlabel("Source Redshift")
+    plt.ylabel("n(z)")
     plt.legend()
     plt.xlim(0, 5)
     pass
 
 
 
-.. image:: demo_mock_cluster_files/demo_mock_cluster_46_0.png
+.. image:: demo_mock_cluster_files/demo_mock_cluster_47_0.png
 
 
 .. code:: ipython3
 
-    plt.hist(allsystematics['ztrue'], bins=50, alpha=0.3, label='true z');
-    plt.hist(allsystematics2['ztrue'], bins=50, alpha=0.3, label='true z');
+    plt.hist(allsystematics["ztrue"], bins=50, alpha=0.3, label="true z")
+    plt.hist(allsystematics2["ztrue"], bins=50, alpha=0.3, label="true z");
 
 
 
-.. image:: demo_mock_cluster_files/demo_mock_cluster_47_0.png
+.. image:: demo_mock_cluster_files/demo_mock_cluster_48_0.png
 
 
 Populate a galaxy cluster object
@@ -503,8 +541,7 @@ Populate a galaxy cluster object
 
 .. code:: ipython3
 
-    gc_object = clmm.GalaxyCluster(cluster_id, cluster_ra, cluster_dec, 
-                                   cluster_z, allsystematics)
+    gc_object = clmm.GalaxyCluster(cluster_id, cluster_ra, cluster_dec, cluster_z, allsystematics)
 
 From a ``GalaxyCluster`` object that has photoz information,
 ``draw_gal_z_from_pdz`` allows to generate ``nobj`` random redshifts of
@@ -513,7 +550,7 @@ a new ``zcol_out`` column.
 
 .. code:: ipython3
 
-    z_random = gc_object.draw_gal_z_from_pdz(zcol_out='z_random', overwrite=False, nobj=1)
+    z_random = gc_object.draw_gal_z_from_pdz(zcol_out="z_random", overwrite=False, nobj=1)
 
 The plot below shows the “observed photoz pdf” (blue), centered on the
 “observed z” (red), the true redshift from which the shear where
@@ -521,50 +558,43 @@ computed (green) and a random redshift (orange) computed from the pdf
 
 .. code:: ipython3
 
-    # p(z) for one of the galaxies in the catalog, 
+    # p(z) for one of the galaxies in the catalog,
     galid = 0
-    plt.fill(gc_object.galcat.pzpdf_info['zbins'],
-             allsystematics['pzpdf'][galid], alpha=.3)
-    plt.plot(gc_object.galcat.pzpdf_info['zbins'],
-             gc_object.galcat['pzpdf'][galid],
-             label='Photoz pdf')
+    plt.fill(gc_object.galcat.pzpdf_info["zbins"], allsystematics["pzpdf"][galid], alpha=0.3)
+    plt.plot(gc_object.galcat.pzpdf_info["zbins"], gc_object.galcat["pzpdf"][galid], label="Photoz pdf")
     
-    plt.axvline(gc_object.galcat['z'][galid],
-                label='Observed z', color='red')
-    plt.axvline(gc_object.galcat['ztrue'][galid],
-                label='True z', color='g')
-    plt.axvline(gc_object.galcat['z_random'][galid],
-                label='Random z from pdf', color='orange')
+    plt.axvline(gc_object.galcat["z"][galid], label="Observed z", color="red")
+    plt.axvline(gc_object.galcat["ztrue"][galid], label="True z", color="g")
+    plt.axvline(gc_object.galcat["z_random"][galid], label="Random z from pdf", color="orange")
     
-    plt.xlabel('Redshift')
-    plt.ylabel('Photo-z Probability Distribution')
+    plt.xlabel("Redshift")
+    plt.ylabel("Photo-z Probability Distribution")
     plt.legend(loc=1)
-    plt.xlim(gc_object.galcat['z'][galid]-0.5,
-             gc_object.galcat['z'][galid]+0.5)
+    plt.xlim(gc_object.galcat["z"][galid] - 0.5, gc_object.galcat["z"][galid] + 0.5)
 
 
 
 
 .. parsed-literal::
 
-    (1.4286375789064634, 2.4286375789064634)
+    (0.5970784022224711, 1.597078402222471)
 
 
 
 
-.. image:: demo_mock_cluster_files/demo_mock_cluster_53_1.png
+.. image:: demo_mock_cluster_files/demo_mock_cluster_54_1.png
 
 
 Plot source galaxy ellipticities
 
 .. code:: ipython3
 
-    plt.scatter(gc_object.galcat['e1'],gc_object.galcat['e2'])
+    plt.scatter(gc_object.galcat["e1"], gc_object.galcat["e2"])
     
     plt.xlim(-0.2, 0.2)
     plt.ylim(-0.2, 0.2)
-    plt.xlabel('Ellipticity 1',fontsize='x-large')
-    plt.ylabel('Ellipticity 2',fontsize='x-large')
+    plt.xlabel("Ellipticity 1", fontsize="x-large")
+    plt.ylabel("Ellipticity 2", fontsize="x-large")
 
 
 
@@ -576,7 +606,7 @@ Plot source galaxy ellipticities
 
 
 
-.. image:: demo_mock_cluster_files/demo_mock_cluster_55_1.png
+.. image:: demo_mock_cluster_files/demo_mock_cluster_56_1.png
 
 
 Generate the mock data catalog with different field-of-view options
@@ -595,15 +625,20 @@ example.
 .. code:: ipython3
 
     allsystematics2 = mock.generate_galaxy_catalog(
-        **cluster_kwargs, zsrc='chang13', 
-        zsrc_min=zsrc_min, zsrc_max=7.0, 
-        shapenoise=0.05, photoz_sigma_unscaled=0.05,
-        field_size=4, ngals=ngals)
+        **cluster_kwargs,
+        zsrc="chang13",
+        zsrc_min=zsrc_min,
+        zsrc_max=7.0,
+        shapenoise=0.05,
+        photoz_sigma_unscaled=0.05,
+        field_size=4,
+        ngals=ngals
+    )
 
 .. code:: ipython3
 
-    plt.scatter(allsystematics['ra'],allsystematics['dec'], marker='.', label = 'default 8 x 8 Mpc FoV')
-    plt.scatter(allsystematics2['ra'],allsystematics2['dec'],marker='.', label = 'user-defined FoV')
+    plt.scatter(allsystematics["ra"], allsystematics["dec"], marker=".", label="default 8 x 8 Mpc FoV")
+    plt.scatter(allsystematics2["ra"], allsystematics2["dec"], marker=".", label="user-defined FoV")
     plt.legend()
 
 
@@ -611,12 +646,12 @@ example.
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x1555162934d0>
+    <matplotlib.legend.Legend at 0x7f78cca2c590>
 
 
 
 
-.. image:: demo_mock_cluster_files/demo_mock_cluster_60_1.png
+.. image:: demo_mock_cluster_files/demo_mock_cluster_61_1.png
 
 
 -  Alternatively, the user may provide a galaxy density (here ~1
@@ -627,11 +662,15 @@ example.
 .. code:: ipython3
 
     allsystematics3 = mock.generate_galaxy_catalog(
-        **cluster_kwargs, zsrc='chang13',
-        zsrc_min=zsrc_min, zsrc_max=7.0, 
-        shapenoise=0.05, photoz_sigma_unscaled=0.05, 
-        ngal_density=1.3)
-    print(f'Number of drawn galaxies = {len(allsystematics3)}')
+        **cluster_kwargs,
+        zsrc="chang13",
+        zsrc_min=zsrc_min,
+        zsrc_max=7.0,
+        shapenoise=0.05,
+        photoz_sigma_unscaled=0.05,
+        ngal_density=1.3,
+    )
+    print(f"Number of drawn galaxies = {len(allsystematics3)}")
 
 
 .. parsed-literal::
@@ -642,11 +681,15 @@ example.
 .. code:: ipython3
 
     allsystematics4 = mock.generate_galaxy_catalog(
-        **cluster_kwargs, zsrc='desc_srd',
-        zsrc_min=zsrc_min, zsrc_max=7.0, 
-        shapenoise=0.05, photoz_sigma_unscaled=0.05, 
-        ngal_density=1.3)
-    print(f'Number of drawn galaxies = {len(allsystematics4)}')
+        **cluster_kwargs,
+        zsrc="desc_srd",
+        zsrc_min=zsrc_min,
+        zsrc_max=7.0,
+        shapenoise=0.05,
+        photoz_sigma_unscaled=0.05,
+        ngal_density=1.3,
+    )
+    print(f"Number of drawn galaxies = {len(allsystematics4)}")
 
 
 .. parsed-literal::
@@ -656,10 +699,13 @@ example.
 
 .. code:: ipython3
 
-    plt.scatter(allsystematics['ra'], allsystematics['dec'],
-                marker='.', label = 'ngals = 1000')
-    plt.scatter(allsystematics3['ra'], allsystematics3['dec'],
-                marker='.', label = 'ngal_density = 1 gal / arcmin2')
+    plt.scatter(allsystematics["ra"], allsystematics["dec"], marker=".", label="ngals = 1000")
+    plt.scatter(
+        allsystematics3["ra"],
+        allsystematics3["dec"],
+        marker=".",
+        label="ngal_density = 1 gal / arcmin2",
+    )
     plt.legend()
 
 
@@ -667,12 +713,12 @@ example.
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x1555150e3610>
+    <matplotlib.legend.Legend at 0x7f78cc8b7010>
 
 
 
 
-.. image:: demo_mock_cluster_files/demo_mock_cluster_64_1.png
+.. image:: demo_mock_cluster_files/demo_mock_cluster_65_1.png
 
 
 Generate mock data with different galaxy cluster options
@@ -692,9 +738,15 @@ Changing the overdensity parameter (all backend) - ``delta_so`` keyword (default
 .. code:: ipython3
 
     allsystematics_500mean = mock.generate_galaxy_catalog(
-        **cluster_kwargs, zsrc='chang13', delta_so=500,
-        zsrc_min=zsrc_min, zsrc_max=7.0, shapenoise=0.05,
-        photoz_sigma_unscaled=0.05, ngals=ngals)
+        **cluster_kwargs,
+        zsrc="chang13",
+        delta_so=500,
+        zsrc_min=zsrc_min,
+        zsrc_max=7.0,
+        shapenoise=0.05,
+        photoz_sigma_unscaled=0.05,
+        ngals=ngals
+    )
 
 Using the critical mass definition (Numcosmo and CCL only) - ``massdef`` keyword (default = ‘mean’)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -704,8 +756,15 @@ WARNING: error will be raised if using the cluster-toolkit backend
 .. code:: ipython3
 
     allsystematics_200critical = mock.generate_galaxy_catalog(
-        **cluster_kwargs, zsrc='chang13', massdef='critical', zsrc_min=zsrc_min,
-        zsrc_max=7.0, shapenoise=0.05, photoz_sigma_unscaled=0.05, ngals=ngals)
+        **cluster_kwargs,
+        zsrc="chang13",
+        massdef="critical",
+        zsrc_min=zsrc_min,
+        zsrc_max=7.0,
+        shapenoise=0.05,
+        photoz_sigma_unscaled=0.05,
+        ngals=ngals
+    )
 
 Changing the halo density profile (Numcosmo and CCL only) - ``halo_profile_model`` keyword (default = ‘nfw’)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -716,5 +775,12 @@ backends
 .. code:: ipython3
 
     allsystematics_200m_einasto = mock.generate_galaxy_catalog(
-        **cluster_kwargs, zsrc='chang13', halo_profile_model='einasto', zsrc_min=zsrc_min,
-        zsrc_max=7.0, shapenoise=0.05, photoz_sigma_unscaled=0.05, ngals=ngals)
+        **cluster_kwargs,
+        zsrc="chang13",
+        halo_profile_model="einasto",
+        zsrc_min=zsrc_min,
+        zsrc_max=7.0,
+        shapenoise=0.05,
+        photoz_sigma_unscaled=0.05,
+        ngals=ngals
+    )

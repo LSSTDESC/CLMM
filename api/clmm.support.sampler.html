@@ -1,22 +1,21 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>clmm.support.sampler module &mdash; CLMM 1.7.1 documentation</title>
+  <title>clmm.support.sampler module &mdash; CLMM 1.10.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=1d24b1d9"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -28,14 +27,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> CLMM
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            CLMM
           </a>
               <div class="version">
-                1.7.1
+                1.10.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -88,8 +91,12 @@
 <li class="toctree-l2"><a class="reference internal" href="clmm.dataops.html">clmm.dataops package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.galaxycluster.html">clmm.galaxycluster module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.gcdata.html">clmm.gcdata module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.redshift.html">clmm.redshift package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="clmm.redshift.distributions.html">clmm.redshift.distributions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.redshift.tools.html">clmm.redshift.tools module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.theory.html">clmm.theory package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="clmm.theory.be_setup.html">clmm.theory.be_setup module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="clmm.theory.ccl.html">clmm.theory.ccl module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="clmm.theory.cluster_toolkit.html">clmm.theory.cluster_toolkit module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="clmm.theory.func_layer.html">clmm.theory.func_layer module</a></li>
@@ -99,8 +106,15 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="clmm.plotting.html">clmm.plotting package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="clmm.utils.html">clmm.utils module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="clmm.z_distributions.html">clmm.z_distributions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clmm.utils.html">clmm.utils package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.beta_lens.html">clmm.utils.beta_lens module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.boost.html">clmm.utils.boost module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.ellipticity.html">clmm.utils.ellipticity module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.statistic.html">clmm.utils.statistic module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.units.html">clmm.utils.units module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clmm.utils.validation.html">clmm.utils.validation module</a></li>
+</ul>
+</li>
 <li class="toctree-l2 current"><a class="reference internal" href="clmm.support.html">clmm.support package</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="clmm.support.mock_data.html">clmm.support.mock_data module</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">clmm.support.sampler module</a></li>
@@ -123,7 +137,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../api.html">API Documentation</a></li>
           <li class="breadcrumb-item"><a href="clmm.support.html">clmm.support package</a></li>
       <li class="breadcrumb-item active">clmm.support.sampler module</li>
@@ -137,15 +151,15 @@
            <div itemprop="articleBody">
              
   <section id="module-clmm.support.sampler">
-<span id="clmm-support-sampler-module"></span><h1>clmm.support.sampler module<a class="headerlink" href="#module-clmm.support.sampler" title="Permalink to this heading"></a></h1>
+<span id="clmm-support-sampler-module"></span><h1>clmm.support.sampler module<a class="headerlink" href="#module-clmm.support.sampler" title="Link to this heading"></a></h1>
 <p>&#64;file.py sampler.py
 Functions for sampling (output either peak or full distribution)</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="clmm.support.sampler.basinhopping">
-<span class="sig-prename descclassname"><span class="pre">clmm.support.sampler.</span></span><span class="sig-name descname"><span class="pre">basinhopping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_to_shear_profile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logm_0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/support/sampler.html#basinhopping"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.support.sampler.basinhopping" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">clmm.support.sampler.</span></span><span class="sig-name descname"><span class="pre">basinhopping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_to_shear_profile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logm_0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/support/sampler.html#basinhopping"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.support.sampler.basinhopping" title="Link to this definition"></a></dt>
 <dd><p>Uses basinhopping, a scipy global optimization function, to find the minimum.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>model_to_shear_profile</strong> (<em>callable</em>) -- The objective function to be minimized.
 <code class="docutils literal notranslate"><span class="pre">model_to_shear_profile(x,</span> <span class="pre">*args)</span> <span class="pre">-&gt;</span> <span class="pre">float</span></code>
@@ -158,7 +172,7 @@ where 'n' is the number of independent variables.</p></li>
 Please check the <cite>scipy</cite> documentaion for information on default values and methods.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>x</strong> (<em>array</em>)</p></li>
 <li><p><em>The solution of the optimization</em></p></li>
@@ -170,10 +184,10 @@ Please check the <cite>scipy</cite> documentaion for information on default valu
 
 <dl class="py function">
 <dt class="sig sig-object py" id="clmm.support.sampler.scicurve_fit">
-<span class="sig-prename descclassname"><span class="pre">clmm.support.sampler.</span></span><span class="sig-name descname"><span class="pre">scicurve_fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">profile_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">profile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">err_profile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">absolute_sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/support/sampler.html#scicurve_fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.support.sampler.scicurve_fit" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">clmm.support.sampler.</span></span><span class="sig-name descname"><span class="pre">scicurve_fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">profile_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">profile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">err_profile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">absolute_sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/support/sampler.html#scicurve_fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.support.sampler.scicurve_fit" title="Link to this definition"></a></dt>
 <dd><p>Uses scipy.optimize.curve_fit to find best fit parameters</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>profile_model</strong> (<em>callable</em>) -- The model function, f(x, ...). It must take the independent
 variable as the first argument and the parameters to fit as
@@ -205,7 +219,7 @@ Mathematically,
 Please check the <cite>scipy</cite> documentaion for information on default values and methods.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><p><strong>p</strong> --</p>
 <dl class="simple">
 <dt>contains :</dt><dd><dl class="simple">
@@ -223,7 +237,7 @@ depends on <cite>absolute_sigma</cite> argument, as described above.</p>
 </dl>
 </p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>list</p>
 </dd>
 </dl>
@@ -231,10 +245,10 @@ depends on <cite>absolute_sigma</cite> argument, as described above.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="clmm.support.sampler.sciopt">
-<span class="sig-prename descclassname"><span class="pre">clmm.support.sampler.</span></span><span class="sig-name descname"><span class="pre">sciopt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_to_shear_profile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logm_0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/support/sampler.html#sciopt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.support.sampler.sciopt" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">clmm.support.sampler.</span></span><span class="sig-name descname"><span class="pre">sciopt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_to_shear_profile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logm_0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/clmm/support/sampler.html#sciopt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#clmm.support.sampler.sciopt" title="Link to this definition"></a></dt>
 <dd><p>Uses scipy optimize minimize to output the peak</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>model_to_shear_profile</strong> (<em>callable</em>) -- The objective function to be minimized.
 <code class="docutils literal notranslate"><span class="pre">model_to_shear_profile(x,</span> <span class="pre">*args)</span> <span class="pre">-&gt;</span> <span class="pre">float</span></code>
@@ -247,7 +261,7 @@ where 'n' is the number of independent variables.</p></li>
 Please check the <cite>scipy</cite> documentaion for information on default values and methods.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>x</strong> (<em>array</em>)</p></li>
 <li><p><em>The solution of the optimization</em></p></li>

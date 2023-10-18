@@ -44,11 +44,12 @@ the implementation via CCL or NumCosmo.
     import numpy as np
     import pyccl as ccl
     import matplotlib.pyplot as plt
-    import scipy 
+    import scipy
     import clmm
     from clmm import GalaxyCluster, ClusterEnsemble, GCData
     from clmm import Cosmology
     from clmm.support import mock_data as mock
+    
     %matplotlib inline
 
 .. code:: ipython3
@@ -56,8 +57,9 @@ the implementation via CCL or NumCosmo.
     # NumCosmo imports
     try:
         import gi
-        gi.require_version('NumCosmo', '1.0')
-        gi.require_version('NumCosmoMath', '1.0')
+    
+        gi.require_version("NumCosmo", "1.0")
+        gi.require_version("NumCosmoMath", "1.0")
     except:
         pass
     
@@ -65,8 +67,8 @@ the implementation via CCL or NumCosmo.
     from gi.repository import NumCosmo as Nc
     from gi.repository import NumCosmoMath as Ncm
     
-    Ncm.cfg_init ()
-    Ncm.cfg_set_log_handler (lambda msg: sys.stdout.write (msg) and sys.stdout.flush ())
+    Ncm.cfg_init()
+    Ncm.cfg_set_log_handler(lambda msg: sys.stdout.write(msg) and sys.stdout.flush())
 
 For reproducibility:
 
@@ -79,43 +81,52 @@ Mass function - CCL implementation
 
 .. code:: ipython3
 
-    cosmo = ccl.Cosmology(Omega_c=0.26, Omega_b=0.04,
-                          h=0.7, sigma8=0.8, n_s=0.96, Neff=3.04,  m_nu=1.0e-05, m_nu_type="single")
-    hmd_200c = ccl.halos.MassDef(200, 'critical') 
-    #For a different multiplicty function, the user must change this function below
+    cosmo = ccl.Cosmology(
+        Omega_c=0.26,
+        Omega_b=0.04,
+        h=0.7,
+        sigma8=0.8,
+        n_s=0.96,
+        Neff=3.04,
+        m_nu=1.0e-05,
+        mass_split="single",
+    )
+    hmd_200c = ccl.halos.MassDef(200, "critical")
+    
+    
+    # For a different multiplicty function, the user must change this function below
     def tinker08_ccl(logm, z):
-        mass = 10**(logm)
-        hmf_200c = ccl.halos.MassFuncTinker08(cosmo, mass_def=hmd_200c)
-        nm = hmf_200c.get_mass_function(cosmo, mass, 1./(1+z))
-        return nm # dn/dlog10M
+        mass = 10 ** (logm)
+        hmf_200c = ccl.halos.MassFuncTinker08(mass_def=hmd_200c)
+        nm = hmf_200c(cosmo, mass, 1.0 / (1 + z))
+        return nm  # dn/dlog10M
     
-    #Computing the volume element
+    
+    # Computing the volume element
     def dV_over_dOmega_dz(z):
-        a = 1./(1. + z)
-        da = ccl.background.angular_diameter_distance(cosmo, a) 
+        a = 1.0 / (1.0 + z)
+        da = ccl.background.angular_diameter_distance(cosmo, a)
         E = ccl.background.h_over_h0(cosmo, a)
-        return ((1.+z)**2)*(da**2)*ccl.physical_constants.CLIGHT_HMPC/cosmo['h']/E 
+        return ((1.0 + z) ** 2) * (da**2) * ccl.physical_constants.CLIGHT_HMPC / cosmo["h"] / E
     
     
-    def pdf_tinker08_ccl(logm,z):
-        return tinker08_ccl(logm, z)*dV_over_dOmega_dz(z)
-
+    def pdf_tinker08_ccl(logm, z):
+        return tinker08_ccl(logm, z) * dV_over_dOmega_dz(z)
 
 Mass function - Numcosmo implementation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code:: ipython3
 
-    Ncm.cfg_init ()
-    #cosmo_nc = Nc.HICosmoDEXcdm()
-    cosmo_nc = Nc.HICosmo.new_from_name(
-        Nc.HICosmo, "NcHICosmoDECpl{'massnu-length':<1>}")
+    Ncm.cfg_init()
+    # cosmo_nc = Nc.HICosmoDEXcdm()
+    cosmo_nc = Nc.HICosmo.new_from_name(Nc.HICosmo, "NcHICosmoDECpl{'massnu-length':<1>}")
     cosmo_nc.omega_x2omega_k()
     cosmo_nc.param_set_by_name("w0", -1.0)
     cosmo_nc.param_set_by_name("w1", 0.0)
     cosmo_nc.param_set_by_name("Tgamma0", 2.725)
     cosmo_nc.param_set_by_name("massnu_0", 0.0)
-    cosmo_nc.param_set_by_name("H0", 70.)
+    cosmo_nc.param_set_by_name("H0", 70.0)
     cosmo_nc.param_set_by_name("Omegab", 0.04)
     cosmo_nc.param_set_by_name("Omegac", 0.26)
     cosmo_nc.param_set_by_name("Omegak", 0.0)
@@ -127,48 +138,51 @@ Mass function - Numcosmo implementation
     
     ENnu = 3.046
     cosmo_nc.param_set_by_name("ENnu", ENnu)
-    reion = Nc.HIReionCamb.new () 
-    prim = Nc.HIPrimPowerLaw.new () 
+    reion = Nc.HIReionCamb.new()
+    prim = Nc.HIPrimPowerLaw.new()
     
-    cosmo_nc.add_submodel (reion)
-    cosmo_nc.add_submodel (prim)
+    cosmo_nc.add_submodel(reion)
+    cosmo_nc.add_submodel(prim)
     
-    dist = Nc.Distance.new (2.0)
+    dist = Nc.Distance.new(2.0)
     dist.prepare_if_needed(cosmo_nc)
-    tf = Nc.TransferFunc.new_from_name ("NcTransferFuncEH")
+    tf = Nc.TransferFunc.new_from_name("NcTransferFuncEH")
     
-    psml = Nc.PowspecMLTransfer.new (tf)
-    psml.require_kmin (1.0e-6)
-    psml.require_kmax (1.0e3)
+    psml = Nc.PowspecMLTransfer.new(tf)
+    psml.require_kmin(1.0e-6)
+    psml.require_kmax(1.0e3)
     
-    psf = Ncm.PowspecFilter.new (psml, Ncm.PowspecFilterType.TOPHAT)
-    psf.set_best_lnr0 ()
+    psf = Ncm.PowspecFilter.new(psml, Ncm.PowspecFilterType.TOPHAT)
+    psf.set_best_lnr0()
     
     prim.props.n_SA = 0.96
     
-    old_amplitude = np.exp (prim.props.ln10e10ASA)
-    prim.props.ln10e10ASA = np.log ((0.8 / cosmo_nc.sigma8(psf))**2 * old_amplitude)
+    old_amplitude = np.exp(prim.props.ln10e10ASA)
+    prim.props.ln10e10ASA = np.log((0.8 / cosmo_nc.sigma8(psf)) ** 2 * old_amplitude)
     print(0.8, cosmo_nc.sigma8(psf))
     
-    mulf = Nc.MultiplicityFuncTinker.new ()
-    mulf.set_mdef (Nc.MultiplicityFuncMassDef.CRITICAL)
-    mulf.set_Delta (200.0)
-    mf = Nc.HaloMassFunction.new (dist, psf, mulf)
+    mulf = Nc.MultiplicityFuncTinker.new()
+    mulf.set_mdef(Nc.MultiplicityFuncMassDef.CRITICAL)
+    mulf.set_Delta(200.0)
+    mf = Nc.HaloMassFunction.new(dist, psf, mulf)
+    
+    
     #
     # New mass function object using the objects defined above.
     #
     def tinker08_nc(logm, z):
-        lnm = logm * np.log(10.) # convert log10(M) to ln(M) 
+        lnm = logm * np.log(10.0)  # convert log10(M) to ln(M)
         res = mf.dn_dlnM(cosmo_nc, lnm, z)
-        return res * np.log(10.) # convert dn/dlnM to dn/dlog10M
+        return res * np.log(10.0)  # convert dn/dlnM to dn/dlog10M
+    
     
     def pdf_tinker08_nc(logm, z):
-        return tinker08_nc(logm, z)*mf.dv_dzdomega(cosmo_nc, z)
+        return tinker08_nc(logm, z) * mf.dv_dzdomega(cosmo_nc, z)
 
 
 .. parsed-literal::
 
-    0.8 0.8000000000000003
+    0.8 0.8
 
 
 Sanity Checks - compare the CCL and NC implementations
@@ -182,11 +196,11 @@ Volume element
     z_arr = np.linspace(0.01, 2, 100)
     v_nc = [mf.dv_dzdomega(cosmo_nc, z) for z in z_arr]
     v_ccl = dV_over_dOmega_dz(z_arr)
-    plt.plot(z_arr, np.abs(v_nc/v_ccl -1)*100)
-    plt.xlabel('Redshift', size=14)
-    plt.ylabel('Relative difference [%]', size=14)
-    plt.grid(which='major', lw=0.5)
-    plt.grid(which='minor', lw=0.2)
+    plt.plot(z_arr, np.abs(v_nc / v_ccl - 1) * 100)
+    plt.xlabel("Redshift", size=14)
+    plt.ylabel("Relative difference [%]", size=14)
+    plt.grid(which="major", lw=0.5)
+    plt.grid(which="minor", lw=0.2)
 
 
 
@@ -204,22 +218,22 @@ cosmologies defined above are not actually the same (neutrinos?).
 
 .. code:: ipython3
 
-    logm_arr=np.linspace(14.,15)
+    logm_arr = np.linspace(14.0, 15)
     z_arr = np.linspace(0.01, 1.7, 2)
     
-    t08_vec_ccl=np.vectorize(tinker08_ccl)
-    t08_vec_nc=np.vectorize(tinker08_nc)
+    t08_vec_ccl = np.vectorize(tinker08_ccl)
+    t08_vec_nc = np.vectorize(tinker08_nc)
     for z in z_arr:
-        res_ccl = t08_vec_ccl(logm_arr,z)
-        res_nc = t08_vec_nc(logm_arr,z)
-        plt.plot(logm_arr, res_ccl, label=f'z={z}, CCL')
-        plt.plot(logm_arr, res_nc, label=f'z={z}, NC')
-        plt.yscale('log')
-        plt.xlabel('log10(M200,c)', size=14)
-        plt.ylabel('dn/d$\log_{10}$M', size=14)
+        res_ccl = t08_vec_ccl(logm_arr, z)
+        res_nc = t08_vec_nc(logm_arr, z)
+        plt.plot(logm_arr, res_ccl, label=f"z={z}, CCL")
+        plt.plot(logm_arr, res_nc, label=f"z={z}, NC")
+        plt.yscale("log")
+        plt.xlabel("log10(M200,c)", size=14)
+        plt.ylabel("dn/d$\log_{10}$M", size=14)
     plt.legend()
-    plt.grid(which='major', lw=0.5)
-    plt.grid(which='minor', lw=0.2)
+    plt.grid(which="major", lw=0.5)
+    plt.grid(which="minor", lw=0.2)
 
 
 
@@ -229,14 +243,14 @@ cosmologies defined above are not actually the same (neutrinos?).
 .. code:: ipython3
 
     z_arr = np.linspace(0.01, 1.7, 100)
-    logm = 15.
-    res_ccl = t08_vec_ccl(logm,z_arr)
-    res_nc = t08_vec_nc(logm,z_arr)
-    plt.plot(z_arr, np.abs(res_ccl/res_nc -1)*100)
+    logm = 15.0
+    res_ccl = t08_vec_ccl(logm, z_arr)
+    res_nc = t08_vec_nc(logm, z_arr)
+    plt.plot(z_arr, np.abs(res_ccl / res_nc - 1) * 100)
     plt.xlabel("Redshift", size=14)
     plt.ylabel("Relative difference [%]", size=14)
-    plt.grid(which='major', lw=0.5)
-    plt.grid(which='minor', lw=0.2)
+    plt.grid(which="major", lw=0.5)
+    plt.grid(which="minor", lw=0.2)
 
 
 
@@ -248,73 +262,75 @@ Acceptance-rejection method to sample (M,z) from the mass function
 
 .. code:: ipython3
 
-    def bivariate_draw(pdf, N=1000,logm_min=14.,logm_max=15., zmin=0.01, zmax=1, Ngrid_m=30, Ngrid_z=30):  
-        """  
-        Uses the rejection method for generating random numbers derived from an arbitrary   
-        probability distribution. 
+    def bivariate_draw(
+        pdf, N=1000, logm_min=14.0, logm_max=15.0, zmin=0.01, zmax=1, Ngrid_m=30, Ngrid_z=30
+    ):
+        """
+        Uses the rejection method for generating random numbers derived from an arbitrary
+        probability distribution.
     
         Parameters
         ----------
         pdf : func
           2d distribution function to sample
         N : int
-          number of points to generate  
-        log_min,logm_max : float 
-          log10 mass range  
-        zmin,zmax : float 
-          redshift range  
+          number of points to generate
+        log_min,logm_max : float
+          log10 mass range
+        zmin,zmax : float
+          redshift range
     
-        Returns:   
+        Returns:
         --------
         ran_logm : list
-            accepted logm values  
+            accepted logm values
         ran_z : list
             accepted redshift values
         acceptance : float
             acceptance ratio of the method
-        """  
+        """
     
         # maximum value of the pdf over the mass and redshift space.
         # the pdf is not monotonous in mass and redshift, so we need
         # to find the maximum numerically. Here we scan the space
         # with a regular grid and use the maximum value.
-        # Accuracy of the results depends on Ngrid_m and Ngrid_z 
+        # Accuracy of the results depends on Ngrid_m and Ngrid_z
         # This should probably be improved
-        
-        logM_arr = np.linspace(logm_min, logm_max, Ngrid_m)  
-        z_arr = np.logspace(np.log10(zmin), np.log10(zmax), Ngrid_z)  
+    
+        logM_arr = np.linspace(logm_min, logm_max, Ngrid_m)
+        z_arr = np.logspace(np.log10(zmin), np.log10(zmax), Ngrid_z)
         p = []
         for logM in logM_arr:
             for z in z_arr:
-                p.append(pdf(logM, z))  
+                p.append(pdf(logM, z))
         pmax = np.max(p)
         pmin = np.min(p)
-        # Counters  
-        naccept = 0  
-        ntrial = 0  
+        # Counters
+        naccept = 0
+        ntrial = 0
     
-        # Keeps drawing until N points are accepted  
-        ran_logm = [] # output list of random numbers  
-        ran_z = [] # output list of random numbers  
-        while naccept < N:  
+        # Keeps drawing until N points are accepted
+        ran_logm = []  # output list of random numbers
+        ran_z = []  # output list of random numbers
+        while naccept < N:
             # draw (logm,z) from uniform distribution
             # draw p from uniform distribution
-            logm = np.random.uniform(logm_min,logm_max) # x'  
-            z = np.random.uniform(zmin,zmax) # x'  
-            p = np.random.uniform(0.,pmax) # y'  
+            logm = np.random.uniform(logm_min, logm_max)  # x'
+            z = np.random.uniform(zmin, zmax)  # x'
+            p = np.random.uniform(0.0, pmax)  # y'
     
-            if p < pdf(logm, z):  
+            if p < pdf(logm, z):
                 # keep the point
-    #            print(logm, z, p, pdf(logm, z))
-                ran_logm.append(logm)  
-                ran_z.append(z)  
-                naccept = naccept+1  
-            ntrial = ntrial+1  
+                #            print(logm, z, p, pdf(logm, z))
+                ran_logm.append(logm)
+                ran_z.append(z)
+                naccept = naccept + 1
+            ntrial = ntrial + 1
     
-        ran_logm = np.asarray(ran_logm)  
-        ran_z = np.asarray(ran_z)  
+        ran_logm = np.asarray(ran_logm)
+        ran_z = np.asarray(ran_z)
     
-        acceptance = float(N/ntrial)
+        acceptance = float(N / ntrial)
         print(f"acceptance = {acceptance}")
         return ran_logm, ran_z, acceptance
 
@@ -325,24 +341,31 @@ Draw :math:`10^4` (M,z) pairs and check consistency with mass function
 
     # Define the numbers of pairs to draw and the mass and redshift ranges
     N = 10000
-    logm_min = 14.
+    logm_min = 14.0
     logm_max = 14.5
     zmin = 0.2
-    zmax = 1.
+    zmax = 1.0
     
     # Choose between the CCL and NC implementation (NC is faster)
-    #pdf = pdf_tinker08_ccl
+    # pdf = pdf_tinker08_ccl
     pdf = pdf_tinker08_nc
 
 .. code:: ipython3
 
     # Normalisation factor for the pdf to be used later
-    norm = 1./scipy.integrate.dblquad(pdf, zmin, zmax, lambda x:logm_min, lambda x:logm_max, epsrel=1.e-4)[0]
+    norm = (
+        1.0
+        / scipy.integrate.dblquad(
+            pdf, zmin, zmax, lambda x: logm_min, lambda x: logm_max, epsrel=1.0e-4
+        )[0]
+    )
 
 .. code:: ipython3
 
     # Random draw
-    ran_logm, ran_z, acceptance = bivariate_draw(pdf, N=N,logm_min=logm_min,logm_max=logm_max, zmin=zmin, zmax=zmax)
+    ran_logm, ran_z, acceptance = bivariate_draw(
+        pdf, N=N, logm_min=logm_min, logm_max=logm_max, zmin=zmin, zmax=zmax
+    )
 
 
 .. parsed-literal::
@@ -371,10 +394,9 @@ Check distribution in mass bins (integrate over the full redshift range)
 
     print(zmin, zmax)
     predicted_T08_m_quad = [
-        norm*N*scipy.integrate.dblquad(
-            pdf, zmin, zmax,
-            lambda x:lmmin, lambda x:lmmax,
-            epsrel=1.e-4)[0]
+        norm
+        * N
+        * scipy.integrate.dblquad(pdf, zmin, zmax, lambda x: lmmin, lambda x: lmmax, epsrel=1.0e-4)[0]
         for lmmin, lmmax in zip(hist_m[1], hist_m[1][1:])
     ]
 
@@ -386,19 +408,25 @@ Check distribution in mass bins (integrate over the full redshift range)
 
 .. code:: ipython3
 
-    bin_centers_m = 0.5*(hist_m[1][:-1]+hist_m[1][1:])
+    bin_centers_m = 0.5 * (hist_m[1][:-1] + hist_m[1][1:])
     
-    plt.hist(ran_logm, bins=hist_m[1], color='teal', alpha=0.3,
-             label='drawn masses - integrated over redshift range')
-    plt.plot(bin_centers_m, np.array(predicted_T08_m_quad), '-o',
-             color='green', label='Expected from theory')
-    plt.yscale('log')
-    plt.xlabel('$\log_{10}$M', size=14)
-    plt.ylabel('Number', size=14)
-    plt.title(f'{N:,} clusters drawn in log10M={logm_min, logm_max}, z={zmin, zmax}')
+    plt.hist(
+        ran_logm,
+        bins=hist_m[1],
+        color="teal",
+        alpha=0.3,
+        label="drawn masses - integrated over redshift range",
+    )
+    plt.plot(
+        bin_centers_m, np.array(predicted_T08_m_quad), "-o", color="green", label="Expected from theory"
+    )
+    plt.yscale("log")
+    plt.xlabel("$\log_{10}$M", size=14)
+    plt.ylabel("Number", size=14)
+    plt.title(f"{N:,} clusters drawn in log10M={logm_min, logm_max}, z={zmin, zmax}")
     plt.legend()
-    plt.grid(which='major', lw=0.5)
-    plt.grid(which='minor', lw=0.2)
+    plt.grid(which="major", lw=0.5)
+    plt.grid(which="minor", lw=0.2)
 
 
 
@@ -414,10 +442,11 @@ Check distribution in redshift bins (integrate over the full mass range)
     
     print(logm_min, logm_max)
     predicted_T08_z_quad = [
-        norm*N*scipy.integrate.dblquad(
-            pdf, zzmin, zzmax,
-            lambda x:logm_min, lambda x:logm_max,
-            epsrel=1.e-4)[0]
+        norm
+        * N
+        * scipy.integrate.dblquad(
+            pdf, zzmin, zzmax, lambda x: logm_min, lambda x: logm_max, epsrel=1.0e-4
+        )[0]
         for zzmin, zzmax in zip(hist_z[1], hist_z[1][1:])
     ]
 
@@ -429,19 +458,29 @@ Check distribution in redshift bins (integrate over the full mass range)
 
 .. code:: ipython3
 
-    bin_centers_z = 0.5*(hist_z[1][:-1]+hist_z[1][1:])
+    bin_centers_z = 0.5 * (hist_z[1][:-1] + hist_z[1][1:])
     
-    plt.hist(ran_z, bins=hist_z[1], color='orange', alpha=0.3,
-             label='drawn redshift - integrated over mass range')
-    plt.plot(bin_centers_z,np.array(predicted_T08_z_quad),
-             '-o',color='darkorange', label='Expected from theory')
-    plt.yscale('log')
-    plt.xlabel('Redshift', size=14)
-    plt.ylabel('Number', size=14)
-    plt.title(f'{N:,} clusters drawn in log10M={logm_min, logm_max}, z={zmin, zmax}')
+    plt.hist(
+        ran_z,
+        bins=hist_z[1],
+        color="orange",
+        alpha=0.3,
+        label="drawn redshift - integrated over mass range",
+    )
+    plt.plot(
+        bin_centers_z,
+        np.array(predicted_T08_z_quad),
+        "-o",
+        color="darkorange",
+        label="Expected from theory",
+    )
+    plt.yscale("log")
+    plt.xlabel("Redshift", size=14)
+    plt.ylabel("Number", size=14)
+    plt.title(f"{N:,} clusters drawn in log10M={logm_min, logm_max}, z={zmin, zmax}")
     plt.legend(loc=4)
-    plt.grid(which='major', lw=0.5)
-    plt.grid(which='minor', lw=0.2)
+    plt.grid(which="major", lw=0.5)
+    plt.grid(which="minor", lw=0.2)
 
 
 
@@ -469,26 +508,26 @@ Cluster ensemble masses, redshifts and positions
     # Randomly keep 30 (M,z) pairs from the 1000s generated abve.
     Nstack = 30
     indices = np.random.choice(len(ran_logm), Nstack)
-    cluster_m = 10 **ran_logm[indices]
+    cluster_m = 10 ** ran_logm[indices]
     cluster_z = ran_z[indices]
     
     # Concentration CCL object to compute the theoretical concentration
-    conc_obj = ccl.halos.ConcentrationDuffy08(hmd_200c)
+    conc_obj = ccl.halos.ConcentrationDuffy08(mass_def=hmd_200c)
     conc_list = []
-    for number in range (0, len(cluster_m)):
-        a = 1./(1. + (cluster_z[number]))
+    for number in range(0, len(cluster_m)):
+        a = 1.0 / (1.0 + (cluster_z[number]))
         # mean value of the concentration for that cluster
-        lnc_mean = np.log(conc_obj.get_concentration(cosmo, M = (cluster_m[number]),a = a))
+        lnc_mean = np.log(conc_obj(cosmo, M=(cluster_m[number]), a=a))
         # random draw of actual concentration from normal distribution around lnc_mean, with a 0.14 scatter
         lnc = np.random.normal(lnc_mean, 0.14)
-        conc_list.append(np.exp(lnc))  
-        
-    conc_list  = np.array(conc_list)
+        conc_list.append(np.exp(lnc))
+    
+    conc_list = np.array(conc_list)
     
     # randomly draw cluster positions over the full sky
-    ra = np.random.random(N) * 360 #from 0 to 360 deg
+    ra = np.random.random(N) * 360  # from 0 to 360 deg
     sindec = np.random.random(N) * 2 - 1
-    dec = np.arcsin(sindec) * 180 / np.pi #from -90 to 90 deg
+    dec = np.arcsin(sindec) * 180 / np.pi  # from -90 to 90 deg
 
 .. code:: ipython3
 
@@ -524,8 +563,11 @@ The cluster objects are then stored in ``gclist``.
 
 .. code:: ipython3
 
-    import warnings 
-    warnings.simplefilter('ignore') # just to prevent warning print out when looping over the cluster ensemble below
+    import warnings
+    
+    warnings.simplefilter(
+        "ignore"
+    )  # just to prevent warning print out when looping over the cluster ensemble below
 
 .. code:: ipython3
 
@@ -533,34 +575,66 @@ The cluster objects are then stored in ``gclist``.
     gclist = []
     # number of galaxies in each cluster field (alternatively, can use the galaxy density instead)
     n_gals = 10000
-    #ngal_density = 10
-    cosmo_clmm = Cosmology(H0=71.0, Omega_dm0=0.265-0.0448, Omega_b0=0.0448, Omega_k0=0.0)
-    #cosmo_clmm.set_be_cosmo(cosmo)
+    # ngal_density = 10
+    cosmo_clmm = Cosmology(H0=71.0, Omega_dm0=0.265 - 0.0448, Omega_b0=0.0448, Omega_k0=0.0)
+    # cosmo_clmm.set_be_cosmo(cosmo)
     gal_args = dict(
-        cosmo=cosmo_clmm, zsrc='chang13', delta_so=200, massdef='critical',
-        halo_profile_model='nfw', zsrc_max=3.0, field_size=10., shapenoise=.04,
-        photoz_sigma_unscaled=0.02, ngals=n_gals, mean_e_err=.1)
+        cosmo=cosmo_clmm,
+        zsrc="chang13",
+        delta_so=200,
+        massdef="critical",
+        halo_profile_model="nfw",
+        zsrc_max=3.0,
+        field_size=10.0,
+        shapenoise=0.04,
+        photoz_sigma_unscaled=0.02,
+        ngals=n_gals,
+        mean_e_err=0.1,
+    )
     
     for i in range(Nstack):
         # generate background galaxy catalog for cluster i
         cl = clmm.GalaxyCluster(
-            f'mock_cluster_{i:04}', ra[i], dec[i], cluster_z[i],
+            f"mock_cluster_{i:04}",
+            ra[i],
+            dec[i],
+            cluster_z[i],
             galcat=mock.generate_galaxy_catalog(
-                cluster_m[i], cluster_z[i], conc_list[i],
-                cluster_ra=ra[i], cluster_dec=dec[i],
-                zsrc_min=cluster_z[i]+0.1, **gal_args))
+                cluster_m[i],
+                cluster_z[i],
+                conc_list[i],
+                cluster_ra=ra[i],
+                cluster_dec=dec[i],
+                zsrc_min=cluster_z[i] + 0.1,
+                **gal_args,
+            ),
+        )
     
         # compute DeltaSigma for each background galaxy
         cl.compute_tangential_and_cross_components(
-            shape_component1='e1', shape_component2='e2', 
-            tan_component='DS_t', cross_component='DS_x',
-            cosmo=cosmo_clmm, is_deltasigma=True, use_pdz=True)
-        
+            shape_component1="e1",
+            shape_component2="e2",
+            tan_component="DS_t",
+            cross_component="DS_x",
+            cosmo=cosmo_clmm,
+            is_deltasigma=True,
+            use_pdz=True,
+        )
+    
         # compute the weights to be used to bluid the DeltaSigma radial profiles
         cl.compute_galaxy_weights(
-            use_pdz=True, use_shape_noise=True, shape_component1='e1', shape_component2='e2', 
-            use_shape_error=True, shape_component1_err='e_err', shape_component2_err='e_err',
-            weight_name='w_ls', cosmo=cosmo_clmm, is_deltasigma=True, add=True)
+            use_pdz=True,
+            use_shape_noise=True,
+            shape_component1="e1",
+            shape_component2="e2",
+            use_shape_error=True,
+            shape_component1_err="e_err",
+            shape_component2_err="e_err",
+            weight_name="w_ls",
+            cosmo=cosmo_clmm,
+            is_deltasigma=True,
+            add=True,
+        )
     
         # append the cluster in the list
         gclist.append(cl)
@@ -568,8 +642,8 @@ The cluster objects are then stored in ``gclist``.
 
 .. parsed-literal::
 
-    CPU times: user 3.03 s, sys: 352 ms, total: 3.38 s
-    Wall time: 3.38 s
+    CPU times: user 1.63 s, sys: 252 ms, total: 1.88 s
+    Wall time: 1.88 s
 
 
 .. code:: ipython3
@@ -581,7 +655,7 @@ The cluster objects are then stored in ``gclist``.
 
 .. parsed-literal::
 
-    <TableColumns names=('ra','dec','e1','e2','e_err','z','ztrue','pzpdf','id','sigma_c','theta','DS_t','DS_x','w_ls')>
+    <TableColumns names=('ra','dec','e1','e2','e_err','z','ztrue','pzpdf','id','sigma_c_eff','theta','DS_t','DS_x','w_ls')>
 
 
 
@@ -606,18 +680,26 @@ to compute
 
     %%time
     ensemble_id = 1
-    bins = np.logspace(np.log10(0.3),np.log10(5),10)
-    clusterensemble = ClusterEnsemble(ensemble_id, gclist, 
-                                      tan_component_in='DS_t', cross_component_in='DS_x', 
-                                      tan_component_out='DS_t', cross_component_out='DS_x', 
-                                      weights_in='w_ls', weights_out='W_l', 
-                                      bins=bins, bin_units='Mpc', cosmo=cosmo_clmm)
+    bins = np.logspace(np.log10(0.3), np.log10(5), 10)
+    clusterensemble = ClusterEnsemble(
+        ensemble_id,
+        gclist,
+        tan_component_in="DS_t",
+        cross_component_in="DS_x",
+        tan_component_out="DS_t",
+        cross_component_out="DS_x",
+        weights_in="w_ls",
+        weights_out="W_l",
+        bins=bins,
+        bin_units="Mpc",
+        cosmo=cosmo_clmm,
+    )
 
 
 .. parsed-literal::
 
-    CPU times: user 402 ms, sys: 4.11 ms, total: 406 ms
-    Wall time: 405 ms
+    CPU times: user 280 ms, sys: 0 ns, total: 280 ms
+    Wall time: 279 ms
 
 
 There is also the option to create an ``ClusterEnsemble`` object without
@@ -634,10 +716,17 @@ individual profile and then delete the cluster object.
     empty_cluster_ensemble = ClusterEnsemble(ensemble_id2)
     for cluster in gclist:
         empty_cluster_ensemble.make_individual_radial_profile(
-            galaxycluster=cluster, tan_component_in='DS_t', cross_component_in='DS_x', 
-            tan_component_out='DS_t', cross_component_out='DS_x', 
-            weights_in = 'w_ls', weights_out='W_l', 
-            bins=bins, bin_units='Mpc', cosmo=cosmo_clmm)
+            galaxycluster=cluster,
+            tan_component_in="DS_t",
+            cross_component_in="DS_x",
+            tan_component_out="DS_t",
+            cross_component_out="DS_x",
+            weights_in="w_ls",
+            weights_out="W_l",
+            bins=bins,
+            bin_units="Mpc",
+            cosmo=cosmo_clmm,
+        )
 
 A third option is where all clusters already have the profile computed,
 and we just add those to the ``ClusterEnsemble`` object:
@@ -647,10 +736,16 @@ and we just add those to the ``ClusterEnsemble`` object:
     # add profiles to gclist
     for cluster in gclist:
         cluster.make_radial_profile(
-            tan_component_in='DS_t', cross_component_in='DS_x', 
-            tan_component_out='DS_t', cross_component_out='DS_x', 
-            weights_in = 'w_ls', weights_out = 'W_l', 
-            bins=bins, bin_units='Mpc', cosmo=cosmo_clmm)
+            tan_component_in="DS_t",
+            cross_component_in="DS_x",
+            tan_component_out="DS_t",
+            cross_component_out="DS_x",
+            weights_in="w_ls",
+            weights_out="W_l",
+            bins=bins,
+            bin_units="Mpc",
+            cosmo=cosmo_clmm,
+        )
 
 .. code:: ipython3
 
@@ -658,8 +753,12 @@ and we just add those to the ``ClusterEnsemble`` object:
     empty_cluster_ensemble = ClusterEnsemble(ensemble_id3)
     for cluster in gclist:
         empty_cluster_ensemble.add_individual_radial_profile(
-            galaxycluster=cluster, profile_table=cluster.profile,
-            tan_component='DS_t', cross_component='DS_x', weights='W_l')
+            galaxycluster=cluster,
+            profile_table=cluster.profile,
+            tan_component="DS_t",
+            cross_component="DS_x",
+            weights="W_l",
+        )
 
 Stacked profile of the cluster ensemble
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -668,7 +767,7 @@ The stacked radial profile of the ensemble is then obtained as
 
 .. code:: ipython3
 
-    clusterensemble.make_stacked_radial_profile(tan_component='DS_t', cross_component='DS_x')
+    clusterensemble.make_stacked_radial_profile(tan_component="DS_t", cross_component="DS_x")
 
 Covariance (Bootstrap, sample, Jackknife) of the stack between radial bins
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -696,30 +795,49 @@ but these are not (yet) available in ``CLMM``
 
 .. code:: ipython3
 
-    clusterensemble.compute_sample_covariance(tan_component='DS_t', cross_component='DS_x')
-    clusterensemble.compute_bootstrap_covariance(tan_component='DS_t', cross_component='DS_x', n_bootstrap=300)
-    clusterensemble.compute_jackknife_covariance(n_side=16,tan_component='DS_t', cross_component='DS_x')
+    clusterensemble.compute_sample_covariance(tan_component="DS_t", cross_component="DS_x")
+    clusterensemble.compute_bootstrap_covariance(
+        tan_component="DS_t", cross_component="DS_x", n_bootstrap=300
+    )
+    clusterensemble.compute_jackknife_covariance(
+        n_side=16, tan_component="DS_t", cross_component="DS_x"
+    )
 
 .. code:: ipython3
 
-    plt.figure(figsize = (7,7))
-    plt.rcParams['axes.linewidth'] = 2
-    plt.plot(clusterensemble.data['radius'][0],
-             clusterensemble.cov_tan_sv.diagonal()**0.5/1e13,
-             '--',c = 'royalblue', label = 'Sample', linewidth = 3)
-    plt.plot(clusterensemble.data['radius'][0],
-             clusterensemble.cov_tan_bs.diagonal()**0.5/1e13,
-             '-s',c = 'g', label = 'Bootstrap', linewidth = 3, markersize = 10)
-    plt.plot(clusterensemble.data['radius'][0],
-             clusterensemble.cov_tan_jk.diagonal()**0.5/1e13,
-             c = 'r', label = 'Jackknife', linewidth = 3)
-    plt.xlabel('R [Mpc]', fontsize =20)
-    plt.ylabel(r'$\sigma_{\Delta\Sigma}\ (\times 10^{13} M_\odot /Mpc^2)$', fontsize =25)
-    plt.tick_params(axis='both', which = 'major', labelsize= 18)
-    plt.legend(frameon = False, fontsize = 20)
+    plt.figure(figsize=(7, 7))
+    plt.rcParams["axes.linewidth"] = 2
+    plt.plot(
+        clusterensemble.data["radius"][0],
+        clusterensemble.cov["tan_sc"].diagonal() ** 0.5 / 1e13,
+        "--",
+        c="royalblue",
+        label="Sample",
+        linewidth=3,
+    )
+    plt.plot(
+        clusterensemble.data["radius"][0],
+        clusterensemble.cov["tan_jk"].diagonal() ** 0.5 / 1e13,
+        "-s",
+        c="g",
+        label="Bootstrap",
+        linewidth=3,
+        markersize=10,
+    )
+    plt.plot(
+        clusterensemble.data["radius"][0],
+        clusterensemble.cov["tan_sc"].diagonal() ** 0.5 / 1e13,
+        c="r",
+        label="Jackknife",
+        linewidth=3,
+    )
+    plt.xlabel("R [Mpc]", fontsize=20)
+    plt.ylabel(r"$\sigma_{\Delta\Sigma}\ (\times 10^{13} M_\odot /Mpc^2)$", fontsize=25)
+    plt.tick_params(axis="both", which="major", labelsize=18)
+    plt.legend(frameon=False, fontsize=20)
     plt.loglog()
-    plt.grid(which='major', lw=0.5)
-    plt.grid(which='minor', lw=0.2)
+    plt.grid(which="major", lw=0.5)
+    plt.grid(which="minor", lw=0.2)
 
 
 
@@ -728,23 +846,21 @@ but these are not (yet) available in ``CLMM``
 
 .. code:: ipython3
 
-    fig, axes = plt.subplots(1,3, figsize =(20, 5))
-    plt.rcParams['axes.linewidth'] = 2
+    fig, axes = plt.subplots(1, 3, figsize=(20, 5))
+    plt.rcParams["axes.linewidth"] = 2
     fig.subplots_adjust(wspace=0.15, hspace=0)
     
-    maximum = clusterensemble.cov_tan_sv.max()
+    maximum = clusterensemble.cov["tan_sc"].max()
     for ax, cov, label in zip(
         axes,
-        [clusterensemble.cov_tan_sv, 
-         clusterensemble.cov_tan_bs,
-         clusterensemble.cov_tan_jk],
-        ['Stack : Sample', 'Stack : Bootstrap', 'Stack : Jackknife'],
+        [clusterensemble.cov["tan_sc"], clusterensemble.cov["tan_jk"], clusterensemble.cov["tan_sc"]],
+        ["Stack : Sample", "Stack : Bootstrap", "Stack : Jackknife"],
     ):
-        ax.set_title(label, fontsize = 20)
-        ax.set_xlabel('radial bin index', fontsize=18)
-        ax.set_ylabel('radial bin index', fontsize=18)
-        ax.tick_params(axis='both', which='major', labelsize=12)
-        im = ax.imshow(cov, cmap = 'Reds', vmin=0, vmax=maximum, origin='lower')
+        ax.set_title(label, fontsize=20)
+        ax.set_xlabel("radial bin index", fontsize=18)
+        ax.set_ylabel("radial bin index", fontsize=18)
+        ax.tick_params(axis="both", which="major", labelsize=12)
+        im = ax.imshow(cov, cmap="Reds", vmin=0, vmax=maximum, origin="lower")
         plt.colorbar(im, ax=ax)
 
 
@@ -762,7 +878,7 @@ mass, concentration and redshift in the stack (dashed black)
 
 .. code:: ipython3
 
-    moo = clmm.Modeling(massdef = 'critical', delta_mdef = 200, halo_profile_model = 'nfw')
+    moo = clmm.Modeling(massdef="critical", delta_mdef=200, halo_profile_model="nfw")
     moo.set_cosmo(cosmo_clmm)
     # Average values of mass and concentration of the ensemble to be used below
     # to overplot the model on the stacked profile
@@ -771,43 +887,95 @@ mass, concentration and redshift in the stack (dashed black)
 
 .. code:: ipython3
 
-    r_stack, gt_stack, gx_stack = (clusterensemble.stacked_data[c] for c in ('radius', 'DS_t', 'DS_x'))
-    plt.rcParams['axes.linewidth'] = 2
-    fig, axs = plt.subplots(1,2, figsize = (17,6))
+    r_stack, gt_stack, gx_stack = (clusterensemble.stacked_data[c] for c in ("radius", "DS_t", "DS_x"))
+    plt.rcParams["axes.linewidth"] = 2
+    fig, axs = plt.subplots(1, 2, figsize=(17, 6))
     
-    err_gt = clusterensemble.cov_tan_sv.diagonal()**0.5/1e13
-    err_gx = clusterensemble.cov_cross_sv.diagonal()**0.5/1e13
+    err_gt = clusterensemble.cov["tan_sc"].diagonal() ** 0.5 / 1e13
+    err_gx = clusterensemble.cov["cross_sc"].diagonal() ** 0.5 / 1e13
     
-    axs[0].errorbar(r_stack,gt_stack/1e13, err_gt,markersize = 5, c = 'r', fmt = 'o', capsize = 10, elinewidth = 1, zorder = 1000, alpha = 1, label = 'Stack')
-    axs[1].errorbar(r_stack,gx_stack/1e13, err_gx,markersize = 5, c = 'r', fmt = 'o', capsize = 10, elinewidth = 1, zorder = 1000, alpha = 1, label = 'Stack')
-    #print(moo.eval_excess_surface_density(clusterensemble.data['radius'][0], cluster_z.mean())/1e13)
-    axs[0].plot(clusterensemble.data['radius'][0],moo.eval_excess_surface_density(clusterensemble.data['radius'][0], cluster_z.mean())/1e13, '--k', linewidth = 3, label = 'Prediction from stack mean cluster', zorder = 100)
-    axs[1].plot(clusterensemble.data['radius'][0],0*moo.eval_excess_surface_density(clusterensemble.data['radius'][0], cluster_z.mean())/1e13, '--k', linewidth = 3, label = 'y=0', zorder = 100)
+    axs[0].errorbar(
+        r_stack,
+        gt_stack / 1e13,
+        err_gt,
+        markersize=5,
+        c="r",
+        fmt="o",
+        capsize=10,
+        elinewidth=1,
+        zorder=1000,
+        alpha=1,
+        label="Stack",
+    )
+    axs[1].errorbar(
+        r_stack,
+        gx_stack / 1e13,
+        err_gx,
+        markersize=5,
+        c="r",
+        fmt="o",
+        capsize=10,
+        elinewidth=1,
+        zorder=1000,
+        alpha=1,
+        label="Stack",
+    )
+    # print(moo.eval_excess_surface_density(clusterensemble.data['radius'][0], cluster_z.mean())/1e13)
+    axs[0].plot(
+        clusterensemble.data["radius"][0],
+        moo.eval_excess_surface_density(clusterensemble.data["radius"][0], cluster_z.mean()) / 1e13,
+        "--k",
+        linewidth=3,
+        label="Prediction from stack mean cluster",
+        zorder=100,
+    )
+    axs[1].plot(
+        clusterensemble.data["radius"][0],
+        0 * moo.eval_excess_surface_density(clusterensemble.data["radius"][0], cluster_z.mean()) / 1e13,
+        "--k",
+        linewidth=3,
+        label="y=0",
+        zorder=100,
+    )
     
-    axs[0].set_xscale('log')
-    axs[1].set_xscale('log')
+    axs[0].set_xscale("log")
+    axs[1].set_xscale("log")
     
     
     for i in range(Nstack):
-        axs[0].plot(clusterensemble.data['radius'][i],clusterensemble.data['DS_t'][i]/1e13,color='cyan', label = 'Individual', alpha = 1, linewidth = 1)
-        axs[1].plot(clusterensemble.data['radius'][i],clusterensemble.data['DS_x'][i]/1e13, color='cyan', label = 'Individual', alpha = 1, linewidth = 1)
+        axs[0].plot(
+            clusterensemble.data["radius"][i],
+            clusterensemble.data["DS_t"][i] / 1e13,
+            color="cyan",
+            label="Individual",
+            alpha=1,
+            linewidth=1,
+        )
+        axs[1].plot(
+            clusterensemble.data["radius"][i],
+            clusterensemble.data["DS_x"][i] / 1e13,
+            color="cyan",
+            label="Individual",
+            alpha=1,
+            linewidth=1,
+        )
         if i == 0:
-            axs[0].legend(frameon = False, fontsize = 15)
-            axs[1].legend(frameon = False, fontsize = 15)
-    #axs[0].plot(np.average(clusterensemble.data['radius'], axis = 0), np.average(clusterensemble.data['gt'], weights = None, axis = 0)/1e13)
-    axs[0].set_xlabel('R [Mpc]', fontsize =20)
-    axs[1].set_xlabel('R [Mpc]', fontsize =20)
-    axs[0].tick_params(axis='both', which = 'major', labelsize= 18)
-    axs[1].tick_params(axis='both', which = 'major', labelsize= 18)
-    axs[0].set_ylabel(r'$\Delta\Sigma_+$ $[\times 10^{13} M_\odot /Mpc^])$', fontsize= 20)
-    axs[1].set_ylabel(r'$\Delta\Sigma_\times$  $[\times 10^{13} M_\odot /Mpc^2]$', fontsize= 20)
-    axs[0].set_title(r'Tangential', fontsize= 20)
-    axs[1].set_title(r'Cross', fontsize= 20)
+            axs[0].legend(frameon=False, fontsize=15)
+            axs[1].legend(frameon=False, fontsize=15)
+    # axs[0].plot(np.average(clusterensemble.data['radius'], axis = 0), np.average(clusterensemble.data['gt'], weights = None, axis = 0)/1e13)
+    axs[0].set_xlabel("R [Mpc]", fontsize=20)
+    axs[1].set_xlabel("R [Mpc]", fontsize=20)
+    axs[0].tick_params(axis="both", which="major", labelsize=18)
+    axs[1].tick_params(axis="both", which="major", labelsize=18)
+    axs[0].set_ylabel(r"$\Delta\Sigma_+$ $[\times 10^{13} M_\odot /Mpc^])$", fontsize=20)
+    axs[1].set_ylabel(r"$\Delta\Sigma_\times$  $[\times 10^{13} M_\odot /Mpc^2]$", fontsize=20)
+    axs[0].set_title(r"Tangential", fontsize=20)
+    axs[1].set_title(r"Cross", fontsize=20)
     
     for ax in axs:
         ax.minorticks_on()
-        ax.grid(lw=.5)
-        ax.grid(which='minor', lw=.1)
+        ax.grid(lw=0.5)
+        ax.grid(which="minor", lw=0.1)
     plt.show()
 
 
@@ -822,8 +990,8 @@ The ``ClusterEnsemble`` object also have an option for saving/loading:
 
 .. code:: ipython3
 
-    clusterensemble.save('ce.pkl')
+    clusterensemble.save("ce.pkl")
 
 .. code:: ipython3
 
-    clusterensemble2 = ClusterEnsemble.load('ce.pkl')
+    clusterensemble2 = ClusterEnsemble.load("ce.pkl")

@@ -1,7 +1,7 @@
-clmm.z\_distributions module
+clmm.utils.validation module
 ============================
 
-.. automodule:: clmm.z_distributions
+.. automodule:: clmm.utils.validation
    :members:
    :undoc-members:
    :show-inheritance:

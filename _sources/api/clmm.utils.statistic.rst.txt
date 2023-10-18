@@ -1,0 +1,7 @@
+clmm.utils.statistic module
+===========================
+
+.. automodule:: clmm.utils.statistic
+   :members:
+   :undoc-members:
+   :show-inheritance:
